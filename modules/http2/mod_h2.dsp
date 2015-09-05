@@ -197,10 +197,6 @@ SOURCE=./h2_workers.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_workers.c
-# End Source File
-# Begin Source File
-
 SOURCE=./mod_h2.c
 # End Source File
 # Begin Source File
