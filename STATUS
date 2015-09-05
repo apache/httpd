@@ -109,14 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
-     PR 57868.
-     trunk: http://svn.apache.org/r1688660
-     2.4.x: trunk works modulo CHANGES and next-number
-     +1: jailletc36, ylavic, niq
-     jailletc36: I'm just wondering why the log message speak about "dbd-query"
-                while other messages around are about "dbd-group"?
-
   *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
      when using RewriteMap with MapType dbd or fastdbd.
      PR 57868.
