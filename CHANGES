@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
+     PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
+
   *) mod_dir: Prevent the internal identifier "httpd/unix-directory" from
      appearing as a Content-Type response header when requests for a directory
      are rewritten by mod_rewrite. [Eric Covener]
