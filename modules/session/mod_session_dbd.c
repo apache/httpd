@@ -94,8 +94,11 @@ static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
 
 /**
  * Load the session by the key specified.
+ *
+ * The session value is allocated using the passed apr_pool_t.
  */
-static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
+static apr_status_t dbd_load(apr_pool_t *p, request_rec * r,
+                             const char *key, const char **val)
 {
 
     apr_status_t rv;
@@ -138,8 +141,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
             return APR_EGENERAL;
         }
         if (*val == NULL) {
-            *val = apr_pstrdup(r->pool,
-                               apr_dbd_get_entry(dbd->driver, row, 0));
+            *val = apr_pstrdup(p, apr_dbd_get_entry(dbd->driver, row, 0));
         }
         /* we can't break out here or row won't get cleaned up */
     }
@@ -191,7 +193,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     }
 
     /* first look in the notes */
-    note = apr_pstrcat(r->pool, MOD_SESSION_DBD, name, NULL);
+    note = apr_pstrcat(m->pool, MOD_SESSION_DBD, name, NULL);
     zz = (session_rec *)apr_table_get(m->notes, note);
     if (zz) {
         *z = zz;
@@ -204,7 +206,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
         /* load an RFC2109 or RFC2965 compliant cookie */
         ap_cookie_read(r, name, &key, conf->remove);
         if (key) {
-            ret = dbd_load(r, key, &val);
+            ret = dbd_load(m->pool, r, key, &val);
             if (ret != APR_SUCCESS) {
                 return ret;
             }
@@ -215,7 +217,7 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     /* load named session */
     else if (conf->peruser) {
         if (r->user) {
-            ret = dbd_load(r, r->user, &val);
+            ret = dbd_load(m->pool, r, r->user, &val);
             if (ret != APR_SUCCESS) {
                 return ret;
             }
@@ -228,8 +230,8 @@ static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
     }
 
     /* create a new session and return it */
-    zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
-    zz->pool = r->pool;
+    zz = (session_rec *) apr_pcalloc(m->pool, sizeof(session_rec));
+    zz->pool = m->pool;
     zz->entries = apr_table_make(zz->pool, 10);
     if (key && val) {
         apr_uuid_t *uuid = apr_pcalloc(zz->pool, sizeof(apr_uuid_t));
