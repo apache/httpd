@@ -165,7 +165,7 @@ function handle(r)
 -- use our own Error contents
         r:puts("Unsupported HTTP method " .. r.method)
         r.status = 405
-        return apache2.ok
+        return apache2.OK
     else
 -- use the ErrorDocument
         return 501
