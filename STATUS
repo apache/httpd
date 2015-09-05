@@ -192,6 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
+
   *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
                   http://svn.apache.org/r1687539 
@@ -230,18 +231,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) apxs: add HTTPD_MMN and HTTPD_VERSION to apxs -q
      trunk: http://svn.apache.org/r1693919
      2.4.x: trunk works modulo CHANGES
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) mod_rewrite: Allow cookies to include ':' by using an alternate separator.
      PR47241.
      trunk: http://svn.apache.org/r1693963
      2.4.x: trunk works modulo CHANGES
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) mod_session_dbd: fix lifetime of Request notes.
      trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/session/mod_session_dbd.c?r1=1679181&r2=1687087&view=patch
      2.4.x: trunk patch applies.
-     +1: niq, ylavic
+     +1: niq, ylavic, jim
 
   *) util_script: Make REDIRECT_URL a complete URL (where set).
      PR 57785
@@ -258,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1597352
      Backport version for 2.4.x of patch:
         Trunk version of patch works
-     +1: rpluem, ylavic,
+     +1: rpluem, ylavic,, jim
 
   *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
      protocols hooks to control Upgrade: and ALPN protocol switching.
@@ -286,7 +287,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      v2: added r1698116, r1693918 to patch
      v3: added changes to ap_array_index and ap_array_contains
      2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v4.patch
-     +1: icing
+     +1: icing, jim
 
   *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
      trunk patch: http://svn.apache.org/r1700783
@@ -337,14 +338,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1700925
                   http://svn.apache.org/r1701204
      2.4.x patch for this and core/mod_ssl: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-h2-all-in-one-v4.patch
-     +1: icing
+     +1: icing, jim
 
 
   *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
      long to keep idle connections with the memcache server(s).
      Change default value from 600 usec (!) to 15 sec.  PR 58091
      Measurements available in the svn commit message.
-q     trunk: http://svn.apache.org/r1696105
+     trunk: http://svn.apache.org/r1696105
             http://svn.apache.org/r1700418
      2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
      +1: jailletc36, ylavic
