@@ -109,13 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
-     when using RewriteMap with MapType dbd or fastdbd.
-     PR 57868.
-     trunk: http://svn.apache.org/r1695170
-     2.4.x: trunk works modulo (missing) CHANGES and next-number
-     +1: jailletc36, ylavic, niq
-     jailletc36: A CHANGE entry should be added. I forgot it :(
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
