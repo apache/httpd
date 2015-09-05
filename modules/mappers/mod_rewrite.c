@@ -2485,10 +2485,18 @@ static void add_cookie(request_rec *r, char *s)
 
     char *tok_cntx;
     char *cookie;
+    /* long-standing default, but can't use ':' in a cookie */
+    const char *sep = ":"; 
 
-    var = apr_strtok(s, ":", &tok_cntx);
-    val = apr_strtok(NULL, ":", &tok_cntx);
-    domain = apr_strtok(NULL, ":", &tok_cntx);
+    /* opt-in to ; separator if first character is a ; */
+    if (s && *s == ';') { 
+        sep = ";"; 
+        s++;
+    }
+
+    var = apr_strtok(s, sep, &tok_cntx);
+    val = apr_strtok(NULL, sep, &tok_cntx);
+    domain = apr_strtok(NULL, sep, &tok_cntx);
 
     if (var && val && domain) {
         request_rec *rmain = r;
@@ -2504,10 +2512,10 @@ static void add_cookie(request_rec *r, char *s)
         if (!data) {
             char *exp_time = NULL;
 
-            expires = apr_strtok(NULL, ":", &tok_cntx);
-            path = expires ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
-            secure = path ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
-            httponly = secure ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
+            expires = apr_strtok(NULL, sep, &tok_cntx);
+            path = expires ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
+            secure = path ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
+            httponly = secure ? apr_strtok(NULL, sep, &tok_cntx) : NULL;
 
             if (expires) {
                 apr_time_exp_t tms;
