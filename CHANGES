@@ -9,6 +9,9 @@ Changes with Apache 2.4.17
   *) apxs: Add HTTPD_VERSION and HTTPD_MMN to the variables available with 
      apxs -q. PR58202. [Daniel Shahaf <danielsh apache.org>]
 
+  *) mod_rewrite: Avoid a crash when lacking correct DB access permissions
+     when using RewriteMap with MapType dbd or fastdbd.  [Christophe Jaillet]
+
   *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
      PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
 
