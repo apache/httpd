@@ -353,6 +353,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36
      ylavic: I'd prefer the unambiguous parentheses in the macros definitions,
              as you suggested on dev@.
+     covener: +1 ^
 
 
   *) Allow autoindexes to work without mod_dir or mod_mime
