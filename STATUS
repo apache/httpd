@@ -362,30 +362,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
-  *) mod_ssl: add ALPN support by allowing other modules to register callbacks
-              for negotiation of the application layer protocol.  PR 52210.
-     trunk patch: http://svn.apache.org/r1332643
-                  http://svn.apache.org/r1487772
-                  http://svn.apache.org/r1670397
-                  http://svn.apache.org/r1670434
-                  http://svn.apache.org/r1670436
-                  http://svn.apache.org/r1670578
-                  http://svn.apache.org/r1670738
-                  http://svn.apache.org/r1675459
-                  http://svn.apache.org/r1676004
-                  http://svn.apache.org/r1676709
-                  http://svn.apache.org/r1681741
-                  http://svn.apache.org/r1681746
-                  http://svn.apache.org/r1685069
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-alpn-v4.patch
-     +1:
-     ylavic: Needs work wrt activation with a new Protocols directive:
-             http://www.mail-archive.com/dev@httpd.apache.org/msg62163.html
-             and also about SNI checks and status 421:
-             http://www.mail-archive.com/dev@httpd.apache.org/msg62230.html
-             Let's comment on @dev for Stefan Eissing (mod_h2) to be able to
-             participate.
-
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
      to be alive and the first bytes sent: this is a best effort to prevent the
