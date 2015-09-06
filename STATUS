@@ -354,6 +354,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: To ease review http://people.apache.org/~jailletc36/sparse_nospace.diff
                  is the same file as above but generated using svn diff -x --ignore-all-space
 
+  *) Allow autoindexes to work without mod_dir or mod_mime
+     trunk: http://svn.apache.org/r1701436
+     2.4.x: trunk works
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) mod_ssl: add ALPN support by allowing other modules to register callbacks
