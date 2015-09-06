@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_autoindex: Allow autoindexes when neither mod_dir nor mod_mime are
+     loaded. [Eric Covener]
+
   *) mod_charset_lite: On EBCDIC platforms, make sure mod_charset_lite runs
      after other resource-level filters. [Eric Covener]
 
