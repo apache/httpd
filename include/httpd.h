@@ -518,6 +518,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_UNSUPPORTED_MEDIA_TYPE          415
 #define HTTP_RANGE_NOT_SATISFIABLE           416
 #define HTTP_EXPECTATION_FAILED              417
+#define HTTP_MISDIRECTED_REQUEST             421
 #define HTTP_UNPROCESSABLE_ENTITY            422
 #define HTTP_LOCKED                          423
 #define HTTP_FAILED_DEPENDENCY               424
@@ -1549,6 +1550,23 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line, const char *t
 AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line, const char *tok);
 
 /**
+ * Retrieve an array of tokens in the format "1#token" defined in RFC2616. Only
+ * accepts ',' as a delimiter, does not accept quoted strings, and errors on
+ * any separator.
+ * @param p The pool to allocate from
+ * @param tok The line to read tokens from
+ * @param tokens Pointer to an array of tokens. If not NULL, must be an array
+ *    of char*, otherwise it will be allocated on @a p when a token is found
+ * @param skip_invalid If true, when an invalid separator is encountered, it
+ *    will be ignored.
+ * @return NULL on success, an error string otherwise.
+ * @remark *tokens may be NULL on output if NULL in input and no token is found
+ */
+AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p, const char *tok,
+                                                    apr_array_header_t **tokens,
+                                                    int skip_invalid);
+
+/**
  * Retrieve a token, spacing over it and adjusting the pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas and can also be delimited
@@ -2264,6 +2282,28 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
                                     const char * const *argv);
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
+
+/**
+ * Get the first index of the string in the array or -1 if not found. Start
+ * searching a start. 
+ * @param array The array the check
+ * @param s The string to find
+ * @param start Start index for search. If start is out of bounds (negative or  
+                equal to array length or greater), -1 will be returned.
+ * @return index of string in array or -1
+ */
+AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array, 
+                                   const char *s,
+                                   int start);
+
+/**
+ * Check if the string is member of the given array by strcmp.
+ * @param array The array the check
+ * @param s The string to find
+ * @return !=0 iff string is member of array (via strcmp)
+ */
+AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
+                                      const char *s);
 
 #ifdef __cplusplus
 }

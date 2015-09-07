@@ -182,6 +182,11 @@
 #include <openssl/srp.h>
 #endif
 
+/* ALPN Protocol Negotiation */
+#if defined(TLSEXT_TYPE_application_layer_protocol_negotiation)
+#define HAVE_TLS_ALPN
+#endif
+
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
 /* mod_ssl headers */
@@ -798,6 +803,12 @@ int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
 #endif
 
+#ifdef HAVE_TLS_ALPN
+int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
+                             unsigned char *outlen, const unsigned char *in,
+                             unsigned int inlen, void *arg);
+#endif
+
 /**  Session Cache Support  */
 apr_status_t ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
@@ -855,6 +866,8 @@ char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
+
+BOOL         ssl_util_vhost_matches(const char *servername, server_rec *s);
 
 /**  Pass Phrase Support  */
 apr_status_t ssl_load_encrypted_pkey(server_rec *, apr_pool_t *, int,

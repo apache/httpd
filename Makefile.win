@@ -215,6 +215,30 @@ _trylua:
 
 !ENDIF
 
+!IF EXIST("srclib\nghttp2")
+
+_trynghttp2:
+!IF $(USEMAK) == 1
+	cd modules\http2
+	$(MAKE) $(MAKEOPT) -f mod_h2.mak CFG="mod_h2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_h2
+!ELSE
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_h2 - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\lua")
+
+_trynghttp2:
+	@echo -----
+	@echo mod_h2 will not build unless nghttp2 is installed in srclib\nghttp2.
+	@echo Version 1.0 includes an lib\makefile.msvc that will satisfy this
+	@echo requirement.
+
+!ENDIF
 
 _trydb:
 !IF $(USEMAK) == 1
@@ -754,6 +778,14 @@ _copybin:
 	copy modules\generators\$(LONG)\mod_info.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_status.$(src_so) 	"$(inst_so)" <.y
 	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
+!IF EXIST("srclib\nghttp2")
+	copy modules\http2\$(LONG)\mod_h2.$(src_so) 		"$(inst_so)" <.y
+!IF "$(SHORT)" == "D"
+	copy srclib\nghttp2\lib\MSVC_obj\nghttp2d.$(src_dll)		 	"$(inst_dll)" <.y
+!ELSE
+	copy srclib\nghttp2\lib\MSVC_obj\nghttp2.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
+!ENDIF
 	copy modules\ldap\$(LONG)\mod_ldap.$(src_so)		"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_config.$(src_so) 	"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_debug.$(src_so) 	"$(inst_so)" <.y

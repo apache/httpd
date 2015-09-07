@@ -315,7 +315,7 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
  * the response to the client
  * @param r The current request
  */
-void ap_process_request(request_rec *r);
+AP_DECLARE(void) ap_process_request(request_rec *r);
 
 /* For post-processing after a handler has finished with a request.
  * (Commonly used after it was suspended)
