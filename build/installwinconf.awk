@@ -59,6 +59,7 @@ BEGIN {
     filelist["httpd-dav.conf"] = "httpd-dav.conf.in";
     filelist["httpd-default.conf"] = "httpd-default.conf.in";
     filelist["httpd-info.conf"] = "httpd-info.conf.in";
+    filelist["httpd-h2.conf"] = "httpd-h2.conf.in";
     filelist["httpd-languages.conf"] = "httpd-languages.conf.in";
     filelist["httpd-manual.conf"] = "httpd-manual.conf.in";
     filelist["httpd-mpm.conf"] = "httpd-mpm.conf.in";
@@ -136,6 +137,7 @@ BEGIN {
           print "#LoadModule ext_filter_module modules/mod_ext_filter.so" > dstfl;
           print "#LoadModule file_cache_module modules/mod_file_cache.so" > dstfl;
           print "#LoadModule filter_module modules/mod_filter.so" > dstfl;
+          print "#LoadModule h2_module modules/mod_h2.so" > dstfl;
           print "#LoadModule headers_module modules/mod_headers.so" > dstfl;
           print "#LoadModule heartbeat_module modules/mod_heartbeat.so" > dstfl;
           print "#LoadModule heartmonitor_module modules/mod_heartmonitor.so" > dstfl;

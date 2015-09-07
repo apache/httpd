@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.17
+  *) mod_h2: added donated http/2 implementation to build system. Similar
+     configuration options to mod_ssl. [Stefan Eissing]
 
   *) mod_rewrite:  Allow cookies set by mod_rewrite to contain ':' by accepting
      ';' as an alternate separator.  PR47241. 

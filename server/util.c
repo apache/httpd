@@ -1451,6 +1451,95 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line,
     return find_list_item(p, line, tok, AP_ETAG_WEAK);
 }
 
+/* Grab a list of tokens of the format 1#token (from RFC7230) */
+AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
+                                                const char *str_in,
+                                                apr_array_header_t **tokens,
+                                                int skip_invalid)
+{
+    int in_leading_space = 1;
+    int in_trailing_space = 0;
+    int string_end = 0;
+    const char *tok_begin;
+    const char *cur;
+
+    if (!str_in) {
+        return NULL;
+    }
+
+    tok_begin = cur = str_in;
+
+    while (!string_end) {
+        const unsigned char c = (unsigned char)*cur;
+
+        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP) && c != '\0') {
+            /* Non-separator character; we are finished with leading
+             * whitespace. We must never have encountered any trailing
+             * whitespace before the delimiter (comma) */
+            in_leading_space = 0;
+            if (in_trailing_space) {
+                return "Encountered illegal whitespace in token";
+            }
+        }
+        else if (c == ' ' || c == '\t') {
+            /* "Linear whitespace" only includes ASCII CRLF, space, and tab;
+             * we can't get a CRLF since headers are split on them already,
+             * so only look for a space or a tab */
+            if (in_leading_space) {
+                /* We're still in leading whitespace */
+                ++tok_begin;
+            }
+            else {
+                /* We must be in trailing whitespace */
+                ++in_trailing_space;
+            }
+        }
+        else if (c == ',' || c == '\0') {
+            if (!in_leading_space) {
+                /* If we're out of the leading space, we know we've read some
+                 * characters of a token */
+                if (*tokens == NULL) {
+                    *tokens = apr_array_make(p, 4, sizeof(char *));
+                }
+                APR_ARRAY_PUSH(*tokens, char *) =
+                    apr_pstrmemdup((*tokens)->pool, tok_begin,
+                                   (cur - tok_begin) - in_trailing_space);
+            }
+            /* We're allowed to have null elements, just don't add them to the
+             * array */
+
+            tok_begin = cur + 1;
+            in_leading_space = 1;
+            in_trailing_space = 0;
+            string_end = (c == '\0');
+        }
+        else {
+            /* Encountered illegal separator char */
+            if (skip_invalid) {
+                /* Skip to the next separator */
+                const char *temp;
+                temp = ap_strchr_c(cur, ',');
+                if(!temp) {
+                    temp = ap_strchr_c(cur, '\0');
+                }
+
+                /* Act like we haven't seen a token so we reset */
+                cur = temp - 1;
+                in_leading_space = 1;
+                in_trailing_space = 0;
+            }
+            else {
+                return apr_psprintf(p, "Encountered illegal separator "
+                                    "'\\x%.2x'", (unsigned int)c);
+            }
+        }
+
+        ++cur;
+    }
+
+    return NULL;
+}
+
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas; and can also be delimited
@@ -3005,3 +3094,28 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
 
     return apr_pstrndup(p, buf, k);
 }
+
+AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array, 
+                                   const char *s,
+                                   int start)
+{
+    if (start >= 0) {
+        int i;
+        
+        for (i = start; i < array->nelts; i++) {
+            const char *p = APR_ARRAY_IDX(array, i, const char *);
+            if (!strcmp(p, s)) {
+                return i;
+            }
+        }
+    }
+    
+    return -1;
+}
+
+AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
+                                      const char *s)
+{
+    return (ap_array_str_index(array, s, 0) >= 0);
+}
+

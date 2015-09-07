@@ -445,6 +445,7 @@
  * 20120211.46 (2.4.13-dev) Add ap_map_http_request_error()
  * 20120211.47 (2.4.13-dev) Add ap_some_authn_required, ap_force_authn hook.
  *                          Deprecate broken ap_some_auth_required.
+ * 20140627.4 (2.5.0-dev)  Added ap_parse_token_list_strict() to httpd.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

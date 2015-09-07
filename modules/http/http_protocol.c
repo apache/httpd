@@ -135,7 +135,7 @@ static const char * const status_lines[RESPONSE_CODES] =
     NULL, /* 418 */
     NULL, /* 419 */
     NULL, /* 420 */
-    NULL, /* 421 */
+    "421 Misdirected Request",
     "422 Unprocessable Entity",
     "423 Locked",
     "424 Failed Dependency",
@@ -1293,6 +1293,11 @@ static const char *get_canned_error_string(int status,
     case HTTP_NETWORK_AUTHENTICATION_REQUIRED:
         return("<p>The client needs to authenticate to gain\n"
                "network access.</p>\n");
+    case HTTP_MISDIRECTED_REQUEST:
+        return("<p>The client needs a new connection for this\n"
+               "request as the requested host name does not match\n"
+               "the Server Name Indication (SNI) in use for this\n"
+               "connection.</p>\n");
     default:                    /* HTTP_INTERNAL_SERVER_ERROR */
         /*
          * This comparison to expose error-notes could be modified to
