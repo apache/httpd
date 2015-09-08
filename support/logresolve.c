@@ -122,7 +122,7 @@ static void usage(void)
     "Options:"                                                               NL
     "  -s   Record statistics to STATFILE when finished."                    NL
                                                                              NL
-    "  -c   Perform double lookups when resolving IP addresses."            NL,
+    "  -c   Perform double lookups when resolving IP addresses."             NL,
     shortname, shortname);
     exit(1);
 }
@@ -200,7 +200,7 @@ int main(int argc, const char * const argv[])
     apr_file_buffer_set(outfile, outbuffer, WRITE_BUF_SIZE);
 
     cache = apr_hash_make(pool);
-    if(apr_pool_create(&pline, pool) != APR_SUCCESS){
+    if (apr_pool_create(&pline, pool) != APR_SUCCESS) {
         return 1;
     }
 
@@ -220,7 +220,7 @@ int main(int argc, const char * const argv[])
 
         /* Check if this could even be an IP address */
         if (!apr_isxdigit(line[0]) && line[0] != ':') {
-                withname++;
+            withname++;
             apr_file_puts(line, outfile);
             continue;
         }
@@ -315,7 +315,7 @@ int main(int argc, const char * const argv[])
     if (stats) {
         apr_file_t *statsfile;
         if (apr_file_open(&statsfile, stats,
-                       APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE,
+                          APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
             apr_file_printf(errfile, "%s: Could not open %s for writing.",
                             shortname, stats);
