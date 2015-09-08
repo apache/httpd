@@ -1823,10 +1823,11 @@ DAV_DECLARE(void) dav_add_vary_header(request_rec *in_req,
      * so only do this check if there is a versioning provider */
     if (vsn_hooks != NULL) {
         const char *target = apr_table_get(in_req->headers_in, DAV_LABEL_HDR);
-        const char *vary = apr_table_get(out_req->headers_out, "Vary");
 
         /* If Target-Selector specified, add it to the Vary header */
         if (target != NULL) {
+            const char *vary = apr_table_get(out_req->headers_out, "Vary");
+
             if (vary == NULL)
                 vary = DAV_LABEL_HDR;
             else
