@@ -296,54 +296,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: icing, jim
 
   *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
-     trunk patch: http://svn.apache.org/r1700783
-                  http://svn.apache.org/r1688474
-                  http://svn.apache.org/r1688475
-                  http://svn.apache.org/r1689605
-                  http://svn.apache.org/r1690120
-                  http://svn.apache.org/r1690137
-                  http://svn.apache.org/r1690248
-                  http://svn.apache.org/r1691374
-                  http://svn.apache.org/r1691582
-                  http://svn.apache.org/r1691592
-                  http://svn.apache.org/r1691819
-                  http://svn.apache.org/r1691908
-                  http://svn.apache.org/r1692285
-                  http://svn.apache.org/r1692432
-                  http://svn.apache.org/r1692486
-                  http://svn.apache.org/r1694951
-                  http://svn.apache.org/r1695885
-                  http://svn.apache.org/r1695920
-                  http://svn.apache.org/r1696264
-                  http://svn.apache.org/r1696279
-                  http://svn.apache.org/r1696428
-                  http://svn.apache.org/r1696442
-                  http://svn.apache.org/r1696565
-                  http://svn.apache.org/r1696592
-                  http://svn.apache.org/r1696607
-                  http://svn.apache.org/r1696755
-                  http://svn.apache.org/r1696881
-                  http://svn.apache.org/r1697051
-                  http://svn.apache.org/r1697339
-                  http://svn.apache.org/r1697370
-                  http://svn.apache.org/r1697389
-                  http://svn.apache.org/r1697446
-                  http://svn.apache.org/r1697543
-                  http://svn.apache.org/r1697634
-                  http://svn.apache.org/r1697855
-                  http://svn.apache.org/r1698023
-                  http://svn.apache.org/r1698103
-                  http://svn.apache.org/r1698107
-                  http://svn.apache.org/r1698116
-                  http://svn.apache.org/r1698133
-                  http://svn.apache.org/r1700271
-                  http://svn.apache.org/r1700275
-                  http://svn.apache.org/r1700514
-                  http://svn.apache.org/r1700777
-                  http://svn.apache.org/r1700917
-                  http://svn.apache.org/r1700925
-                  http://svn.apache.org/r1701204
-     2.4.x patch for this and core/mod_ssl: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-h2-all-in-one-v4.patch
+     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
+     See diff and merged changelists via: 
+         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
      +1: icing, jim
 
 
