@@ -568,10 +568,9 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
         opts->override_opts = this_dir->override_opts;
     }
 
-   if (this_dir->override_list != NULL) {
+    if (this_dir->override_list != NULL) {
         opts->override_list = this_dir->override_list;
-   }
-
+    }
 }
 
 
@@ -614,7 +613,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00029)
                       "Module bug?  Request filename is missing for URI %s",
                       r->uri);
-       return OK;
+        return OK;
     }
 
     /* Canonicalize the file path without resolving filename case or aliases

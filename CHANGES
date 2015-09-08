@@ -17,6 +17,11 @@ Changes with Apache 2.4.17
   *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
      PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
 
+  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
+     long to keep idle connections with the memcache server(s).
+     Change default value from 600 usec (!) to 15 sec. PR 58091
+     [Christophe Jaillet]
+
   *) mod_dir: Prevent the internal identifier "httpd/unix-directory" from
      appearing as a Content-Type response header when requests for a directory
      are rewritten by mod_rewrite. [Eric Covener]

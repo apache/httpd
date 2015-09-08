@@ -345,7 +345,7 @@ int main(int argc, const char * const argv[])
         case 'n':
             need_file = 0;
             cmd = HTDBM_NOFILE;
-                args_left--;
+            args_left--;
             break;
         case 'l':
             need_pwd = 0;

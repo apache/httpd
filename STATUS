@@ -109,38 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
-     long to keep idle connections with the memcache server(s).
-     Change default value from 600 usec (!) to 15 sec.  PR 58091
-     Measurements available in the svn commit message.
-     trunk: http://svn.apache.org/r1696105
-            http://svn.apache.org/r1700418
-     2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
-     +1: jailletc36, ylavic, covener
-     covener: please add compatibility tag to doc during backport
-     jailletc36: done in r1700418
-
-
-  *) Fix some spurious and/or inconsistant indent spotted by sparse
-     Fix some minor style issues.
-     trunk: http://svn.apache.org/r1700317
-            http://svn.apache.org/r1700318
-            http://svn.apache.org/r1700319
-            http://svn.apache.org/r1700320
-            http://svn.apache.org/r1700321
-            http://svn.apache.org/r1700322
-            http://svn.apache.org/r1700326
-            http://svn.apache.org/r1700328
-            http://svn.apache.org/r1700330
-            http://svn.apache.org/r1700331
-            http://svn.apache.org/r1700332
-            http://svn.apache.org/r1700334
-            http://svn.apache.org/r1700336
-            http://svn.apache.org/r1700338
-     2.4.x: http://people.apache.org/~jailletc36/sparse.diff
-     +1: jailletc36, ylavic, covener
-     jailletc36: To ease review http://people.apache.org/~jailletc36/sparse_nospace.diff
-                 is the same file as above but generated using svn diff -x --ignore-all-space
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

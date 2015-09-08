@@ -78,7 +78,7 @@ apr_status_t ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err,
             line_len = AJP_MSG_DUMP_BYTES_PER_LINE;
         }
         for (j = 0; j < line_len; j++) {
-             x = msg->buf[i + j];
+            x = msg->buf[i + j];
 
             *current++ = hex_table[x >> 4];
             *current++ = hex_table[x & 0x0f];
