@@ -209,8 +209,9 @@ static apr_status_t uldap_connection_unbind(void *param)
  *
  * The caller should hold the lock for this connection
  */
-static apr_status_t util_ldap_connection_remove (void *param) {
-    util_ldap_connection_t *ldc = param, *l  = NULL, *prev = NULL;
+static apr_status_t util_ldap_connection_remove (void *param)
+{
+    util_ldap_connection_t *ldc = param, *l = NULL, *prev = NULL;
     util_ldap_state_t *st;
 
     if (!ldc) return APR_SUCCESS;
@@ -2670,16 +2671,17 @@ static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
     return NULL;
 }
 
-static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
-   util_ldap_config_t *dc =
-       (util_ldap_config_t *) apr_pcalloc(p,sizeof(util_ldap_config_t));
+static void *util_ldap_create_dir_config(apr_pool_t *p, char *d)
+{
+    util_ldap_config_t *dc =
+        (util_ldap_config_t *) apr_pcalloc(p,sizeof(util_ldap_config_t));
 
-   /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
-   dc->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
-   dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
-   dc->ReferralHopLimit = AP_LDAP_HOPLIMIT_UNSET;
+    /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
+    dc->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
+    dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
+    dc->ReferralHopLimit = AP_LDAP_HOPLIMIT_UNSET;
 
-   return dc;
+    return dc;
 }
 
 static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
@@ -2891,7 +2893,6 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
 
 static apr_status_t util_ldap_cleanup_module(void *data)
 {
-
     server_rec *s = data;
     util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
         s->module_config, &ldap_module);
@@ -2901,7 +2902,6 @@ static apr_status_t util_ldap_cleanup_module(void *data)
     }
 
     return APR_SUCCESS;
-
 }
 
 static int util_ldap_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
