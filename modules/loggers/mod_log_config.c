@@ -1172,12 +1172,13 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     if (!log_writer) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00645)
                 "log writer isn't correctly setup");
-         return HTTP_INTERNAL_SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
-    if (rv != APR_SUCCESS)
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646) "Error writing to %s",
-                      cls->fname);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00646)
+                      "Error writing to %s", cls->fname);
+    }
     return OK;
 }
 

@@ -185,7 +185,8 @@ static apr_status_t file_cache_el_final(disk_cache_conf *conf, disk_cache_file_t
     return rv;
 }
 
-static apr_status_t file_cache_temp_cleanup(void *dummy) {
+static apr_status_t file_cache_temp_cleanup(void *dummy)
+{
     disk_cache_file_t *file = (disk_cache_file_t *)dummy;
 
     /* clean up the temporary file */
@@ -293,7 +294,7 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
      *     quoted-string expectation-extensions.
      */
 
-    for(i=0, k=0; i < varray->nelts; i++) {
+    for (i=0, k=0; i < varray->nelts; i++) {
         header = apr_table_get(headers, elts[i]);
         if (!header) {
             header = "";
@@ -738,7 +739,7 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
             break;
         }
 
-       *((const char **) apr_array_push(arr)) = apr_pstrdup(r->pool, w);
+        *((const char **) apr_array_push(arr)) = apr_pstrdup(r->pool, w);
     }
 
     return APR_SUCCESS;
@@ -1045,7 +1046,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                          APR_BUFFERED | APR_EXCL, dobj->hdrs.pool);
 
     if (rv != APR_SUCCESS) {
-       ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00725)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, APLOGNO(00725)
                 "could not create header file %s",
                 dobj->hdrs.tempfile);
         return rv;
@@ -1332,7 +1333,7 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
         if (!dobj->disk_info.header_only) {
             rv = file_cache_el_final(conf, &dobj->data, r);
         }
-        else if (dobj->data.file){
+        else if (dobj->data.file) {
             rv = apr_file_remove(dobj->data.file, dobj->data.pool);
         }
     }
@@ -1382,7 +1383,8 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
     return dconf;
 }
 
-static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
+static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv)
+{
     disk_cache_dir_conf *new = (disk_cache_dir_conf *) apr_pcalloc(p, sizeof(disk_cache_dir_conf));
     disk_cache_dir_conf *add = (disk_cache_dir_conf *) addv;
     disk_cache_dir_conf *base = (disk_cache_dir_conf *) basev;
