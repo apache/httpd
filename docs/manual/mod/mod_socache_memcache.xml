@@ -52,4 +52,43 @@
 
 </summary>
 
+<directivesynopsis>
+<name>MemcacheConnTTL</name>
+<description>Keepalive time for idle connections</description>
+<syntax>MemcacheConnTTL <em>num[units]</em></syntax>
+<default>MemcacheConnTTL 15s</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.4.17 and later</compatibility>
+
+<usage>
+
+    <p>Set the time to keep idle connections with the memcache server(s)
+    alive (threaded platforms only).</p>
+    
+    <p>Valid values for <directive>MemcacheConnTTL</directive> are times
+    up to one hour. 0 means no timeout.</p>
+
+    <note><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
+    </p></note>
+
+    <p>Before Apache 2.4.17, this timeout was hardcoded and its value was 600 usec.
+    So, the closest configuration to match the legacy behaviour is to set
+    <directive>MemcacheConnTTL</directive> to 1ms.</p>
+
+    <example>
+    <highlight language="config">
+# Set a timeout of 10 minutes
+MemcacheConnTTL 10min
+# Set a timeout of 60 seconds
+MemcacheConnTTL 60
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

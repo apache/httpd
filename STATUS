@@ -109,18 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
-     long to keep idle connections with the memcache server(s).
-     Change default value from 600 usec (!) to 15 sec.  PR 58091
-     Measurements available in the svn commit message.
-     trunk: http://svn.apache.org/r1696105
-            http://svn.apache.org/r1700418
-     2.4.x: http://people.apache.org/~jailletc36/socache_memcache.diff
-     +1: jailletc36, ylavic, covener
-     covener: please add compatibility tag to doc during backport
-     jailletc36: done in r1700418
-
-
   *) Fix some spurious and/or inconsistant indent spotted by sparse
      Fix some minor style issues.
      trunk: http://svn.apache.org/r1700317
