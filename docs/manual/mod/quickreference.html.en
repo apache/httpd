@@ -746,8 +746,8 @@ of the daemon</td></tr>
 malicious privileges-aware code.</td></tr>
 <tr><td><a href="core.html#protocol">Protocol <var>protocol</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocol for a listening socket</td></tr>
 <tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
-<tr><td><a href="core.html#protocols">Protocols <var>protocol</var> ...</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
-<tr class="odd"><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
+<tr><td><a href="core.html#protocols">Protocols <var>protocol</var> ...</a></td><td> http/1.1 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
+<tr class="odd"><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
 <tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders Off|On</a></td><td> On </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add proxy information in X-Forwarded-* headers</td></tr>
 <tr><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines how to handle bad header lines in a
