@@ -75,11 +75,11 @@ configuration</description>
     <highlight language="config">
 &lt;Location "/server-info"&gt;
     SetHandler server-info
-    Order allow,deny
     # Allow access from server itself
-    Allow from 127.0.0.1
+    Require ip 127.0.0.1
+
     # Additionally, allow access from local workstation
-    Allow from 192.168.1.17
+    Require ip 192.168.1.17
 &lt;/Location&gt;
       </highlight>
     </example>
