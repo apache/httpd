@@ -276,10 +276,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic
 
 
-  *) Allow autoindexes to work without mod_dir or mod_mime
+  *) mod_autoindex: Allow autoindexes to work without mod_dir or mod_mime
      trunk: http://svn.apache.org/r1701436
      2.4.x: trunk works
      +1: covener
+
+  *) mod_ldap: Fix ldaps:// certificate issue with MSSDK.  PR54626
+     trunk: http://svn.apache.org/r1526436
+     2.4.x: trunk works
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
