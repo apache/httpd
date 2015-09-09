@@ -91,11 +91,11 @@ configuration</td></tr>
 
     <div class="example"><h3>Access control</h3><pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
-    Order allow,deny
     # Allow access from server itself
-    Allow from 127.0.0.1
+    Require ip 127.0.0.1
+
     # Additionally, allow access from local workstation
-    Allow from 192.168.1.17
+    Require ip 192.168.1.17
 &lt;/Location&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
