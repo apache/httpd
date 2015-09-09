@@ -496,8 +496,6 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     Balancers available for a virtualhost in addition to the
     number pre-configured. It only takes effect if there is at
     least one pre-configured Balancer.</p>
-    <div class="warning">If/when the growth potential is reached, it is not
-    possible to configure a new balancer or the next restart would fail.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1400,10 +1398,6 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         <td>0</td>
         <td>Number of additional BalancerMembers to allow to be added
         to this balancer in addition to those defined at configuration.
-    <div class="warning"><h3>Note</h3>
-        <p>If/when the growth potential is reached, it is not possible to
-        configure a new BalancerMember or the next restart would fail.</p>
-    </div>
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>

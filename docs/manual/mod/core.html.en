@@ -3671,6 +3671,7 @@ directory</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Protocols http/1.1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -3680,14 +3681,15 @@ directory</td></tr>
             server/virtual host. The list determines the allowed protocols
             a client may negotiate for this server/host.</p>
         
-        <p>You only need to set protocols if you want to limit the available
-            protocols for a server/host. By default, all supported protocols
-            are available to a client.</p>
+        <p>You need to set protocols if you want to extend the available
+            protocols for a server/host. By default, only the http/1.1 protocol
+            (which includes the compatibility with 1.0 and 0.9 clients) is
+            allowed.</p>
         
-        <p>For example, if you want to support only HTTP/1.1 for a server, even
-            though HTTP/2 is available, just specify this protocol only:</p>
+        <p>For example, if you want to support HTTP/2 for a server with TLS, 
+            specify:</p>
         
-        <pre class="prettyprint lang-config">Protocols http/1.1</pre>
+        <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
 
 
         <p>Valid protocols are <code>http/1.1</code> for http and https connections,
@@ -3714,7 +3716,7 @@ directory</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProtocolsHonorOrder Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProtocolsHonorOrder On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -3723,12 +3725,13 @@ directory</td></tr>
         <p>This directive specifies if the server should honor the order in which
         the <code class="directive">Protocols</code> directive lists protocols.</p>
         
-        <p>By default, a client supplies a list of supported protocols and the server
-            selects an available one from that list in the given order.</p>
+        <p>If configured Off, the client supplied list order of protocols has 
+            precedence over the order in the server configuration.</p>
         
-        <p>With <code class="directive">ProtocolsHonorOrder</code> set to <code>on</code>, the
-            client ordering does not matter and only the ordering in the server
-        settings influences the outcome of the protocol negotiation.</p>
+        <p>With <code class="directive">ProtocolsHonorOrder</code> set to <code>on</code> 
+            (default), the client ordering does not matter and only the ordering 
+            in the server settings influences the outcome of the protocol 
+            negotiation.</p>
         
     
 <h3>See also</h3>
