@@ -281,11 +281,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: covener
 
-  *) mod_ldap: Fix ldaps:// certificate issue with MSSDK.  PR54626
-     trunk: http://svn.apache.org/r1526436
-     2.4.x: trunk works
-     +1 covener
-
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
