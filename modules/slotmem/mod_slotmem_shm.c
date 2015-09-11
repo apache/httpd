@@ -25,6 +25,7 @@
 
 #include "httpd.h"
 #include "http_main.h"
+#include "ap_mpm.h" /* for ap_mpm_query() */
 
 #define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
 #define AP_SLOTMEM_IS_PERSIST(t)    (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
@@ -119,9 +120,12 @@ static int slotmem_filenames(apr_pool_t *pool,
                             NULL);
 #else
         /* Each generation needs its own file name. */
-        fname = apr_psprintf(pool, "%s%s_%x%s", DEFAULT_SLOTMEM_PREFIX,
-                             fname, ap_state_query(AP_SQ_CONFIG_GEN),
-                             DEFAULT_SLOTMEM_SUFFIX);
+        {
+            int generation = 0;
+            ap_mpm_query(AP_MPMQ_GENERATION, &generation);
+            fname = apr_psprintf(pool, "%s%s_%x%s", DEFAULT_SLOTMEM_PREFIX,
+                                 fname, generation, DEFAULT_SLOTMEM_SUFFIX);
+        }
 #endif
         fname = ap_runtime_dir_relative(pool, fname);
 
