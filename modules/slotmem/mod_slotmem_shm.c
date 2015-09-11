@@ -41,8 +41,8 @@ typedef struct {
 #define AP_UNSIGNEDINT_OFFSET (APR_ALIGN_DEFAULT(sizeof(unsigned int)))
 
 struct ap_slotmem_instance_t {
-    char                 *name;       /* per segment name */
-    char                 *pname;      /* persisted file name */
+    char                 *fname;      /* file based SHM path/name */
+    char                 *pname;      /* persisted file path/name */
     int                  fbased;      /* filebased? */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
@@ -271,8 +271,8 @@ static apr_status_t cleanup_slotmem(void *param)
                 store_slotmem(next);
             }
             if (next->fbased) {
-                apr_shm_remove(next->name, next->gpool);
-                apr_file_remove(next->name, next->gpool);
+                apr_shm_remove(next->fname, next->gpool);
+                apr_file_remove(next->fname, next->gpool);
             }
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
@@ -336,7 +336,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         /* first try to attach to existing slotmem */
         if (next) {
             for (;;) {
-                if (strcmp(next->name, fname) == 0) {
+                if (strcmp(next->fname, fname) == 0) {
                     /* we already have it */
                     *new = next;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02603)
@@ -435,7 +435,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     /* For the chained slotmem stuff */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(gpool, fname);
+    res->fname = apr_pstrdup(gpool, fname);
     res->pname = apr_pstrdup(gpool, pname);
     res->fbased = fbased;
     res->shm = shm;
@@ -487,7 +487,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     /* first try to attach to existing slotmem */
     if (next) {
         for (;;) {
-            if (strcmp(next->name, fname) == 0) {
+            if (strcmp(next->fname, fname) == 0) {
                 /* we already have it */
                 *new = next;
                 *item_size = next->desc.size;
@@ -519,7 +519,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     /* For the chained slotmem stuff */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
-    res->name = apr_pstrdup(gpool, fname);
+    res->fname = apr_pstrdup(gpool, fname);
     res->fbased = 1;
     res->shm = shm;
     res->num_free = (unsigned int *)ptr;
@@ -665,7 +665,7 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
     if (i >= slot->desc.num) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02293)
                      "slotmem(%s) grab failed. Num %u/num_free %u",
-                     slot->name, slotmem_num_slots(slot),
+                     slot->fname, slotmem_num_slots(slot),
                      slotmem_num_free_slots(slot));
         return APR_EINVAL;
     }
@@ -686,7 +686,7 @@ static apr_status_t slotmem_fgrab(ap_slotmem_instance_t *slot, unsigned int id)
     if (id >= slot->desc.num) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02397)
                      "slotmem(%s) fgrab failed. Num %u/num_free %u",
-                     slot->name, slotmem_num_slots(slot),
+                     slot->fname, slotmem_num_slots(slot),
                      slotmem_num_free_slots(slot));
         return APR_EINVAL;
     }
@@ -713,7 +713,7 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
     if (id >= slot->desc.num || !inuse[id] ) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02294)
                      "slotmem(%s) release failed. Num %u/inuse[%u] %d",
-                     slot->name, slotmem_num_slots(slot),
+                     slot->fname, slotmem_num_slots(slot),
                      id, (int)inuse[id]);
         if (id >= slot->desc.num) {
             return APR_EINVAL;
