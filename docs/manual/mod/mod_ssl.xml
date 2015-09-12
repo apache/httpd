@@ -742,8 +742,8 @@ prefixes are:</p>
 <title><code>aNULL</code>, <code>eNULL</code> and <code>EXP</code>
 ciphers are always disabled</title>
 <p>Beginning with version 2.4.7, null and export-grade
-ciphers are always disabled, as mod_ssl unconditionally prepends any supplied
-cipher suite string with <code>!aNULL:!eNULL:!EXP:</code> at initialization.</p>
+ciphers are always disabled, as mod_ssl unconditionally adds
+<code>!aNULL:!eNULL:!EXP</code> to any cipher string at initialization.</p>
 </note>
 
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
