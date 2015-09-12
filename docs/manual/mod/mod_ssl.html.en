@@ -52,7 +52,6 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Authorization providers for use with Require</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#sslalpnpreference">SSLALPNPreference</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
@@ -322,30 +321,6 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
 
 
   
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLALPNPreference" id="SSLALPNPreference">SSLALPNPreference</a> <a name="sslalpnpreference" id="sslalpnpreference">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure protocol preference for Application-Layer Protocol Negotiation (RFC 7301)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLALPNPreference <em>protocol-id</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 1.0.2 or later</td></tr>
-</table>
-<p>This directive overrides preferences by implementations of application-layer
-protocols during negotiation. Protocol IDs must be specified in terms of the
-"Identification Sequence" from IANA's Application-Layer Protocol
-Negotiation (ALPN) Protocol IDs registry. The protocol specified first gets
-precedence over later or unspecified protocols. This list is evaluated
-against client capabilities.</p>
-
-<div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLALPNPreference h2 spdy/3</pre>
-<p>For clients which support both protocols, <code>h2</code> will be selected. For
-clients which only support <code>spdy/3</code>, that one will be chosen. If a client
-supports only protocol X and there is support for X in httpd, the
-negotiation will select X.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -795,8 +770,8 @@ prefixes are:</p>
 <h3><code>aNULL</code>, <code>eNULL</code> and <code>EXP</code>
 ciphers are always disabled</h3>
 <p>Beginning with version 2.4.7, null and export-grade
-ciphers are always disabled, as mod_ssl unconditionally prepends any supplied
-cipher suite string with <code>!aNULL:!eNULL:!EXP:</code> at initialization.</p>
+ciphers are always disabled, as mod_ssl unconditionally adds
+<code>!aNULL:!eNULL:!EXP</code> to any cipher string at initialization.</p>
 </div>
 
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
@@ -1144,7 +1119,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <p>Some of the <code class="directive">SSLOpenSSLConfCmd</code> commands can be used
 as an alternative to existing directives (such as
