@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1697352:1700601 (outdated) -->
+<!-- English Revision: 1700601 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -797,9 +797,6 @@ serveur HTTP Apache</compatibility>
     &ecirc;tre ajout&eacute;s &agrave; ceux d&eacute;j&agrave; configur&eacute;s pour un
     serveur virtuel. Elle n'est active que si au minimum un r&eacute;partiteur
     a &eacute;t&eacute; pr&eacute;configur&eacute;.</p>
-    <note type="warning">Si l'on configure un nouveau r&eacute;partiteur de
-    charge alors que le nombre maximum a d&eacute;j&agrave;
-    &eacute;t&eacute; atteint, le prochain red&eacute;marrage du serveur &eacute;chouera.</note>
 </usage>
 </directivesynopsis>
 
@@ -1461,9 +1458,6 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         <td>Nombre de membres suppl&eacute;mentaires que l'on peut ajouter &agrave; ce
 	r&eacute;partiteur en plus de ceux d&eacute;finis au niveau de la
 	configuration.
-	<p>Si l'on configure un nouveau membre du groupe de r&eacute;partition
-	de charge alors que le maximum a d&eacute;j&agrave; &eacute;t&eacute; atteint, le prochain
-	red&eacute;marrage du serveur &eacute;chouera.</p>
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>

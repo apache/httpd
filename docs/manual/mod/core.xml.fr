@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1697339:1701005 (outdated) -->
+<!-- English Revision: 1701005 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4015,6 +4015,7 @@ serveur HTTP Apache.</compatibility>
     <name>Protocols</name>
     <description>Protocoles disponibles pour un serveur virtuel ou non</description>
     <syntax>Protocols <var>protocole</var> ...</syntax>
+    <default>Protocols http/1.1</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
     HTTP Apache.</compatibility>
@@ -4025,16 +4026,18 @@ serveur HTTP Apache.</compatibility>
 	protocoles qu'un client sera autoris&eacute; &agrave; n&eacute;gocier avec ce
 	serveur.</p>
         
-        <p>Vous ne devez fournir cette liste que si vous voulez limiter
-	les protocoles disponibles pour le serveur. Par d&eacute;faut, tous les
-	protocoles sont disponibles.</p>
+        <p>Par d&eacute;faut,
+	seul le	protocole http/1.1 est disponible (compatible avec les
+	clients http/1.0 et http/0.9). Par cons&eacute;quent, vous devez
+	fournir cette liste si vous voulez &eacute;tendre les protocoles
+	disponibles pour le serveur.</p>
         
-        <p>Par exemple, si vous ne voulez autoriser que le protocole
-	HTTP/1.1, m&ecirc;me si le protocole HTTP/2 est disponible, utilisez
+        <p>Par exemple, si vous voulez autoriser le protocole
+	HTTP/2 pour un serveur avec TLS, utilisez
 	cette directive comme suit :</p>
         
         <highlight language="config">
-            Protocols http/1.1
+            Protocols h2 http/1.1
         </highlight>
 
         <p>Les protocoles valides sont <code>http/1.1</code> pour les
@@ -4061,7 +4064,7 @@ serveur HTTP Apache.</compatibility>
     <name>ProtocolsHonorOrder</name>
     <description>Protocoles disponibles pour un serveur virtuel ou non</description>
     <syntax>ProtocolsHonorOrder On|Off</syntax>
-    <default>ProtocolsHonorOrder Off</default>
+    <default>ProtocolsHonorOrder On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
     <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
     HTTP Apache.</compatibility>
@@ -4071,14 +4074,16 @@ serveur HTTP Apache.</compatibility>
 	compte de l'ordre des protocoles d&eacute;finis par la directive
 	<directive>Protocols</directive>.</p>
         
-        <p>Par d&eacute;faut, un client fournit une liste de protocoles
-	support&eacute;s et le serveur s&eacute;lectionne le premier disponible.</p>
+        <p>Si cette directive est d&eacute;finie &agrave; Off, l'ordre de la liste des
+	protocoles fournie par le client l'emporte sur l'ordre d&eacute;fini
+	dans la configuration du serveur.</p>
         
         <p>Si la directive <directive>ProtocolsHonorOrder</directive>
-	est d&eacute;finie &agrave; <code>on</code>, il n'est pas tenu compte de l'ordre de la liste des
-	protocoles fournie par le client, et seul l'ordre de la liste des
-	protocles d&eacute;finie au niveau du serveur influera la n&eacute;gociation
-	du protocole.</p>
+	est d&eacute;finie &agrave; <code>on</code> (valeur par d&eacute;faut),
+	il n'est pas tenu compte de l'ordre de la liste des protocoles
+	fournie par le client, et seul l'ordre de la liste des protocles
+	d&eacute;finie au niveau du serveur influera la
+	n&eacute;gociation du protocole.</p>
         
     </usage>
     <seealso><directive module="core">Protocols</directive></seealso>
