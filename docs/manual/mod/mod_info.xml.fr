@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1702020 (outdated) -->
+<!-- English Revision: 1702020 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,12 +81,12 @@ serveur</description>
       <highlight language="config">
 &lt;Location "/server-info"&gt;
     SetHandler server-info
-    Order allow,deny
     # Autorisation d'acc&egrave;s depuis le serveur lui-m&ecirc;me
-    Allow from 127.0.0.1
+    Require ip 127.0.0.1
+
     # Autorisation d'acc&egrave;s depuis une station de travail du r&eacute;seau
 # local
-    Allow from 192.168.1.17
+    Require ip 192.168.1.17
 &lt;/Location&gt;
       </highlight>
     </example>
