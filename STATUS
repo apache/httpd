@@ -281,6 +281,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: covener
 
+  *) Easy patches - synch with trunk
+        - core: Core filters do not need mod_proxy.h
+        - core: Small speed optimization when parsing <Limit>, <LimitExcept>
+                and environment variables
+        - mod_dav: Save a few bytes in conf pool
+        - mod_proxy_http: Remove some spaces between some return statements
+                          and ';' + fix a strange formating in a 'for' loop
+        - mod_dav: Save a few cycles
+     trunk patch:
+        http://svn.apache.org/r1602978
+        http://svn.apache.org/r1683044
+        http://svn.apache.org/r1683884
+        http://svn.apache.org/r1673368
+        http://svn.apache.org/r1701717
+     2.4.x patch: trunk patchs work
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
