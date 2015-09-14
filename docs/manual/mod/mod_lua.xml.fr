@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1701351 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -135,7 +135,7 @@ function handle(r)
 -- message d'erreur personnalis&eacute;
         r:puts("Unsupported HTTP method " .. r.method)
 	r.status = 405
-        return apache2.ok
+        return apache2.OK
     else
 -- message d'erreur ErrorDocument
         return 501

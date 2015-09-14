@@ -276,7 +276,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, ylavic
 
 
-  *) Allow autoindexes to work without mod_dir or mod_mime
+  *) mod_autoindex: Allow autoindexes to work without mod_dir or mod_mime
      trunk: http://svn.apache.org/r1701436
      2.4.x: trunk works
      +1: covener

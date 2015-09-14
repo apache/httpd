@@ -51,6 +51,9 @@ h2_task_input *h2_task_input_create(h2_task_env *env, apr_pool_t *pool,
         input->bb = NULL;
         
         if (env->serialize_headers) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, &env->c,
+                          "h2_task_input(%s): serialize request %s %s", 
+                          env->id, env->method, env->path);
             input->bb = apr_brigade_create(pool, bucket_alloc);
             apr_brigade_printf(input->bb, NULL, NULL, "%s %s HTTP/1.1\r\n", 
                                env->method, env->path);

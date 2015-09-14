@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1598089 -->
+<!-- English Revision : 1701771 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,5 +55,49 @@
     </p>
 
 </summary>
+
+<directivesynopsis>
+<name>MemcacheConnTTL</name>
+<description>Dur&eacute;e de conservation des connexions inactives</description>
+<syntax>MemcacheConnTTL <em>num[units]</em></syntax>
+<default>MemcacheConnTTL 15s</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur HTTP
+Apache.</compatibility>
+
+<usage>
+
+    <p>D&eacute;finit la dur&eacute;e pendant laquelle les connexions
+    inactives avec le(s) serveur(s) memcache seront conserv&eacute;es
+    (plateformes thread&eacute;es seulement).</p>
+    
+    <p>Les valeurs valides de la directive
+    <directive>MemcacheConnTTL</directive> sont des dur&eacute;es d'une heure
+    maximum. La valeur 0 signifie une absence de p&eacute;remption</p>
+
+    <note><p>L'unit&eacute; par d&eacute;faut pour ce d&eacute;lai est la seconde, mais vous
+    pouvez ajouter un suffixe pour sp&eacute;cifier une unit&eacute; diff&eacute;rente ; ms
+    pour milliseconde, s pour seconde, min pour minute et h pour heure..
+    </p></note>
+
+    <p>Dans les versions ant&eacute;rieures &agrave; 2.4.17, ce d&eacute;lai &eacute;tait cod&eacute; en
+    dur et sa valeur &eacute;tait 600 microsecondes. La valeur la plus proche
+    de cette ancienne valeur pour la directive
+    <directive>MemcacheConnTTL</directive> est donc 1ms.</p>
+
+    <example>
+    <highlight language="config">
+# D&eacute;finition d'un d&eacute;lai de 10 minutes
+MemcacheConnTTL 10min
+# D&eacute;finition d'un d&eacute;lai de 60 secondes
+MemcacheConnTTL 60
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

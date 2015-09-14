@@ -58,9 +58,50 @@
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<p>Ce module ne fournit aucune directive.</p>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#memcacheconnttl">MemcacheConnTTL</a></li>
+</ul>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="memcacheconnttl" id="memcacheconnttl">Directive</a> <a name="MemcacheConnTTL" id="MemcacheConnTTL">MemcacheConnTTL</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de conservation des connexions inactives</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MemcacheConnTTL <em>num[units]</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MemcacheConnTTL 15s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_memcache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
+Apache.</td></tr>
+</table>
+
+    <p>Définit la durée pendant laquelle les connexions
+    inactives avec le(s) serveur(s) memcache seront conservées
+    (plateformes threadées seulement).</p>
+    
+    <p>Les valeurs valides de la directive
+    <code class="directive">MemcacheConnTTL</code> sont des durées d'une heure
+    maximum. La valeur 0 signifie une absence de péremption</p>
+
+    <div class="note"><p>L'unité par défaut pour ce délai est la seconde, mais vous
+    pouvez ajouter un suffixe pour spécifier une unité différente ; ms
+    pour milliseconde, s pour seconde, min pour minute et h pour heure..
+    </p></div>
+
+    <p>Dans les versions antérieures à 2.4.17, ce délai était codé en
+    dur et sa valeur était 600 microsecondes. La valeur la plus proche
+    de cette ancienne valeur pour la directive
+    <code class="directive">MemcacheConnTTL</code> est donc 1ms.</p>
+
+    <div class="example"><pre class="prettyprint lang-config"># Définition d'un délai de 10 minutes
+MemcacheConnTTL 10min
+# Définition d'un délai de 60 secondes
+MemcacheConnTTL 60</pre>
+</div>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_memcache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

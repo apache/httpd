@@ -130,7 +130,9 @@ Require ip 10 172.20 192.168.2</pre>
     suit :</p>
 
     <pre class="prettyprint lang-config">Require ip 2001:db8::a00:20ff:fea7:ccea
-Require ip 2001:db8::a00:20ff:fea7:ccea/10</pre>
+Require ip 2001:db8:1:1::a
+Require ip 2001:db8:2:1::/64
+Require ip 2001:db8:3::/48</pre>
 
 
     <p>Note: comme les adresses IP sont lues au démarrage, les
