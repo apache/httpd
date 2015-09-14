@@ -98,7 +98,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     case op_String:
         result = node->node_arg1;
         break;
-
+    case op_Var:
         result = ap_expr_eval_var(ctx, (ap_expr_var_func_t *)node->node_arg1,
                                   node->node_arg2);
         break;
