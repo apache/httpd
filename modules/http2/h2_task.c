@@ -220,7 +220,7 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     task->mplx = NULL;
     
     env.input_eos = task->input_eos;
-    env.serialize_headers = !!h2_config_geti(cfg, H2_CONF_SER_HEADERS);
+    env.serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
     
     /* Create a subpool from the worker one to be used for all things
      * with life-time of this task_env execution.
@@ -389,8 +389,8 @@ static request_rec *h2_task_create_request(h2_task_env *env)
     }
 
     ap_parse_uri(r, env->path);
-    r->protocol = (char*)"HTTP/1.1";
-    r->proto_num = HTTP_VERSION(1, 1);
+    r->protocol = (char*)"HTTP/2";
+    r->proto_num = HTTP_VERSION(2, 0);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.

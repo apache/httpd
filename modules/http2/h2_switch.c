@@ -141,6 +141,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
         h2_ctx_protocol_set(ctx, protocol);
+        h2_ctx_server_set(ctx, s);
         
         if (r != NULL) {
             apr_status_t status;

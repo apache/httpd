@@ -46,6 +46,10 @@ h2_ctx *h2_ctx_create_for(const conn_rec *c, struct h2_task_env *env);
  */
 h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto);
 
+/* Set the server_rec relevant for this context.
+ */
+h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s);
+
 /**
  * Get the h2 protocol negotiated for this connection, or NULL.
  */

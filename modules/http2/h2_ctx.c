@@ -68,6 +68,12 @@ h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto)
     return ctx;
 }
 
+h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s)
+{
+    ctx->server = s;
+    return ctx;
+}
+
 int h2_ctx_is_task(h2_ctx *ctx)
 {
     return ctx && !!ctx->task_env;
