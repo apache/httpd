@@ -98,7 +98,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     case op_String:
         result = node->node_arg1;
         break;
-    case op_Var:
+
         result = ap_expr_eval_var(ctx, (ap_expr_var_func_t *)node->node_arg1,
                                   node->node_arg2);
         break;
@@ -1249,7 +1249,7 @@ static const char *filemod_func(ap_expr_eval_ctx_t *ctx, const void *data,
     apr_finfo_t sb;
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_REG && sb.mtime > 0)
-        return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, sb.mtime);
+        return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, (apr_off_t)sb.mtime);
     else
         return "0";
 }
