@@ -94,12 +94,12 @@ serveur</td></tr>
 
     <div class="example"><h3>Contrôle d'accès</h3><pre class="prettyprint lang-config">&lt;Location "/server-info"&gt;
     SetHandler server-info
-    Order allow,deny
     # Autorisation d'accès depuis le serveur lui-même
-    Allow from 127.0.0.1
+    Require ip 127.0.0.1
+
     # Autorisation d'accès depuis une station de travail du réseau
 # local
-    Allow from 192.168.1.17
+    Require ip 192.168.1.17
 &lt;/Location&gt;</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

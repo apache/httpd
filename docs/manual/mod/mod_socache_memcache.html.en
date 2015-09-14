@@ -57,10 +57,45 @@
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<p>This module provides no
-            directives.</p>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#memcacheconnttl">MemcacheConnTTL</a></li>
+</ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MemcacheConnTTL" id="MemcacheConnTTL">MemcacheConnTTL</a> <a name="memcacheconnttl" id="memcacheconnttl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MemcacheConnTTL <em>num[units]</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MemcacheConnTTL 15s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_memcache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.4.17 and later</td></tr>
+</table>
+
+    <p>Set the time to keep idle connections with the memcache server(s)
+    alive (threaded platforms only).</p>
+    
+    <p>Valid values for <code class="directive">MemcacheConnTTL</code> are times
+    up to one hour. 0 means no timeout.</p>
+
+    <div class="note"><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
+    </p></div>
+
+    <p>Before Apache 2.4.17, this timeout was hardcoded and its value was 600 usec.
+    So, the closest configuration to match the legacy behaviour is to set
+    <code class="directive">MemcacheConnTTL</code> to 1ms.</p>
+
+    <div class="example"><pre class="prettyprint lang-config"># Set a timeout of 10 minutes
+MemcacheConnTTL 10min
+# Set a timeout of 60 seconds
+MemcacheConnTTL 60</pre>
+</div>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_socache_memcache.html" title="English">&nbsp;en&nbsp;</a> |

@@ -173,7 +173,7 @@ function handle(r)
 -- message d'erreur personnalisé
         r:puts("Unsupported HTTP method " .. r.method)
 	r.status = 405
-        return apache2.ok
+        return apache2.OK
     else
 -- message d'erreur ErrorDocument
         return 501

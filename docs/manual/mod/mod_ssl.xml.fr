@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1690349 -->
+<!-- English Revision: 1702644 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2965,9 +2965,8 @@ ce dernier beaucoup plus souple.</p>
 utilis&eacute;e pour <module>mod_ssl</module> (la version minimale 1.0.2 est un
 pr&eacute;requis). Pour obtenir la liste des commandes support&eacute;es, voir la
 section <em>Supported configuration file commands</em> de la page de
-manuel <a
-href="http://www.openssl.org/docs/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>
-d'OpenSSL.</p>
+manuel d'OpenSSL <a
+href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a>.</p>
 
 <p>Certaines commandes peuvent remplacer des directives existantes
 (comme <directive module="mod_ssl">SSLCipherSuite</directive> ou

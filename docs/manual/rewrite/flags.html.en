@@ -134,6 +134,15 @@ follows:</p>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </code></p></div>
 
+<p>If a literal ':' character is needed in any of the cookie fields, an 
+alternate syntax is available.  To opt-in to the alternate syntax, the cookie 
+"Name" should be preceded with a ';' character, and field separators should be
+specified as ';'.</p>
+
+<div class="example"><p><code>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
+</code></p></div>
+
 <p>You must declare a name, a value, and a domain for the cookie to be set.</p>
 
 <dl>
