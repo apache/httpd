@@ -289,13 +289,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         - mod_proxy_http: Remove some spaces between some return statements
                           and ';' + fix a strange formating in a 'for' loop
         - mod_dav: Save a few cycles
+        - mod_deflate: Constify + save a few bytes in conf pool
      trunk patch:
         http://svn.apache.org/r1602978
         http://svn.apache.org/r1683044
         http://svn.apache.org/r1683884
         http://svn.apache.org/r1673368
         http://svn.apache.org/r1701717
+        http://svn.apache.org/r1683047
      2.4.x patch: trunk patchs work
+     +1: jailletc36
+
+  *) Easy patches - synch with trunk
+     mod_negotiation: simplify type-map body tag lookup, and be safe
+                      should it contain a NUL byte.
+     trunk: http://svn.apache.org/r1700851
+     2.4.x: trunk works
      +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
