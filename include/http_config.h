@@ -413,6 +413,23 @@ struct module_struct {
 };
 
 /**
+ * The AP_MAYBE_USELESS macro is used vor variable declarations that
+ * might potentially exhibit "unused var" warnings on some compilers if
+ * left untreated.
+ * Since static intializers are not part of the C language (C89), making
+ * (void) usage is not possible. However many compiler have proprietary 
+ * mechanism to suppress those warnings.  
+ */
+#ifdef AP_MAYBE_USELESS
+#elif defined(__GNUC__)
+# define AP_MAYBE_USELESS(x) x __attribute__((unused)) 
+#elif defined(__LCLINT__)
+# define AP_MAYBE_USELESS(x) /*@unused@*/ x  
+#else
+# define AP_MAYBE_USELESS(x) x
+#endif
+    
+/**
  * The APLOG_USE_MODULE macro is used choose which module a file belongs to.
  * This is necessary to allow per-module loglevel configuration.
  *
@@ -427,7 +444,7 @@ struct module_struct {
  */
 #define APLOG_USE_MODULE(foo) \
     extern module AP_MODULE_DECLARE_DATA foo##_module;                  \
-    static int * const aplog_module_index = &(foo##_module.module_index)
+    AP_MAYBE_USELESS(static int * const aplog_module_index) = &(foo##_module.module_index)
 
 /**
  * AP_DECLARE_MODULE is a convenience macro that combines a call of

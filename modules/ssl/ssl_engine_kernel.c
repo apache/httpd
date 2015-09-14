@@ -2184,7 +2184,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     }
 
     if (inlen == 0) {
-        // someone tries to trick us?
+        /* someone tries to trick us? */
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
                       "ALPN client protocol list empty");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
@@ -2194,7 +2194,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     for (i = 0; i < inlen; /**/) {
         unsigned int plen = in[i++];
         if (plen + i > inlen) {
-            // someone tries to trick us?
+            /* someone tries to trick us? */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02838)
                           "ALPN protocol identifier too long");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
