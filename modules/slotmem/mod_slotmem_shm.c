@@ -281,11 +281,11 @@ static apr_status_t cleanup_slotmem(void *param)
             if (AP_SLOTMEM_IS_PERSIST(next)) {
                 store_slotmem(next);
             }
+            apr_shm_destroy((apr_shm_t *)next->shm);
             if (next->fbased) {
                 apr_shm_remove(next->name, next->gpool);
                 apr_file_remove(next->name, next->gpool);
             }
-            apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
     }
