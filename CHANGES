@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
+     can't create new (clear) slots while previous children gracefully stopping
+     still use the old ones (e.g. Windows, OS2). mod_proxy_balancer failed to
+     restart whenever the number of configured balancers/members changed during
+     restart.  PR 58024.  [Yann Ylavic]
+
   *) mod_ssl: append :!aNULL:!eNULL:!EXP to the cipher string settings,
      instead of prepending !aNULL:!eNULL:!EXP: (as was the case in 2.4.7
      and later). Enables support for configuring the SUITEB* cipher
