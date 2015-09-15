@@ -537,6 +537,11 @@ _build:
 	cd modules\http
 	 $(MAKE) $(MAKEOPT) -f mod_mime.mak        CFG="mod_mime - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+!IF EXIST("srclib\nghttp2")
+	cd modules\http2
+	 $(MAKE) $(MAKEOPT) -f mod_h2.mak         CFG="mod_h2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd modules\loggers
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_log_debug.mak  CFG="mod_log_debug - Win32 $(LONG)" RECURSE=0 $(CTARGET)
