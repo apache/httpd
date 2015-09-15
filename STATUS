@@ -279,7 +279,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_autoindex: Allow autoindexes to work without mod_dir or mod_mime
      trunk: http://svn.apache.org/r1701436
      2.4.x: trunk works
-     +1: covener
+     +1: covener, ylavic
 
   *) Easy patches - synch with trunk
         - core: Core filters do not need mod_proxy.h
@@ -298,14 +298,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1701717
         http://svn.apache.org/r1683047
      2.4.x patch: trunk patchs work
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) Easy patches - synch with trunk
      mod_negotiation: simplify type-map body tag lookup, and be safe
                       should it contain a NUL byte.
      trunk: http://svn.apache.org/r1700851
      2.4.x: trunk works
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
      can't create new (clear) slots while previous children gracefully stopping
