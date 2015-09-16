@@ -109,11 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_autoindex: Allow autoindexes to work without mod_dir or mod_mime
-     trunk: http://svn.apache.org/r1701436
-     2.4.x: trunk works
-     +1: covener, ylavic, jim
-
   *) Easy patches - synch with trunk
         - core: Core filters do not need mod_proxy.h
         - core: Small speed optimization when parsing <Limit>, <LimitExcept>
