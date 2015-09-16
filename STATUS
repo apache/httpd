@@ -109,14 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Easy patches - synch with trunk
-     mod_negotiation: simplify type-map body tag lookup, and be safe
-                      should it contain a NUL byte.
-     trunk: http://svn.apache.org/r1700851
-     2.4.x: trunk works
-     +1: jailletc36, ylavic, jim
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
