@@ -233,7 +233,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 57785
      trunk: http://svn.apache.org/viewvc?view=revision&revision=1677702
      2.4.x: trunk patch applies.
-     +1: niq
+     +1: niq, jim
 
   *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
      protocols hooks to control Upgrade: and ALPN protocol switching.
@@ -273,13 +273,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_rewrite: Fix an harmless error spotted by sparse.
      trunk: http://svn.apache.org/r1701545
      2.4.x: http://people.apache.org/~jailletc36/backport_2.4_r1701545.diff
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
 
   *) mod_autoindex: Allow autoindexes to work without mod_dir or mod_mime
      trunk: http://svn.apache.org/r1701436
      2.4.x: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) Easy patches - synch with trunk
         - core: Core filters do not need mod_proxy.h
@@ -298,14 +298,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1701717
         http://svn.apache.org/r1683047
      2.4.x patch: trunk patchs work
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
   *) Easy patches - synch with trunk
      mod_negotiation: simplify type-map body tag lookup, and be safe
                       should it contain a NUL byte.
      trunk: http://svn.apache.org/r1700851
      2.4.x: trunk works
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
   *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
      can't create new (clear) slots while previous children gracefully stopping
@@ -320,7 +320,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1703200
      2.4.x patch: trunk works (module CHANGES)
      merge patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_slotmem_shm-generation.patch
-     +1: ylavic
+     +1: ylavic, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
