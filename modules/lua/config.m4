@@ -1,7 +1,7 @@
 
 APACHE_MODPATH_INIT(lua)
 
-dnl Check for Lua 5.1 Libraries
+dnl Check for Lua 5.1/5.2 Libraries
 dnl CHECK_LUA(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 dnl Sets:
 dnl  LUA_CFLAGS
@@ -109,7 +109,7 @@ for x in $test_paths ; do
         AC_MSG_RESULT([no])
     fi
 #
-# Why are we bothering looking for lua 5.2?
+# Shouldn't we look for 5.2 first??
 #
     AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.2])
     if test -f ${x}/include/lua-5.2/lua.h; then
@@ -198,13 +198,13 @@ AC_SUBST(LUA_LIBS)
 AC_SUBST(LUA_CFLAGS)
 
 if test -z "${LUA_LIBS}"; then
-  AC_MSG_WARN([*** Lua 5.1 library not found.])
+  AC_MSG_WARN([*** Lua 5.1 or 5.2 library not found.])
   ifelse([$2], ,
     enable_lua="no"
     if test -z "${lua_path}"; then
-        AC_MSG_WARN([Lua 5.1 library is required])
+        AC_MSG_WARN([Lua 5.1 or 5.2 library is required])
     else
-        AC_MSG_ERROR([Lua 5.1 library is required])
+        AC_MSG_ERROR([Lua 5.1 or 5.2 library is required])
     fi,
     $2)
 else
