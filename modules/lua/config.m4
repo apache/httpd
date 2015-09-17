@@ -1,7 +1,7 @@
 
 APACHE_MODPATH_INIT(lua)
 
-dnl Check for Lua 5.1 Libraries
+dnl Check for Lua 5.1/5.2 Libraries
 dnl CHECK_LUA(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 dnl Sets:
 dnl  LUA_CFLAGS
@@ -48,6 +48,26 @@ for x in $test_paths ; do
         break
     ])
   else
+    AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.1])
+    if test -f ${x}/include/lua-5.1/lua.h; then
+        AC_MSG_RESULT([yes])
+        save_CFLAGS=$CFLAGS
+        save_LDFLAGS=$LDFLAGS
+        CFLAGS="$CFLAGS"
+        LDFLAGS="-L$x/lib/lua-5.1 $LDFLAGS $lib_m"
+        AC_CHECK_LIB(lua-5.1, luaL_newstate, [
+            LUA_LIBS="-L$x/lib/lua-5.1 -llua-5.1 $lib_m"
+            if test "x$ap_platform_runtime_link_flag" != "x"; then
+               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua-5.1])
+            fi
+            LUA_CFLAGS="-I$x/include/lua-5.1"
+            ])
+        CFLAGS=$save_CFLAGS
+        LDFLAGS=$save_LDFLAGS
+        break
+    else
+        AC_MSG_RESULT([no])
+    fi
     AC_MSG_CHECKING([for lua.h in ${x}/include/lua5.1])
     if test -f ${x}/include/lua5.1/lua.h; then
         AC_MSG_RESULT([yes])
@@ -81,6 +101,29 @@ for x in $test_paths ; do
                APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua51])
             fi
             LUA_CFLAGS="-I$x/include/lua51"
+            ])
+        CFLAGS=$save_CFLAGS
+        LDFLAGS=$save_LDFLAGS
+        break
+    else
+        AC_MSG_RESULT([no])
+    fi
+#
+# Shouldn't we look for 5.2 first??
+#
+    AC_MSG_CHECKING([for lua.h in ${x}/include/lua-5.2])
+    if test -f ${x}/include/lua-5.2/lua.h; then
+        AC_MSG_RESULT([yes])
+        save_CFLAGS=$CFLAGS
+        save_LDFLAGS=$LDFLAGS
+        CFLAGS="$CFLAGS"
+        LDFLAGS="-L$x/lib/lua-5.2 $LDFLAGS $lib_m"
+        AC_CHECK_LIB(lua-5.2, luaL_newstate, [
+            LUA_LIBS="-L$x/lib/lua-5.2 -llua-5.2 $lib_m"
+            if test "x$ap_platform_runtime_link_flag" != "x"; then
+               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua-5.2])
+            fi
+            LUA_CFLAGS="-I$x/include/lua-5.2"
             ])
         CFLAGS=$save_CFLAGS
         LDFLAGS=$save_LDFLAGS
@@ -155,13 +198,13 @@ AC_SUBST(LUA_LIBS)
 AC_SUBST(LUA_CFLAGS)
 
 if test -z "${LUA_LIBS}"; then
-  AC_MSG_WARN([*** Lua 5.1 library not found.])
+  AC_MSG_WARN([*** Lua 5.1 or 5.2 library not found.])
   ifelse([$2], ,
     enable_lua="no"
     if test -z "${lua_path}"; then
-        AC_MSG_WARN([Lua 5.1 library is required])
+        AC_MSG_WARN([Lua 5.1 or 5.2 library is required])
     else
-        AC_MSG_ERROR([Lua 5.1 library is required])
+        AC_MSG_ERROR([Lua 5.1 or 5.2 library is required])
     fi,
     $2)
 else

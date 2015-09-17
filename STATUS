@@ -284,12 +284,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      merge patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_slotmem_shm-generation.patch
      +1: ylavic, jim
 
-  *) configure/mod_lua: Find Lua-5.[12] as installed by MacPorts and others.
-     trunk patch: http://svn.apache.org/r1703417
-                  http://svn.apache.org/r1703642
-     2.4.x patch: trunk works
-     +1: jim
-
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
