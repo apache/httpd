@@ -286,8 +286,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) configure/mod_lua: Find Lua-5.[12] as installed by MacPorts and others.
      trunk patch: http://svn.apache.org/r1703417
+                  http://svn.apache.org/r1703642
      2.4.x patch: trunk works
-     +1: 
+     +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
