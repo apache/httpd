@@ -155,6 +155,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Not applicable to trunk, mod_mem_cache doesn't exist there.
      2.2.x patch: http://people.apache.org/~elu/mem_cache_client_abort.diff
      +1: elu,
+     ylavic: don't we know from the very beginning of store_body() if
+             r->connection->aborted, so to fail there?
 
 PATCHES/ISSUES THAT ARE STALLED
 
