@@ -48,7 +48,6 @@
 #include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_core.h"
-#include "mod_proxy.h"
 #include "ap_listen.h"
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */

@@ -254,7 +254,7 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
         conf->provider = NULL;
     }
     else {
-        conf->provider_name = apr_pstrdup(cmd->pool, arg1);
+        conf->provider_name = arg1;
     }
 
     if (conf->provider_name != NULL) {

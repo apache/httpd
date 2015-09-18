@@ -62,9 +62,9 @@ typedef struct deflate_filter_config_t
     int memlevel;
     int compressionlevel;
     apr_size_t bufferSize;
-    char *note_ratio_name;
-    char *note_input_name;
-    char *note_output_name;
+    const char *note_ratio_name;
+    const char *note_input_name;
+    const char *note_output_name;
 } deflate_filter_config;
 
 typedef struct deflate_dirconf_t {
@@ -261,16 +261,16 @@ static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
                                                     &deflate_module);
 
     if (arg2 == NULL) {
-        c->note_ratio_name = apr_pstrdup(cmd->pool, arg1);
+        c->note_ratio_name = arg1;
     }
     else if (!strcasecmp(arg1, "ratio")) {
-        c->note_ratio_name = apr_pstrdup(cmd->pool, arg2);
+        c->note_ratio_name = arg2;
     }
     else if (!strcasecmp(arg1, "input")) {
-        c->note_input_name = apr_pstrdup(cmd->pool, arg2);
+        c->note_input_name = arg2;
     }
     else if (!strcasecmp(arg1, "output")) {
-        c->note_output_name = apr_pstrdup(cmd->pool, arg2);
+        c->note_output_name = arg2;
     }
     else {
         return apr_psprintf(cmd->pool, "Unknown note type %s", arg1);
