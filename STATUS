@@ -158,6 +158,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: don't we know from the very beginning of store_body() if
              r->connection->aborted, so to fail there?
 
+  *) mod_proxy: don't recyle backend announced "Connection: close" connections
+     to avoid reusing it should the close be effective after some new request
+     is ready to be sent.
+     trunk patch: http://svn.apache.org/r1678763
+                  http://svn.apache.org/r1703807
+                  http://svn.apache.org/r1703813
+     2.2.x patch: http://people.apache.org/~ylavic/httpd-2.2.x-mod_proxy-connection_close.patch
+     +1: ylavic
+     ylavic: while at it, I also included r1678763 which is only an
+             optimization, but allows to keep code in sync with 2.4/trunk.
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
