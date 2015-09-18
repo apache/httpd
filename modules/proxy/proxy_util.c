@@ -1396,7 +1396,9 @@ static apr_status_t connection_cleanup(void *theconn)
         apr_pool_create(&(conn->scpool), p);
         apr_pool_tag(conn->scpool, "proxy_conn_scpool");
     }
-    else if (conn->close) {
+    else if (conn->close
+                || (conn->connection
+                    && conn->connection->keepalive == AP_CONN_CLOSE)) {
         socket_cleanup(conn);
         conn->close = 0;
     }
