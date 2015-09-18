@@ -2274,7 +2274,10 @@ static int handle_autoindex(request_rec *r)
     autoindex_config_rec *d;
     int allow_opts;
 
-    if(strcmp(r->handler,DIR_MAGIC_TYPE)) {
+    if (strcmp(r->handler,DIR_MAGIC_TYPE) && !AP_IS_DEFAULT_HANDLER_NAME(r->handler)) {
+        return DECLINED;
+    }
+    if (r->finfo.filetype != APR_DIR) {
         return DECLINED;
     }
 
