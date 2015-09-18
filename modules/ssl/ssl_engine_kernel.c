@@ -850,6 +850,11 @@ int ssl_hook_Access(request_rec *r)
                 r->connection->keepalive = AP_CONN_CLOSE;
                 return HTTP_FORBIDDEN;
             }
+
+            /* Full renegotiation successfull, we now have handshaken with
+             * this server's parameters.
+             */
+            sslconn->server = r->server;
         }
 
         /*
