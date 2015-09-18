@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: don't recyle backend announced "Connection: close" connections
+     to avoid reusing it should the close be effective after some new request
+     is ready to be sent.  [Yann Ylavic]
+
   *) mod_auth_digest: remove AuthDigestEnableQueryStringHack which is no
      more documented since dec 2012 (r1415960). [Christophe Jaillet]
 
