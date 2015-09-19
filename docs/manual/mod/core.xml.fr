@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1701005 -->
+<!-- English Revision: 1703152 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4062,7 +4062,8 @@ serveur HTTP Apache.</compatibility>
 
 <directivesynopsis>
     <name>ProtocolsHonorOrder</name>
-    <description>Protocoles disponibles pour un serveur virtuel ou non</description>
+    <description>D&eacute;termine qui du client ou du serveur d&eacute;termine l'ordre
+    des protocoles au cours de la n&eacute;gociation de la connexion</description>
     <syntax>ProtocolsHonorOrder On|Off</syntax>
     <default>ProtocolsHonorOrder On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>
