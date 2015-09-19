@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -145,6 +143,15 @@ suivante :</p>
 
 <div class="example"><p><code>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
+</code></p></div>
+
+<p>Si un caractère littéral ':' doit être insérer dans un des champs du
+cookie, une autre syntaxe est disponible. Pour utiliser cette syntaxe
+alternative, le contenu du champ "Name" doit être précédé du caractère
+';', et les sépateurs de champs deviendront des ';'.</p>
+
+<div class="example"><p><code>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly]
 </code></p></div>
 
 <p>Vous devez déclarer un nom, une valeur et un domaine pour que
