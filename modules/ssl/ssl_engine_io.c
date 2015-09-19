@@ -1139,7 +1139,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
          * IPv4 and IPv6 addresses are not permitted".)
          */
         if (hostname_note &&
+#ifndef OPENSSL_NO_SSL3
             sc->proxy->protocol != SSL_PROTOCOL_SSLV3 &&
+#endif
             apr_ipsubnet_create(&ip, hostname_note, NULL,
                                 c->pool) != APR_SUCCESS) {
             if (SSL_set_tlsext_host_name(filter_ctx->pssl, hostname_note)) {

@@ -135,10 +135,15 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(SessionCacheTimeout, TAKE1,
                 "SSL Session Cache object lifetime "
                 "('N' - number of seconds)")
-#ifdef HAVE_TLSV1_X
-#define SSL_PROTOCOLS "SSLv3|TLSv1|TLSv1.1|TLSv1.2"
+#ifdef OPENSSL_NO_SSL3
+#define SSLv3_PROTO_PREFIX ""
 #else
-#define SSL_PROTOCOLS "SSLv3|TLSv1"
+#define SSLv3_PROTO_PREFIX "SSLv3|"
+#endif
+#ifdef HAVE_TLSV1_X
+#define SSL_PROTOCOLS SSLv3_PROTO_PREFIX "TLSv1|TLSv1.1|TLSv1.2"
+#else
+#define SSL_PROTOCOLS SSLv3_PROTO_PREFIX "TLSv1"
 #endif
     SSL_CMD_SRV(Protocol, RAW_ARGS,
                 "Enable or disable various SSL protocols "

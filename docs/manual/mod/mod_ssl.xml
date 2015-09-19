@@ -581,7 +581,7 @@ by the applicable Security Policy.
 <name>SSLProtocol</name>
 <description>Configure usable SSL/TLS protocol versions</description>
 <syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax>
-<default>SSLProtocol all</default>
+<default>SSLProtocol all -SSLv3</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -596,7 +596,8 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
-    It is the successor to SSLv2 and the predecessor to TLSv1.</p></li>
+    It is the successor to SSLv2 and the predecessor to TLSv1, but is
+    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
@@ -619,7 +620,9 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
     - when using OpenSSL 1.0.1 and later -
-    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>, respectively.</p></li>
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>'', respectively
+    (except for OpenSSL versions compiled with the ``no-ssl3'' configuration
+    option, where <code>all</code> does not include <code>+SSLv3</code>).</p></li>
 </ul>
 <example><title>Example</title>
 <highlight language="config">
@@ -1940,7 +1943,7 @@ proxy SSL/TLS requests.</p>
 <name>SSLProxyProtocol</name>
 <description>Configure usable SSL protocol flavors for proxy usage</description>
 <syntax>SSLProxyProtocol [+|-]<em>protocol</em> ...</syntax>
-<default>SSLProxyProtocol all</default>
+<default>SSLProxyProtocol all -SSLv3</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>Options</override>
