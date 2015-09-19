@@ -1331,7 +1331,7 @@ query can be done in two ways which can be configured by
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL/TLS protocol versions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProtocol [+|-]<em>protocol</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProtocol all</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProtocol all -SSLv3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1346,7 +1346,8 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
-    It is the successor to SSLv2 and the predecessor to TLSv1.</p></li>
+    It is the successor to SSLv2 and the predecessor to TLSv1, but is
+    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
@@ -1369,7 +1370,9 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
     - when using OpenSSL 1.0.1 and later -
-    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>, respectively.</p></li>
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>'', respectively
+    (except for OpenSSL versions compiled with the ``no-ssl3'' configuration
+    option, where <code>all</code> does not include <code>+SSLv3</code>).</p></li>
 </ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProtocol TLSv1</pre>
 </div>
@@ -1711,7 +1714,7 @@ directory contains the appropriate symbolic links.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol flavors for proxy usage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyProtocol [+|-]<em>protocol</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyProtocol all</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyProtocol all -SSLv3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
