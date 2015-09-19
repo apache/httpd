@@ -111,7 +111,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->ticket_key          = NULL;
 #endif
 
-    mctx->protocol            = SSL_PROTOCOL_ALL;
+    mctx->protocol            = SSL_PROTOCOL_DEFAULT;
     mctx->protocol_set        = 0;
 
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
@@ -1316,7 +1316,15 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
             }
         }
         else if (strcEQ(w, "SSLv3")) {
+#ifdef OPENSSL_NO_SSL3
+            if (action != '-') {
+                return "SSLv3 not supported by this version of OpenSSL";
+            }
+            /* Nothing to do, the flag is not present to be toggled */
+            continue;
+#else
             thisopt = SSL_PROTOCOL_SSLV3;
+#endif
         }
         else if (strcEQ(w, "TLSv1")) {
             thisopt = SSL_PROTOCOL_TLSV1;
