@@ -127,7 +127,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
 {
     apr_status_t rv;
     xml2cfg* cfg = ap_get_module_config(r->per_dir_config, &xml2enc_module);
-    if ((cfg->skipto != NULL) && (ctx->flags | ENC_SKIPTO)) {
+    if ((cfg->skipto != NULL) && (ctx->flags & ENC_SKIPTO)) {
         int found = 0;
         char* p = ap_strchr(ctx->buf, '<');
         tattr* starts = (tattr*) cfg->skipto->elts;
