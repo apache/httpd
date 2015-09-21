@@ -267,14 +267,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     }
     else {
         status = apr_brigade_write(io->output, flush_out, io, buf, length);
-        if (status == APR_SUCCESS
-            || APR_STATUS_IS_ECONNABORTED(status)
-            || APR_STATUS_IS_EPIPE(status)) {
-            /* These are all fine and no reason for concern. Everything else
-             * is interesting. */
-            status = APR_SUCCESS;
-        }
-        else {
+        if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
                           "h2_conn_io: write error");
         }
@@ -302,9 +295,7 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
         /* Send it out through installed filters (TLS) to the client */
         status = flush_out(io->output, io);
         
-        if (status == APR_SUCCESS
-            || APR_STATUS_IS_ECONNABORTED(status)
-            || APR_STATUS_IS_EPIPE(status)) {
+        if (status == APR_SUCCESS) {
             /* These are all fine and no reason for concern. Everything else
              * is interesting. */
             io->unflushed = 0;

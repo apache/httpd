@@ -61,7 +61,7 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_mplx *m)
     return stream;
 }
 
-void h2_stream_cleanup(h2_stream *stream)
+static void h2_stream_cleanup(h2_stream *stream)
 {
     if (stream->request) {
         h2_request_destroy(stream->request);

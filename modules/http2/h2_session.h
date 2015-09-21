@@ -71,44 +71,70 @@ struct h2_session {
     
     struct h2_stream_set *streams;  /* streams handled by this session */
     
+    int max_stream_received;        /* highest stream id created */
+    int max_stream_handled;         /* highest stream id handled successfully */
+    
     struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
     struct h2_workers *workers;     /* for executing stream tasks */
 };
 
 
-/* Create a new h2_session for the given connection (mode 'h2').
+/**
+ * Create a new h2_session for the given connection.
  * The session will apply the configured parameter.
+ * @param c       the connection to work on
+ * @param cfg     the module config to apply
+ * @param workers the worker pool to use
+ * @return the created session
  */
 h2_session *h2_session_create(conn_rec *c, struct h2_config *cfg, 
                               struct h2_workers *workers);
 
-/* Create a new h2_session for the given request (mode 'h2c').
+/**
+ * Create a new h2_session for the given request.
  * The session will apply the configured parameter.
+ * @param r       the request that was upgraded
+ * @param cfg     the module config to apply
+ * @param workers the worker pool to use
+ * @return the created session
  */
 h2_session *h2_session_rcreate(request_rec *r, struct h2_config *cfg,
                                struct h2_workers *workers);
 
-/* Destroy the session and all object it still contains. This will not
- * destroy h2_task instances that not finished yet. */
+/**
+ * Destroy the session and all objects it still contains. This will not
+ * destroy h2_task instances that have not finished yet. 
+ * @param session the session to destroy
+ */
 void h2_session_destroy(h2_session *session);
 
-/* Called once at start of session. Performs initial client thingies. */
+/**
+ * Called once at start of session. 
+ * Sets up the session and sends the initial SETTINGS frame.
+ * @param session the session to start
+ * @param rv error codes in libnghttp2 lingo are returned here
+ * @return APR_SUCCESS if all went well
+ */
 apr_status_t h2_session_start(h2_session *session, int *rv);
 
-/* Return != 0 iff session is finished and connection can be closed.
+/**
+ * Determine if session is finished.
+ * @return != 0 iff session is finished and connection can be closed.
  */
 int h2_session_is_done(h2_session *session);
 
-/* Called when the session will shutdown after all open streams
- * are handled. New streams will no longer be accepted. 
- * Call with reason APR_SUCCESS to initiate a graceful shutdown. */
-apr_status_t h2_session_goaway(h2_session *session, apr_status_t reason);
-
-/* Called when an error occured and the session needs to shut down.
- * Status indicates the reason of the error. */
+/**
+ * Called when an error occured and the session needs to shut down.
+ * @param session the session to shut down
+ * @param reason  the apache status that caused the shutdown
+ * @param rv      the nghttp2 reason for shutdown, set to 0 if you have none.
+ *
+ */
 apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
 
-/* Called before a session gets destroyed, might flush output etc. */
+/**
+ * Called before a session gets destroyed, might flush output etc. 
+ */
 apr_status_t h2_session_close(h2_session *session);
 
 /* Read more data from the client connection. Used normally with blocking
