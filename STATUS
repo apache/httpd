@@ -299,6 +299,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic
 
+   * mod_cache: r->err_headers_out is not merged into
+     r->headers when mod_cache is enabled and the response
+     is cached for the first time.
+     trunk patch: http://svn.apache.org/r1704392
+                  http://svn.apache.org/r1704395
+     2.4.x patch: trunk works
+     +1: elu
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
