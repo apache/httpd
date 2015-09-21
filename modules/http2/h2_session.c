@@ -64,6 +64,9 @@ static int stream_open(h2_session *session, int stream_id)
     stream = h2_mplx_open_io(session->mplx, stream_id);
     if (stream) {
         h2_stream_set_add(session->streams, stream);
+        if (stream->id > session->max_stream_received) {
+            session->max_stream_received = stream->id;
+        }
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_session: stream(%ld-%d): opened",
@@ -223,10 +226,25 @@ static int on_frame_not_send_cb(nghttp2_session *ngh2,
     return 0;
 }
 
-static apr_status_t stream_destroy(h2_session *session, h2_stream *stream) 
+static apr_status_t stream_destroy(h2_session *session, 
+                                   h2_stream *stream,
+                                   uint32_t error_code) 
 {
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                  "h2_stream(%ld-%d): closing", session->id, (int)stream->id);
+    if (!error_code) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_stream(%ld-%d): handled, closing", 
+                      session->id, (int)stream->id);
+        if (stream->id > session->max_stream_handled) {
+            session->max_stream_handled = stream->id;
+        }
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_stream(%ld-%d): closing with err=%d %s", 
+                      session->id, (int)stream->id, (int)error_code,
+                      nghttp2_strerror(error_code));
+    }
+    
     h2_stream_set_remove(session->streams, stream);
     return h2_mplx_cleanup_stream(session->mplx, stream);
 }
@@ -243,7 +261,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     }
     stream = h2_stream_set_get(session->streams, stream_id);
     if (stream) {
-        stream_destroy(session, stream);
+        stream_destroy(session, stream, error_code);
     }
     
     if (error_code) {
@@ -655,50 +673,43 @@ void h2_session_destroy(h2_session *session)
     }
 }
 
-apr_status_t h2_session_goaway(h2_session *session, apr_status_t reason)
-{
-    apr_status_t status = APR_SUCCESS;
-    int rv;
-    AP_DEBUG_ASSERT(session);
-    if (session->aborted) {
-        return APR_EINVAL;
-    }
-    
-    rv = 0;
-    if (reason == APR_SUCCESS) {
-        rv = nghttp2_submit_shutdown_notice(session->ngh2);
-    }
-    else {
-        int err = 0;
-        int last_id = nghttp2_session_get_last_proc_stream_id(session->ngh2);
-        rv = nghttp2_submit_goaway(session->ngh2, last_id,
-                                   NGHTTP2_FLAG_NONE, err, NULL, 0);
-    }
-    if (rv != 0) {
-        status = APR_EGENERAL;
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
-                    APLOGNO(02930) "session(%ld): submit goaway: %s",
-                      session->id, nghttp2_strerror(rv));
-    }
-    return status;
-}
-
 static apr_status_t h2_session_abort_int(h2_session *session, int reason)
 {
     AP_DEBUG_ASSERT(session);
     if (!session->aborted) {
         session->aborted = 1;
         if (session->ngh2) {
-            if (reason) {
-                ap_log_cerror(APLOG_MARK, (reason == NGHTTP2_ERR_EOF)?
-                              APLOG_DEBUG : APLOG_INFO, 0, session->c,
-                              "session(%ld): aborting session, reason=%d %s",
-                              session->id, reason, nghttp2_strerror(reason));
+            
+            if (!reason) {
+                nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
+                                      session->max_stream_received, 
+                                      reason, NULL, 0);
+                nghttp2_session_send(session->ngh2);
+                h2_conn_io_flush(&session->io);
             }
-            nghttp2_session_terminate_session(session->ngh2, reason);
-            nghttp2_submit_goaway(session->ngh2, 0, 0, reason, NULL, 0);
-            nghttp2_session_send(session->ngh2);
-            h2_conn_io_flush(&session->io);
+            else {
+                const char *err = nghttp2_strerror(reason);
+                
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                              "session(%ld): aborting session, reason=%d %s",
+                              session->id, reason, err);
+                
+                if (NGHTTP2_ERR_EOF == reason) {
+                    /* This is our way of indication that the connection is
+                     * gone. No use to send any GOAWAY frames. */
+                    nghttp2_session_terminate_session(session->ngh2, reason);
+                }
+                else {
+                    /* The connection might still be there and we shut down
+                     * with GOAWAY and reason information. */
+                     nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
+                                           session->max_stream_received, 
+                                           reason, (const uint8_t *)err, 
+                                           strlen(err));
+                     nghttp2_session_send(session->ngh2);
+                     h2_conn_io_flush(&session->io);
+                }
+            }
         }
         h2_mplx_abort(session->mplx);
     }
@@ -714,10 +725,12 @@ apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv)
             case APR_ENOMEM:
                 rv = NGHTTP2_ERR_NOMEM;
                 break;
-            case APR_EOF:
-                rv = 0;
+            case APR_SUCCESS:                            /* all fine, just... */
+            case APR_EOF:                         /* client closed its end... */
+            case APR_TIMEUP:                          /* got bored waiting... */
+                rv = 0;                            /* ...gracefully shut down */
                 break;
-            case APR_EBADF:
+            case APR_EBADF:        /* connection unusable, terminate silently */
             case APR_ECONNABORTED:
                 rv = NGHTTP2_ERR_EOF;
                 break;
@@ -1006,7 +1019,7 @@ apr_status_t h2_session_read(h2_session *session, apr_read_type_e block)
 apr_status_t h2_session_close(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
-    return h2_conn_io_flush(&session->io);
+    return session->aborted? APR_SUCCESS : h2_conn_io_flush(&session->io);
 }
 
 /* The session wants to send more DATA for the given stream.
