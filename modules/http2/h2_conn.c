@@ -288,24 +288,24 @@ apr_status_t h2_session_process(h2_session *session)
                                   || session->frames_received <= 1)?
                                  APR_BLOCK_READ : APR_NONBLOCK_READ);
         switch (status) {
-            case APR_SUCCESS:
-                /* successful read, reset our idle timers */
+            case APR_SUCCESS:       /* successful read, reset our idle timers */
                 have_read = 1;
                 wait_micros = 0;
                 break;
-            case APR_EAGAIN:
+            case APR_EAGAIN:              /* non-blocking read, nothing there */
                 break;
-            case APR_EBADF:
+            case APR_EBADF:               /* connection is not there any more */
             case APR_EOF:
             case APR_ECONNABORTED:
             case APR_ECONNRESET:
+            case APR_TIMEUP:                       /* blocked read, timed out */
                 ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                               "h2_session(%ld): reading",
                               session->id);
                 h2_session_abort(session, status, 0);
                 break;
             default:
-                ap_log_cerror( APLOG_MARK, APLOG_WARNING, status, session->c,
+                ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
                               APLOGNO(02950) 
                               "h2_session(%ld): error reading, terminating",
                               session->id);
