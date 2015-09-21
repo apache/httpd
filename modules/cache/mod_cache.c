@@ -122,10 +122,12 @@ static int cache_quick_handler(request_rec *r, int lookup)
         return DECLINED;
     }
 
-    /* Since we're in the quick handler, authorization will not have been
-     * processed through normal channels yet. Just decline the request if
-     * it's trying to authorize. */
+    /* find certain cache controlling headers */
     auth = apr_table_get(r->headers_in, "Authorization");
+
+    /* First things first - does the request allow us to return
+     * cached information at all? If not, just decline the request.
+     */
     if (auth) {
         return DECLINED;
     }
