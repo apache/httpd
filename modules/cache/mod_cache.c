@@ -122,12 +122,10 @@ static int cache_quick_handler(request_rec *r, int lookup)
         return DECLINED;
     }
 
-    /* find certain cache controlling headers */
+    /* Since we're in the quick handler, authorization will not have been
+     * processed through normal channels yet. Just decline the request if
+     * it's trying to authorize. */
     auth = apr_table_get(r->headers_in, "Authorization");
-
-    /* First things first - does the request allow us to return
-     * cached information at all? If not, just decline the request.
-     */
     if (auth) {
         return DECLINED;
     }
@@ -1462,6 +1460,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * forward all of them to the client, including non-cacheable ones).
          */
         r->headers_out = cache_merge_headers_out(r);
+        apr_table_clear(r->err_headers_out);
 
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
