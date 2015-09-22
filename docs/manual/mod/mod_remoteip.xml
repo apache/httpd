@@ -113,9 +113,12 @@ via the request headers.
     <var>header-field</var> header as the useragent IP address, or list
     of intermediate useragent IP addresses, subject to further configuration
     of the <directive module="mod_remoteip">RemoteIPInternalProxy</directive> and
-    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directives.  Unless these
-    other directives are used, <module>mod_remoteip</module> will trust all
-    hosts presenting a <directive module="mod_remoteip">RemoteIPHeader</directive> IP value.</p>
+    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directives.</p>
+
+    <note type="warning"> Unless these other directives are used, <module>mod_remoteip</module> 
+    will trust all hosts presenting a non internal address in the 
+    <directive module="mod_remoteip">RemoteIPHeader</directive> header value.
+    </note>
 
     <example><title>Internal (Load Balancer) Example</title>
     <highlight language="config">
@@ -213,19 +216,25 @@ RemoteIPProxiesHeader X-Forwarded-By
 
 <directivesynopsis>
 <name>RemoteIPTrustedProxy</name>
-<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<description>Restrict client IP addresses trusted to present the RemoteIPHeader value</description>
 <syntax>RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> directive adds one
-    or more addresses (or address blocks) to trust as presenting a valid
-    RemoteIPHeader value of the useragent IP.  Unlike the
-    <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive, any intranet
+    <p>The <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> 
+    directive restricts which peer IP addresses (or address blocks) will be
+    trusted to present  a valid RemoteIPHeader value of the useragent IP.</p>
+  
+    <p> Unlike the <directive module="mod_remoteip">RemoteIPInternalProxy</directive> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
     2000::/3 block) are not trusted as the useragent IP, and are left in the
     <directive module="mod_remoteip">RemoteIPHeader</directive> header's value.</p>
+
+    <note type="warning">By default, <module>mod_remoteip</module> will trust 
+    all hosts presenting a non internal address in the 
+    <directive module="mod_remoteip">RemoteIPHeader</directive> header value.
+    </note>
 
     <example><title>Trusted (Load Balancer) Example</title>
         <highlight language="config">
@@ -239,7 +248,7 @@ RemoteIPTrustedProxy proxy.example.com
 
 <directivesynopsis>
 <name>RemoteIPTrustedProxyList</name>
-<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<description>Restrict client IP addresses trusted to present the RemoteIPHeader value</description>
 <syntax>RemoteIPTrustedProxyList <var>filename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
