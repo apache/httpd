@@ -281,6 +281,7 @@ static void stream_destroy(h2_mplx *m, h2_stream *stream, h2_io *io)
          * file handle pool. */
         m->file_handles_allowed += io->files_handles_owned;
         h2_io_set_remove(m->stream_ios, io);
+        h2_io_set_remove(m->ready_ios, io);
         h2_io_destroy(io);
     }
 }
@@ -492,6 +493,8 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
         h2_io *io = h2_io_set_get_highest_prio(m->ready_ios);
         if (io) {
             h2_response *response = io->response;
+            
+            AP_DEBUG_ASSERT(response);
             h2_io_set_remove(m->ready_ios, io);
             
             stream = h2_stream_set_get(streams, response->stream_id);
@@ -564,6 +567,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
         }
         
         io->response = h2_response_copy(io->pool, response);
+        AP_DEBUG_ASSERT(io->response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
             status = out_write(m, io, f, bb, iowait);
@@ -641,7 +645,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io) {
-                if (!io->response->ngheader) {
+                if (!io->response || !io->response->ngheader) {
                     /* In case a close comes before a response was created,
                      * insert an error one so that our streams can properly
                      * reset.
