@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
+     before the retry period is over. [Ruediger Pluem]
+
   *) mod_autoindex: Allow autoindexes when neither mod_dir nor mod_mime are
      loaded. [Eric Covener]
 
