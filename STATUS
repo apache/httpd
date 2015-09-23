@@ -109,6 +109,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
+     before the retry period is over
+      Trunk version of patch:
+         http://svn.apache.org/r1664709
+         http://svn.apache.org/r1697323
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works modulo CHANGES
+      +1: rpluem, ylavic, jim
+      niq: 1. the if(worker->s->retries) {} and comment at line 2917
+              don't seem to make any sense.
+      rpluem: This is just taken over from existing code. It is just indented
+              differently hence part of the path I think it should be marked
+              as TODO section. But this should be subject to another
+              patch.
+           2. Re: error handline line 2930 - can PROXY_WORKER_IS_USABLE
+              not be tested BEFORE opening connection?
+      rpluem: We could, but we can catch more race cases with the current code
+              as it also catches the case where a connection establishment
+              took long and the worker went into error meanwhile.
+ 
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -193,26 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: updated to v5 including r1697013 and r1697015, the diff to v4 is:
              http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4_vs_v5.diff
 
-  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
-     before the retry period is over
-      Trunk version of patch:
-         http://svn.apache.org/r1664709
-         http://svn.apache.org/r1697323
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works modulo CHANGES
-      +1: rpluem, ylavic, jim
-      niq: 1. the if(worker->s->retries) {} and comment at line 2917
-              don't seem to make any sense.
-      rpluem: This is just taken over from existing code. It is just indented
-              differently hence part of the path I think it should be marked
-              as TODO section. But this should be subject to another
-              patch.
-           2. Re: error handline line 2930 - can PROXY_WORKER_IS_USABLE
-              not be tested BEFORE opening connection?
-      rpluem: We could, but we can catch more race cases with the current code
-              as it also catches the case where a connection establishment
-              took long and the worker went into error meanwhile.
- 
   *) util_script: Make REDIRECT_URL a complete URL (where set).
      PR 57785
      trunk: http://svn.apache.org/viewvc?view=revision&revision=1677702
