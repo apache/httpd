@@ -65,16 +65,14 @@ static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes)
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
     cf->bytes_out += bytes;
 
-    if (!cf->first_byte_seen) {
-        /* cleared during log_transaction, after mod_log_config */ 
+    /* writes for handshake i/o, before cf->r is set in post_read_request, don't count */
+    if (cf->r && !cf->first_byte_seen) {
+        /* cleared during log_transaction with cf->r, after mod_log_config */ 
+        logio_dirconf_t *conf = (logio_dirconf_t*) 
+            ap_get_module_config(cf->r->per_dir_config, &logio_module);
         cf->first_byte_seen = 1; 
-
-        if (cf->r) { 
-            logio_dirconf_t *conf = (logio_dirconf_t*) 
-                ap_get_module_config(cf->r->per_dir_config, &logio_module);
-            if (conf && conf->track_ttfb) { 
-                cf->ttfb = apr_time_now() - cf->r->request_time;
-            }
+        if (conf && conf->track_ttfb) { 
+            cf->ttfb = apr_time_now() - cf->r->request_time;
         }
     }
 }

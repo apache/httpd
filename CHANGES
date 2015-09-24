@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_logio: Fix logging of %^FB (time to first byte) on the first request on
+     an SSL connection.  PR 58454.  
+     [Konstantin J. Chernov <k.j.chernov gmail.com>]
+
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
      and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3",
      in accordance with RFC 7568. PR 58349, PR 57120. [Kaspar Brand]
