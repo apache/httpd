@@ -274,6 +274,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: elu, ylavic
      ylavic: possibly with a CHANGES entry
 
+   *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
+      handshake writes as first byte.
+      trunk patch: http://svn.apache.org/r1705099
+      2.4.x patch: trunk works
+      +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
