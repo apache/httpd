@@ -256,8 +256,8 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     apr_bucket *b;
     conn_rec *c = r->connection;
 
-    /* Send an EOR bucket through the output filter chain.  When
-     * this bucket is destroyed, the request will be logged and
+    /* Send an EOR bucket (alone!) through the output filter chain.
+     * When this bucket is destroyed, the request will be logged and
      * its pool will be freed
      */
     bb = apr_brigade_create(c->pool, c->bucket_alloc);

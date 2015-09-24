@@ -1704,15 +1704,15 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
 
-        /* If it is a flush or EOS, we need to pass this down.
+        /* If it is a flush or EOS/EOR, we need to pass this down.
          * These types do not require translation by OpenSSL.
          */
-        if (APR_BUCKET_IS_EOS(bucket)) {
+        if (APR_BUCKET_IS_EOS(bucket) || AP_BUCKET_IS_EOR(bucket)) {
             /*
-             * By definition, nothing can come after EOS.
+             * By definition, nothing can come after EOS/EOR.
              * which also means we can pass the rest of this brigade
              * without creating a new one since it only contains the
-             * EOS bucket.
+             * EOS/EOR bucket.
              */
 
             if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
