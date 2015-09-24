@@ -158,6 +158,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: don't we know from the very beginning of store_body() if
              r->connection->aborted, so to fail there?
      rpluem: Agreed. I guess we can move this up to line 733 before the loop.
+     ylavic: Or even at the beginning if we want to avoid file caching too.
+             But finally I wonder why we would not cache the response provided
+             it is complete. Shouldn't incomplete response be detected with
+             error buckets instead? ISTM that EOS with no error bucket *is*
+             a complete response that could be cached even if the current
+             client won't receive it completely.
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
