@@ -609,7 +609,6 @@
 <li><a href="mod_include.html#ssistarttag">SSIStartTag</a></li>
 <li><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></li>
 <li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>
-<li><a href="mod_ssl.html#sslalpnpreference">SSLALPNPreference</a></li>
 <li><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile</a></li>
