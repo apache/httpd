@@ -134,9 +134,12 @@ via the request headers.
     <var>header-field</var> header as the useragent IP address, or list
     of intermediate useragent IP addresses, subject to further configuration
     of the <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> and
-    <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code> directives.  Unless these
-    other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust all
-    hosts presenting a <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> IP value.</p>
+    <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code> directives.</p>
+
+    <div class="warning"> Unless these other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> 
+    will trust all hosts presenting a non internal address in the 
+    <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> header value.
+    </div>
 
     <div class="example"><h3>Internal (Load Balancer) Example</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP</pre>
 </div>
@@ -218,20 +221,26 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a> <a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
 </table>
-    <p>The <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code> directive adds one
-    or more addresses (or address blocks) to trust as presenting a valid
-    RemoteIPHeader value of the useragent IP.  Unlike the
-    <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> directive, any intranet
+    <p>The <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code> 
+    directive restricts which peer IP addresses (or address blocks) will be
+    trusted to present  a valid RemoteIPHeader value of the useragent IP.</p>
+  
+    <p> Unlike the <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
     2000::/3 block) are not trusted as the useragent IP, and are left in the
     <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> header's value.</p>
+
+    <div class="warning">By default, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust 
+    all hosts presenting a non internal address in the 
+    <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> header value.
+    </div>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
 RemoteIPTrustedProxy 10.0.2.16/28
@@ -242,7 +251,7 @@ RemoteIPTrustedProxy proxy.example.com</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a> <a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxyList <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
