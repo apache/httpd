@@ -123,7 +123,11 @@ AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
             *whack++ = '_';
         }
         while (*whack != '=') {
+#ifdef WIN32
+            if (!apr_isalnum(*whack) && *whack != '(' && *whack != ')') {
+#else
             if (!apr_isalnum(*whack)) {
+#endif
                 *whack = '_';
             }
             ++whack;
