@@ -282,6 +282,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: covener
 
+   *) mod_xml2enc: fix spurious (and harmless) test
+      trunk patch: http://svn.apache.org/r1704099
+      2.4.x patch: trunk works
+      +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
