@@ -181,7 +181,7 @@ is usually linked shared and requires loading. ], $h2_objs, , most, [
            APR_ADDTO(MOD_H2_LDADD, [-export-symbols-regex h2_module])
         fi
     else
-        enable_h2=no
+        enable_http2=no
     fi
 ])
 APACHE_MODULE(h2, [HTTP/2 support (Deprecated. Use --enable-http2)], $h2_objs, , most, [
