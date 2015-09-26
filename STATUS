@@ -285,7 +285,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_xml2enc: fix spurious (and harmless) test
       trunk patch: http://svn.apache.org/r1704099
       2.4.x patch: trunk works
-      +1: jailletc36
+      +1: jailletc36, minfrin
 
   *) mod_ssl: namespacing changes from May 2015
      trunk patches: https://svn.apache.org/r1674538
