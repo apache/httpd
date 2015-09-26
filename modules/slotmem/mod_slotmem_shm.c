@@ -25,23 +25,7 @@
 
 #include "httpd.h"
 #include "http_main.h"
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
-#endif
-
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>         /* for getpid() */
-#endif
-
-#if HAVE_SYS_SEM_H
-#include <sys/shm.h>
-#if !defined(SHM_R)
-#define SHM_R 0400
-#endif
-#if !defined(SHM_W)
-#define SHM_W 0200
-#endif
-#endif
+#include "ap_mpm.h" /* for ap_mpm_query() */
 
 #define AP_SLOTMEM_IS_PREGRAB(t)    (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
 #define AP_SLOTMEM_IS_PERSIST(t)    (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
@@ -58,7 +42,8 @@ typedef struct {
 #define AP_UNSIGNEDINT_OFFSET (APR_ALIGN_DEFAULT(sizeof(unsigned int)))
 
 struct ap_slotmem_instance_t {
-    char                 *name;       /* per segment name */
+    char                 *name;       /* file based SHM path/name */
+    char                 *pname;      /* persisted file path/name */
     int                  fbased;      /* filebased? */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
@@ -86,6 +71,31 @@ static apr_pool_t *gpool = NULL;
 #define DEFAULT_SLOTMEM_SUFFIX ".shm"
 #define DEFAULT_SLOTMEM_PERSIST_SUFFIX ".persist"
 
+/* Unixes (and Netware) have the unlink() semantic, which allows to
+ * apr_file_remove() a file still in use (opened elsewhere), the inode
+ * remains until the last fd is closed, whereas any file created with
+ * the same name/path will use a new inode.
+ *
+ * On windows and OS/2 ("\SHAREMEM\..." tree), apr_file_remove() marks
+ * the files for deletion until the last HANDLE is closed, meanwhile the
+ * same file/path can't be opened/recreated.
+ * Thus on graceful restart (the only restart mode with mpm_winnt), the
+ * old file may still exist until all the children stop, while we ought
+ * to create a new one for our new clear SHM.  Therefore, we would only
+ * be able to reuse (attach) the old SHM, preventing some changes to
+ * the config file, like the number of balancers/members, since the
+ * size checks (to fit the new config) would fail.  Let's avoid this by
+ * including the generation number in the SHM filename (obviously not
+ * the persisted name!)
+ */
+#ifndef SLOTMEM_UNLINK_SEMANTIC
+#if defined(WIN32) || defined(OS2)
+#define SLOTMEM_UNLINK_SEMANTIC 0
+#else
+#define SLOTMEM_UNLINK_SEMANTIC 1
+#endif
+#endif
+
 /*
  * Persist the slotmem in a file
  * slotmem name and file name.
@@ -94,29 +104,59 @@ static apr_pool_t *gpool = NULL;
  * /abs_name : $abs_name
  *
  */
-
-static const char *slotmem_filename(apr_pool_t *pool, const char *slotmemname,
-                                    int persist)
+static int slotmem_filenames(apr_pool_t *pool,
+                             const char *slotname,
+                             const char **filename,
+                             const char **persistname)
 {
-    const char *fname;
-    if (!slotmemname || strcasecmp(slotmemname, "none") == 0) {
-        return NULL;
-    }
-    else if (slotmemname[0] != '/') {
-        const char *filenm = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
-                                         slotmemname, DEFAULT_SLOTMEM_SUFFIX,
-                                         NULL);
-        fname = ap_runtime_dir_relative(pool, filenm);
-    }
-    else {
-        fname = slotmemname;
+    const char *fname = NULL, *pname = NULL;
+
+    if (slotname && *slotname && strcasecmp(slotname, "none") != 0) {
+        if (slotname[0] != '/') {
+#if !SLOTMEM_UNLINK_SEMANTIC
+            /* Each generation needs its own file name. */
+            int generation = 0;
+            ap_mpm_query(AP_MPMQ_GENERATION, &generation);
+            fname = apr_psprintf(pool, "%s%s_%x%s", DEFAULT_SLOTMEM_PREFIX,
+                                 slotname, generation, DEFAULT_SLOTMEM_SUFFIX);
+#else
+            /* Reuse the same file name for each generation. */
+            fname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
+                                slotname, DEFAULT_SLOTMEM_SUFFIX,
+                                NULL);
+#endif
+            fname = ap_runtime_dir_relative(pool, fname);
+        }
+        else {
+            /* Don't mangle the file name if given an absolute path, it's
+             * up to the caller to provide a unique name when necessary.
+             */
+            fname = slotname;
+        }
+
+        if (persistname) {
+            /* Persisted file names are immutable... */
+#if !SLOTMEM_UNLINK_SEMANTIC
+            if (slotname[0] != '/') {
+                pname = apr_pstrcat(pool, DEFAULT_SLOTMEM_PREFIX,
+                                    slotname, DEFAULT_SLOTMEM_SUFFIX,
+                                    DEFAULT_SLOTMEM_PERSIST_SUFFIX,
+                                    NULL);
+                pname = ap_runtime_dir_relative(pool, pname);
+            }
+            else
+#endif
+            pname = apr_pstrcat(pool, fname,
+                                DEFAULT_SLOTMEM_PERSIST_SUFFIX,
+                                NULL);
+        }
     }
 
-    if (persist) {
-        return apr_pstrcat(pool, fname, DEFAULT_SLOTMEM_PERSIST_SUFFIX,
-                           NULL);
+    *filename = fname;
+    if (persistname) {
+        *persistname = pname;
     }
-    return fname;
+    return (fname != NULL);
 }
 
 static void slotmem_clearinuse(ap_slotmem_instance_t *slot)
@@ -143,10 +183,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_file_t *fp;
     apr_status_t rv;
     apr_size_t nbytes;
-    const char *storename;
     unsigned char digest[APR_MD5_DIGESTSIZE];
-
-    storename = slotmem_filename(slotmem->gpool, slotmem->name, 1);
+    const char *storename = slotmem->pname;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02334)
                  "storing %s", storename);
@@ -179,17 +217,14 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     }
 }
 
-static apr_status_t restore_slotmem(void *ptr, const char *name, apr_size_t size,
-                                    apr_pool_t *pool)
+static apr_status_t restore_slotmem(void *ptr, const char *storename,
+                                    apr_size_t size, apr_pool_t *pool)
 {
-    const char *storename;
     apr_file_t *fp;
     apr_size_t nbytes = size;
     apr_status_t rv = APR_SUCCESS;
     unsigned char digest[APR_MD5_DIGESTSIZE];
     unsigned char digest2[APR_MD5_DIGESTSIZE];
-
-    storename = slotmem_filename(pool, name, 1);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02335)
                  "restoring %s", storename);
@@ -246,15 +281,11 @@ static apr_status_t cleanup_slotmem(void *param)
             if (AP_SLOTMEM_IS_PERSIST(next)) {
                 store_slotmem(next);
             }
-            if (next->fbased) {
-                const char *name;
-                apr_shm_remove(next->name, next->gpool);
-                name = slotmem_filename(next->gpool, next->name, 0);
-                if (name) {
-                    apr_file_remove(name, next->gpool);
-                }
-            }
             apr_shm_destroy((apr_shm_t *)next->shm);
+            if (next->fbased) {
+                apr_shm_remove(next->name, next->gpool);
+                apr_file_remove(next->name, next->gpool);
+            }
             next = next->next;
         }
     }
@@ -295,25 +326,24 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                                    unsigned int item_num,
                                    ap_slotmem_type_t type, apr_pool_t *pool)
 {
-/*    void *slotmem = NULL; */
     int fbased = 1;
     int restored = 0;
     char *ptr;
     sharedslotdesc_t desc;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
-    const char *fname;
+    const char *fname, *pname = NULL;
     apr_shm_t *shm;
     apr_size_t basesize = (item_size * item_num);
     apr_size_t size = AP_SLOTMEM_OFFSET + AP_UNSIGNEDINT_OFFSET +
                       (item_num * sizeof(char)) + basesize;
+    int persist = (type & AP_SLOTMEM_TYPE_PERSIST) != 0;
     apr_status_t rv;
 
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
-    fname = slotmem_filename(pool, name, 0);
-    if (fname) {
+    if (slotmem_filenames(pool, name, &fname, persist ? &pname : NULL)) {
         /* first try to attach to existing slotmem */
         if (next) {
             for (;;) {
@@ -399,8 +429,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
          * TODO: Error check the below... What error makes
          * sense if the restore fails? Any?
          */
-        if (type & AP_SLOTMEM_TYPE_PERSIST) {
-            rv = restore_slotmem(ptr, fname, dsize, pool);
+        if (persist) {
+            rv = restore_slotmem(ptr, pname, dsize, pool);
             if (rv == APR_SUCCESS) {
                 restored = 1;
             }
@@ -417,6 +447,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
+    res->pname = apr_pstrdup(gpool, pname);
     res->fbased = fbased;
     res->shm = shm;
     res->num_free = (unsigned int *)ptr;
@@ -457,8 +488,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
-    fname = slotmem_filename(pool, name, 0);
-    if (!fname) {
+    if (!slotmem_filenames(pool, name, &fname, NULL)) {
         return APR_ENOSHMAVAIL;
     }
 

@@ -109,21 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
-     can't create new (clear) slots while previous children gracefully stopping
-     still use the old ones (e.g. Windows, OS2). PR 58024.
-     trunk patch: http://svn.apache.org/r1702450
-                  http://svn.apache.org/r1702473
-                  http://svn.apache.org/r1702501
-                  http://svn.apache.org/r1702955
-                  http://svn.apache.org/r1703149
-                  http://svn.apache.org/r1703157
-                  http://svn.apache.org/r1703169
-                  http://svn.apache.org/r1703200
-     2.4.x patch: trunk works (module CHANGES)
-     merge patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_slotmem_shm-generation.patch
-     +1: ylavic, jim, minfrin
-
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
