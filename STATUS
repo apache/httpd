@@ -108,7 +108,28 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
- 
+
+   * MPMs: Support SO_REUSEPORT to create multiple duplicated listener
+           records for scalability (full log in 2.4.x patch).
+     trunk patch: http://svn.apache.org/r1599531
+                  http://svn.apache.org/r1599593
+                  http://svn.apache.org/r1599601
+                  http://svn.apache.org/r1599603
+                  http://svn.apache.org/r1601558
+                  http://svn.apache.org/r1629909
+                  http://svn.apache.org/r1629918
+                  http://svn.apache.org/r1629990
+                  http://svn.apache.org/r1635521
+                  http://svn.apache.org/r1635859
+                  http://svn.apache.org/r1640145
+                  http://svn.apache.org/r1640161
+                  http://svn.apache.org/r1640184
+                  http://svn.apache.org/r1640763
+                  http://svn.apache.org/r1643179
+                  http://svn.apache.org/r1656368
+                  http://svn.apache.org/r1679714
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets-v3.patch
+     +1: ylavic, jim, minfrin
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -143,28 +164,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza, jim
-
-   * MPMs: Support SO_REUSEPORT to create multiple duplicated listener
-           records for scalability (full log in 2.4.x patch).
-     trunk patch: http://svn.apache.org/r1599531
-                  http://svn.apache.org/r1599593
-                  http://svn.apache.org/r1599601
-                  http://svn.apache.org/r1599603
-                  http://svn.apache.org/r1601558
-                  http://svn.apache.org/r1629909
-                  http://svn.apache.org/r1629918
-                  http://svn.apache.org/r1629990
-                  http://svn.apache.org/r1635521
-                  http://svn.apache.org/r1635859
-                  http://svn.apache.org/r1640145
-                  http://svn.apache.org/r1640161
-                  http://svn.apache.org/r1640184
-                  http://svn.apache.org/r1640763
-                  http://svn.apache.org/r1643179
-                  http://svn.apache.org/r1656368
-                  http://svn.apache.org/r1679714
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ap_listeners_buckets-v3.patch
-     +1: ylavic, jim
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
