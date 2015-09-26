@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.17
 
+  *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
+
   *) MPMs: Support SO_REUSEPORT to create multiple duplicated listener
      records for scalability. [Yingqi Lu <yingqi.lu@intel.com>,
      Jeff Trawick, Jim Jagielski, Yann Ylavic]
