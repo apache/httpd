@@ -109,11 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) util_script: Make REDIRECT_URL a complete URL (where set).
-     PR 57785
-     trunk: http://svn.apache.org/viewvc?view=revision&revision=1677702
-     2.4.x: trunk patch applies.
-     +1: niq, jim, minfrin
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

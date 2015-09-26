@@ -282,12 +282,25 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
+        /* PR#57785: reconstruct full URL here */
+        apr_uri_t *uri = &r->prev->parsed_uri;
+        if (!uri->scheme) {
+            uri->scheme = (char*)ap_http_scheme(r->prev);
+        }
+        if (!uri->port) {
+            uri->port = ap_get_server_port(r->prev);
+            uri->port_str = apr_psprintf(r->pool, "%u", uri->port);
+        }
+        if (!uri->hostname) {
+            uri->hostname = (char*)ap_get_server_name_for_url(r->prev);
+        }
         add_unless_null(e, "REDIRECT_QUERY_STRING", r->prev->args);
-        add_unless_null(e, "REDIRECT_URL", r->prev->uri);
+        add_unless_null(e, "REDIRECT_URL",
+                        apr_uri_unparse(r->pool, uri, 0));
     }
 
     if (e != r->subprocess_env) {
-      apr_table_overlap(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
+        apr_table_overlap(r->subprocess_env, e, APR_OVERLAP_TABLES_SET);
     }
 }
 
