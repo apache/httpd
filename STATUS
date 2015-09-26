@@ -328,6 +328,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-disable-sslv3.diff
      +1: kbrand
 
+  *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
+     and Redirect. Limit Redirect expressions to directory (Location) context
+     and redirect statuses (implicit or explicit).
+     trunk patch: http://svn.apache.org/r1653941
+                  http://svn.apache.org/r1653978
+                  http://svn.apache.org/r1656225
+                  http://svn.apache.org/r1686853
+                  http://svn.apache.org/r1686856
+     2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
