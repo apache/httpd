@@ -2,6 +2,12 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
+     can't create new (clear) slots while previous children gracefully stopping
+     still use the old ones (e.g. Windows, OS2). mod_proxy_balancer failed to
+     restart whenever the number of configured balancers/members changed during
+     restart.  PR 58024.  [Yann Ylavic]
+
   *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
 
   *) MPMs: Support SO_REUSEPORT to create multiple duplicated listener
