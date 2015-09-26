@@ -287,6 +287,47 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: trunk works
       +1: jailletc36
 
+  *) mod_ssl: namespacing changes from May 2015
+     trunk patches: https://svn.apache.org/r1674538
+                    https://svn.apache.org/r1677143
+                    https://svn.apache.org/r1677144
+                    https://svn.apache.org/r1677145
+                    https://svn.apache.org/r1677146
+                    https://svn.apache.org/r1677149
+                    https://svn.apache.org/r1677151
+                    https://svn.apache.org/r1677153
+                    https://svn.apache.org/r1677154
+                    https://svn.apache.org/r1677155
+                    https://svn.apache.org/r1677156
+                    https://svn.apache.org/r1677159
+                    https://svn.apache.org/r1677339
+                    https://svn.apache.org/r1677830
+                    https://svn.apache.org/r1677832
+                    https://svn.apache.org/r1677834
+                    https://svn.apache.org/r1677835
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-namespacing.diff
+     +1: kbrand
+
+  *) mod_ssl: add support for msUPN and dnsSRV otherName form entries
+     in the subjectAltName extension. PR 58020.
+     trunk patch: https://svn.apache.org/r1693792
+     2.4.x patch: trunk works (modulo CHANGES),
+                  but depends on the namespacing backport (see above)
+     +1: kbrand
+
+  *) mod_ssl: support SUITEB* cipher strings with OpenSSL 1.0.2 and later.
+     PR 58213.
+     trunk patch: https://svn.apache.org/r1702643
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: kbrand
+
+  *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
+     and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3".
+     PR 58349, PR 57120.
+     trunk patch: https://svn.apache.org/r1703952
+     2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-disable-sslv3.diff
+     +1: kbrand
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
