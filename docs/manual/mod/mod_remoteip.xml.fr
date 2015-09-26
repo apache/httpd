@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1568652:1704683 (outdated) -->
+<!-- English Revision: 1704683 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -130,10 +130,14 @@ du client</description>
     une liste d'adresses IP clients interm&eacute;diaires, en fonction de la
     configuration des directives
     <directive module="mod_remoteip">RemoteIPInternalProxy</directive> et
-    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive>. Si ces deux derni&egrave;res
+    <directive module="mod_remoteip">RemoteIPTrustedProxy</directive>.</p>
+    
+    <note type="warning">Si ces deux derni&egrave;res
     directives ne sont pas utilis&eacute;es, <module>mod_remoteip</module>
-    traitera tout h&ocirc;te pr&eacute;sentant une valeur d'IP
-    <directive module="mod_remoteip">RemoteIPHeader</directive> comme h&ocirc;te de confiance.</p>
+    traitera tout h&ocirc;te pr&eacute;sentant une adresse non interne
+    dans l'en-t&ecirc;te <directive
+    module="mod_remoteip">RemoteIPHeader</directive> comme h&ocirc;te de
+    confiance.</note>
 
     <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
     charge)</title>
@@ -246,7 +250,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 
 <directivesynopsis>
 <name>RemoteIPTrustedProxy</name>
-<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+<description>Restreint les adresses IP clients dignes de
 confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 <syntax>RemoteIPTrustedProxy
 <var>ip-mandataire</var>|<var>ip-mandataire/sous-r&eacute;seau</var>|<var>nom-h&ocirc;te</var> ...</syntax>
@@ -254,9 +258,11 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 
 <usage>
     <p>La directive <directive module="mod_remoteip">RemoteIPTrustedProxy</directive> permet
-    d'ajouter une ou plusieurs adresses, ou blocs d'adresses, auxquelles
-    on peut faire confiance pour pr&eacute;senter une valeur RemoteIPHeader
-    valide de l'adresse IP du client. A la diff&eacute;rence de la directive
+    de d&eacute;finir quelles adresses IP (ou blocs d'adresses) seront
+    consid&eacute;r&eacute;es comme de confiance pour pr&eacute;senter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+    
+    <p>A la diff&eacute;rence de la directive
     <directive module="mod_remoteip">RemoteIPInternalProxy</directive>, toutes les adresses IP
     intranet ou priv&eacute;es indiqu&eacute;es par de tels mandataires, y compris les
     blocs d'adresses 10/8, 172.16/12, 192.168/16, 169.254/16 et 127/8
@@ -264,6 +270,12 @@ confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
     dignes de confiance en tant qu'adresses IP distantes, et se situent
     &agrave; gauche dans le contenu de l'en-t&ecirc;te
     <directive module="mod_remoteip">RemoteIPHeader</directive>.</p>
+
+    <note type="warning">Par d&eacute;faut, <module>mod_remoteip</module>
+    consid&eacute;rera comme de confiance tout h&ocirc;te pr&eacute;sentant une adresse non
+    interne dans l'en-t&ecirc;te <directive
+    module="mod_remoteip">RemoteIPHeader</directive>.
+    </note>
 
     <example><title>Exemple d'adresse de confiance (r&eacute;partiteur de
     charge</title>
@@ -278,7 +290,7 @@ RemoteIPTrustedProxy proxy.example.com
 
 <directivesynopsis>
 <name>RemoteIPTrustedProxyList</name>
-<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+<description>Restreint les adresses IP clients dignes de
 confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
 <syntax>RemoteIPTrustedProxyList <var>nom-fichier</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
