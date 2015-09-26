@@ -156,6 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
+     minfrin: Two new directives need to be documented.
 
   *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
