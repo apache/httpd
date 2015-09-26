@@ -109,6 +109,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
+     can't create new (clear) slots while previous children gracefully stopping
+     still use the old ones (e.g. Windows, OS2). PR 58024.
+     trunk patch: http://svn.apache.org/r1702450
+                  http://svn.apache.org/r1702473
+                  http://svn.apache.org/r1702501
+                  http://svn.apache.org/r1702955
+                  http://svn.apache.org/r1703149
+                  http://svn.apache.org/r1703157
+                  http://svn.apache.org/r1703169
+                  http://svn.apache.org/r1703200
+     2.4.x patch: trunk works (module CHANGES)
+     merge patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_slotmem_shm-generation.patch
+     +1: ylavic, jim, minfrin
+
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -206,21 +221,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      See diff and merged changelists via: 
          svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
      +1: icing, jim
-
-  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
-     can't create new (clear) slots while previous children gracefully stopping
-     still use the old ones (e.g. Windows, OS2). PR 58024.
-     trunk patch: http://svn.apache.org/r1702450
-                  http://svn.apache.org/r1702473
-                  http://svn.apache.org/r1702501
-                  http://svn.apache.org/r1702955
-                  http://svn.apache.org/r1703149
-                  http://svn.apache.org/r1703157
-                  http://svn.apache.org/r1703169
-                  http://svn.apache.org/r1703200
-     2.4.x patch: trunk works (module CHANGES)
-     merge patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_slotmem_shm-generation.patch
-     +1: ylavic, jim
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
