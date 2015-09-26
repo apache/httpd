@@ -48,6 +48,8 @@
 #include "ap_mmn.h"
 #include "apr_poll.h"
 
+#include <stdlib.h>
+
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
@@ -86,14 +88,12 @@
 
 /* config globals */
 
-static apr_proc_mutex_t *accept_mutex;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxRequestWorkers */
 static int server_limit = 0;
 static int mpm_state = AP_MPMQ_STARTING;
-static ap_pod_t *pod;
 
 /* data retained by prefork across load/unload of the module
  * allocated on first call to pre-config hook; located on
@@ -124,6 +124,15 @@ typedef struct prefork_retained_data {
     int hold_off_on_exponential_spawning;
 } prefork_retained_data;
 static prefork_retained_data *retained;
+
+typedef struct prefork_child_bucket {
+    ap_pod_t *pod;
+    ap_listen_rec *listeners;
+    apr_proc_mutex_t *mutex;
+} prefork_child_bucket;
+static int                   num_buckets; /* Number of listeners buckets */
+static prefork_child_bucket *all_buckets, /* All listeners buckets */
+                            *my_bucket;   /* Current child bucket */
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 
@@ -222,14 +231,14 @@ static void clean_child_exit(int code)
         prefork_note_child_killed(/* slot */ 0, 0, 0);
     }
 
-    ap_mpm_pod_close(pod);
+    ap_mpm_pod_close(my_bucket->pod);
     chdir_for_gprof();
     exit(code);
 }
 
-static void accept_mutex_on(void)
+static apr_status_t accept_mutex_on(void)
 {
-    apr_status_t rv = apr_proc_mutex_lock(accept_mutex);
+    apr_status_t rv = apr_proc_mutex_lock(my_bucket->mutex);
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't grab the accept mutex";
 
@@ -243,11 +252,12 @@ static void accept_mutex_on(void)
             exit(APEXIT_CHILDFATAL);
         }
     }
+    return APR_SUCCESS;
 }
 
-static void accept_mutex_off(void)
+static apr_status_t accept_mutex_off(void)
 {
-    apr_status_t rv = apr_proc_mutex_unlock(accept_mutex);
+    apr_status_t rv = apr_proc_mutex_unlock(my_bucket->mutex);
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't release the accept mutex";
 
@@ -264,6 +274,7 @@ static void accept_mutex_off(void)
             exit(APEXIT_CHILDFATAL);
         }
     }
+    return APR_SUCCESS;
 }
 
 /* On some architectures it's safe to do unserialized accept()s in the single
@@ -272,9 +283,9 @@ static void accept_mutex_off(void)
  * when it's safe in the single Listen case.
  */
 #ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-#define SAFE_ACCEPT(stmt) do {if (ap_listeners->next) {stmt;}} while(0)
+#define SAFE_ACCEPT(stmt) (ap_listeners->next ? (stmt) : APR_SUCCESS)
 #else
-#define SAFE_ACCEPT(stmt) do {stmt;} while(0)
+#define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
 static int prefork_query(int query_code, int *result, apr_status_t *rv)
@@ -352,7 +363,7 @@ static int volatile die_now = 0;
 static void stop_listening(int sig)
 {
     mpm_state = AP_MPMQ_STOPPING;
-    ap_close_listeners();
+    ap_close_listeners_ex(my_bucket->listeners);
 
     /* For a graceful stop, we want the child to exit when done */
     die_now = 1;
@@ -477,7 +488,7 @@ static void set_signals(void)
 static int requests_this_child;
 static int num_listensocks = 0;
 
-static void child_main(int child_num_arg)
+static void child_main(int child_num_arg, int child_bucket)
 {
 #if APR_HAS_THREADS
     apr_thread_t *thd = NULL;
@@ -521,18 +532,26 @@ static void child_main(int child_num_arg)
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");
 
+    /* close unused listeners and pods */
+    for (i = 0; i < num_buckets; i++) {
+        if (i != child_bucket) {
+            ap_close_listeners_ex(all_buckets[i].listeners);
+            ap_mpm_pod_close(all_buckets[i].pod);
+        }
+    }
+
     /* needs to be done before we switch UIDs so we have permissions */
     ap_reopen_scoreboard(pchild, NULL, 0);
-    lockfile = apr_proc_mutex_lockfile(accept_mutex);
-    status = apr_proc_mutex_child_init(&accept_mutex,
-                                       lockfile,
-                                       pchild);
+    status = SAFE_ACCEPT(apr_proc_mutex_child_init(&my_bucket->mutex,
+                                    apr_proc_mutex_lockfile(my_bucket->mutex),
+                                    pchild));
     if (status != APR_SUCCESS) {
+        lockfile = apr_proc_mutex_lockfile(my_bucket->mutex);
         ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(00155)
                      "Couldn't initialize cross-process lock in child "
                      "(%s) (%s)",
                      lockfile ? lockfile : "none",
-                     apr_proc_mutex_name(accept_mutex));
+                     apr_proc_mutex_name(my_bucket->mutex));
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -554,7 +573,7 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDSICK); /* assume temporary resource issue */
     }
 
-    for (lr = ap_listeners, i = num_listensocks; i--; lr = lr->next) {
+    for (lr = my_bucket->listeners, i = num_listensocks; i--; lr = lr->next) {
         apr_pollfd_t pfd = { 0 };
 
         pfd.desc_type = APR_POLL_SOCKET;
@@ -612,7 +631,7 @@ static void child_main(int child_num_arg)
 
         if (num_listensocks == 1) {
             /* There is only one listener record, so refer to that one. */
-            lr = ap_listeners;
+            lr = my_bucket->listeners;
         }
         else {
             /* multiple listening sockets - need to poll */
@@ -710,7 +729,7 @@ static void child_main(int child_num_arg)
          * while we were processing the connection or we are the lucky
          * idle server process that gets to die.
          */
-        if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
+        if (ap_mpm_pod_check(my_bucket->pod) == APR_SUCCESS) { /* selected as idle? */
             die_now = 1;
         }
         else if (retained->my_generation !=
@@ -726,7 +745,7 @@ static void child_main(int child_num_arg)
 }
 
 
-static int make_child(server_rec *s, int slot)
+static int make_child(server_rec *s, int slot, int bucket)
 {
     int pid;
 
@@ -735,6 +754,8 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (one_process) {
+        my_bucket = &all_buckets[0];
+
         apr_signal(SIGHUP, sig_term);
         /* Don't catch AP_SIG_GRACEFUL in ONE_PROCESS mode :) */
         apr_signal(SIGINT, sig_term);
@@ -743,13 +764,14 @@ static int make_child(server_rec *s, int slot)
 #endif
         apr_signal(SIGTERM, sig_term);
         prefork_note_child_started(slot, getpid());
-        child_main(slot);
+        child_main(slot, 0);
         /* NOTREACHED */
+        ap_assert(0);
+        return -1;
     }
 
     (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
                                                (request_rec *) NULL);
-
 
 #ifdef _OSD_POSIX
     /* BS2000 requires a "special" version of fork() before a setuid() call */
@@ -775,6 +797,8 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
+        my_bucket = &all_buckets[bucket];
+
 #ifdef HAVE_BINDPROCESSOR
         /* by default AIX binds to a single processor
          * this bit unbinds children which will then bind to another cpu
@@ -797,9 +821,10 @@ static int make_child(server_rec *s, int slot)
          * The pod is used for signalling the graceful restart.
          */
         apr_signal(AP_SIG_GRACEFUL, stop_listening);
-        child_main(slot);
+        child_main(slot, bucket);
     }
 
+    ap_scoreboard_image->parent[slot].bucket = bucket;
     prefork_note_child_started(slot, pid);
 
     return 0;
@@ -815,7 +840,7 @@ static void startup_children(int number_to_start)
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
-        if (make_child(ap_server_conf, i) < 0) {
+        if (make_child(ap_server_conf, i, i % num_buckets) < 0) {
             break;
         }
         --number_to_start;
@@ -824,6 +849,8 @@ static void startup_children(int number_to_start)
 
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
+    static int bucket_make_child_record = -1;
+    static int bucket_kill_child_record = -1;
     int i;
     int idle_count;
     worker_score *ws;
@@ -874,7 +901,8 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
          * shut down gracefully, in case it happened to pick up a request
          * while we were counting
          */
-        ap_mpm_pod_signal(pod);
+        bucket_kill_child_record = (bucket_kill_child_record + 1) % num_buckets;
+        ap_mpm_pod_signal(all_buckets[bucket_kill_child_record].pod);
         retained->idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -899,7 +927,10 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
                     idle_count, total_non_dead);
             }
             for (i = 0; i < free_length; ++i) {
-                make_child(ap_server_conf, free_slots[i]);
+                bucket_make_child_record++;
+                bucket_make_child_record %= num_buckets;
+                make_child(ap_server_conf, free_slots[i],
+                           bucket_make_child_record);
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
@@ -925,17 +956,9 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int index;
     int remaining_children_to_start;
-    apr_status_t rv;
+    int i;
 
     ap_log_pid(pconf, ap_pid_fname);
-
-    /* Initialize cross-process accept lock */
-    rv = ap_proc_mutex_create(&accept_mutex, NULL, AP_ACCEPT_MUTEX_TYPE, NULL,
-                              s, _pconf, 0);
-    if (rv != APR_SUCCESS) {
-        mpm_state = AP_MPMQ_STOPPING;
-        return DONE;
-    }
 
     if (!retained->is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
@@ -953,12 +976,23 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         AP_MONCONTROL(1);
-        make_child(ap_server_conf, 0);
+        make_child(ap_server_conf, 0, 0);
         /* NOTREACHED */
+        ap_assert(0);
+        return DONE;
     }
-    else {
-    if (ap_daemons_max_free < ap_daemons_min_free + 1)  /* Don't thrash... */
-        ap_daemons_max_free = ap_daemons_min_free + 1;
+
+    /* Don't thrash since num_buckets depends on the
+     * system and the number of online CPU cores...
+     */
+    if (ap_daemons_limit < num_buckets)
+        ap_daemons_limit = num_buckets;
+    if (ap_daemons_to_start < num_buckets)
+        ap_daemons_to_start = num_buckets;
+    if (ap_daemons_min_free < num_buckets)
+        ap_daemons_min_free = num_buckets;
+    if (ap_daemons_max_free < ap_daemons_min_free + num_buckets)
+        ap_daemons_max_free = ap_daemons_min_free + num_buckets;
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
@@ -989,9 +1023,12 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00164)
                 "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
+    ap_log_mpm_common(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00165)
                 "Accept mutex: %s (default: %s)",
-                apr_proc_mutex_name(accept_mutex),
+                (all_buckets[0].mutex)
+                    ? apr_proc_mutex_name(all_buckets[0].mutex)
+                    : "none",
                 apr_proc_mutex_defname());
 
     mpm_state = AP_MPMQ_RUNNING;
@@ -1048,7 +1085,8 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    make_child(ap_server_conf, child_slot);
+                    make_child(ap_server_conf, child_slot,
+                               ap_get_scoreboard_process(child_slot)->bucket);
                     --remaining_children_to_start;
                 }
 #if APR_HAS_OTHER_CHILD
@@ -1089,7 +1127,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         perform_idle_server_maintenance(pconf);
     }
-    } /* one_process */
 
     mpm_state = AP_MPMQ_STOPPING;
 
@@ -1122,7 +1159,9 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_close_listeners();
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, retained->max_daemons_limit);
+        for (i = 0; i < num_buckets; i++) {
+            ap_mpm_pod_killpg(all_buckets[i].pod, retained->max_daemons_limit);
+        }
 
         /* Send SIGUSR1 to the active children */
         active_children = 0;
@@ -1196,7 +1235,9 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     "Graceful restart requested, doing restart");
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, retained->max_daemons_limit);
+        for (i = 0; i < num_buckets; i++) {
+            ap_mpm_pod_killpg(all_buckets[i].pod, retained->max_daemons_limit);
+        }
 
         /* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.  This will break
@@ -1238,7 +1279,10 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 {
     int startup = 0;
     int level_flags = 0;
+    ap_listen_rec **listen_buckets;
     apr_status_t rv;
+    char id[16];
+    int i;
 
     pconf = p;
 
@@ -1255,12 +1299,43 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         return DONE;
     }
 
-    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+    if (one_process) {
+        num_buckets = 1;
+    }
+    else if (!retained->is_graceful) { /* Preserve the number of buckets
+                                          on graceful restarts. */
+        num_buckets = 0;
+    }
+    if ((rv = ap_duplicate_listeners(pconf, ap_server_conf,
+                                     &listen_buckets, &num_buckets))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                      (startup ? NULL : s),
-                     "could not open pipe-of-death");
+                     "could not duplicate listeners");
         return DONE;
     }
+    all_buckets = apr_pcalloc(pconf, num_buckets *
+                                     sizeof(prefork_child_bucket));
+    for (i = 0; i < num_buckets; i++) {
+        if (!one_process && /* no POD in one_process mode */
+                (rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod))) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
+                         (startup ? NULL : s),
+                         "could not open pipe-of-death");
+            return DONE;
+        }
+        /* Initialize cross-process accept lock (safe accept needed only) */
+        if ((rv = SAFE_ACCEPT((apr_snprintf(id, sizeof id, "%i", i),
+                               ap_proc_mutex_create(&all_buckets[i].mutex,
+                                                    NULL, AP_ACCEPT_MUTEX_TYPE,
+                                                    id, s, pconf, 0))))) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
+                         (startup ? NULL : s),
+                         "could not create accept mutex");
+            return DONE;
+        }
+        all_buckets[i].listeners = listen_buckets[i];
+    }
+
     return OK;
 }
 
