@@ -263,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy: Fix ProxySourceAddress binding failure with AH00938.  PR 56687.
      trunk patch: http://svn.apache.org/r1703902
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, minfrin
 
    * mod_cache: r->err_headers_out is not merged into
      r->headers when mod_cache is enabled and the response
