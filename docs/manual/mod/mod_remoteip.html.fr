@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
@@ -149,10 +147,13 @@ du client</td></tr>
     une liste d'adresses IP clients intermédiaires, en fonction de la
     configuration des directives
     <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code> et
-    <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code>. Si ces deux dernières
+    <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code>.</p>
+    
+    <div class="warning">Si ces deux dernières
     directives ne sont pas utilisées, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>
-    traitera tout hôte présentant une valeur d'IP
-    <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> comme hôte de confiance.</p>
+    traitera tout hôte présentant une adresse non interne
+    dans l'en-tête <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code> comme hôte de
+    confiance.</div>
 
     <div class="example"><h3>Exemple à usage interne (répartiteur de
     charge)</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Client-IP</pre>
@@ -249,7 +250,7 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a> <a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint les adresses IP clients dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPTrustedProxy
 <var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</code></td></tr>
@@ -258,9 +259,11 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
 </table>
     <p>La directive <code class="directive"><a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></code> permet
-    d'ajouter une ou plusieurs adresses, ou blocs d'adresses, auxquelles
-    on peut faire confiance pour présenter une valeur RemoteIPHeader
-    valide de l'adresse IP du client. A la différence de la directive
+    de définir quelles adresses IP (ou blocs d'adresses) seront
+    considérées comme de confiance pour présenter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+    
+    <p>A la différence de la directive
     <code class="directive"><a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></code>, toutes les adresses IP
     intranet ou privées indiquées par de tels mandataires, y compris les
     blocs d'adresses 10/8, 172.16/12, 192.168/16, 169.254/16 et 127/8
@@ -268,6 +271,11 @@ confiance pour présenter la valeur RemoteIPHeader</td></tr>
     dignes de confiance en tant qu'adresses IP distantes, et se situent
     à gauche dans le contenu de l'en-tête
     <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code>.</p>
+
+    <div class="warning">Par défaut, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>
+    considérera comme de confiance tout hôte présentant une adresse non
+    interne dans l'en-tête <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code>.
+    </div>
 
     <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
     charge</h3><pre class="prettyprint lang-config">RemoteIPHeader X-Forwarded-For
@@ -279,7 +287,7 @@ RemoteIPTrustedProxy proxy.example.com</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a> <a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint les adresses IP clients dignes de
 confiance pour présenter la valeur RemoteIPHeader</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPTrustedProxyList <var>nom-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
