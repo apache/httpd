@@ -253,6 +253,44 @@ including other causes.</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ListenCoresBucketsRatio</name>
+<description>Ratio between the number of CPU cores (online) and the number of
+listeners' buckets</description>
+<syntax>ListenCoresBucketsRatio <var>ratio</var></syntax>
+<default>ListenCoresBucketsRatio 0 (disabled)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist>
+<module>event</module>
+<module>prefork</module>
+<module>worker</module></modulelist>
+<compatibility>Available in Apache HTTP Server 2.4.13, with a kernel supporting
+the socket option <code>SO_REUSEPORT</code> and distributing new connections
+evenly accross listening processes' (or threads') sockets using it (eg. Linux
+3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
+in *BSDs.</compatibility>
+
+<usage>
+    <p>A <var>ratio</var> between the number of (online) CPU cores and the
+    number of listeners' buckets can be used to make Apache HTTP Server create
+    <code>num_cpu_cores / ratio</code> listening buckets, each containing its
+    own <directive>Listen</directive>-ing socket(s) on the same port(s), and
+    then make each child handle a single bucket (with round-robin distribution
+    of the buckets at children creation time).</p>
+
+    <p><directive>ListenCoresBucketsRatio</directive> can improve the
+    scalability when accepting new connections is/becomes the bottleneck.
+    On systems with a large number of CPU cores, enabling this feature has
+    been tested to show significant performances improvement and shorter
+    responses time.</p>
+
+    <p>There must be at least twice the number of CPU cores than the
+    configured <var>ratio</var> for this to be active. The recommended
+    <var>ratio</var> is <code>8</code>, hence at least <code>16</code>
+    cores should be available at runtime when this value is used.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ListenBackLog</name>
 <description>Maximum length of the queue of pending connections</description>
 <syntax>ListenBacklog <var>backlog</var></syntax>
