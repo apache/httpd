@@ -109,6 +109,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cache: r->err_headers_out is not merged into
+     r->headers when mod_cache is enabled and the response
+     is cached for the first time.
+     trunk patch: http://svn.apache.org/r1704392
+                  http://svn.apache.org/r1704395
+     2.4.x patch: trunk works
+     +1: elu, ylavic, minfrin
+     ylavic: possibly with a CHANGES entry
+
  
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -223,15 +232,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1703902
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, minfrin
-
-   * mod_cache: r->err_headers_out is not merged into
-     r->headers when mod_cache is enabled and the response
-     is cached for the first time.
-     trunk patch: http://svn.apache.org/r1704392
-                  http://svn.apache.org/r1704395
-     2.4.x patch: trunk works
-     +1: elu, ylavic
-     ylavic: possibly with a CHANGES entry
 
    *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
       handshake writes as first byte. Also fix processing per Yann's observations
