@@ -143,6 +143,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1621806
      2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
      +1: jkaluza, jim
+     minfrin: Not understanding "This patch needs changes done in
+              mod_systemd patch", am I right in understanding this patch is
+              already committed?
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
