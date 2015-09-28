@@ -281,6 +281,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1703952
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-disable-sslv3.diff
      +1: kbrand
+     ylavic: Should we really change the (implicit) default in 2.4.x at
+             this stage (and potentially break existing configuratios w/o
+             SSLProtocol which used to work with SSLv3 only capable clients)?
 
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. Limit Redirect expressions to directory (Location) context
