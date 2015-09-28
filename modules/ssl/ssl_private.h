@@ -182,6 +182,11 @@
 #include <openssl/srp.h>
 #endif
 
+/* ALPN Protocol Negotiation */
+#if defined(TLSEXT_TYPE_application_layer_protocol_negotiation)
+#define HAVE_TLS_ALPN
+#endif
+
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
 /* mod_ssl headers */
@@ -796,6 +801,12 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #ifdef HAVE_TLS_SESSION_TICKETS
 int         ssl_callback_SessionTicket(SSL *, unsigned char *, unsigned char *,
                                        EVP_CIPHER_CTX *, HMAC_CTX *, int);
+#endif
+
+#ifdef HAVE_TLS_ALPN
+int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
+                             unsigned char *outlen, const unsigned char *in,
+                             unsigned int inlen, void *arg);
 #endif
 
 /**  Session Cache Support  */

@@ -681,6 +681,10 @@ typedef struct {
 #define AP_MERGE_TRAILERS_DISABLE  2
     int merge_trailers;
 
+
+
+    apr_array_header_t *protocols;
+    int protocols_honor_order;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

@@ -625,6 +625,10 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
     SSL_CTX_set_info_callback(ctx, ssl_callback_Info);
+
+#ifdef HAVE_TLS_ALPN
+    SSL_CTX_set_alpn_select_cb(ctx, ssl_callback_alpn_select, NULL);
+#endif
 }
 
 static apr_status_t ssl_init_ctx_verify(server_rec *s,
