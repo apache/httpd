@@ -1452,6 +1452,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * forward all of them to the client, including non-cacheable ones).
          */
         r->headers_out = cache_merge_headers_out(r);
+        apr_table_clear(r->err_headers_out);
 
         /* Merge in our cached headers.  However, keep any updated values. */
         /* take output, overlay on top of cached */
