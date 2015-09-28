@@ -254,6 +254,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic
 
+   * mod_proxy_balancer: Silence warnings, and fix logic, in XML
+     balancer status output.
+     trunk patch: http://svn.apache.org/r1705776
+     2.4.x patch: trunk works
+     +1: 
+     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
