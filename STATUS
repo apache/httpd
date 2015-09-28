@@ -109,7 +109,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_xml2enc: fix spurious (and harmless) test
+     trunk patch: http://svn.apache.org/r1704099
+     2.4.x patch: trunk works
+     +1: jailletc36, minfrin, ylavic
  
+  *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
+     handshake writes as first byte. Also fix processing per Yann's observations
+     about potential problems with e.g. write completion.
+     trunk patch: http://svn.apache.org/r1705099
+                  http://svn.apache.org/r1705134
+     2.4.x patch: trunk works
+     +1: covener, minfrin, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -229,19 +241,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, minfrin
 
-   *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
-      handshake writes as first byte. Also fix processing per Yann's observations
-      about potential problems with e.g. write completion.
-      trunk patch: http://svn.apache.org/r1705099
-                   http://svn.apache.org/r1705134
-      2.4.x patch: trunk works
-      +1: covener, minfrin
-
-   *) mod_xml2enc: fix spurious (and harmless) test
-      trunk patch: http://svn.apache.org/r1704099
-      2.4.x patch: trunk works
-      +1: jailletc36, minfrin
-
   *) mod_ssl: namespacing changes from May 2015
      trunk patches: https://svn.apache.org/r1674538
                     https://svn.apache.org/r1677143
@@ -274,7 +273,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 58213.
      trunk patch: https://svn.apache.org/r1702643
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
      and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3".
