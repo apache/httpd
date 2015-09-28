@@ -109,11 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_xml2enc: fix spurious (and harmless) test
-     trunk patch: http://svn.apache.org/r1704099
-     2.4.x patch: trunk works
-     +1: jailletc36, minfrin, ylavic
- 
   *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
      handshake writes as first byte. Also fix processing per Yann's observations
      about potential problems with e.g. write completion.
