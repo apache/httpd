@@ -1310,9 +1310,9 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>Balancer sticky session name. The value is usually set to something
         like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
         and it depends on the backend application server that support sessions.
-        If the backend application server uses different names for cookies
-        and url encoded id (like servlet containers), use | to separate them.
-        The first part is for the cookie; the second for the path.<br />
+        If the backend application server uses different name for cookies
+        and url encoded id (like servlet containers) use | to separate them.
+        The first part is for the cookie the second for the path.<br />
         Available in Apache HTTP Server 2.4.4 and later.
     </td></tr>
     <tr><td>stickysessionsep</td>

@@ -279,7 +279,16 @@
 <li><a href="core.html#gprofdir" id="G" name="G">GprofDir</a></li>
 <li><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><a href="mod_unixd.html#group">Group</a></li>
-<li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
+<li><a href="mod_h2.html#h2direct" id="H" name="H">H2Direct</a></li>
+<li><a href="mod_h2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><a href="mod_h2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
+<li><a href="mod_h2.html#h2maxworkers">H2MaxWorkers</a></li>
+<li><a href="mod_h2.html#h2minworkers">H2MinWorkers</a></li>
+<li><a href="mod_h2.html#h2serializeheaders">H2SerializeHeaders</a></li>
+<li><a href="mod_h2.html#h2sessionextrafiles">H2SessionExtraFiles</a></li>
+<li><a href="mod_h2.html#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><a href="mod_h2.html#h2windowsize">H2WindowSize</a></li>
+<li><a href="mod_headers.html#header">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></li>
 <li><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></li>
@@ -343,6 +352,7 @@
 <li><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></li>
 <li><a href="mpm_common.html#listen">Listen</a></li>
 <li><a href="mpm_common.html#listenbacklog">ListenBackLog</a></li>
+<li><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio</a></li>
 <li><a href="mod_so.html#loadfile">LoadFile</a></li>
 <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
 <li><a href="core.html#location">&lt;Location&gt;</a></li>
@@ -407,6 +417,8 @@
 <li><a href="mod_privileges.html#privilegesmode">PrivilegesMode</a></li>
 <li><a href="core.html#protocol">Protocol</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
+<li><a href="core.html#protocols">Protocols</a></li>
+<li><a href="core.html#protocolshonororder">ProtocolsHonorOrder</a></li>
 <li><a href="mod_proxy.html#proxy">&lt;Proxy&gt;</a></li>
 <li><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders</a></li>
 <li><a href="mod_proxy.html#proxybadheader">ProxyBadHeader</a></li>
