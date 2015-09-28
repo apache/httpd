@@ -122,6 +122,42 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: covener, minfrin, ylavic
 
+  *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
+     protocols hooks to control Upgrade: and ALPN protocol switching.
+     HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl
+     trunk patch: http://svn.apache.org/r1697855
+                  http://svn.apache.org/r1697339
+                  http://svn.apache.org/r1696428
+                  http://svn.apache.org/r1696266
+                  http://svn.apache.org/r1696264
+                  http://svn.apache.org/r1695874
+                  http://svn.apache.org/r1695727
+                  http://svn.apache.org/r1692516
+                  http://svn.apache.org/r1692486
+                  http://svn.apache.org/r1610674
+                  http://svn.apache.org/r1685069
+                  http://svn.apache.org/r1693918
+                  http://svn.apache.org/r1698116
+                  http://svn.apache.org/r1698133
+                  http://svn.apache.org/r1694950
+                  http://svn.apache.org/r1700968
+                  http://svn.apache.org/r1701005
+                  http://svn.apache.org/r1701145
+                  http://svn.apache.org/r1701178
+     All changes to files in modules/http2 need to be ignored.
+     v2: added r1698116, r1693918 to patch
+     v3: added changes to ap_array_index and ap_array_contains
+     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v4.patch
+     +1: icing, jim, minfrin
+     ylavic: should/could we set the "experimental" bits for the hooks
+             protocol_{propose,switch} before backporting?
+
+  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
+     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
+     See diff and merged changelists via: 
+         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
+     +1: icing, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -187,43 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
      ylavic: updated to v5 including r1697013 and r1697015, the diff to v4 is:
              http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4_vs_v5.diff
-
-  *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
-     protocols hooks to control Upgrade: and ALPN protocol switching.
-     HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl
-     trunk patch: http://svn.apache.org/r1697855
-                  http://svn.apache.org/r1697339
-                  http://svn.apache.org/r1696428
-                  http://svn.apache.org/r1696266
-                  http://svn.apache.org/r1696264
-                  http://svn.apache.org/r1695874
-                  http://svn.apache.org/r1695727
-                  http://svn.apache.org/r1692516
-                  http://svn.apache.org/r1692486
-                  http://svn.apache.org/r1610674
-                  http://svn.apache.org/r1685069
-                  http://svn.apache.org/r1693918
-                  http://svn.apache.org/r1698116
-                  http://svn.apache.org/r1698133
-                  http://svn.apache.org/r1694950
-                  http://svn.apache.org/r1700968
-                  http://svn.apache.org/r1701005
-                  http://svn.apache.org/r1701145
-                  http://svn.apache.org/r1701178
-     All changes to files in modules/http2 need to be ignored.
-     v2: added r1698116, r1693918 to patch
-     v3: added changes to ap_array_index and ap_array_contains
-     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v4.patch
-     +1: icing, jim
-     minfrin: +1 with proposed MMN bump at https://people.apache.org/~minfrin/core-protocols-mmn.patch
-       +1: jim, icing
-     icing: applied patch to ^/httpd/httpd/branches/2.4.17-protocols-http2
-
-  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
-     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
-     See diff and merged changelists via: 
-         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
-     +1: icing, jim
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
