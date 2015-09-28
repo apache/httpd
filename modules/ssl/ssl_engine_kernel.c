@@ -2135,7 +2135,6 @@ int ssl_callback_SessionTicket(SSL *ssl,
 }
 #endif /* HAVE_TLS_SESSION_TICKETS */
 
-<<<<<<< .working
 #ifdef HAVE_TLS_ALPN
 
 /*
