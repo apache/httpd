@@ -293,7 +293,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
      +1: minfrin
 
-   * MPMs: Follow up to r1705492 (SO_REUSEPORT). Add missing (and harless)
+   * MPMs: Follow up to r1705492 (SO_REUSEPORT). Add missing (and harmless)
            backport hunk (for consistency with trunk and 2.4.x's worker/event).
      trunk patch: http://svn.apache.org/r1629916
      2.4.x patch: trunk works
