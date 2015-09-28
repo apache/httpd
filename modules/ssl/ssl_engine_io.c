@@ -28,6 +28,7 @@
                                   core keeps dumping.''
                                             -- Unknown    */
 #include "ssl_private.h"
+#include "mod_ssl.h"
 #include "apr_date.h"
 
 /*  _________________________________________________________________

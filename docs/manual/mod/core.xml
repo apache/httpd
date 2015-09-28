@@ -3589,6 +3589,8 @@ On Windows, from Apache 2.3.3 and later.</compatibility>
 </directivesynopsis>
 
 
+>
+
 <directivesynopsis>
     <name>Protocols</name>
     <description>Protocols available for a server/virtual host</description>
@@ -3634,7 +3636,7 @@ On Windows, from Apache 2.3.3 and later.</compatibility>
 
 <directivesynopsis>
     <name>ProtocolsHonorOrder</name>
-    <description>Determines if order of Protocols determines precedence during negotiation</description>
+    <description>Protocols available for a server/virtual host</description>
     <syntax>ProtocolsHonorOrder On|Off</syntax>
     <default>ProtocolsHonorOrder On</default>
     <contextlist><context>server config</context><context>virtual host</context></contextlist>

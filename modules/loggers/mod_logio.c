@@ -38,6 +38,7 @@
 module AP_MODULE_DECLARE_DATA logio_module;
 
 static const char logio_filter_name[] = "LOG_INPUT_OUTPUT";
+static const char logio_ttfb_filter_name[] = "LOGIO_TTFB_OUT";
 
 /*
  * Logging of input and output config...
@@ -47,14 +48,17 @@ typedef struct logio_config_t {
     apr_off_t bytes_in;
     apr_off_t bytes_out;
     apr_off_t bytes_last_request;
-    apr_time_t ttfb;
-    request_rec *r;         /* Use for TTFB only */
-    unsigned int first_byte_seen:1;
 } logio_config_t;
 
 typedef struct logio_dirconf_t {
     unsigned int track_ttfb:1;
 } logio_dirconf_t;
+
+typedef struct logio_req_t {
+    apr_time_t ttfb;
+} logio_req_t;
+
+
 
 /*
  * Optional function for the core to add to bytes_out
@@ -64,19 +68,6 @@ static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes)
 {
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
     cf->bytes_out += bytes;
-
-    if (!cf->first_byte_seen) {
-        /* cleared during log_transaction, after mod_log_config */ 
-        cf->first_byte_seen = 1; 
-
-        if (cf->r) { 
-            logio_dirconf_t *conf = (logio_dirconf_t*) 
-                ap_get_module_config(cf->r->per_dir_config, &logio_module);
-            if (conf && conf->track_ttfb) { 
-                cf->ttfb = apr_time_now() - cf->r->request_time;
-            }
-        }
-    }
 }
 
 /*
@@ -132,14 +123,14 @@ static const char *log_bytes_combined(request_rec *r, char *a)
 
 static const char *log_ttfb(request_rec *r, char *a)
 {
-    logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
-                                              &logio_module);
+    logio_req_t *rconf = ap_get_module_config(r->request_config,
+                                           &logio_module);
 
-    if (!cf->first_byte_seen || !cf->ttfb) { 
+    if (!rconf || !rconf->ttfb) { 
         return "-";
     }
 
-    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, cf->ttfb);
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, rconf->ttfb);
 }
 /*
  * Reset counters after logging...
@@ -154,20 +145,6 @@ static int logio_transaction(request_rec *r)
     cf->bytes_last_request = cf->bytes_in + cf->bytes_out;
     cf->bytes_in = cf->bytes_out = 0;
 
-    cf->r = NULL;
-    cf->ttfb = 0;
-    cf->first_byte_seen = 0;
-
-    return OK;
-}
-
-static int logio_post_read_request(request_rec *r)
-{
-    logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
-                                              &logio_module);
-    if (cf) { 
-        cf->r = r;
-    }
     return OK;
 }
 
@@ -226,6 +203,34 @@ static int logio_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     return OK;
 }
 
+static apr_status_t logio_ttfb_filter(ap_filter_t *f, apr_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    logio_dirconf_t *conf = ap_get_module_config(r->per_dir_config,
+                                                 &logio_module);
+    if (conf && conf->track_ttfb) { 
+        logio_req_t *rconf = ap_get_module_config(r->request_config, 
+                                                  &logio_module);
+        if (rconf == NULL) { 
+            rconf = apr_pcalloc(r->pool, sizeof(logio_req_t));
+            rconf->ttfb = apr_time_now() - r->request_time;
+            ap_set_module_config(r->request_config, &logio_module, rconf);
+        }
+    }
+    ap_remove_output_filter(f);
+    return ap_pass_brigade(f->next, b);
+}
+
+static void logio_insert_filter(request_rec * r)
+{
+    logio_dirconf_t *conf = ap_get_module_config(r->per_dir_config,
+                                                 &logio_module);
+    if (conf->track_ttfb) { 
+        ap_add_output_filter(logio_ttfb_filter_name, NULL, r, r->connection);
+    }
+    return;
+}
+
 static const char *logio_track_ttfb(cmd_parms *cmd, void *in_dir_config, int arg)
 {
     logio_dirconf_t *dir_config = in_dir_config;
@@ -254,11 +259,14 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_pre_connection(logio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(logio_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_post_read_request(logio_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_log_transaction(logio_transaction, pre, NULL, APR_HOOK_MIDDLE);
 
     ap_register_input_filter(logio_filter_name, logio_in_filter, NULL,
                              AP_FTYPE_NETWORK - 1);
+
+    ap_hook_insert_filter(logio_insert_filter, NULL, NULL, APR_HOOK_LAST);
+    ap_register_output_filter(logio_ttfb_filter_name, logio_ttfb_filter, NULL,
+                              AP_FTYPE_RESOURCE);
 
     APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_out);
     APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_in);
