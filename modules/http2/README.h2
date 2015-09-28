@@ -1,4 +1,4 @@
-The h2 module adds support for the HTTP/2 protocol to the server.
+The http2 module adds support for the HTTP/2 protocol to the server.
 
 Specifically, it supports the protocols "h2" (HTTP2 over TLS) and "h2c" 
 (HTTP2 over plain HTTP connections via Upgrade). Additionally it offers
@@ -12,7 +12,7 @@ BUILD
 If you have libnghttp2 (https://nghttp2.org) installed on your system, simply
 add 
 
-    --enable-h2
+    --enable-http2
 
 to your httpd ./configure invocation. Should libnghttp2 reside in a unusual
 location, add
@@ -23,7 +23,7 @@ to ./configure. <path> is expected to be the installation prefix, so there
 should be a <path>/lib/libnghttp2.*. If your system support pkg-config,
 <path>/lib/pkgconfig/libnghttp2.pc will be inspected.
 
-If you want to link nghttp2 statically into the mod_h2 module, you may
+If you want to link nghttp2 statically into the mod_http2 module, you may
 similarly to mod_ssl add
 
     --enable-nghttp2-staticlib-deps
@@ -34,12 +34,12 @@ shared cousins.
 
 CONFIGURATION
 
-If mod_h2 is enabled for a site or not depends on the new "Protocols"
+If mod_http2 is enabled for a site or not depends on the new "Protocols"
 directive. This directive list all protocols enabled for a server or
 virtual host.
 
 If you do not specify "Protocols" all available protocols are enabled. For
-sites using TLS, the protocol supported by mod_h2 is "h2". For cleartext
+sites using TLS, the protocol supported by mod_http2 is "h2". For cleartext
 http:, the offered protocol is "h2c".
 
 The following is an example of a server that only supports http/1.1 in
@@ -52,7 +52,7 @@ general and offers h2 for a specific virtual host.
         ...
     </virtualhost>
 
-Please see the documentation of mod_h2 for a complete list and explanation 
+Please see the documentation of mod_http2 for a complete list and explanation 
 of all options.
 
 

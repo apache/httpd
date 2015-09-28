@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_h2 - Apache HTTP Server Version 2.5</title>
+<title>mod_http2 - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -24,14 +24,14 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Module mod_h2</h1>
+<div id="preamble"><h1>Apache Module mod_http2</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_h2.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_http2.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support for the HTTP/2 transport layer</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>h2_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_h2.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_http2.c</td></tr></table>
 <h3>Summary</h3>
 
         <p>This module provides HTTP/2 (RFC 7540) support for the Apache
@@ -63,7 +63,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on (for non TLS)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive toggles the usage of the HTTP/2 Direct Mode. This
@@ -89,7 +89,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxSessionStreams 100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the maximum number of active streams per HTTP/2 session (e.g. connection)
@@ -108,7 +108,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxWorkerIdleSeconds 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the maximum number of seconds a h2 worker may 
@@ -126,12 +126,12 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxWorkers <em>n</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the maximum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxWorkers 20</pre>
@@ -145,12 +145,12 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MinWorkers <em>n</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the minimum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MinWorkers 10</pre>
@@ -165,7 +165,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2SerializeHeaders off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive toggles if HTTP/2 requests shall be serialized in
@@ -189,7 +189,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2SessionExtraFiles 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets maximum number of <em>extra</em> file handles
@@ -220,7 +220,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamMaxMemSize 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the maximum number of outgoing data bytes buffered in memory
@@ -241,7 +241,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WindowSize 65536</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 This directive sets the size of the window that is used for flow control
@@ -259,11 +259,11 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_h2.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_http2.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_h2.html';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_http2.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');

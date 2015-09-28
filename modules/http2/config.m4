@@ -17,8 +17,8 @@ dnl #  start of module specific part
 APACHE_MODPATH_INIT(http2)
 
 dnl #  list of module object files
-h2_objs="dnl
-mod_h2.lo dnl
+http2_objs="dnl
+mod_http2.lo dnl
 h2_alt_svc.lo dnl
 h2_config.lo dnl
 h2_conn.lo dnl
@@ -90,7 +90,7 @@ AC_DEFUN(APACHE_CHECK_NGHTTP2,[
         PKG_CONFIG_PATH="${ap_nghttp2_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
         export PKG_CONFIG_PATH
       fi
-      AC_ARG_ENABLE(nghttp2-staticlib-deps,APACHE_HELP_STRING(--enable-nghttp2-staticlib-deps,[link mod_h2 with dependencies of libnghttp2's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-http2.]), [
+      AC_ARG_ENABLE(nghttp2-staticlib-deps,APACHE_HELP_STRING(--enable-nghttp2-staticlib-deps,[link mod_http2 with dependencies of libnghttp2's static libraries (as indicated by "pkg-config --static"). Must be specified in addition to --enable-http2.]), [
         if test "$enableval" = "yes"; then
           PKGCONFIG_LIBOPTS="--static"
         fi
@@ -167,33 +167,20 @@ AC_DEFUN(APACHE_CHECK_NGHTTP2,[
 ])
 
 
-dnl # hook module into the Autoconf mechanism (--enable-http2 or 
-dnl # --enabled-h2 option,)
+dnl # hook module into the Autoconf mechanism (--enable-http2)
 APACHE_MODULE(http2, [HTTP/2 protocol handling in addition to HTTP protocol 
-handling. Implemented by mod_h2. This module requires a libnghttp2 installation. 
+handling. Implemented by mod_http2. This module requires a libnghttp2 installation. 
 See --with-nghttp2 on how to manage non-standard locations. This module
-is usually linked shared and requires loading. ], $h2_objs, , most, [
+is usually linked shared and requires loading. ], $http2_objs, , most, [
     APACHE_CHECK_NGHTTP2
     if test "$ac_cv_nghttp2" = "yes" ; then
         if test "x$enable_ssl" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
-           APR_ADDTO(MOD_H2_LDADD, [-export-symbols-regex h2_module])
+           APR_ADDTO(MOD_HTTP2_LDADD, [-export-symbols-regex http2_module])
         fi
     else
         enable_http2=no
-    fi
-])
-APACHE_MODULE(h2, [HTTP/2 support (Deprecated. Use --enable-http2)], $h2_objs, , most, [
-    APACHE_CHECK_NGHTTP2
-    if test "$ac_cv_nghttp2" = "yes" ; then
-        if test "x$enable_ssl" = "xshared"; then
-           # The only symbol which needs to be exported is the module
-           # structure, so ask libtool to hide everything else:
-           APR_ADDTO(MOD_H2_LDADD, [-export-symbols-regex h2_module])
-        fi
-    else
-        enable_h2=no
     fi
 ])
 
