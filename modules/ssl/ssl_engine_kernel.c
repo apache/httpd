@@ -172,19 +172,18 @@ int ssl_hook_ReadReq(request_rec *r)
      * original problem.
      */
     if (r->proxyreq != PROXYREQ_PROXY && ap_is_initial_req(r)) {
-        if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
-            char *host, *scope_id;
-            apr_port_t port;
-            apr_status_t rv;
+        server_rec *handshakeserver = sslconn->server;
+        SSLSrvConfigRec *hssc = mySrvConfig(handshakeserver);
 
+        if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
             /*
              * The SNI extension supplied a hostname. So don't accept requests
-             * with either no hostname or a different hostname as this could
-             * cause us to end up in a different virtual host as the one that
-             * was used for the handshake causing different SSL parameters to
-             * be applied as SSLProtocol, SSLCACertificateFile/Path and
-             * SSLCADNRequestFile/Path cannot be renegotiated (SSLCA* due
-             * to current limitations in OpenSSL, see
+             * with either no hostname or a hostname that selected a different
+             * virtual host than the one used for the handshake, causing
+             * different SSL parameters to be applied, such as SSLProtocol,
+             * SSLCACertificateFile/Path and SSLCADNRequestFile/Path which
+             * cannot be renegotiated (SSLCA* due to current limitations in
+             * OpenSSL, see:
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/200806.mbox/%3C48592955.2090303@velox.ch%3E
              * and
              * http://mail-archives.apache.org/mod_mbox/httpd-dev/201312.mbox/%3CCAKQ1sVNpOrdiBm-UPw1hEdSN7YQXRRjeaT-MCWbW_7mN%3DuFiOw%40mail.gmail.com%3E
@@ -196,11 +195,12 @@ int ssl_hook_ReadReq(request_rec *r)
                             " provided in HTTP request", servername);
                 return HTTP_BAD_REQUEST;
             }
-            rv = apr_parse_addr_port(&host, &scope_id, &port, r->hostname, r->pool);
-            if (rv != APR_SUCCESS || scope_id) {
-                return HTTP_BAD_REQUEST;
-            }
-            if (strcasecmp(host, servername)) {
+            if (r->server != handshakeserver) {
+                /* 
+                 * We are really not in Kansas anymore...
+                 * The request does not select the virtual host that was
+                 * selected by the SNI.
+                 */
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02032)
                             "Hostname %s provided via SNI and hostname %s provided"
                             " via HTTP are different", servername, host);
@@ -211,8 +211,7 @@ int ssl_hook_ReadReq(request_rec *r)
             }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
-                 || (mySrvConfig(sslconn->server))->strict_sni_vhost_check
-                    == SSL_ENABLED_TRUE)
+                  || hssc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
                  && r->connection->vhost_lookup_data) {
             /*
              * We are using a name based configuration here, but no hostname was
@@ -849,6 +848,11 @@ int ssl_hook_Access(request_rec *r)
                 r->connection->keepalive = AP_CONN_CLOSE;
                 return HTTP_FORBIDDEN;
             }
+
+            /* Full renegotiation successfull, we now have handshaken with
+             * this server's parameters.
+             */
+            sslconn->server = r->server;
         }
 
         /*
@@ -1984,50 +1988,10 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 {
     SSLSrvConfigRec *sc;
     SSL *ssl;
-    BOOL found = FALSE;
-    apr_array_header_t *names;
-    int i;
+    BOOL found;
     SSLConnRec *sslcon;
 
-    /* check ServerName */
-    if (!strcasecmp(servername, s->server_hostname)) {
-        found = TRUE;
-    }
-
-    /*
-     * if not matched yet, check ServerAlias entries
-     * (adapted from vhost.c:matches_aliases())
-     */
-    if (!found) {
-        names = s->names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!strcasecmp(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
-
-    /* if still no match, check ServerAlias entries with wildcards */
-    if (!found) {
-        names = s->wild_names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!ap_strcasecmp_match(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
+    found = ssl_util_vhost_matches(servername, s);
 
     /* set SSL_CTX (if matched) */
     sslcon = myConnConfig(c);
@@ -2171,6 +2135,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
 }
 #endif /* HAVE_TLS_SESSION_TICKETS */
 
+<<<<<<< .working
 #ifdef HAVE_TLS_ALPN
 
 /*

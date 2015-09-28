@@ -3589,6 +3589,8 @@ On Windows, from Apache 2.3.3 and later.</compatibility>
 </directivesynopsis>
 
 
+>
+
 <directivesynopsis>
     <name>Protocols</name>
     <description>Protocols available for a server/virtual host</description>
