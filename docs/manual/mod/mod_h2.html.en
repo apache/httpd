@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_h2 - Apache HTTP Server Version 2.5</title>
+<title>mod_h2 - Apache HTTP Server Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,12 +17,12 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
-<p class="apache">Apache HTTP Server Version 2.5</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_h2</h1>
 <div class="toplang">
@@ -43,12 +43,7 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#h2bufferoutput">H2BufferOutput</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2buffersize">H2BufferSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2bufferwritemax">H2BufferWriteMax</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2engine">H2Engine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#h2maxheaderlistsize">H2MaxHeaderListSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
@@ -61,80 +56,11 @@
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2BufferOutput" id="H2BufferOutput">H2BufferOutput</a> <a name="h2bufferoutput" id="h2bufferoutput">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Output Buffering Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferOutput on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive toggles if buffering of HTTP/2 output shall be used
-                or if data is written immediately when it arrives. Unless specified
-                otherwise, this directive is <code>on</code> for TLS connections and
-                <code>off</code> for plain connections.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferOutput on</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2BufferSize" id="H2BufferSize">H2BufferSize</a> <a name="h2buffersize" id="h2buffersize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer size for outgoing data per HTTP/2 connection.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferSize <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2BufferSize 65536</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive sets the size of the buffer used to hold outgoing
-                HTTP/2 raw data, should <code>H2BufferOutput</code> be switched on.
-                This data is allocated per HTTP/2 connection, not stream and is
-                counted against the raw protocol data.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferSize 128000</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2BufferWriteMax" id="H2BufferWriteMax">H2BufferWriteMax</a> <a name="h2bufferwritemax" id="h2bufferwritemax">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of write on a HTTP/2 connection.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2BufferWriteMax <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2BufferWriteMax 16384</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive sets maximum amount of data sent out in a single 
-                write on a http/2 connection. It only takes effect when 
-                <code>H2BufferOutput</code> is switched on.
-            </p><p>
-                This directive affects performance of underlying TLS transports. TLS
-                transforms each write into an encrypted record. Clients need
-                to receive all of the record in order to decrypt it. Larger sizes
-                result in better server performance, shorter sizes can affect web
-                page paint timings.
-            </p><p>
-                <code>BufferSize</code> should be a multiple of <code>H2BufferWriteMax</code>.
-                <code>H2BufferWriteMax</code>, if larger than 16k, should be a multiple of 16k,
-                since this is the TLS max record size. Be aware that there are TLS 
-                extensions to limit the record size to powers of 2 less than 16k.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2BufferWriteMax 8000</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Direct Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Direct on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on (for non TLS)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
@@ -152,54 +78,6 @@
                 By default the direct HTTP/2 mode is enabled.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
-</div>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Engine" id="H2Engine">H2Engine</a> <a name="h2engine" id="h2engine">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Engine Operation Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Engine on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Engine off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive toggles the usage of the HTTP/2 Protocol Engine. This
-                should be used inside a 
-                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-                section to enable HTTP/2 for that virtual host. By default the 
-                HTTP/2 Protocol Engine is disabled for both the main server and all 
-                configured virtual hosts.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
-    H2Engine on
-    #...
-&lt;/VirtualHost&gt;</pre>
-</div>
-            <p>
-                The HTTP/2 engine is usable in TLS and plain scenarios, supporting
-                the 'h2' and 'h2c' variants of the protocol. 
-            </p>
-        
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxHeaderListSize" id="H2MaxHeaderListSize">H2MaxHeaderListSize</a> <a name="h2maxheaderlistsize" id="h2maxheaderlistsize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size of acceptable stream headers.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2MaxHeaderListSize <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2MaxHeaderListSize 16384</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_h2</td></tr>
-</table>
-            <p>
-                This directive sets the maximum amount of stream header bytes that
-                the server is willing to accept. It is announced to the client during
-                the initial HTTP/2 handshake.
-            </p>
-            <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2MaxHeaderListSize 10000</pre>
 </div>
         
 </div>
@@ -385,7 +263,7 @@
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_h2.html';
+var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_h2.html';
 (function(w, d) {
     if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
         d.write('<div id="comments_thread"><\/div>');
@@ -395,13 +273,13 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_h2.html';
         s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
         (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
     }
-    else {
+    else { 
         d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
