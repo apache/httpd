@@ -1550,7 +1550,6 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line, const char *t
 AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line, const char *tok);
 
 /**
-<<<<<<< .working
  * Retrieve an array of tokens in the format "1#token" defined in RFC2616. Only
  * accepts ',' as a delimiter, does not accept quoted strings, and errors on
  * any separator.
