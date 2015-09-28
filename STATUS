@@ -204,7 +204,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v4.patch
      +1: icing, jim
      minfrin: +1 with proposed MMN bump at https://people.apache.org/~minfrin/core-protocols-mmn.patch
-       +1: jim
+       +1: jim, icing
+     icing: applied patch to ^/httpd/httpd/branches/2.4.17-protocols-http2
 
   *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
      2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
