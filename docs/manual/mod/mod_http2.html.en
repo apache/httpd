@@ -40,6 +40,12 @@
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
             to provide the core http/2 engine.</p>
         
+        <div class="warning"><h3>Warning</h3>
+          <p>This module is experimental. Its behaviors, directives, and 
+          defaults are subject to more frequent and change from release to 
+          release relative to other standard modules. Users are encouraged to 
+          consult the "CHANGES" file for potential updates.</p>
+        </div>
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
