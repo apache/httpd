@@ -259,14 +259,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1677834
                     https://svn.apache.org/r1677835
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-namespacing.diff
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: add support for msUPN and dnsSRV otherName form entries
      in the subjectAltName extension. PR 58020.
      trunk patch: https://svn.apache.org/r1693792
      2.4.x patch: trunk works (modulo CHANGES),
                   but depends on the namespacing backport (see above)
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: support SUITEB* cipher strings with OpenSSL 1.0.2 and later.
      PR 58213.
