@@ -37,7 +37,7 @@
 
 static void h2_hooks(apr_pool_t *pool);
 
-AP_DECLARE_MODULE(h2) = {
+AP_DECLARE_MODULE(http2) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,
@@ -80,8 +80,8 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     
     ngh2 = nghttp2_version(0);
     ap_log_error( APLOG_MARK, APLOG_INFO, 0, s,
-                 "mod_h2 (v%s, nghttp2 %s), initializing...",
-                 MOD_H2_VERSION, ngh2? ngh2->version_str : "unknown");
+                 "mod_http2 (v%s, nghttp2 %s), initializing...",
+                 MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
     
     switch (h2_conn_mpm_type()) {
         case H2_MPM_EVENT:

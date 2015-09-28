@@ -18,9 +18,9 @@
 
 #include <nghttp2/nghttp2.h>
 
-extern module AP_MODULE_DECLARE_DATA h2_module;
+extern module AP_MODULE_DECLARE_DATA http2_module;
 
-APLOG_USE_MODULE(h2);
+APLOG_USE_MODULE(http2);
 
 
 #define H2_HEADER_METHOD     ":method"

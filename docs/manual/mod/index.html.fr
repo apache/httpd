@@ -160,7 +160,7 @@ externe avant de l'envoyer au client</dd>
 fichiers</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Module de configuration de filtre intelligent sensible au
 contexte</dd>
-<dt><a href="mod_h2.html" id="H" name="H">mod_h2</a></dt><dd>Support for the HTTP/2 transport layer</dd>
+<dt><a href="mod_http2.html" id="H" name="H">mod_http2</a></dt><dd>Support for the HTTP/2 transport layer</dd>
 <dt><a href="mod_headers.html">mod_headers</a></dt><dd>Personnalisation des en-têtes de requêtes et de réponses
 HTTP</dd>
 <dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd>Envoie des messages d'état au mandataire frontal</dd>
