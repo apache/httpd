@@ -418,3 +418,6 @@ SSLRandomSeed connect builtin
 #RequestHeader unset DNT env=bad_DNT
 #</IfModule>
 
+# h2/h2c (HTTP/2) connections
+#Include @rel_sysconfdir@/extra/httpd-h2.conf
+

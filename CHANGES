@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.17
+  *) mod_h2: added donated http/2 implementation to build system. Similar
+     configuration options to mod_ssl. [Stefan Eissing]
 
   *) mod_logio: Fix logging of %^FB (time to first byte) on the first request on
      an SSL connection.  PR 58454.  

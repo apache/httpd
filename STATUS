@@ -110,11 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
-     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
-     See diff and merged changelists via: 
-         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
-     +1: icing, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
