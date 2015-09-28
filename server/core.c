@@ -423,6 +423,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 {
     core_server_config *conf;
+    const char **np;
     int is_virtual = s->is_virtual;
 
     conf = (core_server_config *)apr_pcalloc(a, sizeof(core_server_config));
@@ -468,6 +469,9 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 
     conf->trace_enable = AP_TRACE_UNSET;
 
+    conf->protocols = apr_array_make(a, 5, sizeof(const char *));
+    conf->protocols_honor_order = -1;
+    
     return (void *)conf;
 }
 
@@ -518,6 +522,12 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                            ? virt->merge_trailers
                            : base->merge_trailers;
 
+    conf->protocols = ((virt->protocols->nelts > 0)? 
+                       virt->protocols : base->protocols);
+    conf->protocols_honor_order = ((virt->protocols_honor_order < 0)?
+                                       base->protocols_honor_order :
+                                       virt->protocols_honor_order);
+    
     return conf;
 }
 
@@ -3692,6 +3702,48 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_protocols(cmd_parms *cmd, void *dummy,
+                                 const char *arg)
+{
+    core_server_config *conf =
+    ap_get_core_module_config(cmd->server->module_config);
+    const char **np;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+
+    if (err) {
+        return err;
+    }
+    
+    np = (const char **)apr_array_push(conf->protocols);
+    *np = arg;
+
+    return NULL;
+}
+
+static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
+{
+    core_server_config *conf =
+    ap_get_core_module_config(cmd->server->module_config);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+    
+    if (err) {
+        return err;
+    }
+    
+    if (strcasecmp(arg, "on") == 0) {
+        conf->protocols_honor_order = 1;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        conf->protocols_honor_order = 0;
+    }
+    else {
+        return "ProtocolsHonorOrder must be 'on' or 'off'";
+    }
+    
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4205,6 +4257,11 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
 AP_INIT_FLAG("MergeTrailers", set_merge_trailers, NULL, RSRC_CONF,
               "merge request trailers into request headers or not"),
+AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
+                "Controls which protocols are allowed"),
+AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
+              "'off' (default) or 'on' to respect given order of protocols, "
+              "by default the client specified order determines selection"),
 { NULL }
 };
 
@@ -4936,6 +4993,61 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     }
 }
 
+static int core_upgrade_handler(request_rec *r)
+{
+    conn_rec *c = r->connection;
+    const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+
+    if (upgrade && *upgrade) {
+        const char *conn = apr_table_get(r->headers_in, "Connection");
+        if (ap_find_token(r->pool, conn, "upgrade")) {
+            apr_array_header_t *offers = NULL;
+            const char *err;
+            
+            err = ap_parse_token_list_strict(r->pool, upgrade, &offers, 0);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02910)
+                              "parsing Upgrade header: %s", err);
+                return DECLINED;
+            }
+            
+            if (offers && offers->nelts > 0) {
+                const char *protocol = ap_select_protocol(c, r, r->server,
+                                                          offers);
+                if (protocol && strcmp(protocol, ap_get_protocol(c))) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
+                                  "Upgrade selects '%s'", protocol);
+                    /* Let the client know what we are upgrading to. */
+                    apr_table_clear(r->headers_out);
+                    apr_table_setn(r->headers_out, "Upgrade", protocol);
+                    apr_table_setn(r->headers_out, "Connection", "Upgrade");
+                    
+                    r->status = HTTP_SWITCHING_PROTOCOLS;
+                    r->status_line = ap_get_status_line(r->status);
+                    ap_send_interim_response(r, 1);
+
+                    ap_switch_protocol(c, r, r->server, protocol);
+
+                    /* make sure httpd closes the connection after this */
+                    c->keepalive = AP_CONN_CLOSE;
+                    return DONE;
+                }
+            }
+        }
+    }
+    
+    return DECLINED;
+}
+
+static int core_upgrade_storage(request_rec *r)
+{
+    if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*') &&
+        (r->uri[1] == '\0')) {
+        return core_upgrade_handler(r);
+    }
+    return DECLINED;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -4958,10 +5070,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_check_config(core_check_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_test_config(core_dump_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_map_to_storage(core_upgrade_storage,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(core_child_init,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(ap_logs_child_init,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_handler(core_upgrade_handler,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
