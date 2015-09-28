@@ -5,7 +5,7 @@
 #  variable WITH_SSL=1
 # To build with the mod_lua module set the environment
 #  variable WITH_LUA=1
-# To build with the mod_h2 module set the environment
+# To build with the mod_http2 module set the environment
 #  variable WITH_HTTP2=1
 #
 # Check if LDAP is enabled in APR-UTIL
@@ -74,7 +74,7 @@ SUBDIRS += lua
 endif
 endif
 
-# Allow the mod_h2 module to be built if WITH_HTTP2 is defined
+# Allow the mod_http2 module to be built if WITH_HTTP2 is defined
 ifeq "$(WITH_HTTP2)" "1"
 ifneq "$(NGH2SRC)" ""
 SUBDIRS += http2

@@ -20,12 +20,12 @@
  limitations under the License.
  -->
 
-<modulesynopsis metafile="mod_h2.xml.meta">
+<modulesynopsis metafile="mod_http2.xml.meta">
     
-    <name>mod_h2</name>
+    <name>mod_http2</name>
     <description>Support for the HTTP/2 transport layer</description>
     <status>Extension</status>
-    <sourcefile>mod_h2.c</sourcefile>
+    <sourcefile>mod_http2.c</sourcefile>
     <identifier>h2_module</identifier>
     
     <summary>
@@ -161,7 +161,7 @@
             <p>
                 This directive sets the minimum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <example><title>Example</title>
@@ -183,7 +183,7 @@
             <p>
                 This directive sets the maximum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_h2</code> will chose a value suitable for the <code>mpm</code>
+                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <example><title>Example</title>

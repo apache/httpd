@@ -28,7 +28,7 @@ static h2_ctx *h2_ctx_create(const conn_rec *c)
 {
     h2_ctx *ctx = apr_pcalloc(c->pool, sizeof(h2_ctx));
     AP_DEBUG_ASSERT(ctx);
-    ap_set_module_config(c->conn_config, &h2_module, ctx);
+    ap_set_module_config(c->conn_config, &http2_module, ctx);
     return ctx;
 }
 
@@ -43,7 +43,7 @@ h2_ctx *h2_ctx_create_for(const conn_rec *c, h2_task_env *env)
 
 h2_ctx *h2_ctx_get(const conn_rec *c)
 {
-    h2_ctx *ctx = (h2_ctx*)ap_get_module_config(c->conn_config, &h2_module);
+    h2_ctx *ctx = (h2_ctx*)ap_get_module_config(c->conn_config, &http2_module);
     if (ctx == NULL) {
         ctx = h2_ctx_create(c);
     }
@@ -57,7 +57,7 @@ h2_ctx *h2_ctx_rget(const request_rec *r)
 
 const char *h2_ctx_protocol_get(const conn_rec *c)
 {
-    h2_ctx *ctx = (h2_ctx*)ap_get_module_config(c->conn_config, &h2_module);
+    h2_ctx *ctx = (h2_ctx*)ap_get_module_config(c->conn_config, &http2_module);
     return ctx? ctx->protocol : NULL;
 }
 

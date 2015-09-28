@@ -108,7 +108,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= mod_h2
+NLM_NAME	= mod_http2
 
 #
 # This is used by the link '-desc ' directive.
@@ -230,7 +230,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	h2_module \
+	http2_module \
 	$(EOLIST)
 
 #

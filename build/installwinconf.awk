@@ -140,7 +140,7 @@ BEGIN {
           print "#LoadModule ext_filter_module modules/mod_ext_filter.so" > dstfl;
           print "#LoadModule file_cache_module modules/mod_file_cache.so" > dstfl;
           print "#LoadModule filter_module modules/mod_filter.so" > dstfl;
-          print "#LoadModule h2_module modules/mod_h2.so" > dstfl;
+          print "#LoadModule http2_module modules/mod_http2.so" > dstfl;
           print "#LoadModule headers_module modules/mod_headers.so" > dstfl;
           print "#LoadModule heartbeat_module modules/mod_heartbeat.so" > dstfl;
           print "#LoadModule heartmonitor_module modules/mod_heartmonitor.so" > dstfl;
