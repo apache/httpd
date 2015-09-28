@@ -1453,25 +1453,25 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line,
 
 /* Grab a list of tokens of the format 1#token (from RFC7230) */
 AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
-                                                    const char *str_in,
-                                                    apr_array_header_t **tokens,
-                                                    int skip_invalid)
+                                                const char *str_in,
+                                                apr_array_header_t **tokens,
+                                                int skip_invalid)
 {
     int in_leading_space = 1;
     int in_trailing_space = 0;
     int string_end = 0;
     const char *tok_begin;
     const char *cur;
-    
+
     if (!str_in) {
         return NULL;
     }
-    
+
     tok_begin = cur = str_in;
-    
+
     while (!string_end) {
         const unsigned char c = (unsigned char)*cur;
-        
+
         if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP) && c != '\0') {
             /* Non-separator character; we are finished with leading
              * whitespace. We must never have encountered any trailing
@@ -1502,12 +1502,12 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
                     *tokens = apr_array_make(p, 4, sizeof(char *));
                 }
                 APR_ARRAY_PUSH(*tokens, char *) =
-                apr_pstrmemdup((*tokens)->pool, tok_begin,
-                               (cur - tok_begin) - in_trailing_space);
+                    apr_pstrmemdup((*tokens)->pool, tok_begin,
+                                   (cur - tok_begin) - in_trailing_space);
             }
             /* We're allowed to have null elements, just don't add them to the
              * array */
-            
+
             tok_begin = cur + 1;
             in_leading_space = 1;
             in_trailing_space = 0;
@@ -1522,7 +1522,7 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
                 if(!temp) {
                     temp = ap_strchr_c(cur, '\0');
                 }
-                
+
                 /* Act like we haven't seen a token so we reset */
                 cur = temp - 1;
                 in_leading_space = 1;
@@ -1533,13 +1533,13 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
                                     "'\\x%.2x'", (unsigned int)c);
             }
         }
-        
+
         ++cur;
     }
-    
+
     return NULL;
 }
-    
+
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas; and can also be delimited
