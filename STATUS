@@ -109,14 +109,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
-     handshake writes as first byte. Also fix processing per Yann's observations
-     about potential problems with e.g. write completion.
-     trunk patch: http://svn.apache.org/r1705099
-                  http://svn.apache.org/r1705134
-     2.4.x patch: trunk works
-     +1: covener, minfrin, ylavic
-
   *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
      protocols hooks to control Upgrade: and ALPN protocol switching.
      HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl

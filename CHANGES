@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_logio: Fix logging of %^FB (time to first byte) on the first request on
+     an SSL connection.  PR 58454.  
+     [Konstantin J. Chernov <k.j.chernov gmail.com>]
+
   *) mod_cache: r->err_headers_out is not merged into
      r->headers when mod_cache is enabled and the response
      is cached for the first time. [Edward Lu]
