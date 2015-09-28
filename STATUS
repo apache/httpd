@@ -98,6 +98,7 @@ CURRENT RELEASE NOTES:
     then merge into branches/2.4.x, as applicable.
 
   * Current exceptions for RTC for this branch:
+    . http/2 - mod_h2
     . mod_lua
     . documentation
     . non-Unix build
@@ -109,7 +110,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- 
+  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
+     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
+     See diff and merged changelists via: 
+         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
+     +1: icing, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -176,42 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: updated to v5 including r1697013 and r1697015, the diff to v4 is:
              http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v4_vs_v5.diff
 
-  *) core/mod_ssl: add Protocols/ProtocolsHonorOrder directives and new 
-     protocols hooks to control Upgrade: and ALPN protocol switching.
-     HTTP_MISDIRECTED_REQUEST addition and handling in mod_ssl
-     trunk patch: http://svn.apache.org/r1697855
-                  http://svn.apache.org/r1697339
-                  http://svn.apache.org/r1696428
-                  http://svn.apache.org/r1696266
-                  http://svn.apache.org/r1696264
-                  http://svn.apache.org/r1695874
-                  http://svn.apache.org/r1695727
-                  http://svn.apache.org/r1692516
-                  http://svn.apache.org/r1692486
-                  http://svn.apache.org/r1610674
-                  http://svn.apache.org/r1685069
-                  http://svn.apache.org/r1693918
-                  http://svn.apache.org/r1698116
-                  http://svn.apache.org/r1698133
-                  http://svn.apache.org/r1694950
-                  http://svn.apache.org/r1700968
-                  http://svn.apache.org/r1701005
-                  http://svn.apache.org/r1701145
-                  http://svn.apache.org/r1701178
-     All changes to files in modules/http2 need to be ignored.
-     v2: added r1698116, r1693918 to patch
-     v3: added changes to ap_array_index and ap_array_contains
-     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/core-protocols-v4.patch
-     +1: icing, jim
-     minfrin: +1 with proposed MMN bump at https://people.apache.org/~minfrin/core-protocols-mmn.patch
-       +1: jim
-
-  *) mod_h2: add HTTP/2 support to httpd, depends on core/mod_ssl changes above
-     2.4.x branch for this and core/mod_ssl: https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.17-protocols-http2
-     See diff and merged changelists via: 
-         svn diff ^/httpd/httpd/branches/2.4.x ^/httpd/httpd/branches/2.4.17-protocols-http2
-     +1: icing, jim
-
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.
@@ -227,19 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1703902
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, minfrin
-
-   *) mod_logio: Fix %^FB on initial request on SSL connection by not counting
-      handshake writes as first byte. Also fix processing per Yann's observations
-      about potential problems with e.g. write completion.
-      trunk patch: http://svn.apache.org/r1705099
-                   http://svn.apache.org/r1705134
-      2.4.x patch: trunk works
-      +1: covener, minfrin
-
-   *) mod_xml2enc: fix spurious (and harmless) test
-      trunk patch: http://svn.apache.org/r1704099
-      2.4.x patch: trunk works
-      +1: jailletc36, minfrin
 
   *) mod_ssl: namespacing changes from May 2015
      trunk patches: https://svn.apache.org/r1674538
@@ -260,20 +217,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     https://svn.apache.org/r1677834
                     https://svn.apache.org/r1677835
      2.4.x patch: https://people.apache.org/~kbrand/mod_ssl-2.4.x-namespacing.diff
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: add support for msUPN and dnsSRV otherName form entries
      in the subjectAltName extension. PR 58020.
      trunk patch: https://svn.apache.org/r1693792
      2.4.x patch: trunk works (modulo CHANGES),
                   but depends on the namespacing backport (see above)
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: support SUITEB* cipher strings with OpenSSL 1.0.2 and later.
      PR 58213.
      trunk patch: https://svn.apache.org/r1702643
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: kbrand
+     +1: kbrand, ylavic
 
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
      and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3".

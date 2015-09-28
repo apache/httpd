@@ -1451,6 +1451,7 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line,
     return find_list_item(p, line, tok, AP_ETAG_WEAK);
 }
 
+
 /* Grab a list of tokens of the format 1#token (from RFC7230) */
 AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
                                                 const char *str_in,

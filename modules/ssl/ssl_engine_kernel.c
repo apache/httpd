@@ -29,6 +29,7 @@
                                   time I was too famous.''
                                             -- Unknown                */
 #include "ssl_private.h"
+#include "mod_ssl.h"
 #include "util_md5.h"
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
@@ -201,10 +202,12 @@ int ssl_hook_ReadReq(request_rec *r)
                  * selected by the SNI.
                  */
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02032)
-                             "Hostname %s provided via SNI and hostname %s provided"
-                             " via HTTP select a different server",
-                             servername, r->hostname);
-                return HTTP_MISDIRECTED_REQUEST;
+                            "Hostname %s provided via SNI and hostname %s provided"
+                            " via HTTP are different", servername, host);
+                if (r->connection->keepalives > 0) {
+                    return HTTP_MISDIRECTED_REQUEST;
+                }
+                return HTTP_BAD_REQUEST;
             }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
