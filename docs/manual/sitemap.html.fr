@@ -256,10 +256,10 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_file_cache.html">Module Apache mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Module Apache mod_filter</a></li>
 <li><a href="mod/mod_firehose.html">Module Apache mod_firehose</a></li>
-<li><a href="mod/mod_http2.html">Module Apache mod_http2</a></li>
 <li><a href="mod/mod_headers.html">Module Apache mod_headers</a></li>
 <li><a href="mod/mod_heartbeat.html">Module Apache mod_heartbeat</a></li>
 <li><a href="mod/mod_heartmonitor.html">Module Apache mod_heartmonitor</a></li>
+<li><a href="mod/mod_http2.html">Module Apache mod_http2</a></li>
 <li><a href="mod/mod_ident.html">Module Apache mod_ident</a></li>
 <li><a href="mod/mod_imagemap.html">Module Apache mod_imagemap</a></li>
 <li><a href="mod/mod_include.html">Module Apache mod_include</a></li>
