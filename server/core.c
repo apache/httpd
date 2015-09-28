@@ -423,7 +423,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 {
     core_server_config *conf;
-    const char **np;
     int is_virtual = s->is_virtual;
 
     conf = (core_server_config *)apr_pcalloc(a, sizeof(core_server_config));

@@ -202,12 +202,10 @@ int ssl_hook_ReadReq(request_rec *r)
                  * selected by the SNI.
                  */
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(02032)
-                            "Hostname %s provided via SNI and hostname %s provided"
-                            " via HTTP are different", servername, r->hostname);
-                if (r->connection->keepalives > 0) {
-                    return HTTP_MISDIRECTED_REQUEST;
-                }
-                return HTTP_BAD_REQUEST;
+                             "Hostname %s provided via SNI and hostname %s provided"
+                             " via HTTP select a different server",
+                             servername, r->hostname);
+                return HTTP_MISDIRECTED_REQUEST;
             }
         }
         else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
@@ -2168,7 +2166,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     }
 
     if (inlen == 0) {
-        // someone tries to trick us?
+        /* someone tries to trick us? */
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02837)
                       "ALPN client protocol list empty");
         return SSL_TLSEXT_ERR_ALERT_FATAL;
@@ -2178,7 +2176,7 @@ int ssl_callback_alpn_select(SSL *ssl,
     for (i = 0; i < inlen; /**/) {
         unsigned int plen = in[i++];
         if (plen + i > inlen) {
-            // someone tries to trick us?
+            /* someone tries to trick us? */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02838)
                           "ALPN protocol identifier too long");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
