@@ -4,6 +4,25 @@ Changes with Apache 2.4.17
   *) mod_h2: added donated http/2 implementation to build system. Similar
      configuration options to mod_ssl. [Stefan Eissing]
 
+  *) mod_cache: r->err_headers_out is not merged into
+     r->headers when mod_cache is enabled and the response
+     is cached for the first time. [Edward Lu]
+
+  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
+     can't create new (clear) slots while previous children gracefully stopping
+     still use the old ones (e.g. Windows, OS2). mod_proxy_balancer failed to
+     restart whenever the number of configured balancers/members changed during
+     restart.  PR 58024.  [Yann Ylavic]
+
+  *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
+
+  *) MPMs: Support SO_REUSEPORT to create multiple duplicated listener
+     records for scalability. [Yingqi Lu <yingqi.lu@intel.com>,
+     Jeff Trawick, Jim Jagielski, Yann Ylavic]
+
+  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
+     before the retry period is over. [Ruediger Pluem]
+
   *) mod_autoindex: Allow autoindexes when neither mod_dir nor mod_mime are
      loaded. [Eric Covener]
 

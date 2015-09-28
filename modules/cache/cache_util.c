@@ -1254,7 +1254,6 @@ apr_table_t *cache_merge_headers_out(request_rec *r)
 
     headers_out = apr_table_overlay(r->pool, r->headers_out,
                                     r->err_headers_out);
-    apr_table_clear(r->err_headers_out);
 
     if (r->content_type
             && !apr_table_get(headers_out, "Content-Type")) {
