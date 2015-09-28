@@ -261,7 +261,7 @@ listeners' buckets</description>
 <module>event</module>
 <module>prefork</module>
 <module>worker</module></modulelist>
-<compatibility>Available in Apache HTTP Server 2.4.13, with a kernel supporting
+<compatibility>Available in Apache HTTP Server 2.4.17, with a kernel supporting
 the socket option <code>SO_REUSEPORT</code> and distributing new connections
 evenly accross listening processes' (or threads') sockets using it (eg. Linux
 3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
