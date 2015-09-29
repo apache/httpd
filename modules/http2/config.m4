@@ -180,7 +180,7 @@ is usually linked shared and requires loading. ], $http2_objs, , most, [
            APR_ADDTO(MOD_HTTP2_LDADD, [-export-symbols-regex http2_module])
         fi
     else
-        enable_h2=no
+        enable_http2=no
     fi
 ])
 
