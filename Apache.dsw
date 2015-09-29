@@ -2065,7 +2065,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_h2"=.\modules\http2\mod_h2.dsp - Package Owner=<4>
+Project: "mod_http2"=.\modules\http2\mod_http2.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
