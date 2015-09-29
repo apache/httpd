@@ -2221,7 +2221,7 @@ int ssl_callback_alpn_select(SSL *ssl,
 
     return SSL_TLSEXT_ERR_OK;
 }
-#endif
+#endif /* HAVE_TLS_ALPN */
 
 #ifdef HAVE_SRP
 
