@@ -472,12 +472,9 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
      * connection or for a proxy connection.  Calling _out_flush
      * should be very cheap in cases where it is unnecessary (and no
      * output is buffered) so the performance impact of doing it
-     * unconditionally should be minimal, but in non blocking mode
-     * where the caller may not expect the flush round trip (e.g.
-     * check_pipeline()'s speculative and non-blocking read).
+     * unconditionally should be minimal.
      */
-    if (block != APR_NONBLOCK_READ &&
-            bio_filter_out_flush(inctx->bio_out) < 0) {
+    if (bio_filter_out_flush(inctx->bio_out) < 0) {
         bio_filter_out_ctx_t *outctx = inctx->bio_out->ptr;
         inctx->rc = outctx->rc;
         return -1;
