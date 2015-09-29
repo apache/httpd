@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Free memory earlier when shutting down processes.
+     [Stefan Fritsch]
+
   *) mod_ssl: Make the output filter more friendly with deferred write and
      response pipelining. [Yann Ylavic, Joe Orton]
 

@@ -52,6 +52,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
                                           int *had_to_block);
 apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info);
 apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info);
+void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
 struct fd_queue_elem_t
 {
