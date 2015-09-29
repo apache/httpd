@@ -258,7 +258,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      balancer status output.
      trunk patch: http://svn.apache.org/r1705776
      2.4.x patch: trunk works
-     +1: 
+     +1: jim, ylavic
      
 
 PATCHES/ISSUES THAT ARE BEING WORKED
