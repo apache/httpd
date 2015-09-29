@@ -480,6 +480,7 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
         inctx->rc = outctx->rc;
         return -1;
     }
+#endif
 
     BIO_clear_retry_flags(bio);
 
