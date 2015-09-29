@@ -256,7 +256,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1705776
      2.4.x patch: trunk works
      +1: jim, ylavic
-     
+
+   * mod_ssl: Make the output filter more friendly with deferred write and
+              response pipelining.
+     trunk patch: http://svn.apache.org/r1705194
+                  http://svn.apache.org/r1705823
+                  http://svn.apache.org/r1705826
+                  http://svn.apache.org/r1705828
+                  http://svn.apache.org/r1705833
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
