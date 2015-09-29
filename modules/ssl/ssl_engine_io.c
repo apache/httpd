@@ -1703,48 +1703,31 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
         return ssl_io_filter_error(f, bb, status);
     }
 
-    while (!APR_BRIGADE_EMPTY(bb)) {
+    while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
 
-        /* If it is a flush or EOS/EOR, we need to pass this down.
-         * These types do not require translation by OpenSSL.
-         */
-        if (APR_BUCKET_IS_EOS(bucket) || AP_BUCKET_IS_EOR(bucket)) {
-            /*
-             * By definition, nothing can come after EOS/EOR.
-             * which also means we can pass the rest of this brigade
-             * without creating a new one since it only contains the
-             * EOS/EOR bucket.
-             */
-
-            if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-                return status;
-            }
-            break;
-        }
-        else if (APR_BUCKET_IS_FLUSH(bucket)) {
-
-            if (bio_filter_out_flush(filter_ctx->pbioWrite) < 0) {
-                status = outctx->rc;
-                break;
+        if (APR_BUCKET_IS_METADATA(bucket)) {
+            /* Pass through metadata buckets untouched.  EOC is
+             * special; terminate the SSL layer first. */
+            if (AP_BUCKET_IS_EOC(bucket)) {
+                ssl_filter_io_shutdown(filter_ctx, f->c, 0);
             }
 
-            /* bio_filter_out_flush() already passed down a flush bucket
-             * if there was any data to be flushed.
-             */
-            apr_bucket_delete(bucket);
-        }
-        else if (AP_BUCKET_IS_EOC(bucket)) {
-            /* The EOC bucket indicates connection closure, so SSL
-             * shutdown must now be performed.  */
-            ssl_filter_io_shutdown(filter_ctx, f->c, 0);
-            if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-                return status;
-            }
-            break;
+            AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
+
+            /* Metadata buckets are passed one per brigade; it might
+             * be more efficient (but also more complex) to use
+             * outctx->bb as a true buffer and interleave these with
+             * data buckets. */
+            APR_BUCKET_REMOVE(bucket);
+            APR_BRIGADE_INSERT_HEAD(outctx->bb, bucket);
+            status = ap_pass_brigade(f->next, outctx->bb);
+            if (status == APR_SUCCESS && f->c->aborted)
+                status = APR_ECONNRESET;
+            apr_brigade_cleanup(outctx->bb);
         }
         else {
-            /* filter output */
+            /* Filter a data bucket. */
             const char *data;
             apr_size_t len;
 
@@ -1757,7 +1740,9 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
                     break;
                 }
                 rblock = APR_BLOCK_READ;
-                continue; /* and try again with a blocking read. */
+                /* and try again with a blocking read. */
+                status = APR_SUCCESS;
+                continue;
             }
 
             rblock = APR_NONBLOCK_READ;
@@ -1768,11 +1753,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 
             status = ssl_filter_write(f, data, len);
             apr_bucket_delete(bucket);
-
-            if (status != APR_SUCCESS) {
-                break;
-            }
         }
+
     }
 
     return status;
