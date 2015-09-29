@@ -1282,6 +1282,8 @@ static void close_listeners(int process_slot, int *closed)
         }
         /* wake up the main thread */
         kill(ap_my_pid, SIGTERM);
+
+        ap_free_idle_pools(worker_queue_info);
     }
 }
 
