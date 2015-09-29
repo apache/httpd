@@ -466,9 +466,10 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     }
 
     /* In theory, OpenSSL should flush as necessary, but it is known
-     * not to do so correctly in some cases; see PR 46952.
-     *
-     * Historically, this flush call was performed only for an SSLv2
+     * not to do so correctly in some cases (< 0.9.8m); see PR 46952.
+     */
+#if OPENSSL_VERSION_NUMBER < 0x0009080df
+    /* Historically, this flush call was performed only for an SSLv2
      * connection or for a proxy connection.  Calling _out_flush
      * should be very cheap in cases where it is unnecessary (and no
      * output is buffered) so the performance impact of doing it
