@@ -195,7 +195,7 @@ AP_DECLARE(worker_score *) ap_get_scoreboard_worker_from_indexes(int child_num,
 
 /** Copy the contents of a worker scoreboard entry.  The contents of
  * the worker_score structure are copied verbatim into the dest
- * structure, which must have sizeof(worker_score).
+ * structure.
  * @param dest Output parameter.
  * @param child_num The child number.
  * @param thread_num The thread number.
