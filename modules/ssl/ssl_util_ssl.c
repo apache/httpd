@@ -252,19 +252,48 @@ char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
     return result;
 }
 
+static void parse_otherName_value(apr_pool_t *p, ASN1_TYPE *value,
+                                  const char *onf, apr_array_header_t **entries)
+{
+    const char *str;
+    int nid = onf ? OBJ_txt2nid(onf) : NID_undef;
+
+    if (!value || (nid == NID_undef) || !*entries)
+       return;
+
+    /* 
+     * Currently supported otherName forms (values for "onf"):
+     * "msUPN" (1.3.6.1.4.1.311.20.2.3): Microsoft User Principal Name
+     * "id-on-dnsSRV" (1.3.6.1.5.5.7.8.7): SRVName, as specified in RFC 4985
+     */
+    if ((nid == NID_ms_upn) && (value->type == V_ASN1_UTF8STRING) &&
+        (str = asn1_string_to_utf8(p, value->value.utf8string))) {
+        APR_ARRAY_PUSH(*entries, const char *) = str;
+    } else if (strEQ(onf, "id-on-dnsSRV") &&
+               (value->type == V_ASN1_IA5STRING) &&
+               (str = asn1_string_to_utf8(p, value->value.ia5string))) {
+        APR_ARRAY_PUSH(*entries, const char *) = str;
+    }
+}
+
 /* 
  * Return an array of subjectAltName entries of type "type". If idx is -1,
  * return all entries of the given type, otherwise return an array consisting
  * of the n-th occurrence of that type only. Currently supported types:
  * GEN_EMAIL (rfc822Name)
  * GEN_DNS (dNSName)
+ * GEN_OTHERNAME (requires the otherName form ["onf"] argument to be supplied,
+ *                see parse_otherName_value for the currently supported forms)
  */
-BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
-                        apr_array_header_t **entries)
+BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, const char *onf,
+                        int idx, apr_array_header_t **entries)
 {
     STACK_OF(GENERAL_NAME) *names;
+    int nid = onf ? OBJ_txt2nid(onf) : NID_undef;
 
-    if (!x509 || (type < GEN_OTHERNAME) || (type > GEN_RID) || (idx < -1) ||
+    if (!x509 || (type < GEN_OTHERNAME) ||
+        ((type == GEN_OTHERNAME) && (nid == NID_undef)) ||
+        (type > GEN_RID) || (idx < -1) ||
         !(*entries = apr_array_make(p, 0, sizeof(char *)))) {
         *entries = NULL;
         return FALSE;
@@ -277,33 +306,43 @@ BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
 
         for (i = 0; i < sk_GENERAL_NAME_num(names); i++) {
             name = sk_GENERAL_NAME_value(names, i);
-            if (name->type == type) {
-                if ((idx == -1) || (n == idx)) {
-                    switch (type) {
-                    case GEN_EMAIL:
-                    case GEN_DNS:
-                        utf8str = asn1_string_to_utf8(p, name->d.ia5);
-                        if (utf8str) {
-                            APR_ARRAY_PUSH(*entries, const char *) = utf8str;
-                        }
-                        break;
-                    default:
-                        /*
-                         * Not implemented right now:
-                         * GEN_OTHERNAME (otherName)
-                         * GEN_X400 (x400Address)
-                         * GEN_DIRNAME (directoryName)
-                         * GEN_EDIPARTY (ediPartyName)
-                         * GEN_URI (uniformResourceIdentifier)
-                         * GEN_IPADD (iPAddress)
-                         * GEN_RID (registeredID)
-                         */
-                        break;
-                    }
+
+            if (name->type != type)
+                continue;
+
+            switch (type) {
+            case GEN_EMAIL:
+            case GEN_DNS:
+                if (((idx == -1) || (n == idx)) &&
+                    (utf8str = asn1_string_to_utf8(p, name->d.ia5))) {
+                    APR_ARRAY_PUSH(*entries, const char *) = utf8str;
                 }
-                if ((idx != -1) && (n++ > idx))
-                   break;
+                n++;
+                break;
+            case GEN_OTHERNAME:
+                if (OBJ_obj2nid(name->d.otherName->type_id) == nid) {
+                    if (((idx == -1) || (n == idx))) {
+                        parse_otherName_value(p, name->d.otherName->value,
+                                              onf, entries);
+                    }
+                    n++;
+                }
+                break;
+            default:
+                /*
+                 * Not implemented right now:
+                 * GEN_X400 (x400Address)
+                 * GEN_DIRNAME (directoryName)
+                 * GEN_EDIPARTY (ediPartyName)
+                 * GEN_URI (uniformResourceIdentifier)
+                 * GEN_IPADD (iPAddress)
+                 * GEN_RID (registeredID)
+                 */
+                break;
             }
+
+            if ((idx != -1) && (n > idx))
+               break;
         }
 
         sk_GENERAL_NAME_pop_free(names, GENERAL_NAME_free);
@@ -320,7 +359,7 @@ static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 
     /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
     if (!x509 ||
-        (modssl_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
+        (modssl_X509_getSAN(p, x509, GEN_DNS, NULL, -1, ids) == FALSE && !*ids)) {
         *ids = NULL;
         return FALSE;
     }
