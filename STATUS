@@ -267,6 +267,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly.patch
      +1: ylavic
 
+   * Fix some style issues
+     trunk patch: http://svn.apache.org/r1705983
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
