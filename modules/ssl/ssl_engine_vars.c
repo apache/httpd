@@ -594,6 +594,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
 static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
 {
     int type, numlen;
+    const char *onf = NULL;
     apr_array_header_t *entries;
 
     if (strcEQn(var, "Email_", 6)) {
@@ -604,6 +605,20 @@ static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
         type = GEN_DNS;
         var += 4;
     }
+    else if (strcEQn(var, "OTHER_", 6)) {
+        type = GEN_OTHERNAME;
+        var += 6;
+        if (strEQn(var, "msUPN_", 6)) {
+            var += 6;
+            onf = "msUPN";
+        }
+        else if (strEQn(var, "dnsSRV_", 7)) {
+            var += 7;
+            onf = "id-on-dnsSRV";
+        }
+        else
+           return NULL;
+    }
     else
         return NULL;
 
@@ -612,11 +627,11 @@ static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
     if ((numlen < 1) || (numlen > 4) || (numlen != strlen(var)))
         return NULL;
 
-    if (modssl_X509_getSAN(p, xs, type, atoi(var), &entries))
-       /* return the first entry from this 1-element array */
-       return APR_ARRAY_IDX(entries, 0, char *);
+    if (modssl_X509_getSAN(p, xs, type, onf, atoi(var), &entries))
+        /* return the first entry from this 1-element array */
+        return APR_ARRAY_IDX(entries, 0, char *);
     else
-       return NULL;
+        return NULL;
 }
 
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
@@ -962,11 +977,15 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     /* subjectAltName entries of the server certificate */
     xs = SSL_get_certificate(ssl);
     if (xs) {
-        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, NULL, -1, &entries)) {
             extract_san_array(t, "SSL_SERVER_SAN_Email", entries, p);
         }
-        if (modssl_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_DNS, NULL, -1, &entries)) {
             extract_san_array(t, "SSL_SERVER_SAN_DNS", entries, p);
+        }
+        if (modssl_X509_getSAN(p, xs, GEN_OTHERNAME, "id-on-dnsSRV", -1,
+                               &entries)) {
+            extract_san_array(t, "SSL_SERVER_SAN_OTHER_dnsSRV", entries, p);
         }
         /* no need to free xs (refcount does not increase) */
     }
@@ -974,11 +993,14 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     /* subjectAltName entries of the client certificate */
     xs = SSL_get_peer_certificate(ssl);
     if (xs) {
-        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, NULL, -1, &entries)) {
             extract_san_array(t, "SSL_CLIENT_SAN_Email", entries, p);
         }
-        if (modssl_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_DNS, NULL, -1, &entries)) {
             extract_san_array(t, "SSL_CLIENT_SAN_DNS", entries, p);
+        }
+        if (modssl_X509_getSAN(p, xs, GEN_OTHERNAME, "msUPN", -1, &entries)) {
+            extract_san_array(t, "SSL_CLIENT_SAN_OTHER_msUPN", entries, p);
         }
         X509_free(xs);
     }
