@@ -471,7 +471,9 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     }
 
     cp = apr_pstrcat(p,
+#ifndef OPENSSL_NO_SSL3
                      (protocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
+#endif
                      (protocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""),
 #ifdef HAVE_TLSV1_X
                      (protocol & SSL_PROTOCOL_TLSV1_1 ? "TLSv1.1, " : ""),
@@ -483,12 +485,15 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "Creating new SSL context (protocols: %s)", cp);
 
+#ifndef OPENSSL_NO_SSL3
     if (protocol == SSL_PROTOCOL_SSLV3) {
         method = mctx->pkp ?
             SSLv3_client_method() : /* proxy */
             SSLv3_server_method();  /* server */
     }
-    else if (protocol == SSL_PROTOCOL_TLSV1) {
+    else
+#endif
+    if (protocol == SSL_PROTOCOL_TLSV1) {
         method = mctx->pkp ?
             TLSv1_client_method() : /* proxy */
             TLSv1_server_method();  /* server */
@@ -519,9 +524,11 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
+#ifndef OPENSSL_NO_SSL3
     if (!(protocol & SSL_PROTOCOL_SSLV3)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
     }
+#endif
 
     if (!(protocol & SSL_PROTOCOL_TLSV1)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
