@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
+     and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3",
+     in accordance with RFC 7568. PR 58349, PR 57120. [Kaspar Brand]
+
   *) mod_ssl: append :!aNULL:!eNULL:!EXP to the cipher string settings,
      instead of prepending !aNULL:!eNULL:!EXP: (as was the case in 2.4.7
      and later). Enables support for configuring the SUITEB* cipher
