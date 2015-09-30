@@ -66,16 +66,11 @@ static motorz_core_t *motorz_core_get(void)
 
 static int timer_comp(void *a, void *b)
 {
-    if (a != b) {
-        apr_time_t t1 = (apr_time_t) (((motorz_timer_t *) a)->expires);
-        apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
-        AP_DEBUG_ASSERT(t1);
-        AP_DEBUG_ASSERT(t2);
-        return ((t1 < t2) ? -1 : 1);
-    }
-    else {
-        return 0;
-    }
+    apr_time_t t1 = (apr_time_t) (((motorz_timer_t *) a)->expires);
+    apr_time_t t2 = (apr_time_t) (((motorz_timer_t *) b)->expires);
+    AP_DEBUG_ASSERT(t1);
+    AP_DEBUG_ASSERT(t2);
+    return ((t1 < t2) ? -1 : 1);
 }
 
 static apr_status_t motorz_conn_pool_cleanup(void *baton)
@@ -424,9 +419,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
                                   motorz_io_timeout_cb,
                                   motorz_get_keep_alive_timeout(scon));
 
-            scon->pfd.reqevents = (
-                                   scon->cs.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
-                                   APR_POLLIN)  | APR_POLLHUP | APR_POLLERR;
+            scon->pfd.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
             scon->cs.sense = CONN_SENSE_DEFAULT;
 
             rv = apr_pollset_add(mz->pollset, &scon->pfd);
@@ -448,7 +441,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
 static apr_status_t motorz_pollset_cb(motorz_core_t *mz, apr_interval_time_t timeout)
 {
     apr_status_t rc;
-    const apr_pollfd_t *out_pfd;
+    const apr_pollfd_t *out_pfd = NULL;
     apr_int32_t num = 0;
 
     rc = apr_pollset_poll(mz->pollset, timeout, &num, &out_pfd);
@@ -459,7 +452,7 @@ static apr_status_t motorz_pollset_cb(motorz_core_t *mz, apr_interval_time_t tim
             return rc;
         }
     }
-    while (num) {
+    while (num>0) {
         /* TODO: Error check */
         motorz_io_callback(mz, out_pfd);
         out_pfd++;
@@ -500,7 +493,7 @@ static int motorz_setup_pollset(motorz_core_t *mz)
         rv = apr_pollset_create_ex(&mz->pollset,
                                   512,
                                   mz->pool,
-                                  APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY | APR_POLLSET_NODEFAULT,
+                                  APR_POLLSET_NODEFAULT,
                                   good_methods[i]);
         if (rv == APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02852)
@@ -515,7 +508,7 @@ static int motorz_setup_pollset(motorz_core_t *mz)
         rv = apr_pollset_create(&mz->pollset,
                                     512,
                                     mz->pool,
-                                    APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+                                    0);
     }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(02854)
@@ -900,10 +893,9 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
-#if 0
     apr_skiplist_init(&mz->timer_ring, mz->pool);
     apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
-#endif
+
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(02868)
@@ -1613,7 +1605,12 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     apr_pool_tag(mz->pool, "motorz-mpm-core");
     apr_skiplist_init(&mz->timer_ring, mz->pool);
     apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
-    apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
+    rv = apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+                     "motorz_pre_config: apr_thread_mutex_create failed");
+        return rv;
+    }
 
     ap_listen_pre_config();
     ap_num_kids = DEFAULT_START_DAEMON;
