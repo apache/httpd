@@ -996,7 +996,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     }
 
     SSL_set_shutdown(ssl, shutdown_type);
-    SSL_smart_shutdown(ssl);
+    modssl_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
     if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), loglevel)) {
@@ -1124,8 +1124,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             hostname_note) {
             apr_table_unset(c->notes, "proxy-request-hostname");
             if (!cert
-                || SSL_X509_match_name(c->pool, cert, hostname_note,
-                                       TRUE, server) == FALSE) {
+                || modssl_X509_match_name(c->pool, cert, hostname_note,
+                                          TRUE, server) == FALSE) {
                 proxy_ssl_check_peer_ok = FALSE;
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(02411)
                               "SSL Proxy: Peer certificate does not match "
@@ -2085,7 +2085,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         if (rc >= 0) {
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
-                    SSL_LIBRARY_NAME,
+                    MODSSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp,
@@ -2096,7 +2096,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         else {
             ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: I/O error, %d bytes expected to %s on BIO#%pp [mem: %pp]",
-                    SSL_LIBRARY_NAME, argi,
+                    MODSSL_LIBRARY_NAME, argi,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     bio, argp);
         }

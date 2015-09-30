@@ -142,12 +142,12 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     apr_status_t rv;
     apr_array_header_t *pphrases;
 
-    if (SSLeay() < SSL_LIBRARY_VERSION) {
+    if (SSLeay() < MODSSL_LIBRARY_VERSION) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server, APLOGNO(01882)
                      "Init: this version of mod_ssl was compiled against "
                      "a newer library (%s, version currently loaded is %s)"
                      " - may result in undefined or erroneous behavior",
-                     SSL_LIBRARY_TEXT, SSLeay_version(SSLEAY_VERSION));
+                     MODSSL_LIBRARY_TEXT, SSLeay_version(SSLEAY_VERSION));
     }
 
     /* We initialize mc->pid per-process in the child init,
@@ -236,7 +236,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01883)
-                 "Init: Initialized %s library", SSL_LIBRARY_NAME);
+                 "Init: Initialized %s library", MODSSL_LIBRARY_NAME);
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)
@@ -327,7 +327,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_add_version_components(p, base_server);
 
-    SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
+    modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
     init_dh_params();
 
@@ -811,6 +811,65 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     return APR_SUCCESS;
 }
 
+/*
+ * Read a file that optionally contains the server certificate in PEM
+ * format, possibly followed by a sequence of CA certificates that
+ * should be sent to the peer in the SSL Certificate message.
+ */
+static int use_certificate_chain(
+    SSL_CTX *ctx, char *file, int skipfirst, pem_password_cb *cb)
+{
+    BIO *bio;
+    X509 *x509;
+    unsigned long err;
+    int n;
+
+    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
+        return -1;
+    if (BIO_read_filename(bio, file) <= 0) {
+        BIO_free(bio);
+        return -1;
+    }
+    /* optionally skip a leading server certificate */
+    if (skipfirst) {
+        if ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
+            BIO_free(bio);
+            return -1;
+        }
+        X509_free(x509);
+    }
+    /* free a perhaps already configured extra chain */
+#ifdef OPENSSL_NO_SSL_INTERN
+    SSL_CTX_clear_extra_chain_certs(ctx);
+#else
+    if (ctx->extra_certs != NULL) {
+        sk_X509_pop_free((STACK_OF(X509) *)ctx->extra_certs, X509_free);
+        ctx->extra_certs = NULL;
+    }
+#endif
+    /* create new extra chain by loading the certs */
+    n = 0;
+    while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
+        if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
+            X509_free(x509);
+            BIO_free(bio);
+            return -1;
+        }
+        n++;
+    }
+    /* Make sure that only the error is just an EOF */
+    if ((err = ERR_peek_error()) > 0) {
+        if (!(   ERR_GET_LIB(err) == ERR_LIB_PEM
+              && ERR_GET_REASON(err) == PEM_R_NO_START_LINE)) {
+            BIO_free(bio);
+            return -1;
+        }
+        while (ERR_get_error() > 0) ;
+    }
+    BIO_free(bio);
+    return n;
+}
+
 static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
                                             apr_pool_t *p,
                                             apr_pool_t *ptemp,
@@ -846,9 +905,7 @@ static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
         }
     }
 
-    n = SSL_CTX_use_certificate_chain(mctx->ssl_ctx,
-                                      (char *)chain,
-                                      skip_first, NULL);
+    n = use_certificate_chain(mctx->ssl_ctx, (char *)chain, skip_first, NULL);
     if (n < 0) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01903)
                 "Failed to configure CA certificate chain!");
@@ -921,7 +978,7 @@ static void ssl_check_public_cert(server_rec *s,
      * Some information about the certificate(s)
      */
 
-    if (SSL_X509_getBC(cert, &is_ca, &pathlen)) {
+    if (modssl_X509_getBC(cert, &is_ca, &pathlen)) {
         if (is_ca) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(01906)
                          "%s server certificate is a CA certificate "
@@ -936,8 +993,8 @@ static void ssl_check_public_cert(server_rec *s,
         }
     }
 
-    if (SSL_X509_match_name(ptemp, cert, (const char *)s->server_hostname,
-                            TRUE, s) == FALSE) {
+    if (modssl_X509_match_name(ptemp, cert, (const char *)s->server_hostname,
+                               TRUE, s) == FALSE) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(01909)
                      "%s server certificate does NOT include an ID "
                      "which matches the server name", key_id);
@@ -1202,6 +1259,30 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
 }
 #endif
 
+static BOOL load_x509_info(apr_pool_t *ptemp,
+                           STACK_OF(X509_INFO) *sk,
+                           const char *filename)
+{
+    BIO *in;
+
+    if (!(in = BIO_new(BIO_s_file()))) {
+        return FALSE;
+    }
+
+    if (BIO_read_filename(in, filename) <= 0) {
+        BIO_free(in);
+        return FALSE;
+    }
+
+    ERR_clear_error();
+
+    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
+
+    BIO_free(in);
+
+    return TRUE;
+}
+
 static apr_status_t ssl_init_proxy_certs(server_rec *s,
                                          apr_pool_t *p,
                                          apr_pool_t *ptemp,
@@ -1224,11 +1305,30 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     sk = sk_X509_INFO_new_null();
 
     if (pkp->cert_file) {
-        SSL_X509_INFO_load_file(ptemp, sk, pkp->cert_file);
+        load_x509_info(ptemp, sk, pkp->cert_file);
     }
 
     if (pkp->cert_path) {
-        SSL_X509_INFO_load_path(ptemp, sk, pkp->cert_path);
+        apr_dir_t *dir;
+        apr_finfo_t dirent;
+        apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
+    
+        if (apr_dir_open(&dir, pkp->cert_path, ptemp) == APR_SUCCESS) {
+            while ((apr_dir_read(&dirent, finfo_flags, dir)) == APR_SUCCESS) {
+                const char *fullname;
+
+                if (dirent.filetype == APR_DIR) {
+                    continue; /* don't try to load directories */
+                }
+        
+                fullname = apr_pstrcat(ptemp,
+                                       pkp->cert_path, "/", dirent.name,
+                                       NULL);
+                load_x509_info(ptemp, sk, fullname);
+            }
+
+            apr_dir_close(dir);
+        }
     }
 
     if ((ncerts = sk_X509_INFO_num(sk)) <= 0) {
@@ -1616,7 +1716,7 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02209)
                      "CA certificate: %s",
-                     SSL_X509_NAME_to_string(ptemp, name, 0));
+                     modssl_X509_NAME_to_string(ptemp, name, 0));
 
         /*
          * note that SSL_load_client_CA_file() checks for duplicates,

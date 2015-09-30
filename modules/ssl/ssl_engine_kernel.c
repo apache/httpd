@@ -229,7 +229,7 @@ int ssl_hook_ReadReq(request_rec *r)
         }
     }
 #endif
-    SSL_set_app_data2(ssl, r);
+    modssl_set_app_data2(ssl, r);
 
     /*
      * Log information about incoming HTTPS requests
@@ -1378,7 +1378,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
                                           SSL_get_ex_data_X509_STORE_CTX_idx());
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
+    request_rec *r      = (request_rec *)modssl_get_app_data2(ssl);
     server_rec *s       = r ? r->server : mySrvFromConn(conn);
 
     SSLSrvConfigRec *sc = mySrvConfig(s);
@@ -1647,7 +1647,7 @@ static void ssl_session_log(server_rec *s,
                             const char *result,
                             long timeout)
 {
-    char buf[SSL_SESSION_ID_STRING_LEN];
+    char buf[MODSSL_SESSION_ID_STRING_LEN];
     char timeout_str[56] = {'\0'};
 
     if (!APLOGdebug(s)) {
@@ -1663,7 +1663,7 @@ static void ssl_session_log(server_rec *s,
                  "Inter-Process Session Cache: "
                  "request=%s status=%s id=%s %s(session %s)",
                  request, status,
-                 SSL_SESSION_id2sz(id, idlen, buf, sizeof(buf)),
+                 modssl_SSL_SESSION_id2sz(id, idlen, buf, sizeof(buf)),
                  timeout_str, result);
 }
 
@@ -1804,32 +1804,32 @@ static void log_tracing_state(const SSL *ssl, conn_rec *c,
      */
     if (where & SSL_CB_HANDSHAKE_START) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
-                      "%s: Handshake: start", SSL_LIBRARY_NAME);
+                      "%s: Handshake: start", MODSSL_LIBRARY_NAME);
     }
     else if (where & SSL_CB_HANDSHAKE_DONE) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
-                      "%s: Handshake: done", SSL_LIBRARY_NAME);
+                      "%s: Handshake: done", MODSSL_LIBRARY_NAME);
     }
     else if (where & SSL_CB_LOOP) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                       "%s: Loop: %s",
-                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+                      MODSSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_READ) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                       "%s: Read: %s",
-                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+                      MODSSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_WRITE) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                       "%s: Write: %s",
-                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+                      MODSSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_ALERT) {
         char *str = (where & SSL_CB_READ) ? "read" : "write";
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                       "%s: Alert: %s:%s:%s",
-                      SSL_LIBRARY_NAME, str,
+                      MODSSL_LIBRARY_NAME, str,
                       SSL_alert_type_string_long(rc),
                       SSL_alert_desc_string_long(rc));
     }
@@ -1837,12 +1837,12 @@ static void log_tracing_state(const SSL *ssl, conn_rec *c,
         if (rc == 0) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                           "%s: Exit: failed in %s",
-                          SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+                          MODSSL_LIBRARY_NAME, SSL_state_string_long(ssl));
         }
         else if (rc < 0) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
                           "%s: Exit: error in %s",
-                          SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+                          MODSSL_LIBRARY_NAME, SSL_state_string_long(ssl));
         }
     }
 
