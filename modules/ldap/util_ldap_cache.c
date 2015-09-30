@@ -181,8 +181,8 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
             util_ldap_search_node_free(cache, newnode);
             return NULL;
         }
-        if(node->bindpw) {
-            if(!(newnode->bindpw = util_ald_strdup(cache, node->bindpw))) {
+        if (node->bindpw) {
+            if (!(newnode->bindpw = util_ald_strdup(cache, node->bindpw))) {
                 util_ldap_search_node_free(cache, newnode);
                 return NULL;
             }
@@ -305,14 +305,14 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
         cmp_result = apr_itoa(r->pool, node->result);
     }
 
-    if(node->subgroupList) {
+    if (node->subgroupList) {
         sub_groups_val = "Yes";
     }
     else {
         sub_groups_val = "No";
     }
 
-    if(node->sgl_processed) {
+    if (node->sgl_processed) {
         sub_groups_checked = "Yes";
     }
     else {

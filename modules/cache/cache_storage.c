@@ -50,7 +50,7 @@ int cache_remove_url(cache_request_rec *cache, request_rec *r)
                  "cache: Removing url %s from the cache", h->cache_obj->key);
 
     /* for each specified cache type, delete the URL */
-    while(list) {
+    while (list) {
         list->provider->remove_url(h, r);
         list = list->next;
     }
