@@ -16,10 +16,6 @@ Changes with Apache 2.5.0
      an SSL connection.  PR 58454.  
      [Konstantin J. Chernov <k.j.chernov gmail.com>]
 
-  *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
-     and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3",
-     in accordance with RFC 7568. PR 58349, PR 57120. [Kaspar Brand]
-
   *) mod_proxy: Fix ProxySourceAddress binding failure with AH00938.
      PR 56687.  [Arne de Bruijn <apache arbruijn.dds.nl>
 
@@ -35,11 +31,6 @@ Changes with Apache 2.5.0
      still use the old ones (e.g. Windows, OS2). mod_proxy_balancer failed to
      restart whenever the number of configured balancers/members changed during
      restart.  PR 58024.  [Yann Ylavic]
-
-  *) mod_ssl: append :!aNULL:!eNULL:!EXP to the cipher string settings,
-     instead of prepending !aNULL:!eNULL:!EXP: (as was the case in 2.4.7
-     and later). Enables support for configuring the SUITEB* cipher
-     strings introduced in OpenSSL 1.0.2. PR 58213. [Kaspar Brand]
 
   *) mod_autoindex: Allow autoindexes when neither mod_dir nor mod_mime are
      loaded. [Eric Covener]
@@ -61,12 +52,6 @@ Changes with Apache 2.5.0
 
   *) apxs: Add HTTPD_VERSION and HTTPD_MMN to the variables available with 
      apxs -q. PR58202. [Daniel Shahaf <danielsh apache.org>]
-
-  *) mod_ssl: Add support for extracting the msUPN and dnsSRV forms
-     of subjectAltName entries of type "otherName" into
-     SSL_{CLIENT,SERVER}_SAN_OTHER_{msUPN,dnsSRV}_n environment
-     variables. Addresses PR 58020. [Jan Pazdziora <jpazdziora redhat.com>,
-     Kaspar Brand]
 
   *) mod_h2: added donated http/2 implementation to build system. Similar
      configuration options to mod_ssl. [Stefan Eissing]
