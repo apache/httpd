@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_proxy: Fix ProxySourceAddress binding failure with AH00938.
+     PR 56687.  [Arne de Bruijn <apache arbruijn.dds.nl>
+
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3,
      and change the compiled-in default for SSL[Proxy]Protocol to "all -SSLv3",
      in accordance with RFC 7568. PR 58349, PR 57120. [Kaspar Brand]
@@ -17,7 +20,7 @@ Changes with Apache 2.4.17
      variables. Addresses PR 58020. [Jan Pazdziora <jpazdziora redhat.com>,
      Kaspar Brand]
 
-  *) mod_h2: added donated http/2 implementation to build system. Similar
+  *) mod_http2: added donated http/2 implementation to build system. Similar
      configuration options to mod_ssl. [Stefan Eissing]
 
   *) mod_logio: Fix logging of %^FB (time to first byte) on the first request on
