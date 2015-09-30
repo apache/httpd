@@ -893,9 +893,10 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
+#if 0
     apr_skiplist_init(&mz->timer_ring, mz->pool);
     apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
-
+#endif
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(02868)
@@ -1598,19 +1599,19 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
+        apr_pool_create(&mz->pool, ap_pglobal);
+        apr_pool_tag(mz->pool, "motorz-mpm-core");
+        apr_skiplist_init(&mz->timer_ring, mz->pool);
+        apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
+        rv = apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+                         "motorz_pre_config: apr_thread_mutex_create failed");
+            return rv;
+        }
     }
 
     parent_pid = ap_my_pid = getpid();
-    apr_pool_create(&mz->pool, ap_pglobal);
-    apr_pool_tag(mz->pool, "motorz-mpm-core");
-    apr_skiplist_init(&mz->timer_ring, mz->pool);
-    apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
-    rv = apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
-                     "motorz_pre_config: apr_thread_mutex_create failed");
-        return rv;
-    }
 
     ap_listen_pre_config();
     ap_num_kids = DEFAULT_START_DAEMON;
