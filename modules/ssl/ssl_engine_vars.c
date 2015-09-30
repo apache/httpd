@@ -62,7 +62,7 @@ static int ssl_is_https(conn_rec *c)
 }
 
 static const char var_interface[] = "mod_ssl/" AP_SERVER_BASEREVISION;
-static char var_library_interface[] = SSL_LIBRARY_TEXT;
+static char var_library_interface[] = MODSSL_LIBRARY_TEXT;
 static char *var_library = NULL;
 
 static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
@@ -115,7 +115,7 @@ void ssl_var_register(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
 
     /* Perform once-per-process library version determination: */
-    var_library = apr_pstrdup(p, SSL_LIBRARY_DYNTEXT);
+    var_library = apr_pstrdup(p, MODSSL_LIBRARY_DYNTEXT);
 
     if ((cp = strchr(var_library, ' ')) != NULL) {
         *cp = '/';
@@ -336,7 +336,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         result = (char *)SSL_get_version(ssl);
     }
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
-        char buf[SSL_SESSION_ID_STRING_LEN];
+        char buf[MODSSL_SESSION_ID_STRING_LEN];
         SSL_SESSION *pSession = SSL_get_session(ssl);
         if (pSession) {
             unsigned char *id;
@@ -349,8 +349,8 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
             idlen = pSession->session_id_length;
 #endif
 
-            result = apr_pstrdup(p, SSL_SESSION_id2sz(id, idlen,
-                                                      buf, sizeof(buf)));
+            result = apr_pstrdup(p, modssl_SSL_SESSION_id2sz(id, idlen,
+                                                             buf, sizeof(buf)));
         }
     }
     else if(ssl != NULL && strcEQ(var, "SESSION_RESUMED")) {
@@ -581,7 +581,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    result = SSL_X509_NAME_ENTRY_to_string(p, xsne);
+                    result = modssl_X509_NAME_ENTRY_to_string(p, xsne);
                     break;
                 }
             }
@@ -612,7 +612,7 @@ static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var)
     if ((numlen < 1) || (numlen > 4) || (numlen != strlen(var)))
         return NULL;
 
-    if (SSL_X509_getSAN(p, xs, type, atoi(var), &entries))
+    if (modssl_X509_getSAN(p, xs, type, atoi(var), &entries))
        /* return the first entry from this 1-element array */
        return APR_ARRAY_IDX(entries, 0, char *);
     else
@@ -737,7 +737,7 @@ static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
             char *decimal = BN_bn2dec(bn);
             result = apr_pstrcat(p, "{ serialNumber ", decimal,
                     ", issuer rdnSequence:\"",
-                    SSL_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
+                    modssl_X509_NAME_to_string(p, issuer, 0), "\" }", NULL);
             OPENSSL_free(decimal);
             BN_free(bn);
         }
@@ -902,7 +902,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                  apr_hash_set(count, &nid, sizeof nid, dup);
                  key = apr_pstrcat(p, pfx, tag, NULL);
              }
-             value = SSL_X509_NAME_ENTRY_to_string(p, xsne);
+             value = modssl_X509_NAME_ENTRY_to_string(p, xsne);
              apr_table_setn(t, key, value);
          }
     }
@@ -962,10 +962,10 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     /* subjectAltName entries of the server certificate */
     xs = SSL_get_certificate(ssl);
     if (xs) {
-        if (SSL_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
             extract_san_array(t, "SSL_SERVER_SAN_Email", entries, p);
         }
-        if (SSL_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
             extract_san_array(t, "SSL_SERVER_SAN_DNS", entries, p);
         }
         /* no need to free xs (refcount does not increase) */
@@ -974,10 +974,10 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     /* subjectAltName entries of the client certificate */
     xs = SSL_get_peer_certificate(ssl);
     if (xs) {
-        if (SSL_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_EMAIL, -1, &entries)) {
             extract_san_array(t, "SSL_CLIENT_SAN_Email", entries, p);
         }
-        if (SSL_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
+        if (modssl_X509_getSAN(p, xs, GEN_DNS, -1, &entries)) {
             extract_san_array(t, "SSL_CLIENT_SAN_DNS", entries, p);
         }
         X509_free(xs);

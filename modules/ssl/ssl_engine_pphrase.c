@@ -222,7 +222,7 @@ apr_status_t ssl_load_encrypted_pkey(server_rec *s, apr_pool_t *p, int idx,
          * is not empty. */
         ERR_clear_error();
 
-        bReadable = ((pPrivateKey = SSL_read_PrivateKey(ppcb_arg.pkey_file,
+        bReadable = ((pPrivateKey = modssl_read_privatekey(ppcb_arg.pkey_file,
                      NULL, ssl_pphrase_Handle_CB, &ppcb_arg)) != NULL ?
                      TRUE : FALSE);
 

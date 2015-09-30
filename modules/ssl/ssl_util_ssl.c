@@ -38,33 +38,33 @@
  * also note that OpenSSL increments at static variable when
  * SSL_get_ex_new_index() is called, so we _must_ do this at startup.
  */
-static int SSL_app_data2_idx = -1;
+static int app_data2_idx = -1;
 
-void SSL_init_app_data2_idx(void)
+void modssl_init_app_data2_idx(void)
 {
     int i;
 
-    if (SSL_app_data2_idx > -1) {
+    if (app_data2_idx > -1) {
         return;
     }
 
     /* we _do_ need to call this twice */
-    for (i=0; i<=1; i++) {
-        SSL_app_data2_idx =
+    for (i = 0; i <= 1; i++) {
+        app_data2_idx =
             SSL_get_ex_new_index(0,
                                  "Second Application Data for SSL",
                                  NULL, NULL, NULL);
     }
 }
 
-void *SSL_get_app_data2(SSL *ssl)
+void *modssl_get_app_data2(SSL *ssl)
 {
-    return (void *)SSL_get_ex_data(ssl, SSL_app_data2_idx);
+    return (void *)SSL_get_ex_data(ssl, app_data2_idx);
 }
 
-void SSL_set_app_data2(SSL *ssl, void *arg)
+void modssl_set_app_data2(SSL *ssl, void *arg)
 {
-    SSL_set_ex_data(ssl, SSL_app_data2_idx, (char *)arg);
+    SSL_set_ex_data(ssl, app_data2_idx, (char *)arg);
     return;
 }
 
@@ -74,7 +74,7 @@ void SSL_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-EVP_PKEY *SSL_read_PrivateKey(const char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
+EVP_PKEY *modssl_read_privatekey(const char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
@@ -121,7 +121,7 @@ EVP_PKEY *SSL_read_PrivateKey(const char* filename, EVP_PKEY **key, pem_password
 **  _________________________________________________________________
 */
 
-int SSL_smart_shutdown(SSL *ssl)
+int modssl_smart_shutdown(SSL *ssl)
 {
     int i;
     int rc;
@@ -161,7 +161,7 @@ int SSL_smart_shutdown(SSL *ssl)
 */
 
 /* retrieve basic constraints ingredients */
-BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
+BOOL modssl_X509_getBC(X509 *cert, int *ca, int *pathlen)
 {
     BASIC_CONSTRAINTS *bc;
     BIGNUM *bn = NULL;
@@ -191,7 +191,7 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 }
 
 /* convert an ASN.1 string to a UTF-8 string (escaping control characters) */
-char *SSL_ASN1_STRING_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
+static char *asn1_string_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 {
     char *result = NULL;
     BIO *bio;
@@ -213,9 +213,9 @@ char *SSL_ASN1_STRING_to_utf8(apr_pool_t *p, ASN1_STRING *asn1str)
 }
 
 /* convert a NAME_ENTRY to UTF8 string */
-char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
 {
-    char *result = SSL_ASN1_STRING_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
+    char *result = asn1_string_to_utf8(p, X509_NAME_ENTRY_get_data(xsne));
     ap_xlate_proto_from_ascii(result, len);
     return result;
 }
@@ -224,7 +224,7 @@ char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
  * convert an X509_NAME to an RFC 2253 formatted string, optionally truncated
  * to maxlen characters (specify a maxlen of 0 for no length limit)
  */
-char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
+char *modssl_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
 {
     char *result = NULL;
     BIO *bio;
@@ -259,8 +259,8 @@ char *SSL_X509_NAME_to_string(apr_pool_t *p, X509_NAME *dn, int maxlen)
  * GEN_EMAIL (rfc822Name)
  * GEN_DNS (dNSName)
  */
-BOOL SSL_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
-                     apr_array_header_t **entries)
+BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
+                        apr_array_header_t **entries)
 {
     STACK_OF(GENERAL_NAME) *names;
 
@@ -282,7 +282,7 @@ BOOL SSL_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
                     switch (type) {
                     case GEN_EMAIL:
                     case GEN_DNS:
-                        utf8str = SSL_ASN1_STRING_to_utf8(p, name->d.ia5);
+                        utf8str = asn1_string_to_utf8(p, name->d.ia5);
                         if (utf8str) {
                             APR_ARRAY_PUSH(*entries, const char *) = utf8str;
                         }
@@ -313,14 +313,14 @@ BOOL SSL_X509_getSAN(apr_pool_t *p, X509 *x509, int type, int idx,
 }
 
 /* return an array of (RFC 6125 coined) DNS-IDs and CN-IDs in a certificate */
-BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
+static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 {
     X509_NAME *subj;
     int i = -1;
 
     /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
     if (!x509 ||
-        (SSL_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
+        (modssl_X509_getSAN(p, x509, GEN_DNS, -1, ids) == FALSE && !*ids)) {
         *ids = NULL;
         return FALSE;
     }
@@ -329,7 +329,7 @@ BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
     subj = X509_get_subject_name(x509);
     while ((i = X509_NAME_get_index_by_NID(subj, NID_commonName, i)) != -1) {
         APR_ARRAY_PUSH(*ids, const char *) = 
-            SSL_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
+            modssl_X509_NAME_ENTRY_to_string(p, X509_NAME_get_entry(subj, i));
     }
 
     return apr_is_empty_array(*ids) ? FALSE : TRUE;
@@ -340,8 +340,8 @@ BOOL SSL_X509_getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
  * DNS-IDs and CN-IDs (RFC 6125), optionally with basic wildcard matching.
  * If server_rec is non-NULL, some (debug/trace) logging is enabled.
  */
-BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
-                         BOOL allow_wildcard, server_rec *s)
+BOOL modssl_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
+                            BOOL allow_wildcard, server_rec *s)
 {
     BOOL matched = FALSE;
     apr_array_header_t *ids;
@@ -356,7 +356,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
      *    is found).
      */
 
-    if (SSL_X509_getIDs(p, x509, &ids)) {
+    if (getIDs(p, x509, &ids)) {
         const char *cp;
         int i;
         char **id = (char **)ids->elts;
@@ -387,7 +387,7 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
 
             if (s) {
                 ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
-                             "[%s] SSL_X509_match_name: expecting name '%s', "
+                             "[%s] modssl_X509_match_name: expecting name '%s', "
                              "%smatched by ID '%s'",
                              (mySrvConfig(s))->vhost_id, name,
                              matched == TRUE ? "" : "NOT ", id[i]);
@@ -409,73 +409,6 @@ BOOL SSL_X509_match_name(apr_pool_t *p, X509 *x509, const char *name,
     }
 
     return matched;
-}
-
-/*  _________________________________________________________________
-**
-**  Low-Level CA Certificate Loading
-**  _________________________________________________________________
-*/
-
-BOOL SSL_X509_INFO_load_file(apr_pool_t *ptemp,
-                             STACK_OF(X509_INFO) *sk,
-                             const char *filename)
-{
-    BIO *in;
-
-    if (!(in = BIO_new(BIO_s_file()))) {
-        return FALSE;
-    }
-
-    if (BIO_read_filename(in, filename) <= 0) {
-        BIO_free(in);
-        return FALSE;
-    }
-
-    ERR_clear_error();
-
-    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
-
-    BIO_free(in);
-
-    return TRUE;
-}
-
-BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
-                             STACK_OF(X509_INFO) *sk,
-                             const char *pathname)
-{
-    /* XXX: this dir read code is exactly the same as that in
-     * ssl_engine_init.c, only the call to handle the fullname is different,
-     * should fold the duplication.
-     */
-    apr_dir_t *dir;
-    apr_finfo_t dirent;
-    apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
-    const char *fullname;
-    BOOL ok = FALSE;
-
-    if (apr_dir_open(&dir, pathname, ptemp) != APR_SUCCESS) {
-        return FALSE;
-    }
-
-    while ((apr_dir_read(&dirent, finfo_flags, dir)) == APR_SUCCESS) {
-        if (dirent.filetype == APR_DIR) {
-            continue; /* don't try to load directories */
-        }
-
-        fullname = apr_pstrcat(ptemp,
-                               pathname, "/", dirent.name,
-                               NULL);
-
-        if (SSL_X509_INFO_load_file(ptemp, sk, fullname)) {
-            ok = TRUE;
-        }
-    }
-
-    apr_dir_close(dir);
-
-    return ok;
 }
 
 /*  _________________________________________________________________
@@ -512,77 +445,12 @@ EC_GROUP *ssl_ec_GetParamFromFile(const char *file)
 
 /*  _________________________________________________________________
 **
-**  Extra Server Certificate Chain Support
-**  _________________________________________________________________
-*/
-
-/*
- * Read a file that optionally contains the server certificate in PEM
- * format, possibly followed by a sequence of CA certificates that
- * should be sent to the peer in the SSL Certificate message.
- */
-int SSL_CTX_use_certificate_chain(
-    SSL_CTX *ctx, char *file, int skipfirst, pem_password_cb *cb)
-{
-    BIO *bio;
-    X509 *x509;
-    unsigned long err;
-    int n;
-
-    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
-        return -1;
-    if (BIO_read_filename(bio, file) <= 0) {
-        BIO_free(bio);
-        return -1;
-    }
-    /* optionally skip a leading server certificate */
-    if (skipfirst) {
-        if ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
-            BIO_free(bio);
-            return -1;
-        }
-        X509_free(x509);
-    }
-    /* free a perhaps already configured extra chain */
-#ifdef OPENSSL_NO_SSL_INTERN
-    SSL_CTX_clear_extra_chain_certs(ctx);
-#else
-    if (ctx->extra_certs != NULL) {
-        sk_X509_pop_free((STACK_OF(X509) *)ctx->extra_certs, X509_free);
-        ctx->extra_certs = NULL;
-    }
-#endif
-    /* create new extra chain by loading the certs */
-    n = 0;
-    while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
-        if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
-            X509_free(x509);
-            BIO_free(bio);
-            return -1;
-        }
-        n++;
-    }
-    /* Make sure that only the error is just an EOF */
-    if ((err = ERR_peek_error()) > 0) {
-        if (!(   ERR_GET_LIB(err) == ERR_LIB_PEM
-              && ERR_GET_REASON(err) == PEM_R_NO_START_LINE)) {
-            BIO_free(bio);
-            return -1;
-        }
-        while (ERR_get_error() > 0) ;
-    }
-    BIO_free(bio);
-    return n;
-}
-
-/*  _________________________________________________________________
-**
 **  Session Stuff
 **  _________________________________________________________________
 */
 
-char *SSL_SESSION_id2sz(unsigned char *id, int idlen,
-                        char *str, int strsize)
+char *modssl_SSL_SESSION_id2sz(unsigned char *id, int idlen,
+                               char *str, int strsize)
 {
     if (idlen > SSL_MAX_SSL_SESSION_ID_LENGTH)
         idlen = SSL_MAX_SSL_SESSION_ID_LENGTH;

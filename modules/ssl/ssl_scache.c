@@ -115,7 +115,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
                       apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    unsigned char encoded[SSL_SESSION_MAX_DER], *ptr;
+    unsigned char encoded[MODSSL_SESSION_MAX_DER], *ptr;
     unsigned int len;
     apr_status_t rv;
 
@@ -148,8 +148,8 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
                                  apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    unsigned char dest[SSL_SESSION_MAX_DER];
-    unsigned int destlen = SSL_SESSION_MAX_DER;
+    unsigned char dest[MODSSL_SESSION_MAX_DER];
+    unsigned int destlen = MODSSL_SESSION_MAX_DER;
     const unsigned char *ptr;
     apr_status_t rv;
 
