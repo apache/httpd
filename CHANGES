@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_ssl: append :!aNULL:!eNULL:!EXP to the cipher string settings,
+     instead of prepending !aNULL:!eNULL:!EXP: (as was the case in 2.4.7
+     and later). Enables support for configuring the SUITEB* cipher
+     strings introduced in OpenSSL 1.0.2. PR 58213. [Kaspar Brand]
+
   *) mod_ssl: Add support for extracting the msUPN and dnsSRV forms
      of subjectAltName entries of type "otherName" into
      SSL_{CLIENT,SERVER}_SAN_OTHER_{msUPN,dnsSRV}_n environment
