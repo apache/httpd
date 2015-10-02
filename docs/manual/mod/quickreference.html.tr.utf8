@@ -117,8 +117,8 @@ responses from the server</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
-<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
+<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch "<var>düzenli-ifade</var>"
 "<var>dosya-yolu</var>|<var>dizin-yolu</var>"</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
@@ -595,8 +595,7 @@ sınırlar.</td></tr>
   [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</td></tr>
-<tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ratio between the number of CPU cores (online) and the number of
-listeners' buckets</td></tr>
+<tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>oran</var></a></td><td> 0 (iptal) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İşlemci çekirdek sayısının dinleyenlerin buket sayısına oranı</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
 <tr><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
@@ -610,7 +609,7 @@ uygulanır.</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>biçem</var>|<var>takma-ad</var>
 [<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
-<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable tracking of time to first byte (TTFB)</td></tr>
+<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB ON|OFF</a></td><td> OFF </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">İlk baytın yazılmasına kadar geçen süreyi izler</td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel [<var>modül</var>:]<var>seviye</var>
     [<var>modül</var>:<var>seviye</var>] ...
 </a></td><td> warn </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
@@ -700,8 +699,8 @@ evaluated.</td></tr>
 malicious privileges-aware code.</td></tr>
 <tr class="odd"><td><a href="core.html#protocol">Protocol <var>protokol</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dinlenen bir soket için protokol</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
-<tr class="odd"><td><a href="core.html#protocols">Protocols <var>protocol</var> ...</a></td><td> http/1.1 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
-<tr><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Protocols available for a server/virtual host</td></tr>
+<tr class="odd"><td><a href="core.html#protocols">Protocols <var>protokol</var> ...</a></td><td> http/1.1 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu/sanal konak için kullanılabilecek protokoller</td></tr>
+<tr><td><a href="core.html#protocolshonororder">ProtocolsHonorOrder On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Uzlaşma sırasında protokollerin öncelik sırasını belirler</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders Off|On</a></td><td> On </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Add proxy information in X-Forwarded-* headers</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
@@ -775,7 +774,7 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesinin sonuna yerleştirilecek dosyanın ismini
 belirler.</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] [<var>URL-yolu</var>]
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] <var>URL-yolu</var>
 <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
 yönlendirir.</td></tr>
 <tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>durum</var>] <var>düzenli-ifade</var>
@@ -855,8 +854,8 @@ user authentication</td></tr>
   dosyanın yerini belirler.</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-yolu</var>]
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
@@ -972,7 +971,7 @@ handshake</td></tr>
 <tr><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure various SSL engine run-time options</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of pass phrase dialog for encrypted private
 keys</td></tr>
-<tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL/TLS protocol versions</td></tr>
+<tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 (up to 2 +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL/TLS protocol versions</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
@@ -994,7 +993,7 @@ proxy handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <em>filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <em>filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <em>directory</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocol</em> ...</a></td><td> all </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<em>protocol</em> ...</a></td><td> all -SSLv3 (up to 2 +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <em>level</em></a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <em>number</em></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
 Certificate verification</td></tr>

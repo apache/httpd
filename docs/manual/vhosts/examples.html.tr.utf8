@@ -29,7 +29,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
@@ -79,14 +78,14 @@
     <pre class="prettyprint lang-config"># Apache’nin 80. portu dinlediğinden emin olalım
 Listen 80
 &lt;VirtualHost *:80&gt;
-  DocumentRoot /siteler/ecom
+  DocumentRoot "/siteler/ecom"
   ServerName example.com
 
   # Diğer yönergeler, burada ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
-  DocumentRoot /siteler/eorg
+  DocumentRoot "/siteler/eorg"
   ServerName example.org
 
   # Diğer yönergeler, burada ...
@@ -147,17 +146,17 @@ Listen 80
 
 # Bu, 192.168.1.2 adresindeki "ana sunucu" olsun
 ServerName sunucu.example.com
-DocumentRoot /siteler/anasunucu
+DocumentRoot "/siteler/anasunucu"
 
 &lt;VirtualHost 192.168.1.20&gt;
-    DocumentRoot /siteler/ecom
+    DocumentRoot "/siteler/ecom"
     ServerName example.com
 
     # Diğer yönergeler, burada ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 192.168.1.20&gt;
-    DocumentRoot /siteler/eorg
+    DocumentRoot "/siteler/eorg"
     ServerName example.org
 
     # Diğer yönergeler, burada ...
@@ -184,7 +183,7 @@ DocumentRoot /siteler/anasunucu
       verebilir.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
-    DocumentRoot /siteler/sunucu
+    DocumentRoot "/siteler/sunucu"
     ServerName sunucu.example.com
     ServerAlias sunucu
 &lt;/VirtualHost&gt;</pre>
@@ -218,22 +217,22 @@ Listen 8080
 
 &lt;VirtualHost 172.20.30.40:80&gt;
     ServerName example.com
-    DocumentRoot /siteler/ecom-80
+    DocumentRoot "/siteler/ecom-80"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40:8080&gt;
     ServerName example.com
-    DocumentRoot /siteler/ecom-8080
+    DocumentRoot "/siteler/ecom-8080"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40:80&gt;
     ServerName example.org
-    DocumentRoot /siteler/eorg-80
+    DocumentRoot "/siteler/eorg-80"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40:8080&gt;
     ServerName example.org
-    DocumentRoot /siteler/eorg-8080
+    DocumentRoot "/siteler/eorg-8080"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -248,12 +247,12 @@ Listen 8080
     <pre class="prettyprint lang-config">Listen 80
 
 &lt;VirtualHost 172.20.30.40&gt;
-    DocumentRoot /siteler/ecom
+    DocumentRoot "/siteler/ecom"
     ServerName example.com
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50&gt;
-    DocumentRoot /siteler/eorg
+    DocumentRoot "/siteler/eorg"
     ServerName example.org
 &lt;/VirtualHost&gt;</pre>
 
@@ -277,22 +276,22 @@ Listen 172.20.30.50:80
 Listen 172.20.30.50:8080
 
 &lt;VirtualHost 172.20.30.40:80&gt;
-    DocumentRoot /siteler/ecom-80
+    DocumentRoot "/siteler/ecom-80"
     ServerName example.com
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40:8080&gt;
-    DocumentRoot /siteler/ecom-8080
+    DocumentRoot "/siteler/ecom-8080"
     ServerName example.com
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50:80&gt;
-    DocumentRoot /siteler/eorg-80
+    DocumentRoot "/siteler/eorg-80"
     ServerName example.org
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50:8080&gt;
-    DocumentRoot /siteler/eorg-8080
+    DocumentRoot "/siteler/eorg-8080"
     ServerName example.org
 &lt;/VirtualHost&gt;</pre>
 
@@ -309,28 +308,28 @@ Listen 172.20.30.50:8080
     <pre class="prettyprint lang-config">Listen 80
 
 &lt;VirtualHost 172.20.30.40&gt;
-    DocumentRoot /siteler/ecom
+    DocumentRoot "/siteler/ecom"
     ServerName example.com
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-    DocumentRoot /siteler/eorg
+    DocumentRoot "/siteler/eorg"
     ServerName example.org
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-    DocumentRoot /siteler/enet
+    DocumentRoot "/siteler/enet"
     ServerName example.net
 &lt;/VirtualHost&gt;
 
 # IP'ye dayalı
 &lt;VirtualHost 172.20.30.50&gt;
-    DocumentRoot /siteler/eedu
+    DocumentRoot "/siteler/eedu"
     ServerName example.edu
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.60&gt;
-    DocumentRoot /siteler/egov
+    DocumentRoot "/siteler/egov"
     ServerName example.gov
 &lt;/VirtualHost&gt;</pre>
 
@@ -350,8 +349,8 @@ Listen 172.20.30.50:8080
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass / http://192.168.111.2/
-    ProxyPassReverse / http://192.168.111.2/
+    ProxyPass "/" "http://192.168.111.2/"
+    ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName konak.example.com
 &lt;/VirtualHost&gt;</pre>
 
@@ -367,7 +366,7 @@ Listen 172.20.30.50:8080
       adresi/portu ile eşleşmeyen istekleri yakalamak istersek...</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:*&gt;
-    DocumentRoot /siteler/default
+    DocumentRoot "/siteler/default"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -393,12 +392,12 @@ Listen 172.20.30.50:8080
       <code>_default_</code> sanal konağı kullanmak istersek...</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
-    DocumentRoot /siteler/default80
+    DocumentRoot "/siteler/default80"
     # ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost _default_:*&gt;
-    DocumentRoot /siteler/default
+    DocumentRoot "/siteler/default"
     # ...
 &lt;/VirtualHost&gt;</pre>
 
@@ -416,7 +415,7 @@ Listen 172.20.30.50:8080
       sunmasını istersek...</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
-    DocumentRoot /siteler/default
+    DocumentRoot "/siteler/default"
     ...
 &lt;/VirtualHost&gt;</pre>
 
@@ -447,16 +446,16 @@ Listen 172.20.30.50:8080
 
     <pre class="prettyprint lang-config">Listen 80
 ServerName example.com
-DocumentRoot /siteler/ecom
+DocumentRoot "/siteler/ecom"
 
 &lt;VirtualHost 192.168.1.20 192.168.1.2&gt;
-    DocumentRoot /siteler/eorg
+    DocumentRoot "/siteler/eorg"
     ServerName example.org
     # ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 192.168.1.20&gt;
-    DocumentRoot /siteler/enet
+    DocumentRoot "/siteler/enet"
     ServerName example.enet
     ServerAlias *.example.enet
     # ...
@@ -483,27 +482,27 @@ DocumentRoot /siteler/ecom
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40&gt;
     # ilk sanal konak
-    DocumentRoot /siteler/baska
+    DocumentRoot "/siteler/baska"
     RewriteEngine On
-    RewriteRule . /siteler/baska/index.html
+    RewriteRule "." "/siteler/baska/index.html"
     # ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
 DocumentRoot /siteler/baska/bir
-    ServerName bir.baska.tld
-    ServerPath /bir/
+    ServerName "bir.baska.tld"
+    ServerPath "/bir/"
     RewriteEngine On
-    RewriteRule ^(/bir/.*) /siteler/baska$1
+    RewriteRule "^(/bir/.*) /siteler/baska$1"
     # ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-    DocumentRoot /siteler/baska/iki
+    DocumentRoot "/siteler/baska/iki"
     ServerName iki.baska.tld
-    ServerPath /iki/
+    ServerPath "/iki/"
     RewriteEngine On
-    RewriteRule ^(/iki/.*) /siteler/baska$1
+    RewriteRule "^(/iki/.*)" "/siteler/baska$1"
     # ...
 &lt;/VirtualHost&gt;</pre>
 

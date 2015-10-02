@@ -30,7 +30,6 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
@@ -151,12 +150,12 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
     #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
     ServerName site1.example.com
     ServerAlias example.com
-    DocumentRoot /siteler/site1
+    DocumentRoot "/siteler/site1"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
     ServerName site2.example.com
-    DocumentRoot /siteler/site2
+    DocumentRoot "/siteler/site2"
 &lt;/VirtualHost&gt;</pre>
 
 

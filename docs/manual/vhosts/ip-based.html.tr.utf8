@@ -29,7 +29,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#explanation">IP'ye dayalı sanal konak desteği nedir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
@@ -138,18 +137,18 @@
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.10:80&gt;
     ServerAdmin bilgi@example.com
-    DocumentRoot /siteler/belgeler/ecom
+    DocumentRoot "/siteler/belgeler/ecom"
     ServerName example.com
-    ErrorLog /siteler/gunlukler/ecom/hatalar.log
-    CustomLog /siteler/gunlukler/ecom/erisim.log combined
+    ErrorLog "/siteler/gunlukler/ecom/hatalar.log"
+    CustomLog "/siteler/gunlukler/ecom/erisim.log" combined
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 192.168.1.20:80&gt;
     ServerAdmin bilgi@example.org
-    DocumentRoot /siteler/belgeler/eorg
+    DocumentRoot "/siteler/belgeler/eorg"
     ServerName example.org
-    ErrorLog /siteler/gunlukler/eorg/hatalar.log
-    CustomLog /siteler/gunlukler/eorg/erisim.log combined
+    ErrorLog "/siteler/gunlukler/eorg/hatalar.log"
+    CustomLog "/siteler/gunlukler/eorg/erisim.log" combined
 &lt;/VirtualHost&gt;</pre>
 
 

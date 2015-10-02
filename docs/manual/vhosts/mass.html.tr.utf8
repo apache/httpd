@@ -28,7 +28,6 @@
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/mass.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belgede sanal konakların sonu belirsiz bir şekilde artışı karşısında
@@ -58,20 +57,20 @@
 
 <pre class="prettyprint lang-config">&lt;VirtualHost 111.22.33.44&gt;
     ServerName                 musteri-1.example.com
-    DocumentRoot        /siteler/musteri-1/belgeler
-    ScriptAlias  /cgi-bin/  /siteler/musteri-1/cgi-bin
+    DocumentRoot        "/siteler/musteri-1/belgeler"
+    ScriptAlias  "/cgi-bin/"  "/siteler/musteri-1/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 musteri-2.example.com
-    DocumentRoot        /siteler/musteri-2/belgeler
-    ScriptAlias  /cgi-bin/  /siteler/musteri-2/cgi-bin
+    DocumentRoot        "/siteler/musteri-2/belgeler"
+    ScriptAlias   "/cgi-bin/"   "/siteler/musteri-2/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 musteri-N.example.com
-    DocumentRoot        /siteler/musteri-N/belgeler
-    ScriptAlias  /cgi-bin/  /siteler/musteri-N/cgi-bin
+    DocumentRoot          "/siteler/musteri-N/belgeler"
+    ScriptAlias   "/cgi-bin/"  "/siteler/musteri-N/cgi-bin"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -157,12 +156,12 @@ UseCanonicalName Off
 # Bu günlükleme biçiminde split-logfile aracı kullanılarak
 # sanal konak günlükleri ilk alana göre ayrıştırılabilir
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log vcommon"
 
 # istekleri yerine getirmek için kullanılacak
 # dosya isimlerine sunucu ismini ekleyelim
-VirtualDocumentRoot /siteler/%0/belgeler
-VirtualScriptAlias  /siteler/%0/cgi-bin</pre>
+VirtualDocumentRoot "/siteler/%0/belgeler"
+VirtualScriptAlias  "/siteler/%0/cgi-bin"</pre>
 
 
     <p>Bu yapılandırmayı IP’ye dayalı sanal konaklar için kullanmak isterseniz
@@ -193,10 +192,10 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog logs/access_log vcommon
 
 # sunucu ismini içerecek dosya isimlerini oluşturalım
-VirtualDocumentRoot /home/%2/www
+VirtualDocumentRoot "/home/%2/www"
 
 # ortak cgi-bin dizini
-ScriptAlias  /cgi-bin/  /siteler/std-cgi/</pre>
+ScriptAlias  "/cgi-bin/"  "/siteler/std-cgi/"</pre>
 
 
     <p><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> belgesinde daha karmaşık
@@ -217,12 +216,12 @@ ScriptAlias  /cgi-bin/  /siteler/std-cgi/</pre>
 
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 
-&lt;Directory /siteler/kurumsal&gt;
+&lt;Directory "/siteler/kurumsal"&gt;
     Options FollowSymLinks
     AllowOverride All
 &lt;/Directory&gt;
 
-&lt;Directory /siteler/bireysel&gt;
+&lt;Directory "/siteler/bireysel"&gt;
     Options FollowSymLinks
     AllowOverride None
 &lt;/Directory&gt;
@@ -230,19 +229,19 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName kurumsal.example.com
 
-    CustomLog logs/access_log.kurumsal vcommon
+    CustomLog "logs/access_log.kurumsal" vcommon
 
-    VirtualDocumentRoot /siteler/kurumsal/%0/belgeler
-    VirtualScriptAlias  /siteler/kurumsal/%0/cgi-bin
+    VirtualDocumentRoot "/siteler/kurumsal/%0/belgeler"
+    VirtualScriptAlias  "/siteler/kurumsal/%0/cgi-bin"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.45&gt;
     ServerName bireysel.example.com
 
-    CustomLog logs/access_log.bireysel vcommon
+    CustomLog "logs/access_log.bireysel" vcommon
 
-    VirtualDocumentRoot /siteler/bireysel/%0/belgeler
-    ScriptAlias         /cgi-bin/ /siteler/std-cgi/
+    VirtualDocumentRoot "/siteler/bireysel/%0/belgeler"
+    ScriptAlias         "/cgi-bin/" "/siteler/std-cgi/"
 &lt;/VirtualHost&gt;</pre>
 
 
@@ -272,11 +271,11 @@ UseCanonicalName DNS
 
 # Günlük kayıtları IP adreslerine göre ayrıştırılabilsin
 LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon
-CustomLog logs/access_log vcommon
+CustomLog "logs/access_log" vcommon
 
 # dosya isimleri IP adreslerini içersin
-VirtualDocumentRootIP /siteler/%0/belgeler
-VirtualScriptAliasIP  /siteler/%0/cgi-bin</pre>
+VirtualDocumentRootIP "/siteler/%0/belgeler"
+VirtualScriptAliasIP  "/siteler/%0/cgi-bin"</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

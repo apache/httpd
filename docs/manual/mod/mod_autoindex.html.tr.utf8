@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -561,10 +560,10 @@ belirler.</td></tr>
       ve <code class="directive">IndexIgnore</code> tarafından yoksayılan dosyaları
       kaldırır. </p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /var/www&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;</pre>
@@ -676,7 +675,9 @@ belirler.</td></tr>
         sebep olur. Böylece tarayıcının tüm simgelerin yüklenmesini beklemeden
         sayfa yerleşimi için bir ön hesaplama yapabilmesi mümkün olur. Seçenek
         bir değer belirtilmeksizin kullanıldığında Apache http tarafından
-        atanmış standart simge yüksekliği öntanımlıdır.</dd>
+        atanmış standart simge yüksekliği öntanımlıdır. <strong>Bu
+        seçenek sadece <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>  seçeneği etkinse etkili
+        olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth"><code>IconWidth[=<em>benek-sayısı</em>]</code></a></dt>
 
@@ -746,7 +747,9 @@ belirler.</td></tr>
         için <code class="directive"><a href="#adddescription">AddDescription</a></code>
         yönergesinin açıklamasına bakınız. Ayrıca, açıklama sütununun
         genişliğini ayarlayan <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code> dizin listeleme seçeneğine de
-        bakınız.</dd>
+        bakınız. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble" id="indexoptions.suppresshtmlpreamble"><code>SuppressHTMLPreamble</code></a></dt>
 
@@ -775,7 +778,9 @@ belirler.</td></tr>
       <dt><a name="indexoptions.suppresslastmodified" id="indexoptions.suppresslastmodified"><code>SuppressLastModified</code></a></dt>
 
       <dd>Süslü dizin listelemede son değişiklik tarihinin gösterilmesi
-        engellenir.</dd>
+        engellenir. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules"><code>SuppressRules</code></a>
       </dt>
@@ -785,11 +790,16 @@ belirler.</td></tr>
         etiketinin içeriğinde <code>img</code> ve <code>hr</code>
         etiketlerinin bulunmasına izin vermediğinden <code>SuppressIcon</code>
         ve <code>SuppressRules</code> seçenekleri birlikte kullanılarak HTML
-        3.2 belirtimine uyum sağlanır.</dd>
+        3.2 belirtimine uyum sağlanır. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize"><code>SuppressSize</code></a></dt>
 
       <dd>Süslü dizin listelemede dosya boyutunun gösterilmesi engellenir.
+       <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong>
       </dd>
 
       <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified"><code>TrackModified</code></a>
@@ -849,7 +859,10 @@ belirler.</td></tr>
       <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml"><code>XHTML</code></a></dt>
 
       <dd><code>XHTML</code> seçeneği <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>’in kodu
-        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.</dd>
+        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.
+        <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
     </dl>
 
    
@@ -863,7 +876,7 @@ belirler.</td></tr>
         yönergesi belirtilmişse bunlar ayrı ayrı değil birlikte ele alınır.
         Yani,
 
-     <pre class="prettyprint lang-config">&lt;Directory /foo&gt;
+     <pre class="prettyprint lang-config">&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;</pre>
