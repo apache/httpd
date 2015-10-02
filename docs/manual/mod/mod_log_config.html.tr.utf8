@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -202,17 +201,25 @@
         </td></tr>
 <tr><td><code>%T</code></td>
         <td>Saniye cinsinden, isteği sunmak için harcanan zaman.</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr class="odd"><td><code>%{<var>BİRİM</var>}T</code></td>
+        <td><var>BİRİM</var> ile belirtilen zaman birimi cinsinden, isteği
+          sunmak için harcanan zaman. Geçerli birimler: milisaniye için
+          <code>ms</code>, mikrosaniye için <code>us</code>, saniye için
+          <code>s</code>. <code>s</code> kullanımı birimsiz <code>%T</code> ile
+          aynı sonucu verir; <code>us</code> kullanımı <code>%D</code> ile aynı
+          sonucu verir. Birimli <code>%T</code> kullanımı 2.4.13 ve sonrasında
+          geçerlidir.</td></tr>
+<tr><td><code>%u</code></td>
         <td>Uzak kullanıcı (kimlik doğrulaması istenmişse vardır; durum kodu
           (<code>%s</code>) 401 ise yanlış olabilir).</td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>Herhangi bir sorgu dizgesi içermeksizin istenen URL yolu.</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>İsteği sunan sunucunun meşru sunucu ismi (<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>).</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ayarı ile
           ilgili sunucu ismi.</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>Yanıt tamamlandığında bağlantı durumu:
 
         <table>
@@ -224,20 +231,22 @@
         <tr><td><code>-</code> = </td>
             <td>Yanıt gönderildikten sonra bağlantı kapatılacak.</td></tr>
         </table></td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>İstek ve başlıklar dahil alınan bayt sayısı. Sıfır olamaz. Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
-<tr class="odd"><td><code>%O</code></td>
-        <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
-          kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
-<tr><td><code>%S</code></td>
+<tr><td><code>%O</code></td>
+        <td>Başlıklar dahil gönderilen bayt sayısı. Bir yanıtın
+          gönderilmesinden önce istekten vazgeçilmesi gibi nadir durumlarda
+          sıfır olabilir. Bunu kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin
+          olmalıdır.</td></tr>
+<tr class="odd"><td><code>%S</code></td>
         <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
           dahil; sıfır olamaz. %I ve %O'nun birleşimidir. Bunu kullanmak için
           <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkinleştirilmelidir.</td></tr>
-<tr class="odd"><td><code>%{<var>ALANADI</var>}^ti</code></td>
+<tr><td><code>%{<var>ALANADI</var>}^ti</code></td>
         <td>Sunucuya gönderilen istekteki <code><var>ALANADI</var>:</code>
           Trailer satır(lar)ının içeriği.</td></tr>
-<tr><td><code>%{<var>VARNAME</var>}^to</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}^to</code></td>
         <td>Sunucudan gönderilen yanıttaki <code><var>ALANADI</var>:</code>
           Trailer satır(lar)ının içeriği.</td></tr>
 </table>
@@ -417,10 +426,10 @@ expr=<var>ifade</var>]</code></td></tr>
 
     <pre class="prettyprint lang-config"># Biçem dizgesi yerine takma ad içeren CustomLog
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
 
 # Biçem dizgesinin kendisini içeren CustomLog
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
+CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"</pre>
 
 
     <p>Üçüncü argüman isteğe bağlı olup,belli bir isteğin günlüğe kaydedilip
@@ -438,15 +447,15 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"</pre>
       isterseniz:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image</pre>
+CustomLog "gif-requests.log" common env=gif-image
+CustomLog "nongif-requests.log" common env=!gif-image</pre>
 
 
     <p>Veya eski <code>RefererIgnore</code> yönergesinin davranışını taklit
       etmek isterseniz:</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer</pre>
+CustomLog "referer.log" referer env=!localreferer</pre>
 
 
 </div>
@@ -506,7 +515,7 @@ CustomLog referer.log referer env=!localreferer</pre>
       belirtilmedikçe Ortak Günlük Biçemi öntanımlıdır.</p>
 
     <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log</pre>
+TransferLog "logs/access_log"</pre>
 
 
 </div>

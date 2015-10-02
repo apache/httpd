@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -151,19 +150,19 @@
       eklenir:</p>
     <pre class="prettyprint lang-config"># 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
 # index.php'yi ekleyebilirsiniz.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
 # 2. Örnek: Atamaların tet bir satırda yapıldığı bu örnek 1. örneğe denktir.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
 # 3. Örnek: Listeyi tamamen değiştirmek için, listeyi önce sıfırlamalısınız:
 # Bu örnekte içerik dosyası olarak listede sadece index.php kalır.
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
     DirectoryIndex index.php
@@ -251,7 +250,7 @@
       vardır.</p>
 
     <pre class="prettyprint lang-config"># Aşağıdaki güvenlik uyarısına bakınız!<br />
-&lt;Location /bir/yol&gt;<br />
+&lt;Location "/bir/yol"&gt;<br />
   DirectorySlash Off<br />
   SetHandler bir-eylemci<br />
 &lt;/Location&gt;</pre>
@@ -315,7 +314,7 @@
     <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
       olarak sağlanır:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory /web/example.com/htdocs/blog&gt;
+    <pre class="prettyprint lang-config">&lt;Directory "/web/example.com/htdocs/blog"&gt;
   FallbackResource /blog/index.php
 &lt;/Directory&gt;</pre>
 

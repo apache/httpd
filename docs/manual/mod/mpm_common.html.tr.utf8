@@ -32,7 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -271,20 +270,39 @@ açıklaması</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a> <a name="listencoresbucketsratio" id="listencoresbucketsratio">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ratio between the number of CPU cores (online) and the number of
-listeners' buckets</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ListenCoresBucketsRatio <var>ratio</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ListenCoresBucketsRatio 0 (disabled)</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İşlemci çekirdek sayısının dinleyenlerin buket sayısına oranı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ListenCoresBucketsRatio <var>oran</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ListenCoresBucketsRatio 0 (iptal)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache HTTP Server 2.4.17, with a kernel supporting
-the socket option <code>SO_REUSEPORT</code> and distributing new connections
-evenly accross listening processes' (or threads') sockets using it (eg. Linux
-3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
-in *BSDs.</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Server 2.4.17 ve sonrasında,
+ <code>SO_REUSEPORT</code> soket seçeneğini destekleyen bir Linux çekirdeğinin
+ varlığında ve yeni bağlantıların bunu kullanan dinleme süreçlerinin (veya
+ evrelerinin) soketleri arasında eşit paylaştırılıyor olması halinde
+ kullanılır. Örneğin Linux 3.9 ve sonrasında kullanılabilirken *BSD'lerin şu
+ anki <code>SO_REUSEPORT</code> gerçeklenimi ile kullanılamaz.</td></tr>
+</table>
+    <p>(çevrimiçi) İşlemci çekirdek sayısının dinleyenlerin buket sayısına
+      <var>oran</var>ı, Apache HTTP Sunucusunun <code>işlemci_çekirdek_sayısı /
+      oran</code> sayıda dinleme buketi oluşturması için kullanılabilir ve bu
+      buketlerin herbiri aynı portlar üzerinde kendi
+      <code class="directive">Listen</code> soketlerini içeriyor olurlar. Bu durumda,
+      her çocuk süreç tek bir buketle çalışır (çocukların oluşturulması
+      sırasında buketler döner dağılımla eşleştirilir).</p>
+
+    <p><code class="directive">ListenCoresBucketsRatio</code> yeni bağlantılar kabul
+      edilirken/darboğazlar oluşurken ölçeklenebilirliği arttırabilir. Çok
+      sayıda işlemci çekirdekli sistemlerde bu özelliğin etkinleştirilmesinin
+      önemli başarım artışları ve daha kısa yanıt süreleri oluşturduğu
+      gözlenmiştir.</p>
+
+    <p>Bu <var>oran</var>ın etkin olabilmesi için işlemci çekirdeği çift sayıda
+      olmalıdır. <var>oran</var> için önerilen değer <code>8</code> olup bu
+      durumda çalışma anında en azından <code>16</code> çekirdek
+      kullanılabiliyor olmalıdır.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">Yönergesi</a></h2>
 <table class="directive">

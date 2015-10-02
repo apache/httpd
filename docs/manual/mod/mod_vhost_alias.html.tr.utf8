@@ -30,7 +30,6 @@
 <a href="../fr/mod/mod_vhost_alias.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_vhost_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Kitlesel sanal konakların devingen olarak yapılandırılmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>vhost_alias_module</td></tr>
@@ -51,8 +50,8 @@
         her durumda <code>/cgi-bin/script.pl</code> betiğini <code>
         /usr/local/apache2/cgi-bin/script.pl</code> betiğine eşleyecektir:</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/</pre>
+      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/nerede/bilinmiyor/%0/cgi-bin/"</pre>
 
     </div>
 </div>
@@ -144,7 +143,7 @@ Sanal Barındırma</a></li>
       aşağıdaki yönergeler kullanılıyor olsun:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%0</pre>
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%0"</pre>
 
 
     <p><code>http://example.com/dizin/dosya.html</code> için yapılan bir istek
@@ -156,7 +155,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%0</pre>
       yapılandırma dosyanızda şöyle yapabilirsiniz:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2</pre>
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2"</pre>
 
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -166,7 +165,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2</pre>
 
     <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
 
-    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2</pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2"</pre>
 
 
     <p>Bu durumda istek
@@ -175,7 +174,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2</pre>
 
     <p>Şöyle bir şey de yapabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+</pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+"</pre>
 
 
     <p>Bu örnek için istek
@@ -206,8 +205,8 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2</pre>
       olabilirdi:</p>
 
     <pre class="prettyprint lang-config">UseCanonicalName DNS
-VirtualDocumentRootIP /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler
-VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin</pre>
+VirtualDocumentRootIP "/usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler"
+VirtualScriptAliasIP  "/usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin"</pre>
 
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -224,7 +223,7 @@ VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin</pre>
       karakterini içermesini isterseniz, bir biçem belirteci ile karışıklığa
       sebep olmaksızın bunu şöyle sağlayabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0</pre>
+    <pre class="prettyprint lang-config">VirtualDocumentRoot "/usr/local/apache/sankonlar/%2.0.%3.0"</pre>
 
 
     <p>Bu durumda <code>http://falan.filan.example.com/dizin/dosya.html</code>

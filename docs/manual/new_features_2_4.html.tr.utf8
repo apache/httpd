@@ -27,7 +27,6 @@
 <a href="./fr/new_features_2_4.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Apache HTTP Sunucusunun 2.2 ve 2.4 sürümleri arasındaki
     başlıca farklara değinilmiştir. 2.0 sürümüne göre yeni özellikler için <a href="new_features_2_2.html">Apache 2.2’de Yeni olan Özellikler</a>
@@ -47,8 +46,9 @@
     <dl>
       <dt>Çalışma anında yüklenebilen MPM'ler</dt>
       <dd>Çok sayıda MPM artık <a href="mpm.html#dynamic">yüklenebilir
-        modül</a> olarak derlenebilmektedir.
-        Kullanılacak MPM'in seçimi çalışma anında yapılabilmektedir.</dd>
+        modül</a> olarak derlenebilmektedir. Kullanılacak MPM'in seçimi
+        çalışma anında <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+        yönergesi üzerinden yapılabilmektedir.</dd>
 
       <dt>Event MPM</dt>
       <dd><a href="mod/event.html">Event MPM</a> artık deneysel değil, ancak
