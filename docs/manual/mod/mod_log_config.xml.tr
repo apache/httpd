@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1619884:1681106 (outdated) -->
+<!-- English Revision: 1681106 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -219,6 +219,15 @@
     <tr><td><code>%T</code></td>
         <td>Saniye cinsinden, isteği sunmak için harcanan zaman.</td></tr>
 
+    <tr><td><code>%{<var>BİRİM</var>}T</code></td>
+        <td><var>BİRİM</var> ile belirtilen zaman birimi cinsinden, isteği
+          sunmak için harcanan zaman. Geçerli birimler: milisaniye için
+          <code>ms</code>, mikrosaniye için <code>us</code>, saniye için
+          <code>s</code>. <code>s</code> kullanımı birimsiz <code>%T</code> ile
+          aynı sonucu verir; <code>us</code> kullanımı <code>%D</code> ile aynı
+          sonucu verir. Birimli <code>%T</code> kullanımı 2.4.13 ve sonrasında
+          geçerlidir.</td></tr>
+
     <tr><td><code>%u</code></td>
         <td>Uzak kullanıcı (kimlik doğrulaması istenmişse vardır; durum kodu
           (<code>%s</code>) 401 ise yanlış olabilir).</td></tr>
@@ -252,8 +261,11 @@
           kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Başlıklar dahil gönderilen bayt sayısı. Sıfır olamaz. Bunu
-          kullanmak için <module>mod_logio</module> etkin olmalıdır.</td></tr>
+        <td>Başlıklar dahil gönderilen bayt sayısı. Bir yanıtın
+          gönderilmesinden önce istekten vazgeçilmesi gibi nadir durumlarda
+          sıfır olabilir. Bunu kullanmak için <module>mod_logio</module> etkin
+          olmalıdır.</td></tr>
+
     <tr><td><code>%S</code></td>
         <td>Aktarılan bayt sayısı (alınan ve gönderilen), istekler ve başlıklar
           dahil; sıfır olamaz. %I ve %O'nun birleşimidir. Bunu kullanmak için
@@ -450,10 +462,10 @@ expr=<var>ifade</var>]</syntax>
     <highlight language="config">
 # Biçem dizgesi yerine takma ad içeren CustomLog
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
+CustomLog "logs/access_log" common
 
 # Biçem dizgesinin kendisini içeren CustomLog
-CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+CustomLog "logs/access_log" "%h %l %u %t \"%r\" %&gt;s %b"
     </highlight>
 
     <p>Üçüncü argüman isteğe bağlı olup,belli bir isteğin günlüğe kaydedilip
@@ -473,8 +485,8 @@ CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
 
     <highlight language="config">
 SetEnvIf Request_URI \.gif$ gif-image
-CustomLog gif-requests.log common env=gif-image
-CustomLog nongif-requests.log common env=!gif-image
+CustomLog "gif-requests.log" common env=gif-image
+CustomLog "nongif-requests.log" common env=!gif-image
     </highlight>
 
     <p>Veya eski <code>RefererIgnore</code> yönergesinin davranışını taklit
@@ -482,7 +494,7 @@ CustomLog nongif-requests.log common env=!gif-image
 
     <highlight language="config">
 SetEnvIf Referer example\.com localreferer
-CustomLog referer.log referer env=!localreferer
+CustomLog "referer.log" referer env=!localreferer
     </highlight>
 </usage>
 </directivesynopsis>
@@ -548,7 +560,7 @@ CustomLog referer.log referer env=!localreferer
 
     <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log
+TransferLog "logs/access_log"
     </highlight>
 </usage>
 </directivesynopsis>

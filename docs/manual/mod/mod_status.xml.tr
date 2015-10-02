@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1334024:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -80,7 +80,7 @@
       eklenebilir:</p>
 
 <highlight language="config">
-&lt;Location /server-status&gt;
+&lt;Location "/server-status"&gt;
     SetHandler server-status
     Require host example.com
 &lt;/Location&gt;

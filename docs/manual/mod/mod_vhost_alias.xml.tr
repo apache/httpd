@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1349158:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -48,8 +48,8 @@
         /usr/local/apache2/cgi-bin/script.pl</code> betiğine eşleyecektir:</p>
 
       <highlight language="config">
-ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/
-VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/
+ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"
+VirtualScriptAlias "/nerede/bilinmiyor/%0/cgi-bin/"
       </highlight>
     </note>
 </summary>
@@ -129,7 +129,7 @@ Sanal Barındırma</a></seealso>
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%0
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%0"
     </highlight>
 
     <p><code>http://example.com/dizin/dosya.html</code> için yapılan bir istek
@@ -142,7 +142,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%0
 
     <highlight language="config">
 UseCanonicalName    Off
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2"
     </highlight>
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -153,7 +153,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
     <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
 
     <highlight language="config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2"
     </highlight>
 
     <p>Bu durumda istek
@@ -163,7 +163,7 @@ VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
     <p>Şöyle bir şey de yapabilirsiniz:</p>
 
     <highlight language="config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+"
     </highlight>
 
     <p>Bu örnek için istek
@@ -196,8 +196,8 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
 
     <highlight language="config">
 UseCanonicalName DNS
-VirtualDocumentRootIP /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler
-VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
+VirtualDocumentRootIP "/usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler"
+VirtualScriptAliasIP  "/usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin"
     </highlight>
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
@@ -215,7 +215,7 @@ VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
       sebep olmaksızın bunu şöyle sağlayabilirsiniz:</p>
 
     <highlight language="config">
-VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
+VirtualDocumentRoot "/usr/local/apache/sankonlar/%2.0.%3.0"
     </highlight>
 
     <p>Bu durumda <code>http://falan.filan.example.com/dizin/dosya.html</code>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1647230:1673563 (outdated) -->
+<!-- English Revision: 1673563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -168,12 +168,12 @@ Barındırma</a></seealso>
     #İlk sanal konak aynı zamanda *:80 için de öntanımlıdır.
     ServerName site1.example.com
     ServerAlias example.com
-    DocumentRoot /siteler/site1
+    DocumentRoot "/siteler/site1"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
     ServerName site2.example.com
-    DocumentRoot /siteler/site2
+    DocumentRoot "/siteler/site2"
 &lt;/VirtualHost&gt;
     </highlight>
 

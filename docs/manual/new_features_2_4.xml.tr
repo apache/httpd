@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1661466:1688011 (outdated) -->
+<!-- English Revision: 1688011 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -40,8 +40,9 @@
     <dl>
       <dt>Çalışma anında yüklenebilen MPM'ler</dt>
       <dd>Çok sayıda MPM artık <a href="mpm.html#dynamic">yüklenebilir
-        modül</a> olarak derlenebilmektedir.
-        Kullanılacak MPM'in seçimi çalışma anında yapılabilmektedir.</dd>
+        modül</a> olarak derlenebilmektedir. Kullanılacak MPM'in seçimi
+        çalışma anında <directive module="mod_so">LoadModule</directive>
+        yönergesi üzerinden yapılabilmektedir.</dd>
 
       <dt>Event MPM</dt>
       <dd><a href="mod/event.html">Event MPM</a> artık deneysel değil, ancak

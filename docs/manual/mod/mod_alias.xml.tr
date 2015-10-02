@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1684314:1689815 (outdated) -->
+<!-- English Revision: 1689815 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -48,14 +48,6 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       farklı bir URL ile yeni bir istek yapmaları için istemcileri
       yönlendirmekte kullanılır. Çoğunlukla özkaynak başka bir yere
       taşındığında kullanılır.</p>
-
-    <p><directive module="mod_alias">Alias</directive>,
-      <directive module="mod_alias">ScriptAlias</directive> ve
-      <directive module="mod_alias">Redirect</directive> yönergeleri
-      bir <directive type="section" module="core">Location</directive> veya
-      <directive type="section" module="core">LocationMatch</directive>
-      bölümünde kullanıldığında hedef yol veya URL'de değişiklik yapmak için
-      <a href="../expr.html">ifade sözdizimi</a> kullanılabilir.</p>
 
     <p><module>mod_alias</module> modülü basit URL değiştirme görevlerini
       yerine getirmek için tasarlanmıştır. Sorgu dizgelerini işleme sokmak
@@ -105,27 +97,15 @@ Alias "/foo" "/gaq"
       <code>/foo</code> rumuzu  daima <code>/foo/bar</code> rumuzundan önce
       eşleşecek, dolayısıyla ikinci yönerge yok sayılacaktı.</p>
 
-    <p><directive module="mod_alias">Alias</directive>,
-      <directive module="mod_alias">ScriptAlias</directive> ve
-      <directive module="mod_alias">Redirect</directive>
-      yönergeleri bir <directive type="section"
-      module="core">Location</directive> veya <directive type="section"
-      module="core">LocationMatch</directive> bölümü içinde kullanıldığında
-      bu yönergeler genel alanda tanımlanmış <directive
-      module="mod_alias">Alias</directive>,
-      <directive module="mod_alias">ScriptAlias</directive> ve
-      <directive module="mod_alias">Redirect</directive> yönergelerine göre
-      öncelik alırlar.</p>
-
-  </section>
+</section>
 
 <directivesynopsis>
 <name>Alias</name>
 <description>URL’leri dosya sistemi konumlarıyla eşler.</description>
-<syntax>Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
+<syntax>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
 <var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+</contextlist>
 
   <usage>
 
@@ -187,22 +167,6 @@ Alias "/image" "/ftp/pub/image"
     <p><var>URL-yolu</var> değiştirgesindeki bölü çizgilerinin sayısı istek
       URL-yolundakiler kadardır.</p>
 
-    <p><directive>Alias</directive> yönergesi bir
-      <directive type="section" module="core">Location</directive> veya
-      <directive type="section" module="core">LocationMatch</directive>
-      bölümü içinde kullanılırsa <var>URL-yolu</var> görmezden gelinip <a
-      href="../expr.html">ifade sözdizimi</a> kullanılarak
-      <var>dosya-yolu</var> yorumlanır.<br /> Bu sözdizimi Apache 2.4.13 ve
-      sonrasında kullanılabilmektedir.</p>
-
-    <highlight language="config">
-&lt;Location "/image"&gt;
-    Alias "/ftp/pub/image"
-&lt;/Location&gt;
-&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Alias "/usr/local/apache/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;
-    </highlight>
   </usage>
 </directivesynopsis>
 
@@ -295,7 +259,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"
 <name>Redirect</name>
 <description>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
 yönlendirir.</description>
-<syntax>Redirect [<var>durum</var>] [<var>URL-yolu</var>]
+<syntax>Redirect [<var>durum</var>] <var>URL-yolu</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -336,10 +300,8 @@ Redirect "/bir" "/iki"
       yönlendirilir. <code>POST</code>'ların iptal edileceğini unutmayın.<br />
       Sadece tam yol parçaları eşleştirilir, bu nedenle
       <code>http://example.com/hizmetfesmekan.txt</code> isteği yukarıdaki
-      yönlendirme ile eşleşmeyecektir. <a href="../expr.html">İfade
-      sözdizimini</a> kullanan daha karmaşık eşleşmeler için
-      <var>URL-yolu</var> değeri aşağıda açıklandığı gibi görmezden gelinir.
-      Bundan başka, düzenli ifadelerin kullanıldığı daha karmaşık eşleşmeler
+      yönlendirme ile eşleşmeyecektir.
+      Düzenli ifadelerin kullanıldığı daha karmaşık eşleşmeler
       için <directive module="mod_alias">RedirectMatch</directive>
       yönergesine bakınız.</p>
 
@@ -347,10 +309,6 @@ Redirect "/bir" "/iki"
     <note><title>Bilginize</title>
       <p>Yapılandırma dosyasında yer alış sırasına bakmaksızın
         <directive>Redirect</directive> yönergeleri
-        <directive>Alias</directive> ve <directive>ScriptAlias</directive>
-        yönergelerinden önce ele alınır. Bir <directive type="section"
-        module="core">Location</directive> bölümü içinde yer alan
-        <directive>Redirect</directive> yönergeleri, URL-yolu içeren
         <directive>Alias</directive> ve <directive>ScriptAlias</directive>
         yönergelerinden önce ele alınır.</p></note>
 
@@ -391,26 +349,6 @@ Redirect "/bir" "/iki"
 Redirect permanent "/bir" "http://example.com/iki"
 Redirect 30" "/yedi" http://example.com/baskabisey"
     </highlight>
-
-    <p><directive>Redirect</directive> yönergesi URL-yolu içeren bir
-      <directive type="section" module="core">Location</directive> veya
-      <directive type="section" module="core">LocationMatch</directive>
-      bölümü içinde görmezden gelinip URL <a href="../expr.html">ifade
-      sözdizimi</a> kullanılarak yorumlanır.<br /> Bu sözdizimi Apache
-      2.4.13 ve sonrasında kullanılabilmektedir.</p>
-
-    <highlight language="config">
-&lt;Location "/bir"&gt;
-    Redirect permanent "http://example.com/iki"
-&lt;/Location&gt;
-&lt;Location "/three"&gt;
-    Redirect 303 "http://example.com/baskabisey"
-&lt;/Location&gt;
-&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
-&lt;/LocationMatch&gt;
-    </highlight>
-
   </usage>
 </directivesynopsis>
 
@@ -481,10 +419,10 @@ URL’ye yönlendirir.</description>
 <directivesynopsis>
 <name>ScriptAlias</name>
 <description>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
-<syntax>ScriptAlias [<var>URL-yolu</var>]
+<syntax>ScriptAlias <var>URL-yolu</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+</contextlist>
 
   <usage>
     <p>Hedef dizini, <module>mod_cgi</module> modülünün CGI betiği
@@ -548,23 +486,6 @@ ScriptAlias "/cgi-bin/" "/siteler/cgi-handler.pl"
      çıkabilir; bu bakımdan <directive>ScriptAlias</directive> yönergesini yok
      sayan URL yollarının belirtilebilme olasılığı gözardı
      edilmemelidir.</note>
-
-    <p><directive>ScriptAlias</directive> yönergesi <var>URL-yolu</var>
-      içeren bir <directive type="section" module="core">Location</directive>
-      veya <directive type="section" module="core">LocationMatch</directive>
-      bölümü içindeyse görmezden gelinip URL ifadesi
-      <a href="../expr.html">ifade sözdizimi</a> kullanılarak yorumlanır.
-      <br />Bu sözdizimi Apache 2.4.13 ve sonrasında kullanılabilmektedir.</p>
-
-    <highlight language="config">
-&lt;Location "/cgi-bin" &gt;
-    ScriptAlias "/web/cgi-bin/"
-&lt;/Location&gt;
-&lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
-    ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
-&lt;/LocationMatch&gt;<br />
-    </highlight>
-
   </usage>
   <seealso><a href="../howto/cgi.html">CGI Öğreticisi</a></seealso>
 </directivesynopsis>

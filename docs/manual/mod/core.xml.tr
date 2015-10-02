@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1675432:1705784 (outdated) -->
+<!-- English Revision: 1705784 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -56,7 +56,7 @@
       protokoller için kullanışlıdır. Örnek:</p>
 
     <highlight language="config">
-    AcceptFilter nntp none
+AcceptFilter nntp none
     </highlight>
 
     <p>Öntanımlı protokol isimleri port 443 için <code>https</code> ve tüm
@@ -460,8 +460,8 @@ AcceptFilter https data
         <directive module="mod_include">XBitHack</directive> yönergelerinin
         kullanımına izin verilir. <directive
         module="core">Options</directive> komutunda belirtilecek seçenekler
-        bir eşit işaretinden sonra aralarına sadece virgül konarak
-        (boşluksuz)  belirtilebilir.
+        bir eşit işaretinden sonra aralarına sadece virgül konarak,
+        fakat virgülden sonra boşluk bırakmadan belirtilebilir.
 
       <note><title>Options'ın örtük iptali</title>
       <p><a href="#accessfilename">.htaccess</a> dosyalarında kullanılabilen
@@ -597,7 +597,7 @@ olarak aktarılmasını etkin kılar</description>
       betiklerin erişebilmesini sağlar. Normalde bu HTTP başlıkları
       betiklerden gizli olup sunucuda HTTP Temel kimlik kanıtlaması etkin
       kılındığında sunucuya erişmekte kullanılan kullanıcı kimliklerinin ve
-      parolalarının betikler tarafından görülmesini mümkün kılar. Bu yönerge,
+      parolalarının betikler tarafından görülmemesini mümkün kılar. Bu yönerge,
       HTTP Temel kimlik kanıtlamasını betiklerin gerçekleştirmesini sağlamak
       için kullanılmalıdır.</p>
 
@@ -1372,6 +1372,10 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
 
     <highlight language="config">ErrorLog syslog:user</highlight>
 
+    <p>Buna ek olarak, modüller kendi günlük kaydı oluşturucusunu sağlayabilir.
+      Sözdizimi yukarıdaki örnekte kullanılan <code>syslog</code> sözdiziminin
+      benzeridir.</p>
+
     <p>GÜVENLİK: Günlük dosyalarının saklandığı dizin, sunucuyu başlatan
       kullanıcı dışındakiler tarafından yazılabilir olduğu takdirde
       güvenliğinizin nasıl tehlikeye gireceği <a
@@ -1628,7 +1632,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
         On</code> için öntanımlı davranışı değiştirecektir. Böyle modüller,
         tüm evrelerin durumu hakkında ayrıntılı bilgi toplanmasına bel bağlar.
         Öntanımlı değer sürüm 2.3.6 itibariyle <module>mod_status</module>
-        tarafından değiştirilmiştir; önceki sürümlerde öntanımlı değer daima
+        tarafından değiştirilmiştir. Önceki sürümlerde öntanımlı değer daima
         <code>Off</code> idi.</p>
     </note>
 
@@ -3155,7 +3159,7 @@ LogLevel info
       özkaynaklara erişimi dizgeleştirmekte kullandıkları mekanizmanın yanında
       isteğe bağlı olarak kilit dosyasının yerini belirler. İlk değiştirge
       olarak <code>default</code> belirtilirse tüm mutekslerin ayarları
-      değişir; ilk değiştirge olarak bir muteks ismi belirtilirse (aşağıdaki
+      değişir; ikinci değiştirge olarak bir muteks ismi belirtilirse (aşağıdaki
       tabloya bakın) yalnızca bu muteksin öntanımlıları değişir.</p>
 
     <p><directive>Mutex</directive> yönergesi genelde aşağıdaki istisnai
@@ -3389,8 +3393,9 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <compatibility>2.3.11 sürümünde öntanımlı değer All değiştirilip FollowSymlinks yapıldı.</compatibility>
 
 <usage>
-    <p><directive>Options</directive> yönergesi belli bir dizinde hangi sunucu
-      özelliklerinin etkin olacağını (veya olmayacağını) belirler.</p>
+    <p><directive>Options</directive> yönergesi belli bir dizinde hangi
+       sunucu özelliklerinin etkin olacağını (veya olmayacağını)
+       belirler.</p>
 
     <p><var>seçenek</var> olarak hiçbir ek özellik etkin olmayacaksa
       <code>None</code>, aksi takdirde aşağıdakilerden biri veya bir kaçı
@@ -3408,13 +3413,13 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       <dd>Sunucu bu dizindeki sembolik bağları izler. Bu öntanımlıdır.
       <note>
       <p>Sembolik bağlar izlense bile <directive type="section"
-        module="core">Directory</directive> bölümleriyle eşleşen dosya yolları
-        değiştirilmez.</p>
+        module="core">Directory</directive> bölümleriyle eşleşen dosya
+       yolları değiştirilmez.</p>
       <p><code>FollowSymLinks</code> ve
-      <code>SymLinksIfOwnerMatch</code> <directive
-      module="core">Options</directive> sadece <directive
-      type="section" module="core">Directory</directive> bölümlerinde veya
-      <code>.htaccess</code> dosyaları içinde çalışır.</p>
+        <code>SymLinksIfOwnerMatch</code> <directive
+        module="core">Options</directive> sadece <directive
+        type="section" module="core">Directory</directive> bölümlerinde veya
+        <code>.htaccess</code> dosyaları içinde çalışır.</p>
       <p>Sembolik bağ sınamaları, atlatılabilir yarış koşullarına konu
         olduğundan bu seçeneğin yokluğu bir güvenlik sınırlaması olarak
         değerlendirilmemelidir.</p>
@@ -3546,12 +3551,82 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 
     <highlight language="config">Protocol https</highlight>
 
-    <p>Protokolü <directive module="mpm_common">Listen</directive> yönergesini
-      kullanarak da belirtebilirsiniz.</p>
+    <p>Protokolü <directive module="mpm_common">Listen</directive>
+       yönergesini kullanarak da belirtebilirsiniz.</p>
 </usage>
 <seealso><directive>AcceptFilter</directive></seealso>
 <seealso><directive module="core">AcceptFilter</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Protocols</name>
+<description>Sunucu/sanal konak için kullanılabilecek protokoller</description>
+<syntax>Protocols <var>protokol</var> ...</syntax>
+<default>Protocols http/1.1</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Sadece Apache 2.4.17 ve sonrasında kullanılabilir.</compatibility>
+
+<usage>
+    <p>Bu yönerge bir sunucu/sanal konak için kullanılabilecek
+      protokolleri belirtmekte kullanılır. Bu liste, bir istemcinin bir
+      sanal konak veya sunucu ile uzlaşabilmesini sağlayan prokolleri
+      belirler.</p>
+
+    <p>Bir sanal konak veya sunucuda kullanılabilecek protolleri
+      çeşitlendirmek isterseniz bu protokolleri belirtmeniz gerekir.
+      1.0 ve 0.9 istemcilerle uyumlu olan http/1.1 protokolü
+      öntanımlıdır.</p>
+
+    <p>Örneğin, bir sunucunun TLS'li HTTP/2 protokolünü desteklemesini
+      şöyle sağlayabilirsiniz:</p>
+
+    <highlight language="config">
+        Protocols h2 http/1.1
+    </highlight>
+
+    <p>Geçerli protokoller, http ve https bağlantıları için
+       <code>http/1.1</code> htps bağlantıları için <code>h2</code> ve
+       http bağlantıları için <code>h2c</code> protokolleridir. Modüller
+       başka protokollerin de etkinleştirilmesini gerektirebilir.</p>
+
+    <p>Kullanımından vazgeçilmiş protokollerin silinmesi gerekmez. Böyle
+       protokol isimleri basitçe yoksayılır.</p>
+
+    <p>Ana sunucu için belirtilen protokoller, kendi protokol yönergesi
+       olmayan sanal konaklar için de geçerlidir. Diğer yandan sanal
+       konaklarda protokol belirtilmesi ana sunucuda belirtien
+       protollerin bu sanal konaklarda geçersiz olmasına sebep olur.
+    </p>
+
+</usage>
+<seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>ProtocolsHonorOrder</name>
+<description>Uzlaşma sırasında protokollerin öncelik sırasını belirler</description>
+<syntax>ProtocolsHonorOrder On|Off</syntax>
+<default>ProtocolsHonorOrder On</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Sadece Apache 2.4.17 ve sonrasında kullanılabilir.</compatibility>
+
+<usage>
+    <p>Sunucuda <directive>Protocols</directive> yönergesinde listelemiş
+      protokollerin mi yoksa istemcinin protokol listesinin mi öncelikli
+      olacağı bu yönerge ile belirtilir.</p>
+
+    <p>Off belirtilirse, istemcinin protokol listesi sunucu
+      yapılandırmasındaki sıralamanın önüne geçer.</p>
+
+    <p><directive>ProtocolsHonorOrder</directive> yönergesine <code>on</code>
+         belirtilirse (öntanımlıdır), istemicinin protokol sıralaması dikkate
+         alınmaz ve protokol uzlaşımının sonucunu sunucu ayarlarındaki
+         sıralama belirler.</p>
+
+</usage>
+<seealso><directive module="core">Protocols</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4239,6 +4314,9 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       değiştirmek gerekmeksizin <directive module="core" type="section"
       >IfDefine</directive> bölümlerinin kullanımını değiştirmek için
       kullanılabilir.</p>
+    <p>Bu yönerge sanal konak bağlamında desteklenirken, kapsanan sanal
+      konaklar haricinde, değişiklikleri kendisinden sonraki tüm yapılandırma
+      yönergelerinde görünür kılar.</p>
 </usage>
 </directivesynopsis>
 
@@ -4475,14 +4553,14 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <syntax>MergeTrailers [on|off]</syntax>
 <default>MergeTrailers off</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>2.4.10 ve sonrası</compatibility>
+<compatibility>2.4.11 ve sonrası</compatibility>
 
 <usage>
     <p>Bu yönerge HTTP Trailer alanlarının dahili HTTP başlıklarına kopyalanıp
       kopyalanmayacağını belirler. Kopyalama işlemi istek gövdesi tamamen
       alındığında gerçekleşir, çoğu başlık işleminin çok sonra istek
       başlıklarını inceleme veya değiştirme şansı olur.</p>
-    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.10 öncesi
+    <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.11 öncesi
       dağıtımlarla uyumluluk için vardır.</p>
 </usage>
 </directivesynopsis>
