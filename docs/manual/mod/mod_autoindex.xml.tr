@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1598136:1673893 (outdated) -->
+<!-- English Revision: 1673893 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -564,10 +564,10 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
       kaldırır. </p>
 
     <highlight language="config">
-&lt;Directory /var/www&gt;
+&lt;Directory "/var/www"&gt;
     IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
-&lt;Directory /var/www/backups&gt;
+&lt;Directory "/var/www/backups"&gt;
     IndexIgnoreReset ON
     IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
 &lt;/Directory&gt;
@@ -697,7 +697,10 @@ IndexOptions Charset=UTF-8
         sebep olur. Böylece tarayıcının tüm simgelerin yüklenmesini beklemeden
         sayfa yerleşimi için bir ön hesaplama yapabilmesi mümkün olur. Seçenek
         bir değer belirtilmeksizin kullanıldığında Apache http tarafından
-        atanmış standart simge yüksekliği öntanımlıdır.</dd>
+        atanmış standart simge yüksekliği öntanımlıdır. <strong>Bu
+        seçenek sadece <a href="#indexoptions.fancyindexing"
+        ><code>FancyIndexing</code></a>  seçeneği etkinse etkili
+        olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth"
              ><code>IconWidth[=<em>benek-sayısı</em>]</code></a></dt>
@@ -783,7 +786,9 @@ IndexOptions Charset=UTF-8
         yönergesinin açıklamasına bakınız. Ayrıca, açıklama sütununun
         genişliğini ayarlayan <code><a href="#indexoptions.descriptionwidth"
         >DescriptionWidth</a></code> dizin listeleme seçeneğine de
-        bakınız.</dd>
+        bakınız. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble"
                id="indexoptions.suppresshtmlpreamble"
@@ -818,7 +823,9 @@ IndexOptions Charset=UTF-8
                ><code>SuppressLastModified</code></a></dt>
 
       <dd>Süslü dizin listelemede son değişiklik tarihinin gösterilmesi
-        engellenir.</dd>
+        engellenir. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppressrules"
                id="indexoptions.suppressrules"><code>SuppressRules</code></a>
@@ -829,12 +836,17 @@ IndexOptions Charset=UTF-8
         etiketinin içeriğinde <code>img</code> ve <code>hr</code>
         etiketlerinin bulunmasına izin vermediğinden <code>SuppressIcon</code>
         ve <code>SuppressRules</code> seçenekleri birlikte kullanılarak HTML
-        3.2 belirtimine uyum sağlanır.</dd>
+        3.2 belirtimine uyum sağlanır. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize"
              ><code>SuppressSize</code></a></dt>
 
       <dd>Süslü dizin listelemede dosya boyutunun gösterilmesi engellenir.
+       <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong>
       </dd>
 
       <dt><a name="indexoptions.trackmodified"
@@ -899,7 +911,10 @@ IndexOptions Type=text/plain
                id="indexoptions.xhtml"><code>XHTML</code></a></dt>
 
       <dd><code>XHTML</code> seçeneği <module>mod_autoindex</module>’in kodu
-        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.</dd>
+        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.
+        <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
     </dl>
 
    <!--
@@ -917,7 +932,7 @@ IndexOptions Type=text/plain
         Yani,
 
      <highlight language="config">
-&lt;Directory /foo&gt;
+&lt;Directory "/foo"&gt;
     IndexOptions HTMLTable
     IndexOptions SuppressColumnsorting
 &lt;/Directory&gt;

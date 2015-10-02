@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1590654:1705612 (outdated) -->
+<!-- English Revision: 1705612 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -261,6 +261,45 @@ Listen 192.170.2.1:8443 https
 <seealso><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress"
 ><code>Address already in use</code> hata iletisinin ve diğer sebeplerin
 açıklaması</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenCoresBucketsRatio</name>
+<description>İşlemci çekirdek sayısının dinleyenlerin buket sayısına oranı</description>
+<syntax>ListenCoresBucketsRatio <var>oran</var></syntax>
+<default>ListenCoresBucketsRatio 0 (iptal)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist>
+<module>event</module>
+<module>prefork</module>
+<module>worker</module></modulelist>
+<compatibility>Apache HTTP Server 2.4.17 ve sonrasında,
+ <code>SO_REUSEPORT</code> soket seçeneğini destekleyen bir Linux çekirdeğinin
+ varlığında ve yeni bağlantıların bunu kullanan dinleme süreçlerinin (veya
+ evrelerinin) soketleri arasında eşit paylaştırılıyor olması halinde
+ kullanılır. Örneğin Linux 3.9 ve sonrasında kullanılabilirken *BSD'lerin şu
+ anki <code>SO_REUSEPORT</code> gerçeklenimi ile kullanılamaz.</compatibility>
+
+<usage>
+    <p>(çevrimiçi) İşlemci çekirdek sayısının dinleyenlerin buket sayısına
+      <var>oran</var>ı, Apache HTTP Sunucusunun <code>işlemci_çekirdek_sayısı /
+      oran</code> sayıda dinleme buketi oluşturması için kullanılabilir ve bu
+      buketlerin herbiri aynı portlar üzerinde kendi
+      <directive>Listen</directive> soketlerini içeriyor olurlar. Bu durumda,
+      her çocuk süreç tek bir buketle çalışır (çocukların oluşturulması
+      sırasında buketler döner dağılımla eşleştirilir).</p>
+
+    <p><directive>ListenCoresBucketsRatio</directive> yeni bağlantılar kabul
+      edilirken/darboğazlar oluşurken ölçeklenebilirliği arttırabilir. Çok
+      sayıda işlemci çekirdekli sistemlerde bu özelliğin etkinleştirilmesinin
+      önemli başarım artışları ve daha kısa yanıt süreleri oluşturduğu
+      gözlenmiştir.</p>
+
+    <p>Bu <var>oran</var>ın etkin olabilmesi için işlemci çekirdeği çift sayıda
+      olmalıdır. <var>oran</var> için önerilen değer <code>8</code> olup bu
+      durumda çalışma anında en azından <code>16</code> çekirdek
+      kullanılabiliyor olmalıdır.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
