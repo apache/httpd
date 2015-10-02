@@ -41,6 +41,15 @@
           release relative to other standard modules. Users are encouraged to 
           consult the "CHANGES" file for potential updates.</p>
         </note>
+
+        <p>You must enable HTTP/2 via <directive
+        module="core">Protocols</directive> in order to use the
+        functionality described in this document:</p>
+
+        <highlight language="config">
+            Protocols h2 http/1.1
+        </highlight>
+
     </summary>
     
     <directivesynopsis>

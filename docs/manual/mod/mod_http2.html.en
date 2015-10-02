@@ -46,6 +46,13 @@
           release relative to other standard modules. Users are encouraged to 
           consult the "CHANGES" file for potential updates.</p>
         </div>
+
+        <p>You must enable HTTP/2 via <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> in order to use the
+        functionality described in this document:</p>
+
+        <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
+
+
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
