@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1702644:1706008 (outdated) -->
+<!-- English Revision: 1706008 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,6 +104,9 @@ export&eacute;</td></tr>
 <td>Les entr&eacute;es d'extension subjectAltName du certificat client de type rfc822Name</td></tr>
 <tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>cha&icirc;ne</td>
 <td>Les entr&eacute;es d'extension subjectAltName du certificat client de type dNSName</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td>
+<td>cha&icirc;ne</td>    <td>Extensions subjectAltName de type otherName du
+certificat client, forme Microsoft du nom principal de l'utilisateur (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>cha&icirc;ne</td>
 <td>DN de l'&eacute;metteur du certificat du client</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>cha&icirc;ne</td>
@@ -144,6 +147,9 @@ certificat de serveur de type rfc822Name</td></tr>
 <tr><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>cha&icirc;ne</td>
 <td>Les entr&eacute;es d'extension subjectAltName du
 certificat de serveur de type dNSName</td></tr>
+<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td>
+<td>cha&icirc;ne</td>    <td>Extensions subjectAltName de type otherName du
+certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
 <tr><td><code>SSL_SERVER_I_DN</code></td>               <td>cha&icirc;ne</td>
 <td>DN de l'&eacute;metteur du certificat du serveur</td></tr>
 <tr><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>cha&icirc;ne</td>
@@ -703,7 +709,7 @@ applicable.
 <description>Indique les versions du protocole SSL/TLS
 disponibles</description>
 <syntax>SSLProtocol [+|-]<em>protocole</em> ...</syntax>
-<default>SSLProtocol all</default>
+<default>SSLProtocol all -SSLv3 (jusqu'&agrave; la version 2.4.16 : all)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -719,7 +725,9 @@ casse) :</p>
     <p>
     Il s'agit du protocole Secure Sockets Layer (SSL) version 3.0 de
     Netscape Corporation. C'est le successeur de SSLv2 et le
-    pr&eacute;d&eacute;cesseur de TLSv1.</p></li>
+    pr&eacute;d&eacute;cesseur de TLSv1, mais est consid&eacute;r&eacute; comme
+    obsol&egrave;te dans la <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC
+    7568</a></p></li>
 
 <li><code>TLSv1</code>
     <p>
@@ -741,7 +749,10 @@ casse) :</p>
 <li><code>all</code>
     <p>
     C'est un raccourci pour ``<code>+SSLv3 +TLSv1</code>'' ou - &agrave; partir
-    de la version 1.0.1 d'OpenSSL - ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>.</p></li>
+    de la version 1.0.1 d'OpenSSL - ``<code>+SSLv3 +TLSv1 +TLSv1.1
+    +TLSv1.2</code>'' (sauf si OpenSSL a &eacute;t&eacute; compil&eacute; avec l'option
+    ``no-ssl3'', auquel cas <code>all</code> n'inclura pas
+    <code>+SSLv3</code>).</p></li>
 </ul>
 <example><title>Exemple</title>
 <highlight language="config">
@@ -897,9 +908,9 @@ peut <strong>plus</strong> y &ecirc;tre rajout&eacute; plus tard)</li>
 <code>EXP</code> sont toujours d&eacute;sactiv&eacute;s</title>
 <p>Depuis la version 2.4.7, les
 algorithmes de type null ou destin&eacute;s &agrave; l'exportation sont toujours
-d&eacute;sactiv&eacute;s car mod_ssl fait
-obligatoirement pr&eacute;c&eacute;der toute cha&icirc;ne de suite d'algorithmes par
-<code>!aNULL:!eNULL:!EXP:</code> &agrave; l'initialisation.</p>
+d&eacute;sactiv&eacute;s car mod_ssl ajoute obligatoirement
+<code>!aNULL:!eNULL:!EXP</code> &agrave; toute cha&icirc;ne d'algorithme de
+chiffrement &agrave; l'initialisation.</p>
 </note>
 
 <p>Pour vous simplifier la vie, vous pouvez utiliser la commande
@@ -982,44 +993,44 @@ PEM</description>
 les informations de certificat
 X.509 du serveur cod&eacute;es au format PEM. Ce fichier doit contenir
 au minimum un certificat d'entit&eacute; finale (feuille). 
-La directive peut être utilisée plusieurs fois (elle référence des
-fichiers différents) pour accepter plusieurs algorithmes
+La directive peut &ecirc;tre utilis&eacute;e plusieurs fois (elle r&eacute;f&eacute;rence des
+fichiers diff&eacute;rents) pour accepter plusieurs algorithmes
 d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le
-nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
-avec mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
+nombre d'algorithmes support&eacute;s d&eacute;pend de la version d'OpenSSL utilis&eacute;e
+avec mod_ssl : &agrave; partir de la version 1.0.0, la commande <code>openssl
 list-public-key-algorithms</code> affiche la liste des algorithmes
-supportés.
+support&eacute;s.
 </p>
 
 <p>Les fichiers peuvent aussi contenir des certificats de CA
-intermédiaires triés depuis la feuille vers la racine. Cette
-fonctionnalité est disponible depuis la version 2.4.8 du serveur HTTP
-Apache, et rend obsolète la directive <directive
+interm&eacute;diaires tri&eacute;s depuis la feuille vers la racine. Cette
+fonctionnalit&eacute; est disponible depuis la version 2.4.8 du serveur HTTP
+Apache, et rend obsol&egrave;te la directive <directive
 module="mod_ssl">SSLCertificateChainFile</directive>. A partir de la
-version 1.0.2 d'OpenSSL, il est alors possible de configurer la chaîne
+version 1.0.2 d'OpenSSL, il est alors possible de configurer la cha&icirc;ne
 de certification en fonction du certificat.</p>
 
 <p>Depuis la version 2.4.7 du serveur HTTP Apache, on peut aussi ajouter
-des paramètres DH personnalisés et un nom EC
-curve pour les clés éphémères à la fin du premier fichier défini par la
+des param&egrave;tres DH personnalis&eacute;s et un nom EC
+curve pour les cl&eacute;s &eacute;ph&eacute;m&egrave;res &agrave; la fin du premier fichier d&eacute;fini par la
 directive <directive module="mod_ssl">SSLCertificateFile</directive>.
-Ces paramètres peuvent être générés avec les commandes <code>openssl
-dhparam</code> et <code>openssl ecparam</code>, et ils peuvent être
-ajoutés tel quel à la fin du premier fichier de certificat. En effet,
-seul le premier fichier de certificat défini peut être utilisé pour
-enregistrer des paramètres personnalisés, car ces derniers s'appliquent
-indépendamment de l'algorithme d'authentification utilisé.
+Ces param&egrave;tres peuvent &ecirc;tre g&eacute;n&eacute;r&eacute;s avec les commandes <code>openssl
+dhparam</code> et <code>openssl ecparam</code>, et ils peuvent &ecirc;tre
+ajout&eacute;s tel quel &agrave; la fin du premier fichier de certificat. En effet,
+seul le premier fichier de certificat d&eacute;fini peut &ecirc;tre utilis&eacute; pour
+enregistrer des param&egrave;tres personnalis&eacute;s, car ces derniers s'appliquent
+ind&eacute;pendamment de l'algorithme d'authentification utilis&eacute;.
 </p>
 
-<p>Enfin, il est aussi possible d'ajouter la clé privée du certificat de
-l'entité finale au fichier de certificat, ce qui permet de se passer
+<p>Enfin, il est aussi possible d'ajouter la cl&eacute; priv&eacute;e du certificat de
+l'entit&eacute; finale au fichier de certificat, ce qui permet de se passer
 d'une directive <directive
-module="mod_ssl">SSLCertificateKeyFile</directive> séparée. Cette
-pratique est cependant fortement déconseillée. En effet, les fichiers de
-certificats qui contiennent de tels clés embarquées doivent être définis
-avant les certificats en utilisant un fichier de clé séparé. En outre,
-si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
-passe de la clé s'ouvre au démarrage du serveur.
+module="mod_ssl">SSLCertificateKeyFile</directive> s&eacute;par&eacute;e. Cette
+pratique est cependant fortement d&eacute;conseill&eacute;e. En effet, les fichiers de
+certificats qui contiennent de tels cl&eacute;s embarqu&eacute;es doivent &ecirc;tre d&eacute;finis
+avant les certificats en utilisant un fichier de cl&eacute; s&eacute;par&eacute;. En outre,
+si la cl&eacute; est chiffr&eacute;e, une bo&icirc;te de dialogue pour entrer le mot de
+passe de la cl&eacute; s'ouvre au d&eacute;marrage du serveur.
 </p>
 
 <note>
@@ -1070,11 +1081,11 @@ une directive <directive>SSLCertificateFile</directive> correspondante.
 </p>
 
 <p>
-La clé privé peut aussi être ajoutée au fichier défini par la directive
+La cl&eacute; priv&eacute; peut aussi &ecirc;tre ajout&eacute;e au fichier d&eacute;fini par la directive
 <directive module="mod_ssl">SSLCertificateFile</directive>, mais cette
-pratique est fortement déconseillée. En effet, les fichiers de
-certificats qui comportent une telle clé doivent être définis après les
-certificats en utilisant un fichier de clé séparé.</p>
+pratique est fortement d&eacute;conseill&eacute;e. En effet, les fichiers de
+certificats qui comportent une telle cl&eacute; doivent &ecirc;tre d&eacute;finis apr&egrave;s les
+certificats en utilisant un fichier de cl&eacute; s&eacute;par&eacute;.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -2202,7 +2213,7 @@ un serveur mandataire direct pour les requ&ecirc;tes SSL/TLS.</p>
 <description>D&eacute;finit les protocoles SSL disponibles pour la fonction de
 mandataire</description>
 <syntax>SSLProxyProtocol [+|-]<em>protocole</em> ...</syntax>
-<default>SSLProxyProtocol all</default>
+<default>SSLProxyProtocol all -SSLv3 (jusqu'&agrave; la version 2.4.16: all)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>Options</override>
