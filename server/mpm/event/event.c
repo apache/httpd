@@ -304,9 +304,8 @@ static serf_context_t *g_serf;
 /* The structure used to pass unique initialization info to each thread */
 typedef struct
 {
-    int pid;
-    int tid;
-    int sd;
+    int pslot;  /* process slot */
+    int tslot;  /* worker slot of the thread */
 } proc_info;
 
 /* Structure used to pass information to the thread responsible for
@@ -1736,7 +1735,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
     apr_status_t rc;
     proc_info *ti = dummy;
-    int process_slot = ti->pid;
+    int process_slot = ti->pslot;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_time_t timeout_time = 0, last_log;
     int closed = 0, listeners_disabled = 0;
@@ -2147,8 +2146,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
 {
     proc_info *ti = dummy;
-    int process_slot = ti->pid;
-    int thread_slot = ti->tid;
+    int process_slot = ti->pslot;
+    int thread_slot = ti->tslot;
     apr_status_t rv;
     int is_idle = 0;
 
@@ -2260,9 +2259,8 @@ static void create_listener_thread(thread_starter * ts)
     apr_status_t rv;
 
     my_info = (proc_info *) ap_malloc(sizeof(proc_info));
-    my_info->pid = my_child_num;
-    my_info->tid = -1;          /* listener thread doesn't have a thread slot */
-    my_info->sd = 0;
+    my_info->pslot = my_child_num;
+    my_info->tslot = -1;      /* listener thread doesn't have a thread slot */
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
@@ -2376,9 +2374,8 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             }
 
             my_info = (proc_info *) ap_malloc(sizeof(proc_info));
-            my_info->pid = my_child_num;
-            my_info->tid = i;
-            my_info->sd = 0;
+            my_info->pslot = my_child_num;
+            my_info->tslot = i;
 
             /* We are creating threads right now */
             ap_update_child_status_from_indexes(my_child_num, i,
