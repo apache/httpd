@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1696884:1705682 (outdated) -->
+<!-- English Revision: 1705682 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1375,7 +1375,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	g&eacute;n&eacute;ralement du style <code>JSESSIONID</code> ou
 	<code>PHPSESSIONID</code>, et d&eacute;pend du serveur d'application
 	d'arri&egrave;re-plan qui supporte les sessions. Si le serveur
-	d'application d'arri&egrave;re-plan utilise des noms diff&eacute;rents pour
+	d'application d'arri&egrave;re-plan utilise un nom diff&eacute;rent pour
 	les cookies et les identifiants cod&eacute;s d'URL (comme les
 	conteneurs de servlet), s&eacute;parez-les par le caract&egrave;re '|'. La
 	premi&egrave;re partie contient le cookie et la seconde le chemin.<br />

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1590654:1705612 (outdated) -->
+<!-- English Revision: 1705612 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -279,6 +279,52 @@ qu'utilise le serveur HTTP Apache</a></seealso>
 href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Autre
 discussion &agrave; propos du message d'erreur <code>Address already in
 use</code>, citant d'autres causes possibles.</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ListenCoresBucketsRatio</name>
+<description>Rapport entre le nombre de coeurs de processeur activ&eacute;s et
+le nombre de segments d'&eacute;coute</description>
+<syntax>ListenCoresBucketsRatio <var>ratio</var></syntax>
+<default>ListenCoresBucketsRatio 0 (disabled)</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist>
+<module>event</module>
+<module>prefork</module>
+<module>worker</module></modulelist>
+<compatibility>Disponible &agrave; partir de la version 2.4.13 du serveur HTTP
+Apache, avec un noyau supportant l'option de socket
+<code>SO_REUSEPORT</code>, et distribuant uniform&eacute;ment les nouvelles
+connexions aux sockets d'&eacute;coute des processus (ou threads) qui
+l'utilisent (par exemple Linux versions 3.9 et ult&eacute;rieures, mais pas
+l'impl&eacute;mentation courante de <code>SO_REUSEPORT</code> par les
+plateformes de type BSD.</compatibility>
+
+<usage>
+    <p>Vous pouvez utiliser la directive
+    <directive>ListenCoresBucketsRatio</directive> pour sp&eacute;cifier un
+    <var>ratio</var> entre le nombre de coeurs de CPU activ&eacute;s et le
+    nombre de segments d'&eacute;coute (listeners' buckets) souhait&eacute;s ;  le
+    serveur HTTP Apache va alors cr&eacute;er<code>num_cpu_cores / ratio</code>
+    segments d'&eacute;coute, chacun contenant son propre socket d'&eacute;coute
+    <directive>Listen</directive> sur le ou les m&ecirc;mes ports ; chaque
+    processus enfant sera associ&eacute; &agrave; un seul segment d'&eacute;coute (avec une
+    distribution de type round-robin des segments &agrave; la cr&eacute;ation des
+    processus enfants).</p>
+
+    <p>La directive <directive>ListenCoresBucketsRatio</directive> peut
+    am&eacute;liorer le support de la mont&eacute;e en charge lorsque l'arriv&eacute;e de
+    nouvelles connexions est/devient un goulot d'&eacute;tranglement. Le test
+    de cette fonctionnalit&eacute; avec des machines poss&eacute;dant un nombre de
+    coeurs de CPU important a permit de constater une am&eacute;lioration des
+    performances significative et des temps de r&eacute;ponse plus courts.</p>
+
+    <p>Pour que cette fonctionnalit&eacute; soit activ&eacute;e, le nombre de coeurs
+    de CPU doit &ecirc;tre &eacute;gal au moins au double du <var>ratio</var>
+    sp&eacute;cifi&eacute;. Si vous sp&eacute;cifiez la valeur recommand&eacute;e pour
+    <var>ratio</var>, &agrave; savoir <code>8</code>, le nombre minimum de
+    coeurs de processeurs disponibles sera alors de <code>16</code>.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

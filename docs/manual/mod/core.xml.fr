@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1688755:1705784 (outdated) -->
+<!-- English Revision: 1705784 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3936,6 +3936,84 @@ seulement depuis la version 2.3.3 sous Windows.</compatibility>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+    <name>Protocols</name>
+    <description>Protocoles disponibles pour un serveur virtuel ou non</description>
+    <syntax>Protocols <var>protocole</var> ...</syntax>
+    <default>Protocols http/1.1</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
+    HTTP Apache.</compatibility>
+    
+    <usage>
+        <p>Cette directive permet de sp&eacute;cifier la liste des protocoles
+	support&eacute;s par un serveur virtuel ou non. Cette liste &eacute;num&egrave;re les
+	protocoles qu'un client sera autoris&eacute; &agrave; n&eacute;gocier avec ce
+	serveur.</p>
+        
+        <p>Par d&eacute;faut,
+	seul le	protocole http/1.1 est disponible (compatible avec les
+	clients http/1.0 et http/0.9). Par cons&eacute;quent, vous devez
+	fournir cette liste si vous voulez &eacute;tendre les protocoles
+	disponibles pour le serveur.</p>
+        
+        <p>Par exemple, si vous voulez autoriser le protocole
+	HTTP/2 pour un serveur avec TLS, utilisez
+	cette directive comme suit :</p>
+        
+        <highlight language="config">
+            Protocols h2 http/1.1
+        </highlight>
+
+        <p>Les protocoles valides sont <code>http/1.1</code> pour les
+	connexions http et https, <code>h2</code> pour les connections
+	https et <code>h2c</code> pour les connexions http. D'autres
+	modules peuvent fournir d'autres protocoles.</p>
+        
+        <p>Sp&eacute;cifier des protocoles non disponibles ou d&eacute;sactiv&eacute;s n'aura
+	aucun effet, et ceux-ci seront simplement ignor&eacute;s.</p>
+        
+        <p>Si un serveur virtuel ne poss&egrave;de pas de directive Protocols
+	propre, il h&eacute;rite des protocoles sp&eacute;cifi&eacute;s pour le serveur
+	principal. Autrement dit, les directives Protocols d&eacute;finies au
+	niveau d'un serveur virtuel remplacent celles d&eacute;finies au niveau
+	du serveur principal.
+        </p>
+
+    </usage>
+    <seealso><directive module="core">ProtocolsHonorOrder</directive></seealso>
+</directivesynopsis>
+
+
+<directivesynopsis>
+    <name>ProtocolsHonorOrder</name>
+    <description>D&eacute;termine qui du client ou du serveur d&eacute;termine l'ordre
+    des protocoles au cours de la n&eacute;gociation de la connexion</description>
+    <syntax>ProtocolsHonorOrder On|Off</syntax>
+    <default>ProtocolsHonorOrder On</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible &agrave; partir de la version 2.4.17 du serveur
+    HTTP Apache.</compatibility>
+    
+    <usage>
+        <p>Cette directive permet de d&eacute;finir si le serveur doit tenir
+	compte de l'ordre des protocoles d&eacute;finis par la directive
+	<directive>Protocols</directive>.</p>
+        
+        <p>Si cette directive est d&eacute;finie &agrave; Off, l'ordre de la liste des
+	protocoles fournie par le client l'emporte sur l'ordre d&eacute;fini
+	dans la configuration du serveur.</p>
+        
+        <p>Si la directive <directive>ProtocolsHonorOrder</directive>
+	est d&eacute;finie &agrave; <code>on</code> (valeur par d&eacute;faut),
+	il n'est pas tenu compte de l'ordre de la liste des protocoles
+	fournie par le client, et seul l'ordre de la liste des protocles
+	d&eacute;finie au niveau du serveur influera la
+	n&eacute;gociation du protocole.</p>
+        
+    </usage>
+    <seealso><directive module="core">Protocols</directive></seealso>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>RLimitCPU</name>
