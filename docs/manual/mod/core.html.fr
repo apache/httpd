@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -3861,16 +3859,50 @@ seulement depuis la version 2.3.3 sous Windows.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="protocols" id="protocols">Directive</a> <a name="Protocols" id="Protocols">Protocols</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocols available for a server/virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocoles disponibles pour un serveur virtuel ou non</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocols <var>protocole</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Protocols http/1.1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Only available from Apache 2.4.17 and later.</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
+    HTTP Apache.</td></tr>
+</table>
+        <p>Cette directive permet de spécifier la liste des protocoles
+	supportés par un serveur virtuel ou non. Cette liste énumère les
+	protocoles qu'un client sera autorisé à négocier avec ce
+	serveur.</p>
+        
+        <p>Par défaut,
+	seul le	protocole http/1.1 est disponible (compatible avec les
+	clients http/1.0 et http/0.9). Par conséquent, vous devez
+	fournir cette liste si vous voulez étendre les protocoles
+	disponibles pour le serveur.</p>
+        
+        <p>Par exemple, si vous voulez autoriser le protocole
+	HTTP/2 pour un serveur avec TLS, utilisez
+	cette directive comme suit :</p>
+        
+        <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
+
+
+        <p>Les protocoles valides sont <code>http/1.1</code> pour les
+	connexions http et https, <code>h2</code> pour les connections
+	https et <code>h2c</code> pour les connexions http. D'autres
+	modules peuvent fournir d'autres protocoles.</p>
+        
+        <p>Spécifier des protocoles non disponibles ou désactivés n'aura
+	aucun effet, et ceux-ci seront simplement ignorés.</p>
+        
+        <p>Si un serveur virtuel ne possède pas de directive Protocols
+	propre, il hérite des protocoles spécifiés pour le serveur
+	principal. Autrement dit, les directives Protocols définies au
+	niveau d'un serveur virtuel remplacent celles définies au niveau
+	du serveur principal.
+        </p>
+
+    
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#protocolshonororder">ProtocolsHonorOrder</a></code></li>
 </ul>
@@ -3878,16 +3910,33 @@ seulement depuis la version 2.3.3 sous Windows.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="protocolshonororder" id="protocolshonororder">Directive</a> <a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocols available for a server/virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine qui du client ou du serveur détermine l'ordre
+    des protocoles au cours de la négociation de la connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProtocolsHonorOrder On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Only available from Apache 2.4.17 and later.</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
+    HTTP Apache.</td></tr>
+</table>
+        <p>Cette directive permet de définir si le serveur doit tenir
+	compte de l'ordre des protocoles définis par la directive
+	<code class="directive">Protocols</code>.</p>
+        
+        <p>Si cette directive est définie à Off, l'ordre de la liste des
+	protocoles fournie par le client l'emporte sur l'ordre défini
+	dans la configuration du serveur.</p>
+        
+        <p>Si la directive <code class="directive">ProtocolsHonorOrder</code>
+	est définie à <code>on</code> (valeur par défaut),
+	il n'est pas tenu compte de l'ordre de la liste des protocoles
+	fournie par le client, et seul l'ordre de la liste des protocles
+	définie au niveau du serveur influera la
+	négociation du protocole.</p>
+        
+    
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#protocols">Protocols</a></code></li>
 </ul>
