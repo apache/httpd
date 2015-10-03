@@ -58,6 +58,7 @@ enabled:
 
 * libxml2 (e.g., mod_proxy_html)
 * lua 5.1 (mod_lua)
+* nghttp2 (mod_http2)
 * openssl (mod_ssl and https support for ab)
 * zlib (mod_deflate)
 
@@ -80,6 +81,17 @@ these libraries.
 To work around this issue, rename the well-known OpenSSL directory while
 building httpd.  Let us know if you find a better solution.
 
+nghttp2
+-------
+
+This is required for mod_http2.
+
+cmake-based build support for nghttp2 for Windows can be found at
+https://github.com/trawick/nghttp2-minimal-cmake.  That easily fits into
+a build system that already uses cmake for httpd, apr, and perhaps other
+packages.  A dynamic build of nghttp2 using its normal Windows build
+system should also be usable by nghttp2.
+
 How to build
 ------------
 
@@ -99,7 +111,8 @@ How to build
 
    Alternately, you can use the cmake-gui and update settings in the GUI.
 
-   PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES:
+   PCRE_INCLUDE_DIR, PCRE_LIBRARIES, APR_INCLUDE_DIR, APR_LIBRARIES,
+     NGHTTP2_INCLUDE_DIR, NGHTTP2_LIBRARIES:
 
        cmake doesn't bundle FindXXX for these packages, so the crucial
        information has to be specified in this manner if they aren't found
@@ -133,6 +146,12 @@ How to build
        path to the LDAP library in the APR_LIBRARIES setting.  (If APR and
        APR-Util are found in the default location, the LDAP library will be
        included if it is present.
+
+     -DNGHTTP2_INCLUDE_DIR=d:/path/to/nghttp2inst/include  (which has nghttp2/*.h)
+     -DNGHTTP2_LIBRARIES=d:/path/to/nghttp2inst/lib/nghttp2.lib"
+
+       These will have to be specified if nghttp2 was installed to a different
+       directory than httpd.
 
    LIBXML2_ICONV_INCLUDE_DIR, LIBXML2_ICONV_LIBRARIES
 
