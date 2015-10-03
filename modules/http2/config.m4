@@ -174,7 +174,7 @@ See --with-nghttp2 on how to manage non-standard locations. This module
 is usually linked shared and requires loading. ], $http2_objs, , most, [
     APACHE_CHECK_NGHTTP2
     if test "$ac_cv_nghttp2" = "yes" ; then
-        if test "x$enable_ssl" = "xshared"; then
+        if test "x$enable_http2" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
            APR_ADDTO(MOD_HTTP2_LDADD, [-export-symbols-regex http2_module])
