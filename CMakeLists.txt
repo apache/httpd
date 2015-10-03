@@ -293,7 +293,7 @@ SET(MODULE_LIST
   "modules/generators/mod_info+I+server information"
   "modules/generators/mod_status+I+process/thread monitoring"
   "modules/http/mod_mime+A+mapping of file-extension to MIME.  Disabling this module is normally not recommended."
-  "modules/http2/mod_http2+a+HTTP/2 protocol support"
+  "modules/http2/mod_http2+i+HTTP/2 protocol support"
   "modules/ldap/mod_ldap+i+LDAP caching and connection pooling services"
   "modules/loggers/mod_log_config+A+logging configuration.  You won't be able to log requests to the server without this module."
   "modules/loggers/mod_log_debug+I+configurable debug logging"
