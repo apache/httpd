@@ -30,7 +30,7 @@
 
 #include "apr.h"
 #include "apr_lib.h"
-#ifdef APR_HAVE_LIMITS_H
+#if APR_HAVE_LIMITS_H
 #include <limits.h>
 #endif
 #if APR_HAVE_STDLIB_H

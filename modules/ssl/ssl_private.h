@@ -57,7 +57,7 @@
 /* The #ifdef macros are only defined AFTER including the above
  * therefore we cannot include these system files at the top  :-(
  */
-#ifdef APR_HAVE_STDLIB_H
+#if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 #if APR_HAVE_SYS_TIME_H
