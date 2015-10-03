@@ -1605,7 +1605,7 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
         rv = apr_thread_mutex_create(&mz->mtx, 0, mz->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02966)
                          "motorz_pre_config: apr_thread_mutex_create failed");
             return rv;
         }
