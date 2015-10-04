@@ -112,6 +112,7 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, insert_network_bucket,
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_request_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
@@ -5007,6 +5008,8 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
 
     c->id = id;
     c->bucket_alloc = alloc;
+    c->empty = apr_brigade_create(c->pool, c->bucket_alloc);
+    c->filters = apr_hash_make(c->pool);
 
     c->clogging_input_filters = 0;
 
@@ -5395,6 +5398,9 @@ static void register_hooks(apr_pool_t *p)
     ap_core_output_filter_handle =
         ap_register_output_filter("CORE", ap_core_output_filter,
                                   NULL, AP_FTYPE_NETWORK);
+    ap_request_core_filter_handle =
+        ap_register_output_filter("REQ_CORE", ap_request_core_filter,
+                                  NULL, AP_FTYPE_TRANSCODE);
     ap_subreq_core_filter_handle =
         ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter,
                                   NULL, AP_FTYPE_CONTENT_SET);

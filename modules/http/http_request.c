@@ -256,6 +256,14 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     apr_bucket *b;
     conn_rec *c = r->connection;
 
+    /* Find the last request, taking into account internal
+     * redirects. We want to send the EOR bucket at the end of
+     * all the buckets so it does not jump the queue.
+     */
+    while (r->next) {
+        r = r->next;
+    }
+
     /* Send an EOR bucket through the output filter chain.  When
      * this bucket is destroyed, the request will be logged and
      * its pool will be freed
@@ -264,8 +272,8 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
     b = ap_bucket_eor_create(c->bucket_alloc, r);
     APR_BRIGADE_INSERT_HEAD(bb, b);
 
-    ap_pass_brigade(c->output_filters, bb);
-    
+    ap_pass_brigade(r->output_filters, bb);
+
     /* The EOR bucket has either been handled by an output filter (eg.
      * deleted or moved to a buffered_bb => no more in bb), or an error
      * occured before that (eg. c->aborted => still in bb) and we ought

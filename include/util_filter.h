@@ -278,6 +278,13 @@ struct ap_filter_t {
      *  to the request_rec, except that it is used for connection filters.
      */
     conn_rec *c;
+
+    /** Buffered data associated with the current filter. */
+    apr_bucket_brigade *bb;
+
+    /** Dedicated pool to use for deferred writes. */
+    apr_pool_t *deferred_pool;
+
 };
 
 /**
@@ -519,8 +526,11 @@ AP_DECLARE(apr_status_t) ap_remove_output_filter_byhandle(ap_filter_t *next,
  */
 
 /**
- * prepare a bucket brigade to be setaside.  If a different brigade was
+ * Prepare a bucket brigade to be setaside.  If a different brigade was
  * set-aside earlier, then the two brigades are concatenated together.
+ *
+ * If *save_to is NULL, the brigade will be created, and a cleanup registered
+ * to clear the brigade address when the pool is destroyed.
  * @param f The current filter
  * @param save_to The brigade that was previously set-aside.  Regardless, the
  *             new bucket brigade is returned in this location.
@@ -531,6 +541,53 @@ AP_DECLARE(apr_status_t) ap_remove_output_filter_byhandle(ap_filter_t *next,
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **save_to,
                                          apr_bucket_brigade **b, apr_pool_t *p);
+
+/**
+ * Prepare a bucket brigade to be setaside, creating a dedicated pool if
+ * necessary within the filter to handle the lifetime of the setaside brigade.
+ * @param f The current filter
+ * @param bb The bucket brigade to set aside.  This brigade is always empty
+ *          on return
+ */
+AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
+                                                    apr_bucket_brigade *bb);
+
+/**
+ * Reinstate a brigade setaside earlier, and calculate the amount of data we
+ * should write based on the presence of flush buckets, size limits on in
+ * memory buckets, and the number of outstanding requests in the pipeline.
+ * This is a safety mechanism to protect against a module that might try
+ * generate data too quickly for downstream to handle without yielding as
+ * it should.
+ *
+ * If the brigade passed in is empty, we reinstate the brigade and return
+ * immediately on the assumption that any buckets needing to be flushed were
+ * flushed before being passed to ap_filter_setaside_brigade().
+ *
+ * @param f The current filter
+ * @param bb The bucket brigade to restore to.
+ * @param flush_upto Work out the bucket we need to flush up to, based on the
+ *                   presence of a flush bucket, size limits on in-memory
+ *                   buckets, size limits on the number of requests outstanding
+ *                   in the pipeline.
+ * @return APR_SUCCESS.
+ */
+AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
+                                                     apr_bucket_brigade *bb,
+                                                     apr_bucket **flush_upto);
+
+/**
+ * This function calculates whether there are any as yet unsent
+ * buffered brigades in downstream filters, and returns non zero
+ * if so.
+ *
+ * A filter should use this to determine whether the passing of data
+ * downstream might block, and so defer the passing of brigades
+ * downstream with ap_filter_setaside_brigade().
+ *
+ * This function can be called safely from a handler.
+ */
+AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade

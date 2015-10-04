@@ -359,21 +359,38 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
         }
 
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
-            ap_filter_t *output_filter = c->output_filters;
-            ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
-            while (output_filter->next != NULL) {
-                output_filter = output_filter->next;
-            }
+            apr_hash_index_t *rindex;
+            apr_status_t rv = APR_SUCCESS;
+            int data_in_output_filters = 0;
+            ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
 
-            rv = output_filter->frec->filter_func.out_func(output_filter,
-                                                           NULL);
+            rindex = apr_hash_first(NULL, c->filters);
+            while (rindex) {
+                ap_filter_t *f = apr_hash_this_val(rindex);
+
+                if (!APR_BRIGADE_EMPTY(f->bb)) {
+
+                    rv = ap_pass_brigade(f, c->empty);
+                    apr_brigade_cleanup(c->empty);
+                    if (APR_SUCCESS != rv) {
+                        ap_log_cerror(
+                                APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(02848)
+                                "write failure in '%s' output filter", f->frec->name);
+                        break;
+                    }
+
+                    if (ap_filter_should_yield(f)) {
+                        data_in_output_filters = 1;
+                    }
+                }
+
+                rindex = apr_hash_next(rindex);
+            }
 
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(02848)
-                             "network write failure in core output filter");
                 scon->cs.state = CONN_STATE_LINGER;
             }
-            else if (c->data_in_output_filters) {
+            else if (data_in_output_filters) {
                 /* Still in WRITE_COMPLETION_STATE:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
