@@ -78,9 +78,7 @@ do { \
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 struct core_output_filter_ctx {
-    apr_bucket_brigade *buffered_bb;
     apr_bucket_brigade *tmp_flush_bb;
-    apr_pool_t *deferred_write_pool;
     apr_size_t bytes_written;
 };
 
@@ -328,11 +326,6 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     return APR_SUCCESS;
 }
 
-static void setaside_remaining_output(ap_filter_t *f,
-                                      core_output_filter_ctx_t *ctx,
-                                      apr_bucket_brigade *bb,
-                                      conn_rec *c);
-
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
                                              apr_size_t *bytes_written,
@@ -358,33 +351,23 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          conn_rec *c);
 #endif
 
-/* XXX: Should these be configurable parameters? */
-#define THRESHOLD_MIN_WRITE 4096
-#define THRESHOLD_MAX_BUFFER 65536
-#define MAX_REQUESTS_IN_PIPELINE 5
-
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
  */
 extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *ap__logio_add_bytes_out;
 
-apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
+apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     conn_rec *c = f->c;
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
-    apr_bucket_brigade *bb = NULL;
-    apr_bucket *bucket, *next, *flush_upto = NULL;
-    apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
-    int eor_buckets_in_brigade, morphing_bucket_in_brigade;
+    apr_bucket *flush_upto = NULL;
     apr_status_t rv;
     int loglevel = ap_get_conn_module_loglevel(c, APLOG_MODULE_INDEX);
 
     /* Fail quickly if the connection has already been aborted. */
     if (c->aborted) {
-        if (new_bb != NULL) {
-            apr_brigade_cleanup(new_bb);
-        }
+        apr_brigade_cleanup(bb);
         return APR_ECONNABORTED;
     }
 
@@ -397,33 +380,14 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
          * allocated from bb->pool which might be wrong.
          */
         ctx->tmp_flush_bb = apr_brigade_create(c->pool, c->bucket_alloc);
-        /* same for buffered_bb and ap_save_brigade */
-        ctx->buffered_bb = apr_brigade_create(c->pool, c->bucket_alloc);
-    }
-
-    if (new_bb != NULL)
-        bb = new_bb;
-
-    if ((ctx->buffered_bb != NULL) &&
-        !APR_BRIGADE_EMPTY(ctx->buffered_bb)) {
-        if (new_bb != NULL) {
-            APR_BRIGADE_PREPEND(bb, ctx->buffered_bb);
-        }
-        else {
-            bb = ctx->buffered_bb;
-        }
-        c->data_in_output_filters = 0;
-    }
-    else if (new_bb == NULL) {
-        return APR_SUCCESS;
     }
 
     /* Scan through the brigade and decide whether to attempt a write,
      * and how much to write, based on the following rules:
      *
-     *  1) The new_bb is null: Do a nonblocking write of as much as
+     *  1) The bb is empty: Do a nonblocking write of as much as
      *     possible: do a nonblocking write of as much data as possible,
-     *     then save the rest in ctx->buffered_bb.  (If new_bb == NULL,
+     *     then save the rest in ctx->buffered_bb.  (If bb is empty,
      *     it probably means that the MPM is doing asynchronous write
      *     completion and has just determined that this connection
      *     is writable.)
@@ -459,91 +423,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
      *  3) Actually do the blocking write up to the last bucket determined
      *     by rules 2a-d. The point of doing only one flush is to make as
      *     few calls to writev() as possible.
-     *
-     *  4) If the brigade contains at least THRESHOLD_MIN_WRITE
-     *     bytes: Do a nonblocking write of as much data as possible,
-     *     then save the rest in ctx->buffered_bb.
      */
 
-    if (new_bb == NULL) {
-        rv = send_brigade_nonblocking(net->client_socket, bb,
-                                      &(ctx->bytes_written), c);
-        if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
-            /* The client has aborted the connection */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
-                          "core_output_filter: writing data to the network");
-            apr_brigade_cleanup(bb);
-            c->aborted = 1;
-            return rv;
-        }
-        setaside_remaining_output(f, ctx, bb, c);
+    ap_filter_reinstate_brigade(f, bb, &flush_upto);
+
+    if (APR_BRIGADE_EMPTY(bb)) {
         return APR_SUCCESS;
-    }
-
-    bytes_in_brigade = 0;
-    non_file_bytes_in_brigade = 0;
-    eor_buckets_in_brigade = 0;
-    morphing_bucket_in_brigade = 0;
-
-    for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
-         bucket = next) {
-        next = APR_BUCKET_NEXT(bucket);
-
-        if (!APR_BUCKET_IS_METADATA(bucket)) {
-            if (bucket->length == (apr_size_t)-1) {
-                /*
-                 * A setaside of morphing buckets would read everything into
-                 * memory. Instead, we will flush everything up to and
-                 * including this bucket.
-                 */
-                morphing_bucket_in_brigade = 1;
-            }
-            else {
-                bytes_in_brigade += bucket->length;
-                if (!APR_BUCKET_IS_FILE(bucket))
-                    non_file_bytes_in_brigade += bucket->length;
-            }
-        }
-        else if (AP_BUCKET_IS_EOR(bucket)) {
-            eor_buckets_in_brigade++;
-        }
-
-        if (APR_BUCKET_IS_FLUSH(bucket)
-            || non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER
-            || morphing_bucket_in_brigade
-            || eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) {
-            /* this segment of the brigade MUST be sent before returning. */
-
-            if (loglevel >= APLOG_TRACE6) {
-                char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
-                               "FLUSH bucket" :
-                               (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
-                               "THRESHOLD_MAX_BUFFER" :
-                               morphing_bucket_in_brigade ? "morphing bucket" :
-                               "MAX_REQUESTS_IN_PIPELINE";
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
-                              "will flush because of %s", reason);
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
-                              "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
-                              ", non-file bytes: %" APR_SIZE_T_FMT ", eor "
-                              "buckets: %d, morphing buckets: %d",
-                              flush_upto == NULL ? " so far"
-                                                 : " since last flush point",
-                              bytes_in_brigade,
-                              non_file_bytes_in_brigade,
-                              eor_buckets_in_brigade,
-                              morphing_bucket_in_brigade);
-            }
-            /*
-             * Defer the actual blocking write to avoid doing many writes.
-             */
-            flush_upto = next;
-
-            bytes_in_brigade = 0;
-            non_file_bytes_in_brigade = 0;
-            eor_buckets_in_brigade = 0;
-            morphing_bucket_in_brigade = 0;
-        }
     }
 
     if (flush_upto != NULL) {
@@ -571,69 +456,28 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         APR_BRIGADE_CONCAT(bb, ctx->tmp_flush_bb);
     }
 
+    rv = send_brigade_nonblocking(net->client_socket, bb, &(ctx->bytes_written),
+            c);
+    if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
+        /* The client has aborted the connection */
+        ap_log_cerror(
+                APLOG_MARK, APLOG_TRACE1, rv, c,
+                "core_output_filter: writing data to the network");
+        apr_brigade_cleanup(bb);
+        c->aborted = 1;
+        return rv;
+    }
     if (loglevel >= APLOG_TRACE8) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
-                      "brigade contains: bytes: %" APR_SIZE_T_FMT
-                      ", non-file bytes: %" APR_SIZE_T_FMT
-                      ", eor buckets: %d, morphing buckets: %d",
-                      bytes_in_brigade, non_file_bytes_in_brigade,
-                      eor_buckets_in_brigade, morphing_bucket_in_brigade);
+        ap_log_cerror(
+                APLOG_MARK, APLOG_TRACE8, 0, c,
+                "tried nonblocking write, total bytes "
+                "written: %" APR_SIZE_T_FMT, ctx->bytes_written);
     }
 
-    if (bytes_in_brigade >= THRESHOLD_MIN_WRITE) {
-        rv = send_brigade_nonblocking(net->client_socket, bb,
-                                      &(ctx->bytes_written), c);
-        if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
-            /* The client has aborted the connection */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c,
-                          "core_output_filter: writing data to the network");
-            apr_brigade_cleanup(bb);
-            c->aborted = 1;
-            return rv;
-        }
-        if (loglevel >= APLOG_TRACE8) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE8, 0, c,
-                              "tried nonblocking write, total bytes "
-                              "written: %" APR_SIZE_T_FMT,
-                              ctx->bytes_written);
-        }
-    }
-
-    setaside_remaining_output(f, ctx, bb, c);
-    return APR_SUCCESS;
-}
-
-/*
- * This function assumes that either ctx->buffered_bb == NULL, or
- * ctx->buffered_bb is empty, or ctx->buffered_bb == bb
- */
-static void setaside_remaining_output(ap_filter_t *f,
-                                      core_output_filter_ctx_t *ctx,
-                                      apr_bucket_brigade *bb,
-                                      conn_rec *c)
-{
-    if (bb == NULL) {
-        return;
-    }
     remove_empty_buckets(bb);
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        c->data_in_output_filters = 1;
-        if (bb != ctx->buffered_bb) {
-            if (!ctx->deferred_write_pool) {
-                apr_pool_create(&ctx->deferred_write_pool, c->pool);
-                apr_pool_tag(ctx->deferred_write_pool, "deferred_write");
-            }
-            ap_save_brigade(f, &(ctx->buffered_bb), &bb,
-                            ctx->deferred_write_pool);
-        }
-    }
-    else if (ctx->deferred_write_pool) {
-        /*
-         * There are no more requests in the pipeline. We can just clear the
-         * pool.
-         */
-        apr_pool_clear(ctx->deferred_write_pool);
-    }
+    ap_filter_setaside_brigade(f, bb);
+
+    return APR_SUCCESS;
 }
 
 #ifndef APR_MAX_IOVEC_SIZE

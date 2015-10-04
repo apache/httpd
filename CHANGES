@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Extend support for asynchronous write completion from the
+     network filter to any connection or request filter. [Graham Leggett]
+
   *) mpm_event: Free memory earlier when shutting down processes.
      [Stefan Fritsch]
 

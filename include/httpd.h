@@ -55,6 +55,7 @@
 #include "apr_buckets.h"
 #include "apr_poll.h"
 #include "apr_thread_proc.h"
+#include "apr_hash.h"
 
 #include "os.h"
 
@@ -1136,7 +1137,7 @@ struct conn_rec {
     conn_state_t *cs;
     /** Is there data pending in the input filters? */
     int data_in_input_filters;
-    /** Is there data pending in the output filters? */
+    /** No longer used, replaced with ap_filter_should_yield() */
     int data_in_output_filters;
 
     /** Are there any filters that clogg/buffer the input stream, breaking
@@ -1191,6 +1192,12 @@ struct conn_rec {
 
     /** Array of requests being handled under this connection. */
     apr_array_header_t *requests;
+
+    /** Empty bucket brigade */
+    apr_bucket_brigade *empty;
+
+    /** Hashtable of filters with setaside buckets for write completion */
+    apr_hash_t *filters;
 };
 
 struct conn_slave_rec {

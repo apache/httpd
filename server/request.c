@@ -2036,6 +2036,64 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
+                                                            apr_bucket_brigade *bb)
+{
+    apr_bucket *flush_upto = NULL;
+    apr_status_t status = APR_SUCCESS;
+    apr_bucket_brigade *tmp_bb = f->ctx;
+
+    if (!tmp_bb) {
+        tmp_bb = f->ctx = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+    }
+
+    /* Reinstate any buffered content */
+    ap_filter_reinstate_brigade(f, bb, &flush_upto);
+
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+
+        /* if the core has set aside data, back off and try later */
+        if (!flush_upto) {
+            if (ap_filter_should_yield(f)) {
+                break;
+            }
+        }
+        else if (flush_upto == bucket) {
+            flush_upto = NULL;
+        }
+
+        /* have we found a morphing bucket? if so, force it to morph into something
+         * safe to pass down to the connection filters without needing to be set
+         * aside.
+         */
+        if (!APR_BUCKET_IS_METADATA(bucket)) {
+            if (bucket->length == (apr_size_t) - 1) {
+                const char *data;
+                apr_size_t size;
+                if (APR_SUCCESS
+                        != (status = apr_bucket_read(bucket, &data, &size,
+                                APR_BLOCK_READ))) {
+                    return status;
+                }
+            }
+        }
+
+        /* pass each bucket down the chain */
+        APR_BUCKET_REMOVE(bucket);
+        APR_BRIGADE_INSERT_TAIL(tmp_bb, bucket);
+
+        status = ap_pass_brigade(f->next, tmp_bb);
+        if (!APR_STATUS_IS_EOF(status) && (status != APR_SUCCESS)) {
+            return status;
+        }
+
+    }
+
+    ap_filter_setaside_brigade(f, bb);
+    return status;
+}
+
 extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;
 
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)

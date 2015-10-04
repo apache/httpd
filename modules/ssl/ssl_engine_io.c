@@ -1682,12 +1682,16 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     ssl_filter_ctx_t *filter_ctx = f->ctx;
     bio_filter_in_ctx_t *inctx;
     bio_filter_out_ctx_t *outctx;
+    apr_bucket *flush_upto = NULL;
     apr_read_type_e rblock = APR_NONBLOCK_READ;
 
     if (f->c->aborted) {
         apr_brigade_cleanup(bb);
         return APR_ECONNABORTED;
     }
+
+    /* Reinstate any buffered content */
+    ap_filter_reinstate_brigade(f, bb, &flush_upto);
 
     if (!filter_ctx->pssl) {
         /* ssl_filter_io_shutdown was called */
@@ -1710,6 +1714,16 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 
     while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
+
+        /* if the core has set aside data, back off and try later */
+        if (!flush_upto) {
+            if (ap_filter_should_yield(f)) {
+                break;
+            }
+        }
+        else if (flush_upto == bucket) {
+            flush_upto = NULL;
+        }
 
         if (APR_BUCKET_IS_METADATA(bucket)) {
             /* Pass through metadata buckets untouched.  EOC is
@@ -1760,6 +1774,10 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
             apr_bucket_delete(bucket);
         }
 
+    }
+
+    if (APR_STATUS_IS_EOF(status) || (status == APR_SUCCESS)) {
+        return ap_filter_setaside_brigade(f, bb);
     }
 
     return status;
