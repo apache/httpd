@@ -79,6 +79,7 @@ do { \
 
 struct core_output_filter_ctx {
     apr_bucket_brigade *tmp_flush_bb;
+    apr_bucket_brigade *empty_bb;
     apr_size_t bytes_written;
 };
 
@@ -380,6 +381,14 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * allocated from bb->pool which might be wrong.
          */
         ctx->tmp_flush_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    }
+
+    /* remain compatible with legacy MPMs that passed NULL to this filter */
+    if (bb == NULL) {
+        if (ctx->empty_bb == NULL) {
+            ctx->empty_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        }
+        bb = ctx->empty_bb;
     }
 
     /* Scan through the brigade and decide whether to attempt a write,
