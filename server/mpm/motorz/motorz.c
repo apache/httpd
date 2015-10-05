@@ -362,7 +362,8 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
             apr_hash_index_t *rindex;
             apr_status_t rv = APR_SUCCESS;
             int data_in_output_filters = 0;
-            ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
+
+            ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
 
             rindex = apr_hash_first(NULL, c->filters);
             while (rindex) {
