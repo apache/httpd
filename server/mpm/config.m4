@@ -60,7 +60,7 @@ case $host in
 esac
 
 dnl APACHE_MPM_SUPPORTED(name, supports-shared, is_threaded)
-AC_DEFUN(APACHE_MPM_SUPPORTED,[
+AC_DEFUN([APACHE_MPM_SUPPORTED],[
     if test "$2" = "yes"; then
         eval "ap_supported_mpm_$1=shared"
         ap_supported_shared_mpms="$ap_supported_shared_mpms $1 "
@@ -73,7 +73,7 @@ AC_DEFUN(APACHE_MPM_SUPPORTED,[
 ])dnl
 
 dnl APACHE_MPM_ENABLED(name)
-AC_DEFUN(APACHE_MPM_ENABLED,[
+AC_DEFUN([APACHE_MPM_ENABLED],[
     if ap_mpm_is_enabled $1; then
         :
     else

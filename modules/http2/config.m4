@@ -51,7 +51,7 @@ dnl
 dnl Configure for nghttp2, giving preference to
 dnl "--with-nghttp2=<path>" if it was specified.
 dnl
-AC_DEFUN(APACHE_CHECK_NGHTTP2,[
+AC_DEFUN([APACHE_CHECK_NGHTTP2],[
   AC_CACHE_CHECK([for nghttp2], [ac_cv_nghttp2], [
     dnl initialise the variables we use
     ac_cv_nghttp2=no

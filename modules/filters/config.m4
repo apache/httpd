@@ -96,7 +96,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   fi
 ])
 
-AC_DEFUN(FIND_LIBXML2, [
+AC_DEFUN([FIND_LIBXML2], [
   AC_CACHE_CHECK([for libxml2], [ac_cv_libxml2], [
     AC_ARG_WITH(libxml2,
       [APACHE_HELP_STRING(--with-libxml2=PATH,location for libxml2)],
