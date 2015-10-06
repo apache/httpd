@@ -634,7 +634,7 @@ AP_DECLARE(void) ap_log_rdata(const char *file, int line, int module_index,
 #ifdef AP_HAVE_C99
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_rdata(...) ap_log_rdata__(__VA_ARGS__)
-#define ap_log_rdata__(file, line, mi, level, s, ...)           \
+#define ap_log_rdata__(file, line, mi, level, r, ...)           \
     do { if (APLOG_R_MODULE_IS_LEVEL(r, mi, level)) \
              ap_log_rdata_(file, line, mi, level, r, __VA_ARGS__);    \
     } while(0)
