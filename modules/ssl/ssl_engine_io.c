@@ -1498,7 +1498,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     /* By this point, Application-Layer Protocol Negotiation (ALPN) should be 
      * completed (if our version of OpenSSL supports it). If we haven't already, 
      * find out which protocol was decided upon and inform other modules 
-     * by calling alpn_proto_negotiated_hook. 
+     * by calling running protocol_switch hook. 
      */
     if (!inctx->alpn_finished) {
         SSLConnRec *sslconn = myConnConfig(f->c);
