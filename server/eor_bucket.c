@@ -91,12 +91,23 @@ static void eor_bucket_destroy(void *data)
     }
 }
 
+static apr_status_t eor_bucket_copy(apr_bucket *a, apr_bucket **b)
+{
+    *b = apr_bucket_alloc(sizeof(**b), a->list); /* XXX: check for failure? */
+    **b = *a;
+
+    /* we don't wan't the request to be destroyed twice */
+    (*b)->data = NULL;
+
+    return APR_SUCCESS;
+}
+
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_eor = {
     "EOR", 5, APR_BUCKET_METADATA,
     eor_bucket_destroy,
     eor_bucket_read,
     apr_bucket_setaside_noop,
     apr_bucket_split_notimpl,
-    apr_bucket_simple_copy
+    eor_bucket_copy
 };
 
