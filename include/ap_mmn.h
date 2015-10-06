@@ -494,6 +494,7 @@
  *                         ap_filter_reinstate_brigade() and
  *                         ap_filter_should_yield(). Add empty and filters to
  *                         conn_rec.
+ * 20150222.6 (2.5.0-dev)  Add async_filter to conn_rec.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -501,7 +502,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20150222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

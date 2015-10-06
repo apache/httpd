@@ -1198,6 +1198,9 @@ struct conn_rec {
 
     /** Hashtable of filters with setaside buckets for write completion */
     apr_hash_t *filters;
+
+    /** The minimum level of filter type to allow setaside buckets */
+    int async_filter;
 };
 
 struct conn_slave_rec {
