@@ -110,12 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Silence warnings, and fix logic, in XML
-     balancer status output.
-     trunk patch: http://svn.apache.org/r1705776
-     2.4.x patch: trunk works
-     +1: jim, ylavic, rjung
-
    * Fix some style issues
      trunk patch: http://svn.apache.org/r1705983
      2.4.x patch: trunk works
