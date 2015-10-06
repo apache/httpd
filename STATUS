@@ -115,28 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
-           backport keeps syslog logging as part of httpd core and only adds
-           API to allow other modules to be used for error logging.
-     trunk patch: http://svn.apache.org/r1525597
-                  http://svn.apache.org/r1525664
-                  http://svn.apache.org/r1525845
-                  http://svn.apache.org/r1527003
-                  http://svn.apache.org/r1527005
-                  http://svn.apache.org/r1532344
-                  http://svn.apache.org/r1539988
-                  http://svn.apache.org/r1541029
-                  http://svn.apache.org/r1543979
-                  http://svn.apache.org/r1544156
-                  http://svn.apache.org/r1626978
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
-     +1: jkaluza
-     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
-                 needs 2 args which is not valid in ErrorLog manual)
-     trawick: nit: fix "writing" in "/* NULL if we are writting to syslog */"
-              (sorry, haven't finished reviewing completely)
-     jim: What is the status of this??
-
    * mod_journald: Add new module mod_journald to log error logs into journald.
                    This patch needs changes done in mod_systemd patch (already
                    proposed for 2.4.x).
@@ -262,6 +240,28 @@ PATCHES/ISSUES THAT ARE BEING WORKED
         jim: Non-blocking seems the best way to handle...
 
 PATCHES/ISSUES THAT ARE STALLED
+
+   * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
+           backport keeps syslog logging as part of httpd core and only adds
+           API to allow other modules to be used for error logging.
+     trunk patch: http://svn.apache.org/r1525597
+                  http://svn.apache.org/r1525664
+                  http://svn.apache.org/r1525845
+                  http://svn.apache.org/r1527003
+                  http://svn.apache.org/r1527005
+                  http://svn.apache.org/r1532344
+                  http://svn.apache.org/r1539988
+                  http://svn.apache.org/r1541029
+                  http://svn.apache.org/r1543979
+                  http://svn.apache.org/r1544156
+                  http://svn.apache.org/r1626978
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-errorlog_provider.patch
+     +1: jkaluza
+     +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
+                 needs 2 args which is not valid in ErrorLog manual)
+     trawick: nit: fix "writing" in "/* NULL if we are writting to syslog */"
+              (sorry, haven't finished reviewing completely)
+     jim: What is the status of this??
 
    * mod_proxy: Add ap_proxy_define_match_worker() and use it for ProxyPassMatch
      and ProxyMatch section to distinguish between normal workers and workers
