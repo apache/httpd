@@ -1415,7 +1415,7 @@ static apr_status_t isapi_handler (request_rec *r)
     apr_uint32_t read;
     int res;
 
-    if(strcmp(r->handler, "isapi-isa")
+    if (strcmp(r->handler, "isapi-isa")
         && strcmp(r->handler, "isapi-handler")) {
         /* Hang on to the isapi-isa for compatibility with older docs
          * (wtf did '-isa' mean in the first place?) but introduce

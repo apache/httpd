@@ -27,14 +27,14 @@ static APR_OPTIONAL_FN_TYPE(TestOptionalFn) *pfn;
 
 static int ImportLogTransaction(request_rec *r)
 {
-    if(pfn)
+    if (pfn)
         return pfn(r->the_request);
     return DECLINED;
 }
 
 static void ImportFnRetrieve(void)
 {
-    pfn=APR_RETRIEVE_OPTIONAL_FN(TestOptionalFn);
+    pfn = APR_RETRIEVE_OPTIONAL_FN(TestOptionalFn);
 }
 
 static void ImportRegisterHooks(apr_pool_t *p)

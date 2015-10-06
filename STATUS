@@ -110,11 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Fix some style issues
-     trunk patch: http://svn.apache.org/r1705983
-     2.4.x patch: trunk works
-     +1: jailletc36, jim, rjung
-
    * Fix some m4's AC_DEFUN quoting. PR 58126.
      trunk patch: http://svn.apache.org/r1706918
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch

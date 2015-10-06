@@ -465,11 +465,11 @@ static dav_error * dav_generic_save_lock_record(dav_lockdb *lockdb,
         return NULL;
     }
 
-    while(dp) {
+    while (dp) {
         val.dsize += dav_size_direct(dp);
         dp = dp->next;
     }
-    while(ip) {
+    while (ip) {
         val.dsize += dav_size_indirect(ip);
         ip = ip->next;
     }
@@ -480,7 +480,7 @@ static dav_error * dav_generic_save_lock_record(dav_lockdb *lockdb,
     dp  = direct;
     ip  = indirect;
 
-    while(dp) {
+    while (dp) {
         /* Direct lock - lock_discovery struct follows */
         *ptr++ = DAV_LOCK_DIRECT;
         memcpy(ptr, dp, sizeof(dp->f));        /* Fixed portion of struct */
@@ -505,7 +505,7 @@ static dav_error * dav_generic_save_lock_record(dav_lockdb *lockdb,
         dp = dp->next;
     }
 
-    while(ip) {
+    while (ip) {
         /* Indirect lock prefix */
         *ptr++ = DAV_LOCK_INDIRECT;
 

@@ -269,7 +269,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 
     ndots = 0;
     dots[ndots++] = name-1; /* slightly naughty */
-    for (p = name; *p; ++p){
+    for (p = name; *p; ++p) {
         if (*p == '.' && ndots < MAXDOTS) {
             dots[ndots++] = p;
         }

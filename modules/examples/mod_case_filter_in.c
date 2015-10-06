@@ -99,7 +99,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
          * for a file or socket buffer, for example...
          */
 
-        if(APR_BUCKET_IS_EOS(pbktIn)) {
+        if (APR_BUCKET_IS_EOS(pbktIn)) {
             APR_BUCKET_REMOVE(pbktIn);
             APR_BRIGADE_INSERT_TAIL(pbbOut, pbktIn);
             break;

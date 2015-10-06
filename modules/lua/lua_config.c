@@ -141,7 +141,8 @@ static int cfg_directory(lua_State *L)
     return 1;
 }
 
-/*static int cfg_root(lua_State *L) {
+/*static int cfg_root(lua_State *L)
+{
     ap_lua_dir_cfg *cfg = check_dir_config(L, 1);
     lua_pushstring(L, cfg->root_path);
     return 1;

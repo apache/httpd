@@ -351,7 +351,7 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
     }
     else {
         /* Find provider */
-        for (provider = filter->providers; provider; provider = provider->next){
+        for (provider = filter->providers; provider; provider = provider->next) {
             if (!strcasecmp(provider->frec->name, pname)) {
                 break;
             }
