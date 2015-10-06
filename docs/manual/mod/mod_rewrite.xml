@@ -690,7 +690,9 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         <module>mod_ssl</module> is loaded, but will always expand to
         the empty string if it is not.  Example:
         <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> may expand to
-        <code>128</code>.</li>
+        <code>128</code>. These variables are available even without
+        setting the <code>StdEnvVars</code> option of the
+        <directive module="mod_ssl">SSLOptions</directive> directive.</li>
 
         <li>
         <code>%{HTTP:header}</code>, where <em>header</em> can be
