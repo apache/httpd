@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.17
 
+  *) mod_substitute: Allow to configure the patterns merge order with the new
+     SubstituteInheritBefore on|off directive.  PR 57641
+     [Marc.Stern <Marc.Stern approach.be>, Yann Ylavic, William Rowe]
+
   *) mod_proxy: Fix ProxySourceAddress binding failure with AH00938.
      PR 56687.  [Arne de Bruijn <apache arbruijn.dds.nl>
 

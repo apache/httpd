@@ -110,19 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_substitute: Configure patterns merge order. PR 57641
-     trunk patch: http://svn.apache.org/r1684900
-                  http://svn.apache.org/r1687539 
-                  http://svn.apache.org/r1687680
-                  http://svn.apache.org/r1688331
-                  http://svn.apache.org/r1688339
-                  http://svn.apache.org/r1688340
-                  http://svn.apache.org/r1688341
-                  http://svn.apache.org/r1688343
-                  http://svn.apache.org/r1697013
-                  http://svn.apache.org/r1697015
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v6.patch
-     +1: ylavic, wrowe, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
