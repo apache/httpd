@@ -131,6 +131,9 @@ href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </example>
+<p>These formats even work without setting the <code>StdEnvVars</code>
+option of the <directive module="mod_ssl">SSLOptions</directive>
+directive.</p>
 </section>
 
 <directivesynopsis>
