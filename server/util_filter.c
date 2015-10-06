@@ -736,6 +736,16 @@ AP_DECLARE(apr_status_t) ap_filter_setaside_brigade(ap_filter_t *f,
 
         /* decide what pool we setaside to, request pool or deferred pool? */
         if (f->r) {
+            apr_bucket *e;
+            for (e = APR_BRIGADE_FIRST(bb); e != APR_BRIGADE_SENTINEL(bb); e =
+                    APR_BUCKET_NEXT(e)) {
+                if (APR_BUCKET_IS_TRANSIENT(e)) {
+                    int rv = apr_bucket_setaside(e, f->r->pool);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
+                }
+            }
             pool = f->r->pool;
             APR_BRIGADE_CONCAT(f->bb, bb);
         }
