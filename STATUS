@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1697013
                   http://svn.apache.org/r1697015
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v6.patch
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rjung
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1703807
                   http://svn.apache.org/r1703813
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic
+     +1: ylavic, rjung
      ylavic: while at it, I also included r1678763 which is only an
              optimization, but allows to keep code in sync with trunk.
 
