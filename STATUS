@@ -110,6 +110,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * MPMs: Follow up to r1705492 (SO_REUSEPORT). Add missing (and harmless)
+           backport hunk (for consistency with trunk and 2.4.x's worker/event).
+     trunk patch: http://svn.apache.org/r1629916
+     2.4.x patch: trunk works
+     +1: ylavic, jim, rjung
+
+   * mod_proxy_balancer: Silence warnings, and fix logic, in XML
+     balancer status output.
+     trunk patch: http://svn.apache.org/r1705776
+     2.4.x patch: trunk works
+     +1: jim, ylavic, rjung
+
+   * Fix some style issues
+     trunk patch: http://svn.apache.org/r1705983
+     2.4.x patch: trunk works
+     +1: jailletc36, jim, rjung
+
+   * Fix some m4's AC_DEFUN quoting. PR 58126.
+     trunk patch: http://svn.apache.org/r1706918
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch
+     +1: ylavic, jim, rjung
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -176,18 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
      +1: minfrin
 
-   * MPMs: Follow up to r1705492 (SO_REUSEPORT). Add missing (and harmless)
-           backport hunk (for consistency with trunk and 2.4.x's worker/event).
-     trunk patch: http://svn.apache.org/r1629916
-     2.4.x patch: trunk works
-     +1: ylavic, jim, rjung
-
-   * mod_proxy_balancer: Silence warnings, and fix logic, in XML
-     balancer status output.
-     trunk patch: http://svn.apache.org/r1705776
-     2.4.x patch: trunk works
-     +1: jim, ylavic, rjung
-
    * mod_ssl: Make the output filter more friendly with deferred write and
               response pipelining.
      trunk patch: http://svn.apache.org/r1705194
@@ -198,16 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1706275
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v2.patch
      +1: ylavic
-
-   * Fix some style issues
-     trunk patch: http://svn.apache.org/r1705983
-     2.4.x patch: trunk works
-     +1: jailletc36, jim, rjung
-
-   * Fix some m4's AC_DEFUN quoting. PR 58126.
-     trunk patch: http://svn.apache.org/r1706918
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch
-     +1: ylavic, jim, rjung
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
