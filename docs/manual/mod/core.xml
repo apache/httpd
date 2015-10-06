@@ -568,12 +568,6 @@ AllowOverrideList CookieTracking CookieName
         filter only. If set to "connection", all connection and network filters
         will be eligible for asynchronous handling, including <module>mod_ssl</module>.
         If set to "request", all filters will be eligible for asynchronous handling.</p>
-        
-        <p>With <directive>ProtocolsHonorOrder</directive> set to <code>on</code> 
-            (default), the client ordering does not matter and only the ordering 
-            in the server settings influences the outcome of the protocol 
-            negotiation.</p>
-        
     </usage>
 </directivesynopsis>
 
