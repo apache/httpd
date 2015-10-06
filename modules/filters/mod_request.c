@@ -178,7 +178,8 @@ typedef struct kept_body_filter_ctx {
  * been removed from the body during storage. We need to change the request
  * from Transfer-Encoding: chunked to an explicit Content-Length.
  */
-static int kept_body_filter_init(ap_filter_t *f) {
+static int kept_body_filter_init(ap_filter_t *f)
+{
     apr_off_t length = 0;
     request_rec *r = f->r;
     apr_bucket_brigade *kept_body = r->kept_body;

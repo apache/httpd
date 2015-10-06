@@ -52,7 +52,8 @@ typedef struct buffer_ctx {
 /**
  * Buffer buckets being written to the output filter stack.
  */
-static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
+static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
     apr_bucket *e;
     request_rec *r = f->r;
     buffer_ctx *ctx = f->ctx;
@@ -74,7 +75,6 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->conf = ap_get_module_config(f->r->per_dir_config, &buffer_module);
-
     }
 
     /* Do nothing if asked to filter nothing. */
@@ -187,7 +187,8 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
  * Buffer buckets being read from the input filter stack.
  */
 static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-        ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes) {
+        ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
+{
     apr_bucket *e, *after;
     apr_status_t rv;
     buffer_ctx *ctx = f->ctx;
@@ -294,7 +295,8 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-static void *create_buffer_config(apr_pool_t *p, char *dummy) {
+static void *create_buffer_config(apr_pool_t *p, char *dummy)
+{
     buffer_conf *new = (buffer_conf *) apr_pcalloc(p, sizeof(buffer_conf));
 
     new->size_set = 0; /* unset */
@@ -303,7 +305,8 @@ static void *create_buffer_config(apr_pool_t *p, char *dummy) {
     return (void *) new;
 }
 
-static void *merge_buffer_config(apr_pool_t *p, void *basev, void *addv) {
+static void *merge_buffer_config(apr_pool_t *p, void *basev, void *addv)
+{
     buffer_conf *new = (buffer_conf *) apr_pcalloc(p, sizeof(buffer_conf));
     buffer_conf *add = (buffer_conf *) addv;
     buffer_conf *base = (buffer_conf *) basev;
@@ -314,7 +317,8 @@ static void *merge_buffer_config(apr_pool_t *p, void *basev, void *addv) {
     return new;
 }
 
-static const char *set_buffer_size(cmd_parms *cmd, void *dconf, const char *arg) {
+static const char *set_buffer_size(cmd_parms *cmd, void *dconf, const char *arg)
+{
     buffer_conf *conf = dconf;
 
     if (APR_SUCCESS != apr_strtoff(&(conf->size), arg, NULL, 10) || conf->size
@@ -330,7 +334,8 @@ static const command_rec buffer_cmds[] = { AP_INIT_TAKE1("BufferSize",
         set_buffer_size, NULL, ACCESS_CONF,
         "Maximum size of the buffer used by the buffer filter"), { NULL } };
 
-static void register_hooks(apr_pool_t *p) {
+static void register_hooks(apr_pool_t *p)
+{
     ap_register_output_filter(bufferFilterName, buffer_out_filter, NULL,
             AP_FTYPE_CONTENT_SET);
     ap_register_input_filter(bufferFilterName, buffer_in_filter, NULL,

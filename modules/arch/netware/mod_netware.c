@@ -137,8 +137,9 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     }
 
     /* eliminate the '.' if there is one */
-    if (*ext == '.')
+    if (*ext == '.') {
         ++ext;
+    }
 
     /* check if we have a registered command for the extension*/
     new_cmd = apr_table_get(d->file_type_handlers, ext);
@@ -154,8 +155,9 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         *cmd = apr_pstrcat (p, new_cmd, " ", cmd_only, NULL);
 
         /* Run in its own address space if specified */
-        if(apr_table_get(d->file_handler_mode, ext))
+        if (apr_table_get(d->file_handler_mode, ext)) {
             e_info->addrspace = 1;
+        }
     }
 
     /* Tokenize the full command string into its arguments */

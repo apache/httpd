@@ -1949,7 +1949,7 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 d = apr_pstrdup(ctx->pool, decoding);
                 token = apr_strtok(d, ", \t", &last);
 
-                while(token) {
+                while (token) {
                     if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
@@ -1985,7 +1985,7 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 e = apr_pstrdup(ctx->pool, encoding);
                 token = apr_strtok(e, ", \t", &last);
 
-                while(token) {
+                while (token) {
                     if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
@@ -2587,7 +2587,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 d = apr_pstrdup(ctx->pool, decoding);
                 token = apr_strtok(d, ", \t", &last);
 
-                while(token) {
+                while (token) {
                     if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
@@ -2623,7 +2623,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 e = apr_pstrdup(ctx->pool, encoding);
                 token = apr_strtok(e, ", \t", &last);
 
-                while(token) {
+                while (token) {
                     if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
@@ -3725,7 +3725,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
         } /* switch(ctx->state) */
 
-    } /* while(brigade) */
+    } /* while (brigade) */
 
     /* End of stream. Final cleanup */
     if (intern->seen_eos) {
@@ -4138,13 +4138,13 @@ static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig,
  */
 
 static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
-                                apr_pool_t *ptemp, server_rec *s)
+                               apr_pool_t *ptemp, server_rec *s)
 {
     include_handlers = apr_hash_make(p);
 
     ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
 
-    if(ssi_pfn_register) {
+    if (ssi_pfn_register) {
         ssi_pfn_register("if", handle_if);
         ssi_pfn_register("set", handle_set);
         ssi_pfn_register("else", handle_else);

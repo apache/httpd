@@ -1336,7 +1336,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
     }
 
-    if((autoindex_opts & SHOW_FORBIDDEN)
+    if ((autoindex_opts & SHOW_FORBIDDEN)
         && (rr->status == HTTP_UNAUTHORIZED || rr->status == HTTP_FORBIDDEN)) {
         show_forbidden = 1;
     }

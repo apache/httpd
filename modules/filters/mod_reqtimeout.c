@@ -479,7 +479,8 @@ static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
     return cfg;
 }
 
-static const char *parse_int(apr_pool_t *p, const char *arg, int *val) {
+static const char *parse_int(apr_pool_t *p, const char *arg, int *val)
+{
     char *endptr;
     *val = strtol(arg, &endptr, 10);
 
