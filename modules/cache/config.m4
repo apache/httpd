@@ -34,7 +34,7 @@ dnl
 dnl Configure for the detected distcache installation, giving
 dnl preference to "--with-distcache=<path>" if it was specified.
 dnl
-AC_DEFUN(APACHE_CHECK_DISTCACHE,[
+AC_DEFUN([APACHE_CHECK_DISTCACHE],[
 if test "x$ap_distcache_configured" = "x"; then
   dnl initialise the variables we use
   ap_distcache_found=""
