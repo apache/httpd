@@ -96,7 +96,7 @@ static apr_status_t eor_bucket_copy(apr_bucket *a, apr_bucket **b)
     *b = apr_bucket_alloc(sizeof(**b), a->list); /* XXX: check for failure? */
     **b = *a;
 
-    /* we don't wan't the request to be destroyed twice */
+    /* We don't want the request to be destroyed more than once. */
     (*b)->data = NULL;
 
     return APR_SUCCESS;
