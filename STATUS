@@ -110,12 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * MPMs: Follow up to r1705492 (SO_REUSEPORT). Add missing (and harmless)
-           backport hunk (for consistency with trunk and 2.4.x's worker/event).
-     trunk patch: http://svn.apache.org/r1629916
-     2.4.x patch: trunk works
-     +1: ylavic, jim, rjung
-
    * mod_proxy_balancer: Silence warnings, and fix logic, in XML
      balancer status output.
      trunk patch: http://svn.apache.org/r1705776
