@@ -180,13 +180,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            backport hunk (for consistency with trunk and 2.4.x's worker/event).
      trunk patch: http://svn.apache.org/r1629916
      2.4.x patch: trunk works
-     +1: ylavic, jim
+     +1: ylavic, jim, rjung
 
    * mod_proxy_balancer: Silence warnings, and fix logic, in XML
      balancer status output.
      trunk patch: http://svn.apache.org/r1705776
      2.4.x patch: trunk works
-     +1: jim, ylavic
+     +1: jim, ylavic, rjung
 
    * mod_ssl: Make the output filter more friendly with deferred write and
               response pipelining.
@@ -202,12 +202,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Fix some style issues
      trunk patch: http://svn.apache.org/r1705983
      2.4.x patch: trunk works
-     +1: jailletc36, jim
+     +1: jailletc36, jim, rjung
 
    * Fix some m4's AC_DEFUN quoting. PR 58126.
      trunk patch: http://svn.apache.org/r1706918
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch
-     +1: ylavic, jim
+     +1: ylavic, jim, rjung
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
