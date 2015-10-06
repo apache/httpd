@@ -43,6 +43,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#substitute">Substitute</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#substituteinheritbefore">SubstituteInheritBefore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#substitutemaxlinelength">SubstituteMaxLineLength</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
@@ -128,6 +129,27 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     <code>Substitute</code> takes care of the rest of the problem by
     fixing up the HTML response as well.</p>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SubstituteInheritBefore" id="SubstituteInheritBefore">SubstituteInheritBefore</a> <a name="substituteinheritbefore" id="substituteinheritbefore">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Change the merge order of inherited patterns</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SubstituteInheritBefore on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SubstituteInheritBefore off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.17 and later</td></tr>
+</table>
+    <p>Whether to apply the inherited <code class="directive">Substitute</code>
+    patterns first (<code>on</code>), or after the ones of the current
+    context (<code>off</code>).
+    <code class="directive">SubstituteInheritBefore</code> is itself inherited,
+    hence contexts that inherit it (those that don't specify their own
+    <code class="directive">SubstituteInheritBefore</code> value) will apply the
+    closest defined merge order.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
