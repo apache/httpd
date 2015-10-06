@@ -232,6 +232,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch
      +1: ylavic
 
+   * core: Fix C99 macro for ap_log_rdata, see comment #8 in PR57045
+     trunk patch: http://svn.apache.org/r1706942
+     2.4.x patch: trunk works
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
