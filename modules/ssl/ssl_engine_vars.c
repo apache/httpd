@@ -149,6 +149,14 @@ static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     return sslconn ? ssl_var_lookup_ssl(ctx->p, ctx->c, ctx->r, var) : NULL;
 }
 
+static const char *expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
+                                const char *arg)
+{
+    char *var = (char *)arg;
+
+    return var ? ssl_var_lookup(ctx->p, ctx->s, ctx->c, ctx->r, var) : NULL;
+}
+
 static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
 {
     switch (parms->type) {
@@ -160,6 +168,15 @@ static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
         if (strcEQn(parms->name, "SSL_", 4)) {
             *parms->func = expr_var_fn;
             *parms->data = parms->name + 4;
+            return OK;
+        }
+        break;
+    case AP_EXPR_FUNC_STRING:
+        /* Function SSL() is implemented by us.
+         */
+        if (strcEQ(parms->name, "SSL")) {
+            *parms->func = expr_func_fn;
+            *parms->data = NULL;
             return OK;
         }
         break;

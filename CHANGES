@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Extend expression parser registration to support ssl variables
+     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
+     syntax "ssl(VARIABLE)". [Rainer Jung]
+
   *) core: Extend support for asynchronous write completion from the
      network filter to any connection or request filter. [Graham Leggett]
 
