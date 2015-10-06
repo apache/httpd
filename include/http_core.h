@@ -711,6 +711,8 @@ typedef struct {
 
     apr_array_header_t *protocols;
     int protocols_honor_order;
+    int async_filter;
+    int async_filter_set:1;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

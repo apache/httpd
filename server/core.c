@@ -481,7 +481,8 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 
     conf->protocols = apr_array_make(a, 5, sizeof(const char *));
     conf->protocols_honor_order = -1;
-    
+    conf->async_filter = 0;
+
     return (void *)conf;
 }
 
@@ -555,12 +556,16 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
                            ? virt->merge_trailers
                            : base->merge_trailers;
 
-    conf->protocols = ((virt->protocols->nelts > 0)? 
+    conf->protocols = ((virt->protocols->nelts > 0) ?
                        virt->protocols : base->protocols);
-    conf->protocols_honor_order = ((virt->protocols_honor_order < 0)?
+    conf->protocols_honor_order = ((virt->protocols_honor_order < 0) ?
                                        base->protocols_honor_order :
                                        virt->protocols_honor_order);
-    
+    conf->async_filter = ((virt->async_filter_set) ?
+                                       virt->async_filter :
+                                       base->async_filter);
+    conf->async_filter_set = base->async_filter_set || virt->async_filter_set;
+
     return conf;
 }
 
@@ -3887,6 +3892,34 @@ static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_async_filter(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
+{
+    core_server_config *conf =
+    ap_get_core_module_config(cmd->server->module_config);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+
+    if (err) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "network") == 0) {
+        conf->async_filter = AP_FTYPE_NETWORK;
+    }
+    else if (strcasecmp(arg, "connection") == 0) {
+        conf->async_filter = AP_FTYPE_CONNECTION;
+    }
+    else if (strcasecmp(arg, "request") == 0) {
+        conf->async_filter = 0;
+    }
+    else {
+        return "AsyncFilter must be 'network', 'connection' or 'request'";
+    }
+    conf->async_filter_set = 1;
+
+    return NULL;
+}
+
 static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -4502,6 +4535,9 @@ AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
 AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "'off' (default) or 'on' to respect given order of protocols, "
               "by default the client specified order determines selection"),
+AP_INIT_TAKE1("AsyncFilter", set_async_filter, NULL, RSRC_CONF,
+              "'network', 'connection' (default) or 'request' to limit the "
+              "types of filters that support asynchronous handling"),
 { NULL }
 };
 
@@ -5010,6 +5046,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     c->bucket_alloc = alloc;
     c->empty = apr_brigade_create(c->pool, c->bucket_alloc);
     c->filters = apr_hash_make(c->pool);
+    c->async_filter = sconf->async_filter;
 
     c->clogging_input_filters = 0;
 

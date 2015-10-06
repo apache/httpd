@@ -894,6 +894,14 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
 AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
 {
     /*
+     * Handle the AsyncFilter directive. We limit the filters that are
+     * eligible for asynchronous handling here.
+     */
+    if (f->frec->ftype < f->c->async_filter) {
+        return 0;
+    }
+
+    /*
      * This function decides whether a filter should yield due to buffered
      * data in a downstream filter. If a downstream filter buffers we
      * must back off so we don't overwhelm the server. If this function

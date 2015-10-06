@@ -2043,6 +2043,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_request_core_filter(ap_filter_t *f,
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *tmp_bb = f->ctx;
 
+    /*
+     * Handle the AsyncFilter directive. We limit the filters that are
+     * eligible for asynchronous handling here.
+     */
+    if (f->frec->ftype < f->c->async_filter) {
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
+    }
+
     if (!tmp_bb) {
         tmp_bb = f->ctx = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     }

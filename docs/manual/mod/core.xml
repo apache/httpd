@@ -552,6 +552,32 @@ AllowOverrideList CookieTracking CookieName
 </directivesynopsis>
 
 <directivesynopsis>
+    <name>AsyncFilter</name>
+    <description>Set the minimum filter type eligible for asynchronous handling</description>
+    <syntax>AsyncFilter request|connection|network</syntax>
+    <default>AsyncFilter request</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Only available from Apache 2.5.0 and later.</compatibility>
+
+    <usage>
+        <p>This directive controls the minimum filter levels that are eligible
+        for asynchronous handling. This may be necessary to support legacy external
+        filters that did not handle meta buckets correctly.</p>
+
+        <p>If set to "network", asynchronous handling will be limited to the network
+        filter only. If set to "connection", all connection and network filters
+        will be eligible for asynchronous handling, including <module>mod_ssl</module>.
+        If set to "request", all filters will be eligible for asynchronous handling.</p>
+        
+        <p>With <directive>ProtocolsHonorOrder</directive> set to <code>on</code> 
+            (default), the client ordering does not matter and only the ordering 
+            in the server settings influences the outcome of the protocol 
+            negotiation.</p>
+        
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CGIMapExtension</name>
 <description>Technique for locating the interpreter for CGI
 scripts</description>
