@@ -431,6 +431,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
+            ap_remove_output_filter(f);
         }
         /*
          * No need to handle FLUSH buckets separately as we call
