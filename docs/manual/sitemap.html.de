@@ -237,7 +237,6 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_ext_filter.html">Apache-Modul mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache-Modul mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Apache-Modul mod_filter</a></li>
-<li><a href="mod/mod_h2.html">Apache-Modul mod_h2</a></li>
 <li><a href="mod/mod_headers.html">Apache-Modul mod_headers</a></li>
 <li><a href="mod/mod_heartbeat.html">Apache-Modul mod_heartbeat</a></li>
 <li><a href="mod/mod_heartmonitor.html">Apache-Modul mod_heartmonitor</a></li>
