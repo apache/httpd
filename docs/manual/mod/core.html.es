@@ -3392,7 +3392,7 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">Directiva</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Protocols available for a server/virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Determines if order of Protocols determines precedence during negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>ProtocolsHonorOrder On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
