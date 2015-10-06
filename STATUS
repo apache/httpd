@@ -132,6 +132,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-AC_DEFUN_quotes.patch
      +1: ylavic, jim, rjung
 
+   * mod_substitute: Configure patterns merge order. PR 57641
+     trunk patch: http://svn.apache.org/r1684900
+                  http://svn.apache.org/r1687539 
+                  http://svn.apache.org/r1687680
+                  http://svn.apache.org/r1688331
+                  http://svn.apache.org/r1688339
+                  http://svn.apache.org/r1688340
+                  http://svn.apache.org/r1688341
+                  http://svn.apache.org/r1688343
+                  http://svn.apache.org/r1697013
+                  http://svn.apache.org/r1697015
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v6.patch
+     +1: ylavic, wrowe, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -160,20 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
      minfrin: Two new directives need to be documented.
-
-  *) mod_substitute: Configure patterns merge order. PR 57641
-     trunk patch: http://svn.apache.org/r1684900
-                  http://svn.apache.org/r1687539 
-                  http://svn.apache.org/r1687680
-                  http://svn.apache.org/r1688331
-                  http://svn.apache.org/r1688339
-                  http://svn.apache.org/r1688340
-                  http://svn.apache.org/r1688341
-                  http://svn.apache.org/r1688343
-                  http://svn.apache.org/r1697013
-                  http://svn.apache.org/r1697015
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SubstituteInheritBefore-v6.patch
-     +1: ylavic, wrowe, rjung
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
