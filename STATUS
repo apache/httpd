@@ -170,7 +170,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1705828
                   http://svn.apache.org/r1705833
                   http://svn.apache.org/r1706275
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v2.patch
+                  http://svn.apache.org/r1707230
+                  http://svn.apache.org/r1707231
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v3.patch
      +1: ylavic
 
    * mod_ssl: Extend expression parser registration to support ssl variables
