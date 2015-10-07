@@ -173,6 +173,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v2.patch
      +1: ylavic
 
+   * mod_ssl: Extend expression parser registration to support ssl variables
+     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
+     syntax "ssl(VARIABLE)".
+     trunk patch: http://svn.apache.org/r1707152
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
