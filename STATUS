@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      syntax "ssl(VARIABLE)".
      trunk patch: http://svn.apache.org/r1707002
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung
+     +1: rjung, ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
