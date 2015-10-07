@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ssl: Extend expression parser registration to support ssl variables
      in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
      syntax "ssl(VARIABLE)".
-     trunk patch: http://svn.apache.org/r1707152
+     trunk patch: http://svn.apache.org/r1707002
      2.4.x patch: trunk works (modulo CHANGES)
      +1: rjung
 
