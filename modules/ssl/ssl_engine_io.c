@@ -196,6 +196,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
     apr_bucket *e;
+    int need_flush;
 
     /* Abort early if the client has initiated a renegotiation. */
     if (outctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
@@ -213,6 +214,26 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      * filter must setaside if necessary. */
     e = apr_bucket_transient_create(in, inl, outctx->bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
+
+    /* In theory, OpenSSL should flush as necessary, but it is known
+     * not to do so correctly in some cases (< 0.9.8m; see PR 46952),
+     * or on the proxy/client side (after ssl23_client_hello(), e.g.
+     * ssl/proxy.t test suite).
+     *
+     * Historically, this flush call was performed only for an SSLv2
+     * connection or for a proxy connection.  Calling _out_flush can
+     * be expensive in cases where requests/reponses are pipelined,
+     * so limit the performance impact to handshake time.
+     */
+#if OPENSSL_VERSION_NUMBER < 0x0009080df
+     need_flush = !SSL_is_init_finished(outctx->filter_ctx->pssl)
+#else
+     need_flush = !SSL_in_connect_init(outctx->filter_ctx->pssl);
+#endif
+    if (need_flush) {
+        e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
+    }
 
     if (bio_filter_out_pass(outctx) < 0) {
         return -1;
@@ -452,7 +473,6 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     apr_size_t inl = inlen;
     bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
     apr_read_type_e block = inctx->block;
-    int need_flush;
 
     inctx->rc = APR_SUCCESS;
 
@@ -463,27 +483,6 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     /* Abort early if the client has initiated a renegotiation. */
     if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         inctx->rc = APR_ECONNABORTED;
-        return -1;
-    }
-
-    /* In theory, OpenSSL should flush as necessary, but it is known
-     * not to do so correctly in some cases (< 0.9.8m; see PR 46952),
-     * or on the proxy/client side (after ssl23_client_hello(), e.g.
-     * ssl/proxy.t test suite).
-     *
-     * Historically, this flush call was performed only for an SSLv2
-     * connection or for a proxy connection.  Calling _out_flush can
-     * be expensive in cases where requests/reponses are pipelined,
-     * so limit the performance impact to handshake time.
-     */
-#if OPENSSL_VERSION_NUMBER < 0x0009080df
-    need_flush = 1;
-#else
-    need_flush = !SSL_is_init_finished(inctx->ssl);
-#endif
-    if (need_flush && bio_filter_out_flush(inctx->bio_out) < 0) {
-        bio_filter_out_ctx_t *outctx = inctx->bio_out->ptr;
-        inctx->rc = outctx->rc;
         return -1;
     }
 
