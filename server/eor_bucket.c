@@ -19,6 +19,11 @@
 #include "http_protocol.h"
 #include "scoreboard.h"
 
+typedef struct {
+    apr_bucket_refcount refcount;
+    request_rec *data;
+} ap_bucket_eor;
+
 static apr_status_t eor_bucket_cleanup(void *data)
 {
     request_rec **rp = data;
@@ -50,7 +55,7 @@ static apr_status_t eor_bucket_read(apr_bucket *b, const char **str,
 
 AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r)
 {
-    apr_bucket *h;
+    ap_bucket_eor *h;
 
     h = apr_bucket_alloc(sizeof(*h), b->list);
     h->data = r;
@@ -70,7 +75,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
     b->list = list;
     b = ap_bucket_eor_make(b, r);
     if (r) {
-        apr_bucket *h = b->data;
+        ap_bucket_eor *h = b->data;
         /*
          * Register a cleanup for the request pool as the eor bucket could
          * have been allocated from a different pool then the request pool
@@ -87,7 +92,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
 
 static void eor_bucket_destroy(void *data)
 {
-    apr_bucket *h = data;
+    ap_bucket_eor *h = data;
 
     if (apr_bucket_shared_destroy(h)) {
         request_rec *r = h->data;
