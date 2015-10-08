@@ -110,17 +110,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: don't recyle backend announced "Connection: close" connections
-     to avoid reusing it should the close be effective after some new request
-     is ready to be sent.
-     trunk patch: http://svn.apache.org/r1678763
-                  http://svn.apache.org/r1703807
-                  http://svn.apache.org/r1703813
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rjung, trawick
-     ylavic: while at it, I also included r1678763 which is only an
-             optimization, but allows to keep code in sync with trunk.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
