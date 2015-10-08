@@ -59,7 +59,6 @@ BEGIN {
     filelist["httpd-dav.conf"] = "httpd-dav.conf.in";
     filelist["httpd-default.conf"] = "httpd-default.conf.in";
     filelist["httpd-info.conf"] = "httpd-info.conf.in";
-    filelist["httpd-h2.conf"] = "httpd-h2.conf.in";
     filelist["httpd-languages.conf"] = "httpd-languages.conf.in";
     filelist["httpd-manual.conf"] = "httpd-manual.conf.in";
     filelist["httpd-mpm.conf"] = "httpd-mpm.conf.in";
