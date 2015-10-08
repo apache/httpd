@@ -421,8 +421,8 @@ will handle during its life</description>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently.</p>
 
-    <p>For <module>worker</module>, the default is
-    <code>MaxSpareThreads 250</code>. This MPM deals with idle threads
+    <p>For <module>worker</module> and <module>event</module>, the default is
+    <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
     on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
     threads is less than this number.</p>
@@ -443,9 +443,10 @@ will handle during its life</description>
         <li><module>mpm_netware</module> wants the value to be greater than
         <directive module="mpm_common">MinSpareThreads</directive>.</li>
 
-        <li>For <module>worker</module>, the value must be greater or equal
-        to the sum of <directive module="mpm_common">MinSpareThreads</directive>
-        and <directive module="mpm_common">ThreadsPerChild</directive>.</li>
+        <li>For <module>worker</module> and <module>event</module>, the value
+        must be greater or equal to the sum of <directive module="mpm_common">
+        MinSpareThreads</directive> and <directive module="mpm_common">
+	ThreadsPerChild</directive>.</li>
       </ul>
     </note>
 </usage>
@@ -467,12 +468,11 @@ spikes</description>
 
 <usage>
     <p>Minimum number of idle threads to handle request spikes.
-    Different MPMs deal with this directive
-    differently.</p>
+    Different MPMs deal with this directive differently.</p>
 
-    <p><module>worker</module> uses a default of <code>MinSpareThreads
-    75</code> and deals with idle threads on a server-wide basis. If
-    there aren't enough idle threads in the server then child
+    <p><module>worker</module> and <module>event</module> use a default of
+    <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
+    basis. If there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
     than <var>number</var>.</p>
 
@@ -592,12 +592,12 @@ Apache HTTP Server</a></seealso>
     <p>For the <module>prefork</module> MPM, this directive sets the
     maximum configured value for <directive
     module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
-    Apache httpd process.  For the <module>worker</module> MPM, this directive
-    in combination with <directive
+    Apache httpd process. For the <module>worker</module> and <module>event
+    </module> MPMs, this directive in combination with <directive
     module="mpm_common">ThreadLimit</directive> sets
     the maximum configured value for <directive
     module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
-    Apache httpd process.  Any attempts to change this directive during a
+    Apache httpd process. Any attempts to change this directive during a
     restart will be ignored, but <directive
     module="mpm_common">MaxRequestWorkers</directive> can be modified during
     a restart.</p>
@@ -617,9 +617,9 @@ Apache HTTP Server</a></seealso>
     might want to set <directive
     module="mpm_common">MaxRequestWorkers</directive> to.</p>
 
-    <p>With <module>worker</module>, use this directive only
-    if your <directive module="mpm_common">MaxRequestWorkers</directive> and
-    <directive module="mpm_common">ThreadsPerChild</directive>
+    <p>With <module>worker</module> and <module>event</module>, use this
+    directive only if your <directive module="mpm_common">MaxRequestWorkers
+    </directive> and <directive module="mpm_common">ThreadsPerChild</directive>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
     processes required by what you may want for <directive
@@ -657,10 +657,10 @@ Apache HTTP Server</a></seealso>
     module="prefork">MaxSpareServers</directive>)
     there is usually little reason to adjust this parameter.</p>
 
-    <p>The default value differs from MPM to MPM. <module>worker</module>
-    defaults to <code>StartServers 3</code>; <module>prefork</module>
-    defaults to <code>5</code>; <module>mpmt_os2</module> defaults to
-    <code>2</code>.</p>
+    <p>The default value differs from MPM to MPM. <module>worker</module> and
+    <module>event</module> default to <code>StartServers 3</code>; <module>
+    prefork</module> defaults to <code>5</code>; <module>mpmt_os2</module>
+    defaults to <code>2</code>.</p>
 </usage>
 </directivesynopsis>
 
