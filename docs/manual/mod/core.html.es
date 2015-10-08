@@ -49,6 +49,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#asyncfilter">AsyncFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
@@ -535,6 +536,19 @@ be passed through</td></tr>
 <li><a href="../howto/htaccess.html">.htaccess Files</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AsyncFilter request</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Only available from Apache 2.5.0 and later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directiva</a></h2>
 <table class="directive">

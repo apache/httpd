@@ -49,6 +49,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#asyncfilter">AsyncFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
@@ -486,6 +487,19 @@
 <li><a href="../howto/htaccess.html">.htaccess Files</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AsyncFilter request</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Only available from Apache 2.5.0 and later.</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">ディレクティブ</a></h2>
 <table class="directive">

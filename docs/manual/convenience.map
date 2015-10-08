@@ -41,6 +41,7 @@ anonymous_logemail	mod/mod_authn_anon.html#anonymous_logemail
 anonymous_mustgiveemail	mod/mod_authn_anon.html#anonymous_mustgiveemail
 anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
+asyncfilter	mod/core.html#asyncfilter
 asyncrequestworkerfactor	mod/event.html#asyncrequestworkerfactor
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicfake	mod/mod_auth_basic.html#authbasicfake
