@@ -34,8 +34,8 @@ switch before dumping core</description>
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>See usage for the default setting</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>This controls the directory to which Apache httpd attempts to
@@ -86,8 +86,8 @@ after a crash</description>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist>
-<module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>For safety reasons this directive is only available if the server was
@@ -110,8 +110,8 @@ will exit.</description>
 <syntax>GracefulShutdownTimeout <var>seconds</var></syntax>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-<module>event</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 <compatibility>Available in version 2.2 and later</compatibility>
 
 <usage>
@@ -131,8 +131,9 @@ of the daemon</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpmt_os2</module>
 </modulelist>
 
 <usage>
@@ -173,10 +174,9 @@ of the daemon</description>
 listens to</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module>
-<module>prefork</module><module>worker</module>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
 <compatibility>The <var>protocol</var> argument was added in 2.1.5</compatibility>
 
@@ -259,10 +259,9 @@ listeners' buckets</description>
 <syntax>ListenCoresBucketsRatio <var>ratio</var></syntax>
 <default>ListenCoresBucketsRatio 0 (disabled)</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
 <module>prefork</module>
-<module>worker</module></modulelist>
+</modulelist>
 <compatibility>Available in Apache HTTP Server 2.4.17, with a kernel supporting
 the socket option <code>SO_REUSEPORT</code> and distributing new connections
 evenly accross listening processes' (or threads') sockets using it (eg. Linux
@@ -296,11 +295,10 @@ in *BSDs.</compatibility>
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist>
-<module>event</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>The maximum length of the queue of pending connections.
@@ -324,8 +322,8 @@ simultaneously</description>
 <syntax>MaxRequestWorkers <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
 </modulelist>
 
 <usage>
@@ -367,8 +365,9 @@ to hold without calling <code>free()</code></description>
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 2048</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>prefork</module><module>worker</module><module>mpm_winnt</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module>
 </modulelist>
 
 <usage>
@@ -387,9 +386,10 @@ will handle during its life</description>
 <syntax>MaxConnectionsPerChild <var>number</var></syntax>
 <default>MaxConnectionsPerChild 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 <compatibility>Available Apache HTTP Server 2.3.9 and later. The old name
 <code>MaxRequestsPerChild</code> is still supported.</compatibility>
 
@@ -413,8 +413,9 @@ will handle during its life</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Maximum number of idle threads. Different MPMs deal with this
@@ -460,8 +461,9 @@ spikes</description>
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Minimum number of idle threads to handle request spikes.
@@ -494,8 +496,9 @@ the child processes</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Apache HTTP Server uses a scoreboard to communicate between its parent
@@ -530,9 +533,10 @@ Apache HTTP Server</a></seealso>
 <syntax>ReceiveBufferSize <var>bytes</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>The server will set the TCP receive buffer size to the number of
@@ -549,9 +553,10 @@ Apache HTTP Server</a></seealso>
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Sets the server's TCP send buffer size to the number of bytes
@@ -579,8 +584,9 @@ Apache HTTP Server</a></seealso>
 <syntax>ServerLimit <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
 
 <usage>
     <p>For the <module>prefork</module> MPM, this directive sets the
@@ -637,8 +643,8 @@ Apache HTTP Server</a></seealso>
 <syntax>StartServers <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpmt_os2</module>
 </modulelist>
 
 <usage>
@@ -691,8 +697,9 @@ per child process</description>
 <syntax>ThreadLimit <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>This directive sets the maximum configured value for <directive
@@ -736,8 +743,9 @@ per child process</description>
 <syntax>ThreadsPerChild <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>This directive sets the number of threads created by each
@@ -762,9 +770,9 @@ client connections</description>
 <syntax>ThreadStackSize <var>size</var></syntax>
 <default>65536 on NetWare; varies on other operating systems</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>mpm_winnt</module><module>worker</module>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module><module>mpm_netware</module>
+<module>mpmt_os2</module>
 </modulelist>
 <compatibility>Available in Apache HTTP Server 2.1 and later</compatibility>
 
