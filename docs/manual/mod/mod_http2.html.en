@@ -42,7 +42,7 @@
         
         <div class="warning"><h3>Warning</h3>
           <p>This module is experimental. Its behaviors, directives, and 
-          defaults are subject to more frequent and change from release to 
+          defaults are subject to more change from release to 
           release relative to other standard modules. Users are encouraged to 
           consult the "CHANGES" file for potential updates.</p>
         </div>
