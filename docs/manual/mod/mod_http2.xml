@@ -26,7 +26,7 @@
     <description>Support for the HTTP/2 transport layer</description>
     <status>Extension</status>
     <sourcefile>mod_http2.c</sourcefile>
-    <identifier>h2_module</identifier>
+    <identifier>http2_module</identifier>
     
     <summary>
         <p>This module provides HTTP/2 (RFC 7540) support for the Apache
