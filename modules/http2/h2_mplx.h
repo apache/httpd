@@ -96,6 +96,7 @@ void h2_mplx_reference(h2_mplx *m);
  * Decreases the reference counter of this mplx.
  */
 void h2_mplx_release(h2_mplx *m);
+
 /**
  * Decreases the reference counter of this mplx and waits for it
  * to reached 0, destroy the mplx afterwards.
@@ -246,6 +247,8 @@ apr_status_t h2_mplx_out_write(h2_mplx *mplx, int stream_id,
  * data and then only APR_EOF as result. 
  */
 apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id);
+
+apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error);
 
 /*******************************************************************************
  * h2_mplx list Manipulation.
