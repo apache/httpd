@@ -1037,6 +1037,46 @@ BEGIN {
 }
 <<
 !ENDIF
+!IF EXIST("srclib\libxml2")
+	type << >> "$(INSTDIR)\NOTICE.txt"
+
+This binary distributions of mod_proxy_html.so and mod_xml2enc.so include the
+libxml2 C library written by Daniel Veillard (daniel veillard.com), Bjorn 
+Reese (breese users.sourceforge.net) and Gary Pennington (Gary.Pennington 
+uk.sun.com). For complete information, visit LibXML2's web site at 
+https://http://www.xmlsoft.org/
+<<
+	-awk -f <<script.awk < "srclib\libxml2\Copyright" >> "$(INSTDIR)\LICENSE.txt"
+BEGIN {
+    print "";
+    print "For the mod_proxy_html and mod_xml2enc components:";
+    print "";
+	    while ( getline > 0 ) {
+	print $$0;
+    }
+    exit 0;
+}
+<<
+!ENDIF
+!IF EXIST("srclib\nghttp2")
+	type << >> "$(INSTDIR)\NOTICE.txt"
+
+This binary distribution of mod_http2.so includes nghttp2 C library written 
+by Tatsuhiro Tsujikawa. For complete information, visit nghttp2's web site 
+at https://nghttp2.org/
+<<
+	-awk -f <<script.awk < "srclib\nghttp2\COPYING" >> "$(INSTDIR)\LICENSE.txt"
+BEGIN {
+    print "";
+    print "For the mod_http2 component:";
+    print "";
+	    while ( getline > 0 ) {
+	print $$0;
+    }
+    exit 0;
+}
+<<
+!ENDIF
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
 		_copybin src_exe=exe src_dll=dll src_so=so             \
 		inst_exe="$(INSTDIR)\bin"                              \
