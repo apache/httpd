@@ -117,8 +117,32 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
 typedef apr_status_t h2_util_pass_cb(void *ctx, 
                                        const char *data, apr_size_t len);
 
+/**
+ * Read at most *plen bytes from the brigade and pass them into the
+ * given callback. If cb is NULL, just return the amount of data that
+ * could have been read.
+ * If an EOS was/would be encountered, set *peos != 0.
+ * @param bb the brigade to read from
+ * @param cb the callback to invoke for the read data
+ * @param ctx optional data passed to callback
+ * @param plen inout, as input gives the maximum number of bytes to read,
+ *    on return specifies the actual/would be number of bytes
+ * @param peos != 0 iff an EOS bucket was/would be encountered.
+ */
 apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
                               h2_util_pass_cb *cb, void *ctx, 
                               apr_size_t *plen, int *peos);
+
+/**
+ * Logs the bucket brigade (which bucket types with what length)
+ * to the log at the given level.
+ * @param c the connection to log for
+ * @param stream_id the stream identifier this brigade belongs to
+ * @param level the log level (as in APLOG_*)
+ * @param tag a short message text about the context
+ * @param bb the brigade to log
+ */
+void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
+                    const char *tag, apr_bucket_brigade *bb);
 
 #endif /* defined(__mod_h2__h2_util__) */

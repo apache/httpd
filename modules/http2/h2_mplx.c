@@ -41,6 +41,7 @@
 #include "h2_task_output.h"
 #include "h2_task_queue.h"
 #include "h2_workers.h"
+#include "h2_util.h"
 
 
 static int is_aborted(h2_mplx *m, apr_status_t *pstatus) {
@@ -454,6 +455,13 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
     return status;
 }
 
+#define H2_MPLX_IO_OUT(lvl,m,io,msg) \
+    do { \
+        if (APLOG_C_IS_LEVEL((m)->c,lvl)) \
+        h2_util_bb_log((m)->c,(io)->id,lvl,msg,(io)->bbout); \
+    } while(0)
+
+
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
                                apr_size_t *plen, int *peos)
@@ -467,8 +475,12 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io) {
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
+            
             status = h2_io_out_readx(io, cb, ctx, plen, peos);
-            if (status == APR_SUCCESS && io->output_drained) {
+            
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
+            if (status == APR_SUCCESS && cb && io->output_drained) {
                 apr_thread_cond_signal(io->output_drained);
             }
         }
@@ -492,14 +504,18 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get_highest_prio(m->ready_ios);
         if (io) {
-            h2_response *response = io->response;
             
-            AP_DEBUG_ASSERT(response);
-            h2_io_set_remove(m->ready_ios, io);
-            
-            stream = h2_stream_set_get(streams, response->stream_id);
+            stream = h2_stream_set_get(streams, io->id);
             if (stream) {
-                h2_stream_set_response(stream, response, io->bbout);
+                if (io->rst_error) {
+                    h2_stream_rst(stream, io->rst_error);
+                }
+                else {
+                    AP_DEBUG_ASSERT(io->response);
+                    h2_stream_set_response(stream, io->response, io->bbout);
+                }
+                
+                h2_io_set_remove(m->ready_ios, io);
                 if (io->output_drained) {
                     apr_thread_cond_signal(io->output_drained);
                 }
@@ -507,7 +523,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, APR_NOTFOUND, m->c,
                               APLOGNO(02953) "h2_mplx(%ld): stream for response %d",
-                              m->id, response->stream_id);
+                              m->id, io->id);
             }
         }
         apr_thread_mutex_unlock(m->lock);
@@ -531,7 +547,6 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
         
         status = h2_io_out_write(io, bb, m->stream_max_mem, 
                                  &m->file_handles_allowed);
-        
         /* Wait for data to drain until there is room again */
         while (!APR_BRIGADE_EMPTY(bb) 
                && iowait
@@ -549,6 +564,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
         }
     }
     apr_brigade_cleanup(bb);
+    
     return status;
 }
 
@@ -592,6 +608,9 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response,
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         status = out_open(m, stream_id, response, f, bb, iowait);
+        if (APLOGctrace1(m->c)) {
+            h2_util_bb_log(m->c, stream_id, APLOG_TRACE1, "h2_mplx_out_open", bb);
+        }
         if (m->aborted) {
             return APR_ECONNABORTED;
         }
@@ -616,6 +635,8 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io) {
                 status = out_write(m, io, f, bb, iowait);
+                H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
+                
                 have_out_data_for(m, stream_id);
                 if (m->aborted) {
                     return APR_ECONNABORTED;
@@ -645,7 +666,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io) {
-                if (!io->response || !io->response->ngheader) {
+                if (!io->response && !io->rst_error) {
                     /* In case a close comes before a response was created,
                      * insert an error one so that our streams can properly
                      * reset.
@@ -653,8 +674,48 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                     h2_response *r = h2_response_create(stream_id, 
                                                         "500", NULL, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                                  "h2_mplx(%ld-%d): close, no response, no rst", 
+                                  m->id, io->id);
                 }
                 status = h2_io_out_close(io);
+                H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
+                
+                have_out_data_for(m, stream_id);
+                if (m->aborted) {
+                    /* if we were the last output, the whole session might
+                     * have gone down in the meantime.
+                     */
+                    return APR_SUCCESS;
+                }
+            }
+            else {
+                status = APR_ECONNABORTED;
+            }
+        }
+        apr_thread_mutex_unlock(m->lock);
+    }
+    return status;
+}
+
+apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error)
+{
+    apr_status_t status;
+    AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        if (!m->aborted) {
+            h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
+            if (io && !io->rst_error) {
+                h2_io_rst(io, error);
+                if (!io->response) {
+                        h2_io_set_add(m->ready_ios, io);
+                }
+                H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_rst");
+                
                 have_out_data_for(m, stream_id);
                 if (m->aborted) {
                     /* if we were the last output, the whole session might

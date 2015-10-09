@@ -1062,6 +1062,10 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         case APR_SUCCESS:
             break;
             
+        case APR_ECONNRESET:
+            return nghttp2_submit_rst_stream(ng2s, NGHTTP2_FLAG_NONE,
+                stream->id, stream->rst_error);
+            
         case APR_EAGAIN:
             /* If there is no data available, our session will automatically
              * suspend this stream and not ask for more data until we resume
@@ -1141,10 +1145,14 @@ apr_status_t h2_session_handle_response(h2_session *session, h2_stream *stream)
     int rv = 0;
     AP_DEBUG_ASSERT(session);
     AP_DEBUG_ASSERT(stream);
-    AP_DEBUG_ASSERT(stream->response);
+    AP_DEBUG_ASSERT(stream->response || stream->rst_error);
     
-    if (stream->response->ngheader) {
+    if (stream->response && stream->response->ngheader) {
         rv = submit_response(session, stream->response);
+    }
+    else if (stream->rst_error) {
+        rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                       stream->id, stream->rst_error);
     }
     else {
         rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,

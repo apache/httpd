@@ -86,11 +86,6 @@ apr_status_t h2_stream_destroy(h2_stream *stream)
     return APR_SUCCESS;
 }
 
-void h2_stream_attach_pool(h2_stream *stream, apr_pool_t *pool)
-{
-    stream->pool = pool;
-}
-
 apr_pool_t *h2_stream_detach_pool(h2_stream *stream)
 {
     apr_pool_t *pool = stream->pool;
@@ -98,25 +93,41 @@ apr_pool_t *h2_stream_detach_pool(h2_stream *stream)
     return pool;
 }
 
-void h2_stream_abort(h2_stream *stream)
+void h2_stream_rst(h2_stream *stream, int error_code)
 {
-    AP_DEBUG_ASSERT(stream);
-    stream->aborted = 1;
+    stream->rst_error = error_code;
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->m->c,
+                  "h2_stream(%ld-%d): reset, error=%d", 
+                  stream->m->id, stream->id, error_code);
 }
 
 apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                                     apr_bucket_brigade *bb)
 {
+    apr_status_t status = APR_SUCCESS;
+    
     stream->response = response;
     if (bb && !APR_BRIGADE_EMPTY(bb)) {
         if (!stream->bbout) {
             stream->bbout = apr_brigade_create(stream->pool, 
                                                stream->m->c->bucket_alloc);
         }
-        return h2_util_move(stream->bbout, bb, 16 * 1024, NULL,  
-                            "h2_stream_set_response");
+        status = h2_util_move(stream->bbout, bb, 16 * 1024, NULL,  
+                              "h2_stream_set_response");
     }
-    return APR_SUCCESS;
+    if (APLOGctrace1(stream->m->c)) {
+        apr_size_t len = 0;
+        int eos = 0;
+        if (stream->bbout) {
+            h2_util_bb_avail(stream->bbout, &len, &eos);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->m->c,
+                      "h2_stream(%ld-%d): set_response(%s), brigade=%s, "
+                      "len=%ld, eos=%d", 
+                      stream->m->id, stream->id, response->status,
+                      (stream->bbout? "yes" : "no"), (long)len, (int)eos);
+    }
+    return status;
 }
 
 static int set_closed(h2_stream *stream) 
@@ -141,6 +152,9 @@ apr_status_t h2_stream_rwrite(h2_stream *stream, request_rec *r)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(stream);
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     set_state(stream, H2_STREAM_ST_OPEN);
     status = h2_request_rwrite(stream->request, r, stream->m);
     return status;
@@ -151,6 +165,9 @@ apr_status_t h2_stream_write_eoh(h2_stream *stream, int eos)
     apr_status_t status;
     AP_DEBUG_ASSERT(stream);
     
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     /* Seeing the end-of-headers, we have everything we need to 
      * start processing it.
      */
@@ -180,6 +197,9 @@ apr_status_t h2_stream_write_eos(h2_stream *stream)
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->m->c,
                   "h2_stream(%ld-%d): closing input",
                   stream->m->id, stream->id);
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     if (set_closed(stream)) {
         return h2_request_close(stream->request);
     }
@@ -191,6 +211,9 @@ apr_status_t h2_stream_write_header(h2_stream *stream,
                                     const char *value, size_t vlen)
 {
     AP_DEBUG_ASSERT(stream);
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     switch (stream->state) {
         case H2_STREAM_ST_IDLE:
             set_state(stream, H2_STREAM_ST_OPEN);
@@ -208,7 +231,9 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
                                   const char *data, size_t len)
 {
     AP_DEBUG_ASSERT(stream);
-    AP_DEBUG_ASSERT(stream);
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     switch (stream->state) {
         case H2_STREAM_ST_OPEN:
             break;
@@ -224,6 +249,9 @@ apr_status_t h2_stream_prep_read(h2_stream *stream,
     apr_status_t status = APR_SUCCESS;
     const char *src;
     
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     if (stream->bbout && !APR_BRIGADE_EMPTY(stream->bbout)) {
         src = "stream";
         status = h2_util_bb_avail(stream->bbout, plen, peos);
@@ -251,6 +279,9 @@ apr_status_t h2_stream_readx(h2_stream *stream,
                              h2_io_data_cb *cb, void *ctx,
                              apr_size_t *plen, int *peos)
 {
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
     if (stream->bbout && !APR_BRIGADE_EMPTY(stream->bbout)) {
         return h2_util_bb_readx(stream->bbout, cb, ctx, plen, peos);
     }
