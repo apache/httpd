@@ -255,7 +255,7 @@
 
     <directivesynopsis>
         <name>H2SerializeHeaders</name>
-        <description>Serialize Request/Resoonse Processing Switch</description>
+        <description>Serialize Request/Response Processing Switch</description>
         <syntax>H2SerializeHeaders on|off</syntax>
         <default>H2SerializeHeaders off</default>
         <contextlist>
