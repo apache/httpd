@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674004:1707153 (outdated) -->
+<!-- English Revision: 1707153 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -976,7 +976,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	une cha&icirc;ne de caract&egrave;res vide si <module>mod_ssl</module> n'est
 	pas charg&eacute;. Exemple :
 	<code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> peut correspondre
-	&agrave; <code>128</code>.</li>
+	&agrave; <code>128</code>. Ces variables sont
+	disponibles m&ecirc;me si l'option <code>StdEnvVars</code> de la
+	directive <directive module="mod_ssl">SSLOptions</directive> n'a
+	pas &eacute;t&eacute; d&eacute;finie.</li>
 
         <li>Pour obtenir la valeur d'un en-t&ecirc;te contenu dans une requ&ecirc;te
 	HTTP, on peut toujours utiliser <code>%{HTTP:header}</code>,
