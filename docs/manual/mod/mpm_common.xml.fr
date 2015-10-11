@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1705612:1707631 (outdated) -->
+<!-- English Revision: 1707631 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -36,8 +36,8 @@ positionner avant d'effectuer un vidage m&eacute;moire</description>
 <syntax>CoreDumpDirectory <var>r&eacute;pertoire</var></syntax>
 <default>Voir ci-dessous pour le r&eacute;pertoire par d&eacute;faut</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>Cette directive permet de d&eacute;finir le r&eacute;pertoire dans lequel
@@ -99,8 +99,8 @@ gestionnaires d'exception apr&egrave;s un crash</description>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist>
-<module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>Pour des raisons de s&eacute;curit&eacute;, cette directive n'est disponible
@@ -127,8 +127,8 @@ s'arr&ecirc;ter dans le cas d'un arr&ecirc;t "en douceur"</description>
 <syntax>GracefulShutdownTimeout <var>seconds</var></syntax>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-<module>event</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 <compatibility>Disponible dans les versions 2.2 et sup&eacute;rieures</compatibility>
 
 <usage>
@@ -150,8 +150,9 @@ de processus du d&eacute;mon</description>
 <syntax>PidFile <var>nom fichier</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpmt_os2</module>
 </modulelist>
 
 <usage>
@@ -196,10 +197,9 @@ de processus du d&eacute;mon</description>
 <syntax>Listen [<var>adresse IP</var>:]<var>num&eacute;ro port</var>
 [<var>protocole</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module>
-<module>prefork</module><module>worker</module>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
 <compatibility>L'argument <var>protocole</var> est support&eacute; depuis la version
 2.1.5</compatibility>
@@ -288,10 +288,9 @@ le nombre de segments d'&eacute;coute</description>
 <syntax>ListenCoresBucketsRatio <var>ratio</var></syntax>
 <default>ListenCoresBucketsRatio 0 (disabled)</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
 <module>prefork</module>
-<module>worker</module></modulelist>
+</modulelist>
 <compatibility>Disponible &agrave; partir de la version 2.4.13 du serveur HTTP
 Apache, avec un noyau supportant l'option de socket
 <code>SO_REUSEPORT</code>, et distribuant uniform&eacute;ment les nouvelles
@@ -334,11 +333,10 @@ connexions</description>
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist>
-<module>event</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>La longueur maximale de la liste d'attente des connexions. En
@@ -363,8 +361,8 @@ simultan&eacute;ment</description>
 <syntax>MaxRequestWorkers <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
 </modulelist>
 
 <usage>
@@ -414,8 +412,9 @@ autoris&eacute; &agrave; conserver sans appeler <code>free()</code></description
 <syntax>MaxMemFree <var>KOctets</var></syntax>
 <default>MaxMemFree 2048</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>prefork</module><module>worker</module><module>mpm_winnt</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module>
 </modulelist>
 
 <usage>
@@ -435,9 +434,10 @@ traiter au cours de son fonctionnement</description>
 <syntax>MaxConnectionsPerChild <var>number</var></syntax>
 <default>MaxConnectionsPerChild 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 <compatibility>Disponible depuis la version 2.3.9 du serveur HTTP
 Apache. L'ancien nom <code>MaxRequestsPerChild</code> est encore
 support&eacute;.</compatibility>
@@ -464,14 +464,15 @@ support&eacute;.</compatibility>
 <syntax>MaxSpareThreads <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>C'est le nombre maximum de threads inactifs. Les MPMs utilisent
     cette directive de diff&eacute;rentes mani&egrave;res.</p>
 
-    <p>Pour <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <p>Pour <module>worker</module> et <module>event</module>, la d&eacute;finition par d&eacute;faut est
     <code>MaxSpareThreads 250</code>. Ce MPM g&egrave;re les threads inactifs
     au niveau du serveur. Si le serveur poss&egrave;de trop de threads
     inactifs, des processus enfants seront arr&ecirc;t&eacute;s jusqu'&agrave; ce que le
@@ -496,7 +497,7 @@ support&eacute;.</compatibility>
 	module="mpm_common">MinSpareThreads</directive>.</li>
 
         <li>Avec
-	<module>worker</module>, <directive>MaxSpareThreads</directive>
+	<module>worker</module> et <module>event</module>, <directive>MaxSpareThreads</directive>
 	doit &ecirc;tre sup&eacute;rieure ou &eacute;gale &agrave; la somme de <directive
 	module="mpm_common">MinSpareThreads</directive> et <directive
 	module="mpm_common">ThreadsPerChild</directive>.</li>
@@ -515,15 +516,16 @@ pour pouvoir traiter les pics de requ&ecirc;tes</description>
 <syntax>MinSpareThreads <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>C'est le nombre minimum de threads inactifs pour &ecirc;tre en mesure
     de traiter les pics de requ&ecirc;tes. Les MPMs utilisent cette directive
     de diff&eacute;rentes mani&egrave;res.</p>
 
-    <p>Avec <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <p>Avec <module>worker</module> et <module>event</module>, la d&eacute;finition par d&eacute;faut est
     <code>MinSpareThreads 75</code>, et le nombre de threads inactifs
     est surveill&eacute; au niveau du serveur. Si le serveur ne poss&egrave;de pas
     assez de threads inactifs, des processus enfants sont cr&eacute;&eacute;s jusqu'&agrave;
@@ -552,8 +554,9 @@ la coordination des processus enfants</description>
 <syntax>ScoreBoardFile <var>chemin fichier</var></syntax>
 <default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Le serveur HTTP Apache utilise un tableau de bord pour la
@@ -594,9 +597,10 @@ le serveur HTTP Apache</a></seealso>
 <syntax>ReceiveBufferSize <var>octets</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Le serveur va fixer la taille du tampon TCP en entr&eacute;e au
@@ -614,9 +618,10 @@ le serveur HTTP Apache</a></seealso>
 <syntax>SendBufferSize <var>octets</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>D&eacute;finit la taille du tampon TCP en sortie avec le nombre
@@ -651,15 +656,16 @@ processus</description>
 <syntax>ServerLimit <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
 
 <usage>
     <p>Avec le MPM <module>prefork</module>, cette directive d&eacute;finit le
     nombre maximum que l'on peut affecter &agrave; la directive <directive
     module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la
-    dur&eacute;e de vie du processus Apache httpd. Avec le
-    MPM <module>worker</module>, cette directive, en combinaison avec
+    dur&eacute;e de vie du processus Apache httpd. Avec les
+    MPMs <module>worker</module> et <module>event</module>, cette directive, en combinaison avec
     <directive module="mpm_common">ThreadLimit</directive>, d&eacute;finit le
     nombre maximum que l'on peut affecter &agrave; <directive
     module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la dur&eacute;e de
@@ -678,7 +684,7 @@ processus</description>
     sup&eacute;rieures &agrave; ce que le syst&egrave;me peut supporter, ce dernier peut
     devenir instable ou Apache httpd peut tout simplement refuser de d&eacute;marrer.</p>
 
-    <p>Avec le MPM <module>prefork</module>, n'utilisez cette directive
+    <p>Avec les MPMs <module>prefork</module> et <module>event</module>, n'utilisez cette directive
     que si vous devez d&eacute;finir <directive
     module="mpm_common">MaxRequestWorkers</directive> &agrave; une valeur sup&eacute;rieure &agrave;
     256 (valeur par d&eacute;faut). N'affectez pas &agrave; la directive <directive
@@ -717,8 +723,8 @@ d&eacute;marrage</description>
 <syntax>StartServers <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpmt_os2</module>
 </modulelist>
 
 <usage>
@@ -733,7 +739,7 @@ d&eacute;marrage</description>
     pas n&eacute;cessaire d'ajuster ce param&egrave;tre.</p>
 
     <p>La valeur par d&eacute;faut diff&egrave;re d'un MPM &agrave; l'autre. Pour
-    <module>worker</module>, la d&eacute;finition par d&eacute;faut est
+    <module>worker</module> et <module>event</module>, la d&eacute;finition par d&eacute;faut est
     <code>StartServers 3</code> ; la valeur par d&eacute;faut est
     <code>5</code> pour <module>prefork</module> et <code>2</code>
     pour <module>mpmt_os2</module>.</p>
@@ -772,8 +778,9 @@ processus enfant</description>
 <syntax>ThreadLimit <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Cette directive permet de d&eacute;finir le nombre maximum que l'on peut
@@ -826,8 +833,9 @@ enfant</description>
 <syntax>ThreadsPerChild <var>nombre</var></syntax>
 <default>Voir ci-dessous pour plus de d&eacute;tails</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Cette directive permet de d&eacute;finir le nombre de threads que va
@@ -855,9 +863,9 @@ traitent les connexions clients</description>
 <default>65536 sous NetWare; varie en fonction des autres syst&egrave;mes
 d'exploitation</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>mpm_winnt</module><module>worker</module>
-<module>event</module>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module><module>mpm_netware</module>
+<module>mpmt_os2</module>
 </modulelist>
 <compatibility>Disponible dans les versions 2.1 et sup&eacute;rieures
 du serveur HTTP Apache</compatibility>

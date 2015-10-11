@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1690350:1707123 (outdated) -->
+<!-- English Revision: 1707123 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -764,7 +764,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	d'environnement SSL</a> . Si <module>mod_ssl</module> n'est pas
 	charg&eacute;, cette variable contiendra toujours une cha&icirc;ne vide.
 	Exemple : <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> pourra
-	contenir la valeur <code>128</code>.</li>
+	contenir la valeur <code>128</code>. Ces variables sont
+	disponibles m&ecirc;me si l'option <code>StdEnvVars</code> de la
+	directive <directive module="mod_ssl">SSLOptions</directive> n'a
+	pas &eacute;t&eacute; d&eacute;finie.</li>
 
 	<li>
         On peut utiliser <code>%{HTTP:en-t&ecirc;te}</code>, o&ugrave;
