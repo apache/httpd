@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1707122 (outdated) -->
+<!-- English Revision: 1707122 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -150,25 +150,25 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 
 <directivesynopsis>
 <name>SubstituteMaxLineLength</name>
-<description>Définit la longueur de ligne maximale</description>
+<description>D&eacute;finit la longueur de ligne maximale</description>
 <syntax>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</syntax>
 <default>SubstituteMaxLineLength 1m</default>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.4.11 du serveur HTTP
+<compatibility>Disponible &agrave; partir de la version 2.4.11 du serveur HTTP
 Apache</compatibility>
 
 <usage>
-    <p>La taille de la ligne traitée par <module>mod_substitute</module>
-    est limitée afin de restreindre l'utilisation des ressources
-    mémoire. La directive <directive>SubstituteMaxLineLength</directive>
-    permet de définir cette limite. La valeur de la limite peut être
-    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
+    <p>La taille de la ligne trait&eacute;e par <module>mod_substitute</module>
+    est limit&eacute;e afin de restreindre l'utilisation des ressources
+    m&eacute;moire. La directive <directive>SubstituteMaxLineLength</directive>
+    permet de d&eacute;finir cette limite. La valeur de la limite peut &ecirc;tre
+    sp&eacute;cifi&eacute;e sous la forme d'un nombre d'octets, et peut &ecirc;tre suffix&eacute;e
     par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
     <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
     <code>G</code> pour fournir une valeur respectivement en octets,
-    kiloOctets, mégaOctets ou gigaOctets.</p>
+    kiloOctets, m&eacute;gaOctets ou gigaOctets.</p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -180,6 +180,33 @@ Apache</compatibility>
         </highlight>
     </example>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SubstituteInheritBefore</name>
+<description>Modifie l'ordre de fusion des mod&egrave;les h&eacute;rit&eacute;s</description>
+<syntax>SubstituteInheritBefore on|off</syntax>
+<default>SubstituteInheritBefore on</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir si l'on applique les mod&egrave;les
+<directive>Substitute</directive> h&eacute;rit&eacute;s en premier (valeur
+<code>on</code>), ou apr&egrave;s ceux du
+contexte courant (valeur <code>off</code>). Sa valeur est maintenant
+d&eacute;finie par d&eacute;faut &agrave; <code>on</code> ; il est cependant possible de
+restaurer le comportement des versions 2.4 et ant&eacute;rieures du serveur qui
+&eacute;tait &eacute;quivalent &agrave; une d&eacute;finition &agrave; <code>off</code> de cette directive.
+La valeur de la directive <directive>SubstituteInheritBefore</directive> est
+elle-m&ecirc;me h&eacute;rit&eacute;e, et les contextes qui en h&eacute;ritent (ceux qui ne
+d&eacute;finissent pas explicitement leur propre directive
+<directive>SubstituteInheritBefore</directive>) appliqueront donc
+l'ordre de fusion d&eacute;fini le plus proche.</p>
 </usage>
 </directivesynopsis>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1706008:1707123 (outdated) -->
+<!-- English Revision: 1707123 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -255,6 +255,9 @@ href="../ssl/ssl_compat.html">Compatibilit&eacute;</a>.</p>
 CustomLog "logs/ssl_request_log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </highlight>
 </example>
+<p>Ces formats sont disponibles m&ecirc;me si l'option <code>StdEnvVars</code> de la
+directive <directive module="mod_ssl">SSLOptions</directive> n'a pas &eacute;t&eacute;
+d&eacute;finie.</p>
 </section>
 
 <section id="notes"><title>Information &agrave; propos de la requ&ecirc;te</title>
