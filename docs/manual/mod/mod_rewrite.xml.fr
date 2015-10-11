@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1690137:1706989 (outdated) -->
+<!-- English Revision: 1706989 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -763,7 +763,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	d'environnement SSL</a> . Si <module>mod_ssl</module> n'est pas
 	charg&eacute;, cette variable contiendra toujours une cha&icirc;ne vide.
 	Exemple : <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> pourra
-	contenir la valeur <code>128</code>.</li>
+	contenir la valeur <code>128</code>. Ces variables sont
+	disponibles m&ecirc;me si l'option <code>StdEnvVars</code> de la
+	directive <directive module="mod_ssl">SSLOptions</directive> n'a
+	pas &eacute;t&eacute; d&eacute;finie.</li>
 
 	<li>
         On peut utiliser <code>%{HTTP:en-t&ecirc;te}</code>, o&ugrave;
@@ -1114,9 +1117,9 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au (%-decoded)
       <a href="directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requ&ecirc;te, ou, dans un contexte de répertoire (voir
-      ci-dessous), au chemin de l'URL relativement à ce contexte de
-      répertoire. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      requ&ecirc;te, ou, dans un contexte de r&eacute;pertoire (voir
+      ci-dessous), au chemin de l'URL relativement &agrave; ce contexte de
+      r&eacute;pertoire. Les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui
       correspondait.</p>
 
