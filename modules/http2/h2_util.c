@@ -697,9 +697,11 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
                 else if (APR_BUCKET_IS_IMMORTAL(b)) {
                     btype = "immortal";
                 }
+#if APR_HAS_MMAP
                 else if (APR_BUCKET_IS_MMAP(b)) {
                     btype = "mmap";
                 }
+#endif
                 else if (APR_BUCKET_IS_POOL(b)) {
                     btype = "pool";
                 }
