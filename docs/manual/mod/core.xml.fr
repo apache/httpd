@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1703152:1707165 (outdated) -->
+<!-- English Revision: 1707165 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -596,6 +596,32 @@ AllowOverrideList CookieTracking CookieName
 <seealso><directive module="core">AllowOverride</directive></seealso>
 <seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
 <seealso><a href="../howto/htaccess.html">Fichiers .htaccess</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>AsyncFilter</name>
+    <description>Définit le type de filtrage minimal disponible pour le
+    traitement asynchrone</description>
+    <syntax>AsyncFilter request|connection|network</syntax>
+    <default>AsyncFilter request</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+    <compatibility>Disponible à partir de la version 2.5.0 du serveur
+    HTTP Apache</compatibility>
+
+    <usage>
+        <p>Cette directive permet de définir les niveaux minimaux de
+	filtrage disponibles pour le traitement asynchrone. Son
+	utilisation s'avère nécessaire pour le support des filtres
+	externes anciens qui ne géraient pas les meta-conteneurs
+	correctement.</p>
+
+        <p>Si elle est définie à "network", le traitement asynchrone se
+	limitera aux filtrages réseau. Si elle est définie à
+	"connection", tous les filtres de réseau et de connexion seront
+	disponibles pour le traitement asynchrone, y compris
+	<module>mod_ssl</module>. Si elle est définie à  "request", tous
+	les filtres seront disponibles pour le traitement asynchrone.</p>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
