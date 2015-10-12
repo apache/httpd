@@ -73,22 +73,29 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Direct Protocol Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Direct on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct on (for non TLS)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Direct off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
-                This directive toggles the usage of the HTTP/2 Direct Mode. This
+                This directive toggles the usage of the HTTP/2 Direct Mode. For https, this
                 should be used inside a 
                 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-                section to enable direct HTTP/2 communication for that virtual host. 
+                section to enable direct HTTP/2 communication for that virtual host. For
+                http, this directive only works in server configurations.
+            </p>
+            <p>
                 Direct communication means that if the first bytes received by the 
                 server on a connection match the HTTP/2 preamble, the HTTP/2
                 protocol is switched to immediately without further negotiation.
                 This mode falls outside the RFC 7540 but has become widely implemented
-                as it is very convenient for development and testing. 
-                By default the direct HTTP/2 mode is enabled.
+                on cleartext ports as it is very convenient for development and testing. 
+            </p>
+            <p>
+                Since this detection implies that the client will send data on
+                new connection immediately, direct HTTP/2 mode is disabled by
+                default.
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
 </div>

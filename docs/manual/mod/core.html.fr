@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -643,16 +641,30 @@ AllowOverrideList CookieTracking CookieName</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="asyncfilter" id="asyncfilter">Directive</a> <a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type de filtrage minimal disponible pour le
+    traitement asynchrone</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AsyncFilter request</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Only available from Apache 2.5.0 and later.</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.0 du serveur
+    HTTP Apache</td></tr>
+</table>
+        <p>Cette directive permet de définir les niveaux minimaux de
+	filtrage disponibles pour le traitement asynchrone. Son
+	utilisation s'avère nécessaire pour le support des filtres
+	externes anciens qui ne géraient pas les meta-conteneurs
+	correctement.</p>
+
+        <p>Si elle est définie à "network", le traitement asynchrone se
+	limitera aux filtrages réseau. Si elle est définie à
+	"connection", tous les filtres de réseau et de connexion seront
+	disponibles pour le traitement asynchrone, y compris
+	<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Si elle est définie à  "request", tous
+	les filtres seront disponibles pour le traitement asynchrone.</p>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="cgimapextension" id="cgimapextension">Directive</a> <a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a></h2>
 <table class="directive">
