@@ -243,6 +243,7 @@ static apr_status_t stream_destroy(h2_session *session,
                       "h2_stream(%ld-%d): closing with err=%d %s", 
                       session->id, (int)stream->id, (int)error_code,
                       nghttp2_strerror(error_code));
+        h2_stream_rst(stream, error_code);
     }
     
     h2_stream_set_remove(session->streams, stream);

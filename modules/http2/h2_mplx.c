@@ -299,6 +299,13 @@ apr_status_t h2_mplx_cleanup_stream(h2_mplx *m, h2_stream *stream)
             stream_destroy(m, stream, io);
         }
         else {
+            if (stream->rst_error) {
+                /* Forward error code to fail any further attempt to
+                 * write to io */
+                h2_io_rst(io, stream->rst_error);
+            }
+            /* Remove io from ready set (if there), since we will never submit it */
+            h2_io_set_remove(m->ready_ios, io);
             /* Add stream to closed set for cleanup when task is done */
             h2_stream_set_add(m->closed, stream);
         }
@@ -502,9 +509,8 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        h2_io *io = h2_io_set_get_highest_prio(m->ready_ios);
+        h2_io *io = h2_io_set_pop_highest_prio(m->ready_ios);
         if (io) {
-            
             stream = h2_stream_set_get(streams, io->id);
             if (stream) {
                 if (io->rst_error) {
@@ -515,15 +521,18 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                     h2_stream_set_response(stream, io->response, io->bbout);
                 }
                 
-                h2_io_set_remove(m->ready_ios, io);
                 if (io->output_drained) {
                     apr_thread_cond_signal(io->output_drained);
                 }
             }
             else {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, APR_NOTFOUND, m->c,
-                              APLOGNO(02953) "h2_mplx(%ld): stream for response %d",
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(02953) 
+                              "h2_mplx(%ld): stream for response %d not found",
                               m->id, io->id);
+                /* We have the io ready, but the stream has gone away, maybe
+                 * reset by the client. Should no longer happen since such
+                 * streams should clear io's from the ready queue.
+                 */
             }
         }
         apr_thread_mutex_unlock(m->lock);
