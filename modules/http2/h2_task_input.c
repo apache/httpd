@@ -116,7 +116,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     }
     
     if (mode == AP_MODE_INIT) {
-        return APR_SUCCESS;
+        return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
     }
     
     if (input->bb) {

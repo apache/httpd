@@ -135,7 +135,7 @@ int h2_h2_process_conn(conn_rec* c)
 {
     h2_ctx *ctx = h2_ctx_get(c);
     h2_config *cfg = h2_config_get(c);
-    apr_bucket_brigade* temp;
+    apr_bucket_brigade* temp = NULL;
     int is_tls = h2_h2_is_tls(c);
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn");
@@ -150,11 +150,14 @@ int h2_h2_process_conn(conn_rec* c)
      */
     if (!h2_ctx_protocol_get(c) 
         && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
-        apr_status_t status;
+        apr_status_t status = APR_SUCCESS;
         
-        temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        status = ap_get_brigade(c->input_filters, temp,
-                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+        if (is_tls) {
+            /* trigger the TLS handshake */
+            temp = apr_brigade_create(c->pool, c->bucket_alloc);
+            status = ap_get_brigade(c->input_filters, temp,
+                                    AP_MODE_INIT, APR_BLOCK_READ, 0);
+        }
 
         if (status == APR_SUCCESS) {
             if (h2_ctx_protocol_get(c) 
@@ -166,30 +169,43 @@ int h2_h2_process_conn(conn_rec* c)
                  * http/1.1. Check the actual bytes read for the H2 Magic
                  * Token, *if* H2Direct mode is enabled here. 
                  */
-                int direct_mode = h2_config_geti(cfg, H2_CONF_DIRECT);
-                if (direct_mode > 0 || (direct_mode < 0 && !is_tls)) {
+                if (h2_config_geti(cfg, H2_CONF_DIRECT) > 0) {
                     char *s = NULL;
                     apr_size_t slen;
                     
-                    apr_brigade_pflatten(temp, &s, &slen, c->pool);
-                    if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
-                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                                      "h2_h2, direct mode detected");
-                        h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
+                    if (!temp) {
+                        temp = apr_brigade_create(c->pool, c->bucket_alloc);
+                    }
+                    status = ap_get_brigade(c->input_filters, temp,
+                                            AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+                    if (status == APR_SUCCESS) {
+                        apr_brigade_pflatten(temp, &s, &slen, c->pool);
+                        if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+                            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                                          "h2_h2, direct mode detected");
+                            h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
+                        }
+                        else {
+                            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                                          "h2_h2, not detected in %d bytes: %s", 
+                                          (int)slen, s);
+                        }
                     }
                     else {
-                        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                                      "h2_h2, not detected in %d bytes: %s", 
-                                      (int)slen, s);
+                        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                                      "h2_h2, error reading 24 bytes speculative");
                     }
                 }
             }
         }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                          "h2_h2, error reading 24 bytes speculative");
+                          "h2_h2, failed to init connection");
         }
-        apr_brigade_destroy(temp);
+        
+        if (temp) {
+            apr_brigade_destroy(temp);
+        }
     }
 
     /* If "h2" was selected as protocol (by whatever mechanism), take over
