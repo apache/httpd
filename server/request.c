@@ -2228,8 +2228,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 ap_filter_t *next_filter)
 {
     request_rec *rnew;
-    /* Initialise res, to avoid a gcc warning */
-    int res = HTTP_INTERNAL_SERVER_ERROR;
+    int res = DECLINED;
     char *udir;
 
     rnew = make_sub_request(r, next_filter);
@@ -2245,6 +2244,9 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_uri));
+    }
+    if (ap_is_HTTP_ERROR(rnew->status)) {
+        return rnew;
     }
 
     /* We cannot return NULL without violating the API. So just turn this
@@ -2267,11 +2269,11 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     if (next_filter) {
         res = ap_run_quick_handler(rnew, 1);
     }
-
-    if (next_filter == NULL || res != OK) {
-        if ((res = ap_process_request_internal(rnew))) {
-            rnew->status = res;
-        }
+    if (res == DECLINED) {
+        res = ap_process_request_internal(rnew);
+    }
+    if (res) {
+        rnew->status = res;
     }
 
     return rnew;
