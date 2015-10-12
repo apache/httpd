@@ -47,7 +47,7 @@ static h2_config defconf = {
     NULL,             /* no alt-svcs */
     -1,               /* alt-svc max age */
     0,                /* serialize headers */
-    -1,               /* h2 direct mode */
+    0,                /* h2 direct mode */
     -1,               /* # session extra files */
 };
 

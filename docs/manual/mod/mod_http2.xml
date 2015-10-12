@@ -56,7 +56,7 @@
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>
-        <default>H2Direct on (for non TLS)</default>
+        <default>H2Direct off</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -64,16 +64,23 @@
         
         <usage>
             <p>
-                This directive toggles the usage of the HTTP/2 Direct Mode. This
+                This directive toggles the usage of the HTTP/2 Direct Mode. For https, this
                 should be used inside a 
                 <directive module="core" type="section">VirtualHost</directive> 
-                section to enable direct HTTP/2 communication for that virtual host. 
+                section to enable direct HTTP/2 communication for that virtual host. For
+                http, this directive only works in server configurations.
+            </p>
+            <p>
                 Direct communication means that if the first bytes received by the 
                 server on a connection match the HTTP/2 preamble, the HTTP/2
                 protocol is switched to immediately without further negotiation.
                 This mode falls outside the RFC 7540 but has become widely implemented
-                as it is very convenient for development and testing. 
-                By default the direct HTTP/2 mode is enabled.
+                on cleartext ports as it is very convenient for development and testing. 
+            </p>
+            <p>
+                Since this detection implies that the client will send data on
+                new connection immediately, direct HTTP/2 mode is disabled by
+                default.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
