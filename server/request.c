@@ -2517,7 +2517,7 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
     if (!(r->filename && r->finfo.filetype != APR_NOFILE)) {
         retval = ap_run_quick_handler(r, 0);
     }
-    if (retval != OK) {
+    if (retval == DECLINED) {
         retval = ap_invoke_handler(r);
         if (retval == DONE) {
             retval = OK;
