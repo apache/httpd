@@ -379,8 +379,6 @@ static request_rec *h2_task_create_request(h2_task_env *env)
     
     /* Time to populate r with the data we have. */
     r->request_time = apr_time_now();
-    r->the_request = apr_psprintf(r->pool, "%s %s HTTP/1.1", 
-                                  env->method, env->path);
     r->method = env->method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
@@ -391,6 +389,9 @@ static request_rec *h2_task_create_request(h2_task_env *env)
     ap_parse_uri(r, env->path);
     r->protocol = (char*)"HTTP/2";
     r->proto_num = HTTP_VERSION(2, 0);
+
+    r->the_request = apr_psprintf(r->pool, "%s %s %s", 
+                                  r->method, env->path, r->protocol);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
