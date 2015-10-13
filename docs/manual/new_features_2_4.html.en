@@ -190,7 +190,7 @@
       <dd>Enable FastCGI authorizer applications to authenticate and/or
       authorize clients.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (available since 2.4.x)</dt>
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (available since 2.4.17)</dt>
       <dd>Support for the HTTP/2 transport layer.</dd>
 
     </dl>
