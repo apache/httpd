@@ -74,23 +74,6 @@
   For complete documentation, see manual/platform/windows.html.en or
   http://httpd.apache.org/docs/2.4/platform/windows.html.
 
-  The Apache/Win32 binaries are distributed as Windows Installer packages 
-  (.msi) named httpd-2.4.xx-win32-x86-no_ssl.msi for a version without mod_ssl
-  and httpd-2.4.xx-win32-x86-openssl-1.0.1x.msi for a version including the
-  mod_ssl plus the openssl library and command line utility.  Additional 64 bit
-  binaries have similarly named -win64-x64 package names.  These packages
-  may be unpacked without "installing" them by using the msiexec /a option.
-
-  If you have unpacked a source distribution (named httpd-2.4.x-win32-src.zip, 
-  without any -x86 or -x64 notation) you must compile the package yourself, 
-  see the links mentioned above.  Unless you intended to do this, please look
-  again for an .msi package in http://www.apache.org/dist/httpd/binaries/win32/
-  and install that desired .msi package.
-
-  The .msi package configures the httpd.conf file, and installs and starts 
-  the Apache2.4 service for you.  It also installs plenty of useful shortcuts
-  and the taskbar ApacheMonitor.  We strongly encourage you to use it.
-
 
   Postscript
   ----------
