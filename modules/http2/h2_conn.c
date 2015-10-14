@@ -32,6 +32,7 @@
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_stream_set.h"
+#include "h2_h2.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 #include "h2_workers.h"
@@ -177,6 +178,11 @@ apr_status_t h2_conn_main(conn_rec *c)
         return APR_EGENERAL;
     }
     
+    if (!h2_is_security_compliant(c, 1)) {
+        nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
+                              NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
+    } 
+
     status = h2_session_process(session);
 
     /* Make sure this connection gets closed properly. */
