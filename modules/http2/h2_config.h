@@ -34,6 +34,7 @@ typedef enum {
     H2_CONF_SER_HEADERS,
     H2_CONF_DIRECT,
     H2_CONF_SESSION_FILES,
+    H2_CONF_COMPLIANCE,
 } h2_config_var_t;
 
 /* Apache httpd module configuration for h2. */
@@ -51,6 +52,7 @@ typedef struct h2_config {
                                      processing, better compatibility */
     int h2_direct;                /* if mod_h2 is active directly */
     int session_extra_files;      /* # of extra files a session may keep open */  
+    int rfc_compliance;           /* Comply with all aspects of RFC 7540 */  
 } h2_config;
 
 

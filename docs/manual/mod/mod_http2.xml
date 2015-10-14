@@ -74,11 +74,11 @@
                 Direct communication means that if the first bytes received by the 
                 server on a connection match the HTTP/2 preamble, the HTTP/2
                 protocol is switched to immediately without further negotiation.
-                This mode falls outside the RFC 7540 but has become widely implemented
-                on cleartext ports as it is very convenient for development and testing. 
+                This mode is defined in RFC 7540 for the cleartext (h2c) case. Its
+                use on TLS connections is not allowed by the standard.
             </p>
             <p>
-                Since this detection implies that the client will send data on
+                Since this detection requires that the client will send data on
                 new connection immediately, direct HTTP/2 mode is disabled by
                 default.
             </p>

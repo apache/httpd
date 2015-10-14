@@ -49,6 +49,7 @@ static h2_config defconf = {
     0,                /* serialize headers */
     0,                /* h2 direct mode */
     -1,               /* # session extra files */
+    1,                /* rfc 7540 compliance */
 };
 
 static int files_per_session = 0;
@@ -100,6 +101,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->serialize_headers    = DEF_VAL;
     conf->h2_direct            = DEF_VAL;
     conf->session_extra_files  = DEF_VAL;
+    conf->rfc_compliance       = DEF_VAL;
     return conf;
 }
 
@@ -138,6 +140,7 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->serialize_headers = H2_CONFIG_GET(add, base, serialize_headers);
     n->h2_direct      = H2_CONFIG_GET(add, base, h2_direct);
     n->session_extra_files = H2_CONFIG_GET(add, base, session_extra_files);
+    n->rfc_compliance = H2_CONFIG_GET(add, base, rfc_compliance);
     
     return n;
 }
@@ -162,6 +165,8 @@ int h2_config_geti(h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, alt_svc_max_age);
         case H2_CONF_SER_HEADERS:
             return H2_CONFIG_GET(conf, &defconf, serialize_headers);
+        case H2_CONF_COMPLIANCE:
+            return H2_CONFIG_GET(conf, &defconf, rfc_compliance);
         case H2_CONF_DIRECT:
             return H2_CONFIG_GET(conf, &defconf, h2_direct);
         case H2_CONF_SESSION_FILES:
@@ -332,8 +337,25 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
     return "value must be On or Off";
 }
 
-#define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
+static const char *h2_conf_set_compliance(cmd_parms *parms,
+                                          void *arg, const char *value)
+{
+    h2_config *cfg = h2_config_sget(parms->server);
+    if (!strcasecmp(value, "On")) {
+        cfg->rfc_compliance = 1;
+        return NULL;
+    }
+    else if (!strcasecmp(value, "Off")) {
+        cfg->rfc_compliance = 0;
+        return NULL;
+    }
+    
+    (void)arg;
+    return "value must be On or Off";
+}
 
+
+#define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 
 const command_rec h2_cmds[] = {
     AP_INIT_TAKE1("H2MaxSessionStreams", h2_conf_set_max_streams, NULL,
@@ -354,6 +376,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "set the maximum age (in seconds) that client can rely on alt-svc information"),
     AP_INIT_TAKE1("H2SerializeHeaders", h2_conf_set_serialize_headers, NULL,
                   RSRC_CONF, "on to enable header serialization for compatibility"),
+    AP_INIT_TAKE1("H2Compliance", h2_conf_set_compliance, NULL,
+                  RSRC_CONF, "off to disable strict compliance to RFC 7540"),
     AP_INIT_TAKE1("H2Direct", h2_conf_set_direct, NULL,
                   RSRC_CONF, "on to enable direct HTTP/2 mode"),
     AP_INIT_TAKE1("H2SessionExtraFiles", h2_conf_set_session_extra_files, NULL,
