@@ -445,13 +445,14 @@ int h2_tls_disable(conn_rec *c)
     return 0;
 }
 
-int h2_is_security_compliant(conn_rec *c, int require_all) 
+int h2_is_acceptable_connection(conn_rec *c, int require_all) 
 {
     int is_tls = h2_h2_is_tls(c);
     h2_config *cfg = h2_config_get(c);
 
-    if (is_tls && h2_config_geti(cfg, H2_CONF_COMPLIANCE) > 0) {
-        /* Check TLS connection for RFC 7540 compliance
+    if (is_tls && h2_config_geti(cfg, H2_CONF_MODERN_TLS_ONLY) > 0) {
+        /* Check TLS connection for modern TLS parameters, as defined in
+         * RFC 7540 and https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
          */
         apr_pool_t *pool = c->pool;
         server_rec *s = c->base_server;
@@ -581,27 +582,37 @@ int h2_h2_process_conn(conn_rec* c)
                     char *s = NULL;
                     apr_size_t slen;
                     
-                    if (!temp) {
-                        temp = apr_brigade_create(c->pool, c->bucket_alloc);
-                    }
-                    status = ap_get_brigade(c->input_filters, temp,
-                                            AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
-                    if (status == APR_SUCCESS) {
-                        apr_brigade_pflatten(temp, &s, &slen, c->pool);
-                        if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
-                            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                                          "h2_h2, direct mode detected");
-                            h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
+                    /* 
+                     * Verify that all connection requirements are met. 
+                     */
+                    if (h2_is_acceptable_connection(c, 1)) {
+                        if (!temp) {
+                            temp = apr_brigade_create(c->pool, c->bucket_alloc);
+                        }
+                        status = ap_get_brigade(c->input_filters, temp,
+                                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+                        if (status == APR_SUCCESS) {
+                            apr_brigade_pflatten(temp, &s, &slen, c->pool);
+                            if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+                                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                                              "h2_h2, direct mode detected");
+                                h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
+                            }
+                            else {
+                                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                                              "h2_h2, not detected in %d bytes: %s", 
+                                              (int)slen, s);
+                            }
                         }
                         else {
-                            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                                          "h2_h2, not detected in %d bytes: %s", 
-                                          (int)slen, s);
+                            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                                          "h2_h2, error reading 24 bytes speculative");
                         }
                     }
                     else {
                         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                                      "h2_h2, error reading 24 bytes speculative");
+                                      "h2_h2, passed on direct mode, connection"
+                                      " does not meet requirements");
                     }
                 }
             }

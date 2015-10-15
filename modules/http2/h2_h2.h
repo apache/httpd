@@ -54,15 +54,15 @@ int h2_tls_disable(conn_rec *c);
 void h2_h2_register_hooks(void);
 
 /**
- * Check if the given connection fulfills the security requirements
- * of RFC 7540.
+ * Check if the given connection fulfills the (security) requirements
+ * defined in the configuration.
  * @param c the connection
  * @param require_all != 0 iff any missing connection properties make
  *    the test fail. For example, a cipher might not have been selected while
  *    the handshake is still ongoing.
  * @return != 0 iff security requirements are met
  */
-int h2_is_security_compliant(conn_rec *c, int require_all);
+int h2_is_acceptable_connection(conn_rec *c, int require_all);
 
 
 #endif /* defined(__mod_h2__h2_h2__) */

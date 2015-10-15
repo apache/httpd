@@ -297,4 +297,51 @@
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2ModernTLSOnly</name>
+        <description>Require HTTP/2 connections to be "modern TLS" only</description>
+        <syntax>H2ModernTLSOnly on|off</syntax>
+        <default>H2ModernTLSOnly on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the security checks on HTTP/2 connections
+                in TLS mode (https:). This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                The security checks require that the TSL protocol is at least
+                TLSv1.2 and that none of the ciphers listed in RFC 7540, Appendix A
+                is used. These checks will be extended once new security requirements
+                come into place.
+            </p>
+            <p>
+                The name stems from the 
+                <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Security/Server Side TLS</a>
+                definitions at mozilla where "modern compatiblity" is defined. Mozilla Firefox and
+                other browsers require modern compatiblity for HTTP/2 connections. As everything
+                in OpSec, this is a moving target and can be expected to evolve in the future.
+            </p>
+            <p>
+                One purpose of having these checks in mod_http2 is to enforce this
+                security level for all connections, not only those from browsers. The other
+                purpose is to prevent the negotiation of HTTP/2 as a protocol should
+                the requirements not be met.
+            </p>
+            <p>
+                Ultimately, the security of the TLS connection is determined by the
+                server configuration directives for mod_ssl.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2ModernTLSOnly off
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>

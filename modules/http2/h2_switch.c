@@ -63,9 +63,9 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
         return DECLINED;
     }
     
-    if (!h2_is_security_compliant(c, 0)) {
+    if (!h2_is_acceptable_connection(c, 0)) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                      "protocol propose: security requirements not met, declined");
+                      "protocol propose: connection requirements not met");
         return DECLINED;
     }
     
