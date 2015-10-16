@@ -129,14 +129,19 @@ static apr_status_t ap_cleanup_shared_mem(void *d)
     return APR_SUCCESS;
 }
 
+#define SIZE_OF_scoreboard    APR_ALIGN_DEFAULT(sizeof(scoreboard))
+#define SIZE_OF_global_score  APR_ALIGN_DEFAULT(sizeof(global_score))
+#define SIZE_OF_process_score APR_ALIGN_DEFAULT(sizeof(process_score))
+#define SIZE_OF_worker_score  APR_ALIGN_DEFAULT(sizeof(worker_score))
+
 AP_DECLARE(int) ap_calc_scoreboard_size(void)
 {
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
 
-    scoreboard_size = sizeof(global_score);
-    scoreboard_size += sizeof(process_score) * server_limit;
-    scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
+    scoreboard_size  = SIZE_OF_global_score;
+    scoreboard_size += SIZE_OF_process_score * server_limit;
+    scoreboard_size += SIZE_OF_worker_score * server_limit * thread_limit;
 
     return scoreboard_size;
 }
@@ -153,17 +158,17 @@ AP_DECLARE(void) ap_init_scoreboard(void *shared_score)
     
     ap_calc_scoreboard_size();
     ap_scoreboard_image =
-        ap_calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
+        ap_calloc(1, SIZE_OF_scoreboard + server_limit * sizeof(worker_score *));
     more_storage = shared_score;
     ap_scoreboard_image->global = (global_score *)more_storage;
-    more_storage += sizeof(global_score);
+    more_storage += SIZE_OF_global_score;
     ap_scoreboard_image->parent = (process_score *)more_storage;
-    more_storage += sizeof(process_score) * server_limit;
+    more_storage += SIZE_OF_process_score * server_limit;
     ap_scoreboard_image->servers =
-        (worker_score **)((char*)ap_scoreboard_image + sizeof(scoreboard));
+        (worker_score **)((char*)ap_scoreboard_image + SIZE_OF_scoreboard);
     for (i = 0; i < server_limit; i++) {
         ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
-        more_storage += thread_limit * sizeof(worker_score);
+        more_storage += thread_limit * SIZE_OF_worker_score;
     }
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
@@ -305,10 +310,10 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     if (ap_scoreboard_image) {
         ap_scoreboard_image->global->restart_time = apr_time_now();
         memset(ap_scoreboard_image->parent, 0,
-               sizeof(process_score) * server_limit);
+               SIZE_OF_process_score * server_limit);
         for (i = 0; i < server_limit; i++) {
             memset(ap_scoreboard_image->servers[i], 0,
-                   sizeof(worker_score) * thread_limit);
+                   SIZE_OF_worker_score * thread_limit);
         }
         ap_init_scoreboard(NULL);
         return OK;
