@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
+     configure the session/cookie expiry's update interval. PR 57300.
+     [Paul Spangler <paul.spangler ni.com>]
+
   *) mod_ssl: Extend expression parser registration to support ssl variables
      in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
      syntax "ssl(VARIABLE)". [Rainer Jung]
