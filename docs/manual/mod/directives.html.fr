@@ -310,6 +310,7 @@
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
+<li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles</a></li>
 <li><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
@@ -591,6 +592,7 @@
 <li><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></li>
 <li><a href="mod_session.html#sessionenv">SessionEnv</a></li>
 <li><a href="mod_session.html#sessionexclude">SessionExclude</a></li>
+<li><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></li>
 <li><a href="mod_session.html#sessionheader">SessionHeader</a></li>
 <li><a href="mod_session.html#sessioninclude">SessionInclude</a></li>
 <li><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></li>

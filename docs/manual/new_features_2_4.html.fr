@@ -209,7 +209,8 @@ serveur HTTP Apache</h1>
       <dd>Permet aux applications d'autorisation FastCGI d'authentifier
       et/ou autoriser les clients.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible à partir de la version 2.4.x)</dt>
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible à partir de la
+      version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
     </dl>
