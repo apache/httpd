@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1706357:1708515 (outdated) -->
+<!-- English Revision: 1708515 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -206,7 +206,8 @@ serveur HTTP Apache</title>
       <dd>Permet aux applications d'autorisation FastCGI d'authentifier
       et/ou autoriser les clients.</dd>
 
-      <dt><module>mod_http2</module> (disponible &agrave; partir de la version 2.4.x)</dt>
+      <dt><module>mod_http2</module> (disponible &agrave; partir de la
+      version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
     </dl>
