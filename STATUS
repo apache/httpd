@@ -172,6 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1707002
      2.4.x patch: trunk works (modulo CHANGES)
      +1: rjung, ylavic
+     minfrin: Tiny nit: http://svn.apache.org/r1709596
 
    * httpd.conf.in: Remove commented config regarding DNT because the spec
      now has CR status (confirming our interpretation) and MS has committed
