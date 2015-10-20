@@ -224,7 +224,7 @@ provided by <module>mod_ssl</module> can be used in expressions
 for the <a href="../expr.html">ap_expr Expression Parser</a>.
 The variables can be referenced using the syntax
 ``<code>%{</code><em>varname</em><code>}</code>''. Starting
-with version 2.4.17 one can also use the
+with version 2.4.18 one can also use the
 <module>mod_rewrite</module> style syntax
 ``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
 the function style syntax
