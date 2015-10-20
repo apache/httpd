@@ -70,11 +70,16 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
     }
     
     if (r) {
-        const char *p;
         /* So far, this indicates an HTTP/1 Upgrade header initiated
          * protocol switch. For that, the HTTP2-Settings header needs
          * to be present and valid for the connection.
          */
+        const char *p;
+        
+        if (!h2_allows_h2_upgrade(c)) {
+            return DECLINED;
+        }
+         
         p = apr_table_get(r->headers_in, "HTTP2-Settings");
         if (!p) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,

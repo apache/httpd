@@ -1982,10 +1982,15 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
                                             const apr_array_header_t *choices)
 {
     apr_pool_t *pool = r? r->pool : c->pool;
-    core_server_config *conf = ap_get_core_module_config(s->module_config);
+    core_server_config *conf;
     const char *protocol = NULL, *existing;
     apr_array_header_t *proposals;
 
+    if (!s) {
+        s = (r? r->server : c->base_server);
+    }
+    conf = ap_get_core_module_config(s->module_config);
+    
     if (APLOGcdebug(c)) {
         const char *p = apr_array_pstrcat(pool, conf->protocols, ',');
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
@@ -2089,6 +2094,22 @@ AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r,
                           , rc, protocol);
             return APR_EOF;
     }    
+}
+
+AP_DECLARE(int) ap_is_allowed_protocol(conn_rec *c, request_rec *r,
+                                       server_rec *s, const char *protocol)
+{
+    core_server_config *conf;
+
+    if (!s) {
+        s = (r? r->server : c->base_server);
+    }
+    conf = ap_get_core_module_config(s->module_config);
+    
+    if (conf->protocols->nelts > 0) {
+        return ap_array_str_contains(conf->protocols, protocol);
+    }
+    return !strcmp(AP_PROTOCOL_HTTP1, protocol);
 }
 
 

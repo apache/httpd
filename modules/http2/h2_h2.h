@@ -54,15 +54,30 @@ int h2_tls_disable(conn_rec *c);
 void h2_h2_register_hooks(void);
 
 /**
- * Check if the given connection fulfills the (security) requirements
- * defined in the configuration.
+ * Check if the given connection fulfills the requirements as configured.
  * @param c the connection
  * @param require_all != 0 iff any missing connection properties make
  *    the test fail. For example, a cipher might not have been selected while
  *    the handshake is still ongoing.
- * @return != 0 iff security requirements are met
+ * @return != 0 iff connection requirements are met
  */
 int h2_is_acceptable_connection(conn_rec *c, int require_all);
+
+/**
+ * Check if the "direct" HTTP/2 mode of protocol handling is enabled
+ * for the given connection.
+ * @param c the connection to check
+ * @return != 0 iff direct mode is enabled
+ */
+int h2_allows_h2_direct(conn_rec *c);
+
+/**
+ * Check if the "Upgrade" HTTP/1.1 mode of protocol switching is enabled
+ * for the given connection.
+ * @param c the connection to check
+ * @return != 0 iff Upgrade switching is enabled
+ */
+int h2_allows_h2_upgrade(conn_rec *c);
 
 
 #endif /* defined(__mod_h2__h2_h2__) */

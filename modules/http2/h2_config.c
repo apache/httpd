@@ -47,9 +47,10 @@ static h2_config defconf = {
     NULL,             /* no alt-svcs */
     -1,               /* alt-svc max age */
     0,                /* serialize headers */
-    0,                /* h2 direct mode */
+    -1,               /* h2 direct mode */
     -1,               /* # session extra files */
     1,                /* modern TLS only */
+    -1,               /* HTTP/1 Upgrade support */
 };
 
 static int files_per_session = 0;
@@ -102,6 +103,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->h2_direct            = DEF_VAL;
     conf->session_extra_files  = DEF_VAL;
     conf->modern_tls_only      = DEF_VAL;
+    conf->h2_upgrade           = DEF_VAL;
     return conf;
 }
 
@@ -129,18 +131,19 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     strcat(name, "]");
     n->name = name;
 
-    n->h2_max_streams = H2_CONFIG_GET(add, base, h2_max_streams);
-    n->h2_window_size = H2_CONFIG_GET(add, base, h2_window_size);
-    n->min_workers    = H2_CONFIG_GET(add, base, min_workers);
-    n->max_workers    = H2_CONFIG_GET(add, base, max_workers);
+    n->h2_max_streams       = H2_CONFIG_GET(add, base, h2_max_streams);
+    n->h2_window_size       = H2_CONFIG_GET(add, base, h2_window_size);
+    n->min_workers          = H2_CONFIG_GET(add, base, min_workers);
+    n->max_workers          = H2_CONFIG_GET(add, base, max_workers);
     n->max_worker_idle_secs = H2_CONFIG_GET(add, base, max_worker_idle_secs);
-    n->stream_max_mem_size = H2_CONFIG_GET(add, base, stream_max_mem_size);
-    n->alt_svcs = add->alt_svcs? add->alt_svcs : base->alt_svcs;
-    n->alt_svc_max_age = H2_CONFIG_GET(add, base, alt_svc_max_age);
-    n->serialize_headers = H2_CONFIG_GET(add, base, serialize_headers);
-    n->h2_direct      = H2_CONFIG_GET(add, base, h2_direct);
-    n->session_extra_files = H2_CONFIG_GET(add, base, session_extra_files);
-    n->modern_tls_only = H2_CONFIG_GET(add, base, modern_tls_only);
+    n->stream_max_mem_size  = H2_CONFIG_GET(add, base, stream_max_mem_size);
+    n->alt_svcs             = add->alt_svcs? add->alt_svcs : base->alt_svcs;
+    n->alt_svc_max_age      = H2_CONFIG_GET(add, base, alt_svc_max_age);
+    n->serialize_headers    = H2_CONFIG_GET(add, base, serialize_headers);
+    n->h2_direct            = H2_CONFIG_GET(add, base, h2_direct);
+    n->session_extra_files  = H2_CONFIG_GET(add, base, session_extra_files);
+    n->modern_tls_only      = H2_CONFIG_GET(add, base, modern_tls_only);
+    n->h2_upgrade           = H2_CONFIG_GET(add, base, h2_upgrade);
     
     return n;
 }
@@ -167,6 +170,8 @@ int h2_config_geti(h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, serialize_headers);
         case H2_CONF_MODERN_TLS_ONLY:
             return H2_CONFIG_GET(conf, &defconf, modern_tls_only);
+        case H2_CONF_UPGRADE:
+            return H2_CONFIG_GET(conf, &defconf, h2_upgrade);
         case H2_CONF_DIRECT:
             return H2_CONFIG_GET(conf, &defconf, h2_direct);
         case H2_CONF_SESSION_FILES:
@@ -354,6 +359,23 @@ static const char *h2_conf_set_modern_tls_only(cmd_parms *parms,
     return "value must be On or Off";
 }
 
+static const char *h2_conf_set_upgrade(cmd_parms *parms,
+                                       void *arg, const char *value)
+{
+    h2_config *cfg = h2_config_sget(parms->server);
+    if (!strcasecmp(value, "On")) {
+        cfg->h2_upgrade = 1;
+        return NULL;
+    }
+    else if (!strcasecmp(value, "Off")) {
+        cfg->h2_upgrade = 0;
+        return NULL;
+    }
+    
+    (void)arg;
+    return "value must be On or Off";
+}
+
 
 #define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 
@@ -378,6 +400,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "on to enable header serialization for compatibility"),
     AP_INIT_TAKE1("H2ModernTLSOnly", h2_conf_set_modern_tls_only, NULL,
                   RSRC_CONF, "off to not impose RFC 7540 restrictions on TLS"),
+    AP_INIT_TAKE1("H2Upgrade", h2_conf_set_upgrade, NULL,
+                  RSRC_CONF, "on to allow HTTP/1 Upgrades to h2/h2c"),
     AP_INIT_TAKE1("H2Direct", h2_conf_set_direct, NULL,
                   RSRC_CONF, "on to enable direct HTTP/2 mode"),
     AP_INIT_TAKE1("H2SessionExtraFiles", h2_conf_set_session_extra_files, NULL,
