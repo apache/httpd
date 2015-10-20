@@ -178,9 +178,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      now has CR status (confirming our interpretation) and MS has committed
      to changing their implementation.  PR 53845
      trunk patch: http://svn.apache.org/r1707831
-     2.4.x patch: trunk patch works
+     2.4.x patch: http://people.apache.org/~minfrin/httpd-dnt-2.4.patch
      +1: fielding
-     minfrin: This patch was needed for me: http://people.apache.org/~minfrin/httpd-dnt-2.4.patch
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
