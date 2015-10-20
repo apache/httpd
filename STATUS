@@ -125,6 +125,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rjung, minfrin: Not understanding "This patch needs changes done in
                      mod_systemd patch", am I right in understanding this patch is
                      already committed?
+     jkaluza: No, that patch is not committed yet. It is in STALLED section.
+              The link for that patch is: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
