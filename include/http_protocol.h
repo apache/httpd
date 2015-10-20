@@ -833,6 +833,23 @@ AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r,
  */
 AP_DECLARE(const char *) ap_get_protocol(conn_rec *c);
 
+/**
+ * Check if the given protocol is an allowed choice on the given
+ * combination of connection, request and server. 
+ *
+ * When server is NULL, it is taken from request_rec, unless
+ * request_rec is NULL. Then it is taken from the connection base
+ * server.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected or NULL
+ * @param protocol the protocol to switch to
+ * @return != 0 iff protocol is allowed
+ */
+AP_DECLARE(int) ap_is_allowed_protocol(conn_rec *c, request_rec *r,
+                                       server_rec *s, const char *protocol);
+
 /** @see ap_bucket_type_error */
 typedef struct ap_bucket_error ap_bucket_error;
 

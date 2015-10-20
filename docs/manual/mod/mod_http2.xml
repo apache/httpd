@@ -56,7 +56,7 @@
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>
-        <default>H2Direct off</default>
+        <default>H2Direct on for http:, off for https: requests</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -64,27 +64,66 @@
         
         <usage>
             <p>
-                This directive toggles the usage of the HTTP/2 Direct Mode. For https, this
+                This directive toggles the usage of the HTTP/2 Direct Mode. This
                 should be used inside a 
                 <directive module="core" type="section">VirtualHost</directive> 
-                section to enable direct HTTP/2 communication for that virtual host. For
-                http, this directive only works in server configurations.
+                section to enable direct HTTP/2 communication for that virtual host. 
             </p>
             <p>
                 Direct communication means that if the first bytes received by the 
                 server on a connection match the HTTP/2 preamble, the HTTP/2
                 protocol is switched to immediately without further negotiation.
                 This mode is defined in RFC 7540 for the cleartext (h2c) case. Its
-                use on TLS connections is not allowed by the standard.
+                use on TLS connections not mandated by the standard.
             </p>
             <p>
-                Since this detection requires that the client will send data on
-                new connection immediately, direct HTTP/2 mode is disabled by
-                default.
+                This mode only has an effect when h2 or h2c is enabled via
+                the <directive module="core" type="section">Protocols</directive>.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
                     H2Direct on
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2Upgrade</name>
+        <description>H2 Upgrade Protocol Switch</description>
+        <syntax>H2Upgrade on|off</syntax>
+        <default>H2Upgrade on for http:, off for https: requests</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the usage of the HTTP/1.1 Upgrade method 
+                for switching to HTTP/2. This
+                should be used inside a 
+                <directive module="core" type="section">VirtualHost</directive> 
+                section to enable Upgrades to HTTP/2 for that virtual host. 
+            </p>
+            <p>
+                This method of switching protocols is defined in HTTP/1.1 and
+                uses the "Upgrade" header (thus the name) to announce willingness
+                to use another protocol. This may happen on any request of a
+                HTTP/1.1 connection.
+            </p>
+            <p>
+                This method of protocol switching is enabled by default on cleartext
+                (http:) connections and disabled on TLS (https:), as mandated
+                by RFC 7540. 
+            </p>
+            <p>
+                This mode only has an effect when h2 or h2c is enabled via
+                the <directive module="core" type="section">Protocols</directive>.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2Upgrade on
                 </highlight>
             </example>
         </usage>

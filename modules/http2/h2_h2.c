@@ -503,6 +503,32 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
     return 1;
 }
 
+int h2_allows_h2_direct(conn_rec *c)
+{
+    h2_config *cfg = h2_config_get(c);
+    int h2_direct = h2_config_geti(cfg, H2_CONF_DIRECT);
+    
+    if (h2_direct < 0) {
+        if (h2_h2_is_tls(c)) {
+            /* disabled by default on TLS */
+            h2_direct = 0;
+        }
+        else {
+            /* enabled if "Protocols h2c" is configured */
+            h2_direct = ap_is_allowed_protocol(c, NULL, NULL, "h2c");
+        }
+    }
+    return !!h2_direct;
+}
+
+int h2_allows_h2_upgrade(conn_rec *c)
+{
+    h2_config *cfg = h2_config_get(c);
+    int h2_upgrade = h2_config_geti(cfg, H2_CONF_UPGRADE);
+    
+    return h2_upgrade > 0 || (h2_upgrade < 0 && !h2_h2_is_tls(c));
+}
+
 /*******************************************************************************
  * Register various hooks
  */
@@ -543,9 +569,6 @@ int h2_h2_remove_timeout(conn_rec* c)
 int h2_h2_process_conn(conn_rec* c)
 {
     h2_ctx *ctx = h2_ctx_get(c);
-    h2_config *cfg = h2_config_get(c);
-    apr_bucket_brigade* temp = NULL;
-    int is_tls = h2_h2_is_tls(c);
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn");
     if (h2_ctx_is_task(ctx)) {
@@ -555,75 +578,77 @@ int h2_h2_process_conn(conn_rec* c)
 
     /* If we have not already switched to a h2* protocol and the connection 
      * is on "http/1.1"
-     * -> sniff for the magic PRIamble. On TLS, this might trigger the ALPN.
+     * -> on TLS, try to trigger ALPN
+     * -> sniff for the magic PRIamble if enabled
      */
-    if (!h2_ctx_protocol_get(c) 
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
+    if (h2_ctx_protocol_get(c)) {
+        /* we have a protocol selected */
+    }
+    else if (!strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
+        apr_bucket_brigade* temp = NULL;
         apr_status_t status = APR_SUCCESS;
-        
+        int is_tls = h2_h2_is_tls(c);
+    
+        /* we are still on HTTP/1.1, trigger ALPN if TLS */
+        /* TODO: this part should be in mod_ssl */
         if (is_tls) {
             /* trigger the TLS handshake */
             temp = apr_brigade_create(c->pool, c->bucket_alloc);
             status = ap_get_brigade(c->input_filters, temp,
                                     AP_MODE_INIT, APR_BLOCK_READ, 0);
+            if (status != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                              "h2_h2, failed to trigger ALPN");
+                return DECLINED;
+            }
         }
 
-        if (status == APR_SUCCESS) {
-            if (h2_ctx_protocol_get(c) 
-                || strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))) {
-                /* h2 or another protocol has been selected. */
+        if (h2_ctx_protocol_get(c)) {
+            /* NOW, something has been negotiated */
+        }
+        else if (!strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))
+            && h2_allows_h2_direct(c) 
+            && h2_is_acceptable_connection(c, 1)) {
+            /* ALPN might have been triggered, but we're still on
+             * http/1.1. Check the actual bytes read for the H2 Magic
+             * Token, *if* H2Direct mode is enabled here *and*
+             * connection is in a fully acceptable state.
+             */
+            char *s = NULL;
+            apr_size_t slen;
+
+            if (!temp) {
+                temp = apr_brigade_create(c->pool, c->bucket_alloc);
+            }
+            
+            status = ap_get_brigade(c->input_filters, temp,
+                                    AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+                                    
+            if (status != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                              "h2_h2, error reading 24 bytes speculative");
+                return DECLINED;
+            }
+            
+            apr_brigade_pflatten(temp, &s, &slen, c->pool);
+            if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                              "h2_h2, direct mode detected");
+                h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
             }
             else {
-                /* ALPN might have been triggered, but we're still on
-                 * http/1.1. Check the actual bytes read for the H2 Magic
-                 * Token, *if* H2Direct mode is enabled here. 
-                 */
-                if (h2_config_geti(cfg, H2_CONF_DIRECT) > 0) {
-                    char *s = NULL;
-                    apr_size_t slen;
-                    
-                    /* 
-                     * Verify that all connection requirements are met. 
-                     */
-                    if (h2_is_acceptable_connection(c, 1)) {
-                        if (!temp) {
-                            temp = apr_brigade_create(c->pool, c->bucket_alloc);
-                        }
-                        status = ap_get_brigade(c->input_filters, temp,
-                                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
-                        if (status == APR_SUCCESS) {
-                            apr_brigade_pflatten(temp, &s, &slen, c->pool);
-                            if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
-                                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                                              "h2_h2, direct mode detected");
-                                h2_ctx_protocol_set(ctx, is_tls? "h2" : "h2c");
-                            }
-                            else {
-                                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                                              "h2_h2, not detected in %d bytes: %s", 
-                                              (int)slen, s);
-                            }
-                        }
-                        else {
-                            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                                          "h2_h2, error reading 24 bytes speculative");
-                        }
-                    }
-                    else {
-                        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                                      "h2_h2, passed on direct mode, connection"
-                                      " does not meet requirements");
-                    }
-                }
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                              "h2_h2, not detected in %d bytes: %s", 
+                              (int)slen, s);
+            }
+            
+            if (temp) {
+                apr_brigade_destroy(temp);
             }
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                          "h2_h2, failed to init connection");
-        }
-        
-        if (temp) {
-            apr_brigade_destroy(temp);
+            /* the connection is not HTTP/1.1 or not for us, don't touch it */
+            return DECLINED;
         }
     }
 

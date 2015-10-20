@@ -35,6 +35,7 @@ typedef enum {
     H2_CONF_DIRECT,
     H2_CONF_SESSION_FILES,
     H2_CONF_MODERN_TLS_ONLY,
+    H2_CONF_UPGRADE,
 } h2_config_var_t;
 
 /* Apache httpd module configuration for h2. */
@@ -53,6 +54,7 @@ typedef struct h2_config {
     int h2_direct;                /* if mod_h2 is active directly */
     int session_extra_files;      /* # of extra files a session may keep open */  
     int modern_tls_only;          /* Accept only modern TLS in HTTP/2 connections */  
+    int h2_upgrade;               /* Allow HTTP/1 upgrade to h2/h2c */
 } h2_config;
 
 
