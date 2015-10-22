@@ -47,6 +47,17 @@ void h2_io_destroy(h2_io *io)
     h2_io_cleanup(io);
 }
 
+void h2_io_set_response(h2_io *io, h2_response *response) 
+{
+    AP_DEBUG_ASSERT(response);
+    AP_DEBUG_ASSERT(!io->response);
+    io->response = h2_response_copy(io->pool, response);
+    if (response->rst_error) {
+        h2_io_rst(io, response->rst_error);
+    }
+}
+
+
 void h2_io_rst(h2_io *io, int error)
 {
     io->rst_error = error;

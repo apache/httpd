@@ -591,8 +591,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
                           m->id, stream_id, response->status);
         }
         
-        io->response = h2_response_copy(io->pool, response);
-        AP_DEBUG_ASSERT(io->response);
+        h2_io_set_response(io, response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
             status = out_write(m, io, f, bb, iowait);
@@ -680,7 +679,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                      * insert an error one so that our streams can properly
                      * reset.
                      */
-                    h2_response *r = h2_response_create(stream_id, 
+                    h2_response *r = h2_response_create(stream_id, 0, 
                                                         "500", NULL, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
