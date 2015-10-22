@@ -61,6 +61,11 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
 void h2_io_destroy(h2_io *io);
 
 /**
+ * Set the response of this stream.
+ */
+void h2_io_set_response(h2_io *io, struct h2_response *response);
+
+/**
  * Reset the stream with the given error code.
  */
 void h2_io_rst(h2_io *io, int error);

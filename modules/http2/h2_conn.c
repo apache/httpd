@@ -44,7 +44,6 @@ static apr_status_t h2_session_process(h2_session *session);
 
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
-static module *ssl_module;
 static int checked;
 
 static void check_modules(void) 
@@ -64,9 +63,6 @@ static void check_modules(void)
             else if (!strcmp("prefork.c", m->name)) {
                 mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
-            }
-            else if (!strcmp("mod_ssl.c", m->name)) {
-                ssl_module = m;
             }
         }
         checked = 1;
@@ -103,9 +99,6 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         else if (!strcmp("prefork.c", m->name)) {
             mpm_type = H2_MPM_PREFORK;
             mpm_module = m;
-        }
-        else if (!strcmp("mod_ssl.c", m->name)) {
-            ssl_module = m;
         }
     }
     
@@ -422,21 +415,11 @@ apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
     env->c.conn_config = ap_create_conn_config(env->pool);
     env->c.notes = apr_table_make(env->pool, 5);
     
+    /* In order to do this in 2.4.x, we need to add a member to conn_rec */
+    env->c.master = master;
+    
     ap_set_module_config(env->c.conn_config, &core_module, 
                          h2_worker_get_socket(worker));
-    
-    /* If we serve http:// requests over a TLS connection, we do
-     * not want any mod_ssl vars to be visible.
-     */
-    if (ssl_module && (!env->scheme || strcmp("http", env->scheme))) {
-        /* See #19, there is a range of SSL variables to be gotten from
-         * the main connection that should be available in request handlers
-         */
-        void *sslcfg = ap_get_module_config(master->conn_config, ssl_module);
-        if (sslcfg) {
-            ap_set_module_config(env->c.conn_config, ssl_module, sslcfg);
-        }
-    }
     
     /* This works for mpm_worker so far. Other mpm modules have 
      * different needs, unfortunately. The most interesting one 

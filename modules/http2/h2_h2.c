@@ -437,14 +437,6 @@ int h2_h2_is_tls(conn_rec *c)
     return opt_ssl_is_https && opt_ssl_is_https(c);
 }
 
-int h2_tls_disable(conn_rec *c)
-{
-    if (opt_ssl_engine_disable) {
-        return opt_ssl_engine_disable(c);
-    }
-    return 0;
-}
-
 int h2_is_acceptable_connection(conn_rec *c, int require_all) 
 {
     int is_tls = h2_h2_is_tls(c);

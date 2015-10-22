@@ -34,6 +34,21 @@ extern const char *h2_tls_protos[];
  */
 extern const char *H2_MAGIC_TOKEN;
 
+#define H2_ERR_NO_ERROR             (0x00)
+#define H2_ERR_PROTOCOL_ERROR       (0x01)
+#define H2_ERR_INTERNAL_ERROR       (0x02)
+#define H2_ERR_FLOW_CONTROL_ERROR   (0x03)
+#define H2_ERR_SETTINGS_TIMEOUT     (0x04)
+#define H2_ERR_STREAM_CLOSED        (0x05)
+#define H2_ERR_FRAME_SIZE_ERROR     (0x06)
+#define H2_ERR_REFUSED_STREAM       (0x07)
+#define H2_ERR_CANCEL               (0x08)
+#define H2_ERR_COMPRESSION_ERROR    (0x09)
+#define H2_ERR_CONNECT_ERROR        (0x0a)
+#define H2_ERR_ENHANCE_YOUR_CALM    (0x0b)
+#define H2_ERR_INADEQUATE_SECURITY  (0x0c)
+#define H2_ERR_HTTP_1_1_REQUIRED    (0x0d)
+
 /*
  * One time, post config intialization.
  */
@@ -42,12 +57,6 @@ apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s);
 /* Is the connection a TLS connection?
  */
 int h2_h2_is_tls(conn_rec *c);
-
-/* Disable SSL for this connection, can only be invoked in a pre-
- * connection hook before mod_ssl.
- * @return != 0 iff disable worked
- */
-int h2_tls_disable(conn_rec *c);
 
 /* Register apache hooks for h2 protocol
  */
