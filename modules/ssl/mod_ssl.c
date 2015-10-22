@@ -396,6 +396,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
+    SSLSrvConfigRec *sc;
 
     if (sslconn) {
         return sslconn;
@@ -405,6 +406,8 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 
     sslconn->server = c->base_server;
     sslconn->verify_depth = UNSET;
+    sc = mySrvConfig(c->base_server);
+    sslconn->cipher_suite = sc->server->auth.cipher_suite;
 
     myConnConfigSet(c, sslconn);
 
@@ -563,8 +566,8 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (!(sc && (sc->enabled == SSL_ENABLED_TRUE ||
-                 (sslconn && sslconn->is_proxy))))
+    if (c->master || !(sc && (sc->enabled == SSL_ENABLED_TRUE ||
+                              (sslconn && sslconn->is_proxy))))
     {
         return DECLINED;
     }
