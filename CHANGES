@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Limit to ten the number of tolerated empty lines between request,
+     and consume them before the pipelining check to avoid possible response
+     delay when reading the next request without flushing.  [Yann Ylavic]
+
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
      [Paul Spangler <paul.spangler ni.com>]

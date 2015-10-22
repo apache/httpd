@@ -230,22 +230,84 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
 
 static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
 {
+    c->data_in_input_filters = 0;
     if (c->keepalive != AP_CONN_CLOSE && !c->aborted) {
         apr_status_t rv;
+        int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
+        char buf[2], cr = 0;
+        apr_size_t len;
 
-        AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(bb));
-        rv = ap_get_brigade(c->input_filters, bb, AP_MODE_SPECULATIVE,
-                            APR_NONBLOCK_READ, 1);
-        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
-            /*
-             * Error or empty brigade: There is no data present in the input
-             * filter
+        do {
+            const apr_size_t n = (cr) ? 2 : 1;
+
+            apr_brigade_cleanup(bb);
+            rv = ap_get_brigade(c->input_filters, bb, AP_MODE_SPECULATIVE,
+                                APR_NONBLOCK_READ, n);
+            if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+                /*
+                 * Error or empty brigade: There is no data present in the input
+                 * filter
+                 */
+                return;
+            }
+
+            /* Ignore trailing blank lines (which must not be interpreted as
+             * pipelined requests) up to the limit, otherwise we would block
+             * on the next read without flushing data, and hence possibly delay
+             * pending response(s) until the next/real request comes in or the
+             * keepalive timeout expires.
              */
-            c->data_in_input_filters = 0;
-        }
-        else {
-            c->data_in_input_filters = 1;
-        }
+            len = n;
+            rv = apr_brigade_flatten(bb, buf, &len);
+            if (rv != APR_SUCCESS || len != n) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+                              "check pipeline can't fetch CRLF "
+                              "(%" APR_SIZE_T_FMT "/%" APR_SIZE_T_FMT ")",
+                              len, n);
+                c->data_in_input_filters = 1;
+                return;
+            }
+            if (cr) {
+                AP_DEBUG_ASSERT(len == 2 && buf[0] == APR_ASCII_CR);
+                if (buf[1] != APR_ASCII_LF) {
+                    return;
+                }
+                num_blank_lines--;
+                cr = 0;
+            }
+            else {
+                if (buf[0] == APR_ASCII_CR) {
+                    cr = 1;
+                }
+                else if (buf[0] == APR_ASCII_LF) {
+                    num_blank_lines--;
+                }
+                else {
+                    c->data_in_input_filters = 1;
+                    return;
+                }
+            }
+            if (!cr) {
+                /* Consume this [CR]LF, then next */
+                apr_brigade_cleanup(bb);
+                rv = ap_get_brigade(c->input_filters, bb, AP_MODE_READBYTES,
+                                    APR_NONBLOCK_READ, n);
+                if (rv == APR_SUCCESS) {
+                    rv = apr_brigade_flatten(bb, buf, &len);
+                }
+                if (rv != APR_SUCCESS || len != n) {
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+                                  "check pipeline can't read CRLF "
+                                  "(%" APR_SIZE_T_FMT "/%" APR_SIZE_T_FMT ")",
+                                  len, n);
+                    c->data_in_input_filters = 1;
+                    return;
+                }
+            }
+        } while (num_blank_lines >= 0);
+
+        /* Don't recycle this (abused) connection */
+        c->keepalive = AP_CONN_CLOSE;
     }
 }
 
