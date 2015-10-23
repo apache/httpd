@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: when receiving requests for other virtual hosts than the handshake
+     server, the SSL parameters are checked for equality. With equal 
+     configuration, requests are passed for processing. Any change will trigger
+     the old behaviour of "421 Misdirected Request".
+     SSL now remembers the cipher suite that was used for the last handshake.
+     This is compared against for any vhost/directory cipher specification. 
+     Detailed examination of renegotiation is only done when these do not
+     match.
+     Renegotiation is 403ed when a master connection is present. Exact reason
+     is given additionally in a request note.
+     [Stefan Eissing]
+     
   *) core: Limit to ten the number of tolerated empty lines between request,
      and consume them before the pipelining check to avoid possible response
      delay when reading the next request without flushing.  [Yann Ylavic]
