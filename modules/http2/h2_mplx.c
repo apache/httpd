@@ -144,11 +144,17 @@ static void reference(h2_mplx *m)
     apr_atomic_inc32(&m->refs);
 }
 
-static void release(h2_mplx *m)
+static void release(h2_mplx *m, int lock)
 {
     if (!apr_atomic_dec32(&m->refs)) {
+        if (lock) {
+            apr_thread_mutex_lock(m->lock);
+        }
         if (m->join_wait) {
             apr_thread_cond_signal(m->join_wait);
+        }
+        if (lock) {
+            apr_thread_mutex_unlock(m->lock);
         }
     }
 }
@@ -159,7 +165,7 @@ void h2_mplx_reference(h2_mplx *m)
 }
 void h2_mplx_release(h2_mplx *m)
 {
-    release(m);
+    release(m, 1);
 }
 
 static void workers_register(h2_mplx *m) {
@@ -188,29 +194,17 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        int attempts = 0;
-        
-        release(m);
+        release(m, 0);
         while (apr_atomic_read32(&m->refs) > 0) {
             m->join_wait = wait;
-            ap_log_cerror(APLOG_MARK, (attempts? APLOG_INFO : APLOG_DEBUG), 
-                          0, m->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
                           "h2_mplx(%ld): release_join, refs=%d, waiting...", 
                           m->id, m->refs);
-            apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(10));
-            if (++attempts >= 6) {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
-                              APLOGNO(02952) 
-                              "h2_mplx(%ld): join attempts exhausted, refs=%d", 
-                              m->id, m->refs);
-                break;
-            }
-        }
-        if (m->join_wait) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
-                          "h2_mplx(%ld): release_join -> destroy", m->id);
+            apr_thread_cond_wait(wait, m->lock);
         }
         m->join_wait = NULL;
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+                      "h2_mplx(%ld): release_join -> destroy", m->id);
         apr_thread_mutex_unlock(m->lock);
         h2_mplx_destroy(m);
     }
@@ -353,7 +347,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
         if (io) {
             io->input_arrived = iowait;
             status = h2_io_in_read(io, bb, 0);
-            while (status == APR_EAGAIN 
+            while (APR_STATUS_IS_EAGAIN(status) 
                    && !is_aborted(m, &status)
                    && block == APR_BLOCK_READ) {
                 apr_thread_cond_wait(io->input_arrived, m->lock);

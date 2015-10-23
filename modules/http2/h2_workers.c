@@ -42,6 +42,22 @@ static int in_list(h2_workers *workers, h2_mplx *m)
     return 0;
 }
 
+static void cleanup_zombies(h2_workers *workers, int lock) {
+    if (lock) {
+        apr_thread_mutex_lock(workers->lock);
+    }
+    while (!H2_WORKER_LIST_EMPTY(&workers->zombies)) {
+        h2_worker *zombie = H2_WORKER_LIST_FIRST(&workers->zombies);
+        H2_WORKER_REMOVE(zombie);
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                      "h2_workers: cleanup zombie %d", zombie->id);
+        h2_worker_destroy(zombie);
+    }
+    if (lock) {
+        apr_thread_mutex_unlock(workers->lock);
+    }
+}
+
 
 /**
  * Get the next task for the given worker. Will block until a task arrives
@@ -123,23 +139,12 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
             if (!task) {
                 /* Need to wait for either a new mplx to arrive.
                  */
+                cleanup_zombies(workers, 0);
+                
                 if (workers->worker_count > workers->min_size) {
                     apr_time_t now = apr_time_now();
                     if (now >= (start_wait + max_wait)) {
                         /* waited long enough without getting a task. */
-                        status = APR_TIMEUP;
-                    }
-                    else {
-                        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
-                                     "h2_worker(%d): waiting signal, "
-                                     "worker_count=%d", worker->id, 
-                                     (int)workers->worker_count);
-                        status = apr_thread_cond_timedwait(workers->mplx_added,
-                                                           workers->lock, max_wait);
-                    }
-                    
-                    if (status == APR_TIMEUP) {
-                        /* waited long enough */
                         if (workers->worker_count > workers->min_size) {
                             ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, 
                                          workers->s,
@@ -148,6 +153,12 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                             break;
                         }
                     }
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                                 "h2_worker(%d): waiting signal, "
+                                 "worker_count=%d", worker->id, 
+                                 (int)workers->worker_count);
+                    apr_thread_cond_timedwait(workers->mplx_added,
+                                              workers->lock, max_wait);
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
@@ -194,11 +205,11 @@ static void worker_done(h2_worker *worker, void *ctx)
     h2_workers *workers = (h2_workers *)ctx;
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                      "h2_worker(%d): done", h2_worker_get_id(worker));
         H2_WORKER_REMOVE(worker);
         --workers->worker_count;
-        h2_worker_destroy(worker);
+        H2_WORKER_LIST_INSERT_TAIL(&workers->zombies, worker);
         
         apr_thread_mutex_unlock(workers->lock);
     }
@@ -213,7 +224,7 @@ static apr_status_t add_worker(h2_workers *workers)
     if (!w) {
         return APR_ENOMEM;
     }
-    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, workers->s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                  "h2_workers: adding worker(%d)", h2_worker_get_id(w));
     ++workers->worker_count;
     H2_WORKER_LIST_INSERT_TAIL(&workers->workers, w);
@@ -235,15 +246,22 @@ static apr_status_t h2_workers_start(h2_workers *workers) {
     return status;
 }
 
-h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
+h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
                               int min_size, int max_size)
 {
     apr_status_t status;
     h2_workers *workers;
-    AP_DEBUG_ASSERT(s);
-    AP_DEBUG_ASSERT(pool);
-    status = APR_SUCCESS;
+    apr_pool_t *pool;
 
+    AP_DEBUG_ASSERT(s);
+    AP_DEBUG_ASSERT(server_pool);
+
+    /* let's have our own pool that will be parent to all h2_worker
+     * instances we create. This happens in various threads, but always
+     * guarded by our lock. Without this pool, all subpool creations would
+     * happen on the pool handed to us, which we do not guard.
+     */
+    apr_pool_create(&pool, server_pool);
     workers = apr_pcalloc(pool, sizeof(h2_workers));
     if (workers) {
         workers->s = s;
@@ -255,6 +273,7 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
         apr_threadattr_create(&workers->thread_attr, workers->pool);
         
         APR_RING_INIT(&workers->workers, h2_worker, link);
+        APR_RING_INIT(&workers->zombies, h2_worker, link);
         APR_RING_INIT(&workers->mplxs, h2_mplx, link);
         
         status = apr_thread_mutex_create(&workers->lock,
@@ -278,6 +297,9 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
 
 void h2_workers_destroy(h2_workers *workers)
 {
+    /* before we go, cleanup any zombie workers that may have accumulated */
+    cleanup_zombies(workers, 1);
+    
     if (workers->mplx_added) {
         apr_thread_cond_destroy(workers->mplx_added);
         workers->mplx_added = NULL;
@@ -293,6 +315,10 @@ void h2_workers_destroy(h2_workers *workers)
     while (!H2_WORKER_LIST_EMPTY(&workers->workers)) {
         h2_worker *w = H2_WORKER_LIST_FIRST(&workers->workers);
         H2_WORKER_REMOVE(w);
+    }
+    if (workers->pool) {
+        apr_pool_destroy(workers->pool);
+        /* workers is gone */
     }
 }
 
@@ -320,6 +346,9 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
             add_worker(workers);
         }
         
+        /* cleanup any zombie workers that may have accumulated */
+        cleanup_zombies(workers, 0);
+        
         apr_thread_mutex_unlock(workers->lock);
     }
     return status;
@@ -334,6 +363,9 @@ apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m)
             H2_MPLX_REMOVE(m);
             status = APR_SUCCESS;
         }
+        /* cleanup any zombie workers that may have accumulated */
+        cleanup_zombies(workers, 0);
+        
         apr_thread_mutex_unlock(workers->lock);
     }
     return status;

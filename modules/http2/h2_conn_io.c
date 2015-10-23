@@ -180,6 +180,10 @@ static apr_status_t flush_out(apr_bucket_brigade *bb, void *ctx)
     apr_status_t status;
     apr_off_t bblen;
     
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
+    
     ap_update_child_status(io->connection->sbh, SERVER_BUSY_WRITE, NULL);
     status = apr_brigade_length(bb, 1, &bblen);
     if (status == APR_SUCCESS) {
@@ -193,6 +197,9 @@ static apr_status_t flush_out(apr_bucket_brigade *bb, void *ctx)
     return status;
 }
 
+/* Bring the current buffer content into the output brigade, appropriately
+ * chunked.
+ */
 static apr_status_t bucketeer_buffer(h2_conn_io *io) {
     const char *data = io->buffer;
     apr_size_t remaining = io->buflen;
@@ -282,30 +289,22 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
     if (io->unflushed) {
         apr_status_t status; 
         if (io->buflen > 0) {
+            /* something in the buffer, put it in the output brigade */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
                           "h2_conn_io: flush, flushing %ld bytes", (long)io->buflen);
             bucketeer_buffer(io);
             io->buflen = 0;
         }
-        /* Append flush.
-         */
-        APR_BRIGADE_INSERT_TAIL(io->output,
-                                apr_bucket_flush_create(io->output->bucket_alloc));
-        
-        /* Send it out through installed filters (TLS) to the client */
+        /* Send it out */
         status = flush_out(io->output, io);
         
-        if (status == APR_SUCCESS) {
-            /* These are all fine and no reason for concern. Everything else
-             * is interesting. */
-            io->unflushed = 0;
-        }
-        else {
+        if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
-                          "h2_conn_io: flush error");
+                          "h2_conn_io: flush");
+            return status;
         }
-        
-        return status;
+
+        io->unflushed = 0;
     }
     return APR_SUCCESS;
 }

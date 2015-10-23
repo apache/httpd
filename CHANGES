@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: reworked deallocation on connection shutdown and worker
+     abort. Separate parent pool for all workers. worker threads are joined
+     on planned worker shutdown.
+     [Yann Ylavic, Stefan Eissing]
+     
   *) mod_ssl: when receiving requests for other virtual hosts than the handshake
      server, the SSL parameters are checked for equality. With equal 
      configuration, requests are passed for processing. Any change will trigger

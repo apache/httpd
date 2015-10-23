@@ -41,17 +41,16 @@ static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
 
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
-    switch (rv) {
-        case APR_SUCCESS:
-            return NGHTTP2_NO_ERROR;
-        case APR_EAGAIN:
-        case APR_TIMEUP:
-            return NGHTTP2_ERR_WOULDBLOCK;
-        case APR_EOF:
-            return NGHTTP2_ERR_EOF;
-        default:
-            return NGHTTP2_ERR_PROTO;
+    if (rv == APR_SUCCESS) {
+        return NGHTTP2_NO_ERROR;
     }
+    else if (APR_STATUS_IS_EAGAIN(rv)) {
+        return NGHTTP2_ERR_WOULDBLOCK;
+    }
+    else if (APR_STATUS_IS_EOF(rv)) {
+            return NGHTTP2_ERR_EOF;
+    }
+    return NGHTTP2_ERR_PROTO;
 }
 
 static int stream_open(h2_session *session, int stream_id)
@@ -107,7 +106,7 @@ static ssize_t send_cb(nghttp2_session *ngh2,
     if (status == APR_SUCCESS) {
         return length;
     }
-    if (status == APR_EAGAIN || status == APR_TIMEUP) {
+    if (APR_STATUS_IS_EAGAIN(status)) {
         return NGHTTP2_ERR_WOULDBLOCK;
     }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
@@ -509,12 +508,11 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     if (status == APR_SUCCESS) {
         return 0;
     }
-    else if (status != APR_EOF) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
                       APLOGNO(02925) 
                       "h2_stream(%ld-%d): failed send_data_cb",
                       session->id, (int)stream_id);
-        return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
     return h2_session_status_from_apr_status(status);
@@ -732,10 +730,12 @@ apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv)
                 rv = 0;                            /* ...gracefully shut down */
                 break;
             case APR_EBADF:        /* connection unusable, terminate silently */
-            case APR_ECONNABORTED:
-                rv = NGHTTP2_ERR_EOF;
-                break;
             default:
+                if (APR_STATUS_IS_ECONNABORTED(reason)
+                    || APR_STATUS_IS_ECONNRESET(reason)
+                    || APR_STATUS_IS_EBADF(reason)) {
+                    rv = NGHTTP2_ERR_EOF;
+                }
                 break;
         }
     }
@@ -911,7 +911,7 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
     if (status == APR_SUCCESS) {
         flush_output = 1;
     }
-    else if (status != APR_EAGAIN) {
+    else if (!APR_STATUS_IS_EAGAIN(status)) {
         return status;
     }
     
