@@ -5363,6 +5363,18 @@ static int core_upgrade_handler(request_rec *r)
             }
         }
     }
+    else if (!r->connection->keepalives) {
+        /* first request on connection, if we have protocols other
+         * than the current one enabled here, announce them to the
+         * client */
+        const apr_array_header_t *upgrades;
+        ap_get_protocol_upgrades(r->connection, r, NULL, &upgrades);
+        if (upgrades && upgrades->nelts > 0) {
+            char *protocols = apr_array_pstrcat(r->pool, upgrades, ',');
+            apr_table_setn(r->headers_out, "Upgrade", protocols);
+            apr_table_setn(r->headers_out, "Connection", "Upgrade");
+        }
+    }
     
     return DECLINED;
 }

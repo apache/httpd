@@ -782,7 +782,22 @@ AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
  * @return The identifier of the protocol in place or NULL
  */
 AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
-    
+
+/**
+ * Get the protocols that the connection and optional request may
+ * upgrade to - besides the protocol currently active on the connection. These
+ * values may be used to announce to a client what choices it has.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected or NULL
+ * @param pupgrades on return, possible protocols to upgrade to in descending order 
+ *                 of preference. Maybe NULL if none are available.    
+ */
+AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r, 
+                                                  server_rec *s, 
+                                                  const apr_array_header_t **pupgrades);
+                                                  
 /**
  * Select a protocol for the given connection and optional request. Will return
  * the protocol identifier selected which may be the protocol already in place

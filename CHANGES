@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: add ap_get_protocol_upgrades() to retrieve the list of protocols
+     that a client could possibly upgrade to. Use in first request on a 
+     connection to announce protocol choices.
+     [Stefan Eissing]
+
   *) mod_http2: reworked deallocation on connection shutdown and worker
      abort. Separate parent pool for all workers. worker threads are joined
      on planned worker shutdown.
