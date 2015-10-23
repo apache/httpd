@@ -47,6 +47,12 @@ void h2_io_destroy(h2_io *io)
     h2_io_cleanup(io);
 }
 
+void h2_io_rst(h2_io *io, int error)
+{
+    io->rst_error = error;
+    io->eos_in = 1;
+}
+
 int h2_io_in_has_eos_for(h2_io *io)
 {
     return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, 0));
@@ -124,16 +130,52 @@ apr_status_t h2_io_out_readx(h2_io *io,
                              h2_io_data_cb *cb, void *ctx, 
                              apr_size_t *plen, int *peos)
 {
+    apr_status_t status;
+    
+    if (io->eos_out) {
+        *plen = 0;
+        *peos = 1;
+        return APR_SUCCESS;
+    }
+    
     if (cb == NULL) {
         /* just checking length available */
-        return h2_util_bb_avail(io->bbout, plen, peos);
+        status = h2_util_bb_avail(io->bbout, plen, peos);
     }
-    return h2_util_bb_readx(io->bbout, cb, ctx, plen, peos);
+    else {
+        status = h2_util_bb_readx(io->bbout, cb, ctx, plen, peos);
+        if (status == APR_SUCCESS) {
+            io->eos_out = *peos;
+        }
+    }
+    
+    return status;
 }
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, int *pfile_handles_allowed)
 {
+    apr_status_t status;
+    int start_allowed;
+    
+    if (io->eos_out) {
+        apr_off_t len;
+        /* We have already delivered an EOS bucket to a reader, no
+         * sense in storing anything more here.
+         */
+        status = apr_brigade_length(bb, 1, &len);
+        if (status == APR_SUCCESS) {
+            if (len > 0) {
+                /* someone tries to write real data after EOS, that
+                 * does not look right. */
+                status = APR_EOF;
+            }
+            /* cleanup, as if we had moved the data */
+            apr_brigade_cleanup(bb);
+        }
+        return status;
+    }
+    
     /* Let's move the buckets from the request processing in here, so
      * that the main thread can read them when it has time/capacity.
      *
@@ -144,8 +186,11 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
      * many open files already buffered. Otherwise we will run out of
      * file handles.
      */
-    int start_allowed = *pfile_handles_allowed;
-    apr_status_t status;
+    start_allowed = *pfile_handles_allowed;
+
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
     status = h2_util_move(io->bbout, bb, maxlen, pfile_handles_allowed, 
                           "h2_io_out_write");
     /* track # file buckets moved into our pool */
@@ -158,7 +203,9 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
 
 apr_status_t h2_io_out_close(h2_io *io)
 {
-    APR_BRIGADE_INSERT_TAIL(io->bbout, 
-                            apr_bucket_eos_create(io->bbout->bucket_alloc));
+    if (!io->eos_out && !h2_util_has_eos(io->bbout, 0)) {
+        APR_BRIGADE_INSERT_TAIL(io->bbout, 
+                                apr_bucket_eos_create(io->bbout->bucket_alloc));
+    }
     return APR_SUCCESS;
 }

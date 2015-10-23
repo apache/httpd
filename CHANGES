@@ -1,7 +1,11 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.18
-
+  *) mod_http2: reworked deallocation on connection shutdown and worker
+     abort. Separate parent pool for all workers. worker threads are joined
+     on planned worker shutdown.
+     [Yann Ylavic, Stefan Eissing]
+     
 
 Changes with Apache 2.4.17
 

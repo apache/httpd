@@ -42,6 +42,7 @@ struct h2_workers {
     apr_threadattr_t *thread_attr;
     
     APR_RING_HEAD(h2_worker_list, h2_worker) workers;
+    APR_RING_HEAD(h2_worker_zombies, h2_worker) zombies;
     APR_RING_HEAD(h2_mplx_list, h2_mplx) mplxs;
     
     int worker_count;

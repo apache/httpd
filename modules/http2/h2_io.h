@@ -33,11 +33,13 @@ struct h2_io {
     apr_bucket_brigade *bbin;    /* input data for stream */
     int eos_in;
     int task_done;
+    int rst_error;
     
     apr_size_t input_consumed;   /* how many bytes have been read */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
     
     apr_bucket_brigade *bbout;   /* output data from stream */
+    int eos_out;
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
     struct h2_response *response;/* submittable response created */
@@ -57,6 +59,11 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
  * Frees any resources hold by the h2_io instance. 
  */
 void h2_io_destroy(h2_io *io);
+
+/**
+ * Reset the stream with the given error code.
+ */
+void h2_io_rst(h2_io *io, int error);
 
 /**
  * The input data is completely queued. Blocked reads will return immediately

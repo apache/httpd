@@ -30,7 +30,6 @@ void h2_io_set_destroy(h2_io_set *set);
 
 apr_status_t h2_io_set_add(h2_io_set *set, struct h2_io *io);
 h2_io *h2_io_set_get(h2_io_set *set, int stream_id);
-h2_io *h2_io_set_get_highest_prio(h2_io_set *set);
 h2_io *h2_io_set_remove(h2_io_set *set, struct h2_io *io);
 
 void h2_io_set_remove_all(h2_io_set *set);
@@ -43,5 +42,7 @@ typedef int h2_io_set_iter_fn(void *ctx, struct h2_io *io);
 
 void h2_io_set_iter(h2_io_set *set,
                            h2_io_set_iter_fn *iter, void *ctx);
+
+h2_io *h2_io_set_pop_highest_prio(h2_io_set *set);
 
 #endif /* defined(__mod_h2__h2_io_set__) */

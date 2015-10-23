@@ -66,6 +66,7 @@ struct h2_stream {
     struct h2_task *task;       /* task created for this stream */
     struct h2_response *response; /* the response, once ready */
     apr_bucket_brigade *bbout;  /* output DATA */
+    int rst_error;              /* stream error for RST_STREAM */
 };
 
 
@@ -73,10 +74,9 @@ h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_mplx *m);
 
 apr_status_t h2_stream_destroy(h2_stream *stream);
 
-apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
-void h2_stream_attach_pool(h2_stream *stream, apr_pool_t *pool);
+void h2_stream_rst(h2_stream *streamm, int error_code);
 
-void h2_stream_abort(h2_stream *stream);
+apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
 
 apr_status_t h2_stream_rwrite(h2_stream *stream, request_rec *r);
 

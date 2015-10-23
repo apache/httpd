@@ -255,7 +255,7 @@ apr_status_t h2_session_process(h2_session *session)
             have_written = 1;
             wait_micros = 0;
         }
-        else if (status == APR_EAGAIN) {
+        else if (APR_STATUS_IS_EAGAIN(status)) {
             /* nop */
         }
         else if (status == APR_TIMEUP) {
