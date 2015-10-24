@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      opt-in.  Original PR PR57785
      trunk patch: http://svn.apache.org/1710380.
                   http://svn.apache.org/1710391
-     2.4.x trunk work
+     2.4.x trunk works (needs CHANGES)
      +1 covener
 
 
