@@ -286,7 +286,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
-        if (conf->fully_qualify_redirect_url != AP_CORE_CONFIG_ON) { 
+        if (conf->qualify_redirect_url != AP_CORE_CONFIG_ON) { 
             add_unless_null(e, "REDIRECT_URL", r->prev->uri);
         }
         else { 
