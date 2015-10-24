@@ -198,6 +198,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->max_reversals = AP_MAXRANGES_UNSET;
 
     conf->cgi_pass_auth = AP_CGI_PASS_AUTH_UNSET;
+    conf->qualify_redirect_url = AP_CORE_CONFIG_UNSET; 
 
     return (void *)conf;
 }
@@ -415,6 +416,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     conf->max_reversals = new->max_reversals != AP_MAXRANGES_UNSET ? new->max_reversals : base->max_reversals;
 
     conf->cgi_pass_auth = new->cgi_pass_auth != AP_CGI_PASS_AUTH_UNSET ? new->cgi_pass_auth : base->cgi_pass_auth;
+
+    AP_CORE_MERGE_FLAG(qualify_redirect_url, conf, base, new);
 
     return (void*)conf;
 }
@@ -1772,6 +1775,15 @@ static const char *set_cgi_pass_auth(cmd_parms *cmd, void *d_, int flag)
     core_dir_config *d = d_;
 
     d->cgi_pass_auth = flag ? AP_CGI_PASS_AUTH_ON : AP_CGI_PASS_AUTH_OFF;
+
+    return NULL;
+}
+
+static const char *set_qualify_redirect_url(cmd_parms *cmd, void *d_, int flag)
+{
+    core_dir_config *d = d_;
+
+    d->qualify_redirect_url = flag ? AP_CORE_CONFIG_ON : AP_CORE_CONFIG_OFF;
 
     return NULL;
 }
@@ -4471,6 +4483,10 @@ AP_INIT_TAKE12("LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF,
 AP_INIT_FLAG("CGIPassAuth", set_cgi_pass_auth, NULL, OR_AUTHCFG,
              "Controls whether HTTP authorization headers, normally hidden, will "
              "be passed to scripts"),
+AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
+             "Controls whether HTTP authorization headers, normally hidden, will "
+             "be passed to scripts"),
+
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
