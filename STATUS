@@ -184,7 +184,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: make the 2.4.17 behavior of fully qualifying REDIRECT_URL
      opt-in.  Original PR PR57785
      trunk patch: http://svn.apache.org/1710380.
-     2.4.x trunk works
+                  http://svn.apache.org/1710391
+     2.4.x trunk work
      +1 covener
 
 
