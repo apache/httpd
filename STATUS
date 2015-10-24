@@ -179,7 +179,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to changing their implementation.  PR 53845
      trunk patch: http://svn.apache.org/r1707831
      2.4.x patch: http://people.apache.org/~minfrin/httpd-dnt-2.4.patch
-     +1: fielding
+     +1: fielding, covener
+
+   * core: make the 2.4.17 behavior of fully qualifying REDIRECT_URL
+     opt-in.  Original PR PR57785
+     trunk patch: http://svn.apache.org/1710380.
+     2.4.x trunk works
+     +1 covener
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
