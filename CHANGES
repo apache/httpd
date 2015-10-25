@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.18
 
+  *) mod_ssl: Extend expression parser registration to support ssl variables
+     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
+     syntax "ssl(VARNAME)". [Rainer Jung]
 
 Changes with Apache 2.4.17
 
