@@ -2000,11 +2000,13 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
         existing = ap_get_protocol(c);
         if (conf->protocols->nelts > 1 
             || !ap_array_str_contains(conf->protocols, existing)) {
+            int i;
+            
             /* possibly more than one choice or one, but not the
              * existing. (TODO: maybe 426 and Upgrade then?) */
             upgrades = apr_array_make(pool, conf->protocols->nelts + 1, 
                                       sizeof(char *));
-            for (int i = 0; i < conf->protocols->nelts; ++i) {
+            for (i = 0; i < conf->protocols->nelts; i++) {
                 const char *p = APR_ARRAY_IDX(conf->protocols, i, char *);
                 if (strcmp(existing, p)) {
                     /* not the one we have and possible, add in this order */
