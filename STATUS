@@ -110,13 +110,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-   * mod_ssl: Extend expression parser registration to support ssl variables
-     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
-     syntax "ssl(VARIABLE)".
-     trunk patch: http://svn.apache.org/r1707002
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: rjung, ylavic, sf (plus doc fix pointed out by minfrin)
-     minfrin: Tiny nit: http://svn.apache.org/r1709596
 
    * httpd.conf.in: Remove commented config regarding DNT because the spec
      now has CR status (confirming our interpretation) and MS has committed
