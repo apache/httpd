@@ -55,52 +55,14 @@ Changes with Apache 2.5.0
      unadulterated in 64 bit versions of Windows. PR 46751.  
      [John <john leineweb de>]
 
-  *) mod_logio: Fix logging of %^FB (time to first byte) on the first request on
-     an SSL connection.  PR 58454.  
-     [Konstantin J. Chernov <k.j.chernov gmail.com>]
-
-  *) mod_proxy: Fix ProxySourceAddress binding failure with AH00938.
-     PR 56687.  [Arne de Bruijn <apache arbruijn.dds.nl>
-
-  *) mod_proxy: don't recyle backend announced "Connection: close" connections
-     to avoid reusing it should the close be effective after some new request
-     is ready to be sent.  [Yann Ylavic]
-
   *) mod_auth_digest: remove AuthDigestEnableQueryStringHack which is no
      more documented since dec 2012 (r1415960). [Christophe Jaillet]
-
-  *) mod_slotmem_shm: Fix slots/SHM files names on restart for systems that
-     can't create new (clear) slots while previous children gracefully stopping
-     still use the old ones (e.g. Windows, OS2). mod_proxy_balancer failed to
-     restart whenever the number of configured balancers/members changed during
-     restart.  PR 58024.  [Yann Ylavic]
-
-  *) mod_autoindex: Allow autoindexes when neither mod_dir nor mod_mime are
-     loaded. [Eric Covener]
 
   *) mod_charset_lite: On EBCDIC platforms, make sure mod_charset_lite runs
      after other resource-level filters. [Eric Covener]
 
   *) mod_dir: Responses that go through "FallbackResource" might appear to
      hang due to unterminated chunked encoding. PR58292. [Eric Covener]
-
-  *) mod_socache_memcache: Add the 'MemcacheConnTTL' directive to control how 
-     long to keep idle connections with the memcache server(s).
-     Change default value from 600 usec (!) to 15 sec. PR 58091
-     [Christophe Jaillet]
-
-  *) mod_rewrite:  Allow cookies set by mod_rewrite to contain ':' by accepting
-     ';' as an alternate separator.  PR47241. 
-     [<bugzilla schermesser com>, Eric Covener]
-
-  *) apxs: Add HTTPD_VERSION and HTTPD_MMN to the variables available with 
-     apxs -q. PR58202. [Daniel Shahaf <danielsh apache.org>]
-
-  *) mod_h2: added donated http/2 implementation to build system. Similar
-     configuration options to mod_ssl. [Stefan Eissing]
-
-  *) mod_authz_dbd: Avoid a crash when lacking correct DB access permissions.
-     PR 57868. [Jose Kahan <jose w3.org>, Yann Ylavic]
 
   *) mod_alias: Limit Redirect expressions to directory (Location) context
      and redirect statuses (implicit or explicit).
@@ -122,12 +84,7 @@ Changes with Apache 2.5.0
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
 
-  *) core/util_script: make REDIRECT_URL a full URL.  PR 57785. [Nick Kew]
-
   *) http: Add support for RFC2324/RFC7168. [Graham Leggett]
-
-  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
-     before the retry period is over. [Ruediger Pluem]
 
   *) mod_rewrite: Add support for starting External Rewriting Programs
      as non-root user on UNIX systems by specifying username and group name
@@ -203,10 +160,6 @@ Changes with Apache 2.5.0
   *) mod_log_config: Add GlobalLog to allow a globally defined log to
      be inherited by virtual hosts that define a CustomLog.
      [Edward Lu <Chaosed0 gmail.com>]
-
-  *) MPMs: Support SO_REUSEPORT to create multiple duplicated listener
-     records for scalability. [Yingqi Lu <yingqi.lu@intel.com>,
-     Jeff Trawick, Jim Jagielski]
 
   *) mod_proxy_html: support automatic detection of doctype and processing
      of FPIs.  PR56285 [Micha Lenk <micha lenk info>, Nick Kew]
