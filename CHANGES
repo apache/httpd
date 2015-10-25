@@ -37,10 +37,6 @@ Changes with Apache 2.5.0
      configure the session/cookie expiry's update interval. PR 57300.
      [Paul Spangler <paul.spangler ni.com>]
 
-  *) mod_ssl: Extend expression parser registration to support ssl variables
-     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
-     syntax "ssl(VARIABLE)". [Rainer Jung]
-
   *) core: Extend support for asynchronous write completion from the
      network filter to any connection or request filter. [Graham Leggett]
 
@@ -148,12 +144,6 @@ Changes with Apache 2.5.0
   *) core, mod_info: Add compiled and loaded PCRE versions to version
      number display.  [Rainer Jung]
 
-  *) mpm_winnt: Accept utf-8 (Unicode) service names and descriptions for
-     internationalization.  [William Rowe]
-
-  *) mpm_winnt: Normalize the error and status messages emitted by service.c,
-     the service control interface for Windows.  [William Rowe]
-  
   *) mod_authnz_ldap: Return LDAP connections to the pool before the handler
      is run, instead of waiting until the end of the request. [Eric Covener]
 
@@ -283,17 +273,10 @@ Changes with Apache 2.5.0
      They were truncated to 31 characters which is not enough for IPv6 addresses.
      PR 54848 [Bernhard Schmidt <berni birkenwald de>]
 
-  *) core: Add ap_log_data(), ap_log_rdata(), etc. for logging buffers.
-     [Jeff Trawick]
-
   *) mod_unique_id: Use output of the PRNG rather than IP address and
      pid, avoiding sleep() call and possible DNS issues at startup,
      plus improving randomness for IPv6-only hosts.
      [Jan Kaluza <jkaluza redhat.com>]
-
-  *) mod_authnz_ldap: Support primitive LDAP servers that do not accept
-     filters, such as "SDBM-backed LDAP" on z/OS, by allowing a special
-     filter "none" to be specified in AuthLDAPURL. [Eric Covener]
 
   *) mod_file_cache: mod_file_cache should be able to serve files that
      haven't had a Content-Type set via e.g. mod_mime. [Eric Covener]
@@ -395,8 +378,6 @@ Changes with Apache 2.5.0
 
   *) The following now respect DefaultRuntimeDir/DEFAULT_REL_RUNTIMEDIR:
      - APIs: ap_log_pid(), ap_remove_pid, ap_read_pid()
-     - core: the scoreboard (ScoreBoardFile), pid file (PidFile), and
-       mutexes (Mutex)
      - mod_cache: thundering herd lock directory
      - mod_lbmethod_heartbeat, mod_heartmonitor: heartbeat storage file
      - mod_ldap: shared memory cache
