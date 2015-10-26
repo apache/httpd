@@ -70,6 +70,8 @@ struct h2_stream {
 };
 
 
+#define H2_STREAM_RST(s, def)    (s->rst_error? s->rst_error : (def))
+
 h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_mplx *m);
 
 apr_status_t h2_stream_destroy(h2_stream *stream);
