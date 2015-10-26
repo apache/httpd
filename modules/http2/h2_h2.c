@@ -94,6 +94,7 @@ int h2_tls_disable(conn_rec *c)
     return 0;
 }
 
+
 /*******************************************************************************
  * Register various hooks
  */
@@ -119,7 +120,7 @@ void h2_h2_register_hooks(void)
     ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
-int h2_h2_remove_timeout(conn_rec* c)
+static int h2_h2_remove_timeout(conn_rec* c)
 {
     h2_ctx *ctx = h2_ctx_get(c);
     

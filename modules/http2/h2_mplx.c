@@ -29,6 +29,7 @@
 #include "h2_private.h"
 #include "h2_config.h"
 #include "h2_conn.h"
+#include "h2_h2.h"
 #include "h2_io.h"
 #include "h2_io_set.h"
 #include "h2_response.h"
@@ -288,18 +289,21 @@ apr_status_t h2_mplx_cleanup_stream(h2_mplx *m, h2_stream *stream)
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream->id);
-        if (!io || io->task_done) {
-            /* No more io or task already done -> cleanup immediately */
-            stream_destroy(m, stream, io);
-        }
-        else {
+        if (io) {
+            /* Remove io from ready set, we will never submit it */
+            h2_io_set_remove(m->ready_ios, io);
             if (stream->rst_error) {
                 /* Forward error code to fail any further attempt to
                  * write to io */
                 h2_io_rst(io, stream->rst_error);
             }
-            /* Remove io from ready set (if there), since we will never submit it */
-            h2_io_set_remove(m->ready_ios, io);
+        }
+        
+        if (!io || io->task_done) {
+            /* No more io or task already done -> cleanup immediately */
+            stream_destroy(m, stream, io);
+        }
+        else {
             /* Add stream to closed set for cleanup when task is done */
             h2_stream_set_add(m->closed, stream);
         }
@@ -515,18 +519,21 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                     h2_stream_set_response(stream, io->response, io->bbout);
                 }
                 
-                if (io->output_drained) {
-                    apr_thread_cond_signal(io->output_drained);
-                }
             }
             else {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(02953) 
-                              "h2_mplx(%ld): stream for response %d not found",
-                              m->id, io->id);
                 /* We have the io ready, but the stream has gone away, maybe
                  * reset by the client. Should no longer happen since such
                  * streams should clear io's from the ready queue.
                  */
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c, APLOGNO(02953) 
+                              "h2_mplx(%ld): stream for response %d closed, "
+                              "resetting io to close request processing",
+                              m->id, io->id);
+                h2_io_rst(io, NGHTTP2_ERR_STREAM_CLOSED);
+            }
+            
+            if (io->output_drained) {
+                apr_thread_cond_signal(io->output_drained);
             }
         }
         apr_thread_mutex_unlock(m->lock);

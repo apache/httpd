@@ -168,7 +168,7 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
                   session->id, stream_id, (int)len);
     if (status != APR_SUCCESS) {
         rv = nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE, stream_id,
-                                       NGHTTP2_INTERNAL_ERROR);
+                                       H2_STREAM_RST(stream, NGHTTP2_INTERNAL_ERROR));
         if (nghttp2_is_fatal(rv)) {
             return NGHTTP2_ERR_CALLBACK_FAILURE;
         }
@@ -931,17 +931,18 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
     }
     
     /* If we have responses ready, submit them now. */
-    while ((stream = h2_mplx_next_submit(session->mplx, 
-                                         session->streams)) != NULL) {
+    while (!session->aborted 
+           && (stream = h2_mplx_next_submit(session->mplx, session->streams)) != NULL) {
         status = h2_session_handle_response(session, stream);
         flush_output = 1;
     }
     
-    if (h2_session_resume_streams_with_data(session) > 0) {
+    if (!session->aborted && h2_session_resume_streams_with_data(session) > 0) {
         flush_output = 1;
     }
     
-    if (!flush_output && timeout > 0 && !h2_session_want_write(session)) {
+    if (!session->aborted && !flush_output 
+        && timeout > 0 && !h2_session_want_write(session)) {
         status = h2_mplx_out_trywait(session->mplx, timeout, session->iowait);
 
         if (status != APR_TIMEUP
@@ -1151,13 +1152,10 @@ apr_status_t h2_session_handle_response(h2_session *session, h2_stream *stream)
     if (stream->response && stream->response->ngheader) {
         rv = submit_response(session, stream->response);
     }
-    else if (stream->rst_error) {
-        rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
-                                       stream->id, stream->rst_error);
-    }
     else {
         rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
-                                       stream->id, NGHTTP2_PROTOCOL_ERROR);
+                                       stream->id, 
+                                       H2_STREAM_RST(stream, NGHTTP2_PROTOCOL_ERROR));
     }
     
     if (nghttp2_is_fatal(rv)) {
@@ -1177,27 +1175,6 @@ int h2_session_is_done(h2_session *session)
             || !session->ngh2
             || (!nghttp2_session_want_read(session->ngh2)
                 && !nghttp2_session_want_write(session->ngh2)));
-}
-
-static int log_stream(void *ctx, h2_stream *stream)
-{
-    h2_session *session = (h2_session *)ctx;
-    AP_DEBUG_ASSERT(session);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                  "h2_stream(%ld-%d): in set, suspended=%d, aborted=%d, "
-                  "has_data=%d",
-                  session->id, stream->id, stream->suspended, stream->aborted,
-                  h2_mplx_out_has_data_for(session->mplx, stream->id));
-    return 1;
-}
-
-void h2_session_log_stats(h2_session *session)
-{
-    AP_DEBUG_ASSERT(session);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                  "h2_session(%ld): %d open streams",
-                  session->id, (int)h2_stream_set_size(session->streams));
-    h2_stream_set_iter(session->streams, log_stream, session);
 }
 
 static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
