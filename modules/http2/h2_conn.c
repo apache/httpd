@@ -283,11 +283,15 @@ static apr_status_t h2_conn_loop(h2_session *session)
          */
         got_streams = !h2_stream_set_is_empty(session->streams);
         if (!got_streams || session->frames_received <= 1) {
-            session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+            if (session->c->cs) {
+                session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+            }
             status = h2_session_read(session, APR_BLOCK_READ);
         }
         else {
-            session->c->cs->state = CONN_STATE_HANDLER;
+            if (session->c->cs) {
+                session->c->cs->state = CONN_STATE_HANDLER;
+            }
             status = h2_session_read(session, APR_NONBLOCK_READ);
         }
         
