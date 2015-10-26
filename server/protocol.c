@@ -1983,7 +1983,7 @@ AP_DECLARE(const char *) ap_get_protocol(conn_rec *c)
 }
 
 AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r, 
-                                                  server_rec *s, 
+                                                  server_rec *s, int report_all, 
                                                   const apr_array_header_t **pupgrades)
 {
     apr_pool_t *pool = r? r->pool : c->pool;
@@ -2011,6 +2011,9 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
                 if (strcmp(existing, p)) {
                     /* not the one we have and possible, add in this order */
                     APR_ARRAY_PUSH(upgrades, const char*) = p;
+                }
+                else if (!report_all) {
+                    break;
                 }
             }
         }

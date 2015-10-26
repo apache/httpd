@@ -788,14 +788,19 @@ AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
  * upgrade to - besides the protocol currently active on the connection. These
  * values may be used to announce to a client what choices it has.
  *
+ * If report_all == 0, only protocols more preferable than the one currently
+ * being used, are reported. Otherwise, all available protocols beside the
+ * current one are being reported.
+ *
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected or NULL
+ * @param report_all include also protocols less preferred than the current one
  * @param pupgrades on return, possible protocols to upgrade to in descending order 
  *                 of preference. Maybe NULL if none are available.    
  */
 AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r, 
-                                                  server_rec *s, 
+                                                  server_rec *s, int report_all, 
                                                   const apr_array_header_t **pupgrades);
                                                   
 /**

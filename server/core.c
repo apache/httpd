@@ -5392,7 +5392,7 @@ static int core_upgrade_handler(request_rec *r)
          * client. If the client is already talking a protocol with requests
          * on slave connections, leave it be. */
         const apr_array_header_t *upgrades;
-        ap_get_protocol_upgrades(c, r, NULL, &upgrades);
+        ap_get_protocol_upgrades(c, r, NULL, 0, &upgrades);
         if (upgrades && upgrades->nelts > 0) {
             char *protocols = apr_array_pstrcat(r->pool, upgrades, ',');
             apr_table_setn(r->headers_out, "Upgrade", protocols);
