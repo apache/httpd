@@ -40,7 +40,7 @@
 
 static struct h2_workers *workers;
 
-static apr_status_t h2_session_process(h2_session *session);
+static apr_status_t h2_conn_loop(h2_session *session);
 
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
@@ -150,7 +150,7 @@ apr_status_t h2_conn_rprocess(request_rec *r)
         return APR_EGENERAL;
     }
     
-    return h2_session_process(session);
+    return h2_conn_loop(session);
 }
 
 apr_status_t h2_conn_main(conn_rec *c)
@@ -176,7 +176,7 @@ apr_status_t h2_conn_main(conn_rec *c)
                               NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
     } 
 
-    status = h2_session_process(session);
+    status = h2_conn_loop(session);
 
     /* Make sure this connection gets closed properly. */
     c->keepalive = AP_CONN_CLOSE;
@@ -187,7 +187,7 @@ apr_status_t h2_conn_main(conn_rec *c)
     return status;
 }
 
-apr_status_t h2_session_process(h2_session *session)
+static apr_status_t h2_conn_loop(h2_session *session)
 {
     apr_status_t status = APR_SUCCESS;
     int rv = 0;
@@ -282,10 +282,15 @@ apr_status_t h2_session_process(h2_session *session)
          *     submit our settings and need the ACK.
          */
         got_streams = !h2_stream_set_is_empty(session->streams);
-        status = h2_session_read(session, 
-                                 (!got_streams 
-                                  || session->frames_received <= 1)?
-                                 APR_BLOCK_READ : APR_NONBLOCK_READ);
+        if (!got_streams || session->frames_received <= 1) {
+            session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+            status = h2_session_read(session, APR_BLOCK_READ);
+        }
+        else {
+            session->c->cs->state = CONN_STATE_HANDLER;
+            status = h2_session_read(session, APR_NONBLOCK_READ);
+        }
+        
         switch (status) {
             case APR_SUCCESS:       /* successful read, reset our idle timers */
                 have_read = 1;
@@ -303,6 +308,10 @@ apr_status_t h2_session_process(h2_session *session)
                     ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                                   "h2_session(%ld): terminating",
                                   session->id);
+                    /* Stolen from mod_reqtimeout to speed up lingering when
+                     * a read timeout happened.
+                     */
+                    apr_table_setn(session->c->notes, "short-lingering-close", "1");
                 }
                 else {
                     /* uncommon status, log on INFO so that we see this */
@@ -463,7 +472,6 @@ apr_status_t h2_conn_process(conn_rec *c, apr_socket_t *socket)
 {
     AP_DEBUG_ASSERT(c);
     
-    c->clogging_input_filters = 1;
     ap_process_connection(c, socket);
     
     return APR_SUCCESS;
