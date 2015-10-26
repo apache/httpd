@@ -158,6 +158,4 @@ apr_status_t h2_session_handle_response(h2_session *session,
 /* Get the h2_stream for the given stream idenrtifier. */
 struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
 
-void h2_session_log_stats(h2_session *session);
-
 #endif /* defined(__mod_h2__h2_session__) */

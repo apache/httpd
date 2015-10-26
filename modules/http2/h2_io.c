@@ -91,6 +91,10 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     apr_bucket *last;
     apr_status_t status;
 
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
+    
     if (!io->bbin || APR_BRIGADE_EMPTY(io->bbin)) {
         return io->eos_in? APR_EOF : APR_EAGAIN;
     }
@@ -113,6 +117,10 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
 
 apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
 {
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
+    
     if (io->eos_in) {
         return APR_EOF;
     }
@@ -129,6 +137,10 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
 
 apr_status_t h2_io_in_close(h2_io *io)
 {
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
+    
     if (io->bbin) {
         APR_BRIGADE_INSERT_TAIL(io->bbin, 
                                 apr_bucket_eos_create(io->bbin->bucket_alloc));
@@ -142,6 +154,10 @@ apr_status_t h2_io_out_readx(h2_io *io,
                              apr_size_t *plen, int *peos)
 {
     apr_status_t status;
+    
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
     
     if (io->eos_out) {
         *plen = 0;
@@ -169,6 +185,10 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
     apr_status_t status;
     int start_allowed;
     
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
+
     if (io->eos_out) {
         apr_off_t len;
         /* We have already delivered an EOS bucket to a reader, no
@@ -199,9 +219,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
      */
     start_allowed = *pfile_handles_allowed;
 
-    if (io->rst_error) {
-        return APR_ECONNABORTED;
-    }
     status = h2_util_move(io->bbout, bb, maxlen, pfile_handles_allowed, 
                           "h2_io_out_write");
     /* track # file buckets moved into our pool */
@@ -214,6 +231,9 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
 
 apr_status_t h2_io_out_close(h2_io *io)
 {
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
     if (!io->eos_out && !h2_util_has_eos(io->bbout, 0)) {
         APR_BRIGADE_INSERT_TAIL(io->bbout, 
                                 apr_bucket_eos_create(io->bbout->bucket_alloc));
