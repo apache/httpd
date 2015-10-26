@@ -293,21 +293,24 @@ apr_status_t h2_session_process(h2_session *session)
                 break;
             case APR_EAGAIN:              /* non-blocking read, nothing there */
                 break;
-            case APR_EBADF:               /* connection is not there any more */
-            case APR_EOF:
-            case APR_ECONNABORTED:
-            case APR_ECONNRESET:
-            case APR_TIMEUP:                       /* blocked read, timed out */
-                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
-                              "h2_session(%ld): reading",
-                              session->id);
-                h2_session_abort(session, status, 0);
-                break;
             default:
-                ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
-                              APLOGNO(02950) 
-                              "h2_session(%ld): error reading, terminating",
-                              session->id);
+                if (APR_STATUS_IS_ETIMEDOUT(status)
+                    || APR_STATUS_IS_ECONNABORTED(status)
+                    || APR_STATUS_IS_ECONNRESET(status)
+                    || APR_STATUS_IS_EOF(status)
+                    || APR_STATUS_IS_EBADF(status)) {
+                    /* common status for a client that has left */
+                    ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                                  "h2_session(%ld): terminating",
+                                  session->id);
+                }
+                else {
+                    /* uncommon status, log on INFO so that we see this */
+                    ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
+                                  APLOGNO(02950) 
+                                  "h2_session(%ld): error reading, terminating",
+                                  session->id);
+                }
                 h2_session_abort(session, status, 0);
                 break;
         }
