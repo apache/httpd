@@ -5341,8 +5341,15 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
 static int core_upgrade_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
-    const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+    const char *upgrade;
 
+    if (c->master) {
+        /* Not possible to perform an HTTP/1.1 upgrade from a slave
+         * connection. */
+        return DECLINED;
+    }
+    
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
     if (upgrade && *upgrade) {
         const char *conn = apr_table_get(r->headers_in, "Connection");
         if (ap_find_token(r->pool, conn, "upgrade")) {
@@ -5379,12 +5386,13 @@ static int core_upgrade_handler(request_rec *r)
             }
         }
     }
-    else if (!r->connection->keepalives) {
-        /* first request on connection, if we have protocols other
+    else if (!c->keepalives) {
+        /* first request on a master connection, if we have protocols other
          * than the current one enabled here, announce them to the
-         * client */
+         * client. If the client is already talking a protocol with requests
+         * on slave connections, leave it be. */
         const apr_array_header_t *upgrades;
-        ap_get_protocol_upgrades(r->connection, r, NULL, &upgrades);
+        ap_get_protocol_upgrades(c, r, NULL, &upgrades);
         if (upgrades && upgrades->nelts > 0) {
             char *protocols = apr_array_pstrcat(r->pool, upgrades, ',');
             apr_table_setn(r->headers_out, "Upgrade", protocols);
