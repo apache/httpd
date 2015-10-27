@@ -99,7 +99,7 @@ extern "C" {
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
 #define CACHE_CTX_KEY "mod_cache-ctx"
-#define CACHE_SEPARATOR ",   "
+#define CACHE_SEPARATOR ", \t"
 
 /**
  * cache_util.c
