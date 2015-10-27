@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: new directives 'H2TLSWarmUpSize' and 'H2TLSCoolDownSecs'
+     to control TLS record sizes during connection lifetime.
+     
   *) mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
      fields as described in RFC2616. [Christophe Jaillet]
 
