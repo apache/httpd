@@ -58,6 +58,7 @@ struct h2_session {
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
     int aborted;                    /* this session is being aborted */
+    int flush;                      /* if != 0, flush output on next occasion */
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
@@ -147,8 +148,7 @@ apr_status_t h2_session_read(h2_session *session, apr_read_type_e block);
  * a maximum of timeout micro-seconds and return to the caller. If timeout
  * occurred, APR_TIMEUP will be returned.
  */
-apr_status_t h2_session_write(h2_session *session,
-                              apr_interval_time_t timeout);
+apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout);
 
 /* Start submitting the response to a stream request. This is possible
  * once we have all the response headers. */

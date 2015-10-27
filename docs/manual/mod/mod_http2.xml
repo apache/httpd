@@ -383,4 +383,100 @@
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2TLSWarmUpSize</name>
+        <description></description>
+        <syntax>H2TLSWarmUpSize amount</syntax>
+        <default>H2TLSWarmUpSize 1048576</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive sets the number of bytes to be sent in small
+                TLS records (~1300 bytes) until doing maximum sized writes (16k)
+                on https: HTTP/2 connections.
+                This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                Measurements by <a href="https://www.igvita.com">google performance
+                labs</a> show that best performance on TLS connections is reached,
+                if initial record sizes stay below the MTU level, to allow a
+                complete record to fit into an IP packet.
+            </p>
+            <p>
+                While TCP adjust its flow-control and window sizes, longer TLS
+                records can get stuck in queues or get lost and need retransmission.
+                This is of course true for all packets. TLS however needs the 
+                whole record in order to decrypt it. Any missing bytes at the end
+                will stall usage of the received ones.
+            </p>
+            <p>
+                After a sufficient number of bytes have been send successfully,
+                the TCP state of the connection is stable and maximum TLS record
+                sizes (16 KB) can be used for optimal performance.
+            </p>
+            <p>
+                In deployments where servers are reached locally or over reliable
+                connections only, the value might be decreased with 0 disabling
+                any warmup phase alltogether.
+            </p>
+            <p>
+                The following example sets the size to zero, effectively disabling
+                any warmup phase.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2TLSWarmUpSize 0
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+    
+    <directivesynopsis>
+        <name>H2TLSCoolDownSecs</name>
+        <description></description>
+        <syntax>H2TLSCoolDownSecs seconds</syntax>
+        <default>H2TLSCoolDownSecs 1</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive sets the number of seconds of idle time on a TLS
+                connection before the TLS write size falls back to small (~1300 bytes)
+                length.
+                This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                See <directive type="section">H2TLSWarmUpSize</directive> for a
+                description of TLS warmup. H2TLSCoolDownSecs reflects the fact
+                that connections may detoriate over time (and TCP flow adjusts)
+                for idle connections as well. It is beneficial to overall performance
+                to fall back to the pre-warmup phase after a number of seconds that
+                no data has been sent. 
+            </p>
+            <p>
+                In deployments where connections can be considered reliable, this
+                timer can be disabled by setting it to 0. 
+            </p>
+            <p>
+                The following example sets the seconds to zero, effectively disabling
+                any cooldown. Warmed up TLS connections stay on maximum record
+                size.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2TLSCoolDownSecs 0
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+    
 </modulesynopsis>

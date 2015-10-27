@@ -29,7 +29,11 @@ typedef struct {
     int buffer_output;
     int write_size;
     apr_time_t last_write;
-    apr_size_t bytes_written;
+    apr_int64_t bytes_written;
+    
+    apr_time_t tls_cooldown_usecs;
+    apr_int64_t tls_warmup_size;
+    
     
     char *buffer;
     apr_size_t buflen;

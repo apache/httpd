@@ -186,6 +186,20 @@ static int before_frame_send_cb(nghttp2_session *ngh2,
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
+    /* Set the need to flush output when we have added one of the 
+     * following frame types */
+    switch (frame->hd.type) {
+        case NGHTTP2_RST_STREAM:
+        case NGHTTP2_WINDOW_UPDATE:
+        case NGHTTP2_PUSH_PROMISE:
+        case NGHTTP2_PING:
+        case NGHTTP2_GOAWAY:
+            session->flush = 1;
+            break;
+        default:
+            break;
+
+    }
     if (APLOGctrace2(session->c)) {
         char buffer[256];
         frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
@@ -201,9 +215,14 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                             void *userp)
 {
     h2_session *session = (h2_session *)userp;
-    (void)ngh2; (void)frame;
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                  "h2_session(%ld): on_frame_send", session->id);
+    (void)ngh2;
+    if (APLOGctrace2(session->c)) {
+        char buffer[256];
+        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_session(%ld): on_frame_send %s", 
+                      session->id, buffer);
+    }
     return 0;
 }
 
@@ -269,6 +288,9 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
                       "h2_stream(%ld-%d): close error %d",
                       session->id, (int)stream_id, error_code);
     }
+    
+    /* always flush on eos */
+    session->flush = 1;
     
     return 0;
 }
@@ -517,7 +539,6 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     
     return h2_session_status_from_apr_status(status);
 }
-
 
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
@@ -893,6 +914,12 @@ static void update_window(void *ctx, int stream_id, apr_size_t bytes_read)
     nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
 }
 
+static apr_status_t h2_session_flush(h2_session *session) 
+{
+    session->flush = 0;
+    return h2_conn_io_flush(&session->io);
+}
+
 static apr_status_t h2_session_update_windows(h2_session *session)
 {
     return h2_mplx_in_update_windows(session->mplx, update_window, session);
@@ -902,16 +929,12 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
 {
     apr_status_t status = APR_EAGAIN;
     h2_stream *stream = NULL;
-    int flush_output = 0;
     
     AP_DEBUG_ASSERT(session);
     
     /* Check that any pending window updates are sent. */
     status = h2_session_update_windows(session);
-    if (status == APR_SUCCESS) {
-        flush_output = 1;
-    }
-    else if (!APR_STATUS_IS_EAGAIN(status)) {
+    if (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status)) {
         return status;
     }
     
@@ -927,27 +950,24 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
                 status = APR_ECONNABORTED;
             }
         }
-        flush_output = 1;
     }
     
     /* If we have responses ready, submit them now. */
     while (!session->aborted 
            && (stream = h2_mplx_next_submit(session->mplx, session->streams)) != NULL) {
         status = h2_session_handle_response(session, stream);
-        flush_output = 1;
     }
     
     if (!session->aborted && h2_session_resume_streams_with_data(session) > 0) {
-        flush_output = 1;
     }
     
-    if (!session->aborted && !flush_output 
-        && timeout > 0 && !h2_session_want_write(session)) {
+    if (!session->aborted && !session->flush && timeout > 0 
+        && !h2_session_want_write(session)) {
+        h2_session_flush(session);
         status = h2_mplx_out_trywait(session->mplx, timeout, session->iowait);
 
         if (status != APR_TIMEUP
             && h2_session_resume_streams_with_data(session) > 0) {
-            flush_output = 1;
         }
         else {
             /* nothing happened to ongoing streams, do some house-keeping */
@@ -966,11 +986,10 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
                 status = APR_ECONNABORTED;
             }
         }
-        flush_output = 1;
     }
     
-    if (flush_output) {
-        h2_conn_io_flush(&session->io);
+    if (session->flush) {
+        h2_session_flush(session);
     }
     
     return status;
@@ -1015,6 +1034,11 @@ static apr_status_t session_receive(const char *data, apr_size_t len,
 apr_status_t h2_session_read(h2_session *session, apr_read_type_e block)
 {
     AP_DEBUG_ASSERT(session);
+    if (block == APR_BLOCK_READ) {
+        /* before we do a blocking read, make sure that all our output
+         * is send out. Otherwise we might deadlock. */
+        h2_session_flush(session);
+    }
     return h2_conn_io_read(&session->io, block, session_receive, session);
 }
 
