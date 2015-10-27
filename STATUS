@@ -181,6 +181,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x trunk works (needs CHANGES)
      +1 covener
 
+   * mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
+                fields as described in RFC7230. See OWS definition.
+                [Christophe Jaillet, Graham Leggett]
+     trunk patch: http://svn.apache.org/r1710723
+     2.4.x trunk works (modulo CHANGES)
+     +1: jailletc36
+     jailletc36: CHANGES entry could be tweaked to speak about OWS as per RFC7230
+                 instead of RFC2616
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
