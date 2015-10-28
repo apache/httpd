@@ -302,7 +302,7 @@ provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code
 for the <a href="../expr.html">ap_expr Expression Parser</a>.
 The variables can be referenced using the syntax
 ``<code>%{</code><em>varname</em><code>}</code>''. Starting
-with version 2.4.17 one can also use the
+with version 2.4.18 one can also use the
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> style syntax
 ``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
 the function style syntax
