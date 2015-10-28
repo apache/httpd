@@ -21,8 +21,9 @@ struct apr_thread_cond_t;
 struct h2_task;
 
 
-typedef apr_status_t h2_io_data_cb(void *ctx, 
-                                   const char *data, apr_size_t len);
+typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_size_t len);
+
+typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
 
 typedef struct h2_io h2_io;

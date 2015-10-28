@@ -160,7 +160,8 @@ apr_status_t h2_stream_rwrite(h2_stream *stream, request_rec *r)
     return status;
 }
 
-apr_status_t h2_stream_write_eoh(h2_stream *stream, int eos)
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+                                h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(stream);
@@ -176,7 +177,7 @@ apr_status_t h2_stream_write_eoh(h2_stream *stream, int eos)
         status = h2_request_end_headers(stream->request, 
                                         stream->m, stream->task, eos);
         if (status == APR_SUCCESS) {
-            status = h2_mplx_do_task(stream->m, stream->task);
+            status = h2_mplx_do_task(stream->m, stream->task, cmp, ctx);
         }
         if (eos) {
             status = h2_stream_write_eos(stream);

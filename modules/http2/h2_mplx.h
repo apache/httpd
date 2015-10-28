@@ -76,6 +76,8 @@ struct h2_mplx {
     int file_handles_allowed;
 };
 
+
+
 /*******************************************************************************
  * Object lifecycle and information.
  ******************************************************************************/
@@ -144,9 +146,24 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  ******************************************************************************/
 
 /**
- * Perform the task on the given stream.
+ * Schedule a task for execution.
+ * 
+ * @param m the multiplexer
+ * @param task the task to schedule
+ * @param cmp the stream priority compare function
+ * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_do_task(h2_mplx *mplx, struct h2_task *task);
+apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task,
+                            h2_stream_pri_cmp *cmp, void *ctx);
+
+/**
+ * Stream priorities have changed, reschedule pending tasks.
+ * 
+ * @param m the multiplexer
+ * @param cmp the stream priority compare function
+ * @param ctx context data for the compare function
+ */
+apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
 struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
 

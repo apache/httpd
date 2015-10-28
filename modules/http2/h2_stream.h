@@ -88,7 +88,8 @@ apr_status_t h2_stream_write_header(h2_stream *stream,
                                     const char *name, size_t nlen,
                                     const char *value, size_t vlen);
 
-apr_status_t h2_stream_write_eoh(h2_stream *stream, int eos);
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+                                h2_stream_pri_cmp *cmp, void *ctx);
 
 apr_status_t h2_stream_write_data(h2_stream *stream,
                                   const char *data, size_t len);
