@@ -128,7 +128,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
         
         m->bucket_alloc = apr_bucket_alloc_create(m->pool);
         
-        m->q = h2_tq_create(m->id, m->pool);
+        m->q = h2_tq_create(m->pool, 23);
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
         m->closed = h2_stream_set_create(m->pool);
@@ -812,19 +812,60 @@ static void have_out_data_for(h2_mplx *m, int stream_id)
     }
 }
 
-apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task)
+typedef struct {
+    h2_stream_pri_cmp *cmp;
+    void *ctx;
+} cmp_ctx;
+
+static int task_cmp(h2_task *t1, h2_task *t2, void *ctx)
+{
+    cmp_ctx *x = ctx;
+    return x->cmp(t1->stream_id, t2->stream_id, x->ctx);
+}
+
+apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
+    
     AP_DEBUG_ASSERT(m);
     if (m->aborted) {
         return APR_ECONNABORTED;
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        /* TODO: needs to sort queue by priority */
+        cmp_ctx x;
+        
+        x.cmp = cmp;
+        x.ctx = ctx;
+        h2_tq_sort(m->q, task_cmp, &x);
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                      "h2_mplx(%ld): reprioritize tasks", m->id);
+        apr_thread_mutex_unlock(m->lock);
+    }
+    workers_register(m);
+    return status;
+}
+
+apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task,
+                            h2_stream_pri_cmp *cmp, void *ctx)
+{
+    apr_status_t status;
+    
+    AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        cmp_ctx x;
+        
+        x.cmp = cmp;
+        x.ctx = ctx;
+        h2_tq_add(m->q, task, task_cmp, &x);
+        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                       "h2_mplx: do task(%s)", task->id);
-        h2_tq_append(m->q, task);
         apr_thread_mutex_unlock(m->lock);
     }
     workers_register(m);
@@ -842,7 +883,7 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        task = h2_tq_pop_first(m->q);
+        task = h2_tq_shift(m->q);
         if (task) {
             h2_task_set_started(task);
         }

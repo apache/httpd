@@ -45,9 +45,6 @@ struct h2_worker;
 typedef struct h2_task h2_task;
 
 struct h2_task {
-    /** Links to the rest of the tasks */
-    APR_RING_ENTRY(h2_task) link;
-
     const char *id;
     int stream_id;
     struct h2_mplx *mplx;
@@ -90,74 +87,6 @@ struct h2_task_env {
     
     struct apr_thread_cond_t *io;   /* used to wait for events on */
 };
-
-/**
- * The magic pointer value that indicates the head of a h2_task list
- * @param  b The task list
- * @return The magic pointer value
- */
-#define H2_TASK_LIST_SENTINEL(b)	APR_RING_SENTINEL((b), h2_task, link)
-
-/**
- * Determine if the task list is empty
- * @param b The list to check
- * @return true or false
- */
-#define H2_TASK_LIST_EMPTY(b)	APR_RING_EMPTY((b), h2_task, link)
-
-/**
- * Return the first task in a list
- * @param b The list to query
- * @return The first task in the list
- */
-#define H2_TASK_LIST_FIRST(b)	APR_RING_FIRST(b)
-
-/**
- * Return the last task in a list
- * @param b The list to query
- * @return The last task int he list
- */
-#define H2_TASK_LIST_LAST(b)	APR_RING_LAST(b)
-
-/**
- * Insert a single task at the front of a list
- * @param b The list to add to
- * @param e The task to insert
- */
-#define H2_TASK_LIST_INSERT_HEAD(b, e) do {				\
-    h2_task *ap__b = (e);                                        \
-    APR_RING_INSERT_HEAD((b), ap__b, h2_task, link);	\
-} while (0)
-
-/**
- * Insert a single task at the end of a list
- * @param b The list to add to
- * @param e The task to insert
- */
-#define H2_TASK_LIST_INSERT_TAIL(b, e) do {				\
-    h2_task *ap__b = (e);					\
-    APR_RING_INSERT_TAIL((b), ap__b, h2_task, link);	\
-} while (0)
-
-/**
- * Get the next task in the list
- * @param e The current task
- * @return The next task
- */
-#define H2_TASK_NEXT(e)	APR_RING_NEXT((e), link)
-/**
- * Get the previous task in the list
- * @param e The current task
- * @return The previous task
- */
-#define H2_TASK_PREV(e)	APR_RING_PREV((e), link)
-
-/**
- * Remove a task from its list
- * @param e The task to remove
- */
-#define H2_TASK_REMOVE(e)	APR_RING_REMOVE((e), link)
-
 
 h2_task *h2_task_create(long session_id, int stream_id, 
                         apr_pool_t *pool, struct h2_mplx *mplx,

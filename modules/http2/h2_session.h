@@ -59,6 +59,8 @@ struct h2_session {
                                      * of 'h2c', NULL otherwise */
     int aborted;                    /* this session is being aborted */
     int flush;                      /* if != 0, flush output on next occasion */
+    int reprioritize;               /* scheduled streams priority needs to 
+                                     * be re-evaluated */
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */

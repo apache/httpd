@@ -164,8 +164,6 @@ h2_task *h2_task_create(long session_id,
         return NULL;
     }
     
-    APR_RING_ELEM_INIT(task, link);
-
     task->id = apr_psprintf(stream_pool, "%ld-%d", session_id, stream_id);
     task->stream_id = stream_id;
     task->mplx = mplx;

@@ -81,11 +81,64 @@ static int stream_open(h2_session *session, int stream_id)
     return NGHTTP2_ERR_INVALID_STREAM_ID;
 }
 
+/**
+ * Determine the importance of streams when scheduling tasks.
+ * - if both stream depend on the same one, compare weights
+ * - if one stream is closer to the root, prioritize that one
+ * - if both are on the same level, use the weight of their root
+ *   level ancestors
+ */
+static int spri_cmp(int sid1, nghttp2_stream *s1, 
+                    int sid2, nghttp2_stream *s2, h2_session *session)
+{
+    nghttp2_stream *p1, *p2;
+    
+    p1 = nghttp2_stream_get_parent(s1);
+    p2 = nghttp2_stream_get_parent(s2);
+    
+    if (p1 == p2) {
+        int32_t w1, w2;
+        
+        w1 = nghttp2_stream_get_weight(s1);
+        w2 = nghttp2_stream_get_weight(s2);
+        return w2 - w1;
+    }
+    else if (!p1) {
+        /* stream 1 closer to root */
+        return -1;
+    }
+    else if (!p2) {
+        /* stream 2 closer to root */
+        return 1;
+    }
+    return spri_cmp(sid1, p1, sid2, p2, session);
+}
+
+static int stream_pri_cmp(int sid1, int sid2, void *ctx)
+{
+    h2_session *session = ctx;
+    nghttp2_stream *s1, *s2;
+    
+    s1 = nghttp2_session_find_stream(session->ngh2, sid1);
+    s2 = nghttp2_session_find_stream(session->ngh2, sid2);
+
+    if (s1 == s2) {
+        return 0;
+    }
+    else if (!s1) {
+        return 1;
+    }
+    else if (!s2) {
+        return -1;
+    }
+    return spri_cmp(sid1, s1, sid2, s2, session);
+}
+
 static apr_status_t stream_end_headers(h2_session *session,
                                        h2_stream *stream, int eos)
 {
     (void)session;
-    return h2_stream_write_eoh(stream, eos);
+    return h2_stream_schedule(stream, eos, stream_pri_cmp, session);
 }
 
 static apr_status_t send_data(h2_session *session, const char *data, 
@@ -409,6 +462,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             break;
         }
         case NGHTTP2_PRIORITY: {
+            session->reprioritize = 1;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                           "h2_session:  stream(%ld-%d): PRIORITY frame "
                           " weight=%d, dependsOn=%d, exclusive=%d", 
@@ -931,6 +985,10 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
     h2_stream *stream = NULL;
     
     AP_DEBUG_ASSERT(session);
+    
+    if (session->reprioritize) {
+        h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
+    }
     
     /* Check that any pending window updates are sent. */
     status = h2_session_update_windows(session);
