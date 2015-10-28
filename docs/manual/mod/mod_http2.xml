@@ -27,6 +27,7 @@
     <status>Extension</status>
     <sourcefile>mod_http2.c</sourcefile>
     <identifier>http2_module</identifier>
+    <compatibility>Available in version 2.4.17 and later</compatibility>
     
     <summary>
         <p>This module provides HTTP/2 (RFC 7540) support for the Apache
