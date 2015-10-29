@@ -594,6 +594,20 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     return h2_session_status_from_apr_status(status);
 }
 
+static ssize_t on_data_source_read_length_cb(nghttp2_session *session, 
+                                             uint8_t frame_type, int32_t stream_id, 
+                                             int32_t session_remote_window_size, 
+                                             int32_t stream_remote_window_size, 
+                                             uint32_t remote_max_frame_size, 
+                                             void *user_data)
+{
+    /* DATA frames add 9 bytes header plus 1 byte for padlen and additional 
+     * padlen bytes. Keep below TLS maximum record size.
+     * TODO: respect pad bytes when we have that feature.
+     */
+    return (16*1024 - 10);
+}
+
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
 
@@ -618,6 +632,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
+    NGH2_SET_CALLBACK(*pcb, data_source_read_length, on_data_source_read_length_cb);
     
     return APR_SUCCESS;
 }
