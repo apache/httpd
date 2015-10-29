@@ -64,6 +64,36 @@ static char *(*opt_ssl_var_lookup)(apr_pool_t *, server_rec *,
                                    conn_rec *, request_rec *,
                                    char *);
 
+
+/*******************************************************************************
+ * HTTP/2 error stuff
+ */
+static const char *h2_err_descr[] = {
+    "no error",                    /* 0x0 */
+    "protocol error",
+    "internal error",
+    "flow control error",
+    "settings timeout",
+    "stream closed",               /* 0x5 */
+    "frame size error",
+    "refused stream",
+    "cancel",
+    "compression error",
+    "connect error",               /* 0xa */
+    "enhance your calm",
+    "inadequate security",
+    "http/1.1 required",
+};
+
+const char *h2_h2_err_description(int h2_error)
+{
+    if (h2_error >= 0 
+        && h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
+        return h2_err_descr[h2_error];
+    }
+    return "unknown http/2 errotr code";
+}
+
 /*******************************************************************************
  * Check connection security requirements of RFC 7540
  */

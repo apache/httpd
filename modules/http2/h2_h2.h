@@ -49,6 +49,13 @@ extern const char *H2_MAGIC_TOKEN;
 #define H2_ERR_INADEQUATE_SECURITY  (0x0c)
 #define H2_ERR_HTTP_1_1_REQUIRED    (0x0d)
 
+/**
+ * Provide a user readable description of the HTTP/2 error code-
+ * @param h2_error http/2 error code, as in rfc 7540, ch. 7
+ * @return textual description of code or that it is unknown.
+ */
+const char *h2_h2_err_description(int h2_error);
+
 /*
  * One time, post config intialization.
  */

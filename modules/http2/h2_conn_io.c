@@ -190,7 +190,7 @@ apr_status_t h2_conn_io_read(h2_conn_io *io,
     return status;
 }
 
-static apr_status_t flush_out(apr_bucket_brigade *bb, void *ctx) 
+static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx) 
 {
     h2_conn_io *io = (h2_conn_io*)ctx;
     apr_status_t status;
@@ -274,7 +274,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
             apr_size_t avail = io->bufsize - io->buflen;
             if (avail <= 0) {
                 bucketeer_buffer(io);
-                status = flush_out(io->output, io);
+                status = pass_out(io->output, io);
                 io->buflen = 0;
             }
             else if (length > avail) {
@@ -293,7 +293,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         
     }
     else {
-        status = apr_brigade_write(io->output, flush_out, io, buf, length);
+        status = apr_brigade_write(io->output, pass_out, io, buf, length);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
                           "h2_conn_io: write error");
@@ -315,8 +315,11 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
             bucketeer_buffer(io);
             io->buflen = 0;
         }
+        
+        APR_BRIGADE_INSERT_TAIL(io->output,
+                                apr_bucket_flush_create(io->output->bucket_alloc));
         /* Send it out */
-        status = flush_out(io->output, io);
+        status = pass_out(io->output, io);
         
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
