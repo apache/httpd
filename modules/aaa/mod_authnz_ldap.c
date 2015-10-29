@@ -664,6 +664,21 @@ static int authz_ldap_check_user_access(request_rec *r)
         req->user = r->user;
     }
 
+    /* add environment variables */
+    if (sec->attributes && vals) {
+        apr_table_t *e = r->subprocess_env;
+        int i = 0;
+        while (sec->attributes[i]) {
+            char *str = apr_pstrcat(r->pool, AUTHN_PREFIX, sec->attributes[i], NULL);
+            int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
+            while (str[j]) {
+                str[j] = apr_toupper(str[j]);
+                j++;
+            }
+            apr_table_setn(e, str, vals[i]);
+        }
+    }
+
     /* Loop through the requirements array until there's no elements
      * left, or something causes a return from inside the loop */
     for(x=0; x < reqs_arr->nelts; x++) {
