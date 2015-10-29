@@ -19,17 +19,31 @@
 struct h2_task;
 
 /**
- * A simple ring of rings that keeps a list of h2_tasks and can
- * be ringed itself, using the APR RING macros.
+ * h2_task_queue keeps a list of sorted h2_task* in ascending order.
  */
 typedef struct h2_task_queue h2_task_queue;
 
 struct h2_task_queue {
-    apr_pool_t *pool;
     struct h2_task **elts;
+    int head;
     int nelts;
     int nalloc;
+    apr_pool_t *pool;
 };
+
+/**
+ * Comparator for two task to determine their order.
+ *
+ * @param t1 task to compare
+ * @param t2 task to compare
+ * @param ctx provided user data
+ * @return value is the same as for strcmp() and has the effect:
+ *    == 0: t1 and t2 are treated equal in ordering
+ *     < 0: t1 should be sorted before t2
+ *     > 0: t2 should be sorted before t1
+ */
+typedef int h2_tq_cmp(struct h2_task *t1, struct h2_task *t2, void *ctx);
+
 
 /**
  * Allocate a new queue from the pool and initialize.
@@ -39,53 +53,38 @@ struct h2_task_queue {
 h2_task_queue *h2_tq_create(apr_pool_t *pool, int capacity);
 
 /**
- * Release all queue tasks.
- * @param q the queue to destroy
- */
-void h2_tq_destroy(h2_task_queue *q);
-
-/**
  * Return != 0 iff there are no tasks in the queue.
  * @param q the queue to check
  */
 int h2_tq_empty(h2_task_queue *q);
 
-typedef int h2_tq_cmp(struct h2_task *t1, struct h2_task *t2, void *ctx);
-
 /**
- * Add the task to the sorted queue. For optimiztation, it is assumed
- * that the order of the existing tasks has not changed.
+ * Add the task to the queue. 
  *
  * @param q the queue to append the task to
  * @param task the task to add
- * @param cmp the compare function for sorting
- * @param ctx user data for the compare function 
+ * @param cmp the comparator for sorting
+ * @param ctx user data for comparator 
  */
 void h2_tq_add(h2_task_queue *q, struct h2_task *task,
                h2_tq_cmp *cmp, void *ctx);
 
 /**
- * Sort the tasks queue again. Useful to call if the task order
+ * Sort the tasks queue again. Call if the task ordering
  * has changed.
  *
  * @param q the queue to sort
- * @param cmp the compare function for sorting
- * @param ctx user data for the compare function 
+ * @param cmp the comparator for sorting
+ * @param ctx user data for the comparator 
  */
 void h2_tq_sort(h2_task_queue *q, h2_tq_cmp *cmp, void *ctx);
 
 /**
- * Remove a task from the queue. Return APR_SUCCESS if the task
- * was indeed queued, APR_NOTFOUND otherwise.
- * @param q the queue to remove from
- * @param task the task to remove
- */
-apr_status_t h2_tq_remove(h2_task_queue *q, struct h2_task *task);
-
-/**
  * Get the first task from the queue or NULL if the queue is empty. 
  * The task will be removed.
+ *
  * @param q the queue to get the first task from
+ * @return the first task of the queue, NULL if empty
  */
 h2_task *h2_tq_shift(h2_task_queue *q);
 

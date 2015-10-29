@@ -313,7 +313,7 @@ static apr_status_t stream_destroy(h2_session *session,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): closing with err=%d %s", 
                       session->id, (int)stream->id, (int)error_code,
-                      nghttp2_strerror(error_code));
+                      h2_h2_err_description(error_code));
         h2_stream_rst(stream, error_code);
     }
     
@@ -988,6 +988,7 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
     
     if (session->reprioritize) {
         h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
+        session->reprioritize = 0;
     }
     
     /* Check that any pending window updates are sent. */
