@@ -28,16 +28,21 @@
 #include "h2_h2.h"
 #include "h2_util.h"
 
-#define WRITE_BUFFER_SIZE     (128*1024)
+#define TLS_DATA_MAX          (16*1024) 
+
 /* Calculated like this: assuming MTU 1500 bytes
  * 1500 - 40 (IP) - 20 (TCP) - 40 (TCP options) 
  *      - TLS overhead (60-100) 
  * ~= 1300 bytes */
 #define WRITE_SIZE_INITIAL    1300
-/* Calculated like this: max TLS record size
- * 16*1024
- *      - TLS overhead (60-100) */
-#define WRITE_SIZE_MAX        (16*1024 - 100) 
+/* Calculated like this: max TLS record size 16*1024
+ *   - 40 (IP) - 20 (TCP) - 40 (TCP options) 
+ *    - TLS overhead (60-100) 
+ * which seems to create less TCP packets overall
+ */
+#define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
+
+#define WRITE_BUFFER_SIZE     (8*WRITE_SIZE_MAX)
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
 {
