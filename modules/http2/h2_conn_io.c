@@ -52,28 +52,9 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
     io->input              = apr_brigade_create(c->pool, c->bucket_alloc);
     io->output             = apr_brigade_create(c->pool, c->bucket_alloc);
     io->buflen             = 0;
-    /* That is where we start with, 
-     * see https://issues.apache.org/jira/browse/TS-2503 */
-    io->tls_warmup_size    = h2_config_geti64(cfg, H2_CONF_TLS_WARMUP_SIZE);
-    io->tls_cooldown_usecs = (h2_config_geti(cfg, H2_CONF_TLS_COOLDOWN_SECS) 
-                              * APR_USEC_PER_SEC);
-    io->write_size         = WRITE_SIZE_INITIAL; 
-    io->last_write         = 0;
-    io->buffer_output      = h2_h2_is_tls(c);
-
-    if (APLOGctrace1(c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
-                      "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, cd_secs=%f",
-                      io->connection->id, io->buffer_output, (long)io->tls_warmup_size,
-                      ((float)io->tls_cooldown_usecs/APR_USEC_PER_SEC));
-    }
-    /* Currently we buffer only for TLS output. The reason this gives
-     * improved performance is that buckets send to the mod_ssl network
-     * filter will be encrypted in chunks. There is a special filter
-     * that tries to aggregate data, but that does not work well when
-     * bucket sizes alternate between tiny frame headers and large data
-     * chunks.
-     */
+    io->is_tls             = h2_h2_is_tls(c);
+    io->buffer_output      = io->is_tls;
+    
     if (io->buffer_output) {
         io->bufsize = WRITE_BUFFER_SIZE;
         io->buffer = apr_pcalloc(c->pool, io->bufsize);
@@ -82,6 +63,27 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
         io->bufsize = 0;
     }
     
+    if (io->is_tls) {
+        /* That is where we start with, 
+         * see https://issues.apache.org/jira/browse/TS-2503 */
+        io->warmup_size    = h2_config_geti64(cfg, H2_CONF_TLS_WARMUP_SIZE);
+        io->cooldown_usecs = (h2_config_geti(cfg, H2_CONF_TLS_COOLDOWN_SECS) 
+                              * APR_USEC_PER_SEC);
+        io->write_size     = WRITE_SIZE_INITIAL; 
+    }
+    else {
+        io->warmup_size    = 0;
+        io->cooldown_usecs = 0;
+        io->write_size     = io->bufsize;
+    }
+
+    if (APLOGctrace1(c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
+                      "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, cd_secs=%f",
+                      io->connection->id, io->buffer_output, (long)io->warmup_size,
+                      ((float)io->cooldown_usecs/APR_USEC_PER_SEC));
+    }
+
     return APR_SUCCESS;
 }
 
@@ -89,6 +91,11 @@ void h2_conn_io_destroy(h2_conn_io *io)
 {
     io->input = NULL;
     io->output = NULL;
+}
+
+int h2_conn_io_is_buffered(h2_conn_io *io)
+{
+    return io->bufsize > 0;
 }
 
 static apr_status_t h2_conn_io_bucket_read(h2_conn_io *io,
@@ -206,10 +213,10 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
     }
     
     ap_update_child_status(io->connection->sbh, SERVER_BUSY_WRITE, NULL);
-    status = apr_brigade_length(bb, 1, &bblen);
+    status = apr_brigade_length(bb, 0, &bblen);
     if (status == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
-                      "h2_conn_io(%ld): flush, brigade %ld bytes",
+                      "h2_conn_io(%ld): pass_out brigade %ld bytes",
                       io->connection->id, (long)bblen);
         status = ap_pass_brigade(io->connection->output_filters, bb);
         if (status == APR_SUCCESS) {
@@ -231,8 +238,8 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io) {
     int bcount, i;
 
     if (io->write_size > WRITE_SIZE_INITIAL 
-        && (io->tls_cooldown_usecs > 0)
-        && (apr_time_now() - io->last_write) >= io->tls_cooldown_usecs) {
+        && (io->cooldown_usecs > 0)
+        && (apr_time_now() - io->last_write) >= io->cooldown_usecs) {
         /* long time not written, reset write size */
         io->write_size = WRITE_SIZE_INITIAL;
         io->bytes_written = 0;
@@ -241,7 +248,7 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io) {
                       (long)io->connection->id, (long)io->write_size);
     }
     else if (io->write_size < WRITE_SIZE_MAX 
-             && io->bytes_written >= io->tls_warmup_size) {
+             && io->bytes_written >= io->warmup_size) {
         /* connection is hot, use max size */
         io->write_size = WRITE_SIZE_MAX;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->connection,
@@ -272,7 +279,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     apr_status_t status = APR_SUCCESS;
     io->unflushed = 1;
     
-    if (io->buffer_output) {
+    if (io->bufsize > 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
                       "h2_conn_io: buffering %ld bytes", (long)length);
         while (length > 0 && (status == APR_SUCCESS)) {
@@ -297,12 +304,20 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         }
         
     }
+    else if (1) {
+        apr_bucket *b;
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
+                      "h2_conn_io: passing %ld transient bytes to output filters", 
+                      (long)length);
+        b = apr_bucket_transient_create(buf,length, io->output->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(io->output, b);
+        status = pass_out(io->output, io);
+    }
     else {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
+                      "h2_conn_io: writing %ld bytes to brigade", (long)length);
         status = apr_brigade_write(io->output, pass_out, io, buf, length);
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
-                          "h2_conn_io: write error");
-        }
     }
     
     return status;

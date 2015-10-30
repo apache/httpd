@@ -59,6 +59,7 @@ struct h2_stream {
     
     int aborted;                /* was aborted */
     int suspended;              /* DATA sending has been suspended */
+    apr_size_t data_frames_sent;/* # of DATA frames sent out for this stream */
     
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
