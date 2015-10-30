@@ -26,15 +26,16 @@ typedef struct {
     conn_rec *connection;
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
-    int buffer_output;
+
+    int is_tls;
+    apr_time_t cooldown_usecs;
+    apr_int64_t warmup_size;
+    
     int write_size;
     apr_time_t last_write;
     apr_int64_t bytes_written;
     
-    apr_time_t tls_cooldown_usecs;
-    apr_int64_t tls_warmup_size;
-    
-    
+    int buffer_output;
     char *buffer;
     apr_size_t buflen;
     apr_size_t bufsize;
@@ -42,7 +43,10 @@ typedef struct {
 } h2_conn_io;
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c);
+
 void h2_conn_io_destroy(h2_conn_io *io);
+
+int h2_conn_io_is_buffered(h2_conn_io *io);
 
 typedef apr_status_t (*h2_conn_io_on_read_cb)(const char *data, apr_size_t len,
                                          apr_size_t *readlen, int *done,

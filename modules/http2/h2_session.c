@@ -249,6 +249,8 @@ static int before_frame_send_cb(nghttp2_session *ngh2,
         case NGHTTP2_GOAWAY:
             session->flush = 1;
             break;
+        case NGHTTP2_DATA:
+            
         default:
             break;
 
@@ -557,6 +559,10 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                  "h2_stream(%ld-%d): send_data_cb for %ld bytes",
+                  session->id, (int)stream_id, (long)length);
+                  
     status = send_data(session, (const char *)framehd, 9);
     if (status == APR_SUCCESS) {
         if (padlen) {
@@ -1124,6 +1130,27 @@ apr_status_t h2_session_close(h2_session *session)
 
 /* The session wants to send more DATA for the given stream.
  */
+ 
+typedef struct {
+    char *buf;
+    size_t offset;
+    h2_session *session;
+    h2_stream *stream;
+} cpy_ctx;
+
+static apr_status_t copy_buffer(void *ctx, const char *data, apr_size_t len)
+{
+    cpy_ctx *c = ctx;
+    
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c->session->c,
+                  "h2_stream(%ld-%d): copy %ld bytes for DATA #%ld",
+                  c->session->id, c->stream->id, 
+                  (long)c->stream->data_frames_sent, (long)len);
+    memcpy(c->buf + c->offset, data, len);
+    c->offset += len;
+    return APR_SUCCESS;
+}
+
 static ssize_t stream_data_cb(nghttp2_session *ng2s,
                               int32_t stream_id,
                               uint8_t *buf,
@@ -1153,9 +1180,25 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     
     AP_DEBUG_ASSERT(!h2_stream_is_suspended(stream));
     
-    status = h2_stream_prep_read(stream, &nread, &eos);
-    if (nread) {
-        *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
+    if (h2_conn_io_is_buffered(&session->io)) {
+        status = h2_stream_prep_read(stream, &nread, &eos);
+        if (nread) {
+            *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
+        }
+    }
+    else {
+        cpy_ctx ctx;
+        ctx.buf = (char *)buf;
+        ctx.offset = 0;
+        ctx.session = session;
+        ctx.stream = stream;
+        
+        status = h2_stream_readx(stream, copy_buffer, &ctx, &nread, &eos);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c,
+                      "h2_stream(%ld-%d): read %ld bytes (DATA #%ld)",
+                      session->id, (int)stream_id, (long)nread, 
+                      (long)stream->data_frames_sent);
+        stream->data_frames_sent++;
     }
     
     switch (status) {
