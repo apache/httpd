@@ -57,7 +57,7 @@
 #include "mod_auth.h"
 
 typedef struct anon_auth_user {
-    char *user;
+    const char *user;
     struct anon_auth_user *next;
 } anon_auth_user;
 
@@ -103,7 +103,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
         else {
             first = conf->users;
             conf->users = apr_palloc(cmd->pool, sizeof(*conf->users));
-            conf->users->user = apr_pstrdup(cmd->pool, arg);
+            conf->users->user = arg;
             conf->users->next = first;
         }
     }
