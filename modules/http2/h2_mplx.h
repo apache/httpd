@@ -240,6 +240,14 @@ apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id,
                                apr_size_t *plen, int *peos);
 
 /**
+ * Reads output data into the given brigade. Will never block, but
+ * return APR_EAGAIN until data arrives or the stream is closed.
+ */
+apr_status_t h2_mplx_out_read_to(h2_mplx *mplx, int stream_id, 
+                                 apr_bucket_brigade *bb, 
+                                 apr_size_t *plen, int *peos);
+
+/**
  * Opens the output for the given stream with the specified response.
  */
 apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,

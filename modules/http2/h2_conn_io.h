@@ -60,6 +60,9 @@ apr_status_t h2_conn_io_read(h2_conn_io *io,
 apr_status_t h2_conn_io_write(h2_conn_io *io,
                          const char *buf,
                          size_t length);
+                         
+apr_status_t h2_conn_io_append(h2_conn_io *io, apr_bucket *b);
+apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
 

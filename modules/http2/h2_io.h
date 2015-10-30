@@ -120,6 +120,10 @@ apr_status_t h2_io_out_readx(h2_io *io,
                              h2_io_data_cb *cb, void *ctx, 
                              apr_size_t *plen, int *peos);
 
+apr_status_t h2_io_out_read_to(h2_io *io, 
+                               apr_bucket_brigade *bb, 
+                               apr_size_t *plen, int *peos);
+
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, int *pfile_buckets_allowed);
 

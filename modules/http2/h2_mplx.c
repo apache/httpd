@@ -493,6 +493,36 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
     return status;
 }
 
+apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
+                                 apr_bucket_brigade *bb, 
+                                 apr_size_t *plen, int *peos)
+{
+    apr_status_t status;
+    AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
+        if (io) {
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
+            
+            status = h2_io_out_read_to(io, bb, plen, peos);
+            
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
+            if (status == APR_SUCCESS && io->output_drained) {
+                apr_thread_cond_signal(io->output_drained);
+            }
+        }
+        else {
+            status = APR_ECONNABORTED;
+        }
+        apr_thread_mutex_unlock(m->lock);
+    }
+    return status;
+}
+
 h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
 {
     apr_status_t status;

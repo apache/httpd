@@ -101,8 +101,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     
     apr_brigade_length(bb, 1, &start_len);
     last = APR_BRIGADE_LAST(bb);
-    status = h2_util_move(bb, io->bbin, maxlen, 0, 
-                                       "h2_io_in_read");
+    status = h2_util_move(bb, io->bbin, maxlen, NULL, "h2_io_in_read");
     if (status == APR_SUCCESS) {
         apr_bucket *nlast = APR_BRIGADE_LAST(bb);
         apr_off_t end_len = 0;
@@ -130,7 +129,7 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
             io->bbin = apr_brigade_create(io->bbout->p, 
                                           io->bbout->bucket_alloc);
         }
-        return h2_util_move(io->bbin, bb, 0, 0, "h2_io_in_write");
+        return h2_util_move(io->bbin, bb, 0, NULL, "h2_io_in_write");
     }
     return APR_SUCCESS;
 }
@@ -177,6 +176,24 @@ apr_status_t h2_io_out_readx(h2_io *io,
     }
     
     return status;
+}
+
+apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb, 
+                               apr_size_t *plen, int *peos)
+{
+    if (io->rst_error) {
+        return APR_ECONNABORTED;
+    }
+    
+    if (io->eos_out) {
+        *plen = 0;
+        *peos = 1;
+        return APR_SUCCESS;
+    }
+    
+
+    io->eos_out = *peos = h2_util_has_eos(io->bbout, *plen);
+    return h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
 }
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 

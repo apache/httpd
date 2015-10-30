@@ -323,6 +323,16 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     return status;
 }
 
+apr_status_t h2_conn_io_append(h2_conn_io *io, apr_bucket *b)
+{
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    return APR_SUCCESS;
+}
+
+apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
+{
+    return h2_util_move(io->output, bb, 0, NULL, "h2_conn_io_pass");
+}
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {

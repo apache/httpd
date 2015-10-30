@@ -108,12 +108,15 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
     
     stream->response = response;
     if (bb && !APR_BRIGADE_EMPTY(bb)) {
+        int move_all = INT_MAX;
         if (!stream->bbout) {
             stream->bbout = apr_brigade_create(stream->pool, 
                                                stream->m->c->bucket_alloc);
         }
-        /* TODO: this does not move complete file buckets.*/
-        status = h2_util_move(stream->bbout, bb, 16 * 1024, NULL,  
+        /* we can move file handles from h2_mplx into this h2_stream as many
+         * as we want, since the lifetimes are the same and we are not freeing
+         * the ones in h2_mplx->io before this stream is done. */
+        status = h2_util_move(stream->bbout, bb, 16 * 1024, &move_all,  
                               "h2_stream_set_response");
     }
     if (APLOGctrace1(stream->m->c)) {
@@ -307,6 +310,28 @@ apr_status_t h2_stream_readx(h2_stream *stream,
     return status;
 }
 
+apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
+                               apr_size_t *plen, int *peos)
+{
+    apr_status_t status = APR_SUCCESS;
+
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
+    if (stream->bbout && !APR_BRIGADE_EMPTY(stream->bbout)) {
+        status = h2_transfer_brigade(bb, stream->bbout, bb->p, plen, peos);
+    }
+    else {
+        status = h2_mplx_out_read_to(stream->m, stream->id, bb, plen, peos);
+    }
+    if (status == APR_SUCCESS && !*peos && !*plen) {
+        status = APR_EAGAIN;
+    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->m->c,
+                  "h2_stream(%ld-%d): read_to, len=%ld eos=%d",
+                  stream->m->id, stream->id, (long)*plen, *peos);
+    return status;
+}
 
 void h2_stream_set_suspended(h2_stream *stream, int suspended)
 {
