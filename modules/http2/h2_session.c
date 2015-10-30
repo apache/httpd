@@ -141,9 +141,6 @@ static apr_status_t stream_end_headers(h2_session *session,
     return h2_stream_schedule(stream, eos, stream_pri_cmp, session);
 }
 
-static apr_status_t send_data(h2_session *session, const char *data, 
-                              apr_size_t length);
-
 /*
  * Callback when nghttp2 wants to send bytes back to the client.
  */
@@ -152,10 +149,11 @@ static ssize_t send_cb(nghttp2_session *ngh2,
                        int flags, void *userp)
 {
     h2_session *session = (h2_session *)userp;
-    apr_status_t status = send_data(session, (const char *)data, length);
+    apr_status_t status;
     
     (void)ngh2;
     (void)flags;
+    status = h2_conn_io_write(&session->io, (const char *)data, length);
     if (status == APR_SUCCESS) {
         return length;
     }
@@ -518,17 +516,13 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     return 0;
 }
 
-static apr_status_t send_data(h2_session *session, const char *data, 
-                              apr_size_t length)
-{
-    return h2_conn_io_write(&session->io, data, length);
-}
-
 static apr_status_t pass_data(void *ctx, 
                               const char *data, apr_size_t length)
 {
-    return send_data((h2_session*)ctx, data, length);
+    return h2_conn_io_write(&((h2_session*)ctx)->io, data, length);
 }
+
+static char immortal_zeros[256];
 
 static int on_send_data_cb(nghttp2_session *ngh2, 
                            nghttp2_frame *frame, 
@@ -563,29 +557,58 @@ static int on_send_data_cb(nghttp2_session *ngh2,
                   "h2_stream(%ld-%d): send_data_cb for %ld bytes",
                   session->id, (int)stream_id, (long)length);
                   
-    status = send_data(session, (const char *)framehd, 9);
-    if (status == APR_SUCCESS) {
-        if (padlen) {
-            status = send_data(session, (const char *)&padlen, 1);
+    if (h2_conn_io_is_buffered(&session->io)) {
+        status = h2_conn_io_write(&session->io, (const char *)framehd, 9);
+        if (status == APR_SUCCESS) {
+            if (padlen) {
+                status = h2_conn_io_write(&session->io, (const char *)&padlen, 1);
+            }
+            
+            if (status == APR_SUCCESS) {
+                apr_size_t len = length;
+                status = h2_stream_readx(stream, pass_data, session, 
+                                         &len, &eos);
+                if (status == APR_SUCCESS && len != length) {
+                    status = APR_EINVAL;
+                }
+            }
+            
+            if (status == APR_SUCCESS && padlen) {
+                if (padlen) {
+                    char pad[256];
+                    memset(pad, 0, padlen);
+                    status = h2_conn_io_write(&session->io, pad, padlen);
+                }
+            }
         }
-
+    }
+    else {
+        apr_bucket *b;
+        char *header = apr_pcalloc(stream->pool, 10);
+        memcpy(header, (const char *)framehd, 9);
+        if (padlen) {
+            header[9] = (char)padlen;
+        }
+        b = apr_bucket_pool_create(header, padlen? 10 : 9, 
+                                   stream->pool, session->c->bucket_alloc);
+        status = h2_conn_io_append(&session->io, b);
+        
         if (status == APR_SUCCESS) {
             apr_size_t len = length;
-            status = h2_stream_readx(stream, pass_data, session, 
-                                     &len, &eos);
+            status = h2_stream_read_to(stream, session->io.output, &len, &eos);
+            session->io.unflushed = 1;
             if (status == APR_SUCCESS && len != length) {
                 status = APR_EINVAL;
             }
         }
-        
+            
         if (status == APR_SUCCESS && padlen) {
-            if (padlen) {
-                char pad[256];
-                memset(pad, 0, padlen);
-                status = send_data(session, pad, padlen);
-            }
+            b = apr_bucket_immortal_create(immortal_zeros, padlen, 
+                                           session->c->bucket_alloc);
+            status = h2_conn_io_append(&session->io, b);
         }
     }
+    
     
     if (status == APR_SUCCESS) {
         return 0;
@@ -1145,7 +1168,7 @@ static apr_status_t copy_buffer(void *ctx, const char *data, apr_size_t len)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c->session->c,
                   "h2_stream(%ld-%d): copy %ld bytes for DATA #%ld",
                   c->session->id, c->stream->id, 
-                  (long)c->stream->data_frames_sent, (long)len);
+                  (long)len, (long)c->stream->data_frames_sent);
     memcpy(c->buf + c->offset, data, len);
     c->offset += len;
     return APR_SUCCESS;
@@ -1180,7 +1203,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     
     AP_DEBUG_ASSERT(!h2_stream_is_suspended(stream));
     
-    if (h2_conn_io_is_buffered(&session->io)) {
+    if (1 || h2_conn_io_is_buffered(&session->io)) {
         status = h2_stream_prep_read(stream, &nread, &eos);
         if (nread) {
             *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
