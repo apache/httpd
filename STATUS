@@ -190,6 +190,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: CHANGES entry could be tweaked to speak about OWS as per RFC7230
                  instead of RFC2616
 
+   * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
+          its parameter when starting httpd as single process (httpd -X).
+     trunk patch: http://svn.apache.org/r1711479
+     2.4.x patch: trunk works
+     +1: jkaluza
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
