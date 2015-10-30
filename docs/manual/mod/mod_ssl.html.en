@@ -1270,7 +1270,7 @@ The available <em>option</em>s are:</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
-&lt;Files&gt;</pre>
+&lt;/Files&gt;</pre>
 </div>
 
 </div>
