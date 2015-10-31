@@ -122,33 +122,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-   * mod_journald: Add new module mod_journald to log error logs into journald.
-                   This patch needs changes done in mod_systemd patch (already
-                   proposed for 2.4.x).
-     trunk patch: http://svn.apache.org/r1610339
-                  http://svn.apache.org/r1621806
-     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
-     +1: jkaluza, jim
-     rjung, minfrin: Not understanding "This patch needs changes done in
-                     mod_systemd patch", am I right in understanding this patch is
-                     already committed?
-     jkaluza: No, that patch is not committed yet. It is in STALLED section.
-              The link for that patch is: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
-
-  *) http: Don't remove the Content-Length of zero from a HEAD response if
-     it comes from an origin server, module or script. Allow the previous
-     behaviour (for legacy/buggy modules only, not origin) by also backporting
-     the HttpContentLengthHeadZero directive (and also HttpExpectStrict which
-     comes for free with the same commit).
-     trunk patch: http://svn.apache.org/r1554303
-                  http://svn.apache.org/r1678215
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch
-     +1: ylavic, jim
-     ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
-             ints added at the end of core_server_config, the proposed merge
-             does a minor bump only.
-     minfrin: Two new directives need to be documented.
-
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. Limit Redirect expressions to directory (Location) context
      and redirect statuses (implicit or explicit).
@@ -178,16 +151,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1710380
                   http://svn.apache.org/r1710391
      2.4.x trunk works (needs CHANGES)
-     +1 covener
+     +1 covener, ylavic
 
    * mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
                 fields as described in RFC7230. See OWS definition.
                 [Christophe Jaillet, Graham Leggett]
      trunk patch: http://svn.apache.org/r1710723
      2.4.x trunk works (modulo CHANGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
      jailletc36: CHANGES entry could be tweaked to speak about OWS as per RFC7230
                  instead of RFC2616
+     ylavic: simple s/RFC2616/RFC7230/ in CHANGES entry would be fine IMO.
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
           its parameter when starting httpd as single process (httpd -X).
@@ -204,6 +178,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+
+  *) http: Don't remove the Content-Length of zero from a HEAD response if
+     it comes from an origin server, module or script. Allow the previous
+     behaviour (for legacy/buggy modules only, not origin) by also backporting
+     the HttpContentLengthHeadZero directive (and also HttpExpectStrict which
+     comes for free with the same commit).
+     trunk patch: http://svn.apache.org/r1554303
+                  http://svn.apache.org/r1678215
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-preserve_head_cl_zero.patch
+     +1: ylavic, jim
+     ylavic: r1554303 issued a major MMN bump, but since the ABI change is two
+             ints added at the end of core_server_config, the proposed merge
+             does a minor bump only.
+     minfrin: Two new directives need to be documented.
 
    * mod_proxy_http: Don't establish or reuse a backend connection before pre-
      fetching the request body, so to minimize the delay between it is supposed
@@ -283,6 +271,19 @@ PATCHES/ISSUES THAT ARE STALLED
                   http://svn.apache.org/r1618588
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
      +1: jkaluza
+
+   * mod_journald: Add new module mod_journald to log error logs into journald.
+                   This patch needs changes done in mod_systemd patch (already
+                   proposed for 2.4.x).
+     trunk patch: http://svn.apache.org/r1610339
+                  http://svn.apache.org/r1621806
+     2.4.x patch: http://people.apache.org/~jkaluza/patches/httpd-2.4.x-mod_journald.patch
+     +1: jkaluza, jim
+     rjung, minfrin: Not understanding "This patch needs changes done in
+                     mod_systemd patch", am I right in understanding this patch is
+                     already committed?
+     jkaluza: No, that patch is not committed yet. It is in STALLED section.
+              The link for that patch is: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
 
    * core: Add support for systemd socket activation.
      trunk patch: http://svn.apache.org/r1511033
