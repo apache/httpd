@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
+     alignment (SPARC64, PPC64).  [Yann Ylavic]
+
   *) mod_http2: new directives 'H2TLSWarmUpSize' and 'H2TLSCoolDownSecs'
      to control TLS record sizes during connection lifetime.
      
