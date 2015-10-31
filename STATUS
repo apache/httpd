@@ -119,7 +119,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: fielding, covener, sf
 
 
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -195,6 +194,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1711479
      2.4.x patch: trunk works
      +1: jkaluza
+
+   * core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
+     alignment (SPARC64, PPC64).
+     trunk patch: http://svn.apache.org/r1709008
+                  http://svn.apache.org/r1711648
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
