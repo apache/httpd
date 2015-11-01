@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
+     to only staple responses with certificate status "good". [Kaspar Brand]
+
   *) core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
      alignment (SPARC64, PPC64).  [Yann Ylavic]
 
