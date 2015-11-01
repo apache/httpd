@@ -2422,9 +2422,11 @@ if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> i
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8h or later</td></tr>
 </table>
 <p>When enabled, mod_ssl will pass responses from unsuccessful
-stapling related OCSP queries (such as status errors, expired responses etc.)
-on to the client. If set to <code>off</code>, no stapled responses
-for failed queries will be included in the TLS handshake.</p>
+stapling related OCSP queries (such as responses with an overall status
+other than "successful", responses with a certificate status other than
+"good", expired responses etc.) on to the client.
+If set to <code>off</code>, only responses indicating a certificate status
+of "good" will be included in the TLS handshake.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
