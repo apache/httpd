@@ -176,6 +176,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) core: Limit to ten the number of tolerated empty lines between request,
+     and consume them before the pipelining check to avoid possible response
+     delay when reading the next request without flushing.
+     trunk patch: http://svn.apache.org/r1710095
+                  http://svn.apache.org/r1710105
+                  http://svn.apache.org/r1711902
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-check_pipeline_blank_lines.patch
+                  (trunk works, meant to ease review)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
