@@ -230,91 +230,94 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
 
 static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
 {
+    apr_status_t rv;
+    int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
+    ap_input_mode_t mode = AP_MODE_SPECULATIVE;
+    apr_size_t cr = 0;
+    char buf[2];
+
     c->data_in_input_filters = 0;
-    if (c->keepalive != AP_CONN_CLOSE && !c->aborted) {
-        apr_status_t rv;
-        int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
-        ap_input_mode_t mode = AP_MODE_SPECULATIVE;
-        apr_size_t len, cr = 0;
-        char buf[2];
+    while (c->keepalive != AP_CONN_CLOSE && !c->aborted) {
+        apr_size_t len = cr + 1;
 
-        do {
-            apr_brigade_cleanup(bb);
-            rv = ap_get_brigade(c->input_filters, bb, mode,
-                                APR_NONBLOCK_READ, cr + 1);
-            if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
-                /*
-                 * Error or empty brigade: There is no data present in the input
-                 * filter
-                 */
-                if (mode == AP_MODE_READBYTES) {
-                    /* Unexpected error, stop with this connection */
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(02967)
-                                  "Can't consume pipelined empty lines");
-                    c->keepalive = AP_CONN_CLOSE;
-                }
-                return;
-            }
-
-            /* Ignore trailing blank lines (which must not be interpreted as
-             * pipelined requests) up to the limit, otherwise we would block
-             * on the next read without flushing data, and hence possibly delay
-             * pending response(s) until the next/real request comes in or the
-             * keepalive timeout expires.
+        apr_brigade_cleanup(bb);
+        rv = ap_get_brigade(c->input_filters, bb, mode,
+                            APR_NONBLOCK_READ, len);
+        if (rv != APR_SUCCESS || APR_BRIGADE_EMPTY(bb)) {
+            /*
+             * Error or empty brigade: There is no data present in the input
+             * filter
              */
-            len = cr + 1;
-            rv = apr_brigade_flatten(bb, buf, &len);
-            if (rv != APR_SUCCESS || len != cr + 1) {
-                int level;
-                if (mode == AP_MODE_READBYTES) {
-                    /* Unexpected error, stop with this connection */
-                    c->keepalive = AP_CONN_CLOSE;
-                    level = APLOG_ERR;
-                }
-                else {
-                    /* Let outside (non-speculative/blocking) read determine
-                     * where this possible failure comes from (metadata,
-                     * morphed EOF socket => empty bucket? debug only here).
-                     */
-                    c->data_in_input_filters = 1;
-                    level = APLOG_DEBUG;
-                }
-                ap_log_cerror(APLOG_MARK, level, rv, c, APLOGNO(02968)
-                              "Can't check pipelined data");
-                return;
-            }
-
             if (mode == AP_MODE_READBYTES) {
-                mode = AP_MODE_SPECULATIVE;
-                cr = 0;
-                continue;
+                /* Unexpected error, stop with this connection */
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(02967)
+                              "Can't consume pipelined empty lines");
+                c->keepalive = AP_CONN_CLOSE;
             }
+            break;
+        }
 
-            if (cr) {
-                AP_DEBUG_ASSERT(len == 2 && buf[0] == APR_ASCII_CR);
-                if (buf[1] != APR_ASCII_LF) {
-                    return;
-                }
+        /* Ignore trailing blank lines (which must not be interpreted as
+         * pipelined requests) up to the limit, otherwise we would block
+         * on the next read without flushing data, and hence possibly delay
+         * pending response(s) until the next/real request comes in or the
+         * keepalive timeout expires.
+         */
+        rv = apr_brigade_flatten(bb, buf, &len);
+        if (rv != APR_SUCCESS || len != cr + 1) {
+            int log_level;
+            if (mode == AP_MODE_READBYTES) {
+                /* Unexpected error, stop with this connection */
+                c->keepalive = AP_CONN_CLOSE;
+                log_level = APLOG_ERR;
+            }
+            else {
+                /* Let outside (non-speculative/blocking) read determine
+                 * where this possible failure comes from (metadata,
+                 * morphed EOF socket => empty bucket? debug only here).
+                 */
+                c->data_in_input_filters = 1;
+                log_level = APLOG_DEBUG;
+            }
+            ap_log_cerror(APLOG_MARK, log_level, rv, c, APLOGNO(02968)
+                          "Can't check pipelined data");
+            break;
+        }
+
+        if (mode == AP_MODE_READBYTES) {
+            mode = AP_MODE_SPECULATIVE;
+            cr = 0;
+        }
+        else if (cr) {
+            AP_DEBUG_ASSERT(len == 2 && buf[0] == APR_ASCII_CR);
+            if (buf[1] == APR_ASCII_LF) {
                 mode = AP_MODE_READBYTES;
                 num_blank_lines--;
             }
             else {
-                if (buf[0] == APR_ASCII_CR) {
-                    cr = 1;
-                }
-                else if (buf[0] == APR_ASCII_LF) {
-                    mode = AP_MODE_READBYTES;
-                    num_blank_lines--;
-                }
-                else {
-                    c->data_in_input_filters = 1;
-                    return;
-                }
+                c->data_in_input_filters = 1;
+                break;
             }
-        } while (num_blank_lines >= 0);
-
-        /* Don't recycle this (abused) connection */
-        c->keepalive = AP_CONN_CLOSE;
+        }
+        else {
+            if (buf[0] == APR_ASCII_LF) {
+                mode = AP_MODE_READBYTES;
+                num_blank_lines--;
+            }
+            else if (buf[0] == APR_ASCII_CR) {
+                cr = 1;
+            }
+            else {
+                c->data_in_input_filters = 1;
+                break;
+            }
+        }
+        /* Enough blank lines with this connection?
+         * Stop and don't recycle it.
+         */
+        if (num_blank_lines < 0) {
+            c->keepalive = AP_CONN_CLOSE;
+        }
     }
 }
 
