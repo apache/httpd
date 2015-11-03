@@ -174,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1711902
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-check_pipeline_blank_lines.patch
                   (trunk works, meant to ease review)
-     +1: ylavic
+     +1: ylavic, minfrin
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
