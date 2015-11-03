@@ -87,12 +87,6 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
     return APR_SUCCESS;
 }
 
-void h2_conn_io_destroy(h2_conn_io *io)
-{
-    io->input = NULL;
-    io->output = NULL;
-}
-
 int h2_conn_io_is_buffered(h2_conn_io *io)
 {
     return io->bufsize > 0;
@@ -277,11 +271,17 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                               const char *buf, size_t length)
 {
     apr_status_t status = APR_SUCCESS;
-    io->unflushed = 1;
     
+    io->unflushed = 1;
     if (io->bufsize > 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
                       "h2_conn_io: buffering %ld bytes", (long)length);
+                      
+        if (!APR_BRIGADE_EMPTY(io->output)) {
+            status = h2_conn_io_flush(io);
+            io->unflushed = 1;
+        }
+        
         while (length > 0 && (status == APR_SUCCESS)) {
             apr_size_t avail = io->bufsize - io->buflen;
             if (avail <= 0) {
@@ -304,16 +304,6 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         }
         
     }
-    else if (1) {
-        apr_bucket *b;
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
-                      "h2_conn_io: passing %ld transient bytes to output filters", 
-                      (long)length);
-        b = apr_bucket_transient_create(buf,length, io->output->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(io->output, b);
-        status = pass_out(io->output, io);
-    }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
                       "h2_conn_io: writing %ld bytes to brigade", (long)length);
@@ -323,15 +313,38 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     return status;
 }
 
-apr_status_t h2_conn_io_append(h2_conn_io *io, apr_bucket *b)
+apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
 {
     APR_BRIGADE_INSERT_TAIL(io->output, b);
+    io->unflushed = 1;
     return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
+apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
 {
-    return h2_util_move(io->output, bb, 0, NULL, "h2_conn_io_pass");
+    apr_status_t status = APR_SUCCESS;
+    int flush_now = 0;
+    
+    /* The HTTP/1.1 network output buffer/flush behaviour does not
+     * give optimal performance in the HTTP/2 case, as the pattern of
+     * buckets (data/eor/eos) is different.
+     * As long as we do not have found out the "best" way to deal with
+     * this, force a flush at least every WRITE_BUFFER_SIZE amount
+     * of data which seems to work nicely.
+     */
+    if (io->unflushed) {
+        apr_off_t len = 0;
+        if (!APR_BRIGADE_EMPTY(io->output)) {
+            apr_brigade_length(io->output, 0, &len);
+        }
+        len += io->buflen;
+        flush_now = (len >= WRITE_BUFFER_SIZE);
+    }
+    
+    if (flush_now) {
+        return h2_conn_io_flush(io);
+    }
+    return status;
 }
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io)

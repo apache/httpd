@@ -20,6 +20,8 @@ dnl #  list of module object files
 http2_objs="dnl
 mod_http2.lo dnl
 h2_alt_svc.lo dnl
+h2_bucket_eoc.lo dnl
+h2_bucket_eos.lo dnl
 h2_config.lo dnl
 h2_conn.lo dnl
 h2_conn_io.lo dnl

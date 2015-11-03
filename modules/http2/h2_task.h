@@ -49,9 +49,6 @@ struct h2_task {
     int stream_id;
     struct h2_mplx *mplx;
     
-    volatile apr_uint32_t has_started;
-    volatile apr_uint32_t has_finished;
-    
     const char *method;
     const char *scheme;
     const char *authority;
@@ -59,29 +56,12 @@ struct h2_task {
     apr_table_t *headers;
     int input_eos;
 
-    struct conn_rec *c;
-};
-
-typedef struct h2_task_env h2_task_env;
-
-struct h2_task_env {
-    const char *id;
-    int stream_id;
-    struct h2_mplx *mplx;
-    
-    apr_pool_t *pool;              /* pool for task lifetime things */
-    apr_bucket_alloc_t *bucket_alloc;
-    
-    const char *method;
-    const char *scheme;
-    const char *authority;
-    const char *path;
-    apr_table_t *headers;
-    int input_eos;
-    
     int serialize_headers;
 
-    struct conn_rec c;
+    struct conn_rec *c;
+
+    apr_pool_t *pool;              /* pool for task lifetime things */
+    apr_bucket_alloc_t *bucket_alloc;
     struct h2_task_input *input;
     struct h2_task_output *output;
     
@@ -103,14 +83,7 @@ void h2_task_set_request(h2_task *task,
 
 
 apr_status_t h2_task_do(h2_task *task, struct h2_worker *worker);
-apr_status_t h2_task_process_request(h2_task_env *env);
-
-int h2_task_has_started(h2_task *task);
-void h2_task_set_started(h2_task *task);
-int h2_task_has_finished(h2_task *task);
-void h2_task_set_finished(h2_task *task);
 
 void h2_task_register_hooks(void);
-void h2_task_die(h2_task_env *env, int status, request_rec *r);
 
 #endif /* defined(__mod_h2__h2_task__) */

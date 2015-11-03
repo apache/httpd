@@ -49,6 +49,9 @@ extern const char *H2_MAGIC_TOKEN;
 #define H2_ERR_INADEQUATE_SECURITY  (0x0c)
 #define H2_ERR_HTTP_1_1_REQUIRED    (0x0d)
 
+/* Maximum number of padding bytes in a frame, rfc7540 */
+#define H2_MAX_PADLEN               256
+
 /**
  * Provide a user readable description of the HTTP/2 error code-
  * @param h2_error http/2 error code, as in rfc 7540, ch. 7

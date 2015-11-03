@@ -54,9 +54,7 @@ void h2_stream_set_destroy(h2_stream_set *sp)
 
 static int h2_stream_id_cmp(const void *s1, const void *s2)
 {
-    h2_stream **pstream1 = (h2_stream **)s1;
-    h2_stream **pstream2 = (h2_stream **)s2;
-    return (*pstream1)->id - (*pstream2)->id;
+    return (*((h2_stream **)s1))->id - (*((h2_stream **)s2))->id;
 }
 
 h2_stream *h2_stream_set_get(h2_stream_set *sp, int stream_id)
@@ -101,12 +99,12 @@ apr_status_t h2_stream_set_add(h2_stream_set *sp, h2_stream *stream)
     return APR_SUCCESS;
 }
 
-h2_stream *h2_stream_set_remove(h2_stream_set *sp, h2_stream *stream)
+h2_stream *h2_stream_set_remove(h2_stream_set *sp, int stream_id)
 {
     int i;
     for (i = 0; i < sp->list->nelts; ++i) {
         h2_stream *s = H2_STREAM_IDX(sp->list, i);
-        if (s == stream) {
+        if (s->id == stream_id) {
             int n;
             --sp->list->nelts;
             n = sp->list->nelts - i;

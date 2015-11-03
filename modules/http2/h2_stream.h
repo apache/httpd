@@ -48,6 +48,7 @@ typedef enum {
 struct h2_mplx;
 struct h2_request;
 struct h2_response;
+struct h2_session;
 struct h2_task;
 
 typedef struct h2_stream h2_stream;
@@ -55,27 +56,29 @@ typedef struct h2_stream h2_stream;
 struct h2_stream {
     int id;                     /* http2 stream id */
     h2_stream_state_t state;    /* http/2 state of this stream */
-    struct h2_mplx *m;          /* the multiplexer to work with */
+    struct h2_session *session; /* the session this stream belongs to */
     
     int aborted;                /* was aborted */
     int suspended;              /* DATA sending has been suspended */
-    apr_size_t data_frames_sent;/* # of DATA frames sent out for this stream */
+    int rst_error;              /* stream error for RST_STREAM */
     
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
     
-    struct h2_task *task;       /* task created for this stream */
     struct h2_response *response; /* the response, once ready */
+    
     apr_bucket_brigade *bbout;  /* output DATA */
-    int rst_error;              /* stream error for RST_STREAM */
+    apr_size_t data_frames_sent;/* # of DATA frames sent out for this stream */
 };
 
 
 #define H2_STREAM_RST(s, def)    (s->rst_error? s->rst_error : (def))
 
-h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_mplx *m);
+h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_session *session);
 
 apr_status_t h2_stream_destroy(h2_stream *stream);
+
+void h2_stream_cleanup(h2_stream *stream);
 
 void h2_stream_rst(h2_stream *streamm, int error_code);
 

@@ -44,8 +44,6 @@ typedef struct {
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c);
 
-void h2_conn_io_destroy(h2_conn_io *io);
-
 int h2_conn_io_is_buffered(h2_conn_io *io);
 
 typedef apr_status_t (*h2_conn_io_on_read_cb)(const char *data, apr_size_t len,
@@ -61,8 +59,9 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                          const char *buf,
                          size_t length);
                          
-apr_status_t h2_conn_io_append(h2_conn_io *io, apr_bucket *b);
-apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
+apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b);
+
+apr_status_t h2_conn_io_consider_flush(h2_conn_io *io);
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
 

@@ -35,7 +35,10 @@ struct h2_io {
     int eos_in;
     int task_done;
     int rst_error;
+    int zombie;
     
+    struct h2_task *task;       /* task created for this io */
+
     apr_size_t input_consumed;   /* how many bytes have been read */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
     
