@@ -155,6 +155,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1711479
      2.4.x patch: trunk works
      +1: jkaluza, jim
+     minfrin: Needs extra parens to suppress a warning:
+              prefork.c:1319:16: note: place parentheses around the assignment
+              to silence this warning
 
    * core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
      alignment (SPARC64, PPC64).
