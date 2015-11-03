@@ -465,6 +465,17 @@ typedef unsigned long etag_components_t;
 /* This is the default value used */
 #define ETAG_BACKWARD (ETAG_MTIME | ETAG_SIZE)
 
+/* Generic ON/OFF/UNSET for unsigned int foo :2 */
+#define AP_CORE_CONFIG_OFF   (0)
+#define AP_CORE_CONFIG_ON    (1)
+#define AP_CORE_CONFIG_UNSET (2)
+
+/* Generic merge of flag */
+#define AP_CORE_MERGE_FLAG(field, to, base, over) to->field = \
+               over->field != AP_CORE_CONFIG_UNSET            \
+               ? over->field                                  \
+               : base->field                                   
+
 /**
  * @brief Server Signature Enumeration
  */
@@ -630,6 +641,8 @@ typedef struct {
      * advice
      */
     unsigned int cgi_pass_auth : 2;
+    unsigned int qualify_redirect_url :2;
+
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
