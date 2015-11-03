@@ -111,12 +111,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * httpd.conf.in: Remove commented config regarding DNT because the spec
-     now has CR status (confirming our interpretation) and MS has committed
-     to changing their implementation.  PR 53845
-     trunk patch: http://svn.apache.org/r1707831
-     2.4.x patch: http://people.apache.org/~minfrin/httpd-dnt-2.4.patch
-     +1: fielding, covener, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
