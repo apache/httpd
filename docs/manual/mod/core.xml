@@ -4609,5 +4609,32 @@ hostname or IP address</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>QualifyRedirectURL</name>
+<description>Controls whether the REDIRECT_URL environent variable is 
+             fully qualified</description>
+<syntax>QualifyRedirectURL ON|OFF</syntax>
+<default>QualifyRedirectURL OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Directive supported in 2.4.18 and later. 2.4.17 acted
+as if 'QualifyRedirectURL ON' was configured.</compatibility>
+
+<usage>
+    <p>This directive controls whether the server will ensure that the 
+    REDIRECT_URL environment variable is fully qualified.  By default, 
+    the variable contains the verbatim URL requested by the client, 
+    such as "/index.html".  With <directive module="core"
+    >QualifyRedirectURL ON</directive>, the same request would result in a
+    value such as "http://www.example.com/index.html".</p>
+    <p>Even without this directive set, when a request is issued against a 
+    fully qualified URL, REDIRECT_URL will remain fully qualified.
+    </p>
+</usage>
+</directivesynopsis>
+
+
 
 </modulesynopsis>
