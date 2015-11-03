@@ -41,6 +41,7 @@ struct h2_config;
 struct h2_response;
 struct h2_task;
 struct h2_stream;
+struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
 struct h2_workers;
@@ -70,8 +71,7 @@ struct h2_mplx {
     int aborted;
     apr_size_t stream_max_mem;
     
-    apr_pool_t *spare_pool;           /* spare pool, ready for next stream */
-    struct h2_stream_set *closed;     /* streams closed, but task ongoing */
+    apr_pool_t *spare_pool;           /* spare pool, ready for next io */
     struct h2_workers *workers;
     int file_handles_allowed;
 };
@@ -120,15 +120,16 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id);
 /*******************************************************************************
  * IO lifetime of streams.
  ******************************************************************************/
-/**
- * Prepares the multiplexer to handle in-/output on the given stream id.
- */
-struct h2_stream *h2_mplx_open_io(h2_mplx *mplx, int stream_id);
 
 /**
- * Ends cleanup of a stream in sync with execution thread.
+ * Notifies mplx that a stream has finished processing.
+ * 
+ * @param m the mplx itself
+ * @param stream_id the id of the stream being done
+ * @param rst_error if != 0, the stream was reset with the error given
+ *
  */
-apr_status_t h2_mplx_cleanup_stream(h2_mplx *m, struct h2_stream *stream);
+apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
 
 /* Return != 0 iff the multiplexer has data for the given stream. 
  */
@@ -146,15 +147,18 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  ******************************************************************************/
 
 /**
- * Schedule a task for execution.
+ * Process a stream request.
  * 
  * @param m the multiplexer
- * @param task the task to schedule
+ * @param stream_id the identifier of the stream
+ * @param r the request to be processed
+ * @param eos if input is complete
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task,
-                            h2_stream_pri_cmp *cmp, void *ctx);
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
+                             struct h2_request *r, int eos, 
+                             h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
  * Stream priorities have changed, reschedule pending tasks.
@@ -166,8 +170,6 @@ apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task,
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
 struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
-
-apr_status_t h2_mplx_create_task(h2_mplx *mplx, struct h2_stream *stream);
 
 /*******************************************************************************
  * Input handling of streams.

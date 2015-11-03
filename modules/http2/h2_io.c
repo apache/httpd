@@ -23,6 +23,7 @@
 #include "h2_private.h"
 #include "h2_io.h"
 #include "h2_response.h"
+#include "h2_task.h"
 #include "h2_util.h"
 
 h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc)
@@ -39,7 +40,10 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc)
 
 static void h2_io_cleanup(h2_io *io)
 {
-    (void)io;
+    if (io->task) {
+        h2_task_destroy(io->task);
+        io->task = NULL;
+    }
 }
 
 void h2_io_destroy(h2_io *io)
