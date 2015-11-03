@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1710380
                   http://svn.apache.org/r1710391
      2.4.x trunk works (needs CHANGES)
-     +1 covener, ylavic
+     +1 covener, ylavic, jim
 
    * mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
                 fields as described in RFC7230. See OWS definition.
@@ -161,14 +161,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           its parameter when starting httpd as single process (httpd -X).
      trunk patch: http://svn.apache.org/r1711479
      2.4.x patch: trunk works
-     +1: jkaluza
+     +1: jkaluza, jim
 
    * core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
      alignment (SPARC64, PPC64).
      trunk patch: http://svn.apache.org/r1709008
                   http://svn.apache.org/r1711648
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) core: Limit to ten the number of tolerated empty lines between request,
      and consume them before the pipelining check to avoid possible response
