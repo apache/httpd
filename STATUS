@@ -111,6 +111,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
+     alignment (SPARC64, PPC64).
+     trunk patch: http://svn.apache.org/r1709008
+                  http://svn.apache.org/r1711648
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, jim, minfrin
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -158,13 +165,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      minfrin: Needs extra parens to suppress a warning:
               prefork.c:1319:16: note: place parentheses around the assignment
               to silence this warning
-
-   * core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
-     alignment (SPARC64, PPC64).
-     trunk patch: http://svn.apache.org/r1709008
-                  http://svn.apache.org/r1711648
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
 
   *) core: Limit to ten the number of tolerated empty lines between request,
      and consume them before the pipelining check to avoid possible response
