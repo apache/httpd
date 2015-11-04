@@ -162,7 +162,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (trunk works, meant to ease review)
      +1: ylavic, minfrin
 
-
+  *) core/mod_ssl: 
+     - master conn_rec* addition to conn_rec
+     - minor mmn bump
+     - improved ALPN and Upgrade handling
+     - allowing requests for servers whose TLS configuration is compatible
+       to the SNI server ones
+     - disabling TLS renegotiation for slave connections
+     changes are necessary for update modules/http2
+     trunk patch: http://svn.apache.org/r1708107
+                  http://svn.apache.org/r1709587
+                  http://svn.apache.org/r1709602
+                  http://svn.apache.org/r1709995
+                  http://svn.apache.org/r1710231
+                  http://svn.apache.org/r1710419
+                  http://svn.apache.org/r1710572
+                  http://svn.apache.org/r1710583
+                  + manual addition of "conn_rec *master;"
+     2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/2.4.17-protocols.patch
+     branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
+     +1: icing
+    
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
