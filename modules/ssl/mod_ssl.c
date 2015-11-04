@@ -377,6 +377,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
+    SSLSrvConfigRec *sc;
 
     if (sslconn) {
         return sslconn;
@@ -386,6 +387,8 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 
     sslconn->server = c->base_server;
     sslconn->verify_depth = UNSET;
+    sc = mySrvConfig(c->base_server);
+    sslconn->cipher_suite = sc->server->auth.cipher_suite;
 
     myConnConfigSet(c, sslconn);
 
@@ -525,6 +528,7 @@ static apr_port_t ssl_hook_default_port(const request_rec *r)
 
 static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 {
+
     SSLSrvConfigRec *sc;
     SSLConnRec *sslconn = myConnConfig(c);
 
@@ -537,8 +541,8 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */
-    if (!(sc && (sc->enabled == SSL_ENABLED_TRUE ||
-                 (sslconn && sslconn->is_proxy))))
+    if (c->master || !(sc && (sc->enabled == SSL_ENABLED_TRUE ||
+                              (sslconn && sslconn->is_proxy))))
     {
         return DECLINED;
     }
@@ -566,6 +570,26 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     return ssl_init_ssl_connection(c, NULL);
 }
 
+static int ssl_hook_process_connection(conn_rec* c)
+{
+    SSLConnRec *sslconn = myConnConfig(c);
+
+    if (sslconn && !sslconn->disabled) {
+        /* On an active SSL connection, let the input filters initialize
+         * themselves which triggers the handshake, which again triggers
+         * all kinds of useful things such as SNI and ALPN.
+         */
+        apr_bucket_brigade* temp;
+
+        temp = apr_brigade_create(c->pool, c->bucket_alloc);
+        ap_get_brigade(c->input_filters, temp,
+                       AP_MODE_INIT, APR_BLOCK_READ, 0);
+        apr_brigade_destroy(temp);
+    }
+    
+    return DECLINED;
+}
+
 /*
  *  the module registration phase
  */
@@ -579,6 +603,8 @@ static void ssl_register_hooks(apr_pool_t *p)
     ssl_io_filter_register(p);
 
     ap_hook_pre_connection(ssl_hook_pre_connection,NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_process_connection(ssl_hook_process_connection, 
+                                                   NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_test_config   (ssl_hook_ConfigTest,    NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config   (ssl_init_Module,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_http_scheme   (ssl_hook_http_scheme,   NULL,NULL, APR_HOOK_MIDDLE);
