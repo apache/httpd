@@ -134,7 +134,7 @@ Changes with Apache 2.2.29
   *) Corrected docs/manual pages for new MergeTrailers directive and other
      out of date documentation. [William Rowe]
 
-Changes with Apache 2.2.28
+Changes with Apache 2.2.28 (not released)
 
   *) SECURITY: CVE-2014-0118 (cve.mitre.org)
      mod_deflate: The DEFLATE input filter (inflates request bodies) now
@@ -2290,7 +2290,7 @@ Changes with Apache 2.2.2
   *) Default handler: Don't return output filter apr_status_t values.
      PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
 
-Changes with Apache 2.2.1
+Changes with Apache 2.2.1 (not released)
 
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
