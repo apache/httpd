@@ -4,20 +4,11 @@ Changes with Apache 2.5.0
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 
-  *) core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
-     alignment (SPARC64, PPC64).  [Yann Ylavic]
-
   *) mod_http2: new directives 'H2TLSWarmUpSize' and 'H2TLSCoolDownSecs'
      to control TLS record sizes during connection lifetime.
      
-  *) mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
-     fields as described in RFC2616. [Christophe Jaillet]
-
   *) htpasswd/htdigest: Disable support for bcrypt on EBCDIC platforms. 
      apr-util's bcrypt implementation doesn't tolerate EBCDIC.
-
-  *) core: Make PR57785 REDIRECT_URL fix opt-in with directive 
-     QualifyRedirectURL.  [Eric Covener]
 
   *) core: add ap_get_protocol_upgrades() to retrieve the list of protocols
      that a client could possibly upgrade to. Use in first request on a 
