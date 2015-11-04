@@ -149,6 +149,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               prefork.c:1319:16: note: place parentheses around the assignment
               to silence this warning
      jailletc36: This has been done in r1711919
+     ylavic: Also, I don't think the changes on worker/event are needed,
+             prefork only requires the accept mutex in ONE_PROCESS mode.
 
   *) core: Limit to ten the number of tolerated empty lines between request,
      and consume them before the pipelining check to avoid possible response
