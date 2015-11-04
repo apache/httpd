@@ -460,6 +460,8 @@ typedef struct {
     } reneg_state;
 
     server_rec *server;
+    
+    const char *cipher_suite; /* cipher suite used in last reneg */
 } SSLConnRec;
 
 /* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is

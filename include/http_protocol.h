@@ -782,7 +782,27 @@ AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
  * @return The identifier of the protocol in place or NULL
  */
 AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
-    
+
+/**
+ * Get the protocols that the connection and optional request may
+ * upgrade to - besides the protocol currently active on the connection. These
+ * values may be used to announce to a client what choices it has.
+ *
+ * If report_all == 0, only protocols more preferable than the one currently
+ * being used, are reported. Otherwise, all available protocols beside the
+ * current one are being reported.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected or NULL
+ * @param report_all include also protocols less preferred than the current one
+ * @param pupgrades on return, possible protocols to upgrade to in descending order 
+ *                 of preference. Maybe NULL if none are available.    
+ */
+AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r, 
+                                                  server_rec *s, int report_all, 
+                                                  const apr_array_header_t **pupgrades);
+                                                  
 /**
  * Select a protocol for the given connection and optional request. Will return
  * the protocol identifier selected which may be the protocol already in place
@@ -832,6 +852,23 @@ AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r,
  * @return the protocol in use, never NULL
  */
 AP_DECLARE(const char *) ap_get_protocol(conn_rec *c);
+
+/**
+ * Check if the given protocol is an allowed choice on the given
+ * combination of connection, request and server. 
+ *
+ * When server is NULL, it is taken from request_rec, unless
+ * request_rec is NULL. Then it is taken from the connection base
+ * server.
+ *
+ * @param c The current connection
+ * @param r The current request or NULL
+ * @param s The server/virtual host selected or NULL
+ * @param protocol the protocol to switch to
+ * @return != 0 iff protocol is allowed
+ */
+AP_DECLARE(int) ap_is_allowed_protocol(conn_rec *c, request_rec *r,
+                                       server_rec *s, const char *protocol);
 
 /** @see ap_bucket_type_error */
 typedef struct ap_bucket_error ap_bucket_error;

@@ -1167,6 +1167,9 @@ struct conn_rec {
 #if APR_HAS_THREADS
     apr_thread_t *current_thread;
 #endif
+
+    /** The "real" master connection. NULL if I am the master. */
+    conn_rec *master;
 };
 
 /**
