@@ -58,6 +58,9 @@ struct h2_session {
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
     int aborted;                    /* this session is being aborted */
+    int flush;                      /* if != 0, flush output on next occasion */
+    int reprioritize;               /* scheduled streams priority needs to 
+                                     * be re-evaluated */
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
@@ -73,6 +76,8 @@ struct h2_session {
     
     int max_stream_received;        /* highest stream id created */
     int max_stream_handled;         /* highest stream id handled successfully */
+    
+    apr_pool_t *spare;              /* spare stream pool */
     
     struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
     struct h2_workers *workers;     /* for executing stream tasks */
@@ -107,6 +112,13 @@ h2_session *h2_session_rcreate(request_rec *r, struct h2_config *cfg,
  * @param session the session to destroy
  */
 void h2_session_destroy(h2_session *session);
+
+/**
+ * Cleanup the session and all objects it still contains. This will not
+ * destroy h2_task instances that have not finished yet. 
+ * @param session the session to destroy
+ */
+void h2_session_cleanup(h2_session *session);
 
 /**
  * Called once at start of session. 
@@ -147,8 +159,7 @@ apr_status_t h2_session_read(h2_session *session, apr_read_type_e block);
  * a maximum of timeout micro-seconds and return to the caller. If timeout
  * occurred, APR_TIMEUP will be returned.
  */
-apr_status_t h2_session_write(h2_session *session,
-                              apr_interval_time_t timeout);
+apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout);
 
 /* Start submitting the response to a stream request. This is possible
  * once we have all the response headers. */
@@ -157,5 +168,13 @@ apr_status_t h2_session_handle_response(h2_session *session,
 
 /* Get the h2_stream for the given stream idenrtifier. */
 struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
+
+/**
+ * Destroy the stream and release it everywhere. Reclaim all resources.
+ * @param session the session to which the stream belongs
+ * @param stream the stream to destroy
+ */
+apr_status_t h2_session_stream_destroy(h2_session *session, 
+                                       struct h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_session__) */

@@ -145,4 +145,19 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
 void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
                     const char *tag, apr_bucket_brigade *bb);
 
+/**
+ * Transfer buckets from one brigade to another with a limit on the 
+ * maximum amount of bytes transfered.
+ * @param to   brigade to transfer buckets to
+ * @param from brigades to remove buckets from
+ * @param p    pool that buckets should be setaside to
+ * @param plen maximum bytes to transfer, actual bytes transferred
+ * @param peos if an EOS bucket was transferred
+ */
+AP_DECLARE(apr_status_t) h2_transfer_brigade(apr_bucket_brigade *to,
+                                             apr_bucket_brigade *from, 
+                                             apr_pool_t *p,
+                                             apr_size_t *plen,
+                                             int *peos);
+
 #endif /* defined(__mod_h2__h2_util__) */

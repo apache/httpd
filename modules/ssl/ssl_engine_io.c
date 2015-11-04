@@ -298,9 +298,6 @@ typedef struct {
     apr_pool_t *pool;
     char buffer[AP_IOBUFSIZE];
     ssl_filter_ctx_t *filter_ctx;
-#ifdef HAVE_TLS_ALPN
-    int alpn_finished;  /* 1 if ALPN has finished, 0 otherwise */
-#endif
 } bio_filter_in_ctx_t;
 
 /*
@@ -1418,41 +1415,6 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
 
-#ifdef HAVE_TLS_ALPN
-    /* By this point, Application-Layer Protocol Negotiation (ALPN) should be 
-     * completed (if our version of OpenSSL supports it). If we haven't already, 
-     * find out which protocol was decided upon and inform other modules 
-     * by calling alpn_proto_negotiated_hook. 
-     */
-    if (!inctx->alpn_finished) {
-        SSLConnRec *sslconn = myConnConfig(f->c);
-        const unsigned char *next_proto = NULL;
-        unsigned next_proto_len = 0;
-        const char *protocol;
-
-        SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
-        if (next_proto && next_proto_len) {
-            protocol = apr_pstrmemdup(f->c->pool, (const char *)next_proto,
-                                       next_proto_len);
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                          APLOGNO(02836) "ALPN selected protocol: '%s'",
-                          protocol);
-            
-            if (strcmp(protocol, ap_get_protocol(f->c))) {
-                status = ap_switch_protocol(f->c, NULL, sslconn->server,
-                                            protocol);
-                if (status != APR_SUCCESS) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, status, f->c,
-                                  APLOGNO(02908) "protocol switch to '%s' failed",
-                                  protocol);
-                    return status;
-                }
-            }
-        }
-        inctx->alpn_finished = 1;
-    }
-#endif
-
     return APR_SUCCESS;
 }
 
@@ -1934,9 +1896,6 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
     inctx->filter_ctx = filter_ctx;
-#ifdef HAVE_TLS_ALPN
-    inctx->alpn_finished = 0;
-#endif
 }
 
 /* The request_rec pointer is passed in here only to ensure that the

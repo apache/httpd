@@ -191,6 +191,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->max_reversals = AP_MAXRANGES_UNSET;
 
     conf->cgi_pass_auth = AP_CGI_PASS_AUTH_UNSET;
+    conf->qualify_redirect_url = AP_CORE_CONFIG_UNSET; 
 
     return (void *)conf;
 }
@@ -404,6 +405,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     conf->max_reversals = new->max_reversals != AP_MAXRANGES_UNSET ? new->max_reversals : base->max_reversals;
 
     conf->cgi_pass_auth = new->cgi_pass_auth != AP_CGI_PASS_AUTH_UNSET ? new->cgi_pass_auth : base->cgi_pass_auth;
+
+    AP_CORE_MERGE_FLAG(qualify_redirect_url, conf, base, new);
 
     return (void*)conf;
 }
@@ -1703,6 +1706,15 @@ static const char *set_cgi_pass_auth(cmd_parms *cmd, void *d_, int flag)
     core_dir_config *d = d_;
 
     d->cgi_pass_auth = flag ? AP_CGI_PASS_AUTH_ON : AP_CGI_PASS_AUTH_OFF;
+
+    return NULL;
+}
+
+static const char *set_qualify_redirect_url(cmd_parms *cmd, void *d_, int flag)
+{
+    core_dir_config *d = d_;
+
+    d->qualify_redirect_url = flag ? AP_CORE_CONFIG_ON : AP_CORE_CONFIG_OFF;
 
     return NULL;
 }
@@ -4206,6 +4218,10 @@ AP_INIT_TAKE12("LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF,
 AP_INIT_FLAG("CGIPassAuth", set_cgi_pass_auth, NULL, OR_AUTHCFG,
              "Controls whether HTTP authorization headers, normally hidden, will "
              "be passed to scripts"),
+AP_INIT_FLAG("QualifyRedirectURL", set_qualify_redirect_url, NULL, OR_FILEINFO,
+             "Controls whether HTTP authorization headers, normally hidden, will "
+             "be passed to scripts"),
+
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
      "a mime type that overrides other configured type"),
@@ -4995,8 +5011,15 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
 static int core_upgrade_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
-    const char *upgrade = apr_table_get(r->headers_in, "Upgrade");
+    const char *upgrade;
 
+    if (c->master) {
+        /* Not possible to perform an HTTP/1.1 upgrade from a slave
+         * connection. */
+        return DECLINED;
+    }
+    
+    upgrade = apr_table_get(r->headers_in, "Upgrade");
     if (upgrade && *upgrade) {
         const char *conn = apr_table_get(r->headers_in, "Connection");
         if (ap_find_token(r->pool, conn, "upgrade")) {
@@ -5011,8 +5034,7 @@ static int core_upgrade_handler(request_rec *r)
             }
             
             if (offers && offers->nelts > 0) {
-                const char *protocol = ap_select_protocol(c, r, r->server,
-                                                          offers);
+                const char *protocol = ap_select_protocol(c, r, NULL, offers);
                 if (protocol && strcmp(protocol, ap_get_protocol(c))) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
                                   "Upgrade selects '%s'", protocol);
@@ -5032,6 +5054,19 @@ static int core_upgrade_handler(request_rec *r)
                     return DONE;
                 }
             }
+        }
+    }
+    else if (!c->keepalives) {
+        /* first request on a master connection, if we have protocols other
+         * than the current one enabled here, announce them to the
+         * client. If the client is already talking a protocol with requests
+         * on slave connections, leave it be. */
+        const apr_array_header_t *upgrades;
+        ap_get_protocol_upgrades(c, r, NULL, 0, &upgrades);
+        if (upgrades && upgrades->nelts > 0) {
+            char *protocols = apr_array_pstrcat(r->pool, upgrades, ',');
+            apr_table_setn(r->headers_out, "Upgrade", protocols);
+            apr_table_setn(r->headers_out, "Connection", "Upgrade");
         }
     }
     

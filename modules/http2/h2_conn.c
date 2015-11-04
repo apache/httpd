@@ -32,6 +32,7 @@
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_stream_set.h"
+#include "h2_h2.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 #include "h2_workers.h"
@@ -43,7 +44,6 @@ static apr_status_t h2_conn_loop(h2_session *session);
 
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
-static module *ssl_module;
 static int checked;
 
 static void check_modules(void) 
@@ -63,9 +63,6 @@ static void check_modules(void)
             else if (!strcmp("prefork.c", m->name)) {
                 mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
-            }
-            else if (!strcmp("mod_ssl.c", m->name)) {
-                ssl_module = m;
             }
         }
         checked = 1;
@@ -102,9 +99,6 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         else if (!strcmp("prefork.c", m->name)) {
             mpm_type = H2_MPM_PREFORK;
             mpm_module = m;
-        }
-        else if (!strcmp("mod_ssl.c", m->name)) {
-            ssl_module = m;
         }
     }
     
@@ -177,6 +171,11 @@ apr_status_t h2_conn_main(conn_rec *c)
         return APR_EGENERAL;
     }
     
+    if (!h2_is_acceptable_connection(c, 1)) {
+        nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
+                              NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
+    } 
+
     status = h2_conn_loop(session);
 
     /* Make sure this connection gets closed properly. */
@@ -241,7 +240,7 @@ static apr_status_t h2_conn_loop(h2_session *session)
                   session->c->local_addr->port);
     if (status != APR_SUCCESS) {
         h2_session_abort(session, status, rv);
-        h2_session_destroy(session);
+        h2_session_cleanup(session);
         return status;
     }
     
@@ -344,12 +343,9 @@ static apr_status_t h2_conn_loop(h2_session *session)
     ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                   "h2_session(%ld): done", session->id);
     
+    h2_session_close(session);
     ap_update_child_status_from_conn(session->c->sbh, SERVER_CLOSING, 
                                      session->c);
-
-    h2_session_close(session);
-    h2_session_destroy(session);
-    
     return DONE;
 }
 
@@ -412,11 +408,11 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
     return c;
 }
 
-apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
+apr_status_t h2_conn_setup(h2_task *task, struct h2_worker *worker)
 {
-    conn_rec *master = env->mplx->c;
+    conn_rec *master = task->mplx->c;
     
-    ap_log_perror(APLOG_MARK, APLOG_TRACE3, 0, env->pool,
+    ap_log_perror(APLOG_MARK, APLOG_TRACE3, 0, task->pool,
                   "h2_conn(%ld): created from master", master->id);
     
     /* Ok, we are just about to start processing the connection and
@@ -425,28 +421,18 @@ apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
      * sub-resources from it, so that we get a nice reuse of
      * pools.
      */
-    env->c.pool = env->pool;
-    env->c.bucket_alloc = h2_worker_get_bucket_alloc(worker);
-    env->c.current_thread = h2_worker_get_thread(worker);
+    task->c->pool = task->pool;
+    task->c->bucket_alloc = h2_worker_get_bucket_alloc(worker);
+    task->c->current_thread = h2_worker_get_thread(worker);
     
-    env->c.conn_config = ap_create_conn_config(env->pool);
-    env->c.notes = apr_table_make(env->pool, 5);
+    task->c->conn_config = ap_create_conn_config(task->pool);
+    task->c->notes = apr_table_make(task->pool, 5);
     
-    ap_set_module_config(env->c.conn_config, &core_module, 
+    /* In order to do this in 2.4.x, we need to add a member to conn_rec */
+    task->c->master = master;
+    
+    ap_set_module_config(task->c->conn_config, &core_module, 
                          h2_worker_get_socket(worker));
-    
-    /* If we serve http:// requests over a TLS connection, we do
-     * not want any mod_ssl vars to be visible.
-     */
-    if (ssl_module && (!env->scheme || strcmp("http", env->scheme))) {
-        /* See #19, there is a range of SSL variables to be gotten from
-         * the main connection that should be available in request handlers
-         */
-        void *sslcfg = ap_get_module_config(master->conn_config, ssl_module);
-        if (sslcfg) {
-            ap_set_module_config(env->c.conn_config, ssl_module, sslcfg);
-        }
-    }
     
     /* This works for mpm_worker so far. Other mpm modules have 
      * different needs, unfortunately. The most interesting one 
@@ -457,7 +443,7 @@ apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
             /* all fine */
             break;
         case H2_MPM_EVENT: 
-            fix_event_conn(&env->c, master);
+            fix_event_conn(task->c, master);
             break;
         default:
             /* fingers crossed */
@@ -469,7 +455,7 @@ apr_status_t h2_conn_setup(h2_task_env *env, struct h2_worker *worker)
      * 400 Bad Request
      * when names do not match. We prefer a predictable 421 status.
      */
-    env->c.keepalives = 1;
+    task->c->keepalives = 1;
     
     return APR_SUCCESS;
 }

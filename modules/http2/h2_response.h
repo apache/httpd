@@ -26,6 +26,7 @@ typedef struct h2_ngheader {
 
 typedef struct h2_response {
     int stream_id;
+    int rst_error;
     const char *status;
     apr_off_t content_length;
     apr_table_t *rheader;
@@ -33,9 +34,10 @@ typedef struct h2_response {
 } h2_response;
 
 h2_response *h2_response_create(int stream_id,
-                                  const char *http_status,
-                                  apr_array_header_t *hlines,
-                                  apr_pool_t *pool);
+                                int rst_error,
+                                const char *http_status,
+                                apr_array_header_t *hlines,
+                                apr_pool_t *pool);
 
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
                                  apr_table_t *header, apr_pool_t *pool);

@@ -60,10 +60,6 @@ static void h2_mplx_destroy(h2_mplx *m)
 {
     AP_DEBUG_ASSERT(m);
     m->aborted = 1;
-    if (m->q) {
-        h2_tq_destroy(m->q);
-        m->q = NULL;
-    }
     if (m->ready_ios) {
         h2_io_set_destroy(m->ready_ios);
         m->ready_ios = NULL;
@@ -128,10 +124,9 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
         
         m->bucket_alloc = apr_bucket_alloc_create(m->pool);
         
-        m->q = h2_tq_create(m->id, m->pool);
+        m->q = h2_tq_create(m->pool, h2_config_geti(conf, H2_CONF_MAX_STREAMS));
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
-        m->closed = h2_stream_set_create(m->pool);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->workers = workers;
         
@@ -226,52 +221,18 @@ void h2_mplx_abort(h2_mplx *m)
 }
 
 
-h2_stream *h2_mplx_open_io(h2_mplx *m, int stream_id)
+static void io_destroy(h2_mplx *m, h2_io *io)
 {
-    h2_stream *stream = NULL;
-    apr_status_t status; 
-    h2_io *io;
-
-    if (m->aborted) {
-        return NULL;
-    }
-    status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        apr_pool_t *stream_pool = m->spare_pool;
-        
-        if (!stream_pool) {
-            apr_pool_create(&stream_pool, m->pool);
-        }
-        else {
-            m->spare_pool = NULL;
-        }
-        
-        stream = h2_stream_create(stream_id, stream_pool, m);
-        stream->state = H2_STREAM_ST_OPEN;
-        
-        io = h2_io_set_get(m->stream_ios, stream_id);
-        if (!io) {
-            io = h2_io_create(stream_id, stream_pool, m->bucket_alloc);
-            h2_io_set_add(m->stream_ios, io);
-        }
-        status = io? APR_SUCCESS : APR_ENOMEM;
-        apr_thread_mutex_unlock(m->lock);
-    }
-    return stream;
-}
-
-static void stream_destroy(h2_mplx *m, h2_stream *stream, h2_io *io)
-{
-    apr_pool_t *pool = h2_stream_detach_pool(stream);
-    if (pool) {
-        apr_pool_clear(pool);
-        if (m->spare_pool) {
-            apr_pool_destroy(m->spare_pool);
-        }
-        m->spare_pool = pool;
-    }
-    h2_stream_destroy(stream);
     if (io) {
+        apr_pool_t *pool = io->pool;
+        if (pool) {
+            io->pool = NULL;
+            apr_pool_clear(pool);
+            if (m->spare_pool) {
+                apr_pool_destroy(m->spare_pool);
+            }
+            m->spare_pool = pool;
+        }
         /* The pool is cleared/destroyed which also closes all
          * allocated file handles. Give this count back to our
          * file handle pool. */
@@ -282,31 +243,36 @@ static void stream_destroy(h2_mplx *m, h2_stream *stream, h2_io *io)
     }
 }
 
-apr_status_t h2_mplx_cleanup_stream(h2_mplx *m, h2_stream *stream)
+apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
 {
     apr_status_t status;
+    
     AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream->id);
+        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
+        
         if (io) {
             /* Remove io from ready set, we will never submit it */
             h2_io_set_remove(m->ready_ios, io);
-            if (stream->rst_error) {
-                /* Forward error code to fail any further attempt to
-                 * write to io */
-                h2_io_rst(io, stream->rst_error);
+            
+            if (io->task_done) {
+                io_destroy(m, io);
+            }
+            else {
+                /* cleanup once task is done */
+                io->zombie = 1;
+                if (rst_error) {
+                    /* Forward error code to fail any further attempt to
+                     * write to io */
+                    h2_io_rst(io, rst_error);
+                }
             }
         }
         
-        if (!io || io->task_done) {
-            /* No more io or task already done -> cleanup immediately */
-            stream_destroy(m, stream, io);
-        }
-        else {
-            /* Add stream to closed set for cleanup when task is done */
-            h2_stream_set_add(m->closed, stream);
-        }
         apr_thread_mutex_unlock(m->lock);
     }
     return status;
@@ -316,21 +282,17 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id)
 {
     apr_status_t status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        h2_stream *stream = h2_stream_set_get(m->closed, stream_id);
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       "h2_mplx(%ld): task(%d) done", m->id, stream_id);
-        if (stream) {
-            /* stream was already closed by main connection and is in 
-             * zombie state. Now that the task is done with it, we
-             * can free its resources. */
-            h2_stream_set_remove(m->closed, stream);
-            stream_destroy(m, stream, io);
-        }
-        else if (io) {
-            /* main connection has not finished stream. Mark task as done
-             * so that eventual cleanup can start immediately. */
+        if (io) {
             io->task_done = 1;
+            if (io->zombie) {
+                io_destroy(m, io);
+            }
+            else {
+                /* hang around until the stream deregisteres */
+            }
         }
         apr_thread_mutex_unlock(m->lock);
     }
@@ -497,6 +459,36 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
     return status;
 }
 
+apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
+                                 apr_bucket_brigade *bb, 
+                                 apr_size_t *plen, int *peos)
+{
+    apr_status_t status;
+    AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
+        if (io) {
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_pre");
+            
+            status = h2_io_out_read_to(io, bb, plen, peos);
+            
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_post");
+            if (status == APR_SUCCESS && io->output_drained) {
+                apr_thread_cond_signal(io->output_drained);
+            }
+        }
+        else {
+            status = APR_ECONNABORTED;
+        }
+        apr_thread_mutex_unlock(m->lock);
+    }
+    return status;
+}
+
 h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
 {
     apr_status_t status;
@@ -529,7 +521,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                               "h2_mplx(%ld): stream for response %d closed, "
                               "resetting io to close request processing",
                               m->id, io->id);
-                h2_io_rst(io, NGHTTP2_ERR_STREAM_CLOSED);
+                h2_io_rst(io, H2_ERR_STREAM_CLOSED);
             }
             
             if (io->output_drained) {
@@ -588,12 +580,12 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
     if (io) {
         if (f) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
-                          "h2_mplx(%ld-%d): open response: %s",
-                          m->id, stream_id, response->status);
+                          "h2_mplx(%ld-%d): open response: %s, rst=%d",
+                          m->id, stream_id, response->status, 
+                          response->rst_error);
         }
         
-        io->response = h2_response_copy(io->pool, response);
-        AP_DEBUG_ASSERT(io->response);
+        h2_io_set_response(io, response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
             status = out_write(m, io, f, bb, iowait);
@@ -681,7 +673,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                      * insert an error one so that our streams can properly
                      * reset.
                      */
-                    h2_response *r = h2_response_create(stream_id, 
+                    h2_response *r = h2_response_create(stream_id, 0, 
                                                         "500", NULL, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
@@ -727,11 +719,8 @@ apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error)
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_rst");
                 
                 have_out_data_for(m, stream_id);
-                if (m->aborted) {
-                    /* if we were the last output, the whole session might
-                     * have gone down in the meantime.
-                     */
-                    return APR_SUCCESS;
+                if (io->output_drained) {
+                    apr_thread_cond_signal(io->output_drained);
                 }
             }
             else {
@@ -813,22 +802,98 @@ static void have_out_data_for(h2_mplx *m, int stream_id)
     }
 }
 
-apr_status_t h2_mplx_do_task(h2_mplx *m, struct h2_task *task)
+typedef struct {
+    h2_stream_pri_cmp *cmp;
+    void *ctx;
+} cmp_ctx;
+
+static int task_cmp(h2_task *t1, h2_task *t2, void *ctx)
+{
+    cmp_ctx *x = ctx;
+    return x->cmp(t1->stream_id, t2->stream_id, x->ctx);
+}
+
+apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
+    
     AP_DEBUG_ASSERT(m);
     if (m->aborted) {
         return APR_ECONNABORTED;
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        /* TODO: needs to sort queue by priority */
+        cmp_ctx x;
+        
+        x.cmp = cmp;
+        x.ctx = ctx;
+        h2_tq_sort(m->q, task_cmp, &x);
+        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                      "h2_mplx: do task(%s)", task->id);
-        h2_tq_append(m->q, task);
+                      "h2_mplx(%ld): reprioritize tasks", m->id);
         apr_thread_mutex_unlock(m->lock);
     }
     workers_register(m);
+    return status;
+}
+
+static h2_io *open_io(h2_mplx *m, int stream_id)
+{
+    apr_pool_t *io_pool = m->spare_pool;
+    h2_io *io;
+    
+    if (!io_pool) {
+        apr_pool_create(&io_pool, m->pool);
+    }
+    else {
+        m->spare_pool = NULL;
+    }
+    
+    io = h2_io_create(stream_id, io_pool, m->bucket_alloc);
+    h2_io_set_add(m->stream_ios, io);
+    
+    return io;
+}
+
+
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
+                             struct h2_request *r, int eos, 
+                             h2_stream_pri_cmp *cmp, void *ctx)
+{
+    apr_status_t status;
+    
+    AP_DEBUG_ASSERT(m);
+    if (m->aborted) {
+        return APR_ECONNABORTED;
+    }
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        conn_rec *c;
+        h2_io *io;
+        cmp_ctx x;
+        
+        io = open_io(m, stream_id);
+        c = h2_conn_create(m->c, io->pool);
+        io->task = h2_task_create(m->id, stream_id, io->pool, m, c);
+            
+        status = h2_request_end_headers(r, m, io->task, eos);
+        if (status == APR_SUCCESS && eos) {
+            status = h2_io_in_close(io);
+        }
+        
+        if (status == APR_SUCCESS) {
+            x.cmp = cmp;
+            x.ctx = ctx;
+            h2_tq_add(m->q, io->task, task_cmp, &x);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+                      "h2_mplx(%ld-%d): process", m->c->id, stream_id);
+        apr_thread_mutex_unlock(m->lock);
+    }
+    
+    if (status == APR_SUCCESS) {
+        workers_register(m);
+    }
     return status;
 }
 
@@ -843,31 +908,10 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        task = h2_tq_pop_first(m->q);
-        if (task) {
-            h2_task_set_started(task);
-        }
+        task = h2_tq_shift(m->q);
         *has_more = !h2_tq_empty(m->q);
         apr_thread_mutex_unlock(m->lock);
     }
     return task;
-}
-
-apr_status_t h2_mplx_create_task(h2_mplx *m, struct h2_stream *stream)
-{
-    apr_status_t status;
-    AP_DEBUG_ASSERT(m);
-    if (m->aborted) {
-        return APR_ECONNABORTED;
-    }
-    status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        conn_rec *c = h2_conn_create(m->c, stream->pool);
-        stream->task = h2_task_create(m->id, stream->id, 
-                                      stream->pool, m, c);
-        
-        apr_thread_mutex_unlock(m->lock);
-    }
-    return status;
 }
 

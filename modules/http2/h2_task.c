@@ -52,34 +52,36 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            ap_input_mode_t mode,
                                            apr_read_type_e block,
                                            apr_off_t readbytes) {
-    h2_task_env *env = filter->ctx;
-    AP_DEBUG_ASSERT(env);
-    if (!env->input) {
+    h2_task *task = filter->ctx;
+    AP_DEBUG_ASSERT(task);
+    if (!task->input) {
         return APR_ECONNABORTED;
     }
-    return h2_task_input_read(env->input, filter, brigade,
+    return h2_task_input_read(task->input, filter, brigade,
                               mode, block, readbytes);
 }
 
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
                                             apr_bucket_brigade* brigade) {
-    h2_task_env *env = filter->ctx;
-    AP_DEBUG_ASSERT(env);
-    if (!env->output) {
+    h2_task *task = filter->ctx;
+    AP_DEBUG_ASSERT(task);
+    if (!task->output) {
         return APR_ECONNABORTED;
     }
-    return h2_task_output_write(env->output, filter, brigade);
+    return h2_task_output_write(task->output, filter, brigade);
 }
 
 static apr_status_t h2_filter_read_response(ap_filter_t* f,
                                             apr_bucket_brigade* bb) {
-    h2_task_env *env = f->ctx;
-    AP_DEBUG_ASSERT(env);
-    if (!env->output || !env->output->from_h1) {
+    h2_task *task = f->ctx;
+    AP_DEBUG_ASSERT(task);
+    if (!task->output || !task->output->from_h1) {
         return APR_ECONNABORTED;
     }
-    return h2_from_h1_read_response(env->output->from_h1, f, bb);
+    return h2_from_h1_read_response(task->output->from_h1, f, bb);
 }
+
+static apr_status_t h2_task_process_request(h2_task *task);
 
 /*******************************************************************************
  * Register various hooks
@@ -119,21 +121,15 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     
     (void)arg;
     if (h2_ctx_is_task(ctx)) {
-        h2_task_env *env = h2_ctx_get_task(ctx);
-        
-        /* This connection is a pseudo-connection used for a h2_task.
-         * Since we read/write directly from it ourselves, we need
-         * to disable a possible ssl connection filter.
-         */
-        h2_tls_disable(c);
+        h2_task *task = h2_ctx_get_task(ctx);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "h2_h2, pre_connection, found stream task");
         
         /* Add our own, network level in- and output filters.
          */
-        ap_add_input_filter("H2_TO_H1", env, NULL, c);
-        ap_add_output_filter("H1_TO_H2", env, NULL, c);
+        ap_add_input_filter("H2_TO_H1", task, NULL, c);
+        ap_add_output_filter("H1_TO_H2", task, NULL, c);
     }
     return OK;
 }
@@ -143,14 +139,14 @@ static int h2_task_process_conn(conn_rec* c)
     h2_ctx *ctx = h2_ctx_get(c);
     
     if (h2_ctx_is_task(ctx)) {
-        if (!ctx->task_env->serialize_headers) {
+        if (!ctx->task->serialize_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
                           "h2_h2, processing request directly");
-            h2_task_process_request(ctx->task_env);
+            h2_task_process_request(ctx->task);
             return DONE;
         }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                      "h2_task(%s), serialized handling", ctx->task_env->id);
+                      "h2_task(%s), serialized handling", ctx->task->id);
     }
     return DECLINED;
 }
@@ -170,8 +166,6 @@ h2_task *h2_task_create(long session_id,
         return NULL;
     }
     
-    APR_RING_ELEM_INIT(task, link);
-
     task->id = apr_psprintf(stream_pool, "%ld-%d", session_id, stream_id);
     task->stream_id = stream_id;
     task->mplx = mplx;
@@ -208,121 +202,73 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
 {
     apr_status_t status = APR_SUCCESS;
     h2_config *cfg = h2_config_get(task->mplx->c);
-    h2_task_env env; 
     
     AP_DEBUG_ASSERT(task);
     
-    memset(&env, 0, sizeof(env));
-    
-    env.id = task->id;
-    env.stream_id = task->stream_id;
-    env.mplx = task->mplx;
-    task->mplx = NULL;
-    
-    env.input_eos = task->input_eos;
-    env.serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
+    task->serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
     
     /* Create a subpool from the worker one to be used for all things
-     * with life-time of this task_env execution.
+     * with life-time of this task execution.
      */
-    apr_pool_create(&env.pool, h2_worker_get_pool(worker));
+    apr_pool_create(&task->pool, h2_worker_get_pool(worker));
 
-    /* Link the env to the worker which provides useful things such
+    /* Link the task to the worker which provides useful things such
      * as mutex, a socket etc. */
-    env.io = h2_worker_get_cond(worker);
+    task->io = h2_worker_get_cond(worker);
     
-    /* Clone fields, so that lifetimes become (more) independent. */
-    env.method    = apr_pstrdup(env.pool, task->method);
-    env.scheme    = apr_pstrdup(env.pool, task->scheme);
-    env.authority = apr_pstrdup(env.pool, task->authority);
-    env.path      = apr_pstrdup(env.pool, task->path);
-    env.headers   = apr_table_clone(env.pool, task->headers);
-    
-    /* Setup the pseudo connection to use our own pool and bucket_alloc */
-    env.c = *task->c;
-    task->c = NULL;
-    status = h2_conn_setup(&env, worker);
+    status = h2_conn_setup(task, worker);
     
     /* save in connection that this one is a pseudo connection, prevents
      * other hooks from messing with it. */
-    h2_ctx_create_for(&env.c, &env);
+    h2_ctx_create_for(task->c, task);
 
     if (status == APR_SUCCESS) {
-        env.input = h2_task_input_create(&env, env.pool, 
-                                         env.c.bucket_alloc);
-        env.output = h2_task_output_create(&env, env.pool,
-                                           env.c.bucket_alloc);
-        status = h2_conn_process(&env.c, h2_worker_get_socket(worker));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, &env.c,
-                      "h2_task(%s): processing done", env.id);
+        task->input = h2_task_input_create(task, task->pool, 
+                                           task->c->bucket_alloc);
+        task->output = h2_task_output_create(task, task->pool,
+                                             task->c->bucket_alloc);
+        status = h2_conn_process(task->c, h2_worker_get_socket(worker));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, task->c,
+                      "h2_task(%s): processing done", task->id);
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, &env.c,
-                      APLOGNO(02957) "h2_task(%s): error setting up h2_task_env", 
-                      env.id);
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, task->c,
+                      APLOGNO(02957) "h2_task(%s): error setting up h2_task", 
+                      task->id);
     }
     
-    if (env.input) {
-        h2_task_input_destroy(env.input);
-        env.input = NULL;
+    if (task->input) {
+        h2_task_input_destroy(task->input);
+        task->input = NULL;
     }
     
-    if (env.output) {
-        h2_task_output_close(env.output);
-        h2_task_output_destroy(env.output);
-        env.output = NULL;
+    if (task->output) {
+        h2_task_output_close(task->output);
+        h2_task_output_destroy(task->output);
+        task->output = NULL;
     }
 
-    h2_task_set_finished(task);
-    if (env.io) {
-        apr_thread_cond_signal(env.io);
+    if (task->io) {
+        apr_thread_cond_signal(task->io);
     }
     
-    if (env.pool) {
-        apr_pool_destroy(env.pool);
-        env.pool = NULL;
+    if (task->pool) {
+        apr_pool_destroy(task->pool);
+        task->pool = NULL;
     }
     
-    if (env.c.id) {
-        h2_conn_post(&env.c, worker);
+    if (task->c->id) {
+        h2_conn_post(task->c, worker);
     }
     
-    h2_mplx_task_done(env.mplx, env.stream_id);
+    h2_mplx_task_done(task->mplx, task->stream_id);
     
     return status;
 }
 
-int h2_task_has_started(h2_task *task)
+static request_rec *h2_task_create_request(h2_task *task)
 {
-    AP_DEBUG_ASSERT(task);
-    return apr_atomic_read32(&task->has_started);
-}
-
-void h2_task_set_started(h2_task *task)
-{
-    AP_DEBUG_ASSERT(task);
-    apr_atomic_set32(&task->has_started, 1);
-}
-
-int h2_task_has_finished(h2_task *task)
-{
-    return apr_atomic_read32(&task->has_finished);
-}
-
-void h2_task_set_finished(h2_task *task)
-{
-    apr_atomic_set32(&task->has_finished, 1);
-}
-
-void h2_task_die(h2_task_env *env, int status, request_rec *r)
-{
-    (void)env;
-    ap_die(status, r);
-}
-
-static request_rec *h2_task_create_request(h2_task_env *env)
-{
-    conn_rec *conn = &env->c;
+    conn_rec *conn = task->c;
     request_rec *r;
     apr_pool_t *p;
     int access_status = HTTP_OK;    
@@ -340,7 +286,7 @@ static request_rec *h2_task_create_request(h2_task_env *env)
     
     r->allowed_methods = ap_make_method_list(p, 2);
     
-    r->headers_in = apr_table_copy(r->pool, env->headers);
+    r->headers_in = apr_table_copy(r->pool, task->headers);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
@@ -379,19 +325,19 @@ static request_rec *h2_task_create_request(h2_task_env *env)
     
     /* Time to populate r with the data we have. */
     r->request_time = apr_time_now();
-    r->method = env->method;
+    r->method = task->method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
     if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
     }
 
-    ap_parse_uri(r, env->path);
+    ap_parse_uri(r, task->path);
     r->protocol = (char*)"HTTP/2";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, env->path, r->protocol);
+                                  r->method, task->path, r->protocol);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
@@ -418,7 +364,7 @@ static request_rec *h2_task_create_request(h2_task_env *env)
         /* Request check post hooks failed. An example of this would be a
          * request for a vhost where h2 is disabled --> 421.
          */
-        h2_task_die(env, access_status, r);
+        ap_die(access_status, r);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
         r = NULL;
@@ -435,13 +381,13 @@ traceout:
 }
 
 
-apr_status_t h2_task_process_request(h2_task_env *env)
+static apr_status_t h2_task_process_request(h2_task *task)
 {
-    conn_rec *c = &env->c;
+    conn_rec *c = task->c;
     request_rec *r;
     conn_state_t *cs = c->cs;
 
-    r = h2_task_create_request(env);
+    r = h2_task_create_request(task);
     if (r && (r->status == HTTP_OK)) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
         

@@ -151,13 +151,21 @@ apr_status_t h2_request_write_data(h2_request *req,
 apr_status_t h2_request_end_headers(h2_request *req, struct h2_mplx *m,
                                     h2_task *task, int eos)
 {
+    apr_status_t status;
+    
     if (!req->to_h1) {
-        apr_status_t status = insert_request_line(req, m);
+        status = insert_request_line(req, m);
         if (status != APR_SUCCESS) {
             return status;
         }
     }
-    return h2_to_h1_end_headers(req->to_h1, task, eos);
+    status = h2_to_h1_end_headers(req->to_h1, eos);
+    h2_task_set_request(task, req->to_h1->method, 
+                        req->to_h1->scheme, 
+                        req->to_h1->authority, 
+                        req->to_h1->path, 
+                        req->to_h1->headers, eos);
+    return status;
 }
 
 apr_status_t h2_request_close(h2_request *req)

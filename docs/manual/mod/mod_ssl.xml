@@ -216,6 +216,30 @@ string in <module>mod_log_config</module>.</p>
 
 </section>
 
+<section id="expressionparser"><title>Expression Parser Extension</title>
+
+<p>When <module>mod_ssl</module> is built into Apache or at least
+loaded (under DSO situation) any <a name="envvars">variables</a>
+provided by <module>mod_ssl</module> can be used in expressions
+for the <a href="../expr.html">ap_expr Expression Parser</a>.
+The variables can be referenced using the syntax
+``<code>%{</code><em>varname</em><code>}</code>''. Starting
+with version 2.4.18 one can also use the
+<module>mod_rewrite</module> style syntax
+``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
+the function style syntax
+``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+<example><title>Example (using <module>mod_headers</module>)</title>
+<highlight language="config">
+Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
+Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"
+</highlight>
+</example>
+<p>This feature even works without setting the <code>StdEnvVars</code>
+option of the <directive module="mod_ssl">SSLOptions</directive>
+directive.</p>
+</section>
+
 <section id="authzproviders"><title>Authorization providers for use with Require</title>
 
   <p><module>mod_ssl</module> provides a few authentication providers for use
@@ -1438,7 +1462,7 @@ The available <em>option</em>s are:</p>
 SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
-&lt;Files&gt;
+&lt;/Files&gt;
 </highlight>
 </example>
 </usage>

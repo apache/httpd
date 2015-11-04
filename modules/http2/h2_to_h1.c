@@ -156,7 +156,7 @@ apr_status_t h2_to_h1_add_headers(h2_to_h1 *to_h1, apr_table_t *headers)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, h2_task *task, int eos)
+apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, int eos)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, to_h1->m->c,
                   "h2_to_h1(%ld-%d): end headers", 
@@ -189,23 +189,8 @@ apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, h2_task *task, int eos)
         apr_table_mergen(to_h1->headers, "Transfer-Encoding", "chunked");
     }
     
-    h2_task_set_request(task, to_h1->method, 
-                        to_h1->scheme, 
-                        to_h1->authority, 
-                        to_h1->path, 
-                        to_h1->headers, eos);
     to_h1->eoh = 1;
     
-    if (eos) {
-        apr_status_t status = h2_to_h1_close(to_h1);
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, to_h1->m->c,
-                          APLOGNO(02960) 
-                          "h2_to_h1(%ld-%d): end headers, eos=%d", 
-                          to_h1->m->id, to_h1->stream_id, eos);
-        }
-        return status;
-    }
     return APR_SUCCESS;
 }
 

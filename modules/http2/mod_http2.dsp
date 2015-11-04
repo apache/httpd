@@ -105,6 +105,14 @@ SOURCE=./h2_alt_svc.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_bucket_eoc.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_bucket_eos.c
+# End Source File
+# Begin Source File
+
 SOURCE=./h2_config.c
 # End Source File
 # Begin Source File

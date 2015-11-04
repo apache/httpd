@@ -39,7 +39,7 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r, char *var);
+static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, request_rec *r, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
 static char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, char *var);
@@ -49,8 +49,8 @@ static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
 static char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
 static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c);
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
+static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn);
+static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
@@ -77,7 +77,15 @@ static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     char *var = (char *)data;
     SSLConnRec *sslconn = myConnConfig(ctx->c);
 
-    return sslconn ? ssl_var_lookup_ssl(ctx->p, ctx->c, ctx->r, var) : NULL;
+    return sslconn ? ssl_var_lookup_ssl(ctx->p, sslconn, ctx->r, var) : NULL;
+}
+
+static const char *expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
+                                const char *arg)
+{
+    char *var = (char *)arg;
+
+    return var ? ssl_var_lookup(ctx->p, ctx->s, ctx->c, ctx->r, var) : NULL;
 }
 
 static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
@@ -91,6 +99,15 @@ static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
         if (strcEQn(parms->name, "SSL_", 4)) {
             *parms->func = expr_var_fn;
             *parms->data = parms->name + 4;
+            return OK;
+        }
+        break;
+    case AP_EXPR_FUNC_STRING:
+        /* Function SSL() is implemented by us.
+         */
+        if (strcEQ(parms->name, "SSL")) {
+            *parms->func = expr_func_fn;
+            *parms->data = NULL;
             return OK;
         }
         break;
@@ -245,9 +262,13 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL && c != NULL) {
         SSLConnRec *sslconn = myConnConfig(c);
+        if (!(sslconn && sslconn->ssl) && c->master) {
+            /* use master connection if no SSL defined here */
+            sslconn = myConnConfig(c->master);
+        }
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
-            result = ssl_var_lookup_ssl(p, c, r, var+4);
+            result = ssl_var_lookup_ssl(p, sslconn, r, var+4);
         else if (strcEQ(var, "HTTPS")) {
             if (sslconn && sslconn->ssl)
                 result = "on";
@@ -317,10 +338,9 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
-                                char *var)
+static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, 
+                                request_rec *r, char *var)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     X509 *xs;
     STACK_OF(X509) *sk;
@@ -360,7 +380,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
             result = "Initial";
     }
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
-        result = ssl_var_lookup_ssl_cipher(p, c, var+6);
+        result = ssl_var_lookup_ssl_cipher(p, sslconn, var+6);
     }
     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
         sk = SSL_get_peer_cert_chain(ssl);
@@ -370,7 +390,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         result = ssl_var_lookup_ssl_cert_rfc4523_cea(p, ssl);
     }
     else if (ssl != NULL && strcEQ(var, "CLIENT_VERIFY")) {
-        result = ssl_var_lookup_ssl_cert_verify(p, c);
+        result = ssl_var_lookup_ssl_cert_verify(p, sslconn);
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "CLIENT_", 7)) {
         if ((xs = SSL_get_peer_certificate(ssl)) != NULL) {
@@ -779,9 +799,8 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
+static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     long vrc;
     const char *verr;
@@ -815,9 +834,8 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
+static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     BOOL resdup;
     int usekeysize, algkeysize;

@@ -50,6 +50,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformats">Custom Log Formats</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Request Notes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#expressionparser">Expression Parser Extension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Authorization providers for use with Require</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -292,6 +293,27 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
   for the current connection, the note is not set.</dd>
 </dl>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="expressionparser" id="expressionparser">Expression Parser Extension</a></h2>
+
+<p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
+loaded (under DSO situation) any <a name="envvars">variables</a>
+provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> can be used in expressions
+for the <a href="../expr.html">ap_expr Expression Parser</a>.
+The variables can be referenced using the syntax
+``<code>%{</code><em>varname</em><code>}</code>''. Starting
+with version 2.4.18 one can also use the
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> style syntax
+``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
+the function style syntax
+``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+<div class="example"><h3>Example (using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>)</h3><pre class="prettyprint lang-config">Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
+Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"</pre>
+</div>
+<p>This feature even works without setting the <code>StdEnvVars</code>
+option of the <code class="directive"><a href="#ssloptions">SSLOptions</a></code>
+directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authzproviders" id="authzproviders">Authorization providers for use with Require</a></h2>
@@ -1247,7 +1269,7 @@ The available <em>option</em>s are:</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
-&lt;Files&gt;</pre>
+&lt;/Files&gt;</pre>
 </div>
 
 </div>

@@ -25,6 +25,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
+#include "h2_h2.h"
 #include "h2_util.h"
 #include "h2_response.h"
 
@@ -41,6 +42,7 @@ static int ignore_header(const char *name)
 }
 
 h2_response *h2_response_create(int stream_id,
+                                int rst_error,
                                 const char *http_status,
                                 apr_array_header_t *hlines,
                                 apr_pool_t *pool)
@@ -53,7 +55,8 @@ h2_response *h2_response_create(int stream_id,
     }
     
     response->stream_id = stream_id;
-    response->status = http_status;
+    response->rst_error = rst_error;
+    response->status = http_status? http_status : "500";
     response->content_length = -1;
     
     if (hlines) {
@@ -112,6 +115,19 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     response->status = apr_psprintf(pool, "%d", r->status);
     response->content_length = -1;
     response->rheader = header;
+
+    if (r->status == HTTP_FORBIDDEN) {
+        const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
+        if (cause) {
+            /* This request triggered a TLS renegotiation that is now allowed 
+             * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, r->status, r, 
+                          "h2_response(%ld-%d): renegotiate forbidden, cause: %s",
+                          (long)r->connection->id, stream_id, cause);
+            response->rst_error = H2_ERR_HTTP_1_1_REQUIRED;
+        }
+    }
     
     return response;
 }

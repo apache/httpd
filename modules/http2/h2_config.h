@@ -34,6 +34,10 @@ typedef enum {
     H2_CONF_SER_HEADERS,
     H2_CONF_DIRECT,
     H2_CONF_SESSION_FILES,
+    H2_CONF_MODERN_TLS_ONLY,
+    H2_CONF_UPGRADE,
+    H2_CONF_TLS_WARMUP_SIZE,
+    H2_CONF_TLS_COOLDOWN_SECS,
 } h2_config_var_t;
 
 /* Apache httpd module configuration for h2. */
@@ -51,6 +55,10 @@ typedef struct h2_config {
                                      processing, better compatibility */
     int h2_direct;                /* if mod_h2 is active directly */
     int session_extra_files;      /* # of extra files a session may keep open */  
+    int modern_tls_only;          /* Accept only modern TLS in HTTP/2 connections */  
+    int h2_upgrade;               /* Allow HTTP/1 upgrade to h2/h2c */
+    apr_int64_t tls_warmup_size;  /* Amount of TLS data to send before going full write size */
+    int tls_cooldown_secs;        /* Seconds of idle time before going back to small TLS records */
 } h2_config;
 
 
@@ -67,6 +75,7 @@ h2_config *h2_config_sget(server_rec *s);
 h2_config *h2_config_rget(request_rec *r);
 
 int h2_config_geti(h2_config *conf, h2_config_var_t var);
+apr_int64_t h2_config_geti64(h2_config *conf, h2_config_var_t var);
 
 void h2_config_init(apr_pool_t *pool);
 

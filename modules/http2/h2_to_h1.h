@@ -68,8 +68,7 @@ apr_status_t h2_to_h1_add_headers(h2_to_h1 *to_h1, apr_table_t *headers);
 
 /** End the request headers.
  */
-apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, 
-                                  struct h2_task *task, int eos);
+apr_status_t h2_to_h1_end_headers(h2_to_h1 *to_h1, int eos);
 
 /* Add request body data.
  */

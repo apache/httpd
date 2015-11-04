@@ -7,6 +7,19 @@ Changes with Apache 2.4.18
      [Yann Ylavic, Stefan Eissing]
      
 
+  *) core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
+     alignment (SPARC64, PPC64).  [Yann Ylavic]
+
+  *) mod_cache: Accept HT (Horizontal Tab) when parsing cache related header
+     fields as described in RFC7230. [Christophe Jaillet]
+
+  *) core/util_script: making REDIRECT_URL a full URL is now opt-in
+     via new 'QualifyRedirectURL' directive.
+
+  *) mod_ssl: Extend expression parser registration to support ssl variables
+     in any expression using mod_rewrite syntax "%{SSL:VARNAME}" or function
+     syntax "ssl(VARNAME)". [Rainer Jung]
+
 Changes with Apache 2.4.17
 
   *) mod_http2: added donated HTTP/2 implementation via core module. Similar

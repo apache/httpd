@@ -21,8 +21,9 @@ struct apr_thread_cond_t;
 struct h2_task;
 
 
-typedef apr_status_t h2_io_data_cb(void *ctx, 
-                                   const char *data, apr_size_t len);
+typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_size_t len);
+
+typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
 
 typedef struct h2_io h2_io;
@@ -34,7 +35,10 @@ struct h2_io {
     int eos_in;
     int task_done;
     int rst_error;
+    int zombie;
     
+    struct h2_task *task;       /* task created for this io */
+
     apr_size_t input_consumed;   /* how many bytes have been read */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
     
@@ -59,6 +63,11 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
  * Frees any resources hold by the h2_io instance. 
  */
 void h2_io_destroy(h2_io *io);
+
+/**
+ * Set the response of this stream.
+ */
+void h2_io_set_response(h2_io *io, struct h2_response *response);
 
 /**
  * Reset the stream with the given error code.
@@ -113,6 +122,10 @@ apr_status_t h2_io_in_close(h2_io *io);
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
                              apr_size_t *plen, int *peos);
+
+apr_status_t h2_io_out_read_to(h2_io *io, 
+                               apr_bucket_brigade *bb, 
+                               apr_size_t *plen, int *peos);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, int *pfile_buckets_allowed);
