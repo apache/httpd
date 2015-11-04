@@ -54,8 +54,7 @@ static apr_status_t bucket_read(apr_bucket *b, const char **str,
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_bucket *) h2_bucket_eos_make(apr_bucket *b, 
-                                                   h2_stream *stream)
+apr_bucket *h2_bucket_eos_make(apr_bucket *b, h2_stream *stream)
 {
     h2_bucket_eos *h;
 
@@ -63,13 +62,13 @@ AP_DECLARE(apr_bucket *) h2_bucket_eos_make(apr_bucket *b,
     h->stream = stream;
 
     b = apr_bucket_shared_make(b, h, 0, 0);
-    b->type = &ap_bucket_type_h2_eos;
+    b->type = &h2_bucket_type_eos;
     
     return b;
 }
 
-AP_DECLARE(apr_bucket *) h2_bucket_eos_create(apr_bucket_alloc_t *list,
-                                                     h2_stream *stream)
+apr_bucket *h2_bucket_eos_create(apr_bucket_alloc_t *list,
+                                 h2_stream *stream)
 {
     apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
@@ -97,7 +96,7 @@ static void bucket_destroy(void *data)
     }
 }
 
-AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_h2_eos = {
+AP_DECLARE_DATA const apr_bucket_type_t h2_bucket_type_eos = {
     "H2EOS", 5, APR_BUCKET_METADATA,
     bucket_destroy,
     bucket_read,

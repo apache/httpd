@@ -19,13 +19,12 @@
 struct h2_stream;
 
 /** End Of HTTP/2 STREAM (H2EOS) bucket */
-AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_h2_eos;
+extern const apr_bucket_type_t h2_bucket_type_eos;
 
 
-AP_DECLARE(apr_bucket *) h2_bucket_eos_make(apr_bucket *b, 
-                                            struct h2_stream *stream);
+apr_bucket *h2_bucket_eos_make(apr_bucket *b, struct h2_stream *stream);
 
-AP_DECLARE(apr_bucket *) h2_bucket_eos_create(apr_bucket_alloc_t *list,
-                                              struct h2_stream *stream);
+apr_bucket *h2_bucket_eos_create(apr_bucket_alloc_t *list, 
+                                 struct h2_stream *stream);
 
 #endif /* mod_http2_h2_bucket_stream_eos_h */

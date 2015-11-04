@@ -19,13 +19,13 @@
 struct h2_session;
 
 /** End Of HTTP/2 SESSION (H2EOC) bucket */
-AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_h2_eoc;
+extern const apr_bucket_type_t h2_bucket_type_eoc;
 
 
-AP_DECLARE(apr_bucket *) h2_bucket_eoc_make(apr_bucket *b, 
-                                            struct h2_session *session);
+apr_bucket * h2_bucket_eoc_make(apr_bucket *b, 
+                                struct h2_session *session);
 
-AP_DECLARE(apr_bucket *) h2_bucket_eoc_create(apr_bucket_alloc_t *list,
-                                              struct h2_session *session);
+apr_bucket * h2_bucket_eoc_create(apr_bucket_alloc_t *list,
+                                  struct h2_session *session);
 
 #endif /* mod_http2_h2_bucket_eoc_h */
