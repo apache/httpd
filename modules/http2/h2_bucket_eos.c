@@ -96,7 +96,7 @@ static void bucket_destroy(void *data)
     }
 }
 
-AP_DECLARE_DATA const apr_bucket_type_t h2_bucket_type_eos = {
+const apr_bucket_type_t h2_bucket_type_eos = {
     "H2EOS", 5, APR_BUCKET_METADATA,
     bucket_destroy,
     bucket_read,

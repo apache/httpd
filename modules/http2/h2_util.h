@@ -154,10 +154,10 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
  * @param plen maximum bytes to transfer, actual bytes transferred
  * @param peos if an EOS bucket was transferred
  */
-AP_DECLARE(apr_status_t) h2_transfer_brigade(apr_bucket_brigade *to,
-                                             apr_bucket_brigade *from, 
-                                             apr_pool_t *p,
-                                             apr_size_t *plen,
-                                             int *peos);
+apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
+                                 apr_bucket_brigade *from, 
+                                 apr_pool_t *p,
+                                 apr_size_t *plen,
+                                 int *peos);
 
 #endif /* defined(__mod_h2__h2_util__) */
