@@ -719,11 +719,11 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
 
 }
 
-AP_DECLARE(apr_status_t) h2_transfer_brigade(apr_bucket_brigade *to,
-                                             apr_bucket_brigade *from, 
-                                             apr_pool_t *p,
-                                             apr_size_t *plen,
-                                             int *peos)
+apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
+                                 apr_bucket_brigade *from, 
+                                 apr_pool_t *p,
+                                 apr_size_t *plen,
+                                 int *peos)
 {
     apr_bucket *e;
     apr_size_t len = 0, remain = *plen;
