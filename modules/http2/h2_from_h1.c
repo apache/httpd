@@ -417,7 +417,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
     }
     
     if (!apr_is_empty_array(r->content_languages)) {
-        int i;
+        unsigned int i;
         char *token;
         char **languages = (char **)(r->content_languages->elts);
         const char *field = apr_table_get(r->headers_out, "Content-Language");

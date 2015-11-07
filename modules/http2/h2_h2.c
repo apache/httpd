@@ -85,10 +85,9 @@ static const char *h2_err_descr[] = {
     "http/1.1 required",
 };
 
-const char *h2_h2_err_description(int h2_error)
+const char *h2_h2_err_description(unsigned int h2_error)
 {
-    if (h2_error >= 0 
-        && h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
+    if (h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
         return h2_err_descr[h2_error];
     }
     return "unknown http/2 errotr code";
@@ -415,7 +414,7 @@ static void cipher_init(apr_pool_t *pool)
 {
     apr_hash_t *hash = apr_hash_make(pool);
     const char *source;
-    int i;
+    unsigned int i;
     
     source = "rfc7540";
     for (i = 0; i < RFC7540_names_LEN; ++i) {
@@ -487,7 +486,7 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
         
         /* Need Tlsv1.2 or higher, rfc 7540, ch. 9.2
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, "SSL_PROTOCOL");
+        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_PROTOCOL");
         if (val && *val) {
             if (strncmp("TLS", val, 3) 
                 || !strcmp("TLSv1", val) 
@@ -506,7 +505,7 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
 
         /* Check TLS cipher blacklist
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");
+        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_CIPHER");
         if (val && *val) {
             const char *source;
             if (cipher_is_blacklisted(val, &source)) {

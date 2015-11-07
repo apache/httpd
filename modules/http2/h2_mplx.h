@@ -208,7 +208,7 @@ int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id);
  * Callback invoked for every stream that had input data read since
  * the last invocation.
  */
-typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_size_t consumed);
+typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_off_t consumed);
 
 /**
  * Invoke the callback for all streams that had bytes read since the last
@@ -239,7 +239,7 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
  */
 apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_size_t *plen, int *peos);
+                               apr_off_t *plen, int *peos);
 
 /**
  * Reads output data into the given brigade. Will never block, but
@@ -247,7 +247,7 @@ apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id,
  */
 apr_status_t h2_mplx_out_read_to(h2_mplx *mplx, int stream_id, 
                                  apr_bucket_brigade *bb, 
-                                 apr_size_t *plen, int *peos);
+                                 apr_off_t *plen, int *peos);
 
 /**
  * Opens the output for the given stream with the specified response.

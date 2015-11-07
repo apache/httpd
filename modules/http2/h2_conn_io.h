@@ -31,7 +31,7 @@ typedef struct {
     apr_time_t cooldown_usecs;
     apr_int64_t warmup_size;
     
-    int write_size;
+    apr_size_t write_size;
     apr_time_t last_write;
     apr_int64_t bytes_written;
     

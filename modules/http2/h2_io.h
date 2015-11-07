@@ -21,7 +21,7 @@ struct apr_thread_cond_t;
 struct h2_task;
 
 
-typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_size_t len);
+typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
 
 typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
@@ -121,11 +121,11 @@ apr_status_t h2_io_in_close(h2_io *io);
  */
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
-                             apr_size_t *plen, int *peos);
+                             apr_off_t *plen, int *peos);
 
 apr_status_t h2_io_out_read_to(h2_io *io, 
                                apr_bucket_brigade *bb, 
-                               apr_size_t *plen, int *peos);
+                               apr_off_t *plen, int *peos);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, int *pfile_buckets_allowed);
@@ -140,7 +140,7 @@ apr_status_t h2_io_out_close(h2_io *io);
  * Gives the overall length of the data that is currently queued for
  * output.
  */
-apr_size_t h2_io_out_length(h2_io *io);
+apr_off_t h2_io_out_length(h2_io *io);
 
 
 #endif /* defined(__mod_h2__h2_io__) */

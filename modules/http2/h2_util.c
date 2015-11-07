@@ -215,7 +215,7 @@ static const int DEEP_COPY = 1;
 static const int FILE_MOVE = 1;
 
 static apr_status_t last_not_included(apr_bucket_brigade *bb, 
-                                      apr_size_t maxlen, 
+                                      apr_off_t maxlen, 
                                       int same_alloc,
                                       int *pfile_buckets_allowed,
                                       apr_bucket **pend)
@@ -275,7 +275,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 #define LOG_LEVEL APLOG_INFO
 
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, int *pfile_handles_allowed, 
+                          apr_off_t maxlen, int *pfile_handles_allowed, 
                           const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
@@ -407,7 +407,7 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
 }
 
 apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, const char *msg)
+                          apr_off_t maxlen, const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
     int same_alloc;
@@ -483,7 +483,7 @@ int h2_util_has_flush_or_eos(apr_bucket_brigade *bb) {
     return 0;
 }
 
-int h2_util_has_eos(apr_bucket_brigade *bb, apr_size_t len)
+int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
 {
     apr_bucket *b, *end;
     
@@ -537,7 +537,7 @@ int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb)
 }
 
 apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb, 
-                              apr_size_t *plen, int *peos)
+                              apr_off_t *plen, int *peos)
 {
     apr_status_t status;
     apr_off_t blen = 0;
@@ -574,12 +574,12 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
 
 apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
                               h2_util_pass_cb *cb, void *ctx, 
-                              apr_size_t *plen, int *peos)
+                              apr_off_t *plen, int *peos)
 {
     apr_status_t status = APR_SUCCESS;
     int consume = (cb != NULL);
-    apr_size_t written = 0;
-    apr_size_t avail = *plen;
+    apr_off_t written = 0;
+    apr_off_t avail = *plen;
     apr_bucket *next, *b;
     
     /* Pass data in our brigade through the callback until the length
@@ -607,8 +607,7 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
             
             if (b->length == ((apr_size_t)-1)) {
                 /* read to determine length */
-                status = apr_bucket_read(b, &data, &data_len, 
-                                         APR_NONBLOCK_READ);
+                status = apr_bucket_read(b, &data, &data_len, APR_NONBLOCK_READ);
             }
             else {
                 data_len = b->length;
@@ -722,11 +721,11 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
 apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_bucket_brigade *from, 
                                  apr_pool_t *p,
-                                 apr_size_t *plen,
+                                 apr_off_t *plen,
                                  int *peos)
 {
     apr_bucket *e;
-    apr_size_t len = 0, remain = *plen;
+    apr_off_t len = 0, remain = *plen;
     apr_status_t rv;
 
     *peos = 0;
