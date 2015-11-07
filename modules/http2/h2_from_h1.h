@@ -48,7 +48,7 @@ struct h2_from_h1 {
     apr_pool_t *pool;
     apr_bucket_brigade *bb;
     
-    apr_size_t content_length;
+    apr_off_t content_length;
     int chunked;
     
     const char *status;

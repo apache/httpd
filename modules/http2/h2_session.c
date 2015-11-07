@@ -86,6 +86,12 @@ static int stream_open(h2_session *session, int stream_id)
     return 0;
 }
 
+static apr_status_t h2_session_flush(h2_session *session) 
+{
+    session->flush = 0;
+    return h2_conn_io_flush(&session->io);
+}
+
 /**
  * Determine the importance of streams when scheduling tasks.
  * - if both stream depend on the same one, compare weights
@@ -246,9 +252,7 @@ static int before_frame_send_cb(nghttp2_session *ngh2,
      * following frame types */
     switch (frame->hd.type) {
         case NGHTTP2_RST_STREAM:
-        case NGHTTP2_WINDOW_UPDATE:
         case NGHTTP2_PUSH_PROMISE:
-        case NGHTTP2_PING:
         case NGHTTP2_GOAWAY:
             session->flush = 1;
             break;
@@ -472,6 +476,14 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           frame->priority.pri_spec.exclusive);
             break;
         }
+        case NGHTTP2_WINDOW_UPDATE: {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                          "h2_session:  stream(%ld-%d): WINDOW_UPDATE "
+                          "incr=%d", 
+                          session->id, (int)frame->hd.stream_id,
+                          frame->window_update.window_size_increment);
+            break;
+        }
         default:
             if (APLOGctrace2(session->c)) {
                 char buffer[256];
@@ -517,7 +529,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
 }
 
 static apr_status_t pass_data(void *ctx, 
-                              const char *data, apr_size_t length)
+                              const char *data, apr_off_t length)
 {
     return h2_conn_io_write(&((h2_session*)ctx)->io, data, length);
 }
@@ -535,7 +547,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     apr_status_t status = APR_SUCCESS;
     h2_session *session = (h2_session *)userp;
     int stream_id = (int)frame->hd.stream_id;
-    const unsigned char padlen = frame->data.padlen;
+    unsigned char padlen;
     int eos;
     h2_stream *stream;
     
@@ -544,6 +556,11 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     if (session->aborted) {
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
+    
+    if (frame->data.padlen > H2_MAX_PADLEN) {
+        return NGHTTP2_ERR_PROTO;
+    }
+    padlen = (unsigned char)frame->data.padlen;
     
     stream = h2_session_get_stream(session, stream_id);
     if (!stream) {
@@ -566,9 +583,8 @@ static int on_send_data_cb(nghttp2_session *ngh2,
             }
             
             if (status == APR_SUCCESS) {
-                apr_size_t len = length;
-                status = h2_stream_readx(stream, pass_data, session, 
-                                         &len, &eos);
+                apr_off_t len = length;
+                status = h2_stream_readx(stream, pass_data, session, &len, &eos);
                 if (status == APR_SUCCESS && len != length) {
                     status = APR_EINVAL;
                 }
@@ -593,7 +609,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         status = h2_conn_io_writeb(&session->io, b);
         
         if (status == APR_SUCCESS) {
-            apr_size_t len = length;
+            apr_off_t len = length;
             status = h2_stream_read_to(stream, session->io.output, &len, &eos);
             session->io.unflushed = 1;
             if (status == APR_SUCCESS && len != length) {
@@ -624,20 +640,6 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     return h2_session_status_from_apr_status(status);
 }
 
-static ssize_t on_data_source_read_length_cb(nghttp2_session *session, 
-                                             uint8_t frame_type, int32_t stream_id, 
-                                             int32_t session_remote_window_size, 
-                                             int32_t stream_remote_window_size, 
-                                             uint32_t remote_max_frame_size, 
-                                             void *user_data)
-{
-    /* DATA frames add 9 bytes header plus 1 byte for padlen and additional 
-     * padlen bytes. Keep below TLS maximum record size.
-     * TODO: respect pad bytes when we have that feature.
-     */
-    return (16*1024 - 10);
-}
-
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
 
@@ -662,7 +664,6 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
-    NGH2_SET_CALLBACK(*pcb, data_source_read_length, on_data_source_read_length_cb);
     
     return APR_SUCCESS;
 }
@@ -823,7 +824,7 @@ static apr_status_t h2_session_abort_int(h2_session *session, int reason)
                                       strlen(err));
                 nghttp2_session_send(session->ngh2);
             }
-            h2_conn_io_flush(&session->io);
+            h2_session_flush(session);
         }
         h2_mplx_abort(session->mplx);
     }
@@ -1002,20 +1003,15 @@ static int h2_session_resume_streams_with_data(h2_session *session) {
     return 0;
 }
 
-static void update_window(void *ctx, int stream_id, apr_size_t bytes_read)
+static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
 {
     h2_session *session = (h2_session*)ctx;
     nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
 }
 
-static apr_status_t h2_session_flush(h2_session *session) 
-{
-    session->flush = 0;
-    return h2_conn_io_flush(&session->io);
-}
-
 static apr_status_t h2_session_update_windows(h2_session *session)
 {
+    /* TODO: only do this, when we have streams with open input */
     return h2_mplx_in_update_windows(session->mplx, update_window, session);
 }
 
@@ -1052,6 +1048,7 @@ apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout)
     }
     
     /* If we have responses ready, submit them now. */
+    /* TODO: only call this when we have unsubmitted streams */
     while (!session->aborted 
            && (stream = h2_mplx_next_submit(session->mplx, session->streams)) != NULL) {
         status = h2_session_handle_response(session, stream);
@@ -1152,7 +1149,7 @@ apr_status_t h2_session_close(h2_session *session)
     h2_conn_io_writeb(&session->io,
                       h2_bucket_eoc_create(session->c->bucket_alloc, 
                                            session));
-    return h2_conn_io_flush(&session->io);
+    return h2_session_flush(session);
 }
 
 static ssize_t stream_data_cb(nghttp2_session *ng2s,
@@ -1164,7 +1161,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                               void *puser)
 {
     h2_session *session = (h2_session *)puser;
-    apr_size_t nread = length;
+    apr_off_t nread = length;
     int eos = 0;
     apr_status_t status;
     h2_stream *stream;

@@ -78,7 +78,7 @@ int h2_io_out_has_data(h2_io *io)
     return h2_util_bb_has_data_or_eos(io->bbout);
 }
 
-apr_size_t h2_io_out_length(h2_io *io)
+apr_off_t h2_io_out_length(h2_io *io)
 {
     if (io->bbout) {
         apr_off_t len = 0;
@@ -154,7 +154,7 @@ apr_status_t h2_io_in_close(h2_io *io)
 
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
-                             apr_size_t *plen, int *peos)
+                             apr_off_t *plen, int *peos)
 {
     apr_status_t status;
     
@@ -183,7 +183,7 @@ apr_status_t h2_io_out_readx(h2_io *io,
 }
 
 apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb, 
-                               apr_size_t *plen, int *peos)
+                               apr_off_t *plen, int *peos)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;

@@ -323,14 +323,13 @@ apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
 apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
 {
     apr_status_t status = APR_SUCCESS;
-    int flush_now = 0;
     
     /* The HTTP/1.1 network output buffer/flush behaviour does not
      * give optimal performance in the HTTP/2 case, as the pattern of
      * buckets (data/eor/eos) is different.
-     * As long as we do not have found out the "best" way to deal with
+     * As long as we have not found out the "best" way to deal with
      * this, force a flush at least every WRITE_BUFFER_SIZE amount
-     * of data which seems to work nicely.
+     * of data.
      */
     if (io->unflushed) {
         apr_off_t len = 0;
@@ -338,12 +337,11 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
             apr_brigade_length(io->output, 0, &len);
         }
         len += io->buflen;
-        flush_now = (len >= WRITE_BUFFER_SIZE);
+        if (len >= WRITE_BUFFER_SIZE) {
+            return h2_conn_io_flush(io);
+        }
     }
     
-    if (flush_now) {
-        return h2_conn_io_flush(io);
-    }
     return status;
 }
 
@@ -370,6 +368,8 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
             return status;
         }
 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
+                      "h2_conn_io: flushed");
         io->unflushed = 0;
     }
     return APR_SUCCESS;

@@ -57,7 +57,7 @@ extern const char *H2_MAGIC_TOKEN;
  * @param h2_error http/2 error code, as in rfc 7540, ch. 7
  * @return textual description of code or that it is unknown.
  */
-const char *h2_h2_err_description(int h2_error);
+const char *h2_h2_err_description(unsigned int h2_error);
 
 /*
  * One time, post config intialization.

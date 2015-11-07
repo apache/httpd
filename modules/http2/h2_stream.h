@@ -68,7 +68,7 @@ struct h2_stream {
     struct h2_response *response; /* the response, once ready */
     
     apr_bucket_brigade *bbout;  /* output DATA */
-    apr_size_t data_frames_sent;/* # of DATA frames sent out for this stream */
+    apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
 };
 
 
@@ -103,13 +103,13 @@ apr_status_t h2_stream_set_response(h2_stream *stream,
                                     apr_bucket_brigade *bb);
 
 apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_size_t *plen, int *peos);
+                                 apr_off_t *plen, int *peos);
 
 apr_status_t h2_stream_readx(h2_stream *stream, h2_io_data_cb *cb, 
-                             void *ctx, apr_size_t *plen, int *peos);
+                             void *ctx, apr_off_t *plen, int *peos);
 
 apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
-                               apr_size_t *plen, int *peos);
+                               apr_off_t *plen, int *peos);
 
 
 void h2_stream_set_suspended(h2_stream *stream, int suspended);

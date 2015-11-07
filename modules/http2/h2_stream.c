@@ -116,7 +116,7 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                               "h2_stream_set_response");
     }
     if (APLOGctrace1(stream->session->c)) {
-        apr_size_t len = 0;
+        apr_off_t len = 0;
         int eos = 0;
         h2_util_bb_avail(stream->bbout, &len, &eos);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->c,
@@ -236,7 +236,7 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
 }
 
 apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_size_t *plen, int *peos)
+                                 apr_off_t *plen, int *peos)
 {
     apr_status_t status = APR_SUCCESS;
     const char *src;
@@ -269,7 +269,7 @@ apr_status_t h2_stream_prep_read(h2_stream *stream,
 
 apr_status_t h2_stream_readx(h2_stream *stream, 
                              h2_io_data_cb *cb, void *ctx,
-                             apr_size_t *plen, int *peos)
+                             apr_off_t *plen, int *peos)
 {
     apr_status_t status = APR_SUCCESS;
     const char *src;
@@ -279,7 +279,7 @@ apr_status_t h2_stream_readx(h2_stream *stream,
     }
     *peos = 0;
     if (!APR_BRIGADE_EMPTY(stream->bbout)) {
-        apr_size_t origlen = *plen;
+        apr_off_t origlen = *plen;
         
         src = "stream";
         status = h2_util_bb_readx(stream->bbout, cb, ctx, plen, peos);
@@ -306,7 +306,7 @@ apr_status_t h2_stream_readx(h2_stream *stream,
 }
 
 apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
-                               apr_size_t *plen, int *peos)
+                               apr_off_t *plen, int *peos)
 {
     apr_status_t status = APR_SUCCESS;
 
@@ -315,7 +315,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
     }
     
     if (APR_BRIGADE_EMPTY(stream->bbout)) {
-        apr_size_t tlen = *plen;
+        apr_off_t tlen = *plen;
         int eos;
         status = h2_mplx_out_read_to(stream->session->mplx, stream->id, 
                                      stream->bbout, &tlen, &eos);
@@ -343,6 +343,9 @@ void h2_stream_set_suspended(h2_stream *stream, int suspended)
 {
     AP_DEBUG_ASSERT(stream);
     stream->suspended = !!suspended;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c,
+                  "h2_stream(%ld-%d): suspended=%d",
+                  stream->session->id, stream->id, stream->suspended);
 }
 
 int h2_stream_is_suspended(h2_stream *stream)

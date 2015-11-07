@@ -431,7 +431,7 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
 
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_size_t *plen, int *peos)
+                               apr_off_t *plen, int *peos)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -461,7 +461,7 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
 
 apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
                                  apr_bucket_brigade *bb, 
-                                 apr_size_t *plen, int *peos)
+                                 apr_off_t *plen, int *peos)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
