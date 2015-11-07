@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -52,6 +50,8 @@ pour fournir le moteur de chiffrement.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformats">Formats de journaux
 personnalisés</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Information à propos de la requête</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#expressionparser">Extension pour l'interprétation
+des expressions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Fournisseurs d'autorisation
 disponibles avec Require</a></li>
 </ul><h3 class="directives">Directives</h3>
@@ -366,6 +366,25 @@ format <code>%{<em>nom</em>}n</code> via le module
   sera pas défini.</dd>
 </dl>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="expressionparser" id="expressionparser">Extension pour l'interprétation
+des expressions</a></h2>
+
+<p>Lorsque <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est compilé statiquement avec
+Apache, ou même chargé dynamiquement (en tant que module DSO), toute <a name="envvars">variable</a> en provenance de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut
+être utilisée pour l'<a href="../expr.html">interprétation des
+expression ap_expr</a>. Les variables peuvent être référencées en
+utilisant la syntaxe ``<code>%{</code><em>varname</em><code>}</code>''.
+A partir de la version 2.4.18, on peut aussi utiliser la syntaxe de
+style <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+``<code>%{SSL:</code><em>varname</em><code>}</code>'', ou la syntaxe de
+style fonction ``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+<div class="example"><h3>Exemple (en utilisant <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>)</h3><pre class="prettyprint lang-config">Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
+Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"</pre>
+</div>
+<p>Cette fonctionnalité est disponible même si l'option
+<code>StdEnvVars</code> de la directive <code class="directive"><a href="#ssloptions">SSLOptions</a></code> n'a pas été définie.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authzproviders" id="authzproviders">Fournisseurs d'autorisation
@@ -1418,7 +1437,7 @@ Les <em>option</em>s disponibles sont :</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
-&lt;Files&gt;</pre>
+&lt;/Files&gt;</pre>
 </div>
 
 </div>
