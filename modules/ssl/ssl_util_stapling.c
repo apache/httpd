@@ -404,7 +404,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                 BIO_free(bio);
             }
 
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02969)
                          "stapling_check_response: response has certificate "
                          "status %s (reason: %s) for serial number %s",
                          OCSP_cert_status_str(status),
