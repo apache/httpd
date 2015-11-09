@@ -227,8 +227,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
                                            task->c->bucket_alloc);
         task->output = h2_task_output_create(task, task->pool,
                                              task->c->bucket_alloc);
-        status = h2_conn_process(task->c, h2_worker_get_socket(worker));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, task->c,
+        ap_process_connection(task->c, h2_worker_get_socket(worker));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_task(%s): processing done", task->id);
     }
     else {
@@ -255,10 +255,6 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     if (task->pool) {
         apr_pool_destroy(task->pool);
         task->pool = NULL;
-    }
-    
-    if (task->c->id) {
-        h2_conn_post(task->c, worker);
     }
     
     h2_mplx_task_done(task->mplx, task->stream_id);
