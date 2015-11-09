@@ -1373,8 +1373,10 @@ apr_status_t h2_session_process(h2_session *session)
             }
             
             if (may_block) {
+                h2_session_flush(session);
                 if (session->c->cs) {
-                    session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                    session->c->cs->state = (got_streams? CONN_STATE_HANDLER
+                                             : CONN_STATE_WRITE_COMPLETION);
                 }
                 status = h2_conn_io_read(&session->io, APR_BLOCK_READ, 
                                          session_receive, session);

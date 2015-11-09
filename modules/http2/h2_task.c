@@ -397,6 +397,8 @@ static apr_status_t h2_task_process_request(h2_task *task)
          * will result in a segfault immediately instead
          * of nondeterministic failures later.
          */
+        if (cs)
+            cs->state = CONN_STATE_WRITE_COMPLETION;
         r = NULL;
     }
     ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
