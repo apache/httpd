@@ -780,14 +780,20 @@ void h2_session_destroy(h2_session *session)
         nghttp2_session_del(session->ngh2);
         session->ngh2 = NULL;
     }
+    if (session->spare) {
+        apr_pool_destroy(session->spare);
+        session->spare = NULL;
+    }
+    if (session->pool) {
+        apr_pool_destroy(session->pool);
+    }
 }
 
 void h2_session_cleanup(h2_session *session)
 {
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                  "session(%ld): cleanup and destroy", session->id);
     h2_session_destroy(session);
-    if (session->pool) {
-        apr_pool_destroy(session->pool);
-    }
 }
 
 static apr_status_t h2_session_abort_int(h2_session *session, int reason)
