@@ -22,6 +22,7 @@
 #include <http_log.h>
 
 #include "h2_private.h"
+#include "h2_conn.h"
 #include "h2_mplx.h"
 #include "h2_task.h"
 #include "h2_worker.h"
@@ -55,7 +56,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         if (worker->task) {            
             h2_task_do(worker->task, worker);
             worker->task = NULL;
-            apr_thread_cond_signal(h2_worker_get_cond(worker));
+            apr_thread_cond_signal(worker->io);
         }
     }
 
@@ -112,7 +113,6 @@ h2_worker *h2_worker_create(int id,
         
         w->id = id;
         w->pool = pool;
-        w->bucket_alloc = apr_bucket_alloc_create(pool);
 
         w->get_next = get_next;
         w->worker_done = worker_done;
@@ -157,14 +157,32 @@ int h2_worker_is_aborted(h2_worker *worker)
     return worker->aborted;
 }
 
-apr_thread_t *h2_worker_get_thread(h2_worker *worker)
-{
-    return worker->thread;
+apr_status_t h2_worker_setup_task(h2_worker *worker, h2_task *task) {
+    apr_status_t status;
+    
+    /* Create a subpool from the worker one to be used for all things
+     * with life-time of this task execution.
+     */
+    apr_pool_create(&task->pool, worker->pool);
+
+    /* Link the task to the worker which provides useful things such
+     * as mutex, a socket etc. */
+    task->io = worker->io;
+    
+    status = h2_conn_setup(task, apr_bucket_alloc_create(task->pool),
+                           worker->thread, worker->socket);
+    
+    return status;
 }
 
-apr_thread_cond_t *h2_worker_get_cond(h2_worker *worker)
+void h2_worker_release_task(h2_worker *worker, struct h2_task *task)
 {
-    return worker->io;
+    task->io = NULL;
+    
+    if (task->pool) {
+        apr_pool_destroy(task->pool);
+        task->pool = NULL;
+    }
 }
 
 apr_socket_t *h2_worker_get_socket(h2_worker *worker)
@@ -172,13 +190,4 @@ apr_socket_t *h2_worker_get_socket(h2_worker *worker)
     return worker->socket;
 }
 
-apr_pool_t *h2_worker_get_pool(h2_worker *worker)
-{
-    return worker->pool;
-}
-
-apr_bucket_alloc_t *h2_worker_get_bucket_alloc(h2_worker *worker)
-{
-    return worker->bucket_alloc;
-}
 

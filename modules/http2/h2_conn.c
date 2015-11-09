@@ -248,7 +248,8 @@ conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
     return c;
 }
 
-apr_status_t h2_conn_setup(h2_task *task, struct h2_worker *worker)
+apr_status_t h2_conn_setup(h2_task *task, apr_bucket_alloc_t *bucket_alloc,
+                           apr_thread_t *thread, apr_socket_t *socket)
 {
     conn_rec *master = task->mplx->c;
     
@@ -262,8 +263,8 @@ apr_status_t h2_conn_setup(h2_task *task, struct h2_worker *worker)
      * pools.
      */
     task->c->pool = task->pool;
-    task->c->bucket_alloc = h2_worker_get_bucket_alloc(worker);
-    task->c->current_thread = h2_worker_get_thread(worker);
+    task->c->current_thread = thread;
+    task->c->bucket_alloc = bucket_alloc;
     
     task->c->conn_config = ap_create_conn_config(task->pool);
     task->c->notes = apr_table_make(task->pool, 5);
@@ -271,8 +272,7 @@ apr_status_t h2_conn_setup(h2_task *task, struct h2_worker *worker)
     /* In order to do this in 2.4.x, we need to add a member to conn_rec */
     task->c->master = master;
     
-    ap_set_module_config(task->c->conn_config, &core_module, 
-                         h2_worker_get_socket(worker));
+    ap_set_module_config(task->c->conn_config, &core_module, socket);
     
     /* This works for mpm_worker so far. Other mpm modules have 
      * different needs, unfortunately. The most interesting one 

@@ -206,17 +206,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     AP_DEBUG_ASSERT(task);
     
     task->serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
-    
-    /* Create a subpool from the worker one to be used for all things
-     * with life-time of this task execution.
-     */
-    apr_pool_create(&task->pool, h2_worker_get_pool(worker));
 
-    /* Link the task to the worker which provides useful things such
-     * as mutex, a socket etc. */
-    task->io = h2_worker_get_cond(worker);
-    
-    status = h2_conn_setup(task, worker);
+    status = h2_worker_setup_task(worker, task);
     
     /* save in connection that this one is a pseudo connection, prevents
      * other hooks from messing with it. */
@@ -252,10 +243,7 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         apr_thread_cond_signal(task->io);
     }
     
-    if (task->pool) {
-        apr_pool_destroy(task->pool);
-        task->pool = NULL;
-    }
+    h2_worker_release_task(worker, task);
     
     h2_mplx_task_done(task->mplx, task->stream_id);
     

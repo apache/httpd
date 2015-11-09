@@ -74,6 +74,10 @@ static void h2_mplx_destroy(h2_mplx *m)
         m->lock = NULL;
     }
     
+    if (m->spare_pool) {
+        apr_pool_destroy(m->spare_pool);
+        m->spare_pool = NULL;
+    }
     if (m->pool) {
         apr_pool_destroy(m->pool);
     }
