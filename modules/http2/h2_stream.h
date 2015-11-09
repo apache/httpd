@@ -61,6 +61,7 @@ struct h2_stream {
     int aborted;                /* was aborted */
     int suspended;              /* DATA sending has been suspended */
     int rst_error;              /* stream error for RST_STREAM */
+    int submitted;              /* response HEADER has been sent */
     
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
@@ -114,5 +115,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 
 void h2_stream_set_suspended(h2_stream *stream, int suspended);
 int h2_stream_is_suspended(h2_stream *stream);
+int h2_stream_input_is_open(h2_stream *stream);
+int h2_stream_needs_submit(h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_stream__) */

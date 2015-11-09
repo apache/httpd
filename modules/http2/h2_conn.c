@@ -40,8 +40,6 @@
 
 static struct h2_workers *workers;
 
-static apr_status_t h2_conn_loop(h2_session *session);
-
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
 static int checked;
@@ -133,42 +131,28 @@ static module *h2_conn_mpm_module(void) {
     return mpm_module;
 }
 
-apr_status_t h2_conn_rprocess(request_rec *r)
+apr_status_t h2_conn_process(conn_rec *c, request_rec *r)
 {
-    h2_config *config = h2_config_rget(r);
-    h2_session *session;
-    
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "h2_conn_process start");
-    if (!workers) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02911) 
-                      "workers not initialized");
-        return APR_EGENERAL;
-    }
-    
-    session = h2_session_rcreate(r, config, workers);
-    if (!session) {
-        return APR_EGENERAL;
-    }
-    
-    return h2_conn_loop(session);
-}
-
-apr_status_t h2_conn_main(conn_rec *c)
-{
-    h2_config *config = h2_config_get(c);
-    h2_session *session;
     apr_status_t status;
+    h2_session *session;
+    h2_config *config;
+    int rv;
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_main start");
     if (!workers) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02912) 
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
                       "workers not initialized");
         return APR_EGENERAL;
     }
     
-    session = h2_session_create(c, config, workers);
-    if (!session) {
-        return APR_EGENERAL;
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_process start");
+    
+    if (r) {
+        config = h2_config_rget(r);
+        session = h2_session_rcreate(r, config, workers);
+    }
+    else {
+        config = h2_config_get(c);
+        session = h2_session_create(c, config, workers);
     }
     
     if (!h2_is_acceptable_connection(c, 1)) {
@@ -176,62 +160,7 @@ apr_status_t h2_conn_main(conn_rec *c)
                               NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
     } 
 
-    status = h2_conn_loop(session);
-
-    /* Make sure this connection gets closed properly. */
-    c->keepalive = AP_CONN_CLOSE;
-    if (c->cs) {
-        c->cs->state = CONN_STATE_WRITE_COMPLETION;
-    }
-
-    return status;
-}
-
-static apr_status_t h2_conn_loop(h2_session *session)
-{
-    apr_status_t status = APR_SUCCESS;
-    int rv = 0;
-    apr_interval_time_t wait_micros = 0;
-    static const int MAX_WAIT_MICROS = 200 * 1000;
-    
-    /* Start talking to the client. Apart from protocol meta data,
-     * we mainly will see new http/2 streams opened by the client, which
-     * basically are http requests we need to dispatch.
-     *
-     * There will be bursts of new streams, to be served concurrently,
-     * followed by long pauses of no activity.
-     *
-     * Since the purpose of http/2 is to allow siumultaneous streams, we
-     * need to dispatch the handling of each stream into a separate worker
-     * thread, keeping this thread open for sending responses back as
-     * soon as they arrive.
-     * At the same time, we need to continue reading new frames from
-     * our client, which may be meta (WINDOWS_UPDATEs, PING, SETTINGS) or
-     * new streams.
-     *
-     * As long as we have streams open in this session, we cannot really rest
-     * since there are two conditions to wait on: 1. new data from the client,
-     * 2. new data from the open streams to send back.
-     *
-     * Only when we have no more streams open, can we do a blocking read
-     * on our connection.
-     *
-     * TODO: implement graceful GO_AWAY after configurable idle time
-     */
-    
-    ap_update_child_status_from_conn(session->c->sbh, SERVER_BUSY_READ, 
-                                     session->c);
-
-    if (APLOGctrace2(session->c)) {
-        ap_filter_t *filter = session->c->input_filters;
-        while (filter) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                          "h2_conn(%ld), has connection filter %s",
-                          session->id, filter->frec->name);
-            filter = filter->next;
-        }
-    }
-    
+    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
     status = h2_session_start(session, &rv);
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
@@ -244,109 +173,20 @@ static apr_status_t h2_conn_loop(h2_session *session)
         return status;
     }
     
-    while (!h2_session_is_done(session)) {
-        int have_written = 0;
-        int have_read = 0;
-        int got_streams;
-        
-        status = h2_session_write(session, wait_micros);
-        if (status == APR_SUCCESS) {
-            have_written = 1;
-            wait_micros = 0;
-        }
-        else if (APR_STATUS_IS_EAGAIN(status)) {
-            /* nop */
-        }
-        else if (status == APR_TIMEUP) {
-            wait_micros *= 2;
-            if (wait_micros > MAX_WAIT_MICROS) {
-                wait_micros = MAX_WAIT_MICROS;
-            }
-        }
-        else {
-            ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
-                          "h2_session(%ld): writing, terminating",
-                          session->id);
-            h2_session_abort(session, status, 0);
-            break;
-        }
-        
-        /* We would like to do blocking reads as often as possible as they
-         * are more efficient in regard to server resources.
-         * We can do them under the following circumstances:
-         * - we have no open streams and therefore have nothing to write
-         * - we have just started the session and are waiting for the first
-         *   two frames to come in. There will always be at least 2 frames as
-         *   * h2 will send SETTINGS and SETTINGS-ACK
-         *   * h2c will count the header settings as one frame and we
-         *     submit our settings and need the ACK.
-         */
-        got_streams = !h2_stream_set_is_empty(session->streams);
-        if (!got_streams || session->frames_received <= 1) {
-            if (session->c->cs) {
-                session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
-            }
-            status = h2_session_read(session, APR_BLOCK_READ);
-        }
-        else {
-            if (session->c->cs) {
-                session->c->cs->state = CONN_STATE_HANDLER;
-            }
-            status = h2_session_read(session, APR_NONBLOCK_READ);
-        }
-        
-        switch (status) {
-            case APR_SUCCESS:       /* successful read, reset our idle timers */
-                have_read = 1;
-                wait_micros = 0;
-                break;
-            case APR_EAGAIN:              /* non-blocking read, nothing there */
-                break;
-            default:
-                if (APR_STATUS_IS_ETIMEDOUT(status)
-                    || APR_STATUS_IS_ECONNABORTED(status)
-                    || APR_STATUS_IS_ECONNRESET(status)
-                    || APR_STATUS_IS_EOF(status)
-                    || APR_STATUS_IS_EBADF(status)) {
-                    /* common status for a client that has left */
-                    ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
-                                  "h2_session(%ld): terminating",
-                                  session->id);
-                    /* Stolen from mod_reqtimeout to speed up lingering when
-                     * a read timeout happened.
-                     */
-                    apr_table_setn(session->c->notes, "short-lingering-close", "1");
-                }
-                else {
-                    /* uncommon status, log on INFO so that we see this */
-                    ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
-                                  APLOGNO(02950) 
-                                  "h2_session(%ld): error reading, terminating",
-                                  session->id);
-                }
-                h2_session_abort(session, status, 0);
-                break;
-        }
-        
-        if (!have_read && !have_written
-            && !h2_stream_set_is_empty(session->streams)) {
-            /* Nothing to read or write, we have streams, but
-             * the have no data yet ready to be delivered. Slowly
-             * back off to give others a chance to do their work.
-             */
-            if (wait_micros == 0) {
-                wait_micros = 10;
-            }
-        }
-    }
-    
+    status = h2_session_process(session);
+    h2_session_close(session);
+
     ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                   "h2_session(%ld): done", session->id);
     
-    h2_session_close(session);
-    ap_update_child_status_from_conn(session->c->sbh, SERVER_CLOSING, 
-                                     session->c);
-    return DONE;
+    /* Make sure this connection gets closed properly. */
+    ap_update_child_status_from_conn(c->sbh, SERVER_CLOSING, c);
+    c->keepalive = AP_CONN_CLOSE;
+    if (c->cs) {
+        c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    }
+
+    return status;
 }
 
 
@@ -456,24 +296,6 @@ apr_status_t h2_conn_setup(h2_task *task, struct h2_worker *worker)
      * when names do not match. We prefer a predictable 421 status.
      */
     task->c->keepalives = 1;
-    
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_conn_post(conn_rec *c, h2_worker *worker)
-{
-    (void)worker;
-    
-    /* be sure no one messes with this any more */
-    memset(c, 0, sizeof(*c)); 
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_conn_process(conn_rec *c, apr_socket_t *socket)
-{
-    AP_DEBUG_ASSERT(c);
-    
-    ap_process_connection(c, socket);
     
     return APR_SUCCESS;
 }

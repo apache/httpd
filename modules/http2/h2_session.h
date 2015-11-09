@@ -107,6 +107,14 @@ h2_session *h2_session_rcreate(request_rec *r, struct h2_config *cfg,
                                struct h2_workers *workers);
 
 /**
+ * Process the given HTTP/2 session until it is ended or a fatal
+ * error occured.
+ *
+ * @param session the sessionm to process
+ */
+apr_status_t h2_session_process(h2_session *session);
+
+/**
  * Destroy the session and all objects it still contains. This will not
  * destroy h2_task instances that have not finished yet. 
  * @param session the session to destroy
@@ -130,12 +138,6 @@ void h2_session_cleanup(h2_session *session);
 apr_status_t h2_session_start(h2_session *session, int *rv);
 
 /**
- * Determine if session is finished.
- * @return != 0 iff session is finished and connection can be closed.
- */
-int h2_session_is_done(h2_session *session);
-
-/**
  * Called when an error occured and the session needs to shut down.
  * @param session the session to shut down
  * @param reason  the apache status that caused the shutdown
@@ -148,18 +150,6 @@ apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
  * Called before a session gets destroyed, might flush output etc. 
  */
 apr_status_t h2_session_close(h2_session *session);
-
-/* Read more data from the client connection. Used normally with blocking
- * APR_NONBLOCK_READ, which will return APR_EAGAIN when no data is available.
- * Use with APR_BLOCK_READ only when certain that no data needs to be written
- * while waiting. */
-apr_status_t h2_session_read(h2_session *session, apr_read_type_e block);
-
-/* Write data out to the client, if there is any. Otherwise, wait for
- * a maximum of timeout micro-seconds and return to the caller. If timeout
- * occurred, APR_TIMEUP will be returned.
- */
-apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout);
 
 /* Start submitting the response to a stream request. This is possible
  * once we have all the response headers. */

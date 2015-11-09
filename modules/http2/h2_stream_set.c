@@ -97,4 +97,51 @@ void h2_stream_set_iter(h2_stream_set *sp,
     apr_hash_do(hash_iter, &ictx, sp->hash);
 }
 
+static int unsubmitted_iter(void *ctx, h2_stream *stream)
+{
+    if (h2_stream_needs_submit(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_unsubmitted(h2_stream_set *sp)
+{
+    int has_unsubmitted = 0;
+    h2_stream_set_iter(sp, unsubmitted_iter, &has_unsubmitted);
+    return has_unsubmitted;
+}
+
+static int input_open_iter(void *ctx, h2_stream *stream)
+{
+    if (h2_stream_input_is_open(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_open_input(h2_stream_set *sp)
+{
+    int has_input_open = 0;
+    h2_stream_set_iter(sp, input_open_iter, &has_input_open);
+    return has_input_open;
+}
+
+static int suspended_iter(void *ctx, h2_stream *stream)
+{
+    if (h2_stream_is_suspended(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_suspended(h2_stream_set *sp)
+{
+    int has_suspended = 0;
+    h2_stream_set_iter(sp, suspended_iter, &has_suspended);
+    return has_suspended;
+}
 

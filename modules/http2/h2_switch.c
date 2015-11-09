@@ -154,7 +154,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             ap_remove_input_filter_byhandle(r->input_filters, "reqtimeout");
             
             /* Ok, start an h2_conn on this one. */
-            status = h2_conn_rprocess(r);
+            status = h2_conn_process(r->connection, r);
             if (status != DONE) {
                 /* Nothing really to do about this. */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
