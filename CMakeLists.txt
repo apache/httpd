@@ -379,7 +379,8 @@ SET(mod_http2_requires               NGHTTP2_FOUND)
 SET(mod_http2_extra_defines          ssize_t=long)
 SET(mod_http2_extra_libs             ${NGHTTP2_LIBRARIES})
 SET(mod_http2_extra_sources
-  modules/http2/h2_alt_svc.c         modules/http2/h2_config.c
+  modules/http2/h2_alt_svc.c         modules/http2/h2_bucket_eoc.c
+  modules/http2/h2_bucket_eos.c      modules/http2/h2_config.c
   modules/http2/h2_conn.c            modules/http2/h2_conn_io.c
   modules/http2/h2_ctx.c             modules/http2/h2_from_h1.c
   modules/http2/h2_h2.c              modules/http2/h2_io.c
