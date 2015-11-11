@@ -32,10 +32,7 @@ struct h2_stream_set {
 
 static unsigned int stream_hash(const char *key, apr_ssize_t *klen)
 {
-    /* we use the "int stream_id" has key, which always odd from
-    * client and even from server. As long as we do not mix them
-    * in one set, snip off the lsb. */
-    return (unsigned int)(*((int*)key)) >> 1;
+    return (unsigned int)(*((int*)key));
 }
 
 h2_stream_set *h2_stream_set_create(apr_pool_t *pool, int max)

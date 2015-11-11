@@ -31,22 +31,23 @@ typedef struct h2_io h2_io;
 struct h2_io {
     int id;                      /* stream identifier */
     apr_pool_t *pool;            /* stream pool */
-    apr_bucket_brigade *bbin;    /* input data for stream */
-    int eos_in;
-    int task_done;
-    int rst_error;
     int zombie;
     
-    struct h2_task *task;       /* task created for this io */
+    int task_done;
+    struct h2_task *task;        /* task created for this io */
 
-    apr_size_t input_consumed;   /* how many bytes have been read */
+    struct h2_response *response;/* submittable response created */
+    int rst_error;
+
+    int eos_in;
+    apr_bucket_brigade *bbin;    /* input data for stream */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
+    apr_size_t input_consumed;   /* how many bytes have been read */
     
-    apr_bucket_brigade *bbout;   /* output data from stream */
     int eos_out;
+    apr_bucket_brigade *bbout;   /* output data from stream */
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
-    struct h2_response *response;/* submittable response created */
     int files_handles_owned;
 };
 

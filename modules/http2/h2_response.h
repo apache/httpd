@@ -16,6 +16,8 @@
 #ifndef __mod_h2__h2_response__
 #define __mod_h2__h2_response__
 
+struct h2_push;
+
 /* h2_response is just the data belonging the the head of a HTTP response,
  * suitable prepared to be fed to nghttp2 for response submit. 
  */
@@ -24,18 +26,21 @@ typedef struct h2_ngheader {
     apr_size_t nvlen;
 } h2_ngheader;
 
+struct h2_push;
+
 typedef struct h2_response {
     int stream_id;
     int rst_error;
-    const char *status;
+    int http_status;
     apr_off_t content_length;
     apr_table_t *rheader;
     h2_ngheader *ngheader;
+    apr_array_header_t *pushes;
 } h2_response;
 
 h2_response *h2_response_create(int stream_id,
                                 int rst_error,
-                                const char *http_status,
+                                int http_status,
                                 apr_array_header_t *hlines,
                                 apr_pool_t *pool);
 
@@ -45,5 +50,21 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
 void h2_response_destroy(h2_response *response);
 
 h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from);
+
+/**
+ * Get the number of push proposals included with the response.
+ * @return number of push proposals in this response
+ */
+int h2_response_push_count(h2_response *response);
+
+/**
+ * Get the ith h2_push contained in this response.
+ * 
+ * @param response the response
+ * @param i the index of the push to get
+ * @return the ith h2_push or NULL if out of bounds
+ */
+struct h2_push *h2_response_get_push(h2_response *response, size_t i);
+
 
 #endif /* defined(__mod_h2__h2_response__) */

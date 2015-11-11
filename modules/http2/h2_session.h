@@ -41,6 +41,7 @@ struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
 struct h2_config;
 struct h2_mplx;
+struct h2_push;
 struct h2_response;
 struct h2_session;
 struct h2_stream;
@@ -72,6 +73,7 @@ struct h2_session {
     h2_conn_io io;                  /* io on httpd conn filters */
     struct h2_mplx *mplx;           /* multiplexer for stream data */
     
+    struct h2_stream *last_stream;  /* last stream worked with */
     struct h2_stream_set *streams;  /* streams handled by this session */
     
     int max_stream_received;        /* highest stream id created */
@@ -160,11 +162,37 @@ apr_status_t h2_session_handle_response(h2_session *session,
 struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
 
 /**
+ * Create and register a new stream under the given id.
+ * 
+ * @param session the session to register in
+ * @param stream_id the new stream identifier
+ * @return the new stream
+ */
+struct h2_stream *h2_session_open_stream(h2_session *session, int stream_id);
+
+/**
+ * Returns if client settings have push enabled.
+ * @param != 0 iff push is enabled in client settings
+ */
+int h2_session_push_enabled(h2_session *session);
+
+/**
  * Destroy the stream and release it everywhere. Reclaim all resources.
  * @param session the session to which the stream belongs
  * @param stream the stream to destroy
  */
 apr_status_t h2_session_stream_destroy(h2_session *session, 
                                        struct h2_stream *stream);
+
+/**
+ * Submit a push promise on the stream and schedule the new steam for
+ * processing..
+ * 
+ * @param session the session to work in
+ * @param stream the stream on which the push depends
+ * @param push the push to promise
+ * @return the new promised stream or NULL
+ */
+struct h2_stream *h2_session_push(h2_session *session, struct h2_push *push);
 
 #endif /* defined(__mod_h2__h2_session__) */

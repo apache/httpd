@@ -584,8 +584,8 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
     if (io) {
         if (f) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
-                          "h2_mplx(%ld-%d): open response: %s, rst=%d",
-                          m->id, stream_id, response->status, 
+                          "h2_mplx(%ld-%d): open response: %d, rst=%d",
+                          m->id, stream_id, response->http_status, 
                           response->rst_error);
         }
         
@@ -678,7 +678,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                      * reset.
                      */
                     h2_response *r = h2_response_create(stream_id, 0, 
-                                                        "500", NULL, m->pool);
+                                                        500, NULL, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
                                   "h2_mplx(%ld-%d): close, no response, no rst", 
@@ -861,7 +861,7 @@ static h2_io *open_io(h2_mplx *m, int stream_id)
 
 
 apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
-                             struct h2_request *r, int eos, 
+                             const h2_request *req, int eos, 
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -878,18 +878,16 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
         
         io = open_io(m, stream_id);
         c = h2_conn_create(m->c, io->pool);
-        io->task = h2_task_create(m->id, stream_id, io->pool, m, c);
-            
-        status = h2_request_end_headers(r, m, io->task, eos);
-        if (status == APR_SUCCESS && eos) {
+        io->task = h2_task_create(m->id, req, io->pool, m, c, eos);
+
+        if (eos) {
             status = h2_io_in_close(io);
         }
         
-        if (status == APR_SUCCESS) {
-            x.cmp = cmp;
-            x.ctx = ctx;
-            h2_tq_add(m->q, io->task, task_cmp, &x);
-        }
+        x.cmp = cmp;
+        x.ctx = ctx;
+        h2_tq_add(m->q, io->task, task_cmp, &x);
+
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                       "h2_mplx(%ld-%d): process", m->c->id, stream_id);
         apr_thread_mutex_unlock(m->lock);

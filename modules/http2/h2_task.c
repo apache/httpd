@@ -38,6 +38,7 @@
 #include "h2_from_h1.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
+#include "h2_request.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_task_input.h"
@@ -152,44 +153,28 @@ static int h2_task_process_conn(conn_rec* c)
 }
 
 
-h2_task *h2_task_create(long session_id,
-                        int stream_id,
-                        apr_pool_t *stream_pool,
-                        h2_mplx *mplx, conn_rec *c)
+h2_task *h2_task_create(long session_id, const h2_request *req, 
+                        apr_pool_t *pool, h2_mplx *mplx,
+                        conn_rec *c, int eos)
 {
-    h2_task *task = apr_pcalloc(stream_pool, sizeof(h2_task));
+    h2_task *task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, stream_pool,
+        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
-                      session_id, stream_id);
-        h2_mplx_out_close(mplx, stream_id);
+                      session_id, req->id);
+        h2_mplx_out_close(mplx, req->id);
         return NULL;
     }
     
-    task->id = apr_psprintf(stream_pool, "%ld-%d", session_id, stream_id);
-    task->stream_id = stream_id;
+    task->id = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->stream_id = req->id;
     task->mplx = mplx;
-    
     task->c = c;
-    
-    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, stream_pool,
-                  "h2_task(%s): created", task->id);
-    return task;
-}
 
-void h2_task_set_request(h2_task *task, 
-                         const char *method, 
-                         const char *scheme, 
-                         const char *authority, 
-                         const char *path, 
-                         apr_table_t *headers, int eos)
-{
-    task->method = method;
-    task->scheme = scheme;
-    task->authority = authority;
-    task->path = path;
-    task->headers = headers;
-    task->input_eos = eos;
+    task->request = req;
+    task->input_eos = eos;    
+    
+    return task;
 }
 
 apr_status_t h2_task_destroy(h2_task *task)
@@ -216,8 +201,7 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     if (status == APR_SUCCESS) {
         task->input = h2_task_input_create(task, task->pool, 
                                            task->c->bucket_alloc);
-        task->output = h2_task_output_create(task, task->pool,
-                                             task->c->bucket_alloc);
+        task->output = h2_task_output_create(task, task->pool);
         ap_process_connection(task->c, h2_worker_get_socket(worker));
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_task(%s): processing done", task->id);
@@ -270,7 +254,7 @@ static request_rec *h2_task_create_request(h2_task *task)
     
     r->allowed_methods = ap_make_method_list(p, 2);
     
-    r->headers_in = apr_table_copy(r->pool, task->headers);
+    r->headers_in      = apr_table_copy(r->pool, task->request->headers);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
@@ -309,19 +293,19 @@ static request_rec *h2_task_create_request(h2_task *task)
     
     /* Time to populate r with the data we have. */
     r->request_time = apr_time_now();
-    r->method = task->method;
+    r->method = task->request->method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
     if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
     }
 
-    ap_parse_uri(r, task->path);
+    ap_parse_uri(r, task->request->path);
     r->protocol = (char*)"HTTP/2";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, task->path, r->protocol);
+                                  r->method, task->request->path, r->protocol);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
