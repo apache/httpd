@@ -157,7 +157,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  * @param ctx context data for the compare function
  */
 apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
-                             struct h2_request *r, int eos, 
+                             const struct h2_request *r, int eos, 
                              h2_stream_pri_cmp *cmp, void *ctx);
 
 /**

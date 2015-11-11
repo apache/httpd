@@ -40,10 +40,6 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc)
 
 static void h2_io_cleanup(h2_io *io)
 {
-    if (io->task) {
-        h2_task_destroy(io->task);
-        io->task = NULL;
-    }
 }
 
 void h2_io_destroy(h2_io *io)

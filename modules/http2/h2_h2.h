@@ -52,6 +52,10 @@ extern const char *H2_MAGIC_TOKEN;
 /* Maximum number of padding bytes in a frame, rfc7540 */
 #define H2_MAX_PADLEN               256
 
+#define H2_HTTP_2XX(a)      ((a) >= 200 && (a) < 300)
+
+#define H2_STREAM_CLIENT_INITIATED(id)      (id&0x01)
+
 /**
  * Provide a user readable description of the HTTP/2 error code-
  * @param h2_error http/2 error code, as in rfc 7540, ch. 7

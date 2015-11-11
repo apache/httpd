@@ -24,6 +24,7 @@
 #include "h2_private.h"
 #include "h2_conn.h"
 #include "h2_mplx.h"
+#include "h2_request.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_from_h1.h"
@@ -33,12 +34,10 @@
 #include "h2_util.h"
 
 
-h2_task_output *h2_task_output_create(h2_task *task, apr_pool_t *pool,
-                                      apr_bucket_alloc_t *bucket_alloc)
+h2_task_output *h2_task_output_create(h2_task *task, apr_pool_t *pool)
 {
     h2_task_output *output = apr_pcalloc(pool, sizeof(h2_task_output));
     
-    (void)bucket_alloc;
     if (output) {
         output->task = task;
         output->state = H2_TASK_OUT_INIT;
@@ -73,8 +72,9 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
                               "h2_task_output(%s): write without response "
                               "for %s %s %s",
-                              output->task->id, output->task->method, 
-                              output->task->authority, output->task->path);
+                              output->task->id, output->task->request->method, 
+                              output->task->request->authority, 
+                              output->task->request->path);
                 f->c->aborted = 1;
             }
             if (output->task->io) {
