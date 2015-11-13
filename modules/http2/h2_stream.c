@@ -159,9 +159,6 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 apr_status_t h2_stream_destroy(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
-    
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
-                  "h2_stream(%ld-%d): destroy", stream->session->id, stream->id);
     if (stream->request) {
         h2_request_destroy(stream->request);
         stream->request = NULL;
@@ -237,9 +234,12 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
     return status;
 }
 
-void h2_stream_set_h2_request(h2_stream *stream, const h2_request *req)
+void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
+                              const h2_request *req)
 {
     h2_request_copy(stream->pool, stream->request, req);
+    stream->initiated_on = initiated_on;
+    stream->request->eoh = 0;
 }
 
 apr_status_t h2_stream_add_header(h2_stream *stream,
@@ -286,10 +286,10 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->c,
-                  "h2_mplx(%ld-%d): start stream, task %s %s (%s)",
+                  "h2_stream(%ld-%d): scheduled %s %s://%s%s",
                   stream->session->id, stream->id,
-                  stream->request->method, stream->request->path,
-                  stream->request->authority);
+                  stream->request->method, stream->request->scheme,
+                  stream->request->authority, stream->request->path);
     
     return status;
 }
@@ -545,9 +545,12 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
     
     pushes = h2_push_collect(stream->pool, stream->request, stream->response);
     if (pushes && !apr_is_empty_array(pushes)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                      "h2_stream(%ld-%d): found %d push candidates",
+                      stream->session->id, stream->id, pushes->nelts);
         for (i = 0; i < pushes->nelts; ++i) {
             h2_push *push = APR_ARRAY_IDX(pushes, i, h2_push*);
-            h2_stream *s = h2_session_push(stream->session, push);
+            h2_stream *s = h2_session_push(stream->session, stream, push);
             if (!s) {
                 status = APR_ECONNRESET;
                 break;

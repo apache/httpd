@@ -31,11 +31,22 @@
 
 h2_request *h2_request_create(int id, apr_pool_t *pool)
 {
+    return h2_request_createn(id, pool, NULL, NULL, NULL, NULL, NULL);
+}
+
+h2_request *h2_request_createn(int id, apr_pool_t *pool,
+                               const char *method, const char *scheme,
+                               const char *authority, const char *path,
+                               apr_table_t *header)
+{
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
-    req->id = id;
-    req->headers = apr_table_make(pool, 10);
-    req->content_length = -1;
+    req->id             = id;
+    req->method         = method;
+    req->scheme         = scheme;
+    req->authority      = authority;
+    req->path           = path;
+    req->headers        = header? header : apr_table_make(pool, 10);
     
     return req;
 }
@@ -44,45 +55,26 @@ void h2_request_destroy(h2_request *req)
 {
 }
 
+static apr_status_t inspect_clen(h2_request *req, const char *s)
+{
+    char *end;
+    req->content_length = apr_strtoi64(s, &end, 10);
+    return (s == end)? APR_EINVAL : APR_SUCCESS;
+}
+
 static apr_status_t add_h1_header(h2_request *req, apr_pool_t *pool, 
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen)
 {
     char *hname, *hvalue;
     
-    if (H2_HD_MATCH_LIT("transfer-encoding", name, nlen)) {
-        if (!apr_strnatcasecmp("chunked", value)) {
-            /* This should never arrive here in a HTTP/2 request */
-            ap_log_perror(APLOG_MARK, APLOG_ERR, APR_BADARG, pool,
-                          APLOGNO(02945) 
-                          "h2_request: 'transfer-encoding: chunked' received");
-            return APR_BADARG;
-        }
-    }
-    else if (H2_HD_MATCH_LIT("content-length", name, nlen)) {
-        char *end;
-        req->content_length = apr_strtoi64(value, &end, 10);
-        if (value == end) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, pool,
-                          APLOGNO(02959) 
-                          "h2_request(%d): content-length value not parsed: %s",
-                          req->id, value);
-            return APR_EINVAL;
-        }
-        req->chunked = 0;
-    }
-    else if (H2_HD_MATCH_LIT("content-type", name, nlen)) {
-        /* If we see a content-type and have no length (yet),
-         * we need to chunk. */
-        req->chunked = (req->content_length == -1);
-    }
-    else if ((req->seen_host && H2_HD_MATCH_LIT("host", name, nlen))
-             || H2_HD_MATCH_LIT("expect", name, nlen)
-             || H2_HD_MATCH_LIT("upgrade", name, nlen)
-             || H2_HD_MATCH_LIT("connection", name, nlen)
-             || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
-             || H2_HD_MATCH_LIT("keep-alive", name, nlen)
-             || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
+    if (H2_HD_MATCH_LIT("expect", name, nlen)
+        || H2_HD_MATCH_LIT("upgrade", name, nlen)
+        || H2_HD_MATCH_LIT("connection", name, nlen)
+        || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
+        || H2_HD_MATCH_LIT("transfer-encoding", name, nlen)
+        || H2_HD_MATCH_LIT("keep-alive", name, nlen)
+        || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
         /* ignore these. */
         return APR_SUCCESS;
     }
@@ -91,7 +83,7 @@ static apr_status_t add_h1_header(h2_request *req, apr_pool_t *pool,
         if (existing) {
             char *nval;
             
-            /* Cookie headers come separately in HTTP/2, but need
+            /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
             hvalue = apr_pstrndup(pool, value, vlen);
@@ -101,7 +93,9 @@ static apr_status_t add_h1_header(h2_request *req, apr_pool_t *pool,
         }
     }
     else if (H2_HD_MATCH_LIT("host", name, nlen)) {
-        req->seen_host = 1;
+        if (apr_table_get(req->headers, "Host")) {
+            return APR_SUCCESS; /* ignore duplicate */
+        }
     }
     
     hname = apr_pstrndup(pool, name, nlen);
@@ -124,13 +118,13 @@ static int set_h1_header(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-static apr_status_t add_h1_headers(h2_request *req, apr_pool_t *pool, 
-                                   apr_table_t *headers)
+static apr_status_t add_all_h1_header(h2_request *req, apr_pool_t *pool, 
+                                      apr_table_t *header)
 {
     h1_ctx x;
     x.req = req;
     x.pool = pool;
-    apr_table_do(set_h1_header, &x, headers, NULL);
+    apr_table_do(set_h1_header, &x, header, NULL);
     return APR_SUCCESS;
 }
 
@@ -150,7 +144,7 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
                                       r->parsed_uri.port_str);
     }
     
-    status = add_h1_headers(req, r->pool, r->headers_in);
+    status = add_all_h1_header(req, r->pool, r->headers_in);
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
                   "h2_request(%d): rwrite %s host=%s://%s%s",
@@ -215,11 +209,22 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
 
 apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
 {
+    const char *s;
+    
     if (req->eoh) {
         return APR_EINVAL;
     }
-    
-    if (!req->seen_host) {
+
+    /* be safe, some header we do not accept on h2(c) */
+    apr_table_unset(req->headers, "expect");
+    apr_table_unset(req->headers, "upgrade");
+    apr_table_unset(req->headers, "connection");
+    apr_table_unset(req->headers, "proxy-connection");
+    apr_table_unset(req->headers, "transfer-encoding");
+    apr_table_unset(req->headers, "keep-alive");
+    apr_table_unset(req->headers, "http2-settings");
+
+    if (!apr_table_get(req->headers, "Host")) {
         /* Need to add a "Host" header if not already there to
          * make virtual hosts work correctly. */
         if (!req->authority) {
@@ -228,20 +233,34 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
         apr_table_set(req->headers, "Host", req->authority);
     }
 
-    if (eos && req->chunked) {
-        /* We had chunking figured out, but the EOS is already there.
-         * unmark chunking and set a definitive content-length.
-         */
+    s = apr_table_get(req->headers, "Content-Length");
+    if (s) {
+        if (inspect_clen(req, s) != APR_SUCCESS) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, pool,
+                          APLOGNO(02959) 
+                          "h2_request(%d): content-length value not parsed: %s",
+                          req->id, s);
+            return APR_EINVAL;
+        }
         req->chunked = 0;
-        apr_table_setn(req->headers, "Content-Length", "0");
     }
-    else if (req->chunked) {
-        /* We have not seen a content-length. We therefore must
-         * pass any request content in chunked form.
-         */
-        apr_table_mergen(req->headers, "Transfer-Encoding", "chunked");
+    else {
+        /* no content-length given */
+        req->content_length = -1;
+        s = apr_table_get(req->headers, "Content-Type");
+        if (eos && s) {
+            req->chunked = 0;
+            apr_table_setn(req->headers, "Content-Length", "0");
+        }
+        else if (s) {
+            /* We have not seen a content-length, but a content-type. 
+             * must pass any request content in chunked form.
+             */
+            req->chunked = 1;
+            apr_table_mergen(req->headers, "Transfer-Encoding", "chunked");
+        }
     }
-    
+
     req->eoh = 1;
     
     return APR_SUCCESS;
@@ -253,13 +272,12 @@ void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
 {
     /* keep the dst id */
     dst->method         = OPT_COPY(p, src->method);
-    dst->scheme         = OPT_COPY(p, src->method);
-    dst->authority      = OPT_COPY(p, src->method);
-    dst->path           = OPT_COPY(p, src->method);
+    dst->scheme         = OPT_COPY(p, src->scheme);
+    dst->authority      = OPT_COPY(p, src->authority);
+    dst->path           = OPT_COPY(p, src->path);
     dst->headers        = apr_table_clone(p, src->headers);
     dst->content_length = src->content_length;
     dst->chunked        = src->chunked;
     dst->eoh            = src->eoh;
-    dst->seen_host      = src->seen_host;  
 }
 

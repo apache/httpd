@@ -25,6 +25,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
+#include "h2_request.h"
 #include "h2_util.h"
 
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
@@ -204,6 +205,10 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
     }
     return NULL;
 }
+
+/*******************************************************************************
+ * h2_util for bucket brigades
+ ******************************************************************************/
 
 /* DEEP_COPY==0 crashes under load. I think the setaside is fine, 
  * however buckets moved to another thread will still be
@@ -787,5 +792,93 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
     
     *plen = len;
     return APR_SUCCESS;
+}
+
+/*******************************************************************************
+ * h2_ngheader
+ ******************************************************************************/
+ 
+int h2_util_ignore_header(const char *name) 
+{
+    /* never forward, ch. 8.1.2.2 */
+    return (H2_HD_MATCH_LIT_CS("connection", name)
+            || H2_HD_MATCH_LIT_CS("proxy-connection", name)
+            || H2_HD_MATCH_LIT_CS("upgrade", name)
+            || H2_HD_MATCH_LIT_CS("keep-alive", name)
+            || H2_HD_MATCH_LIT_CS("transfer-encoding", name));
+}
+
+static int count_header(void *ctx, const char *key, const char *value)
+{
+    if (!h2_util_ignore_header(key)) {
+        (*((size_t*)ctx))++;
+    }
+    return 1;
+}
+
+#define NV_ADD_LIT_CS(nv, k, v)     add_header(nv, k, sizeof(k) - 1, v, strlen(v))
+#define NV_ADD_CS_CS(nv, k, v)      add_header(nv, k, strlen(k), v, strlen(v))
+
+static int add_header(h2_ngheader *ngh, 
+                      const char *key, size_t key_len,
+                      const char *value, size_t val_len)
+{
+    nghttp2_nv *nv = &ngh->nv[ngh->nvlen++];
+    
+    nv->name = (uint8_t*)key;
+    nv->namelen = key_len;
+    nv->value = (uint8_t*)value;
+    nv->valuelen = val_len;
+    return 1;
+}
+
+static int add_table_header(void *ctx, const char *key, const char *value)
+{
+    if (!h2_util_ignore_header(key)) {
+        add_header(ctx, key, strlen(key), value, strlen(value));
+    }
+    return 1;
+}
+
+
+h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
+                                       int http_status, 
+                                       apr_table_t *header)
+{
+    h2_ngheader *ngh;
+    size_t n;
+    
+    n = 1;
+    apr_table_do(count_header, &n, header, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    NV_ADD_LIT_CS(ngh, ":status", apr_psprintf(p, "%d", http_status));
+    apr_table_do(add_table_header, ngh, header, NULL);
+
+    return ngh;
+}
+
+h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
+                                       const struct h2_request *req)
+{
+    
+    h2_ngheader *ngh;
+    size_t n;
+    
+    AP_DEBUG_ASSERT(req);
+
+    n = 4;
+    apr_table_do(count_header, &n, req->headers, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    NV_ADD_LIT_CS(ngh, ":scheme", req->scheme);
+    NV_ADD_LIT_CS(ngh, ":authority", req->authority);
+    NV_ADD_LIT_CS(ngh, ":path", req->path);
+    NV_ADD_LIT_CS(ngh, ":method", req->method);
+    apr_table_do(add_table_header, ngh, req->headers, NULL);
+
+    return ngh;
 }
 

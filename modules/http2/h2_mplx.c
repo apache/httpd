@@ -583,7 +583,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
     h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
     if (io) {
         if (f) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                           "h2_mplx(%ld-%d): open response: %d, rst=%d",
                           m->id, stream_id, response->http_status, 
                           response->rst_error);

@@ -30,6 +30,7 @@
 #include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
+#include "h2_request.h"
 #include "h2_response.h"
 #include "h2_stream.h"
 #include "h2_stream_set.h"
@@ -79,10 +80,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
         && stream_id > session->max_stream_received) {
         session->max_stream_received = stream->id;
     }
-    
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                  "h2_session: stream(%ld-%d): opened",
-                  session->id, stream_id);
     
     return stream;
 }
@@ -305,7 +302,7 @@ static int on_frame_not_send_cb(nghttp2_session *ngh2,
     return 0;
 }
 
-static apr_status_t stream_destroy(h2_session *session, 
+static apr_status_t stream_release(h2_session *session, 
                                    h2_stream *stream,
                                    uint32_t error_code) 
 {
@@ -342,12 +339,12 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     }
     stream = h2_session_get_stream(session, stream_id);
     if (stream) {
-        stream_destroy(session, stream, error_code);
+        stream_release(session, stream, error_code);
     }
     
     if (error_code) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_stream(%ld-%d): close error %d",
+                      "h2_stream(%ld-%d): closed, error=%d",
                       session->id, (int)stream_id, error_code);
     }
     
@@ -1121,24 +1118,40 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     if (stream->submitted) {
         rv = NGHTTP2_PROTOCOL_ERROR;
     }
-    else if (stream->response && stream->response->ngheader) {
+    else if (stream->response && stream->response->header) {
         nghttp2_data_provider provider;
         h2_response *response = stream->response;
+        h2_ngheader *ngh;
         
         memset(&provider, 0, sizeof(provider));
         provider.source.fd = stream->id;
         provider.read_callback = stream_data_cb;
         
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "h2_stream(%ld-%d): submitting response %d",
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_stream(%ld-%d): submit response %d",
                       session->id, stream->id, response->http_status);
         
+        ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
+                                        response->header);
         rv = nghttp2_submit_response(session->ngh2, response->stream_id,
-                                     response->ngheader->nv, 
-                                     response->ngheader->nvlen, &provider);
-                                     
+                                     ngh->nv, ngh->nvlen, &provider);
+        
+        /* If the submit worked,
+         * and this stream is not a pushed one itself,
+         * and HTTP/2 server push is enabled here,
+         * and the response is in the range 200-299 *),
+         * and the remote side has pushing enabled,
+         * -> find and perform any pushes on this stream
+         * 
+         * *) the response code is relevant, as we do not want to 
+         *    make pushes on 401 or 403 codes, neiterh on 301/302
+         *    and friends. And if we see a 304, we do not push either
+         *    as the client, having this resource in its cache, might
+         *    also have the pushed ones as well.
+         */
         if (!rv 
-            && !stream->promised_on
+            && !stream->initiated_on
+            && h2_config_geti(h2_config_get(session->c), H2_CONF_PUSH)
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
             
@@ -1148,7 +1161,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     else {
         int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
         
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): RST_STREAM, err=%d",
                       session->id, stream->id, err);
 
@@ -1169,15 +1182,18 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     return status;
 }
 
-struct h2_stream *h2_session_push(h2_session *session, h2_push *push)
+struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
+                                  h2_push *push)
 {
     apr_status_t status;
     h2_stream *stream;
+    h2_ngheader *ngh;
     int nid;
     
+    ngh = h2_util_ngheader_make_req(is->pool, push->req);
     nid = nghttp2_submit_push_promise(session->ngh2, 0, push->initiating_id, 
-                                      push->promise->nv, push->promise->nvlen, 
-                                      NULL);
+                                      ngh->nv, ngh->nvlen, NULL);
+                                      
     if (nid <= 0) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): submitting push promise fail: %s",
@@ -1186,16 +1202,17 @@ struct h2_stream *h2_session_push(h2_session *session, h2_push *push)
         return NULL;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c,
-                  "h2_stream(%ld-%d): promised new stream %d",
-                  session->id, push->initiating_id, nid);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                  "h2_stream(%ld-%d): promised new stream %d for %s %s",
+                  session->id, push->initiating_id, nid,
+                  push->req->method, push->req->path);
                   
     stream = h2_session_open_stream(session, nid);
     if (stream) {
-        h2_stream_set_h2_request(stream, push->req);
+        h2_stream_set_h2_request(stream, is->id, push->req);
         status = stream_end_headers(session, stream, 1);
         if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
                           "h2_stream(%ld-%d): scheduling push stream",
                           session->id, stream->id);
             h2_stream_cleanup(stream);
@@ -1203,7 +1220,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_push *push)
         }
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): failed to create stream obj %d",
                       session->id, push->initiating_id, nid);
     }

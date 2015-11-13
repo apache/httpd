@@ -71,21 +71,6 @@ h2_task_input *h2_task_input_create(h2_task *task, apr_pool_t *pool,
             /* We do not serialize and have eos already, no need to
              * create a bucket brigade. */
         }
-        
-        if (APLOGcdebug(task->c)) {
-            char buffer[1024];
-            apr_size_t len = sizeof(buffer)-1;
-            if (input->bb) {
-                apr_brigade_flatten(input->bb, buffer, &len);
-            }
-            else {
-                len = 0;
-            }
-            buffer[len] = 0;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
-                          "h2_task_input(%s): request is: %s", 
-                          task->id, buffer);
-        }
     }
     return input;
 }
@@ -105,19 +90,18 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     apr_status_t status = APR_SUCCESS;
     apr_off_t bblen = 0;
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task_input(%s): read, block=%d, mode=%d, readbytes=%ld", 
                   input->task->id, block, mode, (long)readbytes);
     
-    if (is_aborted(f)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_task_input(%s): is aborted", 
-                      input->task->id);
-        return APR_ECONNABORTED;
-    }
-    
     if (mode == AP_MODE_INIT) {
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
+    }
+    
+    if (is_aborted(f)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_task_input(%s): is aborted", input->task->id);
+        return APR_ECONNABORTED;
     }
     
     if (input->bb) {

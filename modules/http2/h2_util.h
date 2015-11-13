@@ -16,6 +16,7 @@
 #ifndef __mod_h2__h2_util__
 #define __mod_h2__h2_util__
 
+struct h2_request;
 struct nghttp2_frame;
 
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
@@ -66,6 +67,19 @@ apr_size_t h2_util_base64url_decode(const char **decoded,
                                             nv->namelen = strlen(NAME);       \
                                             nv->value = (uint8_t *)VALUE;     \
                                             nv->valuelen = strlen(VALUE)
+
+int h2_util_ignore_header(const char *name);
+
+typedef struct h2_ngheader {
+    nghttp2_nv *nv;
+    apr_size_t nvlen;
+} h2_ngheader;
+
+h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
+                                       int http_status, 
+                                       apr_table_t *header);
+h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
+                                       const struct h2_request *req);
 
 /**
  * Moves data from one brigade into another. If maxlen > 0, it only

@@ -174,7 +174,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
          * needed to give up with more than enough workers.
          */
         if (task) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                          "h2_worker(%d): start task(%s)",
                          h2_worker_get_id(worker), task->id);
             /* Since we hand out a reference to the worker, we increase
@@ -326,7 +326,7 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
 {
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, status, workers->s,
                      "h2_workers: register mplx(%ld)", m->id);
         if (in_list(workers, m)) {
             status = APR_EAGAIN;

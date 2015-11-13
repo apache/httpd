@@ -50,7 +50,7 @@ typedef struct h2_stream h2_stream;
 
 struct h2_stream {
     int id;                     /* http2 stream id */
-    int promised_on;            /* http2 stream this was a promise on, or 0 */
+    int initiated_on;           /* http2 stream id this was initiated on or 0 */
     h2_stream_state_t state;    /* http/2 state of this stream */
     struct h2_session *session; /* the session this stream belongs to */
     
@@ -131,7 +131,8 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r);
  * @param stream the stream to init the request for
  * @param req the request for initializing, will be copied
  */
-void h2_stream_set_h2_request(h2_stream *stream, const struct h2_request *req);
+void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
+                              const struct h2_request *req);
 
 /*
  * Add a HTTP/2 header (including pseudo headers) to the given stream.
