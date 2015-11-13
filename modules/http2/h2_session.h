@@ -189,10 +189,11 @@ apr_status_t h2_session_stream_destroy(h2_session *session,
  * processing..
  * 
  * @param session the session to work in
- * @param stream the stream on which the push depends
+ * @param is the stream initiating the push
  * @param push the push to promise
  * @return the new promised stream or NULL
  */
-struct h2_stream *h2_session_push(h2_session *session, struct h2_push *push);
+struct h2_stream *h2_session_push(h2_session *session, 
+                                  struct h2_stream *is, struct h2_push *push);
 
 #endif /* defined(__mod_h2__h2_session__) */

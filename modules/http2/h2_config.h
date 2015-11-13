@@ -38,6 +38,7 @@ typedef enum {
     H2_CONF_UPGRADE,
     H2_CONF_TLS_WARMUP_SIZE,
     H2_CONF_TLS_COOLDOWN_SECS,
+    H2_CONF_PUSH,
 } h2_config_var_t;
 
 /* Apache httpd module configuration for h2. */
@@ -59,6 +60,7 @@ typedef struct h2_config {
     int h2_upgrade;               /* Allow HTTP/1 upgrade to h2/h2c */
     apr_int64_t tls_warmup_size;  /* Amount of TLS data to send before going full write size */
     int tls_cooldown_secs;        /* Seconds of idle time before going back to small TLS records */
+    int h2_push;                  /* if HTTP/2 server push is enabled */
 } h2_config;
 
 

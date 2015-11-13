@@ -27,20 +27,8 @@
 #include "h2_private.h"
 #include "h2_h2.h"
 #include "h2_util.h"
-#include "h2_push.h"
 #include "h2_response.h"
 
-static void make_ngheader(apr_pool_t *pool, h2_response *to,
-                          apr_table_t *header);
-
-static int ignore_header(const char *name) 
-{
-    return (H2_HD_MATCH_LIT_CS("connection", name)
-            || H2_HD_MATCH_LIT_CS("proxy-connection", name)
-            || H2_HD_MATCH_LIT_CS("upgrade", name)
-            || H2_HD_MATCH_LIT_CS("keep-alive", name)
-            || H2_HD_MATCH_LIT_CS("transfer-encoding", name));
-}
 
 h2_response *h2_response_create(int stream_id,
                                 int rst_error,
@@ -76,10 +64,8 @@ h2_response *h2_response_create(int stream_id,
             while (*sep == ' ' || *sep == '\t') {
                 ++sep;
             }
-            if (ignore_header(hline)) {
-                /* never forward, ch. 8.1.2.2 */
-            }
-            else {
+            
+            if (!h2_util_ignore_header(hline)) {
                 apr_table_merge(header, hline, sep);
                 if (*sep && H2_HD_MATCH_LIT_CS("content-length", hline)) {
                     char *end;
@@ -100,7 +86,7 @@ h2_response *h2_response_create(int stream_id,
         header = apr_table_make(pool, 0);        
     }
 
-    response->rheader = header;
+    response->header = header;
     return response;
 }
 
@@ -115,7 +101,7 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     response->stream_id = stream_id;
     response->http_status = r->status;
     response->content_length = -1;
-    response->rheader = header;
+    response->header = header;
 
     if (response->http_status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
@@ -144,149 +130,10 @@ h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)
     to->stream_id = from->stream_id;
     to->http_status = from->http_status;
     to->content_length = from->content_length;
-    if (from->rheader) {
-        make_ngheader(pool, to, from->rheader);
+    if (from->header) {
+        to->header = apr_table_clone(pool, from->header);
     }
     return to;
-}
-
-typedef struct {
-    nghttp2_nv *nv;
-    size_t nvlen;
-    size_t nvstrlen;
-    size_t offset;
-    char *strbuf;
-    apr_pool_t *pool;
-    apr_array_header_t *pushes;
-} nvctx_t;
-
-static int count_header(void *ctx, const char *key, const char *value)
-{
-    if (!ignore_header(key)) {
-        nvctx_t *nvctx = (nvctx_t*)ctx;
-        nvctx->nvlen++;
-        nvctx->nvstrlen += strlen(key) + strlen(value) + 2;
-    }
-    return 1;
-}
-
-#define NV_ADD_LIT_CS(nv, k, v)     addnv_lit_cs(nv, k, sizeof(k) - 1, v, strlen(v))
-#define NV_ADD_CS_CS(nv, k, v)      addnv_cs_cs(nv, k, strlen(k), v, strlen(v))
-#define NV_BUF_ADD(nv, s, len)      memcpy(nv->strbuf, s, len); \
-                                    s = nv->strbuf; \
-                                    nv->strbuf += len + 1
-
-static void addnv_cs_cs(nvctx_t *ctx, const char *key, size_t key_len,
-                        const char *value, size_t val_len)
-{
-    nghttp2_nv *nv = &ctx->nv[ctx->offset];
-    
-    NV_BUF_ADD(ctx, key, key_len);
-    NV_BUF_ADD(ctx, value, val_len);
-    
-    nv->name = (uint8_t*)key;
-    nv->namelen = key_len;
-    nv->value = (uint8_t*)value;
-    nv->valuelen = val_len;
-    
-    ctx->offset++;
-}
-
-static void addnv_lit_cs(nvctx_t *ctx, const char *key, size_t key_len,
-                         const char *value, size_t val_len)
-{
-    nghttp2_nv *nv = &ctx->nv[ctx->offset];
-    
-    NV_BUF_ADD(ctx, value, val_len);
-    
-    nv->name = (uint8_t*)key;
-    nv->namelen = key_len;
-    nv->value = (uint8_t*)value;
-    nv->valuelen = val_len;
-    
-    ctx->offset++;
-}
-
-static h2_push *h2_parse_preload(apr_pool_t *pool, const char *str)
-{
-    /* TODO: implement this */
-    return NULL;
-}
-
-static int add_header(void *ctx, const char *key, const char *value)
-{
-    if (!ignore_header(key)) {
-        nvctx_t *nvctx = (nvctx_t*)ctx;
-        NV_ADD_CS_CS(nvctx, key, value);
-        
-        if (apr_strnatcasecmp("link", key) 
-            && ap_strstr_c("preload", value)) {
-            /* Detect link headers with rel=preload to use as possible
-             * server push candidates. */
-            h2_push *push;
-            if ((push = h2_parse_preload(nvctx->pool, value))) {
-                if (!nvctx->pushes) {
-                    nvctx->pushes = apr_array_make(nvctx->pool, 5, 
-                                                   sizeof(h2_push*));
-                }
-                APR_ARRAY_PUSH(nvctx->pushes, h2_push*) = push;
-            }
-        }
-    }
-    return 1;
-}
-
-static void make_ngheader(apr_pool_t *pool, h2_response *to,
-                          apr_table_t *header)
-{
-    size_t n;
-    h2_ngheader *h;
-    nvctx_t ctx;
-    char *status;
-    
-    to->ngheader = NULL;
-    to->pushes   = NULL;
-    
-    status = apr_psprintf(pool, "%d", to->http_status);
-    ctx.nv       = NULL;
-    ctx.nvlen    = 1;
-    ctx.nvstrlen = strlen(status) + 1;
-    ctx.offset   = 0;
-    ctx.strbuf   = NULL;
-    ctx.pool     = pool;
-    ctx.pushes   = NULL;
-    
-    apr_table_do(count_header, &ctx, header, NULL);
-    
-    n =  (sizeof(h2_ngheader)
-                 + (ctx.nvlen * sizeof(nghttp2_nv)) + ctx.nvstrlen); 
-    h = apr_pcalloc(pool, n);
-    if (h) {
-        ctx.nv = (nghttp2_nv*)(h + 1);
-        ctx.strbuf = (char*)&ctx.nv[ctx.nvlen];
-        
-        NV_ADD_LIT_CS(&ctx, ":status", status);
-        apr_table_do(add_header, &ctx, header, NULL);
-        
-        h->nv    = ctx.nv;
-        h->nvlen = ctx.nvlen;
-        
-        to->ngheader = h;
-        to->pushes = ctx.pushes;
-    }
-}
-
-int h2_response_push_count(h2_response *response)
-{
-    return response->pushes? response->pushes->nelts : 0;
-}
-
-h2_push *h2_response_get_push(h2_response *response, size_t i)
-{
-    if (response->pushes && i < response->pushes->nelts) {
-        return APR_ARRAY_IDX(response->pushes, i, h2_push*);
-    }
-    return NULL;
 }
 
 

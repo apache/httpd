@@ -90,6 +90,74 @@
     </directivesynopsis>
 
     <directivesynopsis>
+        <name>H2Push</name>
+        <description>H2 Server Push Switch</description>
+        <syntax>H2Push on|off</syntax>
+        <default>H2Push on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the usage of the HTTP/2 server push 
+                protocol feature. This should be used inside a 
+                <directive module="core" type="section">VirtualHost</directive> 
+                section to enable direct HTTP/2 communication for that virtual host. 
+            </p>
+            <p>
+                The HTTP/2 protocol allows the server to push other resources to
+                a client when it asked for a particular one. This is helpful
+                if those resources are connected in some way and the client can
+                be expected to ask for it anyway. The pushing then saves the
+                time it takes the client to ask for the resources itself. On the
+                other hand, pushing resources the client never needs or already
+                has is a waste of bandwidth.
+            </p>
+            <p>
+                Server pushes are detected by inspecting the <code>Link</code> headers of
+                responses (see https://tools.ietf.org/html/rfc5988 for the 
+                specification). When a link thus specified has the <code>rel=preload</code>
+                attribute, it is treated as a resource to be pushed.
+            </p>
+            <p> 
+                Link headers in responses are either set by the application or
+                can be configured via <module>mod_headers</module> as:
+            </p>
+            <example><title>mod_headers example</title>
+                <highlight language="config">
+                    <Location /index.html>
+                        Header add Link "</css/site.css>;rel=preload"
+                        Header add Link "</images/logo.jpg>;rel=preload"
+                    </Location>
+                </highlight>
+            </example>
+            <p>
+                As the example shows, there can be several link headers added
+                to a response, resulting in several pushes being triggered. There
+                are no checks in the module to avoid pushing the same resource
+                twice or more to one client. Use with care.
+            </p>
+            <p> 
+                HTTP/2 server pushes are enabled by default. This directive 
+                allows it to be switch off on all resources of this server/virtual
+                host.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2Push off
+                </highlight>
+            </example>
+            <p>
+                Last but not least, pushes happen only when the client signals
+                its willingness to accept those. Most browsers do, some, like Safari 9,
+                do not.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
         <name>H2Upgrade</name>
         <description>H2 Upgrade Protocol Switch</description>
         <syntax>H2Upgrade on|off</syntax>
@@ -285,7 +353,7 @@
             <p>
                 This directive sets maximum number of <em>extra</em> file handles
                 a HTTP/2 session is allowed to use. A file handle is counted as
-                <em>extra</em> when it is transfered from a h2 worker thread to
+                <em>extra</em> when it is transferred from a h2 worker thread to
                 the main HTTP/2 connection handling. This commonly happens when
                 serving static files.
             </p><p>
@@ -362,8 +430,8 @@
             <p>
                 The name stems from the 
                 <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Security/Server Side TLS</a>
-                definitions at mozilla where "modern compatiblity" is defined. Mozilla Firefox and
-                other browsers require modern compatiblity for HTTP/2 connections. As everything
+                definitions at mozilla where "modern compatibility" is defined. Mozilla Firefox and
+                other browsers require modern compatibility for HTTP/2 connections. As everything
                 in OpSec, this is a moving target and can be expected to evolve in the future.
             </p>
             <p>
@@ -423,7 +491,7 @@
             <p>
                 In deployments where servers are reached locally or over reliable
                 connections only, the value might be decreased with 0 disabling
-                any warmup phase alltogether.
+                any warmup phase altogether.
             </p>
             <p>
                 The following example sets the size to zero, effectively disabling
@@ -458,7 +526,7 @@
             <p>
                 See <directive type="section">H2TLSWarmUpSize</directive> for a
                 description of TLS warmup. H2TLSCoolDownSecs reflects the fact
-                that connections may detoriate over time (and TCP flow adjusts)
+                that connections may deteriorate over time (and TCP flow adjusts)
                 for idle connections as well. It is beneficial to overall performance
                 to fall back to the pre-warmup phase after a number of seconds that
                 no data has been sent. 
@@ -469,7 +537,7 @@
             </p>
             <p>
                 The following example sets the seconds to zero, effectively disabling
-                any cooldown. Warmed up TLS connections stay on maximum record
+                any cool down. Warmed up TLS connections stay on maximum record
                 size.
             </p>
             <example><title>Example</title>

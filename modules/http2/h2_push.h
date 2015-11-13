@@ -22,7 +22,6 @@ struct h2_ngheader;
 typedef struct h2_push {
     int initiating_id;
     const struct h2_request *req;
-    const struct h2_ngheader *promise;
     const char *as;
 } h2_push;
 

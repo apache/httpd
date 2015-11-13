@@ -40,11 +40,14 @@ struct h2_request {
     apr_off_t content_length;
     int chunked;
     int eoh;
-    
-    int seen_host;
 };
 
 h2_request *h2_request_create(int id, apr_pool_t *pool);
+
+h2_request *h2_request_createn(int id, apr_pool_t *pool,
+                               const char *method, const char *scheme,
+                               const char *authority, const char *path,
+                               apr_table_t *headers);
 
 void h2_request_destroy(h2_request *req);
 
