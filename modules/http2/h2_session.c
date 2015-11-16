@@ -828,6 +828,8 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     apr_status_t status = APR_SUCCESS;
     h2_config *config;
     nghttp2_settings_entry settings[3];
+    size_t slen;
+    int i;
     
     AP_DEBUG_ASSERT(session);
     /* Start the conversation by submitting our SETTINGS frame */
@@ -890,16 +892,19 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
         }
     }
 
-    settings[0].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
-    settings[0].value = (uint32_t)session->max_stream_count;
-    settings[1].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
-    settings[1].value = h2_config_geti(config, H2_CONF_WIN_SIZE);
-    settings[2].settings_id = NGHTTP2_SETTINGS_MAX_HEADER_LIST_SIZE;
-    settings[2].value = 64*1024;
+    slen = 0;
+    settings[slen].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
+    settings[slen].value = (uint32_t)session->max_stream_count;
+    ++slen;
+    i = h2_config_geti(config, H2_CONF_WIN_SIZE);
+    if (i != H2_INITIAL_WINDOW_SIZE) {
+        settings[slen].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
+        settings[slen].value = i;
+        ++slen;
+    }
     
     *rv = nghttp2_submit_settings(session->ngh2, NGHTTP2_FLAG_NONE,
-                                 settings,
-                                 sizeof(settings)/sizeof(settings[0]));
+                                  settings, slen);
     if (*rv != 0) {
         status = APR_EGENERAL;
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,

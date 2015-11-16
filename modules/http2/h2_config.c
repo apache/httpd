@@ -29,6 +29,7 @@
 #include "h2_ctx.h"
 #include "h2_conn.h"
 #include "h2_config.h"
+#include "h2_h2.h"
 #include "h2_private.h"
 
 #define DEF_VAL     (-1)
@@ -38,22 +39,22 @@
 
 static h2_config defconf = {
     "default",
-    100,              /* max_streams */
-    64 * 1024,        /* window_size */
-    -1,               /* min workers */
-    -1,               /* max workers */
-    10 * 60,          /* max workers idle secs */
-    64 * 1024,        /* stream max mem size */
-    NULL,             /* no alt-svcs */
-    -1,               /* alt-svc max age */
-    0,                /* serialize headers */
-    -1,               /* h2 direct mode */
-    -1,               /* # session extra files */
-    1,                /* modern TLS only */
-    -1,               /* HTTP/1 Upgrade support */
-    1024*1024,        /* TLS warmup size */
-    1,                /* TLS cooldown secs */
-    1,                /* HTTP/2 server push enabled */
+    100,                    /* max_streams */
+    H2_INITIAL_WINDOW_SIZE, /* window_size */
+    -1,                     /* min workers */
+    -1,                     /* max workers */
+    10 * 60,                /* max workers idle secs */
+    64 * 1024,              /* stream max mem size */
+    NULL,                   /* no alt-svcs */
+    -1,                     /* alt-svc max age */
+    0,                      /* serialize headers */
+    -1,                     /* h2 direct mode */
+    -1,                     /* # session extra files */
+    1,                      /* modern TLS only */
+    -1,                     /* HTTP/1 Upgrade support */
+    1024*1024,              /* TLS warmup size */
+    1,                      /* TLS cooldown secs */
+    1,                      /* HTTP/2 server push enabled */
 };
 
 static int files_per_session = 0;
