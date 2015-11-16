@@ -51,6 +51,8 @@ extern const char *H2_MAGIC_TOKEN;
 
 /* Maximum number of padding bytes in a frame, rfc7540 */
 #define H2_MAX_PADLEN               256
+/* Initial default window size, RFC 7540 ch. 6.5.2 */
+#define H2_INITIAL_WINDOW_SIZE      ((64*1024)-1)
 
 #define H2_HTTP_2XX(a)      ((a) >= 200 && (a) < 300)
 
