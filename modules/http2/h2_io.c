@@ -32,19 +32,19 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc)
     if (io) {
         io->id = id;
         io->pool = pool;
+        io->bucket_alloc = bucket_alloc;
         io->bbin = NULL;
-        io->bbout = apr_brigade_create(pool, bucket_alloc);
+        io->bbout = NULL;
     }
     return io;
 }
 
-static void h2_io_cleanup(h2_io *io)
-{
-}
-
 void h2_io_destroy(h2_io *io)
 {
-    h2_io_cleanup(io);
+    if (io->pool) {
+        apr_pool_destroy(io->pool);
+        /* gone */
+    }
 }
 
 void h2_io_set_response(h2_io *io, h2_response *response) 
@@ -72,7 +72,7 @@ int h2_io_in_has_eos_for(h2_io *io)
 
 int h2_io_out_has_data(h2_io *io)
 {
-    return h2_util_bb_has_data_or_eos(io->bbout);
+    return io->bbout && h2_util_bb_has_data_or_eos(io->bbout);
 }
 
 apr_off_t h2_io_out_length(h2_io *io)
@@ -127,8 +127,7 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
     io->eos_in = h2_util_has_eos(bb, 0);
     if (!APR_BRIGADE_EMPTY(bb)) {
         if (!io->bbin) {
-            io->bbin = apr_brigade_create(io->bbout->p, 
-                                          io->bbout->bucket_alloc);
+            io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
         }
         return h2_util_move(io->bbin, bb, 0, NULL, "h2_io_in_write");
     }
@@ -164,6 +163,11 @@ apr_status_t h2_io_out_readx(h2_io *io,
         *peos = 1;
         return APR_SUCCESS;
     }
+    else if (!io->bbout) {
+        *plen = 0;
+        *peos = 0;
+        return APR_EAGAIN;
+    }
     
     if (cb == NULL) {
         /* just checking length available */
@@ -191,7 +195,11 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
         *peos = 1;
         return APR_SUCCESS;
     }
-    
+    else if (!io->bbout) {
+        *plen = 0;
+        *peos = 0;
+        return APR_EAGAIN;
+    }
 
     io->eos_out = *peos = h2_util_has_eos(io->bbout, *plen);
     return h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
@@ -224,6 +232,10 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         }
         return status;
     }
+
+    if (!io->bbout) {
+        io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
+    }
     
     /* Let's move the buckets from the request processing in here, so
      * that the main thread can read them when it has time/capacity.
@@ -236,7 +248,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
      * file handles.
      */
     start_allowed = *pfile_handles_allowed;
-
     status = h2_util_move(io->bbout, bb, maxlen, pfile_handles_allowed, 
                           "h2_io_out_write");
     /* track # file buckets moved into our pool */
@@ -251,6 +262,9 @@ apr_status_t h2_io_out_close(h2_io *io)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;
+    }
+    if (!io->bbout) {
+        io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
     }
     if (!io->eos_out && !h2_util_has_eos(io->bbout, 0)) {
         APR_BRIGADE_INSERT_TAIL(io->bbout, 

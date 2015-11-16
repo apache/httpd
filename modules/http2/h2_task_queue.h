@@ -24,7 +24,7 @@ struct h2_task;
 typedef struct h2_task_queue h2_task_queue;
 
 struct h2_task_queue {
-    struct h2_task **elts;
+    int *elts;
     int head;
     int nelts;
     int nalloc;
@@ -34,15 +34,15 @@ struct h2_task_queue {
 /**
  * Comparator for two task to determine their order.
  *
- * @param t1 task to compare
- * @param t2 task to compare
+ * @param s1 stream id to compare
+ * @param s2 stream id to compare
  * @param ctx provided user data
  * @return value is the same as for strcmp() and has the effect:
- *    == 0: t1 and t2 are treated equal in ordering
- *     < 0: t1 should be sorted before t2
- *     > 0: t2 should be sorted before t1
+ *    == 0: s1 and s2 are treated equal in ordering
+ *     < 0: s1 should be sorted before s2
+ *     > 0: s2 should be sorted before s1
  */
-typedef int h2_tq_cmp(struct h2_task *t1, struct h2_task *t2, void *ctx);
+typedef int h2_tq_cmp(int s1, int s2, void *ctx);
 
 
 /**
@@ -59,18 +59,26 @@ h2_task_queue *h2_tq_create(apr_pool_t *pool, int capacity);
 int h2_tq_empty(h2_task_queue *q);
 
 /**
- * Add the task to the queue. 
+ * Add a stream idto the queue. 
  *
  * @param q the queue to append the task to
- * @param task the task to add
+ * @param sid the stream id to add
  * @param cmp the comparator for sorting
  * @param ctx user data for comparator 
  */
-void h2_tq_add(h2_task_queue *q, struct h2_task *task,
-               h2_tq_cmp *cmp, void *ctx);
+void h2_tq_add(h2_task_queue *q, int sid, h2_tq_cmp *cmp, void *ctx);
 
 /**
- * Sort the tasks queue again. Call if the task ordering
+ * Remove the stream id from the queue. Return != 0 iff task
+ * was found in queue.
+ * @param q the task queue
+ * @param sid the stream id to remove
+ * @return != 0 iff task was found in queue
+ */
+int h2_tq_remove(h2_task_queue *q, int sid);
+
+/**
+ * Sort the stream idqueue again. Call if the task ordering
  * has changed.
  *
  * @param q the queue to sort
@@ -80,12 +88,12 @@ void h2_tq_add(h2_task_queue *q, struct h2_task *task,
 void h2_tq_sort(h2_task_queue *q, h2_tq_cmp *cmp, void *ctx);
 
 /**
- * Get the first task from the queue or NULL if the queue is empty. 
+ * Get the first stream id from the queue or NULL if the queue is empty. 
  * The task will be removed.
  *
  * @param q the queue to get the first task from
- * @return the first task of the queue, NULL if empty
+ * @return the first stream id of the queue, 0 if empty
  */
-h2_task *h2_tq_shift(h2_task_queue *q);
+int h2_tq_shift(h2_task_queue *q);
 
 #endif /* defined(__mod_h2__h2_task_queue__) */

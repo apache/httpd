@@ -167,8 +167,9 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     
     task->id = apr_psprintf(pool, "%ld-%d", session_id, req->id);
     task->stream_id = req->id;
+    task->pool = pool;
     task->mplx = mplx;
-    task->c = h2_conn_create(mplx->c, pool);
+    task->c = h2_conn_create(mplx->c, task->pool);
 
     task->request = req;
     task->input_eos = eos;    
@@ -193,8 +194,7 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
 
     status = h2_worker_setup_task(worker, task);
     
-    /* save in connection that this one is a pseudo connection, prevents
-     * other hooks from messing with it. */
+    /* save in connection that this one is a pseudo connection */
     h2_ctx_create_for(task->c, task);
 
     if (status == APR_SUCCESS) {
@@ -228,8 +228,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         apr_thread_cond_signal(task->io);
     }
     
-    h2_worker_release_task(worker, task);
     h2_mplx_task_done(task->mplx, task->stream_id);
+    h2_worker_release_task(worker, task);
     
     return status;
 }
