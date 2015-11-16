@@ -154,8 +154,7 @@ static int h2_task_process_conn(conn_rec* c)
 
 
 h2_task *h2_task_create(long session_id, const h2_request *req, 
-                        apr_pool_t *pool, h2_mplx *mplx,
-                        conn_rec *c, int eos)
+                        apr_pool_t *pool, h2_mplx *mplx, int eos)
 {
     h2_task *task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
@@ -169,7 +168,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     task->id = apr_psprintf(pool, "%ld-%d", session_id, req->id);
     task->stream_id = req->id;
     task->mplx = mplx;
-    task->c = c;
+    task->c = h2_conn_create(mplx->c, pool);
 
     task->request = req;
     task->input_eos = eos;    
@@ -202,7 +201,9 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         task->input = h2_task_input_create(task, task->pool, 
                                            task->c->bucket_alloc);
         task->output = h2_task_output_create(task, task->pool);
+        
         ap_process_connection(task->c, h2_worker_get_socket(worker));
+        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_task(%s): processing done", task->id);
     }
@@ -228,7 +229,6 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     }
     
     h2_worker_release_task(worker, task);
-    
     h2_mplx_task_done(task->mplx, task->stream_id);
     
     return status;

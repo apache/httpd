@@ -124,11 +124,19 @@ apr_status_t h2_session_process(h2_session *session);
 void h2_session_destroy(h2_session *session);
 
 /**
+ * Cleanup session data while winding down. No new streams
+ * may be created afterwards, but existing stream can still be
+ * looked up.
+ * Called automatically on destroy.
+ */
+void h2_session_cleanup(h2_session *session);
+
+/**
  * Cleanup the session and all objects it still contains. This will not
  * destroy h2_task instances that have not finished yet. 
  * @param session the session to destroy
  */
-void h2_session_cleanup(h2_session *session);
+void h2_session_eoc_callback(h2_session *session);
 
 /**
  * Called once at start of session. 

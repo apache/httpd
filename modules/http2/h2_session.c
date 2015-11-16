@@ -627,6 +627,16 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     return APR_SUCCESS;
 }
 
+static apr_status_t session_pool_cleanup(void *data)
+{
+    h2_session *session = data;
+    
+    /* keep us from destroying the pool, since that is already ongoing. */
+    session->pool = NULL;
+    h2_session_destroy(session);
+    return APR_SUCCESS;
+}
+
 static h2_session *h2_session_create_int(conn_rec *c,
                                          request_rec *r,
                                          h2_config *config, 
@@ -648,6 +658,8 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->id = c->id;
         session->c = c;
         session->r = r;
+        
+        apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
         
         session->max_stream_count = h2_config_geti(config, H2_CONF_MAX_STREAMS);
         session->max_stream_mem = h2_config_geti(config, H2_CONF_STREAM_MAX_MEM);
@@ -720,21 +732,12 @@ h2_session *h2_session_rcreate(request_rec *r, h2_config *config,
     return h2_session_create_int(r->connection, r, config, workers);
 }
 
-void h2_session_destroy(h2_session *session)
+void h2_session_cleanup(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
     if (session->mplx) {
         h2_mplx_release_and_join(session->mplx, session->iowait);
         session->mplx = NULL;
-    }
-    if (session->streams) {
-        if (!h2_stream_set_is_empty(session->streams)) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                          "h2_session(%ld): destroy, %d streams open",
-                          session->id, (int)h2_stream_set_size(session->streams));
-        }
-        h2_stream_set_destroy(session->streams);
-        session->streams = NULL;
     }
     if (session->ngh2) {
         nghttp2_session_del(session->ngh2);
@@ -744,12 +747,30 @@ void h2_session_destroy(h2_session *session)
         apr_pool_destroy(session->spare);
         session->spare = NULL;
     }
+}
+
+void h2_session_destroy(h2_session *session)
+{
+    AP_DEBUG_ASSERT(session);
+    h2_session_cleanup(session);
+    
+    if (session->streams) {
+        if (!h2_stream_set_is_empty(session->streams)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                          "h2_session(%ld): destroy, %d streams open",
+                          session->id, (int)h2_stream_set_size(session->streams));
+        }
+        h2_stream_set_destroy(session->streams);
+        session->streams = NULL;
+    }
     if (session->pool) {
+        apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
         apr_pool_destroy(session->pool);
     }
 }
 
-void h2_session_cleanup(h2_session *session)
+
+void h2_session_eoc_callback(h2_session *session)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                   "session(%ld): cleanup and destroy", session->id);
@@ -1012,6 +1033,8 @@ apr_status_t h2_session_close(h2_session *session)
     }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0,session->c,
                   "h2_session: closing, writing eoc");
+                  
+    h2_session_cleanup(session);
     h2_conn_io_writeb(&session->io,
                       h2_bucket_eoc_create(session->c->bucket_alloc, 
                                            session));

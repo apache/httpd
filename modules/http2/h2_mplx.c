@@ -227,24 +227,22 @@ void h2_mplx_abort(h2_mplx *m)
 
 static void io_destroy(h2_mplx *m, h2_io *io)
 {
-    if (io) {
-        apr_pool_t *pool = io->pool;
-        if (pool) {
-            io->pool = NULL;
-            apr_pool_clear(pool);
-            if (m->spare_pool) {
-                apr_pool_destroy(m->spare_pool);
-            }
-            m->spare_pool = pool;
+    apr_pool_t *pool = io->pool;
+    if (pool) {
+        io->pool = NULL;
+        apr_pool_clear(pool);
+        if (m->spare_pool) {
+            apr_pool_destroy(m->spare_pool);
         }
-        /* The pool is cleared/destroyed which also closes all
-         * allocated file handles. Give this count back to our
-         * file handle pool. */
-        m->file_handles_allowed += io->files_handles_owned;
-        h2_io_set_remove(m->stream_ios, io);
-        h2_io_set_remove(m->ready_ios, io);
-        h2_io_destroy(io);
+        m->spare_pool = pool;
     }
+    /* The pool is cleared/destroyed which also closes all
+     * allocated file handles. Give this count back to our
+     * file handle pool. */
+    m->file_handles_allowed += io->files_handles_owned;
+    h2_io_set_remove(m->stream_ios, io);
+    h2_io_set_remove(m->ready_ios, io);
+    h2_io_destroy(io);
 }
 
 apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
@@ -258,7 +256,10 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        
+
+        /* there should be an h2_io, once the stream has been scheduled
+         * for processing, e.g. when we received all HEADERs. But when
+         * a stream is cancelled very early, it will not exist. */
         if (io) {
             /* Remove io from ready set, we will never submit it */
             h2_io_set_remove(m->ready_ios, io);
@@ -268,10 +269,8 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
             }
             else {
                 /* cleanup once task is done */
-                io->zombie = 1;
+                io->orphaned = 1;
                 if (rst_error) {
-                    /* Forward error code to fail any further attempt to
-                     * write to io */
                     h2_io_rst(io, rst_error);
                 }
             }
@@ -291,7 +290,7 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id)
                       "h2_mplx(%ld): task(%d) done", m->id, stream_id);
         if (io) {
             io->task_done = 1;
-            if (io->zombie) {
+            if (io->orphaned) {
                 io_destroy(m, io);
             }
             else {
@@ -314,7 +313,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
+        if (io && !io->orphaned) {
             io->input_arrived = iowait;
             status = h2_io_in_read(io, bb, 0);
             while (APR_STATUS_IS_EAGAIN(status) 
@@ -344,7 +343,7 @@ apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id,
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
+        if (io && !io->orphaned) {
             status = h2_io_in_write(io, bb);
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
@@ -368,7 +367,7 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
+        if (io && !io->orphaned) {
             status = h2_io_in_close(io);
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
@@ -445,7 +444,7 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
+        if (io && !io->orphaned) {
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
             
             status = h2_io_out_readx(io, cb, ctx, plen, peos);
@@ -475,7 +474,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io) {
+        if (io && !io->orphaned) {
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_pre");
             
             status = h2_io_out_read_to(io, bb, plen, peos);
@@ -525,7 +524,14 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                               "h2_mplx(%ld): stream for response %d closed, "
                               "resetting io to close request processing",
                               m->id, io->id);
-                h2_io_rst(io, H2_ERR_STREAM_CLOSED);
+                io->orphaned = 1;
+                if (io->task_done) {
+                    io_destroy(m, io);
+                }
+                else {
+                    /* hang around until the h2_task is done */
+                    h2_io_rst(io, H2_ERR_STREAM_CLOSED);
+                }
             }
             
             if (io->output_drained) {
@@ -581,7 +587,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
     apr_status_t status = APR_SUCCESS;
     
     h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-    if (io) {
+    if (io && !io->orphaned) {
         if (f) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                           "h2_mplx(%ld-%d): open response: %d, rst=%d",
@@ -639,7 +645,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
     if (APR_SUCCESS == status) {
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-            if (io) {
+            if (io && !io->orphaned) {
                 status = out_write(m, io, f, bb, iowait);
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
                 
@@ -671,7 +677,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
     if (APR_SUCCESS == status) {
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-            if (io) {
+            if (io && !io->orphaned) {
                 if (!io->response && !io->rst_error) {
                     /* In case a close comes before a response was created,
                      * insert an error one so that our streams can properly
@@ -715,7 +721,7 @@ apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error)
     if (APR_SUCCESS == status) {
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-            if (io && !io->rst_error) {
+            if (io && !io->rst_error && !io->orphaned) {
                 h2_io_rst(io, error);
                 if (!io->response) {
                         h2_io_set_add(m->ready_ios, io);
@@ -748,7 +754,7 @@ int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id)
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io) {
-            has_eos = h2_io_in_has_eos_for(io);
+            has_eos = io->orphaned || h2_io_in_has_eos_for(io);
         }
         apr_thread_mutex_unlock(m->lock);
     }
@@ -872,13 +878,11 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        conn_rec *c;
         h2_io *io;
         cmp_ctx x;
         
         io = open_io(m, stream_id);
-        c = h2_conn_create(m->c, io->pool);
-        io->task = h2_task_create(m->id, req, io->pool, m, c, eos);
+        io->task = h2_task_create(m->id, req, io->pool, m, eos);
 
         if (eos) {
             status = h2_io_in_close(io);
@@ -912,6 +916,12 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     if (APR_SUCCESS == status) {
         task = h2_tq_shift(m->q);
         *has_more = !h2_tq_empty(m->q);
+        if (task) {
+            /* Anything not already setup correctly in the task
+             * needs to be so now, as task will be executed right about 
+             * when this method returns. */
+             
+        }
         apr_thread_mutex_unlock(m->lock);
     }
     return task;

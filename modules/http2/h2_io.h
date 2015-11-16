@@ -31,7 +31,7 @@ typedef struct h2_io h2_io;
 struct h2_io {
     int id;                      /* stream identifier */
     apr_pool_t *pool;            /* stream pool */
-    int zombie;
+    int orphaned;                /* h2_stream is gone for this io */
     
     int task_done;
     struct h2_task *task;        /* task created for this io */
