@@ -66,8 +66,7 @@ struct h2_task {
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        apr_pool_t *pool, struct h2_mplx *mplx,
-                        conn_rec *c, int eos);
+                        apr_pool_t *pool, struct h2_mplx *mplx, int eos);
 
 apr_status_t h2_task_destroy(h2_task *task);
 
