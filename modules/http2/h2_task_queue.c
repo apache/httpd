@@ -46,8 +46,7 @@ int h2_tq_empty(h2_task_queue *q)
     return q->nelts == 0;
 }
 
-void h2_tq_add(h2_task_queue *q, struct h2_task *task,
-               h2_tq_cmp *cmp, void *ctx)
+void h2_tq_add(h2_task_queue *q, int sid, h2_tq_cmp *cmp, void *ctx)
 {
     int i;
     
@@ -56,11 +55,31 @@ void h2_tq_add(h2_task_queue *q, struct h2_task *task,
     }
     
     i = (q->head + q->nelts) % q->nalloc;
-    q->elts[i] = task;
+    q->elts[i] = sid;
     ++q->nelts;
     
     /* bubble it to the front of the queue */
     tq_bubble_up(q, i, q->head, cmp, ctx);
+}
+
+int h2_tq_remove(h2_task_queue *q, int sid)
+{
+    int i;
+    for (i = 0; i < q->nelts; ++i) {
+        if (sid == q->elts[(q->head + i) % q->nalloc]) {
+            break;
+        }
+    }
+    
+    if (i < q->nelts) {
+        ++i;
+        for (; i < q->nelts; ++i) {
+            q->elts[(q->head+i-1)%q->nalloc] = q->elts[(q->head+i)%q->nalloc];
+        }
+        --q->nelts;
+        return 1;
+    }
+    return 0;
 }
 
 void h2_tq_sort(h2_task_queue *q, h2_tq_cmp *cmp, void *ctx)
@@ -91,34 +110,34 @@ void h2_tq_sort(h2_task_queue *q, h2_tq_cmp *cmp, void *ctx)
 }
 
 
-h2_task *h2_tq_shift(h2_task_queue *q)
+int h2_tq_shift(h2_task_queue *q)
 {
-    h2_task *t;
+    int sid;
     
     if (q->nelts <= 0) {
-        return NULL;
+        return 0;
     }
     
-    t = q->elts[q->head];
+    sid = q->elts[q->head];
     q->head = (q->head + 1) % q->nalloc;
     q->nelts--;
     
-    return t;
+    return sid;
 }
 
 static void tq_grow(h2_task_queue *q, int nlen)
 {
     AP_DEBUG_ASSERT(q->nalloc <= nlen);
     if (nlen > q->nalloc) {
-        h2_task **nq = apr_pcalloc(q->pool, sizeof(h2_task *) * nlen);
+        int *nq = apr_pcalloc(q->pool, sizeof(h2_task *) * nlen);
         if (q->nelts > 0) {
             int l = ((q->head + q->nelts) % q->nalloc) - q->head;
             
-            memmove(nq, q->elts + q->head, sizeof(h2_task *) * l);
+            memmove(nq, q->elts + q->head, sizeof(int) * l);
             if (l < q->nelts) {
                 /* elts wrapped, append elts in [0, remain] to nq */
                 int remain = q->nelts - l;
-                memmove(nq + l, q->elts, sizeof(h2_task *) * remain);
+                memmove(nq + l, q->elts, sizeof(int) * remain);
             }
         }
         q->elts = nq;
@@ -129,9 +148,9 @@ static void tq_grow(h2_task_queue *q, int nlen)
 
 static void tq_swap(h2_task_queue *q, int i, int j)
 {
-    h2_task *t = q->elts[i];
+    int x = q->elts[i];
     q->elts[i] = q->elts[j];
-    q->elts[j] = t;
+    q->elts[j] = x;
 }
 
 static int tq_bubble_up(h2_task_queue *q, int i, int top, 

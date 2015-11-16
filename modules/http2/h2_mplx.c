@@ -41,6 +41,7 @@
 #include "h2_task_input.h"
 #include "h2_task_output.h"
 #include "h2_task_queue.h"
+#include "h2_worker.h"
 #include "h2_workers.h"
 #include "h2_util.h"
 
@@ -228,14 +229,8 @@ void h2_mplx_abort(h2_mplx *m)
 static void io_destroy(h2_mplx *m, h2_io *io)
 {
     apr_pool_t *pool = io->pool;
-    if (pool) {
-        io->pool = NULL;
-        apr_pool_clear(pool);
-        if (m->spare_pool) {
-            apr_pool_destroy(m->spare_pool);
-        }
-        m->spare_pool = pool;
-    }
+    
+    io->pool = NULL;    
     /* The pool is cleared/destroyed which also closes all
      * allocated file handles. Give this count back to our
      * file handle pool. */
@@ -243,6 +238,14 @@ static void io_destroy(h2_mplx *m, h2_io *io)
     h2_io_set_remove(m->stream_ios, io);
     h2_io_set_remove(m->ready_ios, io);
     h2_io_destroy(io);
+    
+    if (pool) {
+        apr_pool_clear(pool);
+        if (m->spare_pool) {
+            apr_pool_destroy(m->spare_pool);
+        }
+        m->spare_pool = pool;
+    }
 }
 
 apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
@@ -263,8 +266,8 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
         if (io) {
             /* Remove io from ready set, we will never submit it */
             h2_io_set_remove(m->ready_ios, io);
-            
-            if (io->task_done) {
+            if (io->task_done || h2_tq_remove(m->q, io->id)) {
+                /* already finished or not even started yet */
                 io_destroy(m, io);
             }
             else {
@@ -274,6 +277,7 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
                     h2_io_rst(io, rst_error);
                 }
             }
+            
         }
         
         apr_thread_mutex_unlock(m->lock);
@@ -812,17 +816,6 @@ static void have_out_data_for(h2_mplx *m, int stream_id)
     }
 }
 
-typedef struct {
-    h2_stream_pri_cmp *cmp;
-    void *ctx;
-} cmp_ctx;
-
-static int task_cmp(h2_task *t1, h2_task *t2, void *ctx)
-{
-    cmp_ctx *x = ctx;
-    return x->cmp(t1->stream_id, t2->stream_id, x->ctx);
-}
-
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -833,11 +826,7 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        cmp_ctx x;
-        
-        x.cmp = cmp;
-        x.ctx = ctx;
-        h2_tq_sort(m->q, task_cmp, &x);
+        h2_tq_sort(m->q, cmp, ctx);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                       "h2_mplx(%ld): reprioritize tasks", m->id);
@@ -878,19 +867,15 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        h2_io *io;
-        cmp_ctx x;
-        
-        io = open_io(m, stream_id);
-        io->task = h2_task_create(m->id, req, io->pool, m, eos);
+        h2_io *io = open_io(m, stream_id);
+        io->request = req;
+        io->request_body = !eos;
 
         if (eos) {
             status = h2_io_in_close(io);
         }
         
-        x.cmp = cmp;
-        x.ctx = ctx;
-        h2_tq_add(m->q, io->task, task_cmp, &x);
+        h2_tq_add(m->q, io->id, cmp, ctx);
 
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                       "h2_mplx(%ld-%d): process", m->c->id, stream_id);
@@ -903,10 +888,11 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
     return status;
 }
 
-h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
+h2_task *h2_mplx_pop_task(h2_mplx *m, h2_worker *w, int *has_more)
 {
     h2_task *task = NULL;
     apr_status_t status;
+    
     AP_DEBUG_ASSERT(m);
     if (m->aborted) {
         *has_more = 0;
@@ -914,14 +900,17 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
-        task = h2_tq_shift(m->q);
-        *has_more = !h2_tq_empty(m->q);
-        if (task) {
+        int sid;
+        while (!task && (sid = h2_tq_shift(m->q)) > 0) {
             /* Anything not already setup correctly in the task
              * needs to be so now, as task will be executed right about 
              * when this method returns. */
-             
+            h2_io *io = h2_io_set_get(m->stream_ios, sid);
+            if (io) {
+                task = h2_worker_create_task(w, m, io->request, !io->request_body);
+            }
         }
+        *has_more = !h2_tq_empty(m->q);
         apr_thread_mutex_unlock(m->lock);
     }
     return task;

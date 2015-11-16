@@ -44,6 +44,7 @@ struct h2_stream;
 struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
+struct h2_worker;
 struct h2_workers;
 struct h2_stream_set;
 struct h2_task_queue;
@@ -169,7 +170,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, struct h2_worker *w, int *has_more);
 
 /*******************************************************************************
  * Input handling of streams.

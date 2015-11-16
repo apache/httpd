@@ -18,7 +18,7 @@
 
 struct h2_response;
 struct apr_thread_cond_t;
-struct h2_task;
+struct h2_request;
 
 
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
@@ -34,9 +34,9 @@ struct h2_io {
     int orphaned;                /* h2_stream is gone for this io */
     
     int task_done;
-    struct h2_task *task;        /* task created for this io */
-
-    struct h2_response *response;/* submittable response created */
+    const struct h2_request *request;  /* request on this io */
+    int request_body;            /* == 0 iff request has no body */
+    struct h2_response *response;/* response for submit, once created */
     int rst_error;
 
     int eos_in;
@@ -46,6 +46,7 @@ struct h2_io {
     
     int eos_out;
     apr_bucket_brigade *bbout;   /* output data from stream */
+    apr_bucket_alloc_t *bucket_alloc;
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
     int files_handles_owned;
