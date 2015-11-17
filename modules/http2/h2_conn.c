@@ -174,10 +174,12 @@ apr_status_t h2_conn_process(conn_rec *c, request_rec *r)
     }
     
     status = h2_session_process(session);
-    h2_session_close(session);
 
     ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                   "h2_session(%ld): done", session->id);
+    h2_session_close(session);
+    h2_session_flush(session);
+    /* hereafter session might be gone */
     
     /* Make sure this connection gets closed properly. */
     ap_update_child_status_from_conn(c->sbh, SERVER_CLOSING, c);
