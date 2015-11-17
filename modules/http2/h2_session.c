@@ -662,9 +662,20 @@ h2_session *h2_session_rcreate(request_rec *r, h2_config *config,
     return h2_session_create_int(r->connection, r, config, workers);
 }
 
-void h2_session_cleanup(h2_session *session)
+static void h2_session_cleanup(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
+    /* This is an early cleanup of the session that may
+     * discard what is no longer necessary for *new* streams
+     * and general HTTP/2 processing.
+     * At this point, all frames are in transit or somehwere in
+     * our buffers or passed down output filters.
+     * h2 streams might still being written out.
+     */
+    if (session->mplx) {
+        h2_mplx_release_and_join(session->mplx, session->iowait);
+        session->mplx = NULL;
+    }
     if (session->ngh2) {
         nghttp2_session_del(session->ngh2);
         session->ngh2 = NULL;
@@ -672,10 +683,6 @@ void h2_session_cleanup(h2_session *session)
     if (session->spare) {
         apr_pool_destroy(session->spare);
         session->spare = NULL;
-    }
-    if (session->mplx) {
-        h2_mplx_release_and_join(session->mplx, session->iowait);
-        session->mplx = NULL;
     }
 }
 
@@ -1194,11 +1201,18 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
 {
     apr_pool_t *pool = h2_stream_detach_pool(stream);
 
-    h2_mplx_stream_done(session->mplx, stream->id, stream->rst_error);
-    if (session->last_stream == stream) {
-        session->last_stream = NULL;
+    /* this may be called while the session has already freed
+     * some internal structures. */
+    if (session->mplx) {
+        h2_mplx_stream_done(session->mplx, stream->id, stream->rst_error);
+        if (session->last_stream == stream) {
+            session->last_stream = NULL;
+        }
     }
-    h2_stream_set_remove(session->streams, stream->id);
+    
+    if (session->streams) {
+        h2_stream_set_remove(session->streams, stream->id);
+    }
     h2_stream_destroy(stream);
     
     if (pool) {
