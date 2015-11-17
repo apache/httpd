@@ -59,7 +59,6 @@ struct h2_session {
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
     int aborted;                    /* this session is being aborted */
-    int flush;                      /* if != 0, flush output on next occasion */
     int reprioritize;               /* scheduled streams priority needs to 
                                      * be re-evaluated */
     apr_size_t frames_received;     /* number of http/2 frames received */
@@ -155,6 +154,12 @@ apr_status_t h2_session_start(h2_session *session, int *rv);
  *
  */
 apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
+
+/**
+ * Pass any buffered output data through the connection filters.
+ * @param session the session to flush
+ */
+apr_status_t h2_session_flush(h2_session *session);
 
 /**
  * Called before a session gets destroyed, might flush output etc. 

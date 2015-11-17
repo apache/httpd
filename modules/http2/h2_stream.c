@@ -259,6 +259,8 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(stream);
+    AP_DEBUG_ASSERT(stream->session);
+    AP_DEBUG_ASSERT(stream->session->mplx);
     
     if (!output_open(stream)) {
         return APR_ECONNRESET;

@@ -278,7 +278,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                       "h2_conn_io: buffering %ld bytes", (long)length);
                       
         if (!APR_BRIGADE_EMPTY(io->output)) {
-            status = h2_conn_io_flush(io);
+            status = h2_conn_io_pass(io);
             io->unflushed = 1;
         }
         
@@ -338,15 +338,15 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
         }
         len += io->buflen;
         if (len >= WRITE_BUFFER_SIZE) {
-            return h2_conn_io_flush(io);
+            return h2_conn_io_pass(io);
         }
     }
     return status;
 }
 
-apr_status_t h2_conn_io_flush(h2_conn_io *io)
+static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
 {
-    if (io->unflushed) {
+    if (io->unflushed || force) {
         apr_status_t status; 
         if (io->buflen > 0) {
             /* something in the buffer, put it in the output brigade */
@@ -356,8 +356,11 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
             io->buflen = 0;
         }
         
-        APR_BRIGADE_INSERT_TAIL(io->output,
-                                apr_bucket_flush_create(io->output->bucket_alloc));
+        if (force) {
+            APR_BRIGADE_INSERT_TAIL(io->output,
+                                    apr_bucket_flush_create(io->output->bucket_alloc));
+        }
+        
         /* Send it out */
         status = pass_out(io->output, io);
         
@@ -374,3 +377,12 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
     return APR_SUCCESS;
 }
 
+apr_status_t h2_conn_io_flush(h2_conn_io *io)
+{
+    return h2_conn_io_flush_int(io, 1);
+}
+
+apr_status_t h2_conn_io_pass(h2_conn_io *io)
+{
+    return h2_conn_io_flush_int(io, 0);
+}

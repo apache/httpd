@@ -84,9 +84,8 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     return stream;
 }
 
-static apr_status_t h2_session_flush(h2_session *session) 
+apr_status_t h2_session_flush(h2_session *session) 
 {
-    session->flush = 0;
     return h2_conn_io_flush(&session->io);
 }
 
@@ -232,72 +231,6 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
         if (nghttp2_is_fatal(rv)) {
             return NGHTTP2_ERR_CALLBACK_FAILURE;
         }
-    }
-    return 0;
-}
-
-static int before_frame_send_cb(nghttp2_session *ngh2,
-                                const nghttp2_frame *frame,
-                                void *userp)
-{
-    h2_session *session = (h2_session *)userp;
-    (void)ngh2;
-
-    if (session->aborted) {
-        return NGHTTP2_ERR_CALLBACK_FAILURE;
-    }
-    /* Set the need to flush output when we have added one of the 
-     * following frame types */
-    switch (frame->hd.type) {
-        case NGHTTP2_RST_STREAM:
-        case NGHTTP2_PUSH_PROMISE:
-        case NGHTTP2_GOAWAY:
-            session->flush = 1;
-            break;
-        default:
-            break;
-
-    }
-    if (APLOGctrace2(session->c)) {
-        char buffer[256];
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_session(%ld): before_frame_send %s", 
-                      session->id, buffer);
-    }
-    return 0;
-}
-
-static int on_frame_send_cb(nghttp2_session *ngh2,
-                            const nghttp2_frame *frame,
-                            void *userp)
-{
-    h2_session *session = (h2_session *)userp;
-    (void)ngh2;
-    if (APLOGctrace2(session->c)) {
-        char buffer[256];
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_session(%ld): on_frame_send %s", 
-                      session->id, buffer);
-    }
-    return 0;
-}
-
-static int on_frame_not_send_cb(nghttp2_session *ngh2,
-                                const nghttp2_frame *frame,
-                                int lib_error_code, void *userp)
-{
-    h2_session *session = (h2_session *)userp;
-    (void)ngh2;
-    
-    if (APLOGctrace2(session->c)) {
-        char buffer[256];
-        
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_session: callback on_frame_not_send error=%d %s",
-                      lib_error_code, buffer);
     }
     return 0;
 }
@@ -616,9 +549,6 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_frame_recv, on_frame_recv_cb);
     NGH2_SET_CALLBACK(*pcb, on_invalid_frame_recv, on_invalid_frame_recv_cb);
     NGH2_SET_CALLBACK(*pcb, on_data_chunk_recv, on_data_chunk_recv_cb);
-    NGH2_SET_CALLBACK(*pcb, before_frame_send, before_frame_send_cb);
-    NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
-    NGH2_SET_CALLBACK(*pcb, on_frame_not_send, on_frame_not_send_cb);
     NGH2_SET_CALLBACK(*pcb, on_stream_close, on_stream_close_cb);
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
@@ -735,10 +665,6 @@ h2_session *h2_session_rcreate(request_rec *r, h2_config *config,
 void h2_session_cleanup(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
-    if (session->mplx) {
-        h2_mplx_release_and_join(session->mplx, session->iowait);
-        session->mplx = NULL;
-    }
     if (session->ngh2) {
         nghttp2_session_del(session->ngh2);
         session->ngh2 = NULL;
@@ -746,6 +672,10 @@ void h2_session_cleanup(h2_session *session)
     if (session->spare) {
         apr_pool_destroy(session->spare);
         session->spare = NULL;
+    }
+    if (session->mplx) {
+        h2_mplx_release_and_join(session->mplx, session->iowait);
+        session->mplx = NULL;
     }
 }
 
@@ -764,7 +694,6 @@ void h2_session_destroy(h2_session *session)
         session->streams = NULL;
     }
     if (session->pool) {
-        apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
         apr_pool_destroy(session->pool);
     }
 }
@@ -774,6 +703,7 @@ void h2_session_eoc_callback(h2_session *session)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                   "session(%ld): cleanup and destroy", session->id);
+    apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
     h2_session_destroy(session);
 }
 
@@ -810,7 +740,6 @@ static apr_status_t h2_session_abort_int(h2_session *session, int reason)
                                       strlen(err));
                 nghttp2_session_send(session->ngh2);
             }
-            h2_session_flush(session);
         }
         h2_mplx_abort(session->mplx);
     }
@@ -1033,12 +962,11 @@ apr_status_t h2_session_close(h2_session *session)
     }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0,session->c,
                   "h2_session: closing, writing eoc");
-                  
-    h2_session_cleanup(session);
-    h2_conn_io_writeb(&session->io,
-                      h2_bucket_eoc_create(session->c->bucket_alloc, 
-                                           session));
-    return h2_session_flush(session);
+    
+    h2_session_cleanup(session);              
+    return h2_conn_io_writeb(&session->io,
+                             h2_bucket_eoc_create(session->c->bucket_alloc, 
+                                                  session));
 }
 
 static ssize_t stream_data_cb(nghttp2_session *ng2s,
@@ -1400,13 +1328,10 @@ apr_status_t h2_session_process(h2_session *session)
             }
         }
         
-        if (have_written) {
-            h2_session_flush(session);
-        }
-        
         if (wait_micros > 0) {
             ap_log_cerror( APLOG_MARK, APLOG_TRACE3, 0, session->c,
                           "h2_session: wait for data, %ld micros", (long)(wait_micros));
+            h2_conn_io_pass(&session->io);
             status = h2_mplx_out_trywait(session->mplx, wait_micros, session->iowait);
             
             if (status == APR_TIMEUP) {
@@ -1446,7 +1371,7 @@ apr_status_t h2_session_process(h2_session *session)
             }
             
             if (may_block) {
-                h2_session_flush(session);
+                h2_conn_io_flush(&session->io);
                 if (session->c->cs) {
                     session->c->cs->state = (got_streams? CONN_STATE_HANDLER
                                              : CONN_STATE_WRITE_COMPLETION);

@@ -114,7 +114,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
         APR_RING_ELEM_INIT(m, link);
         apr_atomic_set32(&m->refs, 1);
         m->c = c;
-        apr_pool_create_ex(&m->pool, parent, NULL, allocator);
+        apr_pool_create_ex(&m->pool, NULL, NULL, allocator);
         if (!m->pool) {
             return NULL;
         }
