@@ -305,7 +305,7 @@ static apr_status_t h2_stream_input_flush(h2_stream *stream)
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->mplx->c,
                           "h2_stream(%ld-%d): flushing input data",
-                          stream->session->mplx->id, stream->id);
+                          stream->session->id, stream->id);
         }
     }
     return status;
