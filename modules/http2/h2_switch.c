@@ -160,7 +160,6 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
                               "session proessed, unexpected status");
             }
-            ap_flush_conn(r->connection);
         }
         return DONE;
     }

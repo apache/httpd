@@ -648,14 +648,10 @@ int h2_h2_process_conn(conn_rec* c)
      * the connection.
      */
     if (h2_ctx_is_active(ctx)) {
-        apr_status_t status;
-        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_h2, connection, h2 active");
         
-        status = h2_conn_process(c, NULL);
-        ap_flush_conn(c);
-        return status;
+        return h2_conn_process(c, NULL);
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");
