@@ -254,17 +254,20 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
     else {
         /* no content-length given */
         req->content_length = -1;
-        s = apr_table_get(req->headers, "Content-Type");
-        if (eos && s) {
-            req->chunked = 0;
-            apr_table_setn(req->headers, "Content-Length", "0");
-        }
-        else if (s) {
-            /* We have not seen a content-length, but a content-type. 
-             * must pass any request content in chunked form.
+        if (!eos) {
+            /* We have not seen a content-length and have no eos,
+             * simulate a chunked encoding for our HTTP/1.1 infrastructure,
+             * in case we have "H2SerializeHeaders on" here
              */
             req->chunked = 1;
             apr_table_mergen(req->headers, "Transfer-Encoding", "chunked");
+        }
+        else if (apr_table_get(req->headers, "Content-Type")) {
+            /* If we have a content-type, but already see eos, no more
+             * data will come. Signal a zero content length explicitly.
+             */
+            req->chunked = 0;
+            apr_table_setn(req->headers, "Content-Length", "0");
         }
     }
 
