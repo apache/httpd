@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1707230
                   http://svn.apache.org/r1707231
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v3.patch
-     +1: ylavic
+     +1: ylavic, icing
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
           its parameter when starting httpd as single process (httpd -X).
