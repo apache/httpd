@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1713040
                   http://svn.apache.org/r1683881
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
