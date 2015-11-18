@@ -917,7 +917,8 @@ static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
 
 static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
-                                        apr_status_t status)
+                                        apr_status_t status,
+                                        int is_init)
 {
     SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
@@ -931,8 +932,13 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                          "trying to send HTML error page");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
 
-            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
             ssl_io_filter_disable(sslconn, f);
+            f->c->keepalive = AP_CONN_CLOSE;
+            if (is_init) {
+                sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
+                return APR_EGENERAL;
+            }
+            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
@@ -1401,11 +1407,22 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
 
     if (!inctx->ssl) {
+        apr_bucket *bucket;
         SSLConnRec *sslconn = myConnConfig(f->c);
-        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
-            apr_bucket *bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
+        if (sslconn->non_ssl_request == NON_SSL_SEND_REQLINE) {
+            bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bucket);
-            sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
+            if (mode != AP_MODE_SPECULATIVE) {
+                sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
+            }
+            return APR_SUCCESS;
+        }
+        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
+            bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bucket);
+            if (mode != AP_MODE_SPECULATIVE) {
+                sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
+            }
             return APR_SUCCESS;
         }
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
@@ -1426,7 +1443,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * rather than have SSLEngine On configured.
      */
     if ((status = ssl_io_filter_handshake(inctx->filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, is_init);
     }
 
     if (is_init) {
@@ -1480,7 +1497,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* Handle custom errors. */
     if (status != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, 0);
     }
 
     /* Create a transient bucket out of the decrypted data. */
@@ -1670,7 +1687,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     inctx->block = APR_BLOCK_READ;
 
     if ((status = ssl_io_filter_handshake(filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, 0);
     }
 
     while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
