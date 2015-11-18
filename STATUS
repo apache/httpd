@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1707230
                   http://svn.apache.org/r1707231
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v3.patch
-     +1: ylavic, icing
+     +1: ylavic, icing, jim
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
           its parameter when starting httpd as single process (httpd -X).
@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   + manual addition of "conn_rec *master;"
      2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/2.4.17-protocols.patch
      branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
-     +1: icing
+     +1: icing, jim
 
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
               to only staple responses with certificate status "good"
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1713040
                   http://svn.apache.org/r1683881
      2.4.x patch: trunk works
-     +1: jailletc36, icing
+     +1: jailletc36, icing, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
