@@ -191,6 +191,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: kbrand, icing
     
+  *) synch 2.4.x with trunk
+        mod_authn_anon: Constify + save a few bytes in conf pool
+        core: Save a few bytes in conf pool when processing 'AllowOverrideList'
+        mod_authnz_ldap: Save a few bytes in conf pool
+     trunk patch: http://svn.apache.org/r1711553
+                  http://svn.apache.org/r1713040
+                  http://svn.apache.org/r1683881
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
