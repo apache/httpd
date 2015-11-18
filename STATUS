@@ -112,15 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) synch 2.4.x with trunk
-        mod_authn_anon: Constify + save a few bytes in conf pool
-        core: Save a few bytes in conf pool when processing 'AllowOverrideList'
-        mod_authnz_ldap: Save a few bytes in conf pool
-     trunk patch: http://svn.apache.org/r1711553
-                  http://svn.apache.org/r1713040
-                  http://svn.apache.org/r1683881
-     2.4.x patch: trunk works
-     +1: jailletc36, icing, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

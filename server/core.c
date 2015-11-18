@@ -1736,7 +1736,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
 
     d->override_list = apr_table_make(cmd->pool, argc);
 
-    for (i=0;i<argc;i++){
+    for (i = 0; i < argc; i++) {
         if (!strcasecmp(argv[i], "None")) {
             if (argc != 1) {
                 return "'None' not allowed with other directives in "
@@ -1747,6 +1747,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
         else {
             const command_rec *result = NULL;
             module *mod = ap_top_module;
+
             result = ap_find_command_in_modules(argv[i], &mod);
             if (result == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
@@ -1765,7 +1766,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
                 continue;
             }
             else {
-                apr_table_set(d->override_list, argv[i], "1");
+                apr_table_setn(d->override_list, argv[i], "1");
             }
         }
     }
