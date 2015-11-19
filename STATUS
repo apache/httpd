@@ -111,6 +111,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core/mod_ssl: 
+     - master conn_rec* addition to conn_rec
+     - minor mmn bump
+     - improved ALPN and Upgrade handling
+     - allowing requests for servers whose TLS configuration is compatible
+       to the SNI server ones
+     - disabling TLS renegotiation for slave connections
+     changes are necessary for update modules/http2
+     trunk patch: http://svn.apache.org/r1708107
+                  http://svn.apache.org/r1709587
+                  http://svn.apache.org/r1709602
+                  http://svn.apache.org/r1709995
+                  http://svn.apache.org/r1710231
+                  http://svn.apache.org/r1710419
+                  http://svn.apache.org/r1710572
+                  http://svn.apache.org/r1710583
+                  http://svn.apache.org/r1715023
+                  + manual addition of "conn_rec *master;"
+     branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
+     +1: icing, ylavic, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -150,27 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, minfrin
      icing: test 3 fails for me in t/security/CVE-2005-3357.t
      ylavic: not related (at least not the cause), fixed in r1715023.
-
-  *) core/mod_ssl: 
-     - master conn_rec* addition to conn_rec
-     - minor mmn bump
-     - improved ALPN and Upgrade handling
-     - allowing requests for servers whose TLS configuration is compatible
-       to the SNI server ones
-     - disabling TLS renegotiation for slave connections
-     changes are necessary for update modules/http2
-     trunk patch: http://svn.apache.org/r1708107
-                  http://svn.apache.org/r1709587
-                  http://svn.apache.org/r1709602
-                  http://svn.apache.org/r1709995
-                  http://svn.apache.org/r1710231
-                  http://svn.apache.org/r1710419
-                  http://svn.apache.org/r1710572
-                  http://svn.apache.org/r1710583
-                  http://svn.apache.org/r1715023
-                  + manual addition of "conn_rec *master;"
-     branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
-     +1: icing, ylavic, jim
 
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
               to only staple responses with certificate status "good"
