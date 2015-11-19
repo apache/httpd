@@ -165,7 +165,7 @@ apr_status_t h2_conn_process(conn_rec *c, request_rec *r)
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
                   "h2_session(%ld): starting on %s:%d", session->id,
-                  session->c->base_server->defn_name,
+                  session->c->base_server->server_hostname,
                   session->c->local_addr->port);
     if (status != APR_SUCCESS) {
         h2_session_abort(session, status, rv);

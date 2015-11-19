@@ -61,7 +61,7 @@ struct h2_stream {
     int aborted;                /* was aborted */
     int suspended;              /* DATA sending has been suspended */
     int rst_error;              /* stream error for RST_STREAM */
-    int req_eoh;                /* request HEADERs have been received */
+    int scheduled;              /* stream has been scheduled */
     int submitted;              /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
@@ -135,7 +135,8 @@ void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
                               const struct h2_request *req);
 
 /*
- * Add a HTTP/2 header (including pseudo headers) to the given stream.
+ * Add a HTTP/2 header (including pseudo headers) or trailer 
+ * to the given stream, depending on stream state.
  *
  * @param stream stream to write the header to
  * @param name the name of the HTTP/2 header
@@ -184,6 +185,13 @@ void h2_stream_rst(h2_stream *streamm, int error_code);
  */
 apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
                                 h2_stream_pri_cmp *cmp, void *ctx);
+
+/**
+ * Determine if stream has been scheduled already.
+ * @param stream the stream to check on
+ * @return != 0 iff stream has been scheduled
+ */
+int h2_stream_is_scheduled(h2_stream *stream);
 
 /**
  * Set the response for this stream. Invoked when all meta data for

@@ -67,7 +67,7 @@ void h2_io_rst(h2_io *io, int error)
 
 int h2_io_in_has_eos_for(h2_io *io)
 {
-    return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, 0));
+    return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, -1));
 }
 
 int h2_io_out_has_data(h2_io *io)
@@ -124,12 +124,12 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
     if (io->eos_in) {
         return APR_EOF;
     }
-    io->eos_in = h2_util_has_eos(bb, 0);
+    io->eos_in = h2_util_has_eos(bb, -1);
     if (!APR_BRIGADE_EMPTY(bb)) {
         if (!io->bbin) {
             io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
         }
-        return h2_util_move(io->bbin, bb, 0, NULL, "h2_io_in_write");
+        return h2_util_move(io->bbin, bb, -1, NULL, "h2_io_in_write");
     }
     return APR_SUCCESS;
 }
@@ -266,7 +266,7 @@ apr_status_t h2_io_out_close(h2_io *io)
     if (!io->bbout) {
         io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
     }
-    if (!io->eos_out && !h2_util_has_eos(io->bbout, 0)) {
+    if (!io->eos_out && !h2_util_has_eos(io->bbout, -1)) {
         APR_BRIGADE_INSERT_TAIL(io->bbout, 
                                 apr_bucket_eos_create(io->bbout->bucket_alloc));
     }

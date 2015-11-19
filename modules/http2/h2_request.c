@@ -249,7 +249,6 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
                           req->id, s);
             return APR_EINVAL;
         }
-        req->chunked = 0;
     }
     else {
         /* no content-length given */
@@ -266,14 +265,70 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
             /* If we have a content-type, but already see eos, no more
              * data will come. Signal a zero content length explicitly.
              */
-            req->chunked = 0;
             apr_table_setn(req->headers, "Content-Length", "0");
         }
     }
 
     req->eoh = 1;
     
+    /* In the presence of trailers, force behaviour of chunked encoding */
+    s = apr_table_get(req->headers, "Trailer");
+    if (s && s[0]) {
+        req->trailers = apr_table_make(pool, 5);
+        if (!req->chunked) {
+            req->chunked = 1;
+            apr_table_mergen(req->headers, "Transfer-Encoding", "chunked");
+        }
+    }
+    
     return APR_SUCCESS;
+}
+
+static apr_status_t add_h1_trailer(h2_request *req, apr_pool_t *pool, 
+                                   const char *name, size_t nlen,
+                                   const char *value, size_t vlen)
+{
+    char *hname, *hvalue;
+    
+    if (H2_HD_MATCH_LIT("expect", name, nlen)
+        || H2_HD_MATCH_LIT("upgrade", name, nlen)
+        || H2_HD_MATCH_LIT("connection", name, nlen)
+        || H2_HD_MATCH_LIT("host", name, nlen)
+        || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
+        || H2_HD_MATCH_LIT("transfer-encoding", name, nlen)
+        || H2_HD_MATCH_LIT("keep-alive", name, nlen)
+        || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
+        /* ignore these. */
+        return APR_SUCCESS;
+    }
+    
+    hname = apr_pstrndup(pool, name, nlen);
+    hvalue = apr_pstrndup(pool, value, vlen);
+    h2_util_camel_case_header(hname, nlen);
+
+    apr_table_mergen(req->trailers, hname, hvalue);
+    
+    return APR_SUCCESS;
+}
+
+
+apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
+                                    const char *name, size_t nlen,
+                                    const char *value, size_t vlen)
+{
+    if (!req->trailers) {
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool,
+                      "h2_request(%d): unanounced trailers",
+                      req->id);
+        return APR_EINVAL;
+    }
+    if (nlen == 0 || name[0] == ':') {
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool,
+                      "h2_request(%d): pseudo header in trailer",
+                      req->id);
+        return APR_EINVAL;
+    }
+    return add_h1_trailer(req, pool, name, nlen, value, vlen);
 }
 
 #define OPT_COPY(p, s)  ((s)? apr_pstrdup(p, s) : NULL)
