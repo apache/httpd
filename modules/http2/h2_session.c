@@ -1482,6 +1482,10 @@ apr_status_t h2_session_process(h2_session *session)
                 if (APR_STATUS_IS_EAGAIN(status)) {
                     status = APR_SUCCESS;
                 }
+                else if (status == APR_SUCCESS) {
+                    /* need to flush window updates onto the connection asap */
+                    h2_conn_io_flush(&session->io);
+                }
             }
             
             h2_session_resume_streams_with_data(session);
@@ -1494,6 +1498,9 @@ apr_status_t h2_session_process(h2_session *session)
             }
         }
         
+        if (have_written) {
+            h2_conn_io_flush(&session->io);
+        }
     }
     
 end_process:
