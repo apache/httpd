@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://raw.githubusercontent.com/icing/mod_h2/master/sandbox/httpd/patches/2.4.17-protocols.patch
      branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
      +1: icing, jim
-     ylavic: needs r1715023.
+     ylavic: +1 with r1715023.
 
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
               to only staple responses with certificate status "good"
