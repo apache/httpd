@@ -1627,7 +1627,7 @@ static const char *set_bind_pattern(cmd_parms *cmd, void *_cfg, const char *exp,
     }
 
     sec->bind_regex = regexp;
-    sec->bind_subst = apr_pstrdup(cmd->pool, subst);
+    sec->bind_subst = subst;
 
     return NULL;
 }
@@ -1655,7 +1655,7 @@ static const char *set_bind_password(cmd_parms *cmd, void *_cfg, const char *arg
         result = ap_get_exec_line(cmd->pool,
                                   (const char*)argv[0], (const char * const *)argv);
 
-        if(!result) {
+        if (!result) {
             return apr_pstrcat(cmd->pool,
                                "Unable to get bind password from exec of ",
                                arg+5, NULL);
