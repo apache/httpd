@@ -319,9 +319,6 @@ typedef struct {
     apr_pool_t *pool;
     char buffer[AP_IOBUFSIZE];
     ssl_filter_ctx_t *filter_ctx;
-#ifdef HAVE_TLS_ALPN
-    int alpn_finished;  /* 1 if ALPN has finished, 0 otherwise */
-#endif
 } bio_filter_in_ctx_t;
 
 /*
@@ -866,7 +863,8 @@ static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
 
 static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
-                                        apr_status_t status)
+                                        apr_status_t status,
+                                        int is_init)
 {
     SSLConnRec *sslconn = myConnConfig(f->c);
     apr_bucket *bucket;
@@ -880,8 +878,13 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
                          "trying to send HTML error page");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
 
-            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
             ssl_io_filter_disable(sslconn, f);
+            f->c->keepalive = AP_CONN_CLOSE;
+            if (is_init) {
+                sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
+                return APR_EGENERAL;
+            }
+            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
@@ -1335,11 +1338,22 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
 
     if (!inctx->ssl) {
+        apr_bucket *bucket;
         SSLConnRec *sslconn = myConnConfig(f->c);
-        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
-            apr_bucket *bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
+        if (sslconn->non_ssl_request == NON_SSL_SEND_REQLINE) {
+            bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bucket);
-            sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
+            if (mode != AP_MODE_SPECULATIVE) {
+                sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
+            }
+            return APR_SUCCESS;
+        }
+        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
+            bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bucket);
+            if (mode != AP_MODE_SPECULATIVE) {
+                sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
+            }
             return APR_SUCCESS;
         }
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
@@ -1360,7 +1374,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      * rather than have SSLEngine On configured.
      */
     if ((status = ssl_io_filter_handshake(inctx->filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, is_init);
     }
 
     if (is_init) {
@@ -1414,7 +1428,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* Handle custom errors. */
     if (status != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, 0);
     }
 
     /* Create a transient bucket out of the decrypted data. */
@@ -1423,41 +1437,6 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
             apr_bucket_transient_create(start, len, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
-
-#ifdef HAVE_TLS_ALPN
-    /* By this point, Application-Layer Protocol Negotiation (ALPN) should be 
-     * completed (if our version of OpenSSL supports it). If we haven't already, 
-     * find out which protocol was decided upon and inform other modules 
-     * by calling alpn_proto_negotiated_hook. 
-     */
-    if (!inctx->alpn_finished) {
-        SSLConnRec *sslconn = myConnConfig(f->c);
-        const unsigned char *next_proto = NULL;
-        unsigned next_proto_len = 0;
-        const char *protocol;
-
-        SSL_get0_alpn_selected(inctx->ssl, &next_proto, &next_proto_len);
-        if (next_proto && next_proto_len) {
-            protocol = apr_pstrmemdup(f->c->pool, (const char *)next_proto,
-                                       next_proto_len);
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, f->c,
-                          APLOGNO(02836) "ALPN selected protocol: '%s'",
-                          protocol);
-            
-            if (strcmp(protocol, ap_get_protocol(f->c))) {
-                status = ap_switch_protocol(f->c, NULL, sslconn->server,
-                                            protocol);
-                if (status != APR_SUCCESS) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, status, f->c,
-                                  APLOGNO(02908) "protocol switch to '%s' failed",
-                                  protocol);
-                    return status;
-                }
-            }
-        }
-        inctx->alpn_finished = 1;
-    }
-#endif
 
     return APR_SUCCESS;
 }
@@ -1635,7 +1614,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     inctx->block = APR_BLOCK_READ;
 
     if ((status = ssl_io_filter_handshake(filter_ctx)) != APR_SUCCESS) {
-        return ssl_io_filter_error(f, bb, status);
+        return ssl_io_filter_error(f, bb, status, 0);
     }
 
     while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
@@ -1920,9 +1899,6 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->block = APR_BLOCK_READ;
     inctx->pool = c->pool;
     inctx->filter_ctx = filter_ctx;
-#ifdef HAVE_TLS_ALPN
-    inctx->alpn_finished = 0;
-#endif
 }
 
 /* The request_rec pointer is passed in here only to ensure that the
