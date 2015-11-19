@@ -49,6 +49,8 @@ static apr_status_t bucket_cleanup(void *data)
 static apr_status_t bucket_read(apr_bucket *b, const char **str,
                                 apr_size_t *len, apr_read_type_e block)
 {
+    (void)b;
+    (void)block;
     *str = NULL;
     *len = 0;
     return APR_SUCCESS;
@@ -89,7 +91,7 @@ static void bucket_destroy(void *data)
     if (apr_bucket_shared_destroy(h)) {
         h2_session *session = h->session;
         if (session) {
-            h2_session_cleanup(session);
+            h2_session_eoc_callback(session);
         }
         apr_bucket_free(h);
     }

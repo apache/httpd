@@ -278,7 +278,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                       "h2_conn_io: buffering %ld bytes", (long)length);
                       
         if (!APR_BRIGADE_EMPTY(io->output)) {
-            status = h2_conn_io_flush(io);
+            status = h2_conn_io_pass(io);
             io->unflushed = 1;
         }
         
@@ -323,14 +323,13 @@ apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
 apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
 {
     apr_status_t status = APR_SUCCESS;
-    int flush_now = 0;
     
     /* The HTTP/1.1 network output buffer/flush behaviour does not
      * give optimal performance in the HTTP/2 case, as the pattern of
      * buckets (data/eor/eos) is different.
-     * As long as we do not have found out the "best" way to deal with
+     * As long as we have not found out the "best" way to deal with
      * this, force a flush at least every WRITE_BUFFER_SIZE amount
-     * of data which seems to work nicely.
+     * of data.
      */
     if (io->unflushed) {
         apr_off_t len = 0;
@@ -338,19 +337,16 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
             apr_brigade_length(io->output, 0, &len);
         }
         len += io->buflen;
-        flush_now = (len >= WRITE_BUFFER_SIZE);
-    }
-    
-    if (flush_now) {
-        return h2_conn_io_flush(io);
+        if (len >= WRITE_BUFFER_SIZE) {
+            return h2_conn_io_pass(io);
+        }
     }
     return status;
 }
 
-apr_status_t h2_conn_io_flush(h2_conn_io *io)
+static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
 {
-    if (io->unflushed) {
-        apr_status_t status; 
+    if (io->unflushed || force) {
         if (io->buflen > 0) {
             /* something in the buffer, put it in the output brigade */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
@@ -359,19 +355,28 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
             io->buflen = 0;
         }
         
-        APR_BRIGADE_INSERT_TAIL(io->output,
-                                apr_bucket_flush_create(io->output->bucket_alloc));
-        /* Send it out */
-        status = pass_out(io->output, io);
-        
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
-                          "h2_conn_io: flush");
-            return status;
+        if (force) {
+            APR_BRIGADE_INSERT_TAIL(io->output,
+                                    apr_bucket_flush_create(io->output->bucket_alloc));
         }
-
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->connection,
+                      "h2_conn_io: flush");
+        /* Send it out */
         io->unflushed = 0;
+        return pass_out(io->output, io);
+        /* no more access after this, as we might have flushed an EOC bucket
+         * that de-allocated us all. */
     }
     return APR_SUCCESS;
 }
 
+apr_status_t h2_conn_io_flush(h2_conn_io *io)
+{
+    return h2_conn_io_flush_int(io, 1);
+}
+
+apr_status_t h2_conn_io_pass(h2_conn_io *io)
+{
+    return h2_conn_io_flush_int(io, 0);
+}

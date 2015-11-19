@@ -79,7 +79,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
     if (*pm && ptask != NULL) {
         /* We have a h2_mplx instance and the worker wants the next task. 
          * Try to get one from the given mplx. */
-        *ptask = h2_mplx_pop_task(*pm, &has_more);
+        *ptask = h2_mplx_pop_task(*pm, worker, &has_more);
         if (*ptask) {
             return APR_SUCCESS;
         }
@@ -124,7 +124,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                 m = H2_MPLX_LIST_FIRST(&workers->mplxs);
                 H2_MPLX_REMOVE(m);
                 
-                task = h2_mplx_pop_task(m, &has_more);
+                task = h2_mplx_pop_task(m, worker, &has_more);
                 if (task) {
                     if (has_more) {
                         H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
@@ -174,7 +174,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
          * needed to give up with more than enough workers.
          */
         if (task) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
                          "h2_worker(%d): start task(%s)",
                          h2_worker_get_id(worker), task->id);
             /* Since we hand out a reference to the worker, we increase
@@ -326,7 +326,7 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
 {
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, status, workers->s,
                      "h2_workers: register mplx(%ld)", m->id);
         if (in_list(workers, m)) {
             status = APR_EAGAIN;

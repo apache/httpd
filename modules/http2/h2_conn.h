@@ -17,19 +17,16 @@
 #define __mod_h2__h2_conn__
 
 struct h2_task;
-struct h2_worker;
 
-/* Process the connection that is now starting the HTTP/2
+/**
+ * Process the connection that is now starting the HTTP/2
  * conversation. Return when the HTTP/2 session is done
  * and the connection will close.
+ *
+ * @param c the connection HTTP/2 is starting on
+ * @param r the upgrad requestion that still awaits an answer, optional
  */
-apr_status_t h2_conn_main(conn_rec *c);
-
-/* Process the request that has been upgraded to a HTTP/2
- * conversation. Return when the HTTP/2 session is done
- * and the connection will close.
- */
-apr_status_t h2_conn_rprocess(request_rec *r);
+apr_status_t h2_conn_process(conn_rec *c, request_rec *r);
 
 /* Initialize this child process for h2 connection work,
  * to be called once during child init before multi processing
@@ -51,9 +48,7 @@ h2_mpm_type_t h2_conn_mpm_type(void);
 
 conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *stream_pool);
 
-apr_status_t h2_conn_setup(struct h2_task *task, struct h2_worker *worker);
-apr_status_t h2_conn_post(conn_rec *c, struct h2_worker *worker);
-
-apr_status_t h2_conn_process(conn_rec *c, apr_socket_t *socket);
+apr_status_t h2_conn_setup(struct h2_task *task, apr_bucket_alloc_t *bucket_alloc,
+                           apr_thread_t *thread, apr_socket_t *socket);
 
 #endif /* defined(__mod_h2__h2_conn__) */

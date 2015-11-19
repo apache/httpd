@@ -29,6 +29,9 @@ Changes with Apache 2.4.17
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.  [Yann Ylavic]
 
+  *) mod_ssl: Make the output filter more friendly with deferred write and
+     response pipelining. [Yann Ylavic, Joe Orton]
+
   *) mod_substitute: Allow to configure the patterns merge order with the new
      SubstituteInheritBefore on|off directive.  PR 57641
      [Marc.Stern <Marc.Stern approach.be>, Yann Ylavic, William Rowe]

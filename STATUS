@@ -127,19 +127,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
      +1: minfrin
 
-   * mod_ssl: Make the output filter more friendly with deferred write and
-              response pipelining.
-     trunk patch: http://svn.apache.org/r1705194
-                  http://svn.apache.org/r1705823
-                  http://svn.apache.org/r1705826
-                  http://svn.apache.org/r1705828
-                  http://svn.apache.org/r1705833
-                  http://svn.apache.org/r1706275
-                  http://svn.apache.org/r1707230
-                  http://svn.apache.org/r1707231
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_ssl-deferred_friendly-v3.patch
-     +1: ylavic
-
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
           its parameter when starting httpd as single process (httpd -X).
      trunk patch: http://svn.apache.org/r1711479
@@ -161,7 +148,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-check_pipeline_blank_lines.patch
                   (trunk works, meant to ease review)
      +1: ylavic, minfrin
+     icing: test 3 fails for me in t/security/CVE-2005-3357.t
+     ylavic: not related (at least not the cause), fixed in r1715023.
 
+  *) core/mod_ssl: 
+     - master conn_rec* addition to conn_rec
+     - minor mmn bump
+     - improved ALPN and Upgrade handling
+     - allowing requests for servers whose TLS configuration is compatible
+       to the SNI server ones
+     - disabling TLS renegotiation for slave connections
+     changes are necessary for update modules/http2
+     trunk patch: http://svn.apache.org/r1708107
+                  http://svn.apache.org/r1709587
+                  http://svn.apache.org/r1709602
+                  http://svn.apache.org/r1709995
+                  http://svn.apache.org/r1710231
+                  http://svn.apache.org/r1710419
+                  http://svn.apache.org/r1710572
+                  http://svn.apache.org/r1710583
+                  http://svn.apache.org/r1715023
+                  + manual addition of "conn_rec *master;"
+     branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
+     +1: icing, ylavic
+     before adding r1715023, jim was +1, retest?
+
+  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
+              to only staple responses with certificate status "good"
+     trunk patch: https://svn.apache.org/r1711728
+                  https://svn.apache.org/r1713209 (missing LOGNO only)
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: kbrand, icing
+    
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 

@@ -18,6 +18,7 @@
 
 struct apr_thread_cond_t;
 struct h2_mplx;
+struct h2_request;
 struct h2_task;
 
 /* h2_worker is a basically a apr_thread_t that reads fromt he h2_workers
@@ -44,7 +45,7 @@ struct h2_worker {
     int id;
     apr_thread_t *thread;
     apr_pool_t *pool;
-    apr_bucket_alloc_t *bucket_alloc;
+    apr_pool_t *task_pool;
     struct apr_thread_cond_t *io;
     apr_socket_t *socket;
     
@@ -142,14 +143,11 @@ int h2_worker_get_id(h2_worker *worker);
 
 int h2_worker_is_aborted(h2_worker *worker);
 
-apr_pool_t *h2_worker_get_pool(h2_worker *worker);
-
-apr_bucket_alloc_t *h2_worker_get_bucket_alloc(h2_worker *worker);
+struct h2_task *h2_worker_create_task(h2_worker *worker, struct h2_mplx *m, 
+                                      const struct h2_request *req, int eos);
+apr_status_t h2_worker_setup_task(h2_worker *worker, struct h2_task *task);
+void h2_worker_release_task(h2_worker *worker, struct h2_task *task);
 
 apr_socket_t *h2_worker_get_socket(h2_worker *worker);
-
-apr_thread_t *h2_worker_get_thread(h2_worker *worker);
-
-struct apr_thread_cond_t *h2_worker_get_cond(h2_worker *worker);
 
 #endif /* defined(__mod_h2__h2_worker__) */

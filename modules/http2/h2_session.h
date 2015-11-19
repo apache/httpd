@@ -41,6 +41,7 @@ struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
 struct h2_config;
 struct h2_mplx;
+struct h2_push;
 struct h2_response;
 struct h2_session;
 struct h2_stream;
@@ -58,7 +59,6 @@ struct h2_session {
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
     int aborted;                    /* this session is being aborted */
-    int flush;                      /* if != 0, flush output on next occasion */
     int reprioritize;               /* scheduled streams priority needs to 
                                      * be re-evaluated */
     apr_size_t frames_received;     /* number of http/2 frames received */
@@ -72,6 +72,7 @@ struct h2_session {
     h2_conn_io io;                  /* io on httpd conn filters */
     struct h2_mplx *mplx;           /* multiplexer for stream data */
     
+    struct h2_stream *last_stream;  /* last stream worked with */
     struct h2_stream_set *streams;  /* streams handled by this session */
     
     int max_stream_received;        /* highest stream id created */
@@ -107,6 +108,14 @@ h2_session *h2_session_rcreate(request_rec *r, struct h2_config *cfg,
                                struct h2_workers *workers);
 
 /**
+ * Process the given HTTP/2 session until it is ended or a fatal
+ * error occured.
+ *
+ * @param session the sessionm to process
+ */
+apr_status_t h2_session_process(h2_session *session);
+
+/**
  * Destroy the session and all objects it still contains. This will not
  * destroy h2_task instances that have not finished yet. 
  * @param session the session to destroy
@@ -118,7 +127,7 @@ void h2_session_destroy(h2_session *session);
  * destroy h2_task instances that have not finished yet. 
  * @param session the session to destroy
  */
-void h2_session_cleanup(h2_session *session);
+void h2_session_eoc_callback(h2_session *session);
 
 /**
  * Called once at start of session. 
@@ -130,12 +139,6 @@ void h2_session_cleanup(h2_session *session);
 apr_status_t h2_session_start(h2_session *session, int *rv);
 
 /**
- * Determine if session is finished.
- * @return != 0 iff session is finished and connection can be closed.
- */
-int h2_session_is_done(h2_session *session);
-
-/**
  * Called when an error occured and the session needs to shut down.
  * @param session the session to shut down
  * @param reason  the apache status that caused the shutdown
@@ -145,21 +148,15 @@ int h2_session_is_done(h2_session *session);
 apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
 
 /**
+ * Pass any buffered output data through the connection filters.
+ * @param session the session to flush
+ */
+apr_status_t h2_session_flush(h2_session *session);
+
+/**
  * Called before a session gets destroyed, might flush output etc. 
  */
 apr_status_t h2_session_close(h2_session *session);
-
-/* Read more data from the client connection. Used normally with blocking
- * APR_NONBLOCK_READ, which will return APR_EAGAIN when no data is available.
- * Use with APR_BLOCK_READ only when certain that no data needs to be written
- * while waiting. */
-apr_status_t h2_session_read(h2_session *session, apr_read_type_e block);
-
-/* Write data out to the client, if there is any. Otherwise, wait for
- * a maximum of timeout micro-seconds and return to the caller. If timeout
- * occurred, APR_TIMEUP will be returned.
- */
-apr_status_t h2_session_write(h2_session *session, apr_interval_time_t timeout);
 
 /* Start submitting the response to a stream request. This is possible
  * once we have all the response headers. */
@@ -170,11 +167,38 @@ apr_status_t h2_session_handle_response(h2_session *session,
 struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
 
 /**
+ * Create and register a new stream under the given id.
+ * 
+ * @param session the session to register in
+ * @param stream_id the new stream identifier
+ * @return the new stream
+ */
+struct h2_stream *h2_session_open_stream(h2_session *session, int stream_id);
+
+/**
+ * Returns if client settings have push enabled.
+ * @param != 0 iff push is enabled in client settings
+ */
+int h2_session_push_enabled(h2_session *session);
+
+/**
  * Destroy the stream and release it everywhere. Reclaim all resources.
  * @param session the session to which the stream belongs
  * @param stream the stream to destroy
  */
 apr_status_t h2_session_stream_destroy(h2_session *session, 
                                        struct h2_stream *stream);
+
+/**
+ * Submit a push promise on the stream and schedule the new steam for
+ * processing..
+ * 
+ * @param session the session to work in
+ * @param is the stream initiating the push
+ * @param push the push to promise
+ * @return the new promised stream or NULL
+ */
+struct h2_stream *h2_session_push(h2_session *session, 
+                                  struct h2_stream *is, struct h2_push *push);
 
 #endif /* defined(__mod_h2__h2_session__) */

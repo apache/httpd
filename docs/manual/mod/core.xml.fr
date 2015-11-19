@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1705784:1712268 (outdated) -->
+<!-- English Revision: 1712268 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5066,6 +5066,35 @@ Apache</compatibility>
     <p>Cette option a &eacute;t&eacute; introduite dans un souci de compatibilit&eacute; avec
     les versions ant&eacute;rieures &agrave; 2.4.11, o&ugrave; les donn&eacute;es suppl&eacute;mentaires
     &eacute;taient syst&eacute;matiquement fusionn&eacute;es avec les en-t&ecirc;tes de la requ&ecirc;te.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>QualifyRedirectURL</name>
+<description>V&eacute;rifie si la variable d'environnement REDIRECT_URL est
+pleinement qualifi&eacute;e</description>
+<syntax>QualifyRedirectURL ON|OFF</syntax>
+<default>QualifyRedirectURL OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Directive support&eacute;e &agrave; partir de la version 2.4.18 du
+serveur HTTP Apache. Jusqu'&agrave; la version 2.4.17, le serveur se comportait
+comme si la directive QualifyRedirectURL &eacute;tait d&eacute;finie &agrave; ON.</compatibility>
+
+<usage>
+    <p>Cette directive permet de s'assurer que le serveur v&eacute;rifiera que
+    la variable d'environnement REDIRECT_URL est bien pleinement
+    qualifi&eacute;e. Par d&eacute;faut, cette variable contient l'URL textuellement
+    demand&eacute;e par le client, par exemple "/index.html". Avec <directive
+    module="core">QualifyRedirectURL ON</directive>, la m&ecirc;me requ&ecirc;te
+    affectera &agrave; la variable REDIRECT_URL une valeur du style
+    "http://www.example.com/index.html".</p>
+    <p>M&ecirc;me si cette directive n'est pas d&eacute;finie, lorsqu'une requ&ecirc;te est
+    soumise avec une URL pleinement qualifi&eacute;e, la variable REDIRECT_URL
+    contiendra quand-m&ecirc;me une URL pleinement qualifi&eacute;e.
+    </p>
 </usage>
 </directivesynopsis>
 

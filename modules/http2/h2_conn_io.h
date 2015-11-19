@@ -31,7 +31,7 @@ typedef struct {
     apr_time_t cooldown_usecs;
     apr_int64_t warmup_size;
     
-    int write_size;
+    apr_size_t write_size;
     apr_time_t last_write;
     apr_int64_t bytes_written;
     
@@ -63,6 +63,7 @@ apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b);
 
 apr_status_t h2_conn_io_consider_flush(h2_conn_io *io);
 
+apr_status_t h2_conn_io_pass(h2_conn_io *io);
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */

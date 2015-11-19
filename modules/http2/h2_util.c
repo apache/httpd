@@ -25,6 +25,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
+#include "h2_request.h"
 #include "h2_util.h"
 
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
@@ -205,6 +206,10 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
     return NULL;
 }
 
+/*******************************************************************************
+ * h2_util for bucket brigades
+ ******************************************************************************/
+
 /* DEEP_COPY==0 crashes under load. I think the setaside is fine, 
  * however buckets moved to another thread will still be
  * free'd against the old bucket_alloc. *And* if the old
@@ -215,7 +220,7 @@ static const int DEEP_COPY = 1;
 static const int FILE_MOVE = 1;
 
 static apr_status_t last_not_included(apr_bucket_brigade *bb, 
-                                      apr_size_t maxlen, 
+                                      apr_off_t maxlen, 
                                       int same_alloc,
                                       int *pfile_buckets_allowed,
                                       apr_bucket **pend)
@@ -224,7 +229,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
     apr_status_t status = APR_SUCCESS;
     int files_allowed = pfile_buckets_allowed? *pfile_buckets_allowed : 0;
     
-    if (maxlen > 0) {
+    if (maxlen >= 0) {
         /* Find the bucket, up to which we reach maxlen/mem bytes */
         for (b = APR_BRIGADE_FIRST(bb); 
              (b != APR_BRIGADE_SENTINEL(bb));
@@ -275,7 +280,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 #define LOG_LEVEL APLOG_INFO
 
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, int *pfile_handles_allowed, 
+                          apr_off_t maxlen, int *pfile_handles_allowed, 
                           const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
@@ -407,7 +412,7 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
 }
 
 apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, const char *msg)
+                          apr_off_t maxlen, const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
     int same_alloc;
@@ -483,7 +488,7 @@ int h2_util_has_flush_or_eos(apr_bucket_brigade *bb) {
     return 0;
 }
 
-int h2_util_has_eos(apr_bucket_brigade *bb, apr_size_t len)
+int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
 {
     apr_bucket *b, *end;
     
@@ -537,7 +542,7 @@ int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb)
 }
 
 apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb, 
-                              apr_size_t *plen, int *peos)
+                              apr_off_t *plen, int *peos)
 {
     apr_status_t status;
     apr_off_t blen = 0;
@@ -550,36 +555,29 @@ apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb,
     else if (blen == 0) {
         /* empty brigade, does it have an EOS bucket somwhere? */
         *plen = 0;
-        *peos = h2_util_has_eos(bb, 0);
+        *peos = h2_util_has_eos(bb, -1);
     }
-    else if (blen > 0) {
+    else {
         /* data in the brigade, limit the length returned. Check for EOS
          * bucket only if we indicate data. This is required since plen == 0
          * means "the whole brigade" for h2_util_hash_eos()
          */
-        if (blen < (apr_off_t)*plen) {
+        if (blen < *plen || *plen < 0) {
             *plen = blen;
         }
-        *peos = (*plen > 0)? h2_util_has_eos(bb, *plen) : 0;
-    }
-    else if (blen < 0) {
-        /* famous SHOULD NOT HAPPEN, sinc we told apr_brigade_length to readall
-         */
-        *plen = 0;
-        *peos = h2_util_has_eos(bb, 0);
-        return APR_EINVAL;
+        *peos = h2_util_has_eos(bb, *plen);
     }
     return APR_SUCCESS;
 }
 
 apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
                               h2_util_pass_cb *cb, void *ctx, 
-                              apr_size_t *plen, int *peos)
+                              apr_off_t *plen, int *peos)
 {
     apr_status_t status = APR_SUCCESS;
     int consume = (cb != NULL);
-    apr_size_t written = 0;
-    apr_size_t avail = *plen;
+    apr_off_t written = 0;
+    apr_off_t avail = *plen;
     apr_bucket *next, *b;
     
     /* Pass data in our brigade through the callback until the length
@@ -607,8 +605,7 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
             
             if (b->length == ((apr_size_t)-1)) {
                 /* read to determine length */
-                status = apr_bucket_read(b, &data, &data_len, 
-                                         APR_NONBLOCK_READ);
+                status = apr_bucket_read(b, &data, &data_len, APR_NONBLOCK_READ);
             }
             else {
                 data_len = b->length;
@@ -722,11 +719,11 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
 apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_bucket_brigade *from, 
                                  apr_pool_t *p,
-                                 apr_size_t *plen,
+                                 apr_off_t *plen,
                                  int *peos)
 {
     apr_bucket *e;
-    apr_size_t len = 0, remain = *plen;
+    apr_off_t len = 0, remain = *plen;
     apr_status_t rv;
 
     *peos = 0;
@@ -788,5 +785,97 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
     
     *plen = len;
     return APR_SUCCESS;
+}
+
+/*******************************************************************************
+ * h2_ngheader
+ ******************************************************************************/
+ 
+int h2_util_ignore_header(const char *name) 
+{
+    /* never forward, ch. 8.1.2.2 */
+    return (H2_HD_MATCH_LIT_CS("connection", name)
+            || H2_HD_MATCH_LIT_CS("proxy-connection", name)
+            || H2_HD_MATCH_LIT_CS("upgrade", name)
+            || H2_HD_MATCH_LIT_CS("keep-alive", name)
+            || H2_HD_MATCH_LIT_CS("transfer-encoding", name));
+}
+
+static int count_header(void *ctx, const char *key, const char *value)
+{
+    if (!h2_util_ignore_header(key)) {
+        (*((size_t*)ctx))++;
+    }
+    return 1;
+}
+
+#define NV_ADD_LIT_CS(nv, k, v)     add_header(nv, k, sizeof(k) - 1, v, strlen(v))
+#define NV_ADD_CS_CS(nv, k, v)      add_header(nv, k, strlen(k), v, strlen(v))
+
+static int add_header(h2_ngheader *ngh, 
+                      const char *key, size_t key_len,
+                      const char *value, size_t val_len)
+{
+    nghttp2_nv *nv = &ngh->nv[ngh->nvlen++];
+    
+    nv->name = (uint8_t*)key;
+    nv->namelen = key_len;
+    nv->value = (uint8_t*)value;
+    nv->valuelen = val_len;
+    return 1;
+}
+
+static int add_table_header(void *ctx, const char *key, const char *value)
+{
+    if (!h2_util_ignore_header(key)) {
+        add_header(ctx, key, strlen(key), value, strlen(value));
+    }
+    return 1;
+}
+
+
+h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
+                                       int http_status, 
+                                       apr_table_t *header)
+{
+    h2_ngheader *ngh;
+    size_t n;
+    
+    n = 1;
+    apr_table_do(count_header, &n, header, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    NV_ADD_LIT_CS(ngh, ":status", apr_psprintf(p, "%d", http_status));
+    apr_table_do(add_table_header, ngh, header, NULL);
+
+    return ngh;
+}
+
+h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
+                                       const struct h2_request *req)
+{
+    
+    h2_ngheader *ngh;
+    size_t n;
+    
+    AP_DEBUG_ASSERT(req);
+    AP_DEBUG_ASSERT(req->scheme);
+    AP_DEBUG_ASSERT(req->authority);
+    AP_DEBUG_ASSERT(req->path);
+    AP_DEBUG_ASSERT(req->method);
+
+    n = 4;
+    apr_table_do(count_header, &n, req->headers, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    NV_ADD_LIT_CS(ngh, ":scheme", req->scheme);
+    NV_ADD_LIT_CS(ngh, ":authority", req->authority);
+    NV_ADD_LIT_CS(ngh, ":path", req->path);
+    NV_ADD_LIT_CS(ngh, ":method", req->method);
+    apr_table_do(add_table_header, ngh, req->headers, NULL);
+
+    return ngh;
 }
 

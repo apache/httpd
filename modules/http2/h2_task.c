@@ -38,6 +38,7 @@
 #include "h2_from_h1.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
+#include "h2_request.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_task_input.h"
@@ -152,44 +153,28 @@ static int h2_task_process_conn(conn_rec* c)
 }
 
 
-h2_task *h2_task_create(long session_id,
-                        int stream_id,
-                        apr_pool_t *stream_pool,
-                        h2_mplx *mplx, conn_rec *c)
+h2_task *h2_task_create(long session_id, const h2_request *req, 
+                        apr_pool_t *pool, h2_mplx *mplx, int eos)
 {
-    h2_task *task = apr_pcalloc(stream_pool, sizeof(h2_task));
+    h2_task *task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, stream_pool,
+        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
-                      session_id, stream_id);
-        h2_mplx_out_close(mplx, stream_id);
+                      session_id, req->id);
+        h2_mplx_out_close(mplx, req->id);
         return NULL;
     }
     
-    task->id = apr_psprintf(stream_pool, "%ld-%d", session_id, stream_id);
-    task->stream_id = stream_id;
+    task->id = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->stream_id = req->id;
+    task->pool = pool;
     task->mplx = mplx;
-    
-    task->c = c;
-    
-    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, stream_pool,
-                  "h2_task(%s): created", task->id);
-    return task;
-}
+    task->c = h2_conn_create(mplx->c, task->pool);
 
-void h2_task_set_request(h2_task *task, 
-                         const char *method, 
-                         const char *scheme, 
-                         const char *authority, 
-                         const char *path, 
-                         apr_table_t *headers, int eos)
-{
-    task->method = method;
-    task->scheme = scheme;
-    task->authority = authority;
-    task->path = path;
-    task->headers = headers;
-    task->input_eos = eos;
+    task->request = req;
+    task->input_eos = eos;    
+    
+    return task;
 }
 
 apr_status_t h2_task_destroy(h2_task *task)
@@ -206,29 +191,20 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     AP_DEBUG_ASSERT(task);
     
     task->serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
-    
-    /* Create a subpool from the worker one to be used for all things
-     * with life-time of this task execution.
-     */
-    apr_pool_create(&task->pool, h2_worker_get_pool(worker));
 
-    /* Link the task to the worker which provides useful things such
-     * as mutex, a socket etc. */
-    task->io = h2_worker_get_cond(worker);
+    status = h2_worker_setup_task(worker, task);
     
-    status = h2_conn_setup(task, worker);
-    
-    /* save in connection that this one is a pseudo connection, prevents
-     * other hooks from messing with it. */
+    /* save in connection that this one is a pseudo connection */
     h2_ctx_create_for(task->c, task);
 
     if (status == APR_SUCCESS) {
         task->input = h2_task_input_create(task, task->pool, 
                                            task->c->bucket_alloc);
-        task->output = h2_task_output_create(task, task->pool,
-                                             task->c->bucket_alloc);
-        status = h2_conn_process(task->c, h2_worker_get_socket(worker));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, task->c,
+        task->output = h2_task_output_create(task, task->pool);
+        
+        ap_process_connection(task->c, h2_worker_get_socket(worker));
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_task(%s): processing done", task->id);
     }
     else {
@@ -252,16 +228,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         apr_thread_cond_signal(task->io);
     }
     
-    if (task->pool) {
-        apr_pool_destroy(task->pool);
-        task->pool = NULL;
-    }
-    
-    if (task->c->id) {
-        h2_conn_post(task->c, worker);
-    }
-    
     h2_mplx_task_done(task->mplx, task->stream_id);
+    h2_worker_release_task(worker, task);
     
     return status;
 }
@@ -286,7 +254,7 @@ static request_rec *h2_task_create_request(h2_task *task)
     
     r->allowed_methods = ap_make_method_list(p, 2);
     
-    r->headers_in = apr_table_copy(r->pool, task->headers);
+    r->headers_in      = apr_table_copy(r->pool, task->request->headers);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
@@ -325,19 +293,19 @@ static request_rec *h2_task_create_request(h2_task *task)
     
     /* Time to populate r with the data we have. */
     r->request_time = apr_time_now();
-    r->method = task->method;
+    r->method = task->request->method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
     if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
     }
 
-    ap_parse_uri(r, task->path);
+    ap_parse_uri(r, task->request->path);
     r->protocol = (char*)"HTTP/2";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, task->path, r->protocol);
+                                  r->method, task->request->path, r->protocol);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
@@ -401,6 +369,8 @@ static apr_status_t h2_task_process_request(h2_task *task)
          * will result in a segfault immediately instead
          * of nondeterministic failures later.
          */
+        if (cs)
+            cs->state = CONN_STATE_WRITE_COMPLETION;
         r = NULL;
     }
     ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);

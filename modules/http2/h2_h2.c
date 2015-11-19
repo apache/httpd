@@ -85,10 +85,9 @@ static const char *h2_err_descr[] = {
     "http/1.1 required",
 };
 
-const char *h2_h2_err_description(int h2_error)
+const char *h2_h2_err_description(unsigned int h2_error)
 {
-    if (h2_error >= 0 
-        && h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
+    if (h2_error < (sizeof(h2_err_descr)/sizeof(h2_err_descr[0]))) {
         return h2_err_descr[h2_error];
     }
     return "unknown http/2 errotr code";
@@ -415,7 +414,7 @@ static void cipher_init(apr_pool_t *pool)
 {
     apr_hash_t *hash = apr_hash_make(pool);
     const char *source;
-    int i;
+    unsigned int i;
     
     source = "rfc7540";
     for (i = 0; i < RFC7540_names_LEN; ++i) {
@@ -487,7 +486,7 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
         
         /* Need Tlsv1.2 or higher, rfc 7540, ch. 9.2
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, "SSL_PROTOCOL");
+        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_PROTOCOL");
         if (val && *val) {
             if (strncmp("TLS", val, 3) 
                 || !strcmp("TLSv1", val) 
@@ -506,7 +505,7 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
 
         /* Check TLS cipher blacklist
          */
-        val = opt_ssl_var_lookup(pool, s, c, NULL, "SSL_CIPHER");
+        val = opt_ssl_var_lookup(pool, s, c, NULL, (char*)"SSL_CIPHER");
         if (val && *val) {
             const char *source;
             if (cipher_is_blacklisted(val, &source)) {
@@ -652,7 +651,7 @@ int h2_h2_process_conn(conn_rec* c)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_h2, connection, h2 active");
         
-        return h2_conn_main(c);
+        return h2_conn_process(c, NULL);
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");
@@ -665,7 +664,7 @@ static int h2_h2_post_read_req(request_rec *r)
     struct h2_task *task = h2_ctx_get_task(ctx);
     if (task) {
         /* h2_task connection for a stream, not for h2c */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "adding h1_to_h2_resp output filter");
         if (task->serialize_headers) {
             ap_remove_output_filter_byhandle(r->output_filters, "H1_TO_H2_RESP");

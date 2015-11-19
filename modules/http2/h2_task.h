@@ -39,6 +39,7 @@ struct apr_thread_cond_t;
 struct h2_conn;
 struct h2_mplx;
 struct h2_task;
+struct h2_request;
 struct h2_resp_head;
 struct h2_worker;
 
@@ -49,11 +50,7 @@ struct h2_task {
     int stream_id;
     struct h2_mplx *mplx;
     
-    const char *method;
-    const char *scheme;
-    const char *authority;
-    const char *path;
-    apr_table_t *headers;
+    const struct h2_request *request;
     int input_eos;
 
     int serialize_headers;
@@ -68,19 +65,10 @@ struct h2_task {
     struct apr_thread_cond_t *io;   /* used to wait for events on */
 };
 
-h2_task *h2_task_create(long session_id, int stream_id, 
-                        apr_pool_t *pool, struct h2_mplx *mplx,
-                        conn_rec *c);
+h2_task *h2_task_create(long session_id, const struct h2_request *req, 
+                        apr_pool_t *pool, struct h2_mplx *mplx, int eos);
 
 apr_status_t h2_task_destroy(h2_task *task);
-
-void h2_task_set_request(h2_task *task, 
-                         const char *method, 
-                         const char *scheme, 
-                         const char *authority, 
-                         const char *path, 
-                         apr_table_t *headers, int eos);
-
 
 apr_status_t h2_task_do(h2_task *task, struct h2_worker *worker);
 

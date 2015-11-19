@@ -23,6 +23,7 @@
 #include "h2_private.h"
 #include "h2_conn.h"
 #include "h2_mplx.h"
+#include "h2_request.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_task_input.h"
@@ -53,11 +54,11 @@ h2_task_input *h2_task_input_create(h2_task *task, apr_pool_t *pool,
         if (task->serialize_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                           "h2_task_input(%s): serialize request %s %s", 
-                          task->id, task->method, task->path);
+                          task->id, task->request->method, task->request->path);
             input->bb = apr_brigade_create(pool, bucket_alloc);
             apr_brigade_printf(input->bb, NULL, NULL, "%s %s HTTP/1.1\r\n", 
-                               task->method, task->path);
-            apr_table_do(ser_header, input, task->headers, NULL);
+                               task->request->method, task->request->path);
+            apr_table_do(ser_header, input, task->request->headers, NULL);
             apr_brigade_puts(input->bb, NULL, NULL, "\r\n");
             if (input->task->input_eos) {
                 APR_BRIGADE_INSERT_TAIL(input->bb, apr_bucket_eos_create(bucket_alloc));
@@ -69,21 +70,6 @@ h2_task_input *h2_task_input_create(h2_task *task, apr_pool_t *pool,
         else {
             /* We do not serialize and have eos already, no need to
              * create a bucket brigade. */
-        }
-        
-        if (APLOGcdebug(task->c)) {
-            char buffer[1024];
-            apr_size_t len = sizeof(buffer)-1;
-            if (input->bb) {
-                apr_brigade_flatten(input->bb, buffer, &len);
-            }
-            else {
-                len = 0;
-            }
-            buffer[len] = 0;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
-                          "h2_task_input(%s): request is: %s", 
-                          task->id, buffer);
         }
     }
     return input;
@@ -104,19 +90,18 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     apr_status_t status = APR_SUCCESS;
     apr_off_t bblen = 0;
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task_input(%s): read, block=%d, mode=%d, readbytes=%ld", 
                   input->task->id, block, mode, (long)readbytes);
     
-    if (is_aborted(f)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_task_input(%s): is aborted", 
-                      input->task->id);
-        return APR_ECONNABORTED;
-    }
-    
     if (mode == AP_MODE_INIT) {
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
+    }
+    
+    if (is_aborted(f)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_task_input(%s): is aborted", input->task->id);
+        return APR_ECONNABORTED;
     }
     
     if (input->bb) {
@@ -160,7 +145,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
             return status;
         }
         if ((bblen == 0) && (block == APR_NONBLOCK_READ)) {
-            return h2_util_has_eos(input->bb, 0)? APR_EOF : APR_EAGAIN;
+            return h2_util_has_eos(input->bb, -1)? APR_EOF : APR_EAGAIN;
         }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_input(%s): mplx in read, %ld bytes in brigade",

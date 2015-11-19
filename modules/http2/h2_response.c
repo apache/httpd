@@ -29,21 +29,10 @@
 #include "h2_util.h"
 #include "h2_response.h"
 
-static h2_ngheader *make_ngheader(apr_pool_t *pool, const char *status,
-                                  apr_table_t *header);
-
-static int ignore_header(const char *name) 
-{
-    return (H2_HD_MATCH_LIT_CS("connection", name)
-            || H2_HD_MATCH_LIT_CS("proxy-connection", name)
-            || H2_HD_MATCH_LIT_CS("upgrade", name)
-            || H2_HD_MATCH_LIT_CS("keep-alive", name)
-            || H2_HD_MATCH_LIT_CS("transfer-encoding", name));
-}
 
 h2_response *h2_response_create(int stream_id,
                                 int rst_error,
-                                const char *http_status,
+                                int http_status,
                                 apr_array_header_t *hlines,
                                 apr_pool_t *pool)
 {
@@ -56,7 +45,7 @@ h2_response *h2_response_create(int stream_id,
     
     response->stream_id = stream_id;
     response->rst_error = rst_error;
-    response->status = http_status? http_status : "500";
+    response->http_status = http_status? http_status : 500;
     response->content_length = -1;
     
     if (hlines) {
@@ -75,10 +64,8 @@ h2_response *h2_response_create(int stream_id,
             while (*sep == ' ' || *sep == '\t') {
                 ++sep;
             }
-            if (ignore_header(hline)) {
-                /* never forward, ch. 8.1.2.2 */
-            }
-            else {
+            
+            if (!h2_util_ignore_header(hline)) {
                 apr_table_merge(header, hline, sep);
                 if (*sep && H2_HD_MATCH_LIT_CS("content-length", hline)) {
                     char *end;
@@ -99,7 +86,7 @@ h2_response *h2_response_create(int stream_id,
         header = apr_table_make(pool, 0);        
     }
 
-    response->rheader = header;
+    response->header = header;
     return response;
 }
 
@@ -112,17 +99,17 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     }
     
     response->stream_id = stream_id;
-    response->status = apr_psprintf(pool, "%d", r->status);
+    response->http_status = r->status;
     response->content_length = -1;
-    response->rheader = header;
+    response->header = header;
 
-    if (r->status == HTTP_FORBIDDEN) {
+    if (response->http_status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
         if (cause) {
             /* This request triggered a TLS renegotiation that is now allowed 
              * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, r->status, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, response->http_status, r, 
                           "h2_response(%ld-%d): renegotiate forbidden, cause: %s",
                           (long)r->connection->id, stream_id, cause);
             response->rst_error = H2_ERR_HTTP_1_1_REQUIRED;
@@ -141,108 +128,12 @@ h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)
 {
     h2_response *to = apr_pcalloc(pool, sizeof(h2_response));
     to->stream_id = from->stream_id;
-    to->status = apr_pstrdup(pool, from->status);
+    to->http_status = from->http_status;
     to->content_length = from->content_length;
-    if (from->rheader) {
-        to->ngheader = make_ngheader(pool, to->status, from->rheader);
+    if (from->header) {
+        to->header = apr_table_clone(pool, from->header);
     }
     return to;
 }
 
-typedef struct {
-    nghttp2_nv *nv;
-    size_t nvlen;
-    size_t nvstrlen;
-    size_t offset;
-    char *strbuf;
-    apr_pool_t *pool;
-} nvctx_t;
-
-static int count_header(void *ctx, const char *key, const char *value)
-{
-    if (!ignore_header(key)) {
-        nvctx_t *nvctx = (nvctx_t*)ctx;
-        nvctx->nvlen++;
-        nvctx->nvstrlen += strlen(key) + strlen(value) + 2;
-    }
-    return 1;
-}
-
-#define NV_ADD_LIT_CS(nv, k, v)     addnv_lit_cs(nv, k, sizeof(k) - 1, v, strlen(v))
-#define NV_ADD_CS_CS(nv, k, v)      addnv_cs_cs(nv, k, strlen(k), v, strlen(v))
-#define NV_BUF_ADD(nv, s, len)      memcpy(nv->strbuf, s, len); \
-s = nv->strbuf; \
-nv->strbuf += len + 1
-
-static void addnv_cs_cs(nvctx_t *ctx, const char *key, size_t key_len,
-                        const char *value, size_t val_len)
-{
-    nghttp2_nv *nv = &ctx->nv[ctx->offset];
-    
-    NV_BUF_ADD(ctx, key, key_len);
-    NV_BUF_ADD(ctx, value, val_len);
-    
-    nv->name = (uint8_t*)key;
-    nv->namelen = key_len;
-    nv->value = (uint8_t*)value;
-    nv->valuelen = val_len;
-    
-    ctx->offset++;
-}
-
-static void addnv_lit_cs(nvctx_t *ctx, const char *key, size_t key_len,
-                         const char *value, size_t val_len)
-{
-    nghttp2_nv *nv = &ctx->nv[ctx->offset];
-    
-    NV_BUF_ADD(ctx, value, val_len);
-    
-    nv->name = (uint8_t*)key;
-    nv->namelen = key_len;
-    nv->value = (uint8_t*)value;
-    nv->valuelen = val_len;
-    
-    ctx->offset++;
-}
-
-static int add_header(void *ctx, const char *key, const char *value)
-{
-    if (!ignore_header(key)) {
-        nvctx_t *nvctx = (nvctx_t*)ctx;
-        NV_ADD_CS_CS(nvctx, key, value);
-    }
-    return 1;
-}
-
-static h2_ngheader *make_ngheader(apr_pool_t *pool, const char *status,
-                                  apr_table_t *header)
-{
-    size_t n;
-    h2_ngheader *h;
-    nvctx_t ctx;
-    
-    ctx.nv       = NULL;
-    ctx.nvlen    = 1;
-    ctx.nvstrlen = strlen(status) + 1;
-    ctx.offset   = 0;
-    ctx.strbuf   = NULL;
-    ctx.pool     = pool;
-    
-    apr_table_do(count_header, &ctx, header, NULL);
-    
-    n =  (sizeof(h2_ngheader)
-                 + (ctx.nvlen * sizeof(nghttp2_nv)) + ctx.nvstrlen); 
-    h = apr_pcalloc(pool, n);
-    if (h) {
-        ctx.nv = (nghttp2_nv*)(h + 1);
-        ctx.strbuf = (char*)&ctx.nv[ctx.nvlen];
-        
-        NV_ADD_LIT_CS(&ctx, ":status", status);
-        apr_table_do(add_header, &ctx, header, NULL);
-        
-        h->nv = ctx.nv;
-        h->nvlen = ctx.nvlen;
-    }
-    return h;
-}
 

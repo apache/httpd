@@ -16,34 +16,31 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include <apr_hash.h>
 #include <apr_strings.h>
 
 #include <httpd.h>
-#include <http_core.h>
-#include <http_connection.h>
 #include <http_log.h>
 
 #include "h2_private.h"
-#include "h2_session.h"
 #include "h2_stream.h"
-#include "h2_task.h"
 #include "h2_stream_set.h"
 
-#define H2_STREAM_IDX(list, i) ((h2_stream**)(list)->elts)[i]
 
 struct h2_stream_set {
-    apr_array_header_t *list;
+    apr_hash_t *hash;
 };
 
-h2_stream_set *h2_stream_set_create(apr_pool_t *pool)
+static unsigned int stream_hash(const char *key, apr_ssize_t *klen)
+{
+    return (unsigned int)(*((int*)key));
+}
+
+h2_stream_set *h2_stream_set_create(apr_pool_t *pool, int max)
 {
     h2_stream_set *sp = apr_pcalloc(pool, sizeof(h2_stream_set));
-    if (sp) {
-        sp->list = apr_array_make(pool, 100, sizeof(h2_stream*));
-        if (!sp->list) {
-            return NULL;
-        }
-    }
+    sp->hash = apr_hash_make_custom(pool, stream_hash);
+
     return sp;
 }
 
@@ -52,111 +49,97 @@ void h2_stream_set_destroy(h2_stream_set *sp)
     (void)sp;
 }
 
-static int h2_stream_id_cmp(const void *s1, const void *s2)
-{
-    return (*((h2_stream **)s1))->id - (*((h2_stream **)s2))->id;
-}
-
 h2_stream *h2_stream_set_get(h2_stream_set *sp, int stream_id)
 {
-    /* we keep the array sorted by id, so lookup can be done
-     * by bsearch.
-     */
-    h2_stream key;
-    h2_stream *pkey, **ps;
-    memset(&key, 0, sizeof(key));
-    key.id = stream_id;
-    pkey = &key;
-    ps = bsearch(&pkey, sp->list->elts, sp->list->nelts, 
-                             sp->list->elt_size, h2_stream_id_cmp);
-    return ps? *ps : NULL;
+    return apr_hash_get(sp->hash, &stream_id, sizeof(stream_id));
 }
 
-static void h2_stream_set_sort(h2_stream_set *sp)
+void h2_stream_set_add(h2_stream_set *sp, h2_stream *stream)
 {
-    qsort(sp->list->elts, sp->list->nelts, sp->list->elt_size, 
-          h2_stream_id_cmp);
+    apr_hash_set(sp->hash, &stream->id, sizeof(stream->id), stream);
 }
 
-apr_status_t h2_stream_set_add(h2_stream_set *sp, h2_stream *stream)
+void h2_stream_set_remove(h2_stream_set *sp, int stream_id)
 {
-    h2_stream *existing = h2_stream_set_get(sp, stream->id);
-    if (!existing) {
-        int last;
-        APR_ARRAY_PUSH(sp->list, h2_stream*) = stream;
-        /* Normally, streams get added in ascending order if id. We
-         * keep the array sorted, so we just need to check of the newly
-         * appended stream has a lower id than the last one. if not,
-         * sorting is not necessary.
-         */
-        last = sp->list->nelts - 1;
-        if (last > 0 
-            && (H2_STREAM_IDX(sp->list, last)->id 
-                < H2_STREAM_IDX(sp->list, last-1)->id)) {
-            h2_stream_set_sort(sp);
-        }
-    }
-    return APR_SUCCESS;
-}
-
-h2_stream *h2_stream_set_remove(h2_stream_set *sp, int stream_id)
-{
-    int i;
-    for (i = 0; i < sp->list->nelts; ++i) {
-        h2_stream *s = H2_STREAM_IDX(sp->list, i);
-        if (s->id == stream_id) {
-            int n;
-            --sp->list->nelts;
-            n = sp->list->nelts - i;
-            if (n > 0) {
-                /* Close the hole in the array by moving the upper
-                 * parts down one step.
-                 */
-                h2_stream **selts = (h2_stream**)sp->list->elts;
-                memmove(selts+i, selts+i+1, n * sizeof(h2_stream*));
-            }
-            return s;
-        }
-    }
-    return NULL;
-}
-
-void h2_stream_set_remove_all(h2_stream_set *sp)
-{
-    sp->list->nelts = 0;
+    apr_hash_set(sp->hash, &stream_id, sizeof(stream_id), NULL);
 }
 
 int h2_stream_set_is_empty(h2_stream_set *sp)
 {
-    AP_DEBUG_ASSERT(sp);
-    return sp->list->nelts == 0;
+    return apr_hash_count(sp->hash) == 0;
 }
 
-h2_stream *h2_stream_set_find(h2_stream_set *sp,
-                              h2_stream_set_match_fn *match, void *ctx)
+apr_size_t h2_stream_set_size(h2_stream_set *sp)
 {
-    h2_stream *s = NULL;
-    int i;
-    for (i = 0; !s && i < sp->list->nelts; ++i) {
-        s = match(ctx, H2_STREAM_IDX(sp->list, i));
-    }
-    return s;
+    return apr_hash_count(sp->hash);
+}
+
+typedef struct {
+    h2_stream_set_iter_fn *iter;
+    void *ctx;
+} iter_ctx;
+
+static int hash_iter(void *ctx, const void *key, apr_ssize_t klen, 
+                     const void *val)
+{
+    iter_ctx *ictx = ctx;
+    return ictx->iter(ictx->ctx, (h2_stream*)val);
 }
 
 void h2_stream_set_iter(h2_stream_set *sp,
                         h2_stream_set_iter_fn *iter, void *ctx)
 {
-    int i;
-    for (i = 0; i < sp->list->nelts; ++i) {
-        h2_stream *s = H2_STREAM_IDX(sp->list, i);
-        if (!iter(ctx, s)) {
-            break;
-        }
-    }
+    iter_ctx ictx;
+    ictx.iter = iter;
+    ictx.ctx = ctx;
+    apr_hash_do(hash_iter, &ictx, sp->hash);
 }
 
-apr_size_t h2_stream_set_size(h2_stream_set *sp)
+static int unsubmitted_iter(void *ctx, h2_stream *stream)
 {
-    return sp->list->nelts;
+    if (h2_stream_needs_submit(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_unsubmitted(h2_stream_set *sp)
+{
+    int has_unsubmitted = 0;
+    h2_stream_set_iter(sp, unsubmitted_iter, &has_unsubmitted);
+    return has_unsubmitted;
+}
+
+static int input_open_iter(void *ctx, h2_stream *stream)
+{
+    if (h2_stream_input_is_open(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_open_input(h2_stream_set *sp)
+{
+    int has_input_open = 0;
+    h2_stream_set_iter(sp, input_open_iter, &has_input_open);
+    return has_input_open;
+}
+
+static int suspended_iter(void *ctx, h2_stream *stream)
+{
+    if (h2_stream_is_suspended(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+int h2_stream_set_has_suspended(h2_stream_set *sp)
+{
+    int has_suspended = 0;
+    h2_stream_set_iter(sp, suspended_iter, &has_suspended);
+    return has_suspended;
 }
 

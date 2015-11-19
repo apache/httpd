@@ -16,6 +16,7 @@
 #ifndef __mod_h2__h2_util__
 #define __mod_h2__h2_util__
 
+struct h2_request;
 struct nghttp2_frame;
 
 size_t h2_util_hex_dump(char *buffer, size_t maxlen,
@@ -67,19 +68,32 @@ apr_size_t h2_util_base64url_decode(const char **decoded,
                                             nv->value = (uint8_t *)VALUE;     \
                                             nv->valuelen = strlen(VALUE)
 
+int h2_util_ignore_header(const char *name);
+
+typedef struct h2_ngheader {
+    nghttp2_nv *nv;
+    apr_size_t nvlen;
+} h2_ngheader;
+
+h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
+                                       int http_status, 
+                                       apr_table_t *header);
+h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
+                                       const struct h2_request *req);
+
 /**
  * Moves data from one brigade into another. If maxlen > 0, it only
  * moves up to maxlen bytes into the target brigade, making bucket splits
  * if needed.
  * @param to the brigade to move the data to
  * @param from the brigade to get the data from
- * @param maxlen of bytes to move, 0 for all
+ * @param maxlen of bytes to move, <= 0 for all
  * @param pfile_buckets_allowed how many file buckets may be moved, 
  *        may be 0 or NULL
  * @param msg message for use in logging
  */
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, int *pfile_buckets_allowed, 
+                          apr_off_t maxlen, int *pfile_buckets_allowed, 
                           const char *msg);
 
 /**
@@ -88,11 +102,11 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
  * if needed.
  * @param to the brigade to copy the data to
  * @param from the brigade to get the data from
- * @param maxlen of bytes to copy, 0 for all
+ * @param maxlen of bytes to copy, <= 0 for all
  * @param msg message for use in logging
  */
 apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_size_t maxlen, const char *msg);
+                          apr_off_t maxlen, const char *msg);
 
 /**
  * Return != 0 iff there is a FLUSH or EOS bucket in the brigade.
@@ -100,7 +114,7 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
  * @return != 0 iff brigade holds FLUSH or EOS bucket (or both)
  */
 int h2_util_has_flush_or_eos(apr_bucket_brigade *bb);
-int h2_util_has_eos(apr_bucket_brigade *bb, apr_size_t len);
+int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
 int h2_util_bb_has_data(apr_bucket_brigade *bb);
 int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb);
 
@@ -112,10 +126,10 @@ int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb);
  * @param on return, if eos has been reached
  */
 apr_status_t h2_util_bb_avail(apr_bucket_brigade *bb, 
-                              apr_size_t *plen, int *peos);
+                              apr_off_t *plen, int *peos);
 
 typedef apr_status_t h2_util_pass_cb(void *ctx, 
-                                       const char *data, apr_size_t len);
+                                     const char *data, apr_off_t len);
 
 /**
  * Read at most *plen bytes from the brigade and pass them into the
@@ -131,7 +145,7 @@ typedef apr_status_t h2_util_pass_cb(void *ctx,
  */
 apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb, 
                               h2_util_pass_cb *cb, void *ctx, 
-                              apr_size_t *plen, int *peos);
+                              apr_off_t *plen, int *peos);
 
 /**
  * Logs the bucket brigade (which bucket types with what length)
@@ -157,7 +171,7 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
 apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_bucket_brigade *from, 
                                  apr_pool_t *p,
-                                 apr_size_t *plen,
+                                 apr_off_t *plen,
                                  int *peos);
 
 #endif /* defined(__mod_h2__h2_util__) */

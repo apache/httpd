@@ -22,7 +22,9 @@
 #include <http_log.h>
 
 #include "h2_private.h"
+#include "h2_conn.h"
 #include "h2_mplx.h"
+#include "h2_request.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 
@@ -55,7 +57,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         if (worker->task) {            
             h2_task_do(worker->task, worker);
             worker->task = NULL;
-            apr_thread_cond_signal(h2_worker_get_cond(worker));
+            apr_thread_cond_signal(worker->io);
         }
     }
 
@@ -112,7 +114,6 @@ h2_worker *h2_worker_create(int id,
         
         w->id = id;
         w->pool = pool;
-        w->bucket_alloc = apr_bucket_alloc_create(pool);
 
         w->get_next = get_next;
         w->worker_done = worker_done;
@@ -123,8 +124,9 @@ h2_worker *h2_worker_create(int id,
             return NULL;
         }
         
-        apr_pool_pre_cleanup_register(pool, w, cleanup_join_thread);
-        apr_thread_create(&w->thread, attr, execute, w, pool);
+        apr_pool_pre_cleanup_register(w->pool, w, cleanup_join_thread);
+        apr_thread_create(&w->thread, attr, execute, w, w->pool);
+        apr_pool_create(&w->task_pool, w->pool);
     }
     return w;
 }
@@ -157,14 +159,37 @@ int h2_worker_is_aborted(h2_worker *worker)
     return worker->aborted;
 }
 
-apr_thread_t *h2_worker_get_thread(h2_worker *worker)
+h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m, 
+                               const h2_request *req, int eos)
 {
-    return worker->thread;
+    h2_task *task;
+    
+    /* Create a subpool from the worker one to be used for all things
+     * with life-time of this task execution.
+     */
+    task = h2_task_create(m->id, req, worker->task_pool, m, eos);
+    /* Link the task to the worker which provides useful things such
+     * as mutex, a socket etc. */
+    task->io = worker->io;
+    
+    return task;
 }
 
-apr_thread_cond_t *h2_worker_get_cond(h2_worker *worker)
+apr_status_t h2_worker_setup_task(h2_worker *worker, h2_task *task) {
+    apr_status_t status;
+    
+    
+    status = h2_conn_setup(task, apr_bucket_alloc_create(task->pool),
+                           worker->thread, worker->socket);
+    
+    return status;
+}
+
+void h2_worker_release_task(h2_worker *worker, struct h2_task *task)
 {
-    return worker->io;
+    task->io = NULL;
+    task->pool = NULL;
+    apr_pool_clear(worker->task_pool);
 }
 
 apr_socket_t *h2_worker_get_socket(h2_worker *worker)
@@ -172,13 +197,4 @@ apr_socket_t *h2_worker_get_socket(h2_worker *worker)
     return worker->socket;
 }
 
-apr_pool_t *h2_worker_get_pool(h2_worker *worker)
-{
-    return worker->pool;
-}
-
-apr_bucket_alloc_t *h2_worker_get_bucket_alloc(h2_worker *worker)
-{
-    return worker->bucket_alloc;
-}
 

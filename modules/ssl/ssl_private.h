@@ -442,6 +442,7 @@ typedef struct {
     int disabled;
     enum {
         NON_SSL_OK = 0,        /* is SSL request, or error handling completed */
+        NON_SSL_SEND_REQLINE,  /* Need to send the fake request line */
         NON_SSL_SEND_HDR_SEP,  /* Need to send the header separator */
         NON_SSL_SET_ERROR_MSG  /* Need to set the error message */
     } non_ssl_request;

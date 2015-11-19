@@ -29,6 +29,7 @@
 #include "h2_ctx.h"
 #include "h2_conn.h"
 #include "h2_config.h"
+#include "h2_h2.h"
 #include "h2_private.h"
 
 #define DEF_VAL     (-1)
@@ -38,21 +39,22 @@
 
 static h2_config defconf = {
     "default",
-    100,              /* max_streams */
-    64 * 1024,        /* window_size */
-    -1,               /* min workers */
-    -1,               /* max workers */
-    10 * 60,          /* max workers idle secs */
-    64 * 1024,        /* stream max mem size */
-    NULL,             /* no alt-svcs */
-    -1,               /* alt-svc max age */
-    0,                /* serialize headers */
-    -1,               /* h2 direct mode */
-    -1,               /* # session extra files */
-    1,                /* modern TLS only */
-    -1,               /* HTTP/1 Upgrade support */
-    1024*1024,        /* TLS warmup size */
-    1,                /* TLS cooldown secs */
+    100,                    /* max_streams */
+    H2_INITIAL_WINDOW_SIZE, /* window_size */
+    -1,                     /* min workers */
+    -1,                     /* max workers */
+    10 * 60,                /* max workers idle secs */
+    64 * 1024,              /* stream max mem size */
+    NULL,                   /* no alt-svcs */
+    -1,                     /* alt-svc max age */
+    0,                      /* serialize headers */
+    -1,                     /* h2 direct mode */
+    -1,                     /* # session extra files */
+    1,                      /* modern TLS only */
+    -1,                     /* HTTP/1 Upgrade support */
+    1024*1024,              /* TLS warmup size */
+    1,                      /* TLS cooldown secs */
+    1,                      /* HTTP/2 server push enabled */
 };
 
 static int files_per_session = 0;
@@ -108,6 +110,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->h2_upgrade           = DEF_VAL;
     conf->tls_warmup_size      = DEF_VAL;
     conf->tls_cooldown_secs    = DEF_VAL;
+    conf->h2_push              = DEF_VAL;
     
     return conf;
 }
@@ -151,6 +154,7 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->h2_upgrade           = H2_CONFIG_GET(add, base, h2_upgrade);
     n->tls_warmup_size      = H2_CONFIG_GET(add, base, tls_warmup_size);
     n->tls_cooldown_secs    = H2_CONFIG_GET(add, base, tls_cooldown_secs);
+    n->h2_push              = H2_CONFIG_GET(add, base, h2_push);
     
     return n;
 }
@@ -196,6 +200,8 @@ apr_int64_t h2_config_geti64(h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, tls_warmup_size);
         case H2_CONF_TLS_COOLDOWN_SECS:
             return H2_CONFIG_GET(conf, &defconf, tls_cooldown_secs);
+        case H2_CONF_PUSH:
+            return H2_CONFIG_GET(conf, &defconf, h2_push);
         default:
             return DEF_VAL;
     }
@@ -358,6 +364,23 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
     return "value must be On or Off";
 }
 
+static const char *h2_conf_set_push(cmd_parms *parms,
+                                    void *arg, const char *value)
+{
+    h2_config *cfg = h2_config_sget(parms->server);
+    if (!strcasecmp(value, "On")) {
+        cfg->h2_push = 1;
+        return NULL;
+    }
+    else if (!strcasecmp(value, "Off")) {
+        cfg->h2_push = 0;
+        return NULL;
+    }
+    
+    (void)arg;
+    return "value must be On or Off";
+}
+
 static const char *h2_conf_set_modern_tls_only(cmd_parms *parms,
                                                void *arg, const char *value)
 {
@@ -444,6 +467,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "number of bytes on TLS connection before doing max writes"),
     AP_INIT_TAKE1("H2TLSCoolDownSecs", h2_conf_set_tls_cooldown_secs, NULL,
                   RSRC_CONF, "seconds of idle time on TLS before shrinking writes"),
+    AP_INIT_TAKE1("H2Push", h2_conf_set_push, NULL,
+                  RSRC_CONF, "off to disable HTTP/2 server push"),
     AP_END_CMD
 };
 
