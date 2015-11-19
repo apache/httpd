@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1707123:1711549 (outdated) -->
+<!-- English Revision: 1711549 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -289,6 +289,31 @@ format <code>%{<em>nom</em>}n</code> via le module
 </dl>
 
 </section>
+
+<section id="expressionparser"><title>Extension pour l'interpr&eacute;tation
+des expressions</title>
+
+<p>Lorsque <module>mod_ssl</module> est compil&eacute; statiquement avec
+Apache, ou m&ecirc;me charg&eacute; dynamiquement (en tant que module DSO), toute <a
+name="envvars">variable</a> en provenance de <module>mod_ssl</module> peut
+&ecirc;tre utilis&eacute;e pour l'<a href="../expr.html">interpr&eacute;tation des
+expression ap_expr</a>. Les variables peuvent &ecirc;tre r&eacute;f&eacute;renc&eacute;es en
+utilisant la syntaxe ``<code>%{</code><em>varname</em><code>}</code>''.
+A partir de la version 2.4.18, on peut aussi utiliser la syntaxe de
+style <module>mod_rewrite</module>
+``<code>%{SSL:</code><em>varname</em><code>}</code>'', ou la syntaxe de
+style fonction ``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+<example><title>Exemple (en utilisant <module>mod_headers</module>)</title>
+<highlight language="config">
+Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
+Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"
+</highlight>
+</example>
+<p>Cette fonctionnalit&eacute; est disponible m&ecirc;me si l'option
+<code>StdEnvVars</code> de la directive <directive
+module="mod_ssl">SSLOptions</directive> n'a pas &eacute;t&eacute; d&eacute;finie.</p>
+</section>
+
 <section id="authzproviders"><title>Fournisseurs d'autorisation
 disponibles avec Require</title>
 
@@ -1659,7 +1684,7 @@ Les <em>option</em>s disponibles sont :</p>
 SSLOptions +FakeBasicAuth -StrictRequire
 &lt;Files ~ "\.(cgi|shtml)$"&gt;
     SSLOptions +StdEnvVars -ExportCertData
-&lt;Files&gt;
+&lt;/Files&gt;
 </highlight>
 </example>
 </usage>
