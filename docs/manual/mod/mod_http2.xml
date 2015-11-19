@@ -141,10 +141,10 @@
             </p>
             <example><title>mod_headers example</title>
                 <highlight language="config">
-                    <Location /index.html>
-                        Header add Link "</css/site.css>;rel=preload"
-                        Header add Link "</images/logo.jpg>;rel=preload"
-                    </Location>
+&lt;Location /index.html&gt;
+    Header add Link "&lt;/css/site.css&gt;;rel=preload"
+    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
+&lt;/Location&gt;
                 </highlight>
             </example>
             <p>
