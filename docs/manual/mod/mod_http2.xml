@@ -57,7 +57,7 @@
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>
-        <default>H2Direct on for http:, off for https: requests</default>
+        <default>H2Direct on for h2c, off for h2 protocol</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -78,8 +78,22 @@
                 use on TLS connections not mandated by the standard.
             </p>
             <p>
-                This mode only has an effect when h2 or h2c is enabled via
-                the <directive module="core" type="section">Protocols</directive>.
+                When a server/vhost does not have h2 or h2c enabled via
+                <directive module="core" type="section">Protocols</directive>,
+                the connection is never inspected for a HTTP/2 preamble. H2Direct
+                does not matter then. This is important for connections that
+                use protocols where an initial read might hang indefinitely, such
+                as NNTP.
+            </p>
+            <p>
+                For clients that have out-of-band knowledge about a server
+                supporting h2c, direct HTTP/2 saves the client from having to
+                perform an HTTP/1.1 upgrade, resulting in better performance
+                and avoiding the Upgrade restrictions on request bodies.
+            </p>
+            <p>
+                This makes direct h2c attractive for server to server communication
+                as well, when the connection can be trusted or is secured by other means.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
@@ -161,7 +175,7 @@
         <name>H2Upgrade</name>
         <description>H2 Upgrade Protocol Switch</description>
         <syntax>H2Upgrade on|off</syntax>
-        <default>H2Upgrade on for http:, off for https: requests</default>
+        <default>H2Upgrade on for h2c, off for h2 protocol</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -183,8 +197,15 @@
             </p>
             <p>
                 This method of protocol switching is enabled by default on cleartext
-                (http:) connections and disabled on TLS (https:), as mandated
-                by RFC 7540. 
+                (potential h2c) connections and disabled on TLS (potential h2), 
+                as mandated by RFC 7540. 
+            </p>
+            <p>
+                Please be aware that Upgrades are only accepted for requests
+                that carry no body. POSTs and PUTs with content will never
+                trigger an upgrade to HTTP/2. 
+                See <directive type="section">H2Direct</directive> for an 
+                alternative to Upgrade.
             </p>
             <p>
                 This mode only has an effect when h2 or h2c is enabled via

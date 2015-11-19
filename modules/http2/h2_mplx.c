@@ -16,6 +16,7 @@
 #include <assert.h>
 #include <stddef.h>
 
+#include <apr_atomic.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <apr_strings.h>
