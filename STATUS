@@ -170,8 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1715023
                   + manual addition of "conn_rec *master;"
      branch mergeable to 2.4.x: ^/httpd/httpd/branches/2.4.17-protocols-changes
-     +1: icing, ylavic
-     before adding r1715023, jim was +1, retest?
+     +1: icing, ylavic, jim
 
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
               to only staple responses with certificate status "good"
