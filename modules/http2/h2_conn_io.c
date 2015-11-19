@@ -347,7 +347,6 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
 static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
 {
     if (io->unflushed || force) {
-        apr_status_t status; 
         if (io->buflen > 0) {
             /* something in the buffer, put it in the output brigade */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, io->connection,
@@ -361,18 +360,13 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
                                     apr_bucket_flush_create(io->output->bucket_alloc));
         }
         
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->connection,
+                      "h2_conn_io: flush");
         /* Send it out */
-        status = pass_out(io->output, io);
-        
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, io->connection,
-                          "h2_conn_io: flush");
-            return status;
-        }
-
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, io->connection,
-                      "h2_conn_io: flushed");
         io->unflushed = 0;
+        return pass_out(io->output, io);
+        /* no more access after this, as we might have flushed an EOC bucket
+         * that de-allocated us all. */
     }
     return APR_SUCCESS;
 }

@@ -36,6 +36,7 @@ struct h2_request {
     const char *path;
     
     apr_table_t *headers;
+    apr_table_t *trailers;
 
     apr_off_t content_length;
     int chunked;
@@ -56,6 +57,10 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r);
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,
                                    const char *value, size_t vlen);
+
+apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
+                                    const char *name, size_t nlen,
+                                    const char *value, size_t vlen);
 
 apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos);
 

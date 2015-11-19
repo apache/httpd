@@ -16,7 +16,6 @@
 #include <assert.h>
 #include <stddef.h>
 
-#include <apr_atomic.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <apr_strings.h>
@@ -44,6 +43,19 @@
 #include "h2_worker.h"
 #include "h2_workers.h"
 #include "h2_util.h"
+
+
+#define H2_MPLX_IO_OUT(lvl,m,io,msg) \
+    do { \
+        if (APLOG_C_IS_LEVEL((m)->c,lvl)) \
+        h2_util_bb_log((m)->c,(io)->id,lvl,msg,(io)->bbout); \
+    } while(0)
+    
+#define H2_MPLX_IO_IN(lvl,m,io,msg) \
+    do { \
+        if (APLOG_C_IS_LEVEL((m)->c,lvl)) \
+        h2_util_bb_log((m)->c,(io)->id,lvl,msg,(io)->bbin); \
+    } while(0)
 
 
 static int is_aborted(h2_mplx *m, apr_status_t *pstatus) {
@@ -112,9 +124,9 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
     if (m) {
         m->id = c->id;
         APR_RING_ELEM_INIT(m, link);
-        apr_atomic_set32(&m->refs, 1);
+        m->refs = 1;
         m->c = c;
-        apr_pool_create_ex(&m->pool, NULL, NULL, allocator);
+        apr_pool_create_ex(&m->pool, parent, NULL, allocator);
         if (!m->pool) {
             return NULL;
         }
@@ -140,30 +152,28 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
     return m;
 }
 
-static void reference(h2_mplx *m)
-{
-    apr_atomic_inc32(&m->refs);
-}
-
 static void release(h2_mplx *m, int lock)
 {
-    if (!apr_atomic_dec32(&m->refs)) {
-        if (lock) {
-            apr_thread_mutex_lock(m->lock);
-        }
+    if (lock) {
+        apr_thread_mutex_lock(m->lock);
+        --m->refs;
         if (m->join_wait) {
             apr_thread_cond_signal(m->join_wait);
         }
-        if (lock) {
-            apr_thread_mutex_unlock(m->lock);
-        }
+        apr_thread_mutex_unlock(m->lock);
+    }
+    else {
+        --m->refs;
     }
 }
 
 void h2_mplx_reference(h2_mplx *m)
 {
-    reference(m);
+    apr_thread_mutex_lock(m->lock);
+    ++m->refs;
+    apr_thread_mutex_unlock(m->lock);
 }
+
 void h2_mplx_release(h2_mplx *m)
 {
     release(m, 1);
@@ -196,16 +206,16 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         release(m, 0);
-        while (apr_atomic_read32(&m->refs) > 0) {
+        while (m->refs > 0) {
             m->join_wait = wait;
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
                           "h2_mplx(%ld): release_join, refs=%d, waiting...", 
                           m->id, m->refs);
             apr_thread_cond_wait(wait, m->lock);
         }
-        m->join_wait = NULL;
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
                       "h2_mplx(%ld): release_join -> destroy", m->id);
+        m->pool = NULL;
         apr_thread_mutex_unlock(m->lock);
         h2_mplx_destroy(m);
     }
@@ -319,13 +329,15 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
             io->input_arrived = iowait;
-            status = h2_io_in_read(io, bb, 0);
+            H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_read_pre");
+            status = h2_io_in_read(io, bb, -1);
             while (APR_STATUS_IS_EAGAIN(status) 
                    && !is_aborted(m, &status)
                    && block == APR_BLOCK_READ) {
                 apr_thread_cond_wait(io->input_arrived, m->lock);
-                status = h2_io_in_read(io, bb, 0);
+                status = h2_io_in_read(io, bb, -1);
             }
+            H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_read_post");
             io->input_arrived = NULL;
         }
         else {
@@ -348,7 +360,9 @@ apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id,
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
+            H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_pre");
             status = h2_io_in_write(io, bb);
+            H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_post");
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
             }
@@ -373,6 +387,7 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
             status = h2_io_in_close(io);
+            H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_close");
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
             }
@@ -428,13 +443,6 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
     }
     return status;
 }
-
-#define H2_MPLX_IO_OUT(lvl,m,io,msg) \
-    do { \
-        if (APLOG_C_IS_LEVEL((m)->c,lvl)) \
-        h2_util_bb_log((m)->c,(io)->id,lvl,msg,(io)->bbout); \
-    } while(0)
-
 
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
@@ -515,7 +523,9 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                 }
                 else {
                     AP_DEBUG_ASSERT(io->response);
+                    H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_next_submit_pre");
                     h2_stream_set_response(stream, io->response, io->bbout);
+                    H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_next_submit_post");
                 }
                 
             }
@@ -879,6 +889,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
 
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                       "h2_mplx(%ld-%d): process", m->c->id, stream_id);
+        H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_process");
         apr_thread_mutex_unlock(m->lock);
     }
     
