@@ -5379,7 +5379,7 @@ static int core_upgrade_handler(request_rec *r)
                     /* Let the client know what we are upgrading to. */
                     apr_table_clear(r->headers_out);
                     apr_table_setn(r->headers_out, "Upgrade", protocol);
-                    apr_table_setn(r->headers_out, "Connection", "upgrade");
+                    apr_table_setn(r->headers_out, "Connection", "Upgrade");
                     
                     r->status = HTTP_SWITCHING_PROTOCOLS;
                     r->status_line = ap_get_status_line(r->status);
@@ -5404,7 +5404,7 @@ static int core_upgrade_handler(request_rec *r)
         if (upgrades && upgrades->nelts > 0) {
             char *protocols = apr_array_pstrcat(r->pool, upgrades, ',');
             apr_table_setn(r->headers_out, "Upgrade", protocols);
-            apr_table_setn(r->headers_out, "Connection", "upgrade");
+            apr_table_setn(r->headers_out, "Connection", "Upgrade");
         }
     }
     
