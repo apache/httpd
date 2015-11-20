@@ -32,11 +32,11 @@ static h2_ctx *h2_ctx_create(const conn_rec *c)
     return ctx;
 }
 
-h2_ctx *h2_ctx_create_for(const conn_rec *c, h2_task_env *env)
+h2_ctx *h2_ctx_create_for(const conn_rec *c, h2_task *task)
 {
     h2_ctx *ctx = h2_ctx_create(c);
     if (ctx) {
-        ctx->task_env = env;
+        ctx->task = task;
     }
     return ctx;
 }
@@ -76,7 +76,7 @@ h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s)
 
 int h2_ctx_is_task(h2_ctx *ctx)
 {
-    return ctx && !!ctx->task_env;
+    return ctx && !!ctx->task;
 }
 
 int h2_ctx_is_active(h2_ctx *ctx)
@@ -84,7 +84,7 @@ int h2_ctx_is_active(h2_ctx *ctx)
     return ctx && ctx->is_h2;
 }
 
-struct h2_task_env *h2_ctx_get_task(h2_ctx *ctx)
+struct h2_task *h2_ctx_get_task(h2_ctx *ctx)
 {
-    return ctx->task_env;
+    return ctx->task;
 }

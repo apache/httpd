@@ -20,6 +20,8 @@ dnl #  list of module object files
 http2_objs="dnl
 mod_http2.lo dnl
 h2_alt_svc.lo dnl
+h2_bucket_eoc.lo dnl
+h2_bucket_eos.lo dnl
 h2_config.lo dnl
 h2_conn.lo dnl
 h2_conn_io.lo dnl
@@ -29,6 +31,7 @@ h2_h2.lo dnl
 h2_io.lo dnl
 h2_io_set.lo dnl
 h2_mplx.lo dnl
+h2_push.lo dnl
 h2_request.lo dnl
 h2_response.lo dnl
 h2_session.lo dnl
@@ -39,7 +42,6 @@ h2_task.lo dnl
 h2_task_input.lo dnl
 h2_task_output.lo dnl
 h2_task_queue.lo dnl
-h2_to_h1.lo dnl
 h2_util.lo dnl
 h2_worker.lo dnl
 h2_workers.lo dnl

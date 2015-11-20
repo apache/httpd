@@ -78,19 +78,6 @@ h2_io *h2_io_set_get(h2_io_set *sp, int stream_id)
     return ps? *ps : NULL;
 }
 
-h2_io *h2_io_set_get_highest_prio(h2_io_set *set)
-{
-    h2_io *highest = NULL;
-    int i;
-    for (i = 0; i < set->list->nelts; ++i) {
-        h2_io *io = h2_io_IDX(set->list, i);
-        if (!highest /*|| io-prio even higher */ ) {
-            highest = io;
-        }
-    }
-    return highest;
-}
-
 static void h2_io_set_sort(h2_io_set *sp)
 {
     qsort(sp->list->elts, sp->list->nelts, sp->list->elt_size, 
@@ -118,24 +105,42 @@ apr_status_t h2_io_set_add(h2_io_set *sp, h2_io *io)
     return APR_SUCCESS;
 }
 
+static void remove_idx(h2_io_set *sp, int idx)
+{
+    int n;
+    --sp->list->nelts;
+    n = sp->list->nelts - idx;
+    if (n > 0) {
+        /* Close the hole in the array by moving the upper
+         * parts down one step.
+         */
+        h2_io **selts = (h2_io**)sp->list->elts;
+        memmove(selts + idx, selts + idx + 1, n * sizeof(h2_io*));
+    }
+}
+
 h2_io *h2_io_set_remove(h2_io_set *sp, h2_io *io)
 {
     int i;
     for (i = 0; i < sp->list->nelts; ++i) {
         h2_io *e = h2_io_IDX(sp->list, i);
         if (e == io) {
-            int n;
-            --sp->list->nelts;
-            n = sp->list->nelts - i;
-            if (n > 0) {
-                /* Close the hole in the array by moving the upper
-                 * parts down one step.
-                 */
-                h2_io **selts = (h2_io**)sp->list->elts;
-                memmove(selts+i, selts+i+1, n * sizeof(h2_io*));
-            }
+            remove_idx(sp, i);
             return e;
         }
+    }
+    return NULL;
+}
+
+h2_io *h2_io_set_pop_highest_prio(h2_io_set *set)
+{
+    /* For now, this just removes the first element in the set.
+     * the name is misleading...
+     */
+    if (set->list->nelts > 0) {
+        h2_io *io = h2_io_IDX(set->list, 0);
+        remove_idx(set, 0);
+        return io;
     }
     return NULL;
 }

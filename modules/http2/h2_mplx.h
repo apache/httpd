@@ -41,8 +41,10 @@ struct h2_config;
 struct h2_response;
 struct h2_task;
 struct h2_stream;
+struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
+struct h2_worker;
 struct h2_workers;
 struct h2_stream_set;
 struct h2_task_queue;
@@ -54,7 +56,7 @@ typedef struct h2_mplx h2_mplx;
 struct h2_mplx {
     long id;
     APR_RING_ENTRY(h2_mplx) link;
-    volatile apr_uint32_t refs;
+    volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
@@ -70,11 +72,12 @@ struct h2_mplx {
     int aborted;
     apr_size_t stream_max_mem;
     
-    apr_pool_t *spare_pool;           /* spare pool, ready for next stream */
-    struct h2_stream_set *closed;     /* streams closed, but task ongoing */
+    apr_pool_t *spare_pool;           /* spare pool, ready for next io */
     struct h2_workers *workers;
     int file_handles_allowed;
 };
+
+
 
 /*******************************************************************************
  * Object lifecycle and information.
@@ -96,6 +99,7 @@ void h2_mplx_reference(h2_mplx *m);
  * Decreases the reference counter of this mplx.
  */
 void h2_mplx_release(h2_mplx *m);
+
 /**
  * Decreases the reference counter of this mplx and waits for it
  * to reached 0, destroy the mplx afterwards.
@@ -117,15 +121,16 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id);
 /*******************************************************************************
  * IO lifetime of streams.
  ******************************************************************************/
-/**
- * Prepares the multiplexer to handle in-/output on the given stream id.
- */
-struct h2_stream *h2_mplx_open_io(h2_mplx *mplx, int stream_id);
 
 /**
- * Ends cleanup of a stream in sync with execution thread.
+ * Notifies mplx that a stream has finished processing.
+ * 
+ * @param m the mplx itself
+ * @param stream_id the id of the stream being done
+ * @param rst_error if != 0, the stream was reset with the error given
+ *
  */
-apr_status_t h2_mplx_cleanup_stream(h2_mplx *m, struct h2_stream *stream);
+apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
 
 /* Return != 0 iff the multiplexer has data for the given stream. 
  */
@@ -143,13 +148,29 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  ******************************************************************************/
 
 /**
- * Perform the task on the given stream.
+ * Process a stream request.
+ * 
+ * @param m the multiplexer
+ * @param stream_id the identifier of the stream
+ * @param r the request to be processed
+ * @param eos if input is complete
+ * @param cmp the stream priority compare function
+ * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_do_task(h2_mplx *mplx, struct h2_task *task);
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
+                             const struct h2_request *r, int eos, 
+                             h2_stream_pri_cmp *cmp, void *ctx);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+/**
+ * Stream priorities have changed, reschedule pending tasks.
+ * 
+ * @param m the multiplexer
+ * @param cmp the stream priority compare function
+ * @param ctx context data for the compare function
+ */
+apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
-apr_status_t h2_mplx_create_task(h2_mplx *mplx, struct h2_stream *stream);
+struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, struct h2_worker *w, int *has_more);
 
 /*******************************************************************************
  * Input handling of streams.
@@ -188,7 +209,7 @@ int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id);
  * Callback invoked for every stream that had input data read since
  * the last invocation.
  */
-typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_size_t consumed);
+typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_off_t consumed);
 
 /**
  * Invoke the callback for all streams that had bytes read since the last
@@ -219,7 +240,15 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
  */
 apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_size_t *plen, int *peos);
+                               apr_off_t *plen, int *peos);
+
+/**
+ * Reads output data into the given brigade. Will never block, but
+ * return APR_EAGAIN until data arrives or the stream is closed.
+ */
+apr_status_t h2_mplx_out_read_to(h2_mplx *mplx, int stream_id, 
+                                 apr_bucket_brigade *bb, 
+                                 apr_off_t *plen, int *peos);
 
 /**
  * Opens the output for the given stream with the specified response.
@@ -246,6 +275,8 @@ apr_status_t h2_mplx_out_write(h2_mplx *mplx, int stream_id,
  * data and then only APR_EOF as result. 
  */
 apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id);
+
+apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error);
 
 /*******************************************************************************
  * h2_mplx list Manipulation.

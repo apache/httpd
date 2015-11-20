@@ -16,26 +16,22 @@
 #ifndef __mod_h2__h2_response__
 #define __mod_h2__h2_response__
 
-/* h2_response is just the data belonging the the head of a HTTP response,
- * suitable prepared to be fed to nghttp2 for response submit. 
- */
-typedef struct h2_ngheader {
-    nghttp2_nv *nv;
-    apr_size_t nvlen;
-} h2_ngheader;
+struct h2_push;
 
 typedef struct h2_response {
     int stream_id;
-    const char *status;
+    int rst_error;
+    int http_status;
     apr_off_t content_length;
-    apr_table_t *rheader;
-    h2_ngheader *ngheader;
+    apr_table_t *header;
+    apr_table_t *trailer;
 } h2_response;
 
 h2_response *h2_response_create(int stream_id,
-                                  const char *http_status,
-                                  apr_array_header_t *hlines,
-                                  apr_pool_t *pool);
+                                int rst_error,
+                                int http_status,
+                                apr_array_header_t *hlines,
+                                apr_pool_t *pool);
 
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
                                  apr_table_t *header, apr_pool_t *pool);

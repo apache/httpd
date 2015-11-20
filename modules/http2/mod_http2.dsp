@@ -105,6 +105,14 @@ SOURCE=./h2_alt_svc.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_bucket_eoc.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_bucket_eos.c
+# End Source File
+# Begin Source File
+
 SOURCE=./h2_config.c
 # End Source File
 # Begin Source File
@@ -138,6 +146,10 @@ SOURCE=./h2_io_set.c
 # Begin Source File
 
 SOURCE=./h2_mplx.c
+# End Source File
+# Begin Source File
+
+SOURCE=./h2_push.c
 # End Source File
 # Begin Source File
 
@@ -178,10 +190,6 @@ SOURCE=./h2_task_output.c
 # Begin Source File
 
 SOURCE=./h2_task_queue.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_to_h1.c
 # End Source File
 # Begin Source File
 

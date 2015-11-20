@@ -42,13 +42,22 @@
           release relative to other standard modules. Users are encouraged to 
           consult the "CHANGES" file for potential updates.</p>
         </note>
+
+        <p>You must enable HTTP/2 via <directive
+        module="core">Protocols</directive> in order to use the
+        functionality described in this document:</p>
+
+        <highlight language="config">
+            Protocols h2 http/1.1
+        </highlight>
+
     </summary>
     
     <directivesynopsis>
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
         <syntax>H2Direct on|off</syntax>
-        <default>H2Direct on (for non TLS)</default>
+        <default>H2Direct on for h2c, off for h2 protocol</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -60,16 +69,151 @@
                 should be used inside a 
                 <directive module="core" type="section">VirtualHost</directive> 
                 section to enable direct HTTP/2 communication for that virtual host. 
+            </p>
+            <p>
                 Direct communication means that if the first bytes received by the 
                 server on a connection match the HTTP/2 preamble, the HTTP/2
                 protocol is switched to immediately without further negotiation.
-                This mode falls outside the RFC 7540 but has become widely implemented
-                as it is very convenient for development and testing. 
-                By default the direct HTTP/2 mode is enabled.
+                This mode is defined in RFC 7540 for the cleartext (h2c) case. Its
+                use on TLS connections not mandated by the standard.
+            </p>
+            <p>
+                When a server/vhost does not have h2 or h2c enabled via
+                <directive module="core" type="section">Protocols</directive>,
+                the connection is never inspected for a HTTP/2 preamble. H2Direct
+                does not matter then. This is important for connections that
+                use protocols where an initial read might hang indefinitely, such
+                as NNTP.
+            </p>
+            <p>
+                For clients that have out-of-band knowledge about a server
+                supporting h2c, direct HTTP/2 saves the client from having to
+                perform an HTTP/1.1 upgrade, resulting in better performance
+                and avoiding the Upgrade restrictions on request bodies.
+            </p>
+            <p>
+                This makes direct h2c attractive for server to server communication
+                as well, when the connection can be trusted or is secured by other means.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
                     H2Direct on
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2Push</name>
+        <description>H2 Server Push Switch</description>
+        <syntax>H2Push on|off</syntax>
+        <default>H2Push on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the usage of the HTTP/2 server push 
+                protocol feature. This should be used inside a 
+                <directive module="core" type="section">VirtualHost</directive> 
+                section to enable direct HTTP/2 communication for that virtual host. 
+            </p>
+            <p>
+                The HTTP/2 protocol allows the server to push other resources to
+                a client when it asked for a particular one. This is helpful
+                if those resources are connected in some way and the client can
+                be expected to ask for it anyway. The pushing then saves the
+                time it takes the client to ask for the resources itself. On the
+                other hand, pushing resources the client never needs or already
+                has is a waste of bandwidth.
+            </p>
+            <p>
+                Server pushes are detected by inspecting the <code>Link</code> headers of
+                responses (see https://tools.ietf.org/html/rfc5988 for the 
+                specification). When a link thus specified has the <code>rel=preload</code>
+                attribute, it is treated as a resource to be pushed.
+            </p>
+            <p> 
+                Link headers in responses are either set by the application or
+                can be configured via <module>mod_headers</module> as:
+            </p>
+            <example><title>mod_headers example</title>
+                <highlight language="config">
+&lt;Location /index.html&gt;
+    Header add Link "&lt;/css/site.css&gt;;rel=preload"
+    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
+&lt;/Location&gt;
+                </highlight>
+            </example>
+            <p>
+                As the example shows, there can be several link headers added
+                to a response, resulting in several pushes being triggered. There
+                are no checks in the module to avoid pushing the same resource
+                twice or more to one client. Use with care.
+            </p>
+            <p> 
+                HTTP/2 server pushes are enabled by default. This directive 
+                allows it to be switch off on all resources of this server/virtual
+                host.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2Push off
+                </highlight>
+            </example>
+            <p>
+                Last but not least, pushes happen only when the client signals
+                its willingness to accept those. Most browsers do, some, like Safari 9,
+                do not.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2Upgrade</name>
+        <description>H2 Upgrade Protocol Switch</description>
+        <syntax>H2Upgrade on|off</syntax>
+        <default>H2Upgrade on for h2c, off for h2 protocol</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the usage of the HTTP/1.1 Upgrade method 
+                for switching to HTTP/2. This
+                should be used inside a 
+                <directive module="core" type="section">VirtualHost</directive> 
+                section to enable Upgrades to HTTP/2 for that virtual host. 
+            </p>
+            <p>
+                This method of switching protocols is defined in HTTP/1.1 and
+                uses the "Upgrade" header (thus the name) to announce willingness
+                to use another protocol. This may happen on any request of a
+                HTTP/1.1 connection.
+            </p>
+            <p>
+                This method of protocol switching is enabled by default on cleartext
+                (potential h2c) connections and disabled on TLS (potential h2), 
+                as mandated by RFC 7540. 
+            </p>
+            <p>
+                Please be aware that Upgrades are only accepted for requests
+                that carry no body. POSTs and PUTs with content will never
+                trigger an upgrade to HTTP/2. 
+                See <directive type="section">H2Direct</directive> for an 
+                alternative to Upgrade.
+            </p>
+            <p>
+                This mode only has an effect when h2 or h2c is enabled via
+                the <directive module="core" type="section">Protocols</directive>.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2Upgrade on
                 </highlight>
             </example>
         </usage>
@@ -230,7 +374,7 @@
             <p>
                 This directive sets maximum number of <em>extra</em> file handles
                 a HTTP/2 session is allowed to use. A file handle is counted as
-                <em>extra</em> when it is transfered from a h2 worker thread to
+                <em>extra</em> when it is transferred from a h2 worker thread to
                 the main HTTP/2 connection handling. This commonly happens when
                 serving static files.
             </p><p>
@@ -282,4 +426,147 @@
         </usage>
     </directivesynopsis>
 
+    <directivesynopsis>
+        <name>H2ModernTLSOnly</name>
+        <description>Require HTTP/2 connections to be "modern TLS" only</description>
+        <syntax>H2ModernTLSOnly on|off</syntax>
+        <default>H2ModernTLSOnly on</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive toggles the security checks on HTTP/2 connections
+                in TLS mode (https:). This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                The security checks require that the TSL protocol is at least
+                TLSv1.2 and that none of the ciphers listed in RFC 7540, Appendix A
+                is used. These checks will be extended once new security requirements
+                come into place.
+            </p>
+            <p>
+                The name stems from the 
+                <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Security/Server Side TLS</a>
+                definitions at mozilla where "modern compatibility" is defined. Mozilla Firefox and
+                other browsers require modern compatibility for HTTP/2 connections. As everything
+                in OpSec, this is a moving target and can be expected to evolve in the future.
+            </p>
+            <p>
+                One purpose of having these checks in mod_http2 is to enforce this
+                security level for all connections, not only those from browsers. The other
+                purpose is to prevent the negotiation of HTTP/2 as a protocol should
+                the requirements not be met.
+            </p>
+            <p>
+                Ultimately, the security of the TLS connection is determined by the
+                server configuration directives for mod_ssl.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2ModernTLSOnly off
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2TLSWarmUpSize</name>
+        <description></description>
+        <syntax>H2TLSWarmUpSize amount</syntax>
+        <default>H2TLSWarmUpSize 1048576</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive sets the number of bytes to be sent in small
+                TLS records (~1300 bytes) until doing maximum sized writes (16k)
+                on https: HTTP/2 connections.
+                This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                Measurements by <a href="https://www.igvita.com">google performance
+                labs</a> show that best performance on TLS connections is reached,
+                if initial record sizes stay below the MTU level, to allow a
+                complete record to fit into an IP packet.
+            </p>
+            <p>
+                While TCP adjust its flow-control and window sizes, longer TLS
+                records can get stuck in queues or get lost and need retransmission.
+                This is of course true for all packets. TLS however needs the 
+                whole record in order to decrypt it. Any missing bytes at the end
+                will stall usage of the received ones.
+            </p>
+            <p>
+                After a sufficient number of bytes have been send successfully,
+                the TCP state of the connection is stable and maximum TLS record
+                sizes (16 KB) can be used for optimal performance.
+            </p>
+            <p>
+                In deployments where servers are reached locally or over reliable
+                connections only, the value might be decreased with 0 disabling
+                any warmup phase altogether.
+            </p>
+            <p>
+                The following example sets the size to zero, effectively disabling
+                any warmup phase.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2TLSWarmUpSize 0
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+    
+    <directivesynopsis>
+        <name>H2TLSCoolDownSecs</name>
+        <description></description>
+        <syntax>H2TLSCoolDownSecs seconds</syntax>
+        <default>H2TLSCoolDownSecs 1</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        
+        <usage>
+            <p>
+                This directive sets the number of seconds of idle time on a TLS
+                connection before the TLS write size falls back to small (~1300 bytes)
+                length.
+                This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                See <directive type="section">H2TLSWarmUpSize</directive> for a
+                description of TLS warmup. H2TLSCoolDownSecs reflects the fact
+                that connections may deteriorate over time (and TCP flow adjusts)
+                for idle connections as well. It is beneficial to overall performance
+                to fall back to the pre-warmup phase after a number of seconds that
+                no data has been sent. 
+            </p>
+            <p>
+                In deployments where connections can be considered reliable, this
+                timer can be disabled by setting it to 0. 
+            </p>
+            <p>
+                The following example sets the seconds to zero, effectively disabling
+                any cool down. Warmed up TLS connections stay on maximum record
+                size.
+            </p>
+            <example><title>Example</title>
+                <highlight language="config">
+                    H2TLSCoolDownSecs 0
+                </highlight>
+            </example>
+        </usage>
+    </directivesynopsis>
+    
 </modulesynopsis>
