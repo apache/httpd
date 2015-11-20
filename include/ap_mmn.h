@@ -495,6 +495,7 @@
  *                         ap_filter_should_yield(). Add empty and filters to
  *                         conn_rec.
  * 20150222.6 (2.5.0-dev)  Add async_filter to conn_rec.
+ * 20150222.7 (2.5.0-dev)  Add ap_str[n]casecmp();
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
