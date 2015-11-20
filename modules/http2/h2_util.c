@@ -834,6 +834,21 @@ static int add_table_header(void *ctx, const char *key, const char *value)
 }
 
 
+h2_ngheader *h2_util_ngheader_make(apr_pool_t *p, apr_table_t *header)
+{
+    h2_ngheader *ngh;
+    size_t n;
+    
+    n = 0;
+    apr_table_do(count_header, &n, header, NULL);
+    
+    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
+    apr_table_do(add_table_header, ngh, header, NULL);
+
+    return ngh;
+}
+
 h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
                                        int http_status, 
                                        apr_table_t *header)
@@ -878,4 +893,95 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
 
     return ngh;
 }
+
+/*******************************************************************************
+ * header HTTP/1 <-> HTTP/2 conversions
+ ******************************************************************************/
+ 
+
+typedef struct {
+    const char *name;
+    size_t len;
+} literal;
+
+#define H2_DEF_LITERAL(n)   { (n), (sizeof(n)-1) }
+#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
+#define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
+
+static literal IgnoredRequestHeaders[] = {
+    H2_DEF_LITERAL("host"),
+    H2_DEF_LITERAL("expect"),
+    H2_DEF_LITERAL("upgrade"),
+    H2_DEF_LITERAL("connection"),
+    H2_DEF_LITERAL("keep-alive"),
+    H2_DEF_LITERAL("http2-settings"),
+    H2_DEF_LITERAL("proxy-connection"),
+    H2_DEF_LITERAL("transfer-encoding"),
+};
+static literal IgnoredRequestTrailers[] = { /* Ignore, see rfc7230, ch. 4.1.2 */
+    H2_DEF_LITERAL("te"),
+    H2_DEF_LITERAL("host"),
+    H2_DEF_LITERAL("range"),
+    H2_DEF_LITERAL("cookie"),
+    H2_DEF_LITERAL("expect"),
+    H2_DEF_LITERAL("pragma"),
+    H2_DEF_LITERAL("max-forwards"),
+    H2_DEF_LITERAL("cache-control"),
+    H2_DEF_LITERAL("authorization"),
+    H2_DEF_LITERAL("content-length"),       
+    H2_DEF_LITERAL("proxy-authorization"),
+};    
+static literal IgnoredResponseTrailers[] = {
+    H2_DEF_LITERAL("age"),
+    H2_DEF_LITERAL("date"),
+    H2_DEF_LITERAL("vary"),
+    H2_DEF_LITERAL("cookie"),
+    H2_DEF_LITERAL("expires"),
+    H2_DEF_LITERAL("warning"),
+    H2_DEF_LITERAL("location"),
+    H2_DEF_LITERAL("retry-after"),
+    H2_DEF_LITERAL("cache-control"),
+    H2_DEF_LITERAL("www-authenticate"),
+    H2_DEF_LITERAL("proxy-authenticate"),
+};
+
+static int ignore_header(const literal *lits, size_t llen,
+                         const char *name, size_t nlen)
+{
+    const literal *lit;
+    int i;
+    
+    for (i = 0; i < llen; ++i) {
+        lit = &lits[i];
+        if (lit->len == nlen && !apr_strnatcasecmp(lit->name, name)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int h2_req_ignore_header(const char *name, size_t len)
+{
+    return ignore_header(H2_LIT_ARGS(IgnoredRequestHeaders), name, len);
+}
+
+int h2_req_ignore_trailer(const char *name, size_t len)
+{
+    return (h2_req_ignore_header(name, len) 
+            || ignore_header(H2_LIT_ARGS(IgnoredRequestTrailers), name, len));
+}
+
+int h2_res_ignore_trailer(const char *name, size_t len)
+{
+    return ignore_header(H2_LIT_ARGS(IgnoredResponseTrailers), name, len);
+}
+
+void h2_req_strip_ignored_header(apr_table_t *headers)
+{
+    int i;
+    for (i = 0; i < H2_ALEN(IgnoredRequestHeaders); ++i) {
+        apr_table_unset(headers, IgnoredRequestHeaders[i].name);
+    }
+}
+
 
