@@ -4,6 +4,24 @@ Changes with Apache 2.5.0
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 
+  *) mod_http2: incoming trailers (headers after request body) are properly
+     forwarded to the processing engine. [Stefan Eissing]
+
+  *) mod_http2: new directive 'H2Push' to en-/disable HTTP/2 server
+     pushes a server/virtual host. Pushes are initiated by the presence
+     of 'Link:' headers with relation 'preload' on a response. [Stefan Eissing]
+     
+  *) mod_http2: write performance of http2 improved for larger resources,
+     especially static files. [Stefan Eissing]
+     
+  *) core: if the first HTTP/1.1 request on a connection goes to a server that
+     prefers different protocols, these protocols are announced in a Upgrade:
+     header on the response, mentioning the preferred protocols.
+     [Stefan Eissing]
+     
+  *) mod_http2: new directive 'H2ModernTLSOnly' to enforce security
+     requirements of RFC 7540 on TLS connections. [Stefan Eissing]
+     
   *) mod_http2: new directives 'H2TLSWarmUpSize' and 'H2TLSCoolDownSecs'
      to control TLS record sizes during connection lifetime.
      
@@ -12,8 +30,7 @@ Changes with Apache 2.5.0
 
   *) core: add ap_get_protocol_upgrades() to retrieve the list of protocols
      that a client could possibly upgrade to. Use in first request on a 
-     connection to announce protocol choices.
-     [Stefan Eissing]
+     connection to announce protocol choices. [Stefan Eissing]
 
   *) mod_http2: reworked deallocation on connection shutdown and worker
      abort. Separate parent pool for all workers. worker threads are joined
@@ -29,8 +46,7 @@ Changes with Apache 2.5.0
      Detailed examination of renegotiation is only done when these do not
      match.
      Renegotiation is 403ed when a master connection is present. Exact reason
-     is given additionally in a request note.
-     [Stefan Eissing]
+     is given additionally in a request note. [Stefan Eissing]
      
   *) core: Limit to ten the number of tolerated empty lines between request,
      and consume them before the pipelining check to avoid possible response
