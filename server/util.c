@@ -3174,6 +3174,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
 
 /*
  * Provide our own known-fast implementation of str[n]casecmp()
+ * NOTE: ASCII only!
  */
 static const unsigned char ucharmap[] = {
     0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,

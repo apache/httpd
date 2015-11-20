@@ -2439,7 +2439,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
                                       const char *s);
 
 /**
- * Known-fast version of strcasecmp()
+ * Known-fast version of strcasecmp(): ASCII only
  * @param s1 The 1st string to compare
  * @param s2 The 2nd string to compare
  * @return integer greater than, equal to, or less than 0, depending on
@@ -2449,7 +2449,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
 AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2);
 
 /**
- * Known-fast version of strncasecmp()
+ * Known-fast version of strncasecmp(): ASCII only
  * @param s1 The 1st string to compare
  * @param s2 The 2nd string to compare
  * @param n  Maximum number of characters in the strings to compare
