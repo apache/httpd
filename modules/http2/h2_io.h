@@ -18,11 +18,12 @@
 
 struct h2_response;
 struct apr_thread_cond_t;
-struct h2_task;
+struct h2_request;
 
 
-typedef apr_status_t h2_io_data_cb(void *ctx, 
-                                   const char *data, apr_size_t len);
+typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
+
+typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
 
 typedef struct h2_io h2_io;
@@ -30,17 +31,24 @@ typedef struct h2_io h2_io;
 struct h2_io {
     int id;                      /* stream identifier */
     apr_pool_t *pool;            /* stream pool */
-    apr_bucket_brigade *bbin;    /* input data for stream */
-    int eos_in;
+    int orphaned;                /* h2_stream is gone for this io */
+    
     int task_done;
-    
-    apr_size_t input_consumed;   /* how many bytes have been read */
+    const struct h2_request *request;  /* request on this io */
+    int request_body;            /* == 0 iff request has no body */
+    struct h2_response *response;/* response for submit, once created */
+    int rst_error;
+
+    int eos_in;
+    apr_bucket_brigade *bbin;    /* input data for stream */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
+    apr_size_t input_consumed;   /* how many bytes have been read */
     
+    int eos_out;
     apr_bucket_brigade *bbout;   /* output data from stream */
+    apr_bucket_alloc_t *bucket_alloc;
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
-    struct h2_response *response;/* submittable response created */
     int files_handles_owned;
 };
 
@@ -57,6 +65,16 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
  * Frees any resources hold by the h2_io instance. 
  */
 void h2_io_destroy(h2_io *io);
+
+/**
+ * Set the response of this stream.
+ */
+void h2_io_set_response(h2_io *io, struct h2_response *response);
+
+/**
+ * Reset the stream with the given error code.
+ */
+void h2_io_rst(h2_io *io, int error);
 
 /**
  * The input data is completely queued. Blocked reads will return immediately
@@ -105,7 +123,11 @@ apr_status_t h2_io_in_close(h2_io *io);
  */
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
-                             apr_size_t *plen, int *peos);
+                             apr_off_t *plen, int *peos);
+
+apr_status_t h2_io_out_read_to(h2_io *io, 
+                               apr_bucket_brigade *bb, 
+                               apr_off_t *plen, int *peos);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, int *pfile_buckets_allowed);
@@ -120,7 +142,7 @@ apr_status_t h2_io_out_close(h2_io *io);
  * Gives the overall length of the data that is currently queued for
  * output.
  */
-apr_size_t h2_io_out_length(h2_io *io);
+apr_off_t h2_io_out_length(h2_io *io);
 
 
 #endif /* defined(__mod_h2__h2_io__) */

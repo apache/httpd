@@ -59,11 +59,6 @@ apr_status_t h2_from_h1_destroy(h2_from_h1 *from_h1)
     return APR_SUCCESS;
 }
 
-h2_from_h1_state_t h2_from_h1_get_state(h2_from_h1 *from_h1)
-{
-    return from_h1->state;
-}
-
 static void set_state(h2_from_h1 *from_h1, h2_from_h1_state_t state)
 {
     if (from_h1->state != state) {
@@ -78,16 +73,9 @@ h2_response *h2_from_h1_get_response(h2_from_h1 *from_h1)
 
 static apr_status_t make_h2_headers(h2_from_h1 *from_h1, request_rec *r)
 {
-    from_h1->response = h2_response_create(from_h1->stream_id, 
-                                       from_h1->status, from_h1->hlines,
-                                       from_h1->pool);
-    if (from_h1->response == NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EINVAL, r->connection,
-                      APLOGNO(02915) 
-                      "h2_from_h1(%d): unable to create resp_head",
-                      from_h1->stream_id);
-        return APR_EINVAL;
-    }
+    from_h1->response = h2_response_create(from_h1->stream_id, 0,
+                                           from_h1->http_status, from_h1->hlines,
+                                           from_h1->pool);
     from_h1->content_length = from_h1->response->content_length;
     from_h1->chunked = r->chunked;
     
@@ -202,8 +190,7 @@ apr_status_t h2_from_h1_read_response(h2_from_h1 *from_h1, ap_filter_t* f,
                 }
                 if (from_h1->state == H2_RESP_ST_STATUS_LINE) {
                     /* instead of parsing, just take it directly */
-                    from_h1->status = apr_psprintf(from_h1->pool, 
-                                                   "%d", f->r->status);
+                    from_h1->http_status = f->r->status;
                     from_h1->state = H2_RESP_ST_HEADERS;
                 }
                 else if (line[0] == '\0') {
@@ -417,7 +404,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
     }
     
     if (!apr_is_empty_array(r->content_languages)) {
-        int i;
+        unsigned int i;
         char *token;
         char **languages = (char **)(r->content_languages->elts);
         const char *field = apr_table_get(r->headers_out, "Content-Language");
@@ -492,8 +479,8 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
 
 apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    h2_task_env *env = f->ctx;
-    h2_from_h1 *from_h1 = env->output? env->output->from_h1 : NULL;
+    h2_task *task = f->ctx;
+    h2_from_h1 *from_h1 = task->output? task->output->from_h1 : NULL;
     request_rec *r = f->r;
     apr_bucket *b;
     ap_bucket_error *eb = NULL;
@@ -503,7 +490,7 @@ apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_from_h1(%d): output_filter called", from_h1->stream_id);
     
-    if (r->header_only && env->output && from_h1->response) {
+    if (r->header_only && task->output && from_h1->response) {
         /* throw away any data after we have compiled the response */
         apr_brigade_cleanup(bb);
         return OK;

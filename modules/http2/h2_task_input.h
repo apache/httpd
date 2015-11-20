@@ -22,16 +22,16 @@
  */
 struct apr_thread_cond_t;
 struct h2_mplx;
-struct h2_task_env;
+struct h2_task;
 
 typedef struct h2_task_input h2_task_input;
 struct h2_task_input {
-    struct h2_task_env *env;
+    struct h2_task *task;
     apr_bucket_brigade *bb;
 };
 
 
-h2_task_input *h2_task_input_create(struct h2_task_env *env, apr_pool_t *pool,
+h2_task_input *h2_task_input_create(struct h2_task *task, apr_pool_t *pool,
                                     apr_bucket_alloc_t *bucket_alloc);
 
 void h2_task_input_destroy(h2_task_input *input);
