@@ -24,6 +24,7 @@ typedef struct h2_response {
     int http_status;
     apr_off_t content_length;
     apr_table_t *header;
+    apr_table_t *trailer;
 } h2_response;
 
 h2_response *h2_response_create(int stream_id,

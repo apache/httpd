@@ -30,6 +30,11 @@ char *h2_strlwr(char *s);
 
 void h2_util_camel_case_header(char *s, size_t len);
 
+int h2_req_ignore_header(const char *name, size_t len);
+int h2_req_ignore_trailer(const char *name, size_t len);
+void h2_req_strip_ignored_header(apr_table_t *headers);
+int h2_res_ignore_trailer(const char *name, size_t len);
+
 /**
  * Return != 0 iff the string s contains the token, as specified in
  * HTTP header syntax, rfc7230.
@@ -75,6 +80,7 @@ typedef struct h2_ngheader {
     apr_size_t nvlen;
 } h2_ngheader;
 
+h2_ngheader *h2_util_ngheader_make(apr_pool_t *p, apr_table_t *header);
 h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p, 
                                        int http_status, 
                                        apr_table_t *header);

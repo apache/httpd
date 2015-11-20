@@ -69,14 +69,7 @@ static apr_status_t add_h1_header(h2_request *req, apr_pool_t *pool,
 {
     char *hname, *hvalue;
     
-    if (H2_HD_MATCH_LIT("expect", name, nlen)
-        || H2_HD_MATCH_LIT("upgrade", name, nlen)
-        || H2_HD_MATCH_LIT("connection", name, nlen)
-        || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
-        || H2_HD_MATCH_LIT("transfer-encoding", name, nlen)
-        || H2_HD_MATCH_LIT("keep-alive", name, nlen)
-        || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
-        /* ignore these. */
+    if (h2_req_ignore_header(name, nlen)) {
         return APR_SUCCESS;
     }
     else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
@@ -115,7 +108,10 @@ typedef struct {
 static int set_h1_header(void *ctx, const char *key, const char *value)
 {
     h1_ctx *x = ctx;
-    add_h1_header(x->req, x->pool, key, strlen(key), value, strlen(value));
+    size_t klen = strlen(key);
+    if (!h2_req_ignore_header(key, klen)) {
+        add_h1_header(x->req, x->pool, key, klen, value, strlen(value));
+    }
     return 1;
 }
 
@@ -222,23 +218,11 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
         return APR_EINVAL;
     }
 
-    /* be safe, some header we do not accept on h2(c) */
-    apr_table_unset(req->headers, "expect");
-    apr_table_unset(req->headers, "upgrade");
-    apr_table_unset(req->headers, "connection");
-    apr_table_unset(req->headers, "proxy-connection");
-    apr_table_unset(req->headers, "transfer-encoding");
-    apr_table_unset(req->headers, "keep-alive");
-    apr_table_unset(req->headers, "http2-settings");
-
-    if (!apr_table_get(req->headers, "Host")) {
-        /* Need to add a "Host" header if not already there to
-         * make virtual hosts work correctly. */
-        if (!req->authority) {
-            return APR_BADARG;
-        }
-        apr_table_set(req->headers, "Host", req->authority);
+    /* Always set the "Host" header from :authority, see rfc7540, ch. 8.1.2.3 */
+    if (!req->authority) {
+        return APR_BADARG;
     }
+    apr_table_setn(req->headers, "Host", req->authority);
 
     s = apr_table_get(req->headers, "Content-Length");
     if (s) {
@@ -290,15 +274,7 @@ static apr_status_t add_h1_trailer(h2_request *req, apr_pool_t *pool,
 {
     char *hname, *hvalue;
     
-    if (H2_HD_MATCH_LIT("expect", name, nlen)
-        || H2_HD_MATCH_LIT("upgrade", name, nlen)
-        || H2_HD_MATCH_LIT("connection", name, nlen)
-        || H2_HD_MATCH_LIT("host", name, nlen)
-        || H2_HD_MATCH_LIT("proxy-connection", name, nlen)
-        || H2_HD_MATCH_LIT("transfer-encoding", name, nlen)
-        || H2_HD_MATCH_LIT("keep-alive", name, nlen)
-        || H2_HD_MATCH_LIT("http2-settings", name, nlen)) {
-        /* ignore these. */
+    if (h2_req_ignore_trailer(name, nlen)) {
         return APR_SUCCESS;
     }
     

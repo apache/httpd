@@ -1076,6 +1076,18 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
     
     if (eos) {
+        apr_table_t *trailers = h2_stream_get_trailers(stream);
+        if (trailers && !apr_is_empty_table(trailers)) {
+            h2_ngheader *nh;
+            int rv;
+            
+            nh = h2_util_ngheader_make(stream->pool, trailers);
+            rv = nghttp2_submit_trailer(ng2s, stream->id, nh->nv, nh->nvlen);
+            if (rv < 0) {
+                nread = rv;
+            }
+        }
+        
         *data_flags |= NGHTTP2_DATA_FLAG_EOF;
     }
     

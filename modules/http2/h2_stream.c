@@ -304,16 +304,21 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
         status = h2_mplx_process(stream->session->mplx, stream->id, 
                                  stream->request, eos, cmp, ctx);
         stream->scheduled = 1;
+        
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+                      "h2_stream(%ld-%d): scheduled %s %s://%s%s",
+                      stream->session->id, stream->id,
+                      stream->request->method, stream->request->scheme,
+                      stream->request->authority, stream->request->path);
     }
     else {
         h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+                      "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
+                      stream->session->id, stream->id,
+                      stream->request->method, stream->request->scheme,
+                      stream->request->authority, stream->request->path);
     }
-    
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->c,
-                  "h2_stream(%ld-%d): scheduled %s %s://%s%s",
-                  stream->session->id, stream->id,
-                  stream->request->method, stream->request->scheme,
-                  stream->request->authority, stream->request->path);
     
     return status;
 }
@@ -365,6 +370,22 @@ static apr_status_t input_add_data(h2_stream *stream,
     return status;
 }
 
+static int input_add_header(void *str, const char *key, const char *value)
+{
+    h2_stream *stream = str;
+    apr_status_t status = input_add_data(stream, key, strlen(key), 0);
+    if (status == APR_SUCCESS) {
+        status = input_add_data(stream, ": ", 2, 0);
+        if (status == APR_SUCCESS) {
+            status = input_add_data(stream, value, strlen(value), 0);
+            if (status == APR_SUCCESS) {
+                status = input_add_data(stream, "\r\n", 2, 0);
+            }
+        }
+    }
+    return (status == APR_SUCCESS);
+}
+
 apr_status_t h2_stream_close_input(h2_stream *stream)
 {
     apr_status_t status = APR_SUCCESS;
@@ -381,7 +402,15 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     H2_STREAM_IN(APLOG_TRACE2, stream, "close_pre");
     if (close_input(stream) && stream->bbin) {
         if (stream->request->chunked) {
-            status = input_add_data(stream, "0\r\n\r\n", 5, 0);
+            apr_table_t *trailers = stream->request->trailers;
+            if (trailers && !apr_is_empty_table(trailers)) {
+                status = input_add_data(stream, "0\r\n", 3, 0);
+                apr_table_do(input_add_header, stream, trailers, NULL);
+                status = input_add_data(stream, "\r\n", 2, 0);
+            }
+            else {
+                status = input_add_data(stream, "0\r\n\r\n", 5, 0);
+            }
         }
         
         if (status == APR_SUCCESS) {
@@ -609,4 +638,10 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
         }
     }
     return status;
+}
+
+apr_table_t *h2_stream_get_trailers(h2_stream *stream)
+{
+    /* TODO */
+    return NULL;
 }
