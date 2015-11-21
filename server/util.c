@@ -3172,6 +3172,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
     return (ap_array_str_index(array, s, 0) >= 0);
 }
 
+#if !APR_CHARSET_EBCDIC
 /*
  * Provide our own known-fast implementation of str[n]casecmp()
  * NOTE: ASCII only!
@@ -3238,3 +3239,14 @@ AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n)
     }
     return (0);
 }
+#else
+AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2)
+{
+  return strcasecmp(s1, s2);
+}
+
+AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n)
+{
+  return strncasecmp(s1, s2, n);
+}
+#endif /*APR_CHARSET_EBCDIC*/
