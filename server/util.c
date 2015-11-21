@@ -3237,7 +3237,7 @@ AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n)
                 /* we know both end here */
                 return (0);
             }
-        } while (!--n);
+        } while (--n != 0);
     }
     return (0);
 }
