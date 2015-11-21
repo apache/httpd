@@ -3228,16 +3228,13 @@ AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n)
 {
     const unsigned char *ps1 = (const unsigned char *) s1;
     const unsigned char *ps2 = (const unsigned char *) s2;
-    if (n) {
-        do {
-            if (ucharmap[*ps1] != ucharmap[*ps2++]) {
-                return (ucharmap[*ps1] - ucharmap[*--ps2]);
-            }
-            if (*ps1++ == '\0') {
-                /* we know both end here */
-                return (0);
-            }
-        } while (--n != 0);
+    while (n--) {
+        if (ucharmap[*ps1] != ucharmap[*ps2++]) {
+            return (ucharmap[*ps1] - ucharmap[*--ps2]);
+        }
+        if (*ps1++ == '\0') {
+            break;
+        }
     }
     return (0);
 }
