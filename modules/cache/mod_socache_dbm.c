@@ -184,8 +184,6 @@ static void socache_dbm_destroy(ap_socache_instance_t *ctx, server_rec *s)
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".pag", NULL));
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".db", NULL));
     unlink(ctx->data_file);
-
-    return;
 }
 
 static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
@@ -510,7 +508,6 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
         ap_rprintf(r, "CacheCurrentSize: %ld\n", size);
         ap_rprintf(r, "CacheAvgEntrySize: %d\n", avg);
     }
-    return;
 }
 
 static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
