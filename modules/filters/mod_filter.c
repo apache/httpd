@@ -670,8 +670,6 @@ static void filter_insert(request_rec *r)
         }
 #endif
     }
-
-    return;
 }
 
 static void filter_hooks(apr_pool_t *pool)
