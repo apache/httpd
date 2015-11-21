@@ -486,8 +486,6 @@ static void menu_header(request_rec *r, char *menu)
                   ap_escape_html(r->pool, r->uri),
                   "</h1>\n<hr />\n\n", NULL);
     }
-
-    return;
 }
 
 static void menu_blank(request_rec *r, char *menu)
@@ -501,11 +499,11 @@ static void menu_blank(request_rec *r, char *menu)
     else if (!strcasecmp(menu, "unformatted")) {
         ap_rputs("\n", r);
     }
-    return;
 }
 
 static void menu_comment(request_rec *r, char *menu, char *comment)
 {
+    /* comments are ignored in the 'formatted' form */
     if (!strcasecmp(menu, "formatted")) {
         ap_rputs("\n", r);         /* print just a newline if 'formatted' */
     }
@@ -515,8 +513,6 @@ static void menu_comment(request_rec *r, char *menu, char *comment)
     else if (!strcasecmp(menu, "unformatted") && *comment) {
         ap_rvputs(r, comment, "\n", NULL);
     }
-    return;                     /* comments are ignored in the
-                                   'formatted' form */
 }
 
 static void menu_default(request_rec *r, const char *menu, const char *href, const char *text)
@@ -541,7 +537,6 @@ static void menu_default(request_rec *r, const char *menu, const char *href, con
     else if (!strcasecmp(menu, "unformatted")) {
         ap_rvputs(r, "<a href=\"", ehref, "\">", etext, "</a>", NULL);
     }
-    return;
 }
 
 static void menu_directive(request_rec *r, const char *menu, const char *href, const char *text)
@@ -566,7 +561,6 @@ static void menu_directive(request_rec *r, const char *menu, const char *href, c
     else if (!strcasecmp(menu, "unformatted")) {
         ap_rvputs(r, "<a href=\"", ehref, "\">", etext, "</a>", NULL);
     }
-    return;
 }
 
 static void menu_footer(request_rec *r)
