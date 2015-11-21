@@ -546,8 +546,8 @@ static void expires_insert_filter(request_rec *r)
         return;
     }
     ap_add_output_filter("MOD_EXPIRES", NULL, r, r->connection);
-    return;
 }
+
 static void register_hooks(apr_pool_t *p)
 {
     /* mod_expires needs to run *before* the cache save filter which is
