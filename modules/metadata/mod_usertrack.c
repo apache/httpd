@@ -148,7 +148,6 @@ static void make_cookie(request_rec *r)
                    (dcfg->style == CT_COOKIE2 ? "Set-Cookie2" : "Set-Cookie"),
                    new_cookie);
     apr_table_setn(r->notes, "cookie", apr_pstrdup(r->pool, cookiebuf));   /* log first time */
-    return;
 }
 
 /* dcfg->regexp is "^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)",
