@@ -3259,7 +3259,7 @@ static const unsigned char ucharmap[] = {
 };
 #endif
 
-AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2)
+AP_DECLARE(int) ap_casecmpstr(const char *s1, const char *s2)
 {
     const unsigned char *ps1 = (const unsigned char *) s1;
     const unsigned char *ps2 = (const unsigned char *) s2;
@@ -3272,7 +3272,7 @@ AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2)
     return (ucharmap[*ps1] - ucharmap[*--ps2]);
 }
 
-AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n)
+AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2, apr_size_t n)
 {
     const unsigned char *ps1 = (const unsigned char *) s1;
     const unsigned char *ps2 = (const unsigned char *) s2;
