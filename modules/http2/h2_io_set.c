@@ -145,37 +145,23 @@ h2_io *h2_io_set_pop_highest_prio(h2_io_set *set)
     return NULL;
 }
 
-void h2_io_set_destroy_all(h2_io_set *sp)
-{
-    int i;
-    for (i = 0; i < sp->list->nelts; ++i) {
-        h2_io *io = h2_io_IDX(sp->list, i);
-        h2_io_destroy(io);
-    }
-    sp->list->nelts = 0;
-}
-
-void h2_io_set_remove_all(h2_io_set *sp)
-{
-    sp->list->nelts = 0;
-}
-
 int h2_io_set_is_empty(h2_io_set *sp)
 {
     AP_DEBUG_ASSERT(sp);
     return sp->list->nelts == 0;
 }
 
-void h2_io_set_iter(h2_io_set *sp,
+int h2_io_set_iter(h2_io_set *sp,
                         h2_io_set_iter_fn *iter, void *ctx)
 {
     int i;
     for (i = 0; i < sp->list->nelts; ++i) {
         h2_io *s = h2_io_IDX(sp->list, i);
         if (!iter(ctx, s)) {
-            break;
+            return 0;
         }
     }
+    return 1;
 }
 
 apr_size_t h2_io_set_size(h2_io_set *sp)
