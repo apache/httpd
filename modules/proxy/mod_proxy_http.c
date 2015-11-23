@@ -1641,13 +1641,14 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "HTTP: received interim %d response", r->status);
             if (!policy
-                    || (!strcasecmp(policy, "RFC") && ((r->expecting_100 = 1)))) {
+                    || (!ap_casecmpstr(policy, "RFC")
+                        && ((r->expecting_100 = 1)))) {
                 ap_send_interim_response(r, 1);
             }
             /* FIXME: refine this to be able to specify per-response-status
              * policies and maybe also add option to bail out with 502
              */
-            else if (strcasecmp(policy, "Suppress")) {
+            else if (ap_casecmpstr(policy, "Suppress")) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01108)
                               "undefined proxy interim response policy");
             }

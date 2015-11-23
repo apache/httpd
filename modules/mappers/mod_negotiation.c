@@ -111,20 +111,20 @@ static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
 {
     neg_dir_config *n = n_;
 
-    if (!strcasecmp(w, "None")) {
+    if (!ap_casecmpstr(w, "None")) {
         if (n->forcelangpriority & ~FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options with None";
         }
         n->forcelangpriority = FLP_NONE;
     }
-    else if (!strcasecmp(w, "Prefer")) {
+    else if (!ap_casecmpstr(w, "Prefer")) {
         if (n->forcelangpriority & FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options None and "
                    "Prefer";
         }
         n->forcelangpriority |= FLP_PREFER;
     }
-    else if (!strcasecmp(w, "Fallback")) {
+    else if (!ap_casecmpstr(w, "Fallback")) {
         if (n->forcelangpriority & FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options None and "
                    "Fallback";
@@ -774,7 +774,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
     /* We need to shortcut the rest of this block following the Body:
      * tag - we will not look for continutation after this line.
      */
-    if (!strncasecmp(buffer, "Body:", 5))
+    if (!ap_casecmpstrn(buffer, "Body:", 5))
         return header_seen;
 
     while (apr_file_getc(&c, map) != APR_EOF) {

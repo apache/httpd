@@ -411,7 +411,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
         
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
             for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!strcasecmp(token, languages[i]))
+                if (!ap_casecmpstr(token, languages[i]))
                     break;
             }
             if (i == r->content_languages->nelts) {
