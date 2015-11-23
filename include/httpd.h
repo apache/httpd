@@ -2446,7 +2446,7 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
  *         if s1 is lexicographically greater than, equal to, or less
  *         than s2 ignoring case.
  */
-AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2);
+AP_DECLARE(int) ap_casecmpstr(const char *s1, const char *s2);
 
 /**
  * Known-fast version of strncasecmp(): ASCII case-folding, POSIX compliant
@@ -2457,7 +2457,7 @@ AP_DECLARE(int) ap_strcasecmp(const char *s1, const char *s2);
  *         if s1 is lexicographically greater than, equal to, or less
  *         than s2 ignoring case.
  */
-AP_DECLARE(int) ap_strncasecmp(const char *s1, const char *s2, apr_size_t n);
+AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2, apr_size_t n);
 
 #ifdef __cplusplus
 }
