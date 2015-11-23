@@ -36,7 +36,7 @@ h2_response *h2_response_create(int stream_id,
                                 apr_array_header_t *hlines,
                                 apr_pool_t *pool)
 {
-    apr_table_t *header;
+    apr_table_t *headers;
     h2_response *response = apr_pcalloc(pool, sizeof(h2_response));
     int i;
     if (response == NULL) {
@@ -49,7 +49,7 @@ h2_response *h2_response_create(int stream_id,
     response->content_length = -1;
     
     if (hlines) {
-        header = apr_table_make(pool, hlines->nelts);        
+        headers = apr_table_make(pool, hlines->nelts);        
         for (i = 0; i < hlines->nelts; ++i) {
             char *hline = ((char **)hlines->elts)[i];
             char *sep = ap_strchr(hline, ':');
@@ -66,7 +66,7 @@ h2_response *h2_response_create(int stream_id,
             }
             
             if (!h2_util_ignore_header(hline)) {
-                apr_table_merge(header, hline, sep);
+                apr_table_merge(headers, hline, sep);
                 if (*sep && H2_HD_MATCH_LIT_CS("content-length", hline)) {
                     char *end;
                     response->content_length = apr_strtoi64(sep, &end, 10);
@@ -83,10 +83,10 @@ h2_response *h2_response_create(int stream_id,
         }
     }
     else {
-        header = apr_table_make(pool, 0);        
+        headers = apr_table_make(pool, 0);        
     }
 
-    response->header = header;
+    response->headers = headers;
     return response;
 }
 
@@ -101,7 +101,7 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     response->stream_id = stream_id;
     response->http_status = r->status;
     response->content_length = -1;
-    response->header = header;
+    response->headers = header;
 
     if (response->http_status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
@@ -130,10 +130,17 @@ h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)
     to->stream_id = from->stream_id;
     to->http_status = from->http_status;
     to->content_length = from->content_length;
-    if (from->header) {
-        to->header = apr_table_clone(pool, from->header);
+    if (from->headers) {
+        to->headers = apr_table_clone(pool, from->headers);
+    }
+    if (from->trailers) {
+        to->trailers = apr_table_clone(pool, from->trailers);
     }
     return to;
 }
 
+void h2_response_set_trailers(h2_response *response, apr_table_t *trailers)
+{
+    response->trailers = trailers;
+}
 

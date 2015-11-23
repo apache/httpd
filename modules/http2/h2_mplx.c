@@ -450,7 +450,8 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
 
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_off_t *plen, int *peos)
+                               apr_off_t *plen, int *peos,
+                               apr_table_t **ptrailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -464,7 +465,6 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
             
             status = h2_io_out_readx(io, cb, ctx, plen, peos);
-            
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
             if (status == APR_SUCCESS && cb && io->output_drained) {
                 apr_thread_cond_signal(io->output_drained);
@@ -473,6 +473,8 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
+        
+        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
         apr_thread_mutex_unlock(m->lock);
     }
     return status;
@@ -480,7 +482,8 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
 
 apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
                                  apr_bucket_brigade *bb, 
-                                 apr_off_t *plen, int *peos)
+                                 apr_off_t *plen, int *peos,
+                                 apr_table_t **ptrailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -503,6 +506,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
+        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
         apr_thread_mutex_unlock(m->lock);
     }
     return status;
@@ -563,6 +567,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
 
 static apr_status_t out_write(h2_mplx *m, h2_io *io, 
                               ap_filter_t* f, apr_bucket_brigade *bb,
+                              apr_table_t *trailers,
                               struct apr_thread_cond_t *iowait)
 {
     apr_status_t status = APR_SUCCESS;
@@ -575,7 +580,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && (status == APR_SUCCESS)
            && !is_aborted(m, &status)) {
         
-        status = h2_io_out_write(io, bb, m->stream_max_mem, 
+        status = h2_io_out_write(io, bb, m->stream_max_mem, trailers,
                                  &m->file_handles_allowed);
         /* Wait for data to drain until there is room again */
         while (!APR_BRIGADE_EMPTY(bb) 
@@ -583,6 +588,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
                && status == APR_SUCCESS
                && (m->stream_max_mem <= h2_io_out_length(io))
                && !is_aborted(m, &status)) {
+            trailers = NULL;
             io->output_drained = iowait;
             if (f) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
@@ -616,7 +622,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
         h2_io_set_response(io, response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
-            status = out_write(m, io, f, bb, iowait);
+            status = out_write(m, io, f, bb, response->trailers, iowait);
         }
         have_out_data_for(m, stream_id);
     }
@@ -652,6 +658,7 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response,
 
 apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id, 
                                ap_filter_t* f, apr_bucket_brigade *bb,
+                               apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait)
 {
     apr_status_t status;
@@ -664,7 +671,10 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io && !io->orphaned) {
-                status = out_write(m, io, f, bb, iowait);
+                status = out_write(m, io, f, bb, trailers, iowait);
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                              "h2_mplx(%ld-%d): write with trailers=%s", 
+                              m->id, io->id, trailers? "yes" : "no");
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
                 
                 have_out_data_for(m, stream_id);
@@ -684,7 +694,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
     return status;
 }
 
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
+apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -708,7 +718,10 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                                   "h2_mplx(%ld-%d): close, no response, no rst", 
                                   m->id, io->id);
                 }
-                status = h2_io_out_close(io);
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                              "h2_mplx(%ld-%d): close with trailers=%s", 
+                              m->id, io->id, trailers? "yes" : "no");
+                status = h2_io_out_close(io, trailers);
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
                 
                 have_out_data_for(m, stream_id);
