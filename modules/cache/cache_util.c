@@ -994,12 +994,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
         char *header = apr_pstrdup(r->pool, pragma_header);
         const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
         while (token) {
-            /* handle most common quickest case... */
-            if (!strcmp(token, "no-cache")) {
-                cc->no_cache = 1;
-            }
-            /* ...then try slowest case */
-            else if (!strcasecmp(token, "no-cache")) {
+            if (!ap_casecmpstr(token, "no-cache")) {
                 cc->no_cache = 1;
             }
             token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
@@ -1014,50 +1009,34 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
             switch (token[0]) {
             case 'n':
             case 'N': {
-                /* handle most common quickest cases... */
-                if (!strcmp(token, "no-cache")) {
-                    cc->no_cache = 1;
-                }
-                else if (!strcmp(token, "no-store")) {
-                    cc->no_store = 1;
-                }
-                /* ...then try slowest cases */
-                else if (!strncasecmp(token, "no-cache", 8)) {
+                if (!ap_casecmpstrn(token, "no-cache", 8)) {
                     if (token[8] == '=') {
                         cc->no_cache_header = 1;
                     }
                     else if (!token[8]) {
                         cc->no_cache = 1;
                     }
-                    break;
                 }
-                else if (!strcasecmp(token, "no-store")) {
+                else if (!ap_casecmpstr(token, "no-store")) {
                     cc->no_store = 1;
                 }
-                else if (!strcasecmp(token, "no-transform")) {
+                else if (!ap_casecmpstr(token, "no-transform")) {
                     cc->no_transform = 1;
                 }
                 break;
             }
             case 'm':
             case 'M': {
-                /* handle most common quickest cases... */
-                if (!strcmp(token, "max-age=0")) {
-                    cc->max_age = 1;
-                    cc->max_age_value = 0;
-                }
-                else if (!strcmp(token, "must-revalidate")) {
-                    cc->must_revalidate = 1;
-                }
-                /* ...then try slowest cases */
-                else if (!strncasecmp(token, "max-age", 7)) {
+                if (!ap_casecmpstrn(token, "max-age", 7)) {
                     if (token[7] == '=') {
                         cc->max_age = 1;
                         cc->max_age_value = apr_atoi64(token + 8);
                     }
-                    break;
                 }
-                else if (!strncasecmp(token, "max-stale", 9)) {
+                else if (!ap_casecmpstr(token, "must-revalidate")) {
+                    cc->must_revalidate = 1;
+                }
+                else if (!ap_casecmpstrn(token, "max-stale", 9)) {
                     if (token[9] == '=') {
                         cc->max_stale = 1;
                         cc->max_stale_value = apr_atoi64(token + 10);
@@ -1066,59 +1045,46 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                         cc->max_stale = 1;
                         cc->max_stale_value = -1;
                     }
-                    break;
                 }
-                else if (!strncasecmp(token, "min-fresh", 9)) {
+                else if (!ap_casecmpstrn(token, "min-fresh", 9)) {
                     if (token[9] == '=') {
                         cc->min_fresh = 1;
                         cc->min_fresh_value = apr_atoi64(token + 10);
                     }
-                    break;
-                }
-                else if (!strcasecmp(token, "must-revalidate")) {
-                    cc->must_revalidate = 1;
                 }
                 break;
             }
             case 'o':
             case 'O': {
-                if (!strcasecmp(token, "only-if-cached")) {
+                if (!ap_casecmpstr(token, "only-if-cached")) {
                     cc->only_if_cached = 1;
                 }
                 break;
             }
-            case 'p':
-            case 'P': {
-                /* handle most common quickest cases... */
-                if (!strcmp(token, "private")) {
-                    cc->private = 1;
-                }
-                /* ...then try slowest cases */
-                else if (!strcasecmp(token, "public")) {
+            case 'p': {
+                if (!ap_casecmpstr(token, "public")) {
                     cc->public = 1;
                 }
-                else if (!strncasecmp(token, "private", 7)) {
+                else if (!ap_casecmpstrn(token, "private", 7)) {
                     if (token[7] == '=') {
                         cc->private_header = 1;
                     }
                     else if (!token[7]) {
                         cc->private = 1;
                     }
-                    break;
                 }
-                else if (!strcasecmp(token, "proxy-revalidate")) {
+                else if (!ap_casecmpstr(token, "proxy-revalidate")) {
                     cc->proxy_revalidate = 1;
                 }
                 break;
             }
             case 's':
             case 'S': {
-                if (!strncasecmp(token, "s-maxage", 8)) {
+                if (!ap_casecmpstrn(token, "s-maxage", 8)) {
                     if (token[8] == '=') {
                         cc->s_maxage = 1;
                         cc->s_maxage_value = apr_atoi64(token + 9);
                     }
-                    break;
                 }
                 break;
             }
@@ -1148,8 +1114,7 @@ static int cache_control_remove(request_rec *r, const char *cc_header,
             switch (token[0]) {
             case 'n':
             case 'N': {
-                if (!strncmp(token, "no-cache", 8)
-                        || !strncasecmp(token, "no-cache", 8)) {
+                if (!ap_casecmpstrn(token, "no-cache", 8)) {
                     if (token[8] == '=') {
                         const char *header = cache_strqtok(token + 9,
                                 CACHE_SEPARATOR "\"", &slast);
@@ -1166,8 +1131,7 @@ static int cache_control_remove(request_rec *r, const char *cc_header,
             }
             case 'p':
             case 'P': {
-                if (!strncmp(token, "private", 7)
-                        || !strncasecmp(token, "private", 7)) {
+                if (!ap_casecmpstrn(token, "private", 7)) {
                     if (token[7] == '=') {
                         const char *header = cache_strqtok(token + 8,
                                 CACHE_SEPARATOR "\"", &slast);

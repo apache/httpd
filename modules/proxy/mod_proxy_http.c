@@ -43,11 +43,11 @@ static int proxy_http_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "http:", 5) == 0) {
+    if (ap_casecmpstrn(url, "http:", 5) == 0) {
         url += 5;
         scheme = "http";
     }
-    else if (strncasecmp(url, "https:", 6) == 0) {
+    else if (ap_casecmpstrn(url, "https:", 6) == 0) {
         url += 6;
         scheme = "https";
     }
@@ -792,7 +792,7 @@ static int ap_proxy_http_prefetch(apr_pool_t *p, request_rec *r,
      * encoding has been done by the extensions' handler, and
      * do not modify add_te_chunked's logic
      */
-    if (*old_te_val && strcasecmp(*old_te_val, "chunked") != 0) {
+    if (*old_te_val && ap_casecmpstr(*old_te_val, "chunked") != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01093)
                       "%s Transfer-Encoding is not supported", *old_te_val);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -1113,14 +1113,14 @@ static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
     };
     int i;
     for (i = 0; date_hdrs[i]; ++i) {
-        if (!strcasecmp(date_hdrs[i], key)) {
+        if (!ap_casecmpstr(date_hdrs[i], key)) {
             apr_table_add(r->headers_out, key,
                           date_canon(r->pool, value));
             return;
         }
     }
     for (i = 0; transform_hdrs[i].name; ++i) {
-        if (!strcasecmp(transform_hdrs[i].name, key)) {
+        if (!ap_casecmpstr(transform_hdrs[i].name, key)) {
             apr_table_add(r->headers_out, key,
                           (*transform_hdrs[i].func)(r, c, value));
             return;

@@ -262,7 +262,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
          */
         for (i = 0, strpp = (char **) values->elts; i < values->nelts;
              ++i, ++strpp) {
-            if (*strpp && strcasecmp(*strpp, start) == 0) {
+            if (*strpp && ap_casecmpstr(*strpp, start) == 0) {
                 break;
             }
         }

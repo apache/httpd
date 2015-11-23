@@ -151,40 +151,40 @@ static int copy_headers_in(void *vbaton, const char *key, const char *value)
     switch (key[0]) {
     case 'a':
     case 'A':
-        if (strcasecmp("Accept-Encoding", key) == 0) {
+        if (ap_casecmpstr("Accept-Encoding", key) == 0) {
             return 0;
         }
         break;
     case 'c':
     case 'C':
-        if (strcasecmp("Connection", key) == 0) {
+        if (ap_casecmpstr("Connection", key) == 0) {
             return 0;
         }
         break;
     case 'h':
     case 'H':
-        if (strcasecmp("Host", key) == 0) {
+        if (ap_casecmpstr("Host", key) == 0) {
             return 0;
         }
         break;
     case 'k':
     case 'K':
-        if (strcasecmp("Keep-Alive", key) == 0) {
+        if (ap_casecmpstr("Keep-Alive", key) == 0) {
             return 0;
         }
         break;
     case 't':
     case 'T':
-        if (strcasecmp("TE", key) == 0) {
+        if (ap_casecmpstr("TE", key) == 0) {
             return 0;
         }
-        if (strcasecmp("Trailer", key) == 0) {
+        if (ap_casecmpstr("Trailer", key) == 0) {
             return 0;
         }
         break;
     case 'u':
     case 'U':
-        if (strcasecmp("Upgrade", key) == 0) {
+        if (ap_casecmpstr("Upgrade", key) == 0) {
             return 0;
         }
         break;
@@ -205,27 +205,27 @@ static int copy_headers_out(void *vbaton, const char *key, const char *value)
     switch (key[0]) {
     case 'c':
     case 'C':
-        if (strcasecmp("Content-Type", key) == 0) {
+        if (ap_casecmpstr("Content-Type", key) == 0) {
             ap_set_content_type(ctx->r, value);
             done = 1;
             break;
         }
-        else if (strcasecmp("Connection", key) == 0) {
+        else if (ap_casecmpstr("Connection", key) == 0) {
             done = 1;
             break;
         }
-        else if (strcasecmp("Content-Encoding", key) == 0) {
+        else if (ap_casecmpstr("Content-Encoding", key) == 0) {
             done = 1;
             break;
         }
-        else if (strcasecmp("Content-Length", key) == 0) {
+        else if (ap_casecmpstr("Content-Length", key) == 0) {
             done = 1;
             break;
         }
         break;
     case 't':
     case 'T':
-        if (strcasecmp("Transfer-Encoding", key) == 0) {
+        if (ap_casecmpstr("Transfer-Encoding", key) == 0) {
             done = 1;
             break;
         }
@@ -512,7 +512,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     baton->done_headers = 0;
     baton->keep_reading = 1;
 
-    if (strcasecmp(conf->url.scheme, "https") == 0) {
+    if (ap_casecmpstr(conf->url.scheme, "https") == 0) {
         baton->want_ssl = 1;
     }
     else {

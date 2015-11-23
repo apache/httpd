@@ -497,7 +497,7 @@ static APR_INLINE char *find_multiple_headers(apr_pool_t *pool,
     result_list = rp = NULL;
 
     do {
-        if (!strcasecmp(t_elt->key, key)) {
+        if (!ap_casecmpstr(t_elt->key, key)) {
             if (!result_list) {
                 result_list = rp = apr_palloc(pool, sizeof(*rp));
             }
@@ -541,10 +541,10 @@ static const char *log_header_out(request_rec *r, char *a)
 {
     const char *cp = NULL;
 
-    if (!strcasecmp(a, "Content-type") && r->content_type) {
+    if (!ap_casecmpstr(a, "Content-type") && r->content_type) {
         cp = ap_field_noparam(r->pool, r->content_type);
     }
-    else if (!strcasecmp(a, "Set-Cookie")) {
+    else if (!ap_casecmpstr(a, "Set-Cookie")) {
         cp = find_multiple_headers(r->pool, r->headers_out, a);
     }
     else {
@@ -808,13 +808,13 @@ static const char *log_request_duration_microseconds(request_rec *r, char *a)
 static const char *log_request_duration_scaled(request_rec *r, char *a)
 {
     apr_time_t duration = get_request_end_time(r) - r->request_time;
-    if (*a == '\0' || !strcasecmp(a, "s")) {
+    if (*a == '\0' || !ap_casecmpstr(a, "s")) {
         duration = apr_time_sec(duration);
     }
-    else if (!strcasecmp(a, "ms")) {
+    else if (!ap_casecmpstr(a, "ms")) {
         duration = apr_time_as_msec(duration);
     }
-    else if (!strcasecmp(a, "us")) {
+    else if (!ap_casecmpstr(a, "us")) {
     }
     else {
         /* bogus format */
@@ -835,13 +835,13 @@ static const char *log_server_port(request_rec *r, char *a)
 {
     apr_port_t port;
 
-    if (*a == '\0' || !strcasecmp(a, "canonical")) {
+    if (*a == '\0' || !ap_casecmpstr(a, "canonical")) {
         port = r->server->port ? r->server->port : ap_default_port(r);
     }
-    else if (!strcasecmp(a, "remote")) {
+    else if (!ap_casecmpstr(a, "remote")) {
         port = r->useragent_addr->port;
     }
-    else if (!strcasecmp(a, "local")) {
+    else if (!ap_casecmpstr(a, "local")) {
         port = r->connection->local_addr->port;
     }
     else {
@@ -861,10 +861,10 @@ static const char *log_server_name(request_rec *r, char *a)
 
 static const char *log_pid_tid(request_rec *r, char *a)
 {
-    if (*a == '\0' || !strcasecmp(a, "pid")) {
+    if (*a == '\0' || !ap_casecmpstr(a, "pid")) {
         return ap_append_pid(r->pool, "", "");
     }
-    else if (!strcasecmp(a, "tid") || !strcasecmp(a, "hextid")) {
+    else if (!ap_casecmpstr(a, "tid") || !ap_casecmpstr(a, "hextid")) {
 #if APR_HAS_THREADS
         apr_os_thread_t tid = apr_os_thread_current();
 #else
@@ -1335,14 +1335,14 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     cls->condition_var = NULL;
     cls->condition_expr = NULL;
     if (envclause != NULL) {
-        if (strncasecmp(envclause, "env=", 4) == 0) {
+        if (ap_casecmpstrn(envclause, "env=", 4) == 0) {
             if ((envclause[4] == '\0')
                 || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
                 return "missing environment variable name";
             }
             cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
         }
-        else if (strncasecmp(envclause, "expr=", 5) == 0) {
+        else if (ap_casecmpstrn(envclause, "expr=", 5) == 0) {
             const char *err;
             if ((envclause[5] == '\0'))
                 return "missing condition";
