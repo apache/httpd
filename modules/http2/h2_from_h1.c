@@ -262,7 +262,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
          */
         for (i = 0, strpp = (char **) values->elts; i < values->nelts;
              ++i, ++strpp) {
-            if (*strpp && ap_casecmpstr(*strpp, start) == 0) {
+            if (*strpp && strcasecmp(*strpp, start) == 0) {
                 break;
             }
         }
@@ -411,7 +411,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
         
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
             for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!ap_casecmpstr(token, languages[i]))
+                if (!strcasecmp(token, languages[i]))
                     break;
             }
             if (i == r->content_languages->nelts) {
