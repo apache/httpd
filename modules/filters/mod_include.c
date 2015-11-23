@@ -620,16 +620,16 @@ static void add_include_vars(request_rec *r)
 static const char *add_include_vars_lazy(request_rec *r, const char *var, const char *timefmt)
 {
     char *val;
-    if (!ap_casecmpstr(var, "DATE_LOCAL")) {
+    if (!strcasecmp(var, "DATE_LOCAL")) {
         val = ap_ht_time(r->pool, r->request_time, timefmt, 0);
     }
-    else if (!ap_casecmpstr(var, "DATE_GMT")) {
+    else if (!strcasecmp(var, "DATE_GMT")) {
         val = ap_ht_time(r->pool, r->request_time, timefmt, 1);
     }
-    else if (!ap_casecmpstr(var, "LAST_MODIFIED")) {
+    else if (!strcasecmp(var, "LAST_MODIFIED")) {
         val = ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0);
     }
-    else if (!ap_casecmpstr(var, "USER_NAME")) {
+    else if (!strcasecmp(var, "USER_NAME")) {
         if (apr_uid_name_get(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
             val = "<unknown>";
         }
@@ -714,9 +714,9 @@ static int include_expr_lookup(ap_expr_lookup_parms *parms)
 {
     switch (parms->type) {
     case AP_EXPR_FUNC_STRING:
-        if (ap_casecmpstr(parms->name, "v") == 0 ||
-            ap_casecmpstr(parms->name, "reqenv") == 0 ||
-            ap_casecmpstr(parms->name, "env") == 0) {
+        if (strcasecmp(parms->name, "v") == 0 ||
+            strcasecmp(parms->name, "reqenv") == 0 ||
+            strcasecmp(parms->name, "env") == 0) {
             *parms->func = include_expr_var_fn;
             *parms->data = parms->name;
             return OK;
@@ -1947,25 +1947,25 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 token = apr_strtok(d, ", \t", &last);
 
                 while (token) {
-                    if (!ap_casecmpstr(token, "none")) {
+                    if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
-                    else if (!ap_casecmpstr(token, "url")) {
+                    else if (!strcasecmp(token, "url")) {
                         char *buf = apr_pstrdup(ctx->pool, echo_text);
                         ap_unescape_url(buf);
                         echo_text = buf;
                     }
-                    else if (!ap_casecmpstr(token, "urlencoded")) {
+                    else if (!strcasecmp(token, "urlencoded")) {
                         char *buf = apr_pstrdup(ctx->pool, echo_text);
                         ap_unescape_urlencoded(buf);
                         echo_text = buf;
                     }
-                    else if (!ap_casecmpstr(token, "entity")) {
+                    else if (!strcasecmp(token, "entity")) {
                         char *buf = apr_pstrdup(ctx->pool, echo_text);
                         decodehtml(buf);
                         echo_text = buf;
                     }
-                    else if (!ap_casecmpstr(token, "base64")) {
+                    else if (!strcasecmp(token, "base64")) {
                         echo_text = ap_pbase64decode(ctx->dpool, echo_text);
                     }
                     else {
@@ -1983,19 +1983,19 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 token = apr_strtok(e, ", \t", &last);
 
                 while (token) {
-                    if (!ap_casecmpstr(token, "none")) {
+                    if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
-                    else if (!ap_casecmpstr(token, "url")) {
+                    else if (!strcasecmp(token, "url")) {
                         echo_text = ap_escape_uri(ctx->dpool, echo_text);
                     }
-                    else if (!ap_casecmpstr(token, "urlencoded")) {
+                    else if (!strcasecmp(token, "urlencoded")) {
                         echo_text = ap_escape_urlencoded(ctx->dpool, echo_text);
                     }
-                    else if (!ap_casecmpstr(token, "entity")) {
+                    else if (!strcasecmp(token, "entity")) {
                         echo_text = ap_escape_html2(ctx->dpool, echo_text, 0);
                     }
-                    else if (!ap_casecmpstr(token, "base64")) {
+                    else if (!strcasecmp(token, "base64")) {
                         char *buf;
                         buf = ap_pbase64encode(ctx->dpool, (char *)echo_text);
                         echo_text = buf;
@@ -2585,25 +2585,25 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 token = apr_strtok(d, ", \t", &last);
 
                 while (token) {
-                    if (!ap_casecmpstr(token, "none")) {
+                    if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
-                    else if (!ap_casecmpstr(token, "url")) {
+                    else if (!strcasecmp(token, "url")) {
                         char *buf = apr_pstrdup(ctx->pool, parsed_string);
                         ap_unescape_url(buf);
                         parsed_string = buf;
                     }
-                    else if (!ap_casecmpstr(token, "urlencoded")) {
+                    else if (!strcasecmp(token, "urlencoded")) {
                         char *buf = apr_pstrdup(ctx->pool, parsed_string);
                         ap_unescape_urlencoded(buf);
                         parsed_string = buf;
                     }
-                    else if (!ap_casecmpstr(token, "entity")) {
+                    else if (!strcasecmp(token, "entity")) {
                         char *buf = apr_pstrdup(ctx->pool, parsed_string);
                         decodehtml(buf);
                         parsed_string = buf;
                     }
-                    else if (!ap_casecmpstr(token, "base64")) {
+                    else if (!strcasecmp(token, "base64")) {
                         parsed_string = ap_pbase64decode(ctx->dpool, parsed_string);
                     }
                     else {
@@ -2621,19 +2621,19 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                 token = apr_strtok(e, ", \t", &last);
 
                 while (token) {
-                    if (!ap_casecmpstr(token, "none")) {
+                    if (!strcasecmp(token, "none")) {
                         /* do nothing */
                     }
-                    else if (!ap_casecmpstr(token, "url")) {
+                    else if (!strcasecmp(token, "url")) {
                         parsed_string = ap_escape_uri(ctx->dpool, parsed_string);
                     }
-                    else if (!ap_casecmpstr(token, "urlencoded")) {
+                    else if (!strcasecmp(token, "urlencoded")) {
                         parsed_string = ap_escape_urlencoded(ctx->dpool, parsed_string);
                     }
-                    else if (!ap_casecmpstr(token, "entity")) {
+                    else if (!strcasecmp(token, "entity")) {
                         parsed_string = ap_escape_html2(ctx->dpool, parsed_string, 0);
                     }
-                    else if (!ap_casecmpstr(token, "base64")) {
+                    else if (!strcasecmp(token, "base64")) {
                         char *buf;
                         buf = ap_pbase64encode(ctx->dpool, (char *)parsed_string);
                         parsed_string = buf;
