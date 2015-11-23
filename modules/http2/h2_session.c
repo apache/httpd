@@ -1124,10 +1124,14 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
             int rv;
             
             nh = h2_util_ngheader_make(stream->pool, trailers);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                          "h2_stream(%ld-%d): submit %d trailers",
+                          session->id, (int)stream_id,(int) nh->nvlen);
             rv = nghttp2_submit_trailer(ng2s, stream->id, nh->nv, nh->nvlen);
             if (rv < 0) {
                 nread = rv;
             }
+            *data_flags |= NGHTTP2_DATA_FLAG_NO_END_STREAM;
         }
         
         *data_flags |= NGHTTP2_DATA_FLAG_EOF;
@@ -1158,7 +1162,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     if (stream->submitted) {
         rv = NGHTTP2_PROTOCOL_ERROR;
     }
-    else if (stream->response && stream->response->header) {
+    else if (stream->response && stream->response->headers) {
         nghttp2_data_provider provider;
         h2_response *response = stream->response;
         h2_ngheader *ngh;
@@ -1172,7 +1176,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
                       session->id, stream->id, response->http_status);
         
         ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
-                                        response->header);
+                                        response->headers);
         rv = nghttp2_submit_response(session->ngh2, response->stream_id,
                                      ngh->nv, ngh->nvlen, &provider);
         
