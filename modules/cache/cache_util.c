@@ -1074,7 +1074,8 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 }
                 break;
             }
-            case 'p': {
+            case 'p':
+            case 'P': {
                 if (!ap_casecmpstr(token, "public")) {
                     cc->public = 1;
                 }
