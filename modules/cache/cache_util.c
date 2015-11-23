@@ -594,7 +594,12 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     }
 
     if ((agestr = apr_table_get(h->resp_hdrs, "Age"))) {
-        age_c = apr_atoi64(agestr);
+        char *endp;
+        apr_off_t offt;
+        if (!apr_strtoff(&offt, agestr, &endp, 10)
+                && endp > agestr && !*endp) {
+            age_c = offt;
+        }
     }
 
     /* calculate age of object */
@@ -1003,6 +1008,8 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
     }
 
     if (cc_header) {
+        char *endp;
+        apr_off_t offt;
         char *header = apr_pstrdup(r->pool, cc_header);
         const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
         while (token) {
@@ -1028,28 +1035,34 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
             case 'm':
             case 'M': {
                 if (!ap_casecmpstrn(token, "max-age", 7)) {
-                    if (token[7] == '=') {
+                    if (token[7] == '='
+                            && !apr_strtoff(&offt, token + 8, &endp, 10)
+                            && endp > token + 8 && !*endp) {
                         cc->max_age = 1;
-                        cc->max_age_value = apr_atoi64(token + 8);
+                        cc->max_age_value = offt;
                     }
                 }
                 else if (!ap_casecmpstr(token, "must-revalidate")) {
                     cc->must_revalidate = 1;
                 }
                 else if (!ap_casecmpstrn(token, "max-stale", 9)) {
-                    if (token[9] == '=') {
+                    if (token[9] == '='
+                            && !apr_strtoff(&offt, token + 10, &endp, 10)
+                            && endp > token + 10 && !*endp) {
                         cc->max_stale = 1;
-                        cc->max_stale_value = apr_atoi64(token + 10);
+                        cc->max_stale_value = offt;
                     }
-                    else if (!token[10]) {
+                    else if (!token[9]) {
                         cc->max_stale = 1;
                         cc->max_stale_value = -1;
                     }
                 }
                 else if (!ap_casecmpstrn(token, "min-fresh", 9)) {
-                    if (token[9] == '=') {
+                    if (token[9] == '='
+                            && !apr_strtoff(&offt, token + 10, &endp, 10)
+                            && endp > token + 10 && !*endp) {
                         cc->min_fresh = 1;
-                        cc->min_fresh_value = apr_atoi64(token + 10);
+                        cc->min_fresh_value = offt;
                     }
                 }
                 break;
@@ -1081,9 +1094,11 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
             case 's':
             case 'S': {
                 if (!ap_casecmpstrn(token, "s-maxage", 8)) {
-                    if (token[8] == '=') {
+                    if (token[8] == '='
+                            && !apr_strtoff(&offt, token + 9, &endp, 10)
+                            && endp > token + 9 && !*endp) {
                         cc->s_maxage = 1;
-                        cc->s_maxage_value = apr_atoi64(token + 9);
+                        cc->s_maxage_value = offt;
                     }
                 }
                 break;
