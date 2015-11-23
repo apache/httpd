@@ -113,6 +113,8 @@ void h2_task_register_hooks(void)
                               NULL, AP_FTYPE_NETWORK);
     ap_register_output_filter("H1_TO_H2_RESP", h2_filter_read_response,
                               NULL, AP_FTYPE_PROTOCOL);
+    ap_register_output_filter("H2_TRAILERS", h2_response_trailers_filter,
+                              NULL, AP_FTYPE_PROTOCOL);
 }
 
 static int h2_task_pre_conn(conn_rec* c, void *arg)
@@ -161,7 +163,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
         ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
                       session_id, req->id);
-        h2_mplx_out_close(mplx, req->id);
+        h2_mplx_out_close(mplx, req->id, NULL);
         return NULL;
     }
     
@@ -228,8 +230,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         apr_thread_cond_signal(task->io);
     }
     
-    h2_mplx_task_done(task->mplx, task->stream_id);
     h2_worker_release_task(worker, task);
+    h2_mplx_task_done(task->mplx, task->stream_id);
     
     return status;
 }

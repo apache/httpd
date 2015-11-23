@@ -73,6 +73,9 @@ static void have_out_data_for(h2_mplx *m, int stream_id);
 static void h2_mplx_destroy(h2_mplx *m)
 {
     AP_DEBUG_ASSERT(m);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+                  "h2_mplx(%ld): destroy, refs=%d", 
+                  m->id, m->refs);
     m->aborted = 1;
     if (m->ready_ios) {
         h2_io_set_destroy(m->ready_ios);
@@ -83,15 +86,6 @@ static void h2_mplx_destroy(h2_mplx *m)
         m->stream_ios = NULL;
     }
     
-    if (m->lock) {
-        apr_thread_mutex_destroy(m->lock);
-        m->lock = NULL;
-    }
-    
-    if (m->spare_pool) {
-        apr_pool_destroy(m->spare_pool);
-        m->spare_pool = NULL;
-    }
     if (m->pool) {
         apr_pool_destroy(m->pool);
     }
@@ -199,44 +193,6 @@ static void workers_unregister(h2_mplx *m) {
     h2_workers_unregister(m->workers, m);
 }
 
-apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
-{
-    apr_status_t status;
-    workers_unregister(m);
-
-    status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        release(m, 0);
-        while (m->refs > 0) {
-            m->join_wait = wait;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
-                          "h2_mplx(%ld): release_join, refs=%d, waiting...", 
-                          m->id, m->refs);
-            apr_thread_cond_wait(wait, m->lock);
-        }
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
-                      "h2_mplx(%ld): release_join -> destroy", m->id);
-        m->pool = NULL;
-        apr_thread_mutex_unlock(m->lock);
-        h2_mplx_destroy(m);
-    }
-    return status;
-}
-
-void h2_mplx_abort(h2_mplx *m)
-{
-    apr_status_t status;
-    AP_DEBUG_ASSERT(m);
-    status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        m->aborted = 1;
-        h2_io_set_destroy_all(m->stream_ios);
-        apr_thread_mutex_unlock(m->lock);
-    }
-    workers_unregister(m);
-}
-
-
 static void io_destroy(h2_mplx *m, h2_io *io)
 {
     apr_pool_t *pool = io->pool;
@@ -259,14 +215,74 @@ static void io_destroy(h2_mplx *m, h2_io *io)
     }
 }
 
+static int io_stream_done(h2_mplx *m, h2_io *io, int rst_error) 
+{
+    /* Remove io from ready set, we will never submit it */
+    h2_io_set_remove(m->ready_ios, io);
+    if (io->task_done || h2_tq_remove(m->q, io->id)) {
+        /* already finished or not even started yet */
+        io_destroy(m, io);
+        return 0;
+    }
+    else {
+        /* cleanup once task is done */
+        io->orphaned = 1;
+        if (rst_error) {
+            h2_io_rst(io, rst_error);
+        }
+        return 1;
+    }
+}
+
+static int stream_done_iter(void *ctx, h2_io *io) {
+    return io_stream_done((h2_mplx*)ctx, io, 0);
+}
+
+apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
+{
+    apr_status_t status;
+    
+    workers_unregister(m);
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        while (!h2_io_set_iter(m->stream_ios, stream_done_iter, m)) {
+            /* iterator until all h2_io have been orphaned or destroyed */
+        }
+    
+        release(m, 0);
+        while (m->refs > 0) {
+            m->join_wait = wait;
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+                          "h2_mplx(%ld): release_join, refs=%d, waiting...", 
+                          m->id, m->refs);
+            apr_thread_cond_wait(wait, m->lock);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+                      "h2_mplx(%ld): release_join -> destroy, (#ios=%ld)", 
+                      m->id, (long)h2_io_set_size(m->stream_ios));
+        h2_mplx_destroy(m);
+        /* all gone */
+        /*apr_thread_mutex_unlock(m->lock);*/
+    }
+    return status;
+}
+
+void h2_mplx_abort(h2_mplx *m)
+{
+    apr_status_t status;
+    AP_DEBUG_ASSERT(m);
+    status = apr_thread_mutex_lock(m->lock);
+    if (APR_SUCCESS == status) {
+        m->aborted = 1;
+        apr_thread_mutex_unlock(m->lock);
+    }
+}
+
 apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
 {
     apr_status_t status;
     
     AP_DEBUG_ASSERT(m);
-    if (m->aborted) {
-        return APR_ECONNABORTED;
-    }
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
@@ -275,20 +291,7 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
          * for processing, e.g. when we received all HEADERs. But when
          * a stream is cancelled very early, it will not exist. */
         if (io) {
-            /* Remove io from ready set, we will never submit it */
-            h2_io_set_remove(m->ready_ios, io);
-            if (io->task_done || h2_tq_remove(m->q, io->id)) {
-                /* already finished or not even started yet */
-                io_destroy(m, io);
-            }
-            else {
-                /* cleanup once task is done */
-                io->orphaned = 1;
-                if (rst_error) {
-                    h2_io_rst(io, rst_error);
-                }
-            }
-            
+            io_stream_done(m, io, rst_error);
         }
         
         apr_thread_mutex_unlock(m->lock);
@@ -447,7 +450,8 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
 
 apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_off_t *plen, int *peos)
+                               apr_off_t *plen, int *peos,
+                               apr_table_t **ptrailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -461,7 +465,6 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
             
             status = h2_io_out_readx(io, cb, ctx, plen, peos);
-            
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
             if (status == APR_SUCCESS && cb && io->output_drained) {
                 apr_thread_cond_signal(io->output_drained);
@@ -470,6 +473,8 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
+        
+        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
         apr_thread_mutex_unlock(m->lock);
     }
     return status;
@@ -477,7 +482,8 @@ apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id,
 
 apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
                                  apr_bucket_brigade *bb, 
-                                 apr_off_t *plen, int *peos)
+                                 apr_off_t *plen, int *peos,
+                                 apr_table_t **ptrailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -500,6 +506,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
+        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
         apr_thread_mutex_unlock(m->lock);
     }
     return status;
@@ -560,6 +567,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
 
 static apr_status_t out_write(h2_mplx *m, h2_io *io, 
                               ap_filter_t* f, apr_bucket_brigade *bb,
+                              apr_table_t *trailers,
                               struct apr_thread_cond_t *iowait)
 {
     apr_status_t status = APR_SUCCESS;
@@ -572,7 +580,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && (status == APR_SUCCESS)
            && !is_aborted(m, &status)) {
         
-        status = h2_io_out_write(io, bb, m->stream_max_mem, 
+        status = h2_io_out_write(io, bb, m->stream_max_mem, trailers,
                                  &m->file_handles_allowed);
         /* Wait for data to drain until there is room again */
         while (!APR_BRIGADE_EMPTY(bb) 
@@ -580,6 +588,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
                && status == APR_SUCCESS
                && (m->stream_max_mem <= h2_io_out_length(io))
                && !is_aborted(m, &status)) {
+            trailers = NULL;
             io->output_drained = iowait;
             if (f) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
@@ -613,7 +622,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
         h2_io_set_response(io, response);
         h2_io_set_add(m->ready_ios, io);
         if (bb) {
-            status = out_write(m, io, f, bb, iowait);
+            status = out_write(m, io, f, bb, response->trailers, iowait);
         }
         have_out_data_for(m, stream_id);
     }
@@ -649,6 +658,7 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response,
 
 apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id, 
                                ap_filter_t* f, apr_bucket_brigade *bb,
+                               apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait)
 {
     apr_status_t status;
@@ -661,7 +671,10 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
         if (!m->aborted) {
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io && !io->orphaned) {
-                status = out_write(m, io, f, bb, iowait);
+                status = out_write(m, io, f, bb, trailers, iowait);
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                              "h2_mplx(%ld-%d): write with trailers=%s", 
+                              m->id, io->id, trailers? "yes" : "no");
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
                 
                 have_out_data_for(m, stream_id);
@@ -681,7 +694,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
     return status;
 }
 
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
+apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -705,7 +718,10 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
                                   "h2_mplx(%ld-%d): close, no response, no rst", 
                                   m->id, io->id);
                 }
-                status = h2_io_out_close(io);
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                              "h2_mplx(%ld-%d): close with trailers=%s", 
+                              m->id, io->id, trailers? "yes" : "no");
+                status = h2_io_out_close(io, trailers);
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
                 
                 have_out_data_for(m, stream_id);

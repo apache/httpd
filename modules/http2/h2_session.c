@@ -24,7 +24,6 @@
 #include <http_log.h>
 
 #include "h2_private.h"
-#include "h2_bucket_eoc.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_h2.h"
@@ -82,11 +81,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     }
     
     return stream;
-}
-
-apr_status_t h2_session_flush(h2_session *session) 
-{
-    return h2_conn_io_flush(&session->io);
 }
 
 /**
@@ -590,6 +584,44 @@ static apr_status_t session_pool_cleanup(void *data)
     return APR_SUCCESS;
 }
 
+static void *session_malloc(size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): malloc(%ld)",
+                  session->id, (long)size);
+    return malloc(size);
+}
+
+static void session_free(void *p, void *ctx)
+{
+    h2_session *session = ctx;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): free()",
+                  session->id);
+    free(p);
+}
+
+static void *session_calloc(size_t n, size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): calloc(%ld, %ld)",
+                  session->id, (long)n, (long)size);
+    return calloc(n, size);
+}
+
+static void *session_realloc(void *p, size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): realloc(%ld)",
+                  session->id, (long)size);
+    return realloc(p, size);
+}
+
 static h2_session *h2_session_create_int(conn_rec *c,
                                          request_rec *r,
                                          h2_config *config, 
@@ -608,17 +640,18 @@ static h2_session *h2_session_create_int(conn_rec *c,
     session = apr_pcalloc(pool, sizeof(h2_session));
     if (session) {
         int rv;
+        nghttp2_mem *mem;
+        
         session->id = c->id;
         session->c = c;
         session->r = r;
         
+        session->pool = pool;
         apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
         
         session->max_stream_count = h2_config_geti(config, H2_CONF_MAX_STREAMS);
         session->max_stream_mem = h2_config_geti(config, H2_CONF_STREAM_MAX_MEM);
 
-        session->pool = pool;
-        
         status = apr_thread_cond_create(&session->iowait, session->pool);
         if (status != APR_SUCCESS) {
             return NULL;
@@ -629,7 +662,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->workers = workers;
         session->mplx = h2_mplx_create(c, session->pool, workers);
         
-        h2_conn_io_init(&session->io, c);
+        h2_conn_io_init(&session->io, c, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
         status = init_callbacks(c, &callbacks);
@@ -648,16 +681,27 @@ static h2_session *h2_session_create_int(conn_rec *c,
             h2_session_destroy(session);
             return NULL;
         }
-
         nghttp2_option_set_peer_max_concurrent_streams(options, 
                                                        (uint32_t)session->max_stream_count);
-
         /* We need to handle window updates ourself, otherwise we
          * get flooded by nghttp2. */
         nghttp2_option_set_no_auto_window_update(options, 1);
         
-        rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
-                                         session, options);
+        if (APLOGctrace6(c)) {
+            mem = apr_pcalloc(session->pool, sizeof(nghttp2_mem));
+            mem->mem_user_data = session;
+            mem->malloc    = session_malloc;
+            mem->free      = session_free;
+            mem->calloc    = session_calloc;
+            mem->realloc   = session_realloc;
+            
+            rv = nghttp2_session_server_new3(&session->ngh2, callbacks,
+                                             session, options, mem);
+        }
+        else {
+            rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
+                                             session, options);
+        }
         nghttp2_session_callbacks_del(callbacks);
         nghttp2_option_del(options);
         
@@ -703,10 +747,6 @@ static void h2_session_cleanup(h2_session *session)
         apr_pool_destroy(session->spare);
         session->spare = NULL;
     }
-    if (session->mplx) {
-        h2_mplx_release_and_join(session->mplx, session->iowait);
-        session->mplx = NULL;
-    }
 }
 
 void h2_session_destroy(h2_session *session)
@@ -714,6 +754,10 @@ void h2_session_destroy(h2_session *session)
     AP_DEBUG_ASSERT(session);
     h2_session_cleanup(session);
     
+    if (session->mplx) {
+        h2_mplx_release_and_join(session->mplx, session->iowait);
+        session->mplx = NULL;
+    }
     if (session->streams) {
         if (!h2_stream_set_is_empty(session->streams)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
@@ -993,10 +1037,8 @@ apr_status_t h2_session_close(h2_session *session)
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0,session->c,
                   "h2_session: closing, writing eoc");
     
-    h2_session_cleanup(session);              
-    return h2_conn_io_writeb(&session->io,
-                             h2_bucket_eoc_create(session->c->bucket_alloc, 
-                                                  session));
+    h2_session_cleanup(session);
+    return h2_conn_io_close(&session->io, session);           
 }
 
 static ssize_t stream_data_cb(nghttp2_session *ng2s,
@@ -1076,6 +1118,22 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     }
     
     if (eos) {
+        apr_table_t *trailers = h2_stream_get_trailers(stream);
+        if (trailers && !apr_is_empty_table(trailers)) {
+            h2_ngheader *nh;
+            int rv;
+            
+            nh = h2_util_ngheader_make(stream->pool, trailers);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                          "h2_stream(%ld-%d): submit %d trailers",
+                          session->id, (int)stream_id,(int) nh->nvlen);
+            rv = nghttp2_submit_trailer(ng2s, stream->id, nh->nv, nh->nvlen);
+            if (rv < 0) {
+                nread = rv;
+            }
+            *data_flags |= NGHTTP2_DATA_FLAG_NO_END_STREAM;
+        }
+        
         *data_flags |= NGHTTP2_DATA_FLAG_EOF;
     }
     
@@ -1104,7 +1162,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     if (stream->submitted) {
         rv = NGHTTP2_PROTOCOL_ERROR;
     }
-    else if (stream->response && stream->response->header) {
+    else if (stream->response && stream->response->headers) {
         nghttp2_data_provider provider;
         h2_response *response = stream->response;
         h2_ngheader *ngh;
@@ -1118,7 +1176,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
                       session->id, stream->id, response->http_status);
         
         ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
-                                        response->header);
+                                        response->headers);
         rv = nghttp2_submit_response(session->ngh2, response->stream_id,
                                      ngh->nv, ngh->nvlen, &provider);
         

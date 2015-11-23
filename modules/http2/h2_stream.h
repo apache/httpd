@@ -290,4 +290,14 @@ int h2_stream_needs_submit(h2_stream *stream);
  */
 apr_status_t h2_stream_submit_pushes(h2_stream *stream);
 
+/**
+ * Get optional trailers for this stream, may be NULL. Meaningful
+ * results can only be expected when the end of the response body has
+ * been reached.
+ *
+ * @param stream to ask for trailers
+ * @return trailers for NULL
+ */
+apr_table_t *h2_stream_get_trailers(h2_stream *stream);
+
 #endif /* defined(__mod_h2__h2_stream__) */

@@ -23,7 +23,8 @@ typedef struct h2_response {
     int rst_error;
     int http_status;
     apr_off_t content_length;
-    apr_table_t *header;
+    apr_table_t *headers;
+    apr_table_t *trailers;
 } h2_response;
 
 h2_response *h2_response_create(int stream_id,
@@ -38,5 +39,14 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
 void h2_response_destroy(h2_response *response);
 
 h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from);
+
+/**
+ * Set the trailers in the reponse. Will replace any existing trailers. Will
+ * *not* clone the table.
+ *
+ * @param response the repsone to set the trailers for
+ * @param trailers the trailers to set
+ */
+void h2_response_set_trailers(h2_response *response, apr_table_t *trailers);
 
 #endif /* defined(__mod_h2__h2_response__) */
