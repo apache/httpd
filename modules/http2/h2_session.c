@@ -584,6 +584,44 @@ static apr_status_t session_pool_cleanup(void *data)
     return APR_SUCCESS;
 }
 
+static void *session_malloc(size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): malloc(%ld)",
+                  session->id, (long)size);
+    return malloc(size);
+}
+
+static void session_free(void *p, void *ctx)
+{
+    h2_session *session = ctx;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): free()",
+                  session->id);
+    free(p);
+}
+
+static void *session_calloc(size_t n, size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): calloc(%ld, %ld)",
+                  session->id, (long)n, (long)size);
+    return calloc(n, size);
+}
+
+static void *session_realloc(void *p, size_t size, void *ctx)
+{
+    h2_session *session = ctx;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, session->c,
+                  "h2_session(%ld): realloc(%ld)",
+                  session->id, (long)size);
+    return realloc(p, size);
+}
+
 static h2_session *h2_session_create_int(conn_rec *c,
                                          request_rec *r,
                                          h2_config *config, 
@@ -602,6 +640,8 @@ static h2_session *h2_session_create_int(conn_rec *c,
     session = apr_pcalloc(pool, sizeof(h2_session));
     if (session) {
         int rv;
+        nghttp2_mem *mem;
+        
         session->id = c->id;
         session->c = c;
         session->r = r;
@@ -641,16 +681,27 @@ static h2_session *h2_session_create_int(conn_rec *c,
             h2_session_destroy(session);
             return NULL;
         }
-
         nghttp2_option_set_peer_max_concurrent_streams(options, 
                                                        (uint32_t)session->max_stream_count);
-
         /* We need to handle window updates ourself, otherwise we
          * get flooded by nghttp2. */
         nghttp2_option_set_no_auto_window_update(options, 1);
         
-        rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
-                                         session, options);
+        if (APLOGctrace6(c)) {
+            mem = apr_pcalloc(session->pool, sizeof(nghttp2_mem));
+            mem->mem_user_data = session;
+            mem->malloc    = session_malloc;
+            mem->free      = session_free;
+            mem->calloc    = session_calloc;
+            mem->realloc   = session_realloc;
+            
+            rv = nghttp2_session_server_new3(&session->ngh2, callbacks,
+                                             session, options, mem);
+        }
+        else {
+            rv = nghttp2_session_server_new2(&session->ngh2, callbacks,
+                                             session, options);
+        }
         nghttp2_session_callbacks_del(callbacks);
         nghttp2_option_del(options);
         
