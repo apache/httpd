@@ -544,7 +544,12 @@ static apr_status_t policy_nocache_out_filter(ap_filter_t *f,
             char *header = apr_pstrdup(r->pool, pragma_header);
             const char *token = apr_strtok(header, ", ", &last);
             while (token) {
-                if (!ap_casecmpstr(token, "no-cache")) {
+                /* handle most common quickest case... */
+                if (!strcmp(token, "no-cache")) {
+                    fail = 1;
+                }
+                /* ...then try slowest case */
+                else if (!strcasecmp(token, "no-cache")) {
                     fail = 1;
                 }
                 token = apr_strtok(NULL, ", ", &last);
@@ -558,7 +563,15 @@ static apr_status_t policy_nocache_out_filter(ap_filter_t *f,
                 switch (token[0]) {
                 case 'n':
                 case 'N': {
-                    if (!ap_casecmpstrn(token, "no-cache", 8)) {
+                    /* handle most common quickest cases... */
+                    if (!strcmp(token, "no-cache")) {
+                        fail = 1;
+                    }
+                    else if (!strcmp(token, "no-store")) {
+                        fail = 1;
+                    }
+                    /* ...then try slowest cases */
+                    else if (!strncasecmp(token, "no-cache", 8)) {
                         if (token[8] == '=') {
                         }
                         else if (!token[8]) {
@@ -566,14 +579,19 @@ static apr_status_t policy_nocache_out_filter(ap_filter_t *f,
                         }
                         break;
                     }
-                    else if (!ap_casecmpstr(token, "no-store")) {
+                    else if (!strcasecmp(token, "no-store")) {
                         fail = 1;
                     }
                     break;
                 }
                 case 'p':
                 case 'P': {
-                    if (!ap_casecmpstrn(token, "private", 7)) {
+                    /* handle most common quickest cases... */
+                    if (!strcmp(token, "private")) {
+                        fail = 1;
+                    }
+                    /* ...then try slowest cases */
+                    else if (!strncasecmp(token, "private", 7)) {
                         if (token[7] == '=') {
                         }
                         else if (!token[7]) {
@@ -644,7 +662,13 @@ static apr_status_t policy_maxage_out_filter(ap_filter_t *f,
                 switch (token[0]) {
                 case 'm':
                 case 'M': {
-                    if (!ap_casecmpstrn(token, "max-age", 7)) {
+                    /* handle most common quickest cases... */
+                    if (!strncmp(token, "max-age", 7)) {
+                        max_age = 1;
+                        max_age_value = apr_atoi64(token + 8);
+                    }
+                    /* ...then try slowest cases */
+                    else if (!strncasecmp(token, "max-age", 7)) {
                         if (token[7] == '=') {
                             max_age = 1;
                             max_age_value = apr_atoi64(token + 8);
@@ -655,7 +679,14 @@ static apr_status_t policy_maxage_out_filter(ap_filter_t *f,
                 }
                 case 's':
                 case 'S': {
-                    if (!ap_casecmpstrn(token, "s-maxage", 8)) {
+                    if (!strncmp(token, "s-maxage", 8)) {
+                        if (token[8] == '=') {
+                            s_maxage = 1;
+                            s_maxage_value = apr_atoi64(token + 9);
+                        }
+                        break;
+                    }
+                    else if (!strncasecmp(token, "s-maxage", 8)) {
                         if (token[8] == '=') {
                             s_maxage = 1;
                             s_maxage_value = apr_atoi64(token + 9);

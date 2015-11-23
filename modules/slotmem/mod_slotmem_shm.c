@@ -111,7 +111,7 @@ static int slotmem_filenames(apr_pool_t *pool,
 {
     const char *fname = NULL, *pname = NULL;
 
-    if (slotname && *slotname && ap_casecmpstr(slotname, "none") != 0) {
+    if (slotname && *slotname && strcasecmp(slotname, "none") != 0) {
         if (slotname[0] != '/') {
 #if !SLOTMEM_UNLINK_SEMANTIC
             /* Each generation needs its own file name. */

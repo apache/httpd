@@ -1710,13 +1710,13 @@ static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
         return FALSE;
     case 'o':
     case 'O':
-        return ap_casecmpstr(arg, "off") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "off") == 0 ? FALSE : TRUE;
     case 'n':
     case 'N':
-        return ap_casecmpstr(arg, "no") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "no") == 0 ? FALSE : TRUE;
     case 'f':
     case 'F':
-        return ap_casecmpstr(arg, "false") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "false") == 0 ? FALSE : TRUE;
     case '0':
         return arg[1] == '\0' ? FALSE : TRUE;
     default:
@@ -1824,7 +1824,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             while (prov->func) {
                 const char **name = prov->names;
                 while (*name) {
-                    if (ap_casecmpstr(*name, parms->name) == 0) {
+                    if (strcasecmp(*name, parms->name) == 0) {
                         *parms->func = prov->func;
                         *parms->data = name;
                         return OK;
@@ -1857,7 +1857,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
                 if (parms->type == AP_EXPR_FUNC_OP_UNARY)
                     match = !strcmp(prov->name, parms->name);
                 else
-                    match = !ap_casecmpstr(prov->name, parms->name);
+                    match = !strcasecmp(prov->name, parms->name);
                 if (match) {
                     if ((parms->flags & AP_EXPR_FLAG_RESTRICTED)
                         && prov->restricted) {

@@ -131,7 +131,7 @@ static ap_unix_identity_t *cgid_suexec_id_doer(const request_rec *r)
 static int is_scriptaliased(request_rec *r)
 {
     const char *t = apr_table_get(r->notes, "alias-forced-type");
-    return t && (!ap_casecmpstr(t, "cgi-script"));
+    return t && (!strcasecmp(t, "cgi-script"));
 }
 
 /* Configuration stuff */

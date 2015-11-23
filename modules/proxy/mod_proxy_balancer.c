@@ -63,7 +63,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     apr_port_t port = 0;
 
     /* TODO: offset of BALANCER_PREFIX ?? */
-    if (ap_casecmpstrn(url, "balancer:", 9) == 0) {
+    if (strncasecmp(url, "balancer:", 9) == 0) {
         url += 9;
     }
     else {
@@ -1380,7 +1380,7 @@ static int balancer_handler(request_rec *r)
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */
-                if (!ap_casecmpstr(worker->s->scheme, "ajp")) {
+                if (!strcasecmp(worker->s->scheme, "ajp")) {
                     ap_rputs("          <httpd:flushpackets>", r);
                     switch (worker->s->flush_packets) {
                         case flush_off:
