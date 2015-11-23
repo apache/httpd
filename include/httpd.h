@@ -2442,9 +2442,8 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
  * Known-fast version of strcasecmp(): ASCII case-folding, POSIX compliant
  * @param s1 The 1st string to compare
  * @param s2 The 2nd string to compare
- * @return integer greater than, equal to, or less than 0, depending on
- *         if s1 is lexicographically greater than, equal to, or less
- *         than s2 ignoring case.
+ * @return 0 if s1 is lexicographically equal to s2 ignoring case;
+ *         non-0 otherwise.
  */
 AP_DECLARE(int) ap_casecmpstr(const char *s1, const char *s2);
 
@@ -2453,9 +2452,8 @@ AP_DECLARE(int) ap_casecmpstr(const char *s1, const char *s2);
  * @param s1 The 1st string to compare
  * @param s2 The 2nd string to compare
  * @param n  Maximum number of characters in the strings to compare
- * @return integer greater than, equal to, or less than 0, depending on
- *         if s1 is lexicographically greater than, equal to, or less
- *         than s2 ignoring case.
+ * @return 0 if s1 is lexicographically equal to s2 ignoring case;
+ *         non-0 otherwise.
  */
 AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2, apr_size_t n);
 
