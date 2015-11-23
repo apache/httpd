@@ -24,7 +24,6 @@
 #include <http_log.h>
 
 #include "h2_private.h"
-#include "h2_bucket_eoc.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_h2.h"
@@ -82,11 +81,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     }
     
     return stream;
-}
-
-apr_status_t h2_session_flush(h2_session *session) 
-{
-    return h2_conn_io_flush(&session->io);
 }
 
 /**
@@ -612,13 +606,12 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->c = c;
         session->r = r;
         
+        session->pool = pool;
         apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
         
         session->max_stream_count = h2_config_geti(config, H2_CONF_MAX_STREAMS);
         session->max_stream_mem = h2_config_geti(config, H2_CONF_STREAM_MAX_MEM);
 
-        session->pool = pool;
-        
         status = apr_thread_cond_create(&session->iowait, session->pool);
         if (status != APR_SUCCESS) {
             return NULL;
@@ -629,7 +622,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->workers = workers;
         session->mplx = h2_mplx_create(c, session->pool, workers);
         
-        h2_conn_io_init(&session->io, c);
+        h2_conn_io_init(&session->io, c, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
         status = init_callbacks(c, &callbacks);
@@ -703,10 +696,6 @@ static void h2_session_cleanup(h2_session *session)
         apr_pool_destroy(session->spare);
         session->spare = NULL;
     }
-    if (session->mplx) {
-        h2_mplx_release_and_join(session->mplx, session->iowait);
-        session->mplx = NULL;
-    }
 }
 
 void h2_session_destroy(h2_session *session)
@@ -714,6 +703,10 @@ void h2_session_destroy(h2_session *session)
     AP_DEBUG_ASSERT(session);
     h2_session_cleanup(session);
     
+    if (session->mplx) {
+        h2_mplx_release_and_join(session->mplx, session->iowait);
+        session->mplx = NULL;
+    }
     if (session->streams) {
         if (!h2_stream_set_is_empty(session->streams)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
@@ -993,10 +986,8 @@ apr_status_t h2_session_close(h2_session *session)
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0,session->c,
                   "h2_session: closing, writing eoc");
     
-    h2_session_cleanup(session);              
-    return h2_conn_io_writeb(&session->io,
-                             h2_bucket_eoc_create(session->c->bucket_alloc, 
-                                                  session));
+    h2_session_cleanup(session);
+    return h2_conn_io_close(&session->io, session);           
 }
 
 static ssize_t stream_data_cb(nghttp2_session *ng2s,

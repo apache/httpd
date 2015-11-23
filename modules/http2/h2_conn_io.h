@@ -42,7 +42,7 @@ typedef struct {
     int unflushed;
 } h2_conn_io;
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c);
+apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, apr_pool_t *pool);
 
 int h2_conn_io_is_buffered(h2_conn_io *io);
 
@@ -65,5 +65,6 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io);
 
 apr_status_t h2_conn_io_pass(h2_conn_io *io);
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
+apr_status_t h2_conn_io_close(h2_conn_io *io, void *session);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */

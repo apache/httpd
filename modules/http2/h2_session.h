@@ -148,12 +148,6 @@ apr_status_t h2_session_start(h2_session *session, int *rv);
 apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
 
 /**
- * Pass any buffered output data through the connection filters.
- * @param session the session to flush
- */
-apr_status_t h2_session_flush(h2_session *session);
-
-/**
  * Called before a session gets destroyed, might flush output etc. 
  */
 apr_status_t h2_session_close(h2_session *session);

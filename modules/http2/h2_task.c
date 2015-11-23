@@ -228,8 +228,8 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
         apr_thread_cond_signal(task->io);
     }
     
-    h2_mplx_task_done(task->mplx, task->stream_id);
     h2_worker_release_task(worker, task);
+    h2_mplx_task_done(task->mplx, task->stream_id);
     
     return status;
 }
