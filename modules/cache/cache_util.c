@@ -55,7 +55,7 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     }
     else {
         /* The URI scheme must be present and identical except for case. */
-        if (!url->scheme || strcasecmp(filter->scheme, url->scheme)) {
+        if (!url->scheme || ap_casecmpstr(filter->scheme, url->scheme)) {
             return 0;
         }
 

@@ -600,7 +600,7 @@ static const char *log_cookie(request_rec *r, char *a)
                     --last;
                 }
 
-                if (!strcasecmp(name, a)) {
+                if (!ap_casecmpstr(name, a)) {
                     /* last1 points to the next char following the ';' delim,
                        or the trailing NUL char of the string */
                     last = last1 - (*last1 ? 2 : 1);

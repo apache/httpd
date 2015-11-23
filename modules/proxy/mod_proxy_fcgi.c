@@ -91,11 +91,11 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 
     if (NULL != (pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo"))) {
         /* It has to be on disk for this to work */
-        if (!strcasecmp(pathinfo_type, "full")) { 
+        if (!ap_casecmpstr(pathinfo_type, "full")) { 
             rconf->need_dirwalk = 1;
             ap_unescape_url_keep2f(path, 0);
         }
-        else if (!strcasecmp(pathinfo_type, "first-dot")) { 
+        else if (!ap_casecmpstr(pathinfo_type, "first-dot")) { 
             char *split = ap_strchr(path, '.');
             if (split) { 
                 char *slash = ap_strchr(split, '/');
@@ -106,7 +106,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
                 }
             }
         }
-        else if (!strcasecmp(pathinfo_type, "last-dot")) { 
+        else if (!ap_casecmpstr(pathinfo_type, "last-dot")) { 
             char *split = ap_strrchr(path, '.');
             if (split) { 
                 char *slash = ap_strchr(split, '/');
@@ -122,7 +122,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
              * the FCGI server to fixup PATH_INFO because it's the entire path
              */
             r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
-            if (!strcasecmp(pathinfo_type, "unescape")) { 
+            if (!ap_casecmpstr(pathinfo_type, "unescape")) { 
                 ap_unescape_url_keep2f(r->path_info, 0);
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)

@@ -1306,7 +1306,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
             for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!strcasecmp(token, languages[i]))
+                if (!ap_casecmpstr(token, languages[i]))
                     break;
             }
             if (i == r->content_languages->nelts) {

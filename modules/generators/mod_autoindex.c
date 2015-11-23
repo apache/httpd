@@ -348,64 +348,64 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         else {
             action = '\0';
         }
-        if (!strcasecmp(w, "FancyIndexing")) {
+        if (!ap_casecmpstr(w, "FancyIndexing")) {
             option = FANCY_INDEXING;
         }
-        else if (!strcasecmp(w, "FoldersFirst")) {
+        else if (!ap_casecmpstr(w, "FoldersFirst")) {
             option = FOLDERS_FIRST;
         }
-        else if (!strcasecmp(w, "HTMLTable")) {
+        else if (!ap_casecmpstr(w, "HTMLTable")) {
             option = TABLE_INDEXING;
         }
-        else if (!strcasecmp(w, "IconsAreLinks")) {
+        else if (!ap_casecmpstr(w, "IconsAreLinks")) {
             option = ICONS_ARE_LINKS;
         }
-        else if (!strcasecmp(w, "IgnoreCase")) {
+        else if (!ap_casecmpstr(w, "IgnoreCase")) {
             option = IGNORE_CASE;
         }
-        else if (!strcasecmp(w, "IgnoreClient")) {
+        else if (!ap_casecmpstr(w, "IgnoreClient")) {
             option = IGNORE_CLIENT;
         }
-        else if (!strcasecmp(w, "ScanHTMLTitles")) {
+        else if (!ap_casecmpstr(w, "ScanHTMLTitles")) {
             option = SCAN_HTML_TITLES;
         }
-        else if (!strcasecmp(w, "SuppressColumnSorting")) {
+        else if (!ap_casecmpstr(w, "SuppressColumnSorting")) {
             option = SUPPRESS_COLSORT;
         }
-        else if (!strcasecmp(w, "SuppressDescription")) {
+        else if (!ap_casecmpstr(w, "SuppressDescription")) {
             option = SUPPRESS_DESC;
         }
-        else if (!strcasecmp(w, "SuppressHTMLPreamble")) {
+        else if (!ap_casecmpstr(w, "SuppressHTMLPreamble")) {
             option = SUPPRESS_PREAMBLE;
         }
-        else if (!strcasecmp(w, "SuppressIcon")) {
+        else if (!ap_casecmpstr(w, "SuppressIcon")) {
             option = SUPPRESS_ICON;
         }
-        else if (!strcasecmp(w, "SuppressLastModified")) {
+        else if (!ap_casecmpstr(w, "SuppressLastModified")) {
             option = SUPPRESS_LAST_MOD;
         }
-        else if (!strcasecmp(w, "SuppressSize")) {
+        else if (!ap_casecmpstr(w, "SuppressSize")) {
             option = SUPPRESS_SIZE;
         }
-        else if (!strcasecmp(w, "SuppressRules")) {
+        else if (!ap_casecmpstr(w, "SuppressRules")) {
             option = SUPPRESS_RULES;
         }
-        else if (!strcasecmp(w, "TrackModified")) {
+        else if (!ap_casecmpstr(w, "TrackModified")) {
             option = TRACK_MODIFIED;
         }
-        else if (!strcasecmp(w, "VersionSort")) {
+        else if (!ap_casecmpstr(w, "VersionSort")) {
             option = VERSION_SORT;
         }
-        else if (!strcasecmp(w, "XHTML")) {
+        else if (!ap_casecmpstr(w, "XHTML")) {
             option = EMIT_XHTML;
         }
-        else if (!strcasecmp(w, "ShowForbidden")) {
+        else if (!ap_casecmpstr(w, "ShowForbidden")) {
             option = SHOW_FORBIDDEN;
         }
-        else if (!strcasecmp(w, "AddAltClass")) {
+        else if (!ap_casecmpstr(w, "AddAltClass")) {
             option = ADDALTCLASS;
         }
-        else if (!strcasecmp(w, "None")) {
+        else if (!ap_casecmpstr(w, "None")) {
             if (action != '\0') {
                 return "Cannot combine '+' or '-' with 'None' keyword";
             }
@@ -413,7 +413,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
             opts_add = 0;
             opts_remove = 0;
         }
-        else if (!strcasecmp(w, "IconWidth")) {
+        else if (!ap_casecmpstr(w, "IconWidth")) {
             if (action != '-') {
                 d_cfg->icon_width = DEFAULT_ICON_WIDTH;
             }
@@ -421,13 +421,13 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->icon_width = 0;
             }
         }
-        else if (!strncasecmp(w, "IconWidth=", 10)) {
+        else if (!ap_casecmpstrn(w, "IconWidth=", 10)) {
             if (action == '-') {
                 return "Cannot combine '-' with IconWidth=n";
             }
             d_cfg->icon_width = atoi(&w[10]);
         }
-        else if (!strcasecmp(w, "IconHeight")) {
+        else if (!ap_casecmpstr(w, "IconHeight")) {
             if (action != '-') {
                 d_cfg->icon_height = DEFAULT_ICON_HEIGHT;
             }
@@ -435,13 +435,13 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->icon_height = 0;
             }
         }
-        else if (!strncasecmp(w, "IconHeight=", 11)) {
+        else if (!ap_casecmpstrn(w, "IconHeight=", 11)) {
             if (action == '-') {
                 return "Cannot combine '-' with IconHeight=n";
             }
             d_cfg->icon_height = atoi(&w[11]);
         }
-        else if (!strcasecmp(w, "NameWidth")) {
+        else if (!ap_casecmpstr(w, "NameWidth")) {
             if (action != '-') {
                 return "NameWidth with no value may only appear as "
                        "'-NameWidth'";
@@ -449,7 +449,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
             d_cfg->name_width = DEFAULT_NAME_WIDTH;
             d_cfg->name_adjust = K_NOADJUST;
         }
-        else if (!strncasecmp(w, "NameWidth=", 10)) {
+        else if (!ap_casecmpstrn(w, "NameWidth=", 10)) {
             if (action == '-') {
                 return "Cannot combine '-' with NameWidth=n";
             }
@@ -466,7 +466,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->name_adjust = K_NOADJUST;
             }
         }
-        else if (!strcasecmp(w, "DescriptionWidth")) {
+        else if (!ap_casecmpstr(w, "DescriptionWidth")) {
             if (action != '-') {
                 return "DescriptionWidth with no value may only appear as "
                        "'-DescriptionWidth'";
@@ -474,7 +474,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
             d_cfg->desc_width = DEFAULT_DESC_WIDTH;
             d_cfg->desc_adjust = K_NOADJUST;
         }
-        else if (!strncasecmp(w, "DescriptionWidth=", 17)) {
+        else if (!ap_casecmpstrn(w, "DescriptionWidth=", 17)) {
             if (action == '-') {
                 return "Cannot combine '-' with DescriptionWidth=n";
             }
@@ -491,10 +491,10 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->desc_adjust = K_NOADJUST;
             }
         }
-        else if (!strncasecmp(w, "Type=", 5)) {
+        else if (!ap_casecmpstrn(w, "Type=", 5)) {
             d_cfg->ctype = apr_pstrdup(cmd->pool, &w[5]);
         }
-        else if (!strncasecmp(w, "Charset=", 8)) {
+        else if (!ap_casecmpstrn(w, "Charset=", 8)) {
             d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);
         }
         else {
@@ -528,26 +528,26 @@ static const char *set_default_order(cmd_parms *cmd, void *m,
 {
     autoindex_config_rec *d_cfg = (autoindex_config_rec *) m;
 
-    if (!strcasecmp(direction, "Ascending")) {
+    if (!ap_casecmpstr(direction, "Ascending")) {
         d_cfg->default_direction = D_ASCENDING;
     }
-    else if (!strcasecmp(direction, "Descending")) {
+    else if (!ap_casecmpstr(direction, "Descending")) {
         d_cfg->default_direction = D_DESCENDING;
     }
     else {
         return "First keyword must be 'Ascending' or 'Descending'";
     }
 
-    if (!strcasecmp(key, "Name")) {
+    if (!ap_casecmpstr(key, "Name")) {
         d_cfg->default_keyid = K_NAME;
     }
-    else if (!strcasecmp(key, "Date")) {
+    else if (!ap_casecmpstr(key, "Date")) {
         d_cfg->default_keyid = K_LAST_MOD;
     }
-    else if (!strcasecmp(key, "Size")) {
+    else if (!ap_casecmpstr(key, "Size")) {
         d_cfg->default_keyid = K_SIZE;
     }
-    else if (!strcasecmp(key, "Description")) {
+    else if (!ap_casecmpstr(key, "Description")) {
         d_cfg->default_keyid = K_DESC;
     }
     else {

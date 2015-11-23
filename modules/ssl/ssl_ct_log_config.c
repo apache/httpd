@@ -201,10 +201,10 @@ apr_status_t save_log_config_entry(apr_array_header_t *log_config,
     if (!distrusted_str) {
         distrusted = DISTRUSTED_UNSET;
     }
-    else if (!strcasecmp(distrusted_str, "1")) {
+    else if (!strcmp(distrusted_str, "1")) {
         distrusted = DISTRUSTED;
     }
-    else if (!strcasecmp(distrusted_str, "0")) {
+    else if (!strcmp(distrusted_str, "0")) {
         distrusted = TRUSTED;
     }
     else {
