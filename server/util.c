@@ -1609,7 +1609,7 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
         while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
         }
-        if (!strncasecmp((const char *)start_token, (const char *)tok,
+        if (!ap_casecmpstrn((const char *)start_token, (const char *)tok,
                          s - start_token)) {
             return 1;
         }
@@ -1636,7 +1636,7 @@ AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
         (lidx > 0 && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
         return 0;
 
-    return (strncasecmp(&line[lidx], tok, tlen) == 0);
+    return (ap_casecmpstrn(&line[lidx], tok, tlen) == 0);
 }
 
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
@@ -2603,7 +2603,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
 
     /* sanity check - we only support forms for now */
     ct = apr_table_get(r->headers_in, "Content-Type");
-    if (!ct || strncasecmp("application/x-www-form-urlencoded", ct, 33)) {
+    if (!ct || ap_casecmpstrn("application/x-www-form-urlencoded", ct, 33)) {
         return ap_discard_request_body(r);
     }
 
