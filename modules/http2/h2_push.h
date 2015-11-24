@@ -20,9 +20,9 @@ struct h2_response;
 struct h2_ngheader;
 
 typedef struct h2_push {
-    int initiating_id;
+    int          initiating_id;
     const struct h2_request *req;
-    const char *as;
+    h2_priority  prio;
 } h2_push;
 
 

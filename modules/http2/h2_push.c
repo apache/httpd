@@ -301,6 +301,9 @@ static int add_push(link_ctx *ctx)
                 h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
                 
+                push->prio.dependency = H2_DEPENDANT_AFTER;
+                push->prio.weight = NGHTTP2_DEFAULT_WEIGHT;
+                
                 if (!ctx->pushes) {
                     ctx->pushes = apr_array_make(ctx->pool, 5, sizeof(h2_push*));
                 }
@@ -386,14 +389,14 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
      * TODO: This may be extended in the future by hooks or callbacks
      * where other modules can provide push information directly.
      */
-    if (res->header) {
+    if (res->headers) {
         link_ctx ctx;
         
         memset(&ctx, 0, sizeof(ctx));
         ctx.req = req;
         ctx.pool = p;
     
-        apr_table_do(head_iter, &ctx, res->header, NULL);
+        apr_table_do(head_iter, &ctx, res->headers, NULL);
         return ctx.pushes;
     }
     return NULL;

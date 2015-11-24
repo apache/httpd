@@ -96,8 +96,9 @@ h2_worker *h2_worker_create(int id,
     apr_allocator_t *allocator = NULL;
     apr_pool_t *pool = NULL;
     h2_worker *w;
+    apr_status_t status;
     
-    apr_status_t status = apr_allocator_create(&allocator);
+    status = apr_allocator_create(&allocator);
     if (status != APR_SUCCESS) {
         return NULL;
     }
@@ -126,7 +127,6 @@ h2_worker *h2_worker_create(int id,
         
         apr_pool_pre_cleanup_register(w->pool, w, cleanup_join_thread);
         apr_thread_create(&w->thread, attr, execute, w, w->pool);
-        apr_pool_create(&w->task_pool, w->pool);
     }
     return w;
 }
@@ -167,7 +167,11 @@ h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m,
     /* Create a subpool from the worker one to be used for all things
      * with life-time of this task execution.
      */
+    if (!worker->task_pool) {
+        apr_pool_create(&worker->task_pool, worker->pool);
+    }
     task = h2_task_create(m->id, req, worker->task_pool, m, eos);
+    
     /* Link the task to the worker which provides useful things such
      * as mutex, a socket etc. */
     task->io = worker->io;

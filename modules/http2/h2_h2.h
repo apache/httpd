@@ -58,6 +58,17 @@ extern const char *H2_MAGIC_TOKEN;
 
 #define H2_STREAM_CLIENT_INITIATED(id)      (id&0x01)
 
+typedef enum {
+    H2_DEPENDANT_AFTER,
+    H2_DEPENDANT_INTERLEAVED,
+    H2_DEPENDANT_BEFORE,
+} h2_dependency;
+
+typedef struct h2_priority {
+    h2_dependency dependency;
+    int           weight;
+} h2_priority;
+
 /**
  * Provide a user readable description of the HTTP/2 error code-
  * @param h2_error http/2 error code, as in rfc 7540, ch. 7
