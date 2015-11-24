@@ -111,20 +111,20 @@ static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
 {
     neg_dir_config *n = n_;
 
-    if (!ap_casecmpstr(w, "None")) {
+    if (!strcasecmp(w, "None")) {
         if (n->forcelangpriority & ~FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options with None";
         }
         n->forcelangpriority = FLP_NONE;
     }
-    else if (!ap_casecmpstr(w, "Prefer")) {
+    else if (!strcasecmp(w, "Prefer")) {
         if (n->forcelangpriority & FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options None and "
                    "Prefer";
         }
         n->forcelangpriority |= FLP_PREFER;
     }
-    else if (!ap_casecmpstr(w, "Fallback")) {
+    else if (!strcasecmp(w, "Fallback")) {
         if (n->forcelangpriority & FLP_NONE) {
             return "Cannot combine ForceLanguagePriority options None and "
                    "Fallback";
