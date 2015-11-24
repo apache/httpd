@@ -41,6 +41,7 @@ struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
 struct h2_config;
 struct h2_mplx;
+struct h2_priority;
 struct h2_push;
 struct h2_response;
 struct h2_session;
@@ -194,5 +195,10 @@ apr_status_t h2_session_stream_destroy(h2_session *session,
  */
 struct h2_stream *h2_session_push(h2_session *session, 
                                   struct h2_stream *is, struct h2_push *push);
+
+apr_status_t h2_session_set_prio(h2_session *session, 
+                                 struct h2_stream *stream, 
+                                 struct h2_priority *prio);
+
 
 #endif /* defined(__mod_h2__h2_session__) */

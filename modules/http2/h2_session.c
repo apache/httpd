@@ -1167,6 +1167,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         nghttp2_data_provider provider;
         h2_response *response = stream->response;
         h2_ngheader *ngh;
+        h2_priority *prio;
         
         memset(&provider, 0, sizeof(provider));
         provider.source.fd = stream->id;
@@ -1175,6 +1176,12 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): submit response %d",
                       session->id, stream->id, response->http_status);
+        
+        prio = h2_stream_get_priority(stream);
+        if (prio) {
+            h2_session_set_prio(session, stream, prio);
+            /* no showstopper if that fails for some reason */
+        }
         
         ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
                                         response->headers);
@@ -1227,13 +1234,6 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     return status;
 }
 
-static int valid_weight(float f) 
-{
-    int w = floor(f);
-    return (w < NGHTTP2_MIN_WEIGHT? NGHTTP2_MIN_WEIGHT : 
-            (w > NGHTTP2_MAX_WEIGHT)? NGHTTP2_MAX_WEIGHT : w);
-}
-
 struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                                   h2_push *push)
 {
@@ -1259,95 +1259,10 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                   session->id, push->initiating_id, nid,
                   push->req->method, push->req->path);
                   
-#ifdef H2_NG2_CHANGE_PRIO
-    /* If different than default, change the priority of the pushed stream
-     * as specified in the h2_push:
-     */
-    if (push->weight != NGHTTP2_DEFAULT_WEIGHT || push->dep_pref != H2_PUSH_DEP_AFTER) {
-        nghttp2_stream *s_init, *s_dep, *s_push;
-        int id_init = push->initiating_id;
-        
-        s_push = nghttp2_session_find_stream(session->ngh2, nid);
-        if (!s_push) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "h2_stream(%ld-%d): lookup of PUSHed stream failed",
-                          session->id, nid);
-        }
-        s_init = nghttp2_session_find_stream(session->ngh2, id_init);
-        if (s_push && s_init) {
-            nghttp2_priority_spec ps;
-            int id_dep, w_init, w, rv = 0;
-            
-            switch (push->dep_pref) {
-                case H2_PUSH_DEP_INTERLEAVED:
-                    /* PUSHed stream is to be interleaved with initiating stream.
-                     * It is made a sibling of the initiating stream and gets a
-                     * proportional weight [1, MAX_WEIGHT] of the initiaing
-                     * stream weight.
-                     */
-                    s_dep = nghttp2_stream_get_parent(s_init);
-                    if (s_dep) {
-                        id_dep = nghttp2_stream_get_stream_id(s_dep);
-                        w_init = nghttp2_stream_get_weight(s_init);
-                        w = valid_weight(w_init * ((float)NGHTTP2_MAX_WEIGHT / push->weight));
-                        nghttp2_priority_spec_init(&ps, id_dep, w, 0);
-                        rv = nghttp2_session_change_stream_priority(session->ngh2, nid, &ps);
-                        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                                      "h2_stream(%ld-%d): PUSH INTERLEAVE, weight=%d, "
-                                      "depends=%d, returned=%d",
-                                      session->id, nid, w, id_dep, rv);
-                    }
-                    break;
-                case H2_PUSH_DEP_BEFORE:
-                    /* PUSHed stream os to be sent BEFORE the initiating stream.
-                     * It gets the same weight as the initiating stream, replaces
-                     * that stream in the dependency tree and has the initiating
-                     * stream as child with MAX_WEIGHT.
-                     */
-                    s_dep = nghttp2_stream_get_parent(s_init);
-                    if (s_dep) {
-                        id_dep = nghttp2_stream_get_stream_id(s_dep);
-                        w_init = nghttp2_stream_get_weight(s_init);
-                        nghttp2_priority_spec_init(&ps, id_dep, valid_weight(w_init), 0);
-                        rv = nghttp2_session_change_stream_priority(session->ngh2, nid, &ps);
-                        if (!rv) {
-                            nghttp2_priority_spec_init(&ps, nid, NGHTTP2_MAX_WEIGHT, 0);
-                            rv = nghttp2_session_change_stream_priority(session->ngh2, id_init, &ps);
-                            if (rv < 0) {
-                                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                                              "h2_stream(%ld-%d): PUSH BEFORE2, weight=%d, "
-                                              "depends=%d, returned=%d",
-                                              session->id, id_init, ps.weight, ps.stream_id, rv);
-                            }
-                        }
-                        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                                      "h2_stream(%ld-%d): PUSH BEFORE, weight=%d, "
-                                      "depends=%d, before=%d, returned=%d",
-                                      session->id, nid, w_init, id_dep, id_init, rv);
-                    }
-                    break;
-                case H2_PUSH_DEP_AFTER:
-                    /* The PUSHed stream is to be sent after the initiating stream.
-                     * Give if the specified weight and let it depend on the intiating
-                     * stream.
-                     */
-                    /* fall through, it's the default */
-                default:
-                    nghttp2_priority_spec_init(&ps, id_init, valid_weight(push->weight), 0);
-                    rv = nghttp2_session_change_stream_priority(session->ngh2, nid, &ps);
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                                  "h2_stream(%ld-%d): PUSH AFTER, weight=%d, "
-                                  "depends=%d, returned=%d",
-                                  session->id, nid, ps.weight, ps.stream_id, rv);
-                    break;
-            }
-        }
-    }
-#endif
-
     stream = h2_session_open_stream(session, nid);
     if (stream) {
         h2_stream_set_h2_request(stream, is->id, push->req);
+        h2_stream_set_priority(stream, &push->prio);
         status = stream_schedule(session, stream, 1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
@@ -1370,6 +1285,108 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
     }
     
     return stream;
+}
+
+static int valid_weight(float f) 
+{
+    int w = floor(f);
+    return (w < NGHTTP2_MIN_WEIGHT? NGHTTP2_MIN_WEIGHT : 
+            (w > NGHTTP2_MAX_WEIGHT)? NGHTTP2_MAX_WEIGHT : w);
+}
+
+apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream, 
+                                 h2_priority *prio)
+{
+    apr_status_t status = APR_SUCCESS;
+#ifdef H2_NG2_CHANGE_PRIO
+    nghttp2_stream *s_grandpa, *s_parent, *s;
+    
+    s = nghttp2_session_find_stream(session->ngh2, stream->id);
+    if (!s) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_stream(%ld-%d): lookup of nghttp2_stream failed",
+                      session->id, stream->id);
+        return APR_EINVAL;
+    }
+    
+    s_parent = nghttp2_stream_get_parent(s);
+    if (s_parent) {
+        nghttp2_priority_spec ps;
+        int id_parent, id_grandpa, w_parent, w, rv = 0;
+        char *ptype = "AFTER";
+        h2_dependency dep = prio->dependency;
+        
+        id_parent = nghttp2_stream_get_stream_id(s_parent);
+        s_grandpa = nghttp2_stream_get_parent(s_parent);
+        if (s_grandpa) {
+            id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
+        }
+        else {
+            /* parent of parent does not exist, 
+             * only possible if parent == root */
+            dep = H2_DEPENDANT_AFTER;
+        }
+        
+        switch (dep) {
+            case H2_DEPENDANT_INTERLEAVED:
+                /* PUSHed stream is to be interleaved with initiating stream.
+                 * It is made a sibling of the initiating stream and gets a
+                 * proportional weight [1, MAX_WEIGHT] of the initiaing
+                 * stream weight.
+                 */
+                ptype = "INTERLEAVED";
+                w_parent = nghttp2_stream_get_weight(s_parent);
+                w = valid_weight(w_parent * ((float)NGHTTP2_MAX_WEIGHT / prio->weight));
+                nghttp2_priority_spec_init(&ps, id_grandpa, w, 0);
+                break;
+                
+            case H2_DEPENDANT_BEFORE:
+                /* PUSHed stream os to be sent BEFORE the initiating stream.
+                 * It gets the same weight as the initiating stream, replaces
+                 * that stream in the dependency tree and has the initiating
+                 * stream as child with MAX_WEIGHT.
+                 */
+                ptype = "BEFORE";
+                nghttp2_priority_spec_init(&ps, stream->id, NGHTTP2_MAX_WEIGHT, 0);
+                rv = nghttp2_session_change_stream_priority(session->ngh2, id_parent, &ps);
+                if (rv < 0) {
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                                  "h2_stream(%ld-%d): PUSH BEFORE2, weight=%d, "
+                                  "depends=%d, returned=%d",
+                                  session->id, id_parent, ps.weight, ps.stream_id, rv);
+                    return APR_EGENERAL;
+                }
+                id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
+                w_parent = nghttp2_stream_get_weight(s_parent);
+                nghttp2_priority_spec_init(&ps, id_grandpa, valid_weight(w_parent), 0);
+                break;
+                
+            case H2_DEPENDANT_AFTER:
+                /* The PUSHed stream is to be sent after the initiating stream.
+                 * Give if the specified weight and let it depend on the intiating
+                 * stream.
+                 */
+                /* fall through, it's the default */
+            default:
+                nghttp2_priority_spec_init(&ps, id_parent, valid_weight(prio->weight), 0);
+                break;
+        }
+
+
+        rv = nghttp2_session_change_stream_priority(session->ngh2, stream->id, &ps);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_stream(%ld-%d): PUSH %s, weight=%d, "
+                      "depends=%d, returned=%d",
+                      session->id, stream->id, ptype, 
+                      ps.weight, ps.stream_id, rv);
+        status = (rv < 0)? APR_EGENERAL : APR_SUCCESS;
+    }
+#else
+    (void)session;
+    (void)stream;
+    (void)prio;
+#endif
+    return status;
 }
 
 apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
