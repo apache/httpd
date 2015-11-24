@@ -16,6 +16,7 @@
 #ifndef __mod_h2__h2_response__
 #define __mod_h2__h2_response__
 
+struct h2_request;
 struct h2_push;
 
 typedef struct h2_response {
@@ -27,18 +28,47 @@ typedef struct h2_response {
     apr_table_t *trailers;
 } h2_response;
 
+/**
+ * Create the response from the status and parsed header lines.
+ * @param stream_id id of the stream to create the response for
+ * @param rst_error error for reset or 0
+ * @param http_status  http status code of response
+ * @param hlines the text lines of the response header
+ * @param pool the memory pool to use
+ */
 h2_response *h2_response_create(int stream_id,
                                 int rst_error,
                                 int http_status,
                                 apr_array_header_t *hlines,
                                 apr_pool_t *pool);
 
+/**
+ * Create the response from the given request_rec.
+ * @param stream_id id of the stream to create the response for
+ * @param r the request record which was processed
+ * @param header the headers of the response
+ * @param pool the memory pool to use
+ */
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
                                  apr_table_t *header, apr_pool_t *pool);
 
-void h2_response_destroy(h2_response *response);
+/**
+ * Create the response for the given error.
+ * @param stream_id id of the stream to create the response for
+ * @param type the error code
+ * @param req the original h2_request
+ * @param pool the memory pool to use
+ */
+h2_response *h2_response_die(int stream_id, apr_status_t type,
+                             const struct h2_request *req, apr_pool_t *pool);
 
-h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from);
+/**
+ * Deep copies the response into a new pool.
+ * @param pool the pool to use for the clone
+ * @param from the response to clone
+ * @return the cloned response
+ */
+h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from);
 
 /**
  * Set the trailers in the reponse. Will replace any existing trailers. Will
