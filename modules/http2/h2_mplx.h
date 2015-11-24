@@ -240,7 +240,8 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
  */
 apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id, 
                                h2_io_data_cb *cb, void *ctx, 
-                               apr_off_t *plen, int *peos);
+                               apr_off_t *plen, int *peos,
+                               apr_table_t **ptrailers);
 
 /**
  * Reads output data into the given brigade. Will never block, but
@@ -248,7 +249,8 @@ apr_status_t h2_mplx_out_readx(h2_mplx *mplx, int stream_id,
  */
 apr_status_t h2_mplx_out_read_to(h2_mplx *mplx, int stream_id, 
                                  apr_bucket_brigade *bb, 
-                                 apr_off_t *plen, int *peos);
+                                 apr_off_t *plen, int *peos,
+                                 apr_table_t **ptrailers);
 
 /**
  * Opens the output for the given stream with the specified response.
@@ -264,17 +266,19 @@ apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
  * @param stream_id the stream identifier
  * @param filter the apache filter context of the data
  * @param bb the bucket brigade to append
+ * @param trailers optional trailers for response, maybe NULL
  * @param iowait a conditional used for block/signalling in h2_mplx
  */
 apr_status_t h2_mplx_out_write(h2_mplx *mplx, int stream_id, 
                                ap_filter_t* filter, apr_bucket_brigade *bb,
+                               apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait);
 
 /**
- * Closes the output stream. Readers of this stream will get all pending 
- * data and then only APR_EOF as result. 
+ * Closes the output for stream stream_id. Optionally forwards trailers
+ * fromt the processed stream.  
  */
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id);
+apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers);
 
 apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error);
 

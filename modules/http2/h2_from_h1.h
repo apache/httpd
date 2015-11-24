@@ -69,4 +69,6 @@ struct h2_response *h2_from_h1_get_response(h2_from_h1 *from_h1);
 
 apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
+apr_status_t h2_response_trailers_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+
 #endif /* defined(__mod_h2__h2_from_h1__) */

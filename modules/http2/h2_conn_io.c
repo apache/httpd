@@ -23,6 +23,7 @@
 #include <http_connection.h>
 
 #include "h2_private.h"
+#include "h2_bucket_eoc.h"
 #include "h2_config.h"
 #include "h2_conn_io.h"
 #include "h2_h2.h"
@@ -44,20 +45,20 @@
 
 #define WRITE_BUFFER_SIZE     (8*WRITE_SIZE_MAX)
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c)
+apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, apr_pool_t *pool)
 {
     h2_config *cfg = h2_config_get(c);
     
     io->connection         = c;
-    io->input              = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->output             = apr_brigade_create(c->pool, c->bucket_alloc);
+    io->input              = apr_brigade_create(pool, c->bucket_alloc);
+    io->output             = apr_brigade_create(pool, c->bucket_alloc);
     io->buflen             = 0;
     io->is_tls             = h2_h2_is_tls(c);
     io->buffer_output      = io->is_tls;
     
     if (io->buffer_output) {
         io->bufsize = WRITE_BUFFER_SIZE;
-        io->buffer = apr_pcalloc(c->pool, io->bufsize);
+        io->buffer = apr_pcalloc(pool, io->bufsize);
     }
     else {
         io->bufsize = 0;
@@ -115,6 +116,8 @@ static apr_status_t h2_conn_io_bucket_read(h2_conn_io *io,
                                      &bucket_length, block);
             
             if (status == APR_SUCCESS && bucket_length > 0) {
+                apr_size_t consumed = 0;
+
                 if (APLOGctrace2(io->connection)) {
                     char buffer[32];
                     h2_util_hex_dump(buffer, sizeof(buffer)/sizeof(buffer[0]),
@@ -124,20 +127,18 @@ static apr_status_t h2_conn_io_bucket_read(h2_conn_io *io,
                                   io->connection->id, (int)bucket_length, buffer);
                 }
                 
-                if (bucket_length > 0) {
-                    apr_size_t consumed = 0;
-                    status = on_read_cb(bucket_data, bucket_length,
-                                        &consumed, pdone, puser);
-                    if (status == APR_SUCCESS && bucket_length > consumed) {
-                        /* We have data left in the bucket. Split it. */
-                        status = apr_bucket_split(bucket, consumed);
-                    }
-                    readlen += consumed;
+                status = on_read_cb(bucket_data, bucket_length, &consumed, 
+                                    pdone, puser);
+                if (status == APR_SUCCESS && bucket_length > consumed) {
+                    /* We have data left in the bucket. Split it. */
+                    status = apr_bucket_split(bucket, consumed);
                 }
+                readlen += consumed;
             }
         }
         apr_bucket_delete(bucket);
     }
+    
     if (readlen == 0 && status == APR_SUCCESS && block == APR_NONBLOCK_READ) {
         return APR_EAGAIN;
     }
@@ -158,10 +159,10 @@ apr_status_t h2_conn_io_read(h2_conn_io *io,
         /* Seems something is left from a previous read, lets
          * satisfy our caller with the data we already have. */
         status = h2_conn_io_bucket_read(io, block, on_read_cb, puser, &done);
+        apr_brigade_cleanup(io->input);
         if (status != APR_SUCCESS || done) {
             return status;
         }
-        apr_brigade_cleanup(io->input);
     }
 
     /* We only do a blocking read when we have no streams to process. So,
@@ -179,6 +180,9 @@ apr_status_t h2_conn_io_read(h2_conn_io *io,
         ap_update_child_status(io->connection->sbh, SERVER_BUSY_READ, NULL);
     }
 
+    /* TODO: replace this with a connection filter itself, so that we
+     * no longer need to transfer incoming buckets to our own brigade. 
+     */
     status = ap_get_brigade(io->connection->input_filters,
                             io->input, AP_MODE_READBYTES,
                             block, 64 * 4096);
@@ -379,4 +383,19 @@ apr_status_t h2_conn_io_flush(h2_conn_io *io)
 apr_status_t h2_conn_io_pass(h2_conn_io *io)
 {
     return h2_conn_io_flush_int(io, 0);
+}
+
+apr_status_t h2_conn_io_close(h2_conn_io *io, void *session)
+{
+    apr_bucket *b;
+
+    /* Send out anything in our buffers */
+    h2_conn_io_flush_int(io, 0);
+    
+    b = h2_bucket_eoc_create(io->connection->bucket_alloc, session);
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    b = apr_bucket_flush_create(io->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    return ap_pass_brigade(io->connection->output_filters, io->output);
+    /* and all is gone */
 }

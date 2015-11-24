@@ -32,16 +32,24 @@ apr_status_t h2_io_set_add(h2_io_set *set, struct h2_io *io);
 h2_io *h2_io_set_get(h2_io_set *set, int stream_id);
 h2_io *h2_io_set_remove(h2_io_set *set, struct h2_io *io);
 
-void h2_io_set_remove_all(h2_io_set *set);
-void h2_io_set_destroy_all(h2_io_set *set);
 int h2_io_set_is_empty(h2_io_set *set);
 apr_size_t h2_io_set_size(h2_io_set *set);
 
 
 typedef int h2_io_set_iter_fn(void *ctx, struct h2_io *io);
 
-void h2_io_set_iter(h2_io_set *set,
-                           h2_io_set_iter_fn *iter, void *ctx);
+/**
+ * Iterator over all h2_io* in the set or until a
+ * callback returns 0. It is not safe to add or remove
+ * set members during iteration.
+ *
+ * @param set the set of h2_io to iterate over
+ * @param iter the function to call for each io
+ * @param ctx user data for the callback
+ * @return 1 iff iteration completed for all members
+ */
+int h2_io_set_iter(h2_io_set *set,
+                   h2_io_set_iter_fn *iter, void *ctx);
 
 h2_io *h2_io_set_pop_highest_prio(h2_io_set *set);
 

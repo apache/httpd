@@ -2,6 +2,14 @@
 
 Changes with Apache 2.4.18
 
+  *) mod_http2: fixes crash on connection abort for a busy connection.
+     fixes crash on a request that did not produce any response.
+     [Stefan Eissing]
+
+  *) mod_http2: trailers are sent after reponse body if set in request_rec
+     trailers_out before the end-of-request bucket is sent through the 
+     output filters. [Stefan Eissing]
+
   *) mod_http2: incoming trailers (headers after request body) are properly
      forwarded to the processing engine. [Stefan Eissing]
 
