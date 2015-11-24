@@ -88,7 +88,7 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
                 if (!res_hooks->get_resource_type(resource, &name, &uri) &&
                     name) {
 
-                    if (!uri || !ap_casecmpstr(uri, "DAV:"))
+                    if (!uri || !strcasecmp(uri, "DAV:"))
                         value = apr_pstrcat(p, value ? value : "",
                                             "<D:", name, "/>", NULL);
                     else
