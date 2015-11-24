@@ -668,3 +668,15 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 {
     return stream->response? stream->response->trailers : NULL;
 }
+
+void h2_stream_set_priority(h2_stream *stream, h2_priority *prio)
+{
+    stream->prio = apr_pcalloc(stream->pool, sizeof(*prio));
+    memcpy(stream->prio, prio, sizeof(*prio));
+}
+
+h2_priority *h2_stream_get_priority(h2_stream *stream)
+{
+    return stream->prio;
+}
+

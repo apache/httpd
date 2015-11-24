@@ -301,6 +301,9 @@ static int add_push(link_ctx *ctx)
                 h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
                 
+                push->prio.dependency = H2_DEPENDANT_AFTER;
+                push->prio.weight = NGHTTP2_DEFAULT_WEIGHT;
+                
                 if (!ctx->pushes) {
                     ctx->pushes = apr_array_make(ctx->pool, 5, sizeof(h2_push*));
                 }

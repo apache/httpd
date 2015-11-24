@@ -711,8 +711,8 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                      * insert an error one so that our streams can properly
                      * reset.
                      */
-                    h2_response *r = h2_response_create(stream_id, 0, 
-                                                        500, NULL, m->pool);
+                    h2_response *r = h2_response_die(stream_id, APR_EGENERAL, 
+                                                     io->request, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
                                   "h2_mplx(%ld-%d): close, no response, no rst", 

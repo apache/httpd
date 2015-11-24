@@ -51,10 +51,6 @@ h2_from_h1 *h2_from_h1_create(int stream_id, apr_pool_t *pool)
 
 apr_status_t h2_from_h1_destroy(h2_from_h1 *from_h1)
 {
-    if (from_h1->response) {
-        h2_response_destroy(from_h1->response);
-        from_h1->response = NULL;
-    }
     from_h1->bb = NULL;
     return APR_SUCCESS;
 }
@@ -520,7 +516,7 @@ apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (eb) {
         int st = eb->status;
         apr_brigade_cleanup(bb);
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
                       "h2_from_h1(%d): err bucket status=%d", 
                       from_h1->stream_id, st);
         ap_die(st, r);

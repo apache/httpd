@@ -21,42 +21,30 @@
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
+#include <util_time.h>
 
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
 #include "h2_h2.h"
 #include "h2_util.h"
+#include "h2_request.h"
 #include "h2_response.h"
 
 
-h2_response *h2_response_create(int stream_id,
-                                int rst_error,
-                                int http_status,
-                                apr_array_header_t *hlines,
-                                apr_pool_t *pool)
+static apr_table_t *parse_headers(apr_array_header_t *hlines, apr_pool_t *pool)
 {
-    apr_table_t *headers;
-    h2_response *response = apr_pcalloc(pool, sizeof(h2_response));
-    int i;
-    if (response == NULL) {
-        return NULL;
-    }
-    
-    response->stream_id = stream_id;
-    response->rst_error = rst_error;
-    response->http_status = http_status? http_status : 500;
-    response->content_length = -1;
-    
     if (hlines) {
-        headers = apr_table_make(pool, hlines->nelts);        
+        apr_table_t *headers = apr_table_make(pool, hlines->nelts);        
+        int i;
+        
         for (i = 0; i < hlines->nelts; ++i) {
             char *hline = ((char **)hlines->elts)[i];
             char *sep = ap_strchr(hline, ':');
             if (!sep) {
                 ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, pool,
-                              APLOGNO(02955) "h2_response(%d): invalid header[%d] '%s'",
-                              response->stream_id, i, (char*)hline);
+                              APLOGNO(02955) "h2_response: invalid header[%d] '%s'",
+                              i, (char*)hline);
                 /* not valid format, abort */
                 return NULL;
             }
@@ -67,27 +55,64 @@ h2_response *h2_response_create(int stream_id,
             
             if (!h2_util_ignore_header(hline)) {
                 apr_table_merge(headers, hline, sep);
-                if (*sep && H2_HD_MATCH_LIT_CS("content-length", hline)) {
-                    char *end;
-                    response->content_length = apr_strtoi64(sep, &end, 10);
-                    if (sep == end) {
-                        ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
-                                      pool, APLOGNO(02956) 
-                                      "h2_response(%d): content-length"
-                                      " value not parsed: %s", 
-                                      response->stream_id, sep);
-                        response->content_length = -1;
-                    }
-                }
             }
         }
+        return headers;
     }
     else {
-        headers = apr_table_make(pool, 0);        
+        return apr_table_make(pool, 0);        
     }
+}
 
+static h2_response *h2_response_create_int(int stream_id,
+                                           int rst_error,
+                                           int http_status,
+                                           apr_table_t *headers,
+                                           apr_pool_t *pool)
+{
+    h2_response *response;
+    const char *s;
+
+    if (!headers) {
+        return NULL;
+    }
+    
+    response = apr_pcalloc(pool, sizeof(h2_response));
+    if (response == NULL) {
+        return NULL;
+    }
+    
+    response->stream_id = stream_id;
+    response->rst_error = rst_error;
+    response->http_status = http_status? http_status : 500;
+    response->content_length = -1;
     response->headers = headers;
+    
+    s = apr_table_get(headers, "Content-Length");
+    if (s) {
+        char *end;
+        
+        response->content_length = apr_strtoi64(s, &end, 10);
+        if (s == end) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
+                          pool, APLOGNO(02956) 
+                          "h2_response: content-length"
+                          " value not parsed: %s", s);
+            response->content_length = -1;
+        }
+    }
     return response;
+}
+
+
+h2_response *h2_response_create(int stream_id,
+                                int rst_error,
+                                int http_status,
+                                apr_array_header_t *hlines,
+                                apr_pool_t *pool)
+{
+    return h2_response_create_int(stream_id, rst_error, http_status,
+                                  parse_headers(hlines, pool), pool);
 }
 
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
@@ -119,12 +144,21 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     return response;
 }
 
-void h2_response_destroy(h2_response *response)
+h2_response *h2_response_die(int stream_id, apr_status_t type,
+                             const struct h2_request *req, apr_pool_t *pool)
 {
-    (void)response;
+    apr_table_t *headers = apr_table_make(pool, 5);
+    char *date = NULL;
+    
+    date = apr_palloc(pool, APR_RFC822_DATE_LEN);
+    ap_recent_rfc822_date(date, req->request_time);
+    apr_table_setn(headers, "Date", date);
+    apr_table_setn(headers, "Server", ap_get_server_banner());
+    
+    return h2_response_create_int(stream_id, 0, 500, headers, pool);
 }
 
-h2_response *h2_response_copy(apr_pool_t *pool, h2_response *from)
+h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from)
 {
     h2_response *to = apr_pcalloc(pool, sizeof(h2_response));
     to->stream_id = from->stream_id;
