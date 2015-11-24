@@ -154,6 +154,8 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([nghttp2 library is unusable])
       fi
+      AC_CHECK_FUNCS([nghttp2_session_change_stream_priority], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_CHANGE_PRIO"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi

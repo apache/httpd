@@ -82,8 +82,6 @@ static apr_status_t h2_filter_read_response(ap_filter_t* f,
     return h2_from_h1_read_response(task->output->from_h1, f, bb);
 }
 
-static apr_status_t h2_task_process_request(h2_task *task);
-
 /*******************************************************************************
  * Register various hooks
  */
@@ -136,24 +134,6 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     }
     return OK;
 }
-
-static int h2_task_process_conn(conn_rec* c)
-{
-    h2_ctx *ctx = h2_ctx_get(c);
-    
-    if (h2_ctx_is_task(ctx)) {
-        if (!ctx->task->serialize_headers) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                          "h2_h2, processing request directly");
-            h2_task_process_request(ctx->task);
-            return DONE;
-        }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
-                      "h2_task(%s), serialized handling", ctx->task->id);
-    }
-    return DECLINED;
-}
-
 
 h2_task *h2_task_create(long session_id, const h2_request *req, 
                         apr_pool_t *pool, h2_mplx *mplx, int eos)
@@ -236,128 +216,12 @@ apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
     return status;
 }
 
-static request_rec *h2_task_create_request(h2_task *task)
+static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
 {
-    conn_rec *conn = task->c;
-    request_rec *r;
-    apr_pool_t *p;
-    int access_status = HTTP_OK;    
-    
-    apr_pool_create(&p, conn->pool);
-    apr_pool_tag(p, "request");
-    r = apr_pcalloc(p, sizeof(request_rec));
-    AP_READ_REQUEST_ENTRY((intptr_t)r, (uintptr_t)conn);
-    r->pool            = p;
-    r->connection      = conn;
-    r->server          = conn->base_server;
-    
-    r->user            = NULL;
-    r->ap_auth_type    = NULL;
-    
-    r->allowed_methods = ap_make_method_list(p, 2);
-    
-    r->headers_in      = apr_table_copy(r->pool, task->request->headers);
-    r->trailers_in     = apr_table_make(r->pool, 5);
-    r->subprocess_env  = apr_table_make(r->pool, 25);
-    r->headers_out     = apr_table_make(r->pool, 12);
-    r->err_headers_out = apr_table_make(r->pool, 5);
-    r->trailers_out    = apr_table_make(r->pool, 5);
-    r->notes           = apr_table_make(r->pool, 5);
-    
-    r->request_config  = ap_create_request_config(r->pool);
-    /* Must be set before we run create request hook */
-    
-    r->proto_output_filters = conn->output_filters;
-    r->output_filters  = r->proto_output_filters;
-    r->proto_input_filters = conn->input_filters;
-    r->input_filters   = r->proto_input_filters;
-    ap_run_create_request(r);
-    r->per_dir_config  = r->server->lookup_defaults;
-    
-    r->sent_bodyct     = 0;                      /* bytect isn't for body */
-    
-    r->read_length     = 0;
-    r->read_body       = REQUEST_NO_BODY;
-    
-    r->status          = HTTP_OK;  /* Until further notice */
-    r->header_only     = 0;
-    r->the_request     = NULL;
-    
-    /* Begin by presuming any module can make its own path_info assumptions,
-     * until some module interjects and changes the value.
-     */
-    r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
-    
-    r->useragent_addr = conn->client_addr;
-    r->useragent_ip = conn->client_ip;
-    
-    ap_run_pre_read_request(r, conn);
-    
-    /* Time to populate r with the data we have. */
-    r->request_time = apr_time_now();
-    r->method = task->request->method;
-    /* Provide quick information about the request method as soon as known */
-    r->method_number = ap_method_number_of(r->method);
-    if (r->method_number == M_GET && r->method[0] == 'H') {
-        r->header_only = 1;
-    }
-
-    ap_parse_uri(r, task->request->path);
-    r->protocol = (char*)"HTTP/2";
-    r->proto_num = HTTP_VERSION(2, 0);
-
-    r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, task->request->path, r->protocol);
-    
-    /* update what we think the virtual host is based on the headers we've
-     * now read. may update status.
-     * Leave r->hostname empty, vhost will parse if form our Host: header,
-     * otherwise we get complains about port numbers.
-     */
-    r->hostname = NULL;
-    ap_update_vhost_from_headers(r);
-    
-    /* we may have switched to another server */
-    r->per_dir_config = r->server->lookup_defaults;
-    
-    /*
-     * Add the HTTP_IN filter here to ensure that ap_discard_request_body
-     * called by ap_die and by ap_send_error_response works correctly on
-     * status codes that do not cause the connection to be dropped and
-     * in situations where the connection should be kept alive.
-     */
-    ap_add_input_filter_handle(ap_http_input_filter_handle,
-                               NULL, r, r->connection);
-    
-    if (access_status != HTTP_OK
-        || (access_status = ap_run_post_read_request(r))) {
-        /* Request check post hooks failed. An example of this would be a
-         * request for a vhost where h2 is disabled --> 421.
-         */
-        ap_die(access_status, r);
-        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-        ap_run_log_transaction(r);
-        r = NULL;
-        goto traceout;
-    }
-    
-    AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method, 
-                            (char *)r->uri, (char *)r->server->defn_name, 
-                            r->status);
-    return r;
-traceout:
-    AP_READ_REQUEST_FAILURE((uintptr_t)r);
-    return r;
-}
-
-
-static apr_status_t h2_task_process_request(h2_task *task)
-{
-    conn_rec *c = task->c;
     request_rec *r;
     conn_state_t *cs = c->cs;
 
-    r = h2_task_create_request(task);
+    r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
         
@@ -380,6 +244,24 @@ static apr_status_t h2_task_process_request(h2_task *task)
 
     return APR_SUCCESS;
 }
+
+static int h2_task_process_conn(conn_rec* c)
+{
+    h2_ctx *ctx = h2_ctx_get(c);
+    
+    if (h2_ctx_is_task(ctx)) {
+        if (!ctx->task->serialize_headers) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+                          "h2_h2, processing request directly");
+            h2_task_process_request(ctx->task->request, c);
+            return DONE;
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+                      "h2_task(%s), serialized handling", ctx->task->id);
+    }
+    return DECLINED;
+}
+
 
 
 

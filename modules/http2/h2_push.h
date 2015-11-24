@@ -19,10 +19,17 @@ struct h2_request;
 struct h2_response;
 struct h2_ngheader;
 
+typedef enum {
+    H2_PUSH_DEP_AFTER,
+    H2_PUSH_DEP_INTERLEAVED,
+    H2_PUSH_DEP_BEFORE,
+} h2_push_dep_t;
+
 typedef struct h2_push {
-    int initiating_id;
+    int           initiating_id;
     const struct h2_request *req;
-    const char *as;
+    h2_push_dep_t dep_pref;
+    int           weight;
 } h2_push;
 
 

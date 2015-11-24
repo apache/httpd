@@ -38,6 +38,7 @@ struct h2_request {
     apr_table_t *headers;
     apr_table_t *trailers;
 
+    apr_time_t request_time;
     apr_off_t content_length;
     int chunked;
     int eoh;
@@ -66,6 +67,15 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos);
 
 void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src);
 
+/**
+ * Create a request_rec representing the h2_request to be
+ * processed on the given connection.
+ *
+ * @param req the h2 request to process
+ * @param conn the connection to process the request on
+ * @return the request_rec representing the request
+ */
+request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn);
 
 
 #endif /* defined(__mod_h2__h2_request__) */
