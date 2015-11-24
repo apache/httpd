@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: trailers are sent after reponse body if set in request_rec
-     trailers_out before the end-of-request bucket is sent through the 
-     output filters. [Stefan Eissing]
-     
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 
