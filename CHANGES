@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: new directive 'H2PushPriority' to allow priority specifications
+     on server pushed streams according to their content-type. 
+     [Stefan Eissing]
+     
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 

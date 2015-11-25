@@ -41,6 +41,8 @@ typedef enum {
     H2_CONF_PUSH,
 } h2_config_var_t;
 
+struct h2_priority;
+
 /* Apache httpd module configuration for h2. */
 typedef struct h2_config {
     const char *name;
@@ -61,6 +63,7 @@ typedef struct h2_config {
     apr_int64_t tls_warmup_size;  /* Amount of TLS data to send before going full write size */
     int tls_cooldown_secs;        /* Seconds of idle time before going back to small TLS records */
     int h2_push;                  /* if HTTP/2 server push is enabled */
+    apr_hash_t *priorities;       /* map of content-type to h2_priority records */
 } h2_config;
 
 
@@ -68,18 +71,21 @@ void *h2_config_create_dir(apr_pool_t *pool, char *x);
 void *h2_config_create_svr(apr_pool_t *pool, server_rec *s);
 void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv);
 
-apr_status_t h2_config_apply_header(h2_config *config, request_rec *r);
+apr_status_t h2_config_apply_header(const h2_config *config, request_rec *r);
 
 extern const command_rec h2_cmds[];
 
-h2_config *h2_config_get(conn_rec *c);
-h2_config *h2_config_sget(server_rec *s);
-h2_config *h2_config_rget(request_rec *r);
+const h2_config *h2_config_get(conn_rec *c);
+const h2_config *h2_config_sget(server_rec *s);
+const h2_config *h2_config_rget(request_rec *r);
 
-int h2_config_geti(h2_config *conf, h2_config_var_t var);
-apr_int64_t h2_config_geti64(h2_config *conf, h2_config_var_t var);
+int h2_config_geti(const h2_config *conf, h2_config_var_t var);
+apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var);
 
 void h2_config_init(apr_pool_t *pool);
 
+const struct h2_priority *h2_config_get_priority(const h2_config *conf, 
+                                                 const char *content_type);
+                                                 
 #endif /* __mod_h2__h2_config_h__ */
 

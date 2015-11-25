@@ -28,12 +28,12 @@ struct h2_config;
  * - those created by ourself to perform work on HTTP/2 streams
  */
 typedef struct h2_ctx {
-    int is_h2;                    /* h2 engine is used */
-    const char *protocol;         /* the protocol negotiated */
-    struct h2_task *task;         /* the h2_task executing or NULL */
-    const char *hostname;         /* hostname negotiated via SNI, optional */
-    server_rec *server;           /* httpd server config selected. */
-    struct h2_config *config;     /* effective config in this context */
+    int is_h2;                      /* h2 engine is used */
+    const char *protocol;           /* the protocol negotiated */
+    struct h2_task *task;           /* the h2_task executing or NULL */
+    const char *hostname;           /* hostname negotiated via SNI, optional */
+    server_rec *server;             /* httpd server config selected. */
+    const struct h2_config *config; /* effective config in this context */
 } h2_ctx;
 
 h2_ctx *h2_ctx_get(const conn_rec *c);

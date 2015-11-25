@@ -102,10 +102,11 @@ static void h2_mplx_destroy(h2_mplx *m)
  *   their HTTP/1 cousins, the separate allocator seems to work better
  *   than protecting a shared h2_session one with an own lock.
  */
-h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, h2_workers *workers)
+h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, 
+                        const h2_config *conf,
+                        h2_workers *workers)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_config *conf = h2_config_get(c);
     apr_allocator_t *allocator = NULL;
     h2_mplx *m;
     AP_DEBUG_ASSERT(conf);
