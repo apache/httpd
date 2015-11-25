@@ -550,6 +550,22 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     return h2_session_status_from_apr_status(status);
 }
 
+static int on_frame_send_cb(nghttp2_session *ngh2, 
+                            const nghttp2_frame *frame,
+                            void *user_data)
+{
+    h2_session *session = user_data;
+    if (APLOGctrace1(session->c)) {
+        char buffer[256];
+        
+        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                      "h2_session(%ld): frame_send %s",
+                      session->id, buffer);
+    }
+    return 0;
+}
+
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
 
@@ -571,7 +587,8 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
-    
+    NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
+
     return APR_SUCCESS;
 }
 
@@ -1503,12 +1520,43 @@ apr_status_t h2_session_process(h2_session *session)
     apr_interval_time_t wait_micros = 0;
     static const int MAX_WAIT_MICROS = 200 * 1000;
     int got_streams = 0;
+    h2_stream *stream;
 
     while (!session->aborted && (nghttp2_session_want_read(session->ngh2)
                                  || nghttp2_session_want_write(session->ngh2))) {
         int have_written = 0;
         int have_read = 0;
                                  
+        got_streams = !h2_stream_set_is_empty(session->streams);
+        if (got_streams) {            
+            h2_session_resume_streams_with_data(session);
+            
+            if (h2_stream_set_has_unsubmitted(session->streams)) {
+                /* If we have responses ready, submit them now. */
+                while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
+                    status = submit_response(session, stream);
+                    if (status == APR_SUCCESS 
+                        && nghttp2_session_want_write(session->ngh2)) {
+                        int rv;
+                        
+                        rv = nghttp2_session_send(session->ngh2);
+                        if (rv != 0) {
+                            ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                                          "h2_session: send: %s", nghttp2_strerror(rv));
+                            if (nghttp2_is_fatal(rv)) {
+                                h2_session_abort(session, status, rv);
+                                goto end_process;
+                            }
+                        }
+                        else {
+                            have_written = 1;
+                            wait_micros = 0;
+                        }
+                    }
+                }
+            }
+        }
+        
         /* Send data as long as we have it and window sizes allow. We are
          * a server after all.
          */
@@ -1624,9 +1672,7 @@ apr_status_t h2_session_process(h2_session *session)
         }
         
         got_streams = !h2_stream_set_is_empty(session->streams);
-        if (got_streams) {
-            h2_stream *stream;
-            
+        if (got_streams) {            
             if (session->reprioritize) {
                 h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
                 session->reprioritize = 0;
@@ -1650,15 +1696,6 @@ apr_status_t h2_session_process(h2_session *session)
                 else if (status == APR_SUCCESS) {
                     /* need to flush window updates onto the connection asap */
                     h2_conn_io_flush(&session->io);
-                }
-            }
-            
-            h2_session_resume_streams_with_data(session);
-            
-            if (h2_stream_set_has_unsubmitted(session->streams)) {
-                /* If we have responses ready, submit them now. */
-                while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
-                    status = submit_response(session, stream);
                 }
             }
         }
