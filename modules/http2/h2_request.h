@@ -20,6 +20,7 @@
  * format that will be fed to various httpd input filters to finally
  * become a request_rec to be handled by soemone.
  */
+struct h2_config;
 struct h2_to_h1;
 struct h2_mplx;
 struct h2_task;
@@ -42,11 +43,15 @@ struct h2_request {
     apr_off_t content_length;
     int chunked;
     int eoh;
+    
+    const struct h2_config *config;
 };
 
-h2_request *h2_request_create(int id, apr_pool_t *pool);
+h2_request *h2_request_create(int id, apr_pool_t *pool, 
+                              const struct h2_config *config);
 
 h2_request *h2_request_createn(int id, apr_pool_t *pool,
+                               const struct h2_config *config, 
                                const char *method, const char *scheme,
                                const char *authority, const char *path,
                                apr_table_t *headers);

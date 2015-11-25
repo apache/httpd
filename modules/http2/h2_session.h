@@ -59,6 +59,7 @@ struct h2_session {
     conn_rec *c;                    /* the connection this session serves */
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
+    const struct h2_config *config; /* Relevant config for this session */
     int aborted;                    /* this session is being aborted */
     int reprioritize;               /* scheduled streams priority needs to 
                                      * be re-evaluated */
@@ -94,7 +95,7 @@ struct h2_session {
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_create(conn_rec *c, struct h2_config *cfg, 
+h2_session *h2_session_create(conn_rec *c, const struct h2_config *cfg, 
                               struct h2_workers *workers);
 
 /**
@@ -105,7 +106,7 @@ h2_session *h2_session_create(conn_rec *c, struct h2_config *cfg,
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_rcreate(request_rec *r, struct h2_config *cfg,
+h2_session *h2_session_rcreate(request_rec *r, const struct h2_config *cfg,
                                struct h2_workers *workers);
 
 /**
@@ -198,7 +199,7 @@ struct h2_stream *h2_session_push(h2_session *session,
 
 apr_status_t h2_session_set_prio(h2_session *session, 
                                  struct h2_stream *stream, 
-                                 struct h2_priority *prio);
+                                 const struct h2_priority *prio);
 
 
 #endif /* defined(__mod_h2__h2_session__) */

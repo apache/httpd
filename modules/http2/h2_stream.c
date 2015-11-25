@@ -25,6 +25,7 @@
 
 #include "h2_private.h"
 #include "h2_conn.h"
+#include "h2_config.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
@@ -159,7 +160,7 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 {
     h2_stream *stream = h2_stream_create(id, pool, session);
     set_state(stream, H2_STREAM_ST_OPEN);
-    stream->request   = h2_request_create(id, pool);
+    stream->request   = h2_request_create(id, pool, session->config);
     stream->bbout     = apr_brigade_create(stream->pool, 
                                            stream->session->c->bucket_alloc);
     
@@ -669,14 +670,15 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
     return stream->response? stream->response->trailers : NULL;
 }
 
-void h2_stream_set_priority(h2_stream *stream, h2_priority *prio)
+const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
-    stream->prio = apr_pcalloc(stream->pool, sizeof(*prio));
-    memcpy(stream->prio, prio, sizeof(*prio));
-}
-
-h2_priority *h2_stream_get_priority(h2_stream *stream)
-{
-    return stream->prio;
+    if (stream->initiated_on && stream->response) {
+        const char *ctype = apr_table_get(stream->response->headers, "content-type");
+        if (ctype) {
+            /* FIXME: Not good enough, config needs to come from request->server */
+            return h2_config_get_priority(stream->session->config, ctype);
+        }
+    }
+    return NULL;
 }
 

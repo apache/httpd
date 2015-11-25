@@ -69,7 +69,7 @@ static void check_modules(void)
 
 apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
 {
-    h2_config *config = h2_config_sget(s);
+    const h2_config *config = h2_config_sget(s);
     apr_status_t status = APR_SUCCESS;
     int minw = h2_config_geti(config, H2_CONF_MIN_WORKERS);
     int maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);
@@ -131,11 +131,11 @@ static module *h2_conn_mpm_module(void) {
     return mpm_module;
 }
 
-apr_status_t h2_conn_process(conn_rec *c, request_rec *r)
+apr_status_t h2_conn_process(conn_rec *c, request_rec *r, server_rec *s)
 {
     apr_status_t status;
     h2_session *session;
-    h2_config *config;
+    const h2_config *config;
     int rv;
     
     if (!workers) {
@@ -146,12 +146,15 @@ apr_status_t h2_conn_process(conn_rec *c, request_rec *r)
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_process start");
     
+    if (!s && r) {
+        s = r->server;
+    }
+    
+    config = s? h2_config_sget(s) : h2_config_get(c);
     if (r) {
-        config = h2_config_rget(r);
         session = h2_session_rcreate(r, config, workers);
     }
     else {
-        config = h2_config_get(c);
         session = h2_session_create(c, config, workers);
     }
     
