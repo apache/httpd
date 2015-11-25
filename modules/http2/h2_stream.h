@@ -70,8 +70,6 @@ struct h2_stream {
     
     apr_bucket_brigade *bbout;  /* output DATA */
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
-    
-    struct h2_priority *prio;   /* priority information to set before submit */
 };
 
 
@@ -306,13 +304,6 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream);
 /**
  * Get priority information set for this stream.
  */
-struct h2_priority *h2_stream_get_priority(h2_stream *stream);
-
-/**
- * Set the priority information to use on the submit of the stream.
- * @param stream the stream to set priority on
- * @param prio the priority information
- */
-void h2_stream_set_priority(h2_stream *stream, struct h2_priority *prio);
+const struct h2_priority *h2_stream_get_priority(h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_stream__) */

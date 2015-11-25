@@ -24,9 +24,10 @@ struct h2_task;
  * and the connection will close.
  *
  * @param c the connection HTTP/2 is starting on
- * @param r the upgrad requestion that still awaits an answer, optional
+ * @param r the upgrade request that still awaits an answer, optional
+ * @param s the server selected by request or, if NULL, connection
  */
-apr_status_t h2_conn_process(conn_rec *c, request_rec *r);
+apr_status_t h2_conn_process(conn_rec *c, request_rec *r, server_rec *s);
 
 /* Initialize this child process for h2 connection work,
  * to be called once during child init before multi processing

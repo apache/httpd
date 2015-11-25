@@ -469,7 +469,7 @@ int h2_h2_is_tls(conn_rec *c)
 int h2_is_acceptable_connection(conn_rec *c, int require_all) 
 {
     int is_tls = h2_h2_is_tls(c);
-    h2_config *cfg = h2_config_get(c);
+    const h2_config *cfg = h2_config_get(c);
 
     if (is_tls && h2_config_geti(cfg, H2_CONF_MODERN_TLS_ONLY) > 0) {
         /* Check TLS connection for modern TLS parameters, as defined in
@@ -526,7 +526,7 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
 
 int h2_allows_h2_direct(conn_rec *c)
 {
-    h2_config *cfg = h2_config_get(c);
+    const h2_config *cfg = h2_config_get(c);
     int h2_direct = h2_config_geti(cfg, H2_CONF_DIRECT);
     
     if (h2_direct < 0) {
@@ -544,7 +544,7 @@ int h2_allows_h2_direct(conn_rec *c)
 
 int h2_allows_h2_upgrade(conn_rec *c)
 {
-    h2_config *cfg = h2_config_get(c);
+    const h2_config *cfg = h2_config_get(c);
     int h2_upgrade = h2_config_geti(cfg, H2_CONF_UPGRADE);
     
     return h2_upgrade > 0 || (h2_upgrade < 0 && !h2_h2_is_tls(c));
@@ -651,7 +651,7 @@ int h2_h2_process_conn(conn_rec* c)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_h2, connection, h2 active");
         
-        return h2_conn_process(c, NULL);
+        return h2_conn_process(c, NULL, ctx->server);
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");

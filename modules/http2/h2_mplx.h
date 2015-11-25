@@ -88,6 +88,7 @@ struct h2_mplx {
  * Implicitly has reference count 1.
  */
 h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master, 
+                        const struct h2_config *conf, 
                         struct h2_workers *workers);
 
 /**
