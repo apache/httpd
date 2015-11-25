@@ -41,6 +41,7 @@ typedef enum {
     H2_CONF_PUSH,
 } h2_config_var_t;
 
+struct apr_hash_t;
 struct h2_priority;
 
 /* Apache httpd module configuration for h2. */
@@ -63,7 +64,7 @@ typedef struct h2_config {
     apr_int64_t tls_warmup_size;  /* Amount of TLS data to send before going full write size */
     int tls_cooldown_secs;        /* Seconds of idle time before going back to small TLS records */
     int h2_push;                  /* if HTTP/2 server push is enabled */
-    apr_hash_t *priorities;       /* map of content-type to h2_priority records */
+    struct apr_hash_t *priorities;/* map of content-type to h2_priority records */
 } h2_config;
 
 
