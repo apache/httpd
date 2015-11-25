@@ -15,6 +15,7 @@
 
 #include <assert.h>
 
+#include <apr_hash.h>
 #include <apr_lib.h>
 
 #include <httpd.h>
