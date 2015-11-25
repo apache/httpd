@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.18
 
+  *) mod_http2: new directive 'H2PushPriority' to allow priority specifications
+     on server pushed streams according to their content-type. 
+     [Stefan Eissing]
+     
   *) mod_http2: fixes crash on connection abort for a busy connection.
      fixes crash on a request that did not produce any response.
      [Stefan Eissing]

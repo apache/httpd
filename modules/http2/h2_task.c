@@ -147,13 +147,13 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
         return NULL;
     }
     
-    task->id = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->id        = apr_psprintf(pool, "%ld-%d", session_id, req->id);
     task->stream_id = req->id;
-    task->pool = pool;
-    task->mplx = mplx;
-    task->c = h2_conn_create(mplx->c, task->pool);
+    task->pool      = pool;
+    task->mplx      = mplx;
+    task->c         = h2_conn_create(mplx->c, task->pool);
 
-    task->request = req;
+    task->request   = req;
     task->input_eos = eos;    
     
     return task;
@@ -168,11 +168,10 @@ apr_status_t h2_task_destroy(h2_task *task)
 apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_config *cfg = h2_config_get(task->mplx->c);
     
     AP_DEBUG_ASSERT(task);
     
-    task->serialize_headers = h2_config_geti(cfg, H2_CONF_SER_HEADERS);
+    task->serialize_headers = h2_config_geti(task->request->config, H2_CONF_SER_HEADERS);
 
     status = h2_worker_setup_task(worker, task);
     

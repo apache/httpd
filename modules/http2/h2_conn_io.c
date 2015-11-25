@@ -45,10 +45,10 @@
 
 #define WRITE_BUFFER_SIZE     (8*WRITE_SIZE_MAX)
 
-apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, apr_pool_t *pool)
+apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
+                             const h2_config *cfg, 
+                             apr_pool_t *pool)
 {
-    h2_config *cfg = h2_config_get(c);
-    
     io->connection         = c;
     io->input              = apr_brigade_create(pool, c->bucket_alloc);
     io->output             = apr_brigade_create(pool, c->bucket_alloc);

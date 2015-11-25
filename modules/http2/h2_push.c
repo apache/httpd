@@ -282,7 +282,6 @@ static int add_push(link_ctx *ctx)
                 path = apr_uri_unparse(ctx->pool, &uri, APR_URI_UNP_OMITSITEPART);
                 
                 push = apr_pcalloc(ctx->pool, sizeof(*push));
-                push->initiating_id = ctx->req->id;
                 
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_header, headers, ctx->req->headers,
@@ -290,19 +289,12 @@ static int add_push(link_ctx *ctx)
                              "Cache-Control",
                              "Accept-Language",
                              NULL);
-                /* TODO: which headers do we add here?
-                 */
-                
-                req = h2_request_createn(0, ctx->pool,
-                                         ctx->req->method, 
-                                         ctx->req->scheme,
+                req = h2_request_createn(0, ctx->pool, ctx->req->config, 
+                                         "GET", ctx->req->scheme,
                                          ctx->req->authority, 
                                          path, headers);
                 h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
-                
-                push->prio.dependency = H2_DEPENDANT_AFTER;
-                push->prio.weight = NGHTTP2_DEFAULT_WEIGHT;
                 
                 if (!ctx->pushes) {
                     ctx->pushes = apr_array_make(ctx->pool, 5, sizeof(h2_push*));

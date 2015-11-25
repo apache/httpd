@@ -30,18 +30,22 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
+#include "h2_config.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
 #include "h2_task.h"
 #include "h2_util.h"
 
 
-h2_request *h2_request_create(int id, apr_pool_t *pool)
+h2_request *h2_request_create(int id, apr_pool_t *pool,
+                              const struct h2_config *config)
 {
-    return h2_request_createn(id, pool, NULL, NULL, NULL, NULL, NULL);
+    return h2_request_createn(id, pool, config, 
+                              NULL, NULL, NULL, NULL, NULL);
 }
 
 h2_request *h2_request_createn(int id, apr_pool_t *pool,
+                               const struct h2_config *config, 
                                const char *method, const char *scheme,
                                const char *authority, const char *path,
                                apr_table_t *header)
@@ -49,6 +53,7 @@ h2_request *h2_request_createn(int id, apr_pool_t *pool,
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
     req->id             = id;
+    req->config         = config;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
@@ -137,6 +142,7 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
 {
     apr_status_t status;
     
+    req->config    = h2_config_rget(r);
     req->method    = r->method;
     req->scheme    = (r->parsed_uri.scheme? r->parsed_uri.scheme
                       : ap_http_scheme(r));

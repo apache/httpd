@@ -550,6 +550,22 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     return h2_session_status_from_apr_status(status);
 }
 
+static int on_frame_send_cb(nghttp2_session *ngh2, 
+                            const nghttp2_frame *frame,
+                            void *user_data)
+{
+    h2_session *session = user_data;
+    if (APLOGctrace1(session->c)) {
+        char buffer[256];
+        
+        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                      "h2_session(%ld): frame_send %s",
+                      session->id, buffer);
+    }
+    return 0;
+}
+
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
 
@@ -571,7 +587,8 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_begin_headers, on_begin_headers_cb);
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
-    
+    NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
+
     return APR_SUCCESS;
 }
 
@@ -625,7 +642,7 @@ static void *session_realloc(void *p, size_t size, void *ctx)
 
 static h2_session *h2_session_create_int(conn_rec *c,
                                          request_rec *r,
-                                         h2_config *config, 
+                                         const h2_config *config, 
                                          h2_workers *workers)
 {
     nghttp2_session_callbacks *callbacks = NULL;
@@ -646,6 +663,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->id = c->id;
         session->c = c;
         session->r = r;
+        session->config = config;
         
         session->pool = pool;
         apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
@@ -661,9 +679,9 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->streams = h2_stream_set_create(session->pool, session->max_stream_count);
         
         session->workers = workers;
-        session->mplx = h2_mplx_create(c, session->pool, workers);
+        session->mplx = h2_mplx_create(c, session->pool, config, workers);
         
-        h2_conn_io_init(&session->io, c, session->pool);
+        h2_conn_io_init(&session->io, c, config, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
         status = init_callbacks(c, &callbacks);
@@ -718,13 +736,13 @@ static h2_session *h2_session_create_int(conn_rec *c,
     return session;
 }
 
-h2_session *h2_session_create(conn_rec *c, h2_config *config, 
+h2_session *h2_session_create(conn_rec *c, const h2_config *config, 
                               h2_workers *workers)
 {
     return h2_session_create_int(c, NULL, config, workers);
 }
 
-h2_session *h2_session_rcreate(request_rec *r, h2_config *config, 
+h2_session *h2_session_rcreate(request_rec *r, const h2_config *config, 
                                h2_workers *workers)
 {
     return h2_session_create_int(r->connection, r, config, workers);
@@ -851,7 +869,6 @@ apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv)
 apr_status_t h2_session_start(h2_session *session, int *rv)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_config *config;
     nghttp2_settings_entry settings[3];
     size_t slen;
     int i;
@@ -859,15 +876,11 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     AP_DEBUG_ASSERT(session);
     /* Start the conversation by submitting our SETTINGS frame */
     *rv = 0;
-    config = h2_config_get(session->c);
     if (session->r) {
         const char *s, *cs;
         apr_size_t dlen; 
         h2_stream * stream;
 
-        /* better for vhost matching */
-        config = h2_config_rget(session->r);
-        
         /* 'h2c' mode: we should have a 'HTTP2-Settings' header with
          * base64 encoded client settings. */
         s = apr_table_get(session->r->headers_in, "HTTP2-Settings");
@@ -921,7 +934,7 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     settings[slen].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
     settings[slen].value = (uint32_t)session->max_stream_count;
     ++slen;
-    i = h2_config_geti(config, H2_CONF_WIN_SIZE);
+    i = h2_config_geti(session->config, H2_CONF_WIN_SIZE);
     if (i != H2_INITIAL_WINDOW_SIZE) {
         settings[slen].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
         settings[slen].value = i;
@@ -1167,7 +1180,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         nghttp2_data_provider provider;
         h2_response *response = stream->response;
         h2_ngheader *ngh;
-        h2_priority *prio;
+        const h2_priority *prio;
         
         memset(&provider, 0, sizeof(provider));
         provider.source.fd = stream->id;
@@ -1203,7 +1216,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
          */
         if (!rv 
             && !stream->initiated_on
-            && h2_config_geti(h2_config_get(session->c), H2_CONF_PUSH)
+            && h2_config_geti(session->config, H2_CONF_PUSH)
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
             
@@ -1243,26 +1256,24 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
     int nid;
     
     ngh = h2_util_ngheader_make_req(is->pool, push->req);
-    nid = nghttp2_submit_push_promise(session->ngh2, 0, push->initiating_id, 
+    nid = nghttp2_submit_push_promise(session->ngh2, 0, is->id, 
                                       ngh->nv, ngh->nvlen, NULL);
                                       
     if (nid <= 0) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): submitting push promise fail: %s",
-                      session->id, push->initiating_id, 
-                      nghttp2_strerror(nid));
+                      session->id, is->id, nghttp2_strerror(nid));
         return NULL;
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                  "h2_stream(%ld-%d): promised new stream %d for %s %s",
-                  session->id, push->initiating_id, nid,
-                  push->req->method, push->req->path);
+                  "h2_stream(%ld-%d): promised new stream %d for %s %s on %d",
+                  session->id, is->id, nid,
+                  push->req->method, push->req->path, is->id);
                   
     stream = h2_session_open_stream(session, nid);
     if (stream) {
         h2_stream_set_h2_request(stream, is->id, push->req);
-        h2_stream_set_priority(stream, &push->prio);
         status = stream_schedule(session, stream, 1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
@@ -1275,7 +1286,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_stream(%ld-%d): failed to create stream obj %d",
-                      session->id, push->initiating_id, nid);
+                      session->id, is->id, nid);
     }
 
     if (!stream) {
@@ -1295,7 +1306,7 @@ static int valid_weight(float f)
 }
 
 apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream, 
-                                 h2_priority *prio)
+                                 const h2_priority *prio)
 {
     apr_status_t status = APR_SUCCESS;
 #ifdef H2_NG2_CHANGE_PRIO
@@ -1336,7 +1347,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                  */
                 ptype = "INTERLEAVED";
                 w_parent = nghttp2_stream_get_weight(s_parent);
-                w = valid_weight(w_parent * ((float)NGHTTP2_MAX_WEIGHT / prio->weight));
+                w = valid_weight(w_parent * ((float)prio->weight / NGHTTP2_MAX_WEIGHT));
                 nghttp2_priority_spec_init(&ps, id_grandpa, w, 0);
                 break;
                 
@@ -1347,7 +1358,8 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                  * stream as child with MAX_WEIGHT.
                  */
                 ptype = "BEFORE";
-                nghttp2_priority_spec_init(&ps, stream->id, NGHTTP2_MAX_WEIGHT, 0);
+                w_parent = nghttp2_stream_get_weight(s_parent);
+                nghttp2_priority_spec_init(&ps, stream->id, w_parent, 0);
                 rv = nghttp2_session_change_stream_priority(session->ngh2, id_parent, &ps);
                 if (rv < 0) {
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
@@ -1357,8 +1369,8 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                     return APR_EGENERAL;
                 }
                 id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
-                w_parent = nghttp2_stream_get_weight(s_parent);
-                nghttp2_priority_spec_init(&ps, id_grandpa, valid_weight(w_parent), 0);
+                w = valid_weight(w_parent * ((float)prio->weight / NGHTTP2_MAX_WEIGHT));
+                nghttp2_priority_spec_init(&ps, id_grandpa, w, 0);
                 break;
                 
             case H2_DEPENDANT_AFTER:
@@ -1508,12 +1520,43 @@ apr_status_t h2_session_process(h2_session *session)
     apr_interval_time_t wait_micros = 0;
     static const int MAX_WAIT_MICROS = 200 * 1000;
     int got_streams = 0;
+    h2_stream *stream;
 
     while (!session->aborted && (nghttp2_session_want_read(session->ngh2)
                                  || nghttp2_session_want_write(session->ngh2))) {
         int have_written = 0;
         int have_read = 0;
                                  
+        got_streams = !h2_stream_set_is_empty(session->streams);
+        if (got_streams) {            
+            h2_session_resume_streams_with_data(session);
+            
+            if (h2_stream_set_has_unsubmitted(session->streams)) {
+                /* If we have responses ready, submit them now. */
+                while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
+                    status = submit_response(session, stream);
+                    if (status == APR_SUCCESS 
+                        && nghttp2_session_want_write(session->ngh2)) {
+                        int rv;
+                        
+                        rv = nghttp2_session_send(session->ngh2);
+                        if (rv != 0) {
+                            ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                                          "h2_session: send: %s", nghttp2_strerror(rv));
+                            if (nghttp2_is_fatal(rv)) {
+                                h2_session_abort(session, status, rv);
+                                goto end_process;
+                            }
+                        }
+                        else {
+                            have_written = 1;
+                            wait_micros = 0;
+                        }
+                    }
+                }
+            }
+        }
+        
         /* Send data as long as we have it and window sizes allow. We are
          * a server after all.
          */
@@ -1629,9 +1672,7 @@ apr_status_t h2_session_process(h2_session *session)
         }
         
         got_streams = !h2_stream_set_is_empty(session->streams);
-        if (got_streams) {
-            h2_stream *stream;
-            
+        if (got_streams) {            
             if (session->reprioritize) {
                 h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
                 session->reprioritize = 0;
@@ -1655,15 +1696,6 @@ apr_status_t h2_session_process(h2_session *session)
                 else if (status == APR_SUCCESS) {
                     /* need to flush window updates onto the connection asap */
                     h2_conn_io_flush(&session->io);
-                }
-            }
-            
-            h2_session_resume_streams_with_data(session);
-            
-            if (h2_stream_set_has_unsubmitted(session->streams)) {
-                /* If we have responses ready, submit them now. */
-                while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
-                    status = submit_response(session, stream);
                 }
             }
         }

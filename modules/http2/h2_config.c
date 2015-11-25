@@ -15,6 +15,9 @@
 
 #include <assert.h>
 
+#include <apr_hash.h>
+#include <apr_lib.h>
+
 #include <httpd.h>
 #include <http_core.h>
 #include <http_config.h>
@@ -43,7 +46,7 @@ static h2_config defconf = {
     H2_INITIAL_WINDOW_SIZE, /* window_size */
     -1,                     /* min workers */
     -1,                     /* max workers */
-    10,                     /* max workers idle secs */
+    10 * 60,                /* max workers idle secs */
     64 * 1024,              /* stream max mem size */
     NULL,                   /* no alt-svcs */
     -1,                     /* alt-svc max age */
@@ -55,6 +58,7 @@ static h2_config defconf = {
     1024*1024,              /* TLS warmup size */
     1,                      /* TLS cooldown secs */
     1,                      /* HTTP/2 server push enabled */
+    NULL,                   /* map of content-type to priorities */
 };
 
 static int files_per_session = 0;
@@ -111,6 +115,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->tls_warmup_size      = DEF_VAL;
     conf->tls_cooldown_secs    = DEF_VAL;
     conf->h2_push              = DEF_VAL;
+    conf->priorities           = NULL;
     
     return conf;
 }
@@ -155,16 +160,22 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     n->tls_warmup_size      = H2_CONFIG_GET(add, base, tls_warmup_size);
     n->tls_cooldown_secs    = H2_CONFIG_GET(add, base, tls_cooldown_secs);
     n->h2_push              = H2_CONFIG_GET(add, base, h2_push);
+    if (add->priorities && base->priorities) {
+        n->priorities       = apr_hash_overlay(pool, add->priorities, base->priorities);
+    }
+    else {
+        n->priorities       = add->priorities? add->priorities : base->priorities;
+    }
     
     return n;
 }
 
-int h2_config_geti(h2_config *conf, h2_config_var_t var)
+int h2_config_geti(const h2_config *conf, h2_config_var_t var)
 {
     return (int)h2_config_geti64(conf, var);
 }
 
-apr_int64_t h2_config_geti64(h2_config *conf, h2_config_var_t var)
+apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
 {
     int n;
     switch(var) {
@@ -207,7 +218,7 @@ apr_int64_t h2_config_geti64(h2_config *conf, h2_config_var_t var)
     }
 }
 
-h2_config *h2_config_sget(server_rec *s)
+const h2_config *h2_config_sget(server_rec *s)
 {
     h2_config *cfg = (h2_config *)ap_get_module_config(s->module_config, 
                                                        &http2_module);
@@ -215,11 +226,21 @@ h2_config *h2_config_sget(server_rec *s)
     return cfg;
 }
 
+const struct h2_priority *h2_config_get_priority(const h2_config *conf, 
+                                                 const char *content_type)
+{
+    if (content_type && conf->priorities) {
+        size_t len = strcspn(content_type, "; \t");
+        h2_priority *prio = apr_hash_get(conf->priorities, content_type, len);
+        return prio? prio : apr_hash_get(conf->priorities, "*", 1);
+    }
+    return NULL;
+}
 
 static const char *h2_conf_set_max_streams(cmd_parms *parms,
                                            void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->h2_max_streams = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->h2_max_streams < 1) {
@@ -231,7 +252,7 @@ static const char *h2_conf_set_max_streams(cmd_parms *parms,
 static const char *h2_conf_set_window_size(cmd_parms *parms,
                                            void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->h2_window_size = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->h2_window_size < 1024) {
@@ -243,7 +264,7 @@ static const char *h2_conf_set_window_size(cmd_parms *parms,
 static const char *h2_conf_set_min_workers(cmd_parms *parms,
                                            void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->min_workers = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->min_workers < 1) {
@@ -255,7 +276,7 @@ static const char *h2_conf_set_min_workers(cmd_parms *parms,
 static const char *h2_conf_set_max_workers(cmd_parms *parms,
                                            void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->max_workers = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->max_workers < 1) {
@@ -267,7 +288,7 @@ static const char *h2_conf_set_max_workers(cmd_parms *parms,
 static const char *h2_conf_set_max_worker_idle_secs(cmd_parms *parms,
                                                     void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->max_worker_idle_secs = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->max_worker_idle_secs < 1) {
@@ -279,7 +300,7 @@ static const char *h2_conf_set_max_worker_idle_secs(cmd_parms *parms,
 static const char *h2_conf_set_stream_max_mem_size(cmd_parms *parms,
                                                    void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     
     
     cfg->stream_max_mem_size = (int)apr_atoi64(value);
@@ -294,7 +315,7 @@ static const char *h2_add_alt_svc(cmd_parms *parms,
                                   void *arg, const char *value)
 {
     if (value && strlen(value)) {
-        h2_config *cfg = h2_config_sget(parms->server);
+        h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
         h2_alt_svc *as = h2_alt_svc_parse(value, parms->pool);
         if (!as) {
             return "unable to parse alt-svc specifier";
@@ -311,7 +332,7 @@ static const char *h2_add_alt_svc(cmd_parms *parms,
 static const char *h2_conf_set_alt_svc_max_age(cmd_parms *parms,
                                                void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->alt_svc_max_age = (int)apr_atoi64(value);
     (void)arg;
     return NULL;
@@ -320,7 +341,7 @@ static const char *h2_conf_set_alt_svc_max_age(cmd_parms *parms,
 static const char *h2_conf_set_session_extra_files(cmd_parms *parms,
                                                    void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     apr_int64_t max = (int)apr_atoi64(value);
     if (max < 0) {
         return "value must be a non-negative number";
@@ -333,7 +354,7 @@ static const char *h2_conf_set_session_extra_files(cmd_parms *parms,
 static const char *h2_conf_set_serialize_headers(cmd_parms *parms,
                                                  void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     if (!strcasecmp(value, "On")) {
         cfg->serialize_headers = 1;
         return NULL;
@@ -350,7 +371,7 @@ static const char *h2_conf_set_serialize_headers(cmd_parms *parms,
 static const char *h2_conf_set_direct(cmd_parms *parms,
                                       void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     if (!strcasecmp(value, "On")) {
         cfg->h2_direct = 1;
         return NULL;
@@ -367,7 +388,7 @@ static const char *h2_conf_set_direct(cmd_parms *parms,
 static const char *h2_conf_set_push(cmd_parms *parms,
                                     void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     if (!strcasecmp(value, "On")) {
         cfg->h2_push = 1;
         return NULL;
@@ -381,10 +402,64 @@ static const char *h2_conf_set_push(cmd_parms *parms,
     return "value must be On or Off";
 }
 
+static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
+                                             const char *ctype, const char *sdependency,
+                                             const char *sweight)
+{
+    h2_config *cfg = (h2_config *)h2_config_sget(cmd->server);
+    const char *sdefweight = "16";         /* default AFTER weight */
+    h2_dependency dependency;
+    h2_priority *priority;
+    int weight;
+    
+    if (!strlen(ctype)) {
+        return "1st argument must be a mime-type, like 'text/css' or '*'";
+    }
+    
+    if (!sweight) {
+        /* 2 args only, but which one? */
+        if (apr_isdigit(sdependency[0])) {
+            sweight = sdependency;
+            sdependency = "AFTER";        /* default dependency */
+        }
+    }
+    
+    if (!strcasecmp("AFTER", sdependency)) {
+        dependency = H2_DEPENDANT_AFTER;
+    } 
+    else if (!strcasecmp("BEFORE", sdependency)) {
+        dependency = H2_DEPENDANT_BEFORE;
+        sdefweight = "256";        /* default BEFORE weight */
+    } 
+    else if (!strcasecmp("INTERLEAVED", sdependency)) {
+        dependency = H2_DEPENDANT_INTERLEAVED;
+        sdefweight = "256";        /* default INTERLEAVED weight */
+    }
+    else {
+        return "dependency must be one of 'After', 'Before' or 'Interleaved'";
+    }
+    
+    weight = (int)apr_atoi64(sweight? sweight : sdefweight);
+    if (weight < NGHTTP2_MIN_WEIGHT) {
+        return apr_psprintf(cmd->pool, "weight must be a number >= %d",
+                            NGHTTP2_MIN_WEIGHT);
+    }
+    
+    priority = apr_pcalloc(cmd->pool, sizeof(*priority));
+    priority->dependency = dependency;
+    priority->weight = weight;
+    
+    if (!cfg->priorities) {
+        cfg->priorities = apr_hash_make(cmd->pool);
+    }
+    apr_hash_set(cfg->priorities, ctype, strlen(ctype), priority);
+    return NULL;
+}
+
 static const char *h2_conf_set_modern_tls_only(cmd_parms *parms,
                                                void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     if (!strcasecmp(value, "On")) {
         cfg->modern_tls_only = 1;
         return NULL;
@@ -401,7 +476,7 @@ static const char *h2_conf_set_modern_tls_only(cmd_parms *parms,
 static const char *h2_conf_set_upgrade(cmd_parms *parms,
                                        void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     if (!strcasecmp(value, "On")) {
         cfg->h2_upgrade = 1;
         return NULL;
@@ -418,7 +493,7 @@ static const char *h2_conf_set_upgrade(cmd_parms *parms,
 static const char *h2_conf_set_tls_warmup_size(cmd_parms *parms,
                                                void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->tls_warmup_size = apr_atoi64(value);
     (void)arg;
     return NULL;
@@ -427,7 +502,7 @@ static const char *h2_conf_set_tls_warmup_size(cmd_parms *parms,
 static const char *h2_conf_set_tls_cooldown_secs(cmd_parms *parms,
                                                  void *arg, const char *value)
 {
-    h2_config *cfg = h2_config_sget(parms->server);
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
     cfg->tls_cooldown_secs = (int)apr_atoi64(value);
     (void)arg;
     return NULL;
@@ -469,18 +544,20 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "seconds of idle time on TLS before shrinking writes"),
     AP_INIT_TAKE1("H2Push", h2_conf_set_push, NULL,
                   RSRC_CONF, "off to disable HTTP/2 server push"),
+    AP_INIT_TAKE23("H2PushPriority", h2_conf_add_push_priority, NULL,
+                  RSRC_CONF, "define priority of PUSHed resources per content type"),
     AP_END_CMD
 };
 
 
-h2_config *h2_config_rget(request_rec *r)
+const h2_config *h2_config_rget(request_rec *r)
 {
     h2_config *cfg = (h2_config *)ap_get_module_config(r->per_dir_config, 
                                                        &http2_module);
     return cfg? cfg : h2_config_sget(r->server); 
 }
 
-h2_config *h2_config_get(conn_rec *c)
+const h2_config *h2_config_get(conn_rec *c)
 {
     h2_ctx *ctx = h2_ctx_get(c);
     

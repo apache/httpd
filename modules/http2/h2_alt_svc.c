@@ -74,7 +74,7 @@ h2_alt_svc *h2_alt_svc_parse(const char *s, apr_pool_t *pool) {
 static int h2_alt_svc_handler(request_rec *r)
 {
     h2_ctx *ctx;
-    h2_config *cfg;
+    const h2_config *cfg;
     int i;
     
     if (r->connection->keepalives > 0) {
