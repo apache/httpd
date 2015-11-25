@@ -295,7 +295,7 @@ hostname(s).</p>
 
 <p>You can alternatively accomplish this using the
 <directive module="core" type="section">If</directive>
-directive:</p>
+directive: (<strong>2.4 and later</strong>)</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
