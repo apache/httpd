@@ -111,6 +111,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Limit to ten the number of tolerated empty lines between request,
+     and consume them before the pipelining check to avoid possible response
+     delay when reading the next request without flushing.
+     trunk patch: http://svn.apache.org/r1710095
+                  http://svn.apache.org/r1710105
+                  http://svn.apache.org/r1711902
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-check_pipeline_blank_lines.patch
+                  (trunk works, meant to ease review)
+     +1: ylavic, minfrin, jim
+     icing: test 3 fails for me in t/security/CVE-2005-3357.t
+     ylavic: not related (at least not the cause), fixed in r1715023.
+
+  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
+              to only staple responses with certificate status "good"
+     trunk patch: https://svn.apache.org/r1711728
+                  https://svn.apache.org/r1713209 (missing LOGNO only)
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: kbrand, icing, jim
+    
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -139,25 +158,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: Also, I don't think the changes on worker/event are needed,
              prefork only requires the accept mutex in ONE_PROCESS mode.
 
-  *) core: Limit to ten the number of tolerated empty lines between request,
-     and consume them before the pipelining check to avoid possible response
-     delay when reading the next request without flushing.
-     trunk patch: http://svn.apache.org/r1710095
-                  http://svn.apache.org/r1710105
-                  http://svn.apache.org/r1711902
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-check_pipeline_blank_lines.patch
-                  (trunk works, meant to ease review)
-     +1: ylavic, minfrin, jim
-     icing: test 3 fails for me in t/security/CVE-2005-3357.t
-     ylavic: not related (at least not the cause), fixed in r1715023.
-
-  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
-              to only staple responses with certificate status "good"
-     trunk patch: https://svn.apache.org/r1711728
-                  https://svn.apache.org/r1713209 (missing LOGNO only)
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: kbrand, icing, jim
-    
   *) Remove some useless return statements (+ some minor style changes)
      trunk patch: http://svn.apache.org/r1715567
                   http://svn.apache.org/r1715568
