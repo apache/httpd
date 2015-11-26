@@ -158,6 +158,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: kbrand, icing
     
+  *) Remove some useless return statements (+ some minor style changes)
+     trunk patch: http://svn.apache.org/r1715567
+                  http://svn.apache.org/r1715568
+                  http://svn.apache.org/r1715570
+                  http://svn.apache.org/r1715571
+                  http://svn.apache.org/r1715572
+                  http://svn.apache.org/r1715576
+                  http://svn.apache.org/r1715581
+                  http://svn.apache.org/r1715582
+                  http://svn.apache.org/r1715583
+                  http://svn.apache.org/r1715584
+                  http://svn.apache.org/r1715585
+     2.4.x patch: https://people.apache.org/~jailletc36/remove_return.patch
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
