@@ -561,12 +561,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
-    int num_blank_lines = 0;
-    int max_blank_lines = r->server->limit_req_fields;
-
-    if (max_blank_lines <= 0) {
-        max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
-    }
+    int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -613,7 +608,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
             return 0;
         }
-    } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
+    } while ((len <= 0) && (--num_blank_lines >= 0));
 
     if (APLOGrtrace5(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
@@ -627,6 +622,13 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
     uri = ap_getword_white(r->pool, &ll);
 
+    if (!*r->method || !*uri) {
+        r->status    = HTTP_BAD_REQUEST;
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        return 0;
+    }
+
     /* Provide quick information about the request method as soon as known */
 
     r->method_number = ap_method_number_of(r->method);
@@ -635,6 +637,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     ap_parse_uri(r, uri);
+    if (r->status != HTTP_OK) {
+        return 0;
+    }
 
     if (ll[0]) {
         r->assbackwards = 0;
