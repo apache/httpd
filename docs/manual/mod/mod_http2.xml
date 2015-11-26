@@ -183,7 +183,7 @@
             <context>virtual host</context>
         </contextlist>
         <compatibility>Available in version 2.4.18 and later. For having an
-        effect, a nghttp2 library version newer than 1.4.0 is necessary.</compatibility>
+        effect, a nghttp2 library version 1.5.0 or newer is necessary.</compatibility>
         
         <usage>
             <p>
