@@ -65,7 +65,7 @@ static const char *set_worker_param(apr_pool_t *p,
     apr_interval_time_t timeout;
 
     if (!strcasecmp(key, "loadfactor")) {
-        /* Normalized load factor. Used with BalancerMamber,
+        /* Normalized load factor. Used with BalancerMember,
          * it is a number between 1 and 100.
          */
         worker->s->lbfactor = atoi(val);
