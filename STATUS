@@ -110,13 +110,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
-              to only staple responses with certificate status "good"
-     trunk patch: https://svn.apache.org/r1711728
-                  https://svn.apache.org/r1713209 (missing LOGNO only)
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: kbrand, icing, jim
     
 
 
