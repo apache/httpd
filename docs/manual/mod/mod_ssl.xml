@@ -2530,9 +2530,11 @@ used for controlling the timeout for invalid/unavailable responses.
 
 <usage>
 <p>When enabled, mod_ssl will pass responses from unsuccessful
-stapling related OCSP queries (such as status errors, expired responses etc.)
-on to the client. If set to <code>off</code>, no stapled responses
-for failed queries will be included in the TLS handshake.</p>
+stapling related OCSP queries (such as responses with an overall status
+other than "successful", responses with a certificate status other than
+"good", expired responses etc.) on to the client.
+If set to <code>off</code>, only responses indicating a certificate status
+of "good" will be included in the TLS handshake.</p>
 </usage>
 </directivesynopsis>
 

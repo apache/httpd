@@ -332,10 +332,12 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                                    certinfo *cinf, OCSP_RESPONSE *rsp,
                                    BOOL *pok)
 {
-    int status, reason;
+    int status = V_OCSP_CERTSTATUS_UNKNOWN;
+    int reason = OCSP_REVOKED_STATUS_NOSTATUS;
     OCSP_BASICRESP *bs = NULL;
     ASN1_GENERALIZEDTIME *rev, *thisupd, *nextupd;
     int response_status = OCSP_response_status(rsp);
+    int rv = SSL_TLSEXT_ERR_OK;
 
     if (pok)
         *pok = FALSE;
@@ -360,9 +362,11 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
 
     if (!OCSP_resp_find_status(bs, cinf->cid, &status, &reason, &rev,
                                &thisupd, &nextupd)) {
-        /* If ID not present just pass back to client */
+        /* If ID not present pass back to client (if configured so) */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01935)
                      "stapling_check_response: certificate ID not present in response!");
+        if (mctx->stapling_return_errors == FALSE)
+            rv = SSL_TLSEXT_ERR_NOACK;
     }
     else {
         if (OCSP_check_validity(thisupd, nextupd,
@@ -385,19 +389,45 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                              "stapling_check_response: cached response expired");
             }
 
-            OCSP_BASICRESP_free(bs);
-            return SSL_TLSEXT_ERR_NOACK;
+            rv = SSL_TLSEXT_ERR_NOACK;
+        }
+
+        if (status != V_OCSP_CERTSTATUS_GOOD) {
+            char snum[MAX_STRING_LEN] = { '\0' };
+            BIO *bio = BIO_new(BIO_s_mem());
+
+            if (bio) {
+                int n;
+                if ((i2a_ASN1_INTEGER(bio, cinf->cid->serialNumber) != -1) &&
+                    ((n = BIO_read(bio, snum, sizeof snum - 1)) > 0))
+                    snum[n] = '\0';
+                BIO_free(bio);
+            }
+
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02969)
+                         "stapling_check_response: response has certificate "
+                         "status %s (reason: %s) for serial number %s",
+                         OCSP_cert_status_str(status),
+                         (reason != OCSP_REVOKED_STATUS_NOSTATUS) ?
+                         OCSP_crl_reason_str(reason) : "n/a",
+                         snum[0] ? snum : "[n/a]");
+
+            if (mctx->stapling_return_errors == FALSE) {
+                if (pok)
+                    *pok = FALSE;
+                rv = SSL_TLSEXT_ERR_NOACK;
+            }
         }
     }
 
     OCSP_BASICRESP_free(bs);
 
-    return SSL_TLSEXT_ERR_OK;
+    return rv;
 }
 
 static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                                     certinfo *cinf, OCSP_RESPONSE **prsp,
-                                    apr_pool_t *pool)
+                                    BOOL *pok, apr_pool_t *pool)
 {
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
     apr_pool_t *vpool;
@@ -405,7 +435,6 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     OCSP_CERTID *id = NULL;
     STACK_OF(X509_EXTENSION) *exts;
     int i;
-    BOOL ok = FALSE;
     BOOL rv = TRUE;
     const char *ocspuri;
     apr_uri_t uri;
@@ -447,8 +476,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     /* Create a temporary pool to constrain memory use */
     apr_pool_create(&vpool, conn->pool);
 
-    ok = apr_uri_parse(vpool, ocspuri, &uri);
-    if (ok != APR_SUCCESS) {
+    if (apr_uri_parse(vpool, ocspuri, &uri) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01939)
                      "stapling_renew_response: Error parsing uri %s",
                       ocspuri);
@@ -487,8 +515,8 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         if (response_status == OCSP_RESPONSE_STATUS_SUCCESSFUL) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01942)
                         "stapling_renew_response: query response received");
-            stapling_check_response(s, mctx, cinf, *prsp, &ok);
-            if (ok == FALSE) {
+            stapling_check_response(s, mctx, cinf, *prsp, pok);
+            if (*pok == FALSE) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01943)
                              "stapling_renew_response: error in retrieved response!");
             }
@@ -497,9 +525,10 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01944)
                          "stapling_renew_response: responder error %s",
                          OCSP_response_status_str(response_status));
+            *pok = FALSE;
         }
     }
-    if (stapling_cache_response(s, mctx, *prsp, cinf, ok, pool) == FALSE) {
+    if (stapling_cache_response(s, mctx, *prsp, cinf, *pok, pool) == FALSE) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01945)
                      "stapling_renew_response: error caching response!");
     }
@@ -651,8 +680,8 @@ static int stapling_refresh_mutex_off(server_rec *s)
 }
 
 static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
-                                         OCSP_RESPONSE **rsp, certinfo *cinf, 
-                                         apr_pool_t *p)
+                                         OCSP_RESPONSE **rsp, BOOL *pok,
+                                         certinfo *cinf, apr_pool_t *p)
 {
     BOOL ok;
     int rv;
@@ -688,6 +717,7 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
             else if (!mctx->stapling_return_errors) {
                 OCSP_RESPONSE_free(*rsp);
                 *rsp = NULL;
+                *pok = FALSE;
                 return SSL_TLSEXT_ERR_NOACK;
             }
         }
@@ -712,6 +742,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     certinfo *cinf = NULL;
     OCSP_RESPONSE *rsp = NULL;
     int rv;
+    BOOL ok = TRUE;
 
     if (sc->server->stapling_enabled != TRUE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01950)
@@ -730,7 +761,7 @@ static int stapling_cb(SSL *ssl, void *arg)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01952)
                  "stapling_cb: retrieved cached certificate data");
 
-    rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
+    rv = get_and_check_cached_response(s, mctx, &rsp, &ok, cinf, conn->pool);
     if (rv != 0) {
         return rv;
     }
@@ -742,7 +773,8 @@ static int stapling_cb(SSL *ssl, void *arg)
         /* Maybe another request refreshed the OCSP response while this
          * thread waited for the mutex.  Check again.
          */
-        rv = get_and_check_cached_response(s, mctx, &rsp, cinf, conn->pool);
+        rv = get_and_check_cached_response(s, mctx, &rsp, &ok, cinf,
+                                           conn->pool);
         if (rv != 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "stapling_cb: error checking for cached response "
@@ -760,7 +792,8 @@ static int stapling_cb(SSL *ssl, void *arg)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "stapling_cb: still must refresh cached response "
                          "after obtaining refresh mutex");
-            rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, conn->pool);
+            rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, &ok,
+                                         conn->pool);
             stapling_refresh_mutex_off(s);
 
             if (rv == TRUE) {
@@ -775,7 +808,7 @@ static int stapling_cb(SSL *ssl, void *arg)
         }
     }
 
-    if (rsp) {
+    if (rsp && ((ok == TRUE) || (mctx->stapling_return_errors == TRUE))) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01956)
                      "stapling_cb: setting response");
         if (!stapling_set_response(ssl, rsp))
@@ -783,7 +816,7 @@ static int stapling_cb(SSL *ssl, void *arg)
         return SSL_TLSEXT_ERR_OK;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01957)
-                 "stapling_cb: no response available");
+                 "stapling_cb: no suitable response available");
 
     return SSL_TLSEXT_ERR_NOACK;
 
