@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1711549 -->
+<!-- English Revision: 1716652 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2835,10 +2835,13 @@ OCSP</description>
 
 <usage>
 <p>Lorsque cette directive est activ&eacute;e, mod_ssl va transmettre au client les
-r&eacute;ponses concernant les requ&ecirc;tes OCSP &eacute;chou&eacute;es (erreurs d'&eacute;tat, r&eacute;ponses
-p&eacute;rim&eacute;es, etc...). Lorsqu'elle est &agrave; <code>off</code>, aucune r&eacute;ponse
-concernant les requ&ecirc;tes OCSP &eacute;chou&eacute;es ne sera incluse dans les
-n&eacute;gociation TLS avec les clients.</p>
+r&eacute;ponses concernant les requ&ecirc;tes OCSP
+&eacute;chou&eacute;es (comme les r&eacute;ponses avec un statut g&eacute;n&eacute;ral autre que
+"successful", les r&eacute;ponses avec un statut de certificat autre que
+"good", les r&eacute;ponses arriv&eacute;es &agrave; expiration, etc...). 
+Lorsqu'elle est &agrave; <code>off</code>, seules les r&eacute;ponses avec un
+statut de certificat &eacute;gal &agrave; "good" seront incluses dans la n&eacute;gociation
+TLS.</p>
 </usage>
 </directivesynopsis>
 
