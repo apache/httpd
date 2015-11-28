@@ -2708,10 +2708,13 @@ OCSP</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Lorsque cette directive est activée, mod_ssl va transmettre au client les
-réponses concernant les requêtes OCSP échouées (erreurs d'état, réponses
-périmées, etc...). Lorsqu'elle est à <code>off</code>, aucune réponse
-concernant les requêtes OCSP échouées ne sera incluse dans les
-négociation TLS avec les clients.</p>
+réponses concernant les requêtes OCSP
+échouées (comme les réponses avec un statut général autre que
+"successful", les réponses avec un statut de certificat autre que
+"good", les réponses arrivées à expiration, etc...). 
+Lorsqu'elle est à <code>off</code>, seules les réponses avec un
+statut de certificat égal à "good" seront incluses dans la négociation
+TLS.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
