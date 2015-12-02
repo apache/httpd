@@ -85,6 +85,17 @@ apr_off_t h2_io_out_length(h2_io *io)
     return 0;
 }
 
+apr_status_t h2_io_in_shutdown(h2_io *io)
+{
+    if (io->bbin) {
+        apr_off_t end_len = 0;
+        apr_brigade_length(io->bbin, 1, &end_len);
+        io->input_consumed += end_len;
+        apr_brigade_cleanup(io->bbin);
+    }
+    return h2_io_in_close(io);
+}
+
 apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
                            apr_size_t maxlen)
 {
