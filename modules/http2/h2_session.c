@@ -57,6 +57,16 @@ static int h2_session_status_from_apr_status(apr_status_t rv)
     return NGHTTP2_ERR_PROTO;
 }
 
+static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
+{
+    h2_session *session = (h2_session*)ctx;
+    nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                  "h2_session(%ld-%d): consumed %ld bytes",
+                  session->id, stream_id, (long)bytes_read);
+}
+
+
 h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
 {
     h2_stream * stream;
@@ -221,6 +231,7 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
                   "h2_stream(%ld-%d): data_chunk_recv, written %ld bytes",
                   session->id, stream_id, (long)len);
     if (status != APR_SUCCESS) {
+        update_window(session, stream_id, len);
         rv = nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE, stream_id,
                                        H2_STREAM_RST(stream, H2_ERR_INTERNAL_ERROR));
         if (nghttp2_is_fatal(rv)) {
@@ -555,11 +566,11 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                             void *user_data)
 {
     h2_session *session = user_data;
-    if (APLOGctrace1(session->c)) {
+    if (APLOGcdebug(session->c)) {
         char buffer[256];
         
         frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                       "h2_session(%ld): frame_send %s",
                       session->id, buffer);
     }
@@ -680,6 +691,8 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         session->workers = workers;
         session->mplx = h2_mplx_create(c, session->pool, config, workers);
+        
+        h2_mplx_set_consumed_cb(session->mplx, update_window, session);
         
         h2_conn_io_init(&session->io, c, config, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
@@ -996,12 +1009,6 @@ static int h2_session_resume_streams_with_data(h2_session *session) {
         return ctx.resume_count;
     }
     return 0;
-}
-
-static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
-{
-    h2_session *session = (h2_session*)ctx;
-    nghttp2_session_consume(session->ngh2, stream_id, bytes_read);
 }
 
 h2_stream *h2_session_get_stream(h2_session *session, int stream_id)
@@ -1579,9 +1586,13 @@ apr_status_t h2_session_process(h2_session *session)
         }
         
         if (wait_micros > 0) {
-            ap_log_cerror( APLOG_MARK, APLOG_TRACE3, 0, session->c,
-                          "h2_session: wait for data, %ld micros", (long)(wait_micros));
-            h2_conn_io_pass(&session->io);
+            if (APLOGcdebug(session->c)) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                              "h2_session: wait for data, %ld micros", 
+                              (long)wait_micros);
+            }
+            nghttp2_session_send(session->ngh2);
+            h2_conn_io_flush(&session->io);
             status = h2_mplx_out_trywait(session->mplx, wait_micros, session->iowait);
             
             if (status == APR_TIMEUP) {
@@ -1687,16 +1698,14 @@ apr_status_t h2_session_process(h2_session *session)
                 }
             }
             
-            if (h2_stream_set_has_open_input(session->streams)) {
-                /* Check that any pending window updates are sent. */
-                status = h2_mplx_in_update_windows(session->mplx, update_window, session);
-                if (APR_STATUS_IS_EAGAIN(status)) {
-                    status = APR_SUCCESS;
-                }
-                else if (status == APR_SUCCESS) {
-                    /* need to flush window updates onto the connection asap */
-                    h2_conn_io_flush(&session->io);
-                }
+            /* Check that any pending window updates are sent. */
+            status = h2_mplx_in_update_windows(session->mplx);
+            if (APR_STATUS_IS_EAGAIN(status)) {
+                status = APR_SUCCESS;
+            }
+            else if (status == APR_SUCCESS) {
+                /* need to flush window updates onto the connection asap */
+                h2_conn_io_flush(&session->io);
             }
         }
         
