@@ -107,6 +107,12 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb);
  */
 apr_status_t h2_io_in_close(h2_io *io);
 
+/**
+ * Shuts all input down. Will close input and mark any data buffered
+ * as consumed.
+ */
+apr_status_t h2_io_in_shutdown(h2_io *io);
+
 /*******************************************************************************
  * Output handling of streams.
  ******************************************************************************/

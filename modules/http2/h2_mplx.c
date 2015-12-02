@@ -194,9 +194,27 @@ static void workers_unregister(h2_mplx *m) {
     h2_workers_unregister(m->workers, m);
 }
 
-static void io_destroy(h2_mplx *m, h2_io *io)
+static int io_process_events(h2_mplx *m, h2_io *io) {
+    if (io->input_consumed && m->input_consumed) {
+        m->input_consumed(m->input_consumed_ctx, 
+                          io->id, io->input_consumed);
+        io->input_consumed = 0;
+        return 1;
+    }
+    return 0;
+}
+
+
+static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
     apr_pool_t *pool = io->pool;
+    
+    /* cleanup any buffered input */
+    h2_io_in_shutdown(io);
+    if (events) {
+        /* Process outstanding events before destruction */
+        io_process_events(m, io);
+    }
     
     io->pool = NULL;    
     /* The pool is cleared/destroyed which also closes all
@@ -222,7 +240,7 @@ static int io_stream_done(h2_mplx *m, h2_io *io, int rst_error)
     h2_io_set_remove(m->ready_ios, io);
     if (io->task_done || h2_tq_remove(m->q, io->id)) {
         /* already finished or not even started yet */
-        io_destroy(m, io);
+        io_destroy(m, io, 1);
         return 0;
     }
     else {
@@ -310,7 +328,7 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id)
         if (io) {
             io->task_done = 1;
             if (io->orphaned) {
-                io_destroy(m, io);
+                io_destroy(m, io, 0);
             }
             else {
                 /* hang around until the stream deregisteres */
@@ -371,6 +389,7 @@ apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id,
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
             }
+            io_process_events(m, io);
         }
         else {
             status = APR_EOF;
@@ -396,6 +415,7 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
             if (io->input_arrived) {
                 apr_thread_cond_signal(io->input_arrived);
             }
+            io_process_events(m, io);
         }
         else {
             status = APR_ECONNABORTED;
@@ -406,24 +426,26 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
 }
 
 typedef struct {
-    h2_mplx_consumed_cb *cb;
-    void *cb_ctx;
+    h2_mplx * m;
     int streams_updated;
 } update_ctx;
 
 static int update_window(void *ctx, h2_io *io)
 {
-    if (io->input_consumed) {
-        update_ctx *uctx = (update_ctx*)ctx;
-        uctx->cb(uctx->cb_ctx, io->id, io->input_consumed);
-        io->input_consumed = 0;
+    update_ctx *uctx = (update_ctx*)ctx;
+    if (io_process_events(uctx->m, io)) {
         ++uctx->streams_updated;
     }
     return 1;
 }
 
-apr_status_t h2_mplx_in_update_windows(h2_mplx *m, 
-                                       h2_mplx_consumed_cb *cb, void *cb_ctx)
+void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx)
+{
+    m->input_consumed = cb;
+    m->input_consumed_ctx = ctx;
+}
+
+apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
 {
     apr_status_t status;
     AP_DEBUG_ASSERT(m);
@@ -434,8 +456,7 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m,
     if (APR_SUCCESS == status) {
         update_ctx ctx;
         
-        ctx.cb              = cb;
-        ctx.cb_ctx          = cb_ctx;
+        ctx.m               = m;
         ctx.streams_updated = 0;
 
         status = APR_EAGAIN;
@@ -549,11 +570,15 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                               m->id, io->id);
                 io->orphaned = 1;
                 if (io->task_done) {
-                    io_destroy(m, io);
+                    io_destroy(m, io, 1);
                 }
                 else {
-                    /* hang around until the h2_task is done */
+                    /* hang around until the h2_task is done, but
+                     * shutdown input and send out any events (e.g. window
+                     * updates) asap. */
+                    h2_io_in_shutdown(io);
                     h2_io_rst(io, H2_ERR_STREAM_CLOSED);
+                    io_process_events(m, io);
                 }
             }
             
