@@ -272,8 +272,8 @@
             </example>
             <p>
                 This says that any pushed stream of content type 'application/json'
-                should be send out <em>before</em> X. This makes P1 dependant
-                on Y and X dependant on P1. So, X will be stalled as long as
+                should be send out <em>before</em> X. This makes P1 dependent
+                on Y and X dependent on P1. So, X will be stalled as long as
                 P1 has data to send. The effective weight is calculated as
                 in the interleaved case.
             </p>
@@ -285,15 +285,15 @@
             </p>
             <p>
                 Last, but not least, there are some specifics of the syntax
-                to be used in this directive.
-                <ol>
-                    <li>'*' is the only special content-type that matches all oither. 
-                    'image/*' will not work.</li>
-                    <li>The default dependency is 'After'. </li>
-                    <li>There are also default weights: for 'After' it is 16, otherwise 256. 
-                    </li>
-                </ol>
+                to be used in this directive:
             </p>
+            <ol>
+                <li>'*' is the only special content-type that matches all others. 
+                 'image/*' will not work.</li>
+                <li>The default dependency is 'After'. </li>
+                <li>There are also default weights: for 'After' it is 16, otherwise 256. 
+                </li>
+            </ol>
             <example><title>Shorter Priority Rules</title>
                 <highlight language="config">
 H2PushPriority application/json 32         # an After rule
