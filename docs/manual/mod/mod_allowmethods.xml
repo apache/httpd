@@ -40,7 +40,7 @@ in order for it to rebuild correctly.
 
 <summary>
 <p>This module makes it easy to restrict what HTTP methods can be
-used on an server. The most common configuration would be:</p>
+used on a server. The most common configuration would be:</p>
 
 <highlight language="config">
 &lt;Location "/"&gt;
@@ -61,9 +61,9 @@ used on an server. The most common configuration would be:</p>
 
 <usage>
 
-<p>The HTTP-methods are case sensitive, and are generally as per
-RFC given in upper case. The GET and HEAD methods are treated as
-equivalent. The <code>reset</code> keyword can be used
+<p>The HTTP-methods are case sensitive and are generally, as per
+RFC, given in upper case. The GET and HEAD methods are treated as
+equivalent. The <code>reset</code> keyword can be used to
 turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 
 <highlight language="config">
@@ -73,7 +73,7 @@ turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 </highlight>
 
 <note><title>Caution</title>
-  <p>The TRACE method can not be denied by this module,
+  <p>The TRACE method cannot be denied by this module;
   use <directive module="core">TraceEnable</directive> instead.</p>
 </note>
 
