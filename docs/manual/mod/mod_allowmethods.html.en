@@ -36,7 +36,7 @@
 <h3>Summary</h3>
 
 <p>This module makes it easy to restrict what HTTP methods can be
-used on an server. The most common configuration would be:</p>
+used on a server. The most common configuration would be:</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
    AllowMethods GET POST OPTIONS
@@ -62,9 +62,9 @@ used on an server. The most common configuration would be:</p>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowmethods</td></tr>
 </table>
 
-<p>The HTTP-methods are case sensitive, and are generally as per
-RFC given in upper case. The GET and HEAD methods are treated as
-equivalent. The <code>reset</code> keyword can be used
+<p>The HTTP-methods are case sensitive and are generally, as per
+RFC, given in upper case. The GET and HEAD methods are treated as
+equivalent. The <code>reset</code> keyword can be used to
 turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> in a deeper nested context:</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/svn"&gt;
@@ -73,7 +73,7 @@ turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowme
 
 
 <div class="note"><h3>Caution</h3>
-  <p>The TRACE method can not be denied by this module,
+  <p>The TRACE method cannot be denied by this module;
   use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
 </div>
 
