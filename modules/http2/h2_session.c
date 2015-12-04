@@ -94,6 +94,8 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     return stream;
 }
 
+#ifdef H2_NG2_STREAM_API
+
 /**
  * Determine the importance of streams when scheduling tasks.
  * - if both stream depend on the same one, compare weights
@@ -146,6 +148,20 @@ static int stream_pri_cmp(int sid1, int sid2, void *ctx)
     }
     return spri_cmp(sid1, s1, sid2, s2, session);
 }
+
+#else /* ifdef H2_NG2_STREAM_API */
+
+/* In absence of nghttp2_stream API, which gives information about
+ * priorities since nghttp2 1.3.x, we just sort the streams by
+ * their identifier, aka. order of arrival.
+ */
+static int stream_pri_cmp(int sid1, int sid2, void *ctx)
+{
+    (void)ctx;
+    return sid1 - sid2;
+}
+
+#endif /* (ifdef else) H2_NG2_STREAM_API */
 
 static apr_status_t stream_schedule(h2_session *session,
                                     h2_stream *stream, int eos)
@@ -884,7 +900,7 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     apr_status_t status = APR_SUCCESS;
     nghttp2_settings_entry settings[3];
     size_t slen;
-    int i;
+    int win_size;
     
     AP_DEBUG_ASSERT(session);
     /* Start the conversation by submitting our SETTINGS frame */
@@ -947,10 +963,10 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
     settings[slen].settings_id = NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS;
     settings[slen].value = (uint32_t)session->max_stream_count;
     ++slen;
-    i = h2_config_geti(session->config, H2_CONF_WIN_SIZE);
-    if (i != H2_INITIAL_WINDOW_SIZE) {
+    win_size = h2_config_geti(session->config, H2_CONF_WIN_SIZE);
+    if (win_size != H2_INITIAL_WINDOW_SIZE) {
         settings[slen].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
-        settings[slen].value = i;
+        settings[slen].value = win_size;
         ++slen;
     }
     
@@ -962,7 +978,25 @@ apr_status_t h2_session_start(h2_session *session, int *rv)
                       APLOGNO(02935) "nghttp2_submit_settings: %s", 
                       nghttp2_strerror(*rv));
     }
-    
+    else {
+        /* use maximum possible value for connection window size. We are only
+         * interested in per stream flow control. which have the initial window
+         * size configured above.
+         * Therefore, for our use, the connection window can only get in the
+         * way. Example: if we allow 100 streams with a 32KB window each, we
+         * buffer up to 3.2 MB of data. Unless we do separate connection window
+         * interim updates, any smaller connection window will lead to blocking
+         * in DATA flow.
+         */
+        *rv = nghttp2_submit_window_update(session->ngh2, NGHTTP2_FLAG_NONE,
+                                           0, NGHTTP2_MAX_WINDOW_SIZE - win_size);
+        if (*rv != 0) {
+            status = APR_EGENERAL;
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
+                          APLOGNO(02970) "nghttp2_submit_window_update: %s", 
+                          nghttp2_strerror(*rv));        
+        }
+    }
     return status;
 }
 
@@ -1272,7 +1306,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                       session->id, is->id, nghttp2_strerror(nid));
         return NULL;
     }
-    
+
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                   "h2_stream(%ld-%d): promised new stream %d for %s %s on %d",
                   session->id, is->id, nid,
@@ -1289,6 +1323,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
             h2_stream_cleanup(stream);
             stream = NULL;
         }
+        ++session->unsent_promises;
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
@@ -1539,14 +1574,23 @@ apr_status_t h2_session_process(h2_session *session)
             h2_session_resume_streams_with_data(session);
             
             if (h2_stream_set_has_unsubmitted(session->streams)) {
+                int unsent_submits = 0;
+                
                 /* If we have responses ready, submit them now. */
                 while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
                     status = submit_response(session, stream);
+                    ++unsent_submits;
+                    
+                    /* Unsent push promises are written immediately, as nghttp2
+                     * 1.5.0 realizes internal stream data structures only on 
+                     * send and we might need them for other submits. 
+                     * Also, to conserve memory, we send at least every 10 submits
+                     * so that nghttp2 does not buffer all outbound items too 
+                     * long.
+                     */
                     if (status == APR_SUCCESS 
-                        && nghttp2_session_want_write(session->ngh2)) {
-                        int rv;
-                        
-                        rv = nghttp2_session_send(session->ngh2);
+                        && (session->unsent_promises || unsent_submits > 10)) {
+                        int rv = nghttp2_session_send(session->ngh2);
                         if (rv != 0) {
                             ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
                                           "h2_session: send: %s", nghttp2_strerror(rv));
@@ -1558,6 +1602,8 @@ apr_status_t h2_session_process(h2_session *session)
                         else {
                             have_written = 1;
                             wait_micros = 0;
+                            session->unsent_promises = 0;
+                            unsent_submits = 0;
                         }
                     }
                 }
@@ -1582,6 +1628,7 @@ apr_status_t h2_session_process(h2_session *session)
             else {
                 have_written = 1;
                 wait_micros = 0;
+                session->unsent_promises = 0;
             }
         }
         
