@@ -2,6 +2,15 @@
 
 Changes with Apache 2.4.18
 
+  *) mod_http2: connection level window for flow control is set to protocol
+     maximum of 2GB-1, preventing window exhaustion when sending data on many
+     streams with higher cumulative window size. 
+     Reducing write frequency unless push promises need to be flushed.
+     [Stefan Eissing]
+  
+  *) mod_http2: required minimum version of libnghttp2 is 1.2.1
+     [Stefan Eissing]
+  
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 
