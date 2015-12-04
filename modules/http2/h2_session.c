@@ -14,7 +14,6 @@
  */
 
 #include <assert.h>
-#include <math.h>
 #include <apr_thread_cond.h>
 #include <apr_base64.h>
 #include <apr_strings.h>
@@ -1342,7 +1341,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
 
 static int valid_weight(float f) 
 {
-    int w = floor(f);
+    int w = (int)f;
     return (w < NGHTTP2_MIN_WEIGHT? NGHTTP2_MIN_WEIGHT : 
             (w > NGHTTP2_MAX_WEIGHT)? NGHTTP2_MAX_WEIGHT : w);
 }
