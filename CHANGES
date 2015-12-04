@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
+     if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
+     [Stefan Eissing]
+     
   *) mod_http2: required minimum version of libnghttp2 is 1.2.1
      [Stefan Eissing]
   
