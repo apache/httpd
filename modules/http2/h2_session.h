@@ -63,6 +63,8 @@ struct h2_session {
     int aborted;                    /* this session is being aborted */
     int reprioritize;               /* scheduled streams priority needs to 
                                      * be re-evaluated */
+    int unsent_promises;            /* number of submitted, but not yet sent
+                                     * push promised */
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
