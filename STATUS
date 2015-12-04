@@ -160,6 +160,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works apart from CHANGES
      +1: icing
      
+  *) mod_proxy_fdpass: Fix this module which has been broken since the beginning
+     of 2.4.x. More details in the change entry of r1717063
+     trunk patch: http://svn.apache.org/r1717063
+     2.4.x patch: trunk patch works (module CHANGES)
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
@@ -202,12 +208,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-   * mod_proxy_fdpass: Fix this module which has been broken since the beginning
-     of 2.4.x. More details in the change entry of r1717063
-     trunk patch: http://svn.apache.org/r1717063
-     2.4.x patch: trunk patch works (module CHANGES)
-     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE STALLED
 
