@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      of 2.4.x. More details in the change entry of r1717063
      trunk patch: http://svn.apache.org/r1717063
      2.4.x patch: trunk patch works (module CHANGES)
-     +1: jailletc36
+     +1: jailletc36, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
