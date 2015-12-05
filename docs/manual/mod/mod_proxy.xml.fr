@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1700601:1717063 (outdated) -->
+<!-- English Revision: 1717063 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1339,6 +1339,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
 	de connexions associ&eacute;es en secondes. Une fois cette
 	limite atteinte, une connexion ne sera pas r&eacute;utilis&eacute;e ; elle
 	sera ferm&eacute;e apr&egrave;s un d&eacute;lai variable.
+    </td></tr>
+    <tr><td>flusher</td>
+        <td>flush</td>
+        <td><p>Le fournisseur utilis&eacute; par <module>mod_proxy_fdpass</module>.
+	Se r&eacute;f&eacute;rer &agrave; la documentation de ce module pour plus de d&eacute;tails.</p>
     </td></tr>
 
     </table>
