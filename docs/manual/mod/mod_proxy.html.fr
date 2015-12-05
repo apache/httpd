@@ -1470,6 +1470,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
 	limite atteinte, une connexion ne sera pas réutilisée ; elle
 	sera fermée après un délai variable.
     </td></tr>
+    <tr><td>flusher</td>
+        <td>flush</td>
+        <td><p>Le fournisseur utilisé par <code class="module"><a href="../mod/mod_proxy_fdpass.html">mod_proxy_fdpass</a></code>.
+	Se référer à la documentation de ce module pour plus de détails.</p>
+    </td></tr>
 
     </table>
 
