@@ -245,9 +245,15 @@ h2maxsessionstreams	mod/mod_http2.html#h2maxsessionstreams
 h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
 h2minworkers	mod/mod_http2.html#h2minworkers
+h2moderntlsonly	mod/mod_http2.html#h2moderntlsonly
+h2push	mod/mod_http2.html#h2push
+h2pushpriority	mod/mod_http2.html#h2pushpriority
 h2serializeheaders	mod/mod_http2.html#h2serializeheaders
 h2sessionextrafiles	mod/mod_http2.html#h2sessionextrafiles
 h2streammaxmemsize	mod/mod_http2.html#h2streammaxmemsize
+h2tlscooldownsecs	mod/mod_http2.html#h2tlscooldownsecs
+h2tlswarmupsize	mod/mod_http2.html#h2tlswarmupsize
+h2upgrade	mod/mod_http2.html#h2upgrade
 h2windowsize	mod/mod_http2.html#h2windowsize
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
@@ -426,6 +432,7 @@ proxysourceaddress	mod/mod_proxy.html#proxysourceaddress
 proxystatus	mod/mod_proxy.html#proxystatus
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
+qualifyredirecturl	mod/core.html#qualifyredirecturl
 readmename	mod/mod_autoindex.html#readmename
 receivebuffersize	mod/mpm_common.html#receivebuffersize
 redirect	mod/mod_alias.html#redirect
