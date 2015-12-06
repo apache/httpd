@@ -166,6 +166,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (module CHANGES)
      +1: jailletc36, wrowe
 
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
+     - mod_isapi: Silent a sparse Warning.
+     trunk patch: http://svn.apache.org/r1716940
+                  http://svn.apache.org/r1717086
+     2.4.x patch: trunk patches work
+     +1: jailletc36
+
+  *) mod_ssl: Save a few bytes in conf pool.
+     trunk patch: http://svn.apache.org/r1715273
+     2.4.x patch: trunk patches work
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
