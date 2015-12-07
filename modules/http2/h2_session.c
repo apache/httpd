@@ -1396,11 +1396,12 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                 /* PUSHed stream os to be sent BEFORE the initiating stream.
                  * It gets the same weight as the initiating stream, replaces
                  * that stream in the dependency tree and has the initiating
-                 * stream as child with MAX_WEIGHT.
+                 * stream as child.
                  */
                 ptype = "BEFORE";
-                w_parent = nghttp2_stream_get_weight(s_parent);
+                w = w_parent = nghttp2_stream_get_weight(s_parent);
                 nghttp2_priority_spec_init(&ps, stream->id, w_parent, 0);
+                id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
                 rv = nghttp2_session_change_stream_priority(session->ngh2, id_parent, &ps);
                 if (rv < 0) {
                     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
@@ -1409,8 +1410,6 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                                   session->id, id_parent, ps.weight, ps.stream_id, rv);
                     return APR_EGENERAL;
                 }
-                id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
-                w = valid_weight(w_parent * ((float)prio->weight / NGHTTP2_MAX_WEIGHT));
                 nghttp2_priority_spec_init(&ps, id_grandpa, w, 0);
                 break;
                 
