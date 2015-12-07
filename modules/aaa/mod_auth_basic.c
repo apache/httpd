@@ -254,7 +254,6 @@ static int get_basic_auth(request_rec *r, const char **user,
 {
     const char *auth_line;
     char *decoded_line;
-    int length;
 
     /* Get the appropriate header */
     auth_line = apr_table_get(r->headers_in, (PROXYREQ_PROXY == r->proxyreq)
@@ -279,10 +278,7 @@ static int get_basic_auth(request_rec *r, const char **user,
         auth_line++;
     }
 
-    decoded_line = apr_palloc(r->pool, apr_base64_decode_len(auth_line) + 1);
-    length = apr_base64_decode(decoded_line, auth_line);
-    /* Null-terminate the string. */
-    decoded_line[length] = '\0';
+    decoded_line = ap_pbase64decode(r->pool, auth_line);
 
     *user = ap_getword_nulls(r->pool, (const char**)&decoded_line, ':');
     *pw = decoded_line;

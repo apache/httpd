@@ -1582,9 +1582,10 @@ static apr_status_t isapi_handler (request_rec *r)
     rv = (*isa->HttpExtensionProc)(cid->ecb);
 
     /* Check for a log message - and log it */
-    if (cid->ecb->lpszLogData && *cid->ecb->lpszLogData)
+    if (*cid->ecb->lpszLogData) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02113)
                       "%s: %s", r->filename, cid->ecb->lpszLogData);
+    }
 
     switch(rv) {
         case 0:  /* Strange, but MS isapi accepts this as success */
