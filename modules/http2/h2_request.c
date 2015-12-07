@@ -150,9 +150,13 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
     req->path      = apr_uri_unparse(r->pool, &r->parsed_uri, 
                                      APR_URI_UNP_OMITSITEPART);
 
-    if (!ap_strchr_c(req->authority, ':') && r->server) {
-        req->authority = apr_psprintf(r->pool, "%s:%d", req->authority,
-                                      (int)r->server->port);
+    if (!ap_strchr_c(req->authority, ':') && r->server && r->server->port) {
+        apr_port_t defport = apr_uri_port_of_scheme(req->scheme);
+        if (defport != r->server->port) {
+            /* port info missing and port is not default for scheme: append */
+            req->authority = apr_psprintf(r->pool, "%s:%d", req->authority,
+                                          (int)r->server->port);
+        }
     }
     
     AP_DEBUG_ASSERT(req->scheme);
