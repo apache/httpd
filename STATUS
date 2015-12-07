@@ -110,7 +110,12 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-    
+
+  *) mod_proxy_fdpass: Fix this module which has been broken since the beginning
+     of 2.4.x. More details in the change entry of r1717063
+     trunk patch: http://svn.apache.org/r1717063
+     2.4.x patch: trunk patch works (module CHANGES)
+     +1: jailletc36, wrowe, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -158,13 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
      trunk patch: http://svn.apache.org/r1717958
      2.4.x patch: trunk works apart from CHANGES
-     +1: icing
-     
-  *) mod_proxy_fdpass: Fix this module which has been broken since the beginning
-     of 2.4.x. More details in the change entry of r1717063
-     trunk patch: http://svn.apache.org/r1717063
-     2.4.x patch: trunk patch works (module CHANGES)
-     +1: jailletc36, wrowe
+     +1: icing, ylavic
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
@@ -172,12 +171,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1716940
                   http://svn.apache.org/r1717086
      2.4.x patch: trunk patches work
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) mod_ssl: Save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1715273
      2.4.x patch: trunk patches work
-     +1: jailletc36
+     +1: jailletc36, ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
