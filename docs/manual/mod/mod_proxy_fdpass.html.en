@@ -47,9 +47,14 @@
 
     <p>The module has a <code>proxy_fdpass_flusher</code> provider interface,
     which allows another module to optionally send the response headers, or even
-    the start of the response body.  The default flush provider disables keep-alive,
-    and sends the response headers, letting the external process just send a
-    response body.</p>
+    the start of the response body.  The default <code>flush</code> provider
+    disables keep-alive, and sends the response headers, letting the external
+    process just send a response body.
+    </p>
+    
+    <p>In order to use another provider, you have to set the <code>flusher</code>
+    parameter in the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive.
+    </p>
 
     <p>At this time the only data passed to the external process is the client
     socket. To receive a client socket, call recvfrom with an allocated
