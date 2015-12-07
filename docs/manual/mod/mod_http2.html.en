@@ -386,14 +386,14 @@
                 get double the weight of X. With 128 only half as much. Note that
                 effective weights are always capped at 256.
             </p>
-            <div class="example"><h3>Before Priority Rule</h3><pre class="prettyprint lang-config">H2PushPriority application/json Before 256</pre>
+            <div class="example"><h3>Before Priority Rule</h3><pre class="prettyprint lang-config">H2PushPriority application/json Before</pre>
 </div>
             <p>
                 This says that any pushed stream of content type 'application/json'
                 should be send out <em>before</em> X. This makes P1 dependent
                 on Y and X dependent on P1. So, X will be stalled as long as
-                P1 has data to send. The effective weight is calculated as
-                in the interleaved case.
+                P1 has data to send. The effective weight is inherited from the
+                client stream. Specifying a weight is not allowed.
             </p>
             <p>
                 Be aware that the effect of priority specifications is limited
@@ -409,11 +409,11 @@
                 <li>'*' is the only special content-type that matches all others. 
                  'image/*' will not work.</li>
                 <li>The default dependency is 'After'. </li>
-                <li>There are also default weights: for 'After' it is 16, otherwise 256. 
+                <li>There are also default weights: for 'After' it is 16, 'interleaved' is 256. 
                 </li>
             </ol>
             <div class="example"><h3>Shorter Priority Rules</h3><pre class="prettyprint lang-config">H2PushPriority application/json 32         # an After rule
-H2PushPriority image/jpeg before           # weight 256 default
+H2PushPriority image/jpeg before           # weight inherited
 H2PushPriority text/css   interleaved      # weight 256 default</pre>
 </div>
         
