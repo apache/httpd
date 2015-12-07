@@ -112,14 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
-     - mod_isapi: Silent a sparse Warning.
-     trunk patch: http://svn.apache.org/r1716940
-                  http://svn.apache.org/r1717086
-     2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic, jim
-
   *) mod_ssl: Save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1715273
      2.4.x patch: trunk patches work
