@@ -832,8 +832,7 @@ const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd,
         return err;
     }
 
-    *(const char **)apr_array_push(sc->server->pks->cert_files) =
-        apr_pstrdup(cmd->pool, arg);
+    *(const char **)apr_array_push(sc->server->pks->cert_files) = arg;
     
     return NULL;
 }
@@ -849,8 +848,7 @@ const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd,
         return err;
     }
 
-    *(const char **)apr_array_push(sc->server->pks->key_files) =
-        apr_pstrdup(cmd->pool, arg);
+    *(const char **)apr_array_push(sc->server->pks->key_files) = arg;
 
     return NULL;
 }
