@@ -11,6 +11,12 @@ Changes with Apache 2.4.18
   *) mod_http2: required minimum version of libnghttp2 is 1.2.1
      [Stefan Eissing]
   
+  *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
+     In earlier version of httpd, you can explicitelly set the 'flusher' parameter
+     to 'flush' as a workaround. (i.e. flusher=flush)
+     Add documentation for the 'flusher' parameter when defining a proxy worker.
+     [Christophe Jaillet]
+
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
 

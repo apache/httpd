@@ -111,11 +111,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_fdpass: Fix this module which has been broken since the beginning
-     of 2.4.x. More details in the change entry of r1717063
-     trunk patch: http://svn.apache.org/r1717063
-     2.4.x patch: trunk patch works (module CHANGES)
-     +1: jailletc36, wrowe, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
