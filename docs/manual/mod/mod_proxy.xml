@@ -1162,6 +1162,11 @@ ProxyPass "/mirror/foo" "http://backend.example.com"
         connection will not be used again; it will be closed at some
         later time.
     </td></tr>
+    <tr><td>flusher</td>
+        <td>flush</td>
+        <td><p>Name of the provider used by <module>mod_proxy_fdpass</module>.
+        See the documentation of this module for more details.</p>
+    </td></tr>
 
     </table>
 
