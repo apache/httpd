@@ -1568,6 +1568,9 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* let someone else attempt to cache */
         cache_remove_lock(conf, cache, r, NULL);
 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02971)
+                    "cache: serving %s (revalidated)", r->uri);
+
         return ap_pass_brigade(f->next, bb);
     }
 
