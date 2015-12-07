@@ -112,11 +112,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) mod_ssl: Save a few bytes in conf pool.
-     trunk patch: http://svn.apache.org/r1715273
-     2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
