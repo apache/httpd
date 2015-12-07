@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
      trunk patch: http://svn.apache.org/r1717958
      2.4.x patch: trunk works apart from CHANGES
-     +1: icing, ylavic
+     +1: icing, ylavic, jim
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
@@ -166,12 +166,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1716940
                   http://svn.apache.org/r1717086
      2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
   *) mod_ssl: Save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1715273
      2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic
+     +1: jailletc36, ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
