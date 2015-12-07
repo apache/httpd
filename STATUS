@@ -111,11 +111,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
-     if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
-     trunk patch: http://svn.apache.org/r1717958
-     2.4.x patch: trunk works apart from CHANGES
-     +1: icing, ylavic, jim
 
   *) Easy patches: synch 2.4.x and trunk
      - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
