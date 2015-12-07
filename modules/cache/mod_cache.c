@@ -1410,14 +1410,8 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         if (control.max_age) {
             apr_int64_t x;
 
-            errno = 0;
-            x = control.max_age_value;
-            if (errno) {
-                x = dconf->defex;
-            }
-            else {
-                x = x * MSEC_ONE_SEC;
-            }
+            x = control.max_age_value * MSEC_ONE_SEC;
+
             if (x < dconf->minex) {
                 x = dconf->minex;
             }
