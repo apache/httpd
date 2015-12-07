@@ -111,6 +111,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
+     if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
+     trunk patch: http://svn.apache.org/r1717958
+     2.4.x patch: trunk works apart from CHANGES
+     +1: icing, ylavic, jim
+
+  *) Easy patches: synch 2.4.x and trunk
+     - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
+     - mod_isapi: Silent a sparse Warning.
+     trunk patch: http://svn.apache.org/r1716940
+                  http://svn.apache.org/r1717086
+     2.4.x patch: trunk patches work
+     +1: jailletc36, ylavic, jim
+
+  *) mod_ssl: Save a few bytes in conf pool.
+     trunk patch: http://svn.apache.org/r1715273
+     2.4.x patch: trunk patches work
+     +1: jailletc36, ylavic, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -153,26 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1715585
      2.4.x patch: https://people.apache.org/~jailletc36/remove_return.patch
      +1: jailletc36, jim
-
-  *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
-     if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
-     trunk patch: http://svn.apache.org/r1717958
-     2.4.x patch: trunk works apart from CHANGES
-     +1: icing, ylavic, jim
-
-  *) Easy patches: synch 2.4.x and trunk
-     - mod_auth_basic: Use 'ap_pbase64decode' to simplify code.
-     - mod_isapi: Silent a sparse Warning.
-     trunk patch: http://svn.apache.org/r1716940
-                  http://svn.apache.org/r1717086
-     2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic, jim
-
-  *) mod_ssl: Save a few bytes in conf pool.
-     trunk patch: http://svn.apache.org/r1715273
-     2.4.x patch: trunk patches work
-     +1: jailletc36, ylavic, jim
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
