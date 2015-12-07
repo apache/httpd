@@ -154,6 +154,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~jailletc36/remove_return.patch
      +1: jailletc36, jim
 
+  *) mod_ssl: Fix missing TLS Upgrade/Connection headers on OPTIONS * requests
+     (Note that this is simply a necessary band-aid, and still won't allow h2c
+     to peacefully coexist with tls/n.n upgrades, because Upgrade phase needs
+     to come earlier, not as a handler, and the bogus connection-close behavior
+     must be removed before the Protocol API can handle TLS upgrade.)
+     PR58688
+     trunk patch: http://svn.apache.org/r1717816
+     +1: wrowe
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
