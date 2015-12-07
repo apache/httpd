@@ -55,9 +55,19 @@ static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algk
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
-static int ssl_is_https(conn_rec *c)
+static SSLConnRec *ssl_get_effective_config(conn_rec *c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
+    if (!(sslconn && sslconn->ssl) && c->master) {
+        /* use master connection if no SSL defined here */
+        sslconn = myConnConfig(c->master);
+    }
+    return sslconn;
+}
+
+static int ssl_is_https(conn_rec *c)
+{
+    SSLConnRec *sslconn = ssl_get_effective_config(c);
     return sslconn && sslconn->ssl;
 }
 
@@ -75,7 +85,7 @@ static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
 static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
-    SSLConnRec *sslconn = myConnConfig(ctx->c);
+    SSLConnRec *sslconn = ssl_get_effective_config(ctx->c);
 
     return sslconn ? ssl_var_lookup_ssl(ctx->p, sslconn, ctx->r, var) : NULL;
 }
@@ -261,11 +271,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      * Connection stuff
      */
     if (result == NULL && c != NULL) {
-        SSLConnRec *sslconn = myConnConfig(c);
-        if (!(sslconn && sslconn->ssl) && c->master) {
-            /* use master connection if no SSL defined here */
-            sslconn = myConnConfig(c->master);
-        }
+        SSLConnRec *sslconn = ssl_get_effective_config(c);
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, sslconn, r, var+4);
@@ -1048,7 +1054,7 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
                                  const char *extension)
 {
-    SSLConnRec *sslconn = myConnConfig(c);
+    SSLConnRec *sslconn = ssl_get_effective_config(c);
     SSL *ssl = NULL;
     apr_array_header_t *array = NULL;
     X509 *xs = NULL;
@@ -1192,7 +1198,7 @@ void ssl_var_log_config_register(apr_pool_t *p)
  */
 static const char *ssl_var_log_handler_c(request_rec *r, char *a)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
+    SSLConnRec *sslconn = ssl_get_effective_config(r->connection);
     char *result;
 
     if (sslconn == NULL || sslconn->ssl == NULL)
