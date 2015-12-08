@@ -162,6 +162,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR58688
      trunk patch: http://svn.apache.org/r1717816
      +1: wrowe, icing
+     ylavic: how about adding !ap_request_has_body(r) to the test then?
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
