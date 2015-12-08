@@ -358,6 +358,7 @@ static h2_response *create_response(h2_from_h1 *from_h1, request_rec *r)
     if (!apr_is_empty_table(r->err_headers_out)) {
         r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                            r->headers_out);
+        apr_table_clear(r->err_headers_out);
     }
     
     /*
