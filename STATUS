@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      must be removed before the Protocol API can handle TLS upgrade.)
      PR58688
      trunk patch: http://svn.apache.org/r1717816
-     +1: wrowe
+     +1: wrowe, icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
