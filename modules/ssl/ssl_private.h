@@ -375,7 +375,7 @@ typedef enum {
  * Define the SSL requirement structure
  */
 typedef struct {
-    char           *cpExpr;
+    const char     *cpExpr;
     ap_expr_info_t *mpExpr;
 } ssl_require_t;
 
