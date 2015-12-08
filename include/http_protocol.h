@@ -736,6 +736,10 @@ AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
  *               NULL to indicated that the hooks are free to propose 
  * @param proposals The list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
                                       server_rec *s,
@@ -765,6 +769,10 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param choices A list of protocol identifiers, normally the clients whishes
  * @param proposals the list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
                                      server_rec *s,
@@ -780,6 +788,10 @@ AP_DECLARE_HOOK(int,protocol_switch,(conn_rec *c, request_rec *r,
  *
  * @param c The current connection
  * @return The identifier of the protocol in place or NULL
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
 
@@ -798,6 +810,10 @@ AP_DECLARE_HOOK(const char *,protocol_get,(const conn_rec *c))
  * @param report_all include also protocols less preferred than the current one
  * @param pupgrades on return, possible protocols to upgrade to in descending order 
  *                 of preference. Maybe NULL if none are available.    
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r, 
                                                   server_rec *s, int report_all, 
@@ -817,6 +833,10 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
  * @param s The server/virtual host selected
  * @param choices A list of protocol identifiers, normally the clients whishes
  * @return The selected protocol or NULL if no protocol could be agreed upon
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
@@ -835,6 +855,10 @@ AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r,
  *         APR_EINVAL,  if the protocol is already in place
  *         APR_NOTIMPL, if no module performed the switch
  *         Other errors where appropriate
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r, 
                                             server_rec *s,
@@ -850,6 +874,10 @@ AP_DECLARE(apr_status_t) ap_switch_protocol(conn_rec *c, request_rec *r,
  *
  * @param c The connection to determine the protocol for
  * @return the protocol in use, never NULL
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE(const char *) ap_get_protocol(conn_rec *c);
 
@@ -866,6 +894,10 @@ AP_DECLARE(const char *) ap_get_protocol(conn_rec *c);
  * @param s The server/virtual host selected or NULL
  * @param protocol the protocol to switch to
  * @return != 0 iff protocol is allowed
+ * @bug This API or implementation and order of operations should be considered
+ * experimental and will continue to evolve in future 2.4 releases, with
+ * a corresponding minor module magic number (MMN) bump to indicate the
+ * API revision level.
  */
 AP_DECLARE(int) ap_is_allowed_protocol(conn_rec *c, request_rec *r,
                                        server_rec *s, const char *protocol);
