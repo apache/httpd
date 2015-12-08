@@ -152,6 +152,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
              */
             ap_remove_input_filter_byhandle(r->input_filters, "http_in");
             ap_remove_input_filter_byhandle(r->input_filters, "reqtimeout");
+            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
             
             /* Ok, start an h2_conn on this one. */
             status = h2_conn_process(r->connection, r, r->server);
