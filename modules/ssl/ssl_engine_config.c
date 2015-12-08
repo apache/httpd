@@ -1268,7 +1268,7 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     }
 
     require = apr_array_push(dc->aRequirement);
-    require->cpExpr = apr_pstrdup(cmd->pool, arg);
+    require->cpExpr = arg;
     require->mpExpr = info;
 
     return NULL;
