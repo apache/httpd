@@ -2,10 +2,9 @@
 
 Changes with Apache 2.4.18
 
-   *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
-      if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
-      [Stefan Eissing]
-
+  *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
+     if conn_rec itself holds no valid SSLConnRec*. Fixes PR58666.
+     [Stefan Eissing]
 
   *) mod_http2: connection level window for flow control is set to protocol
      maximum of 2GB-1, preventing window exhaustion when sending data on many
