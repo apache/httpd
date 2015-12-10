@@ -46,6 +46,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
     ap_rxplus_t *ret = apr_pcalloc(pool, sizeof(ap_rxplus_t));
     char delim = 0;
     enum { SUBSTITUTE = 's', MATCH = 'm'} action = MATCH;
+
     if (!apr_isalnum(pattern[0])) {
         delim = *str++;
     }
@@ -65,7 +66,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
     if (delim) {
         endp = ap_strchr_c(str, delim);
     }
-    if (!endp) { /* there's no delim  or flags */
+    if (!endp) { /* there's no delim or flags */
         if (ap_regcomp(&ret->rx, pattern, 0) == 0) {
             apr_pool_cleanup_register(pool, &ret->rx, rxplus_cleanup,
                                       apr_pool_cleanup_null);
@@ -77,7 +78,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
     }
 
     /* We have a delimiter.  Use it to extract the regexp */
-    rxstr = apr_pstrndup(pool, str, endp-str);
+    rxstr = apr_pstrmemdup(pool, str, endp-str);
 
     /* If it's a substitution, we need the replacement string
      * TODO: possible future enhancement - support other parsing
@@ -89,7 +90,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
             /* missing replacement string is an error */
             return NULL;
         }
-        ret->subs = apr_pstrndup(pool, str, (endp-str));
+        ret->subs = apr_pstrmemdup(pool, str, endp-str);
     }
 
     /* anything after the current delimiter is flags */
