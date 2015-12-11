@@ -54,6 +54,7 @@ struct h2_worker {
     void *ctx;
     
     int aborted;
+    int pool_reuses;
     struct h2_task *task;
 };
 

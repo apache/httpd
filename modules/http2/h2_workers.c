@@ -18,6 +18,7 @@
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 
+#include <mpm_common.h>
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
@@ -271,6 +272,14 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
         apr_atomic_set32(&workers->max_idle_secs, 10);
         
         apr_threadattr_create(&workers->thread_attr, workers->pool);
+        apr_threadattr_detach_set(workers->thread_attr, 0);
+        if (ap_thread_stacksize != 0) {
+            apr_threadattr_stacksize_set(workers->thread_attr,
+                                         ap_thread_stacksize);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "h2_workers: using stacksize=%ld", 
+                         (long)ap_thread_stacksize);
+        }
         
         APR_RING_INIT(&workers->workers, h2_worker, link);
         APR_RING_INIT(&workers->zombies, h2_worker, link);

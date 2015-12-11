@@ -102,8 +102,7 @@ static apr_status_t h2_conn_io_bucket_read(h2_conn_io *io,
     apr_size_t readlen = 0;
     *pdone = 0;
     
-    while (status == APR_SUCCESS && !*pdone
-           && !APR_BRIGADE_EMPTY(io->input)) {
+    while (status == APR_SUCCESS && !*pdone && !APR_BRIGADE_EMPTY(io->input)) {
         
         apr_bucket* bucket = APR_BRIGADE_FIRST(io->input);
         if (APR_BUCKET_IS_METADATA(bucket)) {
