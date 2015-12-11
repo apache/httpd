@@ -2238,20 +2238,14 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
  */
 static int variant_has_language(var_rec *variant, const char *lang)
 {
-    int j, max;
-
     /* fast exit */
     if (   !lang
-        || !variant->content_languages
-        || !(max = variant->content_languages->nelts)) {
+        || !variant->content_languages) {
         return 0;
     }
 
-    for (j = 0; j < max; ++j) {
-        if (!strcmp(lang,
-                    ((char **) (variant->content_languages->elts))[j])) {
-            return 1;
-        }
+    if (ap_array_str_contains(variant->content_languages, lang)) {
+        return 1;
     }
 
     return 0;
