@@ -2679,17 +2679,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
 
 AP_DECLARE(int) ap_exists_config_define(const char *name)
 {
-    char **defines;
-    int i;
-
-    defines = (char **)ap_server_config_defines->elts;
-    for (i = 0; i < ap_server_config_defines->nelts; i++) {
-        if (strcmp(defines[i], name) == 0) {
-            return 1;
-        }
-    }
-
-    return 0;
+    return ap_array_str_contains(ap_server_config_defines, name);
 }
 
 static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
