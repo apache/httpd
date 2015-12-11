@@ -40,6 +40,7 @@ struct h2_io {
     int rst_error;
 
     int eos_in;
+    int eos_in_written;
     apr_bucket_brigade *bbin;    /* input data for stream */
     struct apr_thread_cond_t *input_arrived; /* block on reading */
     apr_size_t input_consumed;   /* how many bytes have been read */
@@ -50,6 +51,7 @@ struct h2_io {
     struct apr_thread_cond_t *output_drained; /* block on writing */
     
     int files_handles_owned;
+    apr_bucket_brigade *tmp;     /* temporary data for chunking */
 };
 
 /*******************************************************************************

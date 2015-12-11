@@ -357,6 +357,9 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
             while (APR_STATUS_IS_EAGAIN(status) 
                    && !is_aborted(m, &status)
                    && block == APR_BLOCK_READ) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
+                              "h2_mplx(%ld-%d): wait on in data (BLOCK_READ)", 
+                              m->id, stream_id);
                 apr_thread_cond_wait(io->input_arrived, m->lock);
                 status = h2_io_in_read(io, bb, -1);
             }

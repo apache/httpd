@@ -163,6 +163,9 @@ apr_status_t h2_conn_process(conn_rec *c, request_rec *r, server_rec *s)
                               NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
     } 
 
+    /* What do install instead? */
+    ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
+    
     ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
     status = h2_session_start(session, &rv);
     
