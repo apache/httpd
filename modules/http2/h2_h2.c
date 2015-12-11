@@ -33,6 +33,8 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_conn.h"
+#include "h2_session.h"
+#include "h2_util.h"
 #include "h2_h2.h"
 
 const char *h2_tls_protos[] = {
@@ -436,7 +438,6 @@ static int cipher_is_blacklisted(const char *cipher, const char **psource)
  * - process_conn take over connection in case of h2
  */
 static int h2_h2_process_conn(conn_rec* c);
-static int h2_h2_remove_timeout(conn_rec* c);
 static int h2_h2_post_read_req(request_rec *r);
 
 
@@ -553,7 +554,6 @@ int h2_allows_h2_upgrade(conn_rec *c)
 /*******************************************************************************
  * Register various hooks
  */
-static const char *const mod_reqtimeout[] = { "reqtimeout.c", NULL};
 static const char* const mod_ssl[]        = {"mod_ssl.c", NULL};
 
 void h2_h2_register_hooks(void)
@@ -564,29 +564,12 @@ void h2_h2_register_hooks(void)
     ap_hook_process_connection(h2_h2_process_conn, 
                                mod_ssl, NULL, APR_HOOK_MIDDLE);
                                
-    /* Perform connection cleanup before the actual processing happens.
-     */
-    ap_hook_process_connection(h2_h2_remove_timeout, 
-                               mod_reqtimeout, NULL, APR_HOOK_LAST);
-    
     /* With "H2SerializeHeaders On", we install the filter in this hook
      * that parses the response. This needs to happen before any other post
      * read function terminates the request with an error. Otherwise we will
      * never see the response.
      */
     ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
-}
-
-static int h2_h2_remove_timeout(conn_rec* c)
-{
-    h2_ctx *ctx = h2_ctx_get(c);
-    
-    if (h2_ctx_is_active(ctx) && !h2_ctx_is_task(ctx)) {
-        /* cleanup on master h2 connections */
-        ap_remove_input_filter_byhandle(c->input_filters, "reqtimeout");
-    }
-    
-    return DECLINED;
 }
 
 int h2_h2_process_conn(conn_rec* c)
@@ -660,28 +643,32 @@ int h2_h2_process_conn(conn_rec* c)
 
 static int h2_h2_post_read_req(request_rec *r)
 {
-    h2_ctx *ctx = h2_ctx_rget(r);
-    struct h2_task *task = h2_ctx_get_task(ctx);
-    if (task) {
-        /* FIXME: sometimes, this hook gets called twice for a single request.
-         * This should not be, right? */
-        /* h2_task connection for a stream, not for h2c */
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                      "adding h1_to_h2_resp output filter");
-        if (task->serialize_headers) {
-            ap_remove_output_filter_byhandle(r->output_filters, "H1_TO_H2_RESP");
-            ap_add_output_filter("H1_TO_H2_RESP", task, r, r->connection);
+    /* slave connection? */
+    if (r->connection->master) {
+        h2_ctx *ctx = h2_ctx_rget(r);
+        struct h2_task *task = h2_ctx_get_task(ctx);
+        /* This hook will get called twice on internal redirects. Take care
+         * that we manipulate filters only once. */
+        /* our slave connection? */
+        if (task && !task->filters_set) {
+            /* setup the correct output filters to process the response
+             * on the proper mod_http2 way. */
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "adding task output filter");
+            if (task->serialize_headers) {
+                ap_add_output_filter("H1_TO_H2_RESP", task, r, r->connection);
+            }
+            else {
+                /* replace the core http filter that formats response headers
+                 * in HTTP/1 with our own that collects status and headers */
+                ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
+                ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
+            }
+            ap_add_output_filter("H2_TRAILERS", task, r, r->connection);
+            task->filters_set = 1;
         }
-        else {
-            /* replace the core http filter that formats response headers
-             * in HTTP/1 with our own that collects status and headers */
-            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-            ap_remove_output_filter_byhandle(r->output_filters, "H2_RESPONSE");
-            ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
-        }
-        ap_add_output_filter("H2_TRAILERS", task, r, r->connection);
     }
     return DECLINED;
 }
+
 
 

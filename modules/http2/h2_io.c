@@ -23,6 +23,7 @@
 #include "h2_private.h"
 #include "h2_io.h"
 #include "h2_response.h"
+#include "h2_request.h"
 #include "h2_task.h"
 #include "h2_util.h"
 
@@ -33,8 +34,6 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc)
         io->id = id;
         io->pool = pool;
         io->bucket_alloc = bucket_alloc;
-        io->bbin = NULL;
-        io->bbout = NULL;
     }
     return io;
 }
@@ -96,11 +95,39 @@ apr_status_t h2_io_in_shutdown(h2_io *io)
     return h2_io_in_close(io);
 }
 
+static int add_trailer(void *ctx, const char *key, const char *value)
+{
+    apr_bucket_brigade *bb = ctx;
+    apr_status_t status;
+    
+    status = apr_brigade_printf(bb, NULL, NULL, "%s: %s\r\n", 
+                                key, value);
+    return (status == APR_SUCCESS);
+}
+
+static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb)
+{
+    apr_status_t status = APR_SUCCESS;
+    
+    if (io->request->chunked) {
+        apr_table_t *trailers = io->request->trailers;
+        if (trailers && !apr_is_empty_table(trailers)) {
+            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
+            apr_table_do(add_trailer, bb, trailers, NULL);
+            status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
+        }
+        else {
+            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
+        }
+    }
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(io->bbin->bucket_alloc));
+    return status;
+}
+
 apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
                            apr_size_t maxlen)
 {
     apr_off_t start_len = 0;
-    apr_bucket *last;
     apr_status_t status;
 
     if (io->rst_error) {
@@ -108,21 +135,56 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     }
     
     if (!io->bbin || APR_BRIGADE_EMPTY(io->bbin)) {
-        return io->eos_in? APR_EOF : APR_EAGAIN;
+        if (io->eos_in) {
+            if (!io->eos_in_written) {
+                status = append_eos(io, bb);
+                io->eos_in_written = 1;
+                return status;
+            }
+            return APR_EOF;
+        }
+        return APR_EAGAIN;
     }
     
-    apr_brigade_length(bb, 1, &start_len);
-    last = APR_BRIGADE_LAST(bb);
-    status = h2_util_move(bb, io->bbin, maxlen, NULL, "h2_io_in_read");
-    if (status == APR_SUCCESS) {
-        apr_bucket *nlast = APR_BRIGADE_LAST(bb);
-        apr_off_t end_len = 0;
-        apr_brigade_length(bb, 1, &end_len);
-        if (last == nlast) {
-            return APR_EAGAIN;
+    if (io->request->chunked) {
+        /* the reader expects HTTP/1.1 chunked encoding */
+        if (!io->tmp) {
+            io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
         }
-        io->input_consumed += (end_len - start_len);
+        apr_brigade_cleanup(io->tmp);
+        
+        status = h2_util_move(io->tmp, io->bbin, maxlen, NULL, "h2_io_in_read_chunk");
+        if (status == APR_SUCCESS) {
+            apr_off_t tmp_len = 0;
+            
+            apr_brigade_length(io->tmp, 1, &tmp_len);
+            if (tmp_len > 0) {
+                io->input_consumed += tmp_len;
+                status = apr_brigade_printf(bb, NULL, NULL, "%lx\r\n", 
+                                            (unsigned long)tmp_len);
+                if (status == APR_SUCCESS) {
+                    status = h2_util_move(bb, io->tmp, -1, NULL, "h2_io_in_read_tmp1");
+                    if (status == APR_SUCCESS) {
+                        status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
+                    }
+                }
+            }
+            else {
+                status = h2_util_move(bb, io->tmp, -1, NULL, "h2_io_in_read_tmp2");
+            }
+        }
     }
+    else {
+        apr_brigade_length(bb, 1, &start_len);
+        
+        status = h2_util_move(bb, io->bbin, maxlen, NULL, "h2_io_in_read");
+        if (status == APR_SUCCESS) {
+            apr_off_t end_len = 0;
+            apr_brigade_length(bb, 1, &end_len);
+            io->input_consumed += (end_len - start_len);
+        }
+    }
+    
     return status;
 }
 
@@ -151,10 +213,6 @@ apr_status_t h2_io_in_close(h2_io *io)
         return APR_ECONNABORTED;
     }
     
-    if (io->bbin) {
-        APR_BRIGADE_INSERT_TAIL(io->bbin, 
-                                apr_bucket_eos_create(io->bbin->bucket_alloc));
-    }
     io->eos_in = 1;
     return APR_SUCCESS;
 }

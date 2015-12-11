@@ -115,6 +115,8 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     }
     
     if ((bblen == 0) && input->task->input_eos) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_task_input(%s): eos", input->task->id);
         return APR_EOF;
     }
     
@@ -161,17 +163,17 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     if (!APR_BRIGADE_EMPTY(input->bb)) {
         if (mode == AP_MODE_EXHAUSTIVE) {
             /* return all we have */
-            return h2_util_move(bb, input->bb, readbytes, NULL, 
-                                "task_input_read(exhaustive)");
+            status = h2_util_move(bb, input->bb, readbytes, NULL, 
+                                  "task_input_read(exhaustive)");
         }
         else if (mode == AP_MODE_READBYTES) {
-            return h2_util_move(bb, input->bb, readbytes, NULL, 
-                                "task_input_read(readbytes)");
+            status = h2_util_move(bb, input->bb, readbytes, NULL, 
+                                  "task_input_read(readbytes)");
         }
         else if (mode == AP_MODE_SPECULATIVE) {
             /* return not more than was asked for */
-            return h2_util_copy(bb, input->bb, readbytes,  
-                                "task_input_read(speculative)");
+            status = h2_util_copy(bb, input->bb, readbytes,  
+                                  "task_input_read(speculative)");
         }
         else if (mode == AP_MODE_GETLINE) {
             /* we are reading a single LF line, e.g. the HTTP headers */
@@ -186,7 +188,6 @@ apr_status_t h2_task_input_read(h2_task_input *input,
                               "h2_task_input(%s): getline: %s",
                               input->task->id, buffer);
             }
-            return status;
         }
         else {
             /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
@@ -194,14 +195,25 @@ apr_status_t h2_task_input_read(h2_task_input *input,
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
                           APLOGNO(02942) 
                           "h2_task_input, unsupported READ mode %d", mode);
-            return APR_ENOTIMPL;
+            status = APR_ENOTIMPL;
         }
+        
+        if (APLOGctrace1(f->c)) {
+            apr_brigade_length(bb, 0, &bblen);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                          "h2_task_input(%s): return %ld data bytes",
+                          input->task->id, (long)bblen);
+        }
+        return status;
     }
     
     if (is_aborted(f)) {
         return APR_ECONNABORTED;
     }
     
-    return (block == APR_NONBLOCK_READ)? APR_EAGAIN : APR_EOF;
+    status = (block == APR_NONBLOCK_READ)? APR_EAGAIN : APR_EOF;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                  "h2_task_input(%s): no data", input->task->id);
+    return status;
 }
 

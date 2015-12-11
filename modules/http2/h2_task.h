@@ -51,13 +51,13 @@ struct h2_task {
     struct h2_mplx *mplx;
     
     const struct h2_request *request;
+    int filters_set;
     int input_eos;
 
     int serialize_headers;
-
+    
     struct conn_rec *c;
-
-    apr_pool_t *pool;              /* pool for task lifetime things */
+    apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
     struct h2_task_input *input;
     struct h2_task_output *output;
