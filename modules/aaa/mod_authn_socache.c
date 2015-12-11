@@ -266,7 +266,7 @@ static const char *construct_key(request_rec *r, const char *context,
                                  const char *user, const char *realm)
 {
     /* handle "special" context values */
-    if (!strcmp(context, "directory")) {
+    if (!strcmp(context, directory)) {
         /* FIXME: are we at risk of this blowing up? */
         char *new_context;
         char *slash = strrchr(r->uri, '/');
