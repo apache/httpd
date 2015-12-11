@@ -17,6 +17,7 @@
 
 #include <apr_thread_cond.h>
 
+#include <mpm_common.h>
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
@@ -61,8 +62,11 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         }
     }
 
-    status = worker->get_next(worker, &m, NULL, worker->ctx);
-    m = NULL;
+    if (m) {
+        /* Hand "m" back to other workers */
+        status = worker->get_next(worker, &m, NULL, worker->ctx);
+        m = NULL;
+    }
     
     if (worker->socket) {
         apr_socket_close(worker->socket);
@@ -98,15 +102,9 @@ h2_worker *h2_worker_create(int id,
     h2_worker *w;
     apr_status_t status;
     
-    status = apr_allocator_create(&allocator);
-    if (status != APR_SUCCESS) {
-        return NULL;
-    }
-    
-    status = apr_pool_create_ex(&pool, parent_pool, NULL, allocator);
-    if (status != APR_SUCCESS) {
-        return NULL;
-    }
+    apr_allocator_create(&allocator);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free);
+    apr_pool_create_ex(&pool, parent_pool, NULL, allocator);
     apr_allocator_owner_set(allocator, pool);
 
     w = apr_pcalloc(pool, sizeof(h2_worker));
@@ -169,6 +167,7 @@ h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m,
      */
     if (!worker->task_pool) {
         apr_pool_create(&worker->task_pool, worker->pool);
+        worker->pool_reuses = 100;
     }
     task = h2_task_create(m->id, req, worker->task_pool, m, eos);
     
@@ -193,7 +192,13 @@ void h2_worker_release_task(h2_worker *worker, struct h2_task *task)
 {
     task->io = NULL;
     task->pool = NULL;
-    apr_pool_clear(worker->task_pool);
+    if (worker->pool_reuses-- <= 0) {
+        apr_pool_destroy(worker->task_pool);
+        worker->task_pool = NULL;
+    }
+    else {
+        apr_pool_clear(worker->task_pool);
+    }
 }
 
 apr_socket_t *h2_worker_get_socket(h2_worker *worker)
