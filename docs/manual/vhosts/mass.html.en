@@ -311,7 +311,9 @@ documentation</a>.</p>
 
 <p>Another option for dynamically generated virtual hosts is
 <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code>, with which you can create a virtualhost
-template, and invoke it for multiple hostnames.
+template, and invoke it for multiple hostnames. An example of this is
+provided in the <strong>Usage</strong> section of the module
+documentation.
 </p>
 </div></div>
 <div class="bottomlang">

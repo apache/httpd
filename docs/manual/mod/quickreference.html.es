@@ -55,7 +55,7 @@
     acuerdo con las notas que detallan más abajo.</p>
   </div>
 <div id="directive-ref"><table id="legend">
-<tr><td class="letters"><span><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></span></td>
+<tr><td class="letters"><span><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#Q">&nbsp;Q&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></span></td>
 <td><table><tr><th>s</th><td>server config</td></tr>
 <tr><th>v</th><td>virtual host</td></tr>
 <tr><th>d</th><td>directory</td></tr>
@@ -505,14 +505,20 @@ media type in the HTTP Content-Type header field</td></tr>
 will exit.</td></tr>
 <tr><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2direct" id="H" name="H">H2Direct on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2direct" id="H" name="H">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
 <tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
 <tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
-<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority mime-type [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs seconds</a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize amount</a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
 <tr><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
@@ -829,142 +835,146 @@ header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync ON|OFF</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to try to create an asynchronous tunnel</td></tr>
 <tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the amount of time the tunnel waits synchronously for data</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
-<tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the end
+<tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL ON|OFF</a></td><td> OFF </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls whether the REDIRECT_URL environent variable is 
+             fully qualified</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP receive buffer size</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] [<var>URL-path</var>]
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
+<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP receive buffer size</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] [<var>URL-path</var>]
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect based on a regular expression match
+<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect based on a regular expression match
 of the current URL</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
+<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr>
-<tr><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
-<tr class="odd"><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
+<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any character set associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content encoding associations for a set of file
+<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content encoding associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any handler associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any handler associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any input filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any input filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any language associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any language associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any output filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any output filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
+<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
 <var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
 [early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
-</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
-<tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
+<tr class="odd"><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
-</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
-    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
+<tr><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
+    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
 an authorization provider.</td></tr>
-<tr><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must fail and at least one must succeed for the enclosing directive to
 succeed.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which one
+<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which one
 must succeed for the enclosing directive to succeed.</td></tr>
-<tr><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must succeed for the enclosing directive to not fail.</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a condition under which rewriting will take place
+<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
+      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a condition under which rewriting will take place
 </td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
     <em>MapTypeOptions</em>
-</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the CPU consumption of processes launched
+</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
+<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
+      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
+<tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the CPU consumption of processes launched
 by Apache httpd children</td></tr>
-<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the memory consumption of processes launched
+<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the memory consumption of processes launched
 by Apache httpd children</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the number of processes that can be launched by
+<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>number</var>|max [<var>number</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of processes that can be launched by
 processes launched by Apache httpd children</td></tr>
-<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction between host-level access control and
+<tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> apache_runtime_stat +</td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the file used to store coordination data for
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> apache_runtime_stat +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
 the child processes</td></tr>
-<tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
+<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-path</var>]
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-path</var>]
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
 target as a CGI script</td></tr>
-<tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
+<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
 and designates the target as a CGI script</td></tr>
-<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI
+<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
+<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
+<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
 in the scriptlog</td></tr>
-<tr><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
-<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> cgisock </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
+<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
+<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> cgisock </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
 the cgi daemon</td></tr>
-<tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
-<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
-<tr class="odd"><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
+<tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
+<tr><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</td></tr>
-<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP buffer size</td></tr>
-<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Email address that the server includes in error
+<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP buffer size</td></tr>
+<tr><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var>|<var>URL</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Email address that the server includes in error
 messages sent to the client</td></tr>
-<tr><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Alternate names for a host used when matching requests
+<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
-<tr><td><a href="core.html#servername">ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Hostname and port that the server uses to identify
+<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
+<tr class="odd"><td><a href="core.html#servername">ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Hostname and port that the server uses to identify
 itself</td></tr>
-<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td></td><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Legacy URL pathname for a name-based virtual host that
+<tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td></td><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Legacy URL pathname for a name-based virtual host that
 is accessed by an incompatible browser</td></tr>
-<tr><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Base directory for the server installation</td></tr>
-<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
-<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the <code>Server</code> HTTP response
+<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server installation</td></tr>
+<tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
+<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the <code>Server</code> HTTP response
 header</td></tr>
-<tr class="odd"><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>name</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto cipher to be used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>filename</var></a></td><td></td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">File containing keys used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable a per user session</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control whether the contents of the session are written to the
+<tr><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher <var>name</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The crypto cipher to be used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile <var>filename</var></a></td><td></td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">File containing keys used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable a per user session</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
+<tr><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
-<tr><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
+<tr><td><a href="mod_session.html#sessionexpiryupdateinterval">SessionExpiryUpdateInterval <var>interval</var></a></td><td> 0 (always update) </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the number of seconds a session's expiry may change without
+the session being updated</td></tr>
 <tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader <var>header</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Import session updates from a given HTTP response header</td></tr>
 <tr><td><a href="mod_session.html#sessioninclude">SessionInclude <var>path</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is valid</td></tr>
 <tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>maxage</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a maximum age in seconds for a session</td></tr>
