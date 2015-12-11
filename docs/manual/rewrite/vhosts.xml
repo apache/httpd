@@ -32,7 +32,7 @@
 how you can use <module>mod_rewrite</module> to create dynamically
 configured virtual hosts.</p>
 
-<note type="warning">mod_rewrite is not the best way to configure
+<note type="warning">mod_rewrite is usually not the best way to configure
 virtual hosts. You should first consider the <a
 href="../vhosts/mass.html">alternatives</a> before resorting to
 mod_rewrite. See also the "<a href="avoid.html#vhosts">how to avoid
@@ -62,9 +62,10 @@ mod_rewrite</a> document.</note>
     new VirtualHost sections.</p>
 
     <p>In this recipe, we assume that we'll be using the hostname
-    <code>www.<strong>SITE</strong>.example.com</code> for each
+    <code><strong>SITE</strong>.example.com</code> for each
     user, and serve their content out of
-    <code>/home/<strong>SITE</strong>/www</code>.</p>
+    <code>/home/<strong>SITE</strong>/www</code>. However, we want
+    <code>www.example.com</code> to be ommitted from this mapping.</p>
     </dd>
 
     <dt>Solution:</dt>
@@ -74,10 +75,11 @@ mod_rewrite</a> document.</note>
 <highlight language="config">
 RewriteEngine on
 
-RewriteMap    lowercase "int:tolower"
+RewriteMap    lowercase int:tolower
 
-RewriteCond   "${lowercase:%{<strong>HTTP_HOST</strong>}}"   "^www\.<strong>([^.]+)</strong>\.example\.com$"
-RewriteRule   "^(.*)"                                        "/home/<strong>%1</strong>/www$1"
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1
 </highlight></dd>
 
 <dt>Discussion</dt>
@@ -99,6 +101,10 @@ backreferences <code>%1</code>, <code>%2</code>, etc, while parentheses
 used in <directive module="mod_rewrite">RewriteRule</directive> are
 captured into the backreferences <code>$1</code>, <code>$2</code>,
 etc.</p>
+
+<p>The first <code>RewriteCond</code> checks to see if the hostname
+starts with <code>www.</code>, and if it does, the rewriting is
+skipped.</p>
 
 <p>
 As with many techniques discussed in this document, mod_rewrite really
