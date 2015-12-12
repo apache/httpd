@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1718324 (outdated) -->
+<!-- English Revision: 1718324 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -48,9 +48,14 @@ d'Apache</compatibility>
     <p>Le module poss&egrave;de une interface de fournisseur
     <code>proxy_fdpass_flusher</code> qui permet &eacute;ventuellement &agrave; un
     autre module d'envoyer les en-t&ecirc;tes de la r&eacute;ponse, ou m&ecirc;me le d&eacute;but
-    du corps de la r&eacute;ponse. Le fournisseur par d&eacute;faut flush d&eacute;sactive la
+    du corps de la r&eacute;ponse. Le fournisseur par d&eacute;faut <code>flush</code> d&eacute;sactive la
     persistence, et envoie les en-t&ecirc;tes de la r&eacute;ponse, laissant le soin
     au processus externe d'envoyer le corps de la r&eacute;ponse.</p>
+
+    <p>Pour utiliser un autre fournisseur, vous devez sp&eacute;cifier le param&egrave;tre
+    <code>flusher</code> de la directive <directive
+    module="mod_proxy">ProxyPass</directive>.
+    </p>
 
     <p>&Agrave; l'heure actuelle, la seule donn&eacute;e transmise au processus
     externe est la socket du client. Pour recevoir une socket client,
