@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1719571 (outdated) -->
+<!-- English Revision: 1719571 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,6 +78,9 @@
 r&eacute;f&eacute;rence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et &agrave;
 mod_rewrite</a></li>
+<li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li>
+<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
+<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
 redirection et la remise en correspondance avec le syst&egrave;me de
 fichiers des URLs</a></li>
@@ -85,10 +88,7 @@ fichiers des URLs</a></li>
 contr&ocirc;le d'acc&egrave;s</a></li>
 <li><a href="vhosts.html">Les serveurs virtuels dynamiques avec mod_rewrite</a></li>
 <li><a href="proxy.html">Les serveurs mandataires dynamiques avec mod_rewrite</a></li>
-<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
 <li><a href="advanced.html">Techniques avanc&eacute;es</a></li>
-<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
-<li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li>
 <li><a href="tech.html">D&eacute;tails techniques</a></li>
 </ul>
 </summary>

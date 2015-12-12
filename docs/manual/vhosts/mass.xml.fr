@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674195:1719576 (outdated) -->
+<!-- English Revision: 1719576 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -322,7 +322,9 @@ href="../rewrite/vhosts.html">documentation sur la r&eacute;&eacute;criture</a>.
 
 <p>Une autre option pour g&eacute;n&eacute;rer dynamiquement des serveurs virtuels :
 mod_macro ; ce module permet de cr&eacute;er un mod&egrave;le de serveur virtuel que
-vous pourrez invoquer pour des noms d'h&ocirc;tes multiples.
+vous pourrez invoquer pour des noms d'h&ocirc;tes multiples. La section
+<strong>Usage</strong> de la documentation du module pr&eacute;sente un exemple qui
+illustre cette m&eacute;thode.
 </p>
 </section>
 
