@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fdpass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fdpass.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support des processus externes fdpass
 à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -53,9 +51,13 @@ d'Apache</td></tr></table>
     <p>Le module possède une interface de fournisseur
     <code>proxy_fdpass_flusher</code> qui permet éventuellement à un
     autre module d'envoyer les en-têtes de la réponse, ou même le début
-    du corps de la réponse. Le fournisseur par défaut flush désactive la
+    du corps de la réponse. Le fournisseur par défaut <code>flush</code> désactive la
     persistence, et envoie les en-têtes de la réponse, laissant le soin
     au processus externe d'envoyer le corps de la réponse.</p>
+
+    <p>Pour utiliser un autre fournisseur, vous devez spécifier le paramètre
+    <code>flusher</code> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.
+    </p>
 
     <p>À l'heure actuelle, la seule donnée transmise au processus
     externe est la socket du client. Pour recevoir une socket client,
