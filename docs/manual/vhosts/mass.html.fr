@@ -28,8 +28,6 @@
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document propose une méthode performante pour servir un nombre
@@ -329,7 +327,9 @@ techniques sont décrites dans la <a href="../rewrite/vhosts.html">documentation 
 
 <p>Une autre option pour générer dynamiquement des serveurs virtuels :
 mod_macro ; ce module permet de créer un modèle de serveur virtuel que
-vous pourrez invoquer pour des noms d'hôtes multiples.
+vous pourrez invoquer pour des noms d'hôtes multiples. La section
+<strong>Usage</strong> de la documentation du module présente un exemple qui
+illustre cette méthode.
 </p>
 </div></div>
 <div class="bottomlang">

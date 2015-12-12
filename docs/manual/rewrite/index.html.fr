@@ -28,8 +28,6 @@
 <a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
        <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> permet de modifier les requêtes
@@ -78,6 +76,9 @@
 référence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et à
 mod_rewrite</a></li>
+<li><a href="flags.html">Drapeaux de réécriture</a></li>
+<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
+<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
 redirection et la remise en correspondance avec le système de
 fichiers des URLs</a></li>
@@ -85,10 +86,7 @@ fichiers des URLs</a></li>
 contrôle d'accès</a></li>
 <li><a href="vhosts.html">Les serveurs virtuels dynamiques avec mod_rewrite</a></li>
 <li><a href="proxy.html">Les serveurs mandataires dynamiques avec mod_rewrite</a></li>
-<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
 <li><a href="advanced.html">Techniques avancées</a></li>
-<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
-<li><a href="flags.html">Drapeaux de réécriture</a></li>
 <li><a href="tech.html">Détails techniques</a></li>
 </ul>
 </div>
