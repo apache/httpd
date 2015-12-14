@@ -96,7 +96,7 @@ int h2_io_out_has_data(h2_io *io);
  * is currently available, APR_EOF if end of input has been reached.
  */
 apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
-                           apr_size_t maxlen);
+                           apr_size_t maxlen, apr_table_t *trailers);
 
 /**
  * Appends given bucket to the input.

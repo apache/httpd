@@ -339,7 +339,8 @@ void h2_mplx_task_done(h2_mplx *m, int stream_id)
 }
 
 apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
-                             int stream_id, apr_bucket_brigade *bb,
+                             int stream_id, apr_bucket_brigade *bb, 
+                             apr_table_t *trailers,
                              struct apr_thread_cond_t *iowait)
 {
     apr_status_t status; 
@@ -353,7 +354,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
         if (io && !io->orphaned) {
             io->input_arrived = iowait;
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_read_pre");
-            status = h2_io_in_read(io, bb, -1);
+            status = h2_io_in_read(io, bb, -1, trailers);
             while (APR_STATUS_IS_EAGAIN(status) 
                    && !is_aborted(m, &status)
                    && block == APR_BLOCK_READ) {
@@ -361,7 +362,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
                               "h2_mplx(%ld-%d): wait on in data (BLOCK_READ)", 
                               m->id, stream_id);
                 apr_thread_cond_wait(io->input_arrived, m->lock);
-                status = h2_io_in_read(io, bb, -1);
+                status = h2_io_in_read(io, bb, -1, trailers);
             }
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_read_post");
             io->input_arrived = NULL;
