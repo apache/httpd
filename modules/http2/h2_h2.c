@@ -574,8 +574,13 @@ void h2_h2_register_hooks(void)
 
 int h2_h2_process_conn(conn_rec* c)
 {
-    h2_ctx *ctx = h2_ctx_get(c);
+    h2_ctx *ctx;
     
+    if (c->master) {
+        return DECLINED;
+    }
+    
+    ctx = h2_ctx_get(c, 0);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn");
     if (h2_ctx_is_task(ctx)) {
         /* our stream pseudo connection */
@@ -612,6 +617,9 @@ int h2_h2_process_conn(conn_rec* c)
         if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "h2_h2, direct mode detected");
+            if (!ctx) {
+                ctx = h2_ctx_get(c, 1);
+            }
             h2_ctx_protocol_set(ctx, h2_h2_is_tls(c)? "h2" : "h2c");
         }
         else {
@@ -630,7 +638,7 @@ int h2_h2_process_conn(conn_rec* c)
     /* If "h2" was selected as protocol (by whatever mechanism), take over
      * the connection.
      */
-    if (h2_ctx_is_active(ctx)) {
+    if (ctx) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_h2, connection, h2 active");
         

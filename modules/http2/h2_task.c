@@ -118,8 +118,13 @@ void h2_task_register_hooks(void)
 static int h2_task_pre_conn(conn_rec* c, void *arg)
 {
     
-    h2_ctx *ctx = h2_ctx_get(c);
+    h2_ctx *ctx;
     
+    if (!c->master) {
+        return OK;
+    }
+    
+    ctx = h2_ctx_get(c, 0);
     (void)arg;
     if (h2_ctx_is_task(ctx)) {
         h2_task *task = h2_ctx_get_task(ctx);
@@ -246,8 +251,13 @@ static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
 
 static int h2_task_process_conn(conn_rec* c)
 {
-    h2_ctx *ctx = h2_ctx_get(c);
+    h2_ctx *ctx;
     
+    if (!c->master) {
+        return DECLINED;
+    }
+    
+    ctx = h2_ctx_get(c, 0);
     if (h2_ctx_is_task(ctx)) {
         if (!ctx->task->serialize_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
