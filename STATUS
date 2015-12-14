@@ -165,6 +165,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: wrowe, icing
      ylavic: how about adding !ap_request_has_body(r) to the test then?
 
+  *) mod_ssl: Fix missing semicolon for building with OpenSSL < 0.9.8m.
+     trunk patch: http://svn.apache.org/r1719967
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
