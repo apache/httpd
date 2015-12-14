@@ -57,6 +57,7 @@ h2_ctx *h2_ctx_protocol_set(h2_ctx *ctx, const char *proto);
 /* Set the server_rec relevant for this context.
  */
 h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s);
+server_rec *h2_ctx_server_get(h2_ctx *ctx);
 
 struct h2_session *h2_ctx_session_get(h2_ctx *ctx);
 void h2_ctx_session_set(h2_ctx *ctx, struct h2_session *session);

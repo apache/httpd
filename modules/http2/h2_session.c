@@ -1596,6 +1596,7 @@ apr_status_t h2_session_process(h2_session *session)
                                           "h2_session: send: %s", nghttp2_strerror(rv));
                             if (nghttp2_is_fatal(rv)) {
                                 h2_session_abort(session, status, rv);
+                                status = APR_EGENERAL;
                                 goto end_process;
                             }
                         }
@@ -1622,6 +1623,7 @@ apr_status_t h2_session_process(h2_session *session)
                               "h2_session: send: %s", nghttp2_strerror(rv));
                 if (nghttp2_is_fatal(rv)) {
                     h2_session_abort(session, status, rv);
+                    status = APR_EGENERAL;
                     goto end_process;
                 }
             }
@@ -1760,6 +1762,8 @@ apr_status_t h2_session_process(h2_session *session)
             h2_conn_io_flush(&session->io);
         }
     }
+    /* normal end of session */
+    status = APR_EOF;
     
 end_process:
     return status;

@@ -30,6 +30,7 @@ static h2_ctx *h2_ctx_create(const conn_rec *c)
     h2_ctx *ctx = apr_pcalloc(c->pool, sizeof(h2_ctx));
     AP_DEBUG_ASSERT(ctx);
     ap_set_module_config(c->conn_config, &http2_module, ctx);
+    h2_ctx_server_set(ctx, c->base_server);
     return ctx;
 }
 
@@ -76,6 +77,11 @@ h2_session *h2_ctx_session_get(h2_ctx *ctx)
 void h2_ctx_session_set(h2_ctx *ctx, struct h2_session *session)
 {
     ctx->session = session;
+}
+
+server_rec *h2_ctx_server_get(h2_ctx *ctx)
+{
+    return ctx? ctx->server : NULL;
 }
 
 h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s)

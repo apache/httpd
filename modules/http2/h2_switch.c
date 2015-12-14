@@ -155,12 +155,15 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
             ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
             
             /* Ok, start an h2_conn on this one. */
-            status = h2_conn_process(r->connection, r, r->server);
-            if (status != DONE) {
-                /* Nothing really to do about this. */
+            h2_ctx_server_set(ctx, r->server);
+            status = h2_conn_setup(ctx, r->connection, r);
+            if (status != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
-                              "session proessed, unexpected status");
+                              "session setup");
+                return status;
             }
+            
+            return h2_conn_run(ctx);
         }
         return DONE;
     }
