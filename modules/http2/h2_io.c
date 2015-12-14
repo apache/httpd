@@ -105,15 +105,23 @@ static int add_trailer(void *ctx, const char *key, const char *value)
     return (status == APR_SUCCESS);
 }
 
-static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb)
+static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb, 
+                               apr_table_t *trailers)
 {
     apr_status_t status = APR_SUCCESS;
+    apr_table_t *t = io->request->trailers;
+
+    if (trailers && t && !apr_is_empty_table(trailers)) {
+        /* trailers passed in, transfer directly. */
+        apr_table_overlap(trailers, t, APR_OVERLAP_TABLES_SET);
+        t = NULL;
+    }
     
     if (io->request->chunked) {
-        apr_table_t *trailers = io->request->trailers;
-        if (trailers && !apr_is_empty_table(trailers)) {
+        if (t && !apr_is_empty_table(t)) {
+            /* no trailers passed in, transfer via chunked */
             status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
-            apr_table_do(add_trailer, bb, trailers, NULL);
+            apr_table_do(add_trailer, bb, t, NULL);
             status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
         }
         else {
@@ -125,7 +133,7 @@ static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb)
 }
 
 apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
-                           apr_size_t maxlen)
+                           apr_size_t maxlen, apr_table_t *trailers)
 {
     apr_off_t start_len = 0;
     apr_status_t status;
@@ -137,7 +145,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     if (!io->bbin || APR_BRIGADE_EMPTY(io->bbin)) {
         if (io->eos_in) {
             if (!io->eos_in_written) {
-                status = append_eos(io, bb);
+                status = append_eos(io, bb, trailers);
                 io->eos_in_written = 1;
                 return status;
             }

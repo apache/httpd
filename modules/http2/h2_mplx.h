@@ -206,6 +206,7 @@ void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
  */
 apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
                              int stream_id, apr_bucket_brigade *bb,
+                             apr_table_t *trailers, 
                              struct apr_thread_cond_t *iowait);
 
 /**

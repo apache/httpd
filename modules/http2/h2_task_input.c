@@ -135,6 +135,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
          never calling us again. */
         status = h2_mplx_in_read(input->task->mplx, APR_BLOCK_READ,
                                  input->task->stream_id, input->bb, 
+                                 f->r? f->r->trailers_in : NULL, 
                                  input->task->io);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_input(%s): mplx in read returned",
