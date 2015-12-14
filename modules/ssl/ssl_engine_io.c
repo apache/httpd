@@ -226,7 +226,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      * so limit the performance impact to handshake time.
      */
 #if OPENSSL_VERSION_NUMBER < 0x0009080df
-     need_flush = !SSL_is_init_finished(outctx->filter_ctx->pssl)
+     need_flush = !SSL_is_init_finished(outctx->filter_ctx->pssl);
 #else
      need_flush = SSL_in_connect_init(outctx->filter_ctx->pssl);
 #endif
