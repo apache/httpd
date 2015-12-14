@@ -554,15 +554,19 @@ int h2_allows_h2_upgrade(conn_rec *c)
 /*******************************************************************************
  * Register various hooks
  */
-static const char* const mod_ssl[]        = {"mod_ssl.c", NULL};
+static const char* const mod_ssl[]        = { "mod_ssl.c", NULL};
+static const char* const mod_reqtimeout[] = { "mod_reqtimeout.c", NULL};
 
 void h2_h2_register_hooks(void)
 {
-    /* When the connection processing actually starts, we might to
-     * take over, if h2* was selected as protocol.
+    /* Our main processing needs to run quite late. Definitely after mod_ssl,
+     * as we need its connection filters, but also before reqtimeout as its
+     * method of timeouts is specific to HTTP/1.1 (as of now).
+     * The core HTTP/1 processing run as REALLY_LAST, so we will have
+     * a chance to take over before it.
      */
     ap_hook_process_connection(h2_h2_process_conn, 
-                               mod_ssl, NULL, APR_HOOK_MIDDLE);
+                               mod_ssl, mod_reqtimeout, APR_HOOK_LAST);
                                
     /* With "H2SerializeHeaders On", we install the filter in this hook
      * that parses the response. This needs to happen before any other post
@@ -574,6 +578,7 @@ void h2_h2_register_hooks(void)
 
 int h2_h2_process_conn(conn_rec* c)
 {
+    apr_status_t status;
     h2_ctx *ctx;
     
     if (c->master) {
@@ -586,19 +591,16 @@ int h2_h2_process_conn(conn_rec* c)
         /* our stream pseudo connection */
         return DECLINED;
     }
-
-    if (h2_ctx_protocol_get(c)) {
-        /* Something has been negotiated */
-    }
-    else if (!strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))
-             && h2_allows_h2_direct(c) 
-             && h2_is_acceptable_connection(c, 1)) {
-        /* connection still is on http/1.1 and H2Direct is enabled. 
+    
+    if (!ctx && c->keepalives == 0
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))
+        && h2_allows_h2_direct(c) 
+        && h2_is_acceptable_connection(c, 1)) {
+        /* Fresh connection still is on http/1.1 and H2Direct is enabled. 
          * Otherwise connection is in a fully acceptable state.
          * -> peek at the first 24 incoming bytes
          */
         apr_bucket_brigade *temp;
-        apr_status_t status;
         char *s = NULL;
         apr_size_t slen;
         
@@ -630,19 +632,17 @@ int h2_h2_process_conn(conn_rec* c)
         
         apr_brigade_destroy(temp);
     }
-    else {
-        /* the connection is not HTTP/1.1 or not for us, don't touch it */
-        return DECLINED;
-    }
 
-    /* If "h2" was selected as protocol (by whatever mechanism), take over
-     * the connection.
-     */
     if (ctx) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_h2, connection, h2 active");
-        
-        return h2_conn_process(c, NULL, ctx->server);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "process_conn");
+        if (!h2_ctx_session_get(ctx)) {
+            status = h2_conn_setup(ctx, c, NULL);
+            if (status != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, "conn_setup");
+                return status;
+            }
+        }
+        return h2_conn_process(ctx);
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");
