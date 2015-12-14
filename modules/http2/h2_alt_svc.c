@@ -73,7 +73,6 @@ h2_alt_svc *h2_alt_svc_parse(const char *s, apr_pool_t *pool) {
 
 static int h2_alt_svc_handler(request_rec *r)
 {
-    h2_ctx *ctx;
     const h2_config *cfg;
     int i;
     
@@ -82,8 +81,7 @@ static int h2_alt_svc_handler(request_rec *r)
         return DECLINED;
     }
     
-    ctx = h2_ctx_rget(r);
-    if (h2_ctx_is_active(ctx) || h2_ctx_is_task(ctx)) {
+    if (h2_ctx_rget(r)) {
         return DECLINED;
     }
     

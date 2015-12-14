@@ -136,7 +136,7 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
     }
     
     if (found) {
-        h2_ctx *ctx = h2_ctx_get(c);
+        h2_ctx *ctx = h2_ctx_get(c, 1);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "switching protocol to '%s'", protocol);
