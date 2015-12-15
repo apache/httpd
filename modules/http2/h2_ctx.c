@@ -34,6 +34,12 @@ static h2_ctx *h2_ctx_create(const conn_rec *c)
     return ctx;
 }
 
+void h2_ctx_clear(const conn_rec *c)
+{
+    AP_DEBUG_ASSERT(c);
+    ap_set_module_config(c->conn_config, &http2_module, NULL);
+}
+
 h2_ctx *h2_ctx_create_for(const conn_rec *c, h2_task *task)
 {
     h2_ctx *ctx = h2_ctx_create(c);

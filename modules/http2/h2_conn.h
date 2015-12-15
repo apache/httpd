@@ -36,16 +36,17 @@ apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
  * @return APR_SUCCESS as long as processing needs to continue, APR_EOF
  *         when HTTP/2 session is done.
  */
-apr_status_t h2_conn_process(struct h2_ctx *ctx);
+apr_status_t h2_conn_process(struct h2_ctx *ctx, int async);
 
 /**
- * Run the HTTP/2 connection. Return when the HTTP/2 session is done
+ * Run the HTTP/2 connection in synchronous fashion. 
+ * Return when the HTTP/2 session is done
  * and the connection will close or a fatal error occured.
  *
  * @param ctx the http2 context to run
  * @return APR_SUCCESS when session is done.
  */
-apr_status_t h2_conn_run(struct h2_ctx *ctx);
+apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c);
 
 /* Initialize this child process for h2 connection work,
  * to be called once during child init before multi processing

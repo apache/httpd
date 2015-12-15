@@ -26,6 +26,7 @@
 #include "h2_private.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
+#include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
@@ -586,9 +587,11 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
         
         frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_session(%ld): frame_send %s",
-                      session->id, buffer);
+                      "h2_session(%ld): send %s, frames=%ld/%ld (r/s)",
+                      session->id, buffer, (long)session->frames_received,
+                     (long)session->frames_sent);
     }
+    ++session->frames_sent;
     return 0;
 }
 
@@ -621,7 +624,15 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
 static apr_status_t session_pool_cleanup(void *data)
 {
     h2_session *session = data;
-    
+    /* On a controlled connection shutdown, this gets never
+     * called as we deregister and destroy our pool manually.
+     * However when we have an async mpm, and handed it our idle
+     * connection, it will just cleanup once the connection is closed
+     * from the other side (and sometimes even from out side) and
+     * here we arrive then.
+     */
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                  "session(%ld): pool_cleanup", session->id);
     /* keep us from destroying the pool, since that is already ongoing. */
     session->pool = NULL;
     h2_session_destroy(session);
@@ -668,7 +679,7 @@ static void *session_realloc(void *p, size_t size, void *ctx)
 
 static h2_session *h2_session_create_int(conn_rec *c,
                                          request_rec *r,
-                                         const h2_config *config, 
+                                         h2_ctx *ctx, 
                                          h2_workers *workers)
 {
     nghttp2_session_callbacks *callbacks = NULL;
@@ -689,13 +700,14 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->id = c->id;
         session->c = c;
         session->r = r;
-        session->config = config;
+        session->s = h2_ctx_server_get(ctx);
+        session->config = h2_config_sget(session->s);
         
         session->pool = pool;
         apr_pool_pre_cleanup_register(pool, session, session_pool_cleanup);
         
-        session->max_stream_count = h2_config_geti(config, H2_CONF_MAX_STREAMS);
-        session->max_stream_mem = h2_config_geti(config, H2_CONF_STREAM_MAX_MEM);
+        session->max_stream_count = h2_config_geti(session->config, H2_CONF_MAX_STREAMS);
+        session->max_stream_mem = h2_config_geti(session->config, H2_CONF_STREAM_MAX_MEM);
 
         status = apr_thread_cond_create(&session->iowait, session->pool);
         if (status != APR_SUCCESS) {
@@ -705,11 +717,11 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->streams = h2_stream_set_create(session->pool, session->max_stream_count);
         
         session->workers = workers;
-        session->mplx = h2_mplx_create(c, session->pool, config, workers);
+        session->mplx = h2_mplx_create(c, session->pool, session->config, workers);
         
         h2_mplx_set_consumed_cb(session->mplx, update_window, session);
         
-        h2_conn_io_init(&session->io, c, config, session->pool);
+        h2_conn_io_init(&session->io, c, session->config, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
         status = init_callbacks(c, &callbacks);
@@ -764,16 +776,14 @@ static h2_session *h2_session_create_int(conn_rec *c,
     return session;
 }
 
-h2_session *h2_session_create(conn_rec *c, const h2_config *config, 
-                              h2_workers *workers)
+h2_session *h2_session_create(conn_rec *c, h2_ctx *ctx, h2_workers *workers)
 {
-    return h2_session_create_int(c, NULL, config, workers);
+    return h2_session_create_int(c, NULL, ctx, workers);
 }
 
-h2_session *h2_session_rcreate(request_rec *r, const h2_config *config, 
-                               h2_workers *workers)
+h2_session *h2_session_rcreate(request_rec *r, h2_ctx *ctx, h2_workers *workers)
 {
-    return h2_session_create_int(r->connection, r, config, workers);
+    return h2_session_create_int(r->connection, r, ctx, workers);
 }
 
 static void h2_session_cleanup(h2_session *session)
@@ -786,6 +796,9 @@ static void h2_session_cleanup(h2_session *session)
      * our buffers or passed down output filters.
      * h2 streams might still being written out.
      */
+    if (session->c) {
+        h2_ctx_clear(session->c);
+    }
     if (session->ngh2) {
         nghttp2_session_del(session->ngh2);
         session->ngh2 = NULL;
@@ -800,17 +813,17 @@ void h2_session_destroy(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
     h2_session_cleanup(session);
-    
+
+    if (APLOGctrace1(session->c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                      "h2_session(%ld): destroy, %d streams open",
+                      session->id, (int)h2_stream_set_size(session->streams));
+    }
     if (session->mplx) {
         h2_mplx_release_and_join(session->mplx, session->iowait);
         session->mplx = NULL;
     }
     if (session->streams) {
-        if (!h2_stream_set_is_empty(session->streams)) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                          "h2_session(%ld): destroy, %d streams open",
-                          session->id, (int)h2_stream_set_size(session->streams));
-        }
         h2_stream_set_destroy(session->streams);
         session->streams = NULL;
     }
@@ -894,7 +907,7 @@ apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv)
     return h2_session_abort_int(session, rv);
 }
 
-apr_status_t h2_session_start(h2_session *session, int *rv)
+static apr_status_t h2_session_start(h2_session *session, int *rv)
 {
     apr_status_t status = APR_SUCCESS;
     nghttp2_settings_entry settings[3];
@@ -1555,216 +1568,268 @@ int h2_session_push_enabled(h2_session *session)
                                                NGHTTP2_SETTINGS_ENABLE_PUSH);
 }
 
+static apr_status_t h2_session_send(h2_session *session)
+{
+    int rv = nghttp2_session_send(session->ngh2);
+    if (rv != 0) {
+        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_session: send: %s", nghttp2_strerror(rv));
+        if (nghttp2_is_fatal(rv)) {
+            h2_session_abort_int(session, rv);
+            return APR_EGENERAL;
+        }
+    }
+    
+    session->wait_micros = 0;
+    session->unsent_promises = 0;
+    session->unsent_submits = 0;
+    
+    return APR_SUCCESS;
+}
 
-apr_status_t h2_session_process(h2_session *session)
+static apr_status_t h2_session_read(h2_session *session, int block)
+{
+    apr_status_t status;
+    
+    status = h2_conn_io_read(&session->io, 
+                             block? APR_BLOCK_READ : APR_NONBLOCK_READ, 
+                             session_receive, session);
+    switch (status) {
+        case APR_SUCCESS:
+            /* successful read, reset our idle timers */
+            session->wait_micros = 0;
+            break;
+        case APR_EAGAIN:
+            break;
+        default:
+            if (APR_STATUS_IS_ETIMEDOUT(status)
+                || APR_STATUS_IS_ECONNABORTED(status)
+                || APR_STATUS_IS_ECONNRESET(status)
+                || APR_STATUS_IS_EOF(status)
+                || APR_STATUS_IS_EBADF(status)) {
+                /* common status for a client that has left */
+                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                              "h2_session(%ld): terminating",
+                              session->id);
+                /* Stolen from mod_reqtimeout to speed up lingering when
+                 * a read timeout happened.
+                 */
+                apr_table_setn(session->c->notes, "short-lingering-close", "1");
+            }
+            else {
+                /* uncommon status, log on INFO so that we see this */
+                ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
+                              APLOGNO(02950) 
+                              "h2_session(%ld): error reading, terminating",
+                              session->id);
+            }
+            h2_session_abort(session, status, 0);
+            break;
+    }
+    return status;
+}
+
+static apr_status_t h2_session_submit(h2_session *session)
+{
+    apr_status_t status = APR_EAGAIN;
+    h2_stream *stream;
+    
+    if (h2_stream_set_has_unsubmitted(session->streams)) {
+        /* If we have responses ready, submit them now. */
+        while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
+            status = submit_response(session, stream);
+            ++session->unsent_submits;
+            
+            /* Unsent push promises are written immediately, as nghttp2
+             * 1.5.0 realizes internal stream data structures only on 
+             * send and we might need them for other submits. 
+             * Also, to conserve memory, we send at least every 10 submits
+             * so that nghttp2 does not buffer all outbound items too 
+             * long.
+             */
+            if (status == APR_SUCCESS 
+                && (session->unsent_promises || session->unsent_submits > 10)) {
+                status = h2_session_send(session);
+                if (status != APR_SUCCESS) {
+                    break;
+                }
+            }
+        }
+    }
+    return status;
+}
+
+static const int MAX_WAIT_MICROS = 200 * 1000;
+
+apr_status_t h2_session_process(h2_session *session, int async)
 {
     apr_status_t status = APR_SUCCESS;
-    apr_interval_time_t wait_micros = 0;
-    static const int MAX_WAIT_MICROS = 200 * 1000;
     int got_streams = 0;
-    h2_stream *stream;
+    int have_written = 0;
+    int have_read = 0;
 
-    while (!session->aborted && (nghttp2_session_want_read(session->ngh2)
-                                 || nghttp2_session_want_write(session->ngh2))) {
-        int have_written = 0;
-        int have_read = 0;
-                                 
-        got_streams = !h2_stream_set_is_empty(session->streams);
-        if (got_streams) {            
-            h2_session_resume_streams_with_data(session);
-            
-            if (h2_stream_set_has_unsubmitted(session->streams)) {
-                int unsent_submits = 0;
-                
-                /* If we have responses ready, submit them now. */
-                while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
-                    status = submit_response(session, stream);
-                    ++unsent_submits;
-                    
-                    /* Unsent push promises are written immediately, as nghttp2
-                     * 1.5.0 realizes internal stream data structures only on 
-                     * send and we might need them for other submits. 
-                     * Also, to conserve memory, we send at least every 10 submits
-                     * so that nghttp2 does not buffer all outbound items too 
-                     * long.
-                     */
-                    if (status == APR_SUCCESS 
-                        && (session->unsent_promises || unsent_submits > 10)) {
-                        int rv = nghttp2_session_send(session->ngh2);
-                        if (rv != 0) {
-                            ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                                          "h2_session: send: %s", nghttp2_strerror(rv));
-                            if (nghttp2_is_fatal(rv)) {
-                                h2_session_abort(session, status, rv);
-                                status = APR_EGENERAL;
-                                goto end_process;
-                            }
-                        }
-                        else {
-                            have_written = 1;
-                            wait_micros = 0;
-                            session->unsent_promises = 0;
-                            unsent_submits = 0;
-                        }
-                    }
-                }
-            }
+    ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                  "h2_session(%ld): process", session->id);
+
+    while (1) {
+        if (session->aborted || (!nghttp2_session_want_read(session->ngh2)
+                                 && !nghttp2_session_want_write(session->ngh2))) {
+            ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                          "h2_session(%ld): process -> aborted", session->id);
+            h2_conn_io_flush(&session->io);
+            return APR_EOF;
         }
-        
-        /* Send data as long as we have it and window sizes allow. We are
-         * a server after all.
-         */
-        if (nghttp2_session_want_write(session->ngh2)) {
+
+        if (!session->started) {
             int rv;
             
-            rv = nghttp2_session_send(session->ngh2);
-            if (rv != 0) {
-                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                              "h2_session: send: %s", nghttp2_strerror(rv));
-                if (nghttp2_is_fatal(rv)) {
-                    h2_session_abort(session, status, rv);
-                    status = APR_EGENERAL;
-                    goto end_process;
-                }
-            }
-            else {
-                have_written = 1;
-                wait_micros = 0;
-                session->unsent_promises = 0;
-            }
-        }
-        
-        if (wait_micros > 0) {
-            if (APLOGcdebug(session->c)) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                              "h2_session: wait for data, %ld micros", 
-                              (long)wait_micros);
-            }
-            nghttp2_session_send(session->ngh2);
-            h2_conn_io_flush(&session->io);
-            status = h2_mplx_out_trywait(session->mplx, wait_micros, session->iowait);
+            if (!h2_is_acceptable_connection(session->c, 1)) {
+                nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
+                                      NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
+            } 
             
-            if (status == APR_TIMEUP) {
-                if (wait_micros < MAX_WAIT_MICROS) {
-                    wait_micros *= 2;
-                }
+            status = h2_session_start(session, &rv);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
+                          "h2_session(%ld): starting on %s:%d", session->id,
+                          session->s->server_hostname,
+                          session->c->local_addr->port);
+            if (status != APR_SUCCESS) {
+                h2_session_abort(session, status, rv);
+                h2_session_eoc_callback(session);
             }
-        }
-        
-        if (nghttp2_session_want_read(session->ngh2))
-        {
-            /* When we
-             * - and have no streams at all
-             * - or have streams, but none is suspended or needs submit and
-             *   have nothing written on the last try
-             * 
-             * or, the other way around
-             * - have only streams where data can be sent, but could
-             *   not send anything
-             *
-             * then we are waiting on frames from the client (for
-             * example WINDOW_UPDATE or HEADER) and without new frames
-             * from the client, we cannot make any progress,
-             * 
-             * and *then* we can safely do a blocking read.
-             */
-            int may_block = (session->frames_received <= 1);
-            if (!may_block) {
-                if (got_streams) {
-                    may_block = (!have_written 
-                                 && !h2_stream_set_has_unsubmitted(session->streams)
-                                 && !h2_stream_set_has_suspended(session->streams));
-                }
-                else {
-                    may_block = 1;
-                }
-            }
-            
-            if (may_block) {
-                h2_conn_io_flush(&session->io);
-                if (session->c->cs) {
-                    session->c->cs->state = (got_streams? CONN_STATE_HANDLER
-                                             : CONN_STATE_WRITE_COMPLETION);
-                }
-                status = h2_conn_io_read(&session->io, APR_BLOCK_READ, 
-                                         session_receive, session);
-            }
-            else {
-                if (session->c->cs) {
-                    session->c->cs->state = CONN_STATE_HANDLER;
-                }
-                status = h2_conn_io_read(&session->io, APR_NONBLOCK_READ, 
-                                         session_receive, session);
-            }
-
-            switch (status) {
-                case APR_SUCCESS:       /* successful read, reset our idle timers */
-                    have_read = 1;
-                    wait_micros = 0;
-                    break;
-                case APR_EAGAIN:              /* non-blocking read, nothing there */
-                    break;
-                default:
-                    if (APR_STATUS_IS_ETIMEDOUT(status)
-                        || APR_STATUS_IS_ECONNABORTED(status)
-                        || APR_STATUS_IS_ECONNRESET(status)
-                        || APR_STATUS_IS_EOF(status)
-                        || APR_STATUS_IS_EBADF(status)) {
-                        /* common status for a client that has left */
-                        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
-                                      "h2_session(%ld): terminating",
-                                      session->id);
-                        /* Stolen from mod_reqtimeout to speed up lingering when
-                         * a read timeout happened.
-                         */
-                        apr_table_setn(session->c->notes, "short-lingering-close", "1");
-                    }
-                    else {
-                        /* uncommon status, log on INFO so that we see this */
-                        ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
-                                      APLOGNO(02950) 
-                                      "h2_session(%ld): error reading, terminating",
-                                      session->id);
-                    }
-                    h2_session_abort(session, status, 0);
-                    goto end_process;
-            }
+            session->started = 1;
         }
         
         got_streams = !h2_stream_set_is_empty(session->streams);
-        if (got_streams) {            
-            if (session->reprioritize) {
-                h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
-                session->reprioritize = 0;
-            }
+        if (got_streams) {
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          "h2_session(%ld): process -> check resume", session->id);
+            /* resume any streams for which data is available again */
+            h2_session_resume_streams_with_data(session);
             
-            if (!have_read && !have_written) {
-                /* Nothing read or written. That means no data yet ready to 
-                 * be send out. Slowly back off...
-                 */
-                if (wait_micros == 0) {
-                    wait_micros = 10;
-                }
+            /* Submit any responses/push_promises that are ready */
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          "h2_session(%ld): process -> check submit", session->id);
+            status = h2_session_submit(session);
+            if (status == APR_SUCCESS) {
+                have_written = 1;
+            }
+            else if (status != APR_EAGAIN) {
+                return status;
             }
             
             /* Check that any pending window updates are sent. */
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          "h2_session(%ld): process -> check window_update", session->id);
             status = h2_mplx_in_update_windows(session->mplx);
-            if (APR_STATUS_IS_EAGAIN(status)) {
-                status = APR_SUCCESS;
-            }
-            else if (status == APR_SUCCESS) {
+            if (status == APR_SUCCESS) {
                 /* need to flush window updates onto the connection asap */
                 h2_conn_io_flush(&session->io);
+            }
+            else if (status != APR_EAGAIN) {
+                return status;
+            }
+        }
+        
+        /* Send data out first, as long as we have some. 
+         * We are a server after all. */
+        if (nghttp2_session_want_write(session->ngh2)) {
+            status = h2_session_send(session);
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                          "h2_session(%ld): process -> send", session->id);
+            have_written = 1;
+            if (status != APR_SUCCESS) {
+                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                              "h2_session(%ld): failed send", session->id);
+                return status;
+            }
+        }
+        
+        /* If we want client data, see if some is there. */
+        if (nghttp2_session_want_read(session->ngh2)) {
+            int idle      = (session->frames_received > 2 && !got_streams);
+            int may_block = ((session->frames_received <= 1) 
+                             || (idle && !async)
+                             || (!have_written && !h2_stream_set_has_unsubmitted(session->streams)
+                                 && !h2_stream_set_has_suspended(session->streams)));
+            status = h2_session_read(session, may_block);
+            
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                          "h2_session(%ld): process -> read", session->id);
+            if (status == APR_SUCCESS) {
+                have_read = 1;
+                got_streams = !h2_stream_set_is_empty(session->streams);
+                if (session->reprioritize) {
+                    ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                                  "h2_session(%ld): process -> reprioritize", session->id);
+                    h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
+                    session->reprioritize = 0;
+                }
+            }
+            else if (status == APR_EAGAIN && idle && async) {
+                /* There is nothing to read and we are in a state where we
+                 * have nothing to write until new input comes. Return to
+                 * our caller so that the MPM may schedule us again when
+                 * read seems possible.
+                 */
+                ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                              "h2_session(%ld): process -> BLOCK_READ, "
+                              "frames_received=%d, got_streams=%d, "
+                              "have_written=%d", 
+                              session->id, (int)session->frames_received,
+                              (int)got_streams, (int)have_written);
+                if (have_written) {
+                    h2_conn_io_flush(&session->io);
+                }
+                if (session->c->cs) {
+                    session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+                    session->c->cs->sense = (have_written? 
+                                             CONN_SENSE_DEFAULT
+                                             : CONN_SENSE_WANT_READ);
+                }
+                return APR_SUCCESS;
+            }
+        }
+            
+        if (!have_read && !have_written) {
+            if (session->wait_micros == 0) {
+                session->wait_micros = 10;
+            }
+        }
+        
+        if (session->wait_micros > 0 && !session->aborted) {
+            /* Only happens when reading returned EAGAIN and we also
+             * had nothing to write. 
+             * This is a normal state of affairs when streams have been
+             * opened, the client waiting on responses, but our workers
+             * have not produced anything to send yet.
+             */
+            if (APLOGcdebug(session->c)) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                              "h2_session: wait for data, %ld micros", 
+                              (long)session->wait_micros);
+            }
+            
+            h2_conn_io_flush(&session->io);
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                          "h2_session(%ld): process -> trywait", session->id);
+            status = h2_mplx_out_trywait(session->mplx, session->wait_micros, 
+                                         session->iowait);
+            if (status == APR_TIMEUP) {
+                if (session->wait_micros < MAX_WAIT_MICROS) {
+                    session->wait_micros *= 2;
+                }
             }
         }
         
         if (have_written) {
             h2_conn_io_flush(&session->io);
         }
+        have_written = 0;
+        have_read = 0;
     }
-    /* normal end of session */
-    status = APR_EOF;
-    
-end_process:
+        
+    ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                  "h2_session(%ld): process -> return", session->id);
     return status;
 }
