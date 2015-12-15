@@ -39,6 +39,7 @@
 
 struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
+struct h2_ctx;
 struct h2_config;
 struct h2_mplx;
 struct h2_priority;
@@ -59,13 +60,21 @@ struct h2_session {
     conn_rec *c;                    /* the connection this session serves */
     request_rec *r;                 /* the request that started this in case
                                      * of 'h2c', NULL otherwise */
+    server_rec *s;                  /* server/vhost we're starting on */
     const struct h2_config *config; /* Relevant config for this session */
+    int started;
     int aborted;                    /* this session is being aborted */
     int reprioritize;               /* scheduled streams priority needs to 
                                      * be re-evaluated */
+                                     
+    apr_interval_time_t  wait_micros;
+    int unsent_submits;             /* number of submitted, but not yet sent
+                                       responses. */
     int unsent_promises;            /* number of submitted, but not yet sent
                                      * push promised */
+                                     
     apr_size_t frames_received;     /* number of http/2 frames received */
+    apr_size_t frames_sent;         /* number of http/2 frames sent */
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
     
@@ -97,7 +106,7 @@ struct h2_session {
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_create(conn_rec *c, const struct h2_config *cfg, 
+h2_session *h2_session_create(conn_rec *c, struct h2_ctx *ctx, 
                               struct h2_workers *workers);
 
 /**
@@ -108,7 +117,7 @@ h2_session *h2_session_create(conn_rec *c, const struct h2_config *cfg,
  * @param workers the worker pool to use
  * @return the created session
  */
-h2_session *h2_session_rcreate(request_rec *r, const struct h2_config *cfg,
+h2_session *h2_session_rcreate(request_rec *r, struct h2_ctx *ctx,
                                struct h2_workers *workers);
 
 /**
@@ -117,7 +126,7 @@ h2_session *h2_session_rcreate(request_rec *r, const struct h2_config *cfg,
  *
  * @param session the sessionm to process
  */
-apr_status_t h2_session_process(h2_session *session);
+apr_status_t h2_session_process(h2_session *session, int async);
 
 /**
  * Destroy the session and all objects it still contains. This will not
@@ -132,15 +141,6 @@ void h2_session_destroy(h2_session *session);
  * @param session the session to destroy
  */
 void h2_session_eoc_callback(h2_session *session);
-
-/**
- * Called once at start of session. 
- * Sets up the session and sends the initial SETTINGS frame.
- * @param session the session to start
- * @param rv error codes in libnghttp2 lingo are returned here
- * @return APR_SUCCESS if all went well
- */
-apr_status_t h2_session_start(h2_session *session, int *rv);
 
 /**
  * Called when an error occured and the session needs to shut down.

@@ -44,6 +44,7 @@ typedef struct h2_ctx {
  * @return h2 context of this connection
  */
 h2_ctx *h2_ctx_get(const conn_rec *c, int create);
+void h2_ctx_clear(const conn_rec *c);
 
 h2_ctx *h2_ctx_rget(const request_rec *r);
 h2_ctx *h2_ctx_create_for(const conn_rec *c, struct h2_task *task);

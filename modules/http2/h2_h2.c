@@ -637,12 +637,17 @@ int h2_h2_process_conn(conn_rec* c)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "process_conn");
         if (!h2_ctx_session_get(ctx)) {
             status = h2_conn_setup(ctx, c, NULL);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c, "conn_setup");
             if (status != APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, "conn_setup");
                 return status;
             }
         }
-        return h2_conn_process(ctx);
+        if (h2_config_async_mpm()) {
+            return h2_conn_process(ctx, 1);
+        }
+        else {
+            return h2_conn_run(ctx, c);
+        }
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");

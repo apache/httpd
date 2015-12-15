@@ -129,7 +129,6 @@ static module *h2_conn_mpm_module(void) {
 apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 {
     h2_session *session;
-    const h2_config *config;
     
     if (!workers) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
@@ -137,75 +136,57 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
         return APR_EGENERAL;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "h2_conn_setup");
-    config = h2_config_sget(h2_ctx_server_get(ctx));
     if (r) {
-        session = h2_session_rcreate(r, config, workers);
+        session = h2_session_rcreate(r, ctx, workers);
     }
     else {
-        session = h2_session_create(c, config, workers);
+        session = h2_session_create(c, ctx, workers);
     }
 
     h2_ctx_session_set(ctx, session);
+    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
+
     return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_process(h2_ctx *ctx)
+apr_status_t h2_conn_process(h2_ctx *ctx, int async)
 {
     apr_status_t status;
     h2_session *session;
-    conn_rec *c;
-    int rv;
     
     session = h2_ctx_session_get(ctx);
-    c = session->c;
-    
-    if (!h2_is_acceptable_connection(c, 1)) {
-        nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 0,
-                              NGHTTP2_INADEQUATE_SECURITY, NULL, 0);
-    } 
 
-    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
-    status = h2_session_start(session, &rv);
-    
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
-                  "h2_session(%ld): starting on %s:%d", session->id,
-                  session->c->base_server->server_hostname,
-                  session->c->local_addr->port);
-    if (status != APR_SUCCESS) {
-        h2_session_abort(session, status, rv);
-        h2_session_eoc_callback(session);
-        return status;
-    }
-    
-    status = h2_session_process(session);
+    status = h2_session_process(session, async);
 
     if (status == APR_EOF) {
         ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                       "h2_session(%ld): done", session->id);
         /* Make sure this connection gets closed properly. */
-        ap_update_child_status_from_conn(c->sbh, SERVER_CLOSING, c);
-        c->keepalive = AP_CONN_CLOSE;
-        if (c->cs) {
-            c->cs->state = CONN_STATE_WRITE_COMPLETION;
-        }
+        ap_update_child_status_from_conn(session->c->sbh, SERVER_CLOSING, session->c);
+        session->c->keepalive = AP_CONN_CLOSE;
         
         h2_session_close(session);
         /* hereafter session will be gone */
     }
+    else {
+        session->c->data_in_input_filters = 0;
+        session->c->keepalive = AP_CONN_KEEPALIVE;
+    }
     
-    return status;
+    if (session->c->cs) {
+        session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    }
+    
+    return DONE;
 }
 
-apr_status_t h2_conn_run(struct h2_ctx *ctx)
+apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 {
-    apr_status_t status;
-    
     do {
-        status = h2_conn_process(ctx);
-    } while (status == APR_SUCCESS);
+        h2_conn_process(ctx, 0);
+    } while (c->keepalive == AP_CONN_KEEPALIVE && !c->aborted);
     
-    return (status == APR_EOF)? APR_SUCCESS : status;
+    return DONE;
 }
 
 
