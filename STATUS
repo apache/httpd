@@ -176,6 +176,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: while at it, I also included r1678763 which is only an
              optimization, but allows to keep code in sync with 2.4/trunk.
 
+  *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
+     SSLCryptoDevice does not get unregistered because of non-zero refcount
+     during the mod_ssl unload happening on httpd startup.
+     trunk patch: http://svn.apache.org/r1720129
+     2.2.x patch: http://jkaluza.fedorapeople.org/httpd-2.2.x-dhparams-free.patch
+     +1: jkaluza
 
 PATCHES/ISSUES THAT ARE STALLED
 
