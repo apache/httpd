@@ -167,7 +167,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_ssl: Fix missing semicolon for building with OpenSSL < 0.9.8m.
      trunk patch: http://svn.apache.org/r1719967
-     +1: ylavic
+     +1: ylavic, mrumph
+     mrumph: Bug 58737 was also opened for this error.
 
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
