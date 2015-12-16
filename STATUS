@@ -112,6 +112,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fix missing semicolon for building with OpenSSL < 0.9.8m.
+     trunk patch: http://svn.apache.org/r1719967
+     +1: ylavic, mrumph, wrowe
+     mrumph: Bug 58737 was also opened for this error.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -164,11 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1717816
      +1: wrowe, icing
      ylavic: how about adding !ap_request_has_body(r) to the test then?
-
-  *) mod_ssl: Fix missing semicolon for building with OpenSSL < 0.9.8m.
-     trunk patch: http://svn.apache.org/r1719967
-     +1: ylavic, mrumph
-     mrumph: Bug 58737 was also opened for this error.
+             wrowe responds: nonstarter, as discussed on list.
 
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
