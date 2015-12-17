@@ -1065,36 +1065,6 @@ h2_stream *h2_session_get_stream(h2_session *session, int stream_id)
     return session->last_stream;
 }
 
-/* h2_io_on_read_cb implementation that offers the data read
- * directly to the session for consumption.
- */
-static apr_status_t session_receive(const char *data, apr_size_t len,
-                                    apr_size_t *readlen, int *done,
-                                    void *puser)
-{
-    h2_session *session = (h2_session *)puser;
-    AP_DEBUG_ASSERT(session);
-    if (len > 0) {
-        ssize_t n = nghttp2_session_mem_recv(session->ngh2,
-                                             (const uint8_t *)data, len);
-        if (n < 0) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_EGENERAL,
-                          session->c,
-                          "h2_session: nghttp2_session_mem_recv error %d",
-                          (int)n);
-            if (nghttp2_is_fatal((int)n)) {
-                *done = 1;
-                h2_session_abort_int(session, (int)n);
-                return APR_EGENERAL;
-            }
-        }
-        else {
-            *readlen = n;
-        }
-    }
-    return APR_SUCCESS;
-}
-
 apr_status_t h2_session_close(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
@@ -1127,9 +1097,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
      * to find out how much of the requested length we can send without
      * blocking.
      * Indicate EOS when we encounter it or DEFERRED if the stream
-     * should be suspended.
-     * TODO: for handling of TRAILERS,  the EOF indication needs
-     * to be aware of that.
+     * should be suspended. Beware of trailers.
      */
  
     (void)ng2s;
@@ -1587,46 +1555,83 @@ static apr_status_t h2_session_send(h2_session *session)
     return APR_SUCCESS;
 }
 
+apr_status_t h2_session_receive(h2_session *session, 
+                                const char *data, apr_size_t len,
+                                apr_size_t *readlen)
+{
+    if (len > 0) {
+        ssize_t n = nghttp2_session_mem_recv(session->ngh2,
+                                             (const uint8_t *)data, len);
+        if (n < 0) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_EGENERAL,
+                          session->c,
+                          "h2_session: nghttp2_session_mem_recv error %d",
+                          (int)n);
+            if (nghttp2_is_fatal((int)n)) {
+                h2_session_abort(session, 0, (int)n);
+                return APR_EGENERAL;
+            }
+        }
+        else {
+            *readlen = n;
+        }
+    }
+    return APR_SUCCESS;
+}
+
+
+
 static apr_status_t h2_session_read(h2_session *session, int block)
 {
-    apr_status_t status;
     
-    status = h2_conn_io_read(&session->io, 
-                             block? APR_BLOCK_READ : APR_NONBLOCK_READ, 
-                             session_receive, session);
-    switch (status) {
-        case APR_SUCCESS:
-            /* successful read, reset our idle timers */
-            session->wait_micros = 0;
-            break;
-        case APR_EAGAIN:
-            break;
-        default:
-            if (APR_STATUS_IS_ETIMEDOUT(status)
-                || APR_STATUS_IS_ECONNABORTED(status)
-                || APR_STATUS_IS_ECONNRESET(status)
-                || APR_STATUS_IS_EOF(status)
-                || APR_STATUS_IS_EBADF(status)) {
-                /* common status for a client that has left */
-                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
-                              "h2_session(%ld): terminating",
-                              session->id);
-                /* Stolen from mod_reqtimeout to speed up lingering when
-                 * a read timeout happened.
-                 */
-                apr_table_setn(session->c->notes, "short-lingering-close", "1");
-            }
-            else {
-                /* uncommon status, log on INFO so that we see this */
-                ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
-                              APLOGNO(02950) 
-                              "h2_session(%ld): error reading, terminating",
-                              session->id);
-            }
-            h2_session_abort(session, status, 0);
-            break;
+    while (1) {
+        apr_status_t status;
+        
+        /* H2_IN filter handles all incoming data against the session.
+         * We just pull at the filter chain to make it happen */
+        status = ap_get_brigade(session->c->input_filters,
+                                session->bbtmp, AP_MODE_READBYTES,
+                                block? APR_BLOCK_READ : APR_NONBLOCK_READ,
+                                APR_BUCKET_BUFF_SIZE);
+        /* get rid of any possible data we do not expect to get */
+        apr_brigade_cleanup(session->bbtmp); 
+
+        switch (status) {
+            case APR_SUCCESS:
+                /* successful read, reset our idle timers */
+                session->wait_micros = 0;
+                if (block) {
+                    return APR_SUCCESS;
+                }
+                break;
+            case APR_EAGAIN:
+                return status;
+            default:
+                if (APR_STATUS_IS_ETIMEDOUT(status)
+                    || APR_STATUS_IS_ECONNABORTED(status)
+                    || APR_STATUS_IS_ECONNRESET(status)
+                    || APR_STATUS_IS_EOF(status)
+                    || APR_STATUS_IS_EBADF(status)) {
+                    /* common status for a client that has left */
+                    ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                                  "h2_session(%ld): terminating",
+                                  session->id);
+                    /* Stolen from mod_reqtimeout to speed up lingering when
+                     * a read timeout happened.
+                     */
+                    apr_table_setn(session->c->notes, "short-lingering-close", "1");
+                }
+                else {
+                    /* uncommon status, log on INFO so that we see this */
+                    ap_log_cerror( APLOG_MARK, APLOG_INFO, status, session->c,
+                                  APLOGNO(02950) 
+                                  "h2_session(%ld): error reading, terminating",
+                                  session->id);
+                }
+                h2_session_abort(session, status, 0);
+                return status;
+        }
     }
-    return status;
 }
 
 static apr_status_t h2_session_submit(h2_session *session)
@@ -1701,6 +1706,58 @@ apr_status_t h2_session_process(h2_session *session, int async)
         }
         
         got_streams = !h2_stream_set_is_empty(session->streams);
+
+        /* If we want client data, see if some is there. */
+        if (nghttp2_session_want_read(session->ngh2)) {
+            int idle      = (session->frames_received > 2 && !got_streams);
+            int may_block = ((session->frames_received <= 1) 
+                             || idle
+                             || (!h2_stream_set_has_unsubmitted(session->streams)
+                                 && !h2_stream_set_has_suspended(session->streams)));
+            
+            status = h2_session_read(session, may_block && !async);
+            
+            ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                          "h2_session(%ld): process -> read", session->id);
+            if (status == APR_SUCCESS) {
+                have_read = 1;
+                got_streams = !h2_stream_set_is_empty(session->streams);
+                if (session->reprioritize) {
+                    ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
+                                  "h2_session(%ld): process -> reprioritize", session->id);
+                    h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
+                    session->reprioritize = 0;
+                }
+            }
+            else if (status == APR_EAGAIN) {
+                /* FIXME: disabling this as event currently discards
+                 * connections on load when we return. */
+                if (async && may_block && 0) {
+                    /* There is nothing to read and we are in a state where we
+                     * have nothing to write until new input comes. Return to
+                     * our caller so that the MPM may schedule us again when
+                     * read seems possible.
+                     */
+                    ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
+                                  "h2_session(%ld): process -> BLOCK_READ, "
+                                  "frames_received=%d, got_streams=%d, "
+                                  "have_written=%d", 
+                                  session->id, (int)session->frames_received,
+                                  (int)got_streams, (int)have_written);
+                    h2_conn_io_flush(&session->io);
+                    if (session->c->cs) {
+                        session->c->cs->sense = CONN_SENSE_WANT_READ;
+                    }
+                    return APR_SUCCESS;
+                }
+            }
+            else {
+                ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
+                              "h2_session(%ld): failed read", session->id);
+                return status;
+            }
+        }
+            
         if (got_streams) {
             ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
                           "h2_session(%ld): process -> check resume", session->id);
@@ -1745,52 +1802,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
             }
         }
         
-        /* If we want client data, see if some is there. */
-        if (nghttp2_session_want_read(session->ngh2)) {
-            int idle      = (session->frames_received > 2 && !got_streams);
-            int may_block = ((session->frames_received <= 1) 
-                             || (idle && !async)
-                             || (!have_written && !h2_stream_set_has_unsubmitted(session->streams)
-                                 && !h2_stream_set_has_suspended(session->streams)));
-            status = h2_session_read(session, may_block);
-            
-            ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
-                          "h2_session(%ld): process -> read", session->id);
-            if (status == APR_SUCCESS) {
-                have_read = 1;
-                got_streams = !h2_stream_set_is_empty(session->streams);
-                if (session->reprioritize) {
-                    ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, session->c,
-                                  "h2_session(%ld): process -> reprioritize", session->id);
-                    h2_mplx_reprioritize(session->mplx, stream_pri_cmp, session);
-                    session->reprioritize = 0;
-                }
-            }
-            else if (status == APR_EAGAIN && idle && async) {
-                /* There is nothing to read and we are in a state where we
-                 * have nothing to write until new input comes. Return to
-                 * our caller so that the MPM may schedule us again when
-                 * read seems possible.
-                 */
-                ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,
-                              "h2_session(%ld): process -> BLOCK_READ, "
-                              "frames_received=%d, got_streams=%d, "
-                              "have_written=%d", 
-                              session->id, (int)session->frames_received,
-                              (int)got_streams, (int)have_written);
-                if (have_written) {
-                    h2_conn_io_flush(&session->io);
-                }
-                if (session->c->cs) {
-                    session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
-                    session->c->cs->sense = (have_written? 
-                                             CONN_SENSE_DEFAULT
-                                             : CONN_SENSE_WANT_READ);
-                }
-                return APR_SUCCESS;
-            }
-        }
-            
         if (!have_read && !have_written) {
             if (session->wait_micros == 0) {
                 session->wait_micros = 10;
