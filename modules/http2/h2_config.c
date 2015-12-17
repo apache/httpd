@@ -64,7 +64,8 @@ static h2_config defconf = {
 static int files_per_session;
 static int async_mpm;
 
-void h2_config_init(apr_pool_t *pool) {
+void h2_config_init(apr_pool_t *pool)
+{
     /* Determine a good default for this platform and mpm?
      * TODO: not sure how APR wants to hand out this piece of 
      * information.
@@ -102,11 +103,7 @@ static void *h2_config_create(apr_pool_t *pool,
     h2_config *conf = (h2_config *)apr_pcalloc(pool, sizeof(h2_config));
     
     const char *s = x? x : "unknown";
-    char *name = apr_pcalloc(pool, strlen(prefix) + strlen(s) + 20);
-    strcpy(name, prefix);
-    strcat(name, "[");
-    strcat(name, s);
-    strcat(name, "]");
+    char *name = apr_pstrcat(pool, prefix, "[", s, "]", NULL);
     
     conf->name                 = name;
     conf->h2_max_streams       = DEF_VAL;
@@ -145,12 +142,7 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     h2_config *add = (h2_config *)addv;
     h2_config *n = (h2_config *)apr_pcalloc(pool, sizeof(h2_config));
 
-    char *name = apr_pcalloc(pool, 20 + strlen(add->name) + strlen(base->name));
-    strcpy(name, "merged[");
-    strcat(name, add->name);
-    strcat(name, ", ");
-    strcat(name, base->name);
-    strcat(name, "]");
+    char *name = apr_pstrcat(pool, "merged[", add->name, ", ", base->name, "]", NULL);
     n->name = name;
 
     n->h2_max_streams       = H2_CONFIG_GET(add, base, h2_max_streams);
@@ -265,7 +257,7 @@ static const char *h2_conf_set_window_size(cmd_parms *parms,
     cfg->h2_window_size = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->h2_window_size < 1024) {
-        return "value must be > 1k";
+        return "value must be >= 1024";
     }
     return NULL;
 }
@@ -277,7 +269,7 @@ static const char *h2_conf_set_min_workers(cmd_parms *parms,
     cfg->min_workers = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->min_workers < 1) {
-        return "value must be > 1";
+        return "value must be > 0";
     }
     return NULL;
 }
@@ -289,7 +281,7 @@ static const char *h2_conf_set_max_workers(cmd_parms *parms,
     cfg->max_workers = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->max_workers < 1) {
-        return "value must be > 1";
+        return "value must be > 0";
     }
     return NULL;
 }
@@ -301,7 +293,7 @@ static const char *h2_conf_set_max_worker_idle_secs(cmd_parms *parms,
     cfg->max_worker_idle_secs = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->max_worker_idle_secs < 1) {
-        return "value must be > 1";
+        return "value must be > 0";
     }
     return NULL;
 }
@@ -315,7 +307,7 @@ static const char *h2_conf_set_stream_max_mem_size(cmd_parms *parms,
     cfg->stream_max_mem_size = (int)apr_atoi64(value);
     (void)arg;
     if (cfg->stream_max_mem_size < 1024) {
-        return "value must be > 1k";
+        return "value must be >= 1024";
     }
     return NULL;
 }
@@ -584,4 +576,3 @@ const h2_config *h2_config_get(conn_rec *c)
     
     return h2_config_sget(c->base_server);
 }
-
