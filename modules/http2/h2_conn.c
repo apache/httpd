@@ -28,6 +28,7 @@
 #include "h2_private.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
+#include "h2_filter.h"
 #include "h2_mplx.h"
 #include "h2_session.h"
 #include "h2_stream.h"
@@ -72,8 +73,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     const h2_config *config = h2_config_sget(s);
     apr_status_t status = APR_SUCCESS;
     int minw = h2_config_geti(config, H2_CONF_MIN_WORKERS);
-    int maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);
-    
+    int maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);    
     int max_threads_per_child = 0;
     int idle_secs = 0;
     int i;
@@ -112,7 +112,10 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     workers = h2_workers_create(s, pool, minw, maxw);
     idle_secs = h2_config_geti(config, H2_CONF_MAX_WORKER_IDLE_SECS);
     h2_workers_set_max_idle_secs(workers, idle_secs);
-    
+ 
+    ap_register_input_filter("H2_IN", h2_filter_core_input,
+                             NULL, AP_FTYPE_CONNECTION);
+   
     return status;
 }
 
@@ -129,6 +132,7 @@ static module *h2_conn_mpm_module(void) {
 apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 {
     h2_session *session;
+    h2_filter_core_in *in;
     
     if (!workers) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
@@ -144,6 +148,11 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
     }
 
     h2_ctx_session_set(ctx, session);
+    
+    in = apr_pcalloc(session->pool, sizeof(*in));
+    in->session = session;
+    ap_add_input_filter("H2_IN", in, r, c);
+    
     ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
 
     return APR_SUCCESS;
@@ -155,9 +164,16 @@ apr_status_t h2_conn_process(h2_ctx *ctx, int async)
     h2_session *session;
     
     session = h2_ctx_session_get(ctx);
+    if (session->c->cs) {
+        session->c->cs->sense = CONN_SENSE_DEFAULT;
+    }
 
     status = h2_session_process(session, async);
 
+    if (session->c->cs) {
+        session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    }
+    
     if (status == APR_EOF) {
         ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, session->c,
                       "h2_session(%ld): done", session->id);
@@ -169,12 +185,7 @@ apr_status_t h2_conn_process(h2_ctx *ctx, int async)
         /* hereafter session will be gone */
     }
     else {
-        session->c->data_in_input_filters = 0;
         session->c->keepalive = AP_CONN_KEEPALIVE;
-    }
-    
-    if (session->c->cs) {
-        session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
     }
     
     return DONE;
@@ -261,11 +272,7 @@ apr_status_t h2_slave_setup(h2_task *task, apr_bucket_alloc_t *bucket_alloc,
             break;
     }
     
-    /* TODO: we simulate that we had already a request on this connection.
-     * This keeps the mod_ssl SNI vs. Host name matcher from answering 
-     * 400 Bad Request
-     * when names do not match. We prefer a predictable 421 status.
-     */
+    /* Simulate that we had already a request on this connection. */
     task->c->keepalives = 1;
     
     return APR_SUCCESS;

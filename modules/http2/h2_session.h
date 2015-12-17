@@ -62,6 +62,7 @@ struct h2_session {
                                      * of 'h2c', NULL otherwise */
     server_rec *s;                  /* server/vhost we're starting on */
     const struct h2_config *config; /* Relevant config for this session */
+    
     int started;
     int aborted;                    /* this session is being aborted */
     int reprioritize;               /* scheduled streams priority needs to 
@@ -83,6 +84,7 @@ struct h2_session {
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
     
     h2_conn_io io;                  /* io on httpd conn filters */
+
     struct h2_mplx *mplx;           /* multiplexer for stream data */
     
     struct h2_stream *last_stream;  /* last stream worked with */
@@ -119,6 +121,14 @@ h2_session *h2_session_create(conn_rec *c, struct h2_ctx *ctx,
  */
 h2_session *h2_session_rcreate(request_rec *r, struct h2_ctx *ctx,
                                struct h2_workers *workers);
+
+/**
+ * Recieve len bytes of raw HTTP/2 input data. Return the amount
+ * consumed and if the session is done.
+ */
+apr_status_t h2_session_receive(h2_session *session, 
+                                const char *data, apr_size_t len,
+                                apr_size_t *readlen);
 
 /**
  * Process the given HTTP/2 session until it is ended or a fatal

@@ -26,6 +26,7 @@ h2_config.lo dnl
 h2_conn.lo dnl
 h2_conn_io.lo dnl
 h2_ctx.lo dnl
+h2_filter.lo dnl
 h2_from_h1.lo dnl
 h2_h2.lo dnl
 h2_io.lo dnl

@@ -434,7 +434,6 @@ static int cipher_is_blacklisted(const char *cipher, const char **psource)
 
 /*******************************************************************************
  * Hooks for processing incoming connections:
- * - pre_conn_before_tls switches SSL off for stream connections
  * - process_conn take over connection in case of h2
  */
 static int h2_h2_process_conn(conn_rec* c);
@@ -528,19 +527,15 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
 int h2_allows_h2_direct(conn_rec *c)
 {
     const h2_config *cfg = h2_config_get(c);
+    int is_tls = h2_h2_is_tls(c);
+    const char *needed_protocol = is_tls? "h2" : "h2c";
     int h2_direct = h2_config_geti(cfg, H2_CONF_DIRECT);
     
     if (h2_direct < 0) {
-        if (h2_h2_is_tls(c)) {
-            /* disabled by default on TLS */
-            h2_direct = 0;
-        }
-        else {
-            /* enabled if "Protocols h2c" is configured */
-            h2_direct = ap_is_allowed_protocol(c, NULL, NULL, "h2c");
-        }
+        h2_direct = is_tls? 0 : 1;
     }
-    return !!h2_direct;
+    return (h2_direct 
+            && ap_is_allowed_protocol(c, NULL, NULL, needed_protocol));
 }
 
 int h2_allows_h2_upgrade(conn_rec *c)
@@ -592,45 +587,55 @@ int h2_h2_process_conn(conn_rec* c)
         return DECLINED;
     }
     
-    if (!ctx && c->keepalives == 0
-        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(c))
-        && h2_allows_h2_direct(c) 
-        && h2_is_acceptable_connection(c, 1)) {
-        /* Fresh connection still is on http/1.1 and H2Direct is enabled. 
-         * Otherwise connection is in a fully acceptable state.
-         * -> peek at the first 24 incoming bytes
-         */
-        apr_bucket_brigade *temp;
-        char *s = NULL;
-        apr_size_t slen;
+    if (!ctx && c->keepalives == 0) {
+        const char *proto = ap_get_protocol(c);
         
-        temp = apr_brigade_create(c->pool, c->bucket_alloc);
-        status = ap_get_brigade(c->input_filters, temp,
-                                AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
-        
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
-                          "h2_h2, error reading 24 bytes speculative");
-            apr_brigade_destroy(temp);
-            return DECLINED;
+        if (APLOGctrace1(c)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn, "
+                          "new connection using protocol '%s', direct=%d, "
+                          "tls acceptable=%d", proto, h2_allows_h2_direct(c), 
+                          h2_is_acceptable_connection(c, 1));
         }
         
-        apr_brigade_pflatten(temp, &s, &slen, c->pool);
-        if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          "h2_h2, direct mode detected");
-            if (!ctx) {
-                ctx = h2_ctx_get(c, 1);
+        if (!strcmp(AP_PROTOCOL_HTTP1, proto)
+            && h2_allows_h2_direct(c) 
+            && h2_is_acceptable_connection(c, 1)) {
+            /* Fresh connection still is on http/1.1 and H2Direct is enabled. 
+             * Otherwise connection is in a fully acceptable state.
+             * -> peek at the first 24 incoming bytes
+             */
+            apr_bucket_brigade *temp;
+            char *s = NULL;
+            apr_size_t slen;
+            
+            temp = apr_brigade_create(c->pool, c->bucket_alloc);
+            status = ap_get_brigade(c->input_filters, temp,
+                                    AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
+            
+            if (status != APR_SUCCESS) {
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                              "h2_h2, error reading 24 bytes speculative");
+                apr_brigade_destroy(temp);
+                return DECLINED;
             }
-            h2_ctx_protocol_set(ctx, h2_h2_is_tls(c)? "h2" : "h2c");
+            
+            apr_brigade_pflatten(temp, &s, &slen, c->pool);
+            if ((slen >= 24) && !memcmp(H2_MAGIC_TOKEN, s, 24)) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                              "h2_h2, direct mode detected");
+                if (!ctx) {
+                    ctx = h2_ctx_get(c, 1);
+                }
+                h2_ctx_protocol_set(ctx, h2_h2_is_tls(c)? "h2" : "h2c");
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                              "h2_h2, not detected in %d bytes: %s", 
+                              (int)slen, s);
+            }
+            
+            apr_brigade_destroy(temp);
         }
-        else {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
-                          "h2_h2, not detected in %d bytes: %s", 
-                          (int)slen, s);
-        }
-        
-        apr_brigade_destroy(temp);
     }
 
     if (ctx) {
