@@ -404,7 +404,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <name>H2WindowSize</name>
         <description>Size of Stream Window for upstream data.</description>
         <syntax>H2WindowSize <em>bytes</em></syntax>
-        <default>H2WindowSize 65536</default>
+        <default>H2WindowSize 65535</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -498,7 +498,6 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <name>H2SessionExtraFiles</name>
         <description>Number of Extra File Handles</description>
         <syntax>H2SessionExtraFiles <em>n</em></syntax>
-        <default>H2SessionExtraFiles 5</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -528,6 +527,11 @@ H2PushPriority text/css   interleaved      # weight 256 default
                     H2SessionExtraFiles 10
                 </highlight>
             </example>
+            <p>
+                If nothing is configured, the module tries to make a conservative
+                guess how many files are safe to use. This depends largely on the 
+                MPM chosen.
+            </p>
         </usage>
     </directivesynopsis>
 
