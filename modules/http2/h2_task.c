@@ -52,7 +52,8 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            apr_bucket_brigade* brigade,
                                            ap_input_mode_t mode,
                                            apr_read_type_e block,
-                                           apr_off_t readbytes) {
+                                           apr_off_t readbytes)
+{
     h2_task *task = filter->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->input) {
@@ -63,7 +64,8 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
 }
 
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
-                                            apr_bucket_brigade* brigade) {
+                                            apr_bucket_brigade* brigade)
+{
     h2_task *task = filter->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->output) {
@@ -73,7 +75,8 @@ static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
 }
 
 static apr_status_t h2_filter_read_response(ap_filter_t* f,
-                                            apr_bucket_brigade* bb) {
+                                            apr_bucket_brigade* bb)
+{
     h2_task *task = f->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->output || !task->output->from_h1) {
@@ -117,7 +120,6 @@ void h2_task_register_hooks(void)
 
 static int h2_task_pre_conn(conn_rec* c, void *arg)
 {
-    
     h2_ctx *ctx;
     
     if (!c->master) {
@@ -270,8 +272,3 @@ static int h2_task_process_conn(conn_rec* c)
     }
     return DECLINED;
 }
-
-
-
-
-

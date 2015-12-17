@@ -176,6 +176,3 @@ static int tq_bubble_down(h2_task_queue *q, int i, int bottom,
     }
     return i;
 }
-
-
-
