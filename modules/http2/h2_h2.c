@@ -699,6 +699,3 @@ static int h2_h2_post_read_req(request_rec *r)
     }
     return DECLINED;
 }
-
-
-

@@ -122,7 +122,8 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
 /* Bring the current buffer content into the output brigade, appropriately
  * chunked.
  */
-static apr_status_t bucketeer_buffer(h2_conn_io *io) {
+static apr_status_t bucketeer_buffer(h2_conn_io *io)
+{
     const char *data = io->buffer;
     apr_size_t remaining = io->buflen;
     apr_bucket *b;

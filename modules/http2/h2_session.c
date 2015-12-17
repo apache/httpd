@@ -1017,7 +1017,8 @@ typedef struct {
     int resume_count;
 } resume_ctx;
 
-static int resume_on_data(void *ctx, h2_stream *stream) {
+static int resume_on_data(void *ctx, h2_stream *stream)
+{
     resume_ctx *rctx = (resume_ctx*)ctx;
     h2_session *session = rctx->session;
     AP_DEBUG_ASSERT(session);
@@ -1040,7 +1041,8 @@ static int resume_on_data(void *ctx, h2_stream *stream) {
     return 1;
 }
 
-static int h2_session_resume_streams_with_data(h2_session *session) {
+static int h2_session_resume_streams_with_data(h2_session *session)
+{
     AP_DEBUG_ASSERT(session);
     if (!h2_stream_set_is_empty(session->streams)
         && session->mplx && !session->aborted) {
@@ -1579,11 +1581,8 @@ apr_status_t h2_session_receive(h2_session *session,
     return APR_SUCCESS;
 }
 
-
-
 static apr_status_t h2_session_read(h2_session *session, int block)
 {
-    
     while (1) {
         apr_status_t status;
         

@@ -43,7 +43,8 @@ static int in_list(h2_workers *workers, h2_mplx *m)
     return 0;
 }
 
-static void cleanup_zombies(h2_workers *workers, int lock) {
+static void cleanup_zombies(h2_workers *workers, int lock)
+{
     if (lock) {
         apr_thread_mutex_lock(workers->lock);
     }
@@ -58,7 +59,6 @@ static void cleanup_zombies(h2_workers *workers, int lock) {
         apr_thread_mutex_unlock(workers->lock);
     }
 }
-
 
 /**
  * Get the next task for the given worker. Will block until a task arrives
@@ -216,7 +216,6 @@ static void worker_done(h2_worker *worker, void *ctx)
     }
 }
 
-
 static apr_status_t add_worker(h2_workers *workers)
 {
     h2_worker *w = h2_worker_create(workers->next_worker_id++,
@@ -232,7 +231,8 @@ static apr_status_t add_worker(h2_workers *workers)
     return APR_SUCCESS;
 }
 
-static apr_status_t h2_workers_start(h2_workers *workers) {
+static apr_status_t h2_workers_start(h2_workers *workers)
+{
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, workers->s,
@@ -390,4 +390,3 @@ void h2_workers_set_max_idle_secs(h2_workers *workers, int idle_secs)
     }
     apr_atomic_set32(&workers->max_idle_secs, idle_secs);
 }
-

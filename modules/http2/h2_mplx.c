@@ -59,7 +59,8 @@
     } while(0)
 
 
-static int is_aborted(h2_mplx *m, apr_status_t *pstatus) {
+static int is_aborted(h2_mplx *m, apr_status_t *pstatus)
+{
     AP_DEBUG_ASSERT(m);
     if (m->aborted) {
         *pstatus = APR_ECONNABORTED;
@@ -175,7 +176,8 @@ void h2_mplx_release(h2_mplx *m)
     release(m, 1);
 }
 
-static void workers_register(h2_mplx *m) {
+static void workers_register(h2_mplx *m)
+{
     /* Initially, there was ref count increase for this as well, but
      * this is not needed, even harmful.
      * h2_workers is only a hub for all the h2_worker instances.
@@ -190,11 +192,13 @@ static void workers_register(h2_mplx *m) {
     h2_workers_register(m->workers, m);
 }
 
-static void workers_unregister(h2_mplx *m) {
+static void workers_unregister(h2_mplx *m)
+{
     h2_workers_unregister(m->workers, m);
 }
 
-static int io_process_events(h2_mplx *m, h2_io *io) {
+static int io_process_events(h2_mplx *m, h2_io *io)
+{
     if (io->input_consumed && m->input_consumed) {
         m->input_consumed(m->input_consumed_ctx, 
                           io->id, io->input_consumed);
@@ -203,7 +207,6 @@ static int io_process_events(h2_mplx *m, h2_io *io) {
     }
     return 0;
 }
-
 
 static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
@@ -253,7 +256,8 @@ static int io_stream_done(h2_mplx *m, h2_io *io, int rst_error)
     }
 }
 
-static int stream_done_iter(void *ctx, h2_io *io) {
+static int stream_done_iter(void *ctx, h2_io *io)
+{
     return io_stream_done((h2_mplx*)ctx, io, 0);
 }
 
@@ -684,7 +688,6 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response,
     }
     return status;
 }
-
 
 apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id, 
                                ap_filter_t* f, apr_bucket_brigade *bb,
