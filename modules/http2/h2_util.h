@@ -26,8 +26,6 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
                             const char *name, size_t namelen,
                             const char *value, size_t valuelen);
 
-char *h2_strlwr(char *s);
-
 void h2_util_camel_case_header(char *s, size_t len);
 
 int h2_req_ignore_header(const char *name, size_t len);
