@@ -43,25 +43,30 @@ static struct h2_workers *workers;
 
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
-static int checked;
 
-static void check_modules(void) 
+static void check_modules(int force) 
 {
+    static int checked = 0;
     int i;
-    if (!checked) {
+
+    if (force || !checked) {
         for (i = 0; ap_loaded_modules[i]; ++i) {
             module *m = ap_loaded_modules[i];
+            
             if (!strcmp("event.c", m->name)) {
                 mpm_type = H2_MPM_EVENT;
                 mpm_module = m;
+                break;
             }
             else if (!strcmp("worker.c", m->name)) {
                 mpm_type = H2_MPM_WORKER;
                 mpm_module = m;
+                break;
             }
             else if (!strcmp("prefork.c", m->name)) {
                 mpm_type = H2_MPM_PREFORK;
                 mpm_module = m;
+                break;
             }
         }
         checked = 1;
@@ -76,27 +81,12 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     int maxw = h2_config_geti(config, H2_CONF_MAX_WORKERS);    
     int max_threads_per_child = 0;
     int idle_secs = 0;
-    int i;
 
     h2_config_init(pool);
     
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &max_threads_per_child);
     
-    for (i = 0; ap_loaded_modules[i]; ++i) {
-        module *m = ap_loaded_modules[i];
-        if (!strcmp("event.c", m->name)) {
-            mpm_type = H2_MPM_EVENT;
-            mpm_module = m;
-        }
-        else if (!strcmp("worker.c", m->name)) {
-            mpm_type = H2_MPM_WORKER;
-            mpm_module = m;
-        }
-        else if (!strcmp("prefork.c", m->name)) {
-            mpm_type = H2_MPM_PREFORK;
-            mpm_module = m;
-        }
-    }
+    check_modules(1);
     
     if (minw <= 0) {
         minw = max_threads_per_child;
@@ -119,13 +109,15 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     return status;
 }
 
-h2_mpm_type_t h2_conn_mpm_type(void) {
-    check_modules();
+h2_mpm_type_t h2_conn_mpm_type(void)
+{
+    check_modules(0);
     return mpm_type;
 }
 
-static module *h2_conn_mpm_module(void) {
-    check_modules();
+static module *h2_conn_mpm_module(void)
+{
+    check_modules(0);
     return mpm_module;
 }
 
