@@ -18,6 +18,7 @@
 
 struct h2_response;
 struct apr_thread_cond_t;
+struct h2_mplx;
 struct h2_request;
 
 
@@ -25,6 +26,12 @@ typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
 
 typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
+typedef enum {
+    H2_IO_READ,
+    H2_IO_WRITE,
+    H2_IO_ANY,
+}
+h2_io_op;
 
 typedef struct h2_io h2_io;
 
@@ -39,16 +46,18 @@ struct h2_io {
     struct h2_response *response;/* response for submit, once created */
     int rst_error;
 
+    h2_io_op timed_op;           /* which operation is waited on */
+    struct apr_thread_cond_t *timed_cond; /* condition to wait on */
+    apr_time_t timeout_at;       /* when IO wait will time out */
+    
     int eos_in;
     int eos_in_written;
     apr_bucket_brigade *bbin;    /* input data for stream */
-    struct apr_thread_cond_t *input_arrived; /* block on reading */
     apr_size_t input_consumed;   /* how many bytes have been read */
     
     int eos_out;
     apr_bucket_brigade *bbout;   /* output data from stream */
     apr_bucket_alloc_t *bucket_alloc;
-    struct apr_thread_cond_t *output_drained; /* block on writing */
     
     int files_handles_owned;
     apr_bucket_brigade *tmp;     /* temporary data for chunking */
@@ -87,6 +96,14 @@ int h2_io_in_has_eos_for(h2_io *io);
  * Output data is available.
  */
 int h2_io_out_has_data(h2_io *io);
+
+void h2_io_signal(h2_io *io, h2_io_op op);
+void h2_io_signal_init(h2_io *io, h2_io_op op, int timeout_secs, 
+                       struct apr_thread_cond_t *cond);
+void h2_io_signal_exit(h2_io *io);
+apr_status_t h2_io_signal_wait(struct h2_mplx *m, h2_io *io);
+
+void h2_io_make_orphaned(h2_io *io, int error);
 
 /*******************************************************************************
  * Input handling of streams.

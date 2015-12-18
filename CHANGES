@@ -1,9 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: adding new config directives and the implementation behind
+     them: H2Timeout, H2KeepAliveTimeout, H2StreamTimeout. Documentation in
+     the http2 manual.
+     [Stefan Eissing]
+
   *) mod_http2: when running in async mpm processing, mod_http2 will cease
      processing on idle connections (e.g. no open streams) back to the mpm.
-     [Stefan Eissing]     
+     [Stefan Eissing]
 
   *) mod_http2: fixed bug in input window size calculation by moving chunked
      request body encoding into later stage of processing.

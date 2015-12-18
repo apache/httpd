@@ -27,6 +27,7 @@
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
+#include "h2_filter.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
@@ -66,6 +67,9 @@ static void update_window(void *ctx, int stream_id, apr_off_t bytes_read)
                   session->id, stream_id, (long)bytes_read);
 }
 
+static apr_status_t h2_session_receive(void *ctx, 
+                                       const char *data, apr_size_t len,
+                                       apr_size_t *readlen);
 
 h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
 {
@@ -708,7 +712,9 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         session->max_stream_count = h2_config_geti(session->config, H2_CONF_MAX_STREAMS);
         session->max_stream_mem = h2_config_geti(session->config, H2_CONF_STREAM_MAX_MEM);
-
+        session->timeout_secs = h2_config_geti(session->config, H2_CONF_TIMEOUT_SECS);
+        session->keepalive_secs = h2_config_geti(session->config, H2_CONF_KEEPALIVE_SECS);
+        
         status = apr_thread_cond_create(&session->iowait, session->pool);
         if (status != APR_SUCCESS) {
             return NULL;
@@ -721,6 +727,11 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         h2_mplx_set_consumed_cb(session->mplx, update_window, session);
         
+        /* Install the connection input filter that feeds the session */
+        session->cin = h2_filter_cin_create(session->pool, h2_session_receive, session);
+        h2_filter_cin_timeout_set(session->cin, session->timeout_secs);
+        ap_add_input_filter("H2_IN", session->cin, r, c);
+
         h2_conn_io_init(&session->io, c, session->config, session->pool);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
@@ -1557,10 +1568,10 @@ static apr_status_t h2_session_send(h2_session *session)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_session_receive(h2_session *session, 
-                                const char *data, apr_size_t len,
-                                apr_size_t *readlen)
+static apr_status_t h2_session_receive(void *ctx, const char *data, 
+                                       apr_size_t len, apr_size_t *readlen)
 {
+    h2_session *session = ctx;
     if (len > 0) {
         ssize_t n = nghttp2_session_mem_recv(session->ngh2,
                                              (const uint8_t *)data, len);
@@ -1713,7 +1724,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                              || idle
                              || (!h2_stream_set_has_unsubmitted(session->streams)
                                  && !h2_stream_set_has_suspended(session->streams)));
-            
+                                 
+            h2_filter_cin_timeout_set(session->cin, idle? session->keepalive_secs : session->timeout_secs);
             status = h2_session_read(session, may_block && !async);
             
             ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, session->c,

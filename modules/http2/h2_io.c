@@ -15,13 +15,18 @@
 
 #include <assert.h>
 
+#include <apr_thread_mutex.h>
+#include <apr_thread_cond.h>
+
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
 
 #include "h2_private.h"
+#include "h2_h2.h"
 #include "h2_io.h"
+#include "h2_mplx.h"
 #include "h2_response.h"
 #include "h2_request.h"
 #include "h2_task.h"
@@ -93,6 +98,66 @@ apr_status_t h2_io_in_shutdown(h2_io *io)
         apr_brigade_cleanup(io->bbin);
     }
     return h2_io_in_close(io);
+}
+
+
+void h2_io_signal_init(h2_io *io, h2_io_op op, int timeout_secs, apr_thread_cond_t *cond)
+{
+    io->timed_op = op;
+    io->timed_cond = cond;
+    if (timeout_secs > 0) {
+        io->timeout_at = apr_time_now() + apr_time_from_sec(timeout_secs);
+    }
+    else {
+        io->timeout_at = 0; 
+    }
+}
+
+void h2_io_signal_exit(h2_io *io)
+{
+    io->timed_cond = NULL;
+    io->timeout_at = 0; 
+}
+
+apr_status_t h2_io_signal_wait(h2_mplx *m, h2_io *io)
+{
+    apr_status_t status;
+    
+    if (io->timeout_at != 0) {
+        status = apr_thread_cond_timedwait(io->timed_cond, m->lock, io->timeout_at);
+        if (APR_STATUS_IS_TIMEUP(status)) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,  
+                          "h2_mplx(%ld-%d): stream timeout expired: %s",
+                          m->id, io->id, 
+                          (io->timed_op == H2_IO_READ)? "read" : "write");
+            h2_io_rst(io, H2_ERR_CANCEL);
+        }
+    }
+    else {
+        apr_thread_cond_wait(io->timed_cond, m->lock);
+        status = APR_SUCCESS;
+    }
+    if (io->orphaned && status == APR_SUCCESS) {
+        return APR_ECONNABORTED;
+    }
+    return status;
+}
+
+void h2_io_signal(h2_io *io, h2_io_op op)
+{
+    if (io->timed_cond && (io->timed_op == op || H2_IO_ANY == op)) {
+        apr_thread_cond_signal(io->timed_cond);
+    }
+}
+
+void h2_io_make_orphaned(h2_io *io, int error)
+{
+    io->orphaned = 1;
+    if (error) {
+        h2_io_rst(io, error);
+    }
+    /* if someone is waiting, wake him up */
+    h2_io_signal(io, H2_IO_ANY);
 }
 
 static int add_trailer(void *ctx, const char *key, const char *value)

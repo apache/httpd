@@ -709,4 +709,98 @@ H2PushPriority text/css   interleaved      # weight 256 default
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2Timeout</name>
+        <description>Timeout (in seconds) for HTTP/2 connections</description>
+        <syntax>H2Timeout seconds</syntax>
+        <default>H2Timeout 5</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.19 and later.</compatibility>
+
+        <usage>
+            <p>
+                This directive sets the timeout for read/write operations on
+                connections where HTTP/2 is negotiated. This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                This directive is similar to the 
+                <directive module="core" type="section">Timeout</directive>, but
+                applies only to HTTP/2 connections.
+            </p>
+            <p>
+                A value of 0 enforces no timeout.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2KeepAliveTimeout</name>
+        <description>Timeout (in seconds) for idle HTTP/2 connections</description>
+        <syntax>H2KeepAliveTimeout seconds</syntax>
+        <default>H2KeepAliveTimeout 300</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.19 and later.</compatibility>
+
+        <usage>
+            <p>
+                This directive sets the timeout for read/write operations on
+                idle connections where HTTP/2 is negotiated. This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                This directive is similar to the 
+                <directive module="core" type="section">KeepAliveTimeout</directive>, but
+                applies only to HTTP/2 connections. A HTTP/2 connection is considered
+                idle when no streams are open, e.g. no requests are ongoing.
+            </p>
+            <p>
+                A value of 0 enforces no timeout.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>H2StreamTimeout</name>
+        <description>Timeout (in seconds) for idle HTTP/2 connections</description>
+        <syntax>H2StreamTimeout seconds</syntax>
+        <default>H2StreamTimeout 120</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.19 and later.</compatibility>
+
+        <usage>
+            <p>
+                This directive sets the timeout for read/write operations on
+                HTTP/2 streams, e.g. individual requests. This can be used server wide or for specific
+                <directive module="core" type="section">VirtualHost</directive>s. 
+            </p>
+            <p>
+                Due to the nature of HTTP/2, which sends multiple requests over a single
+                connection and has priority scheduling, individual streams might not
+                see input for much longer times than HTTP/1.1 requests would. 
+            </p>
+            <p>
+                A value of 0 enforces no timeout, so could wait on chances to receive
+                input or write data indefinitely. This expose a server to
+                risks of thread exhaustion. 
+            </p>
+            <p>
+                Depending on your handling of pushed streams,
+                priorities and general responsiveness, a site might need to increase
+                this value. For example, if you PUSH a large resource <em>before</em>
+                the requested one, the initial stream will not write until the
+                pushed resource is fully sent.
+            </p>
+        </usage>
+    </directivesynopsis>
+
 </modulesynopsis>
