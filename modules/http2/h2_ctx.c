@@ -98,7 +98,7 @@ h2_ctx *h2_ctx_server_set(h2_ctx *ctx, server_rec *s)
 
 int h2_ctx_is_task(h2_ctx *ctx)
 {
-    return ctx && !!ctx->task;
+    return ctx && ctx->task;
 }
 
 struct h2_task *h2_ctx_get_task(h2_ctx *ctx)
