@@ -584,6 +584,7 @@ int h2_h2_process_conn(conn_rec* c)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, process_conn");
     if (h2_ctx_is_task(ctx)) {
         /* our stream pseudo connection */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, "h2_h2, task, declined");
         return DECLINED;
     }
     

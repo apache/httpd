@@ -133,6 +133,7 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 {
     h2_session *session;
     
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "setup");
     if (!workers) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
                       "workers not initialized");
@@ -163,6 +164,7 @@ apr_status_t h2_conn_process(h2_ctx *ctx, int async)
         session->c->cs->sense = CONN_SENSE_DEFAULT;
     }
 
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, "process");
     status = h2_session_process(session, async);
 
     if (session->c->cs) {
