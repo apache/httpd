@@ -18,9 +18,23 @@
 
 struct h2_session;
 
-typedef struct {
-    struct h2_session *session;
-} h2_filter_core_in;
+typedef apr_status_t h2_filter_cin_cb(void *ctx, 
+                                      const char *data, apr_size_t len,
+                                      apr_size_t *readlen);
+
+typedef struct h2_filter_cin {
+    apr_pool_t *pool;
+    apr_bucket_brigade *bb;
+    h2_filter_cin_cb *cb;
+    void *cb_ctx;
+    apr_socket_t *socket;
+    int timeout_secs;
+    apr_time_t last_read;
+} h2_filter_cin;
+
+h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *ctx);
+
+void h2_filter_cin_timeout_set(h2_filter_cin *cin, int timeout_secs);
 
 apr_status_t h2_filter_core_input(ap_filter_t* filter,
                                   apr_bucket_brigade* brigade,

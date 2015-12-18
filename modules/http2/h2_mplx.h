@@ -77,6 +77,7 @@ struct h2_mplx {
     
     int aborted;
     apr_size_t stream_max_mem;
+    int stream_timeout_secs;
     
     apr_pool_t *spare_pool;           /* spare pool, ready for next io */
     struct h2_workers *workers;

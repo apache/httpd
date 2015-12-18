@@ -41,6 +41,7 @@ struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
 struct h2_ctx;
 struct h2_config;
+struct h2_filter_cin;
 struct h2_mplx;
 struct h2_priority;
 struct h2_push;
@@ -83,6 +84,10 @@ struct h2_session {
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
     
+    int timeout_secs;               /* connection timeout (seconds) */
+    int keepalive_secs;             /* connection idle timeout (seconds) */
+    
+    struct h2_filter_cin *cin;      /* connection input filter context */
     h2_conn_io io;                  /* io on httpd conn filters */
 
     struct h2_mplx *mplx;           /* multiplexer for stream data */
@@ -121,14 +126,6 @@ h2_session *h2_session_create(conn_rec *c, struct h2_ctx *ctx,
  */
 h2_session *h2_session_rcreate(request_rec *r, struct h2_ctx *ctx,
                                struct h2_workers *workers);
-
-/**
- * Recieve len bytes of raw HTTP/2 input data. Return the amount
- * consumed and if the session is done.
- */
-apr_status_t h2_session_receive(h2_session *session, 
-                                const char *data, apr_size_t len,
-                                apr_size_t *readlen);
 
 /**
  * Process the given HTTP/2 session until it is ended or a fatal
