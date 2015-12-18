@@ -64,17 +64,6 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
 }
 
 
-char *h2_strlwr(char *s)
-{
-    char *p;
-    for (p = s; *p; ++p) {
-        if (*p >= 'A' && *p <= 'Z') {
-            *p += 'a' - 'A';
-        }
-    }
-    return s;
-}
-
 void h2_util_camel_case_header(char *s, size_t len)
 {
     size_t start = 1;
