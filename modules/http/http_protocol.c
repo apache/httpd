@@ -1584,8 +1584,6 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
 AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
 {
     int methnum;
-    int i;
-    char **methods;
 
     /*
      * If it's one of our known methods, use the shortcut and check the
@@ -1596,18 +1594,13 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
         return !!(l->method_mask & (AP_METHOD_BIT << methnum));
     }
     /*
-     * Otherwise, see if the method name is in the array or string names
+     * Otherwise, see if the method name is in the array of string names.
      */
     if ((l->method_list == NULL) || (l->method_list->nelts == 0)) {
         return 0;
     }
-    methods = (char **)l->method_list->elts;
-    for (i = 0; i < l->method_list->nelts; ++i) {
-        if (strcmp(method, methods[i]) == 0) {
-            return 1;
-        }
-    }
-    return 0;
+
+    return ap_array_str_contains(l->method_list, method);
 }
 
 /*
@@ -1616,9 +1609,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
 AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
 {
     int methnum;
-    int i;
     const char **xmethod;
-    char **methods;
 
     /*
      * If it's one of our known methods, use the shortcut and use the
@@ -1632,14 +1623,10 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
     /*
      * Otherwise, see if the method name is in the array of string names.
      */
-    if (l->method_list->nelts != 0) {
-        methods = (char **)l->method_list->elts;
-        for (i = 0; i < l->method_list->nelts; ++i) {
-            if (strcmp(method, methods[i]) == 0) {
-                return;
-            }
-        }
+    if (ap_array_str_contains(l->method_list, method)) {
+        return;
     }
+
     xmethod = (const char **) apr_array_push(l->method_list);
     *xmethod = method;
 }
