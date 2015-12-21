@@ -76,15 +76,21 @@ struct h2_session {
                                      
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */
+    int requests_received;          /* number of http/2 requests received */
+    int responses_sent;             /* number of http/2 responses submitted */
+    int streams_reset;              /* number of http/2 streams reset by client */
+    int streams_pushed;             /* number of http/2 streams pushed */
+    int max_stream_received;        /* highest stream id created */
+    int max_stream_handled;         /* highest stream id handled successfully */
+    
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
+    int timeout_secs;               /* connection timeout (seconds) */
+    int keepalive_secs;             /* connection idle timeout (seconds) */
     
     apr_pool_t *pool;               /* pool to use in session handling */
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
-    
-    int timeout_secs;               /* connection timeout (seconds) */
-    int keepalive_secs;             /* connection idle timeout (seconds) */
     
     struct h2_filter_cin *cin;      /* connection input filter context */
     h2_conn_io io;                  /* io on httpd conn filters */
@@ -93,9 +99,6 @@ struct h2_session {
     
     struct h2_stream *last_stream;  /* last stream worked with */
     struct h2_stream_set *streams;  /* streams handled by this session */
-    
-    int max_stream_received;        /* highest stream id created */
-    int max_stream_handled;         /* highest stream id handled successfully */
     
     apr_pool_t *spare;              /* spare stream pool */
     
