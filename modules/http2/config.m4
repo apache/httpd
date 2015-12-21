@@ -193,6 +193,9 @@ is usually linked shared and requires loading. ], $http2_objs, , most, [
     fi
 ])
 
+# Ensure that other modules can pick up mod_http2.h
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 dnl #  end of module specific part
 APACHE_MODPATH_FINISH
 

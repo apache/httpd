@@ -33,4 +33,6 @@ APLOG_USE_MODULE(http2);
 #define H2_HEADER_PATH_LEN   5
 #define H2_CRLF             "\r\n"
 
+#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
+
 #endif

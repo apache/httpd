@@ -895,7 +895,6 @@ typedef struct {
 } literal;
 
 #define H2_DEF_LITERAL(n)   { (n), (sizeof(n)-1) }
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
 #define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
 
 static literal IgnoredRequestHeaders[] = {
