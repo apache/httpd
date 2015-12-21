@@ -67,7 +67,7 @@ struct h2_mplx {
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
 
-    int aborted : 1;
+    unsigned int aborted : 1;
 
     struct h2_task_queue *q;
     struct h2_io_set *stream_ios;
