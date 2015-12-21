@@ -125,7 +125,6 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 {
     h2_session *session;
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "setup");
     if (!workers) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02911) 
                       "workers not initialized");
@@ -156,9 +155,9 @@ apr_status_t h2_conn_process(h2_ctx *ctx, int async)
         session->c->cs->sense = CONN_SENSE_DEFAULT;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, "process");
     status = h2_session_process(session, async);
 
+    session->c->keepalive = AP_CONN_KEEPALIVE;
     if (session->c->cs) {
         session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
     }
@@ -171,10 +170,7 @@ apr_status_t h2_conn_process(h2_ctx *ctx, int async)
         session->c->keepalive = AP_CONN_CLOSE;
         
         h2_session_close(session);
-        /* hereafter session will be gone */
-    }
-    else {
-        session->c->keepalive = AP_CONN_KEEPALIVE;
+        /* hereafter session may be gone */
     }
     
     return DONE;

@@ -60,8 +60,8 @@ static h2_config defconf = {
     1,                      /* HTTP/2 server push enabled */
     NULL,                   /* map of content-type to priorities */
     5,                      /* normal connection timeout */
-    5*60,                   /* idle connection timeout */
-    2*60,                   /* stream timeout */
+    30,                     /* idle connection timeout */
+    0,                      /* stream timeout */
 };
 
 static int files_per_session;
