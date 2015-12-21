@@ -36,30 +36,30 @@ h2_io_op;
 typedef struct h2_io h2_io;
 
 struct h2_io {
-    int id;                      /* stream identifier */
-    apr_pool_t *pool;            /* stream pool */
+    int id;                          /* stream identifier */
+    apr_pool_t *pool;                /* stream pool */
     apr_bucket_alloc_t *bucket_alloc;
     
-    const struct h2_request *request;  /* request on this io */
-    struct h2_response *response;/* response to request */
-    int rst_error;               /* h2 related stream abort error */
+    const struct h2_request *request;/* request on this io */
+    struct h2_response *response;    /* response to request */
+    int rst_error;                   /* h2 related stream abort error */
 
-    apr_bucket_brigade *bbin;    /* input data for stream */
-    apr_bucket_brigade *bbout;   /* output data from stream */
-    apr_bucket_brigade *tmp;     /* temporary data for chunking */
+    apr_bucket_brigade *bbin;        /* input data for stream */
+    apr_bucket_brigade *bbout;       /* output data from stream */
+    apr_bucket_brigade *tmp;         /* temporary data for chunking */
 
-    int orphaned       : 1;      /* h2_stream is gone for this io */    
-    int task_done      : 1;      /* h2_task has finished for this io */
-    int request_body   : 1;      /* iff request has body */
-    int eos_in         : 1;      /* input eos has been seen */
-    int eos_in_written : 1;      /* input eos has been forwarded */
-    int eos_out        : 1;      /* output eos has been seen */
+    unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
+    unsigned int task_done      : 1; /* h2_task has finished for this io */
+    unsigned int request_body   : 1; /* iff request has body */
+    unsigned int eos_in         : 1; /* input eos has been seen */
+    unsigned int eos_in_written : 1; /* input eos has been forwarded */
+    unsigned int eos_out        : 1; /* output eos has been seen */
     
-    h2_io_op timed_op;           /* which operation is waited on, if any */
+    h2_io_op timed_op;               /* which operation is waited on, if any */
     struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */
-    apr_time_t timeout_at;       /* when IO wait will time out */
+    apr_time_t timeout_at;           /* when IO wait will time out */
     
-    apr_size_t input_consumed;   /* how many bytes have been read */
+    apr_size_t input_consumed;       /* how many bytes have been read */
         
     int files_handles_owned;
 };

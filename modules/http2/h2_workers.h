@@ -38,7 +38,7 @@ struct h2_workers {
     int min_size;
     int max_size;
     
-    int aborted : 1;
+    unsigned int aborted : 1;
 
     apr_threadattr_t *thread_attr;
     

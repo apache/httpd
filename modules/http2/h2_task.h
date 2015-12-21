@@ -55,9 +55,9 @@ struct h2_task {
     struct conn_rec *c;
     const struct h2_request *request;
     
-    int filters_set       : 1;
-    int input_eos         : 1;
-    int serialize_headers : 1;
+    unsigned int filters_set       : 1;
+    unsigned int input_eos         : 1;
+    unsigned int serialize_headers : 1;
     
     struct h2_task_input *input;
     struct h2_task_output *output;

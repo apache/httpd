@@ -41,9 +41,9 @@ struct h2_request {
     apr_time_t request_time;
     apr_off_t content_length;
     
-    int chunked : 1;    /* iff requst body needs to be forwarded as chunked */
-    int eoh     : 1;    /* iff end-of-headers has been seen and request is complete */
-    int push    : 1;    /* iff server push is possible for this request */
+    unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
+    unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
+    unsigned int push    : 1; /* iff server push is possible for this request */
     
     const struct h2_config *config;
 };
