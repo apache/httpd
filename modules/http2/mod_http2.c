@@ -136,7 +136,7 @@ static void h2_hooks(apr_pool_t *pool)
 {
     static const char *const mod_ssl[] = { "mod_ssl.c", NULL};
     
-    ap_log_perror(APLOG_MARK, APLOG_INFO, 0, pool, "installing hooks");
+    ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
     /* Run once after configuration is set, but before mpm children initialize.
      */

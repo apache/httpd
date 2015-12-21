@@ -74,7 +74,7 @@ static void have_out_data_for(h2_mplx *m, int stream_id);
 static void h2_mplx_destroy(h2_mplx *m)
 {
     AP_DEBUG_ASSERT(m);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): destroy, refs=%d", 
                   m->id, m->refs);
     m->aborted = 1;
@@ -273,12 +273,12 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         release(m, 0);
         while (m->refs > 0) {
             m->join_wait = wait;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): release_join, refs=%d, waiting...", 
                           m->id, m->refs);
             apr_thread_cond_wait(wait, m->lock);
         }
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                       "h2_mplx(%ld): release_join -> destroy, (#ios=%ld)", 
                       m->id, (long)h2_io_set_size(m->stream_ios));
         apr_thread_mutex_unlock(m->lock);
@@ -569,7 +569,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                  * reset by the client. Should no longer happen since such
                  * streams should clear io's from the ready queue.
                  */
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c, APLOGNO(02953) 
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,  
                               "h2_mplx(%ld): stream for response %d closed, "
                               "resetting io to close request processing",
                               m->id, io->id);
@@ -700,7 +700,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
             h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
             if (io && !io->orphaned) {
                 status = out_write(m, io, f, bb, trailers, iowait);
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                               "h2_mplx(%ld-%d): write with trailers=%s", 
                               m->id, io->id, trailers? "yes" : "no");
                 H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
@@ -742,11 +742,11 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                     h2_response *r = h2_response_die(stream_id, APR_EGENERAL, 
                                                      io->request, m->pool);
                     status = out_open(m, stream_id, r, NULL, NULL, NULL);
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                                   "h2_mplx(%ld-%d): close, no response, no rst", 
                                   m->id, io->id);
                 }
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                               "h2_mplx(%ld-%d): close with trailers=%s", 
                               m->id, io->id, trailers? "yes" : "no");
                 status = h2_io_out_close(io, trailers);
