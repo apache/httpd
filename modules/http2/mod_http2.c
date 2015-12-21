@@ -18,9 +18,10 @@
 #include <apr_want.h>
 
 #include <httpd.h>
+#include <http_request.h>
 #include <http_log.h>
 
-#include "mod_h2.h"
+#include "mod_http2.h"
 
 #include <nghttp2/nghttp2.h>
 #include "h2_stream.h"
@@ -31,6 +32,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
+#include "h2_request.h"
 #include "h2_switch.h"
 #include "h2_version.h"
 
@@ -46,6 +48,8 @@ AP_DECLARE_MODULE(http2) = {
     h2_cmds,              /* command handlers */
     h2_hooks
 };
+
+static int h2_h2_fixups(request_rec *r);
 
 /* The module initialization. Called once as apache hook, before any multi
  * processing (threaded or not) happens. It is typically at least called twice, 
@@ -106,6 +110,10 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     return status;
 }
 
+static char *http2_var_lookup(apr_pool_t *, server_rec *,
+                         conn_rec *, request_rec *, char *name);
+static int http2_is_h2(conn_rec *);
+
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
  */
@@ -117,6 +125,9 @@ static void h2_child_init(apr_pool_t *pool, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
                      APLOGNO(02949) "initializing connection handling");
     }
+    
+    APR_REGISTER_OPTIONAL_FN(http2_is_h2);
+    APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
 }
 
 /* Install this module into the apache2 infrastructure.
@@ -141,6 +152,86 @@ static void h2_hooks(apr_pool_t *pool)
 
     h2_alt_svc_register_hooks();
     
+    /* Setup subprocess env for certain variables 
+     */
+    ap_hook_fixups(h2_h2_fixups, NULL,NULL, APR_HOOK_MIDDLE);
 }
 
+static char *value_of_HTTP2(apr_pool_t *p, server_rec *s,
+                              conn_rec *c, request_rec *r)
+{
+    return c && http2_is_h2(c)? "on" : "off";
+}
 
+static char *value_of_H2PUSH(apr_pool_t *p, server_rec *s,
+                             conn_rec *c, request_rec *r)
+{
+    h2_ctx *ctx;
+    if (r) {
+        ctx = h2_ctx_rget(r);
+        if (ctx) {
+            h2_task *task = h2_ctx_get_task(ctx);
+            return task && task->request->push? "on" : "off";
+        }
+    }
+    else if (c) {
+        ctx = h2_ctx_get(c, 0);
+        return ctx && h2_session_push_enabled(ctx->session)? "on" : "off";
+    }
+    else if (s) {
+        const h2_config *cfg = h2_config_sget(s);
+        return cfg && h2_config_geti(cfg, H2_CONF_PUSH)? "on" : "off";
+    }
+    return "off";
+}
+
+typedef char *h2_var_lookup(apr_pool_t *p, server_rec *s,
+                             conn_rec *c, request_rec *r);
+typedef struct h2_var_def {
+    const char *name;
+    h2_var_lookup *lookup;
+    unsigned int  subprocess : 1;    /* should be set in r->subprocess_env */
+} h2_var_def;
+
+static h2_var_def H2_VARS[] = {
+    { "HTTP2",     value_of_HTTP2,  1 },
+    { "H2PUSH",    value_of_H2PUSH, 1 },
+};
+
+#ifndef H2_ALEN
+#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
+#endif
+
+
+static int http2_is_h2(conn_rec *c)
+{
+    return h2_ctx_get(c->master? c->master : c, 0) != NULL;
+}
+
+static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
+                              conn_rec *c, request_rec *r, char *name)
+{
+    /* If the # of vars grow, we need to put definitions in a hash */
+    for (int i = 0; i < H2_ALEN(H2_VARS); ++i) {
+        h2_var_def *vdef = &H2_VARS[i];
+        if (!strcmp(vdef->name, name)) {
+            return vdef->lookup(p, s, c, r);
+        }
+    }
+    return "";
+}
+
+static int h2_h2_fixups(request_rec *r)
+{
+    if (r->connection->master) {
+        h2_ctx *ctx = h2_ctx_rget(r);
+        for (int i = 0; ctx && i < H2_ALEN(H2_VARS); ++i) {
+            h2_var_def *vdef = &H2_VARS[i];
+            if (vdef->subprocess) {
+                apr_table_setn(r->subprocess_env, vdef->name, 
+                               vdef->lookup(r->pool, r->server, r->connection, r));
+            }
+        }
+    }
+    return DECLINED;
+}

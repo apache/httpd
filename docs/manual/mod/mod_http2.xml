@@ -803,4 +803,24 @@ H2PushPriority text/css   interleaved      # weight 256 default
         </usage>
     </directivesynopsis>
 
+    <section id="envvars"><title>Environment Variables</title>
+        
+        <p>This module can be configured to provide HTTP/2 related information
+            as additional environment variables to the SSI and CGI namespace.
+        </p>
+        
+        <table border="1">
+            <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+            </columnspec>
+            <tr>
+                <th><a name="table3">Variable Name:</a></th>
+                <th>Value Type:</th>
+                <th>Description:</th>
+            </tr>
+            <tr><td><code>HTTPe</code></td>                         <td>flag</td>      <td>HTTP/2 is being used.</td></tr>
+            <tr><td><code>H2PUSH</code></td>                        <td>flag</td>      <td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+        </table>
+        
+    </section>
+
 </modulesynopsis>
