@@ -53,7 +53,7 @@ struct h2_worker {
     h2_worker_done_fn *worker_done;
     void *ctx;
     
-    int aborted : 1;
+    unsigned int aborted : 1;
     int pool_reuses;
     struct h2_task *task;
 };
