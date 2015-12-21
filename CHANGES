@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: new r->subprocess_env variables HTTP2 and H2PUSH, set to "on"
+     when available for request.
+     [Stefan Eissing]
+
   *) mod_http2: adding new config directives and the implementation behind
      them: H2Timeout, H2KeepAliveTimeout, H2StreamTimeout. Documentation in
      the http2 manual.
