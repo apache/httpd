@@ -58,12 +58,12 @@ struct h2_stream {
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
     struct h2_response *response; /* the response, once ready */
-    
-    int aborted;                /* was aborted */
-    int suspended;              /* DATA sending has been suspended */
     int rst_error;              /* stream error for RST_STREAM */
-    int scheduled;              /* stream has been scheduled */
-    int submitted;              /* response HEADER has been sent */
+    
+    int aborted    : 1;         /* was aborted */
+    int suspended  : 1;         /* DATA sending has been suspended */
+    int scheduled  : 1;         /* stream has been scheduled */
+    int submitted  : 1;         /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
     apr_bucket_brigade *bbin;   /* input DATA */
@@ -184,7 +184,7 @@ void h2_stream_rst(h2_stream *streamm, int error_code);
  * @param cmp    priority comparision
  * @param ctx    context for comparision
  */
-apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                                 h2_stream_pri_cmp *cmp, void *ctx);
 
 /**

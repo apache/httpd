@@ -273,7 +273,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
 }
 
-apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled, 
                                 h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -294,7 +294,8 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
     /* Seeing the end-of-headers, we have everything we need to 
      * start processing it.
      */
-    status = h2_request_end_headers(stream->request, stream->pool, eos);
+    status = h2_request_end_headers(stream->request, stream->pool, 
+                                    eos, push_enabled);
     if (status == APR_SUCCESS) {
         if (!eos) {
             stream->bbin = apr_brigade_create(stream->pool, 

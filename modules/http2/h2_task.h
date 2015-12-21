@@ -48,17 +48,17 @@ typedef struct h2_task h2_task;
 struct h2_task {
     const char *id;
     int stream_id;
-    struct h2_mplx *mplx;
-    
-    const struct h2_request *request;
-    int filters_set;
-    int input_eos;
-
-    int serialize_headers;
-    
-    struct conn_rec *c;
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
+
+    struct h2_mplx *mplx;    
+    struct conn_rec *c;
+    const struct h2_request *request;
+    
+    int filters_set       : 1;
+    int input_eos         : 1;
+    int serialize_headers : 1;
+    
     struct h2_task_input *input;
     struct h2_task_output *output;
     

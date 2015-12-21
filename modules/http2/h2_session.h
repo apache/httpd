@@ -64,10 +64,9 @@ struct h2_session {
     server_rec *s;                  /* server/vhost we're starting on */
     const struct h2_config *config; /* Relevant config for this session */
     
-    int started;
-    int aborted;                    /* this session is being aborted */
-    int reprioritize;               /* scheduled streams priority needs to 
-                                     * be re-evaluated */
+    int started       : 1;          /* session startup done */
+    int aborted       : 1;          /* this session is being aborted */
+    int reprioritize  : 1;          /* scheduled streams priority changed */
                                      
     apr_interval_time_t  wait_micros;
     int unsent_submits;             /* number of submitted, but not yet sent

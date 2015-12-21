@@ -33,12 +33,13 @@ typedef struct h2_workers h2_workers;
 struct h2_workers {
     server_rec *s;
     apr_pool_t *pool;
-    int aborted;
     
     int next_worker_id;
     int min_size;
     int max_size;
     
+    int aborted : 1;
+
     apr_threadattr_t *thread_attr;
     
     APR_RING_HEAD(h2_worker_list, h2_worker) workers;

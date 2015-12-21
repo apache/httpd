@@ -293,7 +293,8 @@ static int add_push(link_ctx *ctx)
                                          "GET", ctx->req->scheme,
                                          ctx->req->authority, 
                                          path, headers);
-                h2_request_end_headers(req, ctx->pool, 1);
+                /* atm, we do not push on pushes */
+                h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
                 
                 if (!ctx->pushes) {

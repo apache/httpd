@@ -67,6 +67,8 @@ struct h2_mplx {
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
 
+    int aborted : 1;
+
     struct h2_task_queue *q;
     struct h2_io_set *stream_ios;
     struct h2_io_set *ready_ios;
@@ -75,7 +77,6 @@ struct h2_mplx {
     struct apr_thread_cond_t *added_output;
     struct apr_thread_cond_t *join_wait;
     
-    int aborted;
     apr_size_t stream_max_mem;
     int stream_timeout_secs;
     

@@ -171,7 +171,8 @@ static apr_status_t stream_schedule(h2_session *session,
                                     h2_stream *stream, int eos)
 {
     (void)session;
-    return h2_stream_schedule(stream, eos, stream_pri_cmp, session);
+    return h2_stream_schedule(stream, eos, h2_session_push_enabled(session), 
+                              stream_pri_cmp, session);
 }
 
 /*
@@ -1240,7 +1241,6 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
          *    also have the pushed ones as well.
          */
         if (!stream->initiated_on
-            && h2_config_geti(session->config, H2_CONF_PUSH)
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
             
@@ -1545,8 +1545,10 @@ static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 
 int h2_session_push_enabled(h2_session *session)
 {
-    return nghttp2_session_get_remote_settings(session->ngh2, 
-                                               NGHTTP2_SETTINGS_ENABLE_PUSH);
+    /* iff we can and they can */
+    return (h2_config_geti(session->config, H2_CONF_PUSH)
+            && nghttp2_session_get_remote_settings(session->ngh2, 
+                                                   NGHTTP2_SETTINGS_ENABLE_PUSH));
 }
 
 static apr_status_t h2_session_send(h2_session *session)

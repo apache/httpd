@@ -100,7 +100,7 @@ void h2_task_register_hooks(void)
      */
     ap_hook_pre_connection(h2_task_pre_conn,
                            NULL, mod_ssl, APR_HOOK_FIRST);
-    /* When the connection processing actually starts, we might to
+    /* When the connection processing actually starts, we might 
      * take over, if the connection is for a task.
      */
     ap_hook_process_connection(h2_task_process_conn, 

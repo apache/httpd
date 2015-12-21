@@ -193,7 +193,7 @@ static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb,
             status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
         }
     }
-    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(io->bbin->bucket_alloc));
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(io->bucket_alloc));
     return status;
 }
 
@@ -422,7 +422,7 @@ apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers)
         }
         if (!h2_util_has_eos(io->bbout, -1)) {
             APR_BRIGADE_INSERT_TAIL(io->bbout, 
-                                    apr_bucket_eos_create(io->bbout->bucket_alloc));
+                                    apr_bucket_eos_create(io->bucket_alloc));
         }
     }
     return APR_SUCCESS;
