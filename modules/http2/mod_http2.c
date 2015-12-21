@@ -211,8 +211,9 @@ static int http2_is_h2(conn_rec *c)
 static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
                               conn_rec *c, request_rec *r, char *name)
 {
+    int i;
     /* If the # of vars grow, we need to put definitions in a hash */
-    for (int i = 0; i < H2_ALEN(H2_VARS); ++i) {
+    for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
         if (!strcmp(vdef->name, name)) {
             return vdef->lookup(p, s, c, r);
