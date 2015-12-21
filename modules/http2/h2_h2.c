@@ -24,6 +24,7 @@
 #include <http_config.h>
 #include <http_connection.h>
 #include <http_protocol.h>
+#include <http_request.h>
 #include <http_log.h>
 
 #include "h2_private.h"
@@ -33,6 +34,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_conn.h"
+#include "h2_request.h"
 #include "h2_session.h"
 #include "h2_util.h"
 #include "h2_h2.h"
@@ -438,7 +440,7 @@ static int cipher_is_blacklisted(const char *cipher, const char **psource)
  */
 static int h2_h2_process_conn(conn_rec* c);
 static int h2_h2_post_read_req(request_rec *r);
-
+static int h2_h2_fixups(request_rec *r);
 
 /*******************************************************************************
  * Once per lifetime init, retrieve optional functions
@@ -569,6 +571,10 @@ void h2_h2_register_hooks(void)
      * never see the response.
      */
     ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
+
+    /* Setup subprocess env for certain variables 
+     */
+    ap_hook_fixups(h2_h2_fixups, NULL,NULL, APR_HOOK_MIDDLE);
 }
 
 int h2_h2_process_conn(conn_rec* c)
@@ -696,6 +702,21 @@ static int h2_h2_post_read_req(request_rec *r)
             }
             ap_add_output_filter("H2_TRAILERS", task, r, r->connection);
             task->filters_set = 1;
+        }
+    }
+    return DECLINED;
+}
+
+static int h2_h2_fixups(request_rec *r)
+{
+    if (r->connection->master) {
+        h2_ctx *ctx = h2_ctx_rget(r);
+        struct h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            apr_table_setn(r->subprocess_env, "HTTP2", "on");
+            if (task->request->push) {
+                apr_table_setn(r->subprocess_env, "H2PUSH", "on");
+            }
         }
     }
     return DECLINED;
