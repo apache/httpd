@@ -95,7 +95,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
         maxw = minw;
     }
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "h2_workers: min=%d max=%d, mthrpchild=%d", 
                  minw, maxw, max_threads_per_child);
     

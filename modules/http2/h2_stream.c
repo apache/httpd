@@ -201,7 +201,7 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     stream->rst_error = error_code;
     close_input(stream);
     close_output(stream);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): reset, error=%d", 
                   stream->session->id, stream->id, error_code);
 }
@@ -211,7 +211,7 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
 {
     apr_status_t status = APR_SUCCESS;
     if (!output_open(stream)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): output closed", 
                       stream->session->id, stream->id);
         return APR_ECONNRESET;
@@ -229,7 +229,7 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
         H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream set_response_post");
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
                   "h2_stream(%ld-%d): set_response(%d)", 
                   stream->session->id, stream->id, response->http_status);
     return status;
@@ -307,7 +307,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                                  stream->request, eos, cmp, ctx);
         stream->scheduled = 1;
         
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): scheduled %s %s://%s%s",
                       stream->session->id, stream->id,
                       stream->request->method, stream->request->scheme,
@@ -315,7 +315,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     }
     else {
         h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
                       stream->session->id, stream->id,
                       stream->request->method, stream->request->scheme,
@@ -337,7 +337,7 @@ static apr_status_t h2_stream_input_flush(h2_stream *stream)
 
         status = h2_mplx_in_write(stream->session->mplx, stream->id, stream->bbin);
         if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->mplx->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->mplx->c,
                           "h2_stream(%ld-%d): flushing input data",
                           stream->session->id, stream->id);
         }
@@ -362,7 +362,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     apr_status_t status = APR_SUCCESS;
     
     AP_DEBUG_ASSERT(stream);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): closing input",
                   stream->session->id, stream->id);
                   
@@ -388,14 +388,14 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     
     AP_DEBUG_ASSERT(stream);
     if (input_closed(stream) || !stream->request->eoh || !stream->bbin) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): writing denied, closed=%d, eoh=%d, bbin=%d", 
                       stream->session->id, stream->id, input_closed(stream),
                       stream->request->eoh, !!stream->bbin);
         return APR_EINVAL;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): add %ld input bytes", 
                   stream->session->id, stream->id, (long)len);
 
