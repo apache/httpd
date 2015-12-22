@@ -277,7 +277,8 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
     
     AP_DEBUG_ASSERT(to);
     AP_DEBUG_ASSERT(from);
-    same_alloc = (to->bucket_alloc == from->bucket_alloc);
+    same_alloc = (to->bucket_alloc == from->bucket_alloc 
+                  || to->p == from->p);
 
     if (!FILE_MOVE) {
         pfile_handles_allowed = NULL;

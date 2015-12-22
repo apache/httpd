@@ -58,7 +58,7 @@ static apr_status_t consume_brigade(h2_filter_cin *cin,
                     status = apr_bucket_split(bucket, consumed);
                 }
                 readlen += consumed;
-                cin->last_read = apr_time_now();
+                cin->start_read = apr_time_now();
             }
         }
         apr_bucket_delete(bucket);
@@ -70,22 +70,6 @@ static apr_status_t consume_brigade(h2_filter_cin *cin,
     return status;
 }
 
-static apr_status_t check_time_left(h2_filter_cin *cin,
-                                    apr_time_t *ptime_left)
-{
-    if (cin->timeout_secs > 0) {
-        *ptime_left = (cin->last_read + apr_time_from_sec(cin->timeout_secs)
-                       - apr_time_now());
-        if (*ptime_left <= 0)
-            return APR_TIMEUP;
-        
-        if (*ptime_left < apr_time_from_sec(1)) {
-            *ptime_left = apr_time_from_sec(1);
-        }
-    }
-    return APR_SUCCESS;
-}
-
 h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *ctx)
 {
     h2_filter_cin *cin;
@@ -94,7 +78,7 @@ h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *c
     cin->pool      = p;
     cin->cb        = cb;
     cin->cb_ctx    = ctx;
-    cin->last_read = UNSET;
+    cin->start_read = UNSET;
     return cin;
 }
 
@@ -112,11 +96,11 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
     h2_filter_cin *cin = f->ctx;
     apr_status_t status = APR_SUCCESS;
     apr_time_t saved_timeout = UNSET;
-    apr_time_t time_left = UNSET;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "core_input: read, block=%d, mode=%d, readbytes=%ld", 
-                  block, mode, (long)readbytes);
+                  "core_input(%ld): read, %s, mode=%d, readbytes=%ld, timeout=%d", 
+                  (long)f->c->id, (block == APR_BLOCK_READ)? "BLOCK_READ" : "NONBLOCK_READ", 
+                  mode, (long)readbytes, cin->timeout_secs);
     
     if (mode == AP_MODE_INIT || mode == AP_MODE_SPECULATIVE) {
         return ap_get_brigade(f->next, brigade, mode, block, readbytes);
@@ -132,9 +116,9 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
 
     if (!cin->socket) {
         cin->socket = ap_get_conn_socket(f->c);
-        cin->last_read = apr_time_now(); /* first call */
     }
     
+    cin->start_read = apr_time_now();
     if (APR_BRIGADE_EMPTY(cin->bb)) {
         /* We only do a blocking read when we have no streams to process. So,
          * in httpd scoreboard lingo, we are in a KEEPALIVE connection state.
@@ -142,40 +126,30 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
          * child with NULL request. That way, any current request information
          * in the scoreboard is preserved.
          */
-        status = check_time_left(cin, &time_left);
-        if (status != APR_SUCCESS)
-            goto out;
-        
         if (block == APR_BLOCK_READ) {
-            ap_update_child_status_from_conn(f->c->sbh, 
-                                             SERVER_BUSY_KEEPALIVE, f->c);
-            if (time_left > 0) {
-                status = apr_socket_timeout_get(cin->socket, &saved_timeout);
-                AP_DEBUG_ASSERT(status == APR_SUCCESS);
-                status = apr_socket_timeout_set(cin->socket, H2MIN(time_left, saved_timeout));
-                AP_DEBUG_ASSERT(status == APR_SUCCESS);
+            if (cin->timeout_secs > 0) {
+                apr_time_t t = apr_time_from_sec(cin->timeout_secs);
+                apr_socket_timeout_get(cin->socket, &saved_timeout);
+                apr_socket_timeout_set(cin->socket, H2MIN(t, saved_timeout));
             }
         }
-        else {
-            ap_update_child_status(f->c->sbh, SERVER_BUSY_READ, NULL);
-        }
-        
+        ap_update_child_status_from_conn(f->c->sbh, SERVER_BUSY_READ, f->c);
         status = ap_get_brigade(f->next, cin->bb, AP_MODE_READBYTES,
                                 block, readbytes);
+        if (saved_timeout != UNSET) {
+            apr_socket_timeout_set(cin->socket, saved_timeout);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                      "core_input(%ld): got_brigade", (long)f->c->id);
     }
     
-out:
     switch (status) {
         case APR_SUCCESS:
-            if (saved_timeout != UNSET) {
-                apr_socket_timeout_set(cin->socket, saved_timeout);
-            }
             status = consume_brigade(cin, cin->bb, block);
-            if (status == APR_SUCCESS) {
-                status = check_time_left(cin, &time_left);
-            }
+            break;
         case APR_EOF:
         case APR_EAGAIN:
+        case APR_TIMEUP:
             break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, f->c,

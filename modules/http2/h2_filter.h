@@ -29,7 +29,7 @@ typedef struct h2_filter_cin {
     void *cb_ctx;
     apr_socket_t *socket;
     int timeout_secs;
-    apr_time_t last_read;
+    apr_time_t start_read;
 } h2_filter_cin;
 
 h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *ctx);

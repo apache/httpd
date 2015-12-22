@@ -2,7 +2,9 @@
 Changes with Apache 2.5.0
 
   *) mod_http2: On async MPMs (event), idle HTTP/2 connections will enter KEEPALIVE
-     state and become eligible for MPM cleanup under load.
+     state and become eligible for MPM cleanup under load. Rewrote connection
+     state handling. Defaults for H2KeepAliveTimeout shortened. Cleaned up logging.
+     Improved scoreboard updates for http2 master threads.
      [Stefan Eissing]
 
   *) mod_http2: new r->subprocess_env variables HTTP2 and H2PUSH, set to "on"

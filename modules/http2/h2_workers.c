@@ -51,7 +51,7 @@ static void cleanup_zombies(h2_workers *workers, int lock)
     while (!H2_WORKER_LIST_EMPTY(&workers->zombies)) {
         h2_worker *zombie = H2_WORKER_LIST_FIRST(&workers->zombies);
         H2_WORKER_REMOVE(zombie);
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                       "h2_workers: cleanup zombie %d", zombie->id);
         h2_worker_destroy(zombie);
     }
@@ -106,7 +106,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
     status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
         ++workers->idle_worker_count;
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                      "h2_worker(%d): looking for work", h2_worker_get_id(worker));
         
         while (!task && !h2_worker_is_aborted(worker) && !workers->aborted) {
@@ -147,14 +147,14 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                     if (now >= (start_wait + max_wait)) {
                         /* waited long enough without getting a task. */
                         if (workers->worker_count > workers->min_size) {
-                            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, 
+                            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, 
                                          workers->s,
                                          "h2_workers: aborting idle worker");
                             h2_worker_abort(worker);
                             break;
                         }
                     }
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                                  "h2_worker(%d): waiting signal, "
                                  "worker_count=%d", worker->id, 
                                  (int)workers->worker_count);
@@ -162,7 +162,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                                               workers->lock, max_wait);
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+                    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                                  "h2_worker(%d): waiting signal (eternal), "
                                  "worker_count=%d", worker->id, 
                                  (int)workers->worker_count);
@@ -175,7 +175,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
          * needed to give up with more than enough workers.
          */
         if (task) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                          "h2_worker(%d): start task(%s)",
                          h2_worker_get_id(worker), task->id);
             /* Since we hand out a reference to the worker, we increase
@@ -206,7 +206,7 @@ static void worker_done(h2_worker *worker, void *ctx)
     h2_workers *workers = (h2_workers *)ctx;
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                      "h2_worker(%d): done", h2_worker_get_id(worker));
         H2_WORKER_REMOVE(worker);
         --workers->worker_count;
@@ -224,7 +224,7 @@ static apr_status_t add_worker(h2_workers *workers)
     if (!w) {
         return APR_ENOMEM;
     }
-    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                  "h2_workers: adding worker(%d)", h2_worker_get_id(w));
     ++workers->worker_count;
     H2_WORKER_LIST_INSERT_TAIL(&workers->workers, w);
@@ -335,7 +335,7 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
 {
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, status, workers->s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, status, workers->s,
                      "h2_workers: register mplx(%ld)", m->id);
         if (in_list(workers, m)) {
             status = APR_EAGAIN;
@@ -349,7 +349,7 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
             apr_thread_cond_signal(workers->mplx_added);
         }
         else if (workers->worker_count < workers->max_size) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, workers->s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                          "h2_workers: got %d worker, adding 1", 
                          workers->worker_count);
             add_worker(workers);

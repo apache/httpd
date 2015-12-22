@@ -95,7 +95,5 @@ void h2_config_init(apr_pool_t *pool);
 const struct h2_priority *h2_config_get_priority(const h2_config *conf, 
                                                  const char *content_type);
        
-int h2_config_async_mpm(void);
-
 #endif /* __mod_h2__h2_config_h__ */
 
