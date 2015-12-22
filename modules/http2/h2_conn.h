@@ -29,16 +29,6 @@ struct h2_task;
 apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
 
 /**
- * Process the HTTP/2 connection. Return whenever blocking reads or
- * long writes have to be performed.
- *
- * @param ctx the http2 context to process
- * @return APR_SUCCESS as long as processing needs to continue, APR_EOF
- *         when HTTP/2 session is done.
- */
-apr_status_t h2_conn_process(struct h2_ctx *ctx, int async);
-
-/**
  * Run the HTTP/2 connection in synchronous fashion. 
  * Return when the HTTP/2 session is done
  * and the connection will close or a fatal error occured.

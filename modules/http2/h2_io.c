@@ -221,11 +221,6 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     
     if (io->request->chunked) {
         /* the reader expects HTTP/1.1 chunked encoding */
-        if (!io->tmp) {
-            io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
-        }
-        apr_brigade_cleanup(io->tmp);
-        
         status = h2_util_move(io->tmp, io->bbin, maxlen, NULL, "h2_io_in_read_chunk");
         if (status == APR_SUCCESS) {
             apr_off_t tmp_len = 0;
@@ -245,6 +240,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
             else {
                 status = h2_util_move(bb, io->tmp, -1, NULL, "h2_io_in_read_tmp2");
             }
+            apr_brigade_cleanup(io->tmp);
         }
     }
     else {
@@ -274,6 +270,7 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
     if (!APR_BRIGADE_EMPTY(bb)) {
         if (!io->bbin) {
             io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
+            io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
         }
         return h2_util_move(io->bbin, bb, -1, NULL, "h2_io_in_write");
     }

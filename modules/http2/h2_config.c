@@ -60,12 +60,11 @@ static h2_config defconf = {
     1,                      /* HTTP/2 server push enabled */
     NULL,                   /* map of content-type to priorities */
     5,                      /* normal connection timeout */
-    30,                     /* idle connection timeout */
+    5,                      /* keepalive timeout */
     0,                      /* stream timeout */
 };
 
 static int files_per_session;
-static int async_mpm;
 
 void h2_config_init(apr_pool_t *pool)
 {
@@ -90,14 +89,6 @@ void h2_config_init(apr_pool_t *pool)
             /* don't know anything about it, stay safe */
             break;
     }
-    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
-        async_mpm = 0;
-    }
-}
-
-int h2_config_async_mpm(void)
-{
-    return async_mpm;
 }
 
 static void *h2_config_create(apr_pool_t *pool,
