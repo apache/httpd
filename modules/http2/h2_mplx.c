@@ -136,8 +136,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
         
-        m->bucket_alloc = apr_bucket_alloc_create(m->pool);
-        
         m->q = h2_tq_create(m->pool, h2_config_geti(conf, H2_CONF_MAX_STREAMS));
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
@@ -266,6 +264,8 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     workers_unregister(m);
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
+        /* disable WINDOW_UPDATE callbacks */
+        h2_mplx_set_consumed_cb(m, NULL, NULL);
         while (!h2_io_set_iter(m->stream_ios, stream_done_iter, m)) {
             /* iterator until all h2_io have been orphaned or destroyed */
         }
@@ -901,15 +901,14 @@ static h2_io *open_io(h2_mplx *m, int stream_id)
         m->spare_pool = NULL;
     }
     
-    io = h2_io_create(stream_id, io_pool, m->bucket_alloc);
+    io = h2_io_create(stream_id, io_pool);
     h2_io_set_add(m->stream_ios, io);
     
     return io;
 }
 
 
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
-                             const h2_request *req, int eos, 
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req, 
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -922,9 +921,8 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
     if (APR_SUCCESS == status) {
         h2_io *io = open_io(m, stream_id);
         io->request = req;
-        io->request_body = !eos;
 
-        if (eos) {
+        if (!io->request->body) {
             status = h2_io_in_close(io);
         }
         
@@ -942,9 +940,9 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
     return status;
 }
 
-h2_task *h2_mplx_pop_task(h2_mplx *m, h2_worker *w, int *has_more)
+const h2_request *h2_mplx_pop_request(h2_mplx *m, int *has_more)
 {
-    h2_task *task = NULL;
+    const h2_request *req = NULL;
     apr_status_t status;
     
     AP_DEBUG_ASSERT(m);
@@ -955,18 +953,15 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, h2_worker *w, int *has_more)
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         int sid;
-        while (!task && (sid = h2_tq_shift(m->q)) > 0) {
-            /* Anything not already setup correctly in the task
-             * needs to be so now, as task will be executed right about 
-             * when this method returns. */
+        while (!req && (sid = h2_tq_shift(m->q)) > 0) {
             h2_io *io = h2_io_set_get(m->stream_ios, sid);
             if (io) {
-                task = h2_worker_create_task(w, m, io->request, !io->request_body);
+                req = io->request;
             }
         }
         *has_more = !h2_tq_empty(m->q);
         apr_thread_mutex_unlock(m->lock);
     }
-    return task;
+    return req;
 }
 

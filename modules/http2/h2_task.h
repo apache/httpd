@@ -48,30 +48,23 @@ typedef struct h2_task h2_task;
 struct h2_task {
     const char *id;
     int stream_id;
-    apr_pool_t *pool;
-    apr_bucket_alloc_t *bucket_alloc;
-
     struct h2_mplx *mplx;    
-    struct conn_rec *c;
     const struct h2_request *request;
     
-    unsigned int filters_set       : 1;
-    unsigned int input_eos         : 1;
-    unsigned int serialize_headers : 1;
+    unsigned int filters_set : 1;
+    unsigned int input_eos   : 1;
+    unsigned int ser_headers : 1;
     
     struct h2_task_input *input;
     struct h2_task_output *output;
-    
     struct apr_thread_cond_t *io;   /* used to wait for events on */
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        apr_pool_t *pool, struct h2_mplx *mplx, 
-                        int eos);
+                        apr_pool_t *pool, struct h2_mplx *mplx);
 
-apr_status_t h2_task_destroy(h2_task *task);
-
-apr_status_t h2_task_do(h2_task *task, struct h2_worker *worker);
+apr_status_t h2_task_do(h2_task *task, conn_rec *c, 
+                        struct apr_thread_cond_t *cond, apr_socket_t *socket);
 
 void h2_task_register_hooks(void);
 

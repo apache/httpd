@@ -44,7 +44,6 @@ struct h2_stream;
 struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
-struct h2_worker;
 struct h2_workers;
 struct h2_stream_set;
 struct h2_task_queue;
@@ -65,7 +64,6 @@ struct h2_mplx {
     volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
-    apr_bucket_alloc_t *bucket_alloc;
 
     unsigned int aborted : 1;
 
@@ -165,12 +163,10 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  * @param m the multiplexer
  * @param stream_id the identifier of the stream
  * @param r the request to be processed
- * @param eos if input is complete
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
-                             const struct h2_request *r, int eos, 
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request *r, 
                              h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
@@ -182,7 +178,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, struct h2_worker *w, int *has_more);
+const struct h2_request *h2_mplx_pop_request(h2_mplx *mplx, int *has_more);
 
 /**
  * Register a callback for the amount of input data consumed per stream. The

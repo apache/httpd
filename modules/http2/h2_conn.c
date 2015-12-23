@@ -204,58 +204,53 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 
 static void fix_event_conn(conn_rec *c, conn_rec *master);
 
-conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *pool)
+conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p, 
+                          apr_thread_t *thread, apr_socket_t *socket)
 {
     conn_rec *c;
     
     AP_DEBUG_ASSERT(master);
-
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
+                  "h2_conn(%ld): created from master", master->id);
+    
     /* This is like the slave connection creation from 2.5-DEV. A
      * very efficient way - not sure how compatible this is, since
      * the core hooks are no longer run.
      * But maybe it's is better this way, not sure yet.
      */
-    c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
+    c = (conn_rec *) apr_palloc(p, sizeof(conn_rec));
     if (c == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool, 
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
                       APLOGNO(02913) "h2_task: creating conn");
         return NULL;
     }
     
     memcpy(c, master, sizeof(conn_rec));
-    c->id = (master->id & (long)pool);
-    c->master = master;
-    c->input_filters = NULL;
-    c->output_filters = NULL;
-    c->pool = pool;        
-    return c;
-}
-
-apr_status_t h2_slave_setup(h2_task *task, apr_bucket_alloc_t *bucket_alloc,
-                            apr_thread_t *thread, apr_socket_t *socket)
-{
-    conn_rec *master = task->mplx->c;
+           
+    /* Replace these */
+    c->id                     = (master->id & (long)p);
+    c->master                 = master;
+    c->pool                   = p;        
+    c->current_thread         = thread;
+    c->conn_config            = ap_create_conn_config(p);
+    c->notes                  = apr_table_make(p, 5);
+    c->input_filters          = NULL;
+    c->output_filters         = NULL;
+    c->bucket_alloc           = apr_bucket_alloc_create(p);
+    c->cs                     = NULL;
+    c->data_in_input_filters  = 0;
+    c->data_in_output_filters = 0;
+    c->clogging_input_filters = 1;
+    c->log                    = NULL;
+    c->log_id                 = NULL;
     
-    ap_log_perror(APLOG_MARK, APLOG_TRACE3, 0, task->pool,
-                  "h2_conn(%ld): created from master", master->id);
+    /* TODO: these should be unique to this thread */
+    c->sbh                    = master->sbh;
     
-    /* Ok, we are just about to start processing the connection and
-     * the worker is calling us to setup all necessary resources.
-     * We can borrow some from the worker itself and some we do as
-     * sub-resources from it, so that we get a nice reuse of
-     * pools.
-     */
-    task->c->pool = task->pool;
-    task->c->current_thread = thread;
-    task->c->bucket_alloc = bucket_alloc;
+    /* Simulate that we had already a request on this connection. */
+    c->keepalives             = 1;
     
-    task->c->conn_config = ap_create_conn_config(task->pool);
-    task->c->notes = apr_table_make(task->pool, 5);
-    
-    /* In order to do this in 2.4.x, we need to add a member to conn_rec */
-    task->c->master = master;
-    
-    ap_set_module_config(task->c->conn_config, &core_module, socket);
+    ap_set_module_config(c->conn_config, &core_module, socket);
     
     /* This works for mpm_worker so far. Other mpm modules have 
      * different needs, unfortunately. The most interesting one 
@@ -266,17 +261,14 @@ apr_status_t h2_slave_setup(h2_task *task, apr_bucket_alloc_t *bucket_alloc,
             /* all fine */
             break;
         case H2_MPM_EVENT: 
-            fix_event_conn(task->c, master);
+            fix_event_conn(c, master);
             break;
         default:
             /* fingers crossed */
             break;
     }
     
-    /* Simulate that we had already a request on this connection. */
-    task->c->keepalives = 1;
-    
-    return APR_SUCCESS;
+    return c;
 }
 
 /* This is an internal mpm event.c struct which is disguised
