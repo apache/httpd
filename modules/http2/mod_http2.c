@@ -32,6 +32,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
+#include "h2_push.h"
 #include "h2_request.h"
 #include "h2_switch.h"
 #include "h2_version.h"
@@ -171,7 +172,7 @@ static char *value_of_H2PUSH(apr_pool_t *p, server_rec *s,
         ctx = h2_ctx_rget(r);
         if (ctx) {
             h2_task *task = h2_ctx_get_task(ctx);
-            return task && task->request->push? "on" : "off";
+            return (task && task->request->push_policy != H2_PUSH_NONE)? "on" : "off";
         }
     }
     else if (c) {

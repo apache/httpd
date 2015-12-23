@@ -30,6 +30,19 @@
 #include "h2_request.h"
 #include "h2_response.h"
 
+static const char *policy_str(h2_push_policy policy)
+{
+    switch (policy) {
+        case H2_PUSH_NONE:
+            return "none";
+        case H2_PUSH_FAST_LOAD:
+            return "fast-load";
+        case H2_PUSH_HEAD:
+            return "head";
+        default:
+            return "default";
+    }
+}
 
 typedef struct {
     const h2_request *req;
@@ -269,6 +282,7 @@ static int add_push(link_ctx *ctx)
         if (apr_uri_parse(ctx->pool, ctx->link, &uri) == APR_SUCCESS) {
             if (uri.path && same_authority(ctx->req, &uri)) {
                 char *path;
+                const char *method;
                 apr_table_t *headers;
                 h2_request *req;
                 h2_push *push;
@@ -283,6 +297,14 @@ static int add_push(link_ctx *ctx)
                 
                 push = apr_pcalloc(ctx->pool, sizeof(*push));
                 
+                switch (ctx->req->push_policy) {
+                    case H2_PUSH_HEAD:
+                        method = "HEAD";
+                        break;
+                    default:
+                        method = "GET";
+                        break;
+                }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_header, headers, ctx->req->headers,
                              "User-Agent",
@@ -290,7 +312,7 @@ static int add_push(link_ctx *ctx)
                              "Accept-Language",
                              NULL);
                 req = h2_request_createn(0, ctx->pool, ctx->req->config, 
-                                         "GET", ctx->req->scheme,
+                                         method, ctx->req->scheme,
                                          ctx->req->authority, 
                                          path, headers);
                 /* atm, we do not push on pushes */
@@ -374,23 +396,58 @@ static int head_iter(void *ctx, const char *key, const char *value)
 apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req, 
                                     const h2_response *res)
 {
-    /* Collect push candidates from the request/response pair.
-     * 
-     * One source for pushes are "rel=preload" link headers
-     * in the response.
-     * 
-     * TODO: This may be extended in the future by hooks or callbacks
-     * where other modules can provide push information directly.
-     */
-    if (res->headers) {
-        link_ctx ctx;
-        
-        memset(&ctx, 0, sizeof(ctx));
-        ctx.req = req;
-        ctx.pool = p;
-    
-        apr_table_do(head_iter, &ctx, res->headers, NULL);
-        return ctx.pushes;
+    if (req && req->push_policy != H2_PUSH_NONE) {
+        /* Collect push candidates from the request/response pair.
+         * 
+         * One source for pushes are "rel=preload" link headers
+         * in the response.
+         * 
+         * TODO: This may be extended in the future by hooks or callbacks
+         * where other modules can provide push information directly.
+         */
+        if (res->headers) {
+            link_ctx ctx;
+            
+            memset(&ctx, 0, sizeof(ctx));
+            ctx.req = req;
+            ctx.pool = p;
+            
+            apr_table_do(head_iter, &ctx, res->headers, NULL);
+            if (ctx.pushes) {
+                apr_table_setn(res->headers, "push-policy", policy_str(req->push_policy));
+            }
+            return ctx.pushes;
+        }
     }
     return NULL;
+}
+
+void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
+{
+    h2_push_policy policy = H2_PUSH_NONE;
+    if (push_enabled) {
+        const char *val = apr_table_get(req->headers, "accept-push-policy");
+        if (val) {
+            if (ap_find_token(p, val, "fast-load")) {
+                policy = H2_PUSH_FAST_LOAD;
+            }
+            else if (ap_find_token(p, val, "head")) {
+                policy = H2_PUSH_HEAD;
+            }
+            else if (ap_find_token(p, val, "default")) {
+                policy = H2_PUSH_DEFAULT;
+            }
+            else if (ap_find_token(p, val, "none")) {
+                policy = H2_PUSH_NONE;
+            }
+            else {
+                /* nothing known found in this header, go by default */
+                policy = H2_PUSH_DEFAULT;
+            }
+        }
+        else {
+            policy = H2_PUSH_DEFAULT;
+        }
+    }
+    req->push_policy = policy;
 }
