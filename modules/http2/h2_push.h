@@ -19,6 +19,13 @@ struct h2_request;
 struct h2_response;
 struct h2_ngheader;
 
+typedef enum {
+    H2_PUSH_NONE,
+    H2_PUSH_DEFAULT,
+    H2_PUSH_HEAD,
+    H2_PUSH_FAST_LOAD,
+} h2_push_policy;
+
 typedef struct h2_push {
     const struct h2_request *req;
 } h2_push;
@@ -27,5 +34,7 @@ typedef struct h2_push {
 apr_array_header_t *h2_push_collect(apr_pool_t *p, 
                                     const struct h2_request *req, 
                                     const struct h2_response *res);
+
+void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
 
 #endif /* defined(__mod_h2__h2_push__) */

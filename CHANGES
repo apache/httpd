@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: Fixed segfault on connection shutdown, callback ran into a semi
+     dismantled session. Added support for experimental accept-push-policy draft
+     (https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00). Clients
+     may now influence server pushes by sending accept-push-policy headers.
+     [Stefan Eissing]
+
   *) mod_http2: On async MPMs (event), idle HTTP/2 connections will enter KEEPALIVE
      state and become eligible for MPM cleanup under load. Rewrote connection
      state handling. Defaults for H2KeepAliveTimeout shortened. Cleaned up logging.
