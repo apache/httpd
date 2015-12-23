@@ -71,7 +71,7 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
+h2_io *h2_io_create(int id, apr_pool_t *pool);
 
 /**
  * Frees any resources hold by the h2_io instance. 

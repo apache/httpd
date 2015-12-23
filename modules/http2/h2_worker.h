@@ -31,7 +31,7 @@ typedef struct h2_worker h2_worker;
  * gets aborted (idle timeout, for example). */
 typedef apr_status_t h2_worker_mplx_next_fn(h2_worker *worker,
                                             struct h2_mplx **pm,
-                                            struct h2_task **ptask,
+                                            const struct h2_request **preq,
                                             void *ctx);
 
 /* Invoked just before the worker thread exits. */
@@ -54,8 +54,6 @@ struct h2_worker {
     void *ctx;
     
     unsigned int aborted : 1;
-    int pool_reuses;
-    struct h2_task *task;
 };
 
 /**
@@ -145,10 +143,6 @@ int h2_worker_get_id(h2_worker *worker);
 int h2_worker_is_aborted(h2_worker *worker);
 
 struct h2_task *h2_worker_create_task(h2_worker *worker, struct h2_mplx *m, 
-                                      const struct h2_request *req, int eos);
-apr_status_t h2_worker_setup_task(h2_worker *worker, struct h2_task *task);
-void h2_worker_release_task(h2_worker *worker, struct h2_task *task);
-
-apr_socket_t *h2_worker_get_socket(h2_worker *worker);
-
+                                      const struct h2_request *req);
+                                      
 #endif /* defined(__mod_h2__h2_worker__) */

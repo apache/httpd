@@ -25,7 +25,7 @@
 
 #include "h2_private.h"
 #include "h2_mplx.h"
-#include "h2_task.h"
+#include "h2_request.h"
 #include "h2_task_queue.h"
 #include "h2_worker.h"
 #include "h2_workers.h"
@@ -68,20 +68,20 @@ static void cleanup_zombies(h2_workers *workers, int lock)
  * the h2_workers lock.
  */
 static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm, 
-                                  h2_task **ptask, void *ctx)
+                                  const h2_request **preq, void *ctx)
 {
     apr_status_t status;
     h2_mplx *m = NULL;
-    h2_task *task = NULL;
+    const h2_request *req = NULL;
     apr_time_t max_wait, start_wait;
     int has_more = 0;
     h2_workers *workers = (h2_workers *)ctx;
     
-    if (*pm && ptask != NULL) {
+    if (*pm && preq != NULL) {
         /* We have a h2_mplx instance and the worker wants the next task. 
          * Try to get one from the given mplx. */
-        *ptask = h2_mplx_pop_task(*pm, worker, &has_more);
-        if (*ptask) {
+        *preq = h2_mplx_pop_request(*pm, &has_more);
+        if (*preq) {
             return APR_SUCCESS;
         }
     }
@@ -94,7 +94,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
         *pm = NULL;
     }
     
-    if (!ptask) {
+    if (!preq) {
         /* the worker does not want a next task, we're done.
          */
         return APR_SUCCESS;
@@ -109,7 +109,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                      "h2_worker(%d): looking for work", h2_worker_get_id(worker));
         
-        while (!task && !h2_worker_is_aborted(worker) && !workers->aborted) {
+        while (!req && !h2_worker_is_aborted(worker) && !workers->aborted) {
             
             /* Get the next h2_mplx to process that has a task to hand out.
              * If it does, place it at the end of the queu and return the
@@ -121,12 +121,12 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
              * we do a timed wait or block indefinitely.
              */
             m = NULL;
-            while (!task && !H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
+            while (!req && !H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
                 m = H2_MPLX_LIST_FIRST(&workers->mplxs);
                 H2_MPLX_REMOVE(m);
                 
-                task = h2_mplx_pop_task(m, worker, &has_more);
-                if (task) {
+                req = h2_mplx_pop_request(m, &has_more);
+                if (req) {
                     if (has_more) {
                         H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
                     }
@@ -137,7 +137,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                 }
             }
             
-            if (!task) {
+            if (!req) {
                 /* Need to wait for either a new mplx to arrive.
                  */
                 cleanup_zombies(workers, 0);
@@ -174,16 +174,16 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
         /* Here, we either have gotten task and mplx for the worker or
          * needed to give up with more than enough workers.
          */
-        if (task) {
+        if (req) {
             ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                         "h2_worker(%d): start task(%s)",
-                         h2_worker_get_id(worker), task->id);
+                         "h2_worker(%d): start request(%ld-%d)",
+                         h2_worker_get_id(worker), m->id, req->id);
             /* Since we hand out a reference to the worker, we increase
              * its ref count.
              */
             h2_mplx_reference(m);
             *pm = m;
-            *ptask = task;
+            *preq = req;
             
             if (has_more && workers->idle_worker_count > 1) {
                 apr_thread_cond_signal(workers->mplx_added);

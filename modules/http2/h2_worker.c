@@ -24,6 +24,8 @@
 
 #include "h2_private.h"
 #include "h2_conn.h"
+#include "h2_ctx.h"
+#include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
 #include "h2_task.h"
@@ -34,6 +36,11 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
     h2_worker *worker = (h2_worker *)wctx;
     apr_status_t status = APR_SUCCESS;
     h2_mplx *m;
+    const h2_request *req;
+    h2_task *task;
+    conn_rec *c, *master;
+    int stream_id;
+    
     (void)thread;
     
     /* Furthermore, other code might want to see the socket for
@@ -50,15 +57,32 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         return NULL;
     }
     
-    worker->task = NULL;
     m = NULL;
     while (!worker->aborted) {
-        status = worker->get_next(worker, &m, &worker->task, worker->ctx);
+        status = worker->get_next(worker, &m, &req, worker->ctx);
         
-        if (worker->task) {            
-            h2_task_do(worker->task, worker);
-            worker->task = NULL;
-            apr_thread_cond_signal(worker->io);
+        if (req) {
+            stream_id = req->id;
+            master = m->c;
+            c = h2_slave_create(master, worker->task_pool, 
+                                worker->thread, worker->socket);
+            if (!c) {
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
+                              APLOGNO(02957) "h2_task(%s): error setting up slave connection", 
+                              task->id);
+                h2_mplx_out_rst(m, task->stream_id, H2_ERR_INTERNAL_ERROR);
+            }
+            else {
+                task = h2_task_create(m->id, req, worker->task_pool, m);
+                h2_ctx_create_for(c, task);
+                h2_task_do(task, c, worker->io, worker->socket);
+                
+                apr_thread_cond_signal(worker->io);
+            }
+            apr_pool_clear(worker->task_pool);
+            /* task is gone */
+            task = NULL;
+            h2_mplx_task_done(m, stream_id);
         }
     }
 
@@ -124,6 +148,7 @@ h2_worker *h2_worker_create(int id,
         }
         
         apr_pool_pre_cleanup_register(w->pool, w, cleanup_join_thread);
+        apr_pool_create(&w->task_pool, w->pool);
         apr_thread_create(&w->thread, attr, execute, w, w->pool);
     }
     return w;
@@ -158,52 +183,12 @@ int h2_worker_is_aborted(h2_worker *worker)
 }
 
 h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m, 
-                               const h2_request *req, int eos)
+                               const h2_request *req)
 {
     h2_task *task;
     
-    /* Create a subpool from the worker one to be used for all things
-     * with life-time of this task execution.
-     */
-    if (!worker->task_pool) {
-        apr_pool_create(&worker->task_pool, worker->pool);
-        worker->pool_reuses = 100;
-    }
-    task = h2_task_create(m->id, req, worker->task_pool, m, eos);
-    
-    /* Link the task to the worker which provides useful things such
-     * as mutex, a socket etc. */
-    task->io = worker->io;
-    
+    task = h2_task_create(m->id, req, worker->task_pool, m);
     return task;
-}
-
-apr_status_t h2_worker_setup_task(h2_worker *worker, h2_task *task) {
-    apr_status_t status;
-    
-    
-    status = h2_slave_setup(task, apr_bucket_alloc_create(task->pool),
-                            worker->thread, worker->socket);
-    
-    return status;
-}
-
-void h2_worker_release_task(h2_worker *worker, struct h2_task *task)
-{
-    task->io = NULL;
-    task->pool = NULL;
-    if (worker->pool_reuses-- <= 0) {
-        apr_pool_destroy(worker->task_pool);
-        worker->task_pool = NULL;
-    }
-    else {
-        apr_pool_clear(worker->task_pool);
-    }
-}
-
-apr_socket_t *h2_worker_get_socket(h2_worker *worker)
-{
-    return worker->socket;
 }
 
 

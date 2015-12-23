@@ -684,6 +684,7 @@ static void h2_session_destroy(h2_session *session)
                       session->id, (int)h2_stream_set_size(session->streams));
     }
     if (session->mplx) {
+        h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
         h2_mplx_release_and_join(session->mplx, session->iowait);
         session->mplx = NULL;
     }

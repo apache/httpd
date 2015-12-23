@@ -43,6 +43,7 @@ struct h2_request {
     
     unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
     unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
+    unsigned int body    : 1; /* iff this request has a body */
     unsigned int push    : 1; /* iff server push is possible for this request */
     
     const struct h2_config *config;

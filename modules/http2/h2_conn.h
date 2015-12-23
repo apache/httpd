@@ -56,9 +56,7 @@ typedef enum {
 h2_mpm_type_t h2_conn_mpm_type(void);
 
 
-conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *stream_pool);
-
-apr_status_t h2_slave_setup(struct h2_task *task, apr_bucket_alloc_t *bucket_alloc,
-                            apr_thread_t *thread, apr_socket_t *socket);
+conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p, 
+                          apr_thread_t *thread, apr_socket_t *socket);
 
 #endif /* defined(__mod_h2__h2_conn__) */

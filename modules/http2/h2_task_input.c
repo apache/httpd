@@ -51,8 +51,8 @@ h2_task_input *h2_task_input_create(h2_task *task, apr_pool_t *pool,
         input->task = task;
         input->bb = NULL;
         
-        if (task->serialize_headers) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+        if (task->ser_headers) {
+            ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool,
                           "h2_task_input(%s): serialize request %s %s", 
                           task->id, task->request->method, task->request->path);
             input->bb = apr_brigade_create(pool, bucket_alloc);

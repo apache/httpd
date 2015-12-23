@@ -673,7 +673,7 @@ static int h2_h2_post_read_req(request_rec *r)
             /* setup the correct output filters to process the response
              * on the proper mod_http2 way. */
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "adding task output filter");
-            if (task->serialize_headers) {
+            if (task->ser_headers) {
                 ap_add_output_filter("H1_TO_H2_RESP", task, r, r->connection);
             }
             else {

@@ -25,6 +25,7 @@
 struct apr_thread_mutex_t;
 struct apr_thread_cond_t;
 struct h2_mplx;
+struct h2_request;
 struct h2_task;
 struct h2_task_queue;
 

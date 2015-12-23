@@ -298,13 +298,14 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                                     eos, push_enabled);
     if (status == APR_SUCCESS) {
         if (!eos) {
+            stream->request->body = 1;
             stream->bbin = apr_brigade_create(stream->pool, 
                                               stream->session->c->bucket_alloc);
         }
         stream->input_remaining = stream->request->content_length;
         
         status = h2_mplx_process(stream->session->mplx, stream->id, 
-                                 stream->request, eos, cmp, ctx);
+                                 stream->request, cmp, ctx);
         stream->scheduled = 1;
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
