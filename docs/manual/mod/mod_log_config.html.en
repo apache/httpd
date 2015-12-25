@@ -59,6 +59,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#globallog">GlobalLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
@@ -489,6 +490,34 @@ CustomLog "nongif-requests.log" common env=!gif-image</pre>
     <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
 CustomLog "referer.log" referer env=!localreferer</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
+</table>
+
+    <p>The <code class="directive">GlobalLog</code> directive defines a log shared
+       by the main server configuration and all defined virtual hosts.</p>
+
+    <p>The <code class="directive">GlobalLog</code> directive is identical to
+    the <code class="directive">CustomLog</code> directive, apart from the following
+    differences:</p>
+    <ul>
+       <li><code class="directive">GlobalLog</code> is not valid in virtual host
+            context.</li>
+       <li><code class="directive">GlobalLog</code> is used by virtual hosts that
+           define their own <code class="directive">CustomLog</code>, unlike a 
+           globally specified <code class="directive">CustomLog</code>.</li>
+    </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
