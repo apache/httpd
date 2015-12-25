@@ -607,4 +607,33 @@ TransferLog "logs/access_log"
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>GlobalLog</name>
+<description>Sets filename and format of log file</description>
+<syntax>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+
+    <p>The <directive>GlobalLog</directive> directive defines a log shared
+       by the main server configuration and all defined virtual hosts.</p>
+
+    <p>The <directive>GlobalLog</directive> directive is identical to
+    the <directive>CustomLog</directive> directive, apart from the following
+    differences:</p>
+    <ul>
+       <li><directive>GlobalLog</directive> is not valid in virtual host
+            context.</li>
+       <li><directive>GlobalLog</directive> is used by virtual hosts that
+           define their own <directive>CustomLog</directive>, unlike a 
+           globally specified <directive>CustomLog</directive>.</li>
+    </ul>
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>
