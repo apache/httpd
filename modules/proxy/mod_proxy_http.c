@@ -1326,11 +1326,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
-    do_100_continue = (worker->s->ping_timeout_set
-                       && (worker->s->ping_timeout >= 0)
-                       && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0"))
-                       && ap_request_has_body(r));
+    do_100_continue = PROXY_DO_100_CONTINUE(worker, r);
 
     bb = apr_brigade_create(p, c->bucket_alloc);
     pass_bb = apr_brigade_create(p, c->bucket_alloc);
