@@ -337,6 +337,13 @@ do {                             \
 (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
 } while (0)
 
+#define PROXY_DO_100_CONTINUE(w, r) \
+((w)->s->ping_timeout_set \
+ && ((w)->s->ping_timeout >= 0) \
+ && (PROXYREQ_REVERSE == (r)->proxyreq) \
+ && !(apr_table_get((r)->subprocess_env, "force-proxy-request-1.0")) \
+ && ap_request_has_body((r)))
+
 /* use 2 hashes */
 typedef struct {
     unsigned int def;

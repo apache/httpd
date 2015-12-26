@@ -3369,11 +3369,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
     fpr1 = apr_table_get(r->subprocess_env, "force-proxy-request-1.0");
-    do_100_continue = (worker->s->ping_timeout_set
-                       && (worker->s->ping_timeout >= 0)
-                       && (PROXYREQ_REVERSE == r->proxyreq)
-                       && !(fpr1)
-                       && ap_request_has_body(r));
+    do_100_continue = PROXY_DO_100_CONTINUE(worker, r);
 
     if (fpr1) {
         /*
