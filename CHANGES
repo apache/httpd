@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache_socache: Fix a possible cached entity body corruption when it
+     is received from an origin server in multiple batches and forwarded by
+     mod_proxy.  [Yann Ylavic]
+
   *) mod_http2: Fixed segfault on connection shutdown, callback ran into a semi
      dismantled session. Added support for experimental accept-push-policy draft
      (https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00). Clients
