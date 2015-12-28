@@ -248,10 +248,9 @@ variables work.</p>
 
 <p>The full syntax for this flag is:</p>
 
-<div class="example"><p><code>
-[E=VAR:VAL]
-[E=!VAR]
-</code></p></div>
+<pre class="prettyprint lang-config">[E=VAR:VAL]
+[E=!VAR]</pre>
+
 
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
 <code>%N</code>) which are expanded.</p>
