@@ -540,7 +540,12 @@ available in 2.4.10 and later</compatibility>
     <dt><code>expr=<var>expression</var></code></dt>
     <dd>The directive is applied if and only if <var>expression</var>
         evaluates to true. Details of expression syntax and evaluation are
-        documented in the <a href="../expr.html">ap_expr</a> documentation.</dd>
+        documented in the <a href="../expr.html">ap_expr</a> documentation.
+        <example>
+         # This delays the evaluation of the condition clause compared to &lt;If&gt;
+         Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
+        </example>   
+        </dd>
     </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
