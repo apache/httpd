@@ -227,10 +227,10 @@ variables work.</p>
 
 <p>The full syntax for this flag is:</p>
 
-<example>
+<highlight language="config">
 [E=VAR:VAL]
 [E=!VAR]
-</example>
+</highlight>
 
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
 <code>%N</code>) which are expanded.</p>
