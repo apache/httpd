@@ -63,15 +63,15 @@
 <div class="section">
 <h2><a name="processing" id="processing">The Request Processing Cycle</a></h2>
     <p>All requests pass through <code>ap_process_request_internal()</code>
-    in <code>request.c</code>, including subrequests and redirects. If a module
+    in <code>server/request.c</code>, including subrequests and redirects. If a module
     doesn't pass generated requests through this code, the author is cautioned
     that the module may be broken by future changes to request
     processing.</p>
 
     <p>To streamline requests, the module author can take advantage
-    of the hooks offered to drop out of the request cycle early, or
-    to bypass core hooks which are irrelevant (and costly in
-    terms of CPU.)</p>
+    of the <a href="./modguide.html#hooking">hooks offered</a> to drop 
+    out of the request cycle early, or to bypass core hooks which are 
+    irrelevant (and costly in terms of CPU.)</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="parsing" id="parsing">The Request Parsing Phase</a></h2>

@@ -99,12 +99,14 @@
     <p>This is actually rather simple in theory, but the code is
     complex.  First of all, it is important that everybody realize that
     there are three filter lists for each request, but they are all
-    concatenated together.  So, the first list is
-    <code>r->output_filters</code>, then <code>r->proto_output_filters</code>,
-    and finally <code>r->connection->output_filters</code>. These correspond
-    to the <code>RESOURCE</code>, <code>PROTOCOL</code>, and
-    <code>CONNECTION</code> filters respectively. The problem previously, was
-    that we used a singly linked list to create the filter stack, and we
+    concatenated together:</p>
+    <ul>
+        <li><code>r->output_filters</code> (corresponds to RESOURCE)</li>
+        <li><code>r->proto_output_filters</code> (corresponds to PROTOCOL)</li>
+        <li><code>r->connection->output_filters</code> (corresponds to CONNECTION)</li>
+    </ul> 
+    
+    <p>The problem previously, was that we used a singly linked list to create the filter stack, and we
     started from the "correct" location.  This means that if I had a
     <code>RESOURCE</code> filter on the stack, and I added a
     <code>CONNECTION</code> filter, the <code>CONNECTION</code> filter would
