@@ -80,6 +80,9 @@ Changes with Apache 2.4.18
      Renegotiation is 403ed when a master connection is present. Exact reason
      is given additionally in a request note. [Stefan Eissing]
 
+  *) mod_ssl: Make the output filter more friendly with deferred write and
+     response pipelining. [Yann Ylavic, Joe Orton]
+
   *) core: Fix scoreboard crash (SIGBUS) on hardware requiring strict 64bit
      alignment (SPARC64, PPC64).  [Yann Ylavic]
 
@@ -105,9 +108,6 @@ Changes with Apache 2.4.17
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.  [Yann Ylavic]
-
-  *) mod_ssl: Make the output filter more friendly with deferred write and
-     response pipelining. [Yann Ylavic, Joe Orton]
 
   *) mod_substitute: Allow to configure the patterns merge order with the new
      SubstituteInheritBefore on|off directive.  PR 57641
