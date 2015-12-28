@@ -177,6 +177,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://jkaluza.fedorapeople.org/httpd-2.4.x-dhparams-free.patch
      +1: jkaluza
 
+  *) mod_ssl: Fix "warning: variable 'hssc' set but not used".
+              2.4.x only, r1715255 merged in 2.4.18 missed this (trunk) hunk.
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ssl_hssc_warning.patch
+     +1: ylavic
+
+  *) mod_cache_socache: Fix a possible cached entity body corruption when it
+     is received from an origin server in multiple batches and forwarded by
+     mod_proxy.
+     trunk patch: http://svn.apache.org/r1721899
+     2.4.x patch: trunk works, module CHANGES
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
