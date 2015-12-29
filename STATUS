@@ -189,6 +189,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works, module CHANGES
      +1: ylavic
 
+  *) mod_proxy: Prevent invalid loadfactor value from being updated
+     trunk patch: http://svn.apache.org/r1722137
+     2.4.x patch: trunk works
+     +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
