@@ -112,10 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix "warning: variable 'hssc' set but not used".
-              2.4.x only, r1715255 merged in 2.4.18 missed this (trunk) hunk.
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ssl_hssc_warning.patch
-     +1: ylavic, rpluem, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
