@@ -772,8 +772,6 @@ int ssl_hook_Access(request_rec *r)
             && renegotiate
             && ((verify & SSL_VERIFY_PEER) ||
                 (verify & SSL_VERIFY_FAIL_IF_NO_PEER_CERT))) {
-            SSLSrvConfigRec *hssc = mySrvConfig(handshakeserver);
-
 #define MODSSL_CFG_CA_NE(f, sc1, sc2) \
             (sc1->server->auth.f && \
              (!sc2->server->auth.f || \
