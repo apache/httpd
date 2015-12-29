@@ -64,7 +64,7 @@ static const char *set_worker_param(apr_pool_t *p,
     int ival;
     apr_interval_time_t timeout;
 
-    if (!ap_casecmpstr(key, "loadfactor")) {
+    if (!strcasecmp(key, "loadfactor")) {
         /* Normalized load factor. Used with BalancerMember,
          * it is a number between 1 and 100.
          */
@@ -73,7 +73,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "LoadFactor must be a number between 1..100";
         worker->s->lbfactor = ival;
     }
-    else if (!ap_casecmpstr(key, "retry")) {
+    else if (!strcasecmp(key, "retry")) {
         /* If set it will give the retry timeout for the worker
          * The default value is 60 seconds, meaning that if
          * in error state, it will be retried after that timeout.
@@ -84,7 +84,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->retry = apr_time_from_sec(ival);
         worker->s->retry_set = 1;
     }
-    else if (!ap_casecmpstr(key, "ttl")) {
+    else if (!strcasecmp(key, "ttl")) {
         /* Time in seconds that will destroy all the connections
          * that exceed the smax
          */
@@ -93,7 +93,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "TTL must be at least one second";
         worker->s->ttl = apr_time_from_sec(ival);
     }
-    else if (!ap_casecmpstr(key, "min")) {
+    else if (!strcasecmp(key, "min")) {
         /* Initial number of connections to remote
          */
         ival = atoi(val);
@@ -101,7 +101,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Min must be a positive number";
         worker->s->min = ival;
     }
-    else if (!ap_casecmpstr(key, "max")) {
+    else if (!strcasecmp(key, "max")) {
         /* Maximum number of connections to remote
          */
         ival = atoi(val);
@@ -110,7 +110,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->hmax = ival;
     }
     /* XXX: More inteligent naming needed */
-    else if (!ap_casecmpstr(key, "smax")) {
+    else if (!strcasecmp(key, "smax")) {
         /* Maximum number of connections to remote that
          * will not be destroyed
          */
@@ -119,7 +119,7 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Smax must be a positive number";
         worker->s->smax = ival;
     }
-    else if (!ap_casecmpstr(key, "acquire")) {
+    else if (!strcasecmp(key, "acquire")) {
         /* Acquire timeout in given unit (default is milliseconds).
          * If set this will be the maximum time to
          * wait for a free connection.
@@ -131,7 +131,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->acquire = timeout;
         worker->s->acquire_set = 1;
     }
-    else if (!ap_casecmpstr(key, "timeout")) {
+    else if (!strcasecmp(key, "timeout")) {
         /* Connection timeout in seconds.
          * Defaults to server timeout.
          */
@@ -141,7 +141,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->timeout = apr_time_from_sec(ival);
         worker->s->timeout_set = 1;
     }
-    else if (!ap_casecmpstr(key, "iobuffersize")) {
+    else if (!strcasecmp(key, "iobuffersize")) {
         long s = atol(val);
         if (s < 512 && s) {
             return "IOBufferSize must be >= 512 bytes, or 0 for system default.";
@@ -149,7 +149,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->io_buffer_size = (s ? s : AP_IOBUFSIZE);
         worker->s->io_buffer_size_set = 1;
     }
-    else if (!ap_casecmpstr(key, "receivebuffersize")) {
+    else if (!strcasecmp(key, "receivebuffersize")) {
         ival = atoi(val);
         if (ival < 512 && ival != 0) {
             return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
@@ -157,34 +157,34 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->recv_buffer_size = ival;
         worker->s->recv_buffer_size_set = 1;
     }
-    else if (!ap_casecmpstr(key, "keepalive")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "keepalive")) {
+        if (!strcasecmp(val, "on"))
             worker->s->keepalive = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             worker->s->keepalive = 0;
         else
             return "KeepAlive must be On|Off";
         worker->s->keepalive_set = 1;
     }
-    else if (!ap_casecmpstr(key, "disablereuse")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "disablereuse")) {
+        if (!strcasecmp(val, "on"))
             worker->s->disablereuse = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             worker->s->disablereuse = 0;
         else
             return "DisableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
     }
-    else if (!ap_casecmpstr(key, "enablereuse")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "enablereuse")) {
+        if (!strcasecmp(val, "on"))
             worker->s->disablereuse = 0;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             worker->s->disablereuse = 1;
         else
             return "EnableReuse must be On|Off";
         worker->s->disablereuse_set = 1;
     }
-    else if (!ap_casecmpstr(key, "route")) {
+    else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
         if (strlen(val) >= sizeof(worker->s->route))
@@ -192,7 +192,7 @@ static const char *set_worker_param(apr_pool_t *p,
                     (int)sizeof(worker->s->route));
         PROXY_STRNCPY(worker->s->route, val);
     }
-    else if (!ap_casecmpstr(key, "redirect")) {
+    else if (!strcasecmp(key, "redirect")) {
         /* Worker redirection route.
          */
         if (strlen(val) >= sizeof(worker->s->redirect))
@@ -200,7 +200,7 @@ static const char *set_worker_param(apr_pool_t *p,
                     (int)sizeof(worker->s->redirect));
         PROXY_STRNCPY(worker->s->redirect, val);
     }
-    else if (!ap_casecmpstr(key, "status")) {
+    else if (!strcasecmp(key, "status")) {
         const char *v;
         int mode = 1;
         apr_status_t rv;
@@ -220,17 +220,17 @@ static const char *set_worker_param(apr_pool_t *p,
                 return "Unknown status parameter option";
         }
     }
-    else if (!ap_casecmpstr(key, "flushpackets")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "flushpackets")) {
+        if (!strcasecmp(val, "on"))
             worker->s->flush_packets = flush_on;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             worker->s->flush_packets = flush_off;
-        else if (!ap_casecmpstr(val, "auto"))
+        else if (!strcasecmp(val, "auto"))
             worker->s->flush_packets = flush_auto;
         else
             return "flushpackets must be on|off|auto";
     }
-    else if (!ap_casecmpstr(key, "flushwait")) {
+    else if (!strcasecmp(key, "flushwait")) {
         ival = atoi(val);
         if (ival > 1000 || ival < 0) {
             return "flushwait must be <= 1000, or 0 for system default of 10 millseconds.";
@@ -240,7 +240,7 @@ static const char *set_worker_param(apr_pool_t *p,
         else
             worker->s->flush_wait = ival * 1000;    /* change to microseconds */
     }
-    else if (!ap_casecmpstr(key, "ping")) {
+    else if (!strcasecmp(key, "ping")) {
         /* Ping/Pong timeout in given unit (default is second).
          */
         if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
@@ -250,13 +250,13 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->ping_timeout = timeout;
         worker->s->ping_timeout_set = 1;
     }
-    else if (!ap_casecmpstr(key, "lbset")) {
+    else if (!strcasecmp(key, "lbset")) {
         ival = atoi(val);
         if (ival < 0 || ival > 99)
             return "lbset must be between 0 and 99";
         worker->s->lbset = ival;
     }
-    else if (!ap_casecmpstr(key, "connectiontimeout")) {
+    else if (!strcasecmp(key, "connectiontimeout")) {
         /* Request timeout in given unit (default is second).
          * Defaults to connection timeout
          */
@@ -267,7 +267,7 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->s->conn_timeout = timeout;
         worker->s->conn_timeout_set = 1;
     }
-    else if (!ap_casecmpstr(key, "flusher")) {
+    else if (!strcasecmp(key, "flusher")) {
         if (strlen(val) >= sizeof(worker->s->flusher))
             apr_psprintf(p, "flusher name length must be < %d characters",
                     (int)sizeof(worker->s->flusher));
@@ -287,7 +287,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
 {
 
     int ival;
-    if (!ap_casecmpstr(key, "stickysession")) {
+    if (!strcasecmp(key, "stickysession")) {
         char *path;
         /* Balancer sticky session name.
          * Set to something like JSESSIONID or
@@ -304,12 +304,12 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             PROXY_STRNCPY(balancer->s->sticky_path, path);
         }
     }
-    else if (!ap_casecmpstr(key, "stickysessionsep")) {
+    else if (!strcasecmp(key, "stickysessionsep")) {
         /* separator/delimiter for sessionid and route,
          * normally '.'
          */
         if (strlen(val) != 1) {
-            if (!ap_casecmpstr(val, "off"))
+            if (!strcasecmp(val, "off"))
                 balancer->s->sticky_separator = 0;
             else      
                 return "stickysessionsep must be a single character or Off";
@@ -318,20 +318,20 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             balancer->s->sticky_separator = *val;
         balancer->s->sticky_separator_set = 1;
     }
-    else if (!ap_casecmpstr(key, "nofailover")) {
+    else if (!strcasecmp(key, "nofailover")) {
         /* If set to 'on' the session will break
          * if the worker is in error state or
          * disabled.
          */
-        if (!ap_casecmpstr(val, "on"))
+        if (!strcasecmp(val, "on"))
             balancer->s->sticky_force = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             balancer->s->sticky_force = 0;
         else
             return "failover must be On|Off";
         balancer->s->sticky_force_set = 1;
     }
-    else if (!ap_casecmpstr(key, "timeout")) {
+    else if (!strcasecmp(key, "timeout")) {
         /* Balancer timeout in seconds.
          * If set this will be the maximum time to
          * wait for a free worker.
@@ -342,7 +342,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             return "timeout must be at least one second";
         balancer->s->timeout = apr_time_from_sec(ival);
     }
-    else if (!ap_casecmpstr(key, "maxattempts")) {
+    else if (!strcasecmp(key, "maxattempts")) {
         /* Maximum number of failover attempts before
          * giving up.
          */
@@ -352,7 +352,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         balancer->s->max_attempts = ival;
         balancer->s->max_attempts_set = 1;
     }
-    else if (!ap_casecmpstr(key, "lbmethod")) {
+    else if (!strcasecmp(key, "lbmethod")) {
         proxy_balancer_method *provider;
         if (strlen(val) > (sizeof(balancer->s->lbpname)-1))
             return "unknown lbmethod";
@@ -369,20 +369,20 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
         return "unknown lbmethod";
     }
-    else if (!ap_casecmpstr(key, "scolonpathdelim")) {
+    else if (!strcasecmp(key, "scolonpathdelim")) {
         /* If set to 'on' then ';' will also be
          * used as a session path separator/delim (ala
          * mod_jk)
          */
-        if (!ap_casecmpstr(val, "on"))
+        if (!strcasecmp(val, "on"))
             balancer->s->scolonsep = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             balancer->s->scolonsep = 0;
         else
             return "scolonpathdelim must be On|Off";
         balancer->s->scolonsep_set = 1;
     }
-    else if (!ap_casecmpstr(key, "failonstatus")) {
+    else if (!strcasecmp(key, "failonstatus")) {
         char *val_split;
         char *status;
         char *tok_state;
@@ -404,17 +404,17 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
 
     }
-    else if (!ap_casecmpstr(key, "failontimeout")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "failontimeout")) {
+        if (!strcasecmp(val, "on"))
             balancer->failontimeout = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             balancer->failontimeout = 0;
         else
             return "failontimeout must be On|Off";
         balancer->failontimeout_set = 1;
     }
-    else if (!ap_casecmpstr(key, "nonce")) {
-        if (!ap_casecmpstr(val, "None")) {
+    else if (!strcasecmp(key, "nonce")) {
+        if (!strcasecmp(val, "None")) {
             *balancer->s->nonce = '\0';
         }
         else {
@@ -424,17 +424,17 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
         balancer->s->nonce_set = 1;
     }
-    else if (!ap_casecmpstr(key, "growth")) {
+    else if (!strcasecmp(key, "growth")) {
         ival = atoi(val);
         if (ival < 1 || ival > 100)   /* arbitrary limit here */
             return "growth must be between 1 and 100";
         balancer->growth = ival;
         balancer->growth_set = 1;
     }
-    else if (!ap_casecmpstr(key, "forcerecovery")) {
-        if (!ap_casecmpstr(val, "on"))
+    else if (!strcasecmp(key, "forcerecovery")) {
+        if (!strcasecmp(val, "on"))
             balancer->s->forcerecovery = 1;
-        else if (!ap_casecmpstr(val, "off"))
+        else if (!strcasecmp(val, "off"))
             balancer->s->forcerecovery = 0;
         else
             return "forcerecovery must be On|Off";

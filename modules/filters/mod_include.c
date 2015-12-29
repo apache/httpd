@@ -620,16 +620,16 @@ static void add_include_vars(request_rec *r)
 static const char *add_include_vars_lazy(request_rec *r, const char *var, const char *timefmt)
 {
     char *val;
-    if (!ap_casecmpstr(var, "DATE_LOCAL")) {
+    if (!strcasecmp(var, "DATE_LOCAL")) {
         val = ap_ht_time(r->pool, r->request_time, timefmt, 0);
     }
-    else if (!ap_casecmpstr(var, "DATE_GMT")) {
+    else if (!strcasecmp(var, "DATE_GMT")) {
         val = ap_ht_time(r->pool, r->request_time, timefmt, 1);
     }
-    else if (!ap_casecmpstr(var, "LAST_MODIFIED")) {
+    else if (!strcasecmp(var, "LAST_MODIFIED")) {
         val = ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0);
     }
-    else if (!ap_casecmpstr(var, "USER_NAME")) {
+    else if (!strcasecmp(var, "USER_NAME")) {
         if (apr_uid_name_get(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
             val = "<unknown>";
         }
@@ -714,9 +714,9 @@ static int include_expr_lookup(ap_expr_lookup_parms *parms)
 {
     switch (parms->type) {
     case AP_EXPR_FUNC_STRING:
-        if (ap_casecmpstr(parms->name, "v") == 0 ||
-            ap_casecmpstr(parms->name, "reqenv") == 0 ||
-            ap_casecmpstr(parms->name, "env") == 0) {
+        if (strcasecmp(parms->name, "v") == 0 ||
+            strcasecmp(parms->name, "reqenv") == 0 ||
+            strcasecmp(parms->name, "env") == 0) {
             *parms->func = include_expr_var_fn;
             *parms->data = parms->name;
             return OK;

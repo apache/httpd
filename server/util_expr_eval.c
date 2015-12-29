@@ -1710,13 +1710,13 @@ static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
         return FALSE;
     case 'o':
     case 'O':
-        return ap_casecmpstr(arg, "off") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "off") == 0 ? FALSE : TRUE;
     case 'n':
     case 'N':
-        return ap_casecmpstr(arg, "no") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "no") == 0 ? FALSE : TRUE;
     case 'f':
     case 'F':
-        return ap_casecmpstr(arg, "false") == 0 ? FALSE : TRUE;
+        return strcasecmp(arg, "false") == 0 ? FALSE : TRUE;
     case '0':
         return arg[1] == '\0' ? FALSE : TRUE;
     default:

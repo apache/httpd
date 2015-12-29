@@ -808,13 +808,13 @@ static const char *log_request_duration_microseconds(request_rec *r, char *a)
 static const char *log_request_duration_scaled(request_rec *r, char *a)
 {
     apr_time_t duration = get_request_end_time(r) - r->request_time;
-    if (*a == '\0' || !ap_casecmpstr(a, "s")) {
+    if (*a == '\0' || !strcasecmp(a, "s")) {
         duration = apr_time_sec(duration);
     }
-    else if (!ap_casecmpstr(a, "ms")) {
+    else if (!strcasecmp(a, "ms")) {
         duration = apr_time_as_msec(duration);
     }
-    else if (!ap_casecmpstr(a, "us")) {
+    else if (!strcasecmp(a, "us")) {
     }
     else {
         /* bogus format */
@@ -835,13 +835,13 @@ static const char *log_server_port(request_rec *r, char *a)
 {
     apr_port_t port;
 
-    if (*a == '\0' || !ap_casecmpstr(a, "canonical")) {
+    if (*a == '\0' || !strcasecmp(a, "canonical")) {
         port = r->server->port ? r->server->port : ap_default_port(r);
     }
-    else if (!ap_casecmpstr(a, "remote")) {
+    else if (!strcasecmp(a, "remote")) {
         port = r->useragent_addr->port;
     }
-    else if (!ap_casecmpstr(a, "local")) {
+    else if (!strcasecmp(a, "local")) {
         port = r->connection->local_addr->port;
     }
     else {
@@ -861,10 +861,10 @@ static const char *log_server_name(request_rec *r, char *a)
 
 static const char *log_pid_tid(request_rec *r, char *a)
 {
-    if (*a == '\0' || !ap_casecmpstr(a, "pid")) {
+    if (*a == '\0' || !strcasecmp(a, "pid")) {
         return ap_append_pid(r->pool, "", "");
     }
-    else if (!ap_casecmpstr(a, "tid") || !ap_casecmpstr(a, "hextid")) {
+    else if (!strcasecmp(a, "tid") || !strcasecmp(a, "hextid")) {
 #if APR_HAS_THREADS
         apr_os_thread_t tid = apr_os_thread_current();
 #else
@@ -1335,14 +1335,14 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     cls->condition_var = NULL;
     cls->condition_expr = NULL;
     if (envclause != NULL) {
-        if (ap_casecmpstrn(envclause, "env=", 4) == 0) {
+        if (strncasecmp(envclause, "env=", 4) == 0) {
             if ((envclause[4] == '\0')
                 || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
                 return "missing environment variable name";
             }
             cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
         }
-        else if (ap_casecmpstrn(envclause, "expr=", 5) == 0) {
+        else if (strncasecmp(envclause, "expr=", 5) == 0) {
             const char *err;
             if ((envclause[5] == '\0'))
                 return "missing condition";
