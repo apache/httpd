@@ -359,6 +359,7 @@ typedef struct {
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
     char      uds_path[PROXY_WORKER_MAX_NAME_SIZE];   /* path to worker's unix domain socket if applicable */
+    char      hurl[PROXY_WORKER_MAX_ROUTE_SIZE];      /* health check url */
     int             lbset;      /* load balancer cluster set */
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
@@ -368,6 +369,9 @@ typedef struct {
     int             hmax;       /* Hard maximum on the total number of connections */
     int             flush_wait; /* poll wait time in microseconds if flush_auto */
     int             index;      /* shm array index */
+    int             method;     /* method to use for health check */
+    int             passes;     /* number of successes for check to pass */
+    int             fails;       /* number of failures for check to fail */
     proxy_hashes    hash;       /* hash of worker name */
     unsigned int    status;     /* worker status bitfield */
     enum {
@@ -384,6 +388,7 @@ typedef struct {
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
     apr_interval_time_t ping_timeout;
     apr_interval_time_t conn_timeout;
+    apr_interval_time_t interval;
     apr_size_t      recv_buffer_size;
     apr_size_t      io_buffer_size;
     apr_size_t      elected;    /* Number of times the worker was elected */
@@ -518,6 +523,10 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
+
+APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
+                        (apr_pool_t *, proxy_worker *,
+                         const char *, const char *, void *));
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
                           proxy_worker *worker, proxy_server_conf *conf, char *url,
