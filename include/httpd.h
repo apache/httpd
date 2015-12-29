@@ -1533,25 +1533,6 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line);
 AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
 
 /**
- * Get the second word in the string paying attention to quoting.
- * The format {...} can be used instead of quotes with this implementation
- * @param p The pool to allocate from
- * @param line The line to traverse
- * @return A copy of the string
- */
-AP_DECLARE(char *) ap_getword_conf2(apr_pool_t *p, const char **line);
-
-/**
- * Get the second word in the string paying attention to quoting
- * The format {...} can be used instead of quotes with this implementation
- * @param p The pool to allocate from
- * @param line The line to traverse
- * @return A copy of the string
- * @note The same as ap_getword_conf2(), except it doesn't use const char **.
- */
-AP_DECLARE(char *) ap_getword_conf2_nc(apr_pool_t *p, char **line);
-
-/**
  * Check a string for any config define or environment variable construct
  * and replace each of them by the value of that variable, if it exists.
  * The default syntax of the constructs is ${ENV} but can be changed by
