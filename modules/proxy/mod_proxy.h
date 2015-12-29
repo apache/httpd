@@ -270,8 +270,11 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm */
 };
 
-/* Keep below in sync with proxy_util.c! */
 /* worker status bits */
+/*
+ * NOTE: Keep up-to-date w/ proxy_wstat_tbl[]
+ * in proxy_util.c !
+ */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_DRAIN          0x0004
@@ -282,6 +285,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR       0x0080
 #define PROXY_WORKER_HOT_STANDBY    0x0100
 #define PROXY_WORKER_FREE           0x0200
+#define PROXY_WORKER_HC_FAIL        0x0400
 
 /* worker status flags */
 #define PROXY_WORKER_INITIALIZED_FLAG    'O'
@@ -294,9 +298,11 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR_FLAG       'E'
 #define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
 #define PROXY_WORKER_FREE_FLAG           'F'
+#define PROXY_WORKER_HC_FAIL_FLAG        '#'
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
-PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
+PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR | \
+PROXY_WORKER_HC_FAIL )
 
 /* NOTE: these check the shared status */
 #define PROXY_WORKER_IS_INITIALIZED(f)  ( (f)->s->status &  PROXY_WORKER_INITIALIZED )
@@ -371,7 +377,9 @@ typedef struct {
     int             index;      /* shm array index */
     int             method;     /* method to use for health check */
     int             passes;     /* number of successes for check to pass */
-    int             fails;       /* number of failures for check to fail */
+    int             pcount;     /* current count of passes */
+    int             fails;      /* number of failures for check to fail */
+    int             fcount;     /* current count of failures */
     proxy_hashes    hash;       /* hash of worker name */
     unsigned int    status;     /* worker status bitfield */
     enum {

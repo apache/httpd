@@ -16,6 +16,8 @@
 
 #include "mod_proxy.h"
 #include "mod_watchdog.h"
+#include "ap_slotmem.h"
+
 
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
@@ -29,14 +31,14 @@ static char *methods[] = {
       "NULL", "OPTIONS", "HEAD", "GET", "POST", "CPING"
 };
 
-typedef struct hcheck_template_t {
+typedef struct hc_template_t {
     char *name;
     int method;
     int passes;
     int fails;
     apr_interval_time_t interval;
     char *hurl;
-} hcheck_template_t;
+} hc_template_t;
 
 static apr_pool_t *ptemplate = NULL;
 static apr_array_header_t *templates = NULL;
@@ -54,15 +56,15 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                                     void *tmp)
 {
     int ival;
-    hcheck_template_t *ctx;
+    hc_template_t *ctx;
 
     if (!worker && !tmp) {
         return "Bad call to set_worker_hc_param()";
     }
-    ctx = (hcheck_template_t *)tmp;
+    ctx = (hc_template_t *)tmp;
     if (!strcasecmp(key, "hcheck")) {
-        hcheck_template_t *template;
-        template = (hcheck_template_t *)templates->elts;
+        hc_template_t *template;
+        template = (hc_template_t *)templates->elts;
         for (ival = 0; ival < templates->nelts; ival++, template++) {
             if (!ap_casecmpstr(template->name, val)) {
                 worker->s->method = template->method;
@@ -138,8 +140,8 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
 {
     char *name = NULL;
     char *word, *val;
-    hcheck_template_t template;
-    hcheck_template_t *tpush;
+    hc_template_t template;
+    hc_template_t *tpush;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
     if (err)
         return err;
@@ -162,8 +164,8 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
         if (err)
             return apr_pstrcat(cmd->temp_pool, "HCheckTemplate: ", err, " ", word, "=", val, "; ", name, NULL);
         /* No error means we have a valid template */
-        tpush = (hcheck_template_t *)apr_array_push(templates);
-        memcpy(tpush, &template, sizeof(hcheck_template_t));
+        tpush = (hc_template_t *)apr_array_push(templates);
+        memcpy(tpush, &template, sizeof(hc_template_t));
     }
 
     return NULL;
@@ -207,7 +209,7 @@ static int hc_pre_config(apr_pool_t *p, apr_pool_t *plog,
         apr_pool_create(&ptemplate, p);
     }
     if (!templates) {
-        templates = apr_array_make(ptemplate, 10, sizeof(hcheck_template_t));
+        templates = apr_array_make(ptemplate, 10, sizeof(hc_template_t));
     }
     return OK;
 }
@@ -259,7 +261,7 @@ static const command_rec command_table[] = {
 
 static void hc_register_hooks(apr_pool_t *p)
 {
-    static const char *const runAfter[] = { "mod_watchdog.c", NULL};
+    static const char *const runAfter[] = { "mod_watchdog.c", "mod_proxy_balancer.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     ap_hook_pre_config(hc_pre_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_post_config(hc_post_config, NULL, runAfter, APR_HOOK_LAST);
