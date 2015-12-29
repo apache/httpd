@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix missing semicolon for building with OpenSSL < 0.9.8m.
-     trunk patch: http://svn.apache.org/r1719967
-     +1: ylavic, mrumph, wrowe
-     mrumph: Bug 58737 was also opened for this error.
-
   *) Remove some useless return statements (+ some minor style changes)
      trunk patch: http://svn.apache.org/r1715567
                   http://svn.apache.org/r1715568
