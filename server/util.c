@@ -772,12 +772,16 @@ static char *substring_conf(apr_pool_t *p, const char *start, int len,
 #endif
 }
 
-static char *getword_conf_ex(apr_pool_t *p, const char **line, int curlyok)
+AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line)
+{
+    return ap_getword_conf(p, (const char **) line);
+}
+
+AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
 {
     const char *str = *line, *strend;
     char *res;
     char quote;
-    char curly = '{';
 
     while (apr_isspace(*str))
         ++str;
@@ -787,11 +791,7 @@ static char *getword_conf_ex(apr_pool_t *p, const char **line, int curlyok)
         return "";
     }
 
-    if ((quote = *str) == '"' || quote == '\'' || quote == (curlyok ? curly : '\'')) {
-        if (quote == curly) {
-            /* only true if curlyok and we matched */
-            quote = '}';
-        }
+    if ((quote = *str) == '"' || quote == '\'') {
         strend = str + 1;
         while (*strend && *strend != quote) {
             if (*strend == '\\' && strend[1] &&
@@ -819,26 +819,6 @@ static char *getword_conf_ex(apr_pool_t *p, const char **line, int curlyok)
         ++strend;
     *line = strend;
     return res;
-}
-
-AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line)
-{
-    return getword_conf_ex(p, (const char **) line, 0);
-}
-
-AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
-{
-    return getword_conf_ex(p, line, 0);
-}
-
-AP_DECLARE(char *) ap_getword_conf2_nc(apr_pool_t *p, char **line)
-{
-    return getword_conf_ex(p, (const char **) line, 1);
-}
-
-AP_DECLARE(char *) ap_getword_conf2(apr_pool_t *p, const char **line)
-{
-    return getword_conf_ex(p, line, 1);
 }
 
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)

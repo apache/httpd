@@ -496,7 +496,6 @@
  *                         conn_rec.
  * 20150222.6 (2.5.0-dev)  Add async_filter to conn_rec.
  * 20150222.7 (2.5.0-dev)  Add ap_casecmpstr[n]();
- * 20150222.8 (2.5.0-dev)  Add ap_getword_conf2[_nc]();
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
