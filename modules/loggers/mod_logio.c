@@ -228,7 +228,6 @@ static void logio_insert_filter(request_rec * r)
     if (conf->track_ttfb) { 
         ap_add_output_filter(logio_ttfb_filter_name, NULL, r, r->connection);
     }
-    return;
 }
 
 static const char *logio_track_ttfb(cmd_parms *cmd, void *in_dir_config, int arg)

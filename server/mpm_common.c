@@ -198,7 +198,6 @@ AP_DECLARE(void) ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode,
 
     apr_sleep(apr_time_from_sec(1));
     ret->pid = -1;
-    return;
 }
 
 #if defined(TCP_NODELAY)

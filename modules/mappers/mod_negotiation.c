@@ -791,8 +791,9 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
              */
 
             while (c != '\n' && apr_isspace(c)) {
-                if(apr_file_getc(&c, map) != APR_SUCCESS)
+                if (apr_file_getc(&c, map) != APR_SUCCESS) {
                     break;
+                }
             }
 
             apr_file_ungetc(c, map);
@@ -1058,10 +1059,9 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
     return OK;
 }
 
-
 /* Sort function used by read_types_multi. */
-static int variantsortf(var_rec *a, var_rec *b) {
-
+static int variantsortf(var_rec *a, var_rec *b)
+{
     /* First key is the source quality, sort in descending order. */
 
     /* XXX: note that we currently implement no method of setting the
@@ -1727,7 +1727,6 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
             }
         }
     }
-    return;
 }
 
 /* Determining the content length --- if the map didn't tell us,
@@ -2967,8 +2966,9 @@ static int handle_map_file(request_rec *r)
     char *udir;
     const char *new_req;
 
-    if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
+    if (strcmp(r->handler, MAP_FILE_MAGIC_TYPE) && strcmp(r->handler, "type-map")) {
         return DECLINED;
+    }
 
     neg = parse_accept_headers(r);
     if ((res = read_type_map(&map, neg, r))) {
@@ -2976,7 +2976,9 @@ static int handle_map_file(request_rec *r)
     }
 
     res = do_negotiation(r, neg, &best, 0);
-    if (res != 0) return res;
+    if (res != 0) {
+        return res;
+    }
 
     if (best->body)
     {

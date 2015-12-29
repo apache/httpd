@@ -112,21 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Remove some useless return statements (+ some minor style changes)
-     trunk patch: http://svn.apache.org/r1715567
-                  http://svn.apache.org/r1715568
-                  http://svn.apache.org/r1715570
-                  http://svn.apache.org/r1715571
-                  http://svn.apache.org/r1715572
-                  http://svn.apache.org/r1715576
-                  http://svn.apache.org/r1715581
-                  http://svn.apache.org/r1715582
-                  http://svn.apache.org/r1715583
-                  http://svn.apache.org/r1715584
-                  http://svn.apache.org/r1715585
-     2.4.x patch: https://people.apache.org/~jailletc36/remove_return.patch
-     +1: jailletc36, jim, covener
-
   *) mod_ssl: Fix "warning: variable 'hssc' set but not used".
               2.4.x only, r1715255 merged in 2.4.18 missed this (trunk) hunk.
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-ssl_hssc_warning.patch

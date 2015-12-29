@@ -347,8 +347,6 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
     if (root->right) root->right->dump_done = 0;
 
     debug_printf(ctx, "     --- End Parse Tree ---\n\n");
-
-    return;
 }
 
 #define DEBUG_INIT(ctx, filter, brigade) do { \
@@ -1676,8 +1674,6 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     if (dodecode && *tag_val) {
         decodehtml(*tag_val);
     }
-
-    return;
 }
 
 static int find_file(request_rec *r, const char *directive, const char *tag,

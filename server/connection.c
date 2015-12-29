@@ -196,7 +196,6 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     } while (now < timeup);
 
     apr_socket_close(csd);
-    return;
 }
 
 AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)

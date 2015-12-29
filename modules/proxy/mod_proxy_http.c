@@ -1061,7 +1061,6 @@ static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
        }
     }
     apr_table_add(r->headers_out, key, value);
-    return;
 }
 
 /*
@@ -1132,10 +1131,11 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
                                       r->uri, r->method);
                         *pread_len = len;
                         return;
-                    } else {
-                         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01099)
-                                       "No HTTP headers returned by %s (%s)",
-                                       r->uri, r->method);
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01099)
+                                      "No HTTP headers returned by %s (%s)",
+                                      r->uri, r->method);
                         return;
                     }
                 }
