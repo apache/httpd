@@ -112,6 +112,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Prevent invalid loadfactor value from being updated
+     trunk patch: http://svn.apache.org/r1722137
+     2.4.x patch: trunk works
+     +1: jim, covener, ylavic
+
+  *) mod_log_config: PR58769: backport GlobalLog directive to 2.4.x
+     trunk patch: http://svn.apache.org/r1599535
+                  http://svn.apache.org/r1721685 
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+     ylavic: note: the CHANGES entry may be modified to remove Ed's email
+             address (leaving the full name only) since he is now a committer.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -164,16 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works, module CHANGES
      +1: ylavic
 
-  *) mod_proxy: Prevent invalid loadfactor value from being updated
-     trunk patch: http://svn.apache.org/r1722137
-     2.4.x patch: trunk works
-     +1: jim, covener
-
-  *) mod_log_config: PR58769: backport GlobalLog directive to 2.4.x
-     trunk patch: http://svn.apache.org/r1599535
-                  http://svn.apache.org/r1721685 
-     2.4.x patch: trunk works
-     +1 covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
