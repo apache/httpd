@@ -194,6 +194,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jim
 
+  *) mod_log_config: PR58769: backport GlobalLog directive to 2.4.x
+     trunk patch: http://svn.apache.org/r1599535
+                  http://svn.apache.org/r1721685 
+     2.4.x patch: trunk works
+     +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
