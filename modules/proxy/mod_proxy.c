@@ -68,9 +68,10 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Normalized load factor. Used with BalancerMember,
          * it is a number between 1 and 100.
          */
-        worker->s->lbfactor = atoi(val);
-        if (worker->s->lbfactor < 1 || worker->s->lbfactor > 100)
+        ival = atoi(val);
+        if (ival < 1 || ival > 100)
             return "LoadFactor must be a number between 1..100";
+        worker->s->lbfactor = ival;
     }
     else if (!ap_casecmpstr(key, "retry")) {
         /* If set it will give the retry timeout for the worker
