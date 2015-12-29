@@ -45,9 +45,9 @@ static apr_array_header_t *templates = NULL;
 static ap_watchdog_t *watchdog;
 
 /*
- * This is not as clean as it should be, because we are using
- * the same to both update the actual worker as well as verifying
- * and populating the health check 'template' as well.
+ * This serves double duty by not only validating (and creating)
+ * the health-check template, but also ties into set_worker_param()
+ * which does the actual setting of worker params in shm.
  */
 static const char *set_worker_hc_param(apr_pool_t *p,
                                     proxy_worker *worker,
@@ -171,33 +171,60 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static void hc_check(apr_pool_t *p, server_rec *s, apr_time_t now,
+                     proxy_worker *worker)
+{
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                 "Health check (%s).", worker->s->name);
+    return;
+}
+
 static apr_status_t hc_watchdog_callback(int state, void *data,
                                          apr_pool_t *pool)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_time_t cur, now;
-
-
+    apr_time_t now = apr_time_sec(apr_time_now());
+    proxy_balancer *balancer;
+    server_rec *s = (server_rec *)data;
+    proxy_server_conf *conf;
+    apr_pool_t *p;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
-        break;
+            break;
+
         case AP_WATCHDOG_STATE_RUNNING:
-            cur = now = apr_time_sec(apr_time_now());
-            /*
-            while ((now - cur) < apr_time_sec(ctx->interval)) {
-                break;
+            /* loop thru all workers */
+            apr_pool_create(&p, pool);
+            while (s) {
+                int i;
+                conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
+                balancer = (proxy_balancer *)conf->balancers->elts;
+                for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+                    int n;
+                    proxy_worker **workers;
+                    proxy_worker *worker;
+                    workers = (proxy_worker **)balancer->workers->elts;
+                    for (n = 0; n < balancer->workers->nelts; n++) {
+                        worker = *workers;
+                        if (worker->s->method && (now > worker->s->updated + worker->s->interval)) {
+                            hc_check(p, s, now, worker);
+                        }
+                        workers++;
+                    }
+                }
+                s = s->next;
             }
-             */
-        break;
+            apr_pool_destroy(p);
+            break;
+
         case AP_WATCHDOG_STATE_STOPPING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
-
-        break;
+            break;
     }
     return rv;
 }
@@ -240,7 +267,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     rv = hc_watchdog_register_callback(watchdog,
             apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-            NULL,
+            s,
             hc_watchdog_callback);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()

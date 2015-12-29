@@ -2678,7 +2678,6 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
-    set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
@@ -2889,6 +2888,7 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                       APR_HOOK_MIDDLE);
     /* Reset workers count on gracefull restart */
     proxy_lb_workers = 0;
+    set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     return OK;
 }
 static void register_hooks(apr_pool_t *p)
