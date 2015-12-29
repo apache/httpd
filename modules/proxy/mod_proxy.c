@@ -36,6 +36,13 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
+/*
+ * We do health-checks only if that (sub)module is loaded in. This
+ * allows for us to continue as is w/o requiring mod_watchdog for
+ * those implementations which aren't using health checks
+ */
+static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
+
 static const char * const proxy_id = "proxy";
 apr_global_mutex_t *proxy_mutex = NULL;
 
@@ -274,7 +281,11 @@ static const char *set_worker_param(apr_pool_t *p,
         PROXY_STRNCPY(worker->s->flusher, val);
     }
     else {
-        return "unknown Worker parameter";
+        if (set_worker_hc_param_f) {
+            return set_worker_hc_param_f(p, worker, key, val, NULL);
+        } else {
+            return "unknown Worker parameter";
+        }
     }
     return NULL;
 }
@@ -2667,6 +2678,7 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
@@ -2889,7 +2901,8 @@ static void register_hooks(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes.
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c",
+                                           "mod_proxy_hcheck.c", NULL};
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
