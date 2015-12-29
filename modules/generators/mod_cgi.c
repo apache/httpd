@@ -78,7 +78,7 @@ static void discard_script_output(apr_bucket_brigade *bb);
 static int is_scriptaliased(request_rec *r)
 {
     const char *t = apr_table_get(r->notes, "alias-forced-type");
-    return t && (!ap_casecmpstr(t, "cgi-script"));
+    return t && (!strcasecmp(t, "cgi-script"));
 }
 
 /* Configuration stuff */

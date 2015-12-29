@@ -1576,7 +1576,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     }
 
     /* catch the "failed" case */
-    if (i == 4 && !ap_casecmpstr(buf, "NULL")) {
+    if (i == 4 && !strcasecmp(buf, "NULL")) {
         return NULL;
     }
 
@@ -1829,7 +1829,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
     /* fast tests for variable length variables (sic) first */
     if (var[3] == ':') {
-        if (var[4] && !ap_casecmpstrn(var, "ENV", 3)) {
+        if (var[4] && !strncasecmp(var, "ENV", 3)) {
             var += 4;
             result = apr_table_get(r->notes, var);
 
@@ -1840,7 +1840,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                 result = getenv(var);
             }
         }
-        else if (var[4] && !ap_casecmpstrn(var, "SSL", 3) && rewrite_ssl_lookup) {
+        else if (var[4] && !strncasecmp(var, "SSL", 3) && rewrite_ssl_lookup) {
             result = rewrite_ssl_lookup(r->pool, r->server, r->connection, r,
                                         var + 4);
         }
@@ -1850,10 +1850,10 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             request_rec *rr;
             const char *path;
 
-            if (!ap_casecmpstrn(var, "HTTP", 4)) {
+            if (!strncasecmp(var, "HTTP", 4)) {
                 result = lookup_header(var+5, ctx);
             }
-            else if (!ap_casecmpstrn(var, "LA-U", 4)) {
+            else if (!strncasecmp(var, "LA-U", 4)) {
                 if (ctx->uri && subreq_ok(r)) {
                     path = ctx->perdir ? la_u(ctx) : ctx->uri;
                     rr = ap_sub_req_lookup_uri(path, r, NULL);
@@ -1868,7 +1868,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     return (char *)result;
                 }
             }
-            else if (!ap_casecmpstrn(var, "LA-F", 4)) {
+            else if (!strncasecmp(var, "LA-F", 4)) {
                 if (ctx->uri && subreq_ok(r)) {
                     path = ctx->uri;
                     if (ctx->perdir && *path == '/') {
@@ -3477,13 +3477,13 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     switch (*key++) {
     case 'b':
     case 'B':
-        if (!*key || !ap_casecmpstr(key, "ackrefescaping")) {
+        if (!*key || !strcasecmp(key, "ackrefescaping")) {
             cfg->flags |= RULEFLAG_ESCAPEBACKREF;
             if (val && *val) { 
                 cfg->escapes = val;
             }
         }
-        else if (!ap_casecmpstr(key, "NP") || !ap_casecmpstr(key, "ackrefernoplus")) { 
+        else if (!strcasecmp(key, "NP") || !strcasecmp(key, "ackrefernoplus")) { 
             cfg->flags |= RULEFLAG_ESCAPENOPLUS;
         }
         else {
@@ -3492,11 +3492,11 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         break;
     case 'c':
     case 'C':
-        if (!*key || !ap_casecmpstr(key, "hain")) {           /* chain */
+        if (!*key || !strcasecmp(key, "hain")) {           /* chain */
             cfg->flags |= RULEFLAG_CHAIN;
         }
         else if (((*key == 'O' || *key == 'o') && !key[1])
-                 || !ap_casecmpstr(key, "ookie")) {           /* cookie */
+                 || !strcasecmp(key, "ookie")) {           /* cookie */
             data_item *cp = cfg->cookie;
 
             if (!cp) {
@@ -3519,13 +3519,13 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         break;
     case 'd':
     case 'D':
-        if (!*key || !ap_casecmpstr(key, "PI") || !ap_casecmpstr(key,"iscardpath")) {
+        if (!*key || !strcasecmp(key, "PI") || !strcasecmp(key,"iscardpath")) {
             cfg->flags |= (RULEFLAG_DISCARDPATHINFO);
         }
         break;
     case 'e':
     case 'E':
-        if (!*key || !ap_casecmpstr(key, "nv")) {             /* env */
+        if (!*key || !strcasecmp(key, "nv")) {             /* env */
             data_item *cp = cfg->env;
 
             if (!cp) {
@@ -3542,7 +3542,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             cp->next = NULL;
             cp->data = val;
         }
-        else if (!ap_casecmpstr(key, "nd")) {                /* end */
+        else if (!strcasecmp(key, "nd")) {                /* end */
             cfg->flags |= RULEFLAG_END;
         }
         else {
@@ -3552,7 +3552,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'f':
     case 'F':
-        if (!*key || !ap_casecmpstr(key, "orbidden")) {       /* forbidden */
+        if (!*key || !strcasecmp(key, "orbidden")) {       /* forbidden */
             cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
             cfg->forced_responsecode = HTTP_FORBIDDEN;
         }
@@ -3563,7 +3563,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'g':
     case 'G':
-        if (!*key || !ap_casecmpstr(key, "one")) {            /* gone */
+        if (!*key || !strcasecmp(key, "one")) {            /* gone */
             cfg->flags |= (RULEFLAG_STATUS | RULEFLAG_NOSUB);
             cfg->forced_responsecode = HTTP_GONE;
         }
@@ -3574,7 +3574,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'h':
     case 'H':
-        if (!*key || !ap_casecmpstr(key, "andler")) {         /* handler */
+        if (!*key || !strcasecmp(key, "andler")) {         /* handler */
             cfg->forced_handler = val;
         }
         else {
@@ -3583,7 +3583,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         break;
     case 'l':
     case 'L':
-        if (!*key || !ap_casecmpstr(key, "ast")) {            /* last */
+        if (!*key || !strcasecmp(key, "ast")) {            /* last */
             cfg->flags |= RULEFLAG_LASTRULE;
         }
         else {
@@ -3594,10 +3594,10 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'n':
     case 'N':
         if (((*key == 'E' || *key == 'e') && !key[1])
-            || !ap_casecmpstr(key, "oescape")) {              /* noescape */
+            || !strcasecmp(key, "oescape")) {              /* noescape */
             cfg->flags |= RULEFLAG_NOESCAPE;
         }
-        else if (!*key || !ap_casecmpstr(key, "ext")) {       /* next */
+        else if (!*key || !strcasecmp(key, "ext")) {       /* next */
             cfg->flags |= RULEFLAG_NEWROUND;
             if (val && *val) { 
                 cfg->maxrounds = atoi(val);
@@ -3605,11 +3605,11 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
         }
         else if (((*key == 'S' || *key == 's') && !key[1])
-            || !ap_casecmpstr(key, "osubreq")) {              /* nosubreq */
+            || !strcasecmp(key, "osubreq")) {              /* nosubreq */
             cfg->flags |= RULEFLAG_IGNOREONSUBREQ;
         }
         else if (((*key == 'C' || *key == 'c') && !key[1])
-            || !ap_casecmpstr(key, "ocase")) {                /* nocase */
+            || !strcasecmp(key, "ocase")) {                /* nocase */
             cfg->flags |= RULEFLAG_NOCASE;
         }
         else {
@@ -3619,11 +3619,11 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'p':
     case 'P':
-        if (!*key || !ap_casecmpstr(key, "roxy")) {           /* proxy */
+        if (!*key || !strcasecmp(key, "roxy")) {           /* proxy */
             cfg->flags |= RULEFLAG_PROXY;
         }
         else if (((*key == 'T' || *key == 't') && !key[1])
-            || !ap_casecmpstr(key, "assthrough")) {           /* passthrough */
+            || !strcasecmp(key, "assthrough")) {           /* passthrough */
             cfg->flags |= RULEFLAG_PASSTHROUGH;
         }
         else {
@@ -3633,11 +3633,11 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'q':
     case 'Q':
-        if (   !ap_casecmpstr(key, "SA")
-            || !ap_casecmpstr(key, "sappend")) {              /* qsappend */
+        if (   !strcasecmp(key, "SA")
+            || !strcasecmp(key, "sappend")) {              /* qsappend */
             cfg->flags |= RULEFLAG_QSAPPEND;
-        } else if ( !ap_casecmpstr(key, "SD")
-                || !ap_casecmpstr(key, "sdiscard") ) {       /* qsdiscard */
+        } else if ( !strcasecmp(key, "SD")
+                || !strcasecmp(key, "sdiscard") ) {       /* qsdiscard */
             cfg->flags |= RULEFLAG_QSDISCARD;
         }
         else {
@@ -3647,18 +3647,18 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 'r':
     case 'R':
-        if (!*key || !ap_casecmpstr(key, "edirect")) {        /* redirect */
+        if (!*key || !strcasecmp(key, "edirect")) {        /* redirect */
             int status = 0;
 
             cfg->flags |= RULEFLAG_FORCEREDIRECT;
             if (*val) {
-                if (ap_casecmpstr(val, "permanent") == 0) {
+                if (strcasecmp(val, "permanent") == 0) {
                     status = HTTP_MOVED_PERMANENTLY;
                 }
-                else if (ap_casecmpstr(val, "temp") == 0) {
+                else if (strcasecmp(val, "temp") == 0) {
                     status = HTTP_MOVED_TEMPORARILY;
                 }
-                else if (ap_casecmpstr(val, "seeother") == 0) {
+                else if (strcasecmp(val, "seeother") == 0) {
                     status = HTTP_SEE_OTHER;
                 }
                 else if (apr_isdigit(*val)) {
@@ -3688,7 +3688,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 's':
     case 'S':
-        if (!*key || !ap_casecmpstr(key, "kip")) {            /* skip */
+        if (!*key || !strcasecmp(key, "kip")) {            /* skip */
             cfg->skip = atoi(val);
         }
         else {
@@ -3698,7 +3698,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
 
     case 't':
     case 'T':
-        if (!*key || !ap_casecmpstr(key, "ype")) {            /* type */
+        if (!*key || !strcasecmp(key, "ype")) {            /* type */
             cfg->forced_mimetype = val;
         }
         else {
