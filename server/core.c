@@ -1160,7 +1160,7 @@ static const ap_directive_t * find_parent(const ap_directive_t *dirp,
         dirp = dirp->parent;
 
         /* ### it would be nice to have atom-ized directives */
-        if (strcasecmp(dirp->directive, what) == 0)
+        if (ap_casecmpstr(dirp->directive, what) == 0)
             return dirp;
     }
 
@@ -1360,7 +1360,7 @@ static void init_config_defines(apr_pool_t *pconf)
 static const char *set_define(cmd_parms *cmd, void *dummy,
                               const char *name, const char *value)
 {
-    if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
+    if (cmd->parent && ap_casecmpstr(cmd->parent->directive, "<VirtualHost")) { 
         return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ",
                                       cmd->parent->directive, " context", NULL);
     }
@@ -1391,7 +1391,7 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
 {
     int i;
     char **defines;
-    if (cmd->parent && strcasecmp(cmd->parent->directive, "<VirtualHost")) { 
+    if (cmd->parent && ap_casecmpstr(cmd->parent->directive, "<VirtualHost")) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, " is not valid in ",
                                       cmd->parent->directive, " context", NULL);
     }
