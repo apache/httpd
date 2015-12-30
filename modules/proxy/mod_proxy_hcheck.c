@@ -17,6 +17,7 @@
 #include "mod_proxy.h"
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
+#include "ap_expr.h"
 
 
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
@@ -31,7 +32,7 @@ static char *methods[] = {
       "NULL", "OPTIONS", "HEAD", "GET", "POST", "CPING", NULL
 };
 
-typedef struct hc_template_t {
+typedef struct {
     char *name;
     int method;
     int passes;
@@ -40,9 +41,15 @@ typedef struct hc_template_t {
     char *hurl;
 } hc_template_t;
 
-typedef struct sctx_t {
+typedef struct {
+    char *name;
+    ap_expr_info_t *expr;       /* parsed expression */
+} hc_condition_t;
+
+typedef struct {
     apr_pool_t *p;
     apr_array_header_t *templates;
+    apr_array_header_t *conditions;
     ap_watchdog_t *watchdog;
     server_rec *s;
 } sctx_t;
@@ -52,6 +59,7 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
     apr_pool_create(&ctx->p, p);
     ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
+    ctx->conditions = apr_array_make(ctx->p, 10, sizeof(hc_condition_t));
     ctx->s = s;
 
     return ctx;
@@ -159,7 +167,49 @@ static const char *set_worker_hc_param(apr_pool_t *p,
     return NULL;
 }
 
-static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    char *name = NULL;
+    char *expr;
+    hc_condition_t *condition;
+    sctx_t *ctx;
+
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
+    ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
+                                          &proxy_hcheck_module);
+
+    name = ap_getword_conf(cmd->temp_pool, &arg);
+    if (!*name) {
+        return apr_pstrcat(cmd->temp_pool, "Missing name for ",
+                           cmd->cmd->name, NULL);
+    }
+    /* get expr. Allow fancy new {...} quoting style */
+    expr = ap_getword_conf2(cmd->temp_pool, &arg);
+    if (!*expr) {
+        return apr_pstrcat(cmd->temp_pool, "Missing expression for ",
+                           cmd->cmd->name, NULL);
+    }
+    condition = (hc_condition_t *)apr_array_push(ctx->conditions);
+    condition->name = apr_pstrdup(ctx->p, name);
+    condition->expr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
+    if (err) {
+        void *v;
+        /* get rid of recently pushed (bad) condition */
+        v = apr_array_pop(ctx->conditions);
+        return apr_psprintf(cmd->temp_pool, "Could not parse expression \"%s\": %s",
+                            expr, err);
+    }
+    expr = ap_getword_conf(cmd->temp_pool, &arg);
+    if (*expr) {
+        return "error: extra parameter(s)";
+    }
+
+    return NULL;
+}
+
+static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 {
     char *name = NULL;
     char *word, *val;
@@ -314,8 +364,10 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
 }
 
 static const command_rec command_table[] = {
-    AP_INIT_RAW_ARGS("HCheckTemplate", set_hcheck, NULL, OR_FILEINFO,
+    AP_INIT_RAW_ARGS("ProxyHCTemplate", set_hc_template, NULL, OR_FILEINFO,
                      "Health check template"),
+    AP_INIT_RAW_ARGS("ProxyHCCondition", set_hc_condition, NULL, OR_FILEINFO,
+                     "Define a health check condition ruleset"),
     { NULL }
 };
 
