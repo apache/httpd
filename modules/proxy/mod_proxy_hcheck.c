@@ -29,7 +29,7 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 #define HCHECK_WATHCHDOG_INTERVAL (5)
 
 static char *methods[] = {
-      "NULL", "OPTIONS", "HEAD", "GET", "POST", "CPING", NULL
+      "NULL", "OPTIONS", "HEAD", "CPING", NULL
 };
 
 typedef struct {
@@ -257,12 +257,14 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static void hc_check(apr_pool_t *p, server_rec *s, apr_time_t now,
+static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                      proxy_worker *worker)
 {
+    server_rec *s = ctx->s;
     /* TODO: REMOVE ap_log_error call */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                  "Health check (%s).", worker->s->name);
+
     return;
 }
 
@@ -307,7 +309,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                      worker->s->name, worker->s->method, (unsigned long)now,
                                      (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
                         if (worker->s->method && (now > worker->s->updated + worker->s->interval)) {
-                            hc_check(p, s, now, worker);
+                            hc_check(ctx, p, now, worker);
                         }
                         workers++;
                     }
