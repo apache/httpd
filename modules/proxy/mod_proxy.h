@@ -533,7 +533,7 @@ struct proxy_balancer_method {
 #endif
 
 APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
-                        (apr_pool_t *, proxy_worker *,
+                        (apr_pool_t *, server_rec *, proxy_worker *,
                          const char *, const char *, void *));
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,

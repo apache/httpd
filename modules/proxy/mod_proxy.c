@@ -63,6 +63,7 @@ apr_global_mutex_t *proxy_mutex = NULL;
 /* Translate the URL into a 'filename' */
 
 static const char *set_worker_param(apr_pool_t *p,
+                                    server_rec *s,
                                     proxy_worker *worker,
                                     const char *key,
                                     const char *val)
@@ -282,7 +283,7 @@ static const char *set_worker_param(apr_pool_t *p,
     }
     else {
         if (set_worker_hc_param_f) {
-            return set_worker_hc_param_f(p, worker, key, val, NULL);
+            return set_worker_hc_param_f(p, s, worker, key, val, NULL);
         } else {
             return "unknown Worker parameter";
         }
@@ -1804,7 +1805,7 @@ static const char *
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
                              elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
             } else {
-                const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
+                const char *err = set_worker_param(cmd->pool, s, worker, elts[i].key,
                                                    elts[i].val);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
@@ -2288,8 +2289,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
                          elts[i].key, elts[i].val, ap_proxy_worker_name(cmd->pool, worker));
         } else {
-            err = set_worker_param(cmd->pool, worker, elts[i].key,
-                                               elts[i].val);
+            err = set_worker_param(cmd->pool, cmd->server, worker, elts[i].key,
+                                   elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         }
@@ -2373,7 +2374,7 @@ static const char *
         else
             *val++ = '\0';
         if (worker)
-            err = set_worker_param(cmd->pool, worker, word, val);
+            err = set_worker_param(cmd->pool, cmd->server, worker, word, val);
         else
             err = set_balancer_param(conf, cmd->pool, balancer, word, val);
 
@@ -2526,7 +2527,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             else
                 *val++ = '\0';
             if (worker)
-                err = set_worker_param(cmd->pool, worker, word, val);
+                err = set_worker_param(cmd->pool, cmd->server, worker, word, val);
             else
                 err = set_balancer_param(sconf, cmd->pool, balancer,
                                          word, val);
