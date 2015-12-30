@@ -1025,11 +1025,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
          */
         w = ap_getword_conf(parms->temp_pool, &args);
 
-        if (*w == '\0' || (strcasecmp(w, "on") && strcasecmp(w, "off")))
+        if (*w == '\0' || (ap_casecmpstr(w, "on") && ap_casecmpstr(w, "off")))
             return apr_pstrcat(parms->pool, cmd->name, " must be On or Off",
                                NULL);
 
-        return cmd->AP_FLAG(parms, mconfig, strcasecmp(w, "off") != 0);
+        return cmd->AP_FLAG(parms, mconfig, ap_casecmpstr(w, "off") != 0);
 
     default:
         return apr_pstrcat(parms->pool, cmd->name,
