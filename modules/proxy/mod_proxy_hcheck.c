@@ -40,9 +40,22 @@ typedef struct hc_template_t {
     char *hurl;
 } hc_template_t;
 
-static apr_pool_t *ptemplate = NULL;
-static apr_array_header_t *templates = NULL;
-static ap_watchdog_t *watchdog;
+typedef struct sctx_t {
+    apr_pool_t *p;
+    apr_array_header_t *templates;
+    ap_watchdog_t *watchdog;
+    server_rec *s;
+} sctx_t;
+
+static void *hc_create_config(apr_pool_t *p, server_rec *s)
+{
+    sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
+    apr_pool_create(&ctx->p, p);
+    ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
+    ctx->s = s;
+
+    return ctx;
+}
 
 /*
  * This serves double duty by not only validating (and creating)
@@ -50,28 +63,38 @@ static ap_watchdog_t *watchdog;
  * which does the actual setting of worker params in shm.
  */
 static const char *set_worker_hc_param(apr_pool_t *p,
+                                    server_rec *s,
                                     proxy_worker *worker,
                                     const char *key,
                                     const char *val,
-                                    void *tmp)
+                                    void *v)
 {
     int ival;
-    hc_template_t *ctx;
-
-    if (!worker && !tmp) {
+    hc_template_t *temp;
+    sctx_t *ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                                  &proxy_hcheck_module);
+    if (!worker && !v) {
         return "Bad call to set_worker_hc_param()";
     }
-    ctx = (hc_template_t *)tmp;
+    temp = (hc_template_t *)v;
     if (!strcasecmp(key, "hcheck")) {
         hc_template_t *template;
-        template = (hc_template_t *)templates->elts;
-        for (ival = 0; ival < templates->nelts; ival++, template++) {
+        template = (hc_template_t *)ctx->templates->elts;
+        for (ival = 0; ival < ctx->templates->nelts; ival++, template++) {
             if (!ap_casecmpstr(template->name, val)) {
-                worker->s->method = template->method;
-                worker->s->interval = template->interval;
-                worker->s->passes = template->passes;
-                worker->s->fails = template->fails;
-                PROXY_STRNCPY(worker->s->hurl, template->hurl);
+                if (worker) {
+                    worker->s->method = template->method;
+                    worker->s->interval = template->interval;
+                    worker->s->passes = template->passes;
+                    worker->s->fails = template->fails;
+                    PROXY_STRNCPY(worker->s->hurl, template->hurl);
+                } else {
+                    temp->method = template->method;
+                    temp->interval = template->interval;
+                    temp->passes = template->passes;
+                    temp->fails = template->fails;
+                    temp->hurl = apr_pstrdup(p, template->hurl);
+                }
                 return NULL;
             }
         }
@@ -83,7 +106,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                 if (worker) {
                     worker->s->method = ival;
                 } else {
-                    ctx->method = ival;
+                    temp->method = ival;
                 }
                 return NULL;
             }
@@ -97,7 +120,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         if (worker) {
             worker->s->interval = apr_time_from_sec(ival);
         } else {
-            ctx->interval = apr_time_from_sec(ival);
+            temp->interval = apr_time_from_sec(ival);
         }
     }
     else if (!strcasecmp(key, "passes")) {
@@ -107,7 +130,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         if (worker) {
             worker->s->passes = ival;
         } else {
-            ctx->passes = ival;
+            temp->passes = ival;
         }
     }
     else if (!strcasecmp(key, "fails")) {
@@ -117,7 +140,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         if (worker) {
             worker->s->fails = ival;
         } else {
-            ctx->fails = ival;
+            temp->fails = ival;
         }
     }
     else if (!strcasecmp(key, "hurl")) {
@@ -127,7 +150,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         if (worker) {
             PROXY_STRNCPY(worker->s->hurl, val);
         } else {
-            ctx->hurl = apr_pstrdup(p, val);
+            temp->hurl = apr_pstrdup(p, val);
         }
     }
     else {
@@ -140,16 +163,21 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
 {
     char *name = NULL;
     char *word, *val;
-    hc_template_t template;
-    hc_template_t *tpush;
+    hc_template_t *template;
+    sctx_t *ctx;
+
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
     if (err)
         return err;
+    ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
+                                          &proxy_hcheck_module);
 
-    template.name = ap_getword_conf(cmd->temp_pool, &arg);
-    template.method = template.passes = template.fails = 1;
-    template.interval = apr_time_from_sec(HCHECK_WATHCHDOG_SEC);
-    template.hurl = NULL;
+    template = (hc_template_t *)apr_array_push(ctx->templates);
+
+    template->name = apr_pstrdup(ctx->p, ap_getword_conf(cmd->temp_pool, &arg));
+    template->method = template->passes = template->fails = 1;
+    template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_SEC);
+    template->hurl = NULL;
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
@@ -159,13 +187,15 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
         }
         else
             *val++ = '\0';
-        err = set_worker_hc_param(cmd->pool, NULL, word, val, &template);
+        err = set_worker_hc_param(ctx->p, ctx->s, NULL, word, val, template);
 
-        if (err)
+        if (err) {
+            void *v;
+            /* get rid of recently pushed (bad) template */
+            v = apr_array_pop(ctx->templates);
             return apr_pstrcat(cmd->temp_pool, "HCheckTemplate: ", err, " ", word, "=", val, "; ", name, NULL);
+        }
         /* No error means we have a valid template */
-        tpush = (hc_template_t *)apr_array_push(templates);
-        memcpy(tpush, &template, sizeof(hc_template_t));
     }
 
     return NULL;
@@ -174,6 +204,7 @@ static const char *set_hcheck(cmd_parms *cmd, void *dummy, const char *arg)
 static void hc_check(apr_pool_t *p, server_rec *s, apr_time_t now,
                      proxy_worker *worker)
 {
+    /* TODO: REMOVE ap_log_error call */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                  "Health check (%s).", worker->s->name);
     return;
@@ -183,20 +214,25 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                          apr_pool_t *pool)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_time_t now = apr_time_sec(apr_time_now());
+    apr_time_t now = apr_time_now();
     proxy_balancer *balancer;
-    server_rec *s = (server_rec *)data;
+    sctx_t *ctx = (sctx_t *)data;
+    server_rec *s = ctx->s;
     proxy_server_conf *conf;
     apr_pool_t *p;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
             break;
 
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
+            /* TODO: REMOVE ap_log_error call */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "Run of %s watchdog.",
+                         HCHECK_WATHCHDOG_NAME);
             apr_pool_create(&p, pool);
             while (s) {
                 int i;
@@ -209,6 +245,11 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     workers = (proxy_worker **)balancer->workers->elts;
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
+                        /* TODO: REMOVE ap_log_error call */
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                                     "Checking worker: %s:%d (%lu %lu %lu)",
+                                     worker->s->name, worker->s->method, (unsigned long)now,
+                                     (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
                         if (worker->s->method && (now > worker->s->updated + worker->s->interval)) {
                             hc_check(p, s, now, worker);
                         }
@@ -221,7 +262,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             break;
 
         case AP_WATCHDOG_STATE_STOPPING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             break;
@@ -229,22 +270,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     return rv;
 }
 
-static int hc_pre_config(apr_pool_t *p, apr_pool_t *plog,
-                      apr_pool_t *ptemp)
-{
-    if (!ptemplate) {
-        apr_pool_create(&ptemplate, p);
-    }
-    if (!templates) {
-        templates = apr_array_make(ptemplate, 10, sizeof(hc_template_t));
-    }
-    return OK;
-}
-
 static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                        apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
+    sctx_t *ctx;
+
     APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hc_watchdog_get_instance;
     APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *hc_watchdog_register_callback;
 
@@ -255,8 +286,10 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "mod_watchdog is required");
         return !OK;
     }
+    ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                          &proxy_hcheck_module);
 
-    rv = hc_watchdog_get_instance(&watchdog,
+    rv = hc_watchdog_get_instance(&ctx->watchdog,
                                   HCHECK_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
@@ -265,9 +298,9 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                      HCHECK_WATHCHDOG_NAME);
         return !OK;
     }
-    rv = hc_watchdog_register_callback(watchdog,
+    rv = hc_watchdog_register_callback(ctx->watchdog,
             apr_time_from_sec(HCHECK_WATHCHDOG_INTERVAL),
-            s,
+            ctx,
             hc_watchdog_callback);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
@@ -290,7 +323,6 @@ static void hc_register_hooks(apr_pool_t *p)
 {
     static const char *const runAfter[] = { "mod_watchdog.c", "mod_proxy_balancer.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
-    ap_hook_pre_config(hc_pre_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_post_config(hc_post_config, NULL, runAfter, APR_HOOK_LAST);
 }
 
@@ -299,10 +331,10 @@ static void hc_register_hooks(apr_pool_t *p)
 AP_DECLARE_MODULE(proxy_hcheck) =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,           /* create per-dir config structures */
-    NULL,           /* merge  per-dir config structures */
-    NULL,           /* create per-server config structures */
-    NULL,           /* merge  per-server config structures */
-    command_table,  /* table of config file commands */
+    NULL,              /* create per-dir config structures */
+    NULL,              /* merge  per-dir config structures */
+    hc_create_config,  /* create per-server config structures */
+    NULL,              /* merge  per-server config structures */
+    command_table,     /* table of config file commands */
     hc_register_hooks  /* register hooks */
 };
