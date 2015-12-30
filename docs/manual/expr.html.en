@@ -534,7 +534,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 &lt;/If&gt;
 
 # Function example in string context
-Header set foo-checksum "expr=%{md5:foo}"</pre>
+Header set foo-checksum "expr=%{md5:foo}"
+
+# This delays the evaluation of the condition clause compared to &lt;If&gt;
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
