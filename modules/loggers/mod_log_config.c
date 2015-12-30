@@ -265,6 +265,7 @@ typedef struct {
     apr_array_header_t *format;
     void *log_writer;
     char *condition_var;
+    int inherit;
     ap_expr_info_t *condition_expr;
     /** place of definition or NULL if already checked */
     const ap_directive_t *directive;
@@ -1206,12 +1207,15 @@ static int multi_log_transaction(request_rec *r)
             config_log_transaction(r, cls, mls->default_format);
         }
     }
-    else if (mls->server_config_logs) {
+
+    if (mls->server_config_logs) {
         clsarray = (config_log_state *) mls->server_config_logs->elts;
         for (i = 0; i < mls->server_config_logs->nelts; ++i) {
             config_log_state *cls = &clsarray[i];
 
-            config_log_transaction(r, cls, mls->default_format);
+            if (cls->inherit || !mls->config_logs->nelts) {
+                config_log_transaction(r, cls, mls->default_format);
+            }
         }
     }
 
@@ -1336,6 +1340,33 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     return err_string;
 }
 
+static const char *add_global_log(cmd_parms *cmd, void *dummy, const char *fn,
+                                  const char *fmt, const char *envclause) {
+    multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
+                                                &log_config_module);
+    config_log_state *clsarray;
+    config_log_state *cls;
+    const char *ret;
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err) {
+        return err;
+    }
+
+    /* Add a custom log through the normal channel */
+    ret = add_custom_log(cmd, dummy, fn, fmt, envclause);
+
+    /* Set the inherit flag unless there was some error */
+    if (ret == NULL) {
+        clsarray = (config_log_state*)mls->config_logs->elts;
+        cls = &clsarray[mls->config_logs->nelts-1];
+        cls->inherit = 1;
+    }
+
+    return ret;
+}
+
 static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
                                     const char *fn)
 {
@@ -1360,6 +1391,8 @@ static const command_rec config_log_cmds[] =
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
      "a file name, a custom log format string or format name, "
      "and an optional \"env=\" or \"expr=\" clause (see docs)"),
+AP_INIT_TAKE23("GlobalLog", add_global_log, NULL, RSRC_CONF,
+     "Same as CustomLog, but forces virtualhosts to inherit the log"),
 AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
      "the filename of the access log"),
 AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,

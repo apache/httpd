@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_log_config: Add GlobalLog to allow a globally defined log to
+     be inherited by virtual hosts that define a CustomLog.
+     [Edward Lu]
 
 Changes with Apache 2.4.18
 
