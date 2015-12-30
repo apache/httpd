@@ -238,7 +238,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
         if (!val) {
-            return "Invalid HCheckTemplate parameter. Parameter must be "
+            return "Invalid ProxyHCTemplate parameter. Parameter must be "
                    "in the form 'key=value'";
         }
         else
@@ -249,7 +249,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
             void *v;
             /* get rid of recently pushed (bad) template */
             v = apr_array_pop(ctx->templates);
-            return apr_pstrcat(cmd->temp_pool, "HCheckTemplate: ", err, " ", word, "=", val, "; ", name, NULL);
+            return apr_pstrcat(cmd->temp_pool, "ProxyHCTemplate: ", err, " ", word, "=", val, "; ", name, NULL);
         }
         /* No error means we have a valid template */
     }
