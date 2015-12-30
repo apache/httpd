@@ -182,7 +182,7 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
 
     name = ap_getword_conf(cmd->temp_pool, &arg);
     if (!*name) {
-        return apr_pstrcat(cmd->temp_pool, "Missing name for ",
+        return apr_pstrcat(cmd->temp_pool, "Missing condition name for ",
                            cmd->cmd->name, NULL);
     }
     /* get expr. Allow fancy new {...} quoting style */
@@ -222,9 +222,15 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
                                           &proxy_hcheck_module);
 
+    name = ap_getword_conf(cmd->temp_pool, &arg);
+    if (!*name) {
+        return apr_pstrcat(cmd->temp_pool, "Missing template name for ",
+                           cmd->cmd->name, NULL);
+    }
+
     template = (hc_template_t *)apr_array_push(ctx->templates);
 
-    template->name = apr_pstrdup(ctx->p, ap_getword_conf(cmd->temp_pool, &arg));
+    template->name = apr_pstrdup(ctx->p, name);
     template->method = template->passes = template->fails = 1;
     template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_SEC);
     template->hurl = NULL;
