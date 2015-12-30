@@ -85,7 +85,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return "Bad call to set_worker_hc_param()";
     }
     temp = (hc_template_t *)v;
-    if (!strcasecmp(key, "hcheck")) {
+    if (!strcasecmp(key, "hctemplate")) {
         hc_template_t *template;
         template = (hc_template_t *)ctx->templates->elts;
         for (ival = 0; ival < ctx->templates->nelts; ival++, template++) {
@@ -106,9 +106,9 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                 return NULL;
             }
         }
-        return apr_psprintf(p, "Unknown HCheckTemplate name: %s", val);
+        return apr_psprintf(p, "Unknown ProxyHCTemplate name: %s", val);
     }
-    else if (!strcasecmp(key, "method")) {
+    else if (!strcasecmp(key, "hcmethod")) {
         for (ival = 1; methods[ival]; ival++) {
             if (!ap_casecmpstr(val, methods[ival])) {
                 if (worker) {
@@ -121,7 +121,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         }
         return "Unknown method";
     }
-    else if (!strcasecmp(key, "interval")) {
+    else if (!strcasecmp(key, "hcinterval")) {
         ival = atoi(val);
         if (ival < 5)
             return "Interval must be a positive value greater than 5 seconds";
@@ -131,7 +131,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->interval = apr_time_from_sec(ival);
         }
     }
-    else if (!strcasecmp(key, "passes")) {
+    else if (!strcasecmp(key, "hcpasses")) {
         ival = atoi(val);
         if (ival < 0)
             return "Passes must be a positive value";
@@ -141,7 +141,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->passes = ival;
         }
     }
-    else if (!strcasecmp(key, "fails")) {
+    else if (!strcasecmp(key, "hcfails")) {
         ival = atoi(val);
         if (ival < 0)
             return "Fails must be a positive value";
@@ -151,9 +151,9 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->fails = ival;
         }
     }
-    else if (!strcasecmp(key, "hurl")) {
+    else if (!strcasecmp(key, "hcuri")) {
         if (strlen(val) >= sizeof(worker->s->hurl))
-            return apr_psprintf(p, "Health check hurl length must be < %d characters",
+            return apr_psprintf(p, "Health check uri length must be < %d characters",
                     (int)sizeof(worker->s->hurl));
         if (worker) {
             PROXY_STRNCPY(worker->s->hurl, val);
@@ -272,7 +272,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     apr_pool_t *p;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
             break;
@@ -280,12 +280,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
             /* TODO: REMOVE ap_log_error call */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
-            apr_pool_create(&p, pool);
-            while (s) {
+            if (s) {
                 int i;
+                apr_pool_create(&p, pool);
                 conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
                 balancer = (proxy_balancer *)conf->balancers->elts;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
@@ -306,13 +306,12 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         workers++;
                     }
                 }
-                s = s->next;
+                apr_pool_destroy(p);
             }
-            apr_pool_destroy(p);
             break;
 
         case AP_WATCHDOG_STATE_STOPPING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             break;
