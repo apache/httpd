@@ -28,7 +28,7 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 #define HCHECK_WATHCHDOG_INTERVAL (5)
 
 static char *methods[] = {
-      "NULL", "OPTIONS", "HEAD", "GET", "POST", "CPING"
+      "NULL", "OPTIONS", "HEAD", "GET", "POST", "CPING", NULL
 };
 
 typedef struct hc_template_t {
@@ -78,7 +78,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return apr_psprintf(p, "Unknown HCheckTemplate name: %s", val);
     }
     else if (!strcasecmp(key, "method")) {
-        for (ival = 1; ival < sizeof(methods); ival++) {
+        for (ival = 1; methods[ival]; ival++) {
             if (!ap_casecmpstr(val, methods[ival])) {
                 if (worker) {
                     worker->s->method = ival;
