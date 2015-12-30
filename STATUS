@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Prevent invalid loadfactor value from being updated
-     trunk patch: http://svn.apache.org/r1722137
-     2.4.x patch: trunk works
-     +1: jim, covener, ylavic
-
   *) mod_log_config: PR58769: backport GlobalLog directive to 2.4.x
      trunk patch: http://svn.apache.org/r1599535
                   http://svn.apache.org/r1721685 
