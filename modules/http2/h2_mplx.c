@@ -264,6 +264,8 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     workers_unregister(m);
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
+        int i;
+        
         /* disable WINDOW_UPDATE callbacks */
         h2_mplx_set_consumed_cb(m, NULL, NULL);
         while (!h2_io_set_iter(m->stream_ios, stream_done_iter, m)) {
@@ -271,14 +273,21 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         }
     
         release(m, 0);
-        while (m->refs > 0) {
+        for (i = 0; m->refs > 0; ++i) {
+            
             m->join_wait = wait;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): release_join, refs=%d, waiting...", 
                           m->id, m->refs);
-            apr_thread_cond_wait(wait, m->lock);
+                          
+            status = apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(2));
+            if (APR_STATUS_IS_TIMEUP(status)) {
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c,
+                              "h2_mplx(%ld): release timeup %d, refs=%d, waiting...", 
+                              m->id, i, m->refs);
+            }
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
                       "h2_mplx(%ld): release_join -> destroy, (#ios=%ld)", 
                       m->id, (long)h2_io_set_size(m->stream_ios));
         apr_thread_mutex_unlock(m->lock);

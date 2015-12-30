@@ -761,7 +761,6 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <name>H2KeepAliveTimeout</name>
         <description>Timeout (in seconds) for idle HTTP/2 connections</description>
         <syntax>H2KeepAliveTimeout seconds</syntax>
-        <default>H2KeepAliveTimeout 300</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -781,7 +780,9 @@ H2PushPriority text/css   interleaved      # weight 256 default
                 idle when no streams are open, e.g. no requests are ongoing.
             </p>
             <p>
-                A value of 0 enforces no timeout.
+                By default, for non-async MPMs (prefork, worker) the keepalive timeout
+                will be the same as H2Timeout. For async MPMs, the keepalive handling for
+                HTTP/1 connections applies as no special action is taken.
             </p>
         </usage>
     </directivesynopsis>
@@ -790,7 +791,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
         <name>H2StreamTimeout</name>
         <description>Timeout (in seconds) for idle HTTP/2 connections</description>
         <syntax>H2StreamTimeout seconds</syntax>
-        <default>H2StreamTimeout 120</default>
+        <default>H2StreamTimeout 0</default>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>

@@ -788,6 +788,9 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->max_stream_mem = h2_config_geti(session->config, H2_CONF_STREAM_MAX_MEM);
         session->timeout_secs = h2_config_geti(session->config, H2_CONF_TIMEOUT_SECS);
         session->keepalive_secs = h2_config_geti(session->config, H2_CONF_KEEPALIVE_SECS);
+        if (session->keepalive_secs <= 0) {
+            session->keepalive_secs = session->timeout_secs;
+        }
         
         status = apr_thread_cond_create(&session->iowait, session->pool);
         if (status != APR_SUCCESS) {
@@ -878,17 +881,17 @@ void h2_session_eoc_callback(h2_session *session)
     h2_session_destroy(session);
 }
 
-static apr_status_t h2_session_abort_int(h2_session *session, int reason)
+static apr_status_t h2_session_shutdown(h2_session *session, int reason)
 {
     AP_DEBUG_ASSERT(session);
     session->aborted = 1;
-    if (session->state != H2_SESSION_ST_CLOSING) {
-        session->state = H2_SESSION_ST_CLOSING;
+    if (session->state != H2_SESSION_ST_CLOSING
+        && session->state != H2_SESSION_ST_ABORTED) {
         if (session->client_goaway) {
             /* client sent us a GOAWAY, just terminate */
             nghttp2_session_terminate_session(session->ngh2, NGHTTP2_ERR_EOF);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "session(%ld): closed, GOAWAY from client", session->id);
+                          "session(%ld): shutdown, GOAWAY from client", session->id);
         }
         else if (!reason) {
             nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
@@ -896,7 +899,7 @@ static apr_status_t h2_session_abort_int(h2_session *session, int reason)
                                   reason, NULL, 0);
             nghttp2_session_send(session->ngh2);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "session(%ld): closed, no err", session->id);
+                          "session(%ld): shutdown, no err", session->id);
         }
         else {
             const char *err = nghttp2_strerror(reason);
@@ -906,39 +909,22 @@ static apr_status_t h2_session_abort_int(h2_session *session, int reason)
                                   strlen(err));
             nghttp2_session_send(session->ngh2);
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "session(%ld): closed, err=%d '%s'",
+                          "session(%ld): shutdown, err=%d '%s'",
                           session->id, reason, err);
         }
+        session->state = H2_SESSION_ST_CLOSING;
         h2_mplx_abort(session->mplx);
     }
     return APR_SUCCESS;
 }
 
-apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv)
+void h2_session_abort(h2_session *session, apr_status_t status)
 {
     AP_DEBUG_ASSERT(session);
-    if (rv == 0) {
-        rv = NGHTTP2_ERR_PROTO;
-        switch (reason) {
-            case APR_ENOMEM:
-                rv = NGHTTP2_ERR_NOMEM;
-                break;
-            case APR_SUCCESS:                            /* all fine, just... */
-            case APR_EOF:                         /* client closed its end... */
-            case APR_TIMEUP:                          /* got bored waiting... */
-                rv = 0;                            /* ...gracefully shut down */
-                break;
-            case APR_EBADF:        /* connection unusable, terminate silently */
-            default:
-                if (APR_STATUS_IS_ECONNABORTED(reason)
-                    || APR_STATUS_IS_ECONNRESET(reason)
-                    || APR_STATUS_IS_EBADF(reason)) {
-                    rv = NGHTTP2_ERR_EOF;
-                }
-                break;
-        }
-    }
-    return h2_session_abort_int(session, rv);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
+                  "h2_session(%ld): aborting", session->id);
+    session->state = H2_SESSION_ST_ABORTED;
+    session->aborted = 1;
 }
 
 static apr_status_t h2_session_start(h2_session *session, int *rv)
@@ -1104,16 +1090,23 @@ h2_stream *h2_session_get_stream(h2_session *session, int stream_id)
 void h2_session_close(h2_session *session)
 {
     apr_bucket *b;
+    conn_rec *c = session->c;
+    apr_status_t status;
     
     AP_DEBUG_ASSERT(session);
     if (!session->aborted) {
-        h2_session_abort_int(session, 0);
+        h2_session_shutdown(session, 0);
     }
     h2_session_cleanup(session);
 
-    b = h2_bucket_eoc_create(session->c->bucket_alloc, session);
-    h2_conn_io_writeb(&session->io, b);
-    h2_conn_io_flush(&session->io);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                  "h2_session(%ld): writing eoc", c->id);
+    b = h2_bucket_eoc_create(c->bucket_alloc, session);
+    status = h2_conn_io_write_eoc(&session->io, b);
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c,
+                      "h2_session(%ld): flushed eoc bucket", c->id);
+    } 
     /* and all is or will be destroyed */
 }
 
@@ -1300,7 +1293,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
 
     if (nghttp2_is_fatal(rv)) {
         status = APR_EGENERAL;
-        h2_session_abort_int(session, rv);
+        h2_session_shutdown(session, rv);
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, session->c,
                       APLOGNO(02940) "submit_response: %s", 
                       nghttp2_strerror(rv));
@@ -1584,7 +1577,7 @@ static apr_status_t h2_session_send(h2_session *session)
         if (nghttp2_is_fatal(rv)) {
             ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "h2_session: send gave error=%s", nghttp2_strerror(rv));
-            h2_session_abort_int(session, rv);
+            h2_session_shutdown(session, rv);
             return APR_EGENERAL;
         }
     }
@@ -1608,7 +1601,7 @@ static apr_status_t h2_session_receive(void *ctx, const char *data,
                           "h2_session: nghttp2_session_mem_recv error=%d",
                           (int)n);
             if (nghttp2_is_fatal((int)n)) {
-                h2_session_abort_int(session, (int)n);
+                h2_session_shutdown(session, (int)n);
                 return APR_EGENERAL;
             }
         }
@@ -1672,7 +1665,6 @@ static apr_status_t h2_session_read(h2_session *session, int block, int loops)
                                       "h2_session(%ld): error reading, terminating",
                                       session->id);
                     }
-                    h2_session_abort(session, status, 0);
                     return status;
                 }
                 /* subsequent failure after success(es), return initial
@@ -1730,7 +1722,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
 
         if (session->aborted) {
             reason = "aborted";
-            status = APR_EOF;
+            status = APR_ECONNABORTED;
             goto out;
         }
         
@@ -1747,8 +1739,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                               session->s->server_hostname,
                               c->local_addr->port);
                 if (status != APR_SUCCESS) {
-                    h2_session_abort(session, status, rv);
-                    h2_session_eoc_callback(session);
                     reason = "start failed";
                     goto out;
                 }
@@ -1911,10 +1901,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                  * extend that with the H2KeepAliveTimeout. This works different
                  * for async MPMs. */
                 remain_secs = session->keepalive_secs - session->timeout_secs;
-                if (remain_secs <= 0) {
-                    /* keepalive is smaller than normal timeout, close the session */
+                if (!async && remain_secs <= 0) {
+                    /* not async, keepalive is smaller than normal timeout, close the session */
                     reason = "keepalive expired";
-                    h2_session_abort_int(session, 0);
+                    h2_session_shutdown(session, 0);
                     goto out;
                 }
                 ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_KEEPALIVE, c);
@@ -1940,7 +1930,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 status = h2_session_read(session, 1, 1);
                 if (APR_STATUS_IS_TIMEUP(status)) {
                     reason = "keepalive expired";
-                    h2_session_abort_int(session, 0);
+                    h2_session_shutdown(session, 0);
                     goto out;
                 }
                 else if (status != APR_SUCCESS) {
@@ -1963,6 +1953,11 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 reason = "closing";
                 goto out;
+                
+            case H2_SESSION_ST_ABORTED:
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                              "h2_session(%ld): processing ABORTED", session->id);
+                return APR_ECONNABORTED;
                 
             default:
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,

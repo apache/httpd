@@ -93,9 +93,15 @@ int h2_conn_io_is_buffered(h2_conn_io *io)
     return io->bufsize > 0;
 }
 
+typedef struct {
+    conn_rec *c;
+    h2_conn_io *io;
+} pass_out_ctx;
+
 static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx) 
 {
-    h2_conn_io *io = (h2_conn_io*)ctx;
+    pass_out_ctx *pctx = ctx;
+    conn_rec *c = pctx->c;
     apr_status_t status;
     apr_off_t bblen;
     
@@ -103,19 +109,19 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
         return APR_SUCCESS;
     }
     
-    ap_update_child_status(io->connection->sbh, SERVER_BUSY_WRITE, NULL);
+    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
     status = apr_brigade_length(bb, 0, &bblen);
     if (status == APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                       "h2_conn_io(%ld): pass_out brigade %ld bytes",
-                      io->connection->id, (long)bblen);
-        status = ap_pass_brigade(io->connection->output_filters, bb);
-        if (status == APR_SUCCESS) {
-            io->bytes_written += (apr_size_t)bblen;
-            io->last_write = apr_time_now();
+                      c->id, (long)bblen);
+        status = ap_pass_brigade(c->output_filters, bb);
+        if (status == APR_SUCCESS && pctx->io) {
+            pctx->io->bytes_written += (apr_size_t)bblen;
+            pctx->io->last_write = apr_time_now();
         }
-        apr_brigade_cleanup(bb);
     }
+    apr_brigade_cleanup(bb);
     return status;
 }
 
@@ -169,7 +175,10 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                               const char *buf, size_t length)
 {
     apr_status_t status = APR_SUCCESS;
+    pass_out_ctx ctx;
     
+    ctx.c = io->connection;
+    ctx.io = io;
     io->unflushed = 1;
     if (io->bufsize > 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
@@ -183,8 +192,9 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         while (length > 0 && (status == APR_SUCCESS)) {
             apr_size_t avail = io->bufsize - io->buflen;
             if (avail <= 0) {
+                
                 bucketeer_buffer(io);
-                status = pass_out(io->output, io);
+                status = pass_out(io->output, &ctx);
                 io->buflen = 0;
             }
             else if (length > avail) {
@@ -205,7 +215,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     else {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, status, io->connection,
                       "h2_conn_io: writing %ld bytes to brigade", (long)length);
-        status = apr_brigade_write(io->output, pass_out, io, buf, length);
+        status = apr_brigade_write(io->output, pass_out, &ctx, buf, length);
     }
     
     return status;
@@ -242,9 +252,11 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
     return status;
 }
 
-static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
+static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
 {
     if (io->unflushed || force) {
+        pass_out_ctx ctx;
+        
         if (io->buflen > 0) {
             /* something in the buffer, put it in the output brigade */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
@@ -262,20 +274,29 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force)
                       "h2_conn_io: flush");
         /* Send it out */
         io->unflushed = 0;
-        return pass_out(io->output, io);
+        
+        ctx.c = io->connection;
+        ctx.io = eoc? NULL : io;
+        return pass_out(io->output, &ctx);
         /* no more access after this, as we might have flushed an EOC bucket
          * that de-allocated us all. */
     }
     return APR_SUCCESS;
 }
 
+apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, apr_bucket *b)
+{
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    return h2_conn_io_flush_int(io, 1, 1);
+}
+
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
-    return h2_conn_io_flush_int(io, 1);
+    return h2_conn_io_flush_int(io, 1, 0);
 }
 
 apr_status_t h2_conn_io_pass(h2_conn_io *io)
 {
-    return h2_conn_io_flush_int(io, 0);
+    return h2_conn_io_flush_int(io, 0, 0);
 }
 

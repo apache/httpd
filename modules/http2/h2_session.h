@@ -60,6 +60,7 @@ typedef enum {
     H2_SESSION_ST_BUSY_WAIT,        /* waiting for tasks reporting back */
     H2_SESSION_ST_KEEPALIVE,        /* nothing to write, normal timeout passed */
     H2_SESSION_ST_CLOSING,          /* shuting down */
+    H2_SESSION_ST_ABORTED,          /* client closed connection or sky fall */
 } h2_session_state;
 
 typedef struct h2_session {
@@ -153,13 +154,12 @@ apr_status_t h2_session_process(h2_session *session, int async);
 void h2_session_eoc_callback(h2_session *session);
 
 /**
- * Called when an error occured and the session needs to shut down.
- * @param session the session to shut down
- * @param reason  the apache status that caused the shutdown
- * @param rv      the nghttp2 reason for shutdown, set to 0 if you have none.
- *
+ * Called when a serious error occured and the session needs to terminate
+ * without further connection io.
+ * @param session the session to abort
+ * @param reason  the apache status that caused the abort
  */
-apr_status_t h2_session_abort(h2_session *session, apr_status_t reason, int rv);
+void h2_session_abort(h2_session *session, apr_status_t reason);
 
 /**
  * Close and deallocate the given session.

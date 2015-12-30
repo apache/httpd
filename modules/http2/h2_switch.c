@@ -163,7 +163,8 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                 return status;
             }
             
-            return h2_conn_run(ctx, c);
+            h2_conn_run(ctx, c);
+            return DONE;
         }
         return DONE;
     }
