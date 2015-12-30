@@ -60,5 +60,6 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io);
 
 apr_status_t h2_conn_io_pass(h2_conn_io *io);
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
+apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, apr_bucket *b);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */

@@ -158,47 +158,71 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 static apr_status_t h2_conn_process(h2_ctx *ctx)
 {
     h2_session *session;
+    apr_status_t status;
     
     session = h2_ctx_session_get(ctx);
     if (session->c->cs) {
         session->c->cs->sense = CONN_SENSE_DEFAULT;
     }
 
-    h2_session_process(session, async_mpm);
+    status = h2_session_process(session, async_mpm);
 
     session->c->keepalive = AP_CONN_KEEPALIVE;
     if (session->c->cs) {
         session->c->cs->state = CONN_STATE_WRITE_COMPLETION;
     }
     
-    if (session->state == H2_SESSION_ST_CLOSING) {
-        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                      "h2_session(%ld): done", session->id);
+    if (APR_STATUS_IS_EOF(status)
+        || APR_STATUS_IS_ECONNRESET(status) 
+        || APR_STATUS_IS_ECONNABORTED(status)) {
+        /* fatal, probably client just closed connection. emergency shutdown */
         /* Make sure this connection gets closed properly. */
-        ap_update_child_status_from_conn(session->c->sbh, SERVER_CLOSING, session->c);
+        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_session(%ld): aborted", session->id);
         session->c->keepalive = AP_CONN_CLOSE;
         
+        h2_ctx_clear(session->c);
+        h2_session_abort(session, status);
+        h2_session_eoc_callback(session);
+        /* hereafter session might be gone */
+        return APR_ECONNABORTED;
+    }
+    
+    if (session->state == H2_SESSION_ST_CLOSING) {
+        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_session(%ld): closing", session->id);
+        /* Make sure this connection gets closed properly. */
+        session->c->keepalive = AP_CONN_CLOSE;
+        
+        h2_ctx_clear(session->c);
         h2_session_close(session);
         /* hereafter session may be gone */
     }
+    else if (session->state == H2_SESSION_ST_ABORTED) {
+        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                      "h2_session(%ld): already aborted", session->id);
+        return APR_ECONNABORTED;
+    }
     
-    return DONE;
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 {
     int mpm_state = 0;
+    apr_status_t status;
     do {
-        h2_conn_process(ctx);
+        status = h2_conn_process(ctx);
         
         if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
             break;
         }
-    } while (!async_mpm 
+    } while (!async_mpm
+             && status == APR_SUCCESS
              && c->keepalive == AP_CONN_KEEPALIVE 
              && mpm_state != AP_MPMQ_STOPPING);
     
-    return DONE;
+    return status;
 }
 
 

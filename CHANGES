@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: Fixed several errors when connections are closed in the middle
+     of requests, changed H2KeepAliveTimeout defaults to be the same as H2Timeout
+     for synchronous MPMs and leave keepalive timeout to async MPMs default.
+     [Stefan Eissing]
+
   *) mod_cache_socache: Fix a possible cached entity body corruption when it
      is received from an origin server in multiple batches and forwarded by
      mod_proxy.  [Yann Ylavic]
