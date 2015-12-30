@@ -282,7 +282,8 @@
 <li><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></li>
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
-<li><a href="core.html#gprofdir" id="G" name="G">GprofDir</a></li>
+<li><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog</a></li>
+<li><a href="core.html#gprofdir">GprofDir</a></li>
 <li><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_http2.html#h2direct" id="H" name="H">H2Direct</a></li>
