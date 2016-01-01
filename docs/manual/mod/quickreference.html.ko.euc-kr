@@ -478,7 +478,7 @@ will exit.</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr><td><a href="mod_http2.html#h2direct" id="H" name="H">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2keepalivetimeout">H2KeepAliveTimeout seconds</a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout (in seconds) for idle HTTP/2 connections</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2keepalivetimeout">H2KeepAliveTimeout seconds</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout (in seconds) for idle HTTP/2 connections</td></tr>
 <tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
 <tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
@@ -489,7 +489,7 @@ requests</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
 <tr><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
-<tr><td><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout seconds</a></td><td> 120 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Timeout (in seconds) for idle HTTP/2 connections</td></tr>
+<tr><td><a href="mod_http2.html#h2streamtimeout">H2StreamTimeout seconds</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Timeout (in seconds) for idle HTTP/2 connections</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2timeout">H2Timeout seconds</a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout (in seconds) for HTTP/2 connections</td></tr>
 <tr><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs seconds</a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize amount</a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
@@ -1144,7 +1144,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/quickreference
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
