@@ -150,7 +150,6 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout (in seconds) for idle HTTP/2 connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2KeepAliveTimeout seconds</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2KeepAliveTimeout 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -168,7 +167,9 @@
                 idle when no streams are open, e.g. no requests are ongoing.
             </p>
             <p>
-                A value of 0 enforces no timeout.
+                By default, for non-async MPMs (prefork, worker) the keepalive timeout
+                will be the same as H2Timeout. For async MPMs, the keepalive handling for
+                HTTP/1 connections applies as no special action is taken.
             </p>
         
 </div>
@@ -555,7 +556,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout (in seconds) for idle HTTP/2 connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamTimeout seconds</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamTimeout 120</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -787,7 +788,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_http2.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

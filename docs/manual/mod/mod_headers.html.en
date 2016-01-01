@@ -425,7 +425,12 @@ available in 2.4.10 and later</td></tr>
     <dt><code>expr=<var>expression</var></code></dt>
     <dd>The directive is applied if and only if <var>expression</var>
         evaluates to true. Details of expression syntax and evaluation are
-        documented in the <a href="../expr.html">ap_expr</a> documentation.</dd>
+        documented in the <a href="../expr.html">ap_expr</a> documentation.
+        <div class="example"><p><code>
+         # This delays the evaluation of the condition clause compared to &lt;If&gt;
+         Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
+        </code></p></div>   
+        </dd>
     </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
@@ -570,7 +575,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_headers.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2015 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
