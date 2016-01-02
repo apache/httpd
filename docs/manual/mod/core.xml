@@ -4611,8 +4611,8 @@ hostname or IP address</description>
 
 <directivesynopsis>
 <name>QualifyRedirectURL</name>
-<description>Controls whether the REDIRECT_URL environent variable is 
-             fully qualified</description>
+<description>Controls whether the REDIRECT_URL environment variable is
+fully qualified</description>
 <syntax>QualifyRedirectURL ON|OFF</syntax>
 <default>QualifyRedirectURL OFF</default>
 <contextlist><context>server config</context><context>virtual host</context>
