@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1705612:1707631 (outdated) -->
+<!-- English Revision: 1707631 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -38,8 +38,8 @@
 <syntax>CoreDumpDirectory <var>dizin</var></syntax>
 <default>Öntanımlı değer için aşağıdaki açıklamaya bakınız</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache httpd’nin
@@ -96,8 +96,8 @@
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 
 <usage>
     <p>Güvenlik sebebiyle bu yönerge sadece Apache
@@ -121,8 +121,8 @@
 <syntax>GracefulShutdownTimeout <var>saniye</var></syntax>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-<module>event</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 <compatibility>Sürüm 2.2 ve sonrasında mevcuttur</compatibility>
 
 <usage>
@@ -142,8 +142,9 @@
 <syntax>PidFile <var>dosya</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpmt_os2</module>
 </modulelist>
 
 <usage>
@@ -182,9 +183,9 @@ PidFile /var/run/apache.pid
 <syntax>Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
   [<var>protokol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module>
-<module>prefork</module><module>worker</module><module>event</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
 <compatibility><var>protokol</var> değiştirgesi 2.1.5 sürümünde
     eklenmiştir.</compatibility>
@@ -269,10 +270,8 @@ açıklaması</a></seealso>
 <syntax>ListenCoresBucketsRatio <var>oran</var></syntax>
 <default>ListenCoresBucketsRatio 0 (iptal)</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist>
-<module>event</module>
-<module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
 <compatibility>Apache HTTP Server 2.4.17 ve sonrasında,
  <code>SO_REUSEPORT</code> soket seçeneğini destekleyen bir Linux çekirdeğinin
  varlığında ve yeni bağlantıların bunu kullanan dinleme süreçlerinin (veya
@@ -309,9 +308,10 @@ açıklaması</a></seealso>
 <syntax>ListenBacklog <var>kuyruk-uzunluğu</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Bekleyen bağlantılar kuyruğunun azami uzunluğu. Genellikle bu ayar ne
@@ -334,8 +334,9 @@ açıklaması</a></seealso>
 <syntax>MaxRequestWorkers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
 
 <usage>
     <p><directive>MaxRequestWorkers</directive> yönergesi aynı anda işleme
@@ -377,9 +378,10 @@ açıklaması</a></seealso>
 <syntax>MaxMemFree <var>kB-sayısı</var></syntax>
 <default>MaxMemFree 2048</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>prefork</module><module>worker</module>
-<module>mpm_winnt</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module>
+</modulelist>
 
 <usage>
     <p><directive>MaxMemFree</directive> yönergesi, <code>free()</code>
@@ -397,9 +399,9 @@ açıklaması</a></seealso>
 <syntax>MaxConnectionsPerChild <var>sayı</var></syntax>
 <default>MaxConnectionsPerChild 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
 </modulelist>
 <compatibility>Apache HTTP Sunucusunun 2.3.9 ve sonraki sürümlerinde
     kullanılabilmektedir. Eski isim <code>MaxRequestsPerChild</code> hala
@@ -424,17 +426,19 @@ açıklaması</a></seealso>
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Boştaki azami evre sayısı. Her MPM bu yönerge karşısında farklı
       davranır.</p>
 
-    <p><module>worker</module> için <code>MaxSpareThreads 250</code>
-      öntanımlıdır. Bu MPM boştaki evreleri sunucu genelinde izler. Eğer
-      sunucuda çok fazla boşta evre varsa, sunucu boştaki evrelerin sayısı bu
-      sınırın altına inene kadar çocuk süreçleri öldürür.</p>
+    <p><module>worker</module> ve <module>event</module> için
+      <code>MaxSpareThreads 250</code> öntanımlıdır. Bu MPM'ler boştaki
+      evreleri sunucu genelinde izler. Eğer sunucuda çok fazla boşta evre
+      varsa, sunucu boştaki evrelerin sayısı bu sınırın altına inene kadar
+      çocuk süreçleri öldürür.</p>
 
     <p><module>mpm_netware</module> için <code>MaxSpareThreads 100</code>
       öntanımlıdır. Bu MPM tek bir süreç olarak çalıştığından boştaki evre
@@ -453,8 +457,8 @@ açıklaması</a></seealso>
           module="mpm_common">MinSpareThreads</directive> değerinden küçük
           olmasını gerektirir.</li>
 
-        <li><module>worker</module> için değer, <directive
-          module="mpm_common">MinSpareThreads</directive>
+        <li><module>worker</module> ve <module>event</module> için değer,
+          <directive module="mpm_common">MinSpareThreads</directive>
           ve <directive module="mpm_common">ThreadsPerChild</directive>
           toplamına eşit veya büyük olmak zorundadır.</li>
       </ul>
@@ -472,18 +476,19 @@ açıklaması</a></seealso>
 <syntax>MinSpareThreads <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
       sayısı. Her MPM bu yönerge karşısında farklı davranır.</p>
 
-    <p><module>worker</module> modülü için <code>MinSpareThreads
-      75</code> öntanımlıdır ve bu modül boştaki evreleri sunucu genelinde
-      izler. Eğer sunucuda boştaki evre sayısı yetersizse, sunucu, boştaki
-      evrelerin sayısı bu sınırın üstüne çıkana kadar çocuk süreç
-      oluşturur.</p>
+    <p><module>worker</module> ve <module>event</module> modülü için
+      <code>MinSpareThreads 75</code> öntanımlıdır ve bu modül boştaki evreleri
+      sunucu genelinde izler. Eğer sunucuda boştaki evre sayısı yetersizse,
+      sunucu, boştaki evrelerin sayısı bu sınırın üstüne çıkana kadar çocuk
+      süreç oluşturur.</p>
 
     <p><module>mpm_netware</module> için <code>MinSpareThreads 10</code>
       öntanımlıdır ve tek süreç kendisi olduğundan izleme sunucu genelinde
@@ -506,8 +511,9 @@ açıklaması</a></seealso>
 <syntax>ScoreBoardFile <var>dosya-yolu</var></syntax>
 <default>ScoreBoardFile logs/apache_runtime_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Apache HTTP Sunucusu ana ve çocuk süreçler arasında iletişim için bir
@@ -542,9 +548,10 @@ ScoreBoardFile /var/run/apache_status
 <syntax>ReceiveBufferSize <var>bayt-sayısı</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Sunucunun TCP alım tamponu boyunu <var>bayt-sayısı</var> ile belirtilen
@@ -562,9 +569,10 @@ ScoreBoardFile /var/run/apache_status
 <syntax>SendBufferSize <var>bayt-sayısı</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpm_winnt</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p>Sunucu TCP gönderim tamponu boyunu <var>bayt-sayısı</var> ile
@@ -595,14 +603,16 @@ ScoreBoardFile /var/run/apache_status
 <syntax>ServerLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
 
 <usage>
     <p><module>prefork</module> modülü söz konusu olduğunda bu yönerge, Apache
       httpd sürecinin ömrü boyunca <directive module="mpm_common"
       >MaxRequestWorkers</directive> yönergesine atanabilecek
-      azami değeri belirler. <module>worker</module> modülü sözkonusu
+      azami değeri belirler. <module>worker</module> ve <module>event</module>
+      modülü sözkonusu
       olduğunda ise, Apache httpd sürecinin ömrü boyunca <directive
       module="mpm_common">MaxRequestWorkers</directive> yönergesine
       atanabilecek  azami değeri <directive module="mpm_common"
@@ -625,7 +635,8 @@ ScoreBoardFile /var/run/apache_status
       <directive module="mpm_common">MaxRequestWorkers</directive> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
 
-    <p><module>worker</module> modülü söz konusu olduğunda bu yönergeyi
+    <p><module>worker</module> ve <module>event</module> modülü söz konusu
+      olduğunda bu yönergeyi
       <directive module="mpm_common">MaxRequestWorkers</directive> ve
       <directive module="mpm_common">ThreadsPerChild</directive> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
@@ -654,8 +665,9 @@ ScoreBoardFile /var/run/apache_status
 <syntax>StartServers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module><module>mpmt_os2</module>
+</modulelist>
 
 <usage>
     <p><directive>StartServers</directive> yönergesi, sunucunun başlatılması
@@ -669,8 +681,8 @@ ScoreBoardFile /var/run/apache_status
       bakınız.)</p>
 
     <p>Öntanımlı değer MPM’den MPM’e fark eder. Öntanımlı değer
-      <module>worker</module> için <code>3</code> iken
-      <module>prefork</module> için <code>5</code>,
+      <module>worker</module> ve <module>event</module> için <code>3</code>
+      iken <module>prefork</module> için <code>5</code>,
       <module>mpmt_os2</module> için <code>2</code>'dir.</p>
 </usage>
 </directivesynopsis>
@@ -708,8 +720,9 @@ ScoreBoardFile /var/run/apache_status
 <syntax>ThreadLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Bu yönerge, Apache httpd sürecinin ömrü boyunca <directive
@@ -753,8 +766,9 @@ ScoreBoardFile /var/run/apache_status
 <syntax>ThreadsPerChild <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_winnt</module>
-<module>worker</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module>
+</modulelist>
 
 <usage>
     <p>Bu yönerge, her çocuk süreç tarafından oluşturulan evrelerin sayısını
@@ -780,9 +794,9 @@ ScoreBoardFile /var/run/apache_status
 <default>NetWare üzerinde 65536; diğer işletim sistemlerinde
   değişir.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module><module>mpm_netware</module>
-<module>mpmt_os2</module><module>mpm_winnt</module><module>worker</module>
-<module>event</module></modulelist>
+<modulelist><module>event</module><module>worker</module>
+<module>mpm_winnt</module><module>mpm_netware</module>
+<module>mpmt_os2</module></modulelist>
 <compatibility>Apache HTTP Sunucusu 2.1 ve sonrasında
     kullanılabilir.</compatibility>
 
