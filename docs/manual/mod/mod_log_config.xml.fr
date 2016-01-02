@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1681106:1722340 (outdated) -->
+<!-- English Revision: 1722340 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -640,6 +640,33 @@ LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
 TransferLog logs/access_log
       </highlight>
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>GlobalLog</name>
+<description>D&eacute;finit le nom et le format du fichier journal</description>
+<syntax>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<var>format</var>|<var>nickname</var>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+
+    <p>La directive <directive>GlobalLog</directive> permet de sp&eacute;cifier un
+    journal partag&eacute; entre le serveur principal et tous les serveurs virtuels
+    d&eacute;finis.</p>
+
+    <p>Elle est identique &agrave; la directive <directive>CustomLog</directive> &agrave; ces
+    diff&eacute;rences pr&egrave;s : </p>
+    <ul>
+       <li>Elle n'est pas valide dans un contexte de serveur virtuel.</li>
+       <li>A la diff&eacute;rence d'une directive <directive>CustomLog</directive>
+       d&eacute;finie globalement, elle est prise en compte par les serveurs virtuels
+       qui d&eacute;finissent leur propre directive <directive>CustomLog</directive>.</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
