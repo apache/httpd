@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1705784:1712268 (outdated) -->
+<!-- English Revision: 1722608 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -4562,6 +4562,34 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       başlıklarını inceleme veya değiştirme şansı olur.</p>
     <p>Bu seçenek, Trailer alanlarını daima kopyalayan 2.4.11 öncesi
       dağıtımlarla uyumluluk için vardır.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>QualifyRedirectURL</name>
+<description>REDIRECT_URL ortam değişkeninin tamamen nitelenmiş olup
+olmayacağını denetler</description>
+<syntax>QualifyRedirectURL ON|OFF</syntax>
+<default>QualifyRedirectURL OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Yönerge 2.4.18 ve sonrasında desteklenmektedir. 2.4.17
+sürümünde 'QualifyRedirectURL ON' yapılandırması mevcutmuş gibi
+davranılır.</compatibility>
+
+<usage>
+    <p>Bu yönerge sunucuya REDIRECT_URL ortam değişkenin tamamen nitelenmiş
+      olacağını temin eder. Değişken öntanımlı olarak istemci tarafından talep
+      edilen URL'yi harfi harfine içerir, "/index.html" gibi.
+      <directive module="core">QualifyRedirectURL ON</directive> belirtilseydi
+      aynı istek "http://www.example.com/index.html" gibi bir değerle
+      sonuçlanırdı.</p>
+
+     <p>Böyle belirtilmemiş olsa bile, istek tam nitelenmiş bir URL
+       içerseydi REDIRECT_URL de tam nitelenmiş URL'yi içerirdi.
+    </p>
 </usage>
 </directivesynopsis>
 

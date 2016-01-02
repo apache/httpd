@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1681106:1722340 (outdated) -->
+<!-- English Revision: 1722340 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -562,6 +562,34 @@ CustomLog "referer.log" referer env=!localreferer
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
 TransferLog "logs/access_log"
     </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>GlobalLog</name>
+<description>Günlük dosyasının ismini ve biçemini belirler</description>
+<syntax>GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
+<var>biçem</var>|<var>takma_ad</var>
+[env=[!]<var>ortam_değişkeni</var>|
+expr=<var>ifade</var>]</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+
+    <p><directive>GlobalLog</directive> yönergesi ana sunucu yapılandırması ve
+       tüm tanımlı sanal konaklarca paylaşılan bir günlük tanımlar.</p>
+
+    <p><directive>GlobalLog</directive> yönergesi aşağıdaki farklar dışında
+       <directive>CustomLog</directive> yönergesine eşdeğerdir:</p>
+    <ul>
+       <li><directive>GlobalLog</directive> sanal konak bağlamında belirtilirse
+         geçersizdir.</li>
+       <li>Sanal konaklar küresel bağlamda belirtilmiş bir
+         <directive>CustomLog</directive> yönergesinin tersine
+         <directive>GlobalLog</directive> yönergesini kendi
+         <directive>CustomLog</directive> yönergesiymiş gibi kullanır.</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
