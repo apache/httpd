@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1721978 (outdated) -->
+<!-- English Revision: 1721978 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -650,6 +650,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
 # Function example in string context
 Header set foo-checksum "expr=%{md5:foo}"
+
+# L'exemple suivant retarde l'&eacute;valuation de la clause de condition par rapport &agrave;
+# &lt;If&gt;
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
 
 	</highlight>
 </section>
