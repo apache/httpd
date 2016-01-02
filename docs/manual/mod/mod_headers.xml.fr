@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1643445:1721979 (outdated) -->
+<!-- English Revision: 1721979 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -607,7 +607,13 @@ version 2.4.10</compatibility>
     <dd>La directive s'applique si et seulement si <var>expression</var>
     est &eacute;valu&eacute;e &agrave; true. Vous trouverez plus de d&eacute;tails &agrave; propos de la
     syntaxe et de l'&eacute;valuation des expressions dans la documentation <a
-    href="../expr.html">ap_expr</a>.</dd>
+    href="../expr.html">ap_expr</a>.
+    <example>
+         # Cet exemple retarde l'&eacute;valuation de la clause de condition par
+	 # rapport &agrave; &lt;If&gt;
+         Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
+        </example>
+    </dd>
     </dl>
 
     <p>Except&eacute; le cas du mode <a href="#early">pr&eacute;coce</a>, les

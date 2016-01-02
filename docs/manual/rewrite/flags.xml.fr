@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1701409:1721962 (outdated) -->
+<!-- English Revision: 1721962 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -243,9 +243,9 @@ fonctionnement des variables d'environnement.</p>
 
 <p>La syntaxe compl&egrave;te pour ce drapeau est :</p>
 
-<example>
+<highlight language="config">
 [E=!VAR]
-</example>
+</highlight>
 
 <p><code>VAL</code> peut comporter des r&eacute;f&eacute;rences arri&egrave;res
 (<code>$N</code> ou <code>%N</code>) qui seront d&eacute;velopp&eacute;es.</p>
