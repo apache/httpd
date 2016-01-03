@@ -616,6 +616,7 @@ TransferLog "logs/access_log"
 expr=<var>expression</var>]</syntax>
 <contextlist><context>server config</context>
 </contextlist>
+<compatibility>Available in Apache HTTP Server 2.4.19 and later</compatibility>
 
 <usage>
 
