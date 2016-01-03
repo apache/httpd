@@ -512,7 +512,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                                                   AP_WATCHDOG_CVERSION);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02978)
                     "Watchdog: Looking for child (%s).", wn[i].provider_name);
-           if (w) {
+            if (w) {
                 if (!w->active) {
                     int status = ap_run_watchdog_need(s, w->name, 0,
                                                       w->singleton);
@@ -537,7 +537,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                     }
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(02979)
                             "Watchdog: Created child worker thread (%s).", w->name);
-                   wd_server_conf->child_workers++;
+                    wd_server_conf->child_workers++;
                 }
             }
         }
@@ -561,7 +561,7 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
          */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(02980)
                      "Watchdog: nothing configured?");
-       return;
+        return;
     }
     if ((wl = ap_list_provider_names(p, AP_WATCHDOG_PGROUP,
                                         AP_WATCHDOG_CVERSION))) {
