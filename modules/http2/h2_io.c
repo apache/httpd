@@ -15,6 +15,7 @@
 
 #include <assert.h>
 
+#include <apr_pools.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 

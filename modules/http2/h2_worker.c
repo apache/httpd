@@ -101,19 +101,6 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
     return NULL;
 }
 
-static apr_status_t cleanup_join_thread(void *ctx)
-{
-    h2_worker *w = ctx;
-    /* do the join only when the worker is aborted. Otherwise,
-     * we are probably in a process shutdown.
-     */
-    if (w->thread && w->aborted) {
-        apr_status_t rv;
-        apr_thread_join(&rv, w->thread);
-    }
-    return APR_SUCCESS;
-}
-
 h2_worker *h2_worker_create(int id,
                             apr_pool_t *parent_pool,
                             apr_threadattr_t *attr,
@@ -147,7 +134,6 @@ h2_worker *h2_worker_create(int id,
             return NULL;
         }
         
-        apr_pool_pre_cleanup_register(w->pool, w, cleanup_join_thread);
         apr_pool_create(&w->task_pool, w->pool);
         apr_thread_create(&w->thread, attr, execute, w, w->pool);
     }
@@ -156,14 +142,14 @@ h2_worker *h2_worker_create(int id,
 
 apr_status_t h2_worker_destroy(h2_worker *worker)
 {
-    if (worker->io) {
-        apr_thread_cond_destroy(worker->io);
-        worker->io = NULL;
-    }
     if (worker->thread) {
         apr_status_t status;
         apr_thread_join(&status, worker->thread);
         worker->thread = NULL;
+    }
+    if (worker->io) {
+        apr_thread_cond_destroy(worker->io);
+        worker->io = NULL;
     }
     if (worker->pool) {
         apr_pool_destroy(worker->pool);

@@ -246,7 +246,6 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
         apr_atomic_set32(&workers->max_idle_secs, 10);
         
         apr_threadattr_create(&workers->thread_attr, workers->pool);
-        apr_threadattr_detach_set(workers->thread_attr, 1);
         if (ap_thread_stacksize != 0) {
             apr_threadattr_stacksize_set(workers->thread_attr,
                                          ap_thread_stacksize);
