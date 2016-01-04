@@ -705,9 +705,6 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
             
             have_out_data_for(m, stream_id);
-            if (m->aborted) {
-                return APR_ECONNABORTED;
-            }
         }
         else {
             status = APR_ECONNABORTED;
@@ -744,12 +741,6 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
             
             have_out_data_for(m, stream_id);
-            if (m->aborted) {
-                /* if we were the last output, the whole session might
-                 * have gone down in the meantime.
-                 */
-                return APR_SUCCESS;
-            }
         }
         else {
             status = APR_ECONNABORTED;
