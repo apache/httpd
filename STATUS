@@ -165,6 +165,43 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works, module CHANGES
      +1: ylavic
 
+  *) mod_ssl: Constify + save a few bytes in conf pool when parsing SSLRequire
+     mod_nw_ssl: Save a few bytes in conf pool when processing 'NWSSLTrustedCerts'
+     trunk patch: http://svn.apache.org/r1718514
+                  http://svn.apache.org/r1721313 (untested because I don't have this system)
+     2.4.x patch: trunk works
+     +1: jailletc36
+     
+  *) core: Save memory when calling 'ap_parse_htaccess'
+     trunk patch: http://svn.apache.org/r1719016
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+  *) Use 'apr_pstrmemdup' instead of 'apr_pstrndup' when applicable in order
+     to save a few cycles.
+     Fix some style issues.
+     trunk patch: http://svn.apache.org/r1719018
+                  http://svn.apache.org/r1719189
+                  http://svn.apache.org/r1719190
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+  *) mod__negotiation: Use 'ap_array_str_contains' to simplify code.
+     core: likewise
+     http: likewise
+     trunk patch: http://svn.apache.org/r1719252
+                  http://svn.apache.org/r1719254
+                  http://svn.apache.org/r1719255
+                  http://svn.apache.org/r1720996 (change in ap_method_in_list not
+                                                  tested, it is not actually used)
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+  *) mod_mod_authn_socache: Do not use the magic string "directory". Use the
+     corresponding global variable as in all other places of the module.
+     trunk patch: http://svn.apache.org/r1719257
+     2.4.x patch: trunk works
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
