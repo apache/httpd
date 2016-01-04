@@ -34,17 +34,11 @@
 static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
-    apr_status_t status = APR_SUCCESS;
-    h2_mplx *m;
-    const h2_request *req;
-    h2_task *task;
-    conn_rec *c, *master;
-    int stream_id;
+    apr_status_t status;
     
     (void)thread;
-    
-    /* Furthermore, other code might want to see the socket for
-     * this connection. Allocate one without further function...
+    /* Other code might want to see a socket for this connection this
+     * worker processes. Allocate one without further function...
      */
     status = apr_socket_create(&worker->socket,
                                APR_INET, SOCK_STREAM,
@@ -57,41 +51,47 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         return NULL;
     }
     
-    m = NULL;
     while (!worker->aborted) {
+        h2_mplx *m;
+        const h2_request *req;
+        
+        /* Get a h2_mplx + h2_request from the main workers queue. */
         status = worker->get_next(worker, &m, &req, worker->ctx);
         
-        if (req) {
-            stream_id = req->id;
-            master = m->c;
+        while (req) {
+            conn_rec *c, *master = m->c;
+            int stream_id = req->id;
+            
             c = h2_slave_create(master, worker->task_pool, 
                                 worker->thread, worker->socket);
             if (!c) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
-                              APLOGNO(02957) "h2_task(%s): error setting up slave connection", 
-                              task->id);
-                h2_mplx_out_rst(m, task->stream_id, H2_ERR_INTERNAL_ERROR);
+                              APLOGNO(02957) "h2_request(%ld-%d): error setting up slave connection", 
+                              m->id, stream_id);
+                h2_mplx_out_rst(m, stream_id, H2_ERR_INTERNAL_ERROR);
             }
             else {
+                h2_task *task;
+                
                 task = h2_task_create(m->id, req, worker->task_pool, m);
                 h2_ctx_create_for(c, task);
                 h2_task_do(task, c, worker->io, worker->socket);
+                task = NULL;
                 
                 apr_thread_cond_signal(worker->io);
             }
+            
+            /* clean our references and report request as done. Signal
+             * that we want another unless we have been aborted */
+            /* TODO: this will keep a worker attached to this h2_mplx as
+             * long as it has requests to handle. Might no be fair to
+             * other mplx's. Perhaps leave after n requests? */
+            req = NULL;
             apr_pool_clear(worker->task_pool);
-            /* task is gone */
-            task = NULL;
-            h2_mplx_task_done(m, stream_id);
+            h2_mplx_request_done(&m, stream_id, worker->aborted? NULL : &req);
         }
     }
 
-    if (m) {
-        /* Hand "m" back to other workers */
-        status = worker->get_next(worker, &m, NULL, worker->ctx);
-        m = NULL;
-    }
-    
     if (worker->socket) {
         apr_socket_close(worker->socket);
         worker->socket = NULL;

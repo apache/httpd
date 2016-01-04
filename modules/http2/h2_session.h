@@ -76,6 +76,7 @@ typedef struct h2_session {
     unsigned int aborted       : 1; /* aborted processing, emergency exit */
     unsigned int reprioritize  : 1; /* scheduled streams priority changed */
     unsigned int client_goaway : 1; /* client sent us a GOAWAY */
+    unsigned int server_goaway : 1; /* we sent a GOAWAY */
     apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
     
     int unsent_submits;             /* number of submitted, but not yet sent
@@ -94,6 +95,7 @@ typedef struct h2_session {
     
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
+    
     int timeout_secs;               /* connection timeout (seconds) */
     int keepalive_secs;             /* connection idle timeout (seconds) */
     

@@ -71,40 +71,18 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
                                   const h2_request **preq, void *ctx)
 {
     apr_status_t status;
-    h2_mplx *m = NULL;
-    const h2_request *req = NULL;
     apr_time_t max_wait, start_wait;
-    int has_more = 0;
     h2_workers *workers = (h2_workers *)ctx;
-    
-    if (*pm && preq != NULL) {
-        /* We have a h2_mplx instance and the worker wants the next task. 
-         * Try to get one from the given mplx. */
-        *preq = h2_mplx_pop_request(*pm, &has_more);
-        if (*preq) {
-            return APR_SUCCESS;
-        }
-    }
-    
-    if (*pm) {
-        /* Got a mplx handed in, but did not get or want a task from it. 
-         * Release it, as the workers reference will be wiped.
-         */
-        h2_mplx_release(*pm);
-        *pm = NULL;
-    }
-    
-    if (!preq) {
-        /* the worker does not want a next task, we're done.
-         */
-        return APR_SUCCESS;
-    }
     
     max_wait = apr_time_from_sec(apr_atomic_read32(&workers->max_idle_secs));
     start_wait = apr_time_now();
     
     status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
+        const h2_request *req = NULL;
+        h2_mplx *m = NULL;
+        int has_more = 0;
+
         ++workers->idle_worker_count;
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                      "h2_worker(%d): looking for work", h2_worker_get_id(worker));
@@ -138,7 +116,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
             }
             
             if (!req) {
-                /* Need to wait for either a new mplx to arrive.
+                /* Need to wait for a new mplx to arrive.
                  */
                 cleanup_zombies(workers, 0);
                 
@@ -178,10 +156,6 @@ static apr_status_t get_mplx_next(h2_worker *worker, h2_mplx **pm,
             ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                          "h2_worker(%d): start request(%ld-%d)",
                          h2_worker_get_id(worker), m->id, req->id);
-            /* Since we hand out a reference to the worker, we increase
-             * its ref count.
-             */
-            h2_mplx_reference(m);
             *pm = m;
             *preq = req;
             

@@ -49,7 +49,8 @@ struct h2_io {
     apr_bucket_brigade *tmp;         /* temporary data for chunking */
 
     unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
-    unsigned int task_done      : 1; /* h2_task has finished for this io */
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
     unsigned int request_body   : 1; /* iff request has body */
     unsigned int eos_in         : 1; /* input eos has been seen */
     unsigned int eos_in_written : 1; /* input eos has been forwarded */
