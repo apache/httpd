@@ -19,7 +19,6 @@
 #include <httpd.h>
 #include <http_core.h>
 
-#include "h2_task.h"
 #include "h2_task_queue.h"
 
 
@@ -129,7 +128,7 @@ static void tq_grow(h2_task_queue *q, int nlen)
 {
     AP_DEBUG_ASSERT(q->nalloc <= nlen);
     if (nlen > q->nalloc) {
-        int *nq = apr_pcalloc(q->pool, sizeof(h2_task *) * nlen);
+        int *nq = apr_pcalloc(q->pool, sizeof(int) * nlen);
         if (q->nelts > 0) {
             int l = ((q->head + q->nelts) % q->nalloc) - q->head;
             

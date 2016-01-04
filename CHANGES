@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: reworked synching of session shutdown with worker threads. h2 
+     workers now stick to a session until no more reuqquest are tbd, keepalive 
+     handling revisited, users report problems with connection close without
+     GOAWAY frames. [Stefan Eissing]
+  
   *) mod_http2: Fixed several errors when connections are closed in the middle
      of requests, changed H2KeepAliveTimeout defaults to be the same as H2Timeout
      for synchronous MPMs and leave keepalive timeout to async MPMs default.

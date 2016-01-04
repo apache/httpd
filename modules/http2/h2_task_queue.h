@@ -16,8 +16,6 @@
 #ifndef __mod_h2__h2_task_queue__
 #define __mod_h2__h2_task_queue__
 
-struct h2_task;
-
 /**
  * h2_task_queue keeps a list of sorted h2_task* in ascending order.
  */

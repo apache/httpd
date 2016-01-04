@@ -18,7 +18,7 @@
 
 /**
  * The stream multiplexer. It pushes buckets from the connection
- * thread to the stream task threads and vice versa. It's thread-safe
+ * thread to the stream threads and vice versa. It's thread-safe
  * to use.
  *
  * There is one h2_mplx instance for each h2_session, which sits on top
@@ -101,16 +101,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master,
                         struct h2_workers *workers);
 
 /**
- * Increase the reference counter of this mplx.
- */
-void h2_mplx_reference(h2_mplx *m);
-
-/**
- * Decreases the reference counter of this mplx.
- */
-void h2_mplx_release(h2_mplx *m);
-
-/**
  * Decreases the reference counter of this mplx and waits for it
  * to reached 0, destroy the mplx afterwards.
  * This is to be called from the thread that created the mplx in
@@ -122,11 +112,11 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
 
 /**
  * Aborts the multiplexer. It will answer all future invocation with
- * APR_ECONNABORTED, leading to early termination of ongoing tasks.
+ * APR_ECONNABORTED, leading to early termination of ongoing streams.
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-void h2_mplx_task_done(h2_mplx *m, int stream_id);
+void h2_mplx_request_done(h2_mplx **pm, int stream_id, const struct h2_request **preq);
 
 /*******************************************************************************
  * IO lifetime of streams.
@@ -170,7 +160,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request 
                              h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
- * Stream priorities have changed, reschedule pending tasks.
+ * Stream priorities have changed, reschedule pending requests.
  * 
  * @param m the multiplexer
  * @param cmp the stream priority compare function

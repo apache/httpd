@@ -130,7 +130,7 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
             if (cin->timeout_secs > 0) {
                 apr_time_t t = apr_time_from_sec(cin->timeout_secs);
                 apr_socket_timeout_get(cin->socket, &saved_timeout);
-                apr_socket_timeout_set(cin->socket, H2MIN(t, saved_timeout));
+                apr_socket_timeout_set(cin->socket, t);
             }
         }
         ap_update_child_status_from_conn(f->c->sbh, SERVER_BUSY_READ, f->c);

@@ -16,19 +16,25 @@
 #ifndef mod_h2_h2_version_h
 #define mod_h2_h2_version_h
 
-/**
- * @macro
- * Version number of the h2 module as c string
- */
-#define MOD_HTTP2_VERSION "1.0.15-DEVa"
+#undef PACKAGE_VERSION
+#undef PACKAGE_TARNAME
+#undef PACKAGE_STRING
+#undef PACKAGE_NAME
+#undef PACKAGE_BUGREPORT
 
 /**
  * @macro
- * Numerical representation of the version number of the h2 module
+ * Version number of the http2 module as c string
+ */
+#define MOD_HTTP2_VERSION "1.0.17"
+
+/**
+ * @macro
+ * Numerical representation of the version number of the http2 module
  * release. This is a 24 bit number with 8 bits for major number, 8 bits
  * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
  */
-#define MOD_HTTP2_VERSION_NUM 0x01000f
+#define MOD_HTTP2_VERSION_NUM 0x010011
 
 
 #endif /* mod_h2_h2_version_h */

@@ -210,19 +210,17 @@ static apr_status_t h2_conn_process(h2_ctx *ctx)
 apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
 {
     int mpm_state = 0;
-    apr_status_t status;
     do {
-        status = h2_conn_process(ctx);
+        h2_conn_process(ctx);
         
         if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
             break;
         }
     } while (!async_mpm
-             && status == APR_SUCCESS
              && c->keepalive == AP_CONN_KEEPALIVE 
              && mpm_state != AP_MPMQ_STOPPING);
     
-    return status;
+    return DONE;
 }
 
 
