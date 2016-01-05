@@ -1628,7 +1628,7 @@ static apr_status_t h2_session_read(h2_session *session, int block, int loops)
          * We just pull at the filter chain to make it happen */
         status = ap_get_brigade(c->input_filters,
                                 session->bbtmp, AP_MODE_READBYTES,
-                                block? APR_BLOCK_READ : APR_NONBLOCK_READ,
+                                (block && !session->aborted)? APR_BLOCK_READ : APR_NONBLOCK_READ,
                                 APR_BUCKET_BUFF_SIZE);
         /* get rid of any possible data we do not expect to get */
         apr_brigade_cleanup(session->bbtmp); 
@@ -1671,6 +1671,10 @@ static apr_status_t h2_session_read(h2_session *session, int block, int loops)
                 /* subsequent failure after success(es), return initial
                  * status. */
                 return rstatus;
+        }
+        
+        if (session->aborted) {
+            break;
         }
     }
     return rstatus;
