@@ -322,6 +322,8 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
         ap_log_error(APLOG_MARK, APLOG_TRACE3, status, workers->s,
                      "h2_workers: register mplx(%ld)", m->id);
         if (in_list(workers, m)) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+                         "h2_workers: already registered mplx(%ld)", m->id);
             status = APR_EAGAIN;
         }
         else {
@@ -332,16 +334,13 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
         if (workers->idle_worker_count > 0) { 
             apr_thread_cond_signal(workers->mplx_added);
         }
-        else if (workers->worker_count < workers->max_size) {
+        else if (status == APR_SUCCESS 
+                 && workers->worker_count < workers->max_size) {
             ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                          "h2_workers: got %d worker, adding 1", 
                          workers->worker_count);
             add_worker(workers);
         }
-        
-        /* cleanup any zombie workers that may have accumulated */
-        cleanup_zombies(workers, 0);
-        
         apr_thread_mutex_unlock(workers->lock);
     }
     return status;
@@ -356,9 +355,6 @@ apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m)
             H2_MPLX_REMOVE(m);
             status = APR_SUCCESS;
         }
-        /* cleanup any zombie workers that may have accumulated */
-        cleanup_zombies(workers, 0);
-        
         apr_thread_mutex_unlock(workers->lock);
     }
     return status;

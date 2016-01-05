@@ -894,7 +894,6 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
         }
         apr_thread_mutex_unlock(m->lock);
     }
-    workers_register(m);
     return status;
 }
 
@@ -921,6 +920,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
+    int was_empty = 0;
     
     AP_DEBUG_ASSERT(m);
     status = apr_thread_mutex_lock(m->lock);
@@ -936,6 +936,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
                 status = h2_io_in_close(io);
             }
             
+            was_empty = h2_tq_empty(m->q);
             h2_tq_add(m->q, io->id, cmp, ctx);
             
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
@@ -944,8 +945,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
         }
         apr_thread_mutex_unlock(m->lock);
     }
-    
-    if (status == APR_SUCCESS) {
+    if (status == APR_SUCCESS && was_empty) {
         workers_register(m);
     }
     return status;
