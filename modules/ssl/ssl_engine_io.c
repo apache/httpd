@@ -1567,11 +1567,12 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     /* Coalesce the prefix, if:
      * a) more than one bucket is found to coalesce, or
      * b) the brigade contains only a single data bucket, or
-     * c)
+     * c) the data bucket is not last but we have buffered data already.
      */
     if (bytes > 0
         && (count > 1
-            || (count == 1 && endb == APR_BRIGADE_SENTINEL(bb)))) {
+            || (endb == APR_BRIGADE_SENTINEL(bb))
+            || (ctx && ctx->bytes > 0))) {
         /* If coalescing some bytes, ensure a context has been
          * created. */
         if (!ctx) {
