@@ -133,7 +133,6 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
                 apr_socket_timeout_set(cin->socket, t);
             }
         }
-        ap_update_child_status_from_conn(f->c->sbh, SERVER_BUSY_READ, f->c);
         status = ap_get_brigade(f->next, cin->bb, AP_MODE_READBYTES,
                                 block, readbytes);
         if (saved_timeout != UNSET) {

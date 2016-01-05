@@ -167,9 +167,6 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
     }
 
     h2_ctx_session_set(ctx, session);
-    
-    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
-
     return APR_SUCCESS;
 }
 

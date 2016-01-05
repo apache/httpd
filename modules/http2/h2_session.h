@@ -58,7 +58,6 @@ typedef enum {
     H2_SESSION_ST_IDLE_READ,        /* nothing to write, expecting data inc */
     H2_SESSION_ST_BUSY,             /* read/write without stop */
     H2_SESSION_ST_BUSY_WAIT,        /* waiting for tasks reporting back */
-    H2_SESSION_ST_KEEPALIVE,        /* nothing to write, normal timeout passed */
     H2_SESSION_ST_CLOSING,          /* shuting down */
     H2_SESSION_ST_ABORTED,          /* client closed connection or sky fall */
 } h2_session_state;
