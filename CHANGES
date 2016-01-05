@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Avoid one TLS record (application data) fragmentation by
+     including the last suitable bucket when coalescing.  [Yann Ylavic]
+
   *) mod_http2: reworked synching of session shutdown with worker threads. h2 
      workers now stick to a session until no more reuqquest are tbd, keepalive 
      handling revisited, users report problems with connection close without
