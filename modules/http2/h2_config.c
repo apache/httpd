@@ -64,31 +64,9 @@ static h2_config defconf = {
     0,                      /* stream timeout */
 };
 
-static int files_per_session;
-
 void h2_config_init(apr_pool_t *pool)
 {
-    /* Determine a good default for this platform and mpm?
-     * TODO: not sure how APR wants to hand out this piece of 
-     * information.
-     */
-    int max_files = 256;
-    int conn_threads = 1;
-    int tx_files = max_files / 4;
-    
     (void)pool;
-    ap_mpm_query(AP_MPMQ_MAX_THREADS, &conn_threads);
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_PREFORK:
-        case H2_MPM_WORKER:
-        case H2_MPM_EVENT:
-            /* allow that many transfer open files per mplx */
-            files_per_session = (tx_files / conn_threads);
-            break;
-        default:
-            /* don't know anything about it, stay safe */
-            break;
-    }
 }
 
 static void *h2_config_create(apr_pool_t *pool,
@@ -178,7 +156,6 @@ int h2_config_geti(const h2_config *conf, h2_config_var_t var)
 
 apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
 {
-    int n;
     switch(var) {
         case H2_CONF_MAX_STREAMS:
             return H2_CONFIG_GET(conf, &defconf, h2_max_streams);
@@ -203,11 +180,7 @@ apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
         case H2_CONF_DIRECT:
             return H2_CONFIG_GET(conf, &defconf, h2_direct);
         case H2_CONF_SESSION_FILES:
-            n = H2_CONFIG_GET(conf, &defconf, session_extra_files);
-            if (n < 0) {
-                n = files_per_session;
-            }
-            return n;
+            return H2_CONFIG_GET(conf, &defconf, session_extra_files);
         case H2_CONF_TLS_WARMUP_SIZE:
             return H2_CONFIG_GET(conf, &defconf, tls_warmup_size);
         case H2_CONF_TLS_COOLDOWN_SECS:

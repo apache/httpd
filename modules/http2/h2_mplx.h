@@ -80,7 +80,8 @@ struct h2_mplx {
     
     apr_pool_t *spare_pool;           /* spare pool, ready for next io */
     struct h2_workers *workers;
-    int file_handles_allowed;
+    apr_size_t tx_handles_reserved;
+    apr_size_t tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;

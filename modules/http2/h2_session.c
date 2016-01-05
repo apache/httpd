@@ -44,8 +44,6 @@
 #include "h2_version.h"
 #include "h2_workers.h"
 
-#define H2MAX(x,y) ((x) > (y) ? (x) : (y))
-#define H2MIN(x,y) ((x) < (y) ? (x) : (y))
 
 static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
 

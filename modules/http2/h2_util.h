@@ -97,7 +97,7 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
  * @param msg message for use in logging
  */
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, int *pfile_buckets_allowed, 
+                          apr_off_t maxlen, apr_size_t *pfile_buckets_allowed, 
                           const char *msg);
 
 /**

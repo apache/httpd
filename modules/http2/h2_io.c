@@ -355,7 +355,7 @@ static void process_trailers(h2_io *io, apr_table_t *trailers)
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, apr_table_t *trailers,
-                             int *pfile_handles_allowed)
+                             apr_size_t *pfile_buckets_allowed)
 {
     apr_status_t status;
     int start_allowed;
@@ -397,12 +397,12 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
      * many open files already buffered. Otherwise we will run out of
      * file handles.
      */
-    start_allowed = *pfile_handles_allowed;
-    status = h2_util_move(io->bbout, bb, maxlen, pfile_handles_allowed, 
+    start_allowed = *pfile_buckets_allowed;
+    status = h2_util_move(io->bbout, bb, maxlen, pfile_buckets_allowed, 
                           "h2_io_out_write");
     /* track # file buckets moved into our pool */
-    if (start_allowed != *pfile_handles_allowed) {
-        io->files_handles_owned += (start_allowed - *pfile_handles_allowed);
+    if (start_allowed != *pfile_buckets_allowed) {
+        io->files_handles_owned += (start_allowed - *pfile_buckets_allowed);
     }
     return status;
 }

@@ -211,7 +211,7 @@ static const int FILE_MOVE = 1;
 static apr_status_t last_not_included(apr_bucket_brigade *bb, 
                                       apr_off_t maxlen, 
                                       int same_alloc,
-                                      int *pfile_buckets_allowed,
+                                      apr_size_t *pfile_buckets_allowed,
                                       apr_bucket **pend)
 {
     apr_bucket *b;
@@ -269,7 +269,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 #define LOG_LEVEL APLOG_INFO
 
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, int *pfile_handles_allowed, 
+                          apr_off_t maxlen, apr_size_t *pfile_buckets_allowed, 
                           const char *msg)
 {
     apr_status_t status = APR_SUCCESS;
@@ -281,14 +281,14 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                   || to->p == from->p);
 
     if (!FILE_MOVE) {
-        pfile_handles_allowed = NULL;
+        pfile_buckets_allowed = NULL;
     }
     
     if (!APR_BRIGADE_EMPTY(from)) {
         apr_bucket *b, *end;
         
         status = last_not_included(from, maxlen, same_alloc,
-                                   pfile_handles_allowed, &end);
+                                   pfile_buckets_allowed, &end);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -332,8 +332,8 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                         /* ignore */
                     }
                 }
-                else if (pfile_handles_allowed 
-                         && *pfile_handles_allowed > 0 
+                else if (pfile_buckets_allowed 
+                         && *pfile_buckets_allowed > 0 
                          && APR_BUCKET_IS_FILE(b)) {
                     /* We do not want to read files when passing buckets, if
                      * we can avoid it. However, what we've come up so far
@@ -362,7 +362,7 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                     }
                     apr_brigade_insert_file(to, fd, b->start, b->length, 
                                             to->p);
-                    --(*pfile_handles_allowed);
+                    --(*pfile_buckets_allowed);
                 }
                 else {
                     const char *data;

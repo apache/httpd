@@ -158,7 +158,7 @@ apr_status_t h2_io_out_read_to(h2_io *io,
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, apr_table_t *trailers,
-                             int *pfile_buckets_allowed);
+                             apr_size_t *pfile_buckets_allowed);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will
