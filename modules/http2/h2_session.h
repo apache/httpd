@@ -91,7 +91,7 @@ typedef struct h2_session {
     int streams_reset;              /* number of http/2 streams reset by client */
     int streams_pushed;             /* number of http/2 streams pushed */
     int max_stream_received;        /* highest stream id created */
-    int max_stream_handled;         /* highest stream id handled successfully */
+    int max_stream_handled;         /* highest stream id completed */
     
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */

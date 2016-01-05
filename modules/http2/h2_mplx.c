@@ -174,6 +174,17 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
     return m;
 }
 
+int h2_mplx_get_max_stream_started(h2_mplx *m)
+{
+    int stream_id = 0;
+    
+    apr_thread_mutex_lock(m->lock);
+    stream_id = m->max_stream_started;
+    apr_thread_mutex_unlock(m->lock);
+    
+    return stream_id;
+}
+
 static void workers_register(h2_mplx *m)
 {
     /* Initially, there was ref count increase for this as well, but
@@ -341,11 +352,14 @@ static const h2_request *pop_request(h2_mplx *m)
 {
     const h2_request *req = NULL;
     int sid;
-    while (!req && (sid = h2_tq_shift(m->q)) > 0) {
+    while (!m->aborted && !req && (sid = h2_tq_shift(m->q)) > 0) {
         h2_io *io = h2_io_set_get(m->stream_ios, sid);
         if (io) {
             req = io->request;
             io->worker_started = 1;
+            if (sid > m->max_stream_started) {
+                m->max_stream_started = sid;
+            }
         }
     }
     return req;

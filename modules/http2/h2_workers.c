@@ -322,7 +322,7 @@ apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m)
         ap_log_error(APLOG_MARK, APLOG_TRACE3, status, workers->s,
                      "h2_workers: register mplx(%ld)", m->id);
         if (in_list(workers, m)) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, workers->s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
                          "h2_workers: already registered mplx(%ld)", m->id);
             status = APR_EAGAIN;
         }

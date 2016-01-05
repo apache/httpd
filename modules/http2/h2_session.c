@@ -891,21 +891,21 @@ void h2_session_eoc_callback(h2_session *session)
 
 static apr_status_t h2_session_shutdown(h2_session *session, int reason)
 {
+    apr_status_t status = APR_SUCCESS;
+    
     AP_DEBUG_ASSERT(session);
     session->aborted = 1;
     if (session->state != H2_SESSION_ST_CLOSING
         && session->state != H2_SESSION_ST_ABORTED) {
-        if (session->client_goaway) {
-            /* client sent us a GOAWAY, just terminate */
-            nghttp2_session_terminate_session(session->ngh2, NGHTTP2_ERR_EOF);
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "session(%ld): shutdown, GOAWAY from client", session->id);
+        h2_mplx_abort(session->mplx);
+        if (session->server_goaway) {
+            /* already sent one */
         }
         else if (!reason) {
             nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
-                                  session->max_stream_received, 
+                                  h2_mplx_get_max_stream_started(session->mplx), 
                                   reason, NULL, 0);
-            nghttp2_session_send(session->ngh2);
+            status = nghttp2_session_send(session->ngh2);
             session->server_goaway = 1;
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "session(%ld): shutdown, no err", session->id);
@@ -913,19 +913,18 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason)
         else {
             const char *err = nghttp2_strerror(reason);
             nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
-                                  session->max_stream_received, 
+                                  h2_mplx_get_max_stream_started(session->mplx), 
                                   reason, (const uint8_t *)err, 
                                   strlen(err));
-            nghttp2_session_send(session->ngh2);
+            status = nghttp2_session_send(session->ngh2);
             session->server_goaway = 1;
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "session(%ld): shutdown, err=%d '%s'",
                           session->id, reason, err);
         }
         session->state = H2_SESSION_ST_CLOSING;
-        h2_mplx_abort(session->mplx);
     }
-    return APR_SUCCESS;
+    return status;
 }
 
 void h2_session_abort(h2_session *session, apr_status_t status)
@@ -1099,24 +1098,20 @@ h2_stream *h2_session_get_stream(h2_session *session, int stream_id)
 
 void h2_session_close(h2_session *session)
 {
+    apr_status_t status = APR_SUCCESS;
     apr_bucket *b;
     conn_rec *c = session->c;
-    apr_status_t status;
     
     AP_DEBUG_ASSERT(session);
-    if (!session->aborted) {
-        h2_session_shutdown(session, 0);
+    if (!session->server_goaway) {
+        status = h2_session_shutdown(session, 0);
     }
     h2_session_cleanup(session);
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
                   "h2_session(%ld): writing eoc", c->id);
     b = h2_bucket_eoc_create(c->bucket_alloc, session);
-    status = h2_conn_io_write_eoc(&session->io, b);
-    if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c,
-                      "h2_session(%ld): flushed eoc bucket", c->id);
-    } 
+    h2_conn_io_write_eoc(&session->io, b);
     /* and all is or will be destroyed */
 }
 
