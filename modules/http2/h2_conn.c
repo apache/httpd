@@ -117,7 +117,7 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
      */
     n = h2_config_geti(config, H2_CONF_SESSION_FILES);
     if (n < 0) {
-        max_tx_handles = 256;
+        max_tx_handles = maxw * 2;
     }
     else {
         max_tx_handles = maxw * n;
