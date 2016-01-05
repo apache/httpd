@@ -72,6 +72,28 @@ static int is_aborted(h2_mplx *m, apr_status_t *pstatus)
 
 static void have_out_data_for(h2_mplx *m, int stream_id);
 
+static void check_tx_reservation(h2_mplx *m) 
+{
+    if (m->tx_handles_reserved == 0) {
+        m->tx_handles_reserved += h2_workers_tx_reserve(m->workers, 
+            H2MIN(m->tx_chunk_size, h2_io_set_size(m->stream_ios)));
+    }
+}
+
+static void check_tx_free(h2_mplx *m) 
+{
+    if (m->tx_handles_reserved > m->tx_chunk_size) {
+        apr_size_t count = m->tx_handles_reserved - m->tx_chunk_size;
+        m->tx_handles_reserved = m->tx_chunk_size;
+        h2_workers_tx_free(m->workers, count);
+    }
+    else if (m->tx_handles_reserved 
+             && (!m->stream_ios || h2_io_set_is_empty(m->stream_ios))) {
+        h2_workers_tx_free(m->workers, m->tx_handles_reserved);
+        m->tx_handles_reserved = 0;
+    }
+}
+
 static void h2_mplx_destroy(h2_mplx *m)
 {
     AP_DEBUG_ASSERT(m);
@@ -87,6 +109,8 @@ static void h2_mplx_destroy(h2_mplx *m)
         h2_io_set_destroy(m->stream_ios);
         m->stream_ios = NULL;
     }
+    
+    check_tx_free(m);
     
     if (m->pool) {
         apr_pool_destroy(m->pool);
@@ -142,7 +166,9 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->workers = workers;
         
-        m->file_handles_allowed = h2_config_geti(conf, H2_CONF_SESSION_FILES);
+        m->tx_handles_reserved = 0;
+        m->tx_chunk_size = 4;
+        
         m->stream_timeout_secs = h2_config_geti(conf, H2_CONF_STREAM_TIMEOUT_SECS);
     }
     return m;
@@ -162,11 +188,6 @@ static void workers_register(h2_mplx *m)
      * for h2_worker using this is critical.
      */
     h2_workers_register(m->workers, m);
-}
-
-static void workers_unregister(h2_mplx *m)
-{
-    h2_workers_unregister(m->workers, m);
 }
 
 static int io_process_events(h2_mplx *m, h2_io *io)
@@ -195,7 +216,8 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
     /* The pool is cleared/destroyed which also closes all
      * allocated file handles. Give this count back to our
      * file handle pool. */
-    m->file_handles_allowed += io->files_handles_owned;
+    m->tx_handles_reserved += io->files_handles_owned;
+
     h2_io_set_remove(m->stream_ios, io);
     h2_io_set_remove(m->ready_ios, io);
     h2_io_destroy(io);
@@ -207,6 +229,8 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         }
         m->spare_pool = pool;
     }
+
+    check_tx_free(m);
 }
 
 static int io_stream_done(h2_mplx *m, h2_io *io, int rst_error) 
@@ -235,7 +259,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 {
     apr_status_t status;
     
-    workers_unregister(m);
+    h2_workers_unregister(m->workers, m);
     status = apr_thread_mutex_lock(m->lock);
     if (APR_SUCCESS == status) {
         int i, wait_secs = 5;
@@ -613,7 +637,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && !is_aborted(m, &status)) {
         
         status = h2_io_out_write(io, bb, m->stream_max_mem, trailers,
-                                 &m->file_handles_allowed);
+                                 &m->tx_handles_reserved);
         /* Wait for data to drain until there is room again or
          * stream timeout expires */
         h2_io_signal_init(io, H2_IO_WRITE, m->stream_timeout_secs, iowait);
@@ -654,6 +678,11 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
         
         h2_io_set_response(io, response);
         h2_io_set_add(m->ready_ios, io);
+        if (response && response->http_status < 300) {
+            /* we might see some file buckets in the output, see
+             * if we have enough handles reserved. */
+            check_tx_reservation(m);
+        }
         if (bb) {
             status = out_write(m, io, f, bb, response->trailers, iowait);
         }

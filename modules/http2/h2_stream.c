@@ -219,7 +219,7 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
     
     stream->response = response;
     if (bb && !APR_BRIGADE_EMPTY(bb)) {
-        int move_all = INT_MAX;
+        apr_size_t move_all = INT_MAX;
         /* we can move file handles from h2_mplx into this h2_stream as many
          * as we want, since the lifetimes are the same and we are not freeing
          * the ones in h2_mplx->io before this stream is done. */

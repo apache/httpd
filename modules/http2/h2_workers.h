@@ -39,6 +39,9 @@ struct h2_workers {
     int min_size;
     int max_size;
     
+    apr_size_t max_tx_handles;
+    apr_size_t spare_tx_handles;
+    
     unsigned int aborted : 1;
 
     apr_threadattr_t *thread_attr;
@@ -53,6 +56,8 @@ struct h2_workers {
     
     struct apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *mplx_added;
+
+    struct apr_thread_mutex_t *tx_lock;
 };
 
 
@@ -60,7 +65,8 @@ struct h2_workers {
  * threads.
  */
 h2_workers *h2_workers_create(server_rec *s, apr_pool_t *pool,
-                              int min_size, int max_size);
+                              int min_size, int max_size, 
+                              apr_size_t max_tx_handles);
 
 /* Destroy the worker pool and all its threads. 
  */
@@ -71,14 +77,12 @@ void h2_workers_destroy(h2_workers *workers);
  * out of tasks, it will be automatically be unregistered. Should
  * new tasks arrive, it needs to be registered again.
  */
-apr_status_t h2_workers_register(h2_workers *workers, 
-                                 struct h2_mplx *m);
+apr_status_t h2_workers_register(h2_workers *workers, struct h2_mplx *m);
 
 /**
  * Remove a h2_mplx from the worker registry.
  */
-apr_status_t h2_workers_unregister(h2_workers *workers, 
-                                   struct h2_mplx *m);
+apr_status_t h2_workers_unregister(h2_workers *workers, struct h2_mplx *m);
 
 /**
  * Set the amount of seconds a h2_worker should wait for new tasks
@@ -86,5 +90,32 @@ apr_status_t h2_workers_unregister(h2_workers *workers,
  * workers).
  */
 void h2_workers_set_max_idle_secs(h2_workers *workers, int idle_secs);
+
+/**
+ * Reservation of file handles available for transfer between workers
+ * and master connections. 
+ *
+ * When handling output from request processing, file handles are often 
+ * encountered when static files are served. The most efficient way is then
+ * to forward the handle itself to the master connection where it can be
+ * read or sendfile'd to the client. But file handles are a scarce resource,
+ * so there needs to be a limit on how many handles are transferred this way.
+ *
+ * h2_workers keeps track of the number of reserved handles and observes a
+ * configurable maximum value. 
+ *
+ * @param workers the workers instance
+ * @param count how many handles the caller wishes to reserve
+ * @return the number of reserved handles, may be 0.
+ */
+apr_size_t h2_workers_tx_reserve(h2_workers *workers, apr_size_t count);
+
+/**
+ * Return a number of reserved file handles back to the pool. The number
+ * overall may not exceed the numbers reserved.
+ * @param workers the workers instance
+ * @param count how many handles are returned to the pool
+ */
+void h2_workers_tx_free(h2_workers *workers, apr_size_t count);
 
 #endif /* defined(__mod_h2__h2_workers__) */
