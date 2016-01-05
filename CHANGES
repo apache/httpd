@@ -1,18 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: async reading for http2 connections disabled for now. Fixed
+     flushing of last GOAWAY frame. Fixed calculation of last stream id
+     accepted as described in rfc7540. Reading in KEEPALIVE state now 
+     correctly show in scoreboard. Fixed possible race in connection
+     shutdown after review by Ylavic. [Stefan Eissing]
+
   *) mod_ssl: Avoid one TLS record (application data) fragmentation by
      including the last suitable bucket when coalescing.  [Yann Ylavic]
-
-  *) mod_http2: reworked synching of session shutdown with worker threads. h2 
-     workers now stick to a session until no more reuqquest are tbd, keepalive 
-     handling revisited, users report problems with connection close without
-     GOAWAY frames. [Stefan Eissing]
-  
-  *) mod_http2: Fixed several errors when connections are closed in the middle
-     of requests, changed H2KeepAliveTimeout defaults to be the same as H2Timeout
-     for synchronous MPMs and leave keepalive timeout to async MPMs default.
-     [Stefan Eissing]
 
   *) mod_cache_socache: Fix a possible cached entity body corruption when it
      is received from an origin server in multiple batches and forwarded by
