@@ -1532,7 +1532,7 @@ struct coalesce_ctx {
 static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
                                            apr_bucket_brigade *bb)
 {
-    apr_bucket *e, *last = NULL;
+    apr_bucket *e, *endb;
     apr_size_t bytes = 0;
     struct coalesce_ctx *ctx = f->ctx;
     unsigned count = 0;
@@ -1559,10 +1559,10 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
              && (ctx == NULL
                  || bytes + ctx->bytes + e->length < COALESCE_BYTES);
          e = APR_BUCKET_NEXT(e)) {
-        last = e;
         if (e->length) count++; /* don't count zero-length buckets */
         bytes += e->length;
     }
+    endb = e;
 
     /* Coalesce the prefix, if:
      * a) more than one bucket is found to coalesce, or
@@ -1571,7 +1571,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
      */
     if (bytes > 0
         && (count > 1
-            || (count == 1 && APR_BUCKET_NEXT(last) == APR_BRIGADE_SENTINEL(bb)))) {
+            || (count == 1 && endb == APR_BRIGADE_SENTINEL(bb)))) {
         /* If coalescing some bytes, ensure a context has been
          * created. */
         if (!ctx) {
@@ -1588,7 +1588,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
          * normal path of sending the buffer + remaining buckets in
          * brigade.  */
         e = APR_BRIGADE_FIRST(bb);
-        while (e != last) {
+        while (e != endb) {
             apr_size_t len;
             const char *data;
             apr_bucket *next;
