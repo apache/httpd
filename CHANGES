@@ -7,8 +7,9 @@ Changes with Apache 2.5.0
      correctly show in scoreboard. Fixed possible race in connection
      shutdown after review by Ylavic. [Stefan Eissing]
 
-  *) mod_ssl: Avoid one TLS record (application data) fragmentation by
-     including the last suitable bucket when coalescing.  [Yann Ylavic]
+  *) mod_ssl: Save some TLS record (application data) fragmentations by
+     including the last and subsequent suitable buckets when coalescing.
+     [Yann Ylavic]
 
   *) mod_cache_socache: Fix a possible cached entity body corruption when it
      is received from an origin server in multiple batches and forwarded by
