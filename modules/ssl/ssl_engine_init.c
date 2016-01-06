@@ -1067,7 +1067,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     X509 *cert;
     DH *dhparams;
 #ifdef HAVE_ECC
-    EC_GROUP *ecparams;
+    EC_GROUP *ecparams = NULL;
     int nid;
     EC_KEY *eckey = NULL;
 #endif
@@ -1244,6 +1244,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #endif
     }
     EC_KEY_free(eckey);
+    EC_GROUP_free(ecparams);
 #endif
 
     return APR_SUCCESS;
