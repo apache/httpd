@@ -203,6 +203,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36
 
+  *) mod_ssl: Save some TLS record (application data) fragmentations by
+     including the last and subsequent suitable buckets when coalescing.
+     trunk patch: http://svn.apache.org/r1723122
+                  http://svn.apache.org/r1723143
+                  http://svn.apache.org/r1723284
+     2.4.x patch: trunk works, modulo CHANGES (from both r1723122,1723284)
+                  For convenience (possibly):
+                  http://people.apache.org/~ylavic/httpd-2.4.x-ssl_io_filter_coalesce.patch
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
