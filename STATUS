@@ -183,6 +183,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://jkaluza.fedorapeople.org/httpd-2.2.x-dhparams-free.patch
      +1: jkaluza
 
+  *) mime.types: Add common extension "m4a" for MPEG 4 Audio.
+     As a reference see Wikipedia:
+     https://en.wikipedia.org/wiki/MPEG-4_Part_14#.MP4_versus_.M4A
+     PR: 57895
+     trunk patch: http://svn.apache.org/r1723567
+     2.2.x patch: trunk works, modulo CHANGES
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
