@@ -458,9 +458,6 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             ++session->streams_reset;
             break;
         case NGHTTP2_GOAWAY:
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
-                          "h2_session(%ld): GOAWAY errror=%d",
-                          session->id, (int)frame->goaway.error_code);
             session->client_goaway = 1;
             break;
         default:
@@ -700,7 +697,6 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason)
     apr_status_t status = APR_SUCCESS;
     
     AP_DEBUG_ASSERT(session);
-    session->aborted = 1;
     if (session->state != H2_SESSION_ST_CLOSING
         && session->state != H2_SESSION_ST_ABORTED) {
         h2_mplx_abort(session->mplx);
@@ -1615,9 +1611,13 @@ static apr_status_t h2_session_receive(void *ctx, const char *data,
                                        apr_size_t len, apr_size_t *readlen)
 {
     h2_session *session = ctx;
+    ssize_t n;
+    
     if (len > 0) {
-        ssize_t n = nghttp2_session_mem_recv(session->ngh2,
-                                             (const uint8_t *)data, len);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "h2_session(%ld): feeding %ld bytes to nghttp2",
+                      session->id, (long)len);
+        n = nghttp2_session_mem_recv(session->ngh2, (const uint8_t *)data, len);
         if (n < 0) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, APR_EGENERAL,
                           session->c,
@@ -1748,6 +1748,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
             status = APR_ECONNABORTED;
             goto out;
         }
+        else if (session->client_goaway) {
+            h2_session_shutdown(session, 0);
+        }
         
         switch (session->state) {
             case H2_SESSION_ST_INIT:
@@ -1785,9 +1788,17 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else if (status == APR_SUCCESS) {
                     /* got something, go busy again */
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
-                                  "h2_session(%ld): IDLE -> BUSY", session->id);
-                    session->state = H2_SESSION_ST_BUSY;
+                    have_read = 1;
+                    if (session->client_goaway) {
+                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
+                                      "h2_session(%ld): IDLE -> CLOSING", session->id);
+                        h2_session_shutdown(session, 0);
+                    }
+                    else {
+                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
+                                      "h2_session(%ld): IDLE -> BUSY", session->id);
+                        session->state = H2_SESSION_ST_BUSY;
+                    }
                 }
                 else {
                     reason = "keepalive error";
@@ -1855,8 +1866,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     if (h2_stream_set_is_empty(session->streams)) {
                         /* When we have no streams, no task event are possible,
                          * switch to blocking reads */
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
-                                  "h2_session(%ld): BUSY -> IDLE", session->id);
+                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
+                                      "h2_session(%ld): BUSY -> IDLE", session->id);
                         session->state = H2_SESSION_ST_IDLE_READ;
                     }
                     else if (!h2_stream_set_has_unsubmitted(session->streams)
@@ -1864,8 +1875,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* none of our streams is waiting for a response or
                          * new output data from task processing, 
                          * switch to blocking reads. */
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
-                                  "h2_session(%ld): BUSY -> IDLE", session->id);
+                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
+                                      "h2_session(%ld): BUSY -> IDLE", session->id);
                         session->state = H2_SESSION_ST_IDLE_READ;
                     }
                     else {
@@ -1928,12 +1939,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 
             case H2_SESSION_ST_CLOSING:
                 if (nghttp2_session_want_write(session->ngh2)) {
-                    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
                     status = h2_session_send(session);
-                    if (status != APR_SUCCESS) {
-                        reason = "send error";
-                        goto out;
-                    }
                     have_written = 1;
                 }
                 reason = "closing";
