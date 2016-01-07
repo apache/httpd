@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mime.types: add common extension "m4a" for MPEG 4 Audio.
+     PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
+
   *) mod_http2: async reading for http2 connections disabled for now. Fixed
      flushing of last GOAWAY frame. Fixed calculation of last stream id
      accepted as described in rfc7540. Reading in KEEPALIVE state now 
