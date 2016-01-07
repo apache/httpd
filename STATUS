@@ -213,6 +213,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~ylavic/httpd-2.4.x-ssl_io_filter_coalesce.patch
      +1: ylavic
 
+  *) mime.types: Add common extension "m4a" for MPEG 4 Audio.
+     As a reference see Wikipedia:
+     https://en.wikipedia.org/wiki/MPEG-4_Part_14#.MP4_versus_.M4A
+     PR: 57895
+     trunk patch: http://svn.apache.org/r1723567
+     2.4.x patch: trunk works, modulo CHANGES
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
