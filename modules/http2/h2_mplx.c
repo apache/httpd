@@ -319,11 +319,14 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 void h2_mplx_abort(h2_mplx *m)
 {
     apr_status_t status;
+    
     AP_DEBUG_ASSERT(m);
-    status = apr_thread_mutex_lock(m->lock);
-    if (APR_SUCCESS == status) {
-        m->aborted = 1;
-        apr_thread_mutex_unlock(m->lock);
+    if (!m->aborted) {
+        status = apr_thread_mutex_lock(m->lock);
+        if (APR_SUCCESS == status) {
+            m->aborted = 1;
+            apr_thread_mutex_unlock(m->lock);
+        }
     }
 }
 
