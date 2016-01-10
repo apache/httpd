@@ -75,6 +75,26 @@ enum enctype {
     enc_path, enc_search, enc_user, enc_fpath, enc_parm
 };
 
+typedef enum {
+    NONE, TCP, OPTIONS, HEAD, GET, CPING, PROVIDER, EOT
+} hcmethod_t;
+
+typedef struct {
+    hcmethod_t method;
+    char *name;
+} hcmethods_t;
+
+static hcmethods_t hcmethods[] = {
+        {NONE, "NONE"},
+        {TCP, "TCP"},
+        {OPTIONS, "OPTIONS"},
+        {HEAD, "HEAD"},
+        {GET, "GET"},
+        {CPING, "CPING"},
+        {PROVIDER, "PROVIDER"},
+        {EOT, NULL}
+};
+
 #define BALANCER_PREFIX "balancer://"
 
 #if APR_CHARSET_EBCDIC
@@ -365,7 +385,7 @@ typedef struct {
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
     char      uds_path[PROXY_WORKER_MAX_NAME_SIZE];   /* path to worker's unix domain socket if applicable */
-    char      hurl[PROXY_WORKER_MAX_ROUTE_SIZE];      /* health check url */
+    char      hcuri[PROXY_WORKER_MAX_ROUTE_SIZE];     /* health check uri */
     int             lbset;      /* load balancer cluster set */
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
@@ -375,7 +395,6 @@ typedef struct {
     int             hmax;       /* Hard maximum on the total number of connections */
     int             flush_wait; /* poll wait time in microseconds if flush_auto */
     int             index;      /* shm array index */
-    int             method;     /* method to use for health check */
     int             passes;     /* number of successes for check to pass */
     int             pcount;     /* current count of passes */
     int             fails;      /* number of failures for check to fail */
@@ -386,7 +405,8 @@ typedef struct {
         flush_off,
         flush_on,
         flush_auto
-    } flush_packets;           /* control AJP flushing */
+    } flush_packets;            /* control AJP flushing */
+    hcmethod_t      method;     /* method to use for health check */
     apr_time_t      updated;    /* timestamp of last update */
     apr_time_t      error_time; /* time of the last error */
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection

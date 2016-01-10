@@ -19,7 +19,6 @@
 #include "ap_slotmem.h"
 #include "ap_expr.h"
 
-
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 #define HCHECK_WATHCHDOG_NAME ("_proxy_hcheck_")
@@ -28,13 +27,9 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 /* The watchdog runs every 5 seconds, which is also the minimal check */
 #define HCHECK_WATHCHDOG_INTERVAL (5)
 
-static char *methods[] = {
-      "NULL", "OPTIONS", "HEAD", "CPING", NULL
-};
-
 typedef struct {
     char *name;
-    int method;
+    hcmethod_t method;
     int passes;
     int fails;
     apr_interval_time_t interval;
@@ -95,7 +90,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     worker->s->interval = template->interval;
                     worker->s->passes = template->passes;
                     worker->s->fails = template->fails;
-                    PROXY_STRNCPY(worker->s->hurl, template->hurl);
+                    PROXY_STRNCPY(worker->s->hcuri, template->hurl);
                 } else {
                     temp->method = template->method;
                     temp->interval = template->interval;
@@ -109,12 +104,13 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return apr_psprintf(p, "Unknown ProxyHCTemplate name: %s", val);
     }
     else if (!strcasecmp(key, "hcmethod")) {
-        for (ival = 1; methods[ival]; ival++) {
-            if (!ap_casecmpstr(val, methods[ival])) {
+        hcmethods_t *method = hcmethods;
+        for (; method->name; method++) {
+            if (!ap_casecmpstr(val, method->name)) {
                 if (worker) {
-                    worker->s->method = ival;
+                    worker->s->method = method->method;
                 } else {
-                    temp->method = ival;
+                    temp->method = method->method;
                 }
                 return NULL;
             }
@@ -152,11 +148,11 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         }
     }
     else if (!strcasecmp(key, "hcuri")) {
-        if (strlen(val) >= sizeof(worker->s->hurl))
+        if (strlen(val) >= sizeof(worker->s->hcuri))
             return apr_psprintf(p, "Health check uri length must be < %d characters",
-                    (int)sizeof(worker->s->hurl));
+                    (int)sizeof(worker->s->hcuri));
         if (worker) {
-            PROXY_STRNCPY(worker->s->hurl, val);
+            PROXY_STRNCPY(worker->s->hcuri, val);
         } else {
             temp->hurl = apr_pstrdup(p, val);
         }
