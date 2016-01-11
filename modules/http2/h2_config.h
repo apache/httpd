@@ -42,6 +42,7 @@ typedef enum {
     H2_CONF_TIMEOUT_SECS,
     H2_CONF_KEEPALIVE_SECS,
     H2_CONF_STREAM_TIMEOUT_SECS,
+    H2_CONF_PUSH_DIARY_SIZE,
 } h2_config_var_t;
 
 struct apr_hash_t;
@@ -72,6 +73,7 @@ typedef struct h2_config {
     int h2_timeout;               /* timeout for http/2 connections */
     int h2_keepalive;             /* timeout for idle connections, no streams */
     int h2_stream_timeout;        /* timeout for http/2 streams, slave connections */
+    int push_diary_size;          /* # of entries in push diary */
 } h2_config;
 
 

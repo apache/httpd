@@ -16,8 +16,10 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include <apr_strings.h>
 #include <apr_lib.h>
+#include <apr_strings.h>
+#include <apr_hash.h>
+#include <apr_time.h>
 
 #include <httpd.h>
 #include <http_core.h>
@@ -29,6 +31,8 @@
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_response.h"
+#include "h2_session.h"
+#include "h2_stream.h"
 
 static const char *policy_str(h2_push_policy policy)
 {
@@ -451,3 +455,127 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
     }
     req->push_policy = policy;
 }
+
+static unsigned int val_apr_hash(const char *str) 
+{
+    apr_ssize_t len = strlen(str);
+    return apr_hashfunc_default(str, &len);
+}
+
+static void calc_apr_hash(h2_push_digest *d, h2_push *push) 
+{
+    unsigned int val;
+    
+    val = val_apr_hash(push->req->scheme);
+    val ^= val_apr_hash(push->req->authority);
+    val ^= val_apr_hash(push->req->path);
+    
+    d->val.apr_hash = val;
+}
+
+static int cmp_apr_hash(h2_push_digest *d1, h2_push_digest *d2) 
+{
+    return d1->val.apr_hash - d2->val.apr_hash;
+}
+
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t max_entries)
+{
+    h2_push_diary *diary = NULL;
+    
+    if (max_entries > 0) {
+        diary = apr_pcalloc(p, sizeof(*diary));
+        
+        diary->entries     = apr_array_make(p, 10, sizeof(h2_push_diary_entry*));
+        diary->max_entries = max_entries;
+        diary->dtype       = H2_PUSH_DIGEST_APR_HASH;
+        diary->dcalc       = calc_apr_hash;
+        diary->dcmp        = cmp_apr_hash;
+    }
+    
+    return diary;
+}
+
+static h2_push_diary_entry *h2_push_diary_find(h2_push_diary *diary, h2_push_digest *d)
+{
+    if (diary) {
+        h2_push_diary_entry *e;
+        int i;
+
+        for (i = 0; i < diary->entries->nelts; ++i) {
+            e = APR_ARRAY_IDX(diary->entries, i, h2_push_diary_entry*);
+            if (!diary->dcmp(&e->digest, d)) {
+                return e;
+            }
+        }
+    }
+    return NULL;
+}
+
+static h2_push_diary_entry *h2_push_diary_insert(h2_push_diary *diary, h2_push_digest *d)
+{
+    h2_push_diary_entry *e;
+    int i;
+    
+    if (diary->entries->nelts < diary->max_entries) {
+        e = apr_pcalloc(diary->entries->pool, sizeof(*e));
+        APR_ARRAY_PUSH(diary->entries, h2_push_diary_entry*) = e;
+    }
+    else {        
+        h2_push_diary_entry *oldest = NULL;
+        for (i = 0; i < diary->entries->nelts; ++i) {
+            e = APR_ARRAY_IDX(diary->entries, i, h2_push_diary_entry*);
+            if (!oldest || oldest->last_accessed > e->last_accessed) {
+                oldest = e;
+            }
+        }
+        e = oldest;
+    }
+    
+    memcpy(&e->digest, d, sizeof(*d));
+    e->last_accessed = apr_time_now();
+    return e;
+}
+
+apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t *pushes)
+{
+    apr_array_header_t *npushes = pushes;
+    h2_push_digest d;
+    h2_push_diary_entry *e;
+    int i;
+    
+    if (session->push_diary && pushes) {
+        npushes = NULL;
+        
+        for (i = 0; i < pushes->nelts; ++i) {
+            h2_push *push;
+            
+            push = APR_ARRAY_IDX(pushes, i, h2_push*);
+            session->push_diary->dcalc(&d, push);
+            e = h2_push_diary_find(session->push_diary, &d);
+            if (e) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                              "push_diary_update: already there PUSH %s", push->req->path);
+                e->last_accessed = apr_time_now();
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                              "push_diary_update: adding PUSH %s", push->req->path);
+                if (!npushes) {
+                    npushes = apr_array_make(pushes->pool, 5, sizeof(h2_push_diary_entry*));
+                }
+                APR_ARRAY_PUSH(npushes, h2_push*) = push;
+                h2_push_diary_insert(session->push_diary, &d);
+            }
+        }
+    }
+    return npushes;
+}
+    
+apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
+                                           const struct h2_request *req, 
+                                           const struct h2_response *res)
+{
+    apr_array_header_t *pushes = h2_push_collect(stream->pool, req, res);
+    return h2_push_diary_update(stream->session, pushes);
+}
+

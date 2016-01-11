@@ -45,6 +45,7 @@ struct h2_filter_cin;
 struct h2_mplx;
 struct h2_priority;
 struct h2_push;
+struct h2_push_diary;
 struct h2_response;
 struct h2_session;
 struct h2_stream;
@@ -127,6 +128,8 @@ typedef struct h2_session {
     
     struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
     struct h2_workers *workers;     /* for executing stream tasks */
+    
+    struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
 } h2_session;
 
 
