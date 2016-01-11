@@ -84,16 +84,7 @@ typedef struct {
     char *name;
 } hcmethods_t;
 
-static hcmethods_t hcmethods[] = {
-        {NONE, "NONE"},
-        {TCP, "TCP"},
-        {OPTIONS, "OPTIONS"},
-        {HEAD, "HEAD"},
-        {GET, "GET"},
-        {CPING, "CPING"},
-        {PROVIDER, "PROVIDER"},
-        {EOT, NULL}
-};
+extern hcmethods_t hcmethods[];
 
 #define BALANCER_PREFIX "balancer://"
 

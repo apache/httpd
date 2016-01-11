@@ -43,6 +43,17 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
  */
 static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
+hcmethods_t hcmethods[] = {
+        {NONE, "NONE"},
+        {TCP, "TCP"},
+        {OPTIONS, "OPTIONS"},
+        {HEAD, "HEAD"},
+        {GET, "GET"},
+        {CPING, "CPING"},
+        {PROVIDER, "PROVIDER"},
+        {EOT, NULL}
+};
+
 static const char * const proxy_id = "proxy";
 apr_global_mutex_t *proxy_mutex = NULL;
 
