@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision: 420990 -->
+<!-- English Revision: 420990 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
