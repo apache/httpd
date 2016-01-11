@@ -194,6 +194,43 @@
     </directivesynopsis>
 
     <directivesynopsis>
+        <name>H2PushDiarySize</name>
+        <description>H2 Server Push Diary Size</description>
+        <syntax>H2PushDiarySize n</syntax>
+        <default>H2PushDiarySize 128</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.19 and later.</compatibility>
+        
+        <usage>
+            <p>
+                This directive toggles the maximum number of HTTP/2 server pushes 
+                that are remembered per HTTP/2 connection. This can be used inside the
+                <directive module="core" type="section">VirtualHost</directive> 
+                section to influence the number for all connections to that virtual host. 
+            </p>
+            <p>
+                The push diary records a digest (currently using SHA256) of pushed
+                resources (their URL) to avoid duplicate pushes on the same connection.
+                These value are not persisted, so clients openeing a new connection
+                will experience known pushes again. There is ongoing work to enable
+                a client to disclose a digest of the resources it already has, so
+                the diary maybe initialized by the client on each connection setup.
+            </p>
+            <p>
+                If the maximum size is reached, newer entries replace the oldest
+                ones. Using SHA256, each diary entry uses 32 bytes, letting a
+                default diary with 128 entries consume around 4 KB of memory.
+            </p>
+            <p>
+                A size of 0 will effectively disable the push diary.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
         <name>H2PushPriority</name>
         <description>H2 Server Push Priority</description>
         <syntax>H2PushPriority mime-type [after|before|interleaved] [weight]</syntax>
