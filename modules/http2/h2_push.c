@@ -34,6 +34,10 @@
 #include "h2_session.h"
 #include "h2_stream.h"
 
+/*******************************************************************************
+ * link header handling 
+ ******************************************************************************/
+
 static const char *policy_str(h2_push_policy policy)
 {
     switch (policy) {
@@ -456,13 +460,28 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
     req->push_policy = policy;
 }
 
-static unsigned int val_apr_hash(const char *str) 
+/*******************************************************************************
+ * push diary 
+ ******************************************************************************/
+ 
+struct h2_push_digest {
+    union {
+        uint32_t hash;
+    } val;
+};
+
+typedef struct h2_push_diary_entry {
+    h2_push_digest digest;
+} h2_push_diary_entry;
+
+
+static uint32_t val_apr_hash(const char *str) 
 {
     apr_ssize_t len = strlen(str);
     return apr_hashfunc_default(str, &len);
 }
 
-static void calc_apr_hash(h2_push_digest *d, h2_push *push) 
+static void calc_apr_hash(h2_push_diary *diary, h2_push_digest *d, h2_push *push) 
 {
     unsigned int val;
     
@@ -470,69 +489,85 @@ static void calc_apr_hash(h2_push_digest *d, h2_push *push)
     val ^= val_apr_hash(push->req->authority);
     val ^= val_apr_hash(push->req->path);
     
-    d->val.apr_hash = val;
+    d->val.hash = val % (diary->N * diary->P);
 }
 
-static int cmp_apr_hash(h2_push_digest *d1, h2_push_digest *d2) 
+static int cmp_hash(h2_push_digest *d1, h2_push_digest *d2) 
 {
-    return d1->val.apr_hash - d2->val.apr_hash;
+    return (d1->val.hash > d2->val.hash)? 1 : ((d1->val.hash == d2->val.hash)? 0 : -1);
 }
 
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t max_entries)
+static uint32_t ceil_power_of_2(uint32_t n)
+{
+    --n;
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    return ++n;
+}
+
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, uint32_t N, uint32_t P)
 {
     h2_push_diary *diary = NULL;
     
-    if (max_entries > 0) {
+    if (N > 0) {
         diary = apr_pcalloc(p, sizeof(*diary));
         
-        diary->entries     = apr_array_make(p, 10, sizeof(h2_push_diary_entry*));
-        diary->max_entries = max_entries;
+        diary->N           = ceil_power_of_2(N);
+        diary->P           = ceil_power_of_2(P? P : ((1<<31)/diary->N));
+        diary->entries     = apr_array_make(p, 16, sizeof(void*));
         diary->dtype       = H2_PUSH_DIGEST_APR_HASH;
         diary->dcalc       = calc_apr_hash;
-        diary->dcmp        = cmp_apr_hash;
+        diary->dcmp        = cmp_hash;
     }
     
     return diary;
 }
 
-static h2_push_diary_entry *h2_push_diary_find(h2_push_diary *diary, h2_push_digest *d)
+static int h2_push_diary_find(h2_push_diary *diary, h2_push_digest *d)
 {
     if (diary) {
         h2_push_diary_entry *e;
         int i;
-
-        for (i = 0; i < diary->entries->nelts; ++i) {
+        /* search from the end, where the last accessed digests are */
+        for (i = diary->entries->nelts-1; i >= 0; --i) {
             e = APR_ARRAY_IDX(diary->entries, i, h2_push_diary_entry*);
             if (!diary->dcmp(&e->digest, d)) {
-                return e;
+                return i;
             }
         }
     }
-    return NULL;
+    return -1;
 }
 
-static h2_push_diary_entry *h2_push_diary_insert(h2_push_diary *diary, h2_push_digest *d)
+static h2_push_diary_entry *move_to_last(h2_push_diary *diary, apr_size_t idx)
+{
+    h2_push_diary_entry **entries = (h2_push_diary_entry**)diary->entries->elts;
+    h2_push_diary_entry *e = entries[idx];
+    /* move entry[idx] to the end */
+    if (idx < (diary->entries->nelts-1)) {
+        memmove(entries+idx, entries+idx+1, sizeof(h2_push_diary_entry *) * diary->entries->nelts-idx-1);
+        entries[diary->entries->nelts-1] = e;
+    }
+    return e;
+}
+
+static h2_push_diary_entry *h2_push_diary_append(h2_push_diary *diary, h2_push_digest *digest)
 {
     h2_push_diary_entry *e;
-    int i;
     
-    if (diary->entries->nelts < diary->max_entries) {
+    if (diary->entries->nelts < diary->N) {
+        /* append a new diary entry at the end */
         e = apr_pcalloc(diary->entries->pool, sizeof(*e));
         APR_ARRAY_PUSH(diary->entries, h2_push_diary_entry*) = e;
     }
-    else {        
-        h2_push_diary_entry *oldest = NULL;
-        for (i = 0; i < diary->entries->nelts; ++i) {
-            e = APR_ARRAY_IDX(diary->entries, i, h2_push_diary_entry*);
-            if (!oldest || oldest->last_accessed > e->last_accessed) {
-                oldest = e;
-            }
-        }
-        e = oldest;
+    else {
+        e = move_to_last(diary, 0);
     }
-    
-    memcpy(&e->digest, d, sizeof(*d));
-    e->last_accessed = apr_time_now();
+    /* replace content with new digest. keeps memory usage constant once diary is full */
+    memcpy(&e->digest, digest, sizeof(*digest));
     return e;
 }
 
@@ -540,8 +575,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
 {
     apr_array_header_t *npushes = pushes;
     h2_push_digest d;
-    h2_push_diary_entry *e;
-    int i;
+    int i, idx;
     
     if (session->push_diary && pushes) {
         npushes = NULL;
@@ -550,12 +584,12 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
             h2_push *push;
             
             push = APR_ARRAY_IDX(pushes, i, h2_push*);
-            session->push_diary->dcalc(&d, push);
-            e = h2_push_diary_find(session->push_diary, &d);
-            if (e) {
+            session->push_diary->dcalc(session->push_diary, &d, push);
+            idx = h2_push_diary_find(session->push_diary, &d);
+            if (idx >= 0) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                               "push_diary_update: already there PUSH %s", push->req->path);
-                e->last_accessed = apr_time_now();
+                move_to_last(session->push_diary, idx);
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
@@ -564,7 +598,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
                     npushes = apr_array_make(pushes->pool, 5, sizeof(h2_push_diary_entry*));
                 }
                 APR_ARRAY_PUSH(npushes, h2_push*) = push;
-                h2_push_diary_insert(session->push_diary, &d);
+                h2_push_diary_append(session->push_diary, &d);
             }
         }
     }

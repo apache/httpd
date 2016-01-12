@@ -781,7 +781,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
 {
     nghttp2_session_callbacks *callbacks = NULL;
     nghttp2_option *options = NULL;
-    apr_size_t diary_size;
+    uint32_t n;
 
     apr_pool_t *pool = NULL;
     apr_status_t status = apr_pool_create(&pool, c->pool);
@@ -884,16 +884,16 @@ static h2_session *h2_session_create_int(conn_rec *c,
             return NULL;
         }
          
-        diary_size = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
-        session->push_diary = h2_push_diary_create(session->pool, diary_size);
+        n = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
+        session->push_diary = h2_push_diary_create(session->pool, n, 0);
         
         if (APLOGcdebug(c)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                           "session(%ld) created, timeout=%d, keepalive_timeout=%d, "
-                          "max_streams=%d, stream_mem=%d, push_diary_size=%d",
+                          "max_streams=%d, stream_mem=%d, push_diary(N=%d,P=%d)",
                           session->id, session->timeout_secs, session->keepalive_secs,
                           (int)session->max_stream_count, (int)session->max_stream_mem,
-                          (int)diary_size);
+                          (int)session->push_diary->N, (int)session->push_diary->P);
         }
     }
     return session;

@@ -35,31 +35,22 @@ typedef struct h2_push {
 typedef enum {
     H2_PUSH_DIGEST_APR_HASH,
     H2_PUSH_DIGEST_SHA256
-} h2_push_digest_t;
+} h2_push_digest_type;
 
-typedef struct h2_push_digest {
-    union {
-        unsigned int apr_hash;
-        unsigned char sha256[32];
-    } val;
-} h2_push_digest;
+typedef struct h2_push_digest h2_push_digest;
+typedef struct h2_push_diary h2_push_diary;
 
-typedef void h2_push_digest_calc(h2_push_digest *d, h2_push *push);
+typedef void h2_push_digest_calc(h2_push_diary *diary, h2_push_digest *d, h2_push *push);
 typedef int h2_push_digest_cmp(h2_push_digest *d1, h2_push_digest *d2);
 
-typedef struct h2_push_diary_entry {
-    h2_push_digest digest;
-    apr_time_t last_accessed;
-} h2_push_diary_entry;
-
-
-typedef struct h2_push_diary {
+struct h2_push_diary {
     apr_array_header_t  *entries;
-    apr_size_t           max_entries;
-    h2_push_digest_t     dtype;
+    uint32_t             N;   /* Max + of entries, power of 2 */
+    uint32_t             P;   /* Probability 1/P of false positive, power of 2 */
+    h2_push_digest_type  dtype;
     h2_push_digest_calc *dcalc;
     h2_push_digest_cmp  *dcmp;
-} h2_push_diary;
+};
 
 /**
  * Determine the list of h2_push'es to send to the client on behalf of
@@ -89,10 +80,12 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
  * Create a new push diary for the given maximum number of entries.
  * 
  * @oaram p the pool to use
- * @param max_entries the maximum number of entries the diary should hold
+ * @param N the max number of entries, rounded up to 2^x
+ * @param P false positives with 1/P probability, rounded up to 2^x, if 0
+ *          diary will itself choose the best value
  * @return the created diary, might be NULL of max_entries is 0
  */
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t max_entries);
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, uint32_t N, uint32_t P);
 
 /**
  * Filters the given pushes against the diary and returns only those pushes
