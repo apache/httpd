@@ -3410,8 +3410,8 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Directiva</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls whether the REDIRECT_URL environent variable is 
-             fully qualified</td></tr>
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls whether the REDIRECT_URL environment variable is
+fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
