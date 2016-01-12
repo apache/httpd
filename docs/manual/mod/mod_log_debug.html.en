@@ -59,7 +59,7 @@
       <li>
         Log message if request to /foo/* is processed in a sub-request:
         <pre class="prettyprint lang-config">&lt;Location "/foo/"&gt;
-  LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+  LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
 &lt;/Location&gt;</pre>
 
 
