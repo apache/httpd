@@ -37,6 +37,14 @@ client</description>
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 
+<section id="supportedencodings"><title>Supported Encodings</title>
+  <p>The <code>gzip</code> encoding is the only one supported to ensure complete compatibility
+  with old browser implementations. The <code>deflate</code> encoding is not supported, 
+  please check the <a href="http://www.gzip.org/zlib/zlib_faq.html#faq38">zlib's documentation</a>
+  for a complete explanation.
+  </p>
+</section>
+
 <section id="recommended"><title>Sample Configurations</title>
     <note type="warning"><title>Compression and TLS</title>
         <p>Some web applications are vulnerable to an information disclosure
