@@ -313,6 +313,7 @@
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
 <li><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><a href="mod_http2.html#h2push">H2Push</a></li>
+<li><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><a href="mod_http2.html#h2pushpriority">H2PushPriority</a></li>
 <li><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles</a></li>
