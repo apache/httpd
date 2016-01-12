@@ -541,6 +541,12 @@ static const char *h2_conf_set_push_diary_size(cmd_parms *parms,
     if (cfg->push_diary_size < 0) {
         return "value must be >= 0";
     }
+    if (cfg->push_diary_size > 0 && (cfg->push_diary_size & (cfg->push_diary_size-1))) {
+        return "value must a power of 2";
+    }
+    if (cfg->push_diary_size > (1 << 15)) {
+        return "value must <= 65536";
+    }
     return NULL;
 }
 
