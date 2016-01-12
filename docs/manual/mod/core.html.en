@@ -3246,10 +3246,10 @@ or specified mutexes</td></tr>
         holding a mutex that uses this implementation, the server will deadlock
         and stop responding to requests.  When this occurs, the server will
         require a manual restart to recover.</p>
-        <p>Solaris is a notable exception as it provides a mechanism which
+        <p>Solaris and Linux are notable exceptions as they provide a mechanism which
         usually allows the mutex to be recovered after a child process
         terminates abnormally while holding a mutex.</p>
-        <p>If your system implements the
+        <p>If your system is POSIX compliant or if it implements the
         <code>pthread_mutexattr_setrobust_np()</code> function, you may be able
         to use the <code>pthread</code> option safely.</p>
         </div>
@@ -3668,8 +3668,8 @@ On Windows, from Apache 2.3.3 and later.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environent variable is 
-             fully qualified</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is
+fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
