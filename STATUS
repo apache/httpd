@@ -219,7 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 57895
      trunk patch: http://svn.apache.org/r1723567
      2.4.x patch: trunk works, modulo CHANGES
-     +1: rjung
+     +1: rjung, covener
+
+  *) mod_rewrite: Avoid looping on relative substitutions that
+     result in the same filename we started with. 
+     PR 58854.
+     trunk patch: http://svn.apache.org/r1724656
+     2.4.x: trunk works
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
