@@ -62,7 +62,7 @@ static h2_config defconf = {
     -1,                     /* connection timeout */
     -1,                     /* keepalive timeout */
     0,                      /* stream timeout */
-    128,                    /* push diary size */
+    256,                    /* push diary size */
     
 };
 

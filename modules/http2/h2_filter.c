@@ -23,7 +23,16 @@
 
 #include "h2_private.h"
 #include "h2_conn_io.h"
+#include "h2_ctx.h"
+#include "h2_mplx.h"
+#include "h2_push.h"
+#include "h2_task.h"
+#include "h2_stream.h"
+#include "h2_stream_set.h"
+#include "h2_response.h"
+#include "h2_session.h"
 #include "h2_util.h"
+#include "h2_version.h"
 
 #include "h2_filter.h"
 
@@ -157,3 +166,143 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
     }
     return status;
 }
+
+/*******************************************************************************
+ * http2 connection status handler + stream out source
+ ******************************************************************************/
+
+static const char *H2_SOS_H2_STATUS = "http2-status";
+
+int h2_filter_h2_status_handler(request_rec *r)
+{
+    h2_ctx *ctx = h2_ctx_rget(r);
+    h2_task *task;
+    
+    if (strcmp(r->handler, "http2-status")) {
+        return DECLINED;
+    }
+    if (r->method_number != M_GET) {
+        return DECLINED;
+    }
+
+    task = ctx? h2_ctx_get_task(ctx) : NULL;
+    if (task) {
+        /* We need to handle the actual output on the main thread, as
+         * we need to access h2_session information. */
+        apr_table_setn(r->notes, H2_RESP_SOS_NOTE, H2_SOS_H2_STATUS);
+        apr_table_setn(r->headers_out, "Content-Type", "application/json");
+        r->status = 200;
+        return DONE;
+    }
+    return DECLINED;
+}
+
+#define bbout(...)   apr_brigade_printf(bb, NULL, NULL, __VA_ARGS__)
+static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
+{
+    h2_stream *stream = sos->stream;
+    h2_session *session = stream->session;
+    h2_mplx *mplx = session->mplx;
+    apr_status_t status;
+    
+    if (!bb) {
+        bb = apr_brigade_create(stream->pool, session->c->bucket_alloc);
+    }
+    
+    bbout("{\n");
+    bbout("  \"HTTP2\": \"on\",\n");
+    bbout("  \"H2PUSH\": \"%s\",\n", h2_session_push_enabled(session)? "on" : "off");
+    bbout("  \"mod_http2_version\": \"%s\",\n", MOD_HTTP2_VERSION);
+    bbout("  \"session_id\": %ld,\n", (long)session->id);
+    bbout("  \"streams_max\": %d,\n", (int)session->max_stream_count);
+    bbout("  \"this_stream\": %d,\n", stream->id);
+    bbout("  \"streams_open\": %d,\n", (int)h2_stream_set_size(session->streams));
+    bbout("  \"max_stream_started\": %d,\n", mplx->max_stream_started);
+    bbout("  \"requests_received\": %d,\n", session->requests_received);
+    bbout("  \"responses_submitted\": %d,\n", session->responses_submitted);
+    bbout("  \"streams_reset\": %d, \n", session->streams_reset);
+    bbout("  \"pushes_promised\": %d,\n", session->pushes_promised);
+    bbout("  \"pushes_submitted\": %d,\n", session->pushes_submitted);
+    bbout("  \"pushes_reset\": %d,\n", session->pushes_reset);
+    
+    if (session->push_diary) {
+        const char *data;
+        const char *base64_digest;
+        apr_size_t len;
+        
+        status = h2_push_diary_digest_get(session->push_diary, stream->pool, 1024, &data, &len);
+        if (status == APR_SUCCESS) {
+            base64_digest = h2_util_base64url_encode(data, len, stream->pool);
+            bbout("  \"cache_digest\": \"%s\",\n", base64_digest);
+        }
+        
+        /* try the reverse for testing purposes */
+        status = h2_push_diary_digest_set(session->push_diary, data, len);
+        if (status == APR_SUCCESS) {
+            status = h2_push_diary_digest_get(session->push_diary, stream->pool, 1024, &data, &len);
+            if (status == APR_SUCCESS) {
+                base64_digest = h2_util_base64url_encode(data, len, stream->pool);
+                bbout("  \"cache_digest^2\": \"%s\",\n", base64_digest);
+            }
+        }
+    }
+    bbout("  \"frames_received\": %ld,\n", (long)session->frames_received);
+    bbout("  \"frames_sent\": %ld,\n", (long)session->frames_sent);
+    bbout("  \"bytes_received\": %"APR_UINT64_T_FMT",\n", session->io.bytes_read);
+    bbout("  \"bytes_sent\": %"APR_UINT64_T_FMT"\n", session->io.bytes_written);
+    bbout("}\n");
+    
+    return sos->prev->buffer(sos->prev, bb);
+}
+
+static apr_status_t h2_sos_h2_status_read_to(h2_sos *sos, apr_bucket_brigade *bb, 
+                                             apr_off_t *plen, int *peos)
+{
+    return sos->prev->read_to(sos->prev, bb, plen, peos);
+}
+
+static apr_status_t h2_sos_h2_status_prep_read(h2_sos *sos, apr_off_t *plen, int *peos)
+{
+    return sos->prev->prep_read(sos->prev, plen, peos);
+}
+
+static apr_status_t h2_sos_h2_status_readx(h2_sos *sos, h2_io_data_cb *cb, void *ctx,
+                                           apr_off_t *plen, int *peos)
+{
+    return sos->prev->readx(sos->prev, cb, ctx, plen, peos);
+}
+
+static apr_table_t *h2_sos_h2_status_get_trailers(h2_sos *sos)
+{
+    return sos->prev->get_trailers(sos->prev);
+}
+
+static h2_sos *h2_sos_h2_status_create(h2_sos *prev) 
+{
+    h2_sos *sos;
+    h2_response *response = prev->response;
+    
+    apr_table_unset(response->headers, "Content-Length");
+    response->content_length = -1;
+
+    sos = apr_pcalloc(prev->stream->pool, sizeof(*sos));
+    sos->prev         = prev;
+    sos->response     = response;
+    sos->stream       = prev->stream;
+    sos->buffer       = h2_sos_h2_status_buffer;
+    sos->prep_read    = h2_sos_h2_status_prep_read;
+    sos->readx        = h2_sos_h2_status_readx;
+    sos->read_to      = h2_sos_h2_status_read_to;
+    sos->get_trailers = h2_sos_h2_status_get_trailers;
+    
+    return sos;
+}
+
+h2_sos *h2_filter_sos_create(const char *name, struct h2_sos *prev)
+{
+    if (!strcmp(H2_SOS_H2_STATUS, name)) {
+        return h2_sos_h2_status_create(prev);
+    }
+    return prev;
+}
+

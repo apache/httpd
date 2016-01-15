@@ -92,17 +92,19 @@ typedef struct h2_session {
     unsigned int eoc_written   : 1; /* h2 eoc bucket written */
     apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
     
-    int unsent_submits;             /* number of submitted, but not yet sent
-                                       responses. */
-    int unsent_promises;            /* number of submitted, but not yet sent
-                                     * push promised */
-                                     
+    int unsent_submits;             /* number of submitted, but not yet written responses. */
+    int unsent_promises;            /* number of submitted, but not yet written push promised */
+                                         
+    int requests_received;          /* number of http/2 requests received */
+    int responses_submitted;        /* number of http/2 responses submitted */
+    int streams_reset;              /* number of http/2 streams reset by client */
+    int pushes_promised;            /* number of http/2 push promises submitted */
+    int pushes_submitted;           /* number of http/2 pushed responses submitted */
+    int pushes_reset;               /* number of http/2 pushed reset by client */
+    
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */
-    int requests_received;          /* number of http/2 requests received */
-    int responses_sent;             /* number of http/2 responses submitted */
-    int streams_reset;              /* number of http/2 streams reset by client */
-    int streams_pushed;             /* number of http/2 streams pushed */
+    
     int max_stream_received;        /* highest stream id created */
     int max_stream_handled;         /* highest stream id completed */
     

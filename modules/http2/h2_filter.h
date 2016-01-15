@@ -16,6 +16,7 @@
 #ifndef __mod_h2__h2_filter__
 #define __mod_h2__h2_filter__
 
+struct h2_stream;
 struct h2_session;
 
 typedef apr_status_t h2_filter_cin_cb(void *ctx, 
@@ -41,6 +42,36 @@ apr_status_t h2_filter_core_input(ap_filter_t* filter,
                                   ap_input_mode_t mode,
                                   apr_read_type_e block,
                                   apr_off_t readbytes);
+
+typedef struct h2_sos h2_sos;
+typedef apr_status_t h2_sos_data_cb(void *ctx, const char *data, apr_off_t len);
+
+typedef apr_status_t h2_sos_buffer(h2_sos *sos, apr_bucket_brigade *bb);
+typedef apr_status_t h2_sos_prep_read(h2_sos *sos, apr_off_t *plen, int *peos);
+typedef apr_status_t h2_sos_readx(h2_sos *sos, h2_sos_data_cb *cb, 
+                                  void *ctx, apr_off_t *plen, int *peos);
+typedef apr_status_t h2_sos_read_to(h2_sos *sos, apr_bucket_brigade *bb, 
+                                    apr_off_t *plen, int *peos);
+typedef apr_table_t *h2_sos_get_trailers(h2_sos *sos);
+
+
+#define H2_RESP_SOS_NOTE     "h2-sos-filter"
+
+struct h2_sos {
+    struct h2_stream *stream;
+    h2_sos           *prev;
+    struct h2_response *response;
+    void             *ctx;
+    h2_sos_buffer    *buffer;
+    h2_sos_prep_read *prep_read;
+    h2_sos_readx     *readx;
+    h2_sos_read_to   *read_to;
+    h2_sos_get_trailers *get_trailers;
+};
+
+h2_sos *h2_filter_sos_create(const char *name, struct h2_sos *prev); 
+
+int h2_filter_h2_status_handler(request_rec *r);
 
 
 #endif /* __mod_h2__h2_filter__ */

@@ -18,6 +18,7 @@
 #include <apr_want.h>
 
 #include <httpd.h>
+#include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
 
@@ -27,6 +28,7 @@
 #include "h2_stream.h"
 #include "h2_alt_svc.h"
 #include "h2_conn.h"
+#include "h2_filter.h"
 #include "h2_task.h"
 #include "h2_session.h"
 #include "h2_config.h"
@@ -156,6 +158,9 @@ static void h2_hooks(apr_pool_t *pool)
     /* Setup subprocess env for certain variables 
      */
     ap_hook_fixups(h2_h2_fixups, NULL,NULL, APR_HOOK_MIDDLE);
+    
+    /* test http2 connection status handler */
+    ap_hook_handler(h2_filter_h2_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static char *value_of_HTTP2(apr_pool_t *p, server_rec *s,

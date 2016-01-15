@@ -38,6 +38,7 @@
 #include "h2_worker.h"
 #include "h2_workers.h"
 #include "h2_conn.h"
+#include "h2_version.h"
 
 static struct h2_workers *workers;
 

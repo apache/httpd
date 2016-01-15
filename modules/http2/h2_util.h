@@ -49,6 +49,8 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
 apr_size_t h2_util_base64url_decode(const char **decoded, 
                                     const char *encoded, 
                                     apr_pool_t *pool);
+const char *h2_util_base64url_encode(const char *data, 
+                                     apr_size_t len, apr_pool_t *pool);
 
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
     ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))

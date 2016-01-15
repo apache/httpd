@@ -1,6 +1,20 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: connection how keep a "push diary" where hashes of already
+     pushed resources are kept. See directive H2PushDiarySize for managing this.
+     Push diaries can be initialized by clients via the "Cache-Digest" request
+     header. This carries a base64url encoded. compressed Golomb set as described
+     in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+     Introduced a status handler for HTTP/2 connections, giving various counters
+     and statistics about the current connection, plus its cache digest value
+     in a JSON record. Not a replacement for more HTTP/2 in the server status. 
+     Configured as
+     <Location "/http2-status">
+         SetHandler http2-status
+     </Location>
+     [Stefan Eissing]
+  
   *) mod_rewrite: Avoid looping on relative substitutions that
      result in the same filename we started with. PR 58854.
      [Eric Covener]
