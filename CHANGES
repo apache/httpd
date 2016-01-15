@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cgid: Message AH02550, failure to flush a response to the client,
+     is now logged at TRACE1 level to match the underlying core output filter
+     severity.  [Eric Covener]
+
   *) mod_http2: connection how keep a "push diary" where hashes of already
      pushed resources are kept. See directive H2PushDiarySize for managing this.
      Push diaries can be initialized by clients via the "Cache-Digest" request
