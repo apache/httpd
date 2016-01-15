@@ -1742,6 +1742,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     memset(wshared, 0, sizeof(proxy_worker_shared));
 
+    wshared->port = (uri.port ? uri.port : ap_proxy_port_of_scheme(uri.scheme));
     if (uri.port && uri.port == ap_proxy_port_of_scheme(uri.scheme)) {
         uri.port = 0;
     }
@@ -1756,7 +1757,6 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
         return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
     }
-    wshared->port = uri.port;
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;
     wshared->is_address_reusable = 1;
@@ -2914,6 +2914,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * no further connections to the worker could be made
          */
         if (!connected) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "Usable not connected");
+
             if (!(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
                 worker->s->error_time = apr_time_now();
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
@@ -2945,6 +2947,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (connected) {
             socket_cleanup(conn);
         }
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "Not usable");
         return DECLINED;
     }
 }

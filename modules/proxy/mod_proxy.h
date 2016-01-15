@@ -82,6 +82,7 @@ typedef enum {
 typedef struct {
     hcmethod_t method;
     char *name;
+    int implemented;
 } hcmethods_t;
 
 extern hcmethods_t hcmethods[];

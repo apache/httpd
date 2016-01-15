@@ -44,14 +44,14 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
 hcmethods_t hcmethods[] = {
-        {NONE, "NONE"},
-        {TCP, "TCP"},
-        {OPTIONS, "OPTIONS"},
-        {HEAD, "HEAD"},
-        {GET, "GET"},
-        {CPING, "CPING"},
-        {PROVIDER, "PROVIDER"},
-        {EOT, NULL}
+        {NONE, "NONE", 1},
+        {TCP, "TCP", 1},
+        {OPTIONS, "OPTIONS", 0},
+        {HEAD, "HEAD", 0},
+        {GET, "GET", 0},
+        {CPING, "CPING", 0},
+        {PROVIDER, "PROVIDER", 0},
+        {EOT, NULL, 1}
 };
 
 static const char * const proxy_id = "proxy";
