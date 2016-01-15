@@ -45,7 +45,9 @@ typedef struct {
     apr_pool_t *p;
     apr_array_header_t *templates;
     apr_array_header_t *conditions;
+    /* TODO: Make below array/hashtable tagged to each worker */
     ap_watchdog_t *watchdog;
+    proxy_worker *hc;
     server_rec *s;
 } sctx_t;
 
@@ -55,9 +57,41 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     apr_pool_create(&ctx->p, p);
     ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_array_make(ctx->p, 10, sizeof(hc_condition_t));
+    ctx->hc = NULL;
     ctx->s = s;
 
     return ctx;
+}
+
+static void hc_child_init(apr_pool_t *p, server_rec *s)
+{
+    proxy_worker *hc = NULL;
+
+    /* TODO */
+    while (s) {
+        sctx_t *ctx = (sctx_t *) ap_get_module_config(s->module_config,
+                                                      &proxy_hcheck_module);
+        if (!hc) {
+            ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, "http://www.apache.org", 0);
+            PROXY_STRNCPY(hc->s->name,     "proxy:hcheck");
+            PROXY_STRNCPY(hc->s->hostname, "*");
+            PROXY_STRNCPY(hc->s->scheme,   "*");
+            hc->hash.def = hc->s->hash.def =
+                ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
+            hc->hash.fnv = hc->s->hash.fnv =
+                ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
+            /* Do not disable worker in case of errors */
+            hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+            /* Mark as the "generic" worker */
+            hc->s->status |= PROXY_WORKER_GENERIC;
+            ctx->hc = hc;
+            ap_proxy_initialize_worker(ctx->hc, s, ctx->p);
+            /* Enable address cache for generic reverse worker */
+            hc->s->is_address_reusable = 1;
+        }
+        ctx->hc = hc;
+        s = s->next;
+    }
 }
 
 /*
@@ -107,6 +141,10 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         hcmethods_t *method = hcmethods;
         for (; method->name; method++) {
             if (!ap_casecmpstr(val, method->name)) {
+                if (!method->implemented) {
+                    return apr_psprintf(p, "Health check method %s not (yet) implemented",
+                                        val);
+                }
                 if (worker) {
                     worker->s->method = method->method;
                 } else {
@@ -119,8 +157,9 @@ static const char *set_worker_hc_param(apr_pool_t *p,
     }
     else if (!strcasecmp(key, "hcinterval")) {
         ival = atoi(val);
-        if (ival < 5)
-            return "Interval must be a positive value greater than 5 seconds";
+        if (ival < HCHECK_WATHCHDOG_INTERVAL)
+            return apr_psprintf(p, "Interval must be a positive value greater than %d seconds",
+                                HCHECK_WATHCHDOG_INTERVAL);
         if (worker) {
             worker->s->interval = apr_time_from_sec(ival);
         } else {
@@ -252,16 +291,93 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 
     return NULL;
 }
+static void backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
+                            server_rec *s)
+{
+    if (backend) {
+        backend->close = 1;
+        ap_proxy_release_connection(proxy_function, backend, s);
+    }
+}
+
+static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+{
+    int status;
+    apr_status_t err = APR_SUCCESS;
+    proxy_conn_rec *backend = NULL;
+    proxy_conn_pool *cp = ctx->hc->cp;
+
+    if (!worker->cp) {
+        apr_status_t rv;
+        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
+            return rv;
+        }
+        err = apr_sockaddr_info_get(&(cp->addr), worker->s->hostname, APR_UNSPEC,
+                                    worker->s->port, 0, ctx->p);
+
+        if (err != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "DNS lookup failure for: %s:%d",
+                         worker->s->hostname, (int)worker->s->port);
+            return err;
+        }
+    }
+    backend = (proxy_conn_rec *) apr_palloc(p, sizeof(proxy_conn_rec));
+    status = ap_proxy_acquire_connection("HCTCP", &backend, ctx->hc, ctx->s);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                     "ap_proxy_acquire_connection (%d).", status);
+    if (status == OK) {
+        backend->addr = cp->addr;
+        status = ap_proxy_connect_backend("HCTCP", backend, ctx->hc, ctx->s);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "ap_proxy_connect_backend (%d).", status);
+        if (status == OK) {
+            status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                                 "ap_proxy_is_socket_connected (%d).", status);
+        }
+    }
+    ctx->hc->cp = cp;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                     "Health check TCP Status (%d).", status);
+    if (status != OK) {
+        backend_cleanup("HCTCP", backend, ctx->s);
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
 
 static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                      proxy_worker *worker)
 {
     server_rec *s = ctx->s;
+    apr_status_t rv;
     /* TODO: REMOVE ap_log_error call */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
                  "Health check (%s).", worker->s->name);
 
-    return;
+    switch (worker->s->method) {
+        case TCP:
+            rv = hc_check_tcp(ctx, p, worker);
+            break;
+
+        default:
+            rv = APR_ENOTIMPL;
+            break;
+    }
+    if (rv == APR_ENOTIMPL) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+                         "Somehow tried to use unimplemented hcheck method: %d", (int)worker->s->method);
+        return;
+    }
+    /* TODO Honor fails and passes */
+    ap_proxy_set_wstatus('#', (rv == APR_SUCCESS ? 0 : 1), worker);
+    if (rv != APR_SUCCESS) {
+        worker->s->error_time = now;
+    }
+    worker->s->updated = now;
 }
 
 static apr_status_t hc_watchdog_callback(int state, void *data,
@@ -296,21 +412,23 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     int n;
                     proxy_worker **workers;
                     proxy_worker *worker;
+                    ap_proxy_sync_balancer(balancer, s, conf);
                     workers = (proxy_worker **)balancer->workers->elts;
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
                         /* TODO: REMOVE ap_log_error call */
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
-                                     "Checking worker: %s:%d (%lu %lu %lu)",
+                                     "Checking %s worker: %s / %d (%lu %lu %lu)", balancer->s->name,
                                      worker->s->name, worker->s->method, (unsigned long)now,
                                      (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
-                        if (worker->s->method && (now > worker->s->updated + worker->s->interval)) {
+                        if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
                             hc_check(ctx, p, now, worker);
                         }
                         workers++;
                     }
                 }
                 apr_pool_destroy(p);
+                /* s = s->next; */
             }
             break;
 
@@ -379,6 +497,7 @@ static void hc_register_hooks(apr_pool_t *p)
     static const char *const runAfter[] = { "mod_watchdog.c", "mod_proxy_balancer.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     ap_hook_post_config(hc_post_config, NULL, runAfter, APR_HOOK_LAST);
+    ap_hook_child_init(hc_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /* the main config structure */
