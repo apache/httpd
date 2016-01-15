@@ -228,6 +228,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1 covener
 
+  *) mod_cgid: drop severity of flush error message to match
+     core output filter.
+     trunk patch: http://svn.apache.org/r1724847
+     2.4.x: trunk works.
+     +1 covener
+
+  *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075,
+     "Error dispatching request", when the cause appears to be
+     the client closing the connection. PR58118
+     trunk patch:  http://svn.apache.org/r1724857
+     2.4.x patch: trunk works
+     +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
