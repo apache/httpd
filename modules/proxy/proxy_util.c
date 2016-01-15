@@ -2914,8 +2914,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * no further connections to the worker could be made
          */
         if (!connected) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "Usable not connected");
-
             if (!(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
                 worker->s->error_time = apr_time_now();
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
@@ -2947,7 +2945,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (connected) {
             socket_cleanup(conn);
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO() "Not usable");
         return DECLINED;
     }
 }
