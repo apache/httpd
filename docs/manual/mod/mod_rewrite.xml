@@ -1304,7 +1304,6 @@ cannot use <code>$N</code> in the substitution string!
       or it is explicitly terminated by a
       <a href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code> flag</a>,
       or other flag which implies immediate termination, such as
-      <code><strong>END</strong></code> or
       <code><strong>F</strong></code>.</p>
  
      <note><title>Modifying the Query String</title>
@@ -1382,7 +1381,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Especially note caveats for per-directory and
-        .htaccess context (see also the END flag). <em><a
+        .htaccess context. <em><a
         href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
     <tr>
