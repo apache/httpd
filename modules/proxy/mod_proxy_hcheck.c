@@ -314,7 +314,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
             return rv;
         }
-        err = apr_sockaddr_info_get(&(cp->addr), worker->s->hostname, APR_UNSPEC,
+        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
                                     worker->s->port, 0, ctx->p);
 
         if (err != APR_SUCCESS) {
@@ -324,7 +324,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
             return err;
         }
     }
-    backend = (proxy_conn_rec *) apr_palloc(p, sizeof(proxy_conn_rec));
+    cp->addr = worker->cp->addr;
     status = ap_proxy_acquire_connection("HCTCP", &backend, ctx->hc, ctx->s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "ap_proxy_acquire_connection (%d).", status);
@@ -342,8 +342,8 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
     ctx->hc->cp = cp;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "Health check TCP Status (%d).", status);
+    backend_cleanup("HCTCP", backend, ctx->s);
     if (status != OK) {
-        backend_cleanup("HCTCP", backend, ctx->s);
         return APR_EGENERAL;
     }
     return APR_SUCCESS;
