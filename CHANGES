@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_cgid: Message AH02550, failure to flush a response to the client,
+  *) mod_cgid: Message 02550, failure to flush a response to the client,
      is now logged at TRACE1 level to match the underlying core output filter
      severity.  [Eric Covener]
 
