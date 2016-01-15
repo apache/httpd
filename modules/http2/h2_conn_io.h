@@ -35,6 +35,7 @@ typedef struct {
     
     apr_size_t write_size;
     apr_time_t last_write;
+    apr_int64_t bytes_read;
     apr_int64_t bytes_written;
     
     int buffer_output;

@@ -37,19 +37,17 @@ typedef enum {
     H2_PUSH_DIGEST_SHA256
 } h2_push_digest_type;
 
-typedef struct h2_push_digest h2_push_digest;
 typedef struct h2_push_diary h2_push_diary;
 
-typedef void h2_push_digest_calc(h2_push_diary *diary, h2_push_digest *d, h2_push *push);
-typedef int h2_push_digest_cmp(h2_push_digest *d1, h2_push_digest *d2);
+typedef void h2_push_digest_calc(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push);
 
 struct h2_push_diary {
     apr_array_header_t  *entries;
-    uint32_t             N;   /* Max + of entries, power of 2 */
-    uint32_t             P;   /* Probability 1/P of false positive, power of 2 */
+    apr_size_t           NMax; /* Maximum for N, should size change be necessary */
+    apr_size_t           N;    /* Current maximum number of entries, power of 2 */
+    apr_uint64_t         mask; /* applied on hash value comparision */
     h2_push_digest_type  dtype;
     h2_push_digest_calc *dcalc;
-    h2_push_digest_cmp  *dcmp;
 };
 
 /**
@@ -81,11 +79,9 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
  * 
  * @oaram p the pool to use
  * @param N the max number of entries, rounded up to 2^x
- * @param P false positives with 1/P probability, rounded up to 2^x, if 0
- *          diary will itself choose the best value
  * @return the created diary, might be NULL of max_entries is 0
  */
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, uint32_t N, uint32_t P);
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t N);
 
 /**
  * Filters the given pushes against the diary and returns only those pushes
@@ -100,5 +96,33 @@ apr_array_header_t *h2_push_diary_update(struct h2_session *session, apr_array_h
 apr_array_header_t *h2_push_collect_update(struct h2_stream *stream, 
                                            const struct h2_request *req, 
                                            const struct h2_response *res);
+/**
+ * Get a cache digest as described in 
+ * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+ * from the contents of the push diary.
+ * 
+ * @param diary the diary to calculdate the digest from
+ * @param p the pool to use
+ * @param pdata on successful return, the binary cache digest
+ * @param plen on successful return, the length of the binary data
+ */
+apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *p, 
+                                      apr_uint32_t maxP, const char **pdata, 
+                                      apr_size_t *plen);
+
+/**
+ * Initialize the push diary by a cache digest as described in 
+ * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+ * .
+ * @param diary the diary to set the digest into
+ * @param data the binary cache digest
+ * @param len the length of the cache digest
+ * @return APR_EINVAL if digest was not successfully parsed
+ */
+apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, 
+                                      const char *data, apr_size_t len);
+
+apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *data64url, 
+                                        apr_pool_t *pool);
 
 #endif /* defined(__mod_h2__h2_push__) */

@@ -20,12 +20,13 @@ struct h2_request;
 struct h2_push;
 
 typedef struct h2_response {
-    int stream_id;
-    int rst_error;
-    int http_status;
-    apr_off_t content_length;
+    int         stream_id;
+    int         rst_error;
+    int         http_status;
+    apr_off_t   content_length;
     apr_table_t *headers;
     apr_table_t *trailers;
+    const char  *sos_filter;
 } h2_response;
 
 /**
@@ -40,6 +41,7 @@ h2_response *h2_response_create(int stream_id,
                                 int rst_error,
                                 int http_status,
                                 apr_array_header_t *hlines,
+                                apr_table_t *notes,
                                 apr_pool_t *pool);
 
 /**

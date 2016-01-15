@@ -26,6 +26,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
+#include "h2_filter.h"
 #include "h2_h2.h"
 #include "h2_util.h"
 #include "h2_request.h"
@@ -64,10 +65,16 @@ static apr_table_t *parse_headers(apr_array_header_t *hlines, apr_pool_t *pool)
     }
 }
 
+static const char *get_sos_filter(apr_table_t *notes) 
+{
+    return notes? apr_table_get(notes, H2_RESP_SOS_NOTE) : NULL;
+}
+
 static h2_response *h2_response_create_int(int stream_id,
                                            int rst_error,
                                            int http_status,
                                            apr_table_t *headers,
+                                           apr_table_t *notes,
                                            apr_pool_t *pool)
 {
     h2_response *response;
@@ -82,11 +89,12 @@ static h2_response *h2_response_create_int(int stream_id,
         return NULL;
     }
     
-    response->stream_id = stream_id;
-    response->rst_error = rst_error;
-    response->http_status = http_status? http_status : 500;
+    response->stream_id      = stream_id;
+    response->rst_error      = rst_error;
+    response->http_status    = http_status? http_status : 500;
     response->content_length = -1;
-    response->headers = headers;
+    response->headers        = headers;
+    response->sos_filter     = get_sos_filter(notes);
     
     s = apr_table_get(headers, "Content-Length");
     if (s) {
@@ -109,10 +117,11 @@ h2_response *h2_response_create(int stream_id,
                                 int rst_error,
                                 int http_status,
                                 apr_array_header_t *hlines,
+                                apr_table_t *notes,
                                 apr_pool_t *pool)
 {
     return h2_response_create_int(stream_id, rst_error, http_status,
-                                  parse_headers(hlines, pool), pool);
+                                  parse_headers(hlines, pool), notes, pool);
 }
 
 h2_response *h2_response_rcreate(int stream_id, request_rec *r,
@@ -123,10 +132,11 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
         return NULL;
     }
     
-    response->stream_id = stream_id;
-    response->http_status = r->status;
+    response->stream_id      = stream_id;
+    response->http_status    = r->status;
     response->content_length = -1;
-    response->headers = header;
+    response->headers        = header;
+    response->sos_filter     = get_sos_filter(r->notes);
 
     if (response->http_status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
@@ -155,20 +165,22 @@ h2_response *h2_response_die(int stream_id, apr_status_t type,
     apr_table_setn(headers, "Date", date);
     apr_table_setn(headers, "Server", ap_get_server_banner());
     
-    return h2_response_create_int(stream_id, 0, 500, headers, pool);
+    return h2_response_create_int(stream_id, 0, 500, headers, NULL, pool);
 }
 
 h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from)
 {
     h2_response *to = apr_pcalloc(pool, sizeof(h2_response));
-    to->stream_id = from->stream_id;
-    to->http_status = from->http_status;
+    
+    to->stream_id      = from->stream_id;
+    to->http_status    = from->http_status;
     to->content_length = from->content_length;
+    to->sos_filter     = from->sos_filter;
     if (from->headers) {
-        to->headers = apr_table_clone(pool, from->headers);
+        to->headers    = apr_table_clone(pool, from->headers);
     }
     if (from->trailers) {
-        to->trailers = apr_table_clone(pool, from->trailers);
+        to->trailers   = apr_table_clone(pool, from->trailers);
     }
     return to;
 }
