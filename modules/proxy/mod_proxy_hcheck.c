@@ -517,9 +517,10 @@ static const command_rec command_table[] = {
 
 static void hc_register_hooks(apr_pool_t *p)
 {
-    static const char *const runAfter[] = { "mod_watchdog.c", "mod_proxy_balancer.c", NULL};
+    static const char *const runAfter[] = { "mod_proxy_balancer.c", "mod_proxy.c", NULL};
+    static const char *const runBefore[] = { "mod_watchdog.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
-    ap_hook_post_config(hc_post_config, NULL, runAfter, APR_HOOK_LAST);
+    ap_hook_post_config(hc_post_config, runAfter, runBefore, APR_HOOK_LAST);
 }
 
 /* the main config structure */
