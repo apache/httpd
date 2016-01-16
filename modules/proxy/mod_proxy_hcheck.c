@@ -303,7 +303,6 @@ static void backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
 static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
 {
     int status;
-    apr_status_t err = APR_SUCCESS;
     proxy_conn_rec *backend = NULL;
     proxy_conn_pool *saved_cp = ctx->hc->cp;
 
@@ -415,6 +414,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                              */
                             if (!worker->cp) {
                                 apr_status_t rv;
+                                apr_status_t err = APR_SUCCESS;
                                 rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
                                 if (rv != APR_SUCCESS) {
                                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
