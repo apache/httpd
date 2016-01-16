@@ -45,8 +45,8 @@ typedef struct {
     apr_pool_t *p;
     apr_array_header_t *templates;
     apr_array_header_t *conditions;
-    /* TODO: Make below array/hashtable tagged to each worker */
     ap_watchdog_t *watchdog;
+    /* TODO: Make below array/hashtable tagged to each worker */
     proxy_worker *hc;
     server_rec *s;
 } sctx_t;
@@ -305,41 +305,26 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
     int status;
     apr_status_t err = APR_SUCCESS;
     proxy_conn_rec *backend = NULL;
-    proxy_conn_pool *cp = ctx->hc->cp;
+    proxy_conn_pool *saved_cp = ctx->hc->cp;
 
-    if (!worker->cp) {
-        apr_status_t rv;
-        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
-            return rv;
-        }
-        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
-                                    worker->s->port, 0, ctx->p);
-
-        if (err != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                         "DNS lookup failure for: %s:%d",
-                         worker->s->hostname, (int)worker->s->port);
-            return err;
-        }
-    }
-    cp->addr = worker->cp->addr;
+    /*
+     * We use our "generic" health-check worker instead of the *real*
+     * worker, to avoid clashes and conflicts.
+     * TODO: Store backend in our generic worker which is now
+     * a hash table
+     */
+    ctx->hc->cp->addr = worker->cp->addr;
     status = ap_proxy_acquire_connection("HCTCP", &backend, ctx->hc, ctx->s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "ap_proxy_acquire_connection (%d).", status);
     if (status == OK) {
-        backend->addr = cp->addr;
+        backend->addr = ctx->hc->cp->addr;
         status = ap_proxy_connect_backend("HCTCP", backend, ctx->hc, ctx->s);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                         "ap_proxy_connect_backend (%d).", status);
         if (status == OK) {
             status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                                 "ap_proxy_is_socket_connected (%d).", status);
-        }
+         }
     }
-    ctx->hc->cp = cp;
+    ctx->hc->cp = saved_cp;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "Health check TCP Status (%d).", status);
     backend_cleanup("HCTCP", backend, ctx->s);
@@ -422,6 +407,34 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                      worker->s->name, worker->s->method, (unsigned long)now,
                                      (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
+                            /*
+                             * Since this is the watchdog, workers never actually handle a
+                             * request here, and so the local data isn't initialized (of
+                             * course, the shared memory is). So we need to bootstrap
+                             * worker->cp. Note, we only need do this once.
+                             */
+                            if (!worker->cp) {
+                                apr_status_t rv;
+                                rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
+                                if (rv != APR_SUCCESS) {
+                                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
+                                    return rv;
+                                }
+                                /*
+                                 * normally, this is done in ap_proxy_determine_connection().
+                                 * TODO: Look at using ap_proxy_determine_connection() with a
+                                 * fake request_rec
+                                 */
+                                err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
+                                                            worker->s->port, 0, ctx->p);
+
+                                if (err != APR_SUCCESS) {
+                                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                                                 "DNS lookup failure for: %s:%d",
+                                                 worker->s->hostname, (int)worker->s->port);
+                                    return err;
+                                }
+                            }
                             hc_check(ctx, p, now, worker);
                         }
                         workers++;
