@@ -304,7 +304,6 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 {
     int status;
     proxy_conn_rec *backend = NULL;
-    proxy_conn_pool *saved_cp = ctx->hc->cp;
 
     /*
      * We use our "generic" health-check worker instead of the *real*
@@ -323,7 +322,6 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
             status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
          }
     }
-    ctx->hc->cp = saved_cp;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "Health check TCP Status (%d).", status);
     backend_cleanup("HCTCP", backend, ctx->s);
