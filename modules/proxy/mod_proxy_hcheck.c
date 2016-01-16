@@ -23,7 +23,7 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 #define HCHECK_WATHCHDOG_NAME ("_proxy_hcheck_")
 /* default to health check every 30 seconds */
-#define HCHECK_WATHCHDOG_SEC (30)
+#define HCHECK_WATHCHDOG_DEFAULT_INTERVAL (30)
 /* The watchdog runs every 5 seconds, which is also the minimal check */
 #define HCHECK_WATHCHDOG_INTERVAL (5)
 
@@ -47,7 +47,7 @@ typedef struct {
     apr_array_header_t *conditions;
     ap_watchdog_t *watchdog;
     /* TODO: Make below array/hashtable tagged to each worker */
-    proxy_worker *hc;
+    apr_hash_t *hcworkers;
     server_rec *s;
 } sctx_t;
 
@@ -57,42 +57,80 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     apr_pool_create(&ctx->p, p);
     ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_array_make(ctx->p, 10, sizeof(hc_condition_t));
-    ctx->hc = NULL;
+    ctx->hcworkers = apr_hash_make(ctx->p);
     ctx->s = s;
 
     return ctx;
 }
 
-static void hc_child_init(apr_pool_t *p, server_rec *s)
+static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
 {
     proxy_worker *hc = NULL;
+    const char* wptr;
 
-    /* TODO */
-    while (s) {
-        sctx_t *ctx = (sctx_t *) ap_get_module_config(s->module_config,
-                                                      &proxy_hcheck_module);
-        if (!hc) {
-            ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, "http://www.apache.org", 0);
-            PROXY_STRNCPY(hc->s->name,     "proxy:hcheck");
-            PROXY_STRNCPY(hc->s->hostname, "*");
-            PROXY_STRNCPY(hc->s->scheme,   "*");
-            hc->hash.def = hc->s->hash.def =
-                ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
-            hc->hash.fnv = hc->s->hash.fnv =
-                ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
-            /* Do not disable worker in case of errors */
-            hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
-            /* Mark as the "generic" worker */
-            hc->s->status |= PROXY_WORKER_GENERIC;
-            ctx->hc = hc;
-            ap_proxy_initialize_worker(ctx->hc, s, ctx->p);
-            /* Enable address cache for generic reverse worker */
-            hc->s->is_address_reusable = 1;
-        }
-        ctx->hc = hc;
-        s = s->next;
+    wptr = apr_psprintf(ctx->p, "%pp", worker);
+    hc = (proxy_worker *)apr_hash_get(ctx->hcworkers, wptr, APR_HASH_KEY_STRING);
+    if (!hc) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                     "Creating hc worker %s for %s://%s:%d",
+                     wptr, worker->s->scheme, worker->s->hostname,
+                     (int)worker->s->port);
+
+        ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, worker->s->name, 0);
+        PROXY_STRNCPY(hc->s->name,     wptr);
+        PROXY_STRNCPY(hc->s->hostname, worker->s->hostname);
+        PROXY_STRNCPY(hc->s->scheme,   worker->s->scheme);
+        hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
+        hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
+        hc->s->port = worker->s->port;
+        /* Do not disable worker in case of errors */
+        hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
+        /* Mark as the "generic" worker */
+        hc->s->status |= PROXY_WORKER_GENERIC;
+        ap_proxy_initialize_worker(hc, ctx->s, ctx->p);
+        /* Enable address cache for generic reverse worker */
+        hc->s->is_address_reusable = 1;
+        /* tuck away since we need the preparsed address */
+        hc->cp->addr = worker->cp->addr;
+        apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
+    return hc;
 }
+
+static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
+    /*
+     * Since this is the watchdog, workers never actually handle a
+     * request here, and so the local data isn't initialized (of
+     * course, the shared memory is). So we need to bootstrap
+     * worker->cp. Note, we only need do this once.
+     */
+    if (!worker->cp) {
+        apr_status_t rv;
+        apr_status_t err = APR_SUCCESS;
+        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
+            return rv;
+        }
+        /*
+         * normally, this is done in ap_proxy_determine_connection().
+         * TODO: Look at using ap_proxy_determine_connection() with a
+         * fake request_rec
+         */
+        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
+                                    worker->s->port, 0, ctx->p);
+
+        if (err != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "DNS lookup failure for: %s:%d",
+                         worker->s->hostname, (int)worker->s->port);
+            return err;
+        }
+        worker->s->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
+    }
+    return APR_SUCCESS;
+}
+
 
 /*
  * This serves double duty by not only validating (and creating)
@@ -267,7 +305,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 
     template->name = apr_pstrdup(ctx->p, name);
     template->method = template->passes = template->fails = 1;
-    template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_SEC);
+    template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
     template->hurl = NULL;
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
@@ -304,26 +342,25 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 {
     int status;
     proxy_conn_rec *backend = NULL;
+    proxy_worker *hc;
 
     /*
      * We use our "generic" health-check worker instead of the *real*
      * worker, to avoid clashes and conflicts.
-     * TODO: Store backend in our generic worker which is now
-     * a hash table
      */
-    ctx->hc->cp->addr = worker->cp->addr;
-    status = ap_proxy_acquire_connection("HCTCP", &backend, ctx->hc, ctx->s);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                     "ap_proxy_acquire_connection (%d).", status);
+    hc = hc_get_hcworker(ctx, worker);
+
+    status = ap_proxy_acquire_connection("HCTCP", &backend, hc, ctx->s);
     if (status == OK) {
-        backend->addr = ctx->hc->cp->addr;
-        status = ap_proxy_connect_backend("HCTCP", backend, ctx->hc, ctx->s);
+        backend->addr = hc->cp->addr;
+        status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
         if (status == OK) {
             status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
          }
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                     "Health check TCP Status (%d).", status);
+                     "Health check TCP Status (%d) for %s.", status,
+                     hc->s->name);
     backend_cleanup("HCTCP", backend, ctx->s);
     if (status != OK) {
         return APR_EGENERAL;
@@ -360,39 +397,6 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
         worker->s->error_time = now;
     }
     worker->s->updated = now;
-}
-
-static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
-    /*
-     * Since this is the watchdog, workers never actually handle a
-     * request here, and so the local data isn't initialized (of
-     * course, the shared memory is). So we need to bootstrap
-     * worker->cp. Note, we only need do this once.
-     */
-    if (!worker->cp) {
-        apr_status_t rv;
-        apr_status_t err = APR_SUCCESS;
-        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
-            return rv;
-        }
-        /*
-         * normally, this is done in ap_proxy_determine_connection().
-         * TODO: Look at using ap_proxy_determine_connection() with a
-         * fake request_rec
-         */
-        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
-                                    worker->s->port, 0, ctx->p);
-
-        if (err != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                         "DNS lookup failure for: %s:%d",
-                         worker->s->hostname, (int)worker->s->port);
-            return err;
-        }
-    }
-    return APR_SUCCESS;
 }
 
 static apr_status_t hc_watchdog_callback(int state, void *data,
@@ -434,7 +438,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         worker = *workers;
                         /* TODO: REMOVE ap_log_error call */
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
-                                     "Checking %s worker: %s / %d (%lu %lu %lu)", balancer->s->name,
+                                     "Checking %s worker: %s  [%d] (%lu %lu %lu)", balancer->s->name,
                                      worker->s->name, worker->s->method, (unsigned long)now,
                                      (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
@@ -516,7 +520,6 @@ static void hc_register_hooks(apr_pool_t *p)
     static const char *const runAfter[] = { "mod_watchdog.c", "mod_proxy_balancer.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     ap_hook_post_config(hc_post_config, NULL, runAfter, APR_HOOK_LAST);
-    ap_hook_child_init(hc_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /* the main config structure */
