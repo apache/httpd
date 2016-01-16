@@ -362,6 +362,39 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
     worker->s->updated = now;
 }
 
+static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
+    /*
+     * Since this is the watchdog, workers never actually handle a
+     * request here, and so the local data isn't initialized (of
+     * course, the shared memory is). So we need to bootstrap
+     * worker->cp. Note, we only need do this once.
+     */
+    if (!worker->cp) {
+        apr_status_t rv;
+        apr_status_t err = APR_SUCCESS;
+        rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
+            return rv;
+        }
+        /*
+         * normally, this is done in ap_proxy_determine_connection().
+         * TODO: Look at using ap_proxy_determine_connection() with a
+         * fake request_rec
+         */
+        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
+                                    worker->s->port, 0, ctx->p);
+
+        if (err != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "DNS lookup failure for: %s:%d",
+                         worker->s->hostname, (int)worker->s->port);
+            return err;
+        }
+    }
+    return APR_SUCCESS;
+}
+
 static apr_status_t hc_watchdog_callback(int state, void *data,
                                          apr_pool_t *pool)
 {
@@ -394,6 +427,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     int n;
                     proxy_worker **workers;
                     proxy_worker *worker;
+                    /* Have any new balancers or workers been added dynamically? */
                     ap_proxy_sync_balancer(balancer, s, conf);
                     workers = (proxy_worker **)balancer->workers->elts;
                     for (n = 0; n < balancer->workers->nelts; n++) {
@@ -404,34 +438,8 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                      worker->s->name, worker->s->method, (unsigned long)now,
                                      (unsigned long)worker->s->updated, (unsigned long)worker->s->interval);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
-                            /*
-                             * Since this is the watchdog, workers never actually handle a
-                             * request here, and so the local data isn't initialized (of
-                             * course, the shared memory is). So we need to bootstrap
-                             * worker->cp. Note, we only need do this once.
-                             */
-                            if (!worker->cp) {
-                                apr_status_t rv;
-                                apr_status_t err = APR_SUCCESS;
-                                rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
-                                if (rv != APR_SUCCESS) {
-                                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
-                                    return rv;
-                                }
-                                /*
-                                 * normally, this is done in ap_proxy_determine_connection().
-                                 * TODO: Look at using ap_proxy_determine_connection() with a
-                                 * fake request_rec
-                                 */
-                                err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
-                                                            worker->s->port, 0, ctx->p);
-
-                                if (err != APR_SUCCESS) {
-                                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                                                 "DNS lookup failure for: %s:%d",
-                                                 worker->s->hostname, (int)worker->s->port);
-                                    return err;
-                                }
+                            if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
+                                return rv;
                             }
                             hc_check(ctx, p, now, worker);
                         }
