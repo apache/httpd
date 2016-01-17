@@ -22,10 +22,6 @@
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 #define HCHECK_WATHCHDOG_NAME ("_proxy_hcheck_")
-/* default to health check every 30 seconds */
-#define HCHECK_WATHCHDOG_DEFAULT_INTERVAL (30)
-/* The watchdog runs every 5 seconds, which is also the minimal check */
-#define HCHECK_WATHCHDOG_INTERVAL (5)
 
 typedef struct {
     char *name;
@@ -126,7 +122,6 @@ static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
                          worker->s->hostname, (int)worker->s->port);
             return err;
         }
-        worker->s->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
     }
     return APR_SUCCESS;
 }
@@ -517,10 +512,10 @@ static const command_rec command_table[] = {
 
 static void hc_register_hooks(apr_pool_t *p)
 {
-    static const char *const runAfter[] = { "mod_proxy_balancer.c", "mod_proxy.c", NULL};
-    static const char *const runBefore[] = { "mod_watchdog.c", NULL};
+    static const char *const aszPre[] = { "mod_proxy_balancer.c", "mod_proxy.c", NULL};
+    static const char *const aszSucc[] = { "mod_watchdog.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
-    ap_hook_post_config(hc_post_config, runAfter, runBefore, APR_HOOK_LAST);
+    ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
 }
 
 /* the main config structure */

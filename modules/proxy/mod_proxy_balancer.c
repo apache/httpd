@@ -28,6 +28,8 @@ ap_slotmem_provider_t *storage = NULL;
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
+static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
+
 static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
         proxy_worker *worker, server_rec *s) = NULL;
 
@@ -46,7 +48,7 @@ static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (rv != APR_SUCCESS) {
         return rv;
     }
-
+    set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     return OK;
 }
 
@@ -971,6 +973,17 @@ static void push2table(const char *input, apr_table_t *params,
     }
 }
 
+static const char *show_hcmethod(hcmethod_t method)
+{
+    hcmethods_t *m = hcmethods;
+    for (; m->name; m++) {
+        if (m->method == method) {
+            return m->name;
+        }
+    }
+    return "???";
+}
+
 /* Manages the loadfactors and member status
  *   The balancer, worker and nonce are obtained from
  *   the request args (?b=...&w=...&nonce=....).
@@ -1449,7 +1462,7 @@ static int balancer_handler(request_rec *r)
                  " padding: 2px;\n"
                  " border-style: dotted;\n"
                  " border-color: gray;\n"
-                 " background-color: white;\n"
+                 " background-color: lightgray;\n"
                  " text-align: center;\n"
                  "}\n"
                  "td {\n"
@@ -1522,8 +1535,11 @@ static int balancer_handler(request_rec *r)
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
                 "<th>Factor</th><th>Set</th><th>Status</th>"
-                "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>"
-                "</tr>\n", r);
+                "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>", r);
+            if (set_worker_hc_param_f) {
+                ap_rputs("<th>Method</th><th>Interval</th><th>Passes</th><th>Fails</th><th>URI</th>", r);
+            }
+            ap_rputs("</tr>\n", r);
 
             workers = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
@@ -1551,6 +1567,13 @@ static int balancer_handler(request_rec *r)
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
+                if (set_worker_hc_param_f) {
+                    ap_rprintf(r, "</td><td>%s</td>", show_hcmethod(worker->s->method));
+                    ap_rprintf(r, "<td>%d</td>", (int)apr_time_sec(worker->s->interval));
+                    ap_rprintf(r, "<td>%d</td>", worker->s->passes);
+                    ap_rprintf(r, "<td>%d</td>", worker->s->fails);
+                    ap_rprintf(r, "<td>%s", worker->s->hcuri);
+                }
                 ap_rputs("</td></tr>\n", r);
 
                 ++workers;
