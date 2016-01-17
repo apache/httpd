@@ -85,7 +85,7 @@
 <directivesynopsis>
 <name>ProxyHCTemplate</name>
 <description>Creates a named template for setting various health check parameters</description>
-<syntax>ProxyHCTemplate name parameter=setting &gt;...&lt;</syntax>
+<syntax>ProxyHCTemplate name parameter=setting &lt;...&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
