@@ -360,7 +360,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Diary Size</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushDiarySize n</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushDiarySize 128</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushDiarySize 256</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -373,7 +373,7 @@
                 section to influence the number for all connections to that virtual host. 
             </p>
             <p>
-                The push diary records a digest (currently using SHA256) of pushed
+                The push diary records a digest (currently using a 64 bit number) of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
                 These value are not persisted, so clients openeing a new connection
                 will experience known pushes again. There is ongoing work to enable
@@ -382,8 +382,8 @@
             </p>
             <p>
                 If the maximum size is reached, newer entries replace the oldest
-                ones. Using SHA256, each diary entry uses 32 bytes, letting a
-                default diary with 128 entries consume around 4 KB of memory.
+                ones. A diary entry uses 8 bytes, letting a
+                default diary with 256 entries consume around 2 KB of memory.
             </p>
             <p>
                 A size of 0 will effectively disable the push diary.

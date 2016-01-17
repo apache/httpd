@@ -4086,19 +4086,23 @@ to name-virtual hosts</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Hostname and port that the server uses to identify
 itself</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerName [<var>scheme</var>://]<var>domain-name</var>|<var>ip-address</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code class="directive">ServerName</code> directive sets the
-    request scheme, hostname and
-    port that the server uses to identify itself.  This is used when
-    creating redirection URLs.</p>
+    request scheme, hostname and port that the server uses to identify itself.
+    </p>
 
-    <p>Additionally, <code class="directive">ServerName</code> is used (possibly
+    <p><code class="directive">ServerName</code> is used (possibly
     in conjunction with <code class="directive">ServerAlias</code>) to uniquely
     identify a virtual host, when using <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+
+    <p>Additionally, this is used when
+    creating self-referential redirection URLs when 
+    <code class="directive">UseCanonicalName</code> is set to a non-default
+    value.</p>
 
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
