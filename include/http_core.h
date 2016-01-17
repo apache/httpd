@@ -646,7 +646,7 @@ typedef struct {
     apr_hash_t *response_code_exprs;
 
     unsigned int qualify_redirect_url :2;
-
+    ap_expr_info_t  *expr_handler;         /* forced with SetHandler expr= */
 } core_dir_config;
 
 /* macro to implement off by default behaviour */

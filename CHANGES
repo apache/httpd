@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add expression support to SetHandler.
+     [Eric Covener]
+
   *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075, 
      "Error dispatching request", when the cause appears to be 
      due to the client closing the connection. 

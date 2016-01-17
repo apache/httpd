@@ -356,6 +356,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->handler) {
         conf->handler = new->handler;
     }
+    if (new->expr_handler) {
+        conf->expr_handler = new->expr_handler;
+    }
 
     if (new->output_filters) {
         conf->output_filters = new->output_filters;
@@ -1967,7 +1970,18 @@ static const char *set_sethandler(cmd_parms *cmd,
 {
     core_dir_config *dirconf = d_;
 
-    if (arg_ == ap_strstr_c(arg_, "proxy:unix")) { 
+    if (!strncmp(arg_, "expr=", 5)) {
+        const char *err;
+        dirconf->expr_handler = ap_expr_parse_cmd(cmd, arg_+5,
+                                          AP_EXPR_FLAG_STRING_RESULT,
+                                          &err, NULL);
+        if (err) {
+            return apr_pstrcat(cmd->pool,
+                    "Can't parse expression : ", err, NULL);
+        }
+        return NULL;
+    }
+    else if (arg_ == ap_strstr_c(arg_, "proxy:unix")) { 
         dirconf->handler = arg_;
     }
     else { 
@@ -4644,8 +4658,22 @@ static int core_override_type(request_rec *r)
     if (conf->mime_type && strcmp(conf->mime_type, "none"))
         ap_set_content_type(r, (char*) conf->mime_type);
 
-    if (conf->handler && strcmp(conf->handler, "none"))
+    if (conf->expr_handler) { 
+        const char *err;
+        const char *val;
+        val = ap_expr_str_exec(r, conf->expr_handler, &err);
+        if (err) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                          "Can't evaluate handler expression: %s", err);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        if (strcmp(val, "none")) { 
+            r->handler = apr_pstrdup(r->pool, val);
+        }
+    }
+    else if (conf->handler && strcmp(conf->handler, "none")) { 
         r->handler = conf->handler;
+    }
 
     /* Deal with the poor soul who is trying to force path_info to be
      * accepted within the core_handler, where they will let the subreq
