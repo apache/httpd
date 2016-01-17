@@ -241,6 +241,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener
 
+  *) core: Add expr= support to SetHandler (someone wanted this in
+     a well-articulated serverfault post).
+     trunk patch:  http://svn.apache.org/r1725149
+                   http://svn.apache.org/r1725151
+     2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
+     +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
