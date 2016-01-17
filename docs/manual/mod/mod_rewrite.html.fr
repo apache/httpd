@@ -736,7 +736,7 @@ des traitements du moteur de réécriture</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteLog</code> définit le nom
       du fichier dans lequel le serveur journalise tout processus de
-      réécriture qu'il effectue. Si le nom&nbsp;ne commence pas par un
+      réécriture qu'il effectue. Si le nom ne commence pas par un
       slash ('<code>/</code>'), il est considéré comme relatif à la
       <em>Racine du serveur</em>. Cette directive ne doit apparaître
       qu'une seule fois dans la configuration du serveur.</p>
@@ -1400,7 +1400,6 @@ substitution !
       règles aient été appliquées, ou qu'il soit explicitement stoppé
       par un drapeau <a href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code></a>,
       ou par un autre drapeau qui implique un arrêt immédiat, comme
-      <code><strong>END</strong></code> ou
       <code><strong>F</strong></code>.</p>
 
      <div class="note"><h3>Modifier la chaîne de requête</h3>
@@ -1479,7 +1478,7 @@ substitution !
         <td>Arrête le processus de réécriture immédiatement et n'applique
 	plus aucune règle. Prêtez une attention particulière aux mises
 	en garde concernant les contextes de niveau répertoire et
-	.htaccess (voir aussi le drapeau END). <em><a href="../rewrite/flags.html#flag_l">détails ...</a></em></td>
+	.htaccess. <em><a href="../rewrite/flags.html#flag_l">détails ...</a></em></td>
     </tr>
     <tr>
         <td>next|N</td>
@@ -1532,14 +1531,6 @@ substitution !
         <td>Force une redirection externe, avec un code de statut HTTP
 	optionnel. <em><a href="../rewrite/flags.html#flag_r">détails ...</a></em>
         </td>
-    </tr>
-    <tr>
-        <td>END</td>
-        <td>Arrête le processus de réécriture immédiatement et
-	n'applique plus aucune règle. Empêche aussi l'exécution
-	ultérieure de règles de réécriture dans des contextes de
-	répertoire et des fichiers .htaccess (disponible depuis la
-	version 2.3.9) <em><a href="../rewrite/flags.html#flag_l">détails ...</a></em></td>
     </tr>
     <tr>
         <td>skip|S=<em>nombre</em></td>
