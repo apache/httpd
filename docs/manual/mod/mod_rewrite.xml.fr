@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1707153:1724718 (outdated) -->
+<!-- English Revision: 1725069 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1439,7 +1439,6 @@ substitution !
       par un drapeau <a
       href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code></a>,
       ou par un autre drapeau qui implique un arr&ecirc;t imm&eacute;diat, comme
-      <code><strong>END</strong></code> ou
       <code><strong>F</strong></code>.</p>
 
      <note><title>Modifier la cha&icirc;ne de requ&ecirc;te</title>
@@ -1526,7 +1525,7 @@ substitution !
         <td>Arr&ecirc;te le processus de r&eacute;&eacute;criture imm&eacute;diatement et n'applique
 	plus aucune r&egrave;gle. Pr&ecirc;tez une attention particuli&egrave;re aux mises
 	en garde concernant les contextes de niveau r&eacute;pertoire et
-	.htaccess (voir aussi le drapeau END). <em><a
+	.htaccess. <em><a
         href="../rewrite/flags.html#flag_l">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
@@ -1588,15 +1587,6 @@ substitution !
 	optionnel. <em><a
         href="../rewrite/flags.html#flag_r">d&eacute;tails ...</a></em>
         </td>
-    </tr>
-    <tr>
-        <td>END</td>
-        <td>Arr&ecirc;te le processus de r&eacute;&eacute;criture imm&eacute;diatement et
-	n'applique plus aucune r&egrave;gle. Emp&ecirc;che aussi l'ex&eacute;cution
-	ult&eacute;rieure de r&egrave;gles de r&eacute;&eacute;criture dans des contextes de
-	r&eacute;pertoire et des fichiers .htaccess (disponible depuis la
-	version 2.3.9) <em><a
-	href="../rewrite/flags.html#flag_l">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
         <td>skip|S=<em>nombre</em></td>
