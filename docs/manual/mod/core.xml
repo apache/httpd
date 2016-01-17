@@ -4107,9 +4107,10 @@ ServerName www.example.com
     each appearance overrides the previous appearance (within that
     server).</p>
 
-    <p>If no <directive>ServerName</directive> is specified, then the
-    server attempts to deduce the client visible hostname by performing a
-    reverse lookup on an IP address of the systems hostname.</p>
+    <p>If no <directive>ServerName</directive> is specified, the
+    server attempts to deduce the client visible hostname by first asking 
+    the operating system for the system hostname, and if that fails, 
+    performing a reverse lookup on an IP address present on the system.</p>
 
     <p>If no port is specified in the
     <directive>ServerName</directive>, then the server will use the
