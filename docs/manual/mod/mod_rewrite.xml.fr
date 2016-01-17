@@ -268,7 +268,7 @@ des traitements du moteur de r&eacute;&eacute;criture</description>
 <usage>
       <p>La directive <directive>RewriteLog</directive> d&eacute;finit le nom
       du fichier dans lequel le serveur journalise tout processus de
-      r&eacute;&eacute;criture qu'il effectue. Si le nom ne commence pas par un
+      r&eacute;&eacute;criture qu'il effectue. Si le nom ne commence pas par un
       slash ('<code>/</code>'), il est consid&eacute;r&eacute; comme relatif &agrave; la
       <em>Racine du serveur</em>. Cette directive ne doit appara&icirc;tre
       qu'une seule fois dans la configuration du serveur.</p>
