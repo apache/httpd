@@ -57,7 +57,7 @@
         		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td></tr>
         		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td></tr>
         		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
-        		<tr><td>CPING</td><td><strong>AJP only</strong>Do <code>CPING/CPONG</code> check</td></tr>
+        		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td></tr>
         		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
         	</table>
         </td></tr>
@@ -69,7 +69,7 @@
         <td>Number of failed health check tests before worker is disabled</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Period of health checks (e.g. performed every 30 seconds)</td></tr>
+        <td>Period of health checks in seconds (e.g. performed every 30 seconds)</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
         <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
@@ -85,7 +85,7 @@
 <directivesynopsis>
 <name>ProxyHCTemplate</name>
 <description>Creates a named template for setting various health check parameters</description>
-<syntax>ProxyBadHeader name parameter=setting &gt;...&lt;</syntax>
+<syntax>ProxyHCTemplate name parameter=setting &gt;...&lt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
