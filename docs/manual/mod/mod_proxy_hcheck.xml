@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_hcheck.xml.meta">
+
+<name>mod_proxy_hcheck</name>
+<description>Dynamic health check of Balancer members (workers) for
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_hcheck.c</sourcefile>
+<identifier>proxy_hcheck_module</identifier>
+<compatibility>Available in Apache 2.5.0 and later</compatibility>
+
+<summary>
+    <p>This module provides for dynamic health checking of balancer
+    	members (workers). This can be enabled on a worker-by-worker
+    	basis. The health check is done independently of the
+    	actual reverse proxy requests.</p>
+
+    <p>This module <em>requires</em> the service of <module>mod_watchdog</module>.</p>
+
+<note><title>Parameters</title>
+  <p>The health check mechanism is enabled via the use of additional
+  	BalancerMember parameters, which are configured in the standard
+  	way via <directive module="mod_proxy">ProxyPass</directive>:</p>
+
+    <table>
+    <tr><th>Parameter</th>
+        <th>Default</th>
+        <th>Description</th></tr>
+    <tr><td>hcmethod</td>
+        <td>None</td>
+        <td>No dynamic health check performed. Choices are:
+        	<table>
+        		<tr><th>Method</th><th>Description</th></tr>
+        		<tr><td>None</td><td>No dynamic health checking done</td></tr>
+        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td></tr>
+        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td></tr>
+        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td></tr>
+        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
+        		<tr><td>CPING</td><td><strong>AJP only</strong>Do <code>CPING/CPONG</code> check</td></tr>
+        		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
+        	</table>
+        </td></tr>
+    <tr><td>hcpasses</td>
+        <td>1</td>
+        <td>Number of successful health check tests before worker is re-enabled</td></tr>
+    <tr><td>hcfails</td>
+        <td>1</td>
+        <td>Number of failed health check tests before worker is disabled</td></tr>
+    <tr><td>hcinterval</td>
+        <td>30</td>
+        <td>Period of health checks (e.g. performed every 30 seconds)</td></tr>
+    <tr><td>hcuri</td>
+        <td>&nbsp;</td>
+        <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
+    <tr><td>hctemplate</td>
+        <td>&nbsp;</td>
+        <td>Name of template, created via <directive>ProxyHCTemplate</directive> to use for setting health check parameters for this worker</td></tr>
+    </table>
+</note>
+
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyHCTemplate</name>
+<description>Creates a named template for setting various health check parameters</description>
+<syntax>ProxyBadHeader name parameter=setting &gt;...&lt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyHCTemplate</directive> directive allows
+       for creating a named set (template) of health check parameters
+       that can then be assigned to balancer members via the <code>hctemplate</code>
+       parameter</p>
+
+    <example><title>ProxyHCTemplate</title>
+    <highlight language="config">
+ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
+ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
