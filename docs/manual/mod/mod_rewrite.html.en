@@ -971,7 +971,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 
           <p>External rewriting programs are not started if they're defined in a
           context that does not have <code class="directive">RewriteEngine</code> set to
-          <code>on</code></p>.
+          <code>on</code>.</p>
 
 <div class="example"><pre>#!/usr/bin/perl
 $| = 1;
