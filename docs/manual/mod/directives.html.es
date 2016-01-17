@@ -16,7 +16,7 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -491,6 +491,7 @@
 <li><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
+<li><a href="mod_proxy_hcheck.html#proxyhctemplate">ProxyHCTemplate</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
 <li><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType</a></li>
@@ -759,7 +760,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

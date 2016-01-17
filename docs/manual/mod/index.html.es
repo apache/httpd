@@ -16,7 +16,7 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -35,7 +35,7 @@
 <div class="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
-            recientemente.</div>
+            recientementes.</div>
 
     <p>
       Abajo se muestra una lista con todos los módulos que forman
@@ -46,7 +46,7 @@
   </div>
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad Básica y Módulos
-            de MultiProcesamiento</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros Módulos</a></li></ul><h3>Consulte también</h3>
+            de MultiProcesamiento (MPM)</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros Módulos</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
 <li><a href="../mpm.html">Módulos de MultiProcesamiento
   (MPMs)</a>
@@ -57,7 +57,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="core" name="core">Funcionalidad Básica y Módulos
-            de MultiProcesamiento</a></h2>
+            de MultiProcesamiento (MPM)</a></h2>
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
@@ -196,6 +196,8 @@ under different user IDs.</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></dt><dd>Dynamic health check of Balancer members (workers) for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_html.html">mod_proxy_html</a></dt><dd>Rewrite HTML links in to ensure they are addressable
 from Clients' networks in a proxy context.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
@@ -269,7 +271,7 @@ filter modules</dd>
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

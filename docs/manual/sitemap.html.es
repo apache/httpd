@@ -17,7 +17,7 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
@@ -37,7 +37,7 @@
 <div class="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
-            recientemente.</div>
+            recientementes.</div>
 
 <p>Esta página contiene la lista con los documentos actualmente
 disponibles de la <a href="./">Versión 2.5 de la
@@ -254,6 +254,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Módulo Apache mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Módulo Apache mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_hcheck.html">Módulo Apache mod_proxy_hcheck</a></li>
 <li><a href="mod/mod_proxy_html.html">Módulo Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
@@ -342,7 +343,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
