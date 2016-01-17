@@ -446,6 +446,11 @@ struct proxy_worker {
     void            *context;   /* general purpose storage */
 };
 
+/* default to health check every 30 seconds */
+#define HCHECK_WATHCHDOG_DEFAULT_INTERVAL (30)
+/* The watchdog runs every 5 seconds, which is also the minimal check */
+#define HCHECK_WATHCHDOG_INTERVAL (5)
+
 /*
  * Time to wait (in microseconds) to find out if more data is currently
  * available at the backend.
