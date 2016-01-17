@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_hcheck - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_proxy_hcheck</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Dynamic health check of Balancer members (workers) for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_hcheck_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_hcheck.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.5.0 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides for dynamic health checking of balancer
+    	members (workers). This can be enabled on a worker-by-worker
+    	basis. The health check is done independently of the
+    	actual reverse proxy requests.</p>
+
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>.</p>
+
+<div class="note"><h3>Parameters</h3>
+  <p>The health check mechanism is enabled via the use of additional
+  	BalancerMember parameters, which are configured in the standard
+  	way via <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>:</p>
+
+    <table>
+    <tr><th>Parameter</th>
+        <th>Default</th>
+        <th>Description</th></tr>
+    <tr><td>hcmethod</td>
+        <td>None</td>
+        <td>No dynamic health check performed. Choices are:
+        	<table>
+        		<tr><th>Method</th><th>Description</th></tr>
+        		<tr><td>None</td><td>No dynamic health checking done</td></tr>
+        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td></tr>
+        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td></tr>
+        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td></tr>
+        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
+        		<tr><td>CPING</td><td><strong>AJP only</strong>Do <code>CPING/CPONG</code> check</td></tr>
+        		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
+        	</table>
+        </td></tr>
+    <tr><td>hcpasses</td>
+        <td>1</td>
+        <td>Number of successful health check tests before worker is re-enabled</td></tr>
+    <tr><td>hcfails</td>
+        <td>1</td>
+        <td>Number of failed health check tests before worker is disabled</td></tr>
+    <tr><td>hcinterval</td>
+        <td>30</td>
+        <td>Period of health checks (e.g. performed every 30 seconds)</td></tr>
+    <tr><td>hcuri</td>
+        <td>&nbsp;</td>
+        <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
+    <tr><td>hctemplate</td>
+        <td>&nbsp;</td>
+        <td>Name of template, created via <code class="directive">ProxyHCTemplate</code> to use for setting health check parameters for this worker</td></tr>
+    </table>
+</div>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyhctemplate">ProxyHCTemplate</a></li>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named template for setting various health check parameters</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBadHeader name parameter=setting &gt;...&lt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
+</table>
+    <p>The <code class="directive">ProxyHCTemplate</code> directive allows
+       for creating a named set (template) of health check parameters
+       that can then be assigned to balancer members via the <code>hctemplate</code>
+       parameter</p>
+
+    <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
+ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
+</div>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_hcheck.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_hcheck.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
