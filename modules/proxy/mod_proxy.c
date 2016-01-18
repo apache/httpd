@@ -47,7 +47,7 @@ hcmethods_t hcmethods[] = {
         {NONE, "NONE", 1},
         {TCP, "TCP", 1},
         {OPTIONS, "OPTIONS", 1},
-        {HEAD, "HEAD", 0},
+        {HEAD, "HEAD", 1},
         {GET, "GET", 0},
         {CPING, "CPING", 0},
         {PROVIDER, "PROVIDER", 0},
