@@ -352,8 +352,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
         /* Mark as the "generic" worker */
         hc->s->status |= PROXY_WORKER_GENERIC;
         ap_proxy_initialize_worker(hc, ctx->s, ctx->p);
-        /* Enable address cache for generic reverse worker */
-        hc->s->is_address_reusable = 1;
+        hc->s->is_address_reusable = worker->s->is_address_reusable;
         /* tuck away since we need the preparsed address */
         hc->cp->addr = worker->cp->addr;
         hc->s->method = worker->s->method;
