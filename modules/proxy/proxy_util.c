@@ -3699,6 +3699,17 @@ PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme)
     return 0;
 }
 
+PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)
+{
+    hcmethods_t *m = hcmethods;
+    for (; m->name; m++) {
+        if (m->method == method) {
+            return m->name;
+        }
+    }
+    return "???";
+}
+
 void proxy_util_register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);

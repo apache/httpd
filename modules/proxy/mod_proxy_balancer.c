@@ -973,17 +973,6 @@ static void push2table(const char *input, apr_table_t *params,
     }
 }
 
-static const char *show_hcmethod(hcmethod_t method)
-{
-    hcmethods_t *m = hcmethods;
-    for (; m->name; m++) {
-        if (m->method == method) {
-            return m->name;
-        }
-    }
-    return "???";
-}
-
 /* Manages the loadfactors and member status
  *   The balancer, worker and nonce are obtained from
  *   the request args (?b=...&w=...&nonce=....).
@@ -1568,7 +1557,7 @@ static int balancer_handler(request_rec *r)
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
                 if (set_worker_hc_param_f) {
-                    ap_rprintf(r, "</td><td>%s</td>", show_hcmethod(worker->s->method));
+                    ap_rprintf(r, "</td><td>%s</td>", ap_proxy_show_hcmethod(worker->s->method));
                     ap_rprintf(r, "<td>%d</td>", (int)apr_time_sec(worker->s->interval));
                     ap_rprintf(r, "<td>%d</td>", worker->s->passes);
                     ap_rprintf(r, "<td>%d</td>", worker->s->fails);
