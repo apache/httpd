@@ -88,6 +88,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
         hc->s->is_address_reusable = 1;
         /* tuck away since we need the preparsed address */
         hc->cp->addr = worker->cp->addr;
+        hc->s->method = worker->s->method;
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
     return hc;
@@ -324,13 +325,24 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 
     return NULL;
 }
-static void backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
-                            server_rec *s)
+static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
+                                    server_rec *s, int status)
 {
     if (backend) {
         backend->close = 1;
         ap_proxy_release_connection(proxy_function, backend, s);
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                     "Health check %s Status (%d) for %s.",
+                     ap_proxy_show_hcmethod(backend->worker->s->method),
+                     status,
+                     backend->worker->s->name);
+    if (status != OK) {
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+
+
 }
 
 static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
@@ -339,10 +351,6 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
     proxy_conn_rec *backend = NULL;
     proxy_worker *hc;
 
-    /*
-     * We use our "generic" health-check worker instead of the *real*
-     * worker, to avoid clashes and conflicts.
-     */
     hc = hc_get_hcworker(ctx, worker);
 
     status = ap_proxy_acquire_connection("HCTCP", &backend, hc, ctx->s);
@@ -351,17 +359,50 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
         if (status == OK) {
             status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
-         }
+        }
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                     "Health check TCP Status (%d) for %s.", status,
-                     hc->s->name);
-    backend_cleanup("HCTCP", backend, ctx->s);
-    if (status != OK) {
-        return APR_EGENERAL;
+    return backend_cleanup("HCTCP", backend, ctx->s, status);
+}
+
+#if 0
+static apr_status_t hc_check_options(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+{
+    int status;
+    proxy_conn_rec *backend = NULL;
+    proxy_worker *hc;
+    conn_rec c;
+    request_rec *r;
+
+    proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(ctx->s->module_config,
+                                                                        &proxy_module);
+
+    hc = hc_get_hcworker(ctx, worker);
+
+    if ((status = ap_proxy_acquire_connection("HCTCP", &backend, hc, ctx->s)) != OK) {
+        return backend_cleanup("HCTCP", backend, ctx->s, status);
     }
+/*
+    if ((status = ap_proxy_determine_connection(p, r, conf, hc,
+                    backend, uri, &newurl, proxyname, proxyport,
+                    server_portstr, sizeof(server_portstr))) != OK) {
+        return backend_cleanup("HCTCP", backend, ctx->s, status);
+    }
+*/
+    if ((status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s)) != OK) {
+        return backend_cleanup("HCTCP", backend, ctx->s, status);
+    }
+
+    if (!backend->connection) {
+        status = ap_proxy_connection_create("HCTCP", backend, &c, ctx->s);
+        if (status != OK) {
+            return backend_cleanup("HCTCP", backend, ctx->s, status);
+        }
+    }
+
     return APR_SUCCESS;
 }
+
+#endif
 
 static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                      proxy_worker *worker)
