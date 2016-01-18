@@ -45,7 +45,9 @@ struct h2_push_diary {
     apr_array_header_t  *entries;
     apr_size_t           NMax; /* Maximum for N, should size change be necessary */
     apr_size_t           N;    /* Current maximum number of entries, power of 2 */
-    apr_uint64_t         mask; /* applied on hash value comparision */
+    apr_uint64_t         mask; /* mask for relevant bits */
+    unsigned int         mask_bits; /* number of relevant bits */
+    const char          *authority;
     h2_push_digest_type  dtype;
     h2_push_digest_calc *dcalc;
 };
@@ -103,26 +105,28 @@ apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
  * 
  * @param diary the diary to calculdate the digest from
  * @param p the pool to use
+ * @param authority the authority to get the data for, use NULL/"*" for all
  * @param pdata on successful return, the binary cache digest
  * @param plen on successful return, the length of the binary data
  */
 apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *p, 
-                                      apr_uint32_t maxP, const char **pdata, 
-                                      apr_size_t *plen);
+                                      apr_uint32_t maxP, const char *authority, 
+                                      const char **pdata, apr_size_t *plen);
 
 /**
  * Initialize the push diary by a cache digest as described in 
  * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
  * .
  * @param diary the diary to set the digest into
+ * @param authority the authority to set the data for
  * @param data the binary cache digest
  * @param len the length of the cache digest
  * @return APR_EINVAL if digest was not successfully parsed
  */
-apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, 
+apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authority, 
                                       const char *data, apr_size_t len);
 
-apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *data64url, 
-                                        apr_pool_t *pool);
+apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *authority, 
+                                        const char *data64url, apr_pool_t *pool);
 
 #endif /* defined(__mod_h2__h2_push__) */

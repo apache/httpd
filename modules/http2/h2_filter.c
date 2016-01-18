@@ -29,6 +29,7 @@
 #include "h2_task.h"
 #include "h2_stream.h"
 #include "h2_stream_set.h"
+#include "h2_request.h"
 #include "h2_response.h"
 #include "h2_session.h"
 #include "h2_util.h"
@@ -203,6 +204,7 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     h2_stream *stream = sos->stream;
     h2_session *session = stream->session;
     h2_mplx *mplx = session->mplx;
+    h2_push_diary *diary;
     apr_status_t status;
     
     if (!bb) {
@@ -225,21 +227,24 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     bbout("  \"pushes_submitted\": %d,\n", session->pushes_submitted);
     bbout("  \"pushes_reset\": %d,\n", session->pushes_reset);
     
-    if (session->push_diary) {
+    diary = session->push_diary;
+    if (diary) {
         const char *data;
         const char *base64_digest;
         apr_size_t len;
         
-        status = h2_push_diary_digest_get(session->push_diary, stream->pool, 1024, &data, &len);
+        status = h2_push_diary_digest_get(diary, stream->pool, 256, 
+                                          stream->request->authority, &data, &len);
         if (status == APR_SUCCESS) {
             base64_digest = h2_util_base64url_encode(data, len, stream->pool);
             bbout("  \"cache_digest\": \"%s\",\n", base64_digest);
         }
         
         /* try the reverse for testing purposes */
-        status = h2_push_diary_digest_set(session->push_diary, data, len);
+        status = h2_push_diary_digest_set(diary, stream->request->authority, data, len);
         if (status == APR_SUCCESS) {
-            status = h2_push_diary_digest_get(session->push_diary, stream->pool, 1024, &data, &len);
+            status = h2_push_diary_digest_get(diary, stream->pool, 256, 
+                                              stream->request->authority, &data, &len);
             if (status == APR_SUCCESS) {
                 base64_digest = h2_util_base64url_encode(data, len, stream->pool);
                 bbout("  \"cache_digest^2\": \"%s\",\n", base64_digest);
