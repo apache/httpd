@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixed compile issues re cc's with builtin log2n, fixed cache
+     digest calculation. [Stefan Eissing]
+     
+     pushed resources are kept. See directive H2PushDiarySize for managing this.
   *) core: Add expression support to SetHandler.
      [Eric Covener]
 

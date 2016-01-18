@@ -174,7 +174,9 @@ const char *h2_util_base64url_encode(const char *data,
                                ((i+1 < len)? (udata[i+1] >> 4) : 0) & 0x3fu ];
         *p++ = BASE64URL_CHARS[ (udata[i+1] << 2) + 
                                ((i+2 < len)? (udata[i+2] >> 6) : 0) & 0x3fu ];
-        *p++ = (i+2 < len)? BASE64URL_CHARS[ udata[i+2] & 0x3fu ] : '=';
+        if (i+2 < len) {
+            *p++ = BASE64URL_CHARS[ udata[i+2] & 0x3fu ];
+        }
     }
     
     return enc;
