@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 105989:1447968 (outdated) -->
+<!-- $LastChangedRevision: 1447968 $ -->
 
+<!-- =========== Translated by: Luis Gil de Bernabé  -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -23,73 +24,75 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Versi&#243;n &httpd.major;.&httpd.minor; de la documentaci&#243;n del Servidor de HTTP Apache</title>
+<title>Apache HTTP Server Versión &httpd.major;.&httpd.minor;
+Documentación</title>
 
-<category id="release"><title>Notas de la Versi&#243;n</title> 
-    <page href="new_features_2_0.html">Nuevas funcionalidades en
-    Apache 2.0</page>
-    <page href="upgrading.html">Actualizarse a la versión 2.0 desde la 1.3</page>
-    <page href="license.html">Licencia Apache</page>
+<category id="release"><title>Release Notes</title>
+    <page href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</page>
+    <page href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</page>
+    <page href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</page>
+    <page href="upgrading.html">Actualizar a la versión 2.4 de la 2.2</page>
+    <page href="license.html">Licencia Apache </page>
 </category>
 
 <category id="manual"><title>Manual de Referencia</title>
-    <page href="install.html">Compilaci&#243;n e Instalaci&#243;n</page>
-    <page href="invoking.html">Iniciar Apache</page>
-    <page href="stopping.html">Parar y reiniciar Apache</page>
-    <page href="mod/directives.html">Directivas para configurar la
-ejecuci&#243;n</page>
-    <page href="mod/quickreference.html">Gu&#237;a r&#225;pida de
-    Referencia de Directivas</page>
-    <page href="mod/">M&#243;dulos</page>
-    <page href="mpm.html">M&#243;dulos de MultiProcesamiento (MPMs)</page>
+    <page href="install.html">Compilar e Instalar</page>
+    <page href="invoking.html">Ejecutando Apache</page>
+    <page href="stopping.html">Parada y Reinicio de Apache</page>
+    <page href="mod/quickreference.html">Directivas de configuración en tiempo de ejecución</page>
+    <page href="mod/">Módulos</page>
+    <page href="mpm.html">Módulos de Procesamiento Múltiple (MPM)</page>
     <page href="filter.html">Filtros</page>
     <page href="handler.html">Handlers</page>
-    <page href="programs/">El Servidor Apache y Programas de Soporte</page>
+    <page href="expr.html">Analizador de Expresiones</page>
+    <page href="programs/">Programas de Soporte y Servidor</page>
     <page href="glossary.html">Glosario</page>
-</category>    
+</category>
 
-<category id="usersguide"><title>Gu&#237;a del Usuario</title>
-    <page href="bind.html">Puertos de escucha</page>
-    <page href="configuring.html">Ficheros de Configuraci&#243;n</page>
-    <page href="sections.html">Secciones de Configuraci&#243;n</page>
-    <page href="content-negotiation.html">Negociaci&#243;n de Contenidos</page>
-    <page href="dso.html">Objetos Din&#225;micos Compartidos (DSO)</page>
+<category id="usersguide"><title>Guía de Usuario</title>
+    <page href="getting-started.html">Empezando</page>
+    <page href="bind.html">Enlazando Direcciones y Puertos</page>
+    <page href="configuring.html">Ficheros de Configuración</page>
+    <page href="sections.html">Secciones de Configuración</page>
+    <page href="caching.html">Almacenamiento de Contenido en Caché</page>
+    <page href="content-negotiation.html">Negociación de Contenido</page>
+    <page href="dso.html">Objetos Compartidos Dinámicamente (DSO)</page>
     <page href="env.html">Variables de Entorno</page>
-    <page href="logs.html">Archivos Log</page>
-    <page href="urlmapping.html">Mapear URLs a ubicaciones de un
-    sistema de ficheros</page>
-    <page href="misc/perf-tuning.html">Ajustes para conseguir un mejor rendimiento</page>
-    <page href="misc/security_tips.html">Consejos de Seguridad</page>
-    <page href="server-wide.html">Configuraci&#243;n B&#225;sica de Apache</page>
-    <page href="ssl/">Encriptado SSL/TLS</page>
-    <page href="suexec.html">Ejecuci&#243;n de Suexec para CGIs</page>
-    <page href="rewrite/">Documentaci&#243;n adicional
-    sobre mod_rewrite</page>    
-    <page href="vhosts/">Hosting Virtual</page>
+    <page href="logs.html">Ficheros de Log</page>
+    <page href="compliance.html">Cumplimiento del Protocolo HTTP</page>
+    <page href="urlmapping.html">Mapeo de URLs al Sistema de Ficheros</page>
+    <page href="misc/perf-tuning.html">Optimización del Rendimiento</page>
+    <page href="misc/security_tips.html">Consejos de seguridad</page>
+    <page href="server-wide.html">Configuración de Server-Wide</page>
+    <page href="ssl/">Encryptado SSL/TLS</page>
+    <page href="suexec.html">Ejecución de Suexec para CGI</page>
+    <page href="rewrite/">Reescritura de URL con mod_rewrite</page>
+    <page href="vhosts/">Servidores Virtuales</page>
 </category>
 
 <category id="howto"><title>How-To / Tutoriales</title>
-    <page href="howto/auth.html">Autentificaci&#243;n,
-    Autorizaci&#243;n, y Control de Acceso</page>    
-    <page href="howto/cgi.html">CGI: Contenido Din&#225;mico</page>
-    <page href="howto/htaccess.html">Archivos .htaccess</page>
-    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">Directorios web para cada
-    usuario (public_html)</page>
+    <page href="howto/auth.html">Autenticación y Autorización</page>
+    <page href="howto/access.html">Control de Acceso</page>
+    <page href="howto/cgi.html">CGI: Contenido Dinámico</page>
+    <page href="howto/htaccess.html">Ficheros .htaccess</page>
+    <page href="howto/ssi.html">Inclusiones del Lado del Servidor (SSI)</page>
+    <page href="howto/public_html.html">Directorios Web por Usuario
+    (public_html)</page>
 </category>
 
-<category id="platform"><title>Notas espec&#237;ficas sobre plataformas</title>
+<category id="platform"><title>Notas Sobre Plataformas Específicas</title>
     <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">Sistemas Basados en RPM (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
 </category>
 
-<category id="other"><title>Documentaci&#243;n adicional</title>
-    <page href="faq/">Preguntas M&#225;s Frecuentes</page>
-    <page href="sitemap.html">Mapa de este sitio web</page>
-    <page href="developer/">Documentaci&#243;n para desarrolladores</page>
-    <page href="misc/">Otros documentos</page>
+<category id="other"><title>Otros Temas</title>
+    <page href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</page>
+    <page href="sitemap.html">Mapa del Sitio</page>
+    <page href="developer/">Documentación para Desarolladores</page>
+    <page href="http://httpd.apache.org/docs-project/">Contribuir en la Documentacion</page>
+    <page href="misc/">Otras Notas</page>
+    <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
 
 </indexpage>
-
-
