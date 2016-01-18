@@ -1120,6 +1120,13 @@ int ap_proxy_lb_workers(void);
 PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme);
 
 /**
+ * Return the name of the health check method (eg: "OPTIONS").
+ * @param method        method enum
+ * @return              name of method
+ */
+PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method);
+
+/**
  * Strip a unix domain socket (UDS) prefix from the input URL
  * @param p             pool to allocate result from
  * @param url           a URL potentially prefixed with a UDS path
