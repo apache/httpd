@@ -46,7 +46,7 @@ static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 hcmethods_t hcmethods[] = {
         {NONE, "NONE", 1},
         {TCP, "TCP", 1},
-        {OPTIONS, "OPTIONS", 0},
+        {OPTIONS, "OPTIONS", 1},
         {HEAD, "HEAD", 0},
         {GET, "GET", 0},
         {CPING, "CPING", 0},
