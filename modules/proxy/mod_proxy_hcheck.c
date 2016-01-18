@@ -48,6 +48,11 @@ typedef struct {
     server_rec *s;
 } sctx_t;
 
+typedef struct {
+    char *path;
+    char *req;
+} wctx_t;
+
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
 {
     sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
@@ -259,12 +264,12 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static request_rec *create_request_rec(conn_rec *conn)
+static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn)
 {
     request_rec *r;
     apr_pool_t *p;
 
-    apr_pool_create(&p, conn->pool);
+    apr_pool_create(&p, p1);
     apr_pool_tag(p, "request");
     r = apr_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
@@ -327,7 +332,8 @@ static request_rec *create_request_rec(conn_rec *conn)
     return r;
 }
 
-static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
+static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
+                                     apr_pool_t *p)
 {
     proxy_worker *hc = NULL;
     const char* wptr;
@@ -335,6 +341,11 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
     wptr = apr_psprintf(ctx->p, "%pp", worker);
     hc = (proxy_worker *)apr_hash_get(ctx->hcworkers, wptr, APR_HASH_KEY_STRING);
     if (!hc) {
+        apr_uri_t uri;
+        apr_status_t rv;
+        const char *url = worker->s->name;
+        wctx_t *wctx = apr_pcalloc(ctx->p, sizeof(wctx_t));
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
                      "Creating hc worker %s for %s://%s:%d",
                      wptr, worker->s->scheme, worker->s->hostname,
@@ -353,15 +364,43 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker)
         hc->s->status |= PROXY_WORKER_GENERIC;
         ap_proxy_initialize_worker(hc, ctx->s, ctx->p);
         hc->s->is_address_reusable = worker->s->is_address_reusable;
+        hc->s->disablereuse = worker->s->disablereuse;
         /* tuck away since we need the preparsed address */
         hc->cp->addr = worker->cp->addr;
         hc->s->method = worker->s->method;
+
+        rv = apr_uri_parse(p, url, &uri);
+        if (rv == APR_SUCCESS) {
+            wctx->path = apr_pstrdup(ctx->p, uri.path);
+        }
+        hc->context = wctx;
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
     return hc;
 }
 
+static int hc_determine_connection(sctx_t *ctx, proxy_worker *worker) {
+    apr_status_t rv = APR_SUCCESS;
+    int will_reuse = worker->s->is_address_reusable && !worker->s->disablereuse;
+    /*
+     * normally, this is done in ap_proxy_determine_connection().
+     * TODO: Look at using ap_proxy_determine_connection() with a
+     * fake request_rec
+     */
+    if (!worker->cp->addr || !will_reuse) {
+        rv = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
+                                   worker->s->port, 0, ctx->p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "DNS lookup failure for: %s:%d",
+                         worker->s->hostname, (int)worker->s->port);
+        }
+    }
+    return (rv == APR_SUCCESS ? OK : !OK);
+}
+
 static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
+    apr_status_t rv = APR_SUCCESS;
     /*
      * Since this is the watchdog, workers never actually handle a
      * request here, and so the local data isn't initialized (of
@@ -369,29 +408,14 @@ static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
      * worker->cp. Note, we only need do this once.
      */
     if (!worker->cp) {
-        apr_status_t rv;
-        apr_status_t err = APR_SUCCESS;
         rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
             return rv;
         }
-        /*
-         * normally, this is done in ap_proxy_determine_connection().
-         * TODO: Look at using ap_proxy_determine_connection() with a
-         * fake request_rec
-         */
-        err = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
-                                    worker->s->port, 0, ctx->p);
-
-        if (err != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
-                         "DNS lookup failure for: %s:%d",
-                         worker->s->hostname, (int)worker->s->port);
-            return err;
-        }
+        rv = (hc_determine_connection(ctx, worker) == OK ? APR_SUCCESS : APR_EGENERAL);
     }
-    return APR_SUCCESS;
+    return rv;
 }
 
 static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *backend,
@@ -410,11 +434,9 @@ static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *
         return APR_EGENERAL;
     }
     return APR_SUCCESS;
-
-
 }
 
-static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
+static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_rec **backend,
                           proxy_worker *hc, sctx_t *ctx)
 {
     int status;
@@ -433,6 +455,10 @@ static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
         }
 
     }
+    status = hc_determine_connection(ctx, hc);
+    if (status == OK) {
+        (*backend)->addr = hc->cp->addr;
+    }
     return status;
 }
 
@@ -442,9 +468,9 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
     proxy_conn_rec *backend = NULL;
     proxy_worker *hc;
 
-    hc = hc_get_hcworker(ctx, worker);
+    hc = hc_get_hcworker(ctx, worker, p);
 
-    status = hc_get_backend("HCTCP", &backend, hc, ctx);
+    status = hc_get_backend(p, "HCTCP", &backend, hc, ctx);
     if (status == OK) {
         backend->addr = hc->cp->addr;
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
@@ -458,6 +484,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 static void hc_send(sctx_t *ctx, apr_pool_t *p, const char *out, proxy_conn_rec *backend)
 {
     apr_bucket_brigade *tmp_bb = apr_brigade_create(p, ctx->ba);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO() "%s", out);
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), p,
                             ctx->ba));
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_flush_create(ctx->ba));
@@ -523,7 +550,7 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
     return OK;
 }
 
-static apr_status_t hc_check_options(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
 {
     int status;
     proxy_conn_rec *backend = NULL;
@@ -531,10 +558,12 @@ static apr_status_t hc_check_options(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
     conn_rec c;
     request_rec *r;
     const char *req;
+    wctx_t *wctx;
 
-    hc = hc_get_hcworker(ctx, worker);
+    hc = hc_get_hcworker(ctx, worker, p);
+    wctx = (wctx_t *)hc->context;
 
-    if ((status = hc_get_backend("HCTCP", &backend, hc, ctx)) != OK) {
+    if ((status = hc_get_backend(p, "HCTCP", &backend, hc, ctx)) != OK) {
         return backend_cleanup("HCTCP", backend, ctx->s, status);
     }
     if ((status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s)) != OK) {
@@ -546,15 +575,41 @@ static apr_status_t hc_check_options(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
             return backend_cleanup("HCTCP", backend, ctx->s, status);
         }
     }
-    req = apr_psprintf(p, "OPTIONS * HTTP/1.1\r\nHost: %s://%s:%d\r\n\r\n",
-            hc->s->scheme, hc->s->hostname, (int)hc->s->port);
+    switch (hc->s->method) {
+        case OPTIONS:
+            if (!wctx->req) {
+                wctx->req = apr_psprintf(ctx->p,
+                                   "OPTIONS * HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
+                                    hc->s->hostname, (int)hc->s->port);
+            }
+            req = wctx->req;
+            break;
+
+        case HEAD:
+            if (!wctx->req) {
+                wctx->req = apr_psprintf(p,
+                                   "HEAD %s%s%s HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
+                                   (wctx->path ? wctx->path : ""),
+                                   (wctx->path && *hc->s->hcuri ? "/" : "" ),
+                                   (*hc->s->hcuri ? hc->s->hcuri : ""),
+                                   hc->s->hostname, (int)hc->s->port);
+            }
+            req = wctx->req;
+            break;
+
+        default:
+            return backend_cleanup("HCTCP", backend, ctx->s, !OK);
+            break;
+    }
+
     hc_send(ctx, p, req, backend);
 
-    r = create_request_rec(backend->connection);
+    r = create_request_rec(p, backend->connection);
     r->pool = p;
     status = hc_read_headers(ctx, r);
 
-    return backend_cleanup("HCTCP", backend, ctx->s, status);}
+    return backend_cleanup("HCTCP", backend, ctx->s, status);
+}
 
 
 static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
@@ -572,7 +627,8 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
             break;
 
         case OPTIONS:
-             rv = hc_check_options(ctx, p, worker);
+        case HEAD:
+             rv = hc_check_headers(ctx, p, worker);
              break;
 
         default:
