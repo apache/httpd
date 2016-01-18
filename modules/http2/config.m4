@@ -181,10 +181,10 @@ APACHE_MODULE(http2, [HTTP/2 protocol handling in addition to HTTP protocol
 handling. Implemented by mod_http2. This module requires a libnghttp2 installation. 
 See --with-nghttp2 on how to manage non-standard locations. This module
 is usually linked shared and requires loading. ], $http2_objs, , most, [
-    APACHE_CHECK_OPENSSL
-    if test "$ac_cv_openssl" = "yes" ; then
+#    APACHE_CHECK_OPENSSL
+#    if test "$ac_cv_openssl" = "yes" ; then
         APR_ADDTO(MOD_CPPFLAGS, ["-DH2_OPENSSL"])
-    fi
+#    fi
 
     APACHE_CHECK_NGHTTP2
     if test "$ac_cv_nghttp2" = "yes" ; then
