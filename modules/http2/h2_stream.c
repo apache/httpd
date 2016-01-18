@@ -27,6 +27,7 @@
 #include "h2_conn.h"
 #include "h2_config.h"
 #include "h2_h2.h"
+#include "h2_filter.h"
 #include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
@@ -40,11 +41,6 @@
 #include "h2_util.h"
 
 
-#define H2_STREAM_OUT(lvl,s,msg) \
-    do { \
-        if (APLOG_C_IS_LEVEL((s)->session->c,lvl)) \
-        h2_util_bb_log((s)->session->c,(s)->id,lvl,msg,(s)->bbout); \
-    } while(0)
 #define H2_STREAM_IN(lvl,s,msg) \
     do { \
         if (APLOG_C_IS_LEVEL((s)->session->c,lvl)) \
@@ -146,6 +142,8 @@ static int output_open(h2_stream *stream)
     }
 }
 
+static h2_sos *h2_sos_mplx_create(h2_stream *stream, h2_response *response);
+
 h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session)
 {
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
@@ -161,8 +159,6 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
     h2_stream *stream = h2_stream_create(id, pool, session);
     set_state(stream, H2_STREAM_ST_OPEN);
     stream->request   = h2_request_create(id, pool, session->config);
-    stream->bbout     = apr_brigade_create(stream->pool, 
-                                           stream->session->c->bucket_alloc);
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
@@ -201,37 +197,39 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     stream->rst_error = error_code;
     close_input(stream);
     close_output(stream);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): reset, error=%d", 
                   stream->session->id, stream->id, error_code);
+}
+
+struct h2_response *h2_stream_get_response(h2_stream *stream)
+{
+    return stream->sos? stream->sos->response : NULL;
 }
 
 apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                                     apr_bucket_brigade *bb)
 {
     apr_status_t status = APR_SUCCESS;
+    h2_sos *sos;
+    
     if (!output_open(stream)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): output closed", 
                       stream->session->id, stream->id);
         return APR_ECONNRESET;
     }
     
-    stream->response = response;
-    if (bb && !APR_BRIGADE_EMPTY(bb)) {
-        int move_all = INT_MAX;
-        /* we can move file handles from h2_mplx into this h2_stream as many
-         * as we want, since the lifetimes are the same and we are not freeing
-         * the ones in h2_mplx->io before this stream is done. */
-        H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream set_response_pre");
-        status = h2_util_move(stream->bbout, bb, 16 * 1024, &move_all,  
-                              "h2_stream_set_response");
-        H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream set_response_post");
+    sos = h2_sos_mplx_create(stream, response);
+    if (sos->response->sos_filter) {
+        sos = h2_filter_sos_create(sos->response->sos_filter, sos); 
     }
+    stream->sos = sos;
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->c,
+    status = stream->sos->buffer(stream->sos, bb);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
                   "h2_stream(%ld-%d): set_response(%d)", 
-                  stream->session->id, stream->id, response->http_status);
+                  stream->session->id, stream->id, stream->sos->response->http_status);
     return status;
 }
 
@@ -273,7 +271,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
 }
 
-apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled, 
                                 h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -294,19 +292,21 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
     /* Seeing the end-of-headers, we have everything we need to 
      * start processing it.
      */
-    status = h2_request_end_headers(stream->request, stream->pool, eos);
+    status = h2_request_end_headers(stream->request, stream->pool, 
+                                    eos, push_enabled);
     if (status == APR_SUCCESS) {
         if (!eos) {
+            stream->request->body = 1;
             stream->bbin = apr_brigade_create(stream->pool, 
                                               stream->session->c->bucket_alloc);
         }
         stream->input_remaining = stream->request->content_length;
         
         status = h2_mplx_process(stream->session->mplx, stream->id, 
-                                 stream->request, eos, cmp, ctx);
+                                 stream->request, cmp, ctx);
         stream->scheduled = 1;
         
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): scheduled %s %s://%s%s",
                       stream->session->id, stream->id,
                       stream->request->method, stream->request->scheme,
@@ -314,7 +314,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
     }
     else {
         h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
                       stream->session->id, stream->id,
                       stream->request->method, stream->request->scheme,
@@ -336,7 +336,7 @@ static apr_status_t h2_stream_input_flush(h2_stream *stream)
 
         status = h2_mplx_in_write(stream->session->mplx, stream->id, stream->bbin);
         if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, stream->session->mplx->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->mplx->c,
                           "h2_stream(%ld-%d): flushing input data",
                           stream->session->id, stream->id);
         }
@@ -351,40 +351,9 @@ static apr_status_t input_flush(apr_bucket_brigade *bb, void *ctx)
 }
 
 static apr_status_t input_add_data(h2_stream *stream,
-                                   const char *data, size_t len, int chunked)
+                                   const char *data, size_t len)
 {
-    apr_status_t status = APR_SUCCESS;
-    
-    if (chunked) {
-        status = apr_brigade_printf(stream->bbin, input_flush, stream,
-                                    "%lx\r\n", (unsigned long)len);
-        if (status == APR_SUCCESS) {
-            status = apr_brigade_write(stream->bbin, input_flush, stream, data, len);
-            if (status == APR_SUCCESS) {
-                status = apr_brigade_puts(stream->bbin, input_flush, stream, "\r\n");
-            }
-        }
-    }
-    else {
-        status = apr_brigade_write(stream->bbin, input_flush, stream, data, len);
-    }
-    return status;
-}
-
-static int input_add_header(void *str, const char *key, const char *value)
-{
-    h2_stream *stream = str;
-    apr_status_t status = input_add_data(stream, key, strlen(key), 0);
-    if (status == APR_SUCCESS) {
-        status = input_add_data(stream, ": ", 2, 0);
-        if (status == APR_SUCCESS) {
-            status = input_add_data(stream, value, strlen(value), 0);
-            if (status == APR_SUCCESS) {
-                status = input_add_data(stream, "\r\n", 2, 0);
-            }
-        }
-    }
-    return (status == APR_SUCCESS);
+    return apr_brigade_write(stream->bbin, input_flush, stream, data, len);
 }
 
 apr_status_t h2_stream_close_input(h2_stream *stream)
@@ -392,7 +361,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     apr_status_t status = APR_SUCCESS;
     
     AP_DEBUG_ASSERT(stream);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): closing input",
                   stream->session->id, stream->id);
                   
@@ -402,21 +371,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     
     H2_STREAM_IN(APLOG_TRACE2, stream, "close_pre");
     if (close_input(stream) && stream->bbin) {
-        if (stream->request->chunked) {
-            apr_table_t *trailers = stream->request->trailers;
-            if (trailers && !apr_is_empty_table(trailers)) {
-                status = input_add_data(stream, "0\r\n", 3, 0);
-                apr_table_do(input_add_header, stream, trailers, NULL);
-                status = input_add_data(stream, "\r\n", 2, 0);
-            }
-            else {
-                status = input_add_data(stream, "0\r\n\r\n", 5, 0);
-            }
-        }
-        
-        if (status == APR_SUCCESS) {
-            status = h2_stream_input_flush(stream);
-        }
+        status = h2_stream_input_flush(stream);
         if (status == APR_SUCCESS) {
             status = h2_mplx_in_close(stream->session->mplx, stream->id);
         }
@@ -432,25 +387,19 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     
     AP_DEBUG_ASSERT(stream);
     if (input_closed(stream) || !stream->request->eoh || !stream->bbin) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): writing denied, closed=%d, eoh=%d, bbin=%d", 
                       stream->session->id, stream->id, input_closed(stream),
                       stream->request->eoh, !!stream->bbin);
         return APR_EINVAL;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): add %ld input bytes", 
                   stream->session->id, stream->id, (long)len);
 
     H2_STREAM_IN(APLOG_TRACE2, stream, "write_data_pre");
-    if (stream->request->chunked) {
-        /* if input may have a body and we have not seen any
-         * content-length header, we need to chunk the input data.
-         */
-        status = input_add_data(stream, data, len, 1);
-    }
-    else {
+    if (!stream->request->chunked) {
         stream->input_remaining -= len;
         if (stream->input_remaining < 0) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c,
@@ -463,149 +412,13 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
             h2_stream_rst(stream, H2_ERR_PROTOCOL_ERROR);
             return APR_ECONNABORTED;
         }
-        status = input_add_data(stream, data, len, 0);
     }
+    
+    status = input_add_data(stream, data, len);
     if (status == APR_SUCCESS) {
         status = h2_stream_input_flush(stream);
     }
     H2_STREAM_IN(APLOG_TRACE2, stream, "write_data_post");
-    return status;
-}
-
-apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_off_t *plen, int *peos)
-{
-    apr_status_t status = APR_SUCCESS;
-    const char *src;
-    apr_table_t *trailers = NULL;
-    int test_read = (*plen == 0);
-    
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream prep_read_pre");
-    if (!APR_BRIGADE_EMPTY(stream->bbout)) {
-        src = "stream";
-        status = h2_util_bb_avail(stream->bbout, plen, peos);
-        if (!test_read && status == APR_SUCCESS && !*peos && !*plen) {
-            apr_brigade_cleanup(stream->bbout);
-            return h2_stream_prep_read(stream, plen, peos);
-        }
-        trailers = stream->response? stream->response->trailers : NULL;
-    }
-    else {
-        src = "mplx";
-        status = h2_mplx_out_readx(stream->session->mplx, stream->id, 
-                                   NULL, NULL, plen, peos, &trailers);
-        if (trailers && stream->response) {
-            h2_response_set_trailers(stream->response, trailers);
-        }    
-    }
-    
-    if (!test_read && status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
-    }
-    
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream prep_read_post");
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                  "h2_stream(%ld-%d): prep_read %s, len=%ld eos=%d, trailers=%s",
-                  stream->session->id, stream->id, src, (long)*plen, *peos,
-                  trailers? "yes" : "no");
-    return status;
-}
-
-apr_status_t h2_stream_readx(h2_stream *stream, 
-                             h2_io_data_cb *cb, void *ctx,
-                             apr_off_t *plen, int *peos)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_table_t *trailers = NULL;
-    const char *src;
-    
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream readx_pre");
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-    *peos = 0;
-    if (!APR_BRIGADE_EMPTY(stream->bbout)) {
-        apr_off_t origlen = *plen;
-        
-        src = "stream";
-        status = h2_util_bb_readx(stream->bbout, cb, ctx, plen, peos);
-        if (status == APR_SUCCESS && !*peos && !*plen) {
-            apr_brigade_cleanup(stream->bbout);
-            *plen = origlen;
-            return h2_stream_readx(stream, cb, ctx, plen, peos);
-        }
-    }
-    else {
-        src = "mplx";
-        status = h2_mplx_out_readx(stream->session->mplx, stream->id, 
-                                   cb, ctx, plen, peos, &trailers);
-    }
-    
-    if (trailers && stream->response) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                      "h2_stream(%ld-%d): readx, saving trailers",
-                      stream->session->id, stream->id);
-        h2_response_set_trailers(stream->response, trailers);
-    }
-    
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
-    }
-    
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream readx_post");
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                  "h2_stream(%ld-%d): readx %s, len=%ld eos=%d",
-                  stream->session->id, stream->id, src, (long)*plen, *peos);
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream readx_post");
-    
-    return status;
-}
-
-apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
-                               apr_off_t *plen, int *peos)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_table_t *trailers = NULL;
-
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream read_to_pre");
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-    
-    if (APR_BRIGADE_EMPTY(stream->bbout)) {
-        apr_off_t tlen = *plen;
-        int eos;
-        status = h2_mplx_out_read_to(stream->session->mplx, stream->id, 
-                                     stream->bbout, &tlen, &eos, &trailers);
-    }
-    
-    if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(stream->bbout)) {
-        status = h2_transfer_brigade(bb, stream->bbout, stream->pool, 
-                                     plen, peos);
-    }
-    else {
-        *plen = 0;
-        *peos = 0;
-    }
-
-    if (trailers && stream->response) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                      "h2_stream(%ld-%d): read_to, saving trailers",
-                      stream->session->id, stream->id);
-        h2_response_set_trailers(stream->response, trailers);
-    }
-    
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
-    }
-    H2_STREAM_OUT(APLOG_TRACE2, stream, "h2_stream read_to_post");
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                  "h2_stream(%ld-%d): read_to, len=%ld eos=%d",
-                  stream->session->id, stream->id, (long)*plen, *peos);
     return status;
 }
 
@@ -622,6 +435,44 @@ int h2_stream_is_suspended(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
     return stream->suspended;
+}
+
+apr_status_t h2_stream_prep_read(h2_stream *stream, 
+                                 apr_off_t *plen, int *peos)
+{
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
+
+    if (!stream->sos) {
+        return APR_EGENERAL;
+    }
+    return stream->sos->prep_read(stream->sos, plen, peos);
+}
+
+apr_status_t h2_stream_readx(h2_stream *stream, 
+                             h2_io_data_cb *cb, void *ctx,
+                             apr_off_t *plen, int *peos)
+{
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
+    if (!stream->sos) {
+        return APR_EGENERAL;
+    }
+    return stream->sos->readx(stream->sos, cb, ctx, plen, peos);
+}
+
+apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb, 
+                               apr_off_t *plen, int *peos)
+{
+    if (stream->rst_error) {
+        return APR_ECONNRESET;
+    }
+    if (!stream->sos) {
+        return APR_EGENERAL;
+    }
+    return stream->sos->read_to(stream->sos, bb, plen, peos);
 }
 
 int h2_stream_input_is_open(h2_stream *stream) 
@@ -648,7 +499,8 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
     apr_array_header_t *pushes;
     int i;
     
-    pushes = h2_push_collect(stream->pool, stream->request, stream->response);
+    pushes = h2_push_collect_update(stream, stream->request, 
+                                    h2_stream_get_response(stream));
     if (pushes && !apr_is_empty_array(pushes)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): found %d push candidates",
@@ -667,18 +519,213 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
 
 apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 {
-    return stream->response? stream->response->trailers : NULL;
+    return stream->sos? stream->sos->get_trailers(stream->sos) : NULL;
 }
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
-    if (stream->initiated_on && stream->response) {
-        const char *ctype = apr_table_get(stream->response->headers, "content-type");
+    h2_response *response = h2_stream_get_response(stream);
+    
+    if (stream->initiated_on && response) {
+        const char *ctype = apr_table_get(response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */
             return h2_config_get_priority(stream->session->config, ctype);
         }
     }
     return NULL;
+}
+
+/*******************************************************************************
+ * h2_sos_mplx
+ ******************************************************************************/
+
+typedef struct h2_sos_mplx {
+    h2_mplx *m;
+    apr_bucket_brigade *bb;
+    apr_table_t *trailers;
+} h2_sos_mplx;
+
+#define H2_SOS_MPLX_OUT(lvl,msos,msg) \
+    do { \
+        if (APLOG_C_IS_LEVEL((msos)->m->c,lvl)) \
+        h2_util_bb_log((msos)->m->c,(msos)->m->id,lvl,msg,(msos)->bb); \
+    } while(0)
+    
+
+static apr_status_t h2_sos_mplx_read_to(h2_sos *sos, apr_bucket_brigade *bb, 
+                                        apr_off_t *plen, int *peos)
+{
+    h2_sos_mplx *msos = sos->ctx;
+    apr_status_t status = APR_SUCCESS;
+    apr_table_t *trailers = NULL;
+
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx read_to_pre");
+    
+    if (APR_BRIGADE_EMPTY(msos->bb)) {
+        apr_off_t tlen = *plen;
+        int eos;
+        status = h2_mplx_out_read_to(msos->m, sos->stream->id, 
+                                     msos->bb, &tlen, &eos, &trailers);
+    }
+    
+    if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(msos->bb)) {
+        status = h2_transfer_brigade(bb, msos->bb, sos->stream->pool, 
+                                     plen, peos);
+    }
+    else {
+        *plen = 0;
+        *peos = 0;
+    }
+
+    if (trailers) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+                      "h2_stream(%ld-%d): read_to, saving trailers",
+                      msos->m->id, sos->stream->id);
+        msos->trailers = trailers;
+    }
+    
+    if (status == APR_SUCCESS && !*peos && !*plen) {
+        status = APR_EAGAIN;
+    }
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx read_to_post");
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+                  "h2_stream(%ld-%d): read_to, len=%ld eos=%d",
+                  msos->m->id, sos->stream->id, (long)*plen, *peos);
+    return status;
+}
+
+static apr_status_t h2_sos_mplx_prep_read(h2_sos *sos, apr_off_t *plen, int *peos)
+{
+    h2_sos_mplx *msos = sos->ctx;
+    apr_status_t status = APR_SUCCESS;
+    const char *src;
+    apr_table_t *trailers = NULL;
+    int test_read = (*plen == 0);
+    
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prep_read_pre");
+    if (!APR_BRIGADE_EMPTY(msos->bb)) {
+        src = "stream";
+        status = h2_util_bb_avail(msos->bb, plen, peos);
+        if (!test_read && status == APR_SUCCESS && !*peos && !*plen) {
+            apr_brigade_cleanup(msos->bb);
+            return h2_sos_mplx_prep_read(sos, plen, peos);
+        }
+    }
+    else {
+        src = "mplx";
+        status = h2_mplx_out_readx(msos->m, sos->stream->id, 
+                                   NULL, NULL, plen, peos, &trailers);
+        if (trailers) {
+            msos->trailers = trailers;
+        }    
+    }
+    
+    if (!test_read && status == APR_SUCCESS && !*peos && !*plen) {
+        status = APR_EAGAIN;
+    }
+    
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prep_read_post");
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+                  "h2_stream(%ld-%d): prep_read %s, len=%ld eos=%d, trailers=%s",
+                  msos->m->id, sos->stream->id, src, (long)*plen, *peos,
+                  msos->trailers? "yes" : "no");
+    return status;
+}
+
+static apr_status_t h2_sos_mplx_readx(h2_sos *sos, h2_io_data_cb *cb, void *ctx,
+                                      apr_off_t *plen, int *peos)
+{
+    h2_sos_mplx *msos = sos->ctx;
+    apr_status_t status = APR_SUCCESS;
+    apr_table_t *trailers = NULL;
+    const char *src;
+    
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx readx_pre");
+    *peos = 0;
+    if (!APR_BRIGADE_EMPTY(msos->bb)) {
+        apr_off_t origlen = *plen;
+        
+        src = "stream";
+        status = h2_util_bb_readx(msos->bb, cb, ctx, plen, peos);
+        if (status == APR_SUCCESS && !*peos && !*plen) {
+            apr_brigade_cleanup(msos->bb);
+            *plen = origlen;
+            return h2_sos_mplx_readx(sos, cb, ctx, plen, peos);
+        }
+    }
+    else {
+        src = "mplx";
+        status = h2_mplx_out_readx(msos->m, sos->stream->id, 
+                                   cb, ctx, plen, peos, &trailers);
+    }
+    
+    if (trailers) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+                      "h2_stream(%ld-%d): readx, saving trailers",
+                      msos->m->id, sos->stream->id);
+        msos->trailers = trailers;
+    }
+    
+    if (status == APR_SUCCESS && !*peos && !*plen) {
+        status = APR_EAGAIN;
+    }
+    
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_stream readx_post");
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+                  "h2_stream(%ld-%d): readx %s, len=%ld eos=%d",
+                  msos->m->id, sos->stream->id, src, (long)*plen, *peos);
+    
+    return status;
+}
+
+static apr_table_t *h2_sos_mplx_get_trailers(h2_sos *sos)
+{
+    h2_sos_mplx *msos = sos->ctx;
+
+    return msos->trailers;
+}
+
+static apr_status_t h2_sos_mplx_buffer(h2_sos *sos, apr_bucket_brigade *bb) 
+{
+    h2_sos_mplx *msos = sos->ctx;
+    apr_status_t status = APR_SUCCESS;
+
+    if (bb && !APR_BRIGADE_EMPTY(bb)) {
+        apr_size_t move_all = INT_MAX;
+        /* we can move file handles from h2_mplx into this h2_stream as many
+         * as we want, since the lifetimes are the same and we are not freeing
+         * the ones in h2_mplx->io before this stream is done. */
+        H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx set_response_pre");
+        status = h2_util_move(msos->bb, bb, 16 * 1024, &move_all,  
+                              "h2_stream_set_response");
+        H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx set_response_post");
+    }
+    return status;
+}
+
+static h2_sos *h2_sos_mplx_create(h2_stream *stream, h2_response *response)
+{
+    h2_sos *sos;
+    h2_sos_mplx *msos;
+    
+    msos = apr_pcalloc(stream->pool, sizeof(*msos));
+    msos->m = stream->session->mplx;
+    msos->bb = apr_brigade_create(stream->pool, msos->m->c->bucket_alloc);
+
+    sos = apr_pcalloc(stream->pool, sizeof(*sos));
+    sos->stream = stream;
+    sos->response = response;
+    
+    sos->ctx = msos;
+    sos->buffer = h2_sos_mplx_buffer;
+    sos->prep_read = h2_sos_mplx_prep_read;
+    sos->readx = h2_sos_mplx_readx;
+    sos->read_to = h2_sos_mplx_read_to;
+    sos->get_trailers = h2_sos_mplx_get_trailers;
+    
+    sos->response = response;
+
+    return sos;
 }
 

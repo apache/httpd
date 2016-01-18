@@ -52,7 +52,8 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            apr_bucket_brigade* brigade,
                                            ap_input_mode_t mode,
                                            apr_read_type_e block,
-                                           apr_off_t readbytes) {
+                                           apr_off_t readbytes)
+{
     h2_task *task = filter->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->input) {
@@ -63,7 +64,8 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
 }
 
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
-                                            apr_bucket_brigade* brigade) {
+                                            apr_bucket_brigade* brigade)
+{
     h2_task *task = filter->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->output) {
@@ -73,7 +75,8 @@ static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
 }
 
 static apr_status_t h2_filter_read_response(ap_filter_t* f,
-                                            apr_bucket_brigade* bb) {
+                                            apr_bucket_brigade* bb)
+{
     h2_task *task = f->ctx;
     AP_DEBUG_ASSERT(task);
     if (!task->output || !task->output->from_h1) {
@@ -97,7 +100,7 @@ void h2_task_register_hooks(void)
      */
     ap_hook_pre_connection(h2_task_pre_conn,
                            NULL, mod_ssl, APR_HOOK_FIRST);
-    /* When the connection processing actually starts, we might to
+    /* When the connection processing actually starts, we might 
      * take over, if the connection is for a task.
      */
     ap_hook_process_connection(h2_task_process_conn, 
@@ -117,9 +120,13 @@ void h2_task_register_hooks(void)
 
 static int h2_task_pre_conn(conn_rec* c, void *arg)
 {
+    h2_ctx *ctx;
     
-    h2_ctx *ctx = h2_ctx_get(c);
+    if (!c->master) {
+        return OK;
+    }
     
+    ctx = h2_ctx_get(c, 0);
     (void)arg;
     if (h2_ctx_is_task(ctx)) {
         h2_task *task = h2_ctx_get_task(ctx);
@@ -136,9 +143,9 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
 }
 
 h2_task *h2_task_create(long session_id, const h2_request *req, 
-                        apr_pool_t *pool, h2_mplx *mplx, int eos)
+                        apr_pool_t *pool, h2_mplx *mplx)
 {
-    h2_task *task = apr_pcalloc(pool, sizeof(h2_task));
+    h2_task *task     = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
@@ -147,72 +154,35 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
         return NULL;
     }
     
-    task->id        = apr_psprintf(pool, "%ld-%d", session_id, req->id);
-    task->stream_id = req->id;
-    task->pool      = pool;
-    task->mplx      = mplx;
-    task->c         = h2_conn_create(mplx->c, task->pool);
+    task->id          = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->stream_id   = req->id;
+    task->mplx        = mplx;
+    task->request     = req;
+    task->input_eos   = !req->body;
+    task->ser_headers = h2_config_geti(req->config, H2_CONF_SER_HEADERS);
 
-    task->request   = req;
-    task->input_eos = eos;    
-    
     return task;
 }
 
-apr_status_t h2_task_destroy(h2_task *task)
+apr_status_t h2_task_do(h2_task *task, conn_rec *c, apr_thread_cond_t *cond, 
+                        apr_socket_t *socket)
 {
-    (void)task;
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_task_do(h2_task *task, h2_worker *worker)
-{
-    apr_status_t status = APR_SUCCESS;
-    
     AP_DEBUG_ASSERT(task);
+    task->io = cond;
+    task->input = h2_task_input_create(task, c->pool, c->bucket_alloc);
+    task->output = h2_task_output_create(task, c->pool);
     
-    task->serialize_headers = h2_config_geti(task->request->config, H2_CONF_SER_HEADERS);
-
-    status = h2_worker_setup_task(worker, task);
+    ap_process_connection(c, socket);
     
-    /* save in connection that this one is a pseudo connection */
-    h2_ctx_create_for(task->c, task);
-
-    if (status == APR_SUCCESS) {
-        task->input = h2_task_input_create(task, task->pool, 
-                                           task->c->bucket_alloc);
-        task->output = h2_task_output_create(task, task->pool);
-        
-        ap_process_connection(task->c, h2_worker_get_socket(worker));
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_task(%s): processing done", task->id);
-    }
-    else {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, task->c,
-                      APLOGNO(02957) "h2_task(%s): error setting up h2_task", 
-                      task->id);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                  "h2_task(%s): processing done", task->id);
     
-    if (task->input) {
-        h2_task_input_destroy(task->input);
-        task->input = NULL;
-    }
+    h2_task_input_destroy(task->input);
+    h2_task_output_close(task->output);
+    h2_task_output_destroy(task->output);
+    task->io = NULL;
     
-    if (task->output) {
-        h2_task_output_close(task->output);
-        h2_task_output_destroy(task->output);
-        task->output = NULL;
-    }
-
-    if (task->io) {
-        apr_thread_cond_signal(task->io);
-    }
-    
-    h2_worker_release_task(worker, task);
-    h2_mplx_task_done(task->mplx, task->stream_id);
-    
-    return status;
+    return APR_SUCCESS;
 }
 
 static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
@@ -246,10 +216,15 @@ static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
 
 static int h2_task_process_conn(conn_rec* c)
 {
-    h2_ctx *ctx = h2_ctx_get(c);
+    h2_ctx *ctx;
     
+    if (!c->master) {
+        return DECLINED;
+    }
+    
+    ctx = h2_ctx_get(c, 0);
     if (h2_ctx_is_task(ctx)) {
-        if (!ctx->task->serialize_headers) {
+        if (!ctx->task->ser_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
                           "h2_h2, processing request directly");
             h2_task_process_request(ctx->task->request, c);
@@ -260,8 +235,3 @@ static int h2_task_process_conn(conn_rec* c)
     }
     return DECLINED;
 }
-
-
-
-
-

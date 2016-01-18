@@ -16,18 +16,27 @@
 #ifndef __mod_h2__h2_conn__
 #define __mod_h2__h2_conn__
 
+struct h2_ctx;
 struct h2_task;
 
 /**
- * Process the connection that is now starting the HTTP/2
- * conversation. Return when the HTTP/2 session is done
- * and the connection will close.
+ * Setup the connection and our context for HTTP/2 processing
  *
+ * @param ctx the http2 context to setup
  * @param c the connection HTTP/2 is starting on
  * @param r the upgrade request that still awaits an answer, optional
- * @param s the server selected by request or, if NULL, connection
  */
-apr_status_t h2_conn_process(conn_rec *c, request_rec *r, server_rec *s);
+apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
+
+/**
+ * Run the HTTP/2 connection in synchronous fashion. 
+ * Return when the HTTP/2 session is done
+ * and the connection will close or a fatal error occured.
+ *
+ * @param ctx the http2 context to run
+ * @return APR_SUCCESS when session is done.
+ */
+apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c);
 
 /* Initialize this child process for h2 connection work,
  * to be called once during child init before multi processing
@@ -47,9 +56,7 @@ typedef enum {
 h2_mpm_type_t h2_conn_mpm_type(void);
 
 
-conn_rec *h2_conn_create(conn_rec *master, apr_pool_t *stream_pool);
-
-apr_status_t h2_conn_setup(struct h2_task *task, apr_bucket_alloc_t *bucket_alloc,
-                           apr_thread_t *thread, apr_socket_t *socket);
+conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p, 
+                          apr_thread_t *thread, apr_socket_t *socket);
 
 #endif /* defined(__mod_h2__h2_conn__) */

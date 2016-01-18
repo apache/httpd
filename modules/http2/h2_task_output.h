@@ -38,7 +38,7 @@ struct h2_task_output {
     struct h2_task *task;
     h2_task_output_state_t state;
     struct h2_from_h1 *from_h1;
-    int trailers_passed;
+    unsigned int trailers_passed : 1;
 };
 
 h2_task_output *h2_task_output_create(struct h2_task *task, apr_pool_t *pool);

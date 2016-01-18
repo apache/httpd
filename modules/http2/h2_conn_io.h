@@ -17,6 +17,7 @@
 #define __mod_h2__h2_conn_io__
 
 struct h2_config;
+struct h2_session;
 
 /* h2_io is the basic handler of a httpd connection. It keeps two brigades,
  * one for input, one for output and works with the installed connection
@@ -26,7 +27,6 @@ struct h2_config;
  */
 typedef struct {
     conn_rec *connection;
-    apr_bucket_brigade *input;
     apr_bucket_brigade *output;
 
     int is_tls;
@@ -35,6 +35,7 @@ typedef struct {
     
     apr_size_t write_size;
     apr_time_t last_write;
+    apr_int64_t bytes_read;
     apr_int64_t bytes_written;
     
     int buffer_output;
@@ -50,15 +51,6 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
 
 int h2_conn_io_is_buffered(h2_conn_io *io);
 
-typedef apr_status_t (*h2_conn_io_on_read_cb)(const char *data, apr_size_t len,
-                                         apr_size_t *readlen, int *done,
-                                         void *puser);
-
-apr_status_t h2_conn_io_read(h2_conn_io *io,
-                        apr_read_type_e block,
-                        h2_conn_io_on_read_cb on_read_cb,
-                        void *puser);
-
 apr_status_t h2_conn_io_write(h2_conn_io *io,
                          const char *buf,
                          size_t length);
@@ -69,6 +61,6 @@ apr_status_t h2_conn_io_consider_flush(h2_conn_io *io);
 
 apr_status_t h2_conn_io_pass(h2_conn_io *io);
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
-apr_status_t h2_conn_io_close(h2_conn_io *io, void *session);
+apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, apr_bucket *b);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */
