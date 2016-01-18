@@ -32,6 +32,7 @@
 #include "h2_private.h"
 #include "h2_config.h"
 #include "h2_mplx.h"
+#include "h2_push.h"
 #include "h2_request.h"
 #include "h2_task.h"
 #include "h2_util.h"
@@ -227,7 +228,8 @@ apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
     return status;
 }
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, 
+                                    int eos, int push)
 {
     const char *s;
     
@@ -271,6 +273,7 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
     }
 
     req->eoh = 1;
+    h2_push_policy_determine(req, pool, push);
     
     /* In the presence of trailers, force behaviour of chunked encoding */
     s = apr_table_get(req->headers, "Trailer");

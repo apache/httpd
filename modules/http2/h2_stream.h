@@ -45,7 +45,7 @@ struct h2_priority;
 struct h2_request;
 struct h2_response;
 struct h2_session;
-struct h2_task;
+struct h2_sos;
 
 typedef struct h2_stream h2_stream;
 
@@ -57,18 +57,17 @@ struct h2_stream {
     
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
-    struct h2_response *response; /* the response, once ready */
-    
-    int aborted;                /* was aborted */
-    int suspended;              /* DATA sending has been suspended */
     int rst_error;              /* stream error for RST_STREAM */
-    int scheduled;              /* stream has been scheduled */
-    int submitted;              /* response HEADER has been sent */
+    
+    unsigned int aborted   : 1; /* was aborted */
+    unsigned int suspended : 1; /* DATA sending has been suspended */
+    unsigned int scheduled : 1; /* stream has been scheduled */
+    unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
     apr_bucket_brigade *bbin;   /* input DATA */
-    
-    apr_bucket_brigade *bbout;  /* output DATA */
+
+    struct h2_sos *sos;         /* stream output source, e.g. to read output from */
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
 };
 
@@ -184,7 +183,7 @@ void h2_stream_rst(h2_stream *streamm, int error_code);
  * @param cmp    priority comparision
  * @param ctx    context for comparision
  */
-apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
+apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                                 h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
@@ -193,6 +192,8 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos,
  * @return != 0 iff stream has been scheduled
  */
 int h2_stream_is_scheduled(h2_stream *stream);
+
+struct h2_response *h2_stream_get_response(h2_stream *stream);
 
 /**
  * Set the response for this stream. Invoked when all meta data for
@@ -256,6 +257,16 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
                                apr_off_t *plen, int *peos);
 
 /**
+ * Get optional trailers for this stream, may be NULL. Meaningful
+ * results can only be expected when the end of the response body has
+ * been reached.
+ *
+ * @param stream to ask for trailers
+ * @return trailers for NULL
+ */
+apr_table_t *h2_stream_get_trailers(h2_stream *stream);
+
+/**
  * Set the suspended state of the stream.
  * @param stream the stream to change state on
  * @param suspended boolean value if stream is suspended
@@ -290,16 +301,6 @@ int h2_stream_needs_submit(h2_stream *stream);
  * @param stream the stream for which to submit
  */
 apr_status_t h2_stream_submit_pushes(h2_stream *stream);
-
-/**
- * Get optional trailers for this stream, may be NULL. Meaningful
- * results can only be expected when the end of the response body has
- * been reached.
- *
- * @param stream to ask for trailers
- * @return trailers for NULL
- */
-apr_table_t *h2_stream_get_trailers(h2_stream *stream);
 
 /**
  * Get priority information set for this stream.

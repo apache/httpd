@@ -13,29 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef mod_h2_h2_private_h
-#define mod_h2_h2_private_h
+#ifndef mod_http2_mod_http2_h
+#define mod_http2_mod_http2_h
 
-#include <nghttp2/nghttp2.h>
+/** The http2_var_lookup() optional function retrieves HTTP2 environment
+ * variables. */
+APR_DECLARE_OPTIONAL_FN(char *, http2_var_lookup,
+                        (apr_pool_t *, server_rec *,
+                         conn_rec *, request_rec *,
+                         char *));
 
-extern module AP_MODULE_DECLARE_DATA http2_module;
-
-APLOG_USE_MODULE(http2);
-
-
-#define H2_HEADER_METHOD     ":method"
-#define H2_HEADER_METHOD_LEN 7
-#define H2_HEADER_SCHEME     ":scheme"
-#define H2_HEADER_SCHEME_LEN 7
-#define H2_HEADER_AUTH       ":authority"
-#define H2_HEADER_AUTH_LEN   10
-#define H2_HEADER_PATH       ":path"
-#define H2_HEADER_PATH_LEN   5
-#define H2_CRLF             "\r\n"
-
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
-
-#define H2MAX(x,y) ((x) > (y) ? (x) : (y))
-#define H2MIN(x,y) ((x) < (y) ? (x) : (y))
+/** An optional function which returns non-zero if the given connection
+ * or its master connection is using HTTP/2. */
+APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
 
 #endif

@@ -18,7 +18,7 @@
 
 /**
  * The stream multiplexer. It pushes buckets from the connection
- * thread to the stream task threads and vice versa. It's thread-safe
+ * thread to the stream threads and vice versa. It's thread-safe
  * to use.
  *
  * There is one h2_mplx instance for each h2_session, which sits on top
@@ -44,7 +44,6 @@ struct h2_stream;
 struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
-struct h2_worker;
 struct h2_workers;
 struct h2_stream_set;
 struct h2_task_queue;
@@ -65,22 +64,26 @@ struct h2_mplx {
     volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
-    apr_bucket_alloc_t *bucket_alloc;
+
+    unsigned int aborted : 1;
 
     struct h2_task_queue *q;
     struct h2_io_set *stream_ios;
     struct h2_io_set *ready_ios;
     
+    int max_stream_started;      /* highest stream id that started processing */
+
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
     struct apr_thread_cond_t *join_wait;
     
-    int aborted;
     apr_size_t stream_max_mem;
+    int stream_timeout_secs;
     
     apr_pool_t *spare_pool;           /* spare pool, ready for next io */
     struct h2_workers *workers;
-    int file_handles_allowed;
+    apr_size_t tx_handles_reserved;
+    apr_size_t tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
@@ -101,16 +104,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master,
                         struct h2_workers *workers);
 
 /**
- * Increase the reference counter of this mplx.
- */
-void h2_mplx_reference(h2_mplx *m);
-
-/**
- * Decreases the reference counter of this mplx.
- */
-void h2_mplx_release(h2_mplx *m);
-
-/**
  * Decreases the reference counter of this mplx and waits for it
  * to reached 0, destroy the mplx afterwards.
  * This is to be called from the thread that created the mplx in
@@ -122,11 +115,19 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
 
 /**
  * Aborts the multiplexer. It will answer all future invocation with
- * APR_ECONNABORTED, leading to early termination of ongoing tasks.
+ * APR_ECONNABORTED, leading to early termination of ongoing streams.
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-void h2_mplx_task_done(h2_mplx *m, int stream_id);
+void h2_mplx_request_done(h2_mplx **pm, int stream_id, const struct h2_request **preq);
+
+/**
+ * Get the highest stream identifier that has been passed on to processing.
+ * Maybe 0 in case no stream has been processed yet.
+ * @param m the multiplexer
+ * @return highest stream identifier for which processing started
+ */
+int h2_mplx_get_max_stream_started(h2_mplx *m);
 
 /*******************************************************************************
  * IO lifetime of streams.
@@ -163,16 +164,14 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  * @param m the multiplexer
  * @param stream_id the identifier of the stream
  * @param r the request to be processed
- * @param eos if input is complete
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
-                             const struct h2_request *r, int eos, 
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request *r, 
                              h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
- * Stream priorities have changed, reschedule pending tasks.
+ * Stream priorities have changed, reschedule pending requests.
  * 
  * @param m the multiplexer
  * @param cmp the stream priority compare function
@@ -180,7 +179,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id,
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, struct h2_worker *w, int *has_more);
+const struct h2_request *h2_mplx_pop_request(h2_mplx *mplx, int *has_more);
 
 /**
  * Register a callback for the amount of input data consumed per stream. The
@@ -206,6 +205,7 @@ void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
  */
 apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
                              int stream_id, apr_bucket_brigade *bb,
+                             apr_table_t *trailers, 
                              struct apr_thread_cond_t *iowait);
 
 /**

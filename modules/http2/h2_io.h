@@ -18,6 +18,7 @@
 
 struct h2_response;
 struct apr_thread_cond_t;
+struct h2_mplx;
 struct h2_request;
 
 
@@ -25,30 +26,42 @@ typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
 
 typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
+typedef enum {
+    H2_IO_READ,
+    H2_IO_WRITE,
+    H2_IO_ANY,
+}
+h2_io_op;
 
 typedef struct h2_io h2_io;
 
 struct h2_io {
-    int id;                      /* stream identifier */
-    apr_pool_t *pool;            /* stream pool */
-    int orphaned;                /* h2_stream is gone for this io */
-    
-    int task_done;
-    const struct h2_request *request;  /* request on this io */
-    int request_body;            /* == 0 iff request has no body */
-    struct h2_response *response;/* response for submit, once created */
-    int rst_error;
-
-    int eos_in;
-    apr_bucket_brigade *bbin;    /* input data for stream */
-    struct apr_thread_cond_t *input_arrived; /* block on reading */
-    apr_size_t input_consumed;   /* how many bytes have been read */
-    
-    int eos_out;
-    apr_bucket_brigade *bbout;   /* output data from stream */
+    int id;                          /* stream identifier */
+    apr_pool_t *pool;                /* stream pool */
     apr_bucket_alloc_t *bucket_alloc;
-    struct apr_thread_cond_t *output_drained; /* block on writing */
     
+    const struct h2_request *request;/* request on this io */
+    struct h2_response *response;    /* response to request */
+    int rst_error;                   /* h2 related stream abort error */
+
+    apr_bucket_brigade *bbin;        /* input data for stream */
+    apr_bucket_brigade *bbout;       /* output data from stream */
+    apr_bucket_brigade *tmp;         /* temporary data for chunking */
+
+    unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    unsigned int request_body   : 1; /* iff request has body */
+    unsigned int eos_in         : 1; /* input eos has been seen */
+    unsigned int eos_in_written : 1; /* input eos has been forwarded */
+    unsigned int eos_out        : 1; /* output eos has been seen */
+    
+    h2_io_op timed_op;               /* which operation is waited on, if any */
+    struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */
+    apr_time_t timeout_at;           /* when IO wait will time out */
+    
+    apr_size_t input_consumed;       /* how many bytes have been read */
+        
     int files_handles_owned;
 };
 
@@ -59,7 +72,7 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool, apr_bucket_alloc_t *bucket_alloc);
+h2_io *h2_io_create(int id, apr_pool_t *pool);
 
 /**
  * Frees any resources hold by the h2_io instance. 
@@ -86,6 +99,14 @@ int h2_io_in_has_eos_for(h2_io *io);
  */
 int h2_io_out_has_data(h2_io *io);
 
+void h2_io_signal(h2_io *io, h2_io_op op);
+void h2_io_signal_init(h2_io *io, h2_io_op op, int timeout_secs, 
+                       struct apr_thread_cond_t *cond);
+void h2_io_signal_exit(h2_io *io);
+apr_status_t h2_io_signal_wait(struct h2_mplx *m, h2_io *io);
+
+void h2_io_make_orphaned(h2_io *io, int error);
+
 /*******************************************************************************
  * Input handling of streams.
  ******************************************************************************/
@@ -94,7 +115,7 @@ int h2_io_out_has_data(h2_io *io);
  * is currently available, APR_EOF if end of input has been reached.
  */
 apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
-                           apr_size_t maxlen);
+                           apr_size_t maxlen, apr_table_t *trailers);
 
 /**
  * Appends given bucket to the input.
@@ -137,7 +158,7 @@ apr_status_t h2_io_out_read_to(h2_io *io,
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, apr_table_t *trailers,
-                             int *pfile_buckets_allowed);
+                             apr_size_t *pfile_buckets_allowed);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will

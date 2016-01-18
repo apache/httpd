@@ -28,10 +28,9 @@ struct h2_task;
 typedef struct h2_request h2_request;
 
 struct h2_request {
-    int id;                 /* stream id */
+    int id;             /* stream id */
 
-    /* pseudo header values, see ch. 8.1.2.3 */
-    const char *method;
+    const char *method; /* pseudo header values, see ch. 8.1.2.3 */
     const char *scheme;
     const char *authority;
     const char *path;
@@ -41,9 +40,11 @@ struct h2_request {
 
     apr_time_t request_time;
     apr_off_t content_length;
-    int chunked;
-    int eoh;
     
+    unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
+    unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
+    unsigned int body    : 1; /* iff this request has a body */
+    unsigned int push_policy; /* which push policy to use for this request */
     const struct h2_config *config;
 };
 
@@ -68,7 +69,8 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *name, size_t nlen,
                                     const char *value, size_t vlen);
 
-apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos);
+apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, 
+                                    int eos, int push);
 
 void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src);
 

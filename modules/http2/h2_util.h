@@ -26,8 +26,6 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
                             const char *name, size_t namelen,
                             const char *value, size_t valuelen);
 
-char *h2_strlwr(char *s);
-
 void h2_util_camel_case_header(char *s, size_t len);
 
 int h2_req_ignore_header(const char *name, size_t len);
@@ -51,6 +49,8 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
 apr_size_t h2_util_base64url_decode(const char **decoded, 
                                     const char *encoded, 
                                     apr_pool_t *pool);
+const char *h2_util_base64url_encode(const char *data, 
+                                     apr_size_t len, apr_pool_t *pool);
 
 #define H2_HD_MATCH_LIT(l, name, nlen)  \
     ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
@@ -99,7 +99,7 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
  * @param msg message for use in logging
  */
 apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, int *pfile_buckets_allowed, 
+                          apr_off_t maxlen, apr_size_t *pfile_buckets_allowed, 
                           const char *msg);
 
 /**
