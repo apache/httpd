@@ -876,7 +876,8 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
         *ctx->result_string = ap_expr_eval_word(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
             ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                          "Evaluation of expression from %s:%d failed: %s",
+                          APLOGNO(03298)
+                          "Evaluation of string expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
         } else {
@@ -891,6 +892,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
         rc = ap_expr_eval(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
             ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+                          APLOGNO(03299)
                           "Evaluation of expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;

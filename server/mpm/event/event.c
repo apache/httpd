@@ -1774,6 +1774,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     rc = init_pollset(tpool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
+                     APLOGNO(03266)
                      "failed to initialize pollset, "
                      "attempting to shutdown process gracefully");
         signal_threads(ST_GRACEFUL);
@@ -1875,6 +1876,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
             if (!APR_STATUS_IS_TIMEUP(rc)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
+                             APLOGNO(03267)
                              "apr_pollset_poll failed.  Attempting to "
                              "shutdown process gracefully");
                 signal_threads(ST_GRACEFUL);
@@ -1962,6 +1964,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         disable_listensocks(process_slot);
                     listeners_disabled = 1;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                 APLOGNO(03268)
                                  "All workers busy, not accepting new conns "
                                  "in this process");
                 }
@@ -1975,6 +1978,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     if (!listeners_disabled)
                         disable_listensocks(process_slot);
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                 APLOGNO(03269)
                                  "Too many open connections (%u), "
                                  "not accepting new conns in this process",
                                  apr_atomic_read32(&connection_count));
@@ -2189,6 +2193,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             rv = ap_queue_info_set_idle(worker_queue_info, NULL);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                             APLOGNO(03270)
                              "ap_queue_info_set_idle failed. Attempting to "
                              "shutdown process gracefully.");
                 signal_threads(ST_GRACEFUL);
@@ -2431,6 +2436,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         if (loops % 120 == 0) { /* every couple of minutes */
             if (prev_threads_created == threads_created) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                             APLOGNO(03271)
                              "child %" APR_PID_T_FMT " isn't taking over "
                              "slots very quickly (%d of %d)",
                              ap_my_pid, threads_created,
@@ -3309,7 +3315,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
 
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT | level_flags, 0,
-                     (startup ? NULL : s),
+                     (startup ? NULL : s), APLOGNO(03272)
                      "no listening sockets available, shutting down");
         return DONE;
     }
@@ -3324,7 +3330,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
     if ((rv = ap_duplicate_listeners(pconf, ap_server_conf,
                                      &listen_buckets, &num_buckets))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
-                     (startup ? NULL : s),
+                     (startup ? NULL : s), APLOGNO(03273)
                      "could not duplicate listeners");
         return DONE;
     }
@@ -3333,7 +3339,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
     for (i = 0; i < num_buckets; i++) {
         if ((rv = ap_mpm_podx_open(pconf, &all_buckets[i].pod))) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
-                         (startup ? NULL : s),
+                         (startup ? NULL : s), APLOGNO(03274)
                          "could not open pipe-of-death");
             return DONE;
         }

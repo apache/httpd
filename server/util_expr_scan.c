@@ -607,8 +607,9 @@ static yyconst flex_int16_t yy_chk[319] =
 #define YY_FATAL_ERROR(msg)                                     \
     do {                                                        \
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, \
-                      "expr parser fatal error (BUG?): "        \
-                      "%s, exiting", msg);                      \
+                     APLOGNO(03296)                             \
+                     "expr parser fatal error (BUG?): "         \
+                     "%s, exiting", msg);                       \
          abort();                                               \
     } while (0)
 
