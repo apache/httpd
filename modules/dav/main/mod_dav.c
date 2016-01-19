@@ -558,6 +558,7 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
         if (errscan->desc == NULL)
             continue;
 
+        /* Intentional no APLOGNO */
         ap_log_rerror(APLOG_MARK, level, errscan->aprerr, r, "%s  [%d, #%d]",
                       errscan->desc, errscan->status, errscan->error_id);
     }

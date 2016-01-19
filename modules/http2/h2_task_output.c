@@ -69,7 +69,7 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
                 /* This happens currently when ap_die(status, r) is invoked
                  * by a read request filter.
                  */
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03204)
                               "h2_task_output(%s): write without response "
                               "for %s %s %s",
                               output->task->id, output->task->request->method, 

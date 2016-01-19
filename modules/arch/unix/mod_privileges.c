@@ -34,8 +34,8 @@
     apr_strerror(errno, msgbuf, sizeof(msgbuf)); \
     return apr_pstrdup(cmd->pool, msgbuf); \
 }
-#define CR_CHECK(x) if (x == -1) \
-    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, 0, \
+#define CR_CHECK(x, y) if (x == -1) \
+    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, 0, y \
                  "Failed to initialise privileges")
 
 module AP_MODULE_DECLARE_DATA privileges_module;
@@ -87,17 +87,17 @@ static void *privileges_create_cfg(apr_pool_t *pool, server_rec *s)
     /* By default, run in secure vhost mode.
      * That means dropping basic privileges we don't usually need.
      */
-    CR_CHECK(priv_delset(cfg->priv, PRIV_FILE_LINK_ANY));
-    CR_CHECK(priv_delset(cfg->priv, PRIV_PROC_INFO));
-    CR_CHECK(priv_delset(cfg->priv, PRIV_PROC_SESSION));
+    CR_CHECK(priv_delset(cfg->priv, PRIV_FILE_LINK_ANY), APLOGNO(03160));
+    CR_CHECK(priv_delset(cfg->priv, PRIV_PROC_INFO), APLOGNO(03161));
+    CR_CHECK(priv_delset(cfg->priv, PRIV_PROC_SESSION), APLOGNO(03162));
 
 /* Hmmm, should CGI default to secure too ? */
 /*
-    CR_CHECK(priv_delset(cfg->child_priv, PRIV_FILE_LINK_ANY));
-    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_INFO));
-    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_SESSION));
-    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_FORK));
-    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_EXEC));
+    CR_CHECK(priv_delset(cfg->child_priv, PRIV_FILE_LINK_ANY), APLOGNO(03163));
+    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_INFO), APLOGNO(03164));
+    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_SESSION), APLOGNO(03165));
+    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_FORK), APLOGNO(03166));
+    CR_CHECK(priv_delset(cfg->child_priv, PRIV_PROC_EXEC), APLOGNO(03167));
 */
 
     /* we´ll use 0 for unset */
@@ -362,16 +362,16 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
     if (dtrace_enabled) {
         for (sp = s; sp != NULL; sp = sp->next) {
             cfg = ap_get_module_config(sp->module_config, &privileges_module);
-            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_KERNEL));
-            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_PROC));
-            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_USER));
-            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_KERNEL));
-            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_PROC));
-            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_USER));
+            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_KERNEL), APLOGNO(03168));
+            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_PROC), APLOGNO(03169));
+            CR_CHECK(priv_addset(cfg->priv, PRIV_DTRACE_USER), APLOGNO(03170));
+            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_KERNEL), APLOGNO(03171));
+            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_PROC), APLOGNO(03172));
+            CR_CHECK(priv_addset(cfg->child_priv, PRIV_DTRACE_USER), APLOGNO(03173));
         }
-        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_KERNEL));
-        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_PROC));
-        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_USER));
+        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_KERNEL), APLOGNO(03174));
+        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_PROC), APLOGNO(03175));
+        CR_CHECK(priv_addset(priv_default, PRIV_DTRACE_USER), APLOGNO(03176));
     }
 
     /* set up priv_setid for per-request use */

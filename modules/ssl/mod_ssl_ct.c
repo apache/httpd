@@ -820,7 +820,7 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
     apr_status_t rv;
     int count = 0;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03241)
                  SERVICE_THREAD_NAME " started");
 
     while (1) {
@@ -835,7 +835,7 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
             count = 0;
             if (sconf->db_log_config) {
                 /* Reload log config DB */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03242)
                              SERVICE_THREAD_NAME " - reloading config");
                 ap_assert(apr_thread_rwlock_wrlock(log_config_rwlock) == 0);
                 active_log_config = NULL;
@@ -861,7 +861,7 @@ static void * APR_THREAD_FUNC run_service_thread(apr_thread_t *me, void *data)
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03243)
                  SERVICE_THREAD_NAME " exiting");
 
     return NULL;
@@ -1044,7 +1044,7 @@ static int sct_daemon(server_rec *s_main)
         apr_sleep(apr_time_from_sec(30)); /* SIGHUP at restart/stop will break out */
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main, APLOGNO(03244)
                  DAEMON_NAME " - exiting");
 
     return 0;
@@ -1086,7 +1086,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
     apr_status_t rv;
     int count = 0;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03245)
                  DAEMON_THREAD_NAME " started");
 
     /* ptemp - temporary pool for refresh cycles */
@@ -1106,7 +1106,7 @@ static void *sct_daemon_thread(apr_thread_t *me, void *data)
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03246)
                  DAEMON_THREAD_NAME " - exiting");
 
     return NULL;
@@ -2147,7 +2147,7 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
 
     ssl_ct_ssl_proxy_verify(s, c, chain);
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03247)
                   "finally at the point where we can see where SCTs came from"
                   " %pp/%pp/%pp (c %pp)",
                   conncfg->cert_sct_list, conncfg->serverhello_sct_list,

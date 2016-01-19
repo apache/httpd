@@ -1072,6 +1072,8 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     char time_str[APR_CTIME_LEN];
     int log_flags = rv ? APLOG_ERR : APLOG_ERR;
 
+    /* Intentional no APLOGNO */
+    /* Callee provides APLOGNO in error text */
     ap_log_rerror(APLOG_MARK, log_flags, rv, r,
                 "%s: %s", error, r->filename);
 
@@ -1865,8 +1867,8 @@ static apr_status_t handle_exec(include_ctx_t *ctx, ap_filter_t *f,
         ap_log_rerror(APLOG_MARK,
                       (ctx->flags & SSI_FLAG_PRINTING)
                           ? APLOG_ERR : APLOG_WARNING,
-                      0, r, "missing argument for exec element in %s",
-                      r->filename);
+                      0, r, APLOGNO(03196)
+                      "missing argument for exec element in %s", r->filename);
     }
 
     if (!(ctx->flags & SSI_FLAG_PRINTING)) {
