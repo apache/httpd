@@ -871,8 +871,8 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
                               "seen in brigade%s: bytes: %" APR_SIZE_T_FMT
                               ", non-file bytes: %" APR_SIZE_T_FMT ", eor "
                               "buckets: %d, morphing buckets: %d",
-                              flush_upto == NULL ? " so far"
-                                                 : " since last flush point",
+                              *flush_upto == NULL ? " so far"
+                                                  : " since last flush point",
                               bytes_in_brigade,
                               non_file_bytes_in_brigade,
                               eor_buckets_in_brigade,
