@@ -211,6 +211,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
      +1 covener
 
+  *) Add APLOGNO, first chunk (those that were detected by coccinelle).
+     There are some more but they are easier to backport once these here are applied.
+     trunk patch:  http://svn.apache.org/r1725392 (modules)
+                   http://svn.apache.org/r1725394 (server/mpm)
+                   http://svn.apache.org/r1725395 (server others)
+     2.4.x patch:  http://people.apache.org/~rjung/patches/aplogno-backport-r1725392.patch
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
+     +1 rjung
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
