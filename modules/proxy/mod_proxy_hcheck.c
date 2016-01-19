@@ -30,18 +30,19 @@ typedef struct {
     int fails;
     apr_interval_time_t interval;
     char *hurl;
+    char *hcexpr;
 } hc_template_t;
 
 typedef struct {
-    char *name;
-    ap_expr_info_t *expr;       /* parsed expression */
+    char *expr;
+    ap_expr_info_t *pexpr;       /* parsed expression */
 } hc_condition_t;
 
 typedef struct {
     apr_pool_t *p;
     apr_bucket_alloc_t *ba;
     apr_array_header_t *templates;
-    apr_array_header_t *conditions;
+    apr_table_t *conditions;
     ap_watchdog_t *watchdog;
     /* TODO: Make below array/hashtable tagged to each worker */
     apr_hash_t *hcworkers;
@@ -61,7 +62,7 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     apr_pool_create(&ctx->p, p);
     ctx->ba = apr_bucket_alloc_create(p);
     ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
-    ctx->conditions = apr_array_make(ctx->p, 10, sizeof(hc_condition_t));
+    ctx->conditions = apr_table_make(ctx->p, 10);
     ctx->hcworkers = apr_hash_make(ctx->p);
     ctx->s = s;
 
@@ -99,12 +100,14 @@ static const char *set_worker_hc_param(apr_pool_t *p,
                     worker->s->passes = template->passes;
                     worker->s->fails = template->fails;
                     PROXY_STRNCPY(worker->s->hcuri, template->hurl);
+                    PROXY_STRNCPY(worker->s->hcexpr, template->hcexpr);
                 } else {
                     temp->method = template->method;
                     temp->interval = template->interval;
                     temp->passes = template->passes;
                     temp->fails = template->fails;
                     temp->hurl = apr_pstrdup(p, template->hurl);
+                    temp->hcexpr = apr_pstrdup(p, template->hcexpr);
                 }
                 return NULL;
             }
@@ -170,7 +173,23 @@ static const char *set_worker_hc_param(apr_pool_t *p,
             temp->hurl = apr_pstrdup(p, val);
         }
     }
-    else {
+    else if (!strcasecmp(key, "hcexpr")) {
+        hc_condition_t *cond;
+        cond = (hc_condition_t *)apr_table_get(ctx->conditions, val);
+        if (!cond) {
+            return apr_psprintf(p, "Unknown health check condition expr: %s", val);
+        }
+        /* This check is wonky... a known expr can't be this big. Check anyway */
+        if (strlen(val) >= sizeof(worker->s->hcexpr))
+            return apr_psprintf(p, "Health check uri length must be < %d characters",
+                    (int)sizeof(worker->s->hcexpr));
+        if (worker) {
+            PROXY_STRNCPY(worker->s->hcexpr, val);
+        } else {
+            temp->hcexpr = apr_pstrdup(p, val);
+        }
+    }
+  else {
         return "unknown Worker hcheck parameter";
     }
     return NULL;
@@ -180,8 +199,8 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
 {
     char *name = NULL;
     char *expr;
-    hc_condition_t *condition;
     sctx_t *ctx;
+    hc_condition_t *cond;
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
     if (err)
@@ -191,7 +210,12 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
 
     name = ap_getword_conf(cmd->temp_pool, &arg);
     if (!*name) {
-        return apr_pstrcat(cmd->temp_pool, "Missing condition name for ",
+        return apr_pstrcat(cmd->temp_pool, "Missing expression name for ",
+                           cmd->cmd->name, NULL);
+    }
+    if (strlen(name) > (PROXY_WORKER_MAX_SCHEME_SIZE - 1)) {
+        return apr_pstrcat(cmd->temp_pool, "Expression name limited to %d characters (%s)",
+                           (PROXY_WORKER_MAX_SCHEME_SIZE - 1),
                            cmd->cmd->name, NULL);
     }
     /* get expr. Allow fancy new {...} quoting style */
@@ -200,15 +224,14 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
         return apr_pstrcat(cmd->temp_pool, "Missing expression for ",
                            cmd->cmd->name, NULL);
     }
-    condition = (hc_condition_t *)apr_array_push(ctx->conditions);
-    condition->name = apr_pstrdup(ctx->p, name);
-    condition->expr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
+    cond = apr_palloc(ctx->p, sizeof(hc_condition_t));
+    cond->pexpr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
     if (err) {
-        /* get rid of recently pushed (bad) condition */
-        apr_array_pop(ctx->conditions);
         return apr_psprintf(cmd->temp_pool, "Could not parse expression \"%s\": %s",
                             expr, err);
     }
+    cond->expr = apr_pstrdup(cmd->pool, expr);
+    apr_table_setn(ctx->conditions, name, (void *)cond);
     expr = ap_getword_conf(cmd->temp_pool, &arg);
     if (*expr) {
         return "error: extra parameter(s)";
@@ -799,8 +822,8 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
 static const command_rec command_table[] = {
     AP_INIT_RAW_ARGS("ProxyHCTemplate", set_hc_template, NULL, OR_FILEINFO,
                      "Health check template"),
-    AP_INIT_RAW_ARGS("ProxyHCCondition", set_hc_condition, NULL, OR_FILEINFO,
-                     "Define a health check condition ruleset"),
+    AP_INIT_RAW_ARGS("ProxyHCExpr", set_hc_condition, NULL, OR_FILEINFO,
+                     "Define a health check condition ruleset expression"),
     { NULL }
 };
 
