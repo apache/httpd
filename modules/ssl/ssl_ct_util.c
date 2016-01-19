@@ -467,9 +467,11 @@ void ctutil_log_array(const char *file, int line, int module_index,
     const char **elts = (const char **)arr->elts;
     int i;
 
+    /* Intentional no APLOGNO */
     ap_log_error(file, line, module_index, level,
                  0, s, "%s", desc);
     for (i = 0; i < arr->nelts; i++) {
+        /* Intentional no APLOGNO */
         ap_log_error(file, line, module_index, level,
                      0, s, ">>%s", elts[i]);
     }

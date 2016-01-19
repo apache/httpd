@@ -1339,7 +1339,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
  x   if (r->finfo.filetype != APR_DIR
  x       && (res = resolve_symlink(r->filename, r->info, ap_allow_options(r),
  x                                 r->pool))) {
- x       ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+ x       ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(03295)
  x                     "Symbolic link not allowed: %s", r->filename);
  x       return res;
  x   }

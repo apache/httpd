@@ -492,7 +492,8 @@ static void trace_nocontext(apr_pool_t *p, const char *file, int line,
      */
 
 #ifdef EXAMPLE_LOG_EACH
-    ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_NOTICE, 0, p, "%s", note);
+    ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_NOTICE, 0, p,
+                  APLOGNO(03297) "%s", note);
 #endif
 }
 

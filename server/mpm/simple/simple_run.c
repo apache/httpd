@@ -177,7 +177,7 @@ static int simple_run_loop(simple_core_t * sc)
 
         if (rv) {
             if (!APR_STATUS_IS_EINTR(rv) && !APR_STATUS_IS_TIMEUP(rv)) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(03284)
                              "simple_main_loop: apr_pollcb_poll failed");
                 return !OK;
             }
