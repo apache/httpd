@@ -2133,7 +2133,7 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
     apr_pool_t *p = c->pool;
     apr_status_t rv = APR_SUCCESS;
     const char *key;
-    ct_cached_server_data *cached;
+    ct_cached_server_data *cached = NULL;
     ct_conn_config *conncfg = get_conn_config(c);
     server_rec *s = c->base_server;
     ct_server_config *sconf = ap_get_module_config(s->module_config,
