@@ -212,9 +212,8 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
                            cmd->cmd->name, NULL);
     }
     if (strlen(name) > (PROXY_WORKER_MAX_SCHEME_SIZE - 1)) {
-        return apr_pstrcat(cmd->temp_pool, "Expression name limited to %d characters (%s)",
-                           (PROXY_WORKER_MAX_SCHEME_SIZE - 1),
-                           cmd->cmd->name, NULL);
+        return apr_psprintf(cmd->temp_pool, "Expression name limited to %d characters",
+                           (PROXY_WORKER_MAX_SCHEME_SIZE - 1));
     }
     /* get expr. Allow fancy new {...} quoting style */
     expr = ap_getword_conf2(cmd->temp_pool, &arg);
