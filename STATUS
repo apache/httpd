@@ -112,14 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mime.types: Add common extension "m4a" for MPEG 4 Audio.
-     As a reference see Wikipedia:
-     https://en.wikipedia.org/wiki/MPEG-4_Part_14#.MP4_versus_.M4A
-     PR: 57895
-     trunk patch: http://svn.apache.org/r1723567
-     2.4.x patch: trunk works, modulo CHANGES
-     +1: rjung, covener, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
