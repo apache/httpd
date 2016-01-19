@@ -112,15 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Use 'apr_pstrmemdup' instead of 'apr_pstrndup' when applicable in order
-     to save a few cycles.
-     Fix some style issues.
-     trunk patch: http://svn.apache.org/r1719018
-                  http://svn.apache.org/r1719189
-                  http://svn.apache.org/r1719190
-     2.4.x patch: trunk works
-     +1: jailletc36, covener, jim
-
   *) mod_negotiation: Use 'ap_array_str_contains' to simplify code.
      core: likewise
      http: likewise

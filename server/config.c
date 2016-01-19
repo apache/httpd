@@ -136,7 +136,8 @@ AP_DECLARE(int) ap_hook_post_config(ap_HOOK_post_config_t *pf,
         apr_hook_debug_show("post_config", aszPre, aszSucc);
 }
 
-AP_DECLARE(apr_array_header_t *) ap_hook_get_post_config(void) {
+AP_DECLARE(apr_array_header_t *) ap_hook_get_post_config(void)
+{
     return _hooks.link_post_config;
 }
 
@@ -148,7 +149,7 @@ AP_DECLARE(int) ap_run_post_config(apr_pool_t *pconf,
     ap_LINK_post_config_t *pHook;
     int n;
 
-    if(!_hooks.link_post_config)
+    if (!_hooks.link_post_config)
         return;
 
     pHook = (ap_LINK_post_config_t *)_hooks.link_post_config->elts;
@@ -847,7 +848,7 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
     char *w, *w2, *w3;
     const char *errmsg = NULL;
 
-    /** Have we been provided a list of acceptable directives? */
+    /* Have we been provided a list of acceptable directives? */
     if (parms->override_list != NULL) { 
          if (apr_table_get(parms->override_list, cmd->name) != NULL) { 
               override_list_ok = 1;
@@ -1379,7 +1380,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
          */
         last_ptr = &(current->last);
 
-        if(last_ptr && *last_ptr) {
+        if (last_ptr && *last_ptr) {
             current = *last_ptr;
         }
 
@@ -1387,7 +1388,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
             current = current->next;
         }
 
-        if(last_ptr) {
+        if (last_ptr) {
             /* update cached pointer to last node */
             *last_ptr = current;
         }
@@ -1609,8 +1610,8 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
 
     ap_varbuf_init(cmd->temp_pool, &vb, VARBUF_INIT_LEN);
 
-    while((rc = ap_varbuf_cfg_getline(&vb, cmd->config_file, max_len))
-          == APR_SUCCESS) {
+    while ((rc = ap_varbuf_cfg_getline(&vb, cmd->config_file, max_len))
+           == APR_SUCCESS) {
         args = vb.buf;
 
         cmd_name = ap_getword_conf(cmd->temp_pool, &args);
@@ -1912,7 +1913,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
     /* find the first part of the filename */
     rest = ap_strchr_c(fname, '/');
     if (rest) {
-        fname = apr_pstrndup(ptemp, fname, rest - fname);
+        fname = apr_pstrmemdup(ptemp, fname, rest - fname);
         rest++;
     }
 
