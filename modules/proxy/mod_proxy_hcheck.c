@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "mod_proxy.h"
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
@@ -44,7 +43,6 @@ typedef struct {
     apr_array_header_t *templates;
     apr_table_t *conditions;
     ap_watchdog_t *watchdog;
-    /* TODO: Make below array/hashtable tagged to each worker */
     apr_hash_t *hcworkers;
     server_rec *s;
 } sctx_t;
@@ -470,7 +468,7 @@ static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_
                           proxy_worker *hc, sctx_t *ctx)
 {
     int status;
-    status = ap_proxy_acquire_connection("HCTCP", backend, hc, ctx->s);
+    status = ap_proxy_acquire_connection(proxy_function, backend, hc, ctx->s);
     if (status == OK) {
         (*backend)->addr = hc->cp->addr;
         (*backend)->pool = ctx->p;
@@ -514,9 +512,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 static void hc_send(sctx_t *ctx, apr_pool_t *p, const char *out, proxy_conn_rec *backend)
 {
     apr_bucket_brigade *tmp_bb = apr_brigade_create(p, ctx->ba);
-#ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03253) "%s", out);
-#endif
+    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ctx->s, "%s", out);
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), p,
                             ctx->ba));
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_flush_create(ctx->ba));
@@ -569,10 +565,7 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
         if (!(value = strchr(buffer, ':'))) {
             return !OK;
         }
-#ifdef DEBUG
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03255)
-                "%s", buffer);
-#endif
+        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ctx->s, "%s", buffer);
         *value = '\0';
         ++value;
         while (apr_isspace(*value))
@@ -626,7 +619,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
 
         case HEAD:
             if (!wctx->req) {
-                wctx->req = apr_psprintf(p,
+                wctx->req = apr_psprintf(ctx->p,
                                    "HEAD %s%s%s HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
                                    (wctx->path ? wctx->path : ""),
                                    (wctx->path && *hc->s->hcuri ? "/" : "" ),
@@ -678,7 +671,6 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
 {
     server_rec *s = ctx->s;
     apr_status_t rv;
-    /* TODO: REMOVE ap_log_error call */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
                  "Health checking %s", worker->s->name);
 
