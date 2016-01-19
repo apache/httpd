@@ -51,3 +51,16 @@ spatch -sp_file $DIR/find-messages.cocci -in_place -macro_file $DIR/macros.h <fi
 After the initial addition of tags, calling spatch on the same file again may
 be a bad idea. But it may still be useful when adding larger pieces of code to
 httpd.
+
+Depending on the build details of coccinelle, the regular expressions in the
+spatch files can either be in normal PCRE form, or in OCAML Str regexp form.
+If your build only supports the latter, you will have to put a backslash in
+front of every '(', ')' and '|' that is part of a regexp in the cocci file.
+
+Example:
+- original lines
+identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
+identifier fn =~ "^ap_log_(|r|c|p)error$";
+- new lines
+identifier level =~ "^APLOG_\(EMERG\|ALERT\|CRIT\|ERR\|WARNING\|NOTICE\|INFO\|STARTUP\|DEBUG\)$";
+identifier fn =~ "^ap_log_\(\|r\|c\|p\)error$";
