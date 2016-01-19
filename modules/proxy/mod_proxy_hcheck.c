@@ -367,12 +367,14 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         apr_uri_t uri;
         apr_status_t rv;
         const char *url = worker->s->name;
+        apr_port_t port;
         wctx_t *wctx = apr_pcalloc(ctx->p, sizeof(wctx_t));
+        port = (worker->s->port ? worker->s->port : ap_proxy_port_of_scheme(worker->s->scheme));
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03248)
                      "Creating hc worker %s for %s://%s:%d",
                      wptr, worker->s->scheme, worker->s->hostname,
-                     (int)worker->s->port);
+                     (int)port);
 
         ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, worker->s->name, 0);
         PROXY_STRNCPY(hc->s->name,     wptr);
@@ -380,7 +382,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         PROXY_STRNCPY(hc->s->scheme,   worker->s->scheme);
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
-        hc->s->port = worker->s->port;
+        hc->s->port = port;
         /* Do not disable worker in case of errors */
         hc->s->status |= PROXY_WORKER_IGNORE_ERRORS;
         /* Mark as the "generic" worker */
@@ -388,8 +390,6 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         ap_proxy_initialize_worker(hc, ctx->s, ctx->p);
         hc->s->is_address_reusable = worker->s->is_address_reusable;
         hc->s->disablereuse = worker->s->disablereuse;
-        /* tuck away since we need the preparsed address */
-        hc->cp->addr = worker->cp->addr;
         hc->s->method = worker->s->method;
         rv = apr_uri_parse(p, url, &uri);
         if (rv == APR_SUCCESS) {
@@ -597,8 +597,8 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
     proxy_worker *hc;
     conn_rec c;
     request_rec *r;
-    const char *req;
     wctx_t *wctx;
+    hc_condition_t *cond;
 
     hc = hc_get_hcworker(ctx, worker, p);
     wctx = (wctx_t *)hc->context;
@@ -622,7 +622,6 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
                                    "OPTIONS * HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
                                     hc->s->hostname, (int)hc->s->port);
             }
-            req = wctx->req;
             break;
 
         case HEAD:
@@ -634,7 +633,6 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
                                    (*hc->s->hcuri ? hc->s->hcuri : ""),
                                    hc->s->hostname, (int)hc->s->port);
             }
-            req = wctx->req;
             break;
 
         default:
@@ -642,15 +640,33 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
             break;
     }
 
-    hc_send(ctx, p, req, backend);
+    hc_send(ctx, p, wctx->req, backend);
 
     r = create_request_rec(p, backend->connection);
     r->pool = p;
     if ((status = hc_read_headers(ctx, r)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
-    /* TODO: Check conditions here */
-    if (r->status < 200 || r->status > 399) {
+
+    if (*worker->s->hcexpr &&
+            (cond = (hc_condition_t *)apr_table_get(ctx->conditions, worker->s->hcexpr)) != NULL) {
+        const char *err;
+        int ok = ap_expr_exec(r, cond->pexpr, &err);
+        if (ok > 0) {
+            status = OK;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "Success checking condition %s", worker->s->hcexpr);
+        } else if (ok < 0 || err) {
+            status = !OK;
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ctx->s, APLOGNO()
+                         "Error on checking condition %s: %s", worker->s->hcexpr,
+                         err);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                         "Failure checking condition %s", worker->s->hcexpr);
+            status = !OK;
+        }
+    } else if (r->status < 200 || r->status > 399) {
         status = !OK;
     }
     return backend_cleanup("HCOH", backend, ctx->s, status);
