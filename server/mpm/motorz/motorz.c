@@ -848,7 +848,6 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     int i;
     ap_listen_rec *lr;
     ap_sb_handle_t *sbh;
-    apr_bucket_alloc_t *bucket_alloc;
     const char *lockfile;
 
     mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
@@ -968,8 +967,6 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     }
 
     mpm_state = AP_MPMQ_RUNNING;
-
-    bucket_alloc = apr_bucket_alloc_create(pchild);
 
     /* die_now is set when AP_SIG_GRACEFUL is received in the child;
      * shutdown_pending is set when SIGTERM is received when running
