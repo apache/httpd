@@ -570,16 +570,16 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
     hc = hc_get_hcworker(ctx, worker, p);
     wctx = (wctx_t *)hc->context;
 
-    if ((status = hc_get_backend(p, "HCTCP", &backend, hc, ctx)) != OK) {
-        return backend_cleanup("HCTCP", backend, ctx->s, status);
+    if ((status = hc_get_backend(p, "HCOH", &backend, hc, ctx)) != OK) {
+        return backend_cleanup("HCOH", backend, ctx->s, status);
     }
-    if ((status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s)) != OK) {
-        return backend_cleanup("HCTCP", backend, ctx->s, status);
+    if ((status = ap_proxy_connect_backend("HCOH", backend, hc, ctx->s)) != OK) {
+        return backend_cleanup("HCOH", backend, ctx->s, status);
     }
 
     if (!backend->connection) {
-        if ((status = ap_proxy_connection_create("HCTCP", backend, &c, ctx->s)) != OK) {
-            return backend_cleanup("HCTCP", backend, ctx->s, status);
+        if ((status = ap_proxy_connection_create("HCOH", backend, &c, ctx->s)) != OK) {
+            return backend_cleanup("HCOH", backend, ctx->s, status);
         }
     }
     switch (hc->s->method) {
@@ -605,7 +605,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
             break;
 
         default:
-            return backend_cleanup("HCTCP", backend, ctx->s, !OK);
+            return backend_cleanup("HCOH", backend, ctx->s, !OK);
             break;
     }
 
@@ -615,7 +615,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
     r->pool = p;
     status = hc_read_headers(ctx, r);
 
-    return backend_cleanup("HCTCP", backend, ctx->s, status);
+    return backend_cleanup("HCOH", backend, ctx->s, status);
 }
 
 
