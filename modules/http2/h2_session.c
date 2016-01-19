@@ -18,6 +18,8 @@
 #include <apr_base64.h>
 #include <apr_strings.h>
 
+#include <ap_mpm.h>
+
 #include <httpd.h>
 #include <http_core.h>
 #include <http_config.h>
@@ -1957,7 +1959,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = session->c;
-    int rv, have_written, have_read;
+    int rv, have_written, have_read, mpm_state;
 
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): process start, async=%d", session->id, async);
@@ -1986,6 +1988,20 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
+                if ((status = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state))) {
+                    goto out;
+                }
+                if (mpm_state == AP_MPMQ_STOPPING) {
+                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
+                    break;
+                }
+                /* We'd like to wait in smaller increments, using a 1 second
+                 * timeout maybe, trying n times. That would allow us to exit
+                 * on MPMQ_STOPPING earlier.
+                 * Unfortunately, once a socket timeout happened, SSL reports
+                 * EOF on reads and the connection is gone. Not sure if we can
+                 * avoid that...
+                 */
                 h2_filter_cin_timeout_set(session->cin, session->keepalive_secs);
                 ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
                 status = h2_session_read(session, 1, 10);
@@ -1998,7 +2014,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else if (APR_STATUS_IS_TIMEUP(status)) {
                     dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
-                    break;
                 }
                 else {
                     dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);

@@ -466,6 +466,28 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
 
 /*******************************************************************************
  * push diary 
+ *
+ * - The push diary keeps track of resources already PUSHed via HTTP/2 on this
+ *   connection. It records a hash value from the absolute URL of the resource
+ *   pushed.
+ * - Lacking openssl, it uses 'apr_hashfunc_default' for the value
+ * - with openssl, it uses SHA256 to calculate the hash value
+ * - whatever the method to generate the hash, the diary keeps a maximum of 64
+ *   bits per hash, limiting the memory consumption to about 
+ *      H2PushDiarySize * 8 
+ *   bytes. Entries are sorted by most recently used and oldest entries are
+ *   forgotten first.
+ * - Clients can initialize/replace the push diary by sending a 'Cache-Digest'
+ *   header. Currently, this is the base64url encoded value of the cache digest
+ *   as specified in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+ *   This draft can be expected to evolve and the definition of the header
+ *   will be added there and refined.
+ * - The cache digest header is a Golomb Coded Set of hash values, but it may
+ *   limit the amount of bits per hash value even further. For a good description
+ *   of GCS, read here:
+ *      http://giovanni.bajo.it/post/47119962313/golomb-coded-sets-smaller-than-bloom-filters
+ * - The means that the push diary might be initialized with hash values of much
+ *   less than 64 bits, leading to more false positives, but smaller digest size.
  ******************************************************************************/
  
  
