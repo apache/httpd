@@ -26,13 +26,13 @@ struct h2_task;
 
 typedef struct h2_task_input h2_task_input;
 struct h2_task_input {
+    conn_rec *c;
     struct h2_task *task;
     apr_bucket_brigade *bb;
 };
 
 
-h2_task_input *h2_task_input_create(struct h2_task *task, apr_pool_t *pool,
-                                    apr_bucket_alloc_t *bucket_alloc);
+h2_task_input *h2_task_input_create(struct h2_task *task, conn_rec *c);
 
 void h2_task_input_destroy(h2_task_input *input);
 

@@ -28,6 +28,16 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
 
 void h2_util_camel_case_header(char *s, size_t len);
 
+/**
+ * Count the bytes that all key/value pairs in a table have
+ * in length (exlucding terminating 0s), plus additional extra per pair.
+ *
+ * @param t the table to inspect
+ * @param pair_extra the extra amount to add per pair
+ * @return the number of bytes all key/value pairs have
+ */
+apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
+
 int h2_req_ignore_header(const char *name, size_t len);
 int h2_req_ignore_trailer(const char *name, size_t len);
 void h2_req_strip_ignored_header(apr_table_t *headers);

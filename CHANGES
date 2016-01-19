@@ -1,12 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: bytes read/written on slave connections are reported via the
+     optional mod_logio functions. Fixes PR 58871.
+     
   *) Added many log numbers to log statements that had none.
 
-  *) mod_http2: fixed compile issues re cc's with builtin log2n, fixed cache
-     digest calculation. [Stefan Eissing]
-     
-     pushed resources are kept. See directive H2PushDiarySize for managing this.
   *) core: Add expression support to SetHandler.
      [Eric Covener]
 
@@ -19,32 +18,12 @@ Changes with Apache 2.5.0
      is now logged at TRACE1 level to match the underlying core output filter
      severity.  [Eric Covener]
 
-  *) mod_http2: connection how keep a "push diary" where hashes of already
-     pushed resources are kept. See directive H2PushDiarySize for managing this.
-     Push diaries can be initialized by clients via the "Cache-Digest" request
-     header. This carries a base64url encoded. compressed Golomb set as described
-     in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
-     Introduced a status handler for HTTP/2 connections, giving various counters
-     and statistics about the current connection, plus its cache digest value
-     in a JSON record. Not a replacement for more HTTP/2 in the server status. 
-     Configured as
-     <Location "/http2-status">
-         SetHandler http2-status
-     </Location>
-     [Stefan Eissing]
-  
   *) mod_rewrite: Avoid looping on relative substitutions that
      result in the same filename we started with. PR 58854.
      [Eric Covener]
 
   *) mime.types: add common extension "m4a" for MPEG 4 Audio.
      PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
-
-  *) mod_http2: async reading for http2 connections disabled for now. Fixed
-     flushing of last GOAWAY frame. Fixed calculation of last stream id
-     accepted as described in rfc7540. Reading in KEEPALIVE state now 
-     correctly show in scoreboard. Fixed possible race in connection
-     shutdown after review by Ylavic. [Stefan Eissing]
 
   *) mod_ssl: Save some TLS record (application data) fragmentations by
      including the last and subsequent suitable buckets when coalescing.
@@ -54,35 +33,6 @@ Changes with Apache 2.5.0
      is received from an origin server in multiple batches and forwarded by
      mod_proxy.  [Yann Ylavic]
 
-  *) mod_http2: Fixed segfault on connection shutdown, callback ran into a semi
-     dismantled session. Added support for experimental accept-push-policy draft
-     (https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00). Clients
-     may now influence server pushes by sending accept-push-policy headers.
-     [Stefan Eissing]
-
-  *) mod_http2: On async MPMs (event), idle HTTP/2 connections will enter KEEPALIVE
-     state and become eligible for MPM cleanup under load. Rewrote connection
-     state handling. Defaults for H2KeepAliveTimeout shortened. Cleaned up logging.
-     Improved scoreboard updates for http2 master threads.
-     [Stefan Eissing]
-
-  *) mod_http2: new r->subprocess_env variables HTTP2 and H2PUSH, set to "on"
-     when available for request.
-     [Stefan Eissing]
-
-  *) mod_http2: adding new config directives and the implementation behind
-     them: H2Timeout, H2KeepAliveTimeout, H2StreamTimeout. Documentation in
-     the http2 manual.
-     [Stefan Eissing]
-
-  *) mod_http2: when running in async mpm processing, mod_http2 will cease
-     processing on idle connections (e.g. no open streams) back to the mpm.
-     [Stefan Eissing]
-
-  *) mod_http2: fixed bug in input window size calculation by moving chunked
-     request body encoding into later stage of processing.
-     [Stefan Eissing]
-     
   *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
      In earlier version of httpd, you can explicitelly set the 'flusher' parameter
      to 'flush' as a workaround. (i.e. flusher=flush)

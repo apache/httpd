@@ -230,6 +230,40 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
     return NULL;
 }
 
+
+/*******************************************************************************
+ * h2_util for apt_table_t
+ ******************************************************************************/
+ 
+typedef struct {
+    apr_size_t bytes;
+    apr_size_t pair_extra;
+} table_bytes_ctx;
+
+static int count_bytes(void *x, const char *key, const char *value)
+{
+    table_bytes_ctx *ctx = x;
+    if (key) {
+        ctx->bytes += strlen(key);
+    }
+    if (value) {
+        ctx->bytes += strlen(value);
+    }
+    ctx->bytes += ctx->pair_extra;
+    return 1;
+}
+
+apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
+{
+    table_bytes_ctx ctx;
+    
+    ctx.bytes = 0;
+    ctx.pair_extra = pair_extra;
+    apr_table_do(count_bytes, &ctx, t, NULL);
+    return ctx.bytes;
+}
+
+
 /*******************************************************************************
  * h2_util for bucket brigades
  ******************************************************************************/

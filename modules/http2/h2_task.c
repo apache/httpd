@@ -92,6 +92,9 @@ static const char *const mod_ssl[]        = { "mod_ssl.c", NULL};
 static int h2_task_pre_conn(conn_rec* c, void *arg);
 static int h2_task_process_conn(conn_rec* c);
 
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_task_logio_add_bytes_in;
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out;
+
 void h2_task_register_hooks(void)
 {
     /* This hook runs on new connections before mod_ssl has a say.
@@ -116,6 +119,15 @@ void h2_task_register_hooks(void)
                               NULL, AP_FTYPE_PROTOCOL);
     ap_register_output_filter("H2_TRAILERS", h2_response_trailers_filter,
                               NULL, AP_FTYPE_PROTOCOL);
+}
+
+/* post config init */
+apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s)
+{
+    h2_task_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
+    h2_task_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+
+    return APR_SUCCESS;
 }
 
 static int h2_task_pre_conn(conn_rec* c, void *arg)
@@ -169,8 +181,8 @@ apr_status_t h2_task_do(h2_task *task, conn_rec *c, apr_thread_cond_t *cond,
 {
     AP_DEBUG_ASSERT(task);
     task->io = cond;
-    task->input = h2_task_input_create(task, c->pool, c->bucket_alloc);
-    task->output = h2_task_output_create(task, c->pool);
+    task->input = h2_task_input_create(task, c);
+    task->output = h2_task_output_create(task, c);
     
     ap_process_connection(c, socket);
     

@@ -16,6 +16,8 @@
 #ifndef __mod_h2__h2_task__
 #define __mod_h2__h2_task__
 
+#include <http_core.h>
+
 /**
  * A h2_task fakes a HTTP/1.1 request from the data in a HTTP/2 stream 
  * (HEADER+CONT.+DATA) the module recieves.
@@ -67,5 +69,12 @@ apr_status_t h2_task_do(h2_task *task, conn_rec *c,
                         struct apr_thread_cond_t *cond, apr_socket_t *socket);
 
 void h2_task_register_hooks(void);
+/*
+ * One time, post config intialization.
+ */
+apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s);
+
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_task_logio_add_bytes_in;
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out;
 
 #endif /* defined(__mod_h2__h2_task__) */

@@ -43,29 +43,29 @@ static int ser_header(void *ctx, const char *name, const char *value)
     return 1;
 }
 
-h2_task_input *h2_task_input_create(h2_task *task, apr_pool_t *pool, 
-                                    apr_bucket_alloc_t *bucket_alloc)
+h2_task_input *h2_task_input_create(h2_task *task, conn_rec *c)
 {
-    h2_task_input *input = apr_pcalloc(pool, sizeof(h2_task_input));
+    h2_task_input *input = apr_pcalloc(c->pool, sizeof(h2_task_input));
     if (input) {
+        input->c = c;
         input->task = task;
         input->bb = NULL;
         
         if (task->ser_headers) {
-            ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "h2_task_input(%s): serialize request %s %s", 
                           task->id, task->request->method, task->request->path);
-            input->bb = apr_brigade_create(pool, bucket_alloc);
+            input->bb = apr_brigade_create(c->pool, c->bucket_alloc);
             apr_brigade_printf(input->bb, NULL, NULL, "%s %s HTTP/1.1\r\n", 
                                task->request->method, task->request->path);
             apr_table_do(ser_header, input, task->request->headers, NULL);
             apr_brigade_puts(input->bb, NULL, NULL, "\r\n");
             if (input->task->input_eos) {
-                APR_BRIGADE_INSERT_TAIL(input->bb, apr_bucket_eos_create(bucket_alloc));
+                APR_BRIGADE_INSERT_TAIL(input->bb, apr_bucket_eos_create(c->bucket_alloc));
             }
         }
         else if (!input->task->input_eos) {
-            input->bb = apr_brigade_create(pool, bucket_alloc);
+            input->bb = apr_brigade_create(c->pool, c->bucket_alloc);
         }
         else {
             /* We do not serialize and have eos already, no need to
@@ -130,7 +130,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
                       (long)readbytes, (long)bblen);
         
         /* Although we sometimes get called with APR_NONBLOCK_READs, 
-         we seem to  fill our buffer blocking. Otherwise we get EAGAIN,
+         we need to fill our buffer blocking. Otherwise we get EAGAIN,
          return that to our caller and everyone throws up their hands,
          never calling us again. */
         status = h2_mplx_in_read(input->task->mplx, APR_BLOCK_READ,
@@ -150,9 +150,13 @@ apr_status_t h2_task_input_read(h2_task_input *input,
         if ((bblen == 0) && (block == APR_NONBLOCK_READ)) {
             return h2_util_has_eos(input->bb, -1)? APR_EOF : APR_EAGAIN;
         }
+        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_input(%s): mplx in read, %ld bytes in brigade",
                       input->task->id, (long)bblen);
+        if (h2_task_logio_add_bytes_in) {
+            h2_task_logio_add_bytes_in(f->c, bblen);
+        }
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
