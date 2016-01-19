@@ -39,9 +39,10 @@ identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DE
 expression rv, p, s, cert;
 constant char[] fmt !~ "^APLOGNO";
 identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
+identifier fn =~ "^ssl_log_x(|r|c)error$";
 
 @@
-        ssl_log_xerror( SSLLOG_MARK ,
+        fn( SSLLOG_MARK ,
 (
         level
 |
