@@ -1014,7 +1014,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
             if (status != APR_SUCCESS) {
                 if (!APR_STATUS_IS_EINTR(status) && !APR_STATUS_IS_TIMEUP(status)) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL, APLOGNO(03117)
                                  "motorz_main_loop: apr_pollcb_poll failed");
                     clean_child_exit(0);
                 }
@@ -1658,7 +1658,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02886)
                          "WARNING: ServerLimit of %d exceeds compile-time "
                          "limit of", server_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03118)
                          " %d servers, decreasing to %d.",
                          MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
         } else {
@@ -1702,10 +1702,10 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02891)
                          "WARNING: MaxRequestWorkers of %d exceeds ServerLimit "
                          "value of", ap_daemons_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03119)
                          " %d servers, decreasing MaxRequestWorkers to %d.",
                          server_limit, server_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03120)
                          " To increase, please see the ServerLimit "
                          "directive.");
         } else {
@@ -1748,9 +1748,9 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02897)
                          "WARNING: MinSpareServers of %d not allowed, "
                          "increasing to 1", ap_daemons_min_free);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03121)
                          " to avoid almost certain server failure.");
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03122)
                          " Please read the documentation.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02898)
