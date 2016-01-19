@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Save memory when calling 'ap_parse_htaccess'
-     trunk patch: http://svn.apache.org/r1719016
-     2.4.x patch: trunk works
-     +1: jailletc36, covener, jim
-
   *) Use 'apr_pstrmemdup' instead of 'apr_pstrndup' when applicable in order
      to save a few cycles.
      Fix some style issues.
