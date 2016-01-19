@@ -202,9 +202,8 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
     condition->name = apr_pstrdup(ctx->p, name);
     condition->expr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
     if (err) {
-        void *v;
         /* get rid of recently pushed (bad) condition */
-        v = apr_array_pop(ctx->conditions);
+        apr_array_pop(ctx->conditions);
         return apr_psprintf(cmd->temp_pool, "Could not parse expression \"%s\": %s",
                             expr, err);
     }
@@ -253,9 +252,8 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
         err = set_worker_hc_param(ctx->p, ctx->s, NULL, word, val, template);
 
         if (err) {
-            void *v;
             /* get rid of recently pushed (bad) template */
-            v = apr_array_pop(ctx->templates);
+            apr_array_pop(ctx->templates);
             return apr_pstrcat(cmd->temp_pool, "ProxyHCTemplate: ", err, " ", word, "=", val, "; ", name, NULL);
         }
         /* No error means we have a valid template */
