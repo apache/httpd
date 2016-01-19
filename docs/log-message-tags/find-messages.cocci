@@ -1,6 +1,6 @@
 @r1@
 expression rv, s;
-constant char [] format;
+constant char[] fmt !~ "^APLOGNO";
 identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
 identifier fn =~ "^ap_log_(|r|c|p)error$";
 
@@ -15,11 +15,11 @@ identifier fn =~ "^ap_log_(|r|c|p)error$";
 )
         ,rv, s
 +       , APLOGNO()
-        ,format, ...)
+        ,fmt, ...)
 
 @r2@
 expression rv, s, c;
-constant char [] format;
+constant char[] fmt !~ "^APLOGNO";
 identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
 
 @@
@@ -33,11 +33,11 @@ identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DE
 )
         ,rv, s, c
 +       , APLOGNO()
-        ,format, ...)
+        ,fmt, ...)
 
 @r3@
 expression rv, p, s, cert;
-constant char [] format;
+constant char[] fmt !~ "^APLOGNO";
 identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
 
 @@
@@ -51,11 +51,11 @@ identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DE
 )
         ,rv, p, s , cert
 +       , APLOGNO()
-        ,format, ...)
+        ,fmt, ...)
 
 @r4@
 expression rv, rc, cert;
-constant char [] format;
+constant char[] fmt !~ "^APLOGNO";
 identifier level =~ "^APLOG_(EMERG|ALERT|CRIT|ERR|WARNING|NOTICE|INFO|STARTUP|DEBUG)$";
 identifier fn =~ "^ssl_log_(r|c)xerror$";
 
@@ -70,6 +70,5 @@ identifier fn =~ "^ssl_log_(r|c)xerror$";
 )
         ,rv, rc , cert
 +       , APLOGNO()
-        ,format, ...)
-
+        ,fmt, ...)
 
