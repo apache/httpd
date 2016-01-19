@@ -1559,8 +1559,8 @@ static int balancer_handler(request_rec *r)
                 if (set_worker_hc_param_f) {
                     ap_rprintf(r, "</td><td>%s</td>", ap_proxy_show_hcmethod(worker->s->method));
                     ap_rprintf(r, "<td>%d</td>", (int)apr_time_sec(worker->s->interval));
-                    ap_rprintf(r, "<td>%d</td>", worker->s->passes);
-                    ap_rprintf(r, "<td>%d</td>", worker->s->fails);
+                    ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
+                    ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
                     ap_rprintf(r, "<td>%s", worker->s->hcuri);
                 }
                 ap_rputs("</td></tr>\n", r);

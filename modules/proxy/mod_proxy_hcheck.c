@@ -48,9 +48,11 @@ typedef struct {
     server_rec *s;
 } sctx_t;
 
+/* Used in the HC worker via the context field */
 typedef struct {
-    char *path;
-    char *req;
+    char *path;      /* The path of the original worker URL */
+    char *req;       /* pre-formatted HTTP/AJP request */
+    proxy_worker *w; /* Pointer to the actual worker */
 } wctx_t;
 
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
@@ -366,12 +368,19 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         /* tuck away since we need the preparsed address */
         hc->cp->addr = worker->cp->addr;
         hc->s->method = worker->s->method;
-
         rv = apr_uri_parse(p, url, &uri);
         if (rv == APR_SUCCESS) {
             wctx->path = apr_pstrdup(ctx->p, uri.path);
         }
+        wctx->w = worker;
         hc->context = wctx;
+        apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
+    }
+    /* This *could* have changed via the Balancer Manager */
+    if (hc->s->method != worker->s->method) {
+        wctx_t *wctx = hc->s->context;
+        hc->s->method = worker->s->method;
+        wctx->req = NULL;
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
     return hc;
