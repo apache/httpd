@@ -842,7 +842,7 @@ static int APR_THREAD_FUNC regfnWriteClient(isapi_cid    *cid,
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
         if (rv != APR_SUCCESS)
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02984)
                           "WriteClient ap_pass_brigade failed: %s",
                           r->filename);
     }
@@ -1017,7 +1017,7 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
                 r->args = apr_pstrdup(r->pool, (char*) buf_data);
         }
         if (cid->dconf.log_to_errlog)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02985)
                           "%s: %s", cid->r->filename,
                           (char*) buf_data);
         return 1;
@@ -1187,9 +1187,9 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
         int res = 0;
         if (!cid->dconf.fake_async) {
             if (cid->dconf.log_unsupported)
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                            "asynchronous I/O not supported: %s",
-                            r->filename);
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02986)
+                              "asynchronous I/O not supported: %s",
+                              r->filename);
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }

@@ -372,8 +372,9 @@ apr_status_t read_config_db(apr_pool_t *p, server_rec *s_main,
         const char *max_timestamp = apr_dbd_get_entry(driver, row, cur++);
         const char *url = apr_dbd_get_entry(driver, row, cur++);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main,
-                     "Log config: Record %s, log id %s, public key file %s, distrusted %s, URL %s, time %s->%s",
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main, APLOGNO(03036)
+                     "Log config: Record %s, log id %s, public key file %s,"
+                     " distrusted %s, URL %s, time %s->%s",
                      id,
                      log_id ? log_id : "(unset)",
                      public_key ? public_key : "(unset)",

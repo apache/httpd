@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Added many log numbers to log statements that had none.
+
   *) mod_http2: fixed compile issues re cc's with builtin log2n, fixed cache
      digest calculation. [Stefan Eissing]
      

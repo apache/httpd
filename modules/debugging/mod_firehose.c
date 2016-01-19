@@ -485,7 +485,8 @@ static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
                             | conn->nonblock, APR_OS_DEFAULT, plog))) {
                 ap_log_error(APLOG_MARK,
                         APLOG_WARNING,
-                        rv, s, "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
+                        rv, s, APLOGNO(02990)
+                        "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
                         conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
                         conn->request == FIREHOSE_REQUEST ? " request" : "connection",
                         conn->direction == FIREHOSE_IN ? "input" : "output");

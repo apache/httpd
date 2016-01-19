@@ -797,7 +797,7 @@ static int stapling_cb(SSL *ssl, void *arg)
             stapling_refresh_mutex_off(s);
 
             if (rv == TRUE) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03040)
                              "stapling_cb: success renewing response");
             }
             else {
