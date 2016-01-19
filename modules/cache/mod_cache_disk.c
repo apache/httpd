@@ -880,13 +880,15 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     /* Call routine to read the header lines/status line */
     rv = read_table(h, r, h->resp_hdrs, dobj->hdrs.fd);
     if (rv != APR_SUCCESS) { 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
-                     "Error reading response headers from %s for %s", dobj->hdrs.file, dobj->name);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02987) 
+                      "Error reading response headers from %s for %s",
+                      dobj->hdrs.file, dobj->name);
     }
     rv = read_table(h, r, h->req_hdrs, dobj->hdrs.fd);
     if (rv != APR_SUCCESS) { 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
-                     "Error reading request headers from %s for %s", dobj->hdrs.file, dobj->name);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02988) 
+                      "Error reading request headers from %s for %s",
+                      dobj->hdrs.file, dobj->name);
     }
 
     apr_file_close(dobj->hdrs.fd);

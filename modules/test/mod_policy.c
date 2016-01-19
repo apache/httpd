@@ -140,26 +140,18 @@ static void handle_policy(request_rec *r, policy_result result,
 
     switch (result) {
     case policy_log: {
-        ap_log_rerror(
-                APLOG_MARK,
-                APLOG_WARNING,
-                0,
-                r,
-                "mod_policy: violation: %s, uri: %s",
-                message, r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03041)
+                      "mod_policy: violation: %s, uri: %s",
+                      message, r->uri);
         apr_table_addn(r->headers_out, "Warning", apr_psprintf(r->pool,
                 "299 %s \"%s\"", ap_get_server_name(r), message));
         break;
     }
     case policy_enforce: {
 
-        ap_log_rerror(
-                APLOG_MARK,
-                APLOG_ERR,
-                0,
-                r,
-                "mod_policy: violation, rejecting request: %s, uri: %s",
-                message, r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(03042)
+                      "mod_policy: violation, rejecting request: %s, uri: %s",
+                      message, r->uri);
         apr_table_addn(r->err_headers_out, "Warning", apr_psprintf(r->pool,
                 "299 %s \"Rejected: %s\"", ap_get_server_name(r), message));
         apr_table_setn(r->notes, "error-notes",

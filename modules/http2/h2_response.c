@@ -144,7 +144,8 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
             /* This request triggered a TLS renegotiation that is now allowed 
              * in HTTP/2. Tell the client that it should use HTTP/1.1 for this.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, response->http_status, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, response->http_status, r,
+                          APLOGNO(03061) 
                           "h2_response(%ld-%d): renegotiate forbidden, cause: %s",
                           (long)r->connection->id, stream_id, cause);
             response->rst_error = H2_ERR_HTTP_1_1_REQUIRED;

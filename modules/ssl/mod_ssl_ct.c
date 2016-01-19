@@ -348,7 +348,7 @@ static apr_status_t collate_scts(server_rec *s, apr_pool_t *p,
 
         cur_sct_file = elts[i];
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03022)
                      "Adding SCT from file %s", cur_sct_file);
 
         rv = ctutil_read_file(p, s, cur_sct_file, MAX_SCTS_SIZE, &scts,
@@ -540,16 +540,13 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
 
     rv = apr_stat(&finfo, sct_fn, APR_FINFO_MTIME, p);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "Found SCT for %s in %s",
-                     cert_file, sct_fn);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03023)
+                     "Found SCT for %s in %s", cert_file, sct_fn);
 
         if (finfo.mtime + max_sct_age < apr_time_now()) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                         APLOGNO(02692) "SCT for %s is older than %d seconds, "
-                         "must refresh",
-                         cert_file,
-                         (int)(apr_time_sec(max_sct_age)));
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02692)
+                         "SCT for %s is older than %d seconds, must refresh",
+                         cert_file, (int)(apr_time_sec(max_sct_age)));
         }
         else {
             return APR_SUCCESS;
@@ -559,8 +556,8 @@ static apr_status_t fetch_sct(server_rec *s, apr_pool_t *p,
         ap_log_error(APLOG_MARK, APLOG_INFO,
                      /* no need to print error string for file-not-found err */
                      APR_STATUS_IS_ENOENT(rv) ? 0 : rv,
-                     s,
-                     APLOGNO(02693) "Did not find SCT for %s in %s, must fetch",
+                     s, APLOGNO(02693)
+                     "Did not find SCT for %s in %s, must fetch",
                      cert_file, sct_fn);
     }
 
@@ -739,7 +736,7 @@ static apr_status_t update_log_list_for_cert(server_rec *s, apr_pool_t *p,
         for (i = 0; i < arr->nelts; i++) {
             const char *cur_sct_file = elts[i];
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03024)
                          "Removing %s", cur_sct_file);
 
             rv = apr_file_remove(cur_sct_file, p);
@@ -885,7 +882,7 @@ static void sct_daemon_cycle(ct_server_config *sconf, server_rec *s_main,
     apr_status_t rv;
 
     if (sconf->db_log_config) { /* not using static config */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main, APLOGNO(03025)
                      "%s - reloading config", daemon_name);
         apr_pool_clear(sconf->db_log_config_pool);
         active_log_config = NULL;
@@ -903,7 +900,7 @@ static void sct_daemon_cycle(ct_server_config *sconf, server_rec *s_main,
         }
         active_log_config = sconf->db_log_config;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s_main, APLOGNO(03026)
                  "%s - refreshing SCTs as needed", daemon_name);
     rv = refresh_all_scts(s_main, ptemp, active_log_config);
     if (rv != APR_SUCCESS) {
@@ -1393,8 +1390,8 @@ static int ssl_ct_check_config(apr_pool_t *pconf, apr_pool_t *plog,
                          APLOGNO(02720) "Log config file %s cannot be read",
                          sconf->log_config_fname);
             if (msg) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main,
-                            "%s", msg);
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s_main, APLOGNO(03027)
+                             "%s", msg);
             }
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -1740,7 +1737,7 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
             ct_sct_data sct;
             sct_fields_t fields;
 
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03028)
                           "%d SCTs received total", conncfg->all_scts->nelts);
 
             verification_failures = verification_successes = unknown_log_ids = 0;
@@ -1961,7 +1958,7 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
 
     br = OCSP_response_get1_basic(rsp); /* UNDOC */
     if (!br) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03029)
                       "no OCSP basic response");
         return 0;
     }
@@ -2079,7 +2076,7 @@ static int ssl_ct_ssl_proxy_verify(server_rec *s, conn_rec *c,
         return OK;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03030)
                   "ssl_ct_ssl_proxy_verify() - get server certificate info");
 
     if (chain_size < 1) {
@@ -2172,7 +2169,7 @@ static int ssl_ct_proxy_post_handshake(conn_rec *c, SSL *ssl)
         
         key = gen_key(c, conncfg->certs, conncfg);
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03031)
                       "key for server data: %s", key);
 
         ctutil_thread_mutex_lock(cached_server_data_mutex);
@@ -2294,7 +2291,7 @@ static int server_extension_add_callback(SSL *ssl, unsigned ext_type,
         /* Hmmm...  Is this actually called if the client doesn't include
          * the extension in the ClientHello?  I don't think so.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03032)
                       "server_extension_callback_2: client isn't CT-aware");
         /* Skip this extension for ServerHello */
         return -1;
@@ -2351,7 +2348,8 @@ static int ssl_ct_pre_handshake(conn_rec *c, SSL *ssl, int is_proxy)
         conncfg->client_handshake = 1;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "client connected (pre-handshake)");
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03033)
+                  "client connected (pre-handshake)");
 
     SSL_set_tlsext_status_type(ssl, TLSEXT_STATUSTYPE_ocsp); /* UNDOC */
 
@@ -2674,7 +2672,7 @@ static int ssl_ct_detach_backend(request_rec *r,
         ct_conn_config *conncfg = get_conn_config(origin);
         char *list, *last;
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03034)
                       "ssl_ct_detach_backend, %d%d%d",
                       conncfg->server_cert_has_sct_list,
                       conncfg->serverhello_has_sct_list,
@@ -2702,7 +2700,7 @@ static int ssl_ct_detach_backend(request_rec *r,
     }
     else {
         /* why here?  some odd error path? */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03035) 
                       "No backend connection available in ssl_ct_detach_backend()");
     }
 

@@ -186,7 +186,7 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
             c->cs->state = CONN_STATE_WRITE_COMPLETION;
         }
         if (APR_STATUS_IS_EOF(status)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03045)
                           "h2_session(%ld): process, closing conn", c->id);
             c->keepalive = AP_CONN_CLOSE;
         }

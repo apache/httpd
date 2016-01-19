@@ -494,14 +494,14 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
             if (strncmp("TLS", val, 3) 
                 || !strcmp("TLSv1", val) 
                 || !strcmp("TLSv1.1", val)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03050)
                           "h2_h2(%ld): tls protocol not suitable: %s", 
                           (long)c->id, val);
                 return 0;
             }
         }
         else if (require_all) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03051)
                           "h2_h2(%ld): tls protocol is indetermined", (long)c->id);
             return 0;
         }
@@ -512,14 +512,14 @@ int h2_is_acceptable_connection(conn_rec *c, int require_all)
         if (val && *val) {
             const char *source;
             if (cipher_is_blacklisted(val, &source)) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03052)
                               "h2_h2(%ld): tls cipher %s blacklisted by %s", 
                               (long)c->id, val, source);
                 return 0;
             }
         }
         else if (require_all) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03053)
                           "h2_h2(%ld): tls cipher is indetermined", (long)c->id);
             return 0;
         }
@@ -617,7 +617,7 @@ int h2_h2_process_conn(conn_rec* c)
                                     AP_MODE_SPECULATIVE, APR_BLOCK_READ, 24);
             
             if (status != APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03054)
                               "h2_h2, error reading 24 bytes speculative");
                 apr_brigade_destroy(temp);
                 return DECLINED;

@@ -167,7 +167,7 @@ apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
 
     status = add_all_h1_header(req, r->pool, r->headers_in);
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
                   "h2_request(%d): rwrite %s host=%s://%s%s",
                   req->id, req->method, req->scheme, req->authority, req->path);
                   
@@ -313,13 +313,13 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
                                     const char *value, size_t vlen)
 {
     if (!req->trailers) {
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool, APLOGNO(03059)
                       "h2_request(%d): unanounced trailers",
                       req->id);
         return APR_EINVAL;
     }
     if (nlen == 0 || name[0] == ':') {
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, APR_EINVAL, pool, APLOGNO(03060)
                       "h2_request(%d): pseudo header in trailer",
                       req->id);
         return APR_EINVAL;

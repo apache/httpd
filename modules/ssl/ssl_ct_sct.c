@@ -77,7 +77,7 @@ apr_status_t sct_verify_signature(conn_rec *c, sct_fields_t *sctf,
                               APLOGNO(02767) "verify_signature failed");
             }
             else {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03037)
                               "verify_signature succeeded");
             }
             return rv;
@@ -266,7 +266,7 @@ apr_status_t sct_parse(const char *source,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03038)
                  "SCT from %s: version %d timestamp %s hash alg %d sig alg %d",
                  source, fields->version, fields->timestr,
                  fields->hash_alg, fields->sig_alg);
