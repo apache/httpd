@@ -300,7 +300,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                      * If we exit now, all will be deallocated and the worker, once 
                      * it does return, will walk all over freed memory...
                      */
-                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03198)
                                   "h2_mplx(%ld): release, waiting for %d seconds now for "
                                   "all h2_workers to return, have still %d requests outstanding", 
                                   m->id, i*wait_secs, (int)h2_io_set_size(m->stream_ios));

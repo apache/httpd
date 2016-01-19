@@ -732,7 +732,7 @@ static apr_status_t session_pool_cleanup(void *data)
          * connection when sending the next request, this has the effect
          * that at least this one request will fail.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c, APLOGNO(03199)
                       "session(%ld): connection disappeared without proper "
                       "goodbye, clients will be confused, should not happen", 
                       session->id);
@@ -895,7 +895,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
         session->push_diary = h2_push_diary_create(session->pool, n);
         
         if (APLOGcdebug(c)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03200)
                           "session(%ld) created, timeout=%d, keepalive_timeout=%d, "
                           "max_streams=%d, stream_mem=%d, push_diary(type=%d,N=%d)",
                           session->id, session->timeout_secs, session->keepalive_secs,
@@ -1000,7 +1000,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         ++slen;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO(03201)
                   "h2_session(%ld): start, INITIAL_WINDOW_SIZE=%ld, "
                   "MAX_CONCURRENT_STREAMS=%d", 
                   session->id, (long)win_size, (int)session->max_stream_count);
@@ -1402,7 +1402,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
                 id_grandpa = nghttp2_stream_get_stream_id(s_grandpa);
                 rv = nghttp2_session_change_stream_priority(session->ngh2, id_parent, &ps);
                 if (rv < 0) {
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03202)
                                   "h2_stream(%ld-%d): PUSH BEFORE, weight=%d, "
                                   "depends=%d, returned=%d",
                                   session->id, id_parent, ps.weight, ps.stream_id, rv);
@@ -1424,7 +1424,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
 
 
         rv = nghttp2_session_change_stream_priority(session->ngh2, stream->id, &ps);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03203)
                       "h2_stream(%ld-%d): PUSH %s, weight=%d, "
                       "depends=%d, returned=%d",
                       session->id, stream->id, ptype, 

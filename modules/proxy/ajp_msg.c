@@ -130,9 +130,11 @@ apr_status_t ajp_msg_log(request_rec *r, ajp_msg_t *msg, char *err)
         if (rc == APR_SUCCESS) {
             while ((next = ap_strchr(buf, '\n'))) {
                 *next = '\0';
+                /* Intentional no APLOGNO */
                 ap_log_rerror(APLOG_MARK, level, 0, r, "%s", buf);
                 buf = next + 1;
             }
+            /* Intentional no APLOGNO */
             ap_log_rerror(APLOG_MARK, level, 0, r, "%s", buf);
         }
     }
@@ -241,7 +243,7 @@ apr_status_t ajp_msg_end(ajp_msg_t *msg)
 
 static APR_INLINE int ajp_log_overflow(ajp_msg_t *msg, const char *context)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(03229)
                  "%s(): BufferOverflowException %" APR_SIZE_T_FMT
                  " %" APR_SIZE_T_FMT,
                  context, msg->pos, msg->len);

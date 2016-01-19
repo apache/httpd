@@ -423,8 +423,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                 strict ? "No ExecCGI verb found for files of type '%s'."
-                        : "No ExecCGI or Open verb found for files of type '%s'.",
+                 strict ? APLOGNO(03180) "No ExecCGI verb found for files of type '%s'."
+                        : APLOGNO(03181) "No ExecCGI or Open verb found for files of type '%s'.",
                  ext);
         }
     }

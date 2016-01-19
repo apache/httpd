@@ -155,7 +155,7 @@ static void qs_to_table(const char *input, apr_table_t *parms,
         ap_unescape_url(value);
         apr_table_set(parms, key, value);
         /*
-           ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+           ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03182)
            "Found query arg: %s = %s", key, value);
          */
         key = apr_strtok(NULL, "&", &strtok_state);

@@ -143,20 +143,12 @@ static apr_status_t pumpit_cleanup(void *dummy)
             /* ignore the error */
         }
         else if (ctx->r) {
-            ap_log_rerror(
-                    APLOG_MARK,
-                    APLOG_WARNING,
-                    rv,
-                    ctx->r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, ctx->r, APLOGNO(03183)
                     "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
                     (apr_uint64_t)(hdr_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
         }
         else {
-            ap_log_cerror(
-                    APLOG_MARK,
-                    APLOG_WARNING,
-                    rv,
-                    ctx->c,
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, ctx->c, APLOGNO(03184)
                     "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
                     (apr_uint64_t)(hdr_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
         }
@@ -225,20 +217,12 @@ static apr_status_t pumpit(ap_filter_t *f, apr_bucket *b, firehose_ctx_t *ctx)
                         /* ignore the error */
                     }
                     else if (ctx->r) {
-                        ap_log_rerror(
-                                APLOG_MARK,
-                                APLOG_WARNING,
-                                rv,
-                                ctx->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, ctx->r, APLOGNO(03185)
                                 "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
                                 (apr_uint64_t)(vec[0].iov_len + vec[1].iov_len + vec[2].iov_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
                     }
                     else {
-                        ap_log_cerror(
-                                APLOG_MARK,
-                                APLOG_WARNING,
-                                rv,
-                                ctx->c,
+                        ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, ctx->c, APLOGNO(03186)
                                 "mod_firehose: could not write %" APR_UINT64_T_FMT " bytes to '%s' for '%c' connection '%s' and count '%0" APR_UINT64_T_HEX_FMT "', bytes dropped (further errors will be suppressed)",
                                 (apr_uint64_t)(vec[0].iov_len + vec[1].iov_len + vec[2].iov_len), ctx->conn->filename, ctx->conn->direction, ctx->uuid, ctx->count);
                     }
@@ -483,9 +467,7 @@ static int firehose_open_logs(apr_pool_t *p, apr_pool_t *plog,
             if (APR_SUCCESS != (rv = apr_file_open(&conn->file, conn->filename,
                     APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_APPEND
                             | conn->nonblock, APR_OS_DEFAULT, plog))) {
-                ap_log_error(APLOG_MARK,
-                        APLOG_WARNING,
-                        rv, s, APLOGNO(02990)
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(02990)
                         "mod_firehose: could not open '%s' for write, disabling firehose %s%s %s filter",
                         conn->filename, conn->proxy == FIREHOSE_PROXY ? "proxy " : "",
                         conn->request == FIREHOSE_REQUEST ? " request" : "connection",

@@ -233,7 +233,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                 status == V_OCSP_CERTSTATUS_GOOD ? "good" :
                 (status == V_OCSP_CERTSTATUS_REVOKED ? "revoked" : "unknown");
 
-            ssl_log_cxerror(SSLLOG_MARK, level, 0, c, cert,
+            ssl_log_cxerror(SSLLOG_MARK, level, 0, c, cert, APLOGNO(03239)
                             "OCSP validation completed, "
                             "certificate status: %s (%d, %d)",
                             result, status, reason);
