@@ -1526,7 +1526,7 @@ static int balancer_handler(request_rec *r)
                 "<th>Factor</th><th>Set</th><th>Status</th>"
                 "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>", r);
             if (set_worker_hc_param_f) {
-                ap_rputs("<th>Method</th><th>Interval</th><th>Passes</th><th>Fails</th><th>URI</th>", r);
+                ap_rputs("<th>Method</th><th>Interval</th><th>Passes</th><th>Fails</th><th>URI</th><th>Expr</th>", r);
             }
             ap_rputs("</tr>\n", r);
 
@@ -1561,7 +1561,8 @@ static int balancer_handler(request_rec *r)
                     ap_rprintf(r, "<td>%d</td>", (int)apr_time_sec(worker->s->interval));
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
                     ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
-                    ap_rprintf(r, "<td>%s", worker->s->hcuri);
+                    ap_rprintf(r, "<td>%s</td>", worker->s->hcuri);
+                    ap_rprintf(r, "<td>%s", worker->s->hcexpr);
                 }
                 ap_rputs("</td></tr>\n", r);
 
