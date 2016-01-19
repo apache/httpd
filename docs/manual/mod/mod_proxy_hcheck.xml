@@ -51,14 +51,18 @@
         <td>None</td>
         <td>No dynamic health check performed. Choices are:
         	<table>
-        		<tr><th>Method</th><th>Description</th></tr>
-        		<tr><td>None</td><td>No dynamic health checking done</td></tr>
-        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td></tr>
-        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td></tr>
-        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td></tr>
+        		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
+        		<tr><td>None</td><td>No dynamic health checking done</td><td></td></tr>
+        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td></td></tr>
+        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
+<!--
         		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
         		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td></tr>
         		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
+-->
+				<tr><td colspan="3"></td></tr>
+				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>
         	</table>
         </td></tr>
     <tr><td>hcpasses</td>
@@ -76,11 +80,41 @@
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
         <td>Name of template, created via <directive>ProxyHCTemplate</directive> to use for setting health check parameters for this worker</td></tr>
+    <tr><td>hcexpr</td>
+        <td>&nbsp;</td>
+        <td>Name of expression, created via <directive>ProxyHCExpr</directive>, used to check response headers for health.<br/>
+            <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
 </note>
 
 </summary>
 <seealso><module>mod_proxy</module></seealso>
+
+<directivesynopsis>
+<name>ProxyHCExpr</name>
+<description>Creates a named condition expression to use to determine health of the backend based on its response.</description>
+<syntax>ProxyHCExpr name {<a href="../expr.html">ap_expr</a> expression}</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyHCExpr</directive> directive allows
+       for creating a named condition expression that checks the response
+       headers of the backend server to determine its health. This named
+       condition can then be assigned to balancer members via the <code>hcexpr</code>
+       parameter</p>
+
+    <example><title>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</title>
+    <highlight language="config">
+ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
+ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234
+    </highlight>
+    </example>
+
+    <p>NOTE: The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>ProxyHCTemplate</name>
