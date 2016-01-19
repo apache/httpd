@@ -790,8 +790,8 @@ static apr_status_t gset_encode_next(gset_encoder *encoder, apr_uint64_t pval)
     flex_bits = (delta >> encoder->fixed_bits);
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, encoder->pool,
                   "h2_push_diary_enc: val=%"APR_UINT64_T_HEX_FMT", delta=%"
-                  APR_UINT64_T_HEX_FMT" flex_bits=%ld, "
-                  "fixed_bits=%d, fixed_val=%"APR_UINT64_T_HEX_FMT, 
+                  APR_UINT64_T_HEX_FMT" flex_bits=%" APR_UINT64_T_FMT
+                  ", fixed_bits=%d, fixed_val=%"APR_UINT64_T_HEX_FMT, 
                   pval, delta, flex_bits, encoder->fixed_bits, delta&encoder->fixed_mask);
     for (; flex_bits != 0; --flex_bits) {
         status = gset_encode_bit(encoder, 1);
