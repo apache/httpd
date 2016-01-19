@@ -187,20 +187,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 58854.
      trunk patch: http://svn.apache.org/r1724656
      2.4.x: trunk works
-     +1 covener, jim
+     +1 covener, jim, rjung
 
   *) mod_cgid: drop severity of flush error message to match
      core output filter.
      trunk patch: http://svn.apache.org/r1724847
      2.4.x: trunk works.
-     +1 covener, jim
+     +1 covener, jim, rjung
+     rjung: you might also want to add r1725516 (removing
+            APLOGNO, now that the log level is TRACE1)
 
   *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075,
      "Error dispatching request", when the cause appears to be
      the client closing the connection. PR58118
      trunk patch:  http://svn.apache.org/r1724857
      2.4.x patch: trunk works
-     +1 covener, jim
+     +1 covener, jim, rjung
 
   *) core: Add expr= support to SetHandler (someone wanted this in
      a well-articulated serverfault post).
