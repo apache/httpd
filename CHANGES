@@ -6,6 +6,46 @@ Changes with Apache 2.4.19
      be inherited by virtual hosts that define a CustomLog.
      [Edward Lu]
 
+  *) mod_http2: connection how keep a "push diary" where hashes of already
+     pushed resources are kept. See directive H2PushDiarySize for managing this.
+     Push diaries can be initialized by clients via the "Cache-Digest" request
+     header. This carries a base64url encoded. compressed Golomb set as described
+     in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+     Introduced a status handler for HTTP/2 connections, giving various counters
+     and statistics about the current connection, plus its cache digest value
+     in a JSON record. Not a replacement for more HTTP/2 in the server status. 
+     Configured as
+     <Location "/http2-status">
+         SetHandler http2-status
+     </Location>
+     [Stefan Eissing]
+  
+  *) mod_http2: Fixed flushing of last GOAWAY frame. Previously, that frame
+     did not always reach the client, causing some to fail the next request.
+     Fixed calculation of last stream id accepted as described in rfc7540. 
+     Reading in KEEPALIVE state now correctly shown in scoreboard. 
+     Fixed possible race in connection shutdown after review by Ylavic. 
+     Fixed segfault on connection shutdown, callback ran into a semi dismantled session. 
+     [Stefan Eissing]
+
+  *) mod_http2: Added support for experimental accept-push-policy draft
+     (https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00). Clients
+     may now influence server pushes by sending accept-push-policy headers.
+     [Stefan Eissing]
+
+  *) mod_http2: new r->subprocess_env variables HTTP2 and H2PUSH, set to "on"
+     when available for request.
+     [Stefan Eissing]
+
+  *) mod_http2: new config directives and the implementation behind
+     them: H2Timeout, H2KeepAliveTimeout, H2StreamTimeout. Documentation in
+     the http2 manual.
+     [Stefan Eissing]
+
+  *) mod_http2: fixed bug in input window size calculation by moving chunked
+     request body encoding into later stage of processing. Fixes PR 58825.
+     [Stefan Eissing]
+     
 Changes with Apache 2.4.18
 
   *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
