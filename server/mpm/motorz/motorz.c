@@ -1159,6 +1159,7 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
 
     int active = 0;
     free_length = 0;
+    free_slots[0] = 0;
 
     for (i = 0; i < ap_daemons_limit; ++i) {
         int status;
