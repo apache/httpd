@@ -824,6 +824,34 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+static void hc_show_exprs(request_rec *r)
+{
+    const apr_table_entry_t *elts;
+    const apr_array_header_t *hdr;
+    int i;
+    sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
+                                                  &proxy_hcheck_module);
+    if (apr_is_empty_table(ctx->conditions))
+        return;
+
+    ap_rputs("\n\n<table>"
+             "<tr><th colspan=\"2\">Health check cond. expressions:</th></tr>\n"
+             "<tr><th>Expr name</th><th>Expression</th></tr>\n", r);
+
+    hdr = apr_table_elts(ctx->conditions);
+    elts = (const apr_table_entry_t *) hdr->elts;
+    for (i = 0; i < hdr->nelts; ++i) {
+        hc_condition_t *cond;
+        if (!elts[i].key) {
+            continue;
+        }
+        cond = (hc_condition_t *)elts[i].val;
+        ap_rprintf(r, "<tr><td>%s</td><td>%s</td></tr>\n", elts[i].key,
+                   cond->expr);
+    }
+    ap_rputs("</table><hr/>\n", r);
+}
+
 static const command_rec command_table[] = {
     AP_INIT_RAW_ARGS("ProxyHCTemplate", set_hc_template, NULL, OR_FILEINFO,
                      "Health check template"),
@@ -837,6 +865,7 @@ static void hc_register_hooks(apr_pool_t *p)
     static const char *const aszPre[] = { "mod_proxy_balancer.c", "mod_proxy.c", NULL};
     static const char *const aszSucc[] = { "mod_watchdog.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
+    APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
 }
 

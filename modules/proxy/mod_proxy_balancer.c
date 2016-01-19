@@ -33,6 +33,9 @@ static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
         proxy_worker *worker, server_rec *s) = NULL;
 
+static APR_OPTIONAL_FN_TYPE(hc_show_exprs) *hc_show_exprs_f = NULL;
+
+
 /*
  * Register our mutex type before the config is read so we
  * can adjust the mutex settings using the Mutex directive.
@@ -49,6 +52,7 @@ static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         return rv;
     }
     set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
+    hc_show_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_show_exprs);
     return OK;
 }
 
@@ -1572,6 +1576,9 @@ static int balancer_handler(request_rec *r)
             ++balancer;
         }
         ap_rputs("<hr />\n", r);
+        if (hc_show_exprs_f) {
+            hc_show_exprs_f(r);
+        }
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);

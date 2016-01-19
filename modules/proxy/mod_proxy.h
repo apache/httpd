@@ -552,9 +552,12 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+APR_DECLARE_OPTIONAL_FN(void, hc_show_exprs, (request_rec *));
+
 APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
                         (apr_pool_t *, server_rec *, proxy_worker *,
                          const char *, const char *, void *));
+
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
                           proxy_worker *worker, proxy_server_conf *conf, char *url,
