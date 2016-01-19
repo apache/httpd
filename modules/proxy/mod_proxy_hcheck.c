@@ -697,7 +697,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
         if (rv == APR_SUCCESS) {
             worker->s->pcount += 1;
             if (worker->s->pcount >= worker->s->passes) {
-                ap_proxy_set_wstatus('#', 0, worker);
+                ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 0, worker);
                 worker->s->pcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
                              "Health check ENABLING %s", worker->s->name);
@@ -709,7 +709,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
             worker->s->error_time = now;
             worker->s->fcount += 1;
             if (worker->s->fcount >= worker->s->fails) {
-                ap_proxy_set_wstatus('#', 1, worker);
+                ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 1, worker);
                 worker->s->fcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
                              "Health check DISABLING %s", worker->s->name);
