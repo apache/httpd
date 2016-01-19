@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: Save memory when calling 'ap_parse_htaccess'
      trunk patch: http://svn.apache.org/r1719016
      2.4.x patch: trunk works
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) Use 'apr_pstrmemdup' instead of 'apr_pstrndup' when applicable in order
      to save a few cycles.
@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1719189
                   http://svn.apache.org/r1719190
      2.4.x patch: trunk works
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) mod_negotiation: Use 'ap_array_str_contains' to simplify code.
      core: likewise
@@ -195,13 +195,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1720996 (change in ap_method_in_list not
                                                   tested, it is not actually used)
      2.4.x patch: trunk works
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) mod_mod_authn_socache: Do not use the magic string "directory". Use the
      corresponding global variable as in all other places of the module.
      trunk patch: http://svn.apache.org/r1719257
      2.4.x patch: trunk works
-     +1: jailletc36, covener
+     +1: jailletc36, covener, jim
 
   *) mod_ssl: Save some TLS record (application data) fragmentations by
      including the last and subsequent suitable buckets when coalescing.
@@ -219,27 +219,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 57895
      trunk patch: http://svn.apache.org/r1723567
      2.4.x patch: trunk works, modulo CHANGES
-     +1: rjung, covener
+     +1: rjung, covener, jim
 
   *) mod_rewrite: Avoid looping on relative substitutions that
      result in the same filename we started with. 
      PR 58854.
      trunk patch: http://svn.apache.org/r1724656
      2.4.x: trunk works
-     +1 covener
+     +1 covener, jim
 
   *) mod_cgid: drop severity of flush error message to match
      core output filter.
      trunk patch: http://svn.apache.org/r1724847
      2.4.x: trunk works.
-     +1 covener
+     +1 covener, jim
 
   *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075,
      "Error dispatching request", when the cause appears to be
      the client closing the connection. PR58118
      trunk patch:  http://svn.apache.org/r1724857
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
   *) core: Add expr= support to SetHandler (someone wanted this in
      a well-articulated serverfault post).
