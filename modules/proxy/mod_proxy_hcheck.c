@@ -491,7 +491,9 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 static void hc_send(sctx_t *ctx, apr_pool_t *p, const char *out, proxy_conn_rec *backend)
 {
     apr_bucket_brigade *tmp_bb = apr_brigade_create(p, ctx->ba);
+#ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03253) "%s", out);
+#endif
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), p,
                             ctx->ba));
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_flush_create(ctx->ba));
@@ -544,8 +546,10 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
         if (!(value = strchr(buffer, ':'))) {
             return !OK;
         }
+#ifdef DEBUG
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03255)
                 "%s", buffer);
+#endif
         *value = '\0';
         ++value;
         while (apr_isspace(*value))
@@ -557,6 +561,12 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
     return OK;
 }
 
+/*
+ * Send the OPTIONS or HEAD HTTP request to the backend
+ * server associated w/ worker. If we have Conditions,
+ * then apply those to the resulting response, otherwise
+ * any status code 2xx or 3xx is considered "passing"
+ */
 static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
 {
     int status;
@@ -613,8 +623,13 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
 
     r = create_request_rec(p, backend->connection);
     r->pool = p;
-    status = hc_read_headers(ctx, r);
-
+    if ((status = hc_read_headers(ctx, r)) != OK) {
+        return backend_cleanup("HCOH", backend, ctx->s, status);
+    }
+    /* TODO: Check conditions here */
+    if (r->status < 200 || r->status > 399) {
+        status = !OK;
+    }
     return backend_cleanup("HCOH", backend, ctx->s, status);
 }
 
@@ -647,10 +662,29 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                          "Somehow tried to use unimplemented hcheck method: %d", (int)worker->s->method);
         return;
     }
-    /* TODO Honor fails and passes */
-    ap_proxy_set_wstatus('#', (rv == APR_SUCCESS ? 0 : 1), worker);
-    if (rv != APR_SUCCESS) {
-        worker->s->error_time = now;
+    /* what state are we in ? */
+    if (PROXY_WORKER_IS_HCFAILED(worker)) {
+        if (rv == APR_SUCCESS) {
+            worker->s->pcount += 1;
+            if (worker->s->pcount >= worker->s->passes) {
+                ap_proxy_set_wstatus('#', 0, worker);
+                worker->s->pcount = 0;
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Health check re-enabling %s", worker->s->name);
+
+            }
+        }
+    } else {
+        if (rv != APR_SUCCESS) {
+            worker->s->error_time = now;
+            worker->s->fcount += 1;
+            if (worker->s->fcount >= worker->s->fails) {
+                ap_proxy_set_wstatus('#', 1, worker);
+                worker->s->fcount = 0;
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Health check disabling %s", worker->s->name);
+            }
+        }
     }
     worker->s->updated = now;
 }
