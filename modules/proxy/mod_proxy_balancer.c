@@ -1098,16 +1098,16 @@ static int balancer_handler(request_rec *r)
                 *wsel->s->redirect = '\0';
         }
         if ((val = apr_table_get(params, "w_status_I"))) {
-            ap_proxy_set_wstatus('I', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_N"))) {
-            ap_proxy_set_wstatus('N', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_DRAIN_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
-            ap_proxy_set_wstatus('D', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
-            ap_proxy_set_wstatus('H', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_ls"))) {
             int ival = atoi(val);
@@ -1232,7 +1232,7 @@ static int balancer_handler(request_rec *r)
                     /* sync all timestamps */
                     bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
                     /* by default, all new workers are disabled */
-                    ap_proxy_set_wstatus('D', 1, nworker);
+                    ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
                 }
                 if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
