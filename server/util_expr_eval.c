@@ -271,15 +271,15 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
                 const ap_expr_t *arg = e2->node_arg2;
                 ap_expr_list_func_t *func = (ap_expr_list_func_t *)info->node_arg1;
                 apr_array_header_t *haystack;
-                int i = 0;
+
                 AP_DEBUG_ASSERT(func != NULL);
                 AP_DEBUG_ASSERT(info->node_op == op_ListFuncInfo);
                 haystack = (*func)(ctx, info->node_arg2, ap_expr_eval_word(ctx, arg));
-                if (haystack == NULL)
+                if (haystack == NULL) {
                     return 0;
-                for (; i < haystack->nelts; i++) {
-                    if (strcmp(needle, APR_ARRAY_IDX(haystack,i,char *)) == 0)
-                        return 1;
+                }
+                if (ap_array_str_contains(haystack, needle)) {
+                    return 1;
                 }
             }
             return 0;
