@@ -192,7 +192,7 @@ apr_status_t sct_parse(const char *source,
         apr_size_t avail;
         int der_length;
         unsigned char *mem;
-        unsigned char *orig_mem;
+        unsigned char *orig_mem = NULL;
 
         der_length = i2d_X509(cc->leaf, NULL);
         if (der_length < 0) {
@@ -248,7 +248,9 @@ apr_status_t sct_parse(const char *source,
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          APLOGNO(02773) "Failed to reconstruct signed data for "
                          "SCT");
-            free(orig_mem);
+            if (orig_mem != NULL) {
+                free(orig_mem);
+            }
         }
         else {
             if (avail != 0) {
