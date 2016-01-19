@@ -35,13 +35,14 @@ typedef enum {
 typedef struct h2_task_output h2_task_output;
 
 struct h2_task_output {
+    conn_rec *c;
     struct h2_task *task;
     h2_task_output_state_t state;
     struct h2_from_h1 *from_h1;
     unsigned int trailers_passed : 1;
 };
 
-h2_task_output *h2_task_output_create(struct h2_task *task, apr_pool_t *pool);
+h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);
 
 void h2_task_output_destroy(h2_task_output *output);
 

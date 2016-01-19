@@ -109,6 +109,9 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (status == APR_SUCCESS) {
         status = h2_switch_init(p, s);
     }
+    if (status == APR_SUCCESS) {
+        status = h2_task_init(p, s);
+    }
     
     return status;
 }
