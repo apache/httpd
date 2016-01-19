@@ -344,7 +344,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         const char *url = worker->s->name;
         wctx_t *wctx = apr_pcalloc(ctx->p, sizeof(wctx_t));
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03248)
                      "Creating hc worker %s for %s://%s:%d",
                      wptr, worker->s->scheme, worker->s->hostname,
                      (int)worker->s->port);
@@ -389,7 +389,7 @@ static int hc_determine_connection(sctx_t *ctx, proxy_worker *worker) {
         rv = apr_sockaddr_info_get(&(worker->cp->addr), worker->s->hostname, APR_UNSPEC,
                                    worker->s->port, 0, ctx->p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03249)
                          "DNS lookup failure for: %s:%d",
                          worker->s->hostname, (int)worker->s->port);
         }
@@ -408,7 +408,7 @@ static apr_status_t hc_init_worker(sctx_t *ctx, proxy_worker *worker) {
     if (!worker->cp) {
         rv = ap_proxy_initialize_worker(worker, ctx->s, ctx->p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO() "Cannot init worker");
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ctx->s, APLOGNO(03250) "Cannot init worker");
             return rv;
         }
         rv = (hc_determine_connection(ctx, worker) == OK ? APR_SUCCESS : APR_EGENERAL);
@@ -423,7 +423,7 @@ static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *
         backend->close = 1;
         ap_proxy_release_connection(proxy_function, backend, s);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03251)
                      "Health check %s Status (%d) for %s.",
                      ap_proxy_show_hcmethod(backend->worker->s->method),
                      status,
@@ -445,7 +445,7 @@ static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_
         (*backend)->hostname = hc->s->hostname;
         if (strcmp(hc->s->scheme, "https") == 0) {
             if (!ap_proxy_ssl_enable(NULL)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03252)
                               "mod_ssl not configured?");
                 return !OK;
             }
@@ -482,7 +482,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
 static void hc_send(sctx_t *ctx, apr_pool_t *p, const char *out, proxy_conn_rec *backend)
 {
     apr_bucket_brigade *tmp_bb = apr_brigade_create(p, ctx->ba);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO() "%s", out);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03253) "%s", out);
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), p,
                             ctx->ba));
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_flush_create(ctx->ba));
@@ -499,7 +499,7 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
     if (len <= 0) {
         return !OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03254)
             "%s", buffer);
     /* for the below, see ap_proxy_http_process_response() */
     if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
@@ -535,7 +535,7 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
         if (!(value = strchr(buffer, ':'))) {
             return !OK;
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03255)
                 "%s", buffer);
         *value = '\0';
         ++value;
@@ -616,7 +616,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
     server_rec *s = ctx->s;
     apr_status_t rv;
     /* TODO: REMOVE ap_log_error call */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
                  "Health check (%s).", worker->s->name);
 
     switch (worker->s->method) {
@@ -634,7 +634,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
             break;
     }
     if (rv == APR_ENOTIMPL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(03257)
                          "Somehow tried to use unimplemented hcheck method: %d", (int)worker->s->method);
         return;
     }
@@ -658,7 +658,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     apr_pool_t *p;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03258)
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
             break;
@@ -666,7 +666,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
             /* TODO: REMOVE ap_log_error call */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03259)
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             if (s) {
@@ -684,7 +684,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
                         /* TODO: REMOVE ap_log_error call */
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03260)
                                      "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                      worker->s->name, worker->s->method, worker);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
@@ -702,7 +702,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             break;
 
         case AP_WATCHDOG_STATE_STOPPING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03261)
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             break;
@@ -722,7 +722,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
     hc_watchdog_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
     hc_watchdog_register_callback = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_register_callback);
     if (!hc_watchdog_get_instance || !hc_watchdog_register_callback) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(03262)
                      "mod_watchdog is required");
         return !OK;
     }
@@ -733,7 +733,7 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
                                   HCHECK_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03263)
                      "Failed to create watchdog instance (%s)",
                      HCHECK_WATHCHDOG_NAME);
         return !OK;
@@ -743,12 +743,12 @@ static int hc_post_config(apr_pool_t *p, apr_pool_t *plog,
             ctx,
             hc_watchdog_callback);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03264)
                      "Failed to register watchdog callback (%s)",
                      HCHECK_WATHCHDOG_NAME);
         return !OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03265)
                  "watchdog callback registered (%s)", HCHECK_WATHCHDOG_NAME);
     return OK;
 }
