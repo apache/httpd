@@ -71,10 +71,8 @@ apr_status_t sct_verify_signature(conn_rec *c, sct_fields_t *sctf,
             }
             rv = verify_signature(sctf, pubkey);
             if (rv != APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, 
-                              APLOG_ERR,
-                              rv, c,
-                              APLOGNO(02767) "verify_signature failed");
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(02767)
+                              "verify_signature failed");
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03037)
