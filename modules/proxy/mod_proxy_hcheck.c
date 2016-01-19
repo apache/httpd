@@ -477,7 +477,7 @@ static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_
         (*backend)->hostname = hc->s->hostname;
         if (strcmp(hc->s->scheme, "https") == 0) {
             if (!ap_proxy_ssl_enable(NULL)) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03252)
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(03252)
                               "mod_ssl not configured?");
                 return !OK;
             }
@@ -654,7 +654,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
         int ok = ap_expr_exec(r, cond->pexpr, &err);
         if (ok > 0) {
             status = OK;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
                          "Success checking condition %s", worker->s->hcexpr);
         } else if (ok < 0 || err) {
             status = !OK;
@@ -662,7 +662,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
                          "Error on checking condition %s: %s", worker->s->hcexpr,
                          err);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
                          "Failure checking condition %s", worker->s->hcexpr);
             status = !OK;
         }
@@ -680,7 +680,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
     apr_status_t rv;
     /* TODO: REMOVE ap_log_error call */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
-                 "Health check (%s).", worker->s->name);
+                 "Health checking %s", worker->s->name);
 
     switch (worker->s->method) {
         case TCP:
@@ -709,7 +709,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                 ap_proxy_set_wstatus('#', 0, worker);
                 worker->s->pcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
-                             "Health check re-enabling %s", worker->s->name);
+                             "Health check ENABLING %s", worker->s->name);
 
             }
         }
@@ -721,7 +721,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                 ap_proxy_set_wstatus('#', 1, worker);
                 worker->s->fcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
-                             "Health check disabling %s", worker->s->name);
+                             "Health check DISABLING %s", worker->s->name);
             }
         }
     }
@@ -747,8 +747,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
-            /* TODO: REMOVE ap_log_error call */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03259)
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                          "Run of %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
             if (s) {
@@ -765,8 +764,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     workers = (proxy_worker **)balancer->workers->elts;
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
-                        /* TODO: REMOVE ap_log_error call */
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03260)
+                        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                                      "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                      worker->s->name, worker->s->method, worker);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
