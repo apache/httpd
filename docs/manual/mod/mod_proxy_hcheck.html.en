@@ -56,14 +56,14 @@
         <td>None</td>
         <td>No dynamic health check performed. Choices are:
         	<table>
-        		<tr><th>Method</th><th>Description</th></tr>
-        		<tr><td>None</td><td>No dynamic health checking done</td></tr>
-        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td></tr>
-        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td></tr>
-        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td></tr>
-        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
-        		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td></tr>
-        		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
+        		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
+        		<tr><td>None</td><td>No dynamic health checking done</td><td /></tr>
+        		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td /></tr>
+        		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
+
+				<tr><td colspan="3" /></tr>
+				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>
         	</table>
         </td></tr>
     <tr><td>hcpasses</td>
@@ -81,12 +81,17 @@
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
         <td>Name of template, created via <code class="directive">ProxyHCTemplate</code> to use for setting health check parameters for this worker</td></tr>
+    <tr><td>hcexpr</td>
+        <td>&nbsp;</td>
+        <td>Name of expression, created via <code class="directive">ProxyHCExpr</code>, used to check response headers for health.<br />
+            <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
 </div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyhcexpr">ProxyHCExpr</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhctemplate">ProxyHCTemplate</a></li>
 </ul>
 <h3>See also</h3>
@@ -94,6 +99,28 @@
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr name {<a href="../expr.html">ap_expr</a> expression}</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
+</table>
+    <p>The <code class="directive">ProxyHCExpr</code> directive allows
+       for creating a named condition expression that checks the response
+       headers of the backend server to determine its health. This named
+       condition can then be assigned to balancer members via the <code>hcexpr</code>
+       parameter</p>
+
+    <div class="example"><h3>ProxyHCExpr: Allow for 2xx/3xx/4xx as passing</h3><pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
+ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
+</div>
+
+    <p>NOTE: The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a></h2>
 <table class="directive">
