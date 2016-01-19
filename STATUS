@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_mod_authn_socache: Do not use the magic string "directory". Use the
-     corresponding global variable as in all other places of the module.
-     trunk patch: http://svn.apache.org/r1719257
-     2.4.x patch: trunk works
-     +1: jailletc36, covener, jim
-
   *) mime.types: Add common extension "m4a" for MPEG 4 Audio.
      As a reference see Wikipedia:
      https://en.wikipedia.org/wiki/MPEG-4_Part_14#.MP4_versus_.M4A
