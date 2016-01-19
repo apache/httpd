@@ -895,7 +895,7 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     apr_thread_mutex_unlock(timeout_mutex);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
                      "start_lingering_close: apr_pollset_add failure");
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_REMOVE(q, cs);
@@ -1230,7 +1230,7 @@ read_request:
         apr_thread_mutex_unlock(timeout_mutex);
 
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO(03093)
                          "process_socket: apr_pollset_add failure");
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
@@ -1919,7 +1919,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      */
                     if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
-                                     "pollset remove failed");
+                                     APLOGNO(03094) "pollset remove failed");
                         start_lingering_close_nonblocking(cs);
                         break;
                     }
@@ -1936,7 +1936,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     rc = push2worker(out_pfd, event_pollset);
                     if (rc != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                     ap_server_conf, "push2worker failed");
+                                     ap_server_conf, APLOGNO(03095)
+                                     "push2worker failed");
                     }
                     else {
                         have_idle_worker = 0;
@@ -1948,7 +1949,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     break;
                 default:
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                 ap_server_conf,
+                                 ap_server_conf, APLOGNO(03096)
                                  "event_loop: unexpected state %d",
                                  cs->pub.state);
                     ap_assert(0);
@@ -2003,7 +2004,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         apr_allocator_owner_set(allocator, ptrans);
                         if (ptrans == NULL) {
                             ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                         ap_server_conf,
+                                         ap_server_conf, APLOGNO(03097)
                                          "Failed to create transaction pool");
                             signal_threads(ST_GRACEFUL);
                             return NULL;
@@ -2034,7 +2035,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              */
                             apr_socket_close(csd);
                             ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
-                                         ap_server_conf,
+                                         ap_server_conf, APLOGNO(03098)
                                          "ap_queue_push failed");
                             ap_push_pool(worker_queue_info, ptrans);
                         }
@@ -2229,7 +2230,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             /* We got some other error. */
             else if (!workers_may_exit) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                             "ap_queue_pop failed");
+                             APLOGNO(03099) "ap_queue_pop failed");
             }
             continue;
         }
@@ -2318,7 +2319,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     worker_queue = apr_pcalloc(pchild, sizeof(*worker_queue));
     rv = ap_queue_init(worker_queue, threads_per_child, pchild);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03100)
                      "ap_queue_init() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -2333,7 +2334,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     rv = ap_queue_info_create(&worker_queue_info, pchild,
                               threads_per_child, max_recycled_pools);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03101)
                      "ap_queue_info_create() failed");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -2344,7 +2345,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     rv = apr_thread_mutex_create(&timeout_mutex, APR_THREAD_MUTEX_DEFAULT,
                                  pchild);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03102)
                      "creation of the timeout mutex failed.");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -2371,7 +2372,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                                pchild, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
     }
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03103)
                      "apr_pollset_create with Thread Safety failed.");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
@@ -2406,6 +2407,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                                    worker_thread, my_info, pchild);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                             APLOGNO(03104)
                              "apr_thread_create: unable to create worker thread");
                 /* let the parent decide how bad this really is */
                 clean_child_exit(APEXIT_CHILDSICK);
@@ -3531,7 +3533,7 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00497)
                          "WARNING: ServerLimit of %d exceeds compile-time "
                          "limit of", server_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03105)
                          " %d servers, decreasing to %d.",
                          MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
         } else {
@@ -3575,7 +3577,7 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00502)
                          "WARNING: ThreadLimit of %d exceeds compile-time "
                          "limit of", thread_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03106)
                          " %d threads, decreasing to %d.",
                          MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
         } else {
@@ -3619,10 +3621,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00507)
                          "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
                          "of", threads_per_child);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03107)
                          " %d threads, decreasing to %d.",
                          thread_limit, thread_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03108)
                          " To increase, please see the ThreadLimit "
                          "directive.");
         } else {
@@ -3651,11 +3653,11 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00511)
                          "WARNING: MaxRequestWorkers of %d is less than "
                          "ThreadsPerChild of", max_workers);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03109)
                          " %d, increasing to %d.  MaxRequestWorkers must be at "
                          "least as large",
                          threads_per_child, threads_per_child);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03110)
                          " as the number of threads in a single server.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00512)
@@ -3675,11 +3677,11 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00513)
                          "WARNING: MaxRequestWorkers of %d is not an integer "
                          "multiple of", max_workers);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03111)
                          " ThreadsPerChild of %d, decreasing to nearest "
                          "multiple %d,", threads_per_child,
                          tmp_max_workers);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03112)
                          " for a maximum of %d servers.",
                          ap_daemons_limit);
         } else {
@@ -3697,10 +3699,10 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00515)
                          "WARNING: MaxRequestWorkers of %d would require %d "
                          "servers and ", max_workers, ap_daemons_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03113)
                          " would exceed ServerLimit of %d, decreasing to %d.",
                          server_limit, server_limit * threads_per_child);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03114)
                          " To increase, please see the ServerLimit "
                          "directive.");
         } else {
@@ -3732,9 +3734,9 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00519)
                          "WARNING: MinSpareThreads of %d not allowed, "
                          "increasing to 1", min_spare_threads);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03115)
                          " to avoid almost certain server failure.");
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03116)
                          " Please read the documentation.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00520)
