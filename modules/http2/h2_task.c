@@ -220,7 +220,7 @@ static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
             cs->state = CONN_STATE_WRITE_COMPLETION;
         r = NULL;
     }
-    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
+    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
     c->sbh = NULL;
 
     return APR_SUCCESS;

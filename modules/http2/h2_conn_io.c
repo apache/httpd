@@ -109,7 +109,7 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
         return APR_SUCCESS;
     }
     
-    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
+    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
     status = apr_brigade_length(bb, 0, &bblen);
     if (status == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03044)
