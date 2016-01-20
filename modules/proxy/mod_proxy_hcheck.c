@@ -284,16 +284,22 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn)
+/*
+ * Create a dummy request rec, simply so we can use ap_expr.
+ * Use our short-lived poll for bucket_alloc
+ */
+static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn, const char *method)
 {
     request_rec *r;
     apr_pool_t *p;
-
+    apr_bucket_alloc_t *ba;
     apr_pool_create(&p, p1);
     apr_pool_tag(p, "request");
     r = apr_pcalloc(p, sizeof(request_rec));
+    ba = apr_bucket_alloc_create(p);
     r->pool            = p;
     r->connection      = conn;
+    r->connection->bucket_alloc = ba;
     r->server          = conn->base_server;
 
     r->user            = NULL;
@@ -309,6 +315,7 @@ static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn)
     r->trailers_out    = apr_table_make(r->pool, 5);
     r->notes           = apr_table_make(r->pool, 5);
 
+    r->kept_body       = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     r->request_config  = ap_create_request_config(r->pool);
     /* Must be set before we run create request hook */
 
@@ -324,7 +331,7 @@ static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn)
     r->read_body       = REQUEST_NO_BODY;
 
     r->status          = HTTP_OK;  /* Until further notice */
-    r->header_only     = 0;
+    r->header_only     = 1;
     r->the_request     = NULL;
 
     /* Begin by presuming any module can make its own path_info assumptions,
@@ -337,11 +344,11 @@ static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn)
 
 
     /* Time to populate r with the data we have. */
-    r->method = "OPTIONS";
+    r->method = method;
     /* Provide quick information about the request method as soon as known */
     r->method_number = ap_method_number_of(r->method);
-    if (r->method_number == M_GET && r->method[0] == 'H') {
-        r->header_only = 1;
+    if (r->method_number == M_GET && r->method[0] == 'G') {
+        r->header_only = 0;
     }
 
     r->protocol = (char*)"HTTP/1.1";
@@ -576,13 +583,60 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
     return OK;
 }
 
+static int hc_read_body (sctx_t *ctx, request_rec *r)
+{
+    apr_status_t rv = APR_SUCCESS;
+    apr_bucket_brigade *bb;
+    int seen_eos = 0;
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    do {
+        apr_bucket *bucket, *cpy;
+        apr_size_t len = HUGE_STRING_LEN;
+
+        rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, len);
+
+        if (rv != APR_SUCCESS) {
+            if (APR_STATUS_IS_TIMEUP(rv) || APR_STATUS_IS_EOF(rv)) {
+                rv = APR_SUCCESS;
+                break;
+            }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ctx->s, APLOGNO()
+                          "Error reading response body");
+            break;
+        }
+
+        for (bucket = APR_BRIGADE_FIRST(bb);
+             bucket != APR_BRIGADE_SENTINEL(bb);
+             bucket = APR_BUCKET_NEXT(bucket))
+        {
+            if (APR_BUCKET_IS_EOS(bucket)) {
+                seen_eos = 1;
+                break;
+            }
+            if (APR_BUCKET_IS_FLUSH(bucket)) {
+                continue;
+            }
+            rv =  apr_bucket_copy(bucket, &cpy);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+            APR_BRIGADE_INSERT_TAIL(r->kept_body, cpy);
+        }
+        apr_brigade_cleanup(bb);
+    }
+    while (!seen_eos);
+    return (rv == APR_SUCCESS ? OK : !OK);
+}
+
 /*
- * Send the OPTIONS or HEAD HTTP request to the backend
+ * Send the HTTP OPTIONS, HEAD or GET request to the backend
  * server associated w/ worker. If we have Conditions,
  * then apply those to the resulting response, otherwise
  * any status code 2xx or 3xx is considered "passing"
  */
-static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
 {
     int status;
     proxy_conn_rec *backend = NULL;
@@ -591,6 +645,7 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
     request_rec *r;
     wctx_t *wctx;
     hc_condition_t *cond;
+    const char *method;
 
     hc = hc_get_hcworker(ctx, worker, p);
     wctx = (wctx_t *)hc->context;
@@ -611,20 +666,34 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
         case OPTIONS:
             if (!wctx->req) {
                 wctx->req = apr_psprintf(ctx->p,
-                                   "OPTIONS * HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
+                                   "OPTIONS * HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
                                     hc->s->hostname, (int)hc->s->port);
             }
+            method = "OPTIONS";
             break;
 
         case HEAD:
             if (!wctx->req) {
                 wctx->req = apr_psprintf(ctx->p,
-                                   "HEAD %s%s%s HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
+                                   "HEAD %s%s%s HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
                                    (wctx->path ? wctx->path : ""),
                                    (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                    (*hc->s->hcuri ? hc->s->hcuri : ""),
                                    hc->s->hostname, (int)hc->s->port);
             }
+            method = "HEAD";
+            break;
+
+        case GET:
+            if (!wctx->req) {
+                wctx->req = apr_psprintf(ctx->p,
+                                   "GET %s%s%s HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
+                                   (wctx->path ? wctx->path : ""),
+                                   (wctx->path && *hc->s->hcuri ? "/" : "" ),
+                                   (*hc->s->hcuri ? hc->s->hcuri : ""),
+                                   hc->s->hostname, (int)hc->s->port);
+            }
+            method = "GET";
             break;
 
         default:
@@ -634,10 +703,14 @@ static apr_status_t hc_check_headers(sctx_t *ctx, apr_pool_t *p, proxy_worker *w
 
     hc_send(ctx, p, wctx->req, backend);
 
-    r = create_request_rec(p, backend->connection);
-    r->pool = p;
+    r = create_request_rec(p, backend->connection, method);
     if ((status = hc_read_headers(ctx, r)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
+    }
+    if (hc->s->method == GET) {
+        if ((status = hc_read_body(ctx, r)) != OK) {
+            return backend_cleanup("HCOH", backend, ctx->s, status);
+        }
     }
 
     if (*worker->s->hcexpr &&
@@ -680,7 +753,8 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
 
         case OPTIONS:
         case HEAD:
-             rv = hc_check_headers(ctx, p, worker);
+        case GET:
+             rv = hc_check_http(ctx, p, worker);
              break;
 
         default:
