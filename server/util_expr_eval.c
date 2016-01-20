@@ -1065,10 +1065,11 @@ static const char *kb_func(ap_expr_eval_ctx_t *ctx, const void *data,
     if (rv != APR_SUCCESS || len == 0)
         return "";
 
-    buf = apr_palloc(ctx->r->pool, len);
-    apr_brigade_flatten(ctx->r->kept_body, buf, &len);
-    if (len)
-        buf[len-1] = '\0'; /* ensure */
+    buf = apr_palloc(ctx->r->pool, len+1);
+    rv = apr_brigade_flatten(ctx->r->kept_body, buf, &len);
+    if (rv != APR_SUCCESS)
+        return "";
+    buf[len] = '\0'; /* ensure */
     return (const char*)buf;
 }
 
