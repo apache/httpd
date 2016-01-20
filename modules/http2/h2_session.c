@@ -2003,7 +2003,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                  * avoid that...
                  */
                 h2_filter_cin_timeout_set(session->cin, session->keepalive_secs);
-                ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
+                ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_KEEPALIVE, c);
                 status = h2_session_read(session, 1, 10);
                 if (status == APR_SUCCESS) {
                     have_read = 1;
@@ -2024,7 +2024,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_LOCAL_SHUTDOWN:
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
-                    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
+                    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
                     h2_filter_cin_timeout_set(session->cin, session->timeout_secs);
                     status = h2_session_read(session, 0, 10);
                     if (status == APR_SUCCESS) {
