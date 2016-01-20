@@ -1067,7 +1067,8 @@ static const char *kb_func(ap_expr_eval_ctx_t *ctx, const void *data,
 
     buf = apr_palloc(ctx->r->pool, len);
     apr_brigade_flatten(ctx->r->kept_body, buf, &len);
-    buf[len-1] = '\0'; /* ensure */
+    if (len)
+        buf[len-1] = '\0'; /* ensure */
     return (const char*)buf;
 }
 
