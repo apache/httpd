@@ -221,6 +221,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
      +1 rjung
 
+  *) ap_expr: Add kept_body() function for expressions against r->kept_body()
+     trunk patch:  http://svn.apache.org/r1725755
+                   http://svn.apache.org/r1725758
+                   http://svn.apache.org/r1725762
+                   http://svn.apache.org/r1725766
+     2.4.x patch:  trunk works, modulo CHANGES
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
