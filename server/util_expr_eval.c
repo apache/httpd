@@ -1049,6 +1049,28 @@ static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return apr_table_get(t, arg);
 }
 
+static const char *kb_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                                  const char *arg)
+{
+    apr_off_t length;
+    apr_size_t len;
+    apr_status_t rv;
+    char *buf;
+
+    if (!ctx->r || !ctx->r->kept_body)
+        return "";
+
+    rv = apr_brigade_length(ctx->r->kept_body, 1, &length);
+    len = (apr_size_t)length;;
+    if (rv != APR_SUCCESS || len == 0)
+        return "";
+
+    buf = apr_palloc(ctx->r->pool, len);
+    apr_brigade_flatten(ctx->r->kept_body, buf, &len);
+    buf[len-1] = '\0'; /* ensure */
+    return (const char*)buf;
+}
+
 static const char *env_func(ap_expr_eval_ctx_t *ctx, const void *data,
                             const char *arg)
 {
@@ -1785,6 +1807,7 @@ static const struct expr_provider_single string_func_providers[] = {
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
     { md5_func,             "md5",            NULL, 0 },
+    { kb_func,             "kept_body",       NULL, 0 },
 #if APR_VERSION_AT_LEAST(1,6,0)
     { ldap_func,            "ldap",           NULL, 0 },
 #endif

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ap_expr: expression support for r->kept_body if it exists.
+     [Jim Jagielski]
+
   *) mod_http2: bytes read/written on slave connections are reported via the
      optional mod_logio functions. Fixes PR 58871.
      
