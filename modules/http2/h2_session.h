@@ -76,6 +76,7 @@ typedef enum {
     H2_SESSION_EV_STREAM_READY,     /* stream signalled availability of headers/data */
     H2_SESSION_EV_DATA_READ,        /* connection data has been read */
     H2_SESSION_EV_NGH2_DONE,        /* nghttp2 wants neither read nor write anything */
+    H2_SESSION_EV_MPM_STOPPING,     /* the process is stopping */
 } h2_session_event_t;
 
 typedef struct h2_session {
@@ -113,6 +114,7 @@ typedef struct h2_session {
     
     int timeout_secs;               /* connection timeout (seconds) */
     int keepalive_secs;             /* connection idle timeout (seconds) */
+    int keepalive_remain;           /* remaining seconds of keepalive */
     
     apr_pool_t *pool;               /* pool to use in session handling */
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
