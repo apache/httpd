@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_status/scoreboard: additional column 'Protocol' showing the protocol
+     run on the connection. New ap_update_child_status methods for updating
+     server/description information separately. 
+     mod_ssl: server vhost negotiated by servername directly in status.
+     [Stefan Eissing]
+     
   *) mod_http2: keep-alive blocking reads are done with 1 second timeouts to
      check for MPM stopping. Will announce early GOAWAY and finish processing
      open streams, then close.
