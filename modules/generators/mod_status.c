@@ -662,7 +662,7 @@ static int status_handler(request_rec *r)
 #endif
                      "<th>SS</th><th>Req</th>"
                      "<th>Conn</th><th>Child</th><th>Slot</th>"
-                     "<th>Client</th><th>VHost</th>"
+                     "<th>Client</th><th>Protocol</th><th>VHost</th>"
                      "<th>Request</th></tr>\n\n", r);
 
         for (i = 0; i < server_limit; ++i) {
@@ -776,12 +776,14 @@ static int status_handler(request_rec *r)
                     format_byte_out(r, bytes);
                     ap_rputs(")\n", r);
                     ap_rprintf(r,
-                               " <i>%s {%s}</i> <b>[%s]</b><br />\n\n",
+                               " <i>%s {%s}</i> <i>(%s)</i> <b>[%s]</b><br />\n\n",
                                ap_escape_html(r->pool,
                                               ws_record->client),
                                ap_escape_html(r->pool,
                                               ap_escape_logitem(r->pool,
                                                                 ws_record->request)),
+                               ap_escape_html(r->pool,
+                                              ws_record->protocol),
                                ap_escape_html(r->pool,
                                               ws_record->vhost));
                 }
@@ -860,10 +862,12 @@ static int status_handler(request_rec *r)
                                (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
                                (float)bytes / MBYTE);
 
-                    ap_rprintf(r, "</td><td>%s</td><td nowrap>%s</td>"
+                    ap_rprintf(r, "</td><td>%s</td><td>%s</td><td nowrap>%s</td>"
                                   "<td nowrap>%s</td></tr>\n\n",
                                ap_escape_html(r->pool,
                                               ws_record->client),
+                               ap_escape_html(r->pool,
+                                              ws_record->protocol),
                                ap_escape_html(r->pool,
                                               ws_record->vhost),
                                ap_escape_html(r->pool,
