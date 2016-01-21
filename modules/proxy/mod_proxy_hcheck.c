@@ -987,7 +987,7 @@ static int hc_expr_lookup(ap_expr_lookup_parms *parms)
          */
         if (strcasecmp(parms->name, "HC") == 0) {
             *parms->func = hc_expr_func_fn;
-            *parms->data = NULL;
+            *parms->data = parms->name;
             return OK;
         }
         break;
