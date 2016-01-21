@@ -720,7 +720,7 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
         if (ok > 0) {
             status = OK;
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
-                         "Success checking condition %s", worker->s->hcexpr);
+                         "Condition %s: passed", worker->s->hcexpr);
         } else if (ok < 0 || err) {
             status = !OK;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, ctx->s, APLOGNO(03301)
@@ -728,7 +728,7 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
                          err);
         } else {
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
-                         "Failure checking condition %s", worker->s->hcexpr);
+                         "Condition %s: failed", worker->s->hcexpr);
             status = !OK;
         }
     } else if (r->status < 200 || r->status > 399) {
