@@ -978,7 +978,7 @@ static int hc_expr_lookup(ap_expr_lookup_parms *parms)
          */
         if (strncasecmp(parms->name, "HC_", 3) == 0) {
             *parms->func = hc_expr_var_fn;
-            *parms->data = parms->name + 4;
+            *parms->data = parms->name + 3;
             return OK;
         }
         break;
