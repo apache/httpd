@@ -1647,7 +1647,7 @@ static int lua_ap_escape_logitem(lua_State *L)
 
 /**
  * ap_strcmp_match (const char *str, const char *expected)
- * Determine if a string matches a patterm containing the wildcards '?' or '*'
+ * Determine if a string matches a pattern containing the wildcards '?' or '*'
  * @param str The string to check
  * @param expected The pattern to match against
  * @param ignoreCase Whether to ignore case when matching
