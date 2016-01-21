@@ -364,16 +364,16 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
 {
     proxy_worker *hc = NULL;
     const char* wptr;
+    apr_port_t port;
 
     wptr = apr_psprintf(ctx->p, "%pp", worker);
     hc = (proxy_worker *)apr_hash_get(ctx->hcworkers, wptr, APR_HASH_KEY_STRING);
+    port = (worker->s->port ? worker->s->port : ap_proxy_port_of_scheme(worker->s->scheme));
     if (!hc) {
         apr_uri_t uri;
         apr_status_t rv;
         const char *url = worker->s->name;
-        apr_port_t port;
         wctx_t *wctx = apr_pcalloc(ctx->p, sizeof(wctx_t));
-        port = (worker->s->port ? worker->s->port : ap_proxy_port_of_scheme(worker->s->scheme));
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03248)
                      "Creating hc worker %s for %s://%s:%d",
@@ -406,6 +406,10 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
     /* This *could* have changed via the Balancer Manager */
     /* TODO */
     if (hc->s->method != worker->s->method) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+                     "Updating hc worker %s for %s://%s:%d",
+                     wptr, worker->s->scheme, worker->s->hostname,
+                     (int)port);
         hc->s->method = worker->s->method;
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
