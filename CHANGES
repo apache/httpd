@@ -2,6 +2,12 @@
 
 Changes with Apache 2.4.19
 
+
+  *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075, 
+     "Error dispatching request", when the cause appears to be 
+     due to the client closing the connection. 
+     PR58118.  [Tobias Adolph <adolph lrz.de>]
+
   *) mod_cgid: Message AH02550, failure to flush a response to the client,
      is now logged at TRACE1 level to match the underlying core output filter
      severity.  [Eric Covener]
