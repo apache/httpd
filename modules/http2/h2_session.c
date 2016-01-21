@@ -1983,19 +1983,6 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
 
 static const int MAX_WAIT_MICROS = 200 * 1000;
 
-static void update_child_status(h2_session *session, int status, const char *msg)
-{
-    apr_snprintf(session->status, sizeof(session->status),
-                 "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
-                 msg? msg : "-",
-                 (int)h2_stream_set_size(session->streams), 
-                 (int)session->requests_received,
-                 (int)session->responses_submitted,
-                 (int)session->pushes_submitted,
-                 (int)session->pushes_reset + session->streams_reset);
-    ap_update_child_status_descr(session->c->sbh, status, session->status);
-}
-
 apr_status_t h2_session_process(h2_session *session, int async)
 {
     apr_status_t status = APR_SUCCESS;
@@ -2015,19 +2002,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
             }
         }
         
-        session->status[0] = '\0';
-        
         switch (session->state) {
             case H2_SESSION_ST_INIT:
-                ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
                 if (!h2_is_acceptable_connection(c, 1)) {
-                    update_child_status(session, SERVER_BUSY_READ, "inadequate security");
                     h2_session_shutdown(session, NGHTTP2_INADEQUATE_SECURITY, NULL);
                 } 
                 else {
-                    update_child_status(session, SERVER_BUSY_READ, "init");
+                    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
                     status = h2_session_start(session, &rv);
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03079)
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c,
+                                  APLOGNO(03079)
                                   "h2_session(%ld): started on %s:%d", session->id,
                                   session->s->server_hostname,
                                   c->local_addr->port);
@@ -2042,7 +2026,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 /* We wait in smaller increments, using a 1 second timeout.
                  * That gives us the chance to check for MPMQ_STOPPING often. */
                 h2_filter_cin_timeout_set(session->cin, 1);
-                update_child_status(session, SERVER_BUSY_KEEPALIVE, "idle");
+                ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_KEEPALIVE, c);
                 status = h2_session_read(session, 1, 10);
                 if (status == APR_SUCCESS) {
                     have_read = 1;
@@ -2066,7 +2050,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_LOCAL_SHUTDOWN:
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
-                    update_child_status(session, SERVER_BUSY_READ, "busy");
+                    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
                     h2_filter_cin_timeout_set(session->cin, session->timeout_secs);
                     status = h2_session_read(session, 0, 10);
                     if (status == APR_SUCCESS) {
@@ -2108,7 +2092,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 
                 if (nghttp2_session_want_write(session->ngh2)) {
-                    ap_update_child_status(session->c->sbh, SERVER_BUSY_WRITE, NULL);
                     status = h2_session_send(session);
                     if (status == APR_SUCCESS) {
                         have_written = 1;
@@ -2138,7 +2121,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 
                 ap_log_cerror( APLOG_MARK, APLOG_TRACE2, status, c,
                               "h2_session(%ld): process -> trywait", session->id);
-                    update_child_status(session, SERVER_BUSY_READ, "wait");
                 status = h2_mplx_out_trywait(session->mplx, session->wait_us, 
                                              session->iowait);
                 if (status == APR_SUCCESS) {
@@ -2155,7 +2137,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_DONE:
-                update_child_status(session, SERVER_CLOSING, "done");
                 status = APR_EOF;
                 goto out;
                 
