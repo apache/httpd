@@ -602,7 +602,7 @@ static int hc_read_body (sctx_t *ctx, request_rec *r)
                 rv = APR_SUCCESS;
                 break;
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ctx->s, APLOGNO(03300)
                           "Error reading response body");
             break;
         }
@@ -723,7 +723,7 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
                          "Success checking condition %s", worker->s->hcexpr);
         } else if (ok < 0 || err) {
             status = !OK;
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ctx->s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ctx->s, APLOGNO(03301)
                          "Error on checking condition %s: %s", worker->s->hcexpr,
                          err);
         } else {
@@ -773,7 +773,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
             if (worker->s->pcount >= worker->s->passes) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 0, worker);
                 worker->s->pcount = 0;
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03302)
                              "Health check ENABLING %s", worker->s->name);
 
             }
@@ -785,7 +785,7 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
             if (worker->s->fcount >= worker->s->fails) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 1, worker);
                 worker->s->fcount = 0;
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03303)
                              "Health check DISABLING %s", worker->s->name);
             }
         }
