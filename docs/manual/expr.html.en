@@ -23,7 +23,8 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Expressions in Apache HTTP Server</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./edited/expr.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
@@ -452,44 +453,42 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Lookup operating system environment variable</td><td /></tr>
 <tr class="odd"><td><code>note</code></td>
         <td>Lookup request note</td><td /></tr>
-<tr><td><code>kept_body</code></td>
-        <td>Lookup response body if available in <code>r-&gt;kept_body</code></td><td /></tr>
-<tr class="odd"><td><code>env</code></td>
+<tr><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
             <code>osenv</code></td><td /></tr>
-<tr><td><code>tolower</code></td>
+<tr class="odd"><td><code>tolower</code></td>
         <td>Convert string to lower case</td><td /></tr>
-<tr class="odd"><td><code>toupper</code></td>
+<tr><td><code>toupper</code></td>
         <td>Convert string to upper case</td><td /></tr>
-<tr><td><code>escape</code></td>
+<tr class="odd"><td><code>escape</code></td>
         <td>Escape special characters in %hex encoding</td><td /></tr>
-<tr class="odd"><td><code>unescape</code></td>
+<tr><td><code>unescape</code></td>
         <td>Unescape %hex encoded string, leaving encoded slashes alone;
             return empty string if %00 is found</td><td /></tr>
-<tr><td><code>base64</code></td>
+<tr class="odd"><td><code>base64</code></td>
         <td>Encode the string using base64 encoding</td><td /></tr>
-<tr class="odd"><td><code>unbase64</code></td>
+<tr><td><code>unbase64</code></td>
         <td>Decode base64 encoded string, return truncated string if 0x00 is
             found</td><td /></tr>
-<tr><td><code>md5</code></td>
+<tr class="odd"><td><code>md5</code></td>
         <td>Hash the string using MD5, then encode the hash with hexadecimal
             encoding</td><td /></tr>
-<tr class="odd"><td><code>sha1</code></td>
+<tr><td><code>sha1</code></td>
         <td>Hash the string using SHA1, then encode the hash with hexadecimal
             encoding</td><td /></tr>
-<tr><td><code>file</code></td>
+<tr class="odd"><td><code>file</code></td>
         <td>Read contents from a file (including line endings, when present)
         </td><td>yes</td></tr>
-<tr class="odd"><td><code>filemod</code></td>
+<tr><td><code>filemod</code></td>
         <td>Return last modification time of a file (or 0 if file does not exist
             or is not regular file)</td><td>yes</td></tr>
-<tr><td><code>filesize</code></td>
+<tr class="odd"><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
             regular file)</td><td>yes</td></tr>
-<tr class="odd"><td><code>ldap</code></td>
+<tr><td><code>ldap</code></td>
         <td>Escape characters as required by LDAP distinguished name escaping
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td /></tr>
-<tr><td><code>replace</code></td>
+<tr class="odd"><td><code>replace</code></td>
         <td>replace(string, "from", "to") replaces all occurences of "from"
             in the string with "to".</td><td /></tr>
 </table>
@@ -621,7 +620,8 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
     are available for versions 2.5.0 and later.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./edited/expr.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
