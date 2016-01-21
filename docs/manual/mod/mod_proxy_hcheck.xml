@@ -111,7 +111,24 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234
     </highlight>
     </example>
 
-    <p>NOTE: The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+    <p><em>NOTE:</em> The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+
+    <p>If using a health check method (eg: <code>GET</code>) which results in a response
+    body, that body itself can be checked via <code>ap_expr</code> using the <code>hc()</code>
+    expression function, which is unique to this module.</p>
+
+    <p>In the following example, we send the backend a <code>GET</code> request
+    and if the response body contains the phrase <em>Under maintenance</em>,
+    we want to disable the backend.</p>
+
+    <example><title>ProxyHCExpr: Checking response body</title>
+    <highlight language="config">
+ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
+ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get hcuri=/status.php
+    </highlight>
+    </example>
+
+    <p><em>NOTE:</em> Since response body can quite large, it is best if used against specific status pages.</p>
 </usage>
 </directivesynopsis>
 
