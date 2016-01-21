@@ -1673,10 +1673,8 @@ static int cgid_handler(request_rec *r)
 
         rv = ap_pass_brigade(r->output_filters, bb);
         if (rv != APR_SUCCESS) { 
-            /* APLOG_ERR because the core output filter message is at error,
-             * but doesn't know it's passing CGI output 
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02550) "Failed to flush CGI output to client");
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r,
+                          "Failed to flush CGI output to client");
         }
     }
 
