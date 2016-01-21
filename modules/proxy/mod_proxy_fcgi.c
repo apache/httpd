@@ -834,7 +834,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                   &err, &bad_request, &has_responded);
     if (rv != APR_SUCCESS) {
         /* If the client aborted the connection during retrieval or (partially)
-         * sending the response, dont't return a HTTP_SERVICE_UNAVAILABLE, since
+         * sending the response, don't return a HTTP_SERVICE_UNAVAILABLE, since
          * this is not a backend problem. */
         if (r->connection->aborted) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, rv, r, 
