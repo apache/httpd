@@ -46,7 +46,7 @@ constant and is of level debug or above. Then, update-log-msg-tags can be used
 to add numbers to the APLOGNO() tags. The invocation for spatch is:
 
   % DIR=docs/log-message-tags
-  % spatch -sp_file $DIR/find-messages.cocci -in_place -macro_file $DIR/macros.h FILESTOCHECK
+  % spatch --sp_file $DIR/find-messages.cocci --in_place --macro_file $DIR/macros.h FILESTOCHECK
 
 where FILESTOCHECK is the list of C files you want spatch to work on.
 
