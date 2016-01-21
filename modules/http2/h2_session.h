@@ -134,6 +134,8 @@ typedef struct h2_session {
     struct h2_workers *workers;     /* for executing stream tasks */
     
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
+    
+    char status[64];                /* status message for scoreboard */
 } h2_session;
 
 
