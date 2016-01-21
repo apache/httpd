@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_cgid: Message AH02550, failure to flush a response to the client,
+     is now logged at TRACE1 level to match the underlying core output filter
+     severity.  [Eric Covener]
+
   *) mod_rewrite: Avoid looping on relative substitutions that
      result in the same filename we started with. PR 58854.
      [Eric Covener]
