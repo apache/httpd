@@ -932,8 +932,6 @@ static void basic_http_header_check(request_rec *r,
     }
 
     /* kludge around broken browsers when indicated by force-response-1.0
-     * RFC7230 (httpbis) says this is the SHOULD case, but it's a little
-     * late to change httpd defaults.
      */
     if (r->proto_num == HTTP_VERSION(1,0)
         && apr_table_get(r->subprocess_env, "force-response-1.0")) {
