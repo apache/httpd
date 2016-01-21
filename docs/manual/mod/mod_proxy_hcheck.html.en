@@ -61,6 +61,7 @@
         		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td /></tr>
         		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
         		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
+        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
 
 				<tr><td colspan="3" /></tr>
 				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>
@@ -118,7 +119,21 @@
 ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
 </div>
 
-    <p>NOTE: The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+    <p><em>NOTE:</em> The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+
+    <p>If using a health check method (eg: <code>GET</code>) which results in a response
+    body, that body itself can be checked via <code>ap_expr</code> using the <code>hc()</code>
+    expression function, which is unique to this module.</p>
+
+    <p>In the following example, we send the backend a <code>GET</code> request
+    and if the response body contains the phrase <em>Under maintenance</em>,
+    we want to disable the backend.</p>
+
+    <div class="example"><h3>ProxyHCExpr: Checking response body</h3><pre class="prettyprint lang-config">ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
+ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get hcuri=/status.php</pre>
+</div>
+
+    <p><em>NOTE:</em> Since response body can quite large, it is best if used against specific status pages.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
