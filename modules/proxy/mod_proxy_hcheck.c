@@ -926,6 +926,75 @@ static void hc_show_exprs(request_rec *r)
     ap_rputs("</table><hr/>\n", r);
 }
 
+static const char *hc_get_body(request_rec *r)
+{
+    apr_off_t length;
+    apr_size_t len;
+    apr_status_t rv;
+    char *buf;
+
+    if (!r || !r->kept_body)
+        return "";
+
+    rv = apr_brigade_length(r->kept_body, 1, &length);
+    len = (apr_size_t)length;
+    if (rv != APR_SUCCESS || len == 0)
+        return "";
+
+    buf = apr_palloc(r->pool, len + 1);
+    rv = apr_brigade_flatten(r->kept_body, buf, &len);
+    if (rv != APR_SUCCESS)
+        return "";
+    buf[len] = '\0'; /* ensure */
+    return (const char*)buf;
+}
+
+static const char *hc_expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
+{
+    char *var = (char *)data;
+
+    if (var && *var && ctx->r && ap_casecmpstr(var, "BODY") == 0) {
+        return hc_get_body(ctx->r);
+    }
+    return NULL;
+}
+
+static const char *hc_expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
+                                const char *arg)
+{
+    char *var = (char *)arg;
+
+    if (var && *var && ctx->r && ap_casecmpstr(var, "BODY") == 0) {
+        return hc_get_body(ctx->r);
+    }
+    return NULL;
+}
+
+static int hc_expr_lookup(ap_expr_lookup_parms *parms)
+{
+    switch (parms->type) {
+    case AP_EXPR_FUNC_VAR:
+        /* for now, we just handle everything that starts with HC_.
+         */
+        if (strncasecmp(parms->name, "HC_", 3) == 0) {
+            *parms->func = hc_expr_var_fn;
+            *parms->data = parms->name + 4;
+            return OK;
+        }
+        break;
+    case AP_EXPR_FUNC_STRING:
+        /* Function HC() is implemented by us.
+         */
+        if (strcasecmp(parms->name, "HC") == 0) {
+            *parms->func = hc_expr_func_fn;
+            *parms->data = NULL;
+            return OK;
+        }
+        break;
+    }
+    return DECLINED;
+}
+
 static const command_rec command_table[] = {
     AP_INIT_RAW_ARGS("ProxyHCTemplate", set_hc_template, NULL, OR_FILEINFO,
                      "Health check template"),
@@ -941,6 +1010,7 @@ static void hc_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
+    ap_hook_expr_lookup(hc_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /* the main config structure */
