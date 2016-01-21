@@ -1904,7 +1904,7 @@ AP_DECLARE(int) ap_is_matchexp(const char *str)
                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
- * Determine if a string matches a patterm containing the wildcards '?' or '*'
+ * Determine if a string matches a pattern containing the wildcards '?' or '*'
  * @param str The string to check
  * @param expected The pattern to match against
  * @return 0 if the two strings match, 1 otherwise
@@ -1913,7 +1913,7 @@ AP_DECLARE(int) ap_strcmp_match(const char *str, const char *expected)
                 AP_FN_ATTR_NONNULL_ALL;
 
 /**
- * Determine if a string matches a patterm containing the wildcards '?' or '*',
+ * Determine if a string matches a pattern containing the wildcards '?' or '*',
  * ignoring case
  * @param str The string to check
  * @param expected The pattern to match against
