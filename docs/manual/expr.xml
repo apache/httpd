@@ -502,7 +502,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>note</code></td>
         <td>Lookup request note</td><td></td></tr>
     <tr><td><code>kept_body</code></td>
-        <td>Lookup response body if available in <code>r->kept_body</code></td><td></td></tr>
+        <td>Lookup response body if available in <code>r->kept_body</code>. <em>Note:</em>
+        function argument is required but ignored.
+        </td><td></td></tr>
     <tr><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
             <code>osenv</code></td><td></td></tr>
