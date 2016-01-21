@@ -59,9 +59,9 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     sctx_t *ctx = (sctx_t *) apr_palloc(p, sizeof(sctx_t));
     apr_pool_create(&ctx->p, p);
     ctx->ba = apr_bucket_alloc_create(p);
-    ctx->templates = apr_array_make(ctx->p, 10, sizeof(hc_template_t));
-    ctx->conditions = apr_table_make(ctx->p, 10);
-    ctx->hcworkers = apr_hash_make(ctx->p);
+    ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
+    ctx->conditions = apr_table_make(p, 10);
+    ctx->hcworkers = apr_hash_make(p);
     ctx->s = s;
 
     return ctx;
@@ -206,7 +206,7 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
     ctx = (sctx_t *) ap_get_module_config(cmd->server->module_config,
                                           &proxy_hcheck_module);
 
-    name = ap_getword_conf(cmd->temp_pool, &arg);
+    name = ap_getword_conf(cmd->pool, &arg);
     if (!*name) {
         return apr_pstrcat(cmd->temp_pool, "Missing expression name for ",
                            cmd->cmd->name, NULL);
@@ -221,7 +221,7 @@ static const char *set_hc_condition(cmd_parms *cmd, void *dummy, const char *arg
         return apr_pstrcat(cmd->temp_pool, "Missing expression for ",
                            cmd->cmd->name, NULL);
     }
-    cond = apr_palloc(ctx->p, sizeof(hc_condition_t));
+    cond = apr_palloc(cmd->pool, sizeof(hc_condition_t));
     cond->pexpr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
     if (err) {
         return apr_psprintf(cmd->temp_pool, "Could not parse expression \"%s\": %s",
@@ -258,7 +258,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
 
     template = (hc_template_t *)apr_array_push(ctx->templates);
 
-    template->name = apr_pstrdup(ctx->p, name);
+    template->name = apr_pstrdup(cmd->pool, name);
     template->method = template->passes = template->fails = 1;
     template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
     template->hurl = NULL;
@@ -271,7 +271,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
         }
         else
             *val++ = '\0';
-        err = set_worker_hc_param(ctx->p, ctx->s, NULL, word, val, template);
+        err = set_worker_hc_param(cmd->pool, ctx->s, NULL, word, val, template);
 
         if (err) {
             /* get rid of recently pushed (bad) template */
