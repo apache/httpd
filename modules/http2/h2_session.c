@@ -1825,15 +1825,26 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
 {
     switch (session->state) {
         case H2_SESSION_ST_BUSY:
+        case H2_SESSION_ST_LOCAL_SHUTDOWN:
+        case H2_SESSION_ST_REMOTE_SHUTDOWN:
             /* nothing for input and output to do. If we remain
              * in this state, we go into a tight loop and suck up
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
             if (h2_stream_set_is_empty(session->streams)) {
-                /* When we have no streams, no task event are possible,
-                 * switch to blocking reads */
-                transit(session, "no io", H2_SESSION_ST_IDLE);
+                if (!is_accepting_streams(session)) {
+                    /* We are no longer accepting new streams and have
+                     * finished processing existing ones. Time to leave. */
+                    h2_session_shutdown(session, arg, msg);
+                    transit(session, "no io", H2_SESSION_ST_DONE);
+                }
+                else {
+                    /* When we have no streams, no task event are possible,
+                     * switch to blocking reads */
+                    transit(session, "no io", H2_SESSION_ST_IDLE);
+                    session->keepalive_remain = session->keepalive_secs;
+                }
             }
             else if (!h2_stream_set_has_unsubmitted(session->streams)
                      && !h2_stream_set_has_suspended(session->streams)) {
@@ -1841,6 +1852,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                  * new output data from task processing, 
                  * switch to blocking reads. */
                 transit(session, "no io", H2_SESSION_ST_IDLE);
+                session->keepalive_remain = session->keepalive_secs;
             }
             else {
                 /* Unable to do blocking reads, as we wait on events from
@@ -1904,6 +1916,19 @@ static void h2_session_ev_ngh2_done(h2_session *session, int arg, const char *ms
     }
 }
 
+static void h2_session_ev_mpm_stopping(h2_session *session, int arg, const char *msg)
+{
+    switch (session->state) {
+        case H2_SESSION_ST_DONE:
+        case H2_SESSION_ST_LOCAL_SHUTDOWN:
+            /* nop */
+            break;
+        default:
+            h2_session_shutdown(session, arg, msg);
+            break;
+    }
+}
+
 static void dispatch_event(h2_session *session, h2_session_event_t ev, 
                       int arg, const char *msg)
 {
@@ -1941,6 +1966,9 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
         case H2_SESSION_EV_NGH2_DONE:
             h2_session_ev_ngh2_done(session, arg, msg);
             break;
+        case H2_SESSION_EV_MPM_STOPPING:
+            h2_session_ev_mpm_stopping(session, arg, msg);
+            break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                           "h2_session(%ld): unknown event %d", 
@@ -1967,6 +1995,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
     while (1) {
         have_read = have_written = 0;
 
+        if (!ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
+            if (mpm_state == AP_MPMQ_STOPPING) {
+                dispatch_event(session, H2_SESSION_EV_MPM_STOPPING, 0, NULL);
+                break;
+            }
+        }
+        
         switch (session->state) {
             case H2_SESSION_ST_INIT:
                 if (!h2_is_acceptable_connection(c, 1)) {
@@ -1988,21 +2023,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                if ((status = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state))) {
-                    goto out;
-                }
-                if (mpm_state == AP_MPMQ_STOPPING) {
-                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
-                    break;
-                }
-                /* We'd like to wait in smaller increments, using a 1 second
-                 * timeout maybe, trying n times. That would allow us to exit
-                 * on MPMQ_STOPPING earlier.
-                 * Unfortunately, once a socket timeout happened, SSL reports
-                 * EOF on reads and the connection is gone. Not sure if we can
-                 * avoid that...
-                 */
-                h2_filter_cin_timeout_set(session->cin, session->keepalive_secs);
+                /* We wait in smaller increments, using a 1 second timeout.
+                 * That gives us the chance to check for MPMQ_STOPPING often. */
+                h2_filter_cin_timeout_set(session->cin, 1);
                 ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_KEEPALIVE, c);
                 status = h2_session_read(session, 1, 10);
                 if (status == APR_SUCCESS) {
@@ -2013,7 +2036,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     /* nothing to read */
                 }
                 else if (APR_STATUS_IS_TIMEUP(status)) {
-                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
+                    if (--session->keepalive_remain <= 0) {
+                        dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
+                    }
+                    /* continue keepalive handling */
                 }
                 else {
                     dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);

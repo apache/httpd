@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: keep-alive blocking reads are done with 1 second timeouts to
+     check for MPM stopping. Will announce early GOAWAY and finish processing
+     open streams, then close.
+     [Stefan Eissing]
+  
   *) mod_proxy_hcheck: Provide for dynamic background health
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
