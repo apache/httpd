@@ -45,8 +45,10 @@ can be used.  It will add empty APLOGNO() tags where the loglevel is a
 constant and is of level debug or above. Then, update-log-msg-tags can be used
 to add numbers to the APLOGNO() tags. The invocation for spatch is:
 
-DIR=docs/log-message-tags
-spatch -sp_file $DIR/find-messages.cocci -in_place -macro_file $DIR/macros.h <file1> ...
+  % DIR=docs/log-message-tags
+  % spatch -sp_file $DIR/find-messages.cocci -in_place -macro_file $DIR/macros.h FILESTOCHECK
+
+where FILESTOCHECK is the list of C files you want spatch to work on.
 
 After the initial addition of tags, calling spatch on the same file again may
 be a bad idea. But it may still be useful when adding larger pieces of code to
@@ -64,3 +66,7 @@ identifier fn =~ "^ap_log_(|r|c|p)error$";
 - new lines
 identifier level =~ "^APLOG_\(EMERG\|ALERT\|CRIT\|ERR\|WARNING\|NOTICE\|INFO\|STARTUP\|DEBUG\)$";
 identifier fn =~ "^ap_log_\(\|r\|c\|p\)error$";
+
+To finally replace the empty "APLOGNO()," with a real number, run:
+
+  % perl docs/log-message-tags/update-log-msg-tags FILESTOFIX
