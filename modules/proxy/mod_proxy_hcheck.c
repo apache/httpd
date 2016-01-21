@@ -404,10 +404,9 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
     /* This *could* have changed via the Balancer Manager */
+    /* TODO */
     if (hc->s->method != worker->s->method) {
-        wctx_t *wctx = hc->s->context;
         hc->s->method = worker->s->method;
-        wctx->req = NULL;
         apr_hash_set(ctx->hcworkers, wptr, APR_HASH_KEY_STRING, hc);
     }
     return hc;
