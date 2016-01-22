@@ -281,6 +281,7 @@ static const char *set_hc_template(cmd_parms *cmd, void *dummy, const char *arg)
     template->method = template->passes = template->fails = 1;
     template->interval = apr_time_from_sec(HCHECK_WATHCHDOG_DEFAULT_INTERVAL);
     template->hurl = NULL;
+    template->hcexpr = NULL;
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
@@ -492,7 +493,7 @@ static apr_status_t backend_cleanup(const char *proxy_function, proxy_conn_rec *
     return APR_SUCCESS;
 }
 
-static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_rec **backend,
+static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
                           proxy_worker *hc, sctx_t *ctx)
 {
     int status;
@@ -518,15 +519,15 @@ static int hc_get_backend(apr_pool_t *p, const char *proxy_function, proxy_conn_
     return status;
 }
 
-static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *worker)
 {
     int status;
     proxy_conn_rec *backend = NULL;
     proxy_worker *hc;
 
-    hc = hc_get_hcworker(ctx, worker, p);
+    hc = hc_get_hcworker(ctx, worker, ptemp);
 
-    status = hc_get_backend(p, "HCTCP", &backend, hc, ctx);
+    status = hc_get_backend("HCTCP", &backend, hc, ctx);
     if (status == OK) {
         backend->addr = hc->cp->addr;
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
@@ -537,11 +538,11 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *p, proxy_worker *worke
     return backend_cleanup("HCTCP", backend, ctx->s, status);
 }
 
-static void hc_send(sctx_t *ctx, apr_pool_t *p, const char *out, proxy_conn_rec *backend)
+static void hc_send(sctx_t *ctx, apr_pool_t *ptemp, const char *out, proxy_conn_rec *backend)
 {
-    apr_bucket_brigade *tmp_bb = apr_brigade_create(p, ctx->ba);
+    apr_bucket_brigade *tmp_bb = apr_brigade_create(ptemp, ctx->ba);
     ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ctx->s, "%s", out);
-    APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), p,
+    APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_pool_create(out, strlen(out), ptemp,
                             ctx->ba));
     APR_BRIGADE_INSERT_TAIL(tmp_bb, apr_bucket_flush_create(ctx->ba));
     ap_pass_brigade(backend->connection->output_filters, tmp_bb);
@@ -658,7 +659,7 @@ static int hc_read_body (sctx_t *ctx, request_rec *r)
  * then apply those to the resulting response, otherwise
  * any status code 2xx or 3xx is considered "passing"
  */
-static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *worker)
+static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *worker)
 {
     int status;
     proxy_conn_rec *backend = NULL;
@@ -669,10 +670,10 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
     hc_condition_t *cond;
     const char *method;
 
-    hc = hc_get_hcworker(ctx, worker, p);
+    hc = hc_get_hcworker(ctx, worker, ptemp);
     wctx = (wctx_t *)hc->context;
 
-    if ((status = hc_get_backend(p, "HCOH", &backend, hc, ctx)) != OK) {
+    if ((status = hc_get_backend("HCOH", &backend, hc, ctx)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
     if ((status = ap_proxy_connect_backend("HCOH", backend, hc, ctx->s)) != OK) {
@@ -723,9 +724,9 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
             break;
     }
 
-    hc_send(ctx, p, wctx->req, backend);
+    hc_send(ctx, ptemp, wctx->req, backend);
 
-    r = create_request_rec(p, backend->connection, method);
+    r = create_request_rec(ptemp, backend->connection, method);
     if ((status = hc_read_headers(ctx, r)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
@@ -767,20 +768,20 @@ static void *hc_check(apr_thread_t *thread, void *b)
     proxy_worker *worker = baton->worker;
     server_rec *s = ctx->s;
     apr_status_t rv;
-    apr_pool_t *p;
-    apr_pool_create(&p, ctx->p);
+    apr_pool_t *ptemp;
+    apr_pool_create(&ptemp, ctx->p);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
                  "%sHealth checking %s", (thread ? "Threaded " : ""), worker->s->name);
 
     switch (worker->s->method) {
         case TCP:
-            rv = hc_check_tcp(ctx, p, worker);
+            rv = hc_check_tcp(ctx, ptemp, worker);
             break;
 
         case OPTIONS:
         case HEAD:
         case GET:
-             rv = hc_check_http(ctx, p, worker);
+             rv = hc_check_http(ctx, ptemp, worker);
              break;
 
         default:
@@ -791,7 +792,7 @@ static void *hc_check(apr_thread_t *thread, void *b)
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(03257)
                          "Somehow tried to use unimplemented hcheck method: %d",
                          (int)worker->s->method);
-        apr_pool_destroy(p);
+        apr_pool_destroy(ptemp);
         return NULL;
     }
     /* what state are we in ? */
@@ -821,7 +822,7 @@ static void *hc_check(apr_thread_t *thread, void *b)
         }
     }
     worker->s->updated = now;
-    apr_pool_destroy(p);
+    apr_pool_destroy(ptemp);
     return NULL;
 }
 
@@ -882,9 +883,11 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->ctx = ctx;
                             baton->now = now;
                             baton->worker = worker;
+
                             if (ctx->hctp) {
 #if HC_USE_THREADS
-                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton,
+                                                          APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
 #endif
                                 ;
                             } else {
