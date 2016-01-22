@@ -4318,7 +4318,7 @@ header</description>
 <name>SetHandler</name>
 <description>Forces all matching files to be processed by a
 handler</description>
-<syntax>SetHandler <var>handler-name</var>|None|expr=<var>expression</var></syntax>
+<syntax>SetHandler <var>handler-name</var>|none|<var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -4365,7 +4365,7 @@ SetHandler imap-file
 
     <highlight language="config">
 &lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
-     SetHandler "expr=proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
 &lt;/FilesMatch&gt;
     </highlight>
 
