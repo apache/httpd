@@ -56,10 +56,10 @@
         		<tr><td>TCP</td><td>Check that a socket to the backend can be created: e.g. "are you up"</td><td></td></tr>
         		<tr><td>OPTIONS</td><td>Send an <code>HTTP OPTIONS</code> request to the backend</td><td>*</td></tr>
         		<tr><td>HEAD</td><td>Send an <code>HTTP HEAD</code> request to the backend</td><td>*</td></tr>
-        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td></tr>
+        		<tr><td>GET</td><td>Send an <code>HTTP GET</code> request to the backend</td><td>*</td></tr>
 <!--
-        		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td></tr>
-        		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td></tr>
+        		<tr><td>CPING</td><td><strong>AJP only</strong> Do <code>CPING/CPONG</code> check</td><td></td></tr>
+        		<tr><td>PROVIDER</td><td>Name of <code>provider</code> to be used to check health</td><td></td></tr>
 -->
 				<tr><td colspan="3"></td></tr>
 				<tr><td colspan="3">*: Unless <code>hcexpr</code> is used, a 2xx or 3xx HTTP status will be interpreted as <em>passing</em> the health check</td></tr>
