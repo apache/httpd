@@ -988,7 +988,7 @@ the session being updated</td></tr>
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables based on attributes of the request
 without respect to case</td></tr>
-<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|None|expr=<var>expression</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>handler-name</var>|none|<var>expression</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be processed by a
 handler</td></tr>
 <tr><td><a href="core.html#setinputfilter">SetInputFilter <var>filter</var>[;<var>filter</var>...]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Sets the filters that will process client requests and POST
 input</td></tr>

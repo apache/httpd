@@ -4336,7 +4336,7 @@ header</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forces all matching files to be processed by a
 handler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetHandler <var>handler-name</var>|None|expr=<var>expression</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetHandler <var>handler-name</var>|none|<var>expression</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -4378,7 +4378,7 @@ handler</td></tr>
     variables, including backreferences to named regular expressions:</p>
 
     <pre class="prettyprint lang-config">&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
-     SetHandler "expr=proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
 &lt;/FilesMatch&gt;</pre>
 
 
