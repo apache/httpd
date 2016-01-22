@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ap_expr: expression support for variable HTTP2=on|off
+     [Stefan Eissing]
+
   *) mod_status/scoreboard: showing connection protocol in new column, new 
      ap_update_child_status methods for updating server/description. mod_ssl
      sets vhost negotiated by servername directly.
