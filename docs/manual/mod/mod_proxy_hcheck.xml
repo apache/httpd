@@ -99,7 +99,7 @@
 	<!-- This section should probably be extended with more, useful examples -->
 	<highlight language="config">
 ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
-ProxyHCExpr gdown %{REQUEST_STATUS} =~ /^[5]/}
+ProxyHCExpr gdown {%{REQUEST_STATUS} =~ /^[5]/}
 ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 
 &lt;Proxy balancer://foo&gt;
