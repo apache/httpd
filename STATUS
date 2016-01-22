@@ -181,12 +181,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~ylavic/httpd-2.4.x-ssl_io_filter_coalesce.patch
      +1: ylavic, jim
 
-  *) core: Add expr= support to SetHandler (someone wanted this in
+  *) core: Add expression support to SetHandler (someone wanted this in
      a well-articulated serverfault post).
      trunk patch:  http://svn.apache.org/r1725149
                    http://svn.apache.org/r1725151
+                   http://svn.apache.org/r1726233
+                  
      2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
-     +1 covener, jim
+                  +  http://svn.apache.org/r1726233
+     +1 covener
 
   *) Add APLOGNO, first chunk (those that were detected by coccinelle).
      There are some more but they are easier to backport once these here are applied.
