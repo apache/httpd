@@ -1969,27 +1969,14 @@ static const char *set_sethandler(cmd_parms *cmd,
                                      const char *arg_)
 {
     core_dir_config *dirconf = d_;
-
-    if (!strncmp(arg_, "expr=", 5)) {
-        const char *err;
-        dirconf->expr_handler = ap_expr_parse_cmd(cmd, arg_+5,
+    const char *err;
+    dirconf->expr_handler = ap_expr_parse_cmd(cmd, arg_,
                                           AP_EXPR_FLAG_STRING_RESULT,
                                           &err, NULL);
-        if (err) {
-            return apr_pstrcat(cmd->pool,
-                    "Can't parse expression : ", err, NULL);
-        }
-        return NULL;
+    if (err) {
+        return apr_pstrcat(cmd->pool,
+                "Can't parse expression : ", err, NULL);
     }
-    else if (arg_ == ap_strstr_c(arg_, "proxy:unix")) { 
-        dirconf->handler = arg_;
-    }
-    else { 
-        char *arg = apr_pstrdup(cmd->pool,arg_);
-        ap_str_tolower(arg);
-        dirconf->handler = arg;
-    }
-
     return NULL;
 }
 
@@ -4668,7 +4655,13 @@ static int core_override_type(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         if (strcmp(val, "none")) { 
-            r->handler = apr_pstrdup(r->pool, val);
+            if (val != ap_strstr_c(val, "proxy:unix")) { 
+                /* Retained for compatibility --  but not for UDS */
+                char *tmp = apr_pstrdup(r->pool, val);
+                ap_str_tolower(tmp);
+                r->handler = tmp;
+            }
+            r->handler = val;
         }
     }
     else if (conf->handler && strcmp(conf->handler, "none")) { 
