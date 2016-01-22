@@ -90,6 +90,41 @@
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
+<section id="examples">
+
+	<title>Usage examples</title>
+    <p>The following example shows how one might configured health checking
+    	for various backend servers:</p>
+
+	<!-- This section should probably be extended with more, useful examples -->
+	<highlight language="config">
+ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
+ProxyHCExpr gdown %{REQUEST_STATUS} =~ /^[5]/}
+ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
+
+&lt;Proxy balancer://foo&gt;
+  BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
+  BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
+  BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5
+  BalancerMember http://www4.example.com/
+&lt;/Proxy&gt;
+
+ProxyPass "/" "balancer://foo"
+ProxyPassReverse "/" "balancer://foo"
+</highlight>
+
+<p>In this scenario, <code>http://www.example.com/</code> is health checked by sending a <code>GET /status.php</code>
+request to that server and seeing that the returned page does not include the string <em>Under maintenance</em>. If
+it does, that server is put in health-check fail mode, and disabled. This dynamic check is performed
+every 30 seconds, which is the default.</p>
+
+<p><code>http://www2.example.com/</code> is checked by sending a simple <code>HEAD</code> request every
+10 seconds and making sure that the response status is 2xx, 3xx or 4xx. <code>http://www3.example.com/</code> is checked
+every 5 seconds by simply ensuring that the socket to that server is up and <code>http://www4.example.com/</code> is
+not dynamically checked at all.</p>
+
+</section>
+
 <directivesynopsis>
 <name>ProxyHCExpr</name>
 <description>Creates a named condition expression to use to determine health of the backend based on its response.</description>
