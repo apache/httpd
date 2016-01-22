@@ -17,10 +17,22 @@
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
 #include "ap_expr.h"
+#if APR_HAS_THREADS
+#include "apr_thread_pool.h"
+#endif
 
 module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 #define HCHECK_WATHCHDOG_NAME ("_proxy_hcheck_")
+#define HC_THREADPOOL_SIZE (16)
+
+/* Why? So we can easily set/clear HC_USE_THREADS during dev testing */
+#if APR_HAS_THREADS
+#define HC_USE_THREADS 1
+#else
+#define HC_USE_THREADS 0
+typedef void apr_thread_pool_t;
+#endif
 
 typedef struct {
     char *name;
@@ -44,6 +56,7 @@ typedef struct {
     apr_table_t *conditions;
     ap_watchdog_t *watchdog;
     apr_hash_t *hcworkers;
+    apr_thread_pool_t *hctp;
     server_rec *s;
 } sctx_t;
 
@@ -53,6 +66,12 @@ typedef struct {
     char *req;       /* pre-formatted HTTP/AJP request */
     proxy_worker *w; /* Pointer to the actual worker */
 } wctx_t;
+
+typedef struct {
+    sctx_t *ctx;
+    proxy_worker *worker;
+    apr_time_t now;
+} baton_t;
 
 static void *hc_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -740,14 +759,18 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *p, proxy_worker *work
     return backend_cleanup("HCOH", backend, ctx->s, status);
 }
 
-
-static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
-                     proxy_worker *worker)
+static void *hc_check(apr_thread_t *thread, void *b)
 {
+    baton_t *baton = (baton_t *)b;
+    sctx_t *ctx = baton->ctx;
+    apr_time_t now = baton->now;
+    proxy_worker *worker = baton->worker;
     server_rec *s = ctx->s;
     apr_status_t rv;
+    apr_pool_t *p;
+    apr_pool_create(&p, ctx->p);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
-                 "Health checking %s", worker->s->name);
+                 "%sHealth checking %s", (thread ? "Threaded " : ""), worker->s->name);
 
     switch (worker->s->method) {
         case TCP:
@@ -766,8 +789,10 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
     }
     if (rv == APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(03257)
-                         "Somehow tried to use unimplemented hcheck method: %d", (int)worker->s->method);
-        return;
+                         "Somehow tried to use unimplemented hcheck method: %d",
+                         (int)worker->s->method);
+        apr_pool_destroy(p);
+        return NULL;
     }
     /* what state are we in ? */
     if (PROXY_WORKER_IS_HCFAILED(worker)) {
@@ -777,7 +802,8 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 0, worker);
                 worker->s->pcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03302)
-                             "Health check ENABLING %s", worker->s->name);
+                             "%sHealth check ENABLING %s", (thread ? "Threaded " : ""),
+                             worker->s->name);
 
             }
         }
@@ -789,11 +815,14 @@ static void hc_check(sctx_t *ctx, apr_pool_t *p, apr_time_t now,
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 1, worker);
                 worker->s->fcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03303)
-                             "Health check DISABLING %s", worker->s->name);
+                             "%sHealth check DISABLING %s", (thread ? "Threaded " : ""),
+                             worker->s->name);
             }
         }
     }
     worker->s->updated = now;
+    apr_pool_destroy(p);
+    return NULL;
 }
 
 static apr_status_t hc_watchdog_callback(int state, void *data,
@@ -805,12 +834,22 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
     proxy_server_conf *conf;
-    apr_pool_t *p;
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03258)
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
+#if HC_USE_THREADS
+            rv =  apr_thread_pool_create(&ctx->hctp, HC_THREADPOOL_SIZE,
+                                         HC_THREADPOOL_SIZE,ctx->p);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO()
+                             "apr_thread_pool_create() with %d threads failed",
+                             HC_THREADPOOL_SIZE);
+                /* we can continue on without the threadpools */
+                ctx->hctp = NULL;
+            }
+#endif
             break;
 
         case AP_WATCHDOG_STATE_RUNNING:
@@ -820,7 +859,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                          HCHECK_WATHCHDOG_NAME);
             if (s) {
                 int i;
-                apr_pool_create(&p, pool);
                 conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
                 balancer = (proxy_balancer *)conf->balancers->elts;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
@@ -836,15 +874,26 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                      "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
                                      worker->s->name, worker->s->method, worker);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
+                            baton_t *baton;
                             if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
                                 return rv;
                             }
-                            hc_check(ctx, p, now, worker);
+                            baton = apr_palloc(ctx->p, sizeof(baton_t));
+                            baton->ctx = ctx;
+                            baton->now = now;
+                            baton->worker = worker;
+                            if (ctx->hctp) {
+#if HC_USE_THREADS
+                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+#endif
+                                ;
+                            } else {
+                                hc_check(NULL, baton);
+                            }
                         }
                         workers++;
                     }
                 }
-                apr_pool_destroy(p);
                 /* s = s->next; */
             }
             break;
@@ -853,6 +902,14 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03261)
                          "stopping %s watchdog.",
                          HCHECK_WATHCHDOG_NAME);
+#if HC_USE_THREADS
+            rv =  apr_thread_pool_destroy(ctx->hctp);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO()
+                             "apr_thread_pool_destroy() failed");
+            }
+#endif
+            ctx->hctp = NULL;
             break;
     }
     return rv;
