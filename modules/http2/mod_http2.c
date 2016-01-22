@@ -132,8 +132,6 @@ static void h2_child_init(apr_pool_t *pool, server_rec *s)
                      APLOGNO(02949) "initializing connection handling");
     }
     
-    APR_REGISTER_OPTIONAL_FN(http2_is_h2);
-    APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
 }
 
 /* Install this module into the apache2 infrastructure.
@@ -142,6 +140,9 @@ static void h2_hooks(apr_pool_t *pool)
 {
     static const char *const mod_ssl[] = { "mod_ssl.c", NULL};
     
+    APR_REGISTER_OPTIONAL_FN(http2_is_h2);
+    APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
+
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
     /* Run once after configuration is set, but before mpm children initialize.
