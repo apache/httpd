@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -3579,10 +3577,10 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
 	cette implémentation, le serveur va se bloquer et cesser de
 	répondre aux requêtes. Dans ce cas, un redémarrage manuel est
 	nécessaire pour récupérer le mutex.</p>
-        <p>Solaris constitue une exception notable, en ceci qu'il fournit
+        <p>Solaris et Linux constituent des exceptions notables, en ceci qu'ils	fournissent
 	un mécanisme qui permet en général de récupérer le mutex après
 	l'arrêt anormal d'un processus enfant qui détenait le mutex.</p>
-        <p>Si votre système implémente la fonction
+        <p>Si votre système est compatible POSIX ou implémente la fonction
 	<code>pthread_mutexattr_setrobust_np()</code>, vous devriez
 	pouvoir utiliser l'option <code>pthread</code> sans problème.</p>
         </div>

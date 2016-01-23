@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1674608:1726339 (outdated) -->
+<!-- English Revision: 1726339 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -157,8 +157,7 @@ l'authentification HTTP</description>
     appara&icirc;tra dans la bo&icirc;te de dialogue d'authentification pour la
     plupart des navigateurs.</p>
 
-    <p>A partir de la version 2.4.13, il est possible de d&eacute;finir cette
-    directive en utilisant la <a
+    <p>Il est possible de d&eacute;finir cette directive en utilisant la <a
     href="../expr.html">syntaxe des expressions</a> pour
     sp&eacute;cifier l'identifiant d'autorisation de mani&egrave;re dynamique.</p>
 
