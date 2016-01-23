@@ -191,4 +191,28 @@ ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ProxyHCTPsize</name>
+<description>Sets the size of the threadpool used for the health check workers.</description>
+<syntax>ProxyHCTPsize &lt;size&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>If Apache httpd and APR are built with thread support, the health check
+       module will offload the work of the actual checking to a threadpool
+       associated with the Watchdog process, allowing for parallel checks.
+       The <directive>ProxyHCTPsize</directive> directive
+       determines the size of this threadpool. If set to <code>0</code>, no threadpool
+       is used at all, resulting in serialized health checks. The default size is 16.</p>
+
+    <example><title>ProxyHCTPsize</title>
+    <highlight language="config">
+ProxyHCTPsize 32
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
