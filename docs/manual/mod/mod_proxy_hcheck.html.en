@@ -97,6 +97,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhcexpr">ProxyHCExpr</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhctemplate">ProxyHCTemplate</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyhctpsize">ProxyHCTPsize</a></li>
 </ul>
 <h3>See also</h3>
 <ul class="seealso">
@@ -189,6 +190,27 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=in_maint hcmethod=get
 
     <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
 ProxyPass "/apps"     "http://backend.example.com/" hctemplate=tcp5</pre>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the size of the threadpool used for the health check workers.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize &lt;size&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
+</table>
+    <p>If Apache httpd and APR are built with thread support, the health check
+       module will offload the work of the actual checking to a threadpool
+       associated with the Watchdog process, allowing for parallel checks.
+       The <code class="directive">ProxyHCTPsize</code> directive
+       determines the size of this threadpool. If set to <code>0</code>, no threadpool
+       is used at all, resulting in serialized health checks. The default size is 16.</p>
+
+    <div class="example"><h3>ProxyHCTPsize</h3><pre class="prettyprint lang-config">ProxyHCTPsize 32</pre>
 </div>
 
 
