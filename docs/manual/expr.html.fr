@@ -242,27 +242,30 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr class="odd"><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	généré la réponse</td></tr>
-<tr><td><code>HTTPS</code></td>
+<tr><td><code>HTTP2</code></td>
+        <td>"<code>on</code>" si la requête utilise http/2,
+            "<code>off</code>" dans le cas contraire</td></tr>
+<tr class="odd"><td><code>HTTPS</code></td>
         <td>"<code>on</code>" si la requête utilise https,
 	"<code>off</code>" dans le cas contraire</td></tr>
-<tr class="odd"><td><code>IPV6</code></td>
+<tr><td><code>IPV6</code></td>
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
-<tr><td><code>REQUEST_STATUS</code></td>
+<tr class="odd"><td><code>REQUEST_STATUS</code></td>
         <td>Le code d'erreur HTTP de la requête (non
 	disponible à l'intérieur d'un bloc <code class="directive">&lt;If&gt;</code>)</td></tr>
-<tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
+<tr><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la requête (voir
 	la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr><td><code>CONN_LOG_ID</code></td>
+<tr class="odd"><td><code>CONN_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associé à la connexion
 	(voir la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr class="odd"><td><code>CONN_REMOTE_ADDR</code></td>
+<tr><td><code>CONN_REMOTE_ADDR</code></td>
         <td>L'adresse IP du correspondant pour la connexion (voir le module
 	<code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code>)</td></tr>
-<tr><td><code>CONTEXT_PREFIX</code></td>
+<tr class="odd"><td><code>CONTEXT_PREFIX</code></td>
         <td /></tr>
-<tr class="odd"><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
+<tr><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
         <td /></tr>
 </table>
 
