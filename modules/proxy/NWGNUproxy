@@ -312,6 +312,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_show_hcmethod,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_connection_cleanup,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_disable,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_enable,$(DL)>> $@
