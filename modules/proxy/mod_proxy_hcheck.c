@@ -744,15 +744,17 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *
         if (ok > 0) {
             status = OK;
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
-                         "Condition %s: passed", worker->s->hcexpr);
+                         "Condition %s for %s (%s): passed", worker->s->hcexpr,
+                         hc->s->name, worker->s->name);
         } else if (ok < 0 || err) {
             status = !OK;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, ctx->s, APLOGNO(03301)
-                         "Error on checking condition %s: %s", worker->s->hcexpr,
-                         err);
+                         "Error on checking condition %s for %s (%s): %s", worker->s->hcexpr,
+                         hc->s->name, worker->s->name, err);
         } else {
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
-                         "Condition %s: failed", worker->s->hcexpr);
+                         "Condition %s for %s (%s) : failed", worker->s->hcexpr,
+                         hc->s->name, worker->s->name);
             status = !OK;
         }
     } else if (r->status < 200 || r->status > 399) {
