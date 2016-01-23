@@ -158,8 +158,7 @@ l'authentification HTTP</td></tr>
     apparaîtra dans la boîte de dialogue d'authentification pour la
     plupart des navigateurs.</p>
 
-    <p>A partir de la version 2.4.13, il est possible de définir cette
-    directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
+    <p>Il est possible de définir cette directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
     spécifier l'identifiant d'autorisation de manière dynamique.</p>
 
    <p>Exemple :</p>

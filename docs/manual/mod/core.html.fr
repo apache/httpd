@@ -3577,10 +3577,10 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
 	cette implémentation, le serveur va se bloquer et cesser de
 	répondre aux requêtes. Dans ce cas, un redémarrage manuel est
 	nécessaire pour récupérer le mutex.</p>
-        <p>Solaris et Linux constituent des exceptions notables, en ceci qu'ils	fournissent
+        <p>Solaris constitue une exception notable, en ceci qu'il fournit
 	un mécanisme qui permet en général de récupérer le mutex après
 	l'arrêt anormal d'un processus enfant qui détenait le mutex.</p>
-        <p>Si votre système est compatible POSIX ou implémente la fonction
+        <p>Si votre système implémente la fonction
 	<code>pthread_mutexattr_setrobust_np()</code>, vous devriez
 	pouvoir utiliser l'option <code>pthread</code> sans problème.</p>
         </div>
