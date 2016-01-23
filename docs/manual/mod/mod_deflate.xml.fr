@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1724274 (outdated) -->
+<!-- English Revision: 1724274 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -37,6 +37,15 @@ client</description>
     votre serveur avant de l'envoyer au client sur le r&eacute;seau.</p>
 </summary>
 <seealso><a href="../filter.html">Les filtres</a></seealso>
+
+<section id="supportedencodings"><title>Codages support&eacute;s</title>
+  <p>Le seul codage support&eacute; est <code>gzip</code> afin d'assurer une compl&egrave;te
+  compatibilit&eacute; avec les anciens navigateurs. Le codage <code>deflate</code>
+  n'est donc pas support&eacute; ; voir &agrave; ce sujet la <a
+  href="http://www.gzip.org/zlib/zlib_faq.html#faq38">documentation de zlib</a>
+  pour une explication d&eacute;taill&eacute;e.
+  </p>
+</section>
 
 <section id="recommended"><title>Exemples de configurations</title>
     <note type="warning"><title>Compression et TLS</title>

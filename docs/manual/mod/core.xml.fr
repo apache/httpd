@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1722608:1724267 (outdated) -->
+<!-- English Revision: 1725108 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3550,10 +3550,10 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
 	cette impl&eacute;mentation, le serveur va se bloquer et cesser de
 	r&eacute;pondre aux requ&ecirc;tes. Dans ce cas, un red&eacute;marrage manuel est
 	n&eacute;cessaire pour r&eacute;cup&eacute;rer le mutex.</p>
-        <p>Solaris constitue une exception notable, en ceci qu'il fournit
+        <p>Solaris et Linux constituent des exceptions notables, en ceci qu'ils	fournissent
 	un m&eacute;canisme qui permet en g&eacute;n&eacute;ral de r&eacute;cup&eacute;rer le mutex apr&egrave;s
 	l'arr&ecirc;t anormal d'un processus enfant qui d&eacute;tenait le mutex.</p>
-        <p>Si votre syst&egrave;me impl&eacute;mente la fonction
+        <p>Si votre syst&egrave;me est compatible POSIX ou impl&eacute;mente la fonction
 	<code>pthread_mutexattr_setrobust_np()</code>, vous devriez
 	pouvoir utiliser l'option <code>pthread</code> sans probl&egrave;me.</p>
         </note>
@@ -4319,8 +4319,8 @@ du serveur HTTP Apache</a></seealso>
 <name>ServerName</name>
 <description>Nom d'h&ocirc;te et port que le serveur utilise pour
 s'authentifier lui-m&ecirc;me</description>
-<syntax>ServerName [<var>protocole</var>://]<var>nom de domaine
-enti&egrave;rement qualifi&eacute;</var>[:<var>port</var>]</syntax>
+<syntax>ServerName
+[<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
@@ -4328,15 +4328,19 @@ host</context>
 <usage>
     <p>La directive <directive>ServerName</directive> permet de d&eacute;finir
     les protocole, nom d'h&ocirc;te et port d'une requ&ecirc;te que le serveur
-    utilise pour s'authentifier lui-m&ecirc;me. Ceci est utile lors de la
-    cr&eacute;ation de redirections d'URLs.</p>
+    utilise pour s'authentifier lui-m&ecirc;me.</p>
 
-    <p>La directive <directive>ServerName</directive> permet aussi
+    <p>La directive <directive>ServerName</directive> permet
     (&eacute;ventuellement en conjonction avec la directive
     <directive>ServerAlias</directive>) d'identifier de mani&egrave;re unique
     un serveur virtuel, lorsqu'elle est utilis&eacute;e dans un contexte de <a
     href="../vhosts/name-based.html">serveurs virtuels &agrave; base de
     noms</a>.</p>
+
+    <p>Cette directive est aussi utilis&eacute;e lors de la cr&eacute;ation d'URLs de
+    redirection relatives quand la directive
+    <directive>UseCanonicalName</directive> est d&eacute;finie &agrave; une valeur autre que
+    la valeur par d&eacute;faut.</p>
     
     <p>Par exemple, si le nom de la
     machine h&eacute;bergeant le serveur web est
@@ -4353,8 +4357,9 @@ host</context>
 
     <p>Si la directive <directive>ServerName</directive> n'est pas
     d&eacute;finie, le serveur tente de d&eacute;terminer le nom
-    d'h&ocirc;te visible du point de vue du client en effectuant
-    une recherche DNS inverse sur une adresse IP du serveur.</p>
+    d'h&ocirc;te visible du point de vue du client en demandant tout d'abord au
+    syst&egrave;me d'exploitation le nom d'h&ocirc;te syst&egrave;me, et en cas d'&eacute;chec, en effectuant
+    une recherche DNS inverse sur une adresse IP pr&eacute;sente sur le syst&egrave;me.</p>
     
     <p>Si la directive
     <directive>ServerName</directive> ne pr&eacute;cise pas de port, le serveur
