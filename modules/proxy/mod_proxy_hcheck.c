@@ -68,6 +68,7 @@ typedef struct {
 } wctx_t;
 
 typedef struct {
+    apr_pool_t *ptemp;
     sctx_t *ctx;
     proxy_worker *worker;
     apr_time_t now;
@@ -766,10 +767,9 @@ static void *hc_check(apr_thread_t *thread, void *b)
     sctx_t *ctx = baton->ctx;
     apr_time_t now = baton->now;
     proxy_worker *worker = baton->worker;
+    apr_pool_t *ptemp = baton->ptemp;
     server_rec *s = ctx->s;
     apr_status_t rv;
-    apr_pool_t *ptemp;
-    apr_pool_create(&ptemp, ctx->p);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
                  "%sHealth checking %s", (thread ? "Threaded " : ""), worker->s->name);
 
@@ -876,13 +876,18 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                      worker->s->name, worker->s->method, worker);
                         if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
                             baton_t *baton;
+                            /* This pool must last the lifetime of the (possible) thread */
+                            apr_pool_t *ptemp;
+                            apr_pool_create(&ptemp, ctx->p);
+
                             if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
                                 return rv;
                             }
-                            baton = apr_palloc(ctx->p, sizeof(baton_t));
+                            baton = apr_palloc(ptemp, sizeof(baton_t));
                             baton->ctx = ctx;
                             baton->now = now;
                             baton->worker = worker;
+                            baton->ptemp = ptemp;
 
                             if (ctx->hctp) {
 #if HC_USE_THREADS
