@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -3481,10 +3479,10 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
 	cette implémentation, le serveur va se bloquer et cesser de
 	répondre aux requêtes. Dans ce cas, un redémarrage manuel est
 	nécessaire pour récupérer le mutex.</p>
-        <p>Solaris constitue une exception notable, en ceci qu'il fournit
+        <p>Solaris et Linux constituent des exceptions notables, en ceci qu'ils	fournissent
 	un mécanisme qui permet en général de récupérer le mutex après
 	l'arrêt anormal d'un processus enfant qui détenait le mutex.</p>
-        <p>Si votre système implémente la fonction
+        <p>Si votre système est compatible POSIX ou implémente la fonction
 	<code>pthread_mutexattr_setrobust_np()</code>, vous devriez
 	pouvoir utiliser l'option <code>pthread</code> sans problème.</p>
         </div>
@@ -4280,22 +4278,26 @@ du serveur HTTP Apache</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom d'hôte et port que le serveur utilise pour
 s'authentifier lui-même</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerName [<var>protocole</var>://]<var>nom de domaine
-entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerName
+[<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>La directive <code class="directive">ServerName</code> permet de définir
     les protocole, nom d'hôte et port d'une requête que le serveur
-    utilise pour s'authentifier lui-même. Ceci est utile lors de la
-    création de redirections d'URLs.</p>
+    utilise pour s'authentifier lui-même.</p>
 
-    <p>La directive <code class="directive">ServerName</code> permet aussi
+    <p>La directive <code class="directive">ServerName</code> permet
     (éventuellement en conjonction avec la directive
     <code class="directive">ServerAlias</code>) d'identifier de manière unique
     un serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a href="../vhosts/name-based.html">serveurs virtuels à base de
     noms</a>.</p>
+
+    <p>Cette directive est aussi utilisée lors de la création d'URLs de
+    redirection relatives quand la directive
+    <code class="directive">UseCanonicalName</code> est définie à une valeur autre que
+    la valeur par défaut.</p>
     
     <p>Par exemple, si le nom de la
     machine hébergeant le serveur web est
@@ -4313,8 +4315,9 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
 
     <p>Si la directive <code class="directive">ServerName</code> n'est pas
     définie, le serveur tente de déterminer le nom
-    d'hôte visible du point de vue du client en effectuant
-    une recherche DNS inverse sur une adresse IP du serveur.</p>
+    d'hôte visible du point de vue du client en demandant tout d'abord au
+    système d'exploitation le nom d'hôte système, et en cas d'échec, en effectuant
+    une recherche DNS inverse sur une adresse IP présente sur le système.</p>
     
     <p>Si la directive
     <code class="directive">ServerName</code> ne précise pas de port, le serveur
