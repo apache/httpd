@@ -4418,8 +4418,8 @@ du serveur HTTP Apache</a></seealso>
 <name>ServerName</name>
 <description>Nom d'h&ocirc;te et port que le serveur utilise pour
 s'authentifier lui-m&ecirc;me</description>
-<syntax>ServerName [<var>protocole</var>://]<var>nom de domaine
-enti&egrave;rement qualifi&eacute;</var>[:<var>port</var>]</syntax>
+<syntax>ServerName
+[<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
@@ -4427,15 +4427,19 @@ host</context>
 <usage>
     <p>La directive <directive>ServerName</directive> permet de d&eacute;finir
     les protocole, nom d'h&ocirc;te et port d'une requ&ecirc;te que le serveur
-    utilise pour s'authentifier lui-m&ecirc;me. Ceci est utile lors de la
-    cr&eacute;ation de redirections d'URLs.</p>
+    utilise pour s'authentifier lui-m&ecirc;me.</p>
 
-    <p>La directive <directive>ServerName</directive> permet aussi
+    <p>La directive <directive>ServerName</directive> permet
     (&eacute;ventuellement en conjonction avec la directive
     <directive>ServerAlias</directive>) d'identifier de mani&egrave;re unique
     un serveur virtuel, lorsqu'elle est utilis&eacute;e dans un contexte de <a
     href="../vhosts/name-based.html">serveurs virtuels &agrave; base de
     noms</a>.</p>
+
+    <p>Cette directive est aussi utilis&eacute;e lors de la cr&eacute;ation d'URLs de
+    redirection relatives quand la directive
+    <directive>UseCanonicalName</directive> est d&eacute;finie &agrave; une valeur autre que
+    la valeur par d&eacute;faut.</p>
     
     <p>Par exemple, si le nom de la
     machine h&eacute;bergeant le serveur web est
@@ -4452,8 +4456,9 @@ host</context>
 
     <p>Si la directive <directive>ServerName</directive> n'est pas
     d&eacute;finie, le serveur tente de d&eacute;terminer le nom
-    d'h&ocirc;te visible du point de vue du client en effectuant
-    une recherche DNS inverse sur une adresse IP du serveur.</p>
+    d'h&ocirc;te visible du point de vue du client en demandant tout d'abord au
+    syst&egrave;me d'exploitation le nom d'h&ocirc;te syst&egrave;me, et en cas d'&eacute;chec, en effectuant
+    une recherche DNS inverse sur une adresse IP pr&eacute;sente sur le syst&egrave;me.</p>
     
     <p>Si la directive
     <directive>ServerName</directive> ne pr&eacute;cise pas de port, le serveur
@@ -4678,12 +4683,13 @@ HTTP</description>
 <name>SetHandler</name>
 <description>Force le traitement des fichiers sp&eacute;cifi&eacute;s par un
 gestionnaire particulier</description>
-<syntax>SetHandler <var>nom gestionnaire</var>|None</syntax>
+<syntax>SetHandler <var>handler-name</var>|none|<var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Lorsqu'elle se situe &agrave; l'int&eacute;rieur d'un fichier
@@ -4718,6 +4724,16 @@ host</context>
     <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </highlight>
+
+    <p>On peut utiliser des expressions ayant pour valeur des cha&icirc;nes pour
+    r&eacute;f&eacute;rencer des variables sp&eacute;cifiques &agrave; une requ&ecirc;te, y compris les
+    r&eacute;f&eacute;rences arri&egrave;res vers des expressions rationnelles nomm&eacute;es :</p>
+
+    <highlight language="config">
+&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
 &lt;/FilesMatch&gt;
     </highlight>
 
