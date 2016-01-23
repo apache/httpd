@@ -281,6 +281,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
 	g&eacute;n&eacute;r&eacute; la r&eacute;ponse</td></tr>
+    <tr><td><code>HTTP2</code></td>
+        <td>"<code>on</code>" si la requ&ecirc;te utilise http/2,
+            "<code>off</code>" dans le cas contraire</td></tr>
     <tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" si la requ&ecirc;te utilise https,
 	"<code>off</code>" dans le cas contraire</td></tr>
