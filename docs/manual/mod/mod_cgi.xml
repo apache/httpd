@@ -100,7 +100,15 @@
 
       <dd>This will only be set if the CGI script is subject to
       authentication.</dd>
+
     </dl>
+    <p>This module also leverages the core functions 
+       <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga0e81f9571a8a73f5da0e89e1f46d34b1">ap_add_common_vars</a> and 
+       <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga6b975cd7ff27a338cb8752381a4cc14f">ap_add_cgi_vars</a> 
+       to add common CGI environment variables like <code>DOCUMENT_ROOT</code> 
+       (this one from the related <directive module="core">DocumentRoot</directive> directive). 
+       For an exhaustive list please check the code in the appropriate httpd branch.  
+    </p>   
 </section>
 
 <section id="cgi-debug"><title>CGI Debugging</title>
