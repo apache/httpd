@@ -21,10 +21,10 @@
  *
  * Adapted by rst from original NCSA code by Rob McCool
  *
- * Apache adds some new env vars; REDIRECT_URL and REDIRECT_QUERY_STRING for
- * custom error responses, and DOCUMENT_ROOT because we found it useful.
- * It also adds SERVER_ADMIN - useful for scripts to know who to mail when
- * they fail.
+ * This modules uses a httpd core function (ap_add_common_vars) to add some new env vars, 
+ * like REDIRECT_URL and REDIRECT_QUERY_STRING for custom error responses and DOCUMENT_ROOT.
+ * It also adds SERVER_ADMIN - useful for scripts to know who to mail when they fail.
+ * 
  */
 
 #include "apr_lib.h"
@@ -1459,13 +1459,18 @@ static int cgid_handler(request_rec *r)
         return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, APLOGNO(01266)
                                "AcceptPathInfo off disallows user's path");
     }
-/*
+    /*
     if (!ap_suexec_enabled) {
         if (!ap_can_exec(&r->finfo))
             return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, APLOGNO(01267)
                                    "file permissions deny server execution");
     }
-*/
+    */
+
+    /*
+     * httpd core function used to add common environment variables like
+     * DOCUMENT_ROOT. 
+     */
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
     env = ap_create_environment(r->pool, r->subprocess_env);
