@@ -1,5 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+ 
+  *) mod_cache: Consider Cache-Control: s-maxage in expiration
+     calculations.  [Eric Covener]
+
+  *) mod_cache: Allow caching of responses with an Expires header
+     in the past that also has Cache-Control: max-age or s-maxage.
+     PR55156. [Eric Covener]
 
   *) ap_expr: expression support for variable HTTP2=on|off
      [Stefan Eissing]
