@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+
+  *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
+     PR58856 [Micha Lenk <micha lenk.info>]
  
   *) mod_cache: Consider Cache-Control: s-maxage in expiration
      calculations.  [Eric Covener]
