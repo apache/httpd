@@ -296,7 +296,14 @@ CustomLog "logs/deflate_log" deflate
 <usage>
     <p>The <directive>DeflateBufferSize</directive> directive specifies
     the size in bytes of the fragments that zlib should compress at one
-    time.</p>
+    time. If the compressed response size is bigger than the one specified
+    by this directive then httpd will switch to chunked encoding 
+    (HTTP header <code>Transfer-Encoding</code> set to <code>Chunked</code>), with the
+    side effect of not setting any <code>Content-Length</code> HTTP header. This is particularly 
+    important when httpd works behind reverse caching proxies like Varnish or when httpd is configured with 
+    <module>mod_cache</module> and <module>mod_cache_disk</module> because
+    HTTP responses without any <code>Content-Length</code> header might not be cached.
+  </p>
 </usage>
 </directivesynopsis>
 
