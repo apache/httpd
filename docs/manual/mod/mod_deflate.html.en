@@ -287,7 +287,7 @@ content</a></h2>
     by this directive then httpd will switch to chunked encoding 
     (HTTP header <code>Transfer-Encoding</code> set to <code>Chunked</code>), with the
     side effect of not setting any <code>Content-Length</code> HTTP header. This is particularly 
-    important when httpd works behind reverse caching proxies like Varnish or when httpd is configured with 
+    important when httpd works behind reverse caching proxies or when httpd is configured with 
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> because
     HTTP responses without any <code>Content-Length</code> header might not be cached.
   </p>
