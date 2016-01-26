@@ -692,6 +692,7 @@ static apr_status_t proxy_buckets_lifetime_transform(request_rec *r,
     const char *data;
     apr_size_t bytes;
     apr_status_t rv = APR_SUCCESS;
+    apr_bucket_alloc_t *bucket_alloc = to->bucket_alloc;
 
     apr_brigade_cleanup(to);
     for (e = APR_BRIGADE_FIRST(from);
@@ -699,15 +700,15 @@ static apr_status_t proxy_buckets_lifetime_transform(request_rec *r,
          e = APR_BUCKET_NEXT(e)) {
         if (!APR_BUCKET_IS_METADATA(e)) {
             apr_bucket_read(e, &data, &bytes, APR_BLOCK_READ);
-            new = apr_bucket_transient_create(data, bytes, r->connection->bucket_alloc);
+            new = apr_bucket_transient_create(data, bytes, bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(to, new);
         }
         else if (APR_BUCKET_IS_FLUSH(e)) {
-            new = apr_bucket_flush_create(r->connection->bucket_alloc);
+            new = apr_bucket_flush_create(bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(to, new);
         }
         else if (APR_BUCKET_IS_EOS(e)) {
-            new = apr_bucket_eos_create(r->connection->bucket_alloc);
+            new = apr_bucket_eos_create(bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(to, new);
         }
         else {
