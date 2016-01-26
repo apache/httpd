@@ -253,6 +253,8 @@ static const command_rec ssl_config_cmds[] = {
                 "OCSP responder query timeout")
     SSL_CMD_SRV(OCSPUseRequestNonce, FLAG,
                 "Whether OCSP queries use a nonce or not ('on', 'off')")
+    SSL_CMD_SRV(OCSPProxyURL, TAKE1,
+                "Proxy URL to use for OCSP requests")
 
 #ifdef HAVE_OCSP_STAPLING
     /*

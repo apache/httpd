@@ -136,6 +136,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->ocsp_resp_maxage    = UNSET;
     mctx->ocsp_responder_timeout = UNSET;
     mctx->ocsp_use_request_nonce = UNSET;
+    mctx->proxy_uri              = NULL;
 
 #ifdef HAVE_OCSP_STAPLING
     mctx->stapling_enabled           = UNSET;
@@ -285,6 +286,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeInt(ocsp_resp_maxage);
     cfgMergeInt(ocsp_responder_timeout);
     cfgMergeBool(ocsp_use_request_nonce);
+    cfgMerge(proxy_uri, NULL);
 #ifdef HAVE_OCSP_STAPLING
     cfgMergeBool(stapling_enabled);
     cfgMergeInt(stapling_resptime_skew);
@@ -1640,6 +1642,18 @@ const char *ssl_cmd_SSLOCSPUseRequestNonce(cmd_parms *cmd, void *dcfg, int flag)
 
     sc->server->ocsp_use_request_nonce = flag ? TRUE : FALSE;
 
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPProxyURL(cmd_parms *cmd, void *dcfg,
+                                    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->proxy_uri = apr_palloc(cmd->pool, sizeof(apr_uri_t));
+    if (apr_uri_parse(cmd->pool, arg, sc->server->proxy_uri) != APR_SUCCESS) {
+        return apr_psprintf(cmd->pool,
+                            "SSLOCSPProxyURL: Cannot parse URL %s", arg);
+    }
     return NULL;
 }
 

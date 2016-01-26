@@ -27,7 +27,8 @@
 
 /* Serialize an OCSP request which will be sent to the responder at
  * given URI to a memory BIO object, which is returned. */
-static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
+static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri,
+                              const apr_uri_t *proxy_uri)
 {
     BIO *bio;
     int len;
@@ -36,7 +37,13 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
 
     bio = BIO_new(BIO_s_mem());
 
-    BIO_printf(bio, "POST %s%s%s HTTP/1.0\r\n"
+    BIO_printf(bio, "POST ");
+    /* Use full URL instead of URI in case of a request through a proxy */
+    if (proxy_uri) {
+        BIO_printf(bio, "http://%s:%d",
+                   uri->hostname, uri->port);
+    }
+    BIO_printf(bio, "%s%s%s HTTP/1.0\r\n"
                "Host: %s:%d\r\n"
                "Content-Type: application/ocsp-request\r\n"
                "Content-Length: %d\r\n"
@@ -58,25 +65,38 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
  * NULL on error. */
 static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
                                   apr_interval_time_t timeout,
-                                  conn_rec *c, apr_pool_t *p)
+                                  conn_rec *c, apr_pool_t *p,
+                                  const apr_uri_t *proxy_uri)
 {
     apr_status_t rv;
     apr_sockaddr_t *sa;
     apr_socket_t *sd;
     char buf[HUGE_STRING_LEN];
     int len;
+    const apr_uri_t *next_hop_uri;
 
-    rv = apr_sockaddr_info_get(&sa, uri->hostname, APR_UNSPEC, uri->port, 0, p);
+    if (proxy_uri) {
+        next_hop_uri = proxy_uri;
+    }
+    else {
+        next_hop_uri = uri;
+    }
+
+    rv = apr_sockaddr_info_get(&sa, next_hop_uri->hostname, APR_UNSPEC,
+                               next_hop_uri->port, 0, p);
     if (rv) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01972)
-                      "could not resolve address of OCSP responder %s",
-                      uri->hostinfo);
+                      "could not resolve address of %s %s",
+                      proxy_uri ? "proxy" : "OCSP responder",
+                      next_hop_uri->hostinfo);
         return NULL;
     }
 
     /* establish a connection to the OCSP responder */
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01973)
-                  "connecting to OCSP responder '%s'", uri->hostinfo);
+                  "connecting to %s '%s'",
+                  proxy_uri ? "proxy" : "OCSP responder",
+                  uri->hostinfo);
 
     /* Cycle through address until a connect() succeeds. */
     for (; sa; sa = sa->next) {
@@ -94,8 +114,9 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
 
     if (sa == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01974)
-                      "could not connect to OCSP responder '%s'",
-                      uri->hostinfo);
+                      "could not connect to %s '%s'",
+                      proxy_uri ? "proxy" : "OCSP responder",
+                      next_hop_uri->hostinfo);
         return NULL;
     }
 
@@ -289,8 +310,10 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
     OCSP_RESPONSE *response = NULL;
     apr_socket_t *sd;
     BIO *bio;
+    const apr_uri_t *proxy_uri;
 
-    bio = serialize_request(request, uri);
+    proxy_uri = (mySrvConfigFromConn(c))->server->proxy_uri;
+    bio = serialize_request(request, uri, proxy_uri);
     if (bio == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01989)
                       "could not serialize OCSP request");
@@ -298,7 +321,7 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
         return NULL;
     }
 
-    sd = send_request(bio, uri, timeout, c, p);
+    sd = send_request(bio, uri, timeout, c, p, proxy_uri);
     if (sd == NULL) {
         /* Errors already logged. */
         BIO_free(bio);
