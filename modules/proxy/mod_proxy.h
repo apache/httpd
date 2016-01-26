@@ -1140,6 +1140,29 @@ PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method);
  */
 PROXY_DECLARE(const char *) ap_proxy_de_socketfy(apr_pool_t *p, const char *url);
 
+/*
+ * Transform buckets from one bucket allocator to another one by creating a
+ * transient bucket for each data bucket and let it use the data read from
+ * the old bucket. Metabuckets are transformed by just recreating them.
+ * Attention: Currently only the following bucket types are handled:
+ *
+ * All data buckets
+ * FLUSH
+ * EOS
+ *
+ * If an other bucket type is found its type is logged as a debug message
+ * and APR_EGENERAL is returned.
+ *
+ * @param r     request_rec of the actual request. Used for logging purposes
+ * @param from  the bucket brigade to take the buckets from
+ * @param to    the bucket brigade to store the transformed buckets
+ * @return      apr_status_t of the operation. Either APR_SUCCESS or
+ *              APR_EGENERAL
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
+                                                      apr_bucket_brigade *from,
+                                                      apr_bucket_brigade *to);
+
 extern module PROXY_DECLARE_DATA proxy_module;
 
 #endif /*MOD_PROXY_H*/
