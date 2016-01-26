@@ -119,7 +119,7 @@ ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 &lt;Proxy balancer://foo&gt;
   BalancerMember http://www.example.com/  hcmethod=GET hcexpr=in_maint hcuri=/status.php
   BalancerMember http://www2.example.com/  hcmethod=HEAD hcexpr=ok234 hcinterval=10
-  BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5
+  BalancerMember http://www3.example.com/ hcmethod=TCP hcinterval=5 hcpasses=2 hcfails=3
   BalancerMember http://www4.example.com/
 &lt;/Proxy&gt;
 
@@ -134,7 +134,10 @@ every 30 seconds, which is the default.</p>
 
 <p><code>http://www2.example.com/</code> is checked by sending a simple <code>HEAD</code> request every
 10 seconds and making sure that the response status is 2xx, 3xx or 4xx. <code>http://www3.example.com/</code> is checked
-every 5 seconds by simply ensuring that the socket to that server is up and <code>http://www4.example.com/</code> is
+every 5 seconds by simply ensuring that the socket to that server is up. If the backend is marked as
+"down" and it passes 2 health check, it will be re-enabled and added back into the load balancer.
+It takes 3 back-to-back health check failures to disable the server and move it out
+of rotation. Finally, <code>http://www4.example.com/</code> is
 not dynamically checked at all.</p>
 
 </div>
