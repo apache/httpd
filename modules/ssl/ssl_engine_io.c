@@ -1407,19 +1407,19 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     const char *start = inctx->buffer; /* start of block to return */
     apr_size_t len = sizeof(inctx->buffer); /* length of block to return */
     int is_init = (mode == AP_MODE_INIT);
+    apr_bucket *bucket;
 
     if (f->c->aborted) {
         /* XXX: Ok, if we aborted, we ARE at the EOS.  We also have
          * aborted.  This 'double protection' is probably redundant,
          * but also effective against just about anything.
          */
-        apr_bucket *bucket = apr_bucket_eos_create(f->c->bucket_alloc);
+        bucket = apr_bucket_eos_create(f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
         return APR_ECONNABORTED;
     }
 
     if (!inctx->ssl) {
-        apr_bucket *bucket;
         SSLConnRec *sslconn = myConnConfig(f->c);
         if (sslconn->non_ssl_request == NON_SSL_SEND_REQLINE) {
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
@@ -1514,7 +1514,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* Create a transient bucket out of the decrypted data. */
     if (len > 0) {
-        apr_bucket *bucket =
+        bucket =
             apr_bucket_transient_create(start, len, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
@@ -1653,8 +1653,6 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
      * the filter stack, first prepending anything that has been
      * coalesced. */
     if (ctx && ctx->bytes) {
-        apr_bucket *e;
-
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                       "coalesce: passing on %" APR_SIZE_T_FMT " bytes", ctx->bytes);
 
@@ -1890,6 +1888,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
 {
     struct modssl_buffer_ctx *ctx = f->ctx;
     apr_status_t rv;
+    apr_bucket *e, *d;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                   "read from buffered SSL brigade, mode %d, "
@@ -1914,8 +1913,6 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     }
 
     if (mode == AP_MODE_READBYTES) {
-        apr_bucket *e;
-
         /* Partition the buffered brigade. */
         rv = apr_brigade_partition(ctx->bb, bytes, &e);
         if (rv && rv != APR_INCOMPLETE) {
@@ -1930,7 +1927,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
         if (rv == APR_INCOMPLETE) {
             APR_BRIGADE_CONCAT(bb, ctx->bb);
         } else {
-            apr_bucket *d = APR_BRIGADE_FIRST(ctx->bb);
+            d = APR_BRIGADE_FIRST(ctx->bb);
 
             e = APR_BUCKET_PREV(e);
 
@@ -1957,7 +1954,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     }
 
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        apr_bucket *e = APR_BRIGADE_LAST(bb);
+        e = APR_BRIGADE_LAST(bb);
 
         /* Ensure that the brigade is terminated by an EOS if the
          * buffered request body has been entirely consumed. */
