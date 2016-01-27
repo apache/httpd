@@ -2347,6 +2347,20 @@ Responder), this option should be turned <code>off</code>.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLOCSPProxyURL</name>
+<description>Proxy URL to use for OCSP requests</description>
+<syntax>SSLOCSPProxyURL <em>url</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5 and later</compatibility>
+
+<usage>
+<p>This option allows to set the URL of a HTTP proxy that should be used for
+all queries to OCSP responders.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
 <syntax>SSLInsecureRenegotiation on|off</syntax>
