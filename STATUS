@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   
      2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
                   +  http://svn.apache.org/r1726233
-     +1 covener
+     +1: covener
 
   *) Add APLOGNO, first chunk (those that were detected by coccinelle).
      There are some more but they are easier to backport once these here are applied.
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  http://people.apache.org/~rjung/patches/aplogno-backport-r1725392.patch
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
-     +1 rjung, jim
+     +1: rjung, jim
 
   *) ap_expr: Add kept_body() function for expressions against r->kept_body()
      trunk patch:  http://svn.apache.org/r1725755
@@ -207,11 +207,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1725762
                    http://svn.apache.org/r1725766
      2.4.x patch:  trunk works, modulo CHANGES
+     +1:
 
   *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
               for later retries.
      trunk patch:  http://svn.apache.org/r1725940
-     +1 icing
+     +1: icing
+
+  *) mod_lbmethod_heartbeat: No need to search twice for the same value
+     trunk patch:  http://svn.apache.org/r1725445
+     2.4.x patch:  trunk works
+     +1: jailletc36
      
 PATCHES/ISSUES THAT ARE BEING WORKED
 
