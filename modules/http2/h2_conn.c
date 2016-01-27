@@ -75,6 +75,8 @@ static void check_modules(int force)
     }
 }
 
+static void fix_event_master_conn(h2_session *session);
+
 apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
 {
     const h2_config *config = h2_config_sget(s);
@@ -168,6 +170,15 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
     }
 
     h2_ctx_session_set(ctx, session);
+    
+    switch (h2_conn_mpm_type()) {
+        case H2_MPM_EVENT: 
+            fix_event_master_conn(session);
+            break;
+        default:
+            break;
+    }
+
     return APR_SUCCESS;
 }
 
@@ -182,9 +193,6 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
         }
         status = h2_session_process(h2_ctx_session_get(ctx), async_mpm);
         
-        if (c->cs) {
-            c->cs->state = CONN_STATE_WRITE_COMPLETION;
-        }
         if (APR_STATUS_IS_EOF(status)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03045)
                           "h2_session(%ld): process, closing conn", c->id);
@@ -202,6 +210,17 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
              && mpm_state != AP_MPMQ_STOPPING);
     
     return DONE;
+}
+
+apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
+{
+    apr_status_t status;
+    
+    status = h2_session_pre_close(h2_ctx_session_get(ctx), async_mpm);
+    if (status == APR_SUCCESS) {
+        return DONE; /* This is the same, right? */
+    }
+    return status;
 }
 
 
@@ -296,6 +315,11 @@ struct event_conn_state_t {
      * a particular MPM thread; for suspend_/resume_connection
      * hooks)
      */
+    void *sc;
+    /** is the current conn_rec suspended?  (disassociated with
+     * a particular MPM thread; for suspend_/resume_connection
+     * hooks)
+     */
     int suspended;
     /** memory pool to allocate from */
     apr_pool_t *p;
@@ -325,5 +349,16 @@ static void fix_event_conn(conn_rec *c, conn_rec *master)
     cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
     
     c->cs = &(cs->pub);
+}
+
+static void fix_event_master_conn(h2_session *session)
+{
+    /* TODO: event MPM normally does this in a post_read_request hook. But
+     * we never encounter that on our master connection. We *do* know which
+     * server was selected during protocol negotiation, so lets set that.
+     */
+    event_conn_state_t *cs = ap_get_module_config(session->c->conn_config, 
+                                                  h2_conn_mpm_module());
+    cs->sc = ap_get_module_config(session->s->module_config, h2_conn_mpm_module());
 }
 

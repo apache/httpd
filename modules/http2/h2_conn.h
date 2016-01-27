@@ -38,6 +38,12 @@ apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
  */
 apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c);
 
+/**
+ * The connection is about to close. If we have not send a GOAWAY
+ * yet, this is the last chance.
+ */
+apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c);
+
 /* Initialize this child process for h2 connection work,
  * to be called once during child init before multi processing
  * starts.
