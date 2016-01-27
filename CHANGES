@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
+     to OCSP responders through a HTTP proxy. [Ruediger Pluem]
+
   *) mod_http2: idle connections are returned to async mpms. new hook
      "pre_close_connection" used to send GOAWAY frame when not already done.
      Setting event mpm server config "by hand" for the main connection to
