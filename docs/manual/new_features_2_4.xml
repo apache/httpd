@@ -35,7 +35,7 @@
     <title>Core Enhancements</title>
     <dl>
       <dt>Run-time Loadable MPMs</dt>
-      <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built 
+      <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built
       as loadable modules</a> at compile time.
       The MPM of choice can be configured at run time via <directive
       module="mod_so">LoadModule</directive> directive.</dd>
@@ -181,6 +181,9 @@
       <dd>Enable FastCGI authorizer applications to authenticate and/or
       authorize clients.</dd>
 
+      <dt><module>mod_http2</module> (available since 2.4.17)</dt>
+      <dd>Support for the HTTP/2 transport layer.</dd>
+
     </dl>
   </section>
 
@@ -311,7 +314,7 @@
     <title>Program Enhancements</title>
     <dl>
         <dt><program>fcgistarter</program></dt>
-        <dd>New FastCGI deamon starter utility</dd>
+        <dd>New FastCGI daemon starter utility</dd>
 
         <dt><program>htcacheclean</program></dt>
         <dd>Current cached URLs can now be listed, with optional metadata
