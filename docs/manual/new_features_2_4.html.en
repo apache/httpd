@@ -46,7 +46,7 @@
     
     <dl>
       <dt>Run-time Loadable MPMs</dt>
-      <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built 
+      <dd>Multiple MPMs can now be <a href="mpm.html#dynamic">built
       as loadable modules</a> at compile time.
       The MPM of choice can be configured at run time via <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</dd>
 
@@ -190,6 +190,9 @@
       <dd>Enable FastCGI authorizer applications to authenticate and/or
       authorize clients.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (available since 2.4.17)</dt>
+      <dd>Support for the HTTP/2 transport layer.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -317,7 +320,7 @@
     
     <dl>
         <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
-        <dd>New FastCGI deamon starter utility</dd>
+        <dd>New FastCGI daemon starter utility</dd>
 
         <dt><code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code></dt>
         <dd>Current cached URLs can now be listed, with optional metadata
