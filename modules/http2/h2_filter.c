@@ -148,8 +148,6 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
         if (saved_timeout != UNSET) {
             apr_socket_timeout_set(cin->socket, saved_timeout);
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "core_input(%ld): got_brigade", (long)f->c->id);
     }
     
     switch (status) {
@@ -159,6 +157,8 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
         case APR_EOF:
         case APR_EAGAIN:
         case APR_TIMEUP:
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                          "core_input(%ld): read", (long)f->c->id);
             break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, f->c, APLOGNO(03046)

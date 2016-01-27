@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: idle connections are returned to async mpms. new hook
+     "pre_close_connection" used to send GOAWAY frame when not already done.
+     Setting event mpm server config "by hand" for the main connection to
+     the correct negotiated server.
+     [Stefan Eissing]
+  
   *) core: new hook "pre_close_connection" which is run before the lingering
      close of connections is started. This gives protocol handlers one last
      chance to use a connection before it goes down.
