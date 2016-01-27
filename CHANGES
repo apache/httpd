@@ -6,15 +6,15 @@ Changes with Apache 2.5.0
      Setting event mpm server config "by hand" for the main connection to
      the correct negotiated server.
      [Stefan Eissing]
-  
+
   *) core: new hook "pre_close_connection" which is run before the lingering
      close of connections is started. This gives protocol handlers one last
      chance to use a connection before it goes down.
      [Stefan Eissing]
-  
+
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
- 
+
   *) mod_cache: Consider Cache-Control: s-maxage in expiration
      calculations.  [Eric Covener]
 
@@ -29,12 +29,12 @@ Changes with Apache 2.5.0
      ap_update_child_status methods for updating server/description. mod_ssl
      sets vhost negotiated by servername directly.
      [Stefan Eissing]
-     
+
   *) mod_http2: keep-alive blocking reads are done with 1 second timeouts to
      check for MPM stopping. Will announce early GOAWAY and finish processing
      open streams, then close.
      [Stefan Eissing]
-  
+
   *) mod_proxy_hcheck: Provide for dynamic background health
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
@@ -42,10 +42,10 @@ Changes with Apache 2.5.0
   *) mod_ssl: handle TIMEOUT on empty SSL input as non-fatal, returning 
      APR_TIMEUP and preserving connection state for later retry.
      [Stefan Eissing]
-     
+
   *) mod_http2: bytes read/written on slave connections are reported via the
      optional mod_logio functions. Fixes PR 58871.
-     
+
   *) Added many log numbers to log statements that had none.
 
   *) core: Add expression support to SetHandler.
@@ -125,7 +125,7 @@ Changes with Apache 2.5.0
   *) mod_ssl: When SSLVerify is disabled (NONE), don't force a renegotiation if
      the SSLVerifyDepth applied with the default/handshaken vhost differs from
      the one applicable with the finally selected vhost.  [Yann Ylavic]
-     
+
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
 
@@ -169,17 +169,17 @@ Changes with Apache 2.5.0
 
   *) ap_expr: Add filemod function for checking file modification dates
      [Daniel Gruno]
-     
+
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since 
      r1608202. [Eric Covener]
- 
+
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
 
   *) apreq: Content-Length header should be always interpreted as a decimal.
      Leading 0 could be erroneously considered as an octal value. PR 56598.
      [Chris Card <ctcard hotmail com>]
-  
+
   *) mod_proxy: Now allow for 191 character worker names, with non-fatal
      errors if name is truncated. PR53218. [Jim Jagielski]
 
@@ -242,7 +242,7 @@ Changes with Apache 2.5.0
 
   *) mod_proxy_wstunnel: Avoid sending error responses down an upgraded
      websockets connection as it is being close down. [Eric Covener]
-  
+
   *) mod_proxy_wstunnel: Allow the administrator to cap the amount
      of time a synchronous websockets connection stays idle with 
      ProxyWebsocketIdleTimeout. [Eric Covener]
@@ -264,7 +264,7 @@ Changes with Apache 2.5.0
   *) mod_rewrite: Add 'BNF' (backreferences-no-plus) flag to RewriteRule to 
      allow spaces in backreferences to be encoded as %20 instead of '+'.
      [Eric Covener]
-     
+
   *) mod_rewrite: Support an optional list of characters to escape in the 
      argument for the 'B' (escape backreferences) flag. [Eric Covener]
 
