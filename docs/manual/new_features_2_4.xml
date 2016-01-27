@@ -314,7 +314,7 @@
     <title>Program Enhancements</title>
     <dl>
         <dt><program>fcgistarter</program></dt>
-        <dd>New FastCGI deamon starter utility</dd>
+        <dd>New FastCGI daemon starter utility</dd>
 
         <dt><program>htcacheclean</program></dt>
         <dd>Current cached URLs can now be listed, with optional metadata
