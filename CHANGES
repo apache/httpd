@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_ssl: Save some TLS record (application data) fragmentations by
+     including the last and subsequent suitable buckets when coalescing.
 
   *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075, 
      "Error dispatching request", when the cause appears to be 
