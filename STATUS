@@ -112,7 +112,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) mod_ssl: Constify + save a few bytes in conf pool when parsing SSLRequire
+     mod_nw_ssl: Save a few bytes in conf pool when processing 'NWSSLTrustedCerts'
+     trunk patch: http://svn.apache.org/r1718514
+                  http://svn.apache.org/r1721313 (untested because I don't have this system)
+     2.4.x patch: trunk works
+     +1: jailletc36, jim, icing
+     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -164,13 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works, module CHANGES
      +1: ylavic, jim
 
-  *) mod_ssl: Constify + save a few bytes in conf pool when parsing SSLRequire
-     mod_nw_ssl: Save a few bytes in conf pool when processing 'NWSSLTrustedCerts'
-     trunk patch: http://svn.apache.org/r1718514
-                  http://svn.apache.org/r1721313 (untested because I don't have this system)
-     2.4.x patch: trunk works
-     +1: jailletc36, jim
-     
   *) core: Add expression support to SetHandler (someone wanted this in
      a well-articulated serverfault post).
      trunk patch:  http://svn.apache.org/r1725149
