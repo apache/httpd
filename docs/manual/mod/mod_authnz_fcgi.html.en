@@ -104,7 +104,8 @@ and Access Control</a></li>
 
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
-while (FCGI::accept &gt;= 0) {
+my $request = FCGI::Request();
+while ($request-&gt;Accept() &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
     die if $ENV{'FCGI_ROLE'}        ne "AUTHORIZER";
     die if !$ENV{'REMOTE_PASSWD'};
@@ -147,7 +148,8 @@ while (FCGI::accept &gt;= 0) {
       request data.  Example application:
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
-while (FCGI::accept &gt;= 0) {
+my $request = FCGI::Request();
+while ($request-&gt;Accept() &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHORIZER";
     die if $ENV{'FCGI_ROLE'}        ne "AUTHORIZER";
     die if $ENV{'REMOTE_PASSWD'};
@@ -195,7 +197,8 @@ while (FCGI::accept &gt;= 0) {
       application.  Example application:
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
-while (FCGI::accept &gt;= 0) {
+my $request = FCGI::Request();
+while ($request-&gt;Accept() &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'};
     die if $ENV{'FCGI_ROLE'} ne "AUTHORIZER";
     die if !$ENV{'REMOTE_PASSWD'};
@@ -239,7 +242,8 @@ while (FCGI::accept &gt;= 0) {
       specifies when it is called.  Example application:
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
-while (FCGI::accept &gt;= 0) {
+my $request = FCGI::Request();
+while ($request-&gt;Accept() &gt;= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
     die if $ENV{'FCGI_ROLE'} ne "AUTHORIZER";
 
