@@ -86,7 +86,8 @@ and Access Control</a></seealso>
 <highlight language="perl">
 #!/usr/bin/perl
 use FCGI;
-while (FCGI::accept >= 0) {
+my $request = FCGI::Request();
+while ($request->Accept() >= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
     die if $ENV{'FCGI_ROLE'}        ne "AUTHORIZER";
     die if !$ENV{'REMOTE_PASSWD'};
@@ -131,7 +132,8 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
 <highlight language="perl">
 #!/usr/bin/perl
 use FCGI;
-while (FCGI::accept >= 0) {
+my $request = FCGI::Request();
+while ($request->Accept() >= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHORIZER";
     die if $ENV{'FCGI_ROLE'}        ne "AUTHORIZER";
     die if $ENV{'REMOTE_PASSWD'};
@@ -181,7 +183,8 @@ AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
 <highlight language="perl">
 #!/usr/bin/perl
 use FCGI;
-while (FCGI::accept >= 0) {
+my $request = FCGI::Request();
+while ($request->Accept() >= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'};
     die if $ENV{'FCGI_ROLE'} ne "AUTHORIZER";
     die if !$ENV{'REMOTE_PASSWD'};
@@ -228,7 +231,8 @@ AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
 <highlight language="perl">
 #!/usr/bin/perl
 use FCGI;
-while (FCGI::accept >= 0) {
+my $request = FCGI::Request();
+while ($request->Accept() >= 0) {
     die if $ENV{'FCGI_APACHE_ROLE'} ne "AUTHENTICATOR";
     die if $ENV{'FCGI_ROLE'} ne "AUTHORIZER";
 
