@@ -125,7 +125,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1686853
                   http://svn.apache.org/r1686856
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
-     +1: minfrin
+     +1: minfrin, jim
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
           its parameter when starting httpd as single process (httpd -X).
@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      mod_proxy.
      trunk patch: http://svn.apache.org/r1721899
      2.4.x patch: trunk works, module CHANGES
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_ssl: Constify + save a few bytes in conf pool when parsing SSLRequire
      mod_nw_ssl: Save a few bytes in conf pool when processing 'NWSSLTrustedCerts'
@@ -186,10 +186,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725149
                    http://svn.apache.org/r1725151
                    http://svn.apache.org/r1726233
-                  
      2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
                   +  http://svn.apache.org/r1726233
-     +1: covener
+     +1: covener, jim
 
   *) Add APLOGNO, first chunk (those that were detected by coccinelle).
      There are some more but they are easier to backport once these here are applied.
