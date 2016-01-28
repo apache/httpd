@@ -200,6 +200,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works
      +1: jailletc36
      
+  *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
+     remain unset for second or later caller. Fix this by caching the values for 
+     MOD_LDFLAGS and MOD_CFLAGS created during the first run and set them in the 
+     cached case. Change by rpluem
+     trunk patch:  http://svn.apache.org/r1725325
+     2.4.x patch:  trunk works
+     +1: icing
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
