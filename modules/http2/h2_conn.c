@@ -75,8 +75,6 @@ static void check_modules(int force)
     }
 }
 
-static void fix_event_master_conn(h2_session *session);
-
 apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
 {
     const h2_config *config = h2_config_sget(s);
@@ -171,14 +169,6 @@ apr_status_t h2_conn_setup(h2_ctx *ctx, conn_rec *c, request_rec *r)
 
     h2_ctx_session_set(ctx, session);
     
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_EVENT: 
-            fix_event_master_conn(session);
-            break;
-        default:
-            break;
-    }
-
     return APR_SUCCESS;
 }
 
@@ -224,12 +214,11 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 }
 
 
-static void fix_event_conn(conn_rec *c, conn_rec *master);
-
 conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p, 
                           apr_thread_t *thread, apr_socket_t *socket)
 {
     conn_rec *c;
+    void *cfg;
     
     AP_DEBUG_ASSERT(master);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
@@ -250,7 +239,6 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
     memcpy(c, master, sizeof(conn_rec));
            
     /* Replace these */
-    c->id                     = (master->id & (long)p);
     c->master                 = master;
     c->pool                   = p;        
     c->current_thread         = thread;
@@ -259,103 +247,21 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
     c->input_filters          = NULL;
     c->output_filters         = NULL;
     c->bucket_alloc           = apr_bucket_alloc_create(p);
-    c->cs                     = NULL;
     c->data_in_input_filters  = 0;
     c->data_in_output_filters = 0;
     c->clogging_input_filters = 1;
     c->log                    = NULL;
     c->log_id                 = NULL;
+    /* Simulate that we had already a request on this connection. */
+    c->keepalives             = 1;
     
     /* TODO: these should be unique to this thread */
     c->sbh                    = master->sbh;
     
-    /* Simulate that we had already a request on this connection. */
-    c->keepalives             = 1;
-    
     ap_set_module_config(c->conn_config, &core_module, socket);
-    
-    /* This works for mpm_worker so far. Other mpm modules have 
-     * different needs, unfortunately. The most interesting one 
-     * being mpm_event...
-     */
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_WORKER:
-            /* all fine */
-            break;
-        case H2_MPM_EVENT: 
-            fix_event_conn(c, master);
-            break;
-        default:
-            /* fingers crossed */
-            break;
-    }
-    
+    cfg = ap_get_module_config(master->conn_config, h2_conn_mpm_module());
+    ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
+
     return c;
-}
-
-/* This is an internal mpm event.c struct which is disguised
- * as a conn_state_t so that mpm_event can have special connection
- * state information without changing the struct seen on the outside.
- *
- * For our task connections we need to create a new beast of this type
- * and fill it with enough meaningful things that mpm_event reads and
- * starts processing out task request.
- */
-typedef struct event_conn_state_t event_conn_state_t;
-struct event_conn_state_t {
-    /** APR_RING of expiration timeouts */
-    APR_RING_ENTRY(event_conn_state_t) timeout_list;
-    /** the expiration time of the next keepalive timeout */
-    apr_time_t expiration_time;
-    /** connection record this struct refers to */
-    conn_rec *c;
-    /** request record (if any) this struct refers to */
-    request_rec *r;
-    /** server config this struct refers to */
-    void *sc;
-    /** is the current conn_rec suspended?  (disassociated with
-     * a particular MPM thread; for suspend_/resume_connection
-     * hooks)
-     */
-    int suspended;
-    /** memory pool to allocate from */
-    apr_pool_t *p;
-    /** bucket allocator */
-    apr_bucket_alloc_t *bucket_alloc;
-    /** poll file descriptor information */
-    apr_pollfd_t pfd;
-    /** public parts of the connection state */
-    conn_state_t pub;
-};
-APR_RING_HEAD(timeout_head_t, event_conn_state_t);
-
-static void fix_event_conn(conn_rec *c, conn_rec *master) 
-{
-    event_conn_state_t *master_cs = ap_get_module_config(master->conn_config, 
-                                                         h2_conn_mpm_module());
-    event_conn_state_t *cs = apr_pcalloc(c->pool, sizeof(event_conn_state_t));
-    cs->bucket_alloc = apr_bucket_alloc_create(c->pool);
-    
-    ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cs);
-    
-    cs->c = c;
-    cs->r = NULL;
-    cs->p = master_cs->p;
-    cs->pfd = master_cs->pfd;
-    cs->pub = master_cs->pub;
-    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
-    
-    c->cs = &(cs->pub);
-}
-
-static void fix_event_master_conn(h2_session *session)
-{
-    /* TODO: event MPM normally does this in a post_read_request hook. But
-     * we never encounter that on our master connection. We *do* know which
-     * server was selected during protocol negotiation, so lets set that.
-     */
-    event_conn_state_t *cs = ap_get_module_config(session->c->conn_config, 
-                                                  h2_conn_mpm_module());
-    cs->sc = ap_get_module_config(session->s->module_config, h2_conn_mpm_module());
 }
 
