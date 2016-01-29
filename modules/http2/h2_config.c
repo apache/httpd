@@ -59,9 +59,6 @@ static h2_config defconf = {
     1,                      /* TLS cooldown secs */
     1,                      /* HTTP/2 server push enabled */
     NULL,                   /* map of content-type to priorities */
-    -1,                     /* connection timeout */
-    -1,                     /* keepalive timeout */
-    0,                      /* stream timeout */
     256,                    /* push diary size */
     
 };
@@ -96,9 +93,6 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->tls_cooldown_secs    = DEF_VAL;
     conf->h2_push              = DEF_VAL;
     conf->priorities           = NULL;
-    conf->h2_timeout           = DEF_VAL;
-    conf->h2_keepalive         = DEF_VAL;
-    conf->h2_stream_timeout    = DEF_VAL;
     conf->push_diary_size      = DEF_VAL;
     
     return conf;
@@ -145,9 +139,6 @@ void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     else {
         n->priorities       = add->priorities? add->priorities : base->priorities;
     }
-    n->h2_timeout           = H2_CONFIG_GET(add, base, h2_timeout);
-    n->h2_keepalive = H2_CONFIG_GET(add, base, h2_keepalive);
-    n->h2_stream_timeout    = H2_CONFIG_GET(add, base, h2_stream_timeout);
     n->push_diary_size      = H2_CONFIG_GET(add, base, push_diary_size);
     
     return n;
@@ -191,12 +182,6 @@ apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, tls_cooldown_secs);
         case H2_CONF_PUSH:
             return H2_CONFIG_GET(conf, &defconf, h2_push);
-        case H2_CONF_TIMEOUT_SECS:
-            return H2_CONFIG_GET(conf, &defconf, h2_timeout);
-        case H2_CONF_KEEPALIVE_SECS:
-            return H2_CONFIG_GET(conf, &defconf, h2_keepalive);
-        case H2_CONF_STREAM_TIMEOUT_SECS:
-            return H2_CONFIG_GET(conf, &defconf, h2_stream_timeout);
         case H2_CONF_PUSH_DIARY_SIZE:
             return H2_CONFIG_GET(conf, &defconf, push_diary_size);
         default:
@@ -496,42 +481,6 @@ static const char *h2_conf_set_tls_cooldown_secs(cmd_parms *parms,
     return NULL;
 }
 
-static const char *h2_conf_set_timeout(cmd_parms *parms,
-                                       void *arg, const char *value)
-{
-    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
-    (void)arg;
-    cfg->h2_timeout = (int)apr_atoi64(value);
-    if (cfg->h2_timeout < 0) {
-        return "value must be >= 0";
-    }
-    return NULL;
-}
-
-static const char *h2_conf_set_keepalive(cmd_parms *parms,
-                                                 void *arg, const char *value)
-{
-    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
-    (void)arg;
-    cfg->h2_keepalive = (int)apr_atoi64(value);
-    if (cfg->h2_keepalive < 0) {
-        return "value must be >= 0";
-    }
-    return NULL;
-}
-
-static const char *h2_conf_set_stream_timeout(cmd_parms *parms,
-                                              void *arg, const char *value)
-{
-    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
-    (void)arg;
-    cfg->h2_stream_timeout = (int)apr_atoi64(value);
-    if (cfg->h2_stream_timeout < 0) {
-        return "value must be >= 0";
-    }
-    return NULL;
-}
-
 static const char *h2_conf_set_push_diary_size(cmd_parms *parms,
                                                void *arg, const char *value)
 {
@@ -587,12 +536,6 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "off to disable HTTP/2 server push"),
     AP_INIT_TAKE23("H2PushPriority", h2_conf_add_push_priority, NULL,
                   RSRC_CONF, "define priority of PUSHed resources per content type"),
-    AP_INIT_TAKE1("H2Timeout", h2_conf_set_timeout, NULL,
-                  RSRC_CONF, "read/write timeout (seconds) for HTTP/2 connections"),
-    AP_INIT_TAKE1("H2KeepAliveTimeout", h2_conf_set_keepalive, NULL,
-                  RSRC_CONF, "timeout (seconds) for idle HTTP/2 connections, no streams open"),
-    AP_INIT_TAKE1("H2StreamTimeout", h2_conf_set_stream_timeout, NULL,
-                  RSRC_CONF, "read/write timeout (seconds) for HTTP/2 streams"),
     AP_INIT_TAKE1("H2PushDiarySize", h2_conf_set_push_diary_size, NULL,
                   RSRC_CONF, "size of push diary"),
     AP_END_CMD
