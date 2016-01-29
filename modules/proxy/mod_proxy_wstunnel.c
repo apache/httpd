@@ -422,8 +422,8 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     baton->client_soc = client_socket;
     baton->server_soc = sock;
     baton->proxy_connrec = conn;
-    baton->bb_i = bb;
-    baton->bb_o = header_brigade;
+    baton->bb_o = bb;
+    baton->bb_i = header_brigade;
     baton->scheme = scheme;
     apr_pool_create(&baton->subpool, r->pool);
 
