@@ -81,8 +81,8 @@ BrowserMatch MSIE !netscape
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
 <highlight language="config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
+BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot
 </highlight>
 
     <p>Some additional examples:</p>
