@@ -311,10 +311,7 @@ struct event_conn_state_t {
     conn_rec *c;
     /** request record (if any) this struct refers to */
     request_rec *r;
-    /** is the current conn_rec suspended?  (disassociated with
-     * a particular MPM thread; for suspend_/resume_connection
-     * hooks)
-     */
+    /** server config this struct refers to */
     void *sc;
     /** is the current conn_rec suspended?  (disassociated with
      * a particular MPM thread; for suspend_/resume_connection

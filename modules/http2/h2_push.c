@@ -282,14 +282,36 @@ static int set_header(void *ctx, const char *key, const char *value)
     return 1;
 }
 
+static int has_param(link_ctx *ctx, const char *param)
+{
+    const char *p = apr_table_get(ctx->params, param);
+    return !!p;
+}
+
+static int has_relation(link_ctx *ctx, const char *rel)
+{
+    const char *s, *val = apr_table_get(ctx->params, "rel");
+    if (val) {
+        if (!strcmp(rel, val)) {
+            return 1;
+        }
+        s = ap_strstr_c(val, rel);
+        if (s && (s == val || s[-1] == ' ')) {
+            s += strlen(rel);
+            if (!*s || *s == ' ') {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 static int add_push(link_ctx *ctx)
 {
     /* so, we have read a Link header and need to decide
      * if we transform it into a push.
      */
-    const char *rel = apr_table_get(ctx->params, "rel");
-    if (rel && !strcmp("preload", rel)) {
+    if (has_relation(ctx, "preload") && !has_param(ctx, "nopush")) {
         apr_uri_t uri;
         if (apr_uri_parse(ctx->pool, ctx->link, &uri) == APR_SUCCESS) {
             if (uri.path && same_authority(ctx->req, &uri)) {
