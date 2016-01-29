@@ -1834,16 +1834,17 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     /* When we have no streams, no task event are possible,
                      * switch to blocking reads */
                     transit(session, "no io", H2_SESSION_ST_IDLE);
-                    session->keepalive_until = apr_time_now() + session->s->keep_alive_timeout;
+                    session->idle_until = apr_time_now() + session->s->keep_alive_timeout;
                 }
             }
             else if (!h2_stream_set_has_unsubmitted(session->streams)
                      && !h2_stream_set_has_suspended(session->streams)) {
                 /* none of our streams is waiting for a response or
                  * new output data from task processing, 
-                 * switch to blocking reads. */
+                 * switch to blocking reads. We are probably waiting on
+                 * window updates. */
                 transit(session, "no io", H2_SESSION_ST_IDLE);
-                session->keepalive_until = apr_time_now() + session->s->keep_alive_timeout;
+                session->idle_until = apr_time_now() + session->s->timeout;
             }
             else {
                 /* Unable to do blocking reads, as we wait on events from
@@ -2052,7 +2053,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
                     }
                     else if (APR_STATUS_IS_EAGAIN(status) || APR_STATUS_IS_TIMEUP(status)) {
-                        if (apr_time_now() > session->keepalive_until) {
+                        if (apr_time_now() > session->idle_until) {
                             dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
                         }
                         else {
@@ -2080,10 +2081,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* nothing to read */
                     }
                     else if (APR_STATUS_IS_TIMEUP(status)) {
-                        if (apr_time_now() > session->keepalive_until) {
+                        if (apr_time_now() > session->idle_until) {
                             dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
                         }
-                        /* continue keepalive handling */
+                        /* continue reading handling */
                     }
                     else {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);

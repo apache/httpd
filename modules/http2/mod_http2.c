@@ -15,6 +15,7 @@
 
 #include <apr_optional.h>
 #include <apr_optional_hooks.h>
+#include <apr_time.h>
 #include <apr_want.h>
 
 #include <httpd.h>

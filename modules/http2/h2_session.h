@@ -113,7 +113,7 @@ typedef struct h2_session {
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
     
     apr_time_t start_wait;          /* Time we started waiting for sth. to happen */
-    apr_time_t keepalive_until;     /* Time when we stop keeing an idle conn alive */
+    apr_time_t idle_until;          /* Time we shut down due to sheer boredom */
     
     apr_pool_t *pool;               /* pool to use in session handling */
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
