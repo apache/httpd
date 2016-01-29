@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: allowing link header to specify multiple "rel" values, 
+     space-separated inside a quoted string. Prohibiting push when Link parameter
+     "nopush" is present.
+     [Stefan Eissing]
+
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
      PR 58929 [Ruediger Pluem]
