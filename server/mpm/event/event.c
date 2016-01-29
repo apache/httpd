@@ -3293,6 +3293,55 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
     return OK;
 }
 
+static void setup_slave_conn(conn_rec *c, void *csd) 
+{
+    event_conn_state_t *mcs;
+    event_conn_state_t *cs;
+    
+    mcs = ap_get_module_config(c->master->conn_config, &mpm_event_module);
+    
+    cs = apr_pcalloc(c->pool, sizeof(*cs));
+    cs->c = c;
+    cs->r = NULL;
+    cs->sc = mcs->sc;
+    cs->suspended = 0;
+    cs->p = c->pool;
+    cs->bucket_alloc = c->bucket_alloc;
+    cs->pfd = mcs->pfd;
+    cs->pub = mcs->pub;
+    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
+    cs->pub.sense = CONN_SENSE_DEFAULT;
+    
+    c->cs = &(cs->pub);
+    ap_set_module_config(c->conn_config, &mpm_event_module, cs);
+}
+
+static int event_pre_connection(conn_rec *c, void *csd)
+{
+    if (c->master && (!c->cs || c->cs == c->master->cs)) {
+        setup_slave_conn(c, csd);
+    }
+    return OK;
+}
+
+static int event_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
+                                 const char *protocol)
+{
+    if (!r && s) {
+        /* connection based switching of protocol, set the correct server
+         * configuration, so that timeouts, keepalives and such are used
+         * for the server that the connection was switched on.
+         * Normally, we set this on post_read_request, but on a protocol
+         * other than http/1.1, this might never happen.
+         */
+        event_conn_state_t *cs;
+        
+        cs = ap_get_module_config(c->conn_config, &mpm_event_module);
+        cs->sc = ap_get_module_config(s->module_config, &mpm_event_module);
+    }
+    return DECLINED;
+}
+
 /* This really should be a post_config hook, but the error log is already
  * redirected by that point, so we need to do this in the open_logs phase.
  */
@@ -3791,6 +3840,9 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_post_read_request(event_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(event_get_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_resume_suspended(event_resume_suspended, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_pre_connection(event_pre_connection, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_protocol_switch(event_protocol_switch, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,
