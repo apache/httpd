@@ -126,7 +126,7 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
         return 1;
     }
 
-    if (!ap_prep_lingering_close(c)) {
+    if (ap_prep_lingering_close(c)) {
         return 1;
     }
     
