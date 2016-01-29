@@ -183,7 +183,7 @@ See --with-nghttp2 on how to manage non-standard locations. This module
 is usually linked shared and requires loading. ], $http2_objs, , most, [
 #    APACHE_CHECK_OPENSSL
 #    if test "$ac_cv_openssl" = "yes" ; then
-        APR_ADDTO(MOD_CPPFLAGS, ["-DH2_OPENSSL"])
+#        APR_ADDTO(MOD_CPPFLAGS, ["-DH2_OPENSSL"])
 #    fi
 
     APACHE_CHECK_NGHTTP2
