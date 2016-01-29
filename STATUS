@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_lbmethod_heartbeat: No need to search twice for the same value
      trunk patch:  http://svn.apache.org/r1725445
      2.4.x patch:  trunk works
-     +1: jailletc36
+     +1: jailletc36, icing
      
   *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
      remain unset for second or later caller. Fix this by caching the values for 
