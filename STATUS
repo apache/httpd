@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ssl: Fix some duplicate definitions
      trunk patch:  http://svn.apache.org/r1726888
      2.4.x patch:  trunk works
-     +1: mrumph
+     +1: mrumph, icing
      
 PATCHES/ISSUES THAT ARE BEING WORKED
 
