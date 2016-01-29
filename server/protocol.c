@@ -647,6 +647,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
     ap_parse_uri(r, uri);
     if (r->status != HTTP_OK) {
+        r->proto_num = HTTP_VERSION(1,0);
+        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
         return 0;
     }
 
