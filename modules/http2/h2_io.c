@@ -102,12 +102,13 @@ apr_status_t h2_io_in_shutdown(h2_io *io)
 }
 
 
-void h2_io_signal_init(h2_io *io, h2_io_op op, int timeout_secs, apr_thread_cond_t *cond)
+void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 
+                       apr_thread_cond_t *cond)
 {
     io->timed_op = op;
     io->timed_cond = cond;
-    if (timeout_secs > 0) {
-        io->timeout_at = apr_time_now() + apr_time_from_sec(timeout_secs);
+    if (timeout > 0) {
+        io->timeout_at = apr_time_now() + timeout;
     }
     else {
         io->timeout_at = 0; 

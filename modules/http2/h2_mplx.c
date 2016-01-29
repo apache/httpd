@@ -129,7 +129,8 @@ static void h2_mplx_destroy(h2_mplx *m)
  *   than protecting a shared h2_session one with an own lock.
  */
 h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent, 
-                        const h2_config *conf,
+                        const h2_config *conf, 
+                        apr_interval_time_t stream_timeout,
                         h2_workers *workers)
 {
     apr_status_t status = APR_SUCCESS;
@@ -164,12 +165,11 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
+        m->stream_timeout = stream_timeout;
         m->workers = workers;
         
         m->tx_handles_reserved = 0;
         m->tx_chunk_size = 4;
-        
-        m->stream_timeout_secs = h2_config_geti(conf, H2_CONF_STREAM_TIMEOUT_SECS);
     }
     return m;
 }
@@ -416,7 +416,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
         if (io && !io->orphaned) {
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_read_pre");
             
-            h2_io_signal_init(io, H2_IO_READ, m->stream_timeout_secs, iowait);
+            h2_io_signal_init(io, H2_IO_READ, m->stream_timeout, iowait);
             status = h2_io_in_read(io, bb, -1, trailers);
             while (APR_STATUS_IS_EAGAIN(status) 
                    && !is_aborted(m, &status)
@@ -657,7 +657,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
                                  &m->tx_handles_reserved);
         /* Wait for data to drain until there is room again or
          * stream timeout expires */
-        h2_io_signal_init(io, H2_IO_WRITE, m->stream_timeout_secs, iowait);
+        h2_io_signal_init(io, H2_IO_WRITE, m->stream_timeout, iowait);
         while (status == APR_SUCCESS
                && !APR_BRIGADE_EMPTY(bb) 
                && iowait
