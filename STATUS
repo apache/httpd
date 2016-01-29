@@ -177,11 +177,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725392 (modules)
                    http://svn.apache.org/r1725394 (server/mpm)
                    http://svn.apache.org/r1725395 (server others)
+                   http://svn.apache.org/r1725468 (remove APLOGNO from mod_log_debug custom messages)
      2.4.x patch:  http://people.apache.org/~rjung/patches/aplogno-backport-r1725392.patch
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
-     +1: rjung, jim
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725468.patch
+     +1: rjung
      icing: needs http://svn.apache.org/r1725468
+     rjung: You are right, I added r1725468 and restart the vote.
+            @Jim: Only r1725468 is new: removing the added APLOGNO from
+                  mod_log_debug where we actually log the configured custom
+                  log messages. Admins can provide their own LOGNO as part
+                  of the ocnfigured log message. It doesn't make sense to
+                  use a fixed AH one.
 
   *) ap_expr: Add kept_body() function for expressions against r->kept_body()
      trunk patch:  http://svn.apache.org/r1725755
