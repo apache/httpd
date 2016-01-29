@@ -40,7 +40,7 @@ Windows</compatibility>
 
     <p>On Unix, the loaded code typically comes from shared object
     files (usually with <code>.so</code> extension), on Windows
-    this may either the <code>.so</code> or <code>.dll</code>
+    this may either be the <code>.so</code> or <code>.dll</code>
     extension.</p>
 
     <note type="warning"><title>Warning</title>
