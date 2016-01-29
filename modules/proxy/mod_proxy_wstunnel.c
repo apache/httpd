@@ -113,7 +113,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
                             "client was readable");
-                    done |= proxy_wstunnel_transfer(r, c, backconn, bb_i, bb_o,
+                    done |= proxy_wstunnel_transfer(r, c, backconn, bb_o, bb_i,
                                                     "client", &replied)
                                                     != APR_SUCCESS;
                 }
