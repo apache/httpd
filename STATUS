@@ -181,10 +181,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
      +1: rjung, jim
-     icing: several failures in t/apache/expr_string.t such as
-          Got 'AH02999: %', expected '%'
-          may remove the one in mod_log_debug.c:82 again?
-     
+     icing: needs http://svn.apache.org/r1725468
+
   *) ap_expr: Add kept_body() function for expressions against r->kept_body()
      trunk patch:  http://svn.apache.org/r1725755
                    http://svn.apache.org/r1725758
