@@ -48,7 +48,7 @@ Windows</td></tr></table>
 
     <p>On Unix, the loaded code typically comes from shared object
     files (usually with <code>.so</code> extension), on Windows
-    this may either the <code>.so</code> or <code>.dll</code>
+    this may either be the <code>.so</code> or <code>.dll</code>
     extension.</p>
 
     <div class="warning"><h3>Warning</h3>
@@ -161,7 +161,7 @@ Windows</td></tr></table>
 
     <p>For example:</p>
 
-    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+    <pre class="prettyprint lang-config">LoadFile "libexec/libxmlparse.so"</pre>
 
 
 
@@ -183,7 +183,7 @@ of active modules</td></tr>
     <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
     in the module documentation. Example:</p>
 
-    <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+    <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
 
     <p>loads the named module from the modules subdirectory of the
