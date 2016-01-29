@@ -97,8 +97,8 @@ BrowserMatch MSIE !netscape</pre>
   sets environment variables conditional on the
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
-<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
+<pre class="prettyprint lang-config">BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot</pre>
 
 
     <p>Some additional examples:</p>
