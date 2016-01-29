@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Prevent a server crash in case of an invalid CONNECT request with
+     a custom error page for status code 400 that uses server side includes.
+     PR 58929 [Ruediger Pluem]
+
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 
