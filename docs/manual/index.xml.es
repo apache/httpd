@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- $LastChangedRevision: 1447968 $ -->
+<!-- English Revision: 1447968 $ -->
 
 <!-- =========== Translated by: Luis Gil de Bernabé  -->
 <!--
