@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1708515:1726940 (outdated) -->
+<!-- English Revision: 1726940 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,52 +24,52 @@
 
 <manualpage metafile="new_features_2_4.xml.meta">
 
-<title>Vue d'ensemble des nouvelles fonctionnalit&eacute;s de la version 2.4 du
+<title>Vue d'ensemble des nouvelles fonctionnalités de la version 2.4 du
 serveur HTTP Apache</title>
 
 <summary>
-  <p>Ce document d&eacute;crit les modifications majeures apport&eacute;es par
-  la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s
-  ajout&eacute;es par la version 2.2, se r&eacute;f&eacute;rer au document
-  <a href="new_features_2_2.html">Nouvelles fonctionnalit&eacute;s
+  <p>Ce document décrit les modifications majeures apportées par
+  la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
+  ajoutées par la version 2.2, se référer au document
+  <a href="new_features_2_2.html">Nouvelles fonctionnalités
   de la version 2.2</a>.</p>
 </summary>
 
   <section id="core">
-    <title>Am&eacute;liorations du noyau</title>
+    <title>Améliorations du noyau</title>
     <dl>
-      <dt>Modules multiprocessus (MPMs) chargeables &agrave; l'ex&eacute;cution</dt>
-      <dd>Plusieurs MPMs peuvent maintenant &ecirc;tre <a
-      href="mpm.html#dynamic">compil&eacute;s en tant que modules
-      chargeables</a>. Le choix du MPM &agrave; utiliser s'effectue
-      &agrave; l'ex&eacute;cution via la directive <directive
+      <dt>Modules multiprocessus (MPMs) chargeables à l'exécution</dt>
+      <dd>Plusieurs MPMs peuvent maintenant être <a
+      href="mpm.html#dynamic">compilés en tant que modules
+      chargeables</a>. Le choix du MPM à utiliser s'effectue
+      à l'exécution via la directive <directive
       module="mod_so">LoadModule</directive>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le <a href="mod/event.html">MPM Event</a> n'en est plus au stade exp&eacute;rimental et est
-      maintenant pleinement support&eacute;.</dd>
+      <dd>Le <a href="mod/event.html">MPM Event</a> n'en est plus au stade expérimental et est
+      maintenant pleinement supporté.</dd>
 
       <dt>Support du mode asynchrone</dt>
-      <dd>Le support des lectures/&eacute;critures asynchrones pour les MPMs et
-      les plateformes qui l'impl&eacute;mentent a &eacute;t&eacute; am&eacute;lior&eacute;.</dd>
+      <dd>Le support des lectures/écritures asynchrones pour les MPMs et
+      les plateformes qui l'implémentent a été amélioré.</dd>
 
       <dt>Configuration du niveau de journalisation (LogLevel) par
-      module et par r&eacute;pertoire</dt>
+      module et par répertoire</dt>
       <dd>La directive <directive module="core">LogLevel</directive>
-      peut maintenant &ecirc;tre d&eacute;finie par module et par r&eacute;pertoire. Les
-      nouveaux niveaux <code>trace1</code> &agrave; <code>trace8</code> ont &eacute;t&eacute;
-      ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
+      peut maintenant être définie par module et par répertoire. Les
+      nouveaux niveaux <code>trace1</code> à <code>trace8</code> ont été
+      ajoutés au dessus du niveau de journalisation <code>debug</code>.</dd>
 
-      <dt>Sections de configuration au niveau requ&ecirc;te</dt>
+      <dt>Sections de configuration au niveau requête</dt>
       <dd>Les sections <directive module="core">If</directive>,
       <directive module="core" type="section">ElseIf</directive> et
       <directive module="core" type="section">Else</directive>
-      permettent de d&eacute;finir une configuration en fonction de crit&egrave;res
-      li&eacute;s &agrave; la requ&ecirc;te.</dd>
+      permettent de définir une configuration en fonction de critères
+      liés à la requête.</dd>
 
-      <dt>Interpr&eacute;teur d'expressions &agrave; usage g&eacute;n&eacute;ral</dt>
-      <dd>Un nouvel interpr&eacute;teur d'expressions permet de sp&eacute;cifier des
-      <a href="expr.html">conditions complexes</a> via des directives &agrave;
+      <dt>Interpréteur d'expressions à usage général</dt>
+      <dd>Un nouvel interpréteur d'expressions permet de spécifier des
+      <a href="expr.html">conditions complexes</a> via des directives à
       syntaxe commune comme <directive
       module="mod_setenvif">SetEnvIfExpr</directive>, <directive
       module="mod_rewrite">RewriteCond</directive>, <directive
@@ -78,30 +78,30 @@ serveur HTTP Apache</title>
       </dd>
 
       <dt>KeepAliveTimeout en millisecondes</dt>
-      <dd>Il est maintenant possible de d&eacute;finir la directive <directive
+      <dd>Il est maintenant possible de définir la directive <directive
       module="core">KeepAliveTimeout</directive> en millisecondes.
       </dd>
 
       <dt>Directive NameVirtualHost</dt>
-      <dd>Cette directive n'est plus n&eacute;cessaire et est maintenant obsol&egrave;te.</dd>
+      <dd>Cette directive n'est plus nécessaire et est maintenant obsolète.</dd>
 
-      <dt>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></dt>
+      <dt>Directives autorisées dans les fichiers <code>.htaccess</code></dt>
       <dd>La nouvelle directive <directive
-      module="core">AllowOverrideList</directive> permet de contr&ocirc;ler de
-      mani&egrave;re plus pr&eacute;cise la liste des directives autoris&eacute;es dans les
+      module="core">AllowOverrideList</directive> permet de contrôler de
+      manière plus précise la liste des directives autorisées dans les
       fichiers <code>.htaccess</code>.</dd>
 
       <dt>Variables dans les fichiers de configuration</dt>
       <dd>La directive <directive module="core">Define</directive>
-      permet de d&eacute;finir des variables dans les fichiers de
-      configuration, am&eacute;liorant ainsi la claret&eacute; de la pr&eacute;sentation si
-      la m&ecirc;me valeur est utilis&eacute;e en plusieurs points de la
+      permet de définir des variables dans les fichiers de
+      configuration, améliorant ainsi la clareté de la présentation si
+      la même valeur est utilisée en plusieurs points de la
       configuration.
       </dd>
 
-      <dt>Diminution de la m&eacute;moire utilis&eacute;e</dt>
-      <dd>Bien qu'elle propose de nombreuses nouvelles fonctionnalit&eacute;s,
-      la version 2.4.x tend &agrave; utiliser moins de m&eacute;moire que la version
+      <dt>Diminution de la mémoire utilisée</dt>
+      <dd>Bien qu'elle propose de nombreuses nouvelles fonctionnalités,
+      la version 2.4.x tend à utiliser moins de mémoire que la version
       2.2.x.</dd>
 
     </dl>
@@ -112,101 +112,101 @@ serveur HTTP Apache</title>
     <dl>      
 
       <dt><module>mod_proxy_fcgi</module></dt>
-      <dd>Mise &agrave; disposition du protocole FastCGI pour
+      <dd>Mise à disposition du protocole FastCGI pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_scgi</module></dt>
-      <dd>Mise &agrave; disposition du protocole SCGI pour
+      <dd>Mise à disposition du protocole SCGI pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_express</module></dt>
-      <dd>Ajoute &agrave; <module>mod_proxy</module> la configuration dynamique
+      <dd>Ajoute à <module>mod_proxy</module> la configuration dynamique
       de mandataires inverses en masse.</dd>
 
       <dt><module>mod_remoteip</module></dt>
-      <dd>Remplace l'adresse IP distante et le nom d'h&ocirc;te apparents du
-      client pour la requ&ecirc;te courante par la liste d'adresses IP
-      pr&eacute;sent&eacute;e par un mandataire ou un r&eacute;partiteur de charge via les
-      en-t&ecirc;tes de la requ&ecirc;te.</dd>
+      <dd>Remplace l'adresse IP distante et le nom d'hôte apparents du
+      client pour la requête courante par la liste d'adresses IP
+      présentée par un mandataire ou un répartiteur de charge via les
+      en-têtes de la requête.</dd>
 
       <dt><module>mod_heartmonitor</module>,
           <module>mod_lbmethod_heartbeat</module></dt>
-      <dd>Permet &agrave; <module>mod_proxy_balancer</module> de r&eacute;partir la
+      <dd>Permet à <module>mod_proxy_balancer</module> de répartir la
       charge en fonction du nombre de connexions actives sur les
-      serveurs d'arri&egrave;re-plan.</dd>
+      serveurs d'arrière-plan.</dd>
 
       <dt><module>mod_proxy_html</module></dt>
       <dd>Anciennement module tiers, il supporte la correction des liens
-      HTML dans une situation de mandat inverse, o&ugrave; le serveur
-      d'arri&egrave;re-plan g&eacute;n&egrave;re des URLs qui ne sont pas valides du point de
+      HTML dans une situation de mandat inverse, où le serveur
+      d'arrière-plan génère des URLs qui ne sont pas valides du point de
       vue des clients du mandataire.</dd>
 
       <dt><module>mod_sed</module></dt>
-      <dd>Une am&eacute;lioration de <module>mod_substitute</module> qui permet
-      d'&eacute;diter le corps de la r&eacute;ponse avec toute la puissance de la
+      <dd>Une amélioration de <module>mod_substitute</module> qui permet
+      d'éditer le corps de la réponse avec toute la puissance de la
       commande sed.</dd>
 
       <dt><module>mod_auth_form</module></dt>
-      <dd>Impl&eacute;mente une authentification &agrave; base de formulaire.</dd>
+      <dd>Implémente une authentification à base de formulaire.</dd>
 
       <dt><module>mod_session</module></dt>
-      <dd>Permet de conserver les donn&eacute;es de sessions des clients sous
-      forme de cookies ou dans une base de donn&eacute;es.</dd>
+      <dd>Permet de conserver les données de sessions des clients sous
+      forme de cookies ou dans une base de données.</dd>
 
       <dt><module>mod_allowmethods</module></dt>
       <dd>Permet de restreindre l'utilisation de
-      certaines m&eacute;thodes HTTP sans interf&eacute;rer avec l'authentification et
+      certaines méthodes HTTP sans interférer avec l'authentification et
       l'autorisation.</dd>      
 
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd pour la configuration et les fonctions logiques courantes
-      (Exp&eacute;rimental).</dd>
+      (Expérimental).</dd>
 
       <dt><module>mod_log_debug</module></dt>
-      <dd>Permet d'introduire une journalisation personnalis&eacute;e &agrave;
-      diff&eacute;rentes phases du traitement de la requ&ecirc;te.</dd>
+      <dd>Permet d'introduire une journalisation personnalisée à
+      différentes phases du traitement de la requête.</dd>
 
       <dt><module>mod_buffer</module></dt>
-      <dd>Fournit un tampon pour les piles des filtres en entr&eacute;e et en
+      <dd>Fournit un tampon pour les piles des filtres en entrée et en
       sortie.</dd>
 
       <dt><module>mod_data</module></dt>
-      <dd>Convertit un corps de r&eacute;ponse en URL de type donn&eacute;es RFC2397.</dd>
+      <dd>Convertit un corps de réponse en URL de type données RFC2397.</dd>
 
       <dt><module>mod_ratelimit</module></dt>
       <dd>Permet de limiter la bande passante pour certains
       clients.</dd>
 
       <dt><module>mod_request</module></dt>
-      <dd>Fournit des filtres permettant de g&eacute;rer et de mettre &agrave;
-      disposition les corps des requ&ecirc;tes HTTP.</dd>
+      <dd>Fournit des filtres permettant de gérer et de mettre à
+      disposition les corps des requêtes HTTP.</dd>
 
       <dt><module>mod_reflector</module></dt>
-      <dd>Permet de renvoyer comme r&eacute;ponse le corps de la requ&ecirc;te via la
+      <dd>Permet de renvoyer comme réponse le corps de la requête via la
       pile du filtre de sortie.</dd>
       
       <dt><module>mod_slotmem_shm</module></dt>
-      <dd>Met &agrave; disposition un fournisseur de m&eacute;moire partag&eacute;e &agrave; base de
+      <dd>Met à disposition un fournisseur de mémoire partagée à base de
       slots (du style tableau de bord).</dd>
 
       <dt><module>mod_xml2enc</module></dt>
       <dd>Anciennement module tiers, il supporte l'internationalisation
-      dans les modules de filtrage bas&eacute;s sur libxml2 (support du
+      dans les modules de filtrage basés sur libxml2 (support du
       markup)</dd>
 
-      <dt><module>mod_macro</module> (disponible &agrave; partir de la version 2.4.5)</dt>
+      <dt><module>mod_macro</module> (disponible à partir de la version 2.4.5)</dt>
       <dd>Permet d'utiliser des macros au sein des fichiers de
       configuration.</dd>
 
-      <dt><module>mod_proxy_wstunnel</module> (disponible &agrave; partir de la version 2.4.5)</dt>
+      <dt><module>mod_proxy_wstunnel</module> (disponible à partir de la version 2.4.5)</dt>
       <dd>Support des tunnels web-socket.</dd>
 
-      <dt><module>mod_authnz_fcgi</module> (disponible &agrave; partir de la version 2.4.10)</dt>
+      <dt><module>mod_authnz_fcgi</module> (disponible à partir de la version 2.4.10)</dt>
       <dd>Permet aux applications d'autorisation FastCGI d'authentifier
       et/ou autoriser les clients.</dd>
 
-      <dt><module>mod_http2</module> (disponible &agrave; partir de la
+      <dt><module>mod_http2</module> (disponible à partir de la
       version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
@@ -214,115 +214,115 @@ serveur HTTP Apache</title>
   </section>
 
   <section id="module">
-    <title>Am&eacute;liorations des modules</title>
+    <title>Améliorations des modules</title>
     <dl>
       <dt><module>mod_ssl</module></dt>
 
-      <dd><module>mod_ssl</module> peut maintenant v&eacute;rifier la
-      validit&eacute; des certificats clients en se connectant &agrave;
-      un serveur OCSP. Il est possible de d&eacute;finir un
-      r&eacute;pondeur par d&eacute;faut, et de choisir si l'on
-      pr&eacute;f&egrave;re le r&eacute;pondeur d&eacute;sign&eacute;
+      <dd><module>mod_ssl</module> peut maintenant vérifier la
+      validité des certificats clients en se connectant à
+      un serveur OCSP. Il est possible de définir un
+      répondeur par défaut, et de choisir si l'on
+      préfère le répondeur désigné
       dans le certificat client.</dd>
 
 	<dd>En outre, <module>mod_ssl</module> supporte maintenant
 	l'estampillage OCSP (OCSP stapling), qui permet au serveur
-	d'attester la validit&eacute; de son certificat aupr&egrave;s du client au
-	cours de la phase de n&eacute;gociation de la connexion.</dd>
+	d'attester la validité de son certificat auprès du client au
+	cours de la phase de négociation de la connexion.</dd>
 
-      <dd>Enfin, <module>mod_ssl</module> peut maintenant &ecirc;tre configur&eacute; pour
-      que celui-ci partage les donn&eacute;es de session SSL entre les serveurs
+      <dd>Enfin, <module>mod_ssl</module> peut maintenant être configuré pour
+      que celui-ci partage les données de session SSL entre les serveurs
       via memcached.</dd>
 
-      <dd>Le support des cl&eacute;s EC a &eacute;t&eacute; ajout&eacute; &agrave; celui des cl&eacute;s RSA et
+      <dd>Le support des clés EC a été ajouté à celui des clés RSA et
       DSA.</dd>
 
-      <dd>Support de TLS-SRP (disponible &agrave; partir de la version 2.4.4).</dd>
+      <dd>Support de TLS-SRP (disponible à partir de la version 2.4.4).</dd>
 
       <dt><module>mod_proxy</module></dt>
 
       <dd>La directive <directive
-      module="mod_proxy">ProxyPass</directive> est maintenant configur&eacute;e
-      de mani&egrave;re optimale dans les sections <directive
+      module="mod_proxy">ProxyPass</directive> est maintenant configurée
+      de manière optimale dans les sections <directive
       module="core">Location</directive> ou <directive
       module="core">LocationMatch</directive>, et offre un gain de
-      performances important par rapport &agrave; la syntaxe traditionnelle &agrave;
-      deux param&egrave;tres lorsqu'elle est pr&eacute;sente en grand nombre.</dd>
+      performances important par rapport à la syntaxe traditionnelle à
+      deux paramètres lorsqu'elle est présente en grand nombre.</dd>
 
       <dd>Il est maintenant possible de configurer l'adresse source dans
-      les requ&ecirc;tes mandat&eacute;es.</dd>
+      les requêtes mandatées.</dd>
 
       <dd>Support des sockets de type Unix vers le serveur
-      d'arri&egrave;re-plan (disponible &agrave; partir de la version 2.4.7).</dd>
+      d'arrière-plan (disponible à partir de la version 2.4.7).</dd>
 
       <dt><module>mod_proxy_balancer</module></dt>
 
-      <dd>Le gestionnaire de r&eacute;partition de charge propose de nouvelles
-      fonctionnalit&eacute;s. Ainsi, les possibilit&eacute;s de configuration des
-      membres du groupe de r&eacute;partition de charge pendant l'ex&eacute;cution ont
-      &eacute;t&eacute; am&eacute;lior&eacute;es (possibilit&eacute; d'ajout d'un membre suppl&eacute;mentaire).</dd>
+      <dd>Le gestionnaire de répartition de charge propose de nouvelles
+      fonctionnalités. Ainsi, les possibilités de configuration des
+      membres du groupe de répartition de charge pendant l'exécution ont
+      été améliorées (possibilité d'ajout d'un membre supplémentaire).</dd>
 
-      <dd>Configuration &agrave; l'ex&eacute;cution d'un sous-ensemble de param&egrave;tres
-      de r&eacute;partition de charge.</dd>
+      <dd>Configuration à l'exécution d'un sous-ensemble de paramètres
+      de répartition de charge.</dd>
 
-      <dd>Les membres du groupe de r&eacute;partition peuvent &ecirc;tre d&eacute;finis &agrave;
-      'Drain' de fa&ccedil;on &agrave; ce qu'ils ne r&eacute;pondent qu'aux sessions
+      <dd>Les membres du groupe de répartition peuvent être définis à
+      'Drain' de façon à ce qu'ils ne répondent qu'aux sessions
       persistantes existantes, ce qui permet de les mettre hors ligne en
       douceur.</dd>
 
-      <dd>Les r&egrave;glages du r&eacute;partiteur de charge peuvent &ecirc;tre rendus
-      persistants apr&egrave;s red&eacute;marrage.</dd>
+      <dd>Les règlages du répartiteur de charge peuvent être rendus
+      persistants après redémarrage.</dd>
 
       <dt><module>mod_cache</module></dt>
 
-      <dd>Le filtre CACHE du module <module>mod_cache</module> peut &ecirc;tre
-      ins&eacute;r&eacute; &agrave; un certain point de la cha&icirc;ne de filtrage pour contr&ocirc;ler
+      <dd>Le filtre CACHE du module <module>mod_cache</module> peut être
+      inséré à un certain point de la chaîne de filtrage pour contrôler
       plus finement la mise en cache.
       </dd>
 
       <dd><module>mod_cache</module> peut maintenant mettre en cache des
-      requ&ecirc;tes HEAD.</dd>
+      requêtes HEAD.</dd>
 
       <dd>Chaque fois que cela est possible, les directives de
-      <module>mod_cache</module> peuvent maintenant &ecirc;tre d&eacute;finies au
-      niveau du r&eacute;pertoire, et non plus seulement au niveau du serveur
+      <module>mod_cache</module> peuvent maintenant être définies au
+      niveau du répertoire, et non plus seulement au niveau du serveur
       principal.</dd>
 
-      <dd>L'URL de base des URLs en cache peut &ecirc;tre personnalis&eacute;e de
-      fa&ccedil;on &agrave; ce qu'un cluster de caches puisse partager le m&ecirc;me pr&eacute;fixe
+      <dd>L'URL de base des URLs en cache peut être personnalisée de
+      façon à ce qu'un cluster de caches puisse partager le même préfixe
       d'URL.</dd>
 
       <dd><module>mod_cache</module> peut maintenant servir du contenu
-      non mis &agrave; jour lorsqu'un serveur d'arri&egrave;re-plan n'est pas
+      non mis à jour lorsqu'un serveur d'arrière-plan n'est pas
       disponible (erreur 5xx).</dd>
 
-      <dd><module>mod_cache</module> peut maintenant ins&eacute;rer
-      HIT/MISS/REVALIDATE dans un en-t&ecirc;te X-Cache.</dd>
+      <dd><module>mod_cache</module> peut maintenant insérer
+      HIT/MISS/REVALIDATE dans un en-tête X-Cache.</dd>
 
       <dt><module>mod_include</module></dt>
-      <dd>Support de l'attribut 'onerror' dans un &eacute;l&eacute;ment 'include',
-      permettant de renvoyer un message d'erreur personnalis&eacute; &agrave; la place
-      du message d'erreur par d&eacute;faut.</dd>
+      <dd>Support de l'attribut 'onerror' dans un élément 'include',
+      permettant de renvoyer un message d'erreur personnalisé à la place
+      du message d'erreur par défaut.</dd>
 
       <dt><module>mod_cgi</module>, <module>mod_include</module>,
           <module>mod_isapi</module>, ...</dt>
-      <dd>La traduction des en-t&ecirc;tes en variables d'environnement est
+      <dd>La traduction des en-têtes en variables d'environnement est
       plus stricte qu'avant, ce qui permet de diminuer l'exposition aux attaques
-      de type cross-site-scripting via injection d'en-t&ecirc;tes. Les
-      en-t&ecirc;tes contenant des caract&egrave;res invalides (comme les caract&egrave;res
-      de soulignement) sont maintenant ignor&eacute;s. Le document <a
+      de type cross-site-scripting via injection d'en-têtes. Les
+      en-têtes contenant des caractères invalides (comme les caractères
+      de soulignement) sont maintenant ignorés. Le document <a
       href="env.html">Les variables d'environnement dans Apache</a>
-      pr&eacute;sente quelques pistes pour contourner ce probl&egrave;me avec les
-      clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
+      présente quelques pistes pour contourner ce problème avec les
+      clients anciens qui nécessitent de tels en-têtes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
 
       <dt><module>mod_authz_core</module> Conteneurs de logique d'autorisation</dt>
 
       <dd>La directive <directive
       module="mod_authz_core">Require</directive> et les directives de
-      conteneurs associ&eacute;es, comme <directive module="mod_authz_core"
-      type="section">RequireAll</directive>, permettent de d&eacute;finir une
-      logique d'autorisation avanc&eacute;e.</dd>
+      conteneurs associées, comme <directive module="mod_authz_core"
+      type="section">RequireAll</directive>, permettent de définir une
+      logique d'autorisation avancée.</dd>
 
       
 
@@ -330,67 +330,67 @@ serveur HTTP Apache</title>
       <dd>La directive <directive
       module="mod_rewrite">RewriteRule</directive> dispose maintenant
       des drapeaux <code>[QSD]</code> (Query String Discard) et
-      <code>[END]</code> qui permettent de simplifier les sc&eacute;narios de
-      r&eacute;&eacute;criture courants.</dd>
-      <dd>Possibilit&eacute; d'utiliser des expressions bool&eacute;ennes complexes
+      <code>[END]</code> qui permettent de simplifier les scénarios de
+      réécriture courants.</dd>
+      <dd>Possibilité d'utiliser des expressions booléennes complexes
       dans la directive <directive
       module="mod_rewrite">RewriteCond</directive>.</dd>
-      <dd>Possibilit&eacute; d'utiliser des requ&ecirc;tes SQL en tant que fonctions
+      <dd>Possibilité d'utiliser des requêtes SQL en tant que fonctions
       dans la directive <directive
       module="mod_rewrite">RewriteMap</directive>.</dd>
 
       <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
       <dd><module>mod_authnz_ldap</module> ajoute le support des
-      groupes imbriqu&eacute;s.</dd>
+      groupes imbriqués.</dd>
       <dd><module>mod_ldap</module> apporte les directives <directive
       module="mod_ldap">LDAPConnectionPoolTTL</directive> et <directive
       module="mod_ldap">LDAPTimeout</directive>, ainsi que d'autres
-      am&eacute;liorations dans le traitement des d&eacute;lais. Ceci s'av&egrave;re utile
-      pour les configurations o&ugrave; un pare-feu &agrave; m&eacute;moire d'&eacute;tat (stateful)
-      rej&egrave;te les connexions inactives vers le serveur LDAP.</dd>
+      améliorations dans le traitement des délais. Ceci s'avère utile
+      pour les configurations où un pare-feu à mémoire d'état (stateful)
+      rejète les connexions inactives vers le serveur LDAP.</dd>
       <dd><module>mod_ldap</module> propose la directive <directive
       module="mod_ldap">LDAPLibraryDebug</directive> qui permet de
-      journaliser les informations de d&eacute;bogage fournies par la bo&icirc;te &agrave;
-      outils LDAP utilis&eacute;e.</dd>
+      journaliser les informations de débogage fournies par la boîte à
+      outils LDAP utilisée.</dd>
 
       <dt><module>mod_info</module></dt>
       <dd><module>mod_info</module> est maintenant capable d'afficher la
-      configuration pr&eacute;interpr&eacute;t&eacute;e sur stdout au cours du d&eacute;marrage du
+      configuration préinterprétée sur stdout au cours du démarrage du
       serveur.</dd>
 
       <dt><module>mod_auth_basic</module></dt>
-      <dd>Nouveau m&eacute;canisme g&eacute;n&eacute;rique permettant d'effectuer une
-      authentification basique (disponible &agrave; partir de la version 2.4.5).</dd>
+      <dd>Nouveau mécanisme générique permettant d'effectuer une
+      authentification basique (disponible à partir de la version 2.4.5).</dd>
 
     </dl>
   </section>
 
   <section id="programs">
-    <title>Am&eacute;liorations des programmes</title>
+    <title>Améliorations des programmes</title>
     <dl>
         <dt><program>fcgistarter</program></dt>
-        <dd>Nouvel utilitaire pour le d&eacute;marrage des d&eacute;mons
+        <dd>Nouvel utilitaire pour le démarrage des démons
 	FastCGI.</dd>
 	<dt><program>htcacheclean</program></dt>
-        <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
-	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
-        <dd>Possibilit&eacute; de supprimer explicitement des URLs individuelles
-	pr&eacute;sentes dans le cache.</dd>
-        <dd>Les tailles de fichiers peuvent maintenant &ecirc;tre arrondies au
-	multiple de la taille de bloc donn&eacute;e, les limites de taille
-	collant de ce fait d'avantage &agrave; la taille r&eacute;elle sur disque.</dd>
-        <dd>La taille du cache peut maintenant &ecirc;tre limit&eacute;e par le
-	nombre d'inodes, en plus de la possibilit&eacute; de limitation par la
+        <dd>Les URLs présentes dans le cache peuvent maintenant être
+	affichées, accompagnées éventuellement de leurs métadonnées.</dd>
+        <dd>Possibilité de supprimer explicitement des URLs individuelles
+	présentes dans le cache.</dd>
+        <dd>Les tailles de fichiers peuvent maintenant être arrondies au
+	multiple de la taille de bloc donnée, les limites de taille
+	collant de ce fait d'avantage à la taille réelle sur disque.</dd>
+        <dd>La taille du cache peut maintenant être limitée par le
+	nombre d'inodes, en plus de la possibilité de limitation par la
 	taille des fichiers.</dd>
 
 	<dt><program>rotatelogs</program></dt>
-        <dd>Possibilit&eacute; de cr&eacute;er un lien vers le fichier journal
+        <dd>Possibilité de créer un lien vers le fichier journal
 	courant.</dd>
-        <dd>Possibilit&eacute; d'invoquer un script personnalis&eacute; apr&egrave;s la
+        <dd>Possibilité d'invoquer un script personnalisé après la
 	rotation.</dd>
 
 	<dt><program>htpasswd</program>, <program>htdbm</program></dt>
-        <dd>Support de l'algorithme bcrypt (disponible &agrave; partir de la
+        <dd>Support de l'algorithme bcrypt (disponible à partir de la
 	version 2.4.4).
         </dd>
     </dl>
@@ -401,56 +401,56 @@ serveur HTTP Apache</title>
     <dl>
         <dt>mod_rewrite</dt>
         <dd>La documentation du module <module>mod_rewrite</module> a
-	&eacute;t&eacute; r&eacute;organis&eacute;e et presque enti&egrave;rement r&eacute;&eacute;crite en mettant
+	été réorganisée et presque entièrement réécrite en mettant
 	l'accent sur les exemples et l'utilisation courante, ainsi que
-	sur l'incitation &agrave; utiliser d'autres solutions lorsque cela
-	s'av&egrave;re plus appropri&eacute;. Le document <a href="rewrite/">Rewrite
+	sur l'incitation à utiliser d'autres solutions lorsque cela
+	s'avère plus approprié. Le document <a href="rewrite/">Rewrite
 	Guide</a> constitue maintenant une section de premier niveau ;
-	il est mieux organis&eacute; et contient beaucoup plus de d&eacute;tails.</dd>
+	il est mieux organisé et contient beaucoup plus de détails.</dd>
 
         <dt>mod_ssl</dt>
-        <dd>La documentation du module <module>mod_ssl</module> a &eacute;t&eacute;
-	grandement am&eacute;lior&eacute;e, avec plus d'exemples et un niveau "Bien
-	d&eacute;marrer" qui s'ajoutent aux d&eacute;tails techniques d&eacute;j&agrave; pr&eacute;sents
-	dans la pr&eacute;c&eacute;dente documentation.</dd>
+        <dd>La documentation du module <module>mod_ssl</module> a été
+	grandement améliorée, avec plus d'exemples et un niveau "Bien
+	démarrer" qui s'ajoutent aux détails techniques déjà présents
+	dans la précédente documentation.</dd>
 
         <dt>Caching Guide</dt>
         <dd>Le <a href="caching.html">Guide de la mise en cache</a> a
-	&eacute;t&eacute; r&eacute;&eacute;crit afin de bien faire la diff&eacute;rence entre les
-	fonctionnalit&eacute;s de mise en cache de la RFC2616 HTTP/1.1 fournies
+	été réécrit afin de bien faire la différence entre les
+	fonctionnalités de mise en cache de la RFC2616 HTTP/1.1 fournies
 	par le module <module>mod_cache</module>, et la mise en cache
-	g&eacute;n&eacute;rique de type cl&eacute;/valeur fournie par l'interface <a
+	générique de type clé/valeur fournie par l'interface <a
 	href="socache.html">socache</a>, mais aussi pour couvrir la mise
-	en cache sp&eacute;cialis&eacute;e fournie par des m&eacute;canismes tels que ceux du
+	en cache spécialisée fournie par des mécanismes tels que ceux du
 	module <module>mod_file_cache</module>.</dd>
     </dl>
     </section>
 
   <section id="developer">
-    <title>Modifications concernant les d&eacute;veloppeur de modules</title>
+    <title>Modifications concernant les développeur de modules</title>
     <dl>
-      <dt>Ajout de code pour la v&eacute;rification de la configuration</dt>
+      <dt>Ajout de code pour la vérification de la configuration</dt>
 
-      <dd>Une nouvelle fonction, <code>check_config</code>, a &eacute;t&eacute; ajout&eacute;e et
-      s'ex&eacute;cute entre les fonctions <code>pre_config</code> et
-      <code>open_logs</code>. Elle s'ex&eacute;cute aussi avant la fonction
-      <code>test_config</code> si l'option <code>-t</code> est pass&eacute;e au
-      d&eacute;mon <program>httpd</program>. La fonction <code>check_config</code>
-      permet aux modules de v&eacute;rifier l'interd&eacute;pendance des valeurs des
+      <dd>Une nouvelle fonction, <code>check_config</code>, a été ajoutée et
+      s'exécute entre les fonctions <code>pre_config</code> et
+      <code>open_logs</code>. Elle s'exécute aussi avant la fonction
+      <code>test_config</code> si l'option <code>-t</code> est passée au
+      démon <program>httpd</program>. La fonction <code>check_config</code>
+      permet aux modules de vérifier l'interdépendance des valeurs des
       directives de configuration et d'ajuster ces valeurs, alors que les
-      messages du serveur peuvent encore &ecirc;tre affich&eacute;s sur la console.
+      messages du serveur peuvent encore être affichés sur la console.
       L'utilisateur est ainsi averti des erreurs de configuration avant que la
       fonction du noyau <code>open_logs</code> ne redirige les sorties de la
       console vers le journal des erreurs.</dd>
 
       <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
-      <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
-      est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
+      <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
+      est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <module>mod_ssl</module>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
 
-      <dd>Afin de fournir une logique d'autorisation avanc&eacute;e via des
+      <dd>Afin de fournir une logique d'autorisation avancée via des
       directives telles que <directive module="mod_authz_core"
       type="section">RequireAll</directive>, les modules d'autorisation
       s'enregistrent maintenant en tant
@@ -458,28 +458,28 @@ serveur HTTP Apache</title>
 
       <dt>Interface de mise en cache des petits objets</dt>
 
-      <dd>Le fichier d'en-t&ecirc;tes <var>ap_socache.h</var> fournit une
-      interface &agrave; base de fournisseur pour la mise en cache des petits
-      objets de donn&eacute;es, en s'inspirant de
-      l'impl&eacute;mentation pr&eacute;c&eacute;dente
-      du cache de session par <module>mod_ssl</module>. Sont support&eacute;s
+      <dd>Le fichier d'en-têtes <var>ap_socache.h</var> fournit une
+      interface à base de fournisseur pour la mise en cache des petits
+      objets de données, en s'inspirant de
+      l'implémentation précédente
+      du cache de session par <module>mod_ssl</module>. Sont supportés
       actuellement : les fournisseurs utilisant un tampon cyclique en
-      m&eacute;moire partag&eacute;e, les fichiers dbm sur disque, et les caches
-      distribu&eacute;s de type memcache.</dd>
+      mémoire partagée, les fichiers dbm sur disque, et les caches
+      distribués de type memcache.</dd>
 
       <dt>Ajout du point d'ancrage Cache Status</dt>
 
       <dd>Le module <module>mod_cache</module> inclut maintenant un
-      nouveau point d'ancrage, <code>cache_status</code>, qui est appel&eacute;
-      lorsque la d&eacute;cision &agrave; propos de la mise en cache est connue. Il en
-      existe une impl&eacute;mentation par d&eacute;faut qui ajoute les en-t&ecirc;tes
-      optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> &agrave;
-      la r&eacute;ponse.</dd>
+      nouveau point d'ancrage, <code>cache_status</code>, qui est appelé
+      lorsque la décision à propos de la mise en cache est connue. Il en
+      existe une implémentation par défaut qui ajoute les en-têtes
+      optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> à
+      la réponse.</dd>
 
 
     </dl>
-    <p>La documentation du d&eacute;veloppeur contient une <a
-    href="developer/new_api_2_4.html">liste d&eacute;taill&eacute;e des modifications
+    <p>La documentation du développeur contient une <a
+    href="developer/new_api_2_4.html">liste détaillée des modifications
     de l'API</a>.</p>
   </section>
 

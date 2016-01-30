@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1724273:1726578 (outdated) -->
+<!-- English Revision: 1726578 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,30 +32,30 @@ client</description>
 <identifier>deflate_module</identifier>
 
 <summary>
-    <p>Le module <module>mod_deflate</module> impl&eacute;mente le filtre de
+    <p>Le module <module>mod_deflate</module> implémente le filtre de
     sortie <code>DEFLATE</code> qui permet de comprimer la sortie de
-    votre serveur avant de l'envoyer au client sur le r&eacute;seau.</p>
+    votre serveur avant de l'envoyer au client sur le réseau.</p>
 </summary>
 <seealso><a href="../filter.html">Les filtres</a></seealso>
 
-<section id="supportedencodings"><title>Codages support&eacute;s</title>
-  <p>Le seul codage support&eacute; est <code>gzip</code> afin d'assurer une compl&egrave;te
-  compatibilit&eacute; avec les anciens navigateurs. Le codage <code>deflate</code>
-  n'est donc pas support&eacute; ; voir &agrave; ce sujet la <a
+<section id="supportedencodings"><title>Codages supportés</title>
+  <p>Le seul codage supporté est <code>gzip</code> afin d'assurer une complète
+  compatibilité avec les anciens navigateurs. Le codage <code>deflate</code>
+  n'est donc pas supporté ; voir à ce sujet la <a
   href="http://www.gzip.org/zlib/zlib_faq.html#faq38">documentation de zlib</a>
-  pour une explication d&eacute;taill&eacute;e.
+  pour une explication détaillée.
   </p>
 </section>
 
 <section id="recommended"><title>Exemples de configurations</title>
     <note type="warning"><title>Compression et TLS</title>
-        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
+        <p>Certaines applications web sont vulnérables à une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
-	donn&eacute;es compress&eacute;es par deflate. Pour plus de d&eacute;tails,
+	données compressées par deflate. Pour plus de détails,
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </note>
     <p>Voici un exemple simple de configuration qui permet de comprimer
-    les types de contenu &agrave; base de texte.</p>
+    les types de contenu à base de texte.</p>
 
     <example><title>Ne comprime que certains types de documents</title>
     <highlight language="config">
@@ -67,27 +67,27 @@ client</description>
 
 <section id="enable"><title>Activation de la compression</title>
     <note type="warning"><title>Compression et TLS</title>
-        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
+        <p>Certaines applications web sont vulnérables à une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
-	donn&eacute;es compress&eacute;es par deflate. Pour plus de d&eacute;tails,
+	données compressées par deflate. Pour plus de détails,
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </note>
 
     <section id="output"><title>Compression de la sortie</title>
-      <p>La compression est impl&eacute;ment&eacute;e par le <a
+      <p>La compression est implémentée par le <a
       href="../filter.html">filtre</a> <code>DEFLATE</code>. La
       directive suivante active la compression des documents dans le
-      conteneur o&ugrave; elle est plac&eacute;e :</p>
+      conteneur où elle est placée :</p>
 
       <highlight language="config">
 SetOutputFilter DEFLATE
 SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip   
 	</highlight>
 
-      <p>Si vous voulez limiter la compression &agrave; certains types MIME
+      <p>Si vous voulez limiter la compression à certains types MIME
       particuliers, vous pouvez utiliser la directive <directive
       module="mod_filter">AddOutputFilterByType</directive>. Voici un exemple
-      o&ugrave; la compression n'est activ&eacute;e que pour les fichiers html de la
+      où la compression n'est activée que pour les fichiers html de la
       documentation d'Apache :</p>
 
       <highlight language="config">
@@ -97,24 +97,24 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       </highlight>
 
       <note><title>Note</title>
-        Le filtre <code>DEFLATE</code> est toujours ins&eacute;r&eacute; apr&egrave;s les
+        Le filtre <code>DEFLATE</code> est toujours inséré après les
 	filtres RESOURCE comme PHP ou SSI. Il n'affecte jamais les
-	sous-requ&ecirc;tes internes.
+	sous-requêtes internes.
       </note>
       <note><title>Note</title>
-        La variable d'environnement <code>force-gzip</code>, d&eacute;finie &agrave;
+        La variable d'environnement <code>force-gzip</code>, définie à
 	l'aide de la directive <directive
 	module="mod_env">SetEnv</directive>, permet d'ignorer la
-	configuration de votre navigateur quant aux codages accept&eacute;s, et
-	d'envoyer sans condition une sortie comprim&eacute;e.
+	configuration de votre navigateur quant aux codages acceptés, et
+	d'envoyer sans condition une sortie comprimée.
       </note>
 
     </section>
-    <section id="inflate"><title>D&eacute;compression de la sortie</title>
+    <section id="inflate"><title>Décompression de la sortie</title>
       <p>Le module <module>mod_deflate</module> fournit aussi un filtre
-      permettant de d&eacute;comprimer un corps de r&eacute;ponse comprim&eacute; par gzip.
-      Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
-      <code>INFLATE</code> dans la cha&icirc;ne de filtrage en sortie via la
+      permettant de décomprimer un corps de réponse comprimé par gzip.
+      Pour activer cette fonctionnalité, vous devez insérer le filtre
+      <code>INFLATE</code> dans la chaîne de filtrage en sortie via la
       directive <directive module="core">SetOutputFilter</directive> ou
       <directive module="mod_mime">AddOutputFilter</directive>, comme
       dans l'exemple suivant :</p>
@@ -126,17 +126,17 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 &lt;/Location&gt;
       </highlight>
 
-      <p>Dans cet exemple, les sorties comprim&eacute;es par gzip en
-      provenance de example.com seront d&eacute;comprim&eacute;es afin de pouvoir
-      &ecirc;tre &eacute;ventuellement trait&eacute;es par d'autres filtres.
+      <p>Dans cet exemple, les sorties comprimées par gzip en
+      provenance de example.com seront décomprimées afin de pouvoir
+      être éventuellement traitées par d'autres filtres.
       </p>
 
     </section>
-    <section id="input"><title>D&eacute;compression de l'entr&eacute;e</title>
-      <p>Le module <module>mod_deflate</module> fournit &eacute;galement un filtre
-      permettant de d&eacute;comprimer un corps de requ&ecirc;te comprim&eacute; par gzip.
-      Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
-      <code>DEFLATE</code> dans la cha&icirc;ne de filtrage en entr&eacute;e via la
+    <section id="input"><title>Décompression de l'entrée</title>
+      <p>Le module <module>mod_deflate</module> fournit également un filtre
+      permettant de décomprimer un corps de requête comprimé par gzip.
+      Pour activer cette fonctionnalité, vous devez insérer le filtre
+      <code>DEFLATE</code> dans la chaîne de filtrage en entrée via la
       directive <directive module="core">SetInputFilter</directive> ou
       <directive module="mod_mime">AddInputFilter</directive>, comme
       dans l'exemple suivant :</p>
@@ -147,52 +147,52 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 &lt;/Location&gt;
       </highlight>
 
-      <p>D&eacute;sormais, si une requ&ecirc;te contient un en-t&ecirc;te
+      <p>Désormais, si une requête contient un en-tête
       <code>Content-Encoding: gzip</code>, son corps sera
-      automatiquement d&eacute;comprim&eacute;. Peu de navigateurs sont actuellement
-      en mesure de comprimer les corps de requ&ecirc;tes. Cependant,
-      certaines applications sp&eacute;cialis&eacute;es supportent les requ&ecirc;tes
-      comprim&eacute;es, comme par exemple certains clients <a
+      automatiquement décomprimé. Peu de navigateurs sont actuellement
+      en mesure de comprimer les corps de requêtes. Cependant,
+      certaines applications spécialisées supportent les requêtes
+      comprimées, comme par exemple certains clients <a
       href="http://www.webdav.org">WebDAV</a>.</p>
 
-      <note type="warning"><title>Note &agrave; propos de l'en-t&ecirc;te
+      <note type="warning"><title>Note à propos de l'en-tête
       <code>Content-Length</code></title>
-        <p>Si vous &eacute;valuez vous-m&ecirc;me la taille du corps de requ&ecirc;te,
-	<em>ne faites pas confiance &agrave; l'en-t&ecirc;te
-	<code>Content-Length</code>!</em> L'en-t&ecirc;te
-	Content-Length indique la longueur des donn&eacute;es en provenance du
-	client, et <em>non</em> la quantit&eacute; d'octets que repr&eacute;sente le
-	flux de donn&eacute;es d&eacute;compress&eacute;.</p>
+        <p>Si vous évaluez vous-même la taille du corps de requête,
+	<em>ne faites pas confiance à l'en-tête
+	<code>Content-Length</code>!</em> L'en-tête
+	Content-Length indique la longueur des données en provenance du
+	client, et <em>non</em> la quantité d'octets que représente le
+	flux de données décompressé.</p>
       </note>
     </section>
 </section>
 
 <section id="proxies"><title>Prise en compte des serveurs mandataires</title>
 
-    <p>Le module <module>mod_deflate</module> envoie un en-t&ecirc;te de
-    r&eacute;ponse HTTP <code>Vary: Accept-Encoding</code> pour avertir les
-    mandataires qu'une r&eacute;ponse enregistr&eacute;e dans le cache ne doit &ecirc;tre
-    envoy&eacute;e qu'aux clients qui ont envoy&eacute; l'en-t&ecirc;te de requ&ecirc;te
-    <code>Accept-Encoding</code> appropri&eacute;. Ceci permet d'&eacute;viter l'envoi
-    d'un contenu comprim&eacute; &agrave; un client qui ne sera pas en mesure
-    de l'interpr&eacute;ter.</p>
+    <p>Le module <module>mod_deflate</module> envoie un en-tête de
+    réponse HTTP <code>Vary: Accept-Encoding</code> pour avertir les
+    mandataires qu'une réponse enregistrée dans le cache ne doit être
+    envoyée qu'aux clients qui ont envoyé l'en-tête de requête
+    <code>Accept-Encoding</code> approprié. Ceci permet d'éviter l'envoi
+    d'un contenu comprimé à un client qui ne sera pas en mesure
+    de l'interpréter.</p>
 
-    <p>Si vous avez d&eacute;fini des exclusions sp&eacute;cifiques d&eacute;pendant, par
-    exemple, de l'en-t&ecirc;te <code>User-Agent</code>, vous devez
-    ajouter manuellement des donn&eacute;es &agrave; l'en-t&ecirc;te <code>Vary</code> afin
-    d'informer les mandataires des restrictions suppl&eacute;mentaires. Par
-    exemple, dans la configuration classique o&ugrave; l'addition du filtre
-    <code>DEFLATE</code> d&eacute;pend du contenu de l'en-t&ecirc;te
-    <code>User-Agent</code>, vous devez sp&eacute;cifier :</p>
+    <p>Si vous avez défini des exclusions spécifiques dépendant, par
+    exemple, de l'en-tête <code>User-Agent</code>, vous devez
+    ajouter manuellement des données à l'en-tête <code>Vary</code> afin
+    d'informer les mandataires des restrictions supplémentaires. Par
+    exemple, dans la configuration classique où l'addition du filtre
+    <code>DEFLATE</code> dépend du contenu de l'en-tête
+    <code>User-Agent</code>, vous devez spécifier :</p>
 
     <highlight language="config">
       Header append Vary User-Agent
     </highlight>
 
-    <p>Si votre d&eacute;cision de comprimer le contenu d&eacute;pend d'autres
-    informations que celles contenues dans les en-t&ecirc;tes de la requ&ecirc;te
-    (par exemple la version HTTP), vous devez attribuer &agrave; l'en-t&ecirc;te
-    <code>Vary</code> la valeur <code>*</code>, ce qui permet d'emp&ecirc;cher
+    <p>Si votre décision de comprimer le contenu dépend d'autres
+    informations que celles contenues dans les en-têtes de la requête
+    (par exemple la version HTTP), vous devez attribuer à l'en-tête
+    <code>Vary</code> la valeur <code>*</code>, ce qui permet d'empêcher
     les mandataires compatibles de tout mettre en cache.</p>
 
     <example><title>Exemple</title>
@@ -202,30 +202,30 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
     </example>
 </section>
 
-<section id="precompressed"><title>Servir du contenu pr&eacute;compress&eacute;</title>
+<section id="precompressed"><title>Servir du contenu précompressé</title>
 
-    <p>Comme <module>mod_deflate</module> recompresse le contenu demand&eacute; &agrave;
-    chaque requ&ecirc;te, il est possible de gagner en performances en
-    pr&eacute;compressant ce contenu, et en for&ccedil;ant mod_deflate &agrave; servir ce
-    contenu pr&eacute;compress&eacute; sans avoir &agrave; le recompresser &agrave; chaque requ&ecirc;te.
+    <p>Comme <module>mod_deflate</module> recompresse le contenu demandé à
+    chaque requête, il est possible de gagner en performances en
+    précompressant ce contenu, et en forçant mod_deflate à servir ce
+    contenu précompressé sans avoir à le recompresser à chaque requête.
     Pour ce faire, utilisez une configuration du style :</p>
 
     <highlight language="config">
 &lt;IfModule mod_headers.c&gt;
-    # Servir des fichiers CSS compress&eacute;s avec gzip, s'ils existent, et
+    # Servir des fichiers CSS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
     RewriteRule "^(.*)\.css"              "$1\.css\.gz" [QSA]
 
-    # Servir des fichiers JS compress&eacute;s avec gzip, s'ils existent, et
+    # Servir des fichiers JS compressés avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
     RewriteCond "%{REQUEST_FILENAME}\.gz" "-s"
     RewriteRule "^(.*)\.js"               "$1\.js\.gz" [QSA]
 
 
-    # Servir des types de contenus corrects, et emp&ecirc;cher mod_deflate
+    # Servir des types de contenus corrects, et empêcher mod_deflate
     # d'effectuer un double gzip.
     RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
     RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-gzip:1]
@@ -235,8 +235,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       # Servir le type de codage correct.
       Header append Content-Encoding gzip
 
-      # Force les mandataires &agrave; mettre en cache s&eacute;par&eacute;ment les fichiers
-      # css/js gzipp&eacute;s &amp; non gzipp&eacute;s.
+      # Force les mandataires à mettre en cache séparément les fichiers
+      # css/js gzippés &amp; non gzippés.
       Header append Vary Accept-Encoding
     &lt;/FilesMatch&gt;
 &lt;/IfModule&gt;
@@ -247,18 +247,18 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>Enregistre le taux de compression sous la forme d'une note
-&agrave; des fins de journalisation</description>
+à des fins de journalisation</description>
 <syntax>DeflateFilterNote [<var>type</var>] <var>nom de la note</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive>DeflateFilterNote</directive> permet de
-    sp&eacute;cifier qu'une note &agrave; propos du taux de compression doit &ecirc;tre
-    attach&eacute;e &agrave; la requ&ecirc;te. Le nom de la note est pass&eacute; sous la forme
-    d'un argument de la directive. Vous pouvez utiliser cette note &agrave; des
+    spécifier qu'une note à propos du taux de compression doit être
+    attachée à la requête. Le nom de la note est passé sous la forme
+    d'un argument de la directive. Vous pouvez utiliser cette note à des
     fins statistiques en enregistrant sa valeur dans votre <a
-    href="../logs.html#accesslog">journal des acc&egrave;s</a>.</p>
+    href="../logs.html#accesslog">journal des accès</a>.</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -269,14 +269,14 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       </highlight>
     </example>
 
-    <p>Pour extraire des informations plus pr&eacute;cises de vos journaux,
-    vous pouvez utiliser l'argument <var>type</var> pour sp&eacute;cifier le
-    type de donn&eacute;es de la note enregistr&eacute;e dans le journal.
+    <p>Pour extraire des informations plus précises de vos journaux,
+    vous pouvez utiliser l'argument <var>type</var> pour spécifier le
+    type de données de la note enregistrée dans le journal.
     <var>type</var> peut prendre une des valeurs suivantes :</p>
 
     <dl>
       <dt><code>Input</code></dt>
-      <dd>Enregistre dans la note la taille en octets du flux en entr&eacute;e
+      <dd>Enregistre dans la note la taille en octets du flux en entrée
       du filtre.</dd>
 
       <dt><code>Output</code></dt>
@@ -284,15 +284,15 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip
       du filtre.</dd>
 
       <dt><code>Ratio</code></dt>
-      <dd>Enregistre le taux de compression (<code>sortie/entr&eacute;e *
-      100</code>) dans la note. Il s'agit de la valeur par d&eacute;faut si
+      <dd>Enregistre le taux de compression (<code>sortie/entrée *
+      100</code>) dans la note. Il s'agit de la valeur par défaut si
       l'argument <var>type</var> est omis.</dd>
     </dl>
 
-    <p>Vous pouvez donc configurer votre journalisation de la mani&egrave;re
+    <p>Vous pouvez donc configurer votre journalisation de la manière
     suivante :</p>
 
-    <example><title>Journalisation d&eacute;taill&eacute;e</title>
+    <example><title>Journalisation détaillée</title>
       <highlight language="config">
 DeflateFilterNote Input instream
 DeflateFilterNote Output outstream
@@ -317,14 +317,23 @@ fois</description>
 
 <usage>
     <p>La directive <directive>DeflateBufferSize</directive> permet de
-    sp&eacute;cifier la taille en octets du fragment que zlib devra comprimer
-    en une seule fois.</p>
+    spécifier la taille en octets du fragment que zlib devra comprimer
+    en une seule fois. Si la taille de la réponse compressée est supérieure à
+    celle spécifiée par cette directive, httpd passera à un mode d'encodage
+    fragmenté (l'en-tête HTTP <code>Transfer-Encoding</code> prend la valeur
+    <code>Chunked</code>), ceci ayant comme effet de bord de ne définir aucun
+    en-tête HTTP <code>Content-Length</code>. Il est important de connaître ce
+    comportement, particulièrement lorsque httpd travaille derrière des
+    mandataires inverses avec mise en cache, ou lorsque httpd est configuré pour
+    utiliser <module>mod_cache</module> et <module>mod_cache_disk</module> car
+    les réponses HTTP sans en-tête <code>Content-Length</code> peuvent ne pas
+    être mises en cache.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateWindowSize</name>
-<description>Taille de la fen&ecirc;tre de compression zlib</description>
+<description>Taille de la fenêtre de compression zlib</description>
 <syntax>DeflateWindowSize <var>valeur</var></syntax>
 <default>DeflateWindowSize 15</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -332,8 +341,8 @@ fois</description>
 
 <usage>
     <p>La directive <directive>DeflateWindowSize</directive> permet de
-    sp&eacute;cifier la fen&ecirc;tre de compression zlib (une valeur comprise entre
-    1 et 15). En g&eacute;n&eacute;ral, plus grande sera la taille de la fen&ecirc;tre, plus
+    spécifier la fenêtre de compression zlib (une valeur comprise entre
+    1 et 15). En général, plus grande sera la taille de la fenêtre, plus
     grand sera le taux de compression auquel on pourra s'attendre.</p>
 </usage>
 </directivesynopsis>
@@ -341,7 +350,7 @@ fois</description>
 <directivesynopsis>
 
 <name>DeflateMemLevel</name>
-<description>La quantit&eacute; de m&eacute;moire utilisable par zlib pour la
+<description>La quantité de mémoire utilisable par zlib pour la
 compression</description>
 <syntax>DeflateMemLevel <var>valeur</var></syntax>
 <default>DeflateMemLevel 9</default>
@@ -350,34 +359,34 @@ compression</description>
 
 <usage>
     <p>La directive <directive>DeflateMemLevel</directive> permet de
-    sp&eacute;cifier la quantit&eacute; de m&eacute;moire utilisable par zlib pour la
+    spécifier la quantité de mémoire utilisable par zlib pour la
     compression (une valeur comprise entre 1 et 9).</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateCompressionLevel</name>
-<description>Le niveau de compression que nous appliquons &agrave; la
+<description>Le niveau de compression que nous appliquons à la
 sortie</description>
 <syntax>DeflateCompressionLevel <var>valeur</var></syntax>
-<default>La valeur par d&eacute;faut de zlib</default>
+<default>La valeur par défaut de zlib</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive>DeflateCompressionLevel</directive>
-    permet de sp&eacute;cifier le niveau de compression &agrave; utiliser ; plus
+    permet de spécifier le niveau de compression à utiliser ; plus
     grande est la valeur, meilleure sera la compression, mais plus grand
-    sera aussi le temps CPU n&eacute;cessaire pour effectuer le
+    sera aussi le temps CPU nécessaire pour effectuer le
     traitement.</p>
-    <p>La valeur doit &ecirc;tre comprise entre 1 (compression minimale) et 9
+    <p>La valeur doit être comprise entre 1 (compression minimale) et 9
     (compression maximale).</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateAlterETag</name>
-<description>Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
+<description>Comment l'en-tête sortant ETag doit être modifié au cours
 de la compression</description>
 <syntax>DeflateAlterETag AddSuffix|NoChange|Remove</syntax>
 <default>DeflateAlterETag AddSuffix</default>
@@ -386,89 +395,89 @@ de la compression</description>
 
 <usage>
     <p>La directive <directive>DeflateAlterETag</directive> permet de
-    sp&eacute;cifier comment l'en-t&ecirc;te ETag doit &ecirc;tre modifi&eacute; lorsqu'une
-    r&eacute;ponse est compress&eacute;e.</p>
+    spécifier comment l'en-tête ETag doit être modifié lorsqu'une
+    réponse est compressée.</p>
     <dl>
     <dt>AddSuffix</dt>
-    <dd><p>Ajoute la m&eacute;thode de compression &agrave; la fin de l'en-t&ecirc;te, ce
-    qui a pour effet d'attribuer un en-t&ecirc;te ETag unique aux
-    repr&eacute;sentations compress&eacute;es et non compress&eacute;es. C'est l'option par
-    d&eacute;faut depuis la version 2.4.0, mais emp&ecirc;che de servir des
-    codes d'&eacute;tat "HTTP Not Modified" (304) en r&eacute;ponse aux requ&ecirc;tes pour un
-    contenu compress&eacute;.</p></dd>
+    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête, ce
+    qui a pour effet d'attribuer un en-tête ETag unique aux
+    représentations compressées et non compressées. C'est l'option par
+    défaut depuis la version 2.4.0, mais empêche de servir des
+    codes d'état "HTTP Not Modified" (304) en réponse aux requêtes pour un
+    contenu compressé.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Ne modifie pas l'en-t&ecirc;te ETag dans une r&eacute;ponse compress&eacute;e.
-    C'&eacute;tait l'option par
-    d&eacute;faut avant la version 2.4.0, mais cela ne respectait pas la
-    pr&eacute;conisation HTTP/1.1 selon laquelle chaque repr&eacute;sentation de la
-    m&ecirc;me ressource doit poss&eacute;der un en-t&ecirc;te ETag unique.</p></dd>
+    <dd><p>Ne modifie pas l'en-tête ETag dans une réponse compressée.
+    C'était l'option par
+    défaut avant la version 2.4.0, mais cela ne respectait pas la
+    préconisation HTTP/1.1 selon laquelle chaque représentation de la
+    même ressource doit posséder un en-tête ETag unique.</p></dd>
     <dt>Remove</dt>
-    <dd><p>Supprime l'en-t&ecirc;te ETag dans les r&eacute;ponses compress&eacute;es, ce qui
-    a pour effet de rendre impossibles certaines requ&ecirc;tes
-    conditionnelles, mais permet d'&eacute;viter les inconv&eacute;nients des options
-    pr&eacute;c&eacute;dentes.</p></dd>
+    <dd><p>Supprime l'en-tête ETag dans les réponses compressées, ce qui
+    a pour effet de rendre impossibles certaines requêtes
+    conditionnelles, mais permet d'éviter les inconvénients des options
+    précédentes.</p></dd>
     </dl>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateInflateLimitRequestBody</name>
-<description>Taille maximale des corps de requ&ecirc;te d&eacute;compress&eacute;s</description>
+<description>Taille maximale des corps de requête décompressés</description>
 <syntax>DeflateInflateLimitRequestBody<var>value</var></syntax>
-<default>Aucune limite, mais LimitRequestBody s'applique apr&egrave;s la
+<default>Aucune limite, mais LimitRequestBody s'applique après la
 compression</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive
     <directive>DeflateInflateLimitRequestBody</directive> permet de
-    sp&eacute;cifier la taille maximale d'un corps de requ&ecirc;te d&eacute;compress&eacute;. Si
-    elle n'est pas d&eacute;finie, c'est la valeur de la directive <directive
+    spécifier la taille maximale d'un corps de requête décompressé. Si
+    elle n'est pas définie, c'est la valeur de la directive <directive
     module="core">LimitRequestBody</directive> qui s'applique au corps
-    de requ&ecirc;te d&eacute;compress&eacute;.</p>
+    de requête décompressé.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateInflateRatioLimit</name>
-<description>Ratio de d&eacute;compression maximum pour les corps de requ&ecirc;tes</description>
+<description>Ratio de décompression maximum pour les corps de requêtes</description>
 <syntax>DeflateInflateRatioLimit <var>value</var></syntax>
 <default>200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateInflateRatioLimit</directive>
-    permet de d&eacute;finir le ratio maximum entre la taille d'un corps de
-    requ&ecirc;te compress&eacute; et sa taille d&eacute;compress&eacute;e. Ce ratio est v&eacute;rifi&eacute; au
-    fur et &agrave; mesure de
-    l'arriv&eacute;e du corps de requ&ecirc;te, et s'il est d&eacute;pass&eacute; plus de
+    permet de définir le ratio maximum entre la taille d'un corps de
+    requête compressé et sa taille décompressée. Ce ratio est vérifié au
+    fur et à mesure de
+    l'arrivée du corps de requête, et s'il est dépassé plus de
     <directive>DeflateInflateRatioBurst</directive> fois, le traitement
-    de la requ&ecirc;te est interrompu.</p>
+    de la requête est interrompu.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DeflateInflateRatioBurst</name>
-<description>Nombre maximal de fois que le ratio de d&eacute;compression d'un
-corps de requ&ecirc;te peut &ecirc;tre d&eacute;pass&eacute;</description>
+<description>Nombre maximal de fois que le ratio de décompression d'un
+corps de requête peut être dépassé</description>
 <syntax>DeflateInflateRatioBurst <var>value</var></syntax>
 <default>3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>La directive <directive>DeflateInflateRatioBurst</directive>
-    permet de sp&eacute;cifier le nombre maximal de fois que la valeur de la
-    directive <directive>DeflateInflateRatioLimit</directive> peut &ecirc;tre
-    d&eacute;pass&eacute; avant l'arr&ecirc;t du traitement de la requ&ecirc;te.</p>
+    permet de spécifier le nombre maximal de fois que la valeur de la
+    directive <directive>DeflateInflateRatioLimit</directive> peut être
+    dépassé avant l'arrêt du traitement de la requête.</p>
 </usage>
 </directivesynopsis>
 
