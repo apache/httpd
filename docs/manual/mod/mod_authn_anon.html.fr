@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,37 +27,37 @@
 <div id="preamble"><h1>Module Apache mod_authn_anon</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_anon.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_anon.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_anon.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_anon.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet un accÃ¨s "anonyme" Ã  des zones
-authentifiÃ©es</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet un accès "anonyme" à des zones
+authentifiées</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>authn_anon_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_authn_anon.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_anon_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_anon.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet aux frontaux d'authentification comme
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> d'authentifier les utilisateurs
-    Ã  la maniÃ¨re des sites FTP anonymes, c'est Ã  dire
-    en fournissant l'identifiant utilisateur spÃ©cial 'anonymous' et
-    l'adresse email comme mot de passe. Ces adresses email peuvent Ãªtre
-    journalisÃ©es.</p>
+    à la manière des sites FTP anonymes, c'est à dire
+    en fournissant l'identifiant utilisateur spécial 'anonymous' et
+    l'adresse email comme mot de passe. Ces adresses email peuvent être
+    journalisées.</p>
 
-    <p>En combinaison avec d'autres mÃ©thodes de contrÃ´le d'accÃ¨s (base
-    de donnÃ©es), ce module permet d'effectuer un vÃ©ritable suivi des
-    utilisateurs et une personnalisation de leurs accÃ¨s en fonction de
-    leur profil, tout en conservant l'accessibilitÃ© du site aux
-    utilisateurs 'non enregistrÃ©s'. Un avantage du suivi des
-    utilisateurs basÃ© sur l'authentification rÃ©side dans le fait qu'il
-    est, Ã  l'opposÃ© des cookies magiques et des drÃ´les d'URLs avec
-    prÃ©fixes ou suffixes, entiÃ¨rement indÃ©pendant du navigateur et qu'il
+    <p>En combinaison avec d'autres méthodes de contrôle d'accès (base
+    de données), ce module permet d'effectuer un véritable suivi des
+    utilisateurs et une personnalisation de leurs accès en fonction de
+    leur profil, tout en conservant l'accessibilité du site aux
+    utilisateurs 'non enregistrés'. Un avantage du suivi des
+    utilisateurs basé sur l'authentification réside dans le fait qu'il
+    est, à l'opposé des cookies magiques et des drôles d'URLs avec
+    préfixes ou suffixes, entièrement indépendant du navigateur et qu'il
     permet de partager des URLs entre plusieurs utilisateurs.</p>
 
     <p>Si l'on utilise le module <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, le
-    module <code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> est invoquÃ© en affectant la
-    valeur <code>anon</code> Ã  la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.</p>
+    module <code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> est invoqué en affectant la
+    valeur <code>anon</code> à la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
@@ -74,29 +74,29 @@ authentifiÃ©es</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="example" id="example">Exemple</a></h2>
-    <p>L'exemple ci-dessous prÃ©sente un exemple de combinaison avec
-    l'authentification Ã  base de fichier htpasswd "normale", et permet
-    la connexion d'utilisateurs en tant qu'invitÃ©s avec les propriÃ©tÃ©s
+    <p>L'exemple ci-dessous présente un exemple de combinaison avec
+    l'authentification à base de fichier htpasswd "normale", et permet
+    la connexion d'utilisateurs en tant qu'invités avec les propriétés
     suivantes :</p>
 
     <ul>
-      <li>Il incite l'utilisateur Ã  fournir un identifiant.
+      <li>Il incite l'utilisateur à fournir un identifiant.
       (<code class="directive"><a href="#anonymous_nouserid">Anonymous_NoUserID</a></code>)</li>
 
-      <li>Il incite l'utilisateur Ã  fournir un mot de passe.
+      <li>Il incite l'utilisateur à fournir un mot de passe.
       (<code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>)</li>
 
-      <li>Le mot de passe fourni doit Ãªtre une adresse email valide,
-      c'est Ã  dire contenant au moins un '@' et un '.'.
+      <li>Le mot de passe fourni doit être une adresse email valide,
+      c'est à dire contenant au moins un '@' et un '.'.
       (<code class="directive"><a href="#anonymous_verifyemail">Anonymous_VerifyEmail</a></code>)</li>
 
       <li>Les valeurs possibles pour l'identifiant utilisateur sont
       <code>anonymous, guest, www, test ou welcome</code>, et la
-      vÃ©rification n'est <strong>pas</strong> sensible Ã  la casse.
+      vérification n'est <strong>pas</strong> sensible à la casse.
       (<code class="directive"><a href="#anonymous">Anonymous</a></code>)</li>
 
-      <li>Les adresses email entrÃ©es dans le champ passwd sont
-      enregistrÃ©es dans le fichier journal des erreurs.
+      <li>Les adresses email entrées dans le champ passwd sont
+      enregistrées dans le fichier journal des erreurs.
       (<code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>)</li>
     </ul>
 
@@ -119,117 +119,117 @@ authentifiÃ©es</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous" id="anonymous">Directive</a> <a name="Anonymous" id="Anonymous">Anonymous</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit la liste des identifiants utilisateur autorisÃ©s Ã 
-accÃ©der sans vÃ©rification du mot de passe</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la liste des identifiants utilisateur autorisés à
+accéder sans vérification du mot de passe</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous <var>utilisateur</var> [<var>utilisateur</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Une liste d'un ou plusieurs identifiants utilisateur spÃ©ciaux
-    autorisÃ©s Ã  accÃ©der sans vÃ©rification du mot de passe. Les
-    identifiants doivent Ãªtre sÃ©parÃ©s par un espace. Pour spÃ©cifier un
+    <p>Une liste d'un ou plusieurs identifiants utilisateur spéciaux
+    autorisés à accéder sans vérification du mot de passe. Les
+    identifiants doivent être séparés par un espace. Pour spécifier un
     identifiant contenant un espace, on peut utiliser les guillemets '
-    ou ", ou le caractÃ¨re d'Ã©chappement \.</p>
+    ou ", ou le caractère d'échappement \.</p>
 
-    <p>Veuillez noter que la vÃ©rification <strong>n'est pas sensible Ã 
+    <p>Veuillez noter que la vérification <strong>n'est pas sensible à
     la casse</strong>.<br />
-    Il est fortement conseillÃ© d'intÃ©grer l'utilisateur spÃ©cial
+    Il est fortement conseillé d'intégrer l'utilisateur spécial
     '<code>anonymous</code>' dans la liste des identifiants.</p>
 
     <div class="example"><h3>Exemple:</h3><pre class="prettyprint lang-config">Anonymous anonymous "Not Registered" "I don't know"</pre>
 </div>
 
-    <p>Dans cet exemple, l'utilisateur peut accÃ©der au site sans
-    vÃ©rification du mot de passe en utilisant l'identifiant "anonymous",
+    <p>Dans cet exemple, l'utilisateur peut accéder au site sans
+    vérification du mot de passe en utilisant l'identifiant "anonymous",
     "Not Registered", "I Don't Know" ou encore "AnonyMous".</p>
 
     <p>Depuis Apache 2.1, il est possible de remplacer la liste des
-    identifiants autorisÃ©s par le caractÃ¨re "<code>*</code>", ce qui
+    identifiants autorisés par le caractère "<code>*</code>", ce qui
     permet d'utiliser <em>n'importe quel</em> identifiant pour pouvoir
-    accÃ©der au site.</p>
+    accéder au site.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_logemail" id="anonymous_logemail">Directive</a> <a name="Anonymous_LogEmail" id="Anonymous_LogEmail">Anonymous_LogEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©termine si le mot de passe fourni sera enregistrÃ© dans le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le mot de passe fourni sera enregistré dans le
 journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_LogEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_LogEmail On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est dÃ©finie Ã  <code>On</code>, valeur
-    par dÃ©faut, le 'mot de passe' fourni (censÃ© contenir une adresse
-    email valide) est enregistrÃ© dans le journal des erreurs.</p>
+    <p>Lorsque cette directive est définie à <code>On</code>, valeur
+    par défaut, le 'mot de passe' fourni (censé contenir une adresse
+    email valide) est enregistré dans le journal des erreurs.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_mustgiveemail" id="anonymous_mustgiveemail">Directive</a> <a name="Anonymous_MustGiveEmail" id="Anonymous_MustGiveEmail">Anonymous_MustGiveEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©termine si l'abscence de mot de passe est
-autorisÃ©e</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'abscence de mot de passe est
+autorisée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_MustGiveEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_MustGiveEmail On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>DÃ©termine si l'utilisateur doit spÃ©cifier une adresse email comme
-    mot de passe. Lorsque cette directive est dÃ©finie Ã  <code>On</code>,
+    <p>Détermine si l'utilisateur doit spécifier une adresse email comme
+    mot de passe. Lorsque cette directive est définie à <code>On</code>,
     fournir un mot de passe est obligatoire.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_nouserid" id="anonymous_nouserid">Directive</a> <a name="Anonymous_NoUserID" id="Anonymous_NoUserID">Anonymous_NoUserID</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©termine si le champ identifiant peut Ãªtre
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le champ identifiant peut être
 vide</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_NoUserID On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_NoUserID Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est dÃ©finie Ã  <code>On</code>, les
-    utilisateurs peuvent laisser le champ identifiant vide (et peut-Ãªtre
-    aussi le champ mot de passe selon la dÃ©finition de la directive
+    <p>Lorsque cette directive est définie à <code>On</code>, les
+    utilisateurs peuvent laisser le champ identifiant vide (et peut-être
+    aussi le champ mot de passe selon la définition de la directive
     <code class="directive"><a href="#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></code>). Ceci
-    peut s'avÃ©rer trÃ¨s utile pour les utilisateurs de MS-Explorer qui
-    ont pour seule possibilitÃ© d'appuyer sur EntrÃ©e ou de cliquer
-    directement sur le bouton OK, ce qui semble Ãªtre une rÃ©action
+    peut s'avérer très utile pour les utilisateurs de MS-Explorer qui
+    ont pour seule possibilité d'appuyer sur Entrée ou de cliquer
+    directement sur le bouton OK, ce qui semble être une réaction
     naturelle.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="anonymous_verifyemail" id="anonymous_verifyemail">Directive</a> <a name="Anonymous_VerifyEmail" id="Anonymous_VerifyEmail">Anonymous_VerifyEmail</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©termine s'il faut vÃ©rifier que le format de l'adresse
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine s'il faut vérifier que le format de l'adresse
 email fournie comme mot de passe est correct</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Anonymous_VerifyEmail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Anonymous_VerifyEmail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_anon</td></tr>
 </table>
-    <p>Lorsque cette directive est dÃ©finie Ã  <code>On</code>, Apache
-    vÃ©rifie que le 'mot de passe' entrÃ© contient au moins un '@' et un
-    '.' afin d'inciter les utilisateurs Ã  fournir des adresses email
+    <p>Lorsque cette directive est définie à <code>On</code>, Apache
+    vérifie que le 'mot de passe' entré contient au moins un '@' et un
+    '.' afin d'inciter les utilisateurs à fournir des adresses email
     valides (voir ci-dessus la directive <code class="directive"><a href="#anonymous_logemail">Anonymous_LogEmail</a></code>).</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_anon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_anon.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_anon.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_anon.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_anon.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -250,7 +250,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_anon
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

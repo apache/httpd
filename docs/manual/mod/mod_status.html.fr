@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,76 +27,76 @@
 <div id="preamble"><h1>Module Apache mod_status</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des informations sur les performances et l'activitÃ©
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des informations sur les performances et l'activité
 du serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>status_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_status.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>status_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_status.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Le module Status permet Ã  un administrateur de dÃ©terminer le
-    niveau de performances de son serveur. Les statistiques instantanÃ©es
-    du serveur sont prÃ©sentÃ©es dans une page HTML sous une forme
-    aisÃ©ment lisible. Si nÃ©cessaire, cette page peut Ãªtre configurÃ©e
-    pour Ãªtre automatiquement actualisÃ©e (sous rÃ©serve de
-    compatibilitÃ© du navigateur). Une autre page fournit l'Ã©tat
-    instantanÃ© du serveur sous la forme d'une simple liste lisible par
+    <p>Le module Status permet à un administrateur de déterminer le
+    niveau de performances de son serveur. Les statistiques instantanées
+    du serveur sont présentées dans une page HTML sous une forme
+    aisément lisible. Si nécessaire, cette page peut être configurée
+    pour être automatiquement actualisée (sous réserve de
+    compatibilité du navigateur). Une autre page fournit l'état
+    instantané du serveur sous la forme d'une simple liste lisible par
     une machine.</p>
 
-    <p>Les dÃ©tails fournis sont :</p>
+    <p>Les détails fournis sont :</p>
 
     <ul>
-      <li>Le nombre de processus servant les requÃªtes</li>
+      <li>Le nombre de processus servant les requêtes</li>
 
       <li>Le nombre de processus inactifs</li>
 
-      <li>L'Ã©tat de chaque processus, le nombre de requÃªtes qu'il a
-      traitÃ©es et le nombre total d'octets qu'il a servis (*)</li>
+      <li>L'état de chaque processus, le nombre de requêtes qu'il a
+      traitées et le nombre total d'octets qu'il a servis (*)</li>
 
-      <li>Le nombre total d'accÃ¨s effectuÃ©s et d'octets servis (*)</li>
+      <li>Le nombre total d'accès effectués et d'octets servis (*)</li>
 
-      <li>Le moment oÃ¹ le serveur a Ã©tÃ© dÃ©marrÃ©/redÃ©marrÃ© et le temps
-      Ã©coulÃ© depuis</li>
+      <li>Le moment où le serveur a été démarré/redémarré et le temps
+      écoulé depuis</li>
 
-      <li>Les valeurs moyennes du nombre de requÃªtes par seconde, du
+      <li>Les valeurs moyennes du nombre de requêtes par seconde, du
       nombre d'octets servis par seconde et du nombre d'octets par
-      requÃªte (*)</li>
+      requête (*)</li>
 
-      <li>Le pourcentage CPU instantanÃ© utilisÃ© par chaque processus et
+      <li>Le pourcentage CPU instantané utilisé par chaque processus et
       par l'ensemble des processus (*)</li>
 
-      <li>Les hÃ´tes et requÃªtes actuellement en cours de traitement
+      <li>Les hôtes et requêtes actuellement en cours de traitement
       (*)</li>
     </ul>
 
     <p>Les lignes se terminant par "(*)" ne sont disponibles que si la
     directive <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code>
-    est dÃ©finie Ã  <code>On</code>. Depuis la version
-    2.3.6, le chargement de mod_status dÃ©finit automatiquement
-    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> Ã  On.</p>
+    est définie à <code>On</code>. Depuis la version
+    2.3.6, le chargement de mod_status définit automatiquement
+    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> à On.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation du rapport d'Ã©tat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation du rapport d'état</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Actualisation automatique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Fichier d'Ã©tat lisible par une machine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Utilisation de server-status pour la recherche de dÃ©fauts de
+<li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Fichier d'état lisible par une machine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Utilisation de server-status pour la recherche de défauts de
     fonctionnement</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation du rapport d'Ã©tat</a></h2>
+<h2><a name="enable" id="enable">Activation du rapport d'état</a></h2>
     
 
-    <p>Pour n'activer les rapports d'Ã©tat que pour les navigateurs
-    appartenant au domaine example.com, ajoutez ces lignes Ã  votre
+    <p>Pour n'activer les rapports d'état que pour les navigateurs
+    appartenant au domaine example.com, ajoutez ces lignes à votre
     fichier de configuration <code>httpd.conf</code> :</p>
 <pre class="prettyprint lang-config">&lt;Location "/etat-serveur"&gt;
     SetHandler server-status
@@ -105,71 +105,71 @@ du serveur</td></tr>
 
 
     <p>Il est alors possible d'obtenir les statistiques du serveur en
-    utilisant un navigateur web et en accÃ©dant Ã  la page
+    utilisant un navigateur web et en accédant à la page
     <code>http://votre.serveur/etat-serveur</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="autoupdate" id="autoupdate">Actualisation automatique</a></h2>
 
     
-    <p>Vous pouvez faire en sorte que cette page d'Ã©tat s'actualise
-    elle-mÃªme automatiquement si votre navigateur supporte "refresh".
-    Pour ce faire, accÃ©dez Ã  la page
+    <p>Vous pouvez faire en sorte que cette page d'état s'actualise
+    elle-même automatiquement si votre navigateur supporte "refresh".
+    Pour ce faire, accédez à la page
     <code>http://votre.serveur/etat-serveur?refresh=N</code>, pour que
-    cette derniÃ¨re soit actualisÃ©e toutes les N secondes.</p>
+    cette dernière soit actualisée toutes les N secondes.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">Fichier d'Ã©tat lisible par une machine</a></h2>
+<h2><a name="machinereadable" id="machinereadable">Fichier d'état lisible par une machine</a></h2>
 
     
     <p>La page <code>http://votre.serveur/etat-serveur?auto</code>
-    permet d'obtenir une version du fichier d'Ã©tat lisible par une
-    machine. Ceci s'avÃ¨re intÃ©ressant dans le cadre d'une exÃ©cution
+    permet d'obtenir une version du fichier d'état lisible par une
+    machine. Ceci s'avère intéressant dans le cadre d'une exécution
     automatique : voir le programme en Perl
-    <code>log_server_status</code> situÃ© dans le rÃ©pertoire
+    <code>log_server_status</code> situé dans le répertoire
     <code>/support</code> de votre distribution du serveur HTTP Apache.</p>
 
     <div class="note">
-      <strong>Veuillez noter que si <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> a Ã©tÃ©
-      chargÃ© dans le serveur, son gestionnaire sera disponible dans
+      <strong>Veuillez noter que si <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> a été
+      chargé dans le serveur, son gestionnaire sera disponible dans
       <em>tous</em> les fichiers de configuration, y compris les
-      fichiers de configuration de <em>niveau rÃ©pertoire</em> (par
+      fichiers de configuration de <em>niveau répertoire</em> (par
       exemple <code>.htaccess</code>), ce qui peut avoir des
-      rÃ©percutions quant Ã  la sÃ©curitÃ© de votre site.</strong>
+      répercutions quant à la sécurité de votre site.</strong>
     </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Utilisation de server-status pour la recherche de dÃ©fauts de
+<h2><a name="troubleshoot" id="troubleshoot">Utilisation de server-status pour la recherche de défauts de
     fonctionnement</a></h2>
     
 
-    <p>La page <code>server-status</code> peut servir de point de dÃ©part
-    Ã  la recherche de dÃ©fauts de fonctionnement lorsque votre serveur
-    mobilise toutes les ressources disponibles (CPU ou mÃ©moire), pour
-    identifier quels clients ou requÃªtes sont la cause du problÃ¨me.</p>
+    <p>La page <code>server-status</code> peut servir de point de départ
+    à la recherche de défauts de fonctionnement lorsque votre serveur
+    mobilise toutes les ressources disponibles (CPU ou mémoire), pour
+    identifier quels clients ou requêtes sont la cause du problème.</p>
 
-    <p>Tout d'abord, assurez-vous que la directive <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est bien dÃ©finie Ã  on, de
-    faÃ§on Ã  ce que vous puissiez avoir accÃ¨s Ã  toutes les informations Ã 
-    propos de la requÃªte et du client pour chaque processus enfant ou
+    <p>Tout d'abord, assurez-vous que la directive <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est bien définie à on, de
+    façon à ce que vous puissiez avoir accès à toutes les informations à
+    propos de la requête et du client pour chaque processus enfant ou
     thread.</p>
 
-    <p>Consultez ensuite la liste des processus en cours (Ã  l'aide de
+    <p>Consultez ensuite la liste des processus en cours (à l'aide de
     <code>top</code>, ou d'un utilitaire de listage des processus
     similaire), afin d'identifier les processus coupables. Triez
-    l'affichage de <code>top</code> par utilisation CPU ou mÃ©moire, en
-    fonction du problÃ¨me rencontrÃ©.</p>
+    l'affichage de <code>top</code> par utilisation CPU ou mémoire, en
+    fonction du problème rencontré.</p>
 
     <p>Rechargez la page <code>server-status</code> et recherchez
-    les identifiants des processus trouvÃ©s prÃ©cÃ©demment ; vous pourrez
-    alors dÃ©terminer quelle requÃªte est traitÃ©e par ces processus, pour
-    quel client. Les requÃªtes peuvent apparaÃ®tre de maniÃ¨re fugitive, et
+    les identifiants des processus trouvés précédemment ; vous pourrez
+    alors déterminer quelle requête est traitée par ces processus, pour
+    quel client. Les requêtes peuvent apparaître de manière fugitive, et
     il se peut que vous deviez effectuer plusieurs essais avant de
-    parvenir Ã  les prendre en flagrant dÃ©lit, pour ainsi dire.</p>
+    parvenir à les prendre en flagrant délit, pour ainsi dire.</p>
 
-    <p>Cette procÃ©dure <em>devrait</em> vous permettre de cerner quel
-    client, ou type de requÃªte, sont Ã  l'origine de vos problÃ¨mes de
+    <p>Cette procédure <em>devrait</em> vous permettre de cerner quel
+    client, ou type de requête, sont à l'origine de vos problèmes de
     charge. Il est probable que vous identifiiez une application web au
     comportement anormal, ou un client en train d'attaquer votre site.</p>
 
@@ -177,10 +177,10 @@ du serveur</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -199,7 +199,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_status.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

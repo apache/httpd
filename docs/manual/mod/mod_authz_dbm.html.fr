@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,19 +27,19 @@
 <div id="preamble"><h1>Module Apache mod_authz_dbm</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_dbm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authz_dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_authz_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation par groupes sur base de fichiers DBM</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>authz_dbm_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_authz_dbm.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_dbm_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authz_dbm.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module propose d'autoriser ou d'interdire l'accÃ¨s Ã  certaines
-    zones du site web aux utilisateurs authentifiÃ©s en fonction de leur
-    appartenance Ã  un groupe spÃ©cifiÃ©. Le module
-    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> fournit une fonctionnalitÃ©
+    <p>Ce module propose d'autoriser ou d'interdire l'accès à certaines
+    zones du site web aux utilisateurs authentifiés en fonction de leur
+    appartenance à un groupe spécifié. Le module
+    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> fournit une fonctionnalité
     similaire.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -61,7 +61,7 @@
 
     <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> d'Apache permettent,
     au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
-    est bien autorisÃ© Ã  accÃ©der Ã  une ressource.  mod_authz_dbm ajoute
+    est bien autorisé à accéder à une ressource.  mod_authz_dbm ajoute
     les types d'autorisation <code>dbm-group</code> et <code>dbm-file-group</code>.</p>
 
     <p>A partir de la version 2.4.8, les directives require DBM
@@ -69,8 +69,8 @@
 
 <h3><a name="reqgroup" id="reqgroup">Require dbm-group</a></h3>
 
-    <p>Cette directive permet de spÃ©cifier Ã  quel groupe un utilisateur
-    doit appartenir pour obtenir l'autorisation d'accÃ¨s.</p>
+    <p>Cette directive permet de spécifier à quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'accès.</p>
 
     <pre class="prettyprint lang-config">Require dbm-group admin</pre>
 
@@ -79,8 +79,8 @@
 
 <h3><a name="reqfilegroup" id="reqfilegroup">Require dbm-file-group</a></h3>
 
-    <p>Lorsque cette directive est dÃ©finie, l'utilisateur doit
-    appartenir au groupe du fichier pour pouvoir y accÃ©der.</p>
+    <p>Lorsque cette directive est définie, l'utilisateur doit
+    appartenir au groupe du fichier pour pouvoir y accéder.</p>
 
     <pre class="prettyprint lang-config">Require dbm-file-group</pre>
 
@@ -91,8 +91,8 @@
 <div class="section">
 <h2><a name="examples" id="examples">Exemple d'utilisation</a></h2>
 
-<p><em>Notez que si vous utilisez mod_authz_dbm, le mot-clÃ© pour les
-groupes d'authentification qui Ã©tait auparavant <code>group</code> est
+<p><em>Notez que si vous utilisez mod_authz_dbm, le mot-clé pour les
+groupes d'authentification qui était auparavant <code>group</code> est
 maintenant <code>dbm-group</code> :</em>
 </p>
 <pre class="prettyprint lang-config">&lt;Directory "/foo/bar"&gt;
@@ -108,90 +108,90 @@ maintenant <code>dbm-group</code> :</em>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a> <a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit le nom du fichier de base de donnÃ©es qui liste
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom du fichier de base de données qui liste
 les groupes d'utilisateurs.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBMGroupFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbm</td></tr>
 </table>
-    <p>La directive <code class="directive">AuthDBMGroupFile</code> dÃ©finit
+    <p>La directive <code class="directive">AuthDBMGroupFile</code> définit
     le nom d'un fichier DBM contenant la liste des groupes
-    d'utilisateurs, destinÃ©s Ã  la gestion des autorisations.
+    d'utilisateurs, destinés à la gestion des autorisations.
     <var>chemin-fichier</var> est le chemin absolu du
     fichier de groupes.</p>
 
-    <p>La clÃ© du fichier de groupes est le nom d'utilisateur. La valeur
-    de chaque clÃ© est la liste des groupes, sÃ©parÃ©s par des virgules,
+    <p>La clé du fichier de groupes est le nom d'utilisateur. La valeur
+    de chaque clé est la liste des groupes, séparés par des virgules,
     auxquels l'utilisateur appartient. Cette liste ne doit comporter
-    ni espace, ni caractÃ¨re ':'.</p>
+    ni espace, ni caractère ':'.</p>
 
-    <div class="warning"><h3>SÃ©curitÃ©</h3>
-      <p>Le fichier spÃ©cifiÃ© par la directive
-<code class="directive">AuthDBMGroupFile</code> doit Ãªtre situÃ© en dehors de
+    <div class="warning"><h3>Sécurité</h3>
+      <p>Le fichier spécifié par la directive
+<code class="directive">AuthDBMGroupFile</code> doit être situé en dehors de
 l'arborescence des documents du serveur web. Ne le placez
-<strong>surtout pas</strong> dans le rÃ©pertoire qu'il protÃ¨ge, faute
-de quoi, les clients pourraient le tÃ©lÃ©charger, en l'abscence de
-protection supplÃ©mentaire.</p>
+<strong>surtout pas</strong> dans le répertoire qu'il protège, faute
+de quoi, les clients pourraient le télécharger, en l'abscence de
+protection supplémentaire.</p>
     </div>
 
-    <p>Utilisation combinÃ©e de fichiers DBM de groupes et de mots de
-    passe : dans certains cas, il est plus simple de gÃ©rer une seule
-    base de donnÃ©es contenant les groupes et mots de passe de chaque
-    utilisateur. L'Ã©criture de programmes de support en est ainsi
-    simplifiÃ©e car ils n'ont plus qu'un seul fichier DBM Ã  gÃ©rer et
-    Ã  verrouiller. Pour ce faire, on attribue le mÃªme nom de fichier
+    <p>Utilisation combinée de fichiers DBM de groupes et de mots de
+    passe : dans certains cas, il est plus simple de gérer une seule
+    base de données contenant les groupes et mots de passe de chaque
+    utilisateur. L'écriture de programmes de support en est ainsi
+    simplifiée car ils n'ont plus qu'un seul fichier DBM à gérer et
+    à verrouiller. Pour ce faire, on attribue le même nom de fichier
     DBM aux fichiers de groupes et de mots de passe :</p>
 
     <pre class="prettyprint lang-config">AuthDBMGroupFile "/www/userbase"
 AuthDBMUserFile "/www/userbase"</pre>
 
 
-    <p>La clÃ© du fichier DBM unique est le nom d'utilisateur. La
-    valeur associÃ©e Ã  la clÃ© contient :</p>
+    <p>La clé du fichier DBM unique est le nom d'utilisateur. La
+    valeur associée à la clé contient :</p>
 
     <div class="example"><p><code>
-      Mot de passe chiffrÃ© : Liste de groupes [ : (ignorÃ©) ]
+      Mot de passe chiffré : Liste de groupes [ : (ignoré) ]
     </code></p></div>
 
     <p>La partie mot de passe contient comme d'habitude le mot de
-    passe chiffrÃ©. Viennent ensuite le caractÃ¨re ':' et la liste des
-    groupes sÃ©parÃ©s par des virgules. Il est possible d'ajouter
-    d'autres donnÃ©es en fin de ligne aprÃ¨s un autre caractÃ¨re ':',
-    mais elles seront ignorÃ©es par le module d'autorisation. C'est
-    le format utilisÃ© par www.telescope.org pour sa base de donnÃ©es
-    combinÃ©e groupes et mots de passe.</p>
+    passe chiffré. Viennent ensuite le caractère ':' et la liste des
+    groupes séparés par des virgules. Il est possible d'ajouter
+    d'autres données en fin de ligne après un autre caractère ':',
+    mais elles seront ignorées par le module d'autorisation. C'est
+    le format utilisé par www.telescope.org pour sa base de données
+    combinée groupes et mots de passe.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authzdbmtype" id="authzdbmtype">Directive</a> <a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit le type de fichier de base de donnÃ©es contenant
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type de fichier de base de données contenant
 la liste des groupes d'utilisateurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>AuthzDBMType default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzDBMType default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbm</td></tr>
 </table>
-    <p>DÃ©finit le type de fichier de base de donnÃ©es contenant la
-    liste des groupes d'utilisateurs. Le type de base de donnÃ©es par
-    dÃ©faut est dÃ©terminÃ© Ã  la compilation. Les autres types de bases
-    de donnÃ©es disponibles dÃ©pendent aussi de la
+    <p>Définit le type de fichier de base de données contenant la
+    liste des groupes d'utilisateurs. Le type de base de données par
+    défaut est déterminé à la compilation. Les autres types de bases
+    de données disponibles dépendent aussi de la
     <a href="../install.html#dbm">configuration de la
     compilation</a>.</p>
 
-    <p>Quel que soit le programme que vous utilisez pour crÃ©er votre
-    fichier de groupes, il est impÃ©ratif que celui-ci soit configurÃ©
-    pour utiliser le mÃªme type de base de donnÃ©es.</p>
+    <p>Quel que soit le programme que vous utilisez pour créer votre
+    fichier de groupes, il est impératif que celui-ci soit configuré
+    pour utiliser le même type de base de données.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_dbm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authz_dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_authz_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -211,7 +211,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_dbm.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

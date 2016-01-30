@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,58 +24,58 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Serveurs Virtuels</a></div><div id="page-content"><div id="preamble"><h1>Limites des descripteurs de fichiers</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/fd-limits.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/fd-limits.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/fd-limits.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
-    <p>Quand de nombreux serveurs virtuels sont crÃ©Ã©s, Apache peut
-    dÃ©passer les limites en descripteurs de fichiers ('file descriptors',
-    Ã©galement appelÃ©s <cite>gestionnaires de fichiers</cite>) si chacun
+    <p>Quand de nombreux serveurs virtuels sont créés, Apache peut
+    dépasser les limites en descripteurs de fichiers ('file descriptors',
+    également appelés <cite>gestionnaires de fichiers</cite>) si chacun
     des serveurs virtuels utilise ses propres fichiers journaux. Le
-    nombre total de descripteurs de fichiers utilisÃ©s par Apache est
+    nombre total de descripteurs de fichiers utilisés par Apache est
     d'un par fichier journal, un pour chacune des autres directives
     de fichiers journaux, plus un nombre constant compris entre 10 et 20
-    pour son fonctionnement interne. Les systÃ¨mes d'exploitation Unix
+    pour son fonctionnement interne. Les systèmes d'exploitation Unix
     limitent le nombre de descripteurs de fichiers utilisables par
     processus&nbsp;; une valeur courante pour cette limite est de 64, et
-    cette valeur peut le plus souvent Ãªtre augmentÃ©e.</p>
+    cette valeur peut le plus souvent être augmentée.</p>
 
-    <p>Apache tente d'accroÃ®tre cette valeur limite si nÃ©cessaire, mais
+    <p>Apache tente d'accroître cette valeur limite si nécessaire, mais
     sans y parvenir dans les cas suivants&nbsp;:</p>
 
     <ol>
-      <li>Le systÃ¨me d'exploitation ne permet pas l'utilisation d'appels
-      systÃ¨mes <code>setrlimit()</code>.</li>
+      <li>Le système d'exploitation ne permet pas l'utilisation d'appels
+      systèmes <code>setrlimit()</code>.</li>
 
       <li>L'appel <code>setrlimit(RLIMIT_NOFILE)</code> ne fonctionne pas
-      sur votre systÃ¨me d'exploitation (c'est le cas sous Solaris 2.3).</li>
+      sur votre système d'exploitation (c'est le cas sous Solaris 2.3).</li>
 
-      <li>Le nombre de descripteurs de fichiers nÃ©cessaires Ã  Apache
-      dÃ©passe la limite physique du matÃ©riel.</li>
+      <li>Le nombre de descripteurs de fichiers nécessaires à Apache
+      dépasse la limite physique du matériel.</li>
 
-      <li>Le systÃ¨me impose d'autres limites sur l'utilisation des
+      <li>Le système impose d'autres limites sur l'utilisation des
       descripteurs de fichiers, comme par exemple une limite sur les
       flux stdio, utilisables uniquement sur les descripteurs de
-      fichiers infÃ©rieurs Ã  256. (sous Solaris 2).</li>
+      fichiers inférieurs à 256. (sous Solaris 2).</li>
     </ol>
 
-    <p>En cas de problÃ¨me, Vous pouvez&nbsp;:</p>
+    <p>En cas de problème, Vous pouvez&nbsp;:</p>
 
     <ul>
-      <li>RÃ©duire le nombre de fichiers journaux, en ne spÃ©cifiant
+      <li>Réduire le nombre de fichiers journaux, en ne spécifiant
       aucun fichier journal dans les sections
       <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
       en donc en envoyant les informations aux fichiers journaux du
-      serveur principal (Voir <a href="#splitlogs">Ã‰clatement des
+      serveur principal (Voir <a href="#splitlogs">Éclatement des
       fichiers journaux</a> ci-dessous pour plus d'informations sur
-      cette possibilitÃ©).</li>
+      cette possibilité).</li>
 
       <li>
-        Dans les cas 1 ou 2 (Ã©voquÃ©s ci-dessus), augmentez la limite sur
-        les descripteurs de fichiers avant le dÃ©marrage d'Apache, au
+        Dans les cas 1 ou 2 (évoqués ci-dessus), augmentez la limite sur
+        les descripteurs de fichiers avant le démarrage d'Apache, au
         moyen d'un script comme
 
         <div class="example"><p><code>
@@ -91,55 +91,55 @@
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="splitlogs" id="splitlogs">Ã‰clatement des fichiers journaux</a></h2>
+<h2><a name="splitlogs" id="splitlogs">Éclatement des fichiers journaux</a></h2>
 
-<p>Lorsque vous choisissez d'enregistrer les informations Ã©manant de
-plusieurs serveurs virtuels dans un mÃªme fichier journal, vous voudrez
-ensuite pouvoir scinder ces informations Ã  des fins de statistiques, par
-exemple, sur les diffÃ©rents serveurs virtuels. Il est possible de procÃ©der
-de la maniÃ¨re suivante&nbsp;:</p>
+<p>Lorsque vous choisissez d'enregistrer les informations émanant de
+plusieurs serveurs virtuels dans un même fichier journal, vous voudrez
+ensuite pouvoir scinder ces informations à des fins de statistiques, par
+exemple, sur les différents serveurs virtuels. Il est possible de procéder
+de la manière suivante&nbsp;:</p>
 
-<p>Tout d'abord, vous devez ajouter le nom du serveur virtuel Ã  chaque
-entrÃ©e du journal. Ceci se paramÃ¨tre au moyen de la directive
+<p>Tout d'abord, vous devez ajouter le nom du serveur virtuel à chaque
+entrée du journal. Ceci se paramètre au moyen de la directive
 <code class="directive"><a href="../mod/mod_log_config.html#logformat"> LogFormat</a></code> et de la
-variable <code>%v</code>. Ajoutez cette variable au dÃ©but de la chaÃ®ne
-de dÃ©finition du format de journalisations&nbsp;:</p>
+variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
+de définition du format de journalisations&nbsp;:</p>
 
 <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost
 CustomLog "logs/multiple_vhost_log" vhost</pre>
 
 
-<p>Cette configuration va provoquer la crÃ©ation d'un fichier de
+<p>Cette configuration va provoquer la création d'un fichier de
 journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont
-chaque ligne dÃ©butera par le nom canonique du serveur virtuel (spÃ©cifiÃ©
+chaque ligne débutera par le nom canonique du serveur virtuel (spécifié
 par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>).
 (Voir <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> pour d'autres informations sur la
 personnalisation des fichiers journaux.)</p>
 
-<p>Au moment de sÃ©parer les informations du fichier journal en un fichier
+<p>Au moment de séparer les informations du fichier journal en un fichier
 par serveur virtuel, le programme <code>
-<a href="../programs/other.html">split-logfile</a></code> peut Ãªtre
-utilisÃ©. Ce programme peut Ãªtre trouvÃ© dans le rÃ©pertoire
+<a href="../programs/other.html">split-logfile</a></code> peut être
+utilisé. Ce programme peut être trouvé dans le répertoire
 <code>support</code> de la distribution d'Apache.</p>
 
-<p>ExÃ©cutez ce programme au moyen de la commande&nbsp;:</p>
+<p>Exécutez ce programme au moyen de la commande&nbsp;:</p>
 
 <div class="example"><p><code>
 split-logfile &lt; /logs/multiple_vhost_log
 </code></p></div>
 
-<p>Une fois exÃ©cutÃ© avec le nom du fichier contenant tous les journaux,
-ce programme va gÃ©nÃ©rer un fichier pour chacun des serveurs virtuels
-qui apparaÃ®t dans le fichier d'entrÃ©e. Chaque fichier en sortie est
-nommÃ© <code>nomduserveur.log</code>.</p>
+<p>Une fois exécuté avec le nom du fichier contenant tous les journaux,
+ce programme va générer un fichier pour chacun des serveurs virtuels
+qui apparaît dans le fichier d'entrée. Chaque fichier en sortie est
+nommé <code>nomduserveur.log</code>.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/fd-limits.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/fd-limits.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/fd-limits.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/fd-limits.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -158,7 +158,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/fd-limits.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

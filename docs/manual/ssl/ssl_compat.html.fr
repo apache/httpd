@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Chiffrement fort SSL/TLS : Compatibilit√© - Serveur Apache HTTP Version 2.5</title>
+<title>Chiffrement fort SSL/TLS : CompatibilitÈ - Serveur Apache HTTP Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,32 +21,32 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Chiffrement fort SSL/TLS : Compatibilit√©</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>Chiffrement fort SSL/TLS : CompatibilitÈ</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_compat.html" title="Fran√ßais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/ssl/ssl_compat.html" title="FranÁais">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
-<p>Ce document couvre la compatibilit√© ascendante entre mod_ssl et
+<p>Ce document couvre la compatibilitÈ ascendante entre mod_ssl et
 d'autres solutions SSL. mod_ssl n'est pas la seule solution SSL pour Apache ;
-quatre autres produits sont (ou ont √©t√©) √©galement disponibles :
+quatre autres produits sont (ou ont ÈtÈ) Ègalement disponibles :
 <a href="http://www.apache-ssl.org/">Apache-SSL</a>, le produit libre de
-Ben Laurie (d'o√π mod_ssl est issu √† l'origine en 1998), Secure
-Web Server, un produit commercial de Red Hat (bas√© sur mod_ssl),
+Ben Laurie (d'o˘ mod_ssl est issu ‡ l'origine en 1998), Secure
+Web Server, un produit commercial de Red Hat (basÈ sur mod_ssl),
 Raven SSL Module, un produit commercial
-de Covalent (bas√© lui aussi sur mod_ssl), et enfin <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a>, produit
-commercial de C2Net et maintenant de Red Hat, (bas√© sur une branche
-d'√©volution diff√©rente appel√©e Sioux jusqu'√† Stronghold 2.x et bas√© sur
+de Covalent (basÈ lui aussi sur mod_ssl), et enfin <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a>, produit
+commercial de C2Net et maintenant de Red Hat, (basÈ sur une branche
+d'Èvolution diffÈrente appelÈe Sioux jusqu'‡ Stronghold 2.x et basÈ sur
 mod_ssl depuis Stronghold 3.x).</p>
 
-<p>En plus de ses fonctionnalit√©s propres, mod_ssl rassemble la plupart de
-celles des autres solutions SSL, si bien qu'il est tr√®s simple de
+<p>En plus de ses fonctionnalitÈs propres, mod_ssl rassemble la plupart de
+celles des autres solutions SSL, si bien qu'il est trËs simple de
 migrer depuis un module plus ancien vers mod_ssl. Les directives de
-configuration et les noms des variables d'environnement utilis√©s par les
-solutions SSL plus anciennes diff√®rent de ceux qu'utilise mod_ssl ;
-les tableaux de correspondance ci-dessous fournissent les √©quivalences
-de termes utilis√©s par mod_ssl.</p>
+configuration et les noms des variables d'environnement utilisÈs par les
+solutions SSL plus anciennes diffËrent de ceux qu'utilise mod_ssl ;
+les tableaux de correspondance ci-dessous fournissent les Èquivalences
+de termes utilisÈs par mod_ssl.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configuration">Directives de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#variables">Variables d'environnement</a></li>
@@ -58,157 +58,157 @@ de termes utilis√©s par mod_ssl.</p>
 <p>La correspondance entre les directives de configuration qu'utilise
 Apache-SSL 1.x et mod_ssl 2.0.x est fournie dans le <a href="#table1">Tableau
 1</a>. La correspondance depuis Sioux 1.x et Stronghold 2.x n'est que
-partielle car certaines fonctionnalit√©s de ces interfaces ne sont pas
-support√©es par mod_ssl.</p>
+partielle car certaines fonctionnalitÈs de ces interfaces ne sont pas
+supportÈes par mod_ssl.</p>
 
 
 <h3><a name="table1" id="table1">Tableau 1: Correspondance entre les directives de configuration</a></h3>
 
 <table><tr class="header"><th>Ancienne directive</th><th>Directive mod_ssl</th><th>Commentaires</th></tr>
-<tr class="header"><th colspan="3">Compatibilit√© entre Apache-SSL 1.x et mod_ssl 2.0.x :</th></tr>
+<tr class="header"><th colspan="3">CompatibilitÈ entre Apache-SSL 1.x et mod_ssl 2.0.x :</th></tr>
 <tr><td><code>SSLEnable</code></td><td><code>SSLEngine on</code></td><td>plus compacte</td></tr>
 <tr class="odd"><td><code>SSLDisable</code></td><td><code>SSLEngine off</code></td><td>plus compacte</td></tr>
 <tr><td><code>SSLLogFile</code>
-<em>file</em></td><td><code /></td><td>Utilisez plut√¥t la directive
+<em>file</em></td><td><code /></td><td>Utilisez plutÙt la directive
 de niveau module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>.</td></tr>
-<tr class="odd"><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renomm√©e</td></tr>
+<tr class="odd"><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renommÈe</td></tr>
 <tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
-...}</code></td><td>plus g√©n√©rale</td></tr>
+...}</code></td><td>plus gÈnÈrale</td></tr>
 <tr class="odd"><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>",
-...})</code></td><td>plus g√©n√©rale</td></tr>
-<tr><td><code>SSLFakeBasicAuth</code></td><td><code>SSLOptions +FakeBasicAuth</code></td><td>rassembl√©es</td></tr>
-<tr class="odd"><td><code>SSLCacheServerPath</code> <em>dir</em></td><td>-</td><td>fonctionnalit√© supprim√©e</td></tr>
-<tr><td><code>SSLCacheServerPort</code> <em>integer</em></td><td>-</td><td>fonctionnalit√© supprim√©e</td></tr>
-<tr class="header"><th colspan="3">Compatibilit√© avec Apache-SSL 1.x :</th></tr>
-<tr class="odd"><td><code>SSLExportClientCertificates</code></td><td><code>SSLOptions +ExportCertData</code></td><td>rassembl√©es</td></tr>
-<tr><td><code>SSLCacheServerRunDir</code> <em>dir</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="header"><th colspan="3">Compatibilit√© avec Sioux 1.x :</th></tr>
-<tr class="odd"><td><code>SSL_CertFile</code> <em>file</em></td><td><code>SSLCertificateFile</code> <em>file</em></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_KeyFile</code> <em>file</em></td><td><code>SSLCertificateKeyFile</code> <em>file</em></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CipherSuite</code> <em>arg</em></td><td><code>SSLCipherSuite</code> <em>arg</em></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_X509VerifyDir</code> <em>arg</em></td><td><code>SSLCACertificatePath</code> <em>arg</em></td><td>renomm√©e</td></tr>
+...})</code></td><td>plus gÈnÈrale</td></tr>
+<tr><td><code>SSLFakeBasicAuth</code></td><td><code>SSLOptions +FakeBasicAuth</code></td><td>rassemblÈes</td></tr>
+<tr class="odd"><td><code>SSLCacheServerPath</code> <em>dir</em></td><td>-</td><td>fonctionnalitÈ supprimÈe</td></tr>
+<tr><td><code>SSLCacheServerPort</code> <em>integer</em></td><td>-</td><td>fonctionnalitÈ supprimÈe</td></tr>
+<tr class="header"><th colspan="3">CompatibilitÈ avec Apache-SSL 1.x :</th></tr>
+<tr class="odd"><td><code>SSLExportClientCertificates</code></td><td><code>SSLOptions +ExportCertData</code></td><td>rassemblÈes</td></tr>
+<tr><td><code>SSLCacheServerRunDir</code> <em>dir</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="header"><th colspan="3">CompatibilitÈ avec Sioux 1.x :</th></tr>
+<tr class="odd"><td><code>SSL_CertFile</code> <em>file</em></td><td><code>SSLCertificateFile</code> <em>file</em></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_KeyFile</code> <em>file</em></td><td><code>SSLCertificateKeyFile</code> <em>file</em></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CipherSuite</code> <em>arg</em></td><td><code>SSLCipherSuite</code> <em>arg</em></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_X509VerifyDir</code> <em>arg</em></td><td><code>SSLCACertificatePath</code> <em>arg</em></td><td>renommÈe</td></tr>
 <tr class="odd"><td><code>SSL_Log</code>
-<em>file</em></td><td><code>-</code></td><td>Utilisez plut√¥t la directive
+<em>file</em></td><td><code>-</code></td><td>Utilisez plutÙt la directive
 de niveau module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code></td></tr>
-<tr><td><code>SSL_Connect</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_ClientAuth</code> <em>arg</em></td><td><code>SSLVerifyClient</code> <em>arg</em></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_X509VerifyDepth</code> <em>arg</em></td><td><code>SSLVerifyDepth</code> <em>arg</em></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_FetchKeyPhraseFrom</code> <em>arg</em></td><td>-</td><td>pas de v√©ritable √©quivalent ; utiliser SSLPassPhraseDialog</td></tr>
-<tr><td><code>SSL_SessionDir</code> <em>dir</em></td><td>-</td><td>pas de v√©ritable √©quivalent ; utiliser SSLSessionCache</td></tr>
-<tr class="odd"><td><code>SSL_Require</code> <em>expr</em></td><td>-</td><td>pas de v√©ritable √©quivalent ; utiliser SSLRequire</td></tr>
-<tr><td><code>SSL_CertFileType</code> <em>arg</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="odd"><td><code>SSL_KeyFileType</code> <em>arg</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr><td><code>SSL_X509VerifyPolicy</code> <em>arg</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="odd"><td><code>SSL_LogX509Attributes</code> <em>arg</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="header"><th colspan="3">Compatibilit√© avec Stronghold 2.x :</th></tr>
-<tr><td><code>StrongholdAccelerator</code> <em>engine</em></td><td><code>SSLCryptoDevice</code> <em>engine</em></td><td>renomm√©e</td></tr>
+<tr><td><code>SSL_Connect</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_ClientAuth</code> <em>arg</em></td><td><code>SSLVerifyClient</code> <em>arg</em></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_X509VerifyDepth</code> <em>arg</em></td><td><code>SSLVerifyDepth</code> <em>arg</em></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_FetchKeyPhraseFrom</code> <em>arg</em></td><td>-</td><td>pas de vÈritable Èquivalent ; utiliser SSLPassPhraseDialog</td></tr>
+<tr><td><code>SSL_SessionDir</code> <em>dir</em></td><td>-</td><td>pas de vÈritable Èquivalent ; utiliser SSLSessionCache</td></tr>
+<tr class="odd"><td><code>SSL_Require</code> <em>expr</em></td><td>-</td><td>pas de vÈritable Èquivalent ; utiliser SSLRequire</td></tr>
+<tr><td><code>SSL_CertFileType</code> <em>arg</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="odd"><td><code>SSL_KeyFileType</code> <em>arg</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr><td><code>SSL_X509VerifyPolicy</code> <em>arg</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="odd"><td><code>SSL_LogX509Attributes</code> <em>arg</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="header"><th colspan="3">CompatibilitÈ avec Stronghold 2.x :</th></tr>
+<tr><td><code>StrongholdAccelerator</code> <em>engine</em></td><td><code>SSLCryptoDevice</code> <em>engine</em></td><td>renommÈe</td></tr>
 <tr class="odd"><td><code>StrongholdKey</code> <em>dir</em></td><td>-</td><td>sans objet</td></tr>
 <tr><td><code>StrongholdLicenseFile</code> <em>dir</em></td><td>-</td><td>sans objet</td></tr>
-<tr class="odd"><td><code>SSLFlag</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renomm√©e</td></tr>
-<tr><td><code>SSLSessionLockFile</code> <em>file</em></td><td><code>SSLMutex</code> <em>file</em></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSLCipherList</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renomm√©e</td></tr>
-<tr><td><code>RequireSSL</code></td><td><code>SSLRequireSSL</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSLErrorFile</code> <em>file</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr><td><code>SSLRoot</code> <em>dir</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="odd"><td><code>SSL_CertificateLogDir</code> <em>dir</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr><td><code>AuthCertDir</code> <em>dir</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr class="odd"><td><code>SSL_Group</code> <em>name</em></td><td>-</td><td>fonctionnalit√© non support√©e</td></tr>
-<tr><td><code>SSLProxyMachineCertPath</code> <em>dir</em></td><td><code>SSLProxyMachineCertificatePath</code> <em>dir</em></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSLProxyMachineCertFile</code> <em>file</em></td><td><code>SSLProxyMachineCertificateFile</code> <em>file</em></td><td>renomm√©e</td></tr>
-<tr><td><code>SSLProxyCipherList</code> <em>spec</em></td><td><code>SSLProxyCipherSpec</code> <em>spec</em></td><td>renomm√©e</td></tr>
+<tr class="odd"><td><code>SSLFlag</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renommÈe</td></tr>
+<tr><td><code>SSLSessionLockFile</code> <em>file</em></td><td><code>SSLMutex</code> <em>file</em></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSLCipherList</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renommÈe</td></tr>
+<tr><td><code>RequireSSL</code></td><td><code>SSLRequireSSL</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSLErrorFile</code> <em>file</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr><td><code>SSLRoot</code> <em>dir</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="odd"><td><code>SSL_CertificateLogDir</code> <em>dir</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr><td><code>AuthCertDir</code> <em>dir</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr class="odd"><td><code>SSL_Group</code> <em>name</em></td><td>-</td><td>fonctionnalitÈ non supportÈe</td></tr>
+<tr><td><code>SSLProxyMachineCertPath</code> <em>dir</em></td><td><code>SSLProxyMachineCertificatePath</code> <em>dir</em></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSLProxyMachineCertFile</code> <em>file</em></td><td><code>SSLProxyMachineCertificateFile</code> <em>file</em></td><td>renommÈe</td></tr>
+<tr><td><code>SSLProxyCipherList</code> <em>spec</em></td><td><code>SSLProxyCipherSpec</code> <em>spec</em></td><td>renommÈe</td></tr>
 </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="variables" id="variables">Variables d'environnement</a></h2>
 
-<p>La correspondance entre les noms des variables d'environnement utilis√©s par
-les solutions SSL plus anciennes et les noms utilis√©s par mod_ssl est fournie
+<p>La correspondance entre les noms des variables d'environnement utilisÈs par
+les solutions SSL plus anciennes et les noms utilisÈs par mod_ssl est fournie
 dans le <a href="#table2">Tableau 2</a>.</p>
 
-<h3><a name="table2" id="table2">Tableau 2: D√©rivation des variables d'environnement</a></h3>
+<h3><a name="table2" id="table2">Tableau 2: DÈrivation des variables d'environnement</a></h3>
 
 <table><tr class="header"><th>Ancienne variable</th><th>Variable mod_ssl</th><th>Commentaires</th></tr>
-<tr><td><code>SSL_PROTOCOL_VERSION</code></td><td><code>SSL_PROTOCOL</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renomm√©e</td></tr>
-<tr><td><code>HTTPS_SECRETKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>HTTPS_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renomm√©e</td></tr>
-<tr><td><code>HTTPS_CIPHER</code></td><td><code>SSL_CIPHER</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>HTTPS_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_CERTIFICATE</code></td><td><code>SSL_SERVER_CERT</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_CERT_START</code></td><td><code>SSL_SERVER_V_START</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_CERT_END</code></td><td><code>SSL_SERVER_V_END</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_CERT_SERIAL</code></td><td><code>SSL_SERVER_M_SERIAL</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_SIGNATURE_ALGORITHM</code></td><td><code>SSL_SERVER_A_SIG</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_DN</code></td><td><code>SSL_SERVER_S_DN</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_CN</code></td><td><code>SSL_SERVER_S_DN_CN</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_EMAIL</code></td><td><code>SSL_SERVER_S_DN_Email</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_O</code></td><td><code>SSL_SERVER_S_DN_O</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_OU</code></td><td><code>SSL_SERVER_S_DN_OU</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_C</code></td><td><code>SSL_SERVER_S_DN_C</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_SP</code></td><td><code>SSL_SERVER_S_DN_SP</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_L</code></td><td><code>SSL_SERVER_S_DN_L</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_IDN</code></td><td><code>SSL_SERVER_I_DN</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_ICN</code></td><td><code>SSL_SERVER_I_DN_CN</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_IEMAIL</code></td><td><code>SSL_SERVER_I_DN_Email</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_IO</code></td><td><code>SSL_SERVER_I_DN_O</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_IOU</code></td><td><code>SSL_SERVER_I_DN_OU</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_IC</code></td><td><code>SSL_SERVER_I_DN_C</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SERVER_ISP</code></td><td><code>SSL_SERVER_I_DN_SP</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_IL</code></td><td><code>SSL_SERVER_I_DN_L</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_CERTIFICATE</code></td><td><code>SSL_CLIENT_CERT</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_CERT_START</code></td><td><code>SSL_CLIENT_V_START</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_END</code></td><td><code>SSL_CLIENT_V_END</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_CERT_SERIAL</code></td><td><code>SSL_CLIENT_M_SERIAL</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_SIGNATURE_ALGORITHM</code></td><td><code>SSL_CLIENT_A_SIG</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_DN</code></td><td><code>SSL_CLIENT_S_DN</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_CN</code></td><td><code>SSL_CLIENT_S_DN_CN</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_EMAIL</code></td><td><code>SSL_CLIENT_S_DN_Email</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_O</code></td><td><code>SSL_CLIENT_S_DN_O</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_OU</code></td><td><code>SSL_CLIENT_S_DN_OU</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_C</code></td><td><code>SSL_CLIENT_S_DN_C</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_SP</code></td><td><code>SSL_CLIENT_S_DN_SP</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_L</code></td><td><code>SSL_CLIENT_S_DN_L</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_IDN</code></td><td><code>SSL_CLIENT_I_DN</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_ICN</code></td><td><code>SSL_CLIENT_I_DN_CN</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_IEMAIL</code></td><td><code>SSL_CLIENT_I_DN_Email</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_IO</code></td><td><code>SSL_CLIENT_I_DN_O</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_IOU</code></td><td><code>SSL_CLIENT_I_DN_OU</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_IC</code></td><td><code>SSL_CLIENT_I_DN_C</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_ISP</code></td><td><code>SSL_CLIENT_I_DN_SP</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_CLIENT_IL</code></td><td><code>SSL_CLIENT_I_DN_L</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_SECKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renomm√©e</td></tr>
-<tr><td><code>SSL_SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renomm√©e</td></tr>
-<tr class="odd"><td><code>SSL_STRONG_CRYPTO</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_SERVER_KEY_EXP</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_SESSIONDIR</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_SERVER_CERTIFICATELOGDIR</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_CERTFILE</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_SERVER_KEYFILE</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_KEYFILETYPE</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_CLIENT_KEY_EXP</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
-<tr><td><code>SSL_CLIENT_KEY_SIZE</code></td><td><code>-</code></td><td>Non support√©e par mod_ssl</td></tr>
+<tr><td><code>SSL_PROTOCOL_VERSION</code></td><td><code>SSL_PROTOCOL</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renommÈe</td></tr>
+<tr><td><code>HTTPS_SECRETKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>HTTPS_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renommÈe</td></tr>
+<tr><td><code>HTTPS_CIPHER</code></td><td><code>SSL_CIPHER</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>HTTPS_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_CERTIFICATE</code></td><td><code>SSL_SERVER_CERT</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_CERT_START</code></td><td><code>SSL_SERVER_V_START</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_CERT_END</code></td><td><code>SSL_SERVER_V_END</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_CERT_SERIAL</code></td><td><code>SSL_SERVER_M_SERIAL</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_SIGNATURE_ALGORITHM</code></td><td><code>SSL_SERVER_A_SIG</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_DN</code></td><td><code>SSL_SERVER_S_DN</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_CN</code></td><td><code>SSL_SERVER_S_DN_CN</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_EMAIL</code></td><td><code>SSL_SERVER_S_DN_Email</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_O</code></td><td><code>SSL_SERVER_S_DN_O</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_OU</code></td><td><code>SSL_SERVER_S_DN_OU</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_C</code></td><td><code>SSL_SERVER_S_DN_C</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_SP</code></td><td><code>SSL_SERVER_S_DN_SP</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_L</code></td><td><code>SSL_SERVER_S_DN_L</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_IDN</code></td><td><code>SSL_SERVER_I_DN</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_ICN</code></td><td><code>SSL_SERVER_I_DN_CN</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_IEMAIL</code></td><td><code>SSL_SERVER_I_DN_Email</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_IO</code></td><td><code>SSL_SERVER_I_DN_O</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_IOU</code></td><td><code>SSL_SERVER_I_DN_OU</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_IC</code></td><td><code>SSL_SERVER_I_DN_C</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SERVER_ISP</code></td><td><code>SSL_SERVER_I_DN_SP</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_IL</code></td><td><code>SSL_SERVER_I_DN_L</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_CERTIFICATE</code></td><td><code>SSL_CLIENT_CERT</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_CERT_START</code></td><td><code>SSL_CLIENT_V_START</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_END</code></td><td><code>SSL_CLIENT_V_END</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_CERT_SERIAL</code></td><td><code>SSL_CLIENT_M_SERIAL</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_SIGNATURE_ALGORITHM</code></td><td><code>SSL_CLIENT_A_SIG</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_DN</code></td><td><code>SSL_CLIENT_S_DN</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_CN</code></td><td><code>SSL_CLIENT_S_DN_CN</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_EMAIL</code></td><td><code>SSL_CLIENT_S_DN_Email</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_O</code></td><td><code>SSL_CLIENT_S_DN_O</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_OU</code></td><td><code>SSL_CLIENT_S_DN_OU</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_C</code></td><td><code>SSL_CLIENT_S_DN_C</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_SP</code></td><td><code>SSL_CLIENT_S_DN_SP</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_L</code></td><td><code>SSL_CLIENT_S_DN_L</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_IDN</code></td><td><code>SSL_CLIENT_I_DN</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_ICN</code></td><td><code>SSL_CLIENT_I_DN_CN</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_IEMAIL</code></td><td><code>SSL_CLIENT_I_DN_Email</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_IO</code></td><td><code>SSL_CLIENT_I_DN_O</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_IOU</code></td><td><code>SSL_CLIENT_I_DN_OU</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_IC</code></td><td><code>SSL_CLIENT_I_DN_C</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_ISP</code></td><td><code>SSL_CLIENT_I_DN_SP</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_CLIENT_IL</code></td><td><code>SSL_CLIENT_I_DN_L</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_EXPORT</code></td><td><code>SSL_CIPHER_EXPORT</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_KEYSIZE</code></td><td><code>SSL_CIPHER_ALGKEYSIZE</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_SECKEYSIZE</code></td><td><code>SSL_CIPHER_USEKEYSIZE</code></td><td>renommÈe</td></tr>
+<tr><td><code>SSL_SSLEAY_VERSION</code></td><td><code>SSL_VERSION_LIBRARY</code></td><td>renommÈe</td></tr>
+<tr class="odd"><td><code>SSL_STRONG_CRYPTO</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEY_EXP</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEY_SIZE</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_SESSIONDIR</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_CERTIFICATELOGDIR</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_CERTFILE</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_SERVER_KEYFILE</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_KEYFILETYPE</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_CLIENT_KEY_EXP</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_KEY_ALGORITHM</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
+<tr><td><code>SSL_CLIENT_KEY_SIZE</code></td><td><code>-</code></td><td>Non supportÈe par mod_ssl</td></tr>
 </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="customlog" id="customlog">Fonctions de personnalisation des journaux</a></h2>
-<p>Quand mod_ssl est activ√©, le <a href="../mod/mod_log_config.html#formats">Format de journal courant
-(Custom Log Format)</a> du module <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> poss√®de
-des fonctions suppl√©mentaires comme indiqu√© dans le chapitre de r√©f√©rence.
-En plus de la fonction de format √©tendu
+<p>Quand mod_ssl est activÈ, le <a href="../mod/mod_log_config.html#formats">Format de journal courant
+(Custom Log Format)</a> du module <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> possËde
+des fonctions supplÈmentaires comme indiquÈ dans le chapitre de rÈfÈrence.
+En plus de la fonction de format Ètendu
 ``<code>%{</code><em>varname</em><code>}x</code>'' que l'on peut utiliser pour
 extraire le contenu d'une variable fournie par n'importe quel module,
 la fonction
 de format cryptographique ``<code>%{</code><em>name</em><code>}c</code>'' a
-√©t√© ajout√©e √† des fins de compatibilit√© ascendante. Les appels de fonctions
-actuellement impl√©ment√©s sont √©num√©r√©s dans le
+ÈtÈ ajoutÈe ‡ des fins de compatibilitÈ ascendante. Les appels de fonctions
+actuellement implÈmentÈs sont ÈnumÈrÈs dans le
 <a href="#table3">Tableau 3</a>.</p>
 
 <h3><a name="table3" id="table3">Table 3: Fonctions cryptographiques du format de journal courant</a></h3>
@@ -220,16 +220,16 @@ actuellement impl√©ment√©s sont √©num√©r√©s dans le
 <tr><td><code>%...{version}c</code></td>   <td>Version du protocole SSL</td></tr>
 <tr><td><code>%...{cipher}c</code></td>    <td>Chiffrement SSL</td></tr>
 <tr><td><code>%...{subjectdn}c</code></td> <td>Nom distinctif du sujet du certificat du client</td></tr>
-<tr><td><code>%...{issuerdn}c</code></td>  <td>Nom distinctif de l'√©metteur du certificat du client</td></tr>
-<tr><td><code>%...{errcode}c</code></td>   <td>Erreur lors de la v√©rification du certificat (num√©rique)</td></tr>
+<tr><td><code>%...{issuerdn}c</code></td>  <td>Nom distinctif de l'Èmetteur du certificat du client</td></tr>
+<tr><td><code>%...{errcode}c</code></td>   <td>Erreur lors de la vÈrification du certificat (numÈrique)</td></tr>
 
-<tr><td><code>%...{errstr}c</code></td>    <td>Erreur lors de la v√©rification du certificat (cha√Æne de caract√®res)</td></tr>
+<tr><td><code>%...{errstr}c</code></td>    <td>Erreur lors de la vÈrification du certificat (chaÓne de caractËres)</td></tr>
 </table>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_compat.html" title="Fran√ßais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/ssl/ssl_compat.html" title="FranÁais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -248,7 +248,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_compat.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autoris√© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÈ sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

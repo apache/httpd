@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,38 +24,38 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Documentations diverses sur Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/misc/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
 
     <p>Vous trouverez plus loin une liste de pages de documentation
-    additionnelles concernant le projet de dÃ©veloppement du serveur web
+    additionnelles concernant le projet de développement du serveur web
     Apache.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-    <p>La mise Ã  jour des documents ci-dessous permettant de prendre en
-    compte les modifications apportÃ©es par la version 2.1 du serveur
-    HTTP Apache n'a pas Ã©tÃ© entiÃ¨rement menÃ©e Ã  bien. Certaines
-    informations sont probablement encore pertinentes, mais utilisez-les tout de mÃªme avec
-    prÃ©cautions.</p>
+    <p>La mise à jour des documents ci-dessous permettant de prendre en
+    compte les modifications apportées par la version 2.1 du serveur
+    HTTP Apache n'a pas été entièrement menée à bien. Certaines
+    informations sont probablement encore pertinentes, mais utilisez-les tout de même avec
+    précautions.</p>
     </div>
 
     <dl>
-      <dt><a href="perf-tuning.html">Notes Ã  propos des performances -
-      RÃ©glages fins d'Apache</a></dt>
+      <dt><a href="perf-tuning.html">Notes à propos des performances -
+      Réglages fins d'Apache</a></dt>
 
       <dd>
-        <p>Notes Ã  propos de la configuration d'Apache pour de plus
-	hautes performances (Ã  l'exÃ©cution et Ã  la compilation). Notes
+        <p>Notes à propos de la configuration d'Apache pour de plus
+	hautes performances (à l'exécution et à la compilation). Notes
 	expliquant pourquoi Apache accomplit certaines choses et
-	n'en accomplit pas certaines autres (les premiÃ¨res l'accÃ©lÃ©rant
-	et les deuxiÃ¨mes le ralentissant).</p>
+	n'en accomplit pas certaines autres (les premières l'accélérant
+	et les deuxièmes le ralentissant).</p>
       </dd>
 
-      <dt><a href="perf-scaling.html">AmÃƒÂ©lioration des performances</a></dt>
+      <dt><a href="perf-scaling.html">AmÃ©lioration des performances</a></dt>
 
       <dd>
         <p>Quelques options de personnalisation de la configuration
@@ -63,26 +63,26 @@
       </dd>
 
       <dt><a href="security_tips.html">Conseils concernant la
-      sÃ©curitÃ©</a></dt>
+      sécurité</a></dt>
 
       <dd>
         <p>Quelques conseils de type "faites" ou "ne faites pas" pour
-	que votre site web Apache reste sÃ©curisÃ©.</p>
+	que votre site web Apache reste sécurisé.</p>
       </dd>
 
-      <dt><a href="relevant_standards.html">Standards concernÃ©s</a></dt>
+      <dt><a href="relevant_standards.html">Standards concernés</a></dt>
 
       <dd>
-        <p>Ce document constitue une page de rÃ©fÃ©rence pour la plupart
-	des standards concernÃ©s par Apache.</p>
+        <p>Ce document constitue une page de référence pour la plupart
+	des standards concernés par Apache.</p>
       </dd>
 
       <dt><a href="password_encryptions.html">Formats de chiffrement des
       mots de passe</a></dt>
 
       <dd>
-        <p>Discussion Ã  propos des divers algorithmes de chiffrement
-	supportÃ©s par Apache Ã  des fins d'authentification.</p>
+        <p>Discussion à propos des divers algorithmes de chiffrement
+	supportés par Apache à des fins d'authentification.</p>
       </dd>
     </dl>
 
@@ -90,12 +90,12 @@
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/misc/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/misc/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
