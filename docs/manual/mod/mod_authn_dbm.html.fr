@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,26 +27,26 @@
 <div id="preamble"><h1>Module Apache mod_authn_dbm</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_dbm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_dbm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant des fichiers
 DBM</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_dbm_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_dbm.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>authn_dbm_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_authn_dbm.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet aux frontaux comme
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     d'authentifier les utilisateurs en les recherchant dans des fichiers
     de mots de passe <dfn>dbm</dfn>. <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
-    fournit une fonctionnalité similaire.</p>
+    fournit une fonctionnalitÃ© similaire.</p>
 
     <p>Lorsqu'on utilise <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
-    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, ce module est invoqué en affectant
-    la valeur <code>dbm</code> à la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, ce module est invoquÃ© en affectant
+    la valeur <code>dbm</code> Ã  la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -72,76 +72,76 @@ passe</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbmtype" id="authdbmtype">Directive</a> <a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type de fichier de base de données utilisé pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit le type de fichier de base de donnÃ©es utilisÃ© pour
 stocker les mots de passe</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDBMType default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>AuthDBMType default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbm</td></tr>
 </table>
-    <p>Cette directive définit le type de fichier de base de
-    données utilisé pour stocker les mots de passe. Le type de base de
-    données par défaut est défini à la compilation. La liste des autres
-    types de bases de données disponibles dépend aussi de la <a href="../install.html#dbm">configuration de la compilation</a>.</p>
+    <p>Cette directive dÃ©finit le type de fichier de base de
+    donnÃ©es utilisÃ© pour stocker les mots de passe. Le type de base de
+    donnÃ©es par dÃ©faut est dÃ©fini Ã  la compilation. La liste des autres
+    types de bases de donnÃ©es disponibles dÃ©pend aussi de la <a href="../install.html#dbm">configuration de la compilation</a>.</p>
 
-    <p>Il est impératif que le programme que vous utilisez pour créer
-    vos fichiers de mots de passe soit configuré pour utiliser le même
-    type de base de données.</p>
+    <p>Il est impÃ©ratif que le programme que vous utilisez pour crÃ©er
+    vos fichiers de mots de passe soit configurÃ© pour utiliser le mÃªme
+    type de base de donnÃ©es.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authdbmuserfile" id="authdbmuserfile">Directive</a> <a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom d'un fichier de base de données pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit le nom d'un fichier de base de donnÃ©es pour
 l'authentification contenant la liste
 des utilisateurs et de leurs mots de passe</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBMUserFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbm</td></tr>
 </table>
-    <p>La directive <code class="directive">AuthDBMUserFile</code> définit
-    le nom d'un fichier de base de données pour
+    <p>La directive <code class="directive">AuthDBMUserFile</code> dÃ©finit
+    le nom d'un fichier de base de donnÃ©es pour
     l'authentification contenant la liste des utilisateurs et de leurs
-    mots de passe. <var>chemin-fichier</var> doit être un chemin absolu
-    vers le fichier de base de données.</p>
+    mots de passe. <var>chemin-fichier</var> doit Ãªtre un chemin absolu
+    vers le fichier de base de donnÃ©es.</p>
 
-    <p>La clé du fichier de base de données est le nom de l'utilisateur.
-    La valeur associée est le mot de passe chiffré, éventuellement suivi
-    par un ':' et des données aléatoires. Ce ':' ainsi que les données
-    aléatoires qui suivent seront ignorées par le serveur.</p>
+    <p>La clÃ© du fichier de base de donnÃ©es est le nom de l'utilisateur.
+    La valeur associÃ©e est le mot de passe chiffrÃ©, Ã©ventuellement suivi
+    par un ':' et des donnÃ©es alÃ©atoires. Ce ':' ainsi que les donnÃ©es
+    alÃ©atoires qui suivent seront ignorÃ©es par le serveur.</p>
 
-    <div class="warning"><h3>Sécurité :</h3>
-      <p>Faites en sorte que le fichier spécifié par la directive
-      <code class="directive">AuthDBMUserFile</code> soit stocké en dehors de
+    <div class="warning"><h3>SÃ©curitÃ© :</h3>
+      <p>Faites en sorte que le fichier spÃ©cifiÃ© par la directive
+      <code class="directive">AuthDBMUserFile</code> soit stockÃ© en dehors de
       l'arborescence des documents du serveur web ; en particulier, ne
-      l'enregistrez <em>pas</em> dans le répertoire qu'il protège, faute
-      de quoi, les clients auraient la possibilité de
-      télécharger le fichier des mots de passe.</p>
+      l'enregistrez <em>pas</em> dans le rÃ©pertoire qu'il protÃ¨ge, faute
+      de quoi, les clients auraient la possibilitÃ© de
+      tÃ©lÃ©charger le fichier des mots de passe.</p>
     </div>
 
-    <p>Le format de mot de passe chiffré dépend du frontal
-    d'authentification utilisé (par exemple
+    <p>Le format de mot de passe chiffrÃ© dÃ©pend du frontal
+    d'authentification utilisÃ© (par exemple
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de
-    passe</a> pour plus de détails.</p>
+    passe</a> pour plus de dÃ©tails.</p>
 
-    <p>Note importante concernant la compatibilité : l'implémentation de
+    <p>Note importante concernant la compatibilitÃ© : l'implÃ©mentation de
     <code>dbmopen</code> dans les modules d'Apache lit la longueur de la
-    chaîne correspondant aux données chiffrées dans la structure des
-    données DBM, plutôt que de calculer cette longueur en se basant sur
-    le caractère nul final. Certaines applications par contre, comme le
+    chaÃ®ne correspondant aux donnÃ©es chiffrÃ©es dans la structure des
+    donnÃ©es DBM, plutÃ´t que de calculer cette longueur en se basant sur
+    le caractÃ¨re nul final. Certaines applications par contre, comme le
     serveur web Netscape, calculent cette longueur en se basant sur
-    le caractère nul final ; par conséquent, si vous rencontrez des
-    difficultés en échangeant des fichiers DBM entre plusieurs
-    applications, le problème peut éventuellement s'expliquer par cette
-    différence d'implémentation.</p>
+    le caractÃ¨re nul final ; par consÃ©quent, si vous rencontrez des
+    difficultÃ©s en Ã©changeant des fichiers DBM entre plusieurs
+    applications, le problÃ¨me peut Ã©ventuellement s'expliquer par cette
+    diffÃ©rence d'implÃ©mentation.</p>
 
-    <p>Un script perl nommé <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> est fourni avec
-    Apache. On peut utiliser ce programme pour créer et mettre à jour
+    <p>Un script perl nommÃ© <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> est fourni avec
+    Apache. On peut utiliser ce programme pour crÃ©er et mettre Ã  jour
     les fichiers de mots de passe au format DBM que ce module
     utilise. Le programme fourni <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> est un autre
     utilitaire permettant de maintenir les fichiers DBM.</p>
@@ -150,7 +150,7 @@ des utilisateurs et de leurs mots de passe</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_authn_dbm.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_dbm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -171,7 +171,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_dbm.
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
