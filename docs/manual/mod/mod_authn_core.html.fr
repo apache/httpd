@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,24 +27,24 @@
 <div id="preamble"><h1>Module Apache mod_authn_core</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_core.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authn_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Le noyau de l'authentification</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>authn_core_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_authn_core.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_core_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_core.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit le coeur des fonctionnalitÃ©s d'authentification
-    permettant d'accorder ou de refuser l'accÃ¨s Ã  certaines zones du
+    <p>Ce module fournit le coeur des fonctionnalités d'authentification
+    permettant d'accorder ou de refuser l'accès à certaines zones du
     site web. Les directives fournies par le module
-    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> sont communes Ã  tous les
+    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> sont communes à tous les
     fournisseurs d'authentification.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#authnalias">CrÃ©ation d'alias de fournisseurs
+<li><img alt="" src="../images/down.gif" /> <a href="#authnalias">Création d'alias de fournisseurs
 d'authentification</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -55,30 +55,30 @@ d'authentification</a></li>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="authnalias" id="authnalias">CrÃ©ation d'alias de fournisseurs
+<h2><a name="authnalias" id="authnalias">Création d'alias de fournisseurs
 d'authentification</a></h2>
 
-    <p>Il est possible de crÃ©er des fournisseurs d'authentification
-    Ã©tendus dans le fichier de configuration et de leur assigner un
-    alias. Le fournisseur ainsi nommÃ© peut alors Ãªtre rÃ©fÃ©rencÃ© Ã  l'aide
+    <p>Il est possible de créer des fournisseurs d'authentification
+    étendus dans le fichier de configuration et de leur assigner un
+    alias. Le fournisseur ainsi nommé peut alors être référencé à l'aide
     des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> tout comme
-    un fournisseur d'authentification de base. Outre la possibilitÃ© de
-    crÃ©er et attribuer un alias Ã  un fournisseur Ã©tendu, le mÃªme
-    fournisseur d'authentification peut aussi Ãªtre rÃ©fÃ©rencÃ© par
-    plusieurs sections relatives Ã  une zone du site web.</p>
+    un fournisseur d'authentification de base. Outre la possibilité de
+    créer et attribuer un alias à un fournisseur étendu, le même
+    fournisseur d'authentification peut aussi être référencé par
+    plusieurs sections relatives à une zone du site web.</p>
 
     <h3><a name="example" id="example">Exemples</a></h3>
 
-	<p>Cet exemple vÃ©rifie les mots de passe dans deux fichiers
-	textes diffÃ©rents.</p>
+	<p>Cet exemple vérifie les mots de passe dans deux fichiers
+	textes différents.</p>
 
-	<div class="example"><h3>VÃ©rification dans plusieurs fichiers de mots de
-	passe au format texte</h3><pre class="prettyprint lang-config"># PremiÃ¨re vÃ©rification
+	<div class="example"><h3>Vérification dans plusieurs fichiers de mots de
+	passe au format texte</h3><pre class="prettyprint lang-config"># Première vérification
 &lt;AuthnProviderAlias file file1&gt;
     AuthUserFile "/www/conf/passwords1"
 &lt;/AuthnProviderAlias&gt;
 
-# VÃ©rification suivante
+# Vérification suivante
 &lt;AuthnProviderAlias file file2&gt;   
     AuthUserFile "/www/conf/passwords2"
 &lt;/AuthnProviderAlias&gt;
@@ -95,12 +95,12 @@ d'authentification</a></h2>
 
 
         <p>Dans l'exemple ci-dessous, deux fournisseurs
-	d'authentification ldap sont crÃ©Ã©s Ã  partir du fournisseur ldap
+	d'authentification ldap sont créés à partir du fournisseur ldap
 	de base, et se voient attribuer un alias. L'authentification
-	d'une mÃªme zone peut alors Ãªtre traitÃ©e par plusieurs serveurs
+	d'une même zone peut alors être traitée par plusieurs serveurs
 	ldap :</p>
 
-        <div class="example"><h3>VÃ©rification auprÃ¨s de plusieurs serveurs
+        <div class="example"><h3>Vérification auprès de plusieurs serveurs
 	LDAP</h3><pre class="prettyprint lang-config">&lt;AuthnProviderAlias ldap ldap-alias1&gt;
     AuthLDAPBindDN "cn=youruser,o=ctx"
     AuthLDAPBindPassword yourpassword
@@ -122,7 +122,7 @@ Alias "/secure" "/webpages/secure"
     Require valid-user
     # Notez que Require ldap-* ne fonctionnerait pas ici, car
     # AuthnProviderAlias ne fournit pas de configuration pour les
-    # fournisseurs d'autorisation implÃ©mentÃ©s dans le mÃªme module que le
+    # fournisseurs d'autorisation implémentés dans le même module que le
     # fournisseur d'authentification.
 &lt;/Directory&gt;</pre>
 </div>
@@ -132,21 +132,21 @@ Alias "/secure" "/webpages/secure"
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authname" id="authname">Directive</a> <a name="AuthName" id="AuthName">AuthName</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'identifiant de l'autorisation Ã  utiliser avec
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'identifiant de l'autorisation à utiliser avec
 l'authentification HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthName <var>identifiant d'autorisation</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_core</td></tr>
 </table>
-    <p>Cette directive permet de dÃ©finir l'identifiant d'autorisation
-    pour un rÃ©pertoire. Cet identifiant est fourni au client de faÃ§on Ã 
+    <p>Cette directive permet de définir l'identifiant d'autorisation
+    pour un répertoire. Cet identifiant est fourni au client de façon à
     ce qu'il sache quels nom d'utilisateur et mot de passe envoyer.
     <code class="directive">AuthName</code> accepte un seul argument ; s'il
-    contient des espaces, il doit Ãªtre entourÃ© de guillemets. Pour
+    contient des espaces, il doit être entouré de guillemets. Pour
     pouvoir fonctionner, la directive <code class="directive">AuthName</code>
-    doit Ãªtre utilisÃ©e en combinaison avec les directives <code class="directive"><a href="#authtype">AuthType</a></code> et <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, ainsi que des
+    doit être utilisée en combinaison avec les directives <code class="directive"><a href="#authtype">AuthType</a></code> et <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, ainsi que des
     directives comme <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> et <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>.</p>
 
    <p>Par exemple :</p>
@@ -154,12 +154,12 @@ l'authentification HTTP</td></tr>
    <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
-    <p>La chaÃ®ne fournie comme argument Ã  <code>AuthName</code>
-    apparaÃ®tra dans la boÃ®te de dialogue d'authentification pour la
+    <p>La chaîne fournie comme argument à <code>AuthName</code>
+    apparaîtra dans la boîte de dialogue d'authentification pour la
     plupart des navigateurs.</p>
 
-    <p>Il est possible de dÃ©finir cette directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
-    spÃ©cifier l'identifiant d'autorisation de maniÃ¨re dynamique.</p>
+    <p>Il est possible de définir cette directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
+    spécifier l'identifiant d'autorisation de manière dynamique.</p>
 
    <p>Exemple :</p>
 
@@ -169,8 +169,8 @@ l'authentification HTTP</td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentification, autorisation et contrÃ´le
-    d'accÃ¨s</a></li>
+<li><a href="../howto/auth.html">Authentification, autorisation et contrôle
+    d'accès</a></li>
 <li><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></li>
 </ul>
 </div>
@@ -179,7 +179,7 @@ l'authentification HTTP</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui constituent une
 extension d'un fournisseur d'authentification de base et lui attribue
-l'alias spÃ©cifiÃ©</td></tr>
+l'alias spécifié</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthnProviderAlias <var>alias-fournisseur</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
@@ -188,11 +188,11 @@ l'alias spÃ©cifiÃ©</td></tr>
 </table>
     <p>Les balises <code>&lt;AuthnProviderAlias&gt;</code> et
     <code>&lt;/AuthnProviderAlias&gt;</code> permettent de regrouper un
-    ensemble de directives d'authentification qui seront rÃ©fÃ©rencÃ©es par
-    l'alias spÃ©cifiÃ© Ã  l'aide des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
+    ensemble de directives d'authentification qui seront référencées par
+    l'alias spécifié à l'aide des directives <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
 
     <div class="note">Cette directive n'a aucun influence sur le processus
-    d'autorisation, mÃªme pour les modules qui fournissent Ã  la fois
+    d'autorisation, même pour les modules qui fournissent à la fois
     l'authentification et l'autorisation.</div>
 
 
@@ -202,17 +202,17 @@ l'alias spÃ©cifiÃ©</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type d'authentification utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthType None|Basic|Digest|Form</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_core</td></tr>
 </table>
-    <p>Cette directive permet de dÃ©finir le type d'authentification
-    utilisateur pour un rÃ©pertoire. Les types d'authentification
-    disponibles sont <code>None</code>, <code>Basic</code> (implÃ©mentÃ©
+    <p>Cette directive permet de définir le type d'authentification
+    utilisateur pour un répertoire. Les types d'authentification
+    disponibles sont <code>None</code>, <code>Basic</code> (implémenté
     par <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>), <code>Digest</code>
-    (implÃ©mentÃ© par <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>), et
-    <code>Form</code> (implÃ©mentÃ© par
+    (implémenté par <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>), et
+    <code>Form</code> (implémenté par
     <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>).</p>
 
     <p>Pour mettre en oeuvre l'authentification, vous devez aussi
@@ -221,14 +221,14 @@ l'alias spÃ©cifiÃ©</td></tr>
     comme <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> et d'un module d'autorisation
     comme <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>.</p>
 
-    <p>Le type d'authentification <code>None</code> dÃ©sactive
-    l'authentification. Lorsqu'une authentification est dÃ©finie, elle
-    est en gÃ©nÃ©ral hÃ©ritÃ©e par chacune des <a href="../sections.html#mergin">sections de configuration</a> qui
-    suivent, Ã  moins qu'un autre type d'authentification ne soit
-    spÃ©cifiÃ©. Si l'on ne souhaite pas mettre en oeuvre
-    d'authentification pour une sous-section d'une section authentifiÃ©e,
+    <p>Le type d'authentification <code>None</code> désactive
+    l'authentification. Lorsqu'une authentification est définie, elle
+    est en général héritée par chacune des <a href="../sections.html#mergin">sections de configuration</a> qui
+    suivent, à moins qu'un autre type d'authentification ne soit
+    spécifié. Si l'on ne souhaite pas mettre en oeuvre
+    d'authentification pour une sous-section d'une section authentifiée,
     on doit utiliser le type d'authentification <code>None</code> ; dans
-    l'exemple suivant, les clients peuvent accÃ©der au rÃ©pertoire
+    l'exemple suivant, les clients peuvent accéder au répertoire
     <code>/www/docs/public</code> sans devoir s'authentifier :</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs"&gt;
@@ -245,27 +245,27 @@ l'alias spÃ©cifiÃ©</td></tr>
 &lt;/Directory&gt;</pre>
 
 
-    <p>A partir de la version 2.4.13, il est possible de dÃ©finir cette
+    <p>A partir de la version 2.4.13, il est possible de définir cette
     directive en utilisant la <a href="../expr.html">syntaxe des expressions</a> pour
-    spÃ©cifier le type d'authentification de maniÃ¨re dynamique.</p>
+    spécifier le type d'authentification de manière dynamique.</p>
 
     <div class="note">Veuillez noter que, lorsque l'authentification n'est pas
-    activÃ©e, les clients qui se sont dÃ©jÃ  authentifiÃ©s pour une autre
-    zone de l'arborescence du site continueront en gÃ©nÃ©ral Ã  envoyer des
-    en-tÃªte d'authentification HTTP ou des cookies avec chaque requÃªte,
-    sans se prÃ©occuper de savoir si le serveur nÃ©cessite vraiment une
+    activée, les clients qui se sont déjà authentifiés pour une autre
+    zone de l'arborescence du site continueront en général à envoyer des
+    en-tête d'authentification HTTP ou des cookies avec chaque requête,
+    sans se préoccuper de savoir si le serveur nécessite vraiment une
     authentification pour chaque ressource.</div>
 
 <h3>Voir aussi</h3>
 <ul>
-<li><a href="../howto/auth.html">Authentification, autorisation et contrÃ´le
-    d'accÃ¨s</a></li>
+<li><a href="../howto/auth.html">Authentification, autorisation et contrôle
+    d'accès</a></li>
 </ul>
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_core.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authn_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -284,7 +284,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authn_core
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

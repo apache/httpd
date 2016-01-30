@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,31 +27,31 @@
 <div id="preamble"><h1>Module Apache mod_authz_host</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_host.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basÃ©es sur l'hÃ´te (nom ou adresse
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe basées sur l'hôte (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>authz_host_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_authz_host.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible depuis les versions 2.3 et supÃ©rieures
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_host_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authz_host.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.3 et supérieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Les fournisseurs d'autorisation implÃ©mentÃ©s par le module
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> sont enregistrÃ©s Ã  l'aide de
+    <p>Les fournisseurs d'autorisation implémentés par le module
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> sont enregistrés à l'aide de
     la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>. On peut
-    utiliser cette directive Ã  l'intÃ©rieur de sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou de fichiers
+    utiliser cette directive à l'intérieur de sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou de fichiers
     <code><a href="core.html#accessfilename">.htaccess</a> </code> pour
-    contrÃ´ler l'accÃ¨s Ã  certaines zones du serveur. Le contrÃ´le d'accÃ¨s
-    peut Ãªtre effectuÃ© en fonction du nom d'hÃ´te ou de l'adresse IP.</p>
+    contrôler l'accès à certaines zones du serveur. Le contrôle d'accès
+    peut être effectué en fonction du nom d'hôte ou de l'adresse IP.</p>
 
-    <p>En gÃ©nÃ©ral, les directives de restriction d'accÃ¨s s'appliquent Ã 
-    toutes les mÃ©thodes d'accÃ¨s (<code>GET</code>, <code>PUT</code>,
+    <p>En général, les directives de restriction d'accès s'appliquent à
+    toutes les méthodes d'accès (<code>GET</code>, <code>PUT</code>,
     <code>POST</code>, etc...). C'est d'ailleurs ce que l'on souhaite
     dans la plupart des cas. Il est cependant possible de ne restreindre
-    l'accÃ¨s que pour certaines mÃ©thodes, tout en laissant les autres
-    mÃ©thodes sans protection, en plaÃ§ant les directives dans une section
+    l'accès que pour certaines méthodes, tout en laissant les autres
+    méthodes sans protection, en plaçant les directives dans une section
     <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -62,24 +62,24 @@ d'Apache</td></tr></table>
 <h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../howto/auth.html">Authentification, autorisation et
-contrÃ´le d'accÃ¨s</a></li>
+contrôle d'accès</a></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
 
-    <p>La directive Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est utilisÃ©e au cours de
-    la phase d'autorisation pour vÃ©rifier si un utilisateur se voit
-    accorder ou refuser l'accÃ¨s Ã  une ressource. mod_authz_host fournit
+    <p>La directive Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est utilisée au cours de
+    la phase d'autorisation pour vérifier si un utilisateur se voit
+    accorder ou refuser l'accès à une ressource. mod_authz_host fournit
     les types d'autorisation <code>ip</code>, <code>host</code> et <code>local</code>. D'autres
     types d'autorisation
-    sont aussi disponibles, mais nÃ©cessitent le chargement des modules
-    d'autorisation appropriÃ©s.</p>
+    sont aussi disponibles, mais nécessitent le chargement des modules
+    d'autorisation appropriés.</p>
 
-    <p>Ces fournisseurs d'autorisation permettent de dÃ©terminer quels
-    hÃ´tes peuvent accÃ©der Ã  une zone du serveur. On peut contrÃ´ler
-    l'accÃ¨s en fonction du nom d'hÃ´te, de l'adresse IP, ou d'un intervalle
+    <p>Ces fournisseurs d'autorisation permettent de déterminer quels
+    hôtes peuvent accéder à une zone du serveur. On peut contrôler
+    l'accès en fonction du nom d'hôte, de l'adresse IP, ou d'un intervalle
     d'adresses IP.</p>
 
     <p>A partir de la version 2.4.8, les directives require host
@@ -87,46 +87,46 @@ contrÃ´le d'accÃ¨s</a></li>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
-    <p>Le fournisseur <code>ip</code> permet de contrÃ´ler l'accÃ¨s au
+    <p>Le fournisseur <code>ip</code> permet de contrôler l'accès au
     serveur en fonction de l'adresse IP du client distant. Lorsque
-    <code>Require ip <var>adresse-ip</var></code> est spÃ©cifiÃ©, la
-    requÃªte est autorisÃ©e si l'adresse IP du client distant correspond
-    Ã </p>
+    <code>Require ip <var>adresse-ip</var></code> est spécifié, la
+    requête est autorisée si l'adresse IP du client distant correspond
+    à</p>
 
-    <p>Une adresse IP complÃ¨te :</p>
+    <p>Une adresse IP complète :</p>
 
     <pre class="prettyprint lang-config">Require ip 10.1.2.3
 Require ip 192.168.1.104 192.168.1.205</pre>
 
 
-    <p>L'adresse IP d'un hÃ´te pour qui l'accÃ¨s est accordÃ©</p>
+    <p>L'adresse IP d'un hôte pour qui l'accès est accordé</p>
 
     <p>Une adresse IP partielle :</p>
 
     <pre class="prettyprint lang-config">Require ip 10.1
 Require ip 10 172.20 192.168.2</pre>
 
-    <p>Les 1 Ã  3 premiers octets d'une adresse IP, pour une restriction
-    Ã  un sous-rÃ©seau.</p>
+    <p>Les 1 à 3 premiers octets d'une adresse IP, pour une restriction
+    à un sous-réseau.</p>
 
-    <p>Une paire rÃ©seau/masque de sous-rÃ©seau :</p>
+    <p>Une paire réseau/masque de sous-réseau :</p>
 
     <pre class="prettyprint lang-config">Require ip 10.1.0.0/255.255.0.0</pre>
 
-    <p>Un rÃ©seau a.b.c.d, et un masque de sous-rÃ©seau w.x.y.z. pour une
-    restriction de sous-rÃ©seau plus fine.</p>
+    <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z. pour une
+    restriction de sous-réseau plus fine.</p>
 
-    <p>Une spÃ©cification CIDR rÃ©seau/nnn :</p>
+    <p>Une spécification CIDR réseau/nnn :</p>
 
     <pre class="prettyprint lang-config">Require ip 10.1.0.0/16</pre>
 
-    <p>Identique au cas prÃ©cÃ©dent, exceptÃ© que le masque de sous-rÃ©seau
-    reprÃ©sente les nnn premiers bits de poids fort.</p>
+    <p>Identique au cas précédent, excepté que le masque de sous-réseau
+    représente les nnn premiers bits de poids fort.</p>
 
     <p>Notez que les trois derniers exemples correspondent exectement au
-    mÃªme ensemble d'hÃ´tes.</p>
+    même ensemble d'hôtes.</p>
 
-    <p>On peut spÃ©cifier des adresses et des sous-rÃ©seaux IPv6 comme
+    <p>On peut spécifier des adresses et des sous-réseaux IPv6 comme
     suit :</p>
 
     <pre class="prettyprint lang-config">Require ip 2001:db8::a00:20ff:fea7:ccea
@@ -135,67 +135,67 @@ Require ip 2001:db8:2:1::/64
 Require ip 2001:db8:3::/48</pre>
 
 
-    <p>Note: comme les adresses IP sont lues au dÃ©marrage, les
-    expressions ne sont pas Ã©valuÃ©es au moment de la requÃªte.</p>
+    <p>Note: comme les adresses IP sont lues au démarrage, les
+    expressions ne sont pas évaluées au moment de la requête.</p>
 
 
 
 <h3><a name="reqhost" id="reqhost">Require host</a></h3>
 
-    <p>Le fournisseur <code>host</code> permet de contrÃ´ler l'accÃ¨s au
-    serveur en fonction du nom d'hÃ´te du client distant. Lorsque
-    <code>Require host <var>nom-hÃ´te</var></code> est spÃ©cifiÃ©, la
-    requÃªte est autorisÃ©e si le nom d'hÃ´te correspond Ã </p>
+    <p>Le fournisseur <code>host</code> permet de contrôler l'accès au
+    serveur en fonction du nom d'hôte du client distant. Lorsque
+    <code>Require host <var>nom-hôte</var></code> est spécifié, la
+    requête est autorisée si le nom d'hôte correspond à</p>
 
-    <p>Un nom de domaine (Ã©ventuellement partiel)</p>
+    <p>Un nom de domaine (éventuellement partiel)</p>
 
     <pre class="prettyprint lang-config">Require host example.org
 Require host .net example.edu</pre>
 
 
-    <p>Les hÃ´tes dont les noms correspondent ou se terminent par la
-    chaÃ®ne spÃ©cifiÃ©e se voient accorder l'accÃ¨s. Seuls les Ã©lÃ©ment de
+    <p>Les hôtes dont les noms correspondent ou se terminent par la
+    chaîne spécifiée se voient accorder l'accès. Seuls les élément de
     nom de domaine complets sont mis en correspondance ; ainsi,
-    l'exemple ci-dessus correspondra Ã  <code>foo.example.org</code>, mais
-    ne correspondra pas Ã  <code>fooexample.org</code>. Avec cette
+    l'exemple ci-dessus correspondra à <code>foo.example.org</code>, mais
+    ne correspondra pas à <code>fooexample.org</code>. Avec cette
     configuration, Apache va effectuer une double recherche DNS sur
-    l'adresse IP du client, sans tenir compte de la dÃ©finition de la
+    l'adresse IP du client, sans tenir compte de la définition de la
     directive  <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>. Il
     va effectuer une recherche DNS inverse sur l'adresse IP pour trouver
-    le nom d'hÃ´te associÃ©, puis une recherche DNS directe sur le nom
-    d'hÃ´te pour vÃ©rifier qu'il correspond bien Ã  l'adresse IP originale.
-    L'accÃ¨s ne sera accordÃ© que si le nom d'hÃ´te correspond et si les
-    recherches DNS inverse et directe sont cohÃ©rentes.</p>
+    le nom d'hôte associé, puis une recherche DNS directe sur le nom
+    d'hôte pour vérifier qu'il correspond bien à l'adresse IP originale.
+    L'accès ne sera accordé que si le nom d'hôte correspond et si les
+    recherches DNS inverse et directe sont cohérentes.</p>
 
 
 
 <h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
 
-    <p>Le fournisseur <code>local</code> autorise l'accÃ¨s au serveur si
+    <p>Le fournisseur <code>local</code> autorise l'accès au serveur si
     l'une au moins de ces conditions est satisfaite :</p>
 
     <ul>
-        <li>l'adresse IP du client correspond Ã  127.0.0.0/8</li>
+        <li>l'adresse IP du client correspond à 127.0.0.0/8</li>
         <li>l'adresse IP du client est ::1</li>
         <li>les adresses IP du client et du serveur sont identiques</li>
     </ul>
 
-    <p>L'exemple suivant montre une mÃ©thode simple pour sÃ©lectionner les
-    connexions en provenance de l'hÃ´te local :</p>
+    <p>L'exemple suivant montre une méthode simple pour sélectionner les
+    connexions en provenance de l'hôte local :</p>
 
     <pre class="prettyprint lang-config">Require local</pre>
 
 
 
 
-<h3><a name="proxy" id="proxy">Note concernant la sÃ©curitÃ©</a></h3>
+<h3><a name="proxy" id="proxy">Note concernant la sécurité</a></h3>
 
-    <p>Si le contenu de votre serveur est mandatÃ©, vous devez garder Ã 
-    l'esprit que l'adresse client correspondra Ã  l'adresse de votre
-    serveur mandataire et non Ã  l'adresse du client, et l'utilisation de
+    <p>Si le contenu de votre serveur est mandaté, vous devez garder à
+    l'esprit que l'adresse client correspondra à l'adresse de votre
+    serveur mandataire et non à l'adresse du client, et l'utilisation de
     la directive <code>Require</code> dans ce contexte ne provoquera pas
-    forcÃ©ment l'effet dÃ©sirÃ©. Voir <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> pour
-    une solution possible Ã  ce problÃ¨me.</p>
+    forcément l'effet désiré. Voir <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> pour
+    une solution possible à ce problème.</p>
     
 
 
@@ -203,7 +203,7 @@ Require host .net example.edu</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_host.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authz_host.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -222,7 +222,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authz_host
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

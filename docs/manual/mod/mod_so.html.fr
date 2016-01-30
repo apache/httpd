@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,44 +27,44 @@
 <div id="preamble"><h1>Module Apache mod_so</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_so.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_so.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chargement de modules ou de code exÃ©cutable au cours du
-dÃ©marrage ou du redÃ©marrage du serveur</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chargement de modules ou de code exécutable au cours du
+démarrage ou du redémarrage du serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>so_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_so.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Sous Windows, c'est un module de base (toujours
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>so_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_so.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Sous Windows, c'est un module de base (toujours
 inclus)</td></tr></table>
 <h3>Sommaire</h3>
 
 
-    <p>Sur les systÃ¨mes d'exploitation sÃ©lectionnÃ©s, ce module peut Ãªtre
-    utilisÃ© pour charger des modules dans le serveur HTTP Apache en cours d'exÃ©cution
-    grÃ¢ce au mÃ©canisme des <a href="../dso.html">Dynamic Shared Object ou Objets PartagÃ©s
-    Dynamiquement</a> (DSO), et Ã©vite ainsi de devoir effectuer une
+    <p>Sur les systèmes d'exploitation sélectionnés, ce module peut être
+    utilisé pour charger des modules dans le serveur HTTP Apache en cours d'exécution
+    grâce au mécanisme des <a href="../dso.html">Dynamic Shared Object ou Objets Partagés
+    Dynamiquement</a> (DSO), et évite ainsi de devoir effectuer une
     recompilation.</p>
 
-    <p>Sous Unix, le code chargÃ© provient en gÃ©nÃ©ral de fichiers objet
-    partagÃ©s possÃ¨dant en gÃ©nÃ©ral l'extension <code>.so</code>, alors
-    que sous Windows, l'extension peut Ãªtre soit <code>.so</code>, soit
+    <p>Sous Unix, le code chargé provient en général de fichiers objet
+    partagés possèdant en général l'extension <code>.so</code>, alors
+    que sous Windows, l'extension peut être soit <code>.so</code>, soit
     <code>.dll</code>.</p>
 
     <div class="warning"><h3>Avertissement</h3>
-    <p>En gÃ©nÃ©ral, les modules compilÃ©s pour une version majeure du
+    <p>En général, les modules compilés pour une version majeure du
     serveur HTTP Apache ne fonctionneront pas avec une autre (par
-    exemple de 1.3 Ã  2.0 ou 2.0 Ã  2.2). D'une version majeure Ã  l'autre,
-    il y a souvent des modifications d'API qui nÃ©cessitent des
+    exemple de 1.3 à 2.0 ou 2.0 à 2.2). D'une version majeure à l'autre,
+    il y a souvent des modifications d'API qui nécessitent des
     modifications du module pour qu'il puisse fonctionner avec la
     nouvelle version.</p>
     </div>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#windows">CrÃ©ation de modules chargeables pour
+<li><img alt="" src="../images/down.gif" /> <a href="#windows">Création de modules chargeables pour
 Windows</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -74,11 +74,11 @@ Windows</a></li>
 <ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="windows" id="windows">CrÃ©ation de modules chargeables pour
+<h2><a name="windows" id="windows">Création de modules chargeables pour
 Windows</a></h2>
 
     <div class="note"><h3>Note</h3>
-    <p>Sous Windows, oÃ¹ les modules chargeables possÃ¨dent en gÃ©nÃ©ral
+    <p>Sous Windows, où les modules chargeables possèdent en général
     l'extension de nom de fichier <code>.dll</code>, les modules Apache
     httpd se nomment <code>mod_nom-module.so</code>, tout comme sur les
     autres plates-formes. Vous trouverez cependant encore des modules
@@ -86,40 +86,40 @@ Windows</a></h2>
     convention de nommage avec extension <code>.dll</code>.</p>
 
     <p>Bien que <code>mod_so</code> puisse encore charger des modules
-    possÃ¨dant un nom du style <code>ApacheModuleFoo.dll</code>,
-    il est prÃ©fÃ©rable d'utiliser la
+    possèdant un nom du style <code>ApacheModuleFoo.dll</code>,
+    il est préférable d'utiliser la
     nouvelle convention de nommage ; si vous modifiez votre module
     chargeable pour la version 2.0, veuillez aussi modifier son nom pour
     respecter cette nouvelle convention.</p></div>
 
     <p>Les API des modules Apache httpd sous Unix et Windows sont identiques.
     Alors que certains modules s'appuient sur certains
-    aspects de l'architecture Unix non prÃ©sents dans Windows, et ne
-    fonctionneront donc pas sur cette derniÃ¨re plate-forme, de nombreux
+    aspects de l'architecture Unix non présents dans Windows, et ne
+    fonctionneront donc pas sur cette dernière plate-forme, de nombreux
     modules fonctionnent sous Windows avec peu ou pas de modification
-    par rapport Ã  leur version Unix.</p>
+    par rapport à leur version Unix.</p>
 
-    <p>Lorsqu'un module fonctionne, il peut Ãªtre ajoutÃ© au serveur de
-    deux maniÃ¨res. Sous Unix, il peut Ãªtre compilÃ© dans le serveur.
+    <p>Lorsqu'un module fonctionne, il peut être ajouté au serveur de
+    deux manières. Sous Unix, il peut être compilé dans le serveur.
     Comme Apache httpd pour Windows ne dispose pas du programme
-    <code>Configure</code> propre Ã  Apache httpd pour Unix, le fichier source
-    du module doit Ãªtre ajoutÃ© au fichier projet Apache de base, et ses
-    symboles ajoutÃ©s au fichier <code>os\win32\modules.c</code>.</p>
+    <code>Configure</code> propre à Apache httpd pour Unix, le fichier source
+    du module doit être ajouté au fichier projet Apache de base, et ses
+    symboles ajoutés au fichier <code>os\win32\modules.c</code>.</p>
 
-    <p>La seconde mÃ©thode consiste Ã  compiler le module en tant que DLL,
-    Ã  savoir une bibliothÃ¨que partagÃ©e qui pourra Ãªtre chargÃ©e dans le
-    serveur en cours d'exÃ©cution via la directive
+    <p>La seconde méthode consiste à compiler le module en tant que DLL,
+    à savoir une bibliothèque partagée qui pourra être chargée dans le
+    serveur en cours d'exécution via la directive
     <code class="directive">LoadModule</code>. Ces modules DLL
-    peuvent Ãªtre distribuÃ©s et exÃ©cutÃ©s sur toute installation d'Apache
-    httpd pour Windows, sans avoir Ã  recompiler le serveur.</p>
+    peuvent être distribués et exécutés sur toute installation d'Apache
+    httpd pour Windows, sans avoir à recompiler le serveur.</p>
 
-    <p>Pour crÃ©er un module DLL, il est nÃ©cessaire d'apporter une lÃ©gÃ¨re
-    modification Ã  son fichier source : l'enregistrement du module doit
-    Ãªtre exportÃ© depuis la DLL (qui sera elle-mÃªme crÃ©Ã©e plus tard ;
+    <p>Pour créer un module DLL, il est nécessaire d'apporter une légère
+    modification à son fichier source : l'enregistrement du module doit
+    être exporté depuis la DLL (qui sera elle-même créée plus tard ;
     voir plus loin). Pour ce faire, ajoutez la macro
-    <code>AP_MODULE_DECLARE_DATA</code> (dÃ©finie dans les fichiers
-    d'en-tÃªtes d'Apache httpd) Ã  la dÃ©finition de l'enregistrement de votre
-    module. Par exemple, si votre module est dÃ©clarÃ© comme suit :</p>
+    <code>AP_MODULE_DECLARE_DATA</code> (définie dans les fichiers
+    d'en-têtes d'Apache httpd) à la définition de l'enregistrement de votre
+    module. Par exemple, si votre module est déclaré comme suit :</p>
 
 <div class="example"><p><code>
     module foo_module;
@@ -131,35 +131,35 @@ Windows</a></h2>
 </code></p></div>
 
     <p>Notez que cette macro ne sera prise en compte que sous Windows,
-    si bien que le module poura Ãªtre utilisÃ© sans changement sous Unix,
-    si besoin est. Alternativement, si vous Ãªtes familier avec les
+    si bien que le module poura être utilisé sans changement sous Unix,
+    si besoin est. Alternativement, si vous êtes familier avec les
     fichiers <code>.DEF</code>, vous pouvez les utiliser pour exporter
     l'enregistrement du module.</p>
 
-    <p>Maintenant, nous sommes prÃªts Ã  crÃ©er une DLL contenant notre
-    module. Il va falloir pour cela la lier avec la bibliothÃ¨que
-    d'export libhttpd.lib qui a Ã©tÃ© crÃ©Ã©e au cours de la compilation de
-    la bibliothÃ¨que partagÃ©e libhttpd.dll. Il sera peut-Ãªtre aussi
-    nÃ©cessaire de modifier la configuration du compilateur pour
-    s'assurer que les fichiers d'en-tÃªtes d'Apache httpd seront correctement
-    localisÃ©s. Vous trouverez cette bibliothÃ¨que Ã  la racine du
-    rÃ©pertoire des modules de votre serveur. Il est souhaitable
+    <p>Maintenant, nous sommes prêts à créer une DLL contenant notre
+    module. Il va falloir pour cela la lier avec la bibliothèque
+    d'export libhttpd.lib qui a été créée au cours de la compilation de
+    la bibliothèque partagée libhttpd.dll. Il sera peut-être aussi
+    nécessaire de modifier la configuration du compilateur pour
+    s'assurer que les fichiers d'en-têtes d'Apache httpd seront correctement
+    localisés. Vous trouverez cette bibliothèque à la racine du
+    répertoire des modules de votre serveur. Il est souhaitable
     d'utiliser un fichier de module .dsp existant dans l'arborescence
     afin de s'assurer que l'environnement de compilation est
-    correctement configurÃ©, mais vous pouvez aussi comparer les options
-    de compilation et d'Ã©dition de liens Ã  votre fichier .dsp.</p>
+    correctement configuré, mais vous pouvez aussi comparer les options
+    de compilation et d'édition de liens à votre fichier .dsp.</p>
 
-    <p>Ceci devrait crÃ©er une version DLL de votre module. Il vous
-    suffit maintenant de l'enregistrer dans le rÃ©pertoire
-    <code>modules</code> Ã  la racine de votre serveur, et d'utiliser la
+    <p>Ceci devrait créer une version DLL de votre module. Il vous
+    suffit maintenant de l'enregistrer dans le répertoire
+    <code>modules</code> à la racine de votre serveur, et d'utiliser la
     directive <code class="directive">LoadModule</code> pour la charger.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="loadfile" id="loadfile">Directive</a> <a name="LoadFile" id="LoadFile">LoadFile</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison du fichier objet ou de la bibliothÃ¨que
-spÃ©cifiÃ©</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison du fichier objet ou de la bibliothèque
+spécifié</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadFile <em>nom-fichier</em> [<em>nom-fichier</em>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -167,12 +167,12 @@ spÃ©cifiÃ©</td></tr>
 </table>
 
     <p>La directive <code class="directive">LoadFile</code> permet de lier le fichier
-    objet ou la bibliothÃ¨que spÃ©cifiÃ© au serveur lors du
-    dÃ©marrage ou du redÃ©marrage
+    objet ou la bibliothèque spécifié au serveur lors du
+    démarrage ou du redémarrage
     de ce dernier ; ceci permet d'ajouter tout code additionnel
-    nÃ©cessaire au fonctionnement d'un module.
+    nécessaire au fonctionnement d'un module.
     <em>nom-fichier</em> est soit un chemin absolu, soit un chemin
-    relatif au rÃ©pertoire dÃ©fini par la directive <a href="core.html#serverroot">ServerRoot</a>.</p>
+    relatif au répertoire défini par la directive <a href="core.html#serverroot">ServerRoot</a>.</p>
 
     <p>Par exemple:</p>
 
@@ -185,7 +185,7 @@ spÃ©cifiÃ©</td></tr>
 <div class="directive-section"><h2><a name="loadmodule" id="loadmodule">Directive</a> <a name="LoadModule" id="LoadModule">LoadModule</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liaison avec le serveur du fichier objet ou de la
-bibliothÃ¨que spÃ©cifiÃ©, et ajout de ce dernier Ã  la liste des modules
+bibliothèque spécifié, et ajout de ce dernier à la liste des modules
 actifs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LoadModule <em>module nom-fichier</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
@@ -193,10 +193,10 @@ actifs</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
     <p>La directive <code class="directive">LoadModule</code> permet de lier le fichier objet ou la
-    bibliothÃ¨que <em>nom-fichier</em> avec le serveur, et d'ajouter la
-    structure de module nommÃ©e <em>module</em> Ã  la liste des modules
+    bibliothèque <em>nom-fichier</em> avec le serveur, et d'ajouter la
+    structure de module nommée <em>module</em> à la liste des modules
     actifs. <em>module</em> est le nom de la variable externe de type
-    <code>module</code> dans le fichier, et est rÃ©fÃ©rencÃ© comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
+    <code>module</code> dans le fichier, et est référencé comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
     module</a> dans la documentation des modules.</p>
 
     <p>Par exemple :</p>
@@ -204,17 +204,17 @@ actifs</td></tr>
     <pre class="prettyprint lang-config">LoadModule "status_module modules/mod_status.so"</pre>
 
 
-    <p>charge le module spÃ©cifiÃ© depuis le sous-rÃ©pertoire des modules
-    situÃ© Ã  la racine du serveur.</p>
+    <p>charge le module spécifié depuis le sous-répertoire des modules
+    situé à la racine du serveur.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_so.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_so.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -233,7 +233,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_so.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

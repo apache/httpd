@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,80 +24,80 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Serveurs virtuels</a></div><div id="page-content"><div id="preamble"><h1>Support Apache des serveurs virtuels par IP</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">SystÃ¨me requis</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiple">Configuration de processus multiples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#single">Configuration d'un unique processus
-rÃ©sident pour des serveurs virtuels</a></li>
+résident pour des serveurs virtuels</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li>
 <a href="name-based.html">Support Apache des serveurs virtuels par nom</a>
 </li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">SystÃ¨me requis</a></h2>
+<h2><a name="requirements" id="requirements">Système requis</a></h2>
 
     <p>Comme l'indique le terme <cite>par IP</cite>, le serveur
-    <strong>doit disposer de diffÃ©rentes paires adresses IP/port pour chaque
-    serveur virtuel par IP</strong>. La machine peut possÃ©der
-    plusieurs connexions physiques au rÃ©seau, ou utiliser des
-    interfaces virtuelles qui sont supportÃ©es par la plupart des
-    systÃ¨mes d'exploitation modernes (Consultez la documentation des
-    systÃ¨mes d'exploitation pour plus de dÃ©tails, notamment les "alias
+    <strong>doit disposer de différentes paires adresses IP/port pour chaque
+    serveur virtuel par IP</strong>. La machine peut posséder
+    plusieurs connexions physiques au réseau, ou utiliser des
+    interfaces virtuelles qui sont supportées par la plupart des
+    systèmes d'exploitation modernes (Consultez la documentation des
+    systèmes d'exploitation pour plus de détails, notamment les "alias
     IP" et la commande "ifconfig" pour les activer), et/ou utiliser
-    plusieurs numÃ©ros de port.</p>
+    plusieurs numéros de port.</p>
 
     <p>Selon la terminologie du serveur HTTP Apache, l'utilisation d'une
-    seule adresse IP avec plusieurs ports TCP s'apparente aussi Ã  de
-    l'hÃ©bergement virtuel basÃ© sur IP.</p>
+    seule adresse IP avec plusieurs ports TCP s'apparente aussi à de
+    l'hébergement virtuel basé sur IP.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="howto" id="howto">Comment configurer Apache</a></h2>
 
-    <p>Il y a deux maniÃ¨res de configurer Apache pour le support de
+    <p>Il y a deux manières de configurer Apache pour le support de
     multiples serveurs virtuels. Il suffit soit de faire tourner un
-    processus rÃ©sident <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque nom de
-    domaine, soit de faire tourner un unique processus rÃ©sident qui
-    gÃ¨re tous les serveurs virtuels.</p>
+    processus résident <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque nom de
+    domaine, soit de faire tourner un unique processus résident qui
+    gère tous les serveurs virtuels.</p>
 
-    <p>Utilisez des processus rÃ©sidents multiples lorsque&nbsp;:</p>
+    <p>Utilisez des processus résidents multiples lorsque&nbsp;:</p>
 
     <ul>
-      <li>il y a des problÃ¨mes de rÃ©partition de sÃ©curitÃ©, tels
+      <li>il y a des problèmes de répartition de sécurité, tels
       qu'une entreprise1 ne souhaite que personne d'une entreprise2
-      ne puisse lire ses donnÃ©es exceptÃ© via le Web. Dans ce cas,
-      vous aurez besoin de deux processus rÃ©sidents, chacun fonctionnant
-      avec des paramÃ¨tres <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>,
+      ne puisse lire ses données excepté via le Web. Dans ce cas,
+      vous aurez besoin de deux processus résidents, chacun fonctionnant
+      avec des paramètres <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>,
       <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>,
       <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, et
-      <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> diffÃ©rents.</li>
+      <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> différents.</li>
 
-      <li>vous disposez suffisamment de mÃ©moire et de
+      <li>vous disposez suffisamment de mémoire et de
       <a href="../misc/descriptors.html">descripteurs de fichiers</a>
-      pour l'Ã©coute de chaque alias IP de la machine. Il est seulement
+      pour l'écoute de chaque alias IP de la machine. Il est seulement
       possible d'appliquer la directive
       <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, soit sur toutes
       les adresses avec le joker "*", soit uniquement sur des adresses
-      spÃ©cifiques. Donc, si vous avez besoin d'Ã©couter une adresse
+      spécifiques. Donc, si vous avez besoin d'écouter une adresse
       en particulier, vous devrez le faire pour l'ensemble des
       autres adresses (Bien qu'il soit plus simple de lancer un
-      processus <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour Ã©couter N-1 adresses,
+      processus <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour écouter N-1 adresses,
       et un autre pour l'adresse restante).</li>
     </ul>
 
-    <p>Utilisez un unique processus rÃ©sident lorsque&nbsp;:</p>
+    <p>Utilisez un unique processus résident lorsque&nbsp;:</p>
 
     <ul>
       <li>le partage de la configuration httpd entre les serveurs
       virtuels est acceptable.</li>
 
-      <li>la machine assume dÃ©jÃ  une grande quantitÃ© de requÃªtes, et
-      que l'ajout de processus rÃ©sidents supplÃ©mentaires en affecterait
+      <li>la machine assume déjà une grande quantité de requêtes, et
+      que l'ajout de processus résidents supplémentaires en affecterait
       les performances.</li>
     </ul>
 
@@ -105,37 +105,37 @@ rÃ©sident pour des serveurs virtuels</a></li>
 <div class="section">
 <h2><a name="multiple" id="multiple">Configuration de processus multiples</a></h2>
 
-    <p>CrÃ©ez une installation indÃ©pendante du programme
+    <p>Créez une installation indépendante du programme
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque serveur virtuel. Pour
     chacune d'elle, utilisez la directive
     <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> dans le fichier
-    de configuration pour dÃ©finir l'adresse IP (ou serveur virtuel)
-    que le processus rÃ©sident doit gÃ©rer. Par exemple&nbsp;:</p>
+    de configuration pour définir l'adresse IP (ou serveur virtuel)
+    que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
     <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
-    <p>Il est recommandÃ© d'utiliser une adresse IP plutÃ´t qu'un nom
-    de domaine (consultez <a href="../dns-caveats.html">ProblÃ¨mes DNS
+    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
+    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS
     avec Apache</a>).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="single" id="single">Configuration d'un unique processus
-rÃ©sident pour des serveurs virtuels</a></h2>
+résident pour des serveurs virtuels</a></h2>
 
-    <p>Dans ce cas, un unique processus httpd va gÃ©rer les requÃªtes
+    <p>Dans ce cas, un unique processus httpd va gérer les requêtes
     pour le serveur principal et tous les serveurs virtuels. Dans le
     fichier de configuration, la directive
-    <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> va servir Ã 
-    dÃ©finir les autres directives
+    <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> va servir à
+    définir les autres directives
     <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>,
     <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>,
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>,
     <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> et
     <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code> ou
     <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> avec des
-    valeurs diffÃ©rentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
+    valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40:80&gt;
     ServerAdmin webmaster@www1.example.com
@@ -154,38 +154,38 @@ rÃ©sident pour des serveurs virtuels</a></h2>
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Il est recommandÃ© d'utiliser une adresse IP plutÃ´t qu'un nom
-    de domaine comme argument Ã  la directive &lt;VirtualHost&gt;
-     (consultez <a href="../dns-caveats.html">ProblÃ¨mes DNS
+    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
+    de domaine comme argument à la directive &lt;VirtualHost&gt;
+     (consultez <a href="../dns-caveats.html">Problèmes DNS
     avec Apache</a>).</p>
 
     <p>Presque <strong>toutes</strong> les directives de configuration
-    peuvent Ãªtre employÃ©es dans une directive VirtualHost, Ã  l'exception
-    des directives qui contrÃ´lent la crÃ©ation du processus et de
-    quelques autres. Pour connaÃ®tre celles utilisables dans une
-    directive VirtualHost, vÃ©rifiez leur
+    peuvent être employées dans une directive VirtualHost, à l'exception
+    des directives qui contrôlent la création du processus et de
+    quelques autres. Pour connaître celles utilisables dans une
+    directive VirtualHost, vérifiez leur
     <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant
     l'<a href="../mod/directives.html">Index des directives</a>.</p>
 
 
-    <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> peut Ãªtre
-    utilisÃ©es Ã  l'intÃ©rieur d'une directive VirtualHost si l'exÃ©cution se fait
+    <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> peut être
+    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
-    <p><em>SÃ‰CURITÃ‰&nbsp;:</em> lorsque vous spÃ©cifiez oÃ¹ Ã©crire les
+    <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les
     fichiers journaux, soyez attentif aux risques si quelqu'un d'autre
-    que celui qui a dÃ©marrÃ© Apache dispose des droits d'Ã©criture
+    que celui qui a démarré Apache dispose des droits d'écriture
     sur l'emplacement de ces fichiers. Consultez les
-    <a href="../misc/security_tips.html">Conseils sur la sÃ©curitÃ©</a>
-    pour plus de dÃ©tails.</p>
+    <a href="../misc/security_tips.html">Conseils sur la sécurité</a>
+    pour plus de détails.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -204,7 +204,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/ip-based.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

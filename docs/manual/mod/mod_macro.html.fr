@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,21 +27,21 @@
 <div id="preamble"><h1>Module Apache mod_macro</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_macro.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_macro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>macro_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_macro.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>macro_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_macro.c</td></tr></table>
 <h3>Sommaire</h3>
 
 
     <p>Ce module permet d'utiliser des macros dans les fichiers de
-    configuration Ã  l'exÃ©cution du serveur HTTP Apache afin de faciliter
-    la crÃ©ation de nombreux blocs de configuration similaires. Quand le
-    serveur dÃ©marre, les macros sont exÃ©cutÃ©es avec les paramÃ¨tres
-    fournis, et le rÃ©sultat obtenu est traitÃ© au mÃªme titre que le reste
+    configuration à l'exécution du serveur HTTP Apache afin de faciliter
+    la création de nombreux blocs de configuration similaires. Quand le
+    serveur démarre, les macros sont exécutées avec les paramètres
+    fournis, et le résultat obtenu est traité au même titre que le reste
     du fichier de configuration.</p>
 
 </div>
@@ -60,13 +60,13 @@ de configuration Apache.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Utilisation</a></h2>    
-<p>On dÃ©finit une macro Ã  l'aide des blocs <code class="directive">&lt;Macro&gt;</code> qui contiennent la portion de votre
-configuration qui intervient de maniÃ¨re rÃ©pÃ©titive, y compris les
-variables pour les parties qui devront Ãªtre substituÃ©es.</p>
+<p>On définit une macro à l'aide des blocs <code class="directive">&lt;Macro&gt;</code> qui contiennent la portion de votre
+configuration qui intervient de manière répétitive, y compris les
+variables pour les parties qui devront être substituées.</p>
 
-<p>Par exemple, vous pouvez utiliser une macro pour dÃ©finir un bloc
+<p>Par exemple, vous pouvez utiliser une macro pour définir un bloc
 <code class="directive">&lt;VirtualHost&gt;</code>, afin de pouvoir
-dÃ©finir de nombreux serveurs virtuels similaires :</p>    
+définir de nombreux serveurs virtuels similaires :</p>    
 
     <pre class="prettyprint lang-config">&lt;Macro VHost $name $domain&gt;
 &lt;VirtualHost *:80&gt;
@@ -81,11 +81,11 @@ dÃ©finir de nombreux serveurs virtuels similaires :</p>
 
 
 <p>Comme les directives de configuration httpd, les noms des macros sont
-insensibles Ã  la casse, Ã  la diffÃ©rence des variables qui y sont, elles,
+insensibles à la casse, à la différence des variables qui y sont, elles,
 sensibles.</p>
 
 <p>Vous pouvez alors invoquer cette macro autant de fois que vous le
-voulez pour crÃ©er des serveurs virtuels </p>
+voulez pour créer des serveurs virtuels </p>
 
 <pre class="prettyprint lang-config">Use VHost example example.com
 Use VHost myhost hostname.org
@@ -94,44 +94,44 @@ Use VHost apache apache.org
 UndefMacro VHost</pre>
 
 
-<p>Au dÃ©marrage du serveur, chacune de ces invocations
-<code class="directive">Use</code> sera remplacÃ©e par une dÃ©finition de serveur
-virtuel complÃ¨te, comme dÃ©crit dans la dÃ©finition de la
+<p>Au démarrage du serveur, chacune de ces invocations
+<code class="directive">Use</code> sera remplacée par une définition de serveur
+virtuel complète, comme décrit dans la définition de la
 <code class="directive">Macro</code>.</p>
 
-<p>La directive <code class="directive">UndefMacro</code> permet d'Ã©viter les
-conflits de dÃ©finitions qui pourraient provenir de l'utilisation
-ultÃ©rieure de macros contenant les mÃªmes noms de variables.</p>
+<p>La directive <code class="directive">UndefMacro</code> permet d'éviter les
+conflits de définitions qui pourraient provenir de l'utilisation
+ultérieure de macros contenant les mêmes noms de variables.</p>
 
-<p>Vous trouverez une version plus Ã©laborÃ©e de cet exemple plus loin
+<p>Vous trouverez une version plus élaborée de cet exemple plus loin
 dans la section Exemples.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="tips" id="tips">Conseils</a></h2>
 
-<p>Les noms de paramÃ¨tres doivent commencer par un sigil tel que
-<code>$</code>, <code>%</code>, ou <code>@</code>, de faÃ§on Ã  ce qu'ils
+<p>Les noms de paramètres doivent commencer par un sigil tel que
+<code>$</code>, <code>%</code>, ou <code>@</code>, de façon à ce qu'ils
 soient clairement identifiables, mais aussi afin de faciliter les
 interactions avec les autres directives, comme la directive de base
 <code class="directive"><a href="../mod/core.html#define">Define</a></code>. Dans le cas contraire, vous
-recevrez un avertissement. En tout Ã©tat de cause, il est conseillÃ©
+recevrez un avertissement. En tout état de cause, il est conseillé
 d'avoir une bonne connaissance globale de la configuration du serveur,
-afin d'Ã©viter la rÃ©utilisation des mÃªmes variables Ã  diffÃ©rents niveaux,
-ce qui peut Ãªtre Ã  l'origine de confusions.</p>
+afin d'éviter la réutilisation des mêmes variables à différents niveaux,
+ce qui peut être à l'origine de confusions.</p>
 
-<p>Les paramÃ¨tres prÃ©fixÃ©s par <code>$</code> ou <code>%</code> ne sont
-pas Ã©chappÃ©s. Les paramÃ¨tres prÃ©fixÃ©s par <code>@</code> sont Ã©chappÃ©s
+<p>Les paramètres préfixés par <code>$</code> ou <code>%</code> ne sont
+pas échappés. Les paramètres préfixés par <code>@</code> sont échappés
 entre guillemets.</p>
 
-<p>Evitez de prÃ©fixer un paramÃ¨tre par le nom d'un autre paramÃ¨tre (par
-exemple, prÃ©sence simultanÃ©e des paramÃ¨tres <code>$win</code> et
+<p>Evitez de préfixer un paramètre par le nom d'un autre paramètre (par
+exemple, présence simultanée des paramètres <code>$win</code> et
 <code>$winter</code>), car ceci peut introduire de la confusion lors de
-l'Ã©valuation des expressions. Si cela se produit, c'est le nom de
-paramÃ¨tre le plus long possible qui sera utilisÃ©.</p>
+l'évaluation des expressions. Si cela se produit, c'est le nom de
+paramètre le plus long possible qui sera utilisé.</p>
 
-<p>Si vous dÃ©sirez insÃ©rer une valeur dans une chaÃ®ne, il est conseillÃ©
-de l'entourer d'accolades afin d'Ã©viter toute confusion :</p>
+<p>Si vous désirez insérer une valeur dans une chaîne, il est conseillé
+de l'entourer d'accolades afin d'éviter toute confusion :</p>
 
 <pre class="prettyprint lang-config">&lt;Macro DocRoot ${docroot}&gt;
     DocumentRoot "/var/www/${docroot}/htdocs"
@@ -143,13 +143,13 @@ de l'entourer d'accolades afin d'Ã©viter toute confusion :</p>
 <h2><a name="examples" id="examples">Exemples</a></h2>
 
 
-<h3>DÃ©finition de serveurs virtuels</h3>
+<h3>Définition de serveurs virtuels</h3>
 
 
 <p>Un exemple typique d'utilisation de <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> est la
-crÃ©ation dynamique de serveurs virtuels.</p>
+création dynamique de serveurs virtuels.</p>
 
-<pre class="prettyprint lang-config">## DÃ©finition d'une macro VHost pour les configurations rÃ©pÃ©titives
+<pre class="prettyprint lang-config">## Définition d'une macro VHost pour les configurations répétitives
 
 &lt;Macro VHost $host $port $dir&gt;
   Listen $port
@@ -163,14 +163,14 @@ crÃ©ation dynamique de serveurs virtuels.</p>
       Require all granted
     &lt;/Directory&gt;
 
-    # restriction d'accÃ¨s au sous-rÃ©pertoire intranet.
+    # restriction d'accès au sous-répertoire intranet.
     &lt;Directory "$dir/intranet"&gt;
       Require ip 10.0.0.0/8
     &lt;/Directory&gt;
   &lt;/VirtualHost&gt;
 &lt;/Macro&gt;
 
-## Utilisation de la macro VHost avec diffÃ©rents arguments.
+## Utilisation de la macro VHost avec différents arguments.
 
 Use VHost www.apache.org 80 /vhosts/apache/htdocs
 Use VHost example.org 8080 /vhosts/example/htdocs
@@ -178,12 +178,12 @@ Use VHost www.example.fr 1234 /vhosts/example.fr/htdocs</pre>
 
  
 
-<h3>Suppression d'une dÃ©finition de macro</h3>
+<h3>Suppression d'une définition de macro</h3>
 
 
-<p>Il est recommandÃ© de supprimer la dÃ©finition d'une macro aprÃ¨s
-l'avoir utilisÃ©e. Ceci permet d'Ã©viter les confusions au sein d'un
-fichier de configuration complexe oÃ¹ des conflits entre noms de
+<p>Il est recommandé de supprimer la définition d'une macro après
+l'avoir utilisée. Ceci permet d'éviter les confusions au sein d'un
+fichier de configuration complexe où des conflits entre noms de
 variables peuvent survenir.</p>
 
 <pre class="prettyprint lang-config">&lt;Macro DirGroup $dir $group&gt;
@@ -204,20 +204,20 @@ UndefMacro DirGroup</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="macro" id="macro">Directive</a> <a name="Macro" id="Macro">&lt;Macro&gt;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finition d'une macro dans un fichier de configuration</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition d'une macro dans un fichier de configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>
 &lt;Macro <var>nom</var> [<var>par1</var> .. <var>parN</var>]&gt;
 ... &lt;/Macro&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p>La directive <code class="directive">Macro</code> permet de dÃ©finir une macro
+    <p>La directive <code class="directive">Macro</code> permet de définir une macro
     dans un fichier de configuration Apache. Le premier argument est le nom
-    de la macro, et les arguments suivants sont les paramÃ¨tres. Il
-    est de bon aloi de prÃ©fixer les noms des paramÃ¨tres d'une macro
-    avec un caractÃ¨re parmi '<code>$%@</code>', et d'Ã©viter d'en faire
-    de mÃªme avec les noms de macros.
+    de la macro, et les arguments suivants sont les paramètres. Il
+    est de bon aloi de préfixer les noms des paramètres d'une macro
+    avec un caractère parmi '<code>$%@</code>', et d'éviter d'en faire
+    de même avec les noms de macros.
     </p>
 
     <pre class="prettyprint lang-config">&lt;Macro LocalAccessPolicy&gt;
@@ -235,7 +235,7 @@ UndefMacro DirGroup</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Undefine a macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UndefMacro <var>name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table><p>La documentation de cette directive
@@ -247,22 +247,22 @@ UndefMacro DirGroup</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation d'une macro</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
     <p> La directive <code class="directive">Use</code> permet d'utiliser une macro.
-    La macro considÃ©rÃ©e est expansÃ©e. Son nombre d'arguments doit Ãªtre Ã©gal au
-    nombre de paramÃ¨tres prÃ©cisÃ©s dans sa dÃ©finition. Les valeurs passÃ©es en
-    argument sont attribuÃ©es aux paramÃ¨tres correspondants et
-    substituÃ©es avant l'interprÃ©tation du texte de la macro.</p>
+    La macro considérée est expansée. Son nombre d'arguments doit être égal au
+    nombre de paramètres précisés dans sa définition. Les valeurs passées en
+    argument sont attribuées aux paramètres correspondants et
+    substituées avant l'interprétation du texte de la macro.</p>
 
     <pre class="prettyprint lang-config">Use LocalAccessPolicy
 ...
 Use RestrictedAccessPolicy "192.54.172.0/24 192.54.148.0/24"</pre>
 
 
-    <p>est Ã©quivalent, avec les macros dÃ©finies ci-dessus Ã  :</p>
+    <p>est équivalent, avec les macros définies ci-dessus à :</p>
 
     <pre class="prettyprint lang-config">Require ip 10.2.16.0/24
 ...
@@ -273,7 +273,7 @@ Require ip 192.54.172.0/24 192.54.148.0/24</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_macro.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_macro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -292,7 +292,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_macro.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

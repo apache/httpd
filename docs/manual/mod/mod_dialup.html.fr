@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,17 +27,17 @@
 <div id="preamble"><h1>Module Apache mod_dialup</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dialup.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dialup.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_dialup.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie le contenu statique avec une bande passante limitÃ©e
-dÃ©finie par les diffÃ©rents standards des anciens modems.</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>ExpÃ©rimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>dialup_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_dialup.c</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie le contenu statique avec une bande passante limitée
+définie par les différents standards des anciens modems.</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>dialup_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_dialup.c</td></tr></table>
 <h3>Sommaire</h3>
 
 <p>Il s'agit d'un module qui envoie le contenu statique avec une bande
-passante limitÃ©e dÃ©finie par les diffÃ©rents standards des anciens
+passante limitée définie par les différents standards des anciens
 modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 56k V.92 en positionnant une configuration de ce type :</p>
 
@@ -47,12 +47,12 @@ modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 
 
 <p>Auparavant, pour faire des modules de limitation de bande passante,
-il fallait monopoliser un thread, pour chaque client, et insÃ©rer des
-temporisations pour diminuer la bande passante. GrÃ¢ce Ã  cette nouvelle
-fonctionnalitÃ©, un gestionnaire peut recevoir les rÃ©ponses Ã  ses
-callbacks aprÃ¨s N millisecondes, et il sera invoquÃ© par le module MPM
-Event dans un thread diffÃ©rent Ã  la fin du dÃ©lai indiquÃ©. Ã€ partir de ce
-moment, le gestionnaire peut continuer Ã  envoyer des donnÃ©es au
+il fallait monopoliser un thread, pour chaque client, et insérer des
+temporisations pour diminuer la bande passante. Grâce à cette nouvelle
+fonctionnalité, un gestionnaire peut recevoir les réponses à ses
+callbacks après N millisecondes, et il sera invoqué par le module MPM
+Event dans un thread différent à la fin du délai indiqué. À partir de ce
+moment, le gestionnaire peut continuer à envoyer des données au
 client.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -64,13 +64,13 @@ client.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="modemstandard" id="modemstandard">Directive</a> <a name="ModemStandard" id="ModemStandard">ModemStandard</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem Ã  simuler</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Standard de modem à simuler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.92</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>ExpÃ©rimental</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
 </table>
-<p>Cette directive permet de spÃ©cifier le standard de modem que vous
+<p>Cette directive permet de spécifier le standard de modem que vous
 souhaitez simuler.</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
@@ -83,7 +83,7 @@ souhaitez simuler.</p>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dialup.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dialup.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_dialup.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -102,7 +102,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dialup.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

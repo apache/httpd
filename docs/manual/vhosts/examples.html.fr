@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,17 +24,17 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Serveurs virtuels</a></div><div id="page-content"><div id="preamble"><h1>Exemples d'utilisations de VirtualHost</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
-    <p>Le but de ce document est d'essayer de rÃ©pondre aux questions 
-    les plus rÃ©pandues sur la configuration des <a href="index.html">serveurs virtuels</a>. 
-    Les scÃ©narios prÃ©sentÃ©s ici se rencontrent quand plusieurs 
-    serveurs Webs doivent tourner sur une seule et mÃªme machine au 
+    <p>Le but de ce document est d'essayer de répondre aux questions 
+    les plus répandues sur la configuration des <a href="index.html">serveurs virtuels</a>. 
+    Les scénarios présentés ici se rencontrent quand plusieurs 
+    serveurs Webs doivent tourner sur une seule et même machine au 
     moyen de serveurs virtuels <a href="name-based.html">par nom</a> 
     ou <a href="ip-based.html">par IP</a>.</p>
 
@@ -43,17 +43,17 @@
   virtuels par nom sur une seule adresse IP.</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#twoips">Serveurs virtuels par nom sur plus 
     d'une seule adresse IP.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Servir le mÃªme contenu sur des 
-    adresses IP diffÃ©rentes (telle qu'une adresse interne et une 
+<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Servir le même contenu sur des 
+    adresses IP différentes (telle qu'une adresse interne et une 
     externe).</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#port">Servir diffÃ©rents sites sur diffÃ©rents 
+<li><img alt="" src="../images/down.gif" /> <a href="#port">Servir différents sites sur différents 
     ports.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">HÃ©bergement virtuel basÃ© sur IP</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">HÃ©bergements virtuels mixtes basÃ©s sur 
+<li><img alt="" src="../images/down.gif" /> <a href="#ip">Hébergement virtuel basé sur IP</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Hébergements virtuels mixtes basés sur 
     les ports et sur les IP</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">HÃ©bergements virtuels mixtes basÃ© sur 
+<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Hébergements virtuels mixtes basé sur 
     les noms et sur IP</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Utilisation simultanÃ©e de 
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Utilisation simultanée de 
     <code>Virtual_host</code> et de mod_proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#default">Utilisation de serveurs virtuels 
     <code>_default_</code></a></li>
@@ -67,22 +67,22 @@
 <h2><a name="purename" id="purename">Fonctionnement de plusieurs serveurs 
   virtuels par nom sur une seule adresse IP.</a></h2>
 
-    <p>Votre serveur possÃ¨de plusieurs noms d'hÃ´te qui correspondent Ã 
-    une seule adresse IP, ce qui lui permet de rÃ©pondre diffÃ©remment si
-    une requÃªte est envoyÃ©e Ã  <code>www.example.com</code> ou
+    <p>Votre serveur possède plusieurs noms d'hôte qui correspondent à
+    une seule adresse IP, ce qui lui permet de répondre différemment si
+    une requête est envoyée à <code>www.example.com</code> ou
     <code>www.example.org</code>.</p>
 
     <div class="note"><h3>Note&nbsp;:</h3><p>La configuration de serveurs virtuels 
     sous Apache ne provoque pas leur apparition magique dans la 
     configuration du DNS. Il <em>faut</em> que leurs noms soient 
-    dÃ©finis dans le DNS, et qu'ils y soient rÃ©solus sur l'adresse IP 
+    définis dans le DNS, et qu'ils y soient résolus sur l'adresse IP 
     du serveur, faute de quoi personne ne pourra visiter votre site Web. 
-    Il est possible d'ajouter des entrÃ©es dans le fichier 
+    Il est possible d'ajouter des entrées dans le fichier 
     <code>hosts</code> pour tests locaux, mais qui ne fonctionneront 
-    que sur la machine possÃ©dant ces entrÃ©es.</p>
+    que sur la machine possédant ces entrées.</p>
     </div>
 
-    <pre class="prettyprint lang-config"># Apache doit Ã©couter sur le port 80
+    <pre class="prettyprint lang-config"># Apache doit écouter sur le port 80
 Listen 80
 &lt;VirtualHost *:80&gt;
     DocumentRoot "/www/example1"
@@ -100,37 +100,37 @@ Listen 80
 
    
 
-    <p>Les astÃ©risques correspondent Ã  toutes les adresses, si bien que 
-    le serveur principal ne rÃ©pondra jamais Ã  aucune requÃªte. Comme le
+    <p>Les astérisques correspondent à toutes les adresses, si bien que 
+    le serveur principal ne répondra jamais à aucune requête. Comme le
     serveur virtuel
     <code>ServerName www.example.com</code> se trouve en premier dans le fichier 
-    de configuration, il a la plus grande prioritÃ© et peut Ãªtre vu 
-    comme serveur <cite>par dÃ©faut</cite> ou <cite>primaire</cite>&nbsp;; 
-    ce qui signifie que toute requÃªte reÃ§ue ne correspondant Ã  aucune 
+    de configuration, il a la plus grande priorité et peut être vu 
+    comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
+    ce qui signifie que toute requête reçue ne correspondant à aucune 
     des directives <code>ServerName</code> sera servie par ce premier 
     <code>VirtualHost</code>.</p>
 
-    <p>La configuration ci-dessus correspond Ã  ce que l'on souhaite pour
-    la plupart des serveurs virtuels Ã  base de nom. Il faudra cependant
-    utiliser une configuration diffÃ©rente si vous souhaitez servir un
-    contenu diffÃ©rent en fonction de l'adresse IP ou du port.</p>
+    <p>La configuration ci-dessus correspond à ce que l'on souhaite pour
+    la plupart des serveurs virtuels à base de nom. Il faudra cependant
+    utiliser une configuration différente si vous souhaitez servir un
+    contenu différent en fonction de l'adresse IP ou du port.</p>
 
     <div class="note">
             <h3>Note&nbsp;:</h3>
 
             <p>Vous pouvez remplacer <code>*</code> 
-            par une adresse IP du systÃ¨me. Le serveur virtuel concernÃ©
-	    ne sera alors sÃ©lectionnÃ© que pour les requÃªtes HTTP vers
+            par une adresse IP du système. Le serveur virtuel concerné
+	    ne sera alors sélectionné que pour les requêtes HTTP vers
 	    cette adresse IP.</p>
 
-           <p>En gÃ©nÃ©ral, il est commode d'utiliser <code>*</code> sur 
-           les systÃ¨mes dont l'adresse IP n'est pas constante - par 
-           exemple, pour des serveurs dont l'adresse IP est attribuÃ©e 
-           dynamiquement par le FAI, et oÃ¹ le DNS est gÃ©rÃ© au moyen 
+           <p>En général, il est commode d'utiliser <code>*</code> sur 
+           les systèmes dont l'adresse IP n'est pas constante - par 
+           exemple, pour des serveurs dont l'adresse IP est attribuée 
+           dynamiquement par le FAI, et où le DNS est géré au moyen 
            d'un DNS dynamique quelconque. Comme <code>*</code> signifie 
            <cite>n'importe quelle adresse</cite>, cette configuration 
-           fonctionne sans devoir Ãªtre modifiÃ©e quand l'adresse IP du 
-           systÃ¨me est modifiÃ©e.</p>
+           fonctionne sans devoir être modifiée quand l'adresse IP du 
+           système est modifiée.</p>
     </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -139,15 +139,15 @@ Listen 80
     d'une seule adresse IP.</a></h2>
 
   	<div class="note">
-          <h3>Note&nbsp;:</h3><p>Toutes les techniques prÃ©sentÃ©es ici 
-          peuvent Ãªtre Ã©tendues Ã  un plus grand nombre d'adresses IP.</p>
+          <h3>Note&nbsp;:</h3><p>Toutes les techniques présentées ici 
+          peuvent être étendues à un plus grand nombre d'adresses IP.</p>
     </div>
 
     <p>Le serveur a deux adresses IP. Sur l'une 
     (<code>172.20.30.40</code>), le serveur "principal" 
-    <code>server.example.com</code> doit rÃ©pondre, et sur l'autre 
+    <code>server.example.com</code> doit répondre, et sur l'autre 
     (<code>172.20.30.50</code>), deux serveurs virtuels (ou plus) 
-    rÃ©pondront.</p>
+    répondront.</p>
 
     <pre class="prettyprint lang-config">Listen 80
 
@@ -170,28 +170,28 @@ DocumentRoot "/www/mainserver"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Toute requÃªte arrivant sur une autre adresse que 
+    <p>Toute requête arrivant sur une autre adresse que 
     <code>172.20.30.50</code> sera servie par le serveur principal. 
-    Les requÃªtes vers <code>172.20.30.50</code> avec un nom de serveur 
-    inconnu, ou sans en-tÃªte <code>Host:</code>, seront servies par 
+    Les requêtes vers <code>172.20.30.50</code> avec un nom de serveur 
+    inconnu, ou sans en-tête <code>Host:</code>, seront servies par 
     <code>www.example.com</code>.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">Servir le mÃªme contenu sur des 
-    adresses IP diffÃ©rentes (telle qu'une adresse interne et une 
+<h2><a name="intraextra" id="intraextra">Servir le même contenu sur des 
+    adresses IP différentes (telle qu'une adresse interne et une 
     externe).</a></h2>
 
     <p>La machine serveur dispose de deux adresses IP 
     (<code>192.168.1.1</code> et <code>172.20.30.40</code>). Cette 
-    machine est placÃ©e Ã  la fois sur le rÃ©seau interne (l'Intranet) 
-    et le rÃ©seau externe (Internet). Sur Internet, le nom 
+    machine est placée à la fois sur le réseau interne (l'Intranet) 
+    et le réseau externe (Internet). Sur Internet, le nom 
     <code>server.example.com</code> pointe vers l'adresse externe 
-    (<code>172.20.30.40</code>), mais sur le rÃ©seau interne, ce mÃªme 
+    (<code>172.20.30.40</code>), mais sur le réseau interne, ce même 
     nom pointe vers l'adresse interne (<code>192.168.1.1</code>).</p>
 
-    <p>Le serveur peut Ãªtre configurÃ© pour rÃ©pondre de la mÃªme maniÃ¨re 
-    aux requÃªtes internes et externes, au moyen d'une seule section 
+    <p>Le serveur peut être configuré pour répondre de la même manière 
+    aux requêtes internes et externes, au moyen d'une seule section 
     <code>VirtualHost</code>.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
@@ -201,29 +201,29 @@ DocumentRoot "/www/mainserver"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Ainsi, les requÃªtes en provenance de chacun des deux rÃ©seaux 
-    seront servies par le mÃªme <code>VirtualHost</code>.</p>
+    <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
+    seront servies par le même <code>VirtualHost</code>.</p>
 
     <div class="note">
-          <h3>Note&nbsp;:</h3><p>Sur le rÃ©seau interne, il est possible 
+          <h3>Note&nbsp;:</h3><p>Sur le réseau interne, il est possible 
           d'utiliser le nom raccourci <code>server</code> au lieu du nom 
           complet <code>server.example.com</code>.</p>
 
-          <p>Notez Ã©galement que dans l'exemple prÃ©cÃ©dent, vous pouvez 
+          <p>Notez également que dans l'exemple précédent, vous pouvez 
           remplacer la liste des adresses IP par des <code>*</code> afin 
-          que le serveur rÃ©ponde de la mÃªme maniÃ¨re sur toutes ses 
+          que le serveur réponde de la même manière sur toutes ses 
           adresses.</p>
     </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="port" id="port">Servir diffÃ©rents sites sur diffÃ©rents 
+<h2><a name="port" id="port">Servir différents sites sur différents 
     ports.</a></h2>
 
-    <p>Vous disposez de plusieurs domaines pointant sur la mÃªme adresse 
-    IP et vous voulez Ã©galement servir de multiples ports. L'exemple
-    suivant montre que la sÃ©lection en fonction du nom intervient aprÃ¨s
-    la sÃ©lection de la meilleure correspondance du point de vue adresse
+    <p>Vous disposez de plusieurs domaines pointant sur la même adresse 
+    IP et vous voulez également servir de multiples ports. L'exemple
+    suivant montre que la sélection en fonction du nom intervient après
+    la sélection de la meilleure correspondance du point de vue adresse
     IP/port.</p>
 
     <pre class="prettyprint lang-config">Listen 80
@@ -252,7 +252,7 @@ Listen 8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">HÃ©bergement virtuel basÃ© sur IP</a></h2>
+<h2><a name="ip" id="ip">Hébergement virtuel basé sur IP</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
@@ -271,20 +271,20 @@ Listen 8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Les requÃªtes provenant d'adresses non spÃ©cifiÃ©es dans l'une des 
+    <p>Les requêtes provenant d'adresses non spécifiées dans l'une des 
     directives <code>&lt;VirtualHost&gt;</code> (comme pour 
-    <code>localhost</code> par exemple) seront dirigÃ©es vers le serveur 
+    <code>localhost</code> par exemple) seront dirigées vers le serveur 
     principal, s'il en existe un.</p>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">HÃ©bergements virtuels mixtes basÃ©s sur 
+<h2><a name="ipport" id="ipport">Hébergements virtuels mixtes basés sur 
     les ports et sur les IP</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
     <code>www.example.com</code> et <code>www.example.org</code>. 
-    Pour chacun d'eux, nous voulons un hÃ©bergement sur les ports 80 
+    Pour chacun d'eux, nous voulons un hébergement sur les ports 80 
     et 8080.</p>
 
     <pre class="prettyprint lang-config">Listen 172.20.30.40:80
@@ -315,12 +315,12 @@ Listen 172.20.30.50:8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">HÃ©bergements virtuels mixtes basÃ© sur 
+<h2><a name="mixed" id="mixed">Hébergements virtuels mixtes basé sur 
     les noms et sur IP</a></h2>
 
-    <p>Toute adresse indiquÃ©e comme argument d'une section VirtualHost
+    <p>Toute adresse indiquée comme argument d'une section VirtualHost
     et n'apparaissant dans aucun autre serveur virtuel, fait de cette
-    section un serveur virtuel sÃ©lectionnable uniquement en fonction de
+    section un serveur virtuel sélectionnable uniquement en fonction de
     son adresse IP.</p>
 
     <pre class="prettyprint lang-config">Listen 80
@@ -353,17 +353,17 @@ Listen 172.20.30.50:8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Utilisation simultanÃ©e de 
+<h2><a name="proxy" id="proxy">Utilisation simultanée de 
     <code>Virtual_host</code> et de mod_proxy</a></h2>
 
     <p>L'exemple suivant montre comment une machine peut mandater 
     un serveur virtuel fonctionnant sur le serveur d'une autre machine. 
-    Dans cet exemple, un serveur virtuel de mÃªme nom est configurÃ© sur 
-    une machine Ã  l'adresse <code>192.168.111.2</code>. La directive 
+    Dans cet exemple, un serveur virtuel de même nom est configuré sur 
+    une machine à l'adresse <code>192.168.111.2</code>. La directive 
     <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost">ProxyPreserveHost On</a></code> est
-    employÃ©e pour permette au nom de domaine d'Ãªtre prÃ©servÃ© lors du 
-    transfert, au cas oÃ¹ plusieurs noms de domaines cohabitent sur 
-    une mÃªme machine.</p>
+    employée pour permette au nom de domaine d'être préservé lors du 
+    transfert, au cas où plusieurs noms de domaines cohabitent sur 
+    une même machine.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
@@ -381,9 +381,9 @@ Listen 172.20.30.50:8080
     <h3><a name="defaultallports" id="defaultallports">Serveurs virtuels 
     <code>_default_</code> pour tous les ports</a></h3>
 
-    <p>Exemple de capture de <em>toutes</em> les requÃªtes Ã©manant 
-    d'adresses IP ou de ports non connus, <em>c'est-Ã -dire</em>, d'un 
-    couple adresse/port non traitÃ© par aucun autre serveur virtuel.</p>
+    <p>Exemple de capture de <em>toutes</em> les requêtes émanant 
+    d'adresses IP ou de ports non connus, <em>c'est-à-dire</em>, d'un 
+    couple adresse/port non traité par aucun autre serveur virtuel.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:*&gt;
     DocumentRoot "/www/default"
@@ -391,30 +391,30 @@ Listen 172.20.30.50:8080
 
 
     <p>L'utilisation d'un tel serveur virtuel avec un joker pour le 
-    port empÃªche de maniÃ¨re efficace qu'une requÃªte n'atteigne le 
+    port empêche de manière efficace qu'une requête n'atteigne le 
     serveur principal.</p>
 
-    <p>Un serveur virtuel par dÃ©faut ne servira jamais une requÃªte 
-    qui est envoyÃ©e vers un couple adresse/port utilisÃ©e par un 
-    serveur virtuel par nom. Si la requÃªte contient un en-tÃªte 
+    <p>Un serveur virtuel par défaut ne servira jamais une requête 
+    qui est envoyée vers un couple adresse/port utilisée par un 
+    serveur virtuel par nom. Si la requête contient un en-tête 
     <code>Host:</code> inconnu, ou si celui-ci est absent, elle 
     sera toujours servie par le serveur virtuel primaire par nom 
-    (celui correspondant Ã  ce couple adresse/port trouvÃ© en premier 
+    (celui correspondant à ce couple adresse/port trouvé en premier 
     dans le fichier de configuration).</p>
 
     <p>Vous pouvez utiliser une directive 
     <code class="directive"><a href="../mod/mod_alias.html#aliasmatch">AliasMatch</a></code> ou 
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> afin de 
-    rÃ©Ã©crire une requÃªte pour une unique page d'information (ou pour 
+    réécrire une requête pour une unique page d'information (ou pour 
     un script).</p>
     
 
     <h3><a name="defaultdifferentports" id="defaultdifferentports">Serveurs virtuels 
-    <code>_default_</code> pour des ports diffÃ©rents</a></h3>
+    <code>_default_</code> pour des ports différents</a></h3>
 
-    <p>La configuration est similaire Ã  l'exemple prÃ©cÃ©dent, mais 
-    le serveur Ã©coute sur plusieurs ports et un second serveur virtuel 
-    <code>_default_</code> pour le port 80 est ajoutÃ©.</p>
+    <p>La configuration est similaire à l'exemple précédent, mais 
+    le serveur écoute sur plusieurs ports et un second serveur virtuel 
+    <code>_default_</code> pour le port 80 est ajouté.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
     DocumentRoot "/www/default80"
@@ -427,17 +427,17 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Le serveur virtuel par dÃ©faut dÃ©fini pour le port 80 (il doit 
-    impÃ©rativement Ãªtre placÃ© avant un autre serveur virtuel par 
-    dÃ©faut traitant tous les ports grÃ¢ce au joker *) capture toutes 
-    les requÃªtes envoyÃ©es sur une adresse IP non spÃ©cifiÃ©e. Le 
-    serveur principal n'est jamais utilisÃ© pour servir une requÃªte.</p>
+    <p>Le serveur virtuel par défaut défini pour le port 80 (il doit 
+    impérativement être placé avant un autre serveur virtuel par 
+    défaut traitant tous les ports grâce au joker *) capture toutes 
+    les requêtes envoyées sur une adresse IP non spécifiée. Le 
+    serveur principal n'est jamais utilisé pour servir une requête.</p>
     
 
     <h3><a name="defaultoneport" id="defaultoneport">Serveurs virtuels 
     <code>_default_</code> pour un seul port</a></h3>
 
-    <p>Nous voulons crÃ©er un serveur virtuel par dÃ©faut seulement 
+    <p>Nous voulons créer un serveur virtuel par défaut seulement 
     pour le port 80.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
@@ -446,13 +446,13 @@ DocumentRoot "/www/default"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Une requÃªte vers une adresse non spÃ©cifiÃ©e sur le port 80 
-    sera servie par le serveur virtuel par dÃ©faut, et toute autre 
-    requÃªte vers une adresse et un port non spÃ©cifiÃ©s sera servie 
+    <p>Une requête vers une adresse non spécifiée sur le port 80 
+    sera servie par le serveur virtuel par défaut, et toute autre 
+    requête vers une adresse et un port non spécifiés sera servie 
     par le serveur principal.</p>
 
-    <p>L'utilisation du caractÃ¨re gÃ©nÃ©rique <code>*</code> dans la
-    dÃ©claration d'un serveur virtuel l'emporte sur
+    <p>L'utilisation du caractère générique <code>*</code> dans la
+    déclaration d'un serveur virtuel l'emporte sur
     <code>_default_</code>.</p>
     
 
@@ -464,8 +464,8 @@ DocumentRoot "/www/default"
     <p>Le serveur virtuel par nom avec le nom de domaine 
     <code>www.example.org</code> (de notre <a href="#name">exemple 
     par nom</a>) devrait obtenir sa propre adresse IP. Pendant la 
-    phase de migration, il est possible d'Ã©viter les problÃ¨mes avec 
-    les noms de serveurs et autres serveurs mandataires qui mÃ©morisent 
+    phase de migration, il est possible d'éviter les problèmes avec 
+    les noms de serveurs et autres serveurs mandataires qui mémorisent 
     les vielles adresses IP pour les serveurs virtuels par nom.<br />
     La solution est simple, car il suffit d'ajouter la nouvelle 
     adresse IP (<code>172.20.30.50</code>) dans la directive 
@@ -489,7 +489,7 @@ DocumentRoot "/www/example1"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Le serveur virtuel peut maintenant Ãªtre joint par la nouvelle 
+    <p>Le serveur virtuel peut maintenant être joint par la nouvelle 
     adresse (comme un serveur virtuel par IP) et par l'ancienne 
     adresse (comme un serveur virtuel par nom).</p>
 
@@ -498,15 +498,15 @@ DocumentRoot "/www/example1"
 <h2><a name="serverpath" id="serverpath">Utilisation de la directive 
     <code>ServerPath</code></a></h2>
 
-    <p>Dans le cas oÃ¹ vous disposez de deux serveurs virtuels par nom, 
-    le client doit transmettre un en-tÃªte <code>Host:</code> correct 
-    pour dÃ©terminer le serveur concernÃ©. Les vieux clients HTTP/1.0 
-    n'envoient pas un tel en-tÃªte et Apache n'a aucun indice pour 
-    connaÃ®tre le serveur virtuel devant Ãªtre joint (il sert la 
-    requÃªte Ã  partir d'un serveur virtuel primaire). Dans un soucis 
-    de prÃ©server la compatibilitÃ© descendante, il suffit de crÃ©er 
-    un serveur virtuel primaire chargÃ© de retourner une page contenant 
-    des liens dont les URLs auront un prÃ©fixe identifiant les serveurs 
+    <p>Dans le cas où vous disposez de deux serveurs virtuels par nom, 
+    le client doit transmettre un en-tête <code>Host:</code> correct 
+    pour déterminer le serveur concerné. Les vieux clients HTTP/1.0 
+    n'envoient pas un tel en-tête et Apache n'a aucun indice pour 
+    connaître le serveur virtuel devant être joint (il sert la 
+    requête à partir d'un serveur virtuel primaire). Dans un soucis 
+    de préserver la compatibilité descendante, il suffit de créer 
+    un serveur virtuel primaire chargé de retourner une page contenant 
+    des liens dont les URLs auront un préfixe identifiant les serveurs 
     virtuels par nom.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40&gt;
@@ -536,30 +536,30 @@ DocumentRoot "/www/subdomain/sub1"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Ã€ cause de la directive 
-    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, une requÃªte sur 
+    <p>À cause de la directive 
+    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, une requête sur 
     une URL <code>http://www.sub1.domain.tld/sub1/</code> est 
     <em>toujours</em> servie par le serveur sub1-vhost.<br />
-    Une requÃªte sur une URL <code>http://www.sub1.domain.tld/</code> n'est 
-    servie par le serveur sub1-vhost que si le client envoie un en-tÃªte 
-    <code>Host:</code> correct. Si aucun en-tÃªte <code>Host:</code> 
-    n'est transmis, le serveur primaire sera utilisÃ©.</p>
-    <p>Notez qu'il y a une singularitÃ©&nbsp;: une requÃªte sur 
-    <code>http://www.sub2.domain.tld/sub1/</code> est Ã©galement servie 
-    par le serveur sub1-vhost si le client n'envoie pas d'en-tÃªte 
+    Une requête sur une URL <code>http://www.sub1.domain.tld/</code> n'est 
+    servie par le serveur sub1-vhost que si le client envoie un en-tête 
+    <code>Host:</code> correct. Si aucun en-tête <code>Host:</code> 
+    n'est transmis, le serveur primaire sera utilisé.</p>
+    <p>Notez qu'il y a une singularité&nbsp;: une requête sur 
+    <code>http://www.sub2.domain.tld/sub1/</code> est également servie 
+    par le serveur sub1-vhost si le client n'envoie pas d'en-tête 
     <code>Host:</code>.</p>
     <p>Les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 
-    sont employÃ©es pour s'assurer que le client qui envoie un en-tÃªte 
+    sont employées pour s'assurer que le client qui envoie un en-tête 
     <code>Host:</code> correct puisse utiliser d'autres variantes d'URLs, 
-    <em>c'est-Ã -dire</em> avec ou sans prÃ©fixe d'URL.</p>
+    <em>c'est-à-dire</em> avec ou sans préfixe d'URL.</p>
 
 	</div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="TÃ¼rkÃ§e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -578,7 +578,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/examples.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
