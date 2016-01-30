@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,51 +27,51 @@
 <div id="preamble"><h1>Module Apache mod_sed</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_sed.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_sed.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_sed.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre les contenus en entrée (requêtes) et en sortie
-(réponses) en utilisant la syntaxe de <code>sed</code></td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre les contenus en entrÃ©e (requÃªtes) et en sortie
+(rÃ©ponses) en utilisant la syntaxe de <code>sed</code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>sed_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_sed.c sed0.c sed1.c regexp.c regexp.h sed.h</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>sed_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_sed.c sed0.c sed1.c regexp.c regexp.h sed.h</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
 <p><code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> est un filtre de contenu "in-process". Le
-filtre <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> fournit les commandes d'édition de
-<code>sed</code> implémentées par le programme <code>sed</code> de
-Solaris 10 comme décrit dans la <a href="http://www.gnu.org/software/sed/manual/sed.txt">page de
-manuel</a>. Cependant, à la différence de <code>sed</code>,
-<code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> ne reçoit pas de données sur son entrée
-standard. Au lieu de cela, le filtre agit sur les données échangées
-entre le client et le serveur. <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> peut être
-utilisé comme filtre en entrée ou en sortie. <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>
+filtre <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> fournit les commandes d'Ã©dition de
+<code>sed</code> implÃ©mentÃ©es par le programme <code>sed</code> de
+Solaris 10 comme dÃ©crit dans la <a href="http://www.gnu.org/software/sed/manual/sed.txt">page de
+manuel</a>. Cependant, Ã  la diffÃ©rence de <code>sed</code>,
+<code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> ne reÃ§oit pas de donnÃ©es sur son entrÃ©e
+standard. Au lieu de cela, le filtre agit sur les donnÃ©es Ã©changÃ©es
+entre le client et le serveur. <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> peut Ãªtre
+utilisÃ© comme filtre en entrÃ©e ou en sortie. <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>
 est un filtre de contenu, ce qui signifie qu'on ne peut pas l'utiliser
-pour modifier les en-têtes http du client ou du serveur.
+pour modifier les en-tÃªtes http du client ou du serveur.
 </p>
 <p>
-Le filtre en sortie <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> accepte un tronçon de
-données, exécute le script <code>sed</code> sur ces données, puis génère
-une sortie qui est transmise au filtre suivant dans la chaîne.
-</p>
-
-<p>
-Le filtre en entrée <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> reçoit des données en
-provenance du filtre suivant dans la chaîne, exécute les scripts
-<code>sed</code>, et renvoie les données générées au filtre appelant
-dans la chaîne de filtrage.
+Le filtre en sortie <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> accepte un tronÃ§on de
+donnÃ©es, exÃ©cute le script <code>sed</code> sur ces donnÃ©es, puis gÃ©nÃ¨re
+une sortie qui est transmise au filtre suivant dans la chaÃ®ne.
 </p>
 
 <p>
-Les filtres en entrée ou en sortie ne traitent les données que si des
-caractères newline sont détectés dans le contenu à filtrer. A la fin des
-données, ce qui reste est traité comme la dernière ligne.
+Le filtre en entrÃ©e <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code> reÃ§oit des donnÃ©es en
+provenance du filtre suivant dans la chaÃ®ne, exÃ©cute les scripts
+<code>sed</code>, et renvoie les donnÃ©es gÃ©nÃ©rÃ©es au filtre appelant
+dans la chaÃ®ne de filtrage.
+</p>
+
+<p>
+Les filtres en entrÃ©e ou en sortie ne traitent les donnÃ©es que si des
+caractÃ¨res newline sont dÃ©tectÃ©s dans le contenu Ã  filtrer. A la fin des
+donnÃ©es, ce qui reste est traitÃ© comme la derniÃ¨re ligne.
 </p>
 
 <p>Vous trouverez sur le <a href="https://blogs.oracle.com/basant/entry/using_mod_sed_to_filter">blog de
 l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
 lesquelles ce filtre est plus puissant qu'une simple
-recherche/remplacement de chaîne ou d'expression rationnelle.</p>
+recherche/remplacement de chaÃ®ne ou d'expression rationnelle.</p>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -87,8 +87,8 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a></h2>
-    <div class="example"><h3>Ajout d'un filtre en sortie</h3><pre class="prettyprint lang-config"># Dans l'exemple suivant, le filtre sed va remplacer la chaîne
-	 # "monday" par "MON" et la chaîne "sunday" par "SUN" dans les
+    <div class="example"><h3>Ajout d'un filtre en sortie</h3><pre class="prettyprint lang-config"># Dans l'exemple suivant, le filtre sed va remplacer la chaÃ®ne
+	 # "monday" par "MON" et la chaÃ®ne "sunday" par "SUN" dans les
 	 # documents html avant de les envoyer au client.
 &lt;Directory "/var/www/docs/sed"&gt; 
     AddOutputFilter Sed html 
@@ -97,9 +97,9 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 &lt;/Directory&gt;</pre>
 </div>
 
-    <div class="example"><h3>Ajout d'un filtre en entrée</h3><pre class="prettyprint lang-config">         # Dans l'exemple suivant, le filtre sed va remplacer la chaîne
-	 # "monday" par "MON" et la chaîne "sunday" par "SUN" dans les
-	 # données POST envoyées à PHP.
+    <div class="example"><h3>Ajout d'un filtre en entrÃ©e</h3><pre class="prettyprint lang-config">         # Dans l'exemple suivant, le filtre sed va remplacer la chaÃ®ne
+	 # "monday" par "MON" et la chaÃ®ne "sunday" par "SUN" dans les
+	 # donnÃ©es POST envoyÃ©es Ã  PHP.
         &lt;Directory "/var/www/docs/sed"&gt; 
     AddInputFilter Sed php 
     InputSed "s/monday/MON/g" 
@@ -110,13 +110,13 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <div class="section">
 <h2><a name="sed_commands" id="sed_commands">Commandes sed</a></h2>
     <p>
-    Vous trouverez tous les détails à propos de la commande
+    Vous trouverez tous les dÃ©tails Ã  propos de la commande
     <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
     de manuel</a>.
     </p>
     <dl>
         <dt><code>b</code></dt>
-        <dd>Saut vers le label spécifié (similaire à goto).</dd>
+        <dd>Saut vers le label spÃ©cifiÃ© (similaire Ã  goto).</dd>
         <dt><code>h</code></dt>
         <dd>Copie la ligne courante dans le tampon.</dd>
         <dt><code>H</code></dt>
@@ -124,7 +124,7 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
         <dt><code>g</code></dt>
         <dd>Copie le contenu du tampon dans la ligne courante.</dd>
         <dt><code>G</code></dt>
-        <dd>Ajoute le contenu du tampon à la ligne courante.</dd>
+        <dd>Ajoute le contenu du tampon Ã  la ligne courante.</dd>
         <dt><code>x</code></dt>
         <dd>Echange les contenus du tampon et de la ligne courante.</dd>
     </dl>
@@ -132,16 +132,16 @@ recherche/remplacement de chaîne ou d'expression rationnelle.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed à exécuter pour le filtrage des données d'une
-requête (en général des données <code>POST</code>)</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed Ã  exÃ©cuter pour le filtrage des donnÃ©es d'une
+requÃªte (en gÃ©nÃ©ral des donnÃ©es <code>POST</code>)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>InputSed <var>commande-sed</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>La directive <code class="directive">InputSed</code> permet de spécifier
-    la commande sed à exécuter pour le filtrage des données (en général
-    des données <code>POST</code>) d'une requête.
+    <p>La directive <code class="directive">InputSed</code> permet de spÃ©cifier
+    la commande sed Ã  exÃ©cuter pour le filtrage des donnÃ©es (en gÃ©nÃ©ral
+    des donnÃ©es <code>POST</code>) d'une requÃªte.
     </p>
 
 </div>
@@ -149,22 +149,22 @@ requête (en général des données <code>POST</code>)</td></tr>
 <div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
-réponse</td></tr>
+rÃ©ponse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>OutputSed <var>commande-sed</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>La directive <code class="directive">OutputSed</code> permet de spécifier
-    la commande <code>sed</code> à exécuter dans le cadre du traitement
-    d'une réponse.
+    <p>La directive <code class="directive">OutputSed</code> permet de spÃ©cifier
+    la commande <code>sed</code> Ã  exÃ©cuter dans le cadre du traitement
+    d'une rÃ©ponse.
     </p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_sed.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_sed.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_sed.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -183,7 +183,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_sed.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

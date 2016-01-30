@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,36 +27,36 @@
 <div id="preamble"><h1>Module Apache mod_dav_lock</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dav_lock.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav_lock.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav_lock.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav_lock.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de verrouillage générique pour
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de verrouillage gÃ©nÃ©rique pour
 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>dav_lock_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_dav_lock.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>dav_lock_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_dav_lock.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>ce module implémente une API de verrouillage générique que tout
+    <p>ce module implÃ©mente une API de verrouillage gÃ©nÃ©rique que tout
     fournisseur support de <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> peut utiliser. Son
-    activation nécessite l'utilisation de <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. Mais
+    activation nÃ©cessite l'utilisation de <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. Mais
     sans fournisseur support pour l'utiliser, il n'est d'aucun service
-    et ne doit pas être chargé dans le serveur. <a href="http://subversion.apache.org/">mod_dav_svn</a>, le module qui
-    implémente le fournisseur subversion, est un exemple
+    et ne doit pas Ãªtre chargÃ© dans le serveur. <a href="http://subversion.apache.org/">mod_dav_svn</a>, le module qui
+    implÃ©mente le fournisseur subversion, est un exemple
     de module de support qui utilise effectivement
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code>.</p>
 
     <p>Notez que <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> n'a <em>pas</em> besoin de
-    ce module de verrouillage générique, car il utilise sa propre
-    version plus spécifique.</p>
+    ce module de verrouillage gÃ©nÃ©rique, car il utilise sa propre
+    version plus spÃ©cifique.</p>
 
     <p>Pour que <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> puisse fonctionner, il
-    vous suffit de spécifier le chemin de la base de données des verrous
-    à l'aide de la directive <code class="directive"><a href="#davgenericlockdb">DavGenericLockDB</a></code> décrite
+    vous suffit de spÃ©cifier le chemin de la base de donnÃ©es des verrous
+    Ã  l'aide de la directive <code class="directive"><a href="#davgenericlockdb">DavGenericLockDB</a></code> dÃ©crite
     ci-dessous.</p>
 
-    <div class="note"><h3>Note du développeur</h3>
-      <p>Pour déterminer le pointeur de la fonction du fournisseur de
+    <div class="note"><h3>Note du dÃ©veloppeur</h3>
+      <p>Pour dÃ©terminer le pointeur de la fonction du fournisseur de
       verrouillage, vous devez utiliser l'API
       <code>ap_lookup_provider</code> avec les arguments
       <code>dav-lock</code>, <code>generic</code> et <code>0</code>.</p>
@@ -74,30 +74,30 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="davgenericlockdb" id="davgenericlockdb">Directive</a> <a name="DavGenericLockDB" id="DavGenericLockDB">DavGenericLockDB</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin de la base de données des verrous DAV</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin de la base de donnÃ©es des verrous DAV</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavGenericLockDB <var>chemin fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav_lock</td></tr>
 </table>
-    <p>La directive <code class="directive">DavLockDB</code> spécifie
-    le chemin complet de la base de données des verrous, sans extension.
-    Si le chemin n'est pas absolu, il sera considéré comme relatif au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. L'implémentation de
-    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> utilise une base de données SDBM pour
+    <p>La directive <code class="directive">DavLockDB</code> spÃ©cifie
+    le chemin complet de la base de donnÃ©es des verrous, sans extension.
+    Si le chemin n'est pas absolu, il sera considÃ©rÃ© comme relatif au
+    rÃ©pertoire dÃ©fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. L'implÃ©mentation de
+    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> utilise une base de donnÃ©es SDBM pour
     surveiller les verrous utilisateurs.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DavGenericLockDB var/DavLock</pre>
 </div>
 
-    <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui
-    sont respectivement définis par les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> doivent pouvoir écrire dans le
-    répertoire qui contient le fichier de la base de données des
-    verrous. Pour des raisons de sécurité, il est recommandé de créer un
-    répertoire dédié à la base de données des verrous, plutôt que de
-    modifier les permissions d'un répertoire existant. Dans l'exemple
-    ci-dessus, Apache va créer des fichiers dans le répertoire
-    <code>var/</code>, lui-même sous-répertoire du répertoire défini par
+    <p>Les utilisateur et groupe sous lesquels Apache s'exÃ©cute et qui
+    sont respectivement dÃ©finis par les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> doivent pouvoir Ã©crire dans le
+    rÃ©pertoire qui contient le fichier de la base de donnÃ©es des
+    verrous. Pour des raisons de sÃ©curitÃ©, il est recommandÃ© de crÃ©er un
+    rÃ©pertoire dÃ©diÃ© Ã  la base de donnÃ©es des verrous, plutÃ´t que de
+    modifier les permissions d'un rÃ©pertoire existant. Dans l'exemple
+    ci-dessus, Apache va crÃ©er des fichiers dans le rÃ©pertoire
+    <code>var/</code>, lui-mÃªme sous-rÃ©pertoire du rÃ©pertoire dÃ©fini par
     la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>, avec le nom de base
     <code>DavLock</code> suivi d'une extension choisie par le
     serveur.</p>
@@ -107,7 +107,7 @@
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_dav_lock.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav_lock.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav_lock.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav_lock.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
@@ -127,7 +127,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dav_lock.h
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

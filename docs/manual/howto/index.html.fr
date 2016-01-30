@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -24,7 +24,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>How-To / Tutoriels</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/howto/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
@@ -39,25 +39,25 @@
     <dl>
       <dt>Authentification et autorisation</dt>
       <dd>
-        <p>L'authentification représente tout processus par lequel vous
-	vérifiez si quelqu'un correspond bien à l'identité qu'il
-	déclare posséder. L'autorisation représente tout processus
-	permettant de savoir si une personne est autorisée à aller là où
-	elle veut aller, ou à obtenir les informations qu'elle demande.</p>
+        <p>L'authentification reprÃ©sente tout processus par lequel vous
+	vÃ©rifiez si quelqu'un correspond bien Ã  l'identitÃ© qu'il
+	dÃ©clare possÃ©der. L'autorisation reprÃ©sente tout processus
+	permettant de savoir si une personne est autorisÃ©e Ã  aller lÃ  oÃ¹
+	elle veut aller, ou Ã  obtenir les informations qu'elle demande.</p>
 
         <p>Voir <a href="auth.html">Authentification, Autorisation</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Contrôle d'accès</dt>
+      <dt>ContrÃ´le d'accÃ¨s</dt>
       <dd>
-        <p>Le contrôle d'accès se réfère au processus permettant
-	d'interdire ou d'accorder l'accès à une ressource en fonction de
-	certains critères, et il existe de nombreuses façons d'y
+        <p>Le contrÃ´le d'accÃ¨s se rÃ©fÃ¨re au processus permettant
+	d'interdire ou d'accorder l'accÃ¨s Ã  une ressource en fonction de
+	certains critÃ¨res, et il existe de nombreuses faÃ§ons d'y
 	parvenir.</p>
 
-        <p>Voir <a href="access.html">Contrôle d'accès</a></p>
+        <p>Voir <a href="access.html">ContrÃ´le d'accÃ¨s</a></p>
       </dd>
     </dl>
 
@@ -65,13 +65,13 @@
       <dt>Contenu dynamique avec CGI</dt>
       <dd>
         <p>L'Interface Passerelle Commune CGI (Common Gateway Interface)
-	définit pour le serveur web une méthode d'interaction avec des
-	programmes externes générateurs de contenu, souvent nommés
-	programmes CGI ou scripts CGI. Il s'agit d'une méthode
+	dÃ©finit pour le serveur web une mÃ©thode d'interaction avec des
+	programmes externes gÃ©nÃ©rateurs de contenu, souvent nommÃ©s
+	programmes CGI ou scripts CGI. Il s'agit d'une mÃ©thode
 	simple permettant d'ajouter du contenu
-	dynamique à votre site web. Ce document se veut une introduction
-	à la configuration de CGI sur votre serveur web Apache et à
-	l'écriture de programmes CGI.</p>
+	dynamique Ã  votre site web. Ce document se veut une introduction
+	Ã  la configuration de CGI sur votre serveur web Apache et Ã 
+	l'Ã©criture de programmes CGI.</p>
 
         <p>Voir <a href="cgi.html">CGI : contenu dynamique</a></p>
       </dd>
@@ -81,24 +81,24 @@
       <dt>Fichiers <code>.htaccess</code></dt>
       <dd>
         <p>Les fichiers <code>.htaccess</code> permettent de modifier la
-	configuration du serveur au niveau de chaque répertoire. À cet
-	effet, un fichier est placé dans un répertoire particulier du site
-	web, et les directives de configuration qu'il contient s'appliquent à ce
-	répertoire et à tous ses sous-répertoires.</p>
+	configuration du serveur au niveau de chaque rÃ©pertoire. Ã€ cet
+	effet, un fichier est placÃ© dans un rÃ©pertoire particulier du site
+	web, et les directives de configuration qu'il contient s'appliquent Ã  ce
+	rÃ©pertoire et Ã  tous ses sous-rÃ©pertoires.</p>
 
         <p>Voir <a href="htaccess.html">Fichiers <code>.htaccess</code></a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Introduction au Inclusions côté Serveur (Server Side Includes
+      <dt>Introduction au Inclusions cÃ´tÃ© Serveur (Server Side Includes
       ou SSI)</dt>
       <dd>
         <p>Les SSI sont des directives que l'on place dans des pages
-	HTML, et qui sont évaluées par le serveur lorsque ces pages sont
-	servies. Elles vous permettent d'ajouter du contenu généré
-	dynamiquement à une page HTML existante, sans avoir à servir
-	l'intégralité de la page via un programme CGI, ou toute autre
+	HTML, et qui sont Ã©valuÃ©es par le serveur lorsque ces pages sont
+	servies. Elles vous permettent d'ajouter du contenu gÃ©nÃ©rÃ©
+	dynamiquement Ã  une page HTML existante, sans avoir Ã  servir
+	l'intÃ©gralitÃ© de la page via un programme CGI, ou toute autre
 	technologie dynamique.</p>
 
         <p>Voir <a href="ssi.html">Server Side Includes (SSI)</a></p>
@@ -106,29 +106,29 @@
     </dl>
 
     <dl>
-      <dt>Répertoires web de l'utilisateur</dt>
+      <dt>RÃ©pertoires web de l'utilisateur</dt>
       <dd>
-        <p>Sur les systèmes multi-utilisateurs, vous pouvez laisser
-	chaque utilisateur disposer d'un site web dans son répertoire home
+        <p>Sur les systÃ¨mes multi-utilisateurs, vous pouvez laisser
+	chaque utilisateur disposer d'un site web dans son rÃ©pertoire home
 	via la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Les visiteurs de l'URL
 	<code>http://example.com/~nom-utilisateur/</code> vont recevoir
-	du contenu situé dans le répertoire home de l'utilisateur
-	"<code>nom-utilisateur</code>", et dans le sous-répertoire
-	spécifié par la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
+	du contenu situÃ© dans le rÃ©pertoire home de l'utilisateur
+	"<code>nom-utilisateur</code>", et dans le sous-rÃ©pertoire
+	spÃ©cifiÃ© par la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
 
-        <p>Voir <a href="public_html.html">Répertoires web des utilisateurs (<code>public_html</code>)</a></p>
+        <p>Voir <a href="public_html.html">RÃ©pertoires web des utilisateurs (<code>public_html</code>)</a></p>
       </dd>
     </dl>
 
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/howto/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

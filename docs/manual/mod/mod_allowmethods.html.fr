@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,16 +27,16 @@
 <div id="preamble"><h1>Module Apache mod_allowmethods</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_allowmethods.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_allowmethods.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_allowmethods.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Limitation simple des méthodes HTTP acceptées par e serveur</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>allowmethods_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_allowmethods.c</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Limitation simple des mÃ©thodes HTTP acceptÃ©es par e serveur</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>ExpÃ©rimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>allowmethods_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_allowmethods.c</td></tr></table>
 <h3>Sommaire</h3>
 
-<p>Ce module fournit une manière simple de restreindre les méthodes HTTP
-acceptées par le serveur. La configuration la plus courante
+<p>Ce module fournit une maniÃ¨re simple de restreindre les mÃ©thodes HTTP
+acceptÃ©es par le serveur. La configuration la plus courante
 est du style :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/"&gt;
@@ -54,20 +54,20 @@ est du style :</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="allowmethods" id="allowmethods">Directive</a> <a name="AllowMethods" id="AllowMethods">AllowMethods</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'accès aux méthodes HTTP spécifiées</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restreint l'accÃ¨s aux mÃ©thodes HTTP spÃ©cifiÃ©es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowMethods reset</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Default">DÃ©faut:</a></th><td><code>AllowMethods reset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>rÃ©pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>ExpÃ©rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_allowmethods</td></tr>
 </table>
 
-<p>Le nom de chaque méthode HTTP est sensible à la casse, et est le plus
-souvent défini en majuscules, comme dans les RFCs. Les méthodes GET et
-HEAD sont traitées de la même manière. Le mot-clé
-<code>reset</code> permet de désactiver
-<code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> dans les niveaux inférieurs
+<p>Le nom de chaque mÃ©thode HTTP est sensible Ã  la casse, et est le plus
+souvent dÃ©fini en majuscules, comme dans les RFCs. Les mÃ©thodes GET et
+HEAD sont traitÃ©es de la mÃªme maniÃ¨re. Le mot-clÃ©
+<code>reset</code> permet de dÃ©sactiver
+<code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> dans les niveaux infÃ©rieurs
 d'imbrication :</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/svn"&gt;
@@ -76,18 +76,18 @@ d'imbrication :</p>
 
 
 <div class="note"><h3>Avertissement</h3>
-  <p>La méthode TRACE ne peut pas être rejetée par ce module ; pour ce
+  <p>La mÃ©thode TRACE ne peut pas Ãªtre rejetÃ©e par ce module ; pour ce
   faire, vous devez utiliser la directive <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code>.</p>
 </div>
 
-<p>Le module <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> a été écrit pour
-remplacer l'implémentation "bricolée" des directives <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
+<p>Le module <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> a Ã©tÃ© Ã©crit pour
+remplacer l'implÃ©mentation "bricolÃ©e" des directives <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">LimitExcept</a></code>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_allowmethods.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_allowmethods.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_allowmethods.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
@@ -106,7 +106,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_allowmetho
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -27,25 +27,25 @@
 <div id="preamble"><h1>Module Apache mod_headers</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-têtes de requêtes et de réponses
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-tÃªtes de requÃªtes et de rÃ©ponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_headers.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">IdentificateurÂ deÂ Module:</a></th><td>headers_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">FichierÂ Source:</a></th><td>mod_headers.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit des directives permettant de contrôler et
-    modifier les en-têtes de requêtes et de réponses HTTP. Les en-têtes
-    peuvent être fusionnés, remplacés ou supprimés.</p>
+    <p>Ce module fournit des directives permettant de contrÃ´ler et
+    modifier les en-tÃªtes de requÃªtes et de rÃ©ponses HTTP. Les en-tÃªtes
+    peuvent Ãªtre fusionnÃ©s, remplacÃ©s ou supprimÃ©s.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">Chronologie du traitement</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#early">Traitement précoce et traitement
+<li><img alt="" src="../images/down.gif" /> <a href="#early">Traitement prÃ©coce et traitement
 tardif</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 </ul><h3 class="directives">Directives</h3>
@@ -59,47 +59,47 @@ tardif</a></li>
 <h2><a name="order" id="order">Chronologie du traitement</a></h2>
 
     <p>Les directives fournies par <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> peuvent
-    s'insérer presque partout dans la configuration du serveur, et on
-    peut limiter leur portée en les plaçant dans des <a href="../sections.html">sections de configuration</a>.</p>
+    s'insÃ©rer presque partout dans la configuration du serveur, et on
+    peut limiter leur portÃ©e en les plaÃ§ant dans des <a href="../sections.html">sections de configuration</a>.</p>
 
-    <p>La chronologie du traitement est importante et est affectée par
+    <p>La chronologie du traitement est importante et est affectÃ©e par
     l'ordre d'apparition des directives dans le fichier de configuration
     et par leur placement dans les <a href="../sections.html#mergin">sections de configuration</a>. Ainsi,
-    ces deux directives ont un effet différent si leur ordre est inversé
+    ces deux directives ont un effet diffÃ©rent si leur ordre est inversÃ©
     :</p>
 
     <pre class="prettyprint lang-config">RequestHeader append MirrorID "mirror 12"
 RequestHeader unset MirrorID</pre>
 
 
-    <p>Dans cet ordre, l'en-tête <code>MirrorID</code> n'est pas défini.
-    Si l'ordre des directives était inversé, l'en-tête
-    <code>MirrorID</code> serait défini à "mirror 12".</p>
+    <p>Dans cet ordre, l'en-tÃªte <code>MirrorID</code> n'est pas dÃ©fini.
+    Si l'ordre des directives Ã©tait inversÃ©, l'en-tÃªte
+    <code>MirrorID</code> serait dÃ©fini Ã  "mirror 12".</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="early" id="early">Traitement précoce et traitement
+<h2><a name="early" id="early">Traitement prÃ©coce et traitement
 tardif</a></h2>
-    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> peut agir soir précocement, soit
-    tardivement au niveau de la requête. Le mode normal est le mode
-    tardif, lorsque les en-têtes de <em>requête</em> sont définis, immédiatement
-    avant l'exécution du générateur de contenu, et pour les en-têtes de
-    <em>réponse</em>, juste au moment où la réponse est envoyée sur le réseau.
+    <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> peut agir soir prÃ©cocement, soit
+    tardivement au niveau de la requÃªte. Le mode normal est le mode
+    tardif, lorsque les en-tÃªtes de <em>requÃªte</em> sont dÃ©finis, immÃ©diatement
+    avant l'exÃ©cution du gÃ©nÃ©rateur de contenu, et pour les en-tÃªtes de
+    <em>rÃ©ponse</em>, juste au moment oÃ¹ la rÃ©ponse est envoyÃ©e sur le rÃ©seau.
     Utilisez toujours le mode tardif sur un serveur en production.</p>
 
-    <p>Le mode précoce a été conçu à des fins d'aide aux tests et au
-    débogage pour les développeurs. Les directives définies en utilisant
-    le mot-clé <code>early</code> sont censées agir au tout début du
-    traitement de la requête. Cela signifie que l'on peut les utiliser
-    pour simuler différentes requêtes et définir des situations de test,
-    tout en gardant à l'esprit que les en-têtes peuvent être modifiés à
-    tout moment par d'autres modules avant que le réponse ne soit
-    générée.</p>
+    <p>Le mode prÃ©coce a Ã©tÃ© conÃ§u Ã  des fins d'aide aux tests et au
+    dÃ©bogage pour les dÃ©veloppeurs. Les directives dÃ©finies en utilisant
+    le mot-clÃ© <code>early</code> sont censÃ©es agir au tout dÃ©but du
+    traitement de la requÃªte. Cela signifie que l'on peut les utiliser
+    pour simuler diffÃ©rentes requÃªtes et dÃ©finir des situations de test,
+    tout en gardant Ã  l'esprit que les en-tÃªtes peuvent Ãªtre modifiÃ©s Ã 
+    tout moment par d'autres modules avant que le rÃ©ponse ne soit
+    gÃ©nÃ©rÃ©e.</p>
 
-    <p>Comme les directives précoces sont traitées avant que le
-    chemin de la requête ne soit parcouru, les en-têtes
-    précoces ne peuvent être définis que dans un contexte de serveur
-    principal ou de serveur virtuel. Les directives précoces ne peuvent
-    pas dépendre d'un chemin de requête, si bien qu'elles échoueront
+    <p>Comme les directives prÃ©coces sont traitÃ©es avant que le
+    chemin de la requÃªte ne soit parcouru, les en-tÃªtes
+    prÃ©coces ne peuvent Ãªtre dÃ©finis que dans un contexte de serveur
+    principal ou de serveur virtuel. Les directives prÃ©coces ne peuvent
+    pas dÃ©pendre d'un chemin de requÃªte, si bien qu'elles Ã©choueront
     dans des contextes tels que <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -107,99 +107,99 @@ tardif</a></h2>
 
     <ol>
       <li>
-        Copie tous les en-têtes de requête qui commencent par "TS" vers
-	les en-têtes de la réponse :
+        Copie tous les en-tÃªtes de requÃªte qui commencent par "TS" vers
+	les en-tÃªtes de la rÃ©ponse :
 
         <pre class="prettyprint lang-config">Header echo ^TS</pre>
 
       </li>
 
       <li>
-        Ajoute à la réponse un en-tête, <code>mon-en-tête</code>, qui
-	contient un horodatage permettant de déterminer le moment où la
-	requête a été reçue, et le temps qui s'est écoulé jusqu'à ce que
-	la requête ait commencé à être servie. Cet en-tête peut être
-	utilisé par le client pour estimer la charge du serveur ou
-	isoler les goulets d'étranglement entre le client et le
+        Ajoute Ã  la rÃ©ponse un en-tÃªte, <code>mon-en-tÃªte</code>, qui
+	contient un horodatage permettant de dÃ©terminer le moment oÃ¹ la
+	requÃªte a Ã©tÃ© reÃ§ue, et le temps qui s'est Ã©coulÃ© jusqu'Ã  ce que
+	la requÃªte ait commencÃ© Ã  Ãªtre servie. Cet en-tÃªte peut Ãªtre
+	utilisÃ© par le client pour estimer la charge du serveur ou
+	isoler les goulets d'Ã©tranglement entre le client et le
 	serveur.
 
-        <pre class="prettyprint lang-config">Header set mon-en-tête "%D %t"</pre>
+        <pre class="prettyprint lang-config">Header set mon-en-tÃªte "%D %t"</pre>
 
 
-        <p>le résultat est l'ajout à la réponse d'un en-tête du type :</p>
+        <p>le rÃ©sultat est l'ajout Ã  la rÃ©ponse d'un en-tÃªte du type :</p>
 
         <div class="example"><p><code>
-          mon-en-tête: D=3775428 t=991424704447256
+          mon-en-tÃªte: D=3775428 t=991424704447256
         </code></p></div>
       </li>
 
       <li>
-        Dit Bonjour à Joe
+        Dit Bonjour Ã  Joe
 
         <div class="example"><p><code>
-          Header set mon-en-tête "Bonjour Joe. Il a fallu %D microsecondes \<br />
-          à Apache pour servir cette requête."
+          Header set mon-en-tÃªte "Bonjour Joe. Il a fallu %D microsecondes \<br />
+          Ã  Apache pour servir cette requÃªte."
         </code></p></div>
 
-        <p>le résultat est l'ajout à la réponse d'un en-tête du type :</p>
+        <p>le rÃ©sultat est l'ajout Ã  la rÃ©ponse d'un en-tÃªte du type :</p>
 
-        <pre class="prettyprint lang-config">	Header set MyHeader "Bonjour Joe. Il a fallu D=3775428 microsecondes à Apache
-          pour servir cette requête."</pre>
+        <pre class="prettyprint lang-config">	Header set MyHeader "Bonjour Joe. Il a fallu D=3775428 microsecondes Ã  Apache
+          pour servir cette requÃªte."</pre>
 
       </li>
 
       <li>
-        Ajoute l'en-tête <code>mon-en-tête</code> à la réponse si et
-	seulement si l'en-tête <code>mon-en-tête-requête</code> est
-	présent dans la requête. Ceci peut s'avérer utile pour générer
-	des en-têtes de réponse "à la tête du client". Notez que cet
-	exemple nécessite les services du module
+        Ajoute l'en-tÃªte <code>mon-en-tÃªte</code> Ã  la rÃ©ponse si et
+	seulement si l'en-tÃªte <code>mon-en-tÃªte-requÃªte</code> est
+	prÃ©sent dans la requÃªte. Ceci peut s'avÃ©rer utile pour gÃ©nÃ©rer
+	des en-tÃªtes de rÃ©ponse "Ã  la tÃªte du client". Notez que cet
+	exemple nÃ©cessite les services du module
 	<code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.
 
         <pre class="prettyprint lang-config">SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader
 Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader</pre>
 
 
-        <p>Si l'en-tête <code>mon-en-tête-requête: mavaleur</code> est
-	présent dans la requête HTTP, la réponse contiendra un en-tête
+        <p>Si l'en-tÃªte <code>mon-en-tÃªte-requÃªte: mavaleur</code> est
+	prÃ©sent dans la requÃªte HTTP, la rÃ©ponse contiendra un en-tÃªte
 	du type :</p>
 
         <div class="example"><p><code>
-          mon-en-tête: D=3775428 t=991424704447256 montexte
+          mon-en-tÃªte: D=3775428 t=991424704447256 montexte
         </code></p></div>
       </li>
 
       <li>
-        Permet à DAV de fonctionner avec Apache sur SSL (voir la <a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">description
-	du problème</a>) en remplaçant <var>https:</var> par
-	<var>http:</var> dans l'en-tête <var>Destination</var> :
+        Permet Ã  DAV de fonctionner avec Apache sur SSL (voir la <a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">description
+	du problÃ¨me</a>) en remplaÃ§ant <var>https:</var> par
+	<var>http:</var> dans l'en-tÃªte <var>Destination</var> :
 
         <pre class="prettyprint lang-config">RequestHeader edit Destination ^https: http: early</pre>
 
       </li>
 
       <li>
-        Définit la valeur d'un même en-tête sous de multiples conditions
-	non exclusives, mais ne duplique pas une valeur déjà définie
-	dans l'en-tête qui en résulte. Si toutes les conditions
-	suivantes sont satisfaites pour une requête (en d'autres termes,
+        DÃ©finit la valeur d'un mÃªme en-tÃªte sous de multiples conditions
+	non exclusives, mais ne duplique pas une valeur dÃ©jÃ  dÃ©finie
+	dans l'en-tÃªte qui en rÃ©sulte. Si toutes les conditions
+	suivantes sont satisfaites pour une requÃªte (en d'autres termes,
 	si les trois variables d'environnement <code>CGI</code>,
 	<code>NO_CACHE</code> et <code>NO_STORE</code> existent pour la
-	requête) :
+	requÃªte) :
 
         <pre class="prettyprint lang-config">Header merge Cache-Control no-cache env=CGI
 Header merge Cache-Control no-cache env=NO_CACHE
 Header merge Cache-Control no-store env=NO_STORE</pre>
 
 
-        <p>alors, la réponse contiendra l'en-tête suivant :</p>
+        <p>alors, la rÃ©ponse contiendra l'en-tÃªte suivant :</p>
 
         <div class="example"><p><code>
           Cache-Control: no-cache, no-store
         </code></p></div>
 
-        <p>Si <code>append</code> avait été utilisé à la place de
-	<code>merge</code>, la réponse aurait contenu l'en-tête suivant
+        <p>Si <code>append</code> avait Ã©tÃ© utilisÃ© Ã  la place de
+	<code>merge</code>, la rÃ©ponse aurait contenu l'en-tÃªte suivant
 	:</p>
 
         <div class="example"><p><code>
@@ -207,14 +207,14 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
         </code></p></div>
       </li>
       <li>
-        Définit un cookie de test si et seulement si le client n'envoie
+        DÃ©finit un cookie de test si et seulement si le client n'envoie
 	pas de cookie
         <pre class="prettyprint lang-config">Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"</pre>
 
       </li>
       <li>
-        Ajoute un en-tête de mise en cache pour les réponses avec un
-	code d'état HTTP de 200
+        Ajoute un en-tÃªte de mise en cache pour les rÃ©ponses avec un
+	code d'Ã©tat HTTP de 200
         <pre class="prettyprint lang-config">Header append Cache-Control s-maxage=600 "expr=%{REQUEST_STATUS} == 200"</pre>
 
       </li>
@@ -224,192 +224,192 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="header" id="header">Directive</a> <a name="Header" id="Header">Header</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une réponse HTTP</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-tÃªtes d'une rÃ©ponse HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
-<var>en-tête</var> [[expr=]<var>valeur</var>
+<var>en-tÃªte</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le paramètre expr=valeur a été introduit avec la
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
+serveur HTTP Apache ; le paramÃ¨tre expr=valeur a Ã©tÃ© introduit avec la
 version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
-    supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
-    après que le gestionnaire de contenu et les filtres en sortie ne
-    s'exécutent, ce qui permet la modification des en-têtes
+    supprimer des en-tÃªtes de rÃ©ponse HTTP. L'en-tÃªte est modifiÃ© juste
+    aprÃ¨s que le gestionnaire de contenu et les filtres en sortie ne
+    s'exÃ©cutent, ce qui permet la modification des en-tÃªtes
     sortants.</p>
 
-    <p>L'argument optionnel <var>condition</var> permet de déterminer
-    sur quelle table interne d'en-têtes de réponses cette directive va
-    opérer. En dépit du nom, la valeur par défaut de
+    <p>L'argument optionnel <var>condition</var> permet de dÃ©terminer
+    sur quelle table interne d'en-tÃªtes de rÃ©ponses cette directive va
+    opÃ©rer. En dÃ©pit du nom, la valeur par dÃ©faut de
     <code>onsuccess</code> ne limite <em>pas</em> une <var>action</var>
-    aux réponses avec un code d'état de 2xx. Les en-têtes définis sous
-    cette condition sont encore utilisés quand par exemple une requête
-    est mandatée ou générée par un programme CGI avec <em>succès</em>,
-    et ceci même dans le cas où ils ont généré un code d'échec.</p>
+    aux rÃ©ponses avec un code d'Ã©tat de 2xx. Les en-tÃªtes dÃ©finis sous
+    cette condition sont encore utilisÃ©s quand par exemple une requÃªte
+    est mandatÃ©e ou gÃ©nÃ©rÃ©e par un programme CGI avec <em>succÃ¨s</em>,
+    et ceci mÃªme dans le cas oÃ¹ ils ont gÃ©nÃ©rÃ© un code d'Ã©chec.</p>
 
-    <p>Lorsque votre action est une fonction agissant sur un en-tête
-    existant, vous pourrez être amené à spécifier une condition
+    <p>Lorsque votre action est une fonction agissant sur un en-tÃªte
+    existant, vous pourrez Ãªtre amenÃ© Ã  spÃ©cifier une condition
     <code>always</code>, en fonction de la table interne dans laquelle
-    l'en-tête original a été défini. La table qui correspond à
-    <code>always</code> est utilisée pour les réponses d'erreur générées
-    localement ainsi que pour les réponses qui ont abouti.
-     Notez aussi que la répétition
-    de cette directive avec les deux conditions peut être pertinente
-    dans certains scénarios, car <code>always</code> n'englobe pas
-    <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
+    l'en-tÃªte original a Ã©tÃ© dÃ©fini. La table qui correspond Ã 
+    <code>always</code> est utilisÃ©e pour les rÃ©ponses d'erreur gÃ©nÃ©rÃ©es
+    localement ainsi que pour les rÃ©ponses qui ont abouti.
+     Notez aussi que la rÃ©pÃ©tition
+    de cette directive avec les deux conditions peut Ãªtre pertinente
+    dans certains scÃ©narios, car <code>always</code> n'englobe pas
+    <code>onsuccess</code> en ce qui concerne les en-tÃªtes existants :</p>
 
     <ul>
-       <li>Vous ajoutez un en-tête à une réponse
-       générée localement et échouée (non-2xx),
+       <li>Vous ajoutez un en-tÃªte Ã  une rÃ©ponse
+       gÃ©nÃ©rÃ©e localement et Ã©chouÃ©e (non-2xx),
        une redirection par exemple, et dans ce cas, seule la table
-       correspondant à <code>always</code> est utilisée dans la réponse
-       définitive.</li>
-       <li>Vous modifiez ou supprimez un en-tête généré par un script
+       correspondant Ã  <code>always</code> est utilisÃ©e dans la rÃ©ponse
+       dÃ©finitive.</li>
+       <li>Vous modifiez ou supprimez un en-tÃªte gÃ©nÃ©rÃ© par un script
        CGI, et dans ce cas, les scripts CGI sont dans la table
-       correspondant à <code>always</code> et non dans la table par
-       défaut.</li>
-       <li>Vous modifiez ou supprimez un en-tête généré par tel ou tel
-       composant du serveur, mais cet en-tête n'est pas trouvé par la
-       condition par défaut <code>onsuccess</code>.</li>
+       correspondant Ã  <code>always</code> et non dans la table par
+       dÃ©faut.</li>
+       <li>Vous modifiez ou supprimez un en-tÃªte gÃ©nÃ©rÃ© par tel ou tel
+       composant du serveur, mais cet en-tÃªte n'est pas trouvÃ© par la
+       condition par dÃ©faut <code>onsuccess</code>.</li>
     </ul>
 
-    <p>Outre le paramètre <var>condition</var> décrit ci-dessus, vous
-    pouvez limiter une action en fonction de codes d'état HTTP, par
-    exemple pour les requêtes mandatées ou générées par un programme
+    <p>Outre le paramÃ¨tre <var>condition</var> dÃ©crit ci-dessus, vous
+    pouvez limiter une action en fonction de codes d'Ã©tat HTTP, par
+    exemple pour les requÃªtes mandatÃ©es ou gÃ©nÃ©rÃ©es par un programme
     CGI. Voir l'exemple qui utilise %{REQUEST_STATUS} dans la section
     ci-dessus.</p>
 
-    <p>L'action que cette directive provoque est déterminée par le
+    <p>L'action que cette directive provoque est dÃ©terminÃ©e par le
     premier argument (ou par le second argument si une
-    <var>condition</var> est spécifiée). Il peut prendre
+    <var>condition</var> est spÃ©cifiÃ©e). Il peut prendre
     une des valeurs suivantes :</p>
 
     <dl>
     <dt><code>add</code></dt>
-    <dd>L'en-tête est ajouté au jeu d'en-têtes préexistant, même s'il
-    existe déjà. Ceci peut conduire à la présence de deux (ou plusieurs)
-    en-têtes possèdant le même nom et donc induire des conséquences
-    imprévues ; en général, il est préférable d'utiliser
+    <dd>L'en-tÃªte est ajoutÃ© au jeu d'en-tÃªtes prÃ©existant, mÃªme s'il
+    existe dÃ©jÃ . Ceci peut conduire Ã  la prÃ©sence de deux (ou plusieurs)
+    en-tÃªtes possÃ¨dant le mÃªme nom et donc induire des consÃ©quences
+    imprÃ©vues ; en gÃ©nÃ©ral, il est prÃ©fÃ©rable d'utiliser
     <code>set</code>, <code>append</code> ou <code>merge</code>.</dd>
 
     <dt><code>append</code></dt>
-    <dd>La valeur d'en-tête est ajoutée à tout en-tête existant de même
-    nom. Lorsqu'une nouvelle valeur est ainsi ajoutée, elle est séparée
-    de celles qui sont déjà présentes par une virgule. Il s'agit de la
-    méthode HTTP standard permettant d'affecter plusieurs valeurs à un
-    en-tête.</dd>
+    <dd>La valeur d'en-tÃªte est ajoutÃ©e Ã  tout en-tÃªte existant de mÃªme
+    nom. Lorsqu'une nouvelle valeur est ainsi ajoutÃ©e, elle est sÃ©parÃ©e
+    de celles qui sont dÃ©jÃ  prÃ©sentes par une virgule. Il s'agit de la
+    mÃ©thode HTTP standard permettant d'affecter plusieurs valeurs Ã  un
+    en-tÃªte.</dd>
 
     <dt><code>echo</code></dt>
-    <dd>Les en-têtes de la requête possédant le nom spécifié sont
-    recopiés vers les en-têtes de la réponse. <var>en-tête</var> peut
-    être une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
-    <var>valeur</var> ne doit pas être présent.</dd>
+    <dd>Les en-tÃªtes de la requÃªte possÃ©dant le nom spÃ©cifiÃ© sont
+    recopiÃ©s vers les en-tÃªtes de la rÃ©ponse. <var>en-tÃªte</var> peut
+    Ãªtre une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
+    <var>valeur</var> ne doit pas Ãªtre prÃ©sent.</dd>
 
     <dt><code>edit</code></dt>
     <dt><code>edit*</code></dt>
-    <dd>Si l'en-tête existe, sa valeur est modifiée en fonction d'une
+    <dd>Si l'en-tÃªte existe, sa valeur est modifiÃ©e en fonction d'une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
-    l'argument <var>remplacement</var> une chaîne de caractères de
-    remplacement qui peut contenir des références
-    arrières ou des spécificateurs de format. La forme <code>edit</code> n'effectuera une
+    l'argument <var>remplacement</var> une chaÃ®ne de caractÃ¨res de
+    remplacement qui peut contenir des rÃ©fÃ©rences
+    arriÃ¨res ou des spÃ©cificateurs de format. La forme <code>edit</code> n'effectuera une
     recherche/remplacement qu'une seule fois dans la valeur de
-    l'en-tête, alors que la forme <code>edit*</code> en effectuera autant
-    que le nombre d'apparition de la chaîne à remplacer.</dd>
+    l'en-tÃªte, alors que la forme <code>edit*</code> en effectuera autant
+    que le nombre d'apparition de la chaÃ®ne Ã  remplacer.</dd>
 
     <dt><code>merge</code></dt>
-    <dd>La valeur d'en-tête est ajoutée à tout en-tête de même nom, sauf
-    si elle apparaît déjà dans la liste des valeurs préexistantes de
-    l'en-tête séparées par des virgules. Lorsqu'une nouvelle valeur est
-    ainsi ajoutée, elle est séparée de celles qui sont déjà présentes
-    par une virgule. Il s'agit de la méthode HTTP standard permettant
-    d'affecter plusieurs valeurs à un en-tête. Les valeurs sont
-    comparées en tenant compte de la casse, et après le traitement de
-    tous les spécificateurs de format. Une valeur entourée de guillemets
-    est considérée comme différente de la même valeur mais sans
+    <dd>La valeur d'en-tÃªte est ajoutÃ©e Ã  tout en-tÃªte de mÃªme nom, sauf
+    si elle apparaÃ®t dÃ©jÃ  dans la liste des valeurs prÃ©existantes de
+    l'en-tÃªte sÃ©parÃ©es par des virgules. Lorsqu'une nouvelle valeur est
+    ainsi ajoutÃ©e, elle est sÃ©parÃ©e de celles qui sont dÃ©jÃ  prÃ©sentes
+    par une virgule. Il s'agit de la mÃ©thode HTTP standard permettant
+    d'affecter plusieurs valeurs Ã  un en-tÃªte. Les valeurs sont
+    comparÃ©es en tenant compte de la casse, et aprÃ¨s le traitement de
+    tous les spÃ©cificateurs de format. Une valeur entourÃ©e de guillemets
+    est considÃ©rÃ©e comme diffÃ©rente de la mÃªme valeur mais sans
     guillemets.</dd>
 
     <dt><code>set</code></dt>
-    <dd>L'en-tête est défini, remplaçant tout en-tête préexistant avec
-    le même nom. L'argument <var>valeur</var> peut être une chaîne de
+    <dd>L'en-tÃªte est dÃ©fini, remplaÃ§ant tout en-tÃªte prÃ©existant avec
+    le mÃªme nom. L'argument <var>valeur</var> peut Ãªtre une chaÃ®ne de
     formatage.</dd>
 
     <dt><code>setifempty</code></dt>
-    <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.<br />
+    <dd>L'en-tÃªte est dÃ©fini, mais seulement s'il n'existe
+    aucun en-tÃªte avec le mÃªme nom.<br />
     Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
-    <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
-    possèdent le même nom, ils seront tous supprimés. L'argument
-    <var>value</var> ne doit pas apparaître.</dd>
+    <dd>L'en-tÃªte est supprimÃ© s'il existe. Si plusieurs en-tÃªtes
+    possÃ¨dent le mÃªme nom, ils seront tous supprimÃ©s. L'argument
+    <var>value</var> ne doit pas apparaÃ®tre.</dd>
 
     <dt><code>note</code></dt>
-    <dd>La valeur de l'<var>en-tête</var> considéré est copiée dans une
-    note interne dont le nom est spécifié via l'argument
-    <var>valeur</var>. Ceci permet de journaliser la valeur d'un en-tête
-    envoyé par un programme CGI ou une ressource mandatée, même s'il
-    est prévu de l'effacer.<br />
-    Disponible à partir de la version 2.4.7 du serveur HTTP Apache.</dd>
+    <dd>La valeur de l'<var>en-tÃªte</var> considÃ©rÃ© est copiÃ©e dans une
+    note interne dont le nom est spÃ©cifiÃ© via l'argument
+    <var>valeur</var>. Ceci permet de journaliser la valeur d'un en-tÃªte
+    envoyÃ© par un programme CGI ou une ressource mandatÃ©e, mÃªme s'il
+    est prÃ©vu de l'effacer.<br />
+    Disponible Ã  partir de la version 2.4.7 du serveur HTTP Apache.</dd>
 
     </dl>    
 
-    <p>Cet argument est suivi d'un nom d'<var>en-tête</var> qui peut se
-    terminer par un caractère ':', mais ce n'est pas obligatoire. La
-    casse est ignorée avec <code>set</code>, <code>append</code>,
+    <p>Cet argument est suivi d'un nom d'<var>en-tÃªte</var> qui peut se
+    terminer par un caractÃ¨re ':', mais ce n'est pas obligatoire. La
+    casse est ignorÃ©e avec <code>set</code>, <code>append</code>,
     <code>merge</code>, <code>add</code>, <code>unset</code> et
-    <code>edit</code>. Le nom d'<var>en-tête</var> est sensible à la
-    casse pour <code>echo</code> et peut être une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
+    <code>edit</code>. Le nom d'<var>en-tÃªte</var> est sensible Ã  la
+    casse pour <code>echo</code> et peut Ãªtre une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
 
     <p>Avec <code>set</code>, <code>append</code>, <code>merge</code> et
-    <code>add</code>, une <var>valeur</var> est spécifiée comme
+    <code>add</code>, une <var>valeur</var> est spÃ©cifiÃ©e comme
     argument suivant. Si <var>valeur</var> contient des espaces, elle
-    doit être entourée de guillemets. <var>valeur</var> peut être une
-    chaîne de caractères, une chaîne contenant des spécificateurs de
-    format propres à <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> (et des caractères
-    littéraux), ou une expression  <a href="../expr.html">ap_expr</a>
-    préfixée par <em>expr=</em>.</p>
+    doit Ãªtre entourÃ©e de guillemets. <var>valeur</var> peut Ãªtre une
+    chaÃ®ne de caractÃ¨res, une chaÃ®ne contenant des spÃ©cificateurs de
+    format propres Ã  <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> (et des caractÃ¨res
+    littÃ©raux), ou une expression  <a href="../expr.html">ap_expr</a>
+    prÃ©fixÃ©e par <em>expr=</em>.</p>
     
-    <p><var>valeur</var> supporte les spécificateurs de format suivants :</p>
+    <p><var>valeur</var> supporte les spÃ©cificateurs de format suivants :</p>
 
     <table class="bordered"><tr class="header"><th>Format</th><th>Description</th></tr>
 <tr><td><code>%%</code></td>
-        <td>Le caractère pourcentage</td></tr>
+        <td>Le caractÃ¨re pourcentage</td></tr>
 <tr class="odd"><td><code>%t</code></td>
-        <td>Le moment de réception de la requête en temps
-	universel coordonné depuis le temps epoch (Jan. 1, 1970) et
-	exprimé en microsecondes. La valeur est précédée de
+        <td>Le moment de rÃ©ception de la requÃªte en temps
+	universel coordonnÃ© depuis le temps epoch (Jan. 1, 1970) et
+	exprimÃ© en microsecondes. La valeur est prÃ©cÃ©dÃ©e de
 	<code>t=</code>.</td></tr>
 <tr><td><code>%D</code></td>
-        <td>Le temps écoulé entre la réception de la requête et l'envoi
-	des en-têtes sur le réseau. Il s'agit de la durée de traitement
-	de la requête. La valeur est précédée de <code>D=</code>. La
-	valeur est exprimée en microsecondes.</td></tr>
+        <td>Le temps Ã©coulÃ© entre la rÃ©ception de la requÃªte et l'envoi
+	des en-tÃªtes sur le rÃ©seau. Il s'agit de la durÃ©e de traitement
+	de la requÃªte. La valeur est prÃ©cÃ©dÃ©e de <code>D=</code>. La
+	valeur est exprimÃ©e en microsecondes.</td></tr>
 <tr class="odd"><td><code>%l</code></td>
         <td>La charge moyenne courante du serveur proprement dit. Ce
 	sont les valeurs obtenues par <code>getloadavg()</code> qui
-	représentent la charge moyenne courante, sur 5 minutes et sur 15
-	minutes. Chaque valeur est précédée de <code>l=</code> et
-	séparée de la suivante par un <code>/</code>.<br />
+	reprÃ©sentent la charge moyenne courante, sur 5 minutes et sur 15
+	minutes. Chaque valeur est prÃ©cÃ©dÃ©e de <code>l=</code> et
+	sÃ©parÃ©e de la suivante par un <code>/</code>.<br />
 	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%i</code></td>
-        <td>Le pourcentage courant de httpd au repos (de 0 à 100)
+        <td>Le pourcentage courant de httpd au repos (de 0 Ã  100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est précédée de <code>i=</code>.<br />
+	La valeur est prÃ©cÃ©dÃ©e de <code>i=</code>.<br />
 	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr class="odd"><td><code>%b</code></td>
-        <td>Le pourcentage courant de httpd utilisé (de 0 à 100)
+        <td>Le pourcentage courant de httpd utilisÃ© (de 0 Ã  100)
 	en se basant sur le nombre de processus et threads disponibles.
-	La valeur est précédée de <code>b=</code>.<br />
+	La valeur est prÃ©cÃ©dÃ©e de <code>b=</code>.<br />
 	Disponible depuis la version 2.4.4 du serveur HTTP Apache.
         </td></tr>
 <tr><td><code>%{NOM_VARIABLE}e</code></td>
@@ -418,31 +418,31 @@ version 2.4.10</td></tr>
 <tr class="odd"><td><code>%{NOM_VARIABLE}s</code></td>
         <td>Le contenu de la <a href="../env.html">variable
 	d'environnement SSL</a> <code>NOM_VARIABLE</code>, si
-	<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est activé.</td></tr>
+	<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est activÃ©.</td></tr>
 </table>
 
     <div class="note"><h3>Note</h3>
-      <p>Le spécificateur de format <code>%s</code> est disponible
-      depuis la version 2.1 d'Apache ; il peut être utilisé à la place
-      de <code>%e</code> pour éviter de devoir spécifier
+      <p>Le spÃ©cificateur de format <code>%s</code> est disponible
+      depuis la version 2.1 d'Apache ; il peut Ãªtre utilisÃ© Ã  la place
+      de <code>%e</code> pour Ã©viter de devoir spÃ©cifier
       <code>SSLOptions +StdEnvVars</code>. Cependant, si
-      <code>SSLOptions +StdEnvVars</code> doit tout de même être
-      spécifié pour une raison quelconque, <code>%e</code> sera plus
+      <code>SSLOptions +StdEnvVars</code> doit tout de mÃªme Ãªtre
+      spÃ©cifiÃ© pour une raison quelconque, <code>%e</code> sera plus
       efficace que <code>%s</code>.</p>
     </div>
 
-    <div class="note"><h3>Note à propos des valeurs des expressions</h3>
-    <p>Lorsque le paramètre valeur utilise l'interpréteur <a href="../expr.html">ap_expr</a>, certaines syntaxes d'expressions
-    seront différentes des exemples qui évaluent des expressions
-    <em>booléennes</em> telles que &lt;If&gt; :</p>
+    <div class="note"><h3>Note Ã  propos des valeurs des expressions</h3>
+    <p>Lorsque le paramÃ¨tre valeur utilise l'interprÃ©teur <a href="../expr.html">ap_expr</a>, certaines syntaxes d'expressions
+    seront diffÃ©rentes des exemples qui Ã©valuent des expressions
+    <em>boolÃ©ennes</em> telles que &lt;If&gt; :</p>
     <ul>
-      <li>Le point de départ de la syntaxe est 'string' au lieu de
+      <li>Le point de dÃ©part de la syntaxe est 'string' au lieu de
       'expr'.</li>
       <li>Les appels de fonction utilisent la syntaxe %{funcname:arg} au
       lieu de funcname(arg).</li>
       <li>Les fonctions multi-arguments ne sont pas encore disponibles
-      depuis le point de départ 'string'.</li>
-      <li>Il faut mettre entre guillemets l'ensemble du paramètre, comme
+      depuis le point de dÃ©part 'string'.</li>
+      <li>Il faut mettre entre guillemets l'ensemble du paramÃ¨tre, comme
       dans l'exemple suivant : 
           <pre class="prettyprint lang-config">Header set foo-checksum "expr=%{md5:foo}"</pre>
 
@@ -451,172 +451,172 @@ version 2.4.10</td></tr>
     </ul>
     </div>
 
-    <p><code>edit</code>nécessite les deux arguments
+    <p><code>edit</code>nÃ©cessite les deux arguments
     <var>valeur</var>, qui est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
-    rationnelle</a>, et une chaîne additionnelle
-    <var>remplacement</var>. Depuis la version 2.4.7, la chaîne de
+    rationnelle</a>, et une chaÃ®ne additionnelle
+    <var>remplacement</var>. Depuis la version 2.4.7, la chaÃ®ne de
     remplacement peut aussi
-    contenir des spécificateurs de format.</p>
+    contenir des spÃ©cificateurs de format.</p>
 
-    <p>La directive <code class="directive">Header</code> peut être suivie d'un
+    <p>La directive <code class="directive">Header</code> peut Ãªtre suivie d'un
     argument additionnel qui peut prendre les valeurs suivantes :</p>
 
     <dl>
     <dt><code>early</code></dt>
-    <dd>Spécifie <a href="#early">traitement préalable</a>.</dd>
+    <dd>SpÃ©cifie <a href="#early">traitement prÃ©alable</a>.</dd>
     <dt><code>env=[!]<var>variable</var></code></dt>
-    <dd>La directive est appliquée si et seulement si la <a href="../env.html">variable d'environnement</a>
+    <dd>La directive est appliquÃ©e si et seulement si la <a href="../env.html">variable d'environnement</a>
     <code>variable</code> existe. Un <code>!</code> devant
     <code>variable</code> inverse le test, et la directive ne
-    s'appliquera alors que si <code>variable</code> n'est pas définie.</dd>
+    s'appliquera alors que si <code>variable</code> n'est pas dÃ©finie.</dd>
     <dt><code>expr=<var>expression</var></code></dt>
     <dd>La directive s'applique si et seulement si <var>expression</var>
-    est évaluée à true. Vous trouverez plus de détails à propos de la
-    syntaxe et de l'évaluation des expressions dans la documentation <a href="../expr.html">ap_expr</a>.
+    est Ã©valuÃ©e Ã  true. Vous trouverez plus de dÃ©tails Ã  propos de la
+    syntaxe et de l'Ã©valuation des expressions dans la documentation <a href="../expr.html">ap_expr</a>.
     <div class="example"><p><code>
-         # Cet exemple retarde l'évaluation de la clause de condition par
-	 # rapport à &lt;If&gt;
+         # Cet exemple retarde l'Ã©valuation de la clause de condition par
+	 # rapport Ã  &lt;If&gt;
          Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
         </code></p></div>
     </dd>
     </dl>
 
-    <p>Excepté le cas du mode <a href="#early">précoce</a>, les
-    directives <code class="directive">Header</code> sont traitées juste avant
-    l'envoi de la réponse sur le réseau. Cela signifie qu'il est
-    possible de définir et/ou modifier la plupart des en-têtes, à
-    l'exception de certains en-têtes qui sont ajoutés par le filtre
-    d'en-tête HTTP. Avant la version 2.2.12, il n'était pas
-    possible de modifier l'en-tête Content-Type avec cette directive.</p>
+    <p>ExceptÃ© le cas du mode <a href="#early">prÃ©coce</a>, les
+    directives <code class="directive">Header</code> sont traitÃ©es juste avant
+    l'envoi de la rÃ©ponse sur le rÃ©seau. Cela signifie qu'il est
+    possible de dÃ©finir et/ou modifier la plupart des en-tÃªtes, Ã 
+    l'exception de certains en-tÃªtes qui sont ajoutÃ©s par le filtre
+    d'en-tÃªte HTTP. Avant la version 2.2.12, il n'Ã©tait pas
+    possible de modifier l'en-tÃªte Content-Type avec cette directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="requestheader" id="requestheader">Directive</a> <a name="RequestHeader" id="RequestHeader">RequestHeader</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-tÃªtes d'une requÃªte HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
-<var>en-tête</var> [[expr=]<var>valeur</var>
+<var>en-tÃªte</var> [[expr=]<var>valeur</var>
 [<var>remplacement</var>]
 [early|env=[!]<var>variable</var>|expr=<var>expression</var>]]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, rÃ©pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
-serveur HTTP Apache ; le paramètre expr=valeur a été introduit avec la
+<tr><th><a href="directive-dict.html#Compatibility">CompatibilitÃ©:</a></th><td>SetIfEmpty est disponible depuis la version 2.4.7 du
+serveur HTTP Apache ; le paramÃ¨tre expr=valeur a Ã©tÃ© introduit avec la
 version 2.4.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, modifier ou
-    supprimer des en-têtes de requête HTTP. L'en-tête est modifié juste
-    avant que le gestionnaire de contenu ne s'exécute, ce qui permet la
-    modification des en-têtes entrants. L'action effectuée est
-    déterminée par le premier argument. Ce dernier accepte les valeurs
+    supprimer des en-tÃªtes de requÃªte HTTP. L'en-tÃªte est modifiÃ© juste
+    avant que le gestionnaire de contenu ne s'exÃ©cute, ce qui permet la
+    modification des en-tÃªtes entrants. L'action effectuÃ©e est
+    dÃ©terminÃ©e par le premier argument. Ce dernier accepte les valeurs
     suivantes :</p>
 
     <dl>
 
     <dt><code>add</code></dt>
-    <dd>L'en-tête est ajouté au jeu d'en-têtes préexistant, même s'il
-    existe déjà. Ceci peut conduire à la présence de deux (ou plusieurs)
-    en-têtes possèdant le même nom et donc induire des conséquences
-    imprévues ; en général, il est préférable d'utiliser
+    <dd>L'en-tÃªte est ajoutÃ© au jeu d'en-tÃªtes prÃ©existant, mÃªme s'il
+    existe dÃ©jÃ . Ceci peut conduire Ã  la prÃ©sence de deux (ou plusieurs)
+    en-tÃªtes possÃ¨dant le mÃªme nom et donc induire des consÃ©quences
+    imprÃ©vues ; en gÃ©nÃ©ral, il est prÃ©fÃ©rable d'utiliser
     <code>set</code>, <code>append</code> ou <code>merge</code>.</dd>
 
     <dt><code>append</code></dt>
-    <dd>La valeur d'en-tête est ajoutée à tout en-tête existant de même
-    nom. Lorsqu'une nouvelle valeur est ainsi ajoutée, elle est séparée
-    de celles qui sont déjà présentes par une virgule. Il s'agit de la
-    méthode HTTP standard permettant d'affecter plusieurs valeurs à un
-    en-tête.</dd>
+    <dd>La valeur d'en-tÃªte est ajoutÃ©e Ã  tout en-tÃªte existant de mÃªme
+    nom. Lorsqu'une nouvelle valeur est ainsi ajoutÃ©e, elle est sÃ©parÃ©e
+    de celles qui sont dÃ©jÃ  prÃ©sentes par une virgule. Il s'agit de la
+    mÃ©thode HTTP standard permettant d'affecter plusieurs valeurs Ã  un
+    en-tÃªte.</dd>
 
     <dt><code>edit</code></dt>
     <dt><code>edit*</code></dt>
-    <dd>Si l'en-tête existe, sa valeur est modifiée en fonction d'une
+    <dd>Si l'en-tÃªte existe, sa valeur est modifiÃ©e en fonction d'une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
-    l'argument <var>remplacement</var> une chaîne de caractères de
-    remplacement qui peut contenir des références
-    arrières ou des spécificateurs de format. Avec
-    <code>edit</code>, la chaîne de l'en-tête correspondant au modèle ne
-    sera recherchée et remplacée qu'une seule fois, alors qu'avec
+    l'argument <var>remplacement</var> une chaÃ®ne de caractÃ¨res de
+    remplacement qui peut contenir des rÃ©fÃ©rences
+    arriÃ¨res ou des spÃ©cificateurs de format. Avec
+    <code>edit</code>, la chaÃ®ne de l'en-tÃªte correspondant au modÃ¨le ne
+    sera recherchÃ©e et remplacÃ©e qu'une seule fois, alors qu'avec
     <code>edit*</code>, elle le sera pour chacune de ses instances si
-    elle apparaît plusieurs fois.</dd>
+    elle apparaÃ®t plusieurs fois.</dd>
 
     <dt><code>merge</code></dt>
-    <dd>La valeur d'en-tête est ajoutée à tout en-tête de même nom, sauf
-    si elle apparaît déjà dans la liste des valeurs préexistantes de
-    l'en-tête séparées par des virgules. Lorsqu'une nouvelle valeur est
-    ainsi ajoutée, elle est séparée de celles qui sont déjà présentes
-    par une virgule. Il s'agit de la méthode HTTP standard permettant
-    d'affecter plusieurs valeurs à un en-tête. Les valeurs sont
-    comparées en tenant compte de la casse, et après le traitement de
-    tous les spécificateurs de format. Une valeur entourée de guillemets
-    est considérée comme différente de la même valeur mais sans
+    <dd>La valeur d'en-tÃªte est ajoutÃ©e Ã  tout en-tÃªte de mÃªme nom, sauf
+    si elle apparaÃ®t dÃ©jÃ  dans la liste des valeurs prÃ©existantes de
+    l'en-tÃªte sÃ©parÃ©es par des virgules. Lorsqu'une nouvelle valeur est
+    ainsi ajoutÃ©e, elle est sÃ©parÃ©e de celles qui sont dÃ©jÃ  prÃ©sentes
+    par une virgule. Il s'agit de la mÃ©thode HTTP standard permettant
+    d'affecter plusieurs valeurs Ã  un en-tÃªte. Les valeurs sont
+    comparÃ©es en tenant compte de la casse, et aprÃ¨s le traitement de
+    tous les spÃ©cificateurs de format. Une valeur entourÃ©e de guillemets
+    est considÃ©rÃ©e comme diffÃ©rente de la mÃªme valeur mais sans
     guillemets.</dd>
 
     <dt><code>set</code></dt>
-    <dd>L'en-tête est défini, remplaçant tout en-tête préexistant avec
-    le même nom.</dd>
+    <dd>L'en-tÃªte est dÃ©fini, remplaÃ§ant tout en-tÃªte prÃ©existant avec
+    le mÃªme nom.</dd>
 
     <dt><code>setifempty</code></dt>
-    <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.<br />
+    <dd>L'en-tÃªte est dÃ©fini, mais seulement s'il n'existe
+    aucun en-tÃªte avec le mÃªme nom.<br />
     Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
 
     <dt><code>unset</code></dt>
-    <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
-    possèdent le même nom, ils seront tous supprimés. L'argument
-    <var>value</var> ne doit pas apparaître.</dd>
+    <dd>L'en-tÃªte est supprimÃ© s'il existe. Si plusieurs en-tÃªtes
+    possÃ¨dent le mÃªme nom, ils seront tous supprimÃ©s. L'argument
+    <var>value</var> ne doit pas apparaÃ®tre.</dd>
     </dl>
 
-    <p>Cet argument est suivi d'un nom d'en-tête qui peut se terminer
-    par un caractère ':', mais ce n'est pas obligatoire. La casse est
-    ignorée. Avec <code>set</code>, <code>append</code>,
+    <p>Cet argument est suivi d'un nom d'en-tÃªte qui peut se terminer
+    par un caractÃ¨re ':', mais ce n'est pas obligatoire. La casse est
+    ignorÃ©e. Avec <code>set</code>, <code>append</code>,
     <code>merge</code> et <code>add</code>, une <var>valeur</var> est
-    fournie en troisième argument. Si une <var>valeur</var> contient des
-    espaces, elle doit être entourée de guillemets. Avec
-    <code>unset</code>, aucune <var>valeur</var> ne doit apparaître.
-    <var>valeur</var> peut être une chaîne de caractères, une chaîne
-    contenant des spécificateurs de format, ou une combinaison des deux.
-    Les spécificateurs de format supportés sont les mêmes que ceux de la
-    directive <code class="directive"><a href="#header">Header</a></code>, à
-    laquelle vous pouvez vous reporter pour plus de détails. Avec
+    fournie en troisiÃ¨me argument. Si une <var>valeur</var> contient des
+    espaces, elle doit Ãªtre entourÃ©e de guillemets. Avec
+    <code>unset</code>, aucune <var>valeur</var> ne doit apparaÃ®tre.
+    <var>valeur</var> peut Ãªtre une chaÃ®ne de caractÃ¨res, une chaÃ®ne
+    contenant des spÃ©cificateurs de format, ou une combinaison des deux.
+    Les spÃ©cificateurs de format supportÃ©s sont les mÃªmes que ceux de la
+    directive <code class="directive"><a href="#header">Header</a></code>, Ã 
+    laquelle vous pouvez vous reporter pour plus de dÃ©tails. Avec
     <code>edit</code>, les deux arguments <var>valeur</var> et
     <var>remplacement</var> sont obligatoires, et correspondent
-    respectivement à une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
-    rationnelle</a> et à une chaîne de remplacement.</p>
+    respectivement Ã  une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
+    rationnelle</a> et Ã  une chaÃ®ne de remplacement.</p>
 
-    <p>La directive <code class="directive">RequestHeader</code> peut être
-    suivie d'un argument supplémentaire, qui pourra prendre les valeurs
+    <p>La directive <code class="directive">RequestHeader</code> peut Ãªtre
+    suivie d'un argument supplÃ©mentaire, qui pourra prendre les valeurs
     suivantes :</p>
     <dl>
     <dt><code>early</code></dt>
-    <dd>Spécifie <a href="#early">traitement préalable</a>.</dd>
+    <dd>SpÃ©cifie <a href="#early">traitement prÃ©alable</a>.</dd>
     <dt><code>env=[!]<var>variable</var></code></dt>
-    <dd>La directive est appliquée si et seulement si la <a href="../env.html">variable d'environnement</a>
+    <dd>La directive est appliquÃ©e si et seulement si la <a href="../env.html">variable d'environnement</a>
     <code>variable</code> existe. Un <code>!</code> devant
     <code>variable</code> inverse le test, et la directive ne
-    s'appliquera alors que si <code>variable</code> n'est pas définie.</dd>
+    s'appliquera alors que si <code>variable</code> n'est pas dÃ©finie.</dd>
     <dt><code>expr=<var>expression</var></code></dt>
     <dd>La directive s'applique si et seulement si <var>expression</var>
-    est évaluée à true. Vous trouverez plus de détails à propos de la
-    syntaxe et de l'évaluation des expressions dans la documentation <a href="../expr.html">ap_expr</a>.</dd>
+    est Ã©valuÃ©e Ã  true. Vous trouverez plus de dÃ©tails Ã  propos de la
+    syntaxe et de l'Ã©valuation des expressions dans la documentation <a href="../expr.html">ap_expr</a>.</dd>
     </dl>
 
-    <p>Excepté le cas du mode <a href="#early">précoce</a>, la directive
-    <code class="directive">RequestHeader</code> est traitée juste avant la
-    prise en compte de la requête par son gestionnaire, au cours de la
-    phase de vérification. Ceci permet la modification des en-têtes
-    générés par le navigateur, ou par les filtres en entrée
+    <p>ExceptÃ© le cas du mode <a href="#early">prÃ©coce</a>, la directive
+    <code class="directive">RequestHeader</code> est traitÃ©e juste avant la
+    prise en compte de la requÃªte par son gestionnaire, au cours de la
+    phase de vÃ©rification. Ceci permet la modification des en-tÃªtes
+    gÃ©nÃ©rÃ©s par le navigateur, ou par les filtres en entrÃ©e
     d'Apache.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" title="FranÃ§ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
@@ -637,7 +637,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_headers.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />AutorisÃ© sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
