@@ -21,7 +21,7 @@
 
 <language id="fr">
     <name>French</name>
-    <charset>UTF-8</charset>
+    <charset>ISO-8859-1</charset>
     <source-ext>.xml.fr</source-ext>
     <target-ext>.html.fr</target-ext>
 
