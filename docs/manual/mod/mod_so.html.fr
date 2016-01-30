@@ -109,7 +109,7 @@ Windows</a></h2>
     <p>La seconde méthode consiste à compiler le module en tant que DLL,
     à savoir une bibliothèque partagée qui pourra être chargée dans le
     serveur en cours d'exécution via la directive
-    <code><code class="directive">LoadModule</code></code>. Ces modules DLL
+    <code class="directive">LoadModule</code>. Ces modules DLL
     peuvent être distribués et exécutés sur toute installation d'Apache
     httpd pour Windows, sans avoir à recompiler le serveur.</p>
 
@@ -166,16 +166,17 @@ spécifié</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
 
-    <p>La directive LoadFile permet de lier le fichier objet ou la
-    bibliothèque spécifié au serveur lors du démarrage ou du redémarrage
+    <p>La directive <code class="directive">LoadFile</code> permet de lier le fichier
+    objet ou la bibliothèque spécifié au serveur lors du
+    démarrage ou du redémarrage
     de ce dernier ; ceci permet d'ajouter tout code additionnel
     nécessaire au fonctionnement d'un module.
     <em>nom-fichier</em> est soit un chemin absolu, soit un chemin
     relatif au répertoire défini par la directive <a href="core.html#serverroot">ServerRoot</a>.</p>
 
-    <p>Par exemple:</p>
+    <p>Par exemple :</p>
 
-    <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
+    <pre class="prettyprint lang-config">LoadFile "libexec/libxmlparse.so"</pre>
 
 
 
@@ -191,14 +192,16 @@ actifs</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
-    <p>La directive LoadModule permet de lier le fichier objet ou la
+    <p>La directive <code class="directive">LoadModule</code> permet de lier le fichier objet ou la
     bibliothèque <em>nom-fichier</em> avec le serveur, et d'ajouter la
     structure de module nommée <em>module</em> à la liste des modules
     actifs. <em>module</em> est le nom de la variable externe de type
     <code>module</code> dans le fichier, et est référencé comme <a href="module-dict.html#ModuleIdentifier">Identificateur de
-    module</a> dans la documentation des modules. Exemple :</p>
+    module</a> dans la documentation des modules.</p>
 
-    <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
+    <p>Par exemple :</p>
+
+    <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
 
     <p>charge le module spécifié depuis le sous-répertoire des modules
