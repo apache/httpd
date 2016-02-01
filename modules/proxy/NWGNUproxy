@@ -274,6 +274,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) proxy_run_scheme_handler,$(DL)>> $@
 	@echo $(DL) ap_proxy_acquire_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_backend_broke,$(DL)>> $@
+	@echo $(DL) ap_proxy_buckets_lifetime_transform$(DL)>> $@
 	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
