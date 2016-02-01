@@ -97,8 +97,8 @@ BrowserMatch MSIE !netscape</pre>
   sets environment variables conditional on the
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
-<pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
+<pre class="prettyprint lang-config">BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot</pre>
 
 
     <p>Some additional examples:</p>
@@ -227,7 +227,8 @@ of</p>
     <code><em>value</em></code>. Since version 2.0.51, Apache httpd will
     recognize occurrences of <code>$1</code>..<code>$9</code> within
     <var>value</var> and replace them by parenthesized subexpressions
-    of <var>regex</var>.</p>
+    of <var>regex</var>. <code>$0</code> provides access to the whole
+    string matched by that pattern.</p>
 
 <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" object_is_image=gif
 SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
@@ -236,6 +237,8 @@ SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
 SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
 
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf Request_URI "\.(.*)$" EXTENSION=$1
 
 SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
 
