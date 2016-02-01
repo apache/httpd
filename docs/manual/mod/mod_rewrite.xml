@@ -759,136 +759,152 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         <li>
           You can perform lexicographical string comparisons:
 
-          <ul>
-            <li>'<strong>&lt;CondPattern</strong>' (lexicographically
-            precedes)<br />
+          <dl>
+            <dt><strong>&lt;CondPattern</strong></dt>
+            <dd>Lexicographically precedes<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically precedes
-            <em>CondPattern</em>.</li>
+            <em>CondPattern</em>.</dd>
 
-            <li>'<strong>&gt;CondPattern</strong>' (lexicographically
-            follows)<br />
+            <dt><strong>&gt;CondPattern</strong></dt>
+            <dd>Lexicographically follows<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically follows
-            <em>CondPattern</em>.</li>
+            <em>CondPattern</em>.</dd>
 
-            <li>'<strong>=CondPattern</strong>' (lexicographically
-            equal)<br />
+            <dt><strong>=CondPattern</strong></dt>
+            <dd>Lexicographically equal<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> is lexicographically equal to
             <em>CondPattern</em> (the two strings are exactly
             equal, character for character). If <em>CondPattern</em>
             is <code>""</code> (two quotation marks) this
-            compares <em>TestString</em> to the empty string.</li>
+            compares <em>TestString</em> to the empty string.</dd>
 
-            <li>'<strong>&lt;=CondPattern</strong>' (lexicographically
-            less than or equal to)<br />
+            <dt><strong>&lt;=CondPattern</strong></dt>
+            <dd>Lexicographically less than or equal to<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically precedes
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
-            (the two strings are equal, character for character).</li>
+            (the two strings are equal, character for character).</dd>
 
-            <li>'<strong>&gt;=CondPattern</strong>' (lexicographically
-            greater than or equal to)<br />
+            <dt><strong>&gt;=CondPattern</strong></dt>
+            <dd>Lexicographically greater than or equal to<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically follows
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
-            (the two strings are equal, character for character).</li>
-        </ul></li>
+            (the two strings are equal, character for character).</dd>
+        </dl>
+        </li>
 
         <li>
           You can perform integer comparisons:
-          <ul>
+          <dl>
 
-            <li>'<strong>-eq</strong>' (is numerically
-            <strong>eq</strong>ual to)<br />
+            <dt><strong>-eq</strong></dt>
+            <dd>Is numerically <strong>eq</strong>ual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
-            the two are numerically equal.</li>
+            the two are numerically equal.</dd>
 
-            <li>'<strong>-ge</strong>' (is numerically
-            <strong>g</strong>reater than or <strong>e</strong>qual to)<br />
+            <dt><strong>-ge</strong></dt>
+            <dd>Is numerically <strong>g</strong>reater than or <strong>e</strong>qual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than or equal
-            to the <em>CondPattern</em>.</li>
+            to the <em>CondPattern</em>.</dd>
 
-             <li>'<strong>-gt</strong>' (is numerically
-            <strong>g</strong>reater <strong>t</strong>han)<br />
+            <dt><strong>-gt</strong></dt>
+            <dd>Is numerically <strong>g</strong>reater <strong>t</strong>han<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than
-            the <em>CondPattern</em>.</li>
+            the <em>CondPattern</em>.</dd>
 
-            <li>'<strong>-le</strong>' (is numerically
-            <strong>l</strong>ess than or <strong>e</strong>qual to)<br />
+            <dt><strong>-le</strong></dt>
+            <dd>Is numerically <strong>l</strong>ess than or <strong>e</strong>qual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than or equal
             to the <em>CondPattern</em>. Avoid confusion with the
             <strong>-l</strong> by using the <strong>-L</strong> or
-            <strong>-h</strong> variant.</li>
+            <strong>-h</strong> variant.</dd>
 
-             <li>'<strong>-lt</strong>' (is numerically
-            <strong>l</strong>ess <strong>t</strong>han)<br />
+            <dt><strong>-lt</strong></dt>
+            <dd>Is numerically <strong>l</strong>ess <strong>t</strong>han<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than
             the <em>CondPattern</em>. Avoid confusion with the
             <strong>-l</strong> by using the <strong>-L</strong> or
-            <strong>-h</strong> variant.</li>
+            <strong>-h</strong> variant.</dd>
 
-           </ul>
+           </dl>
         </li>
 
         <li>You can perform various file attribute tests:
-          <ul>
-            <li>'<strong>-d</strong>' (is
-            <strong>d</strong>irectory)<br />
-             Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a directory.</li>
 
-            <li>'<strong>-f</strong>' (is regular
-            <strong>f</strong>ile)<br />
-             Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a regular file.</li>
 
-            <li>'<strong>-F</strong>' (is existing file, via
-            subrequest)<br />
+          <dl>
+
+          <dt><strong>-d</strong></dt>
+          
+          <dd>Is <strong>d</strong>irectory.<br />
+             Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a directory.
+          </dd>
+
+          <dt><strong>-f</strong></dt>
+          
+          <dd>Is regular <strong>f</strong>ile.<br />
+
+             Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a regular file.
+        </dd>
+
+           <dt><strong>-F</strong></dt>
+           
+           <dd>Is existing file, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
             subrequest to do the check, so use it with care -
-            it can impact your server's performance!</li>
+            it can impact your server's performance!
+           </dd>
 
-            <li>'<strong>-H</strong>' (is symbolic link, bash convention)<br />
-            See <strong>-l</strong>.</li>
+            <dt><strong>-H</strong></dt>
+            <dd>Is symbolic link, bash convention.<br />
+            See <strong>-l</strong>.
+            </dd>
 
-            <li>'<strong>-l</strong>' (is symbolic
-            <strong>l</strong>ink)<br />
+            <dt><strong>-l</strong></dt>
+            
+            <dd>Is symbolic <strong>l</strong>ink.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
             use the bash convention of <strong>-L</strong> or
             <strong>-h</strong> if there's a possibility of confusion
             such as when using the <strong>-lt</strong> or
-            <strong>-le</strong> tests.</li>
+            <strong>-le</strong> tests.
+            </dd>
 
-            <li>'<strong>-L</strong>' (is symbolic link, bash convention)<br />
-            See <strong>-l</strong>.</li>
+            <dt><strong>-L</strong></dt>
+            <dd>Is symbolic link, bash convention.<br />
+            See <strong>-l</strong>.</dd>
 
-            <li>'<strong>-s</strong>' (is regular file, with
-            <strong>s</strong>ize)<br />
+            <dt><strong>-s</strong></dt>
+            <dd>Is regular file, with <strong>s</strong>ize.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file with size greater
-            than zero.</li>
+            than zero.</dd>
 
-            <li><p>'<strong>-U</strong>' (is existing URL, via
-            subrequest)<br />
+            <dt><strong>-U</strong></dt>
+            <dd><p>Is existing URL, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid URL,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -898,16 +914,23 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             like access control, authentication, and authorization.  This flag
             <em>does not</em> return information about the status code the
             configured handler (static file, CGI, proxy, etc.) would have
-            returned.</p> </li>
+            returned.</p> </dd>
 
-            <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
-            permissions)<br />
+            <dt><strong>-x</strong></dt>
+            <dd>Has e<strong>x</strong>ecutable permissions.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and has executable permissions.
             These permissions are determined according to
-            the underlying OS.</li>
+            the underlying OS.</dd>
 
-          </ul>
+          </dl>
+
+          For example:
+
+        <highlight language="config">
+        RewriteCond /var/www/%{REQUEST_URI} !-f
+        RewriteRule ^(.+) /other/archive/$1 [R]
+        </highlight>
 
         </li>
 
