@@ -2071,7 +2071,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 else {
                     /* We wait in smaller increments, using a 1 second timeout.
                      * That gives us the chance to check for MPMQ_STOPPING often. */
-                    h2_filter_cin_timeout_set(session->cin, 1);
+                    h2_filter_cin_timeout_set(session->cin, 
+                                              (h2_stream_set_is_empty(session->streams)?
+                                              session->s->keep_alive_timeout :
+                                              session->s->timeout));
                     status = h2_session_read(session, 1, 10);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
