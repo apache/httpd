@@ -100,7 +100,32 @@
 
       <dd>This will only be set if the CGI script is subject to
       authentication.</dd>
+
     </dl>
+    <p>This module also leverages the core functions 
+       <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga0e81f9571a8a73f5da0e89e1f46d34b1">ap_add_common_vars</a> and 
+       <a href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga6b975cd7ff27a338cb8752381a4cc14f">ap_add_cgi_vars</a> 
+       to add environment variables like:</p> 
+       <dl>
+           <dt>DOCUMENT_ROOT</dt>
+
+           <dd>Set with the content of the related <directive module="core">DocumentRoot</directive> directive.</dd>
+
+           <dt>SERVER_NAME</dt>
+
+           <dd>The fully qualified domain name related to the request.</dd>
+
+           <dt>SERVER_ADDR</dt>
+
+           <dd>The IP address of the Virtual Host serving the request.</dd>
+
+           <dt>SERVER_ADMIN</dt>
+
+           <dd>Set with the content of the related <directive module="core">ServerAdmin</directive> directive.</dd>
+      </dl>
+    <p>For an exhaustive list it is suggested to write a basic CGI script 
+       that dumps all the environment variables passed by Apache in a convenient format.
+    </p>   
 </section>
 
 <section id="cgi-debug"><title>CGI Debugging</title>
