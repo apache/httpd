@@ -48,7 +48,7 @@ Windows</td></tr></table>
 
     <p>On Unix, the loaded code typically comes from shared object
     files (usually with <code>.so</code> extension), on Windows
-    this may either the <code>.so</code> or <code>.dll</code>
+    this may either be the <code>.so</code> or <code>.dll</code>
     extension.</p>
 
     <div class="warning"><h3>Warning</h3>
@@ -100,7 +100,7 @@ Windows</td></tr></table>
 
     <p>The second way is to compile the module as a DLL, a shared
     library that can be loaded into the server at runtime, using
-    the <code><code class="directive">LoadModule</code></code>
+    the <code class="directive">LoadModule</code>
     directive. These module DLLs can be distributed and run on any
     Apache httpd for Windows installation, without recompilation of the
     server.</p>
@@ -153,7 +153,7 @@ Windows</td></tr></table>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
 
-    <p>The LoadFile directive links in the named object files or
+    <p>The <code class="directive">LoadFile</code> directive links in the named object files or
     libraries when the server is started or restarted; this is used
     to load additional code which may be required for some module
     to work. <em>Filename</em> is either an absolute path or
@@ -176,12 +176,14 @@ of active modules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_so</td></tr>
 </table>
-    <p>The LoadModule directive links in the object file or library
+    <p>The <code class="directive">LoadModule</code> directive links in the object file or library
     <em>filename</em> and adds the module structure named
     <em>module</em> to the list of active modules. <em>Module</em>
     is the name of the external variable of type
     <code>module</code> in the file, and is listed as the <a href="module-dict.html#ModuleIdentifier">Module Identifier</a>
-    in the module documentation. Example:</p>
+    in the module documentation.</p>
+
+    <p>For example:</p>
 
     <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
