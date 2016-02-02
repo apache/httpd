@@ -310,7 +310,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR_FLAG       'E'
 #define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
 #define PROXY_WORKER_FREE_FLAG           'F'
-#define PROXY_WORKER_HC_FAIL_FLAG        '#'
+#define PROXY_WORKER_HC_FAIL_FLAG        'C'
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR | \
@@ -329,6 +329,8 @@ PROXY_WORKER_HC_FAIL )
 #define PROXY_WORKER_IS_GENERIC(f)   ( (f)->s->status &  PROXY_WORKER_GENERIC )
 
 #define PROXY_WORKER_IS_HCFAILED(f)   ( (f)->s->status &  PROXY_WORKER_HC_FAIL )
+
+#define PROXY_WORKER_IS(f, b)   ( (f)->s->status & (b) )
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY    60
