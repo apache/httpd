@@ -132,7 +132,7 @@ URLs on the fly</td></tr>
                <code class="directive">RewriteRule</code>, suffixed by the relative 
                substitution is also valid as a URL path on the server 
                (this is rare).</li>
-          <li> In Apache HTTP Server 2.4.13 and later, this directive may be 
+          <li> In Apache HTTP Server 2.4.11 and later, this directive may be
                 omitted when the request is mapped via 
                 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
                 or <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</li>
@@ -147,7 +147,7 @@ URLs on the fly</td></tr>
 AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 &lt;Directory "/opt/myapp-1.2.3"&gt;
     RewriteEngine On
-    RewriteBase /myapp/
+    RewriteBase "/myapp/"
     RewriteRule "^index\.html$"  "welcome.html"
 &lt;/Directory&gt;</pre>
 
@@ -489,136 +489,152 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         <li>
           You can perform lexicographical string comparisons:
 
-          <ul>
-            <li>'<strong>&lt;CondPattern</strong>' (lexicographically
-            precedes)<br />
+          <dl>
+            <dt><strong>&lt;CondPattern</strong></dt>
+            <dd>Lexicographically precedes<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically precedes
-            <em>CondPattern</em>.</li>
+            <em>CondPattern</em>.</dd>
 
-            <li>'<strong>&gt;CondPattern</strong>' (lexicographically
-            follows)<br />
+            <dt><strong>&gt;CondPattern</strong></dt>
+            <dd>Lexicographically follows<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically follows
-            <em>CondPattern</em>.</li>
+            <em>CondPattern</em>.</dd>
 
-            <li>'<strong>=CondPattern</strong>' (lexicographically
-            equal)<br />
+            <dt><strong>=CondPattern</strong></dt>
+            <dd>Lexicographically equal<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> is lexicographically equal to
             <em>CondPattern</em> (the two strings are exactly
             equal, character for character). If <em>CondPattern</em>
             is <code>""</code> (two quotation marks) this
-            compares <em>TestString</em> to the empty string.</li>
+            compares <em>TestString</em> to the empty string.</dd>
 
-            <li>'<strong>&lt;=CondPattern</strong>' (lexicographically
-            less than or equal to)<br />
+            <dt><strong>&lt;=CondPattern</strong></dt>
+            <dd>Lexicographically less than or equal to<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically precedes
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
-            (the two strings are equal, character for character).</li>
+            (the two strings are equal, character for character).</dd>
 
-            <li>'<strong>&gt;=CondPattern</strong>' (lexicographically
-            greater than or equal to)<br />
+            <dt><strong>&gt;=CondPattern</strong></dt>
+            <dd>Lexicographically greater than or equal to<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically follows
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
-            (the two strings are equal, character for character).</li>
-        </ul></li>
+            (the two strings are equal, character for character).</dd>
+        </dl>
+        </li>
 
         <li>
           You can perform integer comparisons:
-          <ul>
+          <dl>
 
-            <li>'<strong>-eq</strong>' (is numerically
-            <strong>eq</strong>ual to)<br />
+            <dt><strong>-eq</strong></dt>
+            <dd>Is numerically <strong>eq</strong>ual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
-            the two are numerically equal.</li>
+            the two are numerically equal.</dd>
 
-            <li>'<strong>-ge</strong>' (is numerically
-            <strong>g</strong>reater than or <strong>e</strong>qual to)<br />
+            <dt><strong>-ge</strong></dt>
+            <dd>Is numerically <strong>g</strong>reater than or <strong>e</strong>qual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than or equal
-            to the <em>CondPattern</em>.</li>
+            to the <em>CondPattern</em>.</dd>
 
-             <li>'<strong>-gt</strong>' (is numerically
-            <strong>g</strong>reater <strong>t</strong>han)<br />
+            <dt><strong>-gt</strong></dt>
+            <dd>Is numerically <strong>g</strong>reater <strong>t</strong>han<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than
-            the <em>CondPattern</em>.</li>
+            the <em>CondPattern</em>.</dd>
 
-            <li>'<strong>-le</strong>' (is numerically
-            <strong>l</strong>ess than or <strong>e</strong>qual to)<br />
+            <dt><strong>-le</strong></dt>
+            <dd>Is numerically <strong>l</strong>ess than or <strong>e</strong>qual to<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than or equal
             to the <em>CondPattern</em>. Avoid confusion with the
             <strong>-l</strong> by using the <strong>-L</strong> or
-            <strong>-h</strong> variant.</li>
+            <strong>-h</strong> variant.</dd>
 
-             <li>'<strong>-lt</strong>' (is numerically
-            <strong>l</strong>ess <strong>t</strong>han)<br />
+            <dt><strong>-lt</strong></dt>
+            <dd>Is numerically <strong>l</strong>ess <strong>t</strong>han<br />
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than
             the <em>CondPattern</em>. Avoid confusion with the
             <strong>-l</strong> by using the <strong>-L</strong> or
-            <strong>-h</strong> variant.</li>
+            <strong>-h</strong> variant.</dd>
 
-           </ul>
+           </dl>
         </li>
 
         <li>You can perform various file attribute tests:
-          <ul>
-            <li>'<strong>-d</strong>' (is
-            <strong>d</strong>irectory)<br />
-             Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a directory.</li>
 
-            <li>'<strong>-f</strong>' (is regular
-            <strong>f</strong>ile)<br />
-             Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a regular file.</li>
 
-            <li>'<strong>-F</strong>' (is existing file, via
-            subrequest)<br />
+          <dl>
+
+          <dt><strong>-d</strong></dt>
+          
+          <dd>Is <strong>d</strong>irectory.<br />
+             Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a directory.
+          </dd>
+
+          <dt><strong>-f</strong></dt>
+          
+          <dd>Is regular <strong>f</strong>ile.<br />
+
+             Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a regular file.
+        </dd>
+
+           <dt><strong>-F</strong></dt>
+
+           <dd>Is existing file, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
             subrequest to do the check, so use it with care -
-            it can impact your server's performance!</li>
+            it can impact your server's performance!
+           </dd>
 
-            <li>'<strong>-H</strong>' (is symbolic link, bash convention)<br />
-            See <strong>-l</strong>.</li>
+            <dt><strong>-H</strong></dt>
+            <dd>Is symbolic link, bash convention.<br />
+            See <strong>-l</strong>.
+            </dd>
 
-            <li>'<strong>-l</strong>' (is symbolic
-            <strong>l</strong>ink)<br />
+            <dt><strong>-l</strong></dt>
+            
+            <dd>Is symbolic <strong>l</strong>ink.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
             use the bash convention of <strong>-L</strong> or
             <strong>-h</strong> if there's a possibility of confusion
             such as when using the <strong>-lt</strong> or
-            <strong>-le</strong> tests.</li>
+            <strong>-le</strong> tests.
+            </dd>
 
-            <li>'<strong>-L</strong>' (is symbolic link, bash convention)<br />
-            See <strong>-l</strong>.</li>
+            <dt><strong>-L</strong></dt>
+            <dd>Is symbolic link, bash convention.<br />
+            See <strong>-l</strong>.</dd>
 
-            <li>'<strong>-s</strong>' (is regular file, with
-            <strong>s</strong>ize)<br />
+            <dt><strong>-s</strong></dt>
+            <dd>Is regular file, with <strong>s</strong>ize.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file with size greater
-            than zero.</li>
+            than zero.</dd>
 
-            <li><p>'<strong>-U</strong>' (is existing URL, via
-            subrequest)<br />
+            <dt><strong>-U</strong></dt>
+            <dd><p>Is existing URL, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid URL,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -628,16 +644,22 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             like access control, authentication, and authorization.  This flag
             <em>does not</em> return information about the status code the 
             configured handler (static file, CGI, proxy, etc.) would have 
-            returned.</p> </li>
+            returned.</p> </dd>
 
-            <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
-            permissions)<br />
+            <dt><strong>-x</strong></dt>
+            <dd>Has e<strong>x</strong>ecutable permissions.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and has executable permissions.
             These permissions are determined according to
-            the underlying OS.</li>
+            the underlying OS.</dd>
 
-          </ul>
+          </dl>
+
+          For example:
+
+        <pre class="prettyprint lang-config">        RewriteCond /var/www/%{REQUEST_URI} !-f
+        RewriteRule ^(.+) /other/archive/$1 [R]</pre>
+
 
         </li>
 
@@ -652,8 +674,8 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             to block unwanted hotlinking.
            </p>
 
-           <pre class="prettyprint lang-config">           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
-           RewriteRule "^/images" "-" [F]</pre>
+           <pre class="prettyprint lang-config">RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+RewriteRule "^/images" "-" [F]</pre>
 
         </li>
 
@@ -760,6 +782,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+    <em>MapTypeOptions</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -796,7 +819,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
       <p>For example, you might define a
       <code class="directive">RewriteMap</code> as:</p>
 
-      <pre class="prettyprint lang-config">RewriteMap "examplemap" "txt:/path/to/file/map.txt"</pre>
+      <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
 
 
       <p>You would then be able to use this map in a
@@ -804,6 +827,11 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 
       <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
 
+
+      <p>The meaning of the <em>MapTypeOptions</em> argument depends on
+      particular <em>MapType</em>. See the
+      <a href="../rewrite/rewritemap.html">Using RewriteMap</a> for
+      more information.</p>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
@@ -850,8 +878,6 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><code>MaxRedirects</code> is no longer available in version 2.1 and
-later</td></tr>
 </table>
 
       <p>The <code class="directive">RewriteOptions</code> directive sets some
@@ -978,14 +1004,12 @@ later</td></tr>
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>In versions 2.4.13 and later, when a relative substitution is made
+      <p>When a relative substitution is made
          in directory (htaccess) context and <code class="directive"><a href="#rewritebase">RewriteBase</a></code> has not been set, this module uses some
          extended URL and filesystem context information to change the 
          relative substitution back into a URL. Modules such as 
          <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
-         supply this extended context info.  This option disables the behavior
-         introduced in 2.4.13 and should only be set if all of the conditions 
-         above are present and a substituion has an unexpected result.  </p>
+         supply this extended context info.  </p>
       </dd>
 
       </dl>
@@ -1204,118 +1228,124 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
 <tr>
         <td>B</td>
-        <td>Escape non-alphanumeric characters <em>before</em> applying
-        the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
+        <td>Escape non-alphanumeric characters in backreferences <em>before</em>
+        applying the transformation. <em><a href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>
 <tr class="odd">
+        <td>backrefnoplus|BNP</td>
+        <td>If backreferences are being escaped, spaces should be escaped to
+        %20 instead of +. Useful when the backreference will be used in the
+        path component rather than the query string.<em><a href="../rewrite/flags.html#flag_bnp">details ...</a></em></td>
+    </tr>
+<tr>
         <td>chain|C</td>
         <td>Rule is chained to the following rule. If the rule fails,
         the rule(s) chained to it will be skipped. <em><a href="../rewrite/flags.html#flag_c">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is:
         CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
-<tr class="odd">
+<tr>
         <td>discardpath|DPI</td>
         <td>Causes the PATH_INFO portion of the rewritten URI to be
         discarded. <em><a href="../rewrite/flags.html#flag_dpi">details
         ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>END</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Also prevents further execution of rewrite rules
         in per-directory and .htaccess context. (Available in 2.3.9 and later)
         <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Causes an environment variable <em>VAR</em> to be set (to the
         value <em>VAL</em> if provided). The form !<em>VAR</em> causes
         the environment variable <em>VAR</em> to be unset.
         <em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>forbidden|F</td>
         <td>Returns a 403 FORBIDDEN response to the client browser.
         <em><a href="../rewrite/flags.html#flag_f">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>gone|G</td>
         <td>Returns a 410 GONE response to the client browser. <em><a href="../rewrite/flags.html#flag_g">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>Handler|H=<em>Content-handler</em></td>
         <td>Causes the resulting URI to be sent to the specified
         <em>Content-handler</em> for processing. <em><a href="../rewrite/flags.html#flag_h">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Especially note caveats for per-directory and
         .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>next|N</td>
         <td>Re-run the rewriting process, starting again with the first
         rule, using the result of the ruleset so far as a starting
         point. <em><a href="../rewrite/flags.html#flag_n">details
         ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>nocase|NC</td>
         <td>Makes the pattern comparison case-insensitive.
         <em><a href="../rewrite/flags.html#flag_nc">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>noescape|NE</td>
         <td>Prevent mod_rewrite from applying hexcode escaping of
         special characters in the result of the rewrite. <em><a href="../rewrite/flags.html#flag_ne">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>nosubreq|NS</td>
         <td>Causes a rule to be skipped if the current request is an
         internal sub-request. <em><a href="../rewrite/flags.html#flag_ns">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>proxy|P</td>
         <td>Force the substitution URL to be internally sent as a proxy
         request. <em><a href="../rewrite/flags.html#flag_p">details
         ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>passthrough|PT</td>
         <td>Forces the resulting URI to be passed back to the URL
         mapping engine for processing of other URI-to-filename
         translators, such as <code>Alias</code> or
         <code>Redirect</code>. <em><a href="../rewrite/flags.html#flag_pt">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>qsappend|QSA</td>
         <td>Appends any query string from the original request URL to 
         any query string created in the rewrite target.<em><a href="../rewrite/flags.html#flag_qsa">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>qsdiscard|QSD</td>
         <td>Discard any query string attached to the incoming URI.
         <em><a href="../rewrite/flags.html#flag_qsd">details
         ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>redirect|R[=<em>code</em>]</td>
         <td>Forces an external redirect, optionally with the specified
         HTTP status code. <em><a href="../rewrite/flags.html#flag_r">details ...</a></em>
         </td>
     </tr>
-<tr class="odd">
+<tr>
         <td>skip|S=<em>num</em></td>
         <td>Tells the rewriting engine to skip the next <em>num</em>
         rules if the current rule matches. <em><a href="../rewrite/flags.html#flag_s">details ...</a></em></td>
     </tr>
-<tr>
+<tr class="odd">
         <td>type|T=<em>MIME-type</em></td>
         <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file
         to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
@@ -1400,7 +1430,7 @@ directive.</p>
       <p><strong>Inside per-directory configuration for
       <code>/somepath</code><br />
        (<code>/physical/path/to/somepath/.htaccess</code>, with
-      <code>RewriteBase /somepath</code>)<br />
+      <code>RewriteBase "/somepath"</code>)<br />
        for request ``<code>GET
       /somepath/localpath/pathinfo</code>'':</strong><br />
      </p>

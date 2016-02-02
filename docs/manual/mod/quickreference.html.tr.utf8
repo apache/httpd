@@ -844,6 +844,7 @@ must succeed for the enclosing directive to not fail.</td></tr>
 </td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+    <em>MapTypeOptions</em>
 </a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
