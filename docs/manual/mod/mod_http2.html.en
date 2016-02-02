@@ -55,26 +55,52 @@
 
 
     </div>
-<div id="quickview"><h3 class="directives">Directives</h3>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2keepalivetimeout">H2KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxsessionstreams">H2MaxSessionStreams</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2maxworkers">H2MaxWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2minworkers">H2MinWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2moderntlsonly">H2ModernTLSOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2sessionextrafiles">H2SessionExtraFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2streamtimeout">H2StreamTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2timeout">H2Timeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlscooldownsecs">H2TLSCoolDownSecs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2tlswarmupsize">H2TLSWarmUpSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2upgrade">H2Upgrade</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2windowsize">H2WindowSize</a></li>
 </ul>
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="envvars" id="envvars">Environment Variables</a></h2>
+        
+        <p>This module can be configured to provide HTTP/2 related information
+            as additional environment variables to the SSI and CGI namespace.
+        </p>
+        
+        <table class="bordered">
+            
+            <tr>
+                <th><a name="table3">Variable Name:</a></th>
+                <th>Value Type:</th>
+                <th>Description:</th>
+            </tr>
+            <tr><td><code>HTTPe</code></td>                         <td>flag</td>      <td>HTTP/2 is being used.</td></tr>
+            <tr><td><code>H2PUSH</code></td>                        <td>flag</td>      <td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+        </table>
+        
+    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
 <table class="directive">
@@ -118,6 +144,34 @@
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2Direct on</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2KeepAliveTimeout" id="H2KeepAliveTimeout">H2KeepAliveTimeout</a> <a name="h2keepalivetimeout" id="h2keepalivetimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout (in seconds) for idle HTTP/2 connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2KeepAliveTimeout seconds</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.19 and later.</td></tr>
+</table>
+            <p>
+                This directive sets the timeout for read/write operations on
+                idle connections where HTTP/2 is negotiated. This can be used server wide or for specific
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+            </p>
+            <p>
+                This directive is similar to the 
+                <code class="directive"><a href="../mod/core.html#keepalivetimeout">&lt;KeepAliveTimeout&gt;</a></code>, but
+                applies only to HTTP/2 connections. A HTTP/2 connection is considered
+                idle when no streams are open, e.g. no requests are ongoing.
+            </p>
+            <p>
+                By default, for non-async MPMs (prefork, worker) the keepalive timeout
+                will be the same as H2Timeout. For async MPMs, the keepalive handling for
+                HTTP/1 connections applies as no special action is taken.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -302,6 +356,41 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a name="h2pushdiarysize" id="h2pushdiarysize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Diary Size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushDiarySize n</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2PushDiarySize 256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.19 and later.</td></tr>
+</table>
+            <p>
+                This directive toggles the maximum number of HTTP/2 server pushes 
+                that are remembered per HTTP/2 connection. This can be used inside the
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+                section to influence the number for all connections to that virtual host. 
+            </p>
+            <p>
+                The push diary records a digest (currently using a 64 bit number) of pushed
+                resources (their URL) to avoid duplicate pushes on the same connection.
+                These value are not persisted, so clients openeing a new connection
+                will experience known pushes again. There is ongoing work to enable
+                a client to disclose a digest of the resources it already has, so
+                the diary maybe initialized by the client on each connection setup.
+            </p>
+            <p>
+                If the maximum size is reached, newer entries replace the oldest
+                ones. A diary entry uses 8 bytes, letting a
+                default diary with 256 entries consume around 2 KB of memory.
+            </p>
+            <p>
+                A size of 0 will effectively disable the push diary.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>H2 Server Push Priority</td></tr>
@@ -447,7 +536,6 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of Extra File Handles</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2SessionExtraFiles <em>n</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2SessionExtraFiles 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
@@ -471,6 +559,11 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             <pre>(h2_connections * extra_files) + (h2_max_worker)</pre>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2SessionExtraFiles 10</pre>
 </div>
+            <p>
+                If nothing is configured, the module tries to make a conservative
+                guess how many files are safe to use. This depends largely on the 
+                MPM chosen.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -492,6 +585,67 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             </p>
             <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">H2StreamMaxMemSize 128000</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2StreamTimeout" id="H2StreamTimeout">H2StreamTimeout</a> <a name="h2streamtimeout" id="h2streamtimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout (in seconds) for idle HTTP/2 connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2StreamTimeout seconds</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2StreamTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.19 and later.</td></tr>
+</table>
+            <p>
+                This directive sets the timeout for read/write operations on
+                HTTP/2 streams, e.g. individual requests. This can be used server wide or for specific
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+            </p>
+            <p>
+                Due to the nature of HTTP/2, which sends multiple requests over a single
+                connection and has priority scheduling, individual streams might not
+                see input for much longer times than HTTP/1.1 requests would. 
+            </p>
+            <p>
+                A value of 0 enforces no timeout, so could wait on chances to receive
+                input or write data indefinitely. This expose a server to
+                risks of thread exhaustion. 
+            </p>
+            <p>
+                Depending on your handling of pushed streams,
+                priorities and general responsiveness, a site might need to increase
+                this value. For example, if you PUSH a large resource <em>before</em>
+                the requested one, the initial stream will not write until the
+                pushed resource is fully sent.
+            </p>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2Timeout" id="H2Timeout">H2Timeout</a> <a name="h2timeout" id="h2timeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout (in seconds) for HTTP/2 connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2Timeout seconds</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2Timeout 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.19 and later.</td></tr>
+</table>
+            <p>
+                This directive sets the timeout for read/write operations on
+                connections where HTTP/2 is negotiated. This can be used server wide or for specific
+                <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>s. 
+            </p>
+            <p>
+                This directive is similar to the 
+                <code class="directive"><a href="../mod/core.html#timeout">&lt;Timeout&gt;</a></code>, but
+                applies only to HTTP/2 connections.
+            </p>
+            <p>
+                A value of 0 enforces no timeout.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -630,7 +784,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size of Stream Window for upstream data.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2WindowSize <em>bytes</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WindowSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>H2WindowSize 65535</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
