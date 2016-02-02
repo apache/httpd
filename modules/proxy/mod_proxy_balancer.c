@@ -1486,10 +1486,10 @@ static int balancer_handler(request_rec *r)
         for (i = 0; i < conf->balancers->nelts; i++) {
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
-            ap_rvputs(r, "<a href=\"", ap_escape_uri(r->pool, r->uri), "?b=",
+            ap_rvputs(r, "<a href='", ap_escape_uri(r->pool, r->uri), "?b=",
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                       "&amp;nonce=", balancer->s->nonce,
-                      "\">", NULL);
+                      "'>", NULL);
             ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
@@ -1539,12 +1539,12 @@ static int balancer_handler(request_rec *r)
             for (n = 0; n < balancer->workers->nelts; n++) {
                 char fbuf[50];
                 worker = *workers;
-                ap_rvputs(r, "<tr>\n<td><a href=\"",
+                ap_rvputs(r, "<tr>\n<td><a href='",
                           ap_escape_uri(r->pool, r->uri), "?b=",
                           balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&amp;w=",
                           ap_escape_uri(r->pool, worker->s->name),
                           "&amp;nonce=", balancer->s->nonce,
-                          "\">", NULL);
+                          "'>", NULL);
                 ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -1583,20 +1583,20 @@ static int balancer_handler(request_rec *r)
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
-            ap_rputs("<form method=\"POST\" enctype=\"application/x-www-form-urlencoded\" action=\"", r);
-            ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
+            ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name='w_wr' id='w_wr' type=text ", r);
-            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->route),
+            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->route),
                       NULL);
-            ap_rputs("\"></td></tr>\n", r);
+            ap_rputs("'></td></tr>\n", r);
             ap_rputs("<tr><td>Route Redirect:</td><td><input name='w_rr' id='w_rr' type=text ", r);
-            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->redirect),
+            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->redirect),
                       NULL);
-            ap_rputs("\"></td></tr>\n", r);
+            ap_rputs("'></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td>", r);
             ap_rputs("<td><table><tr>"
                      "<th>Ignore Errors</th>"
@@ -1619,7 +1619,7 @@ static int balancer_handler(request_rec *r)
             if (hc_select_exprs_f) {
                 proxy_hcmethods_t *method = proxy_hcmethods;
                 ap_rputs("<tr><td colspan='2'>\n<table align='center'><tr><th>Health Check param</th><th>Value</th></tr>\n", r);
-                ap_rputs("<tr><td>Method</td><td><select name='hcmethod'>\n", r);
+                ap_rputs("<tr><td>Method</td><td><select name='w_hm'>\n", r);
                 for (; method->name; method++) {
                     if (method->implemented) {
                         ap_rprintf(r, "<option value='%s' %s >%s</option>\n",
@@ -1629,13 +1629,17 @@ static int balancer_handler(request_rec *r)
                     }
                 }
                 ap_rputs("</select>\n</td></tr>\n", r);
-                ap_rputs("<tr><td>Expr</td><td><select name='hcexpr'>\n", r);
+                ap_rputs("<tr><td>Expr</td><td><select name='w_he'>\n", r);
                 hc_select_exprs_f(r, wsel->s->hcexpr);
                 ap_rputs("</select>\n</td></tr>\n", r);
-                ap_rprintf(r, "<tr><td>Interval (secs)</td><td>%d</td></tr>\n", (int)apr_time_sec(wsel->s->interval));
-                ap_rprintf(r, "<tr><td>Fails trigger</td><td>%d</td></tr>\n", wsel->s->fails);
-                ap_rprintf(r, "<tr><td>Passes trigger</td><td>%d</td></tr>\n", wsel->s->passes);
-                ap_rprintf(r, "<tr><td>HC uri</td><td>%s</td></tr>\n", wsel->s->hcuri);
+                ap_rprintf(r, "<tr><td>Interval (secs)</td><td><input name='w_hi' id='w_hi' type='text'"
+                           "value='%d'></td></tr>\n", (int)apr_time_sec(wsel->s->interval));
+                ap_rprintf(r, "<tr><td>Passes trigger</td><td><input name='w_hp' id='w_hp' type='text'"
+                           "value='%d'></td></tr>\n", wsel->s->passes);
+                ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
+                           "value='%d'></td></tr>\n", wsel->s->fails);
+                ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
+                        "value='%s'</td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
                 ap_rputs("</table>\n</td></tr>\n", r);
             }
             ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
