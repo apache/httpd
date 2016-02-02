@@ -1165,7 +1165,8 @@ static int balancer_handler(request_rec *r)
                 *wsel->s->hcuri = '\0';
         }
         if (hc_valid_expr_f && (val = apr_table_get(params, "w_he"))) {
-            if (strlen(val) && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
+            if (strlen(val) && wsel->s->method != NONE && wsel->s->method != TCP &&
+                    hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
                 strcpy(wsel->s->hcexpr, val);
             else
                 *wsel->s->hcexpr = '\0';
