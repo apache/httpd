@@ -1101,6 +1101,10 @@ static int balancer_handler(request_rec *r)
             else
                 *wsel->s->redirect = '\0';
         }
+        /*
+         * TODO: Look for all 'w_status_#' keys and then loop thru
+         * on that # character, since the character == the flag
+         */
         if ((val = apr_table_get(params, "w_status_I"))) {
             ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, atoi(val), wsel);
         }
@@ -1112,6 +1116,12 @@ static int balancer_handler(request_rec *r)
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
             ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, atoi(val), wsel);
+        }
+        if ((val = apr_table_get(params, "w_status_S"))) {
+            ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, atoi(val), wsel);
+        }
+        if ((val = apr_table_get(params, "w_status_C"))) {
+            ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_ls"))) {
             int ival = atoi(val);

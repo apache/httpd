@@ -83,9 +83,17 @@ typedef struct {
     hcmethod_t method;
     char *name;
     int implemented;
-} hcmethods_t;
+} proxy_hcmethods_t;
 
-extern hcmethods_t hcmethods[];
+typedef struct {
+    unsigned int bit;
+    char flag;
+    const char *name;
+} proxy_wstat_t;
+
+/* These 2 are in mod_proxy.c */
+extern proxy_hcmethods_t proxy_hcmethods[];
+extern proxy_wstat_t proxy_wstat_tbl[];
 
 #define BALANCER_PREFIX "balancer://"
 
@@ -285,7 +293,7 @@ struct proxy_conn_pool {
 /* worker status bits */
 /*
  * NOTE: Keep up-to-date w/ proxy_wstat_tbl[]
- * in proxy_util.c !
+ * in mod_proxy.c !
  */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
