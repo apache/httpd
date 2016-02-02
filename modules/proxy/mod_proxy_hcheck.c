@@ -1022,8 +1022,9 @@ static void hc_show_exprs(request_rec *r)
             continue;
         }
         cond = (hc_condition_t *)elts[i].val;
-        ap_rprintf(r, "<tr><td>%s</td><td>%s</td></tr>\n", elts[i].key,
-                   cond->expr);
+        ap_rprintf(r, "<tr><td>%s</td><td>%s</td></tr>\n",
+                   ap_escape_html(r->pool, elts[i].key),
+                   ap_escape_html(r->pool, cond->expr));
     }
     ap_rputs("</table><hr/>\n", r);
 }
@@ -1044,9 +1045,10 @@ static void hc_select_exprs(request_rec *r, const char *expr)
         if (!elts[i].key) {
             continue;
         }
-        ap_rprintf(r, "<option value='%s' %s >%s</option>\n", elts[i].key,
+        ap_rprintf(r, "<option value='%s' %s >%s</option>\n",
+                   ap_escape_html(r->pool, elts[i].key),
                    (!ap_casecmpstr(elts[i].key, expr)) ? "selected" : "",
-                   elts[i].key);
+                           ap_escape_html(r->pool, elts[i].key));
     }
 }
 
