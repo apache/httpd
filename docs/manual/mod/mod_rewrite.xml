@@ -570,7 +570,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 respectively.</p>
 
                 <p>Those that are special to mod_rewrite include those below.</p>
-        <note>
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -644,7 +643,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   (decoded), unlike most other variables below.</dd>
 
                 </dl>
-</note>
         </li>
       </ul>
 
@@ -1060,6 +1058,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       <directive module="mod_rewrite">RewriteCond</directive> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
       <code>%{QUERY_STRING}</code> variables respectively.</p>
+
+      <p>In any case, remember that regular expressions are substring
+      matches. That is, you don't need the regex to describe the entire
+      string, just the part that you wish to match. Thus, using a regex
+      of <code>.</code> is often sufficient rather than <code>.*</code>,
+      and the regex <code>abc</code> is <strong>not</code> the same as
+      <code>^abc$</code>.</p>
 
 </note>
 
