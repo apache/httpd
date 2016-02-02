@@ -1339,18 +1339,7 @@ static int balancer_handler(request_rec *r)
                 }
                 /* Begin proxy_worker_stat */
                 ap_rputs("          <httpd:status>", r);
-                if (worker->s->status & PROXY_WORKER_DISABLED)
-                    ap_rputs("Disabled", r);
-                else if (worker->s->status & PROXY_WORKER_IN_ERROR)
-                    ap_rputs("Error", r);
-                else if (worker->s->status & PROXY_WORKER_STOPPED)
-                    ap_rputs("Stopped", r);
-                else if (worker->s->status & PROXY_WORKER_HOT_STANDBY)
-                    ap_rputs("Standby", r);
-                else if (PROXY_WORKER_IS_USABLE(worker))
-                    ap_rputs("OK", r);
-                else if (!PROXY_WORKER_IS_INITIALIZED(worker))
-                    ap_rputs("Uninitialized", r);
+                ap_rputs(ap_proxy_parse_wstatus(r->pool, worker), r);
                 ap_rputs("</httpd:status>\n", r);
                 if ((worker->s->error_time > 0) && apr_rfc822_date(date, worker->s->error_time) == APR_SUCCESS) {
                     ap_rvputs(r, "          <httpd:error_time>", date,
@@ -1601,11 +1590,15 @@ static int balancer_handler(request_rec *r)
                      "<th>Ignore Errors</th>"
                      "<th>Draining Mode</th>"
                      "<th>Disabled</th>"
-                     "<th>Hot Standby</th></tr>\n<tr>", r);
-            create_radio("w_status_I", (PROXY_WORKER_IGNORE_ERRORS & wsel->s->status), r);
-            create_radio("w_status_N", (PROXY_WORKER_DRAIN & wsel->s->status), r);
-            create_radio("w_status_D", (PROXY_WORKER_DISABLED & wsel->s->status), r);
-            create_radio("w_status_H", (PROXY_WORKER_HOT_STANDBY & wsel->s->status), r);
+                     "<th>Hot Standby</th>"
+                     "<th>HC Fail</th>"
+                     "<th>Stopped</th></tr>\n<tr>", r);
+            create_radio("w_status_I", (PROXY_WORKER_IS(wsel, PROXY_WORKER_IGNORE_ERRORS)), r);
+            create_radio("w_status_N", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DRAIN)), r);
+            create_radio("w_status_D", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DISABLED)), r);
+            create_radio("w_status_H", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_STANDBY)), r);
+            create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
+            create_radio("w_status_S", (PROXY_WORKER_IS(wsel, PROXY_WORKER_STOPPED)), r);
             ap_rputs("</tr></table>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
