@@ -35,6 +35,7 @@ static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
 
 static APR_OPTIONAL_FN_TYPE(hc_show_exprs) *hc_show_exprs_f = NULL;
 static APR_OPTIONAL_FN_TYPE(hc_select_exprs) *hc_select_exprs_f = NULL;
+static APR_OPTIONAL_FN_TYPE(hc_valid_expr) *hc_valid_expr_f = NULL;
 
 
 /*
@@ -55,6 +56,7 @@ static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     hc_show_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_show_exprs);
     hc_select_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_select_exprs);
+    hc_valid_expr_f = APR_RETRIEVE_OPTIONAL_FN(hc_valid_expr);
     return OK;
 }
 
@@ -1131,6 +1133,44 @@ static int balancer_handler(request_rec *r)
                 wsel->s->lbset = ival;
              }
         }
+        if ((val = apr_table_get(params, "w_hi"))) {
+            int ival = atoi(val);
+            if (ival >= HCHECK_WATHCHDOG_INTERVAL) {
+                wsel->s->interval = apr_time_from_sec(ival);
+             }
+        }
+        if ((val = apr_table_get(params, "w_hp"))) {
+            int ival = atoi(val);
+            if (ival >= 1) {
+                wsel->s->passes = ival;
+             }
+        }
+        if ((val = apr_table_get(params, "w_hf"))) {
+            int ival = atoi(val);
+            if (ival >= 1) {
+                wsel->s->fails = ival;
+             }
+        }
+        if ((val = apr_table_get(params, "w_hm"))) {
+            proxy_hcmethods_t *method = proxy_hcmethods;
+            for (; method->name; method++) {
+                if (!ap_casecmpstr(method->name, val) && method->implemented)
+                    wsel->s->method = method->method;
+            }
+        }
+        if ((val = apr_table_get(params, "w_hu"))) {
+            if (strlen(val) && strlen(val) < sizeof(wsel->s->hcuri))
+                strcpy(wsel->s->hcuri, val);
+            else
+                *wsel->s->hcuri = '\0';
+        }
+        if (hc_valid_expr_f && (val = apr_table_get(params, "w_he"))) {
+            if (strlen(val) && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
+                strcpy(wsel->s->hcexpr, val);
+            else
+                *wsel->s->hcexpr = '\0';
+        }
+
         /* if enabling, we need to reset all lb params */
         if (bsel && !was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
             bsel->s->need_reset = 1;
