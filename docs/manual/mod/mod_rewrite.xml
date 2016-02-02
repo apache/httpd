@@ -928,8 +928,8 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
           For example:
 
         <highlight language="config">
-        RewriteCond /var/www/%{REQUEST_URI} !-f
-        RewriteRule ^(.+) /other/archive/$1 [R]
+RewriteCond /var/www/%{REQUEST_URI} !-f
+RewriteRule ^(.+) /other/archive/$1 [R]
         </highlight>
 
         </li>
