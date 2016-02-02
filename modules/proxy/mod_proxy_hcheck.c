@@ -1047,9 +1047,31 @@ static void hc_select_exprs(request_rec *r, const char *expr)
         }
         ap_rprintf(r, "<option value='%s' %s >%s</option>\n",
                    ap_escape_html(r->pool, elts[i].key),
-                   (!ap_casecmpstr(elts[i].key, expr)) ? "selected" : "",
+                   (!strcmp(elts[i].key, expr)) ? "selected" : "",
                            ap_escape_html(r->pool, elts[i].key));
     }
+}
+
+static int hc_valid_expr(request_rec *r, const char *expr)
+{
+    const apr_table_entry_t *elts;
+    const apr_array_header_t *hdr;
+    int i;
+    sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
+                                                  &proxy_hcheck_module);
+    if (apr_is_empty_table(ctx->conditions))
+        return 0;
+
+    hdr = apr_table_elts(ctx->conditions);
+    elts = (const apr_table_entry_t *) hdr->elts;
+    for (i = 0; i < hdr->nelts; ++i) {
+        if (!elts[i].key) {
+            continue;
+        }
+        if (!strcmp(elts[i].key, expr))
+            return 1;
+    }
+    return 0;
 }
 
 static const char *hc_get_body(request_rec *r)
@@ -1140,6 +1162,7 @@ static void hc_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
     APR_REGISTER_OPTIONAL_FN(hc_select_exprs);
+    APR_REGISTER_OPTIONAL_FN(hc_valid_expr);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
     ap_hook_expr_lookup(hc_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }
