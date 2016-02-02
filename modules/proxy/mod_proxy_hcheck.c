@@ -135,7 +135,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         return apr_psprintf(p, "Unknown ProxyHCTemplate name: %s", val);
     }
     else if (!strcasecmp(key, "hcmethod")) {
-        hcmethods_t *method = hcmethods;
+        proxy_hcmethods_t *method = proxy_hcmethods;
         for (; method->name; method++) {
             if (!ap_casecmpstr(val, method->name)) {
                 if (!method->implemented) {

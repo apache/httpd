@@ -54,25 +54,6 @@ typedef struct {
     const char   *proxy_auth;      /* Proxy authorization */
 } forward_info;
 
-static struct proxy_wstat {
-    unsigned int bit;
-    char flag;
-    const char *name;
-} proxy_wstat_tbl[] = {
-    {PROXY_WORKER_INITIALIZED,   PROXY_WORKER_INITIALIZED_FLAG,   "Init "},
-    {PROXY_WORKER_IGNORE_ERRORS, PROXY_WORKER_IGNORE_ERRORS_FLAG, "Ign "},
-    {PROXY_WORKER_DRAIN,         PROXY_WORKER_DRAIN_FLAG,         "Drn "},
-    {PROXY_WORKER_GENERIC,       PROXY_WORKER_GENERIC_FLAG,       "Gen "},
-    {PROXY_WORKER_IN_SHUTDOWN,   PROXY_WORKER_IN_SHUTDOWN_FLAG,   "Shut "},
-    {PROXY_WORKER_DISABLED,      PROXY_WORKER_DISABLED_FLAG,      "Dis "},
-    {PROXY_WORKER_STOPPED,       PROXY_WORKER_STOPPED_FLAG,       "Stop "},
-    {PROXY_WORKER_IN_ERROR,      PROXY_WORKER_IN_ERROR_FLAG,      "Err "},
-    {PROXY_WORKER_HOT_STANDBY,   PROXY_WORKER_HOT_STANDBY_FLAG,   "Stby "},
-    {PROXY_WORKER_FREE,          PROXY_WORKER_FREE_FLAG,          "Free "},
-    {PROXY_WORKER_HC_FAIL,       PROXY_WORKER_HC_FAIL_FLAG,       "HcFl "},
-    {0x0, '\0', NULL}
-};
-
 /* Global balancer counter */
 int PROXY_DECLARE_DATA proxy_lb_workers = 0;
 static int lb_workers_limit = 0;
@@ -3130,7 +3111,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *
 {
     unsigned int *status = &w->s->status;
     char flag = toupper(c);
-    struct proxy_wstat *pwt = proxy_wstat_tbl;
+    proxy_wstat_t *pwt = proxy_wstat_tbl;
     while (pwt->bit) {
         if (flag == pwt->flag) {
             if (set)
@@ -3148,7 +3129,7 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w)
 {
     char *ret = "";
     unsigned int status = w->s->status;
-    struct proxy_wstat *pwt = proxy_wstat_tbl;
+    proxy_wstat_t *pwt = proxy_wstat_tbl;
     while (pwt->bit) {
         if (status & pwt->bit)
             ret = apr_pstrcat(p, ret, pwt->name, NULL);
@@ -3701,7 +3682,7 @@ PROXY_DECLARE(apr_port_t) ap_proxy_port_of_scheme(const char *scheme)
 
 PROXY_DECLARE (const char *) ap_proxy_show_hcmethod(hcmethod_t method)
 {
-    hcmethods_t *m = hcmethods;
+    proxy_hcmethods_t *m = proxy_hcmethods;
     for (; m->name; m++) {
         if (m->method == method) {
             return m->name;

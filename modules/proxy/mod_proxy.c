@@ -43,7 +43,8 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
  */
 static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
-hcmethods_t hcmethods[] = {
+/* Externals */
+proxy_hcmethods_t proxy_hcmethods[] = {
         {NONE, "NONE", 1},
         {TCP, "TCP", 1},
         {OPTIONS, "OPTIONS", 1},
@@ -52,6 +53,21 @@ hcmethods_t hcmethods[] = {
         {CPING, "CPING", 0},
         {PROVIDER, "PROVIDER", 0},
         {EOT, NULL, 1}
+};
+
+proxy_wstat_t proxy_wstat_tbl[] = {
+    {PROXY_WORKER_INITIALIZED,   PROXY_WORKER_INITIALIZED_FLAG,   "Init "},
+    {PROXY_WORKER_IGNORE_ERRORS, PROXY_WORKER_IGNORE_ERRORS_FLAG, "Ign "},
+    {PROXY_WORKER_DRAIN,         PROXY_WORKER_DRAIN_FLAG,         "Drn "},
+    {PROXY_WORKER_GENERIC,       PROXY_WORKER_GENERIC_FLAG,       "Gen "},
+    {PROXY_WORKER_IN_SHUTDOWN,   PROXY_WORKER_IN_SHUTDOWN_FLAG,   "Shut "},
+    {PROXY_WORKER_DISABLED,      PROXY_WORKER_DISABLED_FLAG,      "Dis "},
+    {PROXY_WORKER_STOPPED,       PROXY_WORKER_STOPPED_FLAG,       "Stop "},
+    {PROXY_WORKER_IN_ERROR,      PROXY_WORKER_IN_ERROR_FLAG,      "Err "},
+    {PROXY_WORKER_HOT_STANDBY,   PROXY_WORKER_HOT_STANDBY_FLAG,   "Stby "},
+    {PROXY_WORKER_FREE,          PROXY_WORKER_FREE_FLAG,          "Free "},
+    {PROXY_WORKER_HC_FAIL,       PROXY_WORKER_HC_FAIL_FLAG,       "HcFl "},
+    {0x0, '\0', NULL}
 };
 
 static const char * const proxy_id = "proxy";
