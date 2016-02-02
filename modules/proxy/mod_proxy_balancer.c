@@ -1529,7 +1529,7 @@ static int balancer_handler(request_rec *r)
                 "<th>Factor</th><th>Set</th><th>Status</th>"
                 "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>", r);
             if (set_worker_hc_param_f) {
-                ap_rputs("<th>Method</th><th>Interval</th><th>Passes</th><th>Fails</th><th>URI</th><th>Expr</th>", r);
+                ap_rputs("<th>HC Method</th><th>HC Interval</th><th>Passes</th><th>Fails</th><th>HC uri</th><th>HC Expr</th>", r);
             }
             ap_rputs("</tr>\n", r);
 
