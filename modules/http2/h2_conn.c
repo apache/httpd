@@ -89,7 +89,6 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     
     status = ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, status, s, "querying MPM for async");
         /* some MPMs do not implemnent this */
         async_mpm = 0;
         status = APR_SUCCESS;

@@ -1548,7 +1548,21 @@ int h2_session_push_enabled(h2_session *session)
 
 static apr_status_t h2_session_send(h2_session *session)
 {
-    int rv = nghttp2_session_send(session->ngh2);
+    apr_interval_time_t saved_timeout;
+    int rv;
+    apr_socket_t *socket;
+    
+    socket = ap_get_conn_socket(session->c);
+    if (socket) {
+        apr_socket_timeout_get(socket, &saved_timeout);
+        apr_socket_timeout_set(socket, session->s->timeout);
+    }
+    
+    rv = nghttp2_session_send(session->ngh2);
+    
+    if (socket) {
+        apr_socket_timeout_set(socket, saved_timeout);
+    }
     if (rv != 0) {
         if (nghttp2_is_fatal(rv)) {
             dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, rv, nghttp2_strerror(rv));
@@ -2071,10 +2085,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 else {
                     /* We wait in smaller increments, using a 1 second timeout.
                      * That gives us the chance to check for MPMQ_STOPPING often. */
-                    h2_filter_cin_timeout_set(session->cin, 
-                                              (h2_stream_set_is_empty(session->streams)?
-                                              session->s->keep_alive_timeout :
-                                              session->s->timeout));
+                    h2_filter_cin_timeout_set(session->cin, apr_time_from_sec(1));
                     status = h2_session_read(session, 1, 10);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
