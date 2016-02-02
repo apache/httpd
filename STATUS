@@ -168,8 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725149
                    http://svn.apache.org/r1725151
                    http://svn.apache.org/r1726233
-     2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr.diff
-                  +  http://svn.apache.org/r1726233
+     2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr-2.diff
      +1: covener, jim
 
   *) Add APLOGNO, first chunk (those that were detected by coccinelle).
