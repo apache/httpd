@@ -1165,13 +1165,15 @@ static int balancer_handler(request_rec *r)
                 *wsel->s->hcuri = '\0';
         }
         if (hc_valid_expr_f && (val = apr_table_get(params, "w_he"))) {
-            if (strlen(val) && wsel->s->method != NONE && wsel->s->method != TCP &&
-                    hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
+            if (strlen(val) && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
                 strcpy(wsel->s->hcexpr, val);
             else
                 *wsel->s->hcexpr = '\0';
         }
-
+        /* If the health check method doesn't support an expr, then null it */
+        if (wsel->s->method == NONE || wsel->s->method == TCP) {
+            *wsel->s->hcexpr = '\0';
+        }
         /* if enabling, we need to reset all lb params */
         if (bsel && !was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
             bsel->s->need_reset = 1;
