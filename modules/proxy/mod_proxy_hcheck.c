@@ -1011,7 +1011,7 @@ static void hc_show_exprs(request_rec *r)
         return;
 
     ap_rputs("\n\n<table>"
-             "<tr><th colspan=\"2\">Health check cond. expressions:</th></tr>\n"
+             "<tr><th colspan='2'>Health check cond. expressions:</th></tr>\n"
              "<tr><th>Expr name</th><th>Expression</th></tr>\n", r);
 
     hdr = apr_table_elts(ctx->conditions);
@@ -1026,6 +1026,28 @@ static void hc_show_exprs(request_rec *r)
                    cond->expr);
     }
     ap_rputs("</table><hr/>\n", r);
+}
+
+static void hc_select_exprs(request_rec *r, const char *expr)
+{
+    const apr_table_entry_t *elts;
+    const apr_array_header_t *hdr;
+    int i;
+    sctx_t *ctx = (sctx_t *) ap_get_module_config(r->server->module_config,
+                                                  &proxy_hcheck_module);
+    if (apr_is_empty_table(ctx->conditions))
+        return;
+
+    hdr = apr_table_elts(ctx->conditions);
+    elts = (const apr_table_entry_t *) hdr->elts;
+    for (i = 0; i < hdr->nelts; ++i) {
+        if (!elts[i].key) {
+            continue;
+        }
+        ap_rprintf(r, "<option value='%s' %s >%s</option>\n", elts[i].key,
+                   (!ap_casecmpstr(elts[i].key, expr)) ? "selected" : "",
+                   elts[i].key);
+    }
 }
 
 static const char *hc_get_body(request_rec *r)
@@ -1115,6 +1137,7 @@ static void hc_register_hooks(apr_pool_t *p)
     static const char *const aszSucc[] = { "mod_watchdog.c", NULL};
     APR_REGISTER_OPTIONAL_FN(set_worker_hc_param);
     APR_REGISTER_OPTIONAL_FN(hc_show_exprs);
+    APR_REGISTER_OPTIONAL_FN(hc_select_exprs);
     ap_hook_post_config(hc_post_config, aszPre, aszSucc, APR_HOOK_LAST);
     ap_hook_expr_lookup(hc_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }

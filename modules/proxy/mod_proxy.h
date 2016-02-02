@@ -562,8 +562,9 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+/* Following 3 from health check */
 APR_DECLARE_OPTIONAL_FN(void, hc_show_exprs, (request_rec *));
-
+APR_DECLARE_OPTIONAL_FN(void, hc_select_exprs, (request_rec *, const char *));
 APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
                         (apr_pool_t *, server_rec *, proxy_worker *,
                          const char *, const char *, void *));

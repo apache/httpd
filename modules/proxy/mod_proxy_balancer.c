@@ -34,6 +34,7 @@ static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
         proxy_worker *worker, server_rec *s) = NULL;
 
 static APR_OPTIONAL_FN_TYPE(hc_show_exprs) *hc_show_exprs_f = NULL;
+static APR_OPTIONAL_FN_TYPE(hc_select_exprs) *hc_select_exprs_f = NULL;
 
 
 /*
@@ -53,6 +54,7 @@ static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
     hc_show_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_show_exprs);
+    hc_select_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_select_exprs);
     return OK;
 }
 
@@ -1601,7 +1603,7 @@ static int balancer_handler(request_rec *r)
                      "<th>Draining Mode</th>"
                      "<th>Disabled</th>"
                      "<th>Hot Standby</th>", r);
-            if (set_worker_hc_param_f) {
+            if (hc_show_exprs_f) {
                 ap_rputs("<th>HC Fail</th>", r);
             }
             ap_rputs("<th>Stopped</th></tr>\n<tr>", r);
@@ -1609,12 +1611,34 @@ static int balancer_handler(request_rec *r)
             create_radio("w_status_N", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DRAIN)), r);
             create_radio("w_status_D", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DISABLED)), r);
             create_radio("w_status_H", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_STANDBY)), r);
-            if (set_worker_hc_param_f) {
+            if (hc_show_exprs_f) {
                 create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
             }
             create_radio("w_status_S", (PROXY_WORKER_IS(wsel, PROXY_WORKER_STOPPED)), r);
-            ap_rputs("</tr></table>\n", r);
-            ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
+            ap_rputs("</tr></table></td></tr>\n", r);
+            if (hc_select_exprs_f) {
+                proxy_hcmethods_t *method = proxy_hcmethods;
+                ap_rputs("<tr><td colspan='2'>\n<table align='center'><tr><th>Health Check param</th><th>Value</th></tr>\n", r);
+                ap_rputs("<tr><td>Method</td><td><select name='hcmethod'>\n", r);
+                for (; method->name; method++) {
+                    if (method->implemented) {
+                        ap_rprintf(r, "<option value='%s' %s >%s</option>\n",
+                                method->name,
+                                (wsel->s->method == method->method) ? "selected" : "",
+                                method->name);
+                    }
+                }
+                ap_rputs("</select>\n</td></tr>\n", r);
+                ap_rputs("<tr><td>Expr</td><td><select name='hcexpr'>\n", r);
+                hc_select_exprs_f(r, wsel->s->hcexpr);
+                ap_rputs("</select>\n</td></tr>\n", r);
+                ap_rprintf(r, "<tr><td>Interval (secs)</td><td>%d</td></tr>\n", (int)apr_time_sec(wsel->s->interval));
+                ap_rprintf(r, "<tr><td>Fails trigger</td><td>%d</td></tr>\n", wsel->s->fails);
+                ap_rprintf(r, "<tr><td>Passes trigger</td><td>%d</td></tr>\n", wsel->s->passes);
+                ap_rprintf(r, "<tr><td>HC uri</td><td>%s</td></tr>\n", wsel->s->hcuri);
+                ap_rputs("</table>\n</td></tr>\n", r);
+            }
+            ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
             ap_rvputs(r, "value='", ap_escape_uri(r->pool, wsel->s->name), "'>\n", NULL);
             ap_rvputs(r, "<input type=hidden name='b' id='b' ", NULL);
