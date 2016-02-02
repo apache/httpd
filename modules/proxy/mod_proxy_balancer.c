@@ -1600,14 +1600,18 @@ static int balancer_handler(request_rec *r)
                      "<th>Ignore Errors</th>"
                      "<th>Draining Mode</th>"
                      "<th>Disabled</th>"
-                     "<th>Hot Standby</th>"
-                     "<th>HC Fail</th>"
-                     "<th>Stopped</th></tr>\n<tr>", r);
+                     "<th>Hot Standby</th>", r);
+            if (set_worker_hc_param_f) {
+                ap_rputs("<th>HC Fail</th>", r);
+            }
+            ap_rputs("<th>Stopped</th></tr>\n<tr>", r);
             create_radio("w_status_I", (PROXY_WORKER_IS(wsel, PROXY_WORKER_IGNORE_ERRORS)), r);
             create_radio("w_status_N", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DRAIN)), r);
             create_radio("w_status_D", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DISABLED)), r);
             create_radio("w_status_H", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_STANDBY)), r);
-            create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
+            if (set_worker_hc_param_f) {
+                create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
+            }
             create_radio("w_status_S", (PROXY_WORKER_IS(wsel, PROXY_WORKER_STOPPED)), r);
             ap_rputs("</tr></table>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
