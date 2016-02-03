@@ -851,14 +851,14 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
           <dl>
 
           <dt><strong>-d</strong></dt>
-          
+
           <dd>Is <strong>d</strong>irectory.<br />
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a directory.
           </dd>
 
           <dt><strong>-f</strong></dt>
-          
+
           <dd>Is regular <strong>f</strong>ile.<br />
 
              Treats the <em>TestString</em> as a pathname and tests
@@ -866,7 +866,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         </dd>
 
            <dt><strong>-F</strong></dt>
-           
+
            <dd>Is existing file, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
@@ -881,7 +881,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             </dd>
 
             <dt><strong>-l</strong></dt>
-            
+
             <dd>Is symbolic <strong>l</strong>ink.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
@@ -1063,7 +1063,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       matches. That is, you don't need the regex to describe the entire
       string, just the part that you wish to match. Thus, using a regex
       of <code>.</code> is often sufficient rather than <code>.*</code>,
-      and the regex <code>abc</code> is <strong>not</code> the same as
+      and the regex <code>abc</code> is <strong>not</strong> the same as
       <code>^abc$</code>.</p>
 
 </note>
