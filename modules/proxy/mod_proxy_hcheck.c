@@ -905,14 +905,16 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                     workers = (proxy_worker **)balancer->workers->elts;
                     for (n = 0; n < balancer->workers->nelts; n++) {
                         worker = *workers;
-                        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
-                                     "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
-                                     worker->s->name, worker->s->method, worker);
-                        if ((worker->s->method != NONE) && (now > worker->s->updated + worker->s->interval)) {
+                        if (!PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED) &&
+                           (worker->s->method != NONE) &&
+                           (now > worker->s->updated + worker->s->interval)) {
                             baton_t *baton;
                             /* This pool must last the lifetime of the (possible) thread */
                             apr_pool_t *ptemp;
                             apr_pool_create(&ptemp, ctx->p);
+                            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
+                                         "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
+                                         worker->s->name, worker->s->method, worker);
 
                             if ((rv = hc_init_worker(ctx, worker)) != APR_SUCCESS) {
                                 return rv;
