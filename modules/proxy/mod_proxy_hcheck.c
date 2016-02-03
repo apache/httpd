@@ -824,6 +824,7 @@ static void *hc_check(apr_thread_t *thread, void *b)
             worker->s->pcount += 1;
             if (worker->s->pcount >= worker->s->passes) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 0, worker);
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 0, worker);
                 worker->s->pcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03302)
                              "%sHealth check ENABLING %s", (thread ? "Threaded " : ""),
