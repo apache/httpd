@@ -1946,6 +1946,12 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
         server_rec *s)
 {
     if (worker->s->status & PROXY_WORKER_IN_ERROR) {
+        if (PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(3305)
+                         "%s: Won't retry worker (%s): stopped",
+                         proxy_function, worker->s->hostname);
+            return DECLINED;
+        }
         if ((worker->s->status & PROXY_WORKER_IGNORE_ERRORS)
             || apr_time_now() > worker->s->error_time + worker->s->retry) {
             ++worker->s->retries;
