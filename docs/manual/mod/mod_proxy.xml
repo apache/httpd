@@ -835,7 +835,7 @@ expressions</description>
 
    <note type="warning"><title>Warning</title>
       <p>Keep in mind that the same parameter key can have a different meaning
-      depending whether it is applied to a balancer or a worker, as shown by 
+      depending whether it is applied to a balancer or a worker, as shown by
       the two examples above regarding timeout.</p>
    </note>
 
@@ -1083,8 +1083,8 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>This parameter should be used when you have a firewall between your
     Apache httpd and the backend server, which tends to drop inactive connections.
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
-    messages on inactive connections and thus prevent the firewall 
-    from dropping the connection. 
+    messages on inactive connections and thus prevent the firewall
+    from dropping the connection.
     To enable keepalive, set this property value to <code>On</code>. </p>
     <p>The frequency of initial and subsequent TCP keepalive probes
     depends on global OS settings, and may be as high as 2 hours. To be useful,
@@ -1152,16 +1152,18 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>Single letter value defining the initial status of
         this worker.
         <table>
-         <tr><td>D: Worker is disabled and will not accept any requests.</td></tr>
-         <tr><td>S: Worker is administratively stopped.</td></tr>
-         <tr><td>I: Worker is in ignore-errors mode and will always be considered available.</td></tr>
-         <tr><td>H: Worker is in hot-standby mode and will only be used if no other
+         <tr><td>D</td><td>Worker is disabled and will not accept any requests; will be
+                    automatically retried.</td></tr>
+         <tr><td>S</td><td>Worker is administratively stopped; will not accept requests
+                    and will not be automatically retried</td></tr>
+         <tr><td>I</td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
+         <tr><td>H</td><td>Worker is in hot-standby mode and will only be used if no other
                     viable workers are available.</td></tr>
-         <tr><td>E: Worker is in an error state.</td></tr>
-         <tr><td>N: Worker is in drain mode and will only accept existing sticky sessions
+         <tr><td>E</td><td>Worker is in an error state.</td></tr>
+         <tr><td>N</td><td>Worker is in drain mode and will only accept existing sticky sessions
                     destined for itself and ignore all other requests.</td></tr>
-        </table>Status
-        can be set (which is the default) by prepending with '+' or
+        </table>
+        Status can be set (which is the default) by prepending with '+' or
         cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
         clears the in-error flag.
@@ -1319,7 +1321,7 @@ ProxyPass "/" "balancer://hotcluster/"
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
-    backend.  Note that this keyword may affect the security of your backend, 
+    backend.  Note that this keyword may affect the security of your backend,
     as it removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
@@ -1470,7 +1472,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <p>will not only cause a local request for the
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>
-    (the functionality which <code>ProxyPass</code> provides here). 
+    (the functionality which <code>ProxyPass</code> provides here).
     It also takes care of redirects which the server <code>backend.example.com</code> sends
     when redirecting <code>http://backend.example.com/bar</code> to
     <code>http://backend.example.com/quux</code> . Apache httpd adjusts this to
