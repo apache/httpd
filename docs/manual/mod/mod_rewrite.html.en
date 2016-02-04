@@ -300,7 +300,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 respectively.</p>
 
                 <p>Those that are special to mod_rewrite include those below.</p>
-        <div class="note">
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -374,7 +373,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   (decoded), unlike most other variables below.</dd>
 
                 </dl>
-</div>
         </li>
       </ul>
 
@@ -583,14 +581,14 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
           <dl>
 
           <dt><strong>-d</strong></dt>
-          
+
           <dd>Is <strong>d</strong>irectory.<br />
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a directory.
           </dd>
 
           <dt><strong>-f</strong></dt>
-          
+
           <dd>Is regular <strong>f</strong>ile.<br />
 
              Treats the <em>TestString</em> as a pathname and tests
@@ -598,7 +596,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         </dd>
 
            <dt><strong>-F</strong></dt>
-           
+
            <dd>Is existing file, via subrequest.<br />
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
@@ -613,7 +611,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             </dd>
 
             <dt><strong>-l</strong></dt>
-            
+
             <dd>Is symbolic <strong>l</strong>ink.<br />
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
@@ -657,8 +655,8 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 
           For example:
 
-        <pre class="prettyprint lang-config">        RewriteCond /var/www/%{REQUEST_URI} !-f
-        RewriteRule ^(.+) /other/archive/$1 [R]</pre>
+        <pre class="prettyprint lang-config">RewriteCond /var/www/%{REQUEST_URI} !-f
+RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 
 
         </li>
@@ -1055,6 +1053,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
       <code>%{QUERY_STRING}</code> variables respectively.</p>
+
+      <p>In any case, remember that regular expressions are substring
+      matches. That is, you don't need the regex to describe the entire
+      string, just the part that you wish to match. Thus, using a regex
+      of <code>.</code> is often sufficient rather than <code>.*</code>,
+      and the regex <code>abc</code> is <strong>not</strong> the same as
+      <code>^abc$</code>.</p>
 
 </div>
 
