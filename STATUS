@@ -185,12 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://people.apache.org/~rjung/patches/aplogno-backport-r1725468.patch
      +1: rjung, jim
      icing: needs http://svn.apache.org/r1725468
-     rjung: You are right, I added r1725468 and restart the vote.
-            @Jim: Only r1725468 is new: removing the added APLOGNO from
-                  mod_log_debug where we actually log the configured custom
-                  log messages. Admins can provide their own LOGNO as part
-                  of the ocnfigured log message. It doesn't make sense to
-                  use a fixed AH one.
+     rjung: You are right, I added r1725468 and restarted the vote.
 
   *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
               for later retries.
