@@ -239,6 +239,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works modulo CHANGES
      +1: rpluem,
 
+  *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
+     Trunk version of patch:
+     Backport version for 2.4.x of patch:
+     +1: 
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
