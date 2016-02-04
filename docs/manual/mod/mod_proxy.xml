@@ -1151,7 +1151,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td>-</td>
         <td>Single letter value defining the initial status of
         this worker.
-        <table class="bordered">
+        <table border="1">
          <tr><td><code>D</code></td><td>Worker is disabled and will not accept any requests; will be
                     automatically retried.</td></tr>
          <tr><td><code>S</code></td><td>Worker is administratively stopped; will not accept requests
