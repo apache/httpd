@@ -1175,6 +1175,39 @@ PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
                                                       apr_bucket_brigade *from,
                                                       apr_bucket_brigade *to);
 
+/*
+ * Sends all data that can be read non blocking from the input filter chain of
+ * c_i and send it down the output filter chain of c_o. For reading it uses
+ * the bucket brigade bb_i which should be created from the bucket allocator
+ * associated with c_i. For sending through the output filter chain it uses
+ * the bucket brigade bb_o which should be created from the bucket allocator
+ * associated with c_o. In order to get the buckets from bb_i to bb_o
+ * ap_proxy_buckets_lifetime_transform is used.
+ *
+ * @param r     request_rec of the actual request. Used for logging purposes
+ * @param c_i   inbound connection conn_rec
+ * @param c_o   outbound connection conn_rec
+ * @param bb_i  bucket brigade for pulling data from the inbound connection
+ * @param bb_o  bucket brigade for sending data through the outbound connection
+ * @param name  string for logging from where data was pulled
+ * @param sent  if not NULL will be set to 1 if data was sent through c_o
+ * @param bsize maximum amount of data pulled in one iteration from c_i
+ * @param after if set flush data on c_o only once after the loop
+ * @return      apr_status_t of the operation. Could be any error returned from
+ *              either the input filter chain of c_i or the output filter chain
+ *              of c_o. APR_EPIPE if the outgoing connection was aborted.
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
+                                                       request_rec *r,
+                                                       conn_rec *c_i,
+                                                       conn_rec *c_o,
+                                                       apr_bucket_brigade *bb_i,
+                                                       apr_bucket_brigade *bb_o,
+                                                       const char *name,
+                                                       int *sent,
+                                                       apr_off_t bsize,
+                                                       int after);
+
 extern module PROXY_DECLARE_DATA proxy_module;
 
 #endif /*MOD_PROXY_H*/
