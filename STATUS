@@ -190,14 +190,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   of the ocnfigured log message. It doesn't make sense to
                   use a fixed AH one.
 
-  *) ap_expr: Add kept_body() function for expressions against r->kept_body()
-     trunk patch:  http://svn.apache.org/r1725755
-                   http://svn.apache.org/r1725758
-                   http://svn.apache.org/r1725762
-                   http://svn.apache.org/r1725766
-     2.4.x patch:  trunk works, modulo CHANGES
-     +1:
-
   *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
               for later retries.
      trunk patch:  http://svn.apache.org/r1725940
