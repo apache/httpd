@@ -256,13 +256,22 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL)# Exports of mod_proxy$(DL)> $@
 	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
 	@echo $(DL) proxy_module,$(DL)>> $@
+	@echo $(DL) proxy_hcmethods,$(DL)>> $@
 	@echo $(DL) proxy_hook_canon_handler,$(DL)>> $@
+	@echo $(DL) proxy_hook_create_req,$(DL)>> $@
+	@echo $(DL) proxy_hook_detach_backend,$(DL)>> $@
+	@echo $(DL) proxy_hook_fixups,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_canon_handler,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_create_req,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_detach_backend,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_fixups,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_post_request,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_pre_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_get_request_status,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_scheme_handler,$(DL)>> $@
 	@echo $(DL) proxy_hook_post_request,$(DL)>> $@
 	@echo $(DL) proxy_hook_pre_request,$(DL)>> $@
+	@echo $(DL) proxy_hook_request_status,$(DL)>> $@
 	@echo $(DL) proxy_hook_scheme_handler,$(DL)>> $@
 	@echo $(DL) proxy_run_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_run_create_req,$(DL)>> $@
@@ -274,7 +283,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) proxy_run_scheme_handler,$(DL)>> $@
 	@echo $(DL) ap_proxy_acquire_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_backend_broke,$(DL)>> $@
-	@echo $(DL) ap_proxy_buckets_lifetime_transform$(DL)>> $@
+	@echo $(DL) ap_proxy_buckets_lifetime_transform,$(DL)>> $@
 	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
@@ -282,11 +291,14 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_conn_is_https,$(DL)>> $@
 	@echo $(DL) ap_proxy_connect_backend,$(DL)>> $@
 	@echo $(DL) ap_proxy_connect_to_backend,$(DL)>> $@
+	@echo $(DL) ap_proxy_connect_uds,$(DL)>> $@
 	@echo $(DL) ap_proxy_connection_create,$(DL)>> $@
 	@echo $(DL) ap_proxy_connection_reusable,$(DL)>> $@
 	@echo $(DL) ap_proxy_cookie_reverse_map,$(DL)>> $@
 	@echo $(DL) ap_proxy_create_hdrbrgd,$(DL)>> $@
+	@echo $(DL) ap_proxy_de_socketfy,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_balancer,$(DL)>> $@
+	@echo $(DL) ap_proxy_define_match_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_define_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_determine_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_find_balancershm,$(DL)>> $@
@@ -321,6 +333,8 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_strncpy,$(DL)>> $@
 	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
+	@echo $(DL) ap_proxy_transfer_between_connections,$(DL)>> $@
+	@echo $(DL) ap_proxy_update_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_valid_balancer_name,$(DL)>> $@
 	@echo $(DL) ap_proxy_worker_name,$(DL)>> $@
 	@echo $(DL) ap_proxyerror$(DL)>> $@
@@ -331,5 +345,3 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 #
 
 include $(APBUILD)/NWGNUtail.inc
-
-
