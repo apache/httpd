@@ -37,11 +37,6 @@ typedef struct ws_baton_t {
     char *scheme;               /* required to release the proxy connection */
 } ws_baton_t;
 
-static apr_status_t proxy_wstunnel_transfer(request_rec *r,
-                                            conn_rec *c_i, conn_rec *c_o,
-                                            apr_bucket_brigade *bb_i,
-                                            apr_bucket_brigade *bb_o,
-                                            const char *name, int *sent);
 static void proxy_wstunnel_callback(void *b);
 
 static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
@@ -92,9 +87,12 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
                             "sock was readable");
-                    done |= proxy_wstunnel_transfer(r, backconn, c, bb_i, bb_o,
-                                                    "sock", NULL)
-                                                    != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, backconn,
+                                                                  c, bb_i, bb_o,
+                                                                  "sock", NULL,
+                                                                  AP_IOBUFSIZE,
+                                                                  0)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
@@ -113,9 +111,13 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_as
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
                             "client was readable");
-                    done |= proxy_wstunnel_transfer(r, c, backconn, bb_o, bb_i,
-                                                    "client", &replied)
-                                                    != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, c, backconn,
+                                                                  bb_o, bb_i,
+                                                                  "client",
+                                                                  &replied,
+                                                                  AP_IOBUFSIZE,
+                                                                  0)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
@@ -270,65 +272,6 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
                               "/", path, (search) ? "?" : "",
                               (search) ? search : "", NULL);
     return OK;
-}
-
-
-static apr_status_t proxy_wstunnel_transfer(request_rec *r,
-                                            conn_rec *c_i, conn_rec *c_o,
-                                            apr_bucket_brigade *bb_i,
-                                            apr_bucket_brigade *bb_o,
-                                            const char *name, int *sent)
-{
-    apr_status_t rv;
-#ifdef DEBUGGING
-    apr_off_t len;
-#endif
-
-    do {
-        apr_brigade_cleanup(bb_i);
-        rv = ap_get_brigade(c_i->input_filters, bb_i, AP_MODE_READBYTES,
-                            APR_NONBLOCK_READ, AP_IOBUFSIZE);
-        if (rv == APR_SUCCESS) {
-            if (c_o->aborted) {
-                return APR_EPIPE;
-            }
-            if (APR_BRIGADE_EMPTY(bb_i)) {
-                break;
-            }
-#ifdef DEBUGGING
-            len = -1;
-            apr_brigade_length(bb_i, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02440)
-                          "read %" APR_OFF_T_FMT
-                          " bytes from %s", len, name);
-#endif
-            if (sent) {
-                *sent = 1;
-            }
-            ap_proxy_buckets_lifetime_transform(r, bb_i, bb_o);
-            rv = ap_pass_brigade(c_o->output_filters, bb_o);
-            if (rv == APR_SUCCESS) {
-                ap_fflush(c_o->output_filters, bb_o);
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02441)
-                              "error on %s - ap_pass_brigade",
-                              name);
-            }
-        } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02442)
-                          "error on %s - ap_get_brigade",
-                          name);
-        }
-    } while (rv == APR_SUCCESS);
-
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r, "wstunnel_transfer complete");
-
-    if (APR_STATUS_IS_EAGAIN(rv)) {
-        rv = APR_SUCCESS;
-    }
-
-    return rv;
 }
 
 /*
