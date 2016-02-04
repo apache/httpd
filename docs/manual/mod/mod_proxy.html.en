@@ -1279,16 +1279,16 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
         <td>-</td>
         <td>Single letter value defining the initial status of
         this worker.
-        <table>
-         <tr><td>D</td><td>Worker is disabled and will not accept any requests; will be
+        <table class="bordered">
+         <tr><td><code>D</code></td><td>Worker is disabled and will not accept any requests; will be
                     automatically retried.</td></tr>
-         <tr><td>S</td><td>Worker is administratively stopped; will not accept requests
+         <tr><td><code>S</code></td><td>Worker is administratively stopped; will not accept requests
                     and will not be automatically retried</td></tr>
-         <tr><td>I</td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
-         <tr><td>H</td><td>Worker is in hot-standby mode and will only be used if no other
+         <tr><td><code>I</code></td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
+         <tr><td><code>H</code></td><td>Worker is in hot-standby mode and will only be used if no other
                     viable workers are available.</td></tr>
-         <tr><td>E</td><td>Worker is in an error state.</td></tr>
-         <tr><td>N</td><td>Worker is in drain mode and will only accept existing sticky sessions
+         <tr><td><code>E</code></td><td>Worker is in an error state.</td></tr>
+         <tr><td><code>N</code></td><td>Worker is in drain mode and will only accept existing sticky sessions
                     destined for itself and ignore all other requests.</td></tr>
         </table>
         Status can be set (which is the default) by prepending with '+' or
