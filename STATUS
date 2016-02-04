@@ -113,11 +113,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) mod_lbmethod_heartbeat: No need to search twice for the same value
-     trunk patch:  http://svn.apache.org/r1725445
-     2.4.x patch:  trunk works
-     +1: jailletc36, icing, jim
-
   *) mod_ssl: Fix some duplicate definitions
      trunk patch:  http://svn.apache.org/r1726888
      2.4.x patch:  trunk works
