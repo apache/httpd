@@ -112,6 +112,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+
+  *) mod_lbmethod_heartbeat: No need to search twice for the same value
+     trunk patch:  http://svn.apache.org/r1725445
+     2.4.x patch:  trunk works
+     +1: jailletc36, icing, jim
+
+  *) mod_ssl: Fix some duplicate definitions
+     trunk patch:  http://svn.apache.org/r1726888
+     2.4.x patch:  trunk works
+     +1: mrumph, icing, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -195,11 +206,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725940
      +1: icing, jim
 
-  *) mod_lbmethod_heartbeat: No need to search twice for the same value
-     trunk patch:  http://svn.apache.org/r1725445
-     2.4.x patch:  trunk works
-     +1: jailletc36, icing, jim
-
   *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
      remain unset for second or later caller. Fix this by caching the values for 
      MOD_LDFLAGS and MOD_CFLAGS created during the first run and set them in the 
@@ -207,11 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725325
      2.4.x patch:  trunk works
      +1: icing, jim
-
-  *) mod_ssl: Fix some duplicate definitions
-     trunk patch:  http://svn.apache.org/r1726888
-     2.4.x patch:  trunk works
-     +1: mrumph, icing, jim
 
   *) core: introducing new hook "pre_close_connection" to give protocols other
      than http/1.1 a chance to send one last frame before close.
