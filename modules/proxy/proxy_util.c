@@ -2647,12 +2647,12 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
 }
 
 
-#if APR_HAVE_SYS_UN_H
 /* TODO: In APR 2.x: Extend apr_sockaddr_t to possibly be a path !!! */
 PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
                                                  const char *uds_path,
                                                  apr_pool_t *p)
 {
+#if APR_HAVE_SYS_UN_H
     apr_status_t rv;
     apr_os_sock_t rawsock;
     apr_interval_time_t t;
@@ -2694,8 +2694,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
     }
 
     return APR_SUCCESS;
-}
+#else
+    return APR_ENOTIMPL;
 #endif
+}
 
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
