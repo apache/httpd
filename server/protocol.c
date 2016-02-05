@@ -614,7 +614,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                 r->status = HTTP_BAD_REQUEST;
             }
             r->proto_num = HTTP_VERSION(1,0);
-            r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+            r->protocol  = "HTTP/1.0";
             return 0;
         }
     } while ((len <= 0) && (--num_blank_lines >= 0));
@@ -634,7 +634,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (!*r->method || !*uri) {
         r->status    = HTTP_BAD_REQUEST;
         r->proto_num = HTTP_VERSION(1,0);
-        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        r->protocol  = "HTTP/1.0";
         return 0;
     }
 
@@ -648,7 +648,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     ap_parse_uri(r, uri);
     if (r->status != HTTP_OK) {
         r->proto_num = HTTP_VERSION(1,0);
-        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        r->protocol  = "HTTP/1.0";
         return 0;
     }
 
@@ -687,7 +687,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                           "Invalid protocol '%s'", r->protocol);
             if (enforce_strict) {
                 r->proto_num = HTTP_VERSION(1,0);
-                r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+                r->protocol  = "HTTP/1.0";
                 r->connection->keepalive = AP_CONN_CLOSE;
                 r->status = HTTP_BAD_REQUEST;
                 return 0;
