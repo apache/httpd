@@ -204,7 +204,7 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
-	@$(OBJDIR)/mod_proxy.imp \
+	@mod_proxy.imp \
 	$(EOLIST)
 
 #

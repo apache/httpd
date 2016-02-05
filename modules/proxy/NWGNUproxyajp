@@ -210,7 +210,7 @@ FILE_nlm_copyright =
 FILES_nlm_Ximports = \
 	@aprlib.imp \
 	@httpd.imp \
-	@$(OBJDIR)/mod_proxy.imp \
+	@mod_proxy.imp \
 	@libc.imp \
 	$(EOLIST)
  
