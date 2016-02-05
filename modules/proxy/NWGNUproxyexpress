@@ -203,7 +203,7 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
-	@$(OBJDIR)/mod_proxy.imp \
+	@mod_proxy.imp \
 	$(EOLIST)
 
 # Don't link with Winsock if standard sockets are being used
