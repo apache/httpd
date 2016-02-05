@@ -91,10 +91,6 @@ typedef struct {
     const char *name;
 } proxy_wstat_t;
 
-/* These 2 are in mod_proxy.c */
-PROXY_DECLARE_DATA extern proxy_hcmethods_t proxy_hcmethods[];
-PROXY_DECLARE_DATA extern proxy_wstat_t proxy_wstat_tbl[];
-
 #define BALANCER_PREFIX "balancer://"
 
 #if APR_CHARSET_EBCDIC
@@ -561,6 +557,11 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
+
+
+/* These 2 are in mod_proxy.c */
+PROXY_DECLARE_DATA extern proxy_hcmethods_t proxy_hcmethods[];
+PROXY_DECLARE_DATA extern proxy_wstat_t proxy_wstat_tbl[];
 
 /* Following 4 from health check */
 APR_DECLARE_OPTIONAL_FN(void, hc_show_exprs, (request_rec *));
