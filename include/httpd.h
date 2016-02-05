@@ -826,7 +826,7 @@ struct request_rec {
     /** Protocol version number of protocol; 1.1 = 1001 */
     int proto_num;
     /** Protocol string, as given to us, or HTTP/0.9 */
-    char *protocol;
+    const char *protocol;
     /** Host, as set by full URI or Host: header.
      *  For literal IPv6 addresses, this does NOT include the surrounding [ ]
      */
