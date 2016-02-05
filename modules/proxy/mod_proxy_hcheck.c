@@ -393,7 +393,7 @@ static request_rec *create_request_rec(apr_pool_t *p1, conn_rec *conn, const cha
         r->header_only = 0;
     }
 
-    r->protocol = (char*)"HTTP/1.0";
+    r->protocol = "HTTP/1.0";
     r->proto_num = HTTP_VERSION(1, 0);
 
     r->hostname = NULL;
