@@ -60,6 +60,17 @@ function add_symbol(sym_name) {
     next
 }
 
+/^[ \t]*PROXY_HOOK_NON_LINKED[ \t]*AP[RU]?_DECLARE_EXTERNAL_HOOK[^(]*[(][^)]*/ {
+    split($0, args, ",")
+    prefix = args[1]
+    sub("^.*[(]", "", prefix)
+    symbol = args[4]
+    sub("^[ \t]+", "", symbol)
+    sub("[ \t]+$", "", symbol)
+    add_symbol(prefix "_run_" symbol)
+    next
+}
+
 /^[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(][^)]*[)]/ {
     sub("[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(]", "", $0)
     sub("[)].*$", "", $0)
