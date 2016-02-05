@@ -558,6 +558,11 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+/* A non-functional marker tag to inform build/make_nw_export.awk
+ * that this hook is not linked in the module.
+ */
+#define PROXY_HOOK_NON_LINKED
+
 
 /* These 2 are in mod_proxy.c */
 PROXY_DECLARE_DATA extern proxy_hcmethods_t proxy_hcmethods[];
@@ -572,11 +577,16 @@ APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
                          const char *, const char *, void *));
 
 
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
-                          proxy_worker *worker, proxy_server_conf *conf, char *url,
-                          const char *proxyhost, apr_port_t proxyport))
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
-                          char *url))
+PROXY_HOOK_NON_LINKED APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler,
+                                               (request_rec *r,
+                                                proxy_worker *worker,
+                                                proxy_server_conf *conf,
+                                                char *url,
+                                                const char *proxyhost,
+                                                apr_port_t proxyport))
+PROXY_HOOK_NON_LINKED APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler,
+                                                (request_rec *r,
+                                                 char *url))
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
@@ -598,25 +608,30 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, detach_backend, (request_rec *r,
  * and then the scheme_handler is called.
  *
  */
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request, (proxy_worker **worker,
-                          proxy_balancer **balancer,
-                          request_rec *r,
-                          proxy_server_conf *conf, char **url))
+PROXY_HOOK_NON_LINKED APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request,
+                                                (proxy_worker **worker,
+                                                 proxy_balancer **balancer,
+                                                 request_rec *r,
+                                                 proxy_server_conf *conf,
+                                                 char **url))
 /**
  * post request hook.
  * It is called after request for updating runtime balancer status.
  */
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, post_request, (proxy_worker *worker,
-                          proxy_balancer *balancer, request_rec *r,
-                          proxy_server_conf *conf))
+PROXY_HOOK_NON_LINKED APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, post_request,
+                                                (proxy_worker *worker,
+                                                 proxy_balancer *balancer,
+                                                 request_rec *r,
+                                                 proxy_server_conf *conf))
 
 /**
  * request status hook
  * It is called after all proxy processing has been done.  This gives other
  * modules a chance to create default content on failure, for example
  */
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
-                          (int *status, request_rec *r))
+PROXY_HOOK_NON_LINKED APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
+                                                (int *status,
+                                                 request_rec *r))
 
 /* proxy_util.c */
 
