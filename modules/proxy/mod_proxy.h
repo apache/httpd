@@ -92,8 +92,8 @@ typedef struct {
 } proxy_wstat_t;
 
 /* These 2 are in mod_proxy.c */
-extern proxy_hcmethods_t proxy_hcmethods[];
-extern proxy_wstat_t proxy_wstat_tbl[];
+PROXY_DECLARE_DATA extern proxy_hcmethods_t proxy_hcmethods[];
+PROXY_DECLARE_DATA extern proxy_wstat_t proxy_wstat_tbl[];
 
 #define BALANCER_PREFIX "balancer://"
 
