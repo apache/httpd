@@ -44,7 +44,7 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
 
 /* Externals */
-proxy_hcmethods_t proxy_hcmethods[] = {
+proxy_hcmethods_t PROXY_DECLARE_DATA proxy_hcmethods[] = {
         {NONE, "NONE", 1},
         {TCP, "TCP", 1},
         {OPTIONS, "OPTIONS", 1},
@@ -55,7 +55,7 @@ proxy_hcmethods_t proxy_hcmethods[] = {
         {EOT, NULL, 1}
 };
 
-proxy_wstat_t proxy_wstat_tbl[] = {
+proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
     {PROXY_WORKER_INITIALIZED,   PROXY_WORKER_INITIALIZED_FLAG,   "Init "},
     {PROXY_WORKER_IGNORE_ERRORS, PROXY_WORKER_IGNORE_ERRORS_FLAG, "Ign "},
     {PROXY_WORKER_DRAIN,         PROXY_WORKER_DRAIN_FLAG,         "Drn "},
