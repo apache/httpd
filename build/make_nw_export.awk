@@ -60,7 +60,7 @@ function add_symbol(sym_name) {
     next
 }
 
-/^[ \t]*PROXY_HOOK_NON_LINKED[ \t]*AP[RU]?_DECLARE_EXTERNAL_HOOK[^(]*[(][^)]*/ {
+/^[ \t]*PROXY_DECLARE_OPTIONAL_HOOK[^(]*[(][^)]*/ {
     split($0, args, ",")
     prefix = args[1]
     sub("^.*[(]", "", prefix)
