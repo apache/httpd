@@ -148,12 +148,15 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-TARGET_nlm = $(OBJDIR)/$(NLM_NAME).nlm
+TARGET_nlm = \
+	$(OBJDIR)/proxyhcheck.nlm \
+	$(EOLIST)
 
 #
 # If there is an LIB target, put it here
 #
-TARGET_lib =
+TARGET_lib = \
+	$(EOLIST)
 
 #
 # These are the OBJ files needed to create the NLM target above.
@@ -176,8 +179,8 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
-	libc \
 	aprlib \
+	libc \
 	proxy \
 	$(EOLIST)
 
@@ -200,10 +203,10 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
 	@mod_proxy.imp \
+	@libc.imp \
 	$(EOLIST)
 
 # Don't link with Winsock if standard sockets are being used
