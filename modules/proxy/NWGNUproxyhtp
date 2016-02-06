@@ -256,5 +256,3 @@ vpath %.c ../arch/netware
 #
 
 include $(APBUILD)/NWGNUtail.inc
-
-

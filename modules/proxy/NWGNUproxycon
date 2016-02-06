@@ -98,13 +98,13 @@ NLM_NAME	= proxycon
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Connection Sub-Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy CONNECT Sub-Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= Proxy Conn Module
+NLM_THREAD_NAME	= Proxy CONNECT Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -247,5 +247,3 @@ install :: nlms FORCE
 #
 
 include $(APBUILD)/NWGNUtail.inc
-
-

@@ -105,7 +105,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy LoadBalance by Traffic Sub-Module
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= LBM Traf Module
+NLM_THREAD_NAME	= LBM Traffic Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -149,12 +149,15 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-TARGET_nlm = $(OBJDIR)/$(NLM_NAME).nlm
+TARGET_nlm = \
+	$(OBJDIR)/proxylbm_busy.nlm \
+	$(EOLIST)
 
 #
 # If there is an LIB target, put it here
 #
-TARGET_lib =
+TARGET_lib = \
+	$(EOLIST)
 
 #
 # These are the OBJ files needed to create the NLM target above.
@@ -177,8 +180,8 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
-	libc \
 	aprlib \
+	libc \
 	proxy \
 	$(EOLIST)
 
@@ -201,10 +204,10 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
 	@mod_proxy.imp \
+	@libc.imp \
 	$(EOLIST)
 
 #
@@ -247,5 +250,3 @@ vpath %.c balancers
 #
 
 include $(APBUILD)/NWGNUtail.inc
-
-
