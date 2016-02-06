@@ -26,7 +26,7 @@
 
 <name>mod_setenvif</name>
 <description>Permet de définir des variables d'environnement en fonction
-de caractéristiques de la requête</description>
+de certainescaractéristiques de la requête</description>
 <status>Base</status>
 <sourcefile>mod_setenvif.c</sourcefile>
 <identifier>setenvif_module</identifier>
@@ -34,9 +34,8 @@ de caractéristiques de la requête</description>
 <summary>
 
     <p>Le module <module>mod_setenvif</module> vous permet de définir
-    des variables d'environnement internes en fonction du fait que telle ou telle
-    caractéristique de la requête correspond ou non aux expressions
-    rationnelles que vous spécifiez. Ces variables d'environnement
+    des variables d'environnement internes de manière conditionnelle en fonction
+    de critères que vous pouvez spécifier. Ces variables d'environnement
     peuvent être utilisées par d'autres parties du serveur pour prendre
     des décisions quant aux actions à entreprendre, et pour déterminer
     si les scripts CGI et les pages SSI doivent pouvoir y accéder.</p>
@@ -152,7 +151,7 @@ attributs de la requête</description>
     <p>La directive <directive>SetEnvIf</directive> permet de définir
     des variables d'environnement en fonction des attributs de la
     requête. L'<em>attribut</em> spécifié comme premier argument peut
-    se présenter sous l'une des quatre formes suivantes :</p>
+    se présenter sous l'une des trois formes suivantes :</p>
 
 <ol>
 <li>Un champ d'en-tête de requête HTTP (voir la <a
