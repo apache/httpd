@@ -98,12 +98,11 @@ function add_symbol(sym_name) {
     add_symbol($NF)
 }
 
-/^[ \t]*PROXY_DECLARE_DATA (extern[ \t]+)?.*;/ {
+/^[ \t]*(extern[ \t]+(module[ \t]+)?)?PROXY_DECLARE_DATA .*;/ {
     gsub(/[*;\n\r]/, "")
     gsub(/\[.*\]/, "")
     add_symbol($NF)
 }
-
 
 END {
     printf("Added %d symbols to export list.\n", idx) > "/dev/stderr"
