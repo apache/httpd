@@ -19,7 +19,6 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(SRC)/include \
-			$(STDMOD)/http \
 			$(NWOS) \
 			$(EOLIST)
 
