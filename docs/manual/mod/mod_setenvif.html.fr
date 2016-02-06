@@ -33,7 +33,7 @@
 <a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de définir des variables d'environnement en fonction
-de caractéristiques de la requête</td></tr>
+de certaines caractéristiques de la requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>setenvif_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_setenvif.c</td></tr></table>
@@ -41,9 +41,8 @@ de caractéristiques de la requête</td></tr>
 
 
     <p>Le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> vous permet de définir
-    des variables d'environnement internes en fonction du fait que telle ou telle
-    caractéristique de la requête correspond ou non aux expressions
-    rationnelles que vous spécifiez. Ces variables d'environnement
+    des variables d'environnement internes de manière conditionnelle en fonction
+    de critères que vous pouvez spécifier. Ces variables d'environnement
     peuvent être utilisées par d'autres parties du serveur pour prendre
     des décisions quant aux actions à entreprendre, et pour déterminer
     si les scripts CGI et les pages SSI doivent pouvoir y accéder.</p>
@@ -157,7 +156,7 @@ attributs de la requête</td></tr>
     <p>La directive <code class="directive">SetEnvIf</code> permet de définir
     des variables d'environnement en fonction des attributs de la
     requête. L'<em>attribut</em> spécifié comme premier argument peut
-    se présenter sous l'une des quatre formes suivantes :</p>
+    se présenter sous l'une des trois formes suivantes :</p>
 
 <ol>
 <li>Un champ d'en-tête de requête HTTP (voir la <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour

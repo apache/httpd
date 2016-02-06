@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -320,7 +318,7 @@ la réécriture soit effectuée
 
 		<p>Parmi les variables
 		spécifiques à mod_rewrite, ou trouve les suivantes :</p>
-        <div class="note">
+        
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -396,7 +394,7 @@ la réécriture soit effectuée
 		  valeur n'a pas été déséchappée (décodée), à la
 		  différence de la plupart des variables suivantes.</dd>
                 </dl>
-</div>
+
         </li>
       </ul>
 
@@ -524,25 +522,25 @@ la réécriture soit effectuée
         <li>Vous pouvez effectuer des comparaisons lexicographiques de
 	chaînes	:
 
-          <ul>
-            <li>'<strong>&lt;expression</strong>' (inférieur au sens
-	    lexicographique)<br />
+         <dl>
+            <dt><strong>&lt;expression</strong></dt>
+	    <dd>inférieur au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
 	    <em>chaîne_de_test</em>. La condition est satisfaite si
 	    <em>chaîne_de_test</em> est inférieure au sens
-	    lexicographique à l'<em>expression</em>.</li>
+	    lexicographique à l'<em>expression</em>.</dd>
 
-            <li>'<strong>&gt;expression</strong>' (supérieur au sens
-	    lexicographique)<br />
+            <dt><strong>&gt;expression</strong></dt>
+	    <dd>supérieur au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
 	    <em>chaîne_de_test</em>. La condition est satisfaite si
 	    <em>chaîne_de_test</em> est supérieure au sens
-	    lexicographique à l'<em>expression</em>.</li>
+	    lexicographique à l'<em>expression</em>.</dd>
 
-            <li>'<strong>=expression</strong>' (égal au sens
-	    lexicographique)<br />
+            <dt><strong>=expression</strong></dt>
+	    <dd>égal au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
 	    <em>chaîne_de_test</em>. La condition est satisfaite si
@@ -550,54 +548,58 @@ la réécriture soit effectuée
 	    lexicographique à l'<em>expression</em> (les deux chaînes
 	    sont exactement identiques, caractère pour caractère). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>chaîne_de_test</em> est comparée à la chaîne vide.</li>
+	    <em>chaîne_de_test</em> est comparée à la
+	    chaîne vide.</dd>
 
-	    <li>'<strong>&lt;=expression de comparaison</strong>' (inférieur ou égal à
-	    au sens lexicographique)<br />
+	    <dt><strong>&lt;=expression de comparaison</strong></dt>
+	    <dd>inférieur ou égal à au sens lexicographique<br />
             Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
 	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
 	    précède lexicographiquement <em>expression_de_comparaison</em>, ou est
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
-	    sont identiques, caractère pour caractère).</li>
+	    sont identiques, caractère pour caractère).</dd>
 
-            <li>'<strong>&gt;=expression de comparaison</strong>'
-	    (supérieur ou égal à au sens lexicographique)<br />
+            <dt><strong>&gt;=expression de comparaison</strong></dt>
+	    <dd>supérieur ou égal à au sens lexicographique<br />
             Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
 	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
 	    suit lexicographiquement <em>expression_de_comparaison</em>, ou est
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
-	    sont identiques, caractère pour caractère).</li>
-        </ul></li>
+	    sont identiques, caractère pour caractère).</dd>
+        </dl>
+	</li>
 
         <li>
           Vous pouvez effectuer des comparaisons d'entiers :
-          <ul>
+          <dl>
 
-            <li>'<strong>-eq</strong>' (est numériquement égal à)<br />
+            <dt><strong>-eq</strong></dt>
+	    <dd>est numériquement égal à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
 	    comparaison</em>. Vrai si les deux expressions sont
-	    numériquement égales.</li>
+	    numériquement égales.</dd>
 
-            <li>'<strong>-ge</strong>' (est numériquement supérieur ou
-	    égal à)<br />
+            <dt><strong>-ge</strong></dt>
+	    <dd>est numériquement supérieur ou égal à<br />
+            La <em>chaîne_de_test</em> est considérée comme un entier,
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    numériquement supérieure ou égale à
+	    <em>expression_de_comparaison</em>.</dd>
+
+             <dt><strong>-gt</strong></dt>
+	     <dd>est numériquement supérieur à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
 	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
-	    supérieure ou égale à <em>expression_de_comparaison</em>.</li>
+	    supérieure à <em>expression_de_comparaison</em>.</dd>
 
-             <li>'<strong>-gt</strong>' (est numériquement supérieur à)<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
-	    numériquement
-	    supérieure à <em>expression_de_comparaison</em>.</li>
-
-            <li>'<strong>-le</strong>' (est numériquement inférieur ou
-	    égal à)<br />
+            <dt><strong>-le</strong></dt>
+	    <dd>est numériquement inférieur ou égal à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
 	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
@@ -605,9 +607,10 @@ la réécriture soit effectuée
 	    inférieure ou égale à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
-	    <strong>-h</strong>.</li>
+	    <strong>-h</strong>.</dd>
 
-             <li>'<strong>-lt</strong>' (est numériquement inférieur à)<br />
+             <dt><strong>-lt</strong></dt>
+	     <dd>est numériquement inférieur à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
 	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
@@ -615,57 +618,59 @@ la réécriture soit effectuée
 	    inférieure à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
-	    <strong>-h</strong>.</li>
+	    <strong>-h</strong>.</dd>
 
-           </ul>
+           </dl>
         </li>
 
         <li>Vous pouvez effectuer différents tests sur les attributs de
 	fichier :
-          <ul>
+          <dl>
 
-            <li>'<strong>-d</strong>' (est un répertoire -
-	    <strong>d</strong>irectory)<br />
+            <dt><strong>-d</strong></dt>
+	    <dd>est un <strong>r</strong>épertoire<br />
 	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
-	    s'il existe ou pas, et s'il s'agit d'un répertoire.</li>
+	    s'il existe ou pas, et s'il s'agit d'un répertoire.</dd>
 
-            <li>'<strong>-f</strong>' (est un
-	    <strong>f</strong>ichier régulier)<br />
+            <dt><strong>-f</strong></dt>
+	    <dd>est un <strong>f</strong>ichier régulier<br />
 	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
-	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.</li>
+	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.</dd>
 
-            <li>'<strong>-F</strong>' (test de l'existence d'un fichier
-	    via une sous-requête)<br />
+            <dt><strong>-F</strong></dt>
+	    <dd>test de l'existence d'un fichier via une sous-requête<br />
 	    Vérifie si <em>chaîne_de_test</em> est un fichier valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
 	    utiliser avec précautions car les performances du serveur
-	    peuvent s'en trouver affectées !</li>
+	    peuvent s'en trouver affectées !</dd>
 
-	    <li>'<strong>-H</strong>' (est un lien symbolique, selon la
-	    convention bash)<br />
-            Voir <strong>-l</strong>.</li>
+	    <dt><strong>-H</strong></dt>
+	    <dd>est un lien symbolique, selon la convention bash<br />
+            Voir <strong>-l</strong>.</dd>
 
-            <li>'<strong>-l</strong>' (est un lien symbolique)<br />
+            <dt><strong>-l</strong></dt>
+	    <dd>est un <strong>l</strong>ien symbolique<br />
             Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle est un lien symbolique. On
 	    peut aussi utiliser la convention bash <strong>-L</strong>
 	    ou <strong>-h</strong> lorsqu'il y a risque de confusion
-	    avec les tests <strong>-lt</strong> ou <strong>-le</strong>.</li>
+	    avec les tests <strong>-lt</strong> ou <strong>-le</strong>.</dd>
 
-            <li>'<strong>-L</strong>' (est un lien symbolique, selon la
-	    convention bash)<br />
-            Voir <strong>-l</strong>.</li>
+            <dt><strong>-L</strong></dt>
+	    <dd>est un lien symbolique, selon la convention bash<br />
+            Voir <strong>-l</strong>.</dd>
 
-            <li>'<strong>-s</strong>' (est un fichier régulier d'une
-	    certaine taille)<br />
+            <dt><strong>-s</strong></dt>
+	    <dd>est un fichier régulier d'une certaine taille<br />
             Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle est un fichier régulier
-	    d'une taille supérieure à zéro.</li>
+	    d'une taille supérieure à zéro.</dd>
 
-            <li><p>'<strong>-U</strong>' (test de l'existence d'une
-	    URL via une sous-requête)<br />
+            <dt><strong>-U</strong></dt>
+	    <dd><p>test de l'existence d'une
+	    URL via une sous-requête<br />
 	    Vérifie si <em>chaîne_de_test</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
@@ -677,15 +682,22 @@ la réécriture soit effectuée
 	    l'autorisation. Il ne renvoie <em>pas</em> d'informations
 	    concernant le code d'état que le gestionnaire configuré
 	    (static file, CGI, proxy, etc...) aurait, quant à lui,
-	    retourné.</p></li>
+	    retourné.</p></dd>
 
-	  <li>'<strong>-x</strong>' (a l'attribut d'exécution positionné)<br />
+	  <dt><strong>-x</strong></dt>
+	  <dd>a l'attribut d'exécution positionné<br />
             Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle a son attribut d'exécution
 	    positionné. Ce positionnement est déterminé en fonction de
-	    l'OS sous-jacent.</li>
+	    l'OS sous-jacent.</dd>
 
-	    </ul>
+	    </dl>
+
+	    Par exemple:
+
+        <pre class="prettyprint lang-config">RewriteCond /var/www/%{REQUEST_URI} !-f
+RewriteRule ^(.+) /other/archive/$1 [R]</pre>
+
 
         </li>
 
@@ -1121,6 +1133,15 @@ pour le moteur de réécriture</td></tr>
       comportant respectivement les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
       <code>%{QUERY_STRING}</code>.</p>
+
+      <p>Dans tous les cas, il faut garder à l'esprit que les expressions
+      rationnelles permettent de rechercher des correspondances de sous-chaînes.
+      En d'autres termes, l'expression rationnelle n'a pas besoin de correspondre à
+      l'ensemble de la chaîne, mais seulement à la partie que vous souhaitez
+      voir correspondre. Ainsi, l'utilisation de l'expression <code>.</code> est
+      souvent suffisante et préférable à <code>.*</code>, et l'expression
+      <code>abc</code> <strong>n'est pas</strong> identique à l'expression
+      <code>^abc$</code>.</p>
 </div>
 
 <div class="note"><h3>Réécritures dans un contexte de répertoire</h3>
