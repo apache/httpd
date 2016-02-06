@@ -236,7 +236,7 @@ mandataire.</dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Limitation de la bande passante pour les clients</dd>
 <dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Réfléchit un corps de requête comme réponse via la pile de
 filtres en sortie.</dd>
-<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP et le nom d'hôte apparents du client
+<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
 </dd>
@@ -255,7 +255,7 @@ règles permettant de réécrire les URLs des requêtes
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Support du chiffrement des sessions</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>Support des session basé sur DBD/SQL</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Permet de définir des variables d'environnement en fonction
-de caractéristiques de la requête</dd>
+de certainescaractéristiques de la requête</dd>
 <dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Fournisseur de mémoire partagée à base de
 slots.</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Fournisseur de mémoire partagée basée sur les
