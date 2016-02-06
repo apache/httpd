@@ -568,8 +568,8 @@ struct proxy_balancer_method {
 
 
 /* These 2 are in mod_proxy.c */
-PROXY_DECLARE_DATA extern proxy_hcmethods_t proxy_hcmethods[];
-PROXY_DECLARE_DATA extern proxy_wstat_t proxy_wstat_tbl[];
+extern PROXY_DECLARE_DATA proxy_hcmethods_t proxy_hcmethods[];
+extern PROXY_DECLARE_DATA proxy_wstat_t proxy_wstat_tbl[];
 
 /* Following 4 from health check */
 APR_DECLARE_OPTIONAL_FN(void, hc_show_exprs, (request_rec *));
