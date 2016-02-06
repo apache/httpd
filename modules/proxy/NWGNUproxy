@@ -222,7 +222,6 @@ endif
 #
 FILES_nlm_exports = \
 	@mod_proxy.imp \
-	proxy_module \
 	$(EOLIST)
 
 #
