@@ -105,7 +105,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Web Socket Tunnel Module
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= Prxy WbSkt Module
+NLM_THREAD_NAME	= Proxy WbSkt Module
 
 #
 # If this is specified, it will override VERSION value in
