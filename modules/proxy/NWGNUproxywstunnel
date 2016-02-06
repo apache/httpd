@@ -240,7 +240,8 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-vpath %.c balancers
+vpath %.c ../arch/netware
+
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
 # in this makefile
