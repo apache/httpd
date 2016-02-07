@@ -1937,9 +1937,11 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
     int i, len;
     OCSP_RESPONSE *rsp;
     OCSP_BASICRESP *br;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     OCSP_RESPDATA *rd;
-    OCSP_SINGLERESP *single;
     STACK_OF(X509_EXTENSION) *exts;
+#endif
+    OCSP_SINGLERESP *single;
 
     len = SSL_get_tlsext_status_ocsp_resp(ssl, &p); /* UNDOC */
     if (!p) {
@@ -1963,15 +1965,25 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
         return 0;
     }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     rd = br->tbsResponseData;
+#endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     for (i = 0; i < sk_OCSP_SINGLERESP_num(rd->responses); i++) { /* UNDOC */
+#else
+    for (i = 0; i < OCSP_resp_count(br); i++) {
+#endif
         const unsigned char *p;
         X509_EXTENSION *ext;
         int idx;
         ASN1_OCTET_STRING *oct1, *oct2;
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         single = sk_OCSP_SINGLERESP_value(rd->responses, i); /* UNDOC */
+#else
+        single = OCSP_resp_get0(br, i);
+#endif
         if (!single) {
             continue;
         }
@@ -1986,9 +1998,13 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "index of NID_ct_cert_scts: %d", idx);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
         exts = single->singleExtensions;
 
         ext = sk_X509_EXTENSION_value(exts, idx); /* UNDOC */
+#else
+        ext = OCSP_SINGLERESP_get_ext(single, idx);
+#endif
         oct1 = X509_EXTENSION_get_data(ext); /* UNDOC */
 
         p = oct1->data;

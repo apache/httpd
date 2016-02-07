@@ -25,19 +25,19 @@ APLOG_USE_MODULE(ssl_ct);
 static apr_status_t verify_signature(sct_fields_t *sctf,
                                      EVP_PKEY *pkey)
 {
-    EVP_MD_CTX ctx;
+    EVP_MD_CTX *ctx;
     int rc;
 
     if (sctf->signed_data == NULL) {
         return APR_EINVAL;
     }
 
-    EVP_MD_CTX_init(&ctx);
+    ctx = EVP_MD_CTX_new();
     ap_assert(1 == EVP_VerifyInit(&ctx, EVP_sha256()));
     ap_assert(1 == EVP_VerifyUpdate(&ctx, sctf->signed_data,
                                     sctf->signed_data_len));
     rc = EVP_VerifyFinal(&ctx, sctf->sig, sctf->siglen, pkey);
-    EVP_MD_CTX_cleanup(&ctx);
+    EVP_MD_CTX_free(ctx);
 
     return rc == 1 ? APR_SUCCESS : APR_EINVAL;
 }
