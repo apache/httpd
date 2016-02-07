@@ -156,7 +156,7 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                      "Init: this version of mod_ssl was compiled against "
                      "a newer library (%s, version currently loaded is %s)"
                      " - may result in undefined or erroneous behavior",
-                     MODSSL_LIBRARY_TEXT, SSLeay_version(SSLEAY_VERSION));
+                     MODSSL_LIBRARY_TEXT, MODSSL_LIBRARY_DYNTEXT);
     }
 
     /* We initialize mc->pid per-process in the child init,
@@ -1719,7 +1719,7 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
                      "an OpenSSL version with support for TLS extensions "
                      "(RFC 6066 - Server Name Indication / SNI), "
                      "but the currently used library version (%s) is "
-                     "lacking this feature", SSLeay_version(SSLEAY_VERSION));
+                     "lacking this feature", MODSSL_LIBRARY_DYNTEXT);
     }
 #endif
 
