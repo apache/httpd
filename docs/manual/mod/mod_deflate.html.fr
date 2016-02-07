@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -270,7 +268,16 @@ fois</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateBufferSize</code> permet de
     spécifier la taille en octets du fragment que zlib devra comprimer
-    en une seule fois.</p>
+    en une seule fois. Si la taille de la réponse compressée est supérieure à
+    celle spécifiée par cette directive, httpd passera à un mode d'encodage
+    fragmenté (l'en-tête HTTP <code>Transfer-Encoding</code> prend la valeur
+    <code>Chunked</code>), ceci ayant comme effet de bord de ne définir aucun
+    en-tête HTTP <code>Content-Length</code>. Il est important de connaître ce
+    comportement, particulièrement lorsque httpd travaille derrière des
+    mandataires inverses avec mise en cache, ou lorsque httpd est configuré pour
+    utiliser <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> et <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> car
+    les réponses HTTP sans en-tête <code>Content-Length</code> peuvent ne pas
+    être mises en cache.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
