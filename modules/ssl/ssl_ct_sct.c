@@ -32,12 +32,20 @@ static apr_status_t verify_signature(sct_fields_t *sctf,
         return APR_EINVAL;
     }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    ctx = EVP_MD_CTX_create();
+#else
     ctx = EVP_MD_CTX_new();
+#endif
     ap_assert(1 == EVP_VerifyInit(ctx, EVP_sha256()));
     ap_assert(1 == EVP_VerifyUpdate(ctx, sctf->signed_data,
                                     sctf->signed_data_len));
     rc = EVP_VerifyFinal(ctx, sctf->sig, sctf->siglen, pkey);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    EVP_MD_CTX_destroy(ctx);
+#else
     EVP_MD_CTX_free(ctx);
+#endif
 
     return rc == 1 ? APR_SUCCESS : APR_EINVAL;
 }
