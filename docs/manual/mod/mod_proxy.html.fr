@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
@@ -1441,15 +1439,19 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td>-</td>
         <td>Valeur constituée d'une simple lettre et définissant l'état
 	initial de ce serveur cible.
-	 <table>
-         <tr><td>D: le serveur cible est désactivé et n'accepte aucune requête.</td></tr>
-         <tr><td>S: le serveur cible est arrêté.</td></tr>
-         <tr><td>I: le serveur cible est en mode "erreurs ignorées",
+	 <table class="bordered">
+         <tr><td><code>D</code></td><td>le serveur cible est
+	 désactivé et n'accepte aucune requête ; sa
+	 réactivation sera automatiquement relancée.</td></tr>
+         <tr><td><code>S</code></td><td>le serveur cible est arrêté
+	 ; il n'accepte plus de requête et sa réactivation ne sera pas
+	 automatiquement relancée.</td></tr>
+         <tr><td><code>I</code></td><td>le serveur cible est en mode "erreurs ignorées",
 	 et sera toujours considéré comme disponible.</td></tr>
-         <tr><td>H: le serveur cible est en mode d'attente et ne sera
+         <tr><td><code>H</code></td><td>le serveur cible est en mode d'attente et ne sera
 	 utilisé que si aucun autre serveur n'est disponible.</td></tr>
-         <tr><td>E: le serveur cible est en erreur.</td></tr>
-         <tr><td>N: le serveur cible est en mode vidage, n'acceptera que
+         <tr><td><code>E</code></td><td>le serveur cible est en erreur.</td></tr>
+         <tr><td><code>N</code></td><td>le serveur cible est en mode vidage, n'acceptera que
 	 les sessions persistantes qui lui appartiennent, et refusera
 	 toutes les autres requêtes.</td></tr>
         </table>
