@@ -33,10 +33,10 @@ static apr_status_t verify_signature(sct_fields_t *sctf,
     }
 
     ctx = EVP_MD_CTX_new();
-    ap_assert(1 == EVP_VerifyInit(&ctx, EVP_sha256()));
-    ap_assert(1 == EVP_VerifyUpdate(&ctx, sctf->signed_data,
+    ap_assert(1 == EVP_VerifyInit(ctx, EVP_sha256()));
+    ap_assert(1 == EVP_VerifyUpdate(ctx, sctf->signed_data,
                                     sctf->signed_data_len));
-    rc = EVP_VerifyFinal(&ctx, sctf->sig, sctf->siglen, pkey);
+    rc = EVP_VerifyFinal(ctx, sctf->sig, sctf->siglen, pkey);
     EVP_MD_CTX_free(ctx);
 
     return rc == 1 ? APR_SUCCESS : APR_EINVAL;
