@@ -2717,6 +2717,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
     if (conn->sock) {
         if (!(connected = ap_proxy_is_socket_connected(conn->sock))) {
+            /* FIXME: this loses conn->ssl_hostname and it will not be
+             * restablished before the SSL connection is made -> no SNI! */
             socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
                          "%s: backend socket is disconnected.",
