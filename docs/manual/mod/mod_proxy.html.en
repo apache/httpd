@@ -950,6 +950,11 @@ through</td></tr>
 
     </div> 
 
+    <div class="warning"><h3>Ordering ProxyPass and RewriteRule Directives</h3>
+      <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives
+      are evaluated before <code class="directive"><a href="#proxypass">ProxyPass</a></code> ones.</p>
+    </div>
+
     <p><strong>ProxyPass <code>key=value</code> Parameters</strong></p>
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
