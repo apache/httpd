@@ -799,6 +799,11 @@ expressions</description>
 
     </note> <!-- /ordering_proxypass -->
 
+    <note type="warning"><title>Ordering ProxyPass and RewriteRule Directives</title>
+      <p><directive module="mod_rewrite">RewriteRule</directive> directives
+      are evaluated before <directive module="mod_proxy">ProxyPass</directive> ones.</p>
+    </note>
+
     <p><strong>ProxyPass <code>key=value</code> Parameters</strong></p>
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled

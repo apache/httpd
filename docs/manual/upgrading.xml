@@ -113,6 +113,9 @@
       from <module>mod_auth_digest</module> has been merged with
       <directive module="mod_authn_file">AuthUserFile</directive>
       and is now part of <module>mod_authn_file</module>.</li>
+
+      <li><directive module="mod_rewrite">RewriteRule</directive> directives
+      are evaluated before <directive module="mod_proxy">ProxyPass</directive> ones.</li>
     </ul>
   </section>
 
