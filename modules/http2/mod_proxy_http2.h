@@ -13,18 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef __MOD_HTTP2_H__
-#define __MOD_HTTP2_H__
+#ifndef __MOD_PROXY_HTTP2_H__
+#define __MOD_PROXY_HTTP2_H__
 
-/** The http2_var_lookup() optional function retrieves HTTP2 environment
- * variables. */
-APR_DECLARE_OPTIONAL_FN(char *, http2_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *,
-                         char *));
-
-/** An optional function which returns non-zero if the given connection
- * or its master connection is using HTTP/2. */
-APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
 
 #endif

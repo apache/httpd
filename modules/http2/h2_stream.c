@@ -158,7 +158,8 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 {
     h2_stream *stream = h2_stream_create(id, pool, session);
     set_state(stream, H2_STREAM_ST_OPEN);
-    stream->request   = h2_request_create(id, pool, session->config);
+    stream->request   = h2_request_create(id, pool, 
+        h2_config_geti(session->config, H2_CONF_SER_HEADERS));
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
@@ -242,6 +243,9 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
     }
     set_state(stream, H2_STREAM_ST_OPEN);
     status = h2_request_rwrite(stream->request, r);
+    stream->request->serialize = h2_config_geti(h2_config_rget(r), 
+                                                H2_CONF_SER_HEADERS);
+
     return status;
 }
 

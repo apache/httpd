@@ -171,7 +171,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     task->mplx        = mplx;
     task->request     = req;
     task->input_eos   = !req->body;
-    task->ser_headers = h2_config_geti(req->config, H2_CONF_SER_HEADERS);
+    task->ser_headers = req->serialize;
 
     return task;
 }
@@ -206,9 +206,14 @@ static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
     if (r && (r->status == HTTP_OK)) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
         
-        if (cs)
+        if (cs) {
             cs->state = CONN_STATE_HANDLER;
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%ld-%d): start process_request", c->id, req->id);
         ap_process_request(r);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%ld-%d): process_request done", c->id, req->id);
         /* After the call to ap_process_request, the
          * request pool will have been deleted.  We set
          * r=NULL here to ensure that any dereference

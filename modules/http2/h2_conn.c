@@ -134,6 +134,8 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
     ap_register_input_filter("H2_IN", h2_filter_core_input,
                              NULL, AP_FTYPE_CONNECTION);
    
+    status = h2_mplx_child_init(pool, s);
+    
     return status;
 }
 

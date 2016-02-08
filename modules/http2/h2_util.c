@@ -1004,6 +1004,9 @@ static literal IgnoredResponseTrailers[] = {
     H2_DEF_LITERAL("www-authenticate"),
     H2_DEF_LITERAL("proxy-authenticate"),
 };
+static literal IgnoredProxyRespHds[] = {
+    H2_DEF_LITERAL("alt-svc"),
+};
 
 static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
@@ -1036,12 +1039,125 @@ int h2_res_ignore_trailer(const char *name, size_t len)
     return ignore_header(H2_LIT_ARGS(IgnoredResponseTrailers), name, len);
 }
 
-void h2_req_strip_ignored_header(apr_table_t *headers)
+int h2_proxy_res_ignore_header(const char *name, size_t len)
 {
-    int i;
-    for (i = 0; i < H2_ALEN(IgnoredRequestHeaders); ++i) {
-        apr_table_unset(headers, IgnoredRequestHeaders[i].name);
+    return (h2_req_ignore_header(name, len) 
+            || ignore_header(H2_LIT_ARGS(IgnoredProxyRespHds), name, len));
+}
+
+
+/*******************************************************************************
+ * frame logging
+ ******************************************************************************/
+
+int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
+{
+    char scratch[128];
+    size_t s_len = sizeof(scratch)/sizeof(scratch[0]);
+    
+    switch (frame->hd.type) {
+        case NGHTTP2_DATA: {
+            return apr_snprintf(buffer, maxlen,
+                                "DATA[length=%d, flags=%d, stream=%d, padlen=%d]",
+                                (int)frame->hd.length, frame->hd.flags,
+                                frame->hd.stream_id, (int)frame->data.padlen);
+        }
+        case NGHTTP2_HEADERS: {
+            return apr_snprintf(buffer, maxlen,
+                                "HEADERS[length=%d, hend=%d, stream=%d, eos=%d]",
+                                (int)frame->hd.length,
+                                !!(frame->hd.flags & NGHTTP2_FLAG_END_HEADERS),
+                                frame->hd.stream_id,
+                                !!(frame->hd.flags & NGHTTP2_FLAG_END_STREAM));
+        }
+        case NGHTTP2_PRIORITY: {
+            return apr_snprintf(buffer, maxlen,
+                                "PRIORITY[length=%d, flags=%d, stream=%d]",
+                                (int)frame->hd.length,
+                                frame->hd.flags, frame->hd.stream_id);
+        }
+        case NGHTTP2_RST_STREAM: {
+            return apr_snprintf(buffer, maxlen,
+                                "RST_STREAM[length=%d, flags=%d, stream=%d]",
+                                (int)frame->hd.length,
+                                frame->hd.flags, frame->hd.stream_id);
+        }
+        case NGHTTP2_SETTINGS: {
+            if (frame->hd.flags & NGHTTP2_FLAG_ACK) {
+                return apr_snprintf(buffer, maxlen,
+                                    "SETTINGS[ack=1, stream=%d]",
+                                    frame->hd.stream_id);
+            }
+            return apr_snprintf(buffer, maxlen,
+                                "SETTINGS[length=%d, stream=%d]",
+                                (int)frame->hd.length, frame->hd.stream_id);
+        }
+        case NGHTTP2_PUSH_PROMISE: {
+            return apr_snprintf(buffer, maxlen,
+                                "PUSH_PROMISE[length=%d, hend=%d, stream=%d]",
+                                (int)frame->hd.length,
+                                !!(frame->hd.flags & NGHTTP2_FLAG_END_HEADERS),
+                                frame->hd.stream_id);
+        }
+        case NGHTTP2_PING: {
+            return apr_snprintf(buffer, maxlen,
+                                "PING[length=%d, ack=%d, stream=%d]",
+                                (int)frame->hd.length,
+                                frame->hd.flags&NGHTTP2_FLAG_ACK,
+                                frame->hd.stream_id);
+        }
+        case NGHTTP2_GOAWAY: {
+            size_t len = (frame->goaway.opaque_data_len < s_len)?
+            frame->goaway.opaque_data_len : s_len-1;
+            memcpy(scratch, frame->goaway.opaque_data, len);
+            scratch[len+1] = '\0';
+            return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s']",
+                                frame->goaway.error_code, scratch);
+        }
+        case NGHTTP2_WINDOW_UPDATE: {
+            return apr_snprintf(buffer, maxlen,
+                                "WINDOW_UPDATE[stream=%d, incr=%d]",
+                                frame->hd.stream_id, 
+                                frame->window_update.window_size_increment);
+        }
+        default:
+            return apr_snprintf(buffer, maxlen,
+                                "type=%d[length=%d, flags=%d, stream=%d]",
+                                frame->hd.type, (int)frame->hd.length,
+                                frame->hd.flags, frame->hd.stream_id);
     }
 }
 
+/*******************************************************************************
+ * push policy
+ ******************************************************************************/
+void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
+{
+    h2_push_policy policy = H2_PUSH_NONE;
+    if (push_enabled) {
+        const char *val = apr_table_get(req->headers, "accept-push-policy");
+        if (val) {
+            if (ap_find_token(p, val, "fast-load")) {
+                policy = H2_PUSH_FAST_LOAD;
+            }
+            else if (ap_find_token(p, val, "head")) {
+                policy = H2_PUSH_HEAD;
+            }
+            else if (ap_find_token(p, val, "default")) {
+                policy = H2_PUSH_DEFAULT;
+            }
+            else if (ap_find_token(p, val, "none")) {
+                policy = H2_PUSH_NONE;
+            }
+            else {
+                /* nothing known found in this header, go by default */
+                policy = H2_PUSH_DEFAULT;
+            }
+        }
+        else {
+            policy = H2_PUSH_DEFAULT;
+        }
+    }
+    req->push_policy = policy;
+}
 

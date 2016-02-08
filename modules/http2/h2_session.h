@@ -37,6 +37,8 @@
  *
  */
 
+#include "h2.h"
+
 struct apr_thread_mutext_t;
 struct apr_thread_cond_t;
 struct h2_ctx;
@@ -53,16 +55,6 @@ struct h2_task;
 struct h2_workers;
 
 struct nghttp2_session;
-
-typedef enum {
-    H2_SESSION_ST_INIT,             /* send initial SETTINGS, etc. */
-    H2_SESSION_ST_DONE,             /* finished, connection close */
-    H2_SESSION_ST_IDLE,             /* nothing to write, expecting data inc */
-    H2_SESSION_ST_BUSY,             /* read/write without stop */
-    H2_SESSION_ST_WAIT,             /* waiting for tasks reporting back */
-    H2_SESSION_ST_LOCAL_SHUTDOWN,   /* we announced GOAWAY */
-    H2_SESSION_ST_REMOTE_SHUTDOWN,  /* client announced GOAWAY */
-} h2_session_state;
 
 typedef enum {
     H2_SESSION_EV_INIT,             /* session was initialized */

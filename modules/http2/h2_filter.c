@@ -51,7 +51,7 @@ static apr_status_t consume_brigade(h2_filter_cin *cin,
         
         apr_bucket* bucket = APR_BRIGADE_FIRST(bb);
         if (APR_BUCKET_IS_METADATA(bucket)) {
-            /* we do nothing regardih2_filter_cin_timeout_setng any meta here */
+            /* we do nothing regarding any meta here */
         }
         else {
             const char *bucket_data = NULL;

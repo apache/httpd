@@ -28,6 +28,8 @@ size_t h2_util_header_print(char *buffer, size_t maxlen,
 
 void h2_util_camel_case_header(char *s, size_t len);
 
+int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
+
 /**
  * Count the bytes that all key/value pairs in a table have
  * in length (exlucding terminating 0s), plus additional extra per pair.
@@ -40,8 +42,8 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
 
 int h2_req_ignore_header(const char *name, size_t len);
 int h2_req_ignore_trailer(const char *name, size_t len);
-void h2_req_strip_ignored_header(apr_table_t *headers);
 int h2_res_ignore_trailer(const char *name, size_t len);
+int h2_proxy_res_ignore_header(const char *name, size_t len);
 
 /**
  * Return != 0 iff the string s contains the token, as specified in
@@ -189,5 +191,16 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_pool_t *p,
                                  apr_off_t *plen,
                                  int *peos);
+
+/**
+ * Set the push policy for the given request. Takes request headers into 
+ * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
+ * for details.
+ * 
+ * @param req the request to determine the policy for
+ * @param p the pool to use
+ * @param push_enabled if HTTP/2 server push is generally enabled for this request
+ */
+void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
 
 #endif /* defined(__mod_h2__h2_util__) */

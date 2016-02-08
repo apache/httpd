@@ -30,8 +30,7 @@ typedef enum {
     H2_IO_READ,
     H2_IO_WRITE,
     H2_IO_ANY,
-}
-h2_io_op;
+} h2_io_op;
 
 typedef struct h2_io h2_io;
 
