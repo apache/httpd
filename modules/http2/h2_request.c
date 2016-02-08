@@ -30,38 +30,33 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
-#include "h2_config.h"
-#include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_task.h"
 #include "h2_util.h"
 
 
-h2_request *h2_request_create(int id, apr_pool_t *pool,
-                              const struct h2_config *config)
+h2_request *h2_request_create(int id, apr_pool_t *pool, int serialize)
 {
-    return h2_request_createn(id, pool, config, 
-                              NULL, NULL, NULL, NULL, NULL);
+    return h2_request_createn(id, pool, NULL, NULL, NULL, NULL, NULL,
+                              serialize);
 }
 
 h2_request *h2_request_createn(int id, apr_pool_t *pool,
-                               const struct h2_config *config, 
                                const char *method, const char *scheme,
                                const char *authority, const char *path,
-                               apr_table_t *header)
+                               apr_table_t *header, int serialize)
 {
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
     req->id             = id;
-    req->config         = config;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
     req->path           = path;
     req->headers        = header? header : apr_table_make(pool, 10);
     req->request_time   = apr_time_now();
-
+    req->serialize      = serialize;
+    
     return req;
 }
 
@@ -139,38 +134,48 @@ static apr_status_t add_all_h1_header(h2_request *req, apr_pool_t *pool,
 }
 
 
-apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
+apr_status_t h2_request_make(h2_request *req, apr_pool_t *pool,
+                             const char *method, const char *scheme, 
+                             const char *authority, const char *path, 
+                             apr_table_t *headers)
 {
-    apr_status_t status;
-    
-    req->config    = h2_config_rget(r);
-    req->method    = r->method;
-    req->scheme    = (r->parsed_uri.scheme? r->parsed_uri.scheme
-                      : ap_http_scheme(r));
-    req->authority = r->hostname;
-    req->path      = apr_uri_unparse(r->pool, &r->parsed_uri, 
-                                     APR_URI_UNP_OMITSITEPART);
+    req->method    = method;
+    req->scheme    = scheme;
+    req->authority = authority;
+    req->path      = path;
 
-    if (!ap_strchr_c(req->authority, ':') && r->server && r->server->port) {
-        apr_port_t defport = apr_uri_port_of_scheme(req->scheme);
-        if (defport != r->server->port) {
-            /* port info missing and port is not default for scheme: append */
-            req->authority = apr_psprintf(r->pool, "%s:%d", req->authority,
-                                          (int)r->server->port);
-        }
-    }
-    
     AP_DEBUG_ASSERT(req->scheme);
     AP_DEBUG_ASSERT(req->authority);
     AP_DEBUG_ASSERT(req->path);
     AP_DEBUG_ASSERT(req->method);
 
-    status = add_all_h1_header(req, r->pool, r->headers_in);
+    return add_all_h1_header(req, pool, headers);
+}
 
+apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
+{
+    apr_status_t status;
+    const char *scheme, *authority;
+    
+    scheme = (r->parsed_uri.scheme? r->parsed_uri.scheme
+              : ap_http_scheme(r));
+    authority = r->hostname;
+    if (!ap_strchr_c(authority, ':') && r->server && r->server->port) {
+        apr_port_t defport = apr_uri_port_of_scheme(scheme);
+        if (defport != r->server->port) {
+            /* port info missing and port is not default for scheme: append */
+            authority = apr_psprintf(r->pool, "%s:%d", authority,
+                                     (int)r->server->port);
+        }
+    }
+    
+    status = h2_request_make(req, r->pool,  r->method, scheme, authority,
+                             apr_uri_unparse(r->pool, &r->parsed_uri, 
+                                             APR_URI_UNP_OMITSITEPART),
+                             r->headers_in);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
                   "h2_request(%d): rwrite %s host=%s://%s%s",
                   req->id, req->method, req->scheme, req->authority, req->path);
-                  
     return status;
 }
 

@@ -201,6 +201,32 @@ is usually linked shared and requires loading. ], $http2_objs, , most, [
 # Ensure that other modules can pick up mod_http2.h
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
+
+
+dnl #  list of module object files
+proxy_http2_objs="dnl
+mod_proxy_http2.lo dnl
+h2_proxy_session.lo dnl
+h2_request.lo dnl
+h2_util.lo dnl
+"
+
+dnl # hook module into the Autoconf mechanism (--enable-proxy_http2)
+APACHE_MODULE(proxy_http2, [HTTP/2 proxy module. This module requires a libnghttp2 installation. 
+See --with-nghttp2 on how to manage non-standard locations. ], $proxy_http2_objs, , no, [
+    APACHE_CHECK_NGHTTP2
+    if test "$ac_cv_nghttp2" = "yes" ; then
+        if test "x$enable_http2" = "xshared"; then
+           # The only symbol which needs to be exported is the module
+           # structure, so ask libtool to hide everything else:
+           APR_ADDTO(MOD_PROXY_HTTP2_LDADD, [-export-symbols-regex proxy_http2_module])
+        fi
+    else
+        enable_proxy_http2=no
+    fi
+])
+
+
 dnl #  end of module specific part
 APACHE_MODPATH_FINISH
 

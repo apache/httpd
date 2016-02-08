@@ -15,18 +15,13 @@
 #ifndef __mod_h2__h2_push__
 #define __mod_h2__h2_push__
 
+#include "h2.h"
+
 struct h2_request;
 struct h2_response;
 struct h2_ngheader;
 struct h2_session;
 struct h2_stream;
-
-typedef enum {
-    H2_PUSH_NONE,
-    H2_PUSH_DEFAULT,
-    H2_PUSH_HEAD,
-    H2_PUSH_FAST_LOAD,
-} h2_push_policy;
 
 typedef struct h2_push {
     const struct h2_request *req;
@@ -64,17 +59,6 @@ struct h2_push_diary {
 apr_array_header_t *h2_push_collect(apr_pool_t *p, 
                                     const struct h2_request *req, 
                                     const struct h2_response *res);
-
-/**
- * Set the push policy for the given request. Takes request headers into 
- * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
- * for details.
- * 
- * @param req the request to determine the policy for
- * @param p the pool to use
- * @param push_enabled if HTTP/2 server push is generally enabled for this request
- */
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
 
 /**
  * Create a new push diary for the given maximum number of entries.

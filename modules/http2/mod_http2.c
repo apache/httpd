@@ -72,7 +72,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     void *data = NULL;
-    const char *mod_h2_init_key = "mod_h2_init_counter";
+    const char *mod_h2_init_key = "mod_http2_init_counter";
     nghttp2_info *ngh2;
     apr_status_t status;
     (void)plog;(void)ptemp;

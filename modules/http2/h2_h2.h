@@ -29,47 +29,6 @@ extern const char *h2_clear_protos[];
 extern const char *h2_tls_protos[];
 
 /**
- * The magic PRIamble of RFC 7540 that is always sent when starting
- * a h2 communication.
- */
-extern const char *H2_MAGIC_TOKEN;
-
-#define H2_ERR_NO_ERROR             (0x00)
-#define H2_ERR_PROTOCOL_ERROR       (0x01)
-#define H2_ERR_INTERNAL_ERROR       (0x02)
-#define H2_ERR_FLOW_CONTROL_ERROR   (0x03)
-#define H2_ERR_SETTINGS_TIMEOUT     (0x04)
-#define H2_ERR_STREAM_CLOSED        (0x05)
-#define H2_ERR_FRAME_SIZE_ERROR     (0x06)
-#define H2_ERR_REFUSED_STREAM       (0x07)
-#define H2_ERR_CANCEL               (0x08)
-#define H2_ERR_COMPRESSION_ERROR    (0x09)
-#define H2_ERR_CONNECT_ERROR        (0x0a)
-#define H2_ERR_ENHANCE_YOUR_CALM    (0x0b)
-#define H2_ERR_INADEQUATE_SECURITY  (0x0c)
-#define H2_ERR_HTTP_1_1_REQUIRED    (0x0d)
-
-/* Maximum number of padding bytes in a frame, rfc7540 */
-#define H2_MAX_PADLEN               256
-/* Initial default window size, RFC 7540 ch. 6.5.2 */
-#define H2_INITIAL_WINDOW_SIZE      ((64*1024)-1)
-
-#define H2_HTTP_2XX(a)      ((a) >= 200 && (a) < 300)
-
-#define H2_STREAM_CLIENT_INITIATED(id)      (id&0x01)
-
-typedef enum {
-    H2_DEPENDANT_AFTER,
-    H2_DEPENDANT_INTERLEAVED,
-    H2_DEPENDANT_BEFORE,
-} h2_dependency;
-
-typedef struct h2_priority {
-    h2_dependency dependency;
-    int           weight;
-} h2_priority;
-
-/**
  * Provide a user readable description of the HTTP/2 error code-
  * @param h2_error http/2 error code, as in rfc 7540, ch. 7
  * @return textual description of code or that it is unknown.

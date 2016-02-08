@@ -345,10 +345,9 @@ static int add_push(link_ctx *ctx)
                              "Cache-Control",
                              "Accept-Language",
                              NULL);
-                req = h2_request_createn(0, ctx->pool, ctx->req->config, 
-                                         method, ctx->req->scheme,
-                                         ctx->req->authority, 
-                                         path, headers);
+                req = h2_request_createn(0, ctx->pool, method, ctx->req->scheme,
+                                         ctx->req->authority, path, headers,
+                                         ctx->req->serialize);
                 /* atm, we do not push on pushes */
                 h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
@@ -454,36 +453,6 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
         }
     }
     return NULL;
-}
-
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
-{
-    h2_push_policy policy = H2_PUSH_NONE;
-    if (push_enabled) {
-        const char *val = apr_table_get(req->headers, "accept-push-policy");
-        if (val) {
-            if (ap_find_token(p, val, "fast-load")) {
-                policy = H2_PUSH_FAST_LOAD;
-            }
-            else if (ap_find_token(p, val, "head")) {
-                policy = H2_PUSH_HEAD;
-            }
-            else if (ap_find_token(p, val, "default")) {
-                policy = H2_PUSH_DEFAULT;
-            }
-            else if (ap_find_token(p, val, "none")) {
-                policy = H2_PUSH_NONE;
-            }
-            else {
-                /* nothing known found in this header, go by default */
-                policy = H2_PUSH_DEFAULT;
-            }
-        }
-        else {
-            policy = H2_PUSH_DEFAULT;
-        }
-    }
-    req->push_policy = policy;
 }
 
 /*******************************************************************************

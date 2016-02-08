@@ -95,6 +95,8 @@ struct h2_mplx {
  * Object lifecycle and information.
  ******************************************************************************/
 
+apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s);
+
 /**
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.

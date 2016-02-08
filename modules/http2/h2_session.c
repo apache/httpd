@@ -47,8 +47,6 @@
 #include "h2_workers.h"
 
 
-static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
-
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
     if (rv == APR_SUCCESS) {
@@ -216,7 +214,7 @@ static int on_invalid_frame_recv_cb(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
         
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03063)
                       "h2_session(%ld): recv unknown FRAME[%s], frames=%ld/%ld (r/s)",
                       session->id, buffer, (long)session->frames_received,
@@ -377,7 +375,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
         
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03066)
                       "h2_session(%ld): recv FRAME[%s], frames=%ld/%ld (r/s)",
                       session->id, buffer, (long)session->frames_received,
@@ -466,8 +464,8 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
             if (APLOGctrace2(session->c)) {
                 char buffer[256];
                 
-                frame_print(frame, buffer,
-                            sizeof(buffer)/sizeof(buffer[0]));
+                h2_util_frame_print(frame, buffer,
+                                    sizeof(buffer)/sizeof(buffer[0]));
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                               "h2_session: on_frame_rcv %s", buffer);
             }
@@ -607,7 +605,7 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
         
-        frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03068)
                       "h2_session(%ld): sent FRAME[%s], frames=%ld/%ld (r/s)",
                       session->id, buffer, (long)session->frames_received,
@@ -690,7 +688,8 @@ static void h2_session_destroy(h2_session *session)
     }
 }
 
-static apr_status_t h2_session_shutdown(h2_session *session, int reason, const char *msg)
+static apr_status_t h2_session_shutdown(h2_session *session, int reason, 
+                                        const char *msg, int force_close)
 {
     apr_status_t status = APR_SUCCESS;
     const char *err = msg;
@@ -708,6 +707,11 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason, const c
                   "session(%ld): sent GOAWAY, err=%d, msg=%s", 
                   session->id, reason, err? err : "");
     dispatch_event(session, H2_SESSION_EV_LOCAL_GOAWAY, reason, err);
+    
+    if (force_close) {
+        h2_mplx_abort(session->mplx);
+    }
+    
     return status;
 }
 
@@ -1437,14 +1441,14 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
     apr_pool_t *pool = h2_stream_detach_pool(stream);
 
     /* this may be called while the session has already freed
-     * some internal structures. */
+     * some internal structures or even when the mplx is locked. */
     if (session->mplx) {
         h2_mplx_stream_done(session->mplx, stream->id, stream->rst_error);
-        if (session->last_stream == stream) {
-            session->last_stream = NULL;
-        }
     }
     
+    if (session->last_stream == stream) {
+        session->last_stream = NULL;
+    }
     if (session->streams) {
         h2_stream_set_remove(session->streams, stream->id);
     }
@@ -1458,84 +1462,6 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
         session->spare = pool;
     }
     return APR_SUCCESS;
-}
-
-static int frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
-{
-    char scratch[128];
-    size_t s_len = sizeof(scratch)/sizeof(scratch[0]);
-    
-    switch (frame->hd.type) {
-        case NGHTTP2_DATA: {
-            return apr_snprintf(buffer, maxlen,
-                                "DATA[length=%d, flags=%d, stream=%d, padlen=%d]",
-                                (int)frame->hd.length, frame->hd.flags,
-                                frame->hd.stream_id, (int)frame->data.padlen);
-        }
-        case NGHTTP2_HEADERS: {
-            return apr_snprintf(buffer, maxlen,
-                                "HEADERS[length=%d, hend=%d, stream=%d, eos=%d]",
-                                (int)frame->hd.length,
-                                !!(frame->hd.flags & NGHTTP2_FLAG_END_HEADERS),
-                                frame->hd.stream_id,
-                                !!(frame->hd.flags & NGHTTP2_FLAG_END_STREAM));
-        }
-        case NGHTTP2_PRIORITY: {
-            return apr_snprintf(buffer, maxlen,
-                                "PRIORITY[length=%d, flags=%d, stream=%d]",
-                                (int)frame->hd.length,
-                                frame->hd.flags, frame->hd.stream_id);
-        }
-        case NGHTTP2_RST_STREAM: {
-            return apr_snprintf(buffer, maxlen,
-                                "RST_STREAM[length=%d, flags=%d, stream=%d]",
-                                (int)frame->hd.length,
-                                frame->hd.flags, frame->hd.stream_id);
-        }
-        case NGHTTP2_SETTINGS: {
-            if (frame->hd.flags & NGHTTP2_FLAG_ACK) {
-                return apr_snprintf(buffer, maxlen,
-                                    "SETTINGS[ack=1, stream=%d]",
-                                    frame->hd.stream_id);
-            }
-            return apr_snprintf(buffer, maxlen,
-                                "SETTINGS[length=%d, stream=%d]",
-                                (int)frame->hd.length, frame->hd.stream_id);
-        }
-        case NGHTTP2_PUSH_PROMISE: {
-            return apr_snprintf(buffer, maxlen,
-                                "PUSH_PROMISE[length=%d, hend=%d, stream=%d]",
-                                (int)frame->hd.length,
-                                !!(frame->hd.flags & NGHTTP2_FLAG_END_HEADERS),
-                                frame->hd.stream_id);
-        }
-        case NGHTTP2_PING: {
-            return apr_snprintf(buffer, maxlen,
-                                "PING[length=%d, ack=%d, stream=%d]",
-                                (int)frame->hd.length,
-                                frame->hd.flags&NGHTTP2_FLAG_ACK,
-                                frame->hd.stream_id);
-        }
-        case NGHTTP2_GOAWAY: {
-            size_t len = (frame->goaway.opaque_data_len < s_len)?
-            frame->goaway.opaque_data_len : s_len-1;
-            memcpy(scratch, frame->goaway.opaque_data, len);
-            scratch[len+1] = '\0';
-            return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s']",
-                                frame->goaway.error_code, scratch);
-        }
-        case NGHTTP2_WINDOW_UPDATE: {
-            return apr_snprintf(buffer, maxlen,
-                                "WINDOW_UPDATE[stream=%d, incr=%d]",
-                                frame->hd.stream_id, 
-                                frame->window_update.window_size_increment);
-        }
-        default:
-            return apr_snprintf(buffer, maxlen,
-                                "type=%d[length=%d, flags=%d, stream=%d]",
-                                frame->hd.type, (int)frame->hd.length,
-                                frame->hd.flags, frame->hd.stream_id);
-    }
 }
 
 int h2_session_push_enabled(h2_session *session)
@@ -1791,7 +1717,7 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
         default:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                           "h2_session(%ld): conn error -> shutdown", session->id);
-            h2_session_shutdown(session, arg, msg);
+            h2_session_shutdown(session, arg, msg, 0);
             break;
     }
 }
@@ -1808,7 +1734,7 @@ static void h2_session_ev_proto_error(h2_session *session, int arg, const char *
         default:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                           "h2_session(%ld): proto error -> shutdown", session->id);
-            h2_session_shutdown(session, arg, msg);
+            h2_session_shutdown(session, arg, msg, 0);
             break;
     }
 }
@@ -1820,7 +1746,7 @@ static void h2_session_ev_conn_timeout(h2_session *session, int arg, const char 
             transit(session, "conn timeout", H2_SESSION_ST_DONE);
             break;
         default:
-            h2_session_shutdown(session, arg, msg);
+            h2_session_shutdown(session, arg, msg, 1);
             transit(session, "conn timeout", H2_SESSION_ST_DONE);
             break;
     }
@@ -1841,7 +1767,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
-                    h2_session_shutdown(session, arg, msg);
+                    h2_session_shutdown(session, arg, msg, 0);
                     transit(session, "no io", H2_SESSION_ST_DONE);
                 }
                 else {
@@ -1919,7 +1845,7 @@ static void h2_session_ev_mpm_stopping(h2_session *session, int arg, const char 
             /* nop */
             break;
         default:
-            h2_session_shutdown(session, arg, msg);
+            h2_session_shutdown(session, arg, msg, 0);
             break;
     }
 }
@@ -1932,7 +1858,7 @@ static void h2_session_ev_pre_close(h2_session *session, int arg, const char *ms
             /* nop */
             break;
         default:
-            h2_session_shutdown(session, arg, msg);
+            h2_session_shutdown(session, arg, msg, 1);
             h2_conn_io_flush(&session->io);
             break;
     }
@@ -2035,7 +1961,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
                 if (!h2_is_acceptable_connection(c, 1)) {
                     update_child_status(session, SERVER_BUSY_READ, "inadequate security");
-                    h2_session_shutdown(session, NGHTTP2_INADEQUATE_SECURITY, NULL);
+                    h2_session_shutdown(session, NGHTTP2_INADEQUATE_SECURITY, NULL, 1);
                 } 
                 else {
                     update_child_status(session, SERVER_BUSY_READ, "init");
@@ -2079,7 +2005,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, c,
                                       "h2_session(%ld): idle, no data, error", 
                                       session->id);
-                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "timeout");
                     }
                 }
                 else {
@@ -2101,7 +2027,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* continue reading handling */
                     }
                     else {
-                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "error");
                     }
                 }
                 
@@ -2208,7 +2134,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     transit(session, "wait cycle", H2_SESSION_ST_BUSY);
                 }
                 else {
-                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, "cond wait error");
+                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, "cond wait error", 0);
                 }
                 break;
                 

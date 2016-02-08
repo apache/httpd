@@ -27,6 +27,8 @@
 #include <http_request.h>
 #include <http_log.h>
 
+#include "mod_ssl.h"
+
 #include "mod_http2.h"
 #include "h2_private.h"
 
@@ -54,18 +56,8 @@ const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 /*******************************************************************************
  * The optional mod_ssl functions we need. 
  */
-APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec*));
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec*));
-
 static int (*opt_ssl_engine_disable)(conn_rec*);
 static int (*opt_ssl_is_https)(conn_rec*);
-/*******************************************************************************
- * SSL var lookup
- */
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *,
-                         char *));
 static char *(*opt_ssl_var_lookup)(apr_pool_t *, server_rec *,
                                    conn_rec *, request_rec *,
                                    char *);

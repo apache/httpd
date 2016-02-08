@@ -16,6 +16,8 @@
 #ifndef __mod_h2__h2_stream__
 #define __mod_h2__h2_stream__
 
+#include "h2.h"
+
 /**
  * A HTTP/2 stream, e.g. a client request+response in HTTP/1.1 terms.
  * 
@@ -29,16 +31,6 @@
  * by DATA frames read from the h2_stream until EOS is reached.
  */
 #include "h2_io.h"
-
-typedef enum {
-    H2_STREAM_ST_IDLE,
-    H2_STREAM_ST_OPEN,
-    H2_STREAM_ST_RESV_LOCAL,
-    H2_STREAM_ST_RESV_REMOTE,
-    H2_STREAM_ST_CLOSED_INPUT,
-    H2_STREAM_ST_CLOSED_OUTPUT,
-    H2_STREAM_ST_CLOSED,
-} h2_stream_state_t;
 
 struct h2_mplx;
 struct h2_priority;
