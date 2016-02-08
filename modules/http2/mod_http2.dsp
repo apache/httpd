@@ -129,6 +129,10 @@ SOURCE=./h2_ctx.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_filter.c
+# End Source File
+# Begin Source File
+
 SOURCE=./h2_from_h1.c
 # End Source File
 # Begin Source File
