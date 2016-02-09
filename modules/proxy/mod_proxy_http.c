@@ -2097,21 +2097,6 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                "proxy-request-hostname",
                                backend->ssl_hostname);
             }
-
-            /* Step Three-and-a-Half: See if the socket is still connected (if
-             * desired). Note: Since ap_proxy_connect_backend just above does
-             * the same check (unconditionally), this step is not required when
-             * backend's socket/connection is reused (ie. no Step Three).
-             */
-            if (worker->s->ping_timeout_set && worker->s->ping_timeout < 0 &&
-                    !ap_proxy_is_socket_connected(backend->sock)) {
-                backend->close = 1;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(02535)
-                              "socket check failed to %pI (%s)",
-                              worker->cp->addr, worker->s->hostname);
-                retry++;
-                continue;
-            }
         }
 
         /* Don't recycle the connection if prefetch (above) told not to do so */
@@ -2130,8 +2115,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                             flushall)) != OK) {
             proxy_run_detach_backend(r, backend);
             if ((status == HTTP_SERVICE_UNAVAILABLE) &&
-                 worker->s->ping_timeout_set &&
-                 worker->s->ping_timeout >= 0) {
+                    worker->s->ping_timeout_set) {
                 backend->close = 1;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(01115)
                               "HTTP: 100-Continue failed to %pI (%s)",

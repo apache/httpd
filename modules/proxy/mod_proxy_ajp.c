@@ -342,8 +342,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * but doesn't affect the whole worker.
          */
         if (APR_STATUS_IS_TIMEUP(status) &&
-            conn->worker->s->ping_timeout_set &&
-            conn->worker->s->ping_timeout >= 0) {
+                conn->worker->s->ping_timeout_set) {
             return HTTP_GATEWAY_TIME_OUT;
         }
 
@@ -680,8 +679,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              * but doesn't affect the whole worker.
              */
             if (APR_STATUS_IS_TIMEUP(status) &&
-                conn->worker->s->ping_timeout_set &&
-                conn->worker->s->ping_timeout >= 0) {
+                    conn->worker->s->ping_timeout_set) {
                 apr_table_setn(r->notes, "proxy_timedout", "1");
                 rv = HTTP_GATEWAY_TIME_OUT;
             }
@@ -791,35 +789,22 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
         /* Handle CPING/CPONG */
         if (worker->s->ping_timeout_set) {
-            if (worker->s->ping_timeout < 0) {
-                if (!ap_proxy_is_socket_connected(backend->sock)) {
-                    backend->close = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(02534)
-                                  "socket check failed to %pI (%s)",
-                                  worker->cp->addr, worker->s->hostname);
-                    status = HTTP_SERVICE_UNAVAILABLE;
-                    retry++;
-                    continue;
-                }
-            }
-            else {
-                status = ajp_handle_cping_cpong(backend->sock, r,
-                                                worker->s->ping_timeout);
-                /*
-                 * In case the CPING / CPONG failed for the first time we might be
-                 * just out of luck and got a faulty backend connection, but the
-                 * backend might be healthy nevertheless. So ensure that the backend
-                 * TCP connection gets closed and try it once again.
-                 */
-                if (status != APR_SUCCESS) {
-                    backend->close = 1;
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00897)
-                                  "cping/cpong failed to %pI (%s)",
-                                  worker->cp->addr, worker->s->hostname);
-                    status = HTTP_SERVICE_UNAVAILABLE;
-                    retry++;
-                    continue;
-                }
+            status = ajp_handle_cping_cpong(backend->sock, r,
+                                            worker->s->ping_timeout);
+            /*
+             * In case the CPING / CPONG failed for the first time we might be
+             * just out of luck and got a faulty backend connection, but the
+             * backend might be healthy nevertheless. So ensure that the backend
+             * TCP connection gets closed and try it once again.
+             */
+            if (status != APR_SUCCESS) {
+                backend->close = 1;
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00897)
+                              "cping/cpong failed to %pI (%s)",
+                              worker->cp->addr, worker->s->hostname);
+                status = HTTP_SERVICE_UNAVAILABLE;
+                retry++;
+                continue;
             }
         }
         /* Step Three: Process the Request */
