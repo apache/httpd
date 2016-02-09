@@ -211,9 +211,9 @@ static int proxy_http2_handler(request_rec *r,
 {
     const char *proxy_function;
     proxy_conn_rec *backend;
-    char *locurl = url, *u, *firsturl;
+    char *locurl = url, *u;
     apr_size_t slen;
-    int is_ssl = 0, retry = 0;
+    int is_ssl = 0;
     int flushall = 0;
     int status;
     char server_portstr[32];
@@ -268,7 +268,7 @@ static int proxy_http2_handler(request_rec *r,
         ap_proxy_ssl_connection_cleanup(backend, r);
     }
 
-    while (retry < 2) {
+    do { /* while (0): break out */
         conn_rec *backconn;
         
         /* Step One: Determine the URL to connect to (might be a proxy),
@@ -288,18 +288,6 @@ static int proxy_http2_handler(request_rec *r,
             ssl_hostname = apr_pstrdup(r->pool, backend->ssl_hostname);
         }
         
-        if (!retry) {
-            firsturl = locurl;
-            /* http does a prefetch here, so that it immediately can start sending
-             * when the backend connection comes online. This minimizes the risk of
-             * reusing a connection only to experience a keepalive close.
-             */
-        }
-        else {
-            /* On a retry, we'd expect to see the same url again */
-            AP_DEBUG_ASSERT(strcmp(firsturl, locurl) == 0);
-        }
-
         /* Step Two: Make the Connection (or check that an already existing
          * socket is still usable). On success, we have a socket connected to
          * backend->hostname. */
@@ -339,21 +327,6 @@ static int proxy_http2_handler(request_rec *r,
                 apr_table_setn(backend->connection->notes,
                                "proxy-request-alpn-protos", "h2");
             }
-            
-            /* Step Three-and-a-Half: See if the socket is still connected (if
-             * desired). Note: Since ap_proxy_connect_backend just above does
-             * the same check (unconditionally), this step is not required when
-             * backend's socket/connection is reused (ie. no Step Three).
-             */
-            if (worker->s->ping_timeout_set && worker->s->ping_timeout < 0 &&
-                !ap_proxy_is_socket_connected(backend->sock)) {
-                backend->close = 1;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO()
-                              "socket check failed to %pI (%s)",
-                              worker->cp->addr, worker->s->hostname);
-                retry++;
-                continue;
-            }
         }
 
         /* Step Four: Send the Request in a new HTTP/2 stream and
@@ -370,8 +343,7 @@ static int proxy_http2_handler(request_rec *r,
                 proxy_run_detach_backend(r, backend);
             }
         }
-        break;
-    }
+    } while (0);
 
     /* clean up before return */
 cleanup:

@@ -280,7 +280,7 @@ static const char *set_worker_param(apr_pool_t *p,
          */
         if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
             return "Ping/Pong timeout has wrong format";
-        if (timeout < 1000 && timeout >= 0)
+        if (timeout < 1000)
             return "Ping/Pong timeout must be at least one millisecond";
         worker->s->ping_timeout = timeout;
         worker->s->ping_timeout_set = 1;

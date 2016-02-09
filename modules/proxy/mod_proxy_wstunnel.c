@@ -421,7 +421,6 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     const char *upgrade;
     char *scheme;
-    int retry;
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri;
@@ -463,15 +462,13 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     backend->is_ssl = is_ssl;
     backend->close = 0;
 
-    retry = 0;
-    while (retry < 2) {
+    do { /* while (0): break out */
         char *locurl = url;
         /* Step One: Determine Who To Connect To */
         status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                                uri, &locurl, proxyname, proxyport,
                                                server_portstr,
                                                sizeof(server_portstr));
-
         if (status != OK)
             break;
 
@@ -495,8 +492,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
         /* Step Three: Process the Request */
         status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
                                       server_portstr, scheme);
-        break;
-    }
+    } while (0);
 
     /* Do not close the socket */
     if (status != SUSPENDED) { 
