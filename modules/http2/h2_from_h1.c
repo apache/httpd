@@ -519,7 +519,7 @@ apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (eb) {
         int st = eb->status;
         apr_brigade_cleanup(bb);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03047)
                       "h2_from_h1(%d): err bucket status=%d", 
                       from_h1->stream_id, st);
         ap_die(st, r);
@@ -528,7 +528,7 @@ apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     
     from_h1->response = create_response(from_h1, r);
     if (from_h1->response == NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_NOTICE, 0, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_NOTICE, 0, f->c, APLOGNO(03048)
                       "h2_from_h1(%d): unable to create response", 
                       from_h1->stream_id);
         return APR_ENOMEM;
@@ -574,7 +574,7 @@ apr_status_t h2_response_trailers_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 /* FIXME: need a better test case than this.
                 apr_table_setn(r->trailers_out, "X", "1"); */
                 if (r->trailers_out && !apr_is_empty_table(r->trailers_out)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03049)
                                   "h2_from_h1(%d): trailers filter, saving trailers",
                                   from_h1->stream_id);
                     h2_response_set_trailers(from_h1->response,

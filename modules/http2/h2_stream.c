@@ -67,7 +67,7 @@ static int set_state(h2_stream *stream, h2_stream_state_t state)
         return 1;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, stream->session->c, APLOGNO(03081)
                   "h2_stream(%ld-%d): invalid state transition from %d to %d", 
                   stream->session->id, stream->id, stream->state, state);
     return 0;
@@ -160,7 +160,7 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
     set_state(stream, H2_STREAM_ST_OPEN);
     stream->request   = h2_request_create(id, pool, session->config);
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
     return stream;
 }

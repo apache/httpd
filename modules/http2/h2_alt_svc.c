@@ -102,7 +102,7 @@ static int h2_alt_svc_handler(request_rec *r)
             if (ma >= 0) {
                 svc_ma = apr_psprintf(r->pool, "; ma=%d", ma);
             }
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03043)
                           "h2_alt_svc: announce %s for %s:%d", 
                           (secure? "secure" : "insecure"), 
                           r->hostname, (int)r->server->port);

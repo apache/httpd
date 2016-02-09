@@ -1826,23 +1826,23 @@ static const char *
 
         if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(03018)
                          "Parsed addr %s", inet_ntoa(New->addr));
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(03019)
                          "Parsed mask %s", inet_ntoa(New->mask));
 #endif
         }
         else if (ap_proxy_is_domainname(New, parms->pool)) {
             ap_str_tolower(New->name);
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(03020)
                          "Parsed domain %s", New->name);
 #endif
         }
         else if (ap_proxy_is_hostname(New, parms->pool)) {
             ap_str_tolower(New->name);
 #if DEBUGGING
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(03021)
                          "Parsed host %s", New->name);
 #endif
         }

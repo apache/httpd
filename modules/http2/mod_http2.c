@@ -78,7 +78,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     
     apr_pool_userdata_get(&data, mod_h2_init_key, s->process->pool);
     if ( data == NULL ) {
-        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error( APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03089)
                      "initializing post config dry run");
         apr_pool_userdata_set((const void *)1, mod_h2_init_key,
                               apr_pool_cleanup_null, s->process->pool);
@@ -86,7 +86,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     
     ngh2 = nghttp2_version(0);
-    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03090)
                  "mod_http2 (v%s, nghttp2 %s), initializing...",
                  MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
     
@@ -100,7 +100,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
             break;
         case H2_MPM_UNKNOWN:
             /* ??? */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03091)
                          "post_config: mpm type unknown");
             break;
     }
