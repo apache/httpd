@@ -553,9 +553,7 @@ static apr_status_t hc_check_tcp(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *w
     if (status == OK) {
         backend->addr = hc->cp->addr;
         status = ap_proxy_connect_backend("HCTCP", backend, hc, ctx->s);
-        if (status == OK) {
-            status = (ap_proxy_is_socket_connected(backend->sock) ? OK : !OK);
-        }
+        /* does an unconditional ap_proxy_is_socket_connected() */
     }
     return backend_cleanup("HCTCP", backend, ctx->s, status);
 }
