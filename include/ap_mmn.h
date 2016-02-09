@@ -498,15 +498,16 @@
  * 20150222.7 (2.5.0-dev)  Add ap_casecmpstr[n]();
  * 20150222.8 (2.5.0-dev)  Add ap_getword_conf2[_nc]();
  * 20150222.9 (2.5.0-dev)  Add epxr_hander to core_dir_config.
- * 20160121.0 (2.5.0-dev)  Add new ap_update_child_status...() methods.
+ * 20150222.10 (2.5.0-dev) Add new ap_update_child_status...() methods,
+ *                         add protocol to worker_score in scoreboard.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20160121
+#define MODULE_MAGIC_NUMBER_MAJOR 20150222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 10                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
