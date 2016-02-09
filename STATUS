@@ -112,6 +112,69 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
+     remain unset for second or later caller. Fix this by caching the values for 
+     MOD_LDFLAGS and MOD_CFLAGS created during the first run and set them in the 
+     cached case. Change by rpluem
+     trunk patch:  http://svn.apache.org/r1725325
+     2.4.x patch:  trunk works
+     +1: icing, jim, ylavic
+
+  *) mod_ssl: Fix missing TLS Upgrade/Connection headers on OPTIONS * requests
+     (Note that this is simply a necessary band-aid, and still won't allow h2c
+     to peacefully coexist with tls/n.n upgrades, because Upgrade phase needs
+     to come earlier, not as a handler, and the bogus connection-close behavior
+     must be removed before the Protocol API can handle TLS upgrade.)
+     PR58688
+     trunk patch: http://svn.apache.org/r1717816
+     +1: wrowe, icing, ylavic
+
+  *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
+              for later retries.
+     trunk patch:  http://svn.apache.org/r1725940
+     +1: icing, jim, ylavic
+
+  *) Add APLOGNO, first chunk (those that were detected by coccinelle).
+     There are some more but they are easier to backport once these here are applied.
+     trunk patch:  http://svn.apache.org/r1725392 (modules)
+                   http://svn.apache.org/r1725394 (server/mpm)
+                   http://svn.apache.org/r1725395 (server others)
+                   http://svn.apache.org/r1725468 (remove APLOGNO from mod_log_debug custom messages)
+     2.4.x patch:  http://people.apache.org/~rjung/patches/aplogno-backport-r1725392.patch
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
+                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725468.patch
+     +1: rjung, jim, ylavic
+     icing: needs http://svn.apache.org/r1725468
+     rjung: You are right, I added r1725468 and restarted the vote.
+
+  *) core: Prevent a server crash in case of an invalid CONNECT request with
+     a custom error page for status code 400 that uses server side includes.
+     PR 58929
+     Trunk version of patch:
+         http://svn.apache.org/r1727544
+     Backport version for 2.4.x of patch:
+         Trunk version of patch works modulo CHANGES
+     +1: rpluem, covener, ylavic
+
+  *) core: Add expression support to SetHandler (someone wanted this in
+     a well-articulated serverfault post).
+     trunk patch:  http://svn.apache.org/r1725149
+                   http://svn.apache.org/r1725151
+                   http://svn.apache.org/r1726233
+                   http://svn.apache.org/r1729374
+     2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr-2.diff
+                                    + http://svn.apache.org/r1729374 
+     +1: covener, jim, ylavic
+
+  *) core: introducing new hook "pre_close_connection" to give protocols other
+     than http/1.1 a chance to send one last frame before close.
+     Requires MMN bump
+     trunk patch:  http://svn.apache.org/r1727071
+                   http://svn.apache.org/r1727573
+     2.4.x patch:  trunk works (modulo CHANGES)
+     +1: icing, covener, ylavic
+     covener: needs MMN bump, but sorting out previous MMN question first.
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -138,18 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               to silence this warning
      jailletc36: This has been done in r1711919
      ylavic: Also, I don't think the changes on worker/event are needed,
-             prefork only requires the accept mutex in ONE_PROCESS mode.
-
-  *) mod_ssl: Fix missing TLS Upgrade/Connection headers on OPTIONS * requests
-     (Note that this is simply a necessary band-aid, and still won't allow h2c
-     to peacefully coexist with tls/n.n upgrades, because Upgrade phase needs
-     to come earlier, not as a handler, and the bogus connection-close behavior
-     must be removed before the Protocol API can handle TLS upgrade.)
-     PR58688
-     trunk patch: http://svn.apache.org/r1717816
-     +1: wrowe, icing
-     ylavic: how about adding !ap_request_has_body(r) to the test then?
-             wrowe responds: nonstarter, as discussed on list.
+             only prefork requires the accept mutex in ONE_PROCESS mode.
 
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
@@ -157,6 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1720129
      2.4.x patch: http://jkaluza.fedorapeople.org/httpd-2.4.x-dhparams-free.patch
      +1: jkaluza
+     ylavic: +1 with r1723295 (likewise for ecparams).
 
   *) mod_cache_socache: Fix a possible cached entity body corruption when it
      is received from an origin server in multiple batches and forwarded by
@@ -164,61 +217,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1721899
      2.4.x patch: trunk works, module CHANGES
      +1: ylavic, jim
-
-  *) core: Add expression support to SetHandler (someone wanted this in
-     a well-articulated serverfault post).
-     trunk patch:  http://svn.apache.org/r1725149
-                   http://svn.apache.org/r1725151
-                   http://svn.apache.org/r1726233
-                   http://svn.apache.org/r1729374
-     2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr-2.diff
-                                    + http://svn.apache.org/r1729374 
-     +1: covener, jim
-
-  *) Add APLOGNO, first chunk (those that were detected by coccinelle).
-     There are some more but they are easier to backport once these here are applied.
-     trunk patch:  http://svn.apache.org/r1725392 (modules)
-                   http://svn.apache.org/r1725394 (server/mpm)
-                   http://svn.apache.org/r1725395 (server others)
-                   http://svn.apache.org/r1725468 (remove APLOGNO from mod_log_debug custom messages)
-     2.4.x patch:  http://people.apache.org/~rjung/patches/aplogno-backport-r1725392.patch
-                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725394.patch
-                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725395.patch
-                   http://people.apache.org/~rjung/patches/aplogno-backport-r1725468.patch
-     +1: rjung, jim
-     icing: needs http://svn.apache.org/r1725468
-     rjung: You are right, I added r1725468 and restarted the vote.
-
-  *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
-              for later retries.
-     trunk patch:  http://svn.apache.org/r1725940
-     +1: icing, jim
-
-  *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
-     remain unset for second or later caller. Fix this by caching the values for 
-     MOD_LDFLAGS and MOD_CFLAGS created during the first run and set them in the 
-     cached case. Change by rpluem
-     trunk patch:  http://svn.apache.org/r1725325
-     2.4.x patch:  trunk works
-     +1: icing, jim
-
-  *) core: introducing new hook "pre_close_connection" to give protocols other
-     than http/1.1 a chance to send one last frame before close.
-     Requires MMN bump
-     trunk patch:  http://svn.apache.org/r1727071
-                   http://svn.apache.org/r1727573
-     2.4.x patch:  trunk works (modulo CHANGES)
-     +1: icing, covener
-     covener: needs MMN bump, but sorting out previous MMN question first.
-    
-  *) core: Prevent a server crash in case of an invalid CONNECT request with
-     a custom error page for status code 400 that uses server side includes.
-     PR 58929
-     Trunk version of patch:
-         http://svn.apache.org/r1727544
-     Backport version for 2.4.x of patch:
-         Trunk version of patch works modulo CHANGES
-     +1: rpluem, covener
 
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy.
