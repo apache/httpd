@@ -350,8 +350,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * but doesn't affect the whole worker.
          */
         if (APR_STATUS_IS_TIMEUP(status) &&
-            conn->worker->s->ping_timeout_set &&
-            conn->worker->s->ping_timeout >= 0) {
+                conn->worker->s->ping_timeout_set) {
             return HTTP_GATEWAY_TIME_OUT;
         }
 
@@ -687,8 +686,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              * but doesn't affect the whole worker.
              */
             if (APR_STATUS_IS_TIMEUP(status) &&
-                conn->worker->s->ping_timeout_set &&
-                conn->worker->s->ping_timeout >= 0) {
+                    conn->worker->s->ping_timeout_set) {
                 apr_table_setn(r->notes, "proxy_timedout", "1");
                 rv = HTTP_GATEWAY_TIME_OUT;
             }
