@@ -48,6 +48,11 @@
   	BalancerMember parameters, which are configured in the standard
   	way via <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>:</p>
 
+  <p>A new BalancerMember status state (flag) is defined via this module: "<code>C</code>".
+     When the worker is taken offline due to failures as determined by the health
+     check module, this flag is set, and can be seen (and modified) via the
+     <code>balancer-manager</code>.</p>
+
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
