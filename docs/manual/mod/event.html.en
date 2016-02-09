@@ -38,12 +38,8 @@ of consuming threads only for connections with active processing</td></tr>
 
     <p>The <code class="module"><a href="../mod/event.html">event</a></code> Multi-Processing Module (MPM) is
     designed to allow more requests to be served simultaneously by
-    passing off some processing work to supporting threads, freeing up
-    the main threads to work on new requests.  It is based on the
-    <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, which implements a hybrid
-    multi-process multi-threaded server.  Run-time configuration
-    directives are identical to those provided by
-    <code class="module"><a href="../mod/worker.html">worker</a></code>.</p>
+    passing off some processing work to the listeners threads, freeing up
+    the worker threads to serve new requests.</p>
 
     <p>To use the <code class="module"><a href="../mod/event.html">event</a></code> MPM, add
       <code>--with-mpm=event</code> to the <code class="program"><a href="../programs/configure.html">configure</a></code>
@@ -52,6 +48,7 @@ of consuming threads only for connections with active processing</td></tr>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#event-worker-relationship">Relationship with the Worker MPM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
 </ul><h3 class="directives">Directives</h3>
@@ -83,39 +80,111 @@ of consuming threads only for connections with active processing</td></tr>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="event-worker-relationship" id="event-worker-relationship">Relationship with the Worker MPM</a></h2>
+<p><code class="module"><a href="../mod/event.html">event</a></code> is based on the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, which implements a hybrid 
+multi-process multi-threaded server. A single control process (the parent) is responsible for launching
+child processes. Each child process creates a fixed number of server
+threads as specified in the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive, as well
+as a listener thread which listens for connections and passes them to a worker thread for processing when they arrive.</p>
+
+<p>Run-time configuration directives are identical to those provided by <code class="module"><a href="../mod/worker.html">worker</a></code>, with the only addition 
+of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
     <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
-    completes the first request, the client can keep the connection
-    open, and send further requests using the same socket. This can
-    save significant overhead in creating TCP connections. However,
-    Apache HTTP Server traditionally keeps an entire child process/thread waiting
-    for data from the client, which brings its own disadvantages. To
-    solve this problem, this MPM uses a dedicated thread to handle both
-    the Listening sockets, all sockets that are in a Keep Alive state,
-    and sockets where the handler and protocol filters have done their work
-    and the only remaining thing to do is send the data to the client. The
-    status page of <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> shows how many connections are
-    in the mentioned states.</p>
+    completes the first request, it can keep the connection
+    open, sending further requests using the same socket and saving 
+    significant overhead in creating TCP connections. However,
+    Apache HTTP Server traditionally keeps an entire child 
+    process/thread waiting for data from the client, which brings its own disadvantages. 
+    To solve this problem, this MPM uses a dedicated listener thread for each process 
+    to handle both the Listening sockets, all sockets that are in a Keep Alive state, 
+    sockets where the handler and protocol filters have done their work
+    and the ones where the only remaining thing to do is send the data to the client.
+    </p>
 
-    <p>The improved connection handling may not work for certain connection
-    filters that have declared themselves as incompatible with event. In these
-    cases, this MPM will fall back to the behaviour of the
-    <code class="module"><a href="../mod/worker.html">worker</a></code> MPM and reserve one worker thread per connection.
-    All modules shipped with the server are compatible with the event MPM.</p>
+    <p>The total amount of connections that a single process/threads block can handle is regulated 
+        by the <code class="directive">AsyncRequestWorkerFactor</code> directive.</p>
 
-    <p>A similar restriction is currently present for requests involving an
-    output filter that needs to read and/or modify the whole response body,
-    like for example mod_ssl, mod_deflate, or mod_include. If the
-    connection to the client blocks while the filter is processing the
-    data, and the amount of data produced by the filter is too big to be
-    buffered in memory, the thread used for the request is not freed while
-    httpd waits until the pending data is sent to the client.</p>
+    <h3><a name="async-connections" id="async-connections">Async connections</a></h3>
+        <p>Async connections would need a fixed dedicated worker thread with the previous MPMs but not with event.
+        The status page of <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> shows new columns under the Async connections section:</p>
+        <dl>
+            <dt>Writing</dt>
+            <dd>While sending the response to the client, it might happen that the TCP write buffer fills up because the connection is too slow. Usually in this case a <code>write()</code> to the socket returns <code>EWOULDBLOCK</code> or <code>EAGAIN</code>, to become writable again after an idle time. The worker holding the socket might be able to offload the waiting task to the listener thread, that in turn will re-assign it to the first idle worker thread available once an event will be raised for the socket (for example, "the socket is now writable"). Please check the Limitations section for more information.
+            </dd>
 
-    <p>The MPM assumes that the underlying <code>apr_pollset</code>
-    implementation is reasonably threadsafe. This enables the MPM to
-    avoid excessive high level locking, or having to wake up the listener
-    thread in order to send it a keep-alive socket. This is currently
-    only compatible with KQueue and EPoll.</p>
+            <dt>Keep-alive</dt>
+            <dd>Keep Alive handling is the most basic improvement from the worker MPM.
+            Once a worker thread finishes to flush the response to the client, it can offload the
+            socket handling to the listener thread, that in turns will wait for any event from the
+            OS, like "the socket is readable". If any new request comes from the client, then the 
+            listener will forward it to the first worker thread available. Conversely, if the 
+            <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> occurs then the socket will be 
+            closed by the listener. In this way the worker threads are not responsible for idle
+            sockets and they can be re-used to serve other requests.</dd>
+
+            <dt>Closing</dt>
+            <dd>Sometimes the MPM needs to perform a lingering close, namely sending back an early error to the client while it is still transmitting data to httpd. Sending the response and then closing the connection immediately is not the correct thing to do since the client (still trying to send the rest of the request) would get a connection reset and could not read the httpd's response. So in such cases, httpd tries to read the rest of the request to allow the client to consume the response. The lingering close is time bounded but it can take relatively long time, so a worker thread can offload this work to the listener.</dd>
+        </dl>
+
+        <p>These improvements are valid for both HTTP/HTTPS connections.</p> 
+
+    
+
+    <h3><a name="limitations" id="limitations">Limitations</a></h3>
+        <p>The improved connection handling may not work for certain connection
+        filters that have declared themselves as incompatible with event. In these
+        cases, this MPM will fall back to the behaviour of the
+        <code class="module"><a href="../mod/worker.html">worker</a></code> MPM and reserve one worker thread per connection.
+        All modules shipped with the server are compatible with the event MPM.</p>
+
+        <p>A similar restriction is currently present for requests involving an
+        output filter that needs to read and/or modify the whole response body,
+        like for example mod_ssl, mod_deflate, or mod_include. If the
+        connection to the client blocks while the filter is processing the
+        data, and the amount of data produced by the filter is too big to be
+        buffered in memory, the thread used for the request is not freed while
+        httpd waits until the pending data is sent to the client. Please note that
+        this limitation is only a corner case, it does not mean that the event MPM
+        defaults to worker in presence of TLS/SSL connections and/or compression.</p> 
+        
+        <p>To illustrate this point we can think about the following two situations: 
+        serving a static asset (like a CSS file) versus serving content retrieved from
+        FCGI/CGI or a proxied server. The former is predictable, namely the event MPM 
+        has full visibility on the end of the content and it can use events: the worker 
+        thread serving the response content can flush the first bytes until <code>EWOULDBLOCK</code>
+        or <code>EAGAIN</code> is returned, delegating the rest to the listener. This one in turn
+        waits for an event on the socket, and delegates the work to flush the rest of the content
+        to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxed content)
+        the MPM can't predict the end of the response and a worker thread has to finish its work
+        before returning the control to the listener. The only alternative is to buffer the 
+        response in memory, but it wouldn't be the safest option for the sake of the
+        server's stability and memory footprint.
+        </p>
+
+    
+
+    <h3><a name="background" id="background">Background material</a></h3>
+        <p>The event model was made possible by the introduction of new APIs into the supported operating systems:</p>
+        <ul>
+            <li>epoll (Linux) </li>
+            <li>kqueue (BSD) </li>
+            <li>event ports (Solaris) </li>
+        </ul>
+        <p>Before these new APIs where made available, the traditional <code>select</code> and <code>poll</code> APIs had to be used. 
+        Those APIs get slow if used to handle many connections or if the set of connections rate of change is high. 
+        The new APIs allow to monitor much more connections and they perform way better when the set of connections to monitor changes frequently. So these APIs made it possible to write the event MPM, that scales much better with the typical HTTP pattern of many idle connections.</p>
+
+        <p>The MPM assumes that the underlying <code>apr_pollset</code>
+        implementation is reasonably threadsafe. This enables the MPM to
+        avoid excessive high level locking, or having to wake up the listener
+        thread in order to send it a keep-alive socket. This is currently
+        only compatible with KQueue and EPoll.</p>
+
+    
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
