@@ -262,17 +262,21 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
                       "No cert available to check with OCSP");
         return 1;
     }
-    /* XXX: OpenSSL 1.1.0: cert->valid not available in OpenSSL 1.1.0
-     * and I have found no accessor method. What to do? */
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
     else if (cert->valid && X509_check_issued(cert,cert) == X509_V_OK) {
+#else
+    /* No need to check cert->valid, because modssl_verify_ocsp() only
+     * is called if OpenSSL already successfully verified the certificate
+     * (parameter "ok" in ssl_callback_SSLVerify() must be true).
+     */
+    else if (X509_check_issued(cert,cert) == X509_V_OK) {
+#endif
         /* don't do OCSP checking for valid self-issued certs */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "Skipping OCSP check for valid self-issued cert");
         X509_STORE_CTX_set_error(ctx, X509_V_OK);
         return 1;
     }
-#endif
 
     /* Create a temporary pool to constrain memory use (the passed-in
      * pool may be e.g. a connection pool). */
