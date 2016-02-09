@@ -291,7 +291,7 @@ static int io_stream_done(h2_mplx *m, h2_io *io, int rst_error)
 {
     /* Remove io from ready set, we will never submit it */
     h2_io_set_remove(m->ready_ios, io);
-    if (!io->worker_started || io->worker_done) {
+    if (!io->processing_started || io->processing_done) {
         /* already finished or not even started yet */
         h2_tq_remove(m->q, io->id);
         io_destroy(m, io, 1);
@@ -406,7 +406,7 @@ static const h2_request *pop_request(h2_mplx *m)
         h2_io *io = h2_io_set_get(m->stream_ios, sid);
         if (io) {
             req = io->request;
-            io->worker_started = 1;
+            io->processing_started = 1;
             if (sid > m->max_stream_started) {
                 m->max_stream_started = sid;
             }
@@ -425,7 +425,7 @@ void h2_mplx_request_done(h2_mplx **pm, int stream_id, const h2_request **preq)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       "h2_mplx(%ld): request(%d) done", m->id, stream_id);
         if (io) {
-            io->worker_done = 1;
+            io->processing_done = 1;
             if (io->orphaned) {
                 io_destroy(m, io, 0);
                 if (m->join_wait) {
@@ -672,7 +672,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                               "resetting io to close request processing",
                               m->id, io->id);
                 h2_io_make_orphaned(io, H2_ERR_STREAM_CLOSED);
-                if (!io->worker_started || io->worker_done) {
+                if (!io->processing_started || io->processing_done) {
                     io_destroy(m, io, 1);
                 }
                 else {
