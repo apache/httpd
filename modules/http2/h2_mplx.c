@@ -307,7 +307,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                 }
             }
         }
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03056)
                       "h2_mplx(%ld): release_join -> destroy", m->id);
         apr_thread_mutex_unlock(m->lock);
         h2_mplx_destroy(m);

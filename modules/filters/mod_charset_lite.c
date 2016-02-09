@@ -508,7 +508,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     default:
         msg = APLOGNO(02198) "xlate filter - returning error";
     }
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, "%s", msg);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(02997) "%s", msg);
 }
 
 /* chk_filter_chain() is called once per filter instance; it tries to

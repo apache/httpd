@@ -1438,7 +1438,8 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
                 int j;
                 for (j = 0; j < i; j++) {
                     ssl_log_xerror(SSLLOG_MARK, APLOG_DEBUG, 0, ptemp, s,
-                                   sk_X509_value(chain, j), "%i:", j);
+                                   sk_X509_value(chain, j), APLOGNO(03039)
+                                   "%i:", j);
                 }
             }
         }
