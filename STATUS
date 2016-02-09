@@ -170,7 +170,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1725149
                    http://svn.apache.org/r1725151
                    http://svn.apache.org/r1726233
+                   http://svn.apache.org/r1729374
      2.4.x patch: MMN/changes only: http://people.apache.org/~covener/patches/2.4.x-sethandler-expr-2.diff
+                                    + http://svn.apache.org/r1729374 
      +1: covener, jim
 
   *) Add APLOGNO, first chunk (those that were detected by coccinelle).
@@ -206,8 +208,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1727071
                    http://svn.apache.org/r1727573
      2.4.x patch:  trunk works (modulo CHANGES)
-     +1: icing
-
+     +1: icing, covener
+     covener: needs MMN bump, but sorting out previous MMN question first.
+    
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
      PR 58929
@@ -215,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1727544
      Backport version for 2.4.x of patch:
          Trunk version of patch works modulo CHANGES
-     +1: rpluem,
+     +1: rpluem, covener
 
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy.
