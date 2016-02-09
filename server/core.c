@@ -4661,7 +4661,9 @@ static int core_override_type(request_rec *r)
                 ap_str_tolower(tmp);
                 r->handler = tmp;
             }
-            r->handler = val;
+            else { 
+                r->handler = val;
+            }
         }
     }
     else if (conf->handler && strcmp(conf->handler, "none")) { 
