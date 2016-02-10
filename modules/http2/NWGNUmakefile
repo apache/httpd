@@ -34,6 +34,8 @@ XINCDIRS	+= \
 			$(NGH2SRC)/lib/ \
 			$(NGH2SRC)/lib/includes \
 			$(SERVER)/mpm/NetWare \
+			$(STDMOD)/proxy \
+			$(STDMOD)/ssl \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -55,6 +57,7 @@ XDEFINES	+= \
 #
 XLFLAGS		+= \
 			-L$(OBJDIR) \
+			-L../proxy \
 			$(EOLIST)
 
 #
@@ -224,6 +227,7 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
+	@mod_proxy.imp \
 	$(EOLIST)
 
 #
