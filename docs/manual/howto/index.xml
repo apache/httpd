@@ -109,6 +109,19 @@
       </dd>
     </dl>
 
+    <dl>
+      <dt>Reverse Proxy guide</dt>
+      <dd>
+        <p>Apache httpd has extensive capabilities as a reverse proxy server using the
+        <directive module="mod_proxy">ProxyPass</directive> directive as well as
+        <directive module="mod_proxy">BalancerMember</directive> to create sophisticated
+        reverse proxying implementations which provide for high-availability, load
+        balancing and failover, cloud-based clustering and dynamic on-the-fly reconfiguration.</p>
+
+        <p>See: <a href="reverse_proxy.html">Reverse proxy guide</a></p>
+      </dd>
+    </dl>
+
   </section>
 
 </manualpage>
