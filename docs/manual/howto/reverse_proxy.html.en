@@ -30,72 +30,185 @@
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-	  <p>In addition to being a "basic" web server, and providing static and
-	  dynamic content to end-users, Apache httpd (as well as most other web
-	  servers) can also act as a reverse proxy server, also-known-as a
-	  "gateway" server.</p>
+    <p>In addition to being a "basic" web server, and providing static and
+    dynamic content to end-users, Apache httpd (as well as most other web
+    servers) can also act as a reverse proxy server, also-known-as a
+    "gateway" server.</p>
 
-	  <p>In such scenarios, httpd itself does not generate or host the data,
-	  but rather the content is obtained by one or several backend servers,
-	  which normally have no direct connection to the external network. As
-	  httpd receives a request from a client, the request itself is <em>proxied</em>
-	  to one of these backend servers, which then handles the request, generates
-	  the content and then sends this content back to httpd, which then
-	  generates the actual HTTP response back to the client.</p>
+    <p>In such scenarios, httpd itself does not generate or host the data,
+    but rather the content is obtained by one or several backend servers,
+    which normally have no direct connection to the external network. As
+    httpd receives a request from a client, the request itself is <em>proxied</em>
+    to one of these backend servers, which then handles the request, generates
+    the content and then sends this content back to httpd, which then
+    generates the actual HTTP response back to the client.</p>
 
-	  <p>There are numerous reasons for such an implementation, but generally
-	  the typical rationales are due to security, high-availability, load-balancing
-	  and centralized authentication/authorization. It is critical in these
-	  implementations that the layout, design and architecture of the backend
-	  infrastructure (those servers which actually handle the requests) are
-	  insulated and protected from the outside; as far as the client is concerned,
-	  the reverse proxy server <em>is</em> the sole source of all content.</p>
+    <p>There are numerous reasons for such an implementation, but generally
+    the typical rationales are due to security, high-availability, load-balancing
+    and centralized authentication/authorization. It is critical in these
+    implementations that the layout, design and architecture of the backend
+    infrastructure (those servers which actually handle the requests) are
+    insulated and protected from the outside; as far as the client is concerned,
+    the reverse proxy server <em>is</em> the sole source of all content.</p>
 
-	  <p>A typical implementation is below:</p>
-	  <p><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
-	  
-	</div>
+    <p>A typical implementation is below:</p>
+    <p><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+
+  </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Reverse Proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#userdir">Simple reverse proxying</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#simple">Simple reverse proxying</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cluster">Clusters and Balancers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#config">Balancer and BalancerMember configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#failover">Failover</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Reverse Proxy</a></h2>
-	
-	<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  
+  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="userdir" id="userdir">Simple reverse proxying</a></h2>
-		
+<h2><a name="simple" id="simple">Simple reverse proxying</a></h2>
+    
 
-		<p>The <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
-		directive specifies the mapping of incoming requests to the backend
-		server (or a cluster of servers known as a <code>Balancer</code>
-		group). The simpliest example proxies all requests (<code>"/"</code>)
-		to a single backend:</p>
+    <p>
+      The <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+      directive specifies the mapping of incoming requests to the backend
+      server (or a cluster of servers known as a <code>Balancer</code>
+      group). The simpliest example proxies all requests (<code>"/"</code>)
+      to a single backend:
+    </p>
 
-		<pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com"</pre>
-
-
-		<p>To ensure that and <code>Location:</code> headers generated from
-		the backend are modified to point to the reverse proxy, instead of
-		back to itself, the <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
-		directive is most often required:</p>
-
-		<pre class="prettyprint lang-config">		ProxyPass "/"  "http://www.example.com"
-		ProxyPassReverse "/"  "http://www.example.com"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com"</pre>
 
 
-		<p>Only specific URIs can be proxied, as shown in this example:</p>
+    <p>
+      To ensure that and <code>Location:</code> headers generated from
+      the backend are modified to point to the reverse proxy, instead of
+      back to itself, the <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+      directive is most often required:
+    </p>
 
-		<pre class="prettyprint lang-config">		ProxyPass "/images"  "http://www.example.com"
-		ProxyPassReverse "/images"  "http://www.example.com"</pre>
+    <pre class="prettyprint lang-config">      ProxyPass "/"  "http://www.example.com"
+      ProxyPassReverse "/"  "http://www.example.com"</pre>
 
 
-		<p>In the above, any requests which start with the <code>/images</code>
-		path with be proxied to the specified backend, otherwise it will be handled
-		locally.</p>
-	</div></div>
+    <p>Only specific URIs can be proxied, as shown in this example:</p>
+
+    <pre class="prettyprint lang-config">      ProxyPass "/images"  "http://www.example.com"
+      ProxyPassReverse "/images"  "http://www.example.com"</pre>
+
+
+    <p>In the above, any requests which start with the <code>/images</code>
+      path with be proxied to the specified backend, otherwise it will be handled
+      locally.
+    </p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cluster" id="cluster">Clusters and Balancers</a></h2>
+    
+
+    <p>
+      As useful as the above is, it still has the deficiencies that should
+      the (single) backend node go down, or become heavily loaded, that proxying
+      those requests provides no real advantage. What is needed is the ability
+      to define a set or group of backend servers which can handle such
+      requests and for the reverse proxy to load balance and failover among
+      them. This group is sometimes called a <em>cluster</em> but Apache httpd's
+      term is a <em>balancer</em>. One defines a balancer by leveraging the
+      <code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> and
+      <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives as
+      shown:
+    </p>
+
+    <pre class="prettyprint lang-config">      &lt;Proxy balancer://myset&gt;
+        BalancerMember http://www2.example.com:8080
+        BalancerMember http://www3.example.com:8080
+        ProxySet lbmethod=bytraffic
+      &lt;/Proxy&gt;
+
+      ProxyPass "/images"  "balancer://myset"
+      ProxyPassReverse "/images"  "balancer://myset"</pre>
+
+
+    <p>
+      The <code>balancer://</code> scheme is what tells httpd that we are creating
+      a balancer set, with the name <em>myset</em>. It includes 2 backend servers,
+      which httpd calls <em>BalancerMembers</em>. In this case, any requests for
+      <code>/images</code> will be proxied to <em>one</em> of the 2 backends.
+      The <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> directive
+      specifies that the <em>myset</em> Balancer use a load balancing algorithm
+      that balances based on I/O bytes.
+    </p>
+
+    <div class="note"><h3>Hint</h3>
+      <p>
+      	<em>BalancerMembers</em> are also sometimes referred to as <em>workers</em>.
+      </p>
+   </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="config" id="config">Balancer and BalancerMember configuration</a></h2>
+    
+
+    <p>
+      You can adjust numerous configuration details of the <em>balancers</em>
+      and the <em>workers</em> via the various parameters defined in
+      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. For example,
+      assuming we would want <code>http://www3.example.com:8080</code> to
+      handle 3x the traffic with a timeout of 1 second, we would adjust the
+      configuration as follows:
+    </p>
+
+    <pre class="prettyprint lang-config">      &lt;Proxy balancer://myset&gt;
+        BalancerMember http://www2.example.com:8080
+        BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+        ProxySet lbmethod=bytraffic
+      &lt;/Proxy&gt;
+
+      ProxyPass "/images"  "balancer://myset"
+      ProxyPassReverse "/images"  "balancer://myset"</pre>
+
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="failover" id="failover">Failover</a></h2>
+    
+
+    <p>
+      You can also fine-tune various failover scenarios, detailing which
+      workers and even which balancers should accessed in such cases. For
+      example, the below setup implements 2 failover cases: In the first,
+      <code>http://hstandby.example.com:8080</code> is only sent traffic
+      if all other workers in the <em>myset</em> balancer are not available.
+      If that worker itself is not available, only then will the
+      <code>http://bkup1.example.com:8080</code> and <code>http://bkup2.example.com:8080</code>
+      workers be brought into rotation:
+    </p>
+
+    <pre class="prettyprint lang-config">      &lt;Proxy balancer://myset&gt;
+        BalancerMember http://www2.example.com:8080
+        BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+        BalancerMember http://hstandby.example.com:8080 status=+H
+        BalancerMember http://bkup1.example.com:8080 lbset=1
+        BalancerMember http://bkup2.example.com:8080 lbset=1
+        ProxySet lbmethod=byrequests
+      &lt;/Proxy&gt;
+
+      ProxyPass "/images"  "balancer://myset"
+      ProxyPassReverse "/images"  "balancer://myset"</pre>
+
+
+    <p>
+      The magic of this failover setup is setting <code>http://hstandby.example.com:8080</code>
+      with the <code>+H</code> status flag, which puts it in <em>hot standby</em> mode,
+      and making the 2 <code>bkup#</code> servers part of the #1 load balancer set (the
+      default set is 0); for failover, hot standbys (if they exist) are used 1st, when all regular
+      workers are unavailable; load balancer sets are always tried lowest number first.
+    </p>
+
+  </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/public_html.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/public_html.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
