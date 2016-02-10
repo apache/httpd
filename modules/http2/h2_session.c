@@ -1538,13 +1538,13 @@ static apr_status_t h2_session_receive(void *ctx, const char *data,
     return APR_SUCCESS;
 }
 
-static apr_status_t h2_session_read(h2_session *session, int block, int loops)
+static apr_status_t h2_session_read(h2_session *session, int block)
 {
     apr_status_t status, rstatus = APR_EAGAIN;
     conn_rec *c = session->c;
-    int i;
+    apr_off_t read_start = session->io.bytes_read;
     
-    for (i = 0; i < loops; ++i) {
+    while (1) {
         /* H2_IN filter handles all incoming data against the session.
          * We just pull at the filter chain to make it happen */
         status = ap_get_brigade(c->input_filters,
@@ -1569,7 +1569,7 @@ static apr_status_t h2_session_read(h2_session *session, int block, int loops)
             case APR_TIMEUP:
                 return status;
             default:
-                if (!i) {
+                if (session->io.bytes_read == read_start) {
                     /* first attempt failed */
                     if (APR_STATUS_IS_ETIMEDOUT(status)
                         || APR_STATUS_IS_ECONNABORTED(status)
@@ -1594,6 +1594,12 @@ static apr_status_t h2_session_read(h2_session *session, int block, int loops)
                 return rstatus;
         }
         if (!is_accepting_streams(session)) {
+            break;
+        }
+        if ((session->io.bytes_read - read_start) > (64*1024)) {
+            /* read enough in one go, give write a chance */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
+                          "h2_session(%ld): read 64k, returning", session->id);
             break;
         }
     }
@@ -1785,7 +1791,9 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     /* When we have no streams, no task event are possible,
                      * switch to blocking reads */
                     transit(session, "no io", H2_SESSION_ST_IDLE);
-                    session->idle_until = apr_time_now() + session->s->keep_alive_timeout;
+                    session->idle_until = (session->requests_received? 
+                                           session->s->keep_alive_timeout : 
+                                           session->s->timeout) + apr_time_now();
                 }
             }
             else if (!h2_stream_set_has_unsubmitted(session->streams)
@@ -1991,7 +1999,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 no_streams = h2_stream_set_is_empty(session->streams);
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
-                if (async && !session->r) {
+                if (async && !session->r && session->requests_received && no_streams) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
                     /* We do not return to the async mpm immediately, since under
@@ -2003,13 +2011,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                      * time here for the next frame to arrive, before handing
                      * it to keep_alive processing of the mpm.
                      */
-                    if (no_streams) {
-                        status = h2_session_read(session, 0, 20);
-                    }
-                    else {
-                        h2_filter_cin_timeout_set(session->cin, session->s->timeout);
-                        status = h2_session_read(session, 1, 20);
-                    }
+                    status = h2_session_read(session, 0);
                     
                     if (status == APR_SUCCESS) {
                         have_read = 1;
@@ -2035,7 +2037,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     /* We wait in smaller increments, using a 1 second timeout.
                      * That gives us the chance to check for MPMQ_STOPPING often. */
                     h2_filter_cin_timeout_set(session->cin, apr_time_from_sec(1));
-                    status = h2_session_read(session, 1, 10);
+                    status = h2_session_read(session, 1);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
@@ -2061,7 +2063,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
                     h2_filter_cin_timeout_set(session->cin, session->s->timeout);
-                    status = h2_session_read(session, 0, 20);
+                    status = h2_session_read(session, 0);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
