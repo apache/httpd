@@ -174,37 +174,12 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io)
 apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
 {
     APR_BRIGADE_INSERT_TAIL(io->output, b);
-    io->unflushed = 1;
     return APR_SUCCESS;
-}
-
-apr_status_t h2_conn_io_consider_flush(h2_conn_io *io)
-{
-    apr_status_t status = APR_SUCCESS;
-    
-    /* The HTTP/1.1 network output buffer/flush behaviour does not
-     * give optimal performance in the HTTP/2 case, as the pattern of
-     * buckets (data/eor/eos) is different.
-     * As long as we have not found out the "best" way to deal with
-     * this, force a flush at least every WRITE_BUFFER_SIZE amount
-     * of data.
-     */
-    if (io->unflushed) {
-        apr_off_t len = 0;
-        if (!APR_BRIGADE_EMPTY(io->output)) {
-            apr_brigade_length(io->output, 0, &len);
-        }
-        len += io->buflen;
-        if (len >= WRITE_BUFFER_SIZE) {
-            return h2_conn_io_pass(io);
-        }
-    }
-    return status;
 }
 
 static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
 {
-    if (io->unflushed || force) {
+    if (io->buflen > 0 || !APR_BRIGADE_EMPTY(io->output)) {
         pass_out_ctx ctx;
         
         if (io->buflen > 0) {
@@ -212,7 +187,6 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
                           "h2_conn_io: flush, flushing %ld bytes", (long)io->buflen);
             bucketeer_buffer(io);
-            io->buflen = 0;
         }
         
         if (force) {
@@ -223,10 +197,10 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
                       "h2_conn_io: flush");
         /* Send it out */
-        io->unflushed = 0;
-        
+        io->buflen = 0;
         ctx.c = io->connection;
         ctx.io = eoc? NULL : io;
+        
         return pass_out(io->output, &ctx);
         /* no more access after this, as we might have flushed an EOC bucket
          * that de-allocated us all. */
@@ -234,20 +208,32 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, apr_bucket *b)
+apr_status_t h2_conn_io_pass(h2_conn_io *io, int flush)
 {
+    return h2_conn_io_flush_int(io, flush, 0);
+}
+
+apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
+{
+    apr_off_t len = 0;
+    
+    if (!APR_BRIGADE_EMPTY(io->output)) {
+        apr_brigade_length(io->output, 0, &len);
+    }
+    len += io->buflen;
+    if (len >= WRITE_BUFFER_SIZE) {
+        return h2_conn_io_pass(io, 0);
+    }
+    return APR_SUCCESS;
+}
+
+apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
+{
+    apr_bucket *b = h2_bucket_eoc_create(io->connection->bucket_alloc, session);
     APR_BRIGADE_INSERT_TAIL(io->output, b);
-    return h2_conn_io_flush_int(io, 1, 1);
-}
-
-apr_status_t h2_conn_io_flush(h2_conn_io *io)
-{
-    return h2_conn_io_flush_int(io, 1, 0);
-}
-
-apr_status_t h2_conn_io_pass(h2_conn_io *io)
-{
-    return h2_conn_io_flush_int(io, 0, 0);
+    b = apr_bucket_flush_create(io->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    return h2_conn_io_flush_int(io, 0, 1);
 }
 
 apr_status_t h2_conn_io_write(h2_conn_io *io, 
@@ -258,14 +244,12 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     
     ctx.c = io->connection;
     ctx.io = io;
-    io->unflushed = 1;
     if (io->bufsize > 0) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
                       "h2_conn_io: buffering %ld bytes", (long)length);
                       
         if (!APR_BRIGADE_EMPTY(io->output)) {
-            status = h2_conn_io_pass(io);
-            io->unflushed = 1;
+            status = h2_conn_io_flush_int(io, 0, 0);
         }
         
         while (length > 0 && (status == APR_SUCCESS)) {
