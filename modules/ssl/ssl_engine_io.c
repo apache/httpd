@@ -1146,7 +1146,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 #endif
         const char *hostname_note = apr_table_get(c->notes,
                                                   "proxy-request-hostname");
+#ifdef HAVE_TLS_ALPN
         const char *alpn_note;
+#endif
         BOOL proxy_ssl_check_peer_ok = TRUE;
         int post_handshake_rc = OK;
 
@@ -1158,7 +1160,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         if (alpn_note) {
             char *protos, *s, *p, *last;
             apr_size_t len;
-            
+
             s = protos = apr_pcalloc(c->pool, strlen(alpn_note)+1);
             p = apr_pstrdup(c->pool, alpn_note);
             while ((p = apr_strtok(p, ", ", &last))) {
