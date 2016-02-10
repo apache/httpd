@@ -220,7 +220,7 @@ static int proxy_http2_handler(request_rec *r,
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
-    const char *ssl_hostname;
+    const char *ssl_hostname = NULL;
 
     /* find the scheme */
     if ((url[0] != 'h' && url[0] != 'H') || url[1] != '2') {
