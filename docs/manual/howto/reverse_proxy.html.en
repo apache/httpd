@@ -60,6 +60,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cluster">Clusters and Balancers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#config">Balancer and BalancerMember configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#failover">Failover</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#manager">Balancer Manager</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -206,6 +207,59 @@ ProxyPassReverse "/images"  "balancer://myset"</pre>
       and making the 2 <code>bkup#</code> servers part of the #1 load balancer set (the
       default set is 0); for failover, hot standbys (if they exist) are used 1st, when all regular
       workers are unavailable; load balancer sets are always tried lowest number first.
+    </p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="manager" id="manager">Balancer Manager</a></h2>
+    
+
+    <p>
+      One of the most unique and useful features of Apache httpd's reverse proxy is
+	  the embedded <em>balancer-manager</em> application. Similar to
+	  <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, <em>balancer-manager</em> displays
+	  the current working configuration and status of the enabled
+	  balancers and workers currently in use. However, not only does it
+	  display these parameters, it also allows for dynamic, runtime, on-the-fly
+	  reconfiguration of almost all of them, including adding new <em>BalancerMembers</em>
+	  (workers) to an existing balancer. To enable these capability, the following
+	  needs to be added to your configuration:
+    </p>
+
+<pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
+    SetHandler balancer-manager
+    Require host localhost
+&lt;/Location&gt;</pre>
+
+
+    <div class="warning"><h3>Warning</h3>
+      <p>Do not enable the <em>balancer-manager</em> until you have <a href="mod_proxy.html#access">secured your server</a>. In
+      particular, ensure that access to the URL is tightly
+      restricted.</p>
+    </div>
+
+    <p>
+      When the reverse proxy server is accessed at that url
+      (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
+      page similar to the below:
+    </p>
+    <p><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
+
+    <p>
+      This form allows the devops admin to adjust various parameters, take
+      workers offline, change load balancing methods and add new works. For
+      example, clicking on the balancer itself, you will get the following page:
+    </p>
+    <p><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
+
+    <p>
+      Whereas clicking on a worker, displays this page:
+    </p>
+    <p><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
+
+    <p>
+      To have these changes persist restarts of the reverse proxy, ensure that
+      <code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code> is enabled.
     </p>
 
   </div></div>

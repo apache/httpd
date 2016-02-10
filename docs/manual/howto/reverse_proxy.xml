@@ -216,4 +216,59 @@ ProxyPassReverse "/images"  "balancer://myset"
 
   </section>
 
+  <section id="manager">
+    <title>Balancer Manager</title>
+
+    <p>
+      One of the most unique and useful features of Apache httpd's reverse proxy is
+	  the embedded <em>balancer-manager</em> application. Similar to
+	  <module>mod_status</module>, <em>balancer-manager</em> displays
+	  the current working configuration and status of the enabled
+	  balancers and workers currently in use. However, not only does it
+	  display these parameters, it also allows for dynamic, runtime, on-the-fly
+	  reconfiguration of almost all of them, including adding new <em>BalancerMembers</em>
+	  (workers) to an existing balancer. To enable these capability, the following
+	  needs to be added to your configuration:
+    </p>
+
+<highlight language="config">
+&lt;Location "/balancer-manager"&gt;
+    SetHandler balancer-manager
+    Require host localhost
+&lt;/Location&gt;
+</highlight>
+
+    <note type="warning"><title>Warning</title>
+      <p>Do not enable the <em>balancer-manager</em> until you have <a
+      href="mod_proxy.html#access">secured your server</a>. In
+      particular, ensure that access to the URL is tightly
+      restricted.</p>
+    </note>
+
+    <p>
+      When the reverse proxy server is accessed at that url
+      (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
+      page similar to the below:
+    </p>
+    <p><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
+
+    <p>
+      This form allows the devops admin to adjust various parameters, take
+      workers offline, change load balancing methods and add new works. For
+      example, clicking on the balancer itself, you will get the following page:
+    </p>
+    <p><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
+
+    <p>
+      Whereas clicking on a worker, displays this page:
+    </p>
+    <p><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
+
+    <p>
+      To have these changes persist restarts of the reverse proxy, ensure that
+      <directive module="mod_proxy">BalancerPersist</directive> is enabled.
+    </p>
+
+  </section>
+
 </manualpage>
