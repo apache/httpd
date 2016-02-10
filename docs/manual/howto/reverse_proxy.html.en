@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Reverse Proxy Guide - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Reverse Proxy Guide</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/howto/public_html.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+	  <p>In addition to being a "basic" web server, and providing static and
+	  dynamic content to end-users, Apache httpd (as well as most other web
+	  servers) can also act as a reverse proxy server, also-known-as a
+	  "gateway" server.</p>
+
+	  <p>In such scenarios, httpd itself does not generate or host the data,
+	  but rather the content is obtained by one or several backend servers,
+	  which normally have no direct connection to the external network. As
+	  httpd receives a request from a client, the request itself is <em>proxied</em>
+	  to one of these backend servers, which then handles the request, generates
+	  the content and then sends this content back to httpd, which then
+	  generates the actual HTTP response back to the client.</p>
+
+	  <p>There are numerous reasons for such an implementation, but generally
+	  the typical rationales are due to security, high-availability, load-balancing
+	  and centralized authentication/authorization. It is critical in these
+	  implementations that the layout, design and architecture of the backend
+	  infrastructure (those servers which actually handle the requests) are
+	  insulated and protected from the outside; as far as the client is concerned,
+	  the reverse proxy server <em>is</em> the sole source of all content.</p>
+
+	  <p>A typical implementation is below: <img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+	  
+	</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Reverse Proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#userdir">Simple reverse proxying</a></li>
+</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Reverse Proxy</a></h2>
+	
+	<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="userdir" id="userdir">Simple reverse proxying</a></h2>
+		
+
+		<p>The <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+		directive specifies the mapping of incoming requests to the backend
+		server (or a cluster of servers known as a <code>Balancer</code>
+		group). The simpliest example proxies all requests (<code>"/"</code>)
+		to a single backend:</p>
+
+		<pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com"</pre>
+
+
+		<p>To ensure that and <code>Location:</code> headers generated from
+		the backend are modified to point to the reverse proxy, instead of
+		back to itself, the <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+		directive is most often required:</p>
+
+		<pre class="prettyprint lang-config">		ProxyPass "/"  "http://www.example.com"
+		ProxyPassReverse "/"  "http://www.example.com"</pre>
+
+
+		<p>Only specific URIs can be proxied, as shown in this example:</p>
+
+		<pre class="prettyprint lang-config">		ProxyPass "/images"  "http://www.example.com"
+		ProxyPassReverse "/images"  "http://www.example.com"</pre>
+
+
+		<p>In the above, any requests which start with the <code>/images</code>
+		path with be proxied to the specified backend, otherwise it will be handled
+		locally.</p>
+	</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/howto/public_html.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/howto/public_html.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+var comments_shortname = 'httpd';
+var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/public_html.html';
+(function(w, d) {
+    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
+        d.write('<div id="comments_thread"><\/div>');
+        var s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
+        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
+    }
+    else {
+        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
+    }
+})(window, document);
+//--><!]]></script></div><div id="footer">
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
