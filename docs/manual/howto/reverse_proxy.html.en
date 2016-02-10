@@ -51,7 +51,8 @@
 	  insulated and protected from the outside; as far as the client is concerned,
 	  the reverse proxy server <em>is</em> the sole source of all content.</p>
 
-	  <p>A typical implementation is below: <img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+	  <p>A typical implementation is below:</p>
+	  <p><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
 	  
 	</div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Reverse Proxy</a></li>
