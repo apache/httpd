@@ -48,7 +48,7 @@
     the reverse proxy server <em>is</em> the sole source of all content.</p>
 
     <p>A typical implementation is below:</p>
-    <p><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+    <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
 
   </summary>
 
@@ -250,19 +250,19 @@ ProxyPassReverse "/images"  "balancer://myset"
       (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
       page similar to the below:
     </p>
-    <p><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
 
     <p>
       This form allows the devops admin to adjust various parameters, take
       workers offline, change load balancing methods and add new works. For
       example, clicking on the balancer itself, you will get the following page:
     </p>
-    <p><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
 
     <p>
       Whereas clicking on a worker, displays this page:
     </p>
-    <p><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
 
     <p>
       To have these changes persist restarts of the reverse proxy, ensure that
