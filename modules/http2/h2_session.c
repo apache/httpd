@@ -1935,7 +1935,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = session->c;
-    int rv, have_written, have_read, mpm_state;
+    int rv, have_written, have_read, mpm_state, no_streams;
 
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): process start, async=%d", session->id, async);
@@ -1978,16 +1978,26 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                update_child_status(session, (h2_stream_set_is_empty(session->streams)?
-                                              SERVER_BUSY_KEEPALIVE : SERVER_BUSY_READ), 
-                                              "idle");
+                no_streams = h2_stream_set_is_empty(session->streams);
+                update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
+                                              : SERVER_BUSY_READ), "idle");
                 if (async && !session->r) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
-                    if (c->cs) {
-                        c->cs->sense = CONN_SENSE_WANT_READ;
-                    }
-                    status = h2_session_read(session, 0, 1);
+                    /* We do not return to the async mpm immediately, since under
+                     * load, mpms show the tendency to throw keep_alive connections
+                     * away very rapidly.
+                     * So, if we are still processing streams, we wait for the
+                     * normal timeout first and, on timeout, close.
+                     * If we have no streams, we still wait a short amount of
+                     * time here for the next frame to arrive, before handing
+                     * it to keep_alive processing of the mpm.
+                     */
+                    h2_filter_cin_timeout_set(session->cin, 
+                                              no_streams? apr_time_from_msec(200)
+                                              : session->s->timeout);
+                    status = h2_session_read(session, 1, 10);
+                    
                     if (status == APR_SUCCESS) {
                         have_read = 1;
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
