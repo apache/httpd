@@ -35,8 +35,24 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
     apr_status_t status;
+    apr_allocator_t *task_allocator = NULL;
+    apr_pool_t *task_pool;
     
     (void)thread;
+    
+    /* We create a root pool with its own allocator to be used for
+     * processing a request. This is the only way to have the processing
+     * independant of the worker pool as the h2_mplx pool as well as
+     * not sensitive to which thread it is in.
+     * In that sense, memory allocation and lifetime is similar to a master
+     * connection.
+     * The mail goal in this is that slave connections and requests will
+     * - one day - be suspended and resumed in different threads.
+     */
+    apr_allocator_create(&task_allocator);
+    apr_pool_create_ex(&task_pool, NULL, NULL, task_allocator);
+    apr_allocator_owner_set(task_allocator, task_pool);
+
     /* Other code might want to see a socket for this connection this
      * worker processes. Allocate one without further function...
      */
@@ -62,7 +78,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
             conn_rec *c, *master = m->c;
             int stream_id = req->id;
             
-            c = h2_slave_create(master, worker->task_pool, 
+            c = h2_slave_create(master, task_pool, 
                                 worker->thread, worker->socket);
             if (!c) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
@@ -73,7 +89,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
             else {
                 h2_task *task;
                 
-                task = h2_task_create(m->id, req, worker->task_pool, m);
+                task = h2_task_create(m->id, req, task_pool, m);
                 h2_ctx_create_for(c, task);
                 h2_task_do(task, c, worker->io, worker->socket);
                 task = NULL;
@@ -87,7 +103,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
              * long as it has requests to handle. Might no be fair to
              * other mplx's. Perhaps leave after n requests? */
             req = NULL;
-            apr_pool_clear(worker->task_pool);
+            apr_pool_clear(task_pool);
             h2_mplx_request_done(&m, stream_id, worker->aborted? NULL : &req);
         }
     }
@@ -134,7 +150,6 @@ h2_worker *h2_worker_create(int id,
             return NULL;
         }
         
-        apr_pool_create(&w->task_pool, w->pool);
         apr_thread_create(&w->thread, attr, execute, w, w->pool);
     }
     return w;
@@ -171,15 +186,6 @@ void h2_worker_abort(h2_worker *worker)
 int h2_worker_is_aborted(h2_worker *worker)
 {
     return worker->aborted;
-}
-
-h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m, 
-                               const h2_request *req)
-{
-    h2_task *task;
-    
-    task = h2_task_create(m->id, req, worker->task_pool, m);
-    return task;
 }
 
 
