@@ -584,7 +584,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     
     if (status == APR_SUCCESS) {
         stream->data_frames_sent++;
-        h2_conn_io_consider_flush(&session->io);
+        h2_conn_io_consider_pass(&session->io);
         return 0;
     }
     else {
@@ -612,6 +612,15 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                      (long)session->frames_sent);
     }
     ++session->frames_sent;
+    switch (frame->hd.type) {
+        case NGHTTP2_HEADERS:
+        case NGHTTP2_DATA:
+            /* no explicit flushing necessary */
+            break;
+        default:
+            session->flush = 1;
+            break;
+    }
     return 0;
 }
 
@@ -702,7 +711,7 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason,
                           h2_mplx_get_max_stream_started(session->mplx), 
                           reason, (uint8_t*)err, err? strlen(err):0);
     status = nghttp2_session_send(session->ngh2);
-    h2_conn_io_flush(&session->io);
+    h2_conn_io_pass(&session->io, 1);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03069)
                   "session(%ld): sent GOAWAY, err=%d, msg=%s", 
                   session->id, reason, err? err : "");
@@ -1027,6 +1036,8 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
                           nghttp2_strerror(*rv));        
         }
     }
+    
+    h2_conn_io_pass(&session->io, 1);
     return status;
 }
 
@@ -1859,7 +1870,6 @@ static void h2_session_ev_pre_close(h2_session *session, int arg, const char *ms
             break;
         default:
             h2_session_shutdown(session, arg, msg, 1);
-            h2_conn_io_flush(&session->io);
             break;
     }
 }
@@ -1993,10 +2003,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
                      * time here for the next frame to arrive, before handing
                      * it to keep_alive processing of the mpm.
                      */
-                    h2_filter_cin_timeout_set(session->cin, 
-                                              no_streams? apr_time_from_msec(200)
-                                              : session->s->timeout);
-                    status = h2_session_read(session, 1, 10);
+                    if (no_streams) {
+                        status = h2_session_read(session, 0, 20);
+                    }
+                    else {
+                        h2_filter_cin_timeout_set(session->cin, session->s->timeout);
+                        status = h2_session_read(session, 1, 20);
+                    }
                     
                     if (status == APR_SUCCESS) {
                         have_read = 1;
@@ -2048,7 +2061,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
                     h2_filter_cin_timeout_set(session->cin, session->s->timeout);
-                    status = h2_session_read(session, 0, 10);
+                    status = h2_session_read(session, 0, 20);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
@@ -2087,7 +2100,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 
-                if (nghttp2_session_want_write(session->ngh2)) {
+                while (nghttp2_session_want_write(session->ngh2)) {
                     ap_update_child_status(session->c->sbh, SERVER_BUSY_WRITE, NULL);
                     status = h2_session_send(session);
                     if (status == APR_SUCCESS) {
@@ -2161,19 +2174,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
         }
 
-        if (have_written) {
-            h2_conn_io_flush(&session->io);
-        }
-        else if (!nghttp2_session_want_read(session->ngh2) 
+        h2_conn_io_pass(&session->io, 1);
+        if (!nghttp2_session_want_read(session->ngh2) 
                  && !nghttp2_session_want_write(session->ngh2)) {
             dispatch_event(session, H2_SESSION_EV_NGH2_DONE, 0, NULL); 
         }
     }
     
 out:
-    if (have_written) {
-        h2_conn_io_flush(&session->io);
-    }
+    h2_conn_io_pass(&session->io, session->flush);
+    session->flush = 0;
     
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): [%s] process returns", 
@@ -2190,8 +2200,7 @@ out:
     if (session->state == H2_SESSION_ST_DONE) {
         if (!session->eoc_written) {
             session->eoc_written = 1;
-            h2_conn_io_write_eoc(&session->io, 
-                                 h2_bucket_eoc_create(session->c->bucket_alloc, session));
+            h2_conn_io_write_eoc(&session->io, session);
         }
     }
     
