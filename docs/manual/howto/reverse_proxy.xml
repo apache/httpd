@@ -80,7 +80,7 @@
     </p>
 
     <highlight language="config">
-      ProxyPass "/"  "http://www.example.com"
+ProxyPass "/"  "http://www.example.com"
     </highlight>
 
     <p>
@@ -91,15 +91,15 @@
     </p>
 
     <highlight language="config">
-      ProxyPass "/"  "http://www.example.com"
-      ProxyPassReverse "/"  "http://www.example.com"
+ProxyPass "/"  "http://www.example.com"
+ProxyPassReverse "/"  "http://www.example.com"
     </highlight>
 
     <p>Only specific URIs can be proxied, as shown in this example:</p>
 
     <highlight language="config">
-      ProxyPass "/images"  "http://www.example.com"
-      ProxyPassReverse "/images"  "http://www.example.com"
+ProxyPass "/images"  "http://www.example.com"
+ProxyPassReverse "/images"  "http://www.example.com"
     </highlight>
 
     <p>In the above, any requests which start with the <code>/images</code>
@@ -125,14 +125,14 @@
     </p>
 
     <highlight language="config">
-      &lt;Proxy balancer://myset&gt;
-        BalancerMember http://www2.example.com:8080
-        BalancerMember http://www3.example.com:8080
-        ProxySet lbmethod=bytraffic
-      &lt;/Proxy&gt;
+&lt;Proxy balancer://myset&gt;
+    BalancerMember http://www2.example.com:8080
+    BalancerMember http://www3.example.com:8080
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
 
-      ProxyPass "/images"  "balancer://myset"
-      ProxyPassReverse "/images"  "balancer://myset"
+ProxyPass "/images"  "balancer://myset"
+ProxyPassReverse "/images"  "balancer://myset"
     </highlight>
 
     <p>
@@ -166,14 +166,14 @@
     </p>
 
     <highlight language="config">
-      &lt;Proxy balancer://myset&gt;
-        BalancerMember http://www2.example.com:8080
-        BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-        ProxySet lbmethod=bytraffic
-      &lt;/Proxy&gt;
+&lt;Proxy balancer://myset&gt;
+    BalancerMember http://www2.example.com:8080
+    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    ProxySet lbmethod=bytraffic
+&lt;/Proxy&gt;
 
-      ProxyPass "/images"  "balancer://myset"
-      ProxyPassReverse "/images"  "balancer://myset"
+ProxyPass "/images"  "balancer://myset"
+ProxyPassReverse "/images"  "balancer://myset"
     </highlight>
 
   </section>
@@ -193,17 +193,17 @@
     </p>
 
     <highlight language="config">
-      &lt;Proxy balancer://myset&gt;
-        BalancerMember http://www2.example.com:8080
-        BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-        BalancerMember http://hstandby.example.com:8080 status=+H
-        BalancerMember http://bkup1.example.com:8080 lbset=1
-        BalancerMember http://bkup2.example.com:8080 lbset=1
-        ProxySet lbmethod=byrequests
-      &lt;/Proxy&gt;
+&lt;Proxy balancer://myset&gt;
+    BalancerMember http://www2.example.com:8080
+    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+    BalancerMember http://hstandby.example.com:8080 status=+H
+    BalancerMember http://bkup1.example.com:8080 lbset=1
+    BalancerMember http://bkup2.example.com:8080 lbset=1
+    ProxySet lbmethod=byrequests
+&lt;/Proxy&gt;
 
-      ProxyPass "/images"  "balancer://myset"
-      ProxyPassReverse "/images"  "balancer://myset"
+ProxyPass "/images"  "balancer://myset"
+ProxyPassReverse "/images"  "balancer://myset"
     </highlight>
 
     <p>
