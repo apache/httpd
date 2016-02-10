@@ -42,22 +42,24 @@
             to provide the core http/2 engine.</p>
         
         <div class="warning"><h3>Warning</h3>
-          <p>This module is experimental. Its behaviors, directives, and 
-          defaults are subject to more change from release to 
-          release relative to other standard modules. Users are encouraged to 
-          consult the "CHANGES" file for potential updates.</p>
+            <p>This module is experimental. Its behaviors, directives, and 
+                defaults are subject to more change from release to 
+                release relative to other standard modules. Users are encouraged to 
+                consult the "CHANGES" file for potential updates.</p>
         </div>
-
+        
         <p>You must enable HTTP/2 via <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> in order to use the
         functionality described in this document:</p>
-
+        
         <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
 
-
+        
     </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dimensioning">HTTP/2 Dimensioning</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#misdirected">Multiple Hosts and Misdirected Requests</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
@@ -81,8 +83,8 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="envvars" id="envvars">Environment Variables</a></h2>
-        
-        <p>This module can be configured to provide HTTP/2 related information
+        <p>
+            This module can be configured to provide HTTP/2 related information
             as additional environment variables to the SSI and CGI namespace.
         </p>
         
@@ -93,10 +95,104 @@
                 <th>Value Type:</th>
                 <th>Description:</th>
             </tr>
-            <tr><td><code>HTTPe</code></td>                         <td>flag</td>      <td>HTTP/2 is being used.</td></tr>
-            <tr><td><code>H2PUSH</code></td>                        <td>flag</td>      <td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+            <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
+            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
         </table>
-        
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dimensioning" id="dimensioning">HTTP/2 Dimensioning</a></h2>
+        <p>
+            Enabling HTTP/2 on your Apache Server has impact on the resource
+            consumption and if you have a busy site, you may need to consider
+            carefully the implications.
+        </p>
+        <p>
+            The first noticable thing after enabling HTTP/2 is that your server
+            processes will start additional threads. The reason for this is that
+            HTTP/2 gives all requests that it receives to its own <em>Worker</em>
+            threads for processing, collects the results and streams them out
+            to the client.
+        </p>
+        <p>
+            In the current implementation, these workers use a separate thread
+            pool from the MPM workers that you might be familiar with. This is
+            just how things are right now and not intended to be like this forever.
+            (It might be forever for the 2.4.x release line, though.) So, HTTP/2
+            workers, or shorter H2Workers, will not show up in mod_status. They
+            are also not counted against directives such as ThreadsPerChild. However
+            they take ThreadsPerChild as default if you have not configured something
+            else via <code class="directive">&lt;H2MinWorkers&gt;</code> and
+            <code class="directive">&lt;H2MaxWorkers&gt;</code>.
+        </p>
+        <p>
+            Another thing to watch out for is is memory consumption. Since HTTP/2
+            keeps more state on the server to manage all the open request, priorities
+            for and dependencies between them, it will always need more memory
+            than HTTP/1.1 processing. There are three directives which steer the
+            memory footprint of a HTTP/2 connection:
+            <code class="directive">&lt;H2MaxSessionStreams&gt;</code>,
+            <code class="directive">&lt;H2WindowSize&gt;</code> and
+            <code class="directive">&lt;H2StreamMaxMemSize&gt;</code>.
+        </p>
+        <p>
+            <code class="directive">&lt;H2MaxSessionStreams&gt;</code> limits the
+            number of parallel requests that a client can make on a HTTP/2 connection.
+            It depends on your site how many you should allow. The default is 100 which
+            is plenty and unless you run into memory problems, I would keep it this
+            way. Most requests that browsers send are GETs without a body, so they
+            use up only a little bit of memory until the actual processing starts.
+        </p>
+        <p>
+            <code class="directive">&lt;H2WindowSize&gt;</code> controls how much
+            the client is allowed to send as body of a request, before it waits
+            for the server to encourage more. Or, the other way around, it is the
+            amount of request body data the server needs to be able to buffer. This
+            is per request.
+        </p>
+        <p>
+            And last, but not least, <code class="directive">&lt;H2StreamMaxMemSize&gt;</code>
+            controls how much response data shall be buffered. The request sits in
+            a H2Worker thread and is producing data, the HTTP/2 connection tries
+            to send this to the client. If the client does not read fast enough,
+            the connection will buffer this amount of data and then suspend the
+            H2Worker.
+        </p>
+        <p>
+            If you serve a lot of static files, <code class="directive">&lt;H2SessionExtraFiles&gt;</code>
+            is of interest. This tells the server how many file handles per
+            HTTP/2 connection it is allowed to waste for better performance. Because
+            when a request produces a static file as the response, the file handle
+            gets passed around and is buffered and not the file contents. That allows
+            to serve many large files without wasting memory or copying data 
+            unnecessarily. However file handles are a limited resource for a process,
+            and if too many are used this way, requests may fail under load as
+            the amount of open handles has been exceeded.
+        </p>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misdirected" id="misdirected">Multiple Hosts and Misdirected Requests</a></h2>
+        <p>
+            Many sites use the same TLS certificate for multiple virtual hosts. The 
+            certificate either has a wildcard name, such as '*.example.org' or carries
+            several alternate names. Browsers using HTTP/2 will recognize that and reuse
+            an already opened connection for such hosts.
+        </p>
+        <p>
+            While this is great for performance, it comes at a price: such vhosts 
+            need more care in their configuration. The problem is that you will have
+            multiple requests for multiple hosts on the same TLS connection. And that
+            makes renegotiation impossible, in face the HTTP/2 standard forbids it.
+        </p>
+        <p>
+            So, if you have several virtual hosts using the same certificate and
+            want to use HTTP/2 for them, you need to make sure that all vhosts have
+            exactly the same SSL configuration. You need the same protocol, 
+            ciphers and settings for client verification.
+        </p>
+        <p>
+            If you mix things, Apache httpd will detect it and return a special
+            response code, 421 Misidrected Request, to the client.
+        </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
@@ -298,10 +394,10 @@
                 Link headers in responses are either set by the application or
                 can be configured via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
             </p>
-            <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
-    Header add Link "&lt;/css/site.css&gt;;rel=preload"
-    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
-&lt;/Location&gt;</pre>
+            <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">                    &lt;Location /index.html&gt;
+                    Header add Link "&lt;/css/site.css&gt;;rel=preload"
+                    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
+                    &lt;/Location&gt;</pre>
 </div>
             <p>
                 As the example shows, there can be several link headers added
@@ -369,7 +465,7 @@
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.18 and later. For having an
-        effect, a nghttp2 library version 1.5.0 or newer is necessary.</td></tr>
+            effect, a nghttp2 library version 1.5.0 or newer is necessary.</td></tr>
 </table>
             <p>
                 This directive defines the priority handling of pushed responses
@@ -465,14 +561,14 @@
             </p>
             <ol>
                 <li>'*' is the only special content-type that matches all others. 
-                 'image/*' will not work.</li>
+                    'image/*' will not work.</li>
                 <li>The default dependency is 'After'. </li>
                 <li>There are also default weights: for 'After' it is 16, 'interleaved' is 256. 
                 </li>
             </ol>
-            <div class="example"><h3>Shorter Priority Rules</h3><pre class="prettyprint lang-config">H2PushPriority application/json 32         # an After rule
-H2PushPriority image/jpeg before           # weight inherited
-H2PushPriority text/css   interleaved      # weight 256 default</pre>
+            <div class="example"><h3>Shorter Priority Rules</h3><pre class="prettyprint lang-config">                    H2PushPriority application/json 32         # an After rule
+                    H2PushPriority image/jpeg before           # weight inherited
+                    H2PushPriority text/css   interleaved      # weight 256 default</pre>
 </div>
         
 </div>
@@ -615,7 +711,7 @@ H2PushPriority text/css   interleaved      # weight 256 default</pre>
             </p>
             <p>
                 Measurements by <a href="https://www.igvita.com">google performance
-                labs</a> show that best performance on TLS connections is reached,
+                    labs</a> show that best performance on TLS connections is reached,
                 if initial record sizes stay below the MTU level, to allow a
                 complete record to fit into an IP packet.
             </p>
