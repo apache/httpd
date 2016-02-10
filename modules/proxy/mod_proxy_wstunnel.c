@@ -423,6 +423,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     char *scheme;
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
+    char *locurl = url;
     apr_uri_t *uri;
     int is_ssl = 0;
 
@@ -449,53 +450,48 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02451) "serving URL %s", url);
 
     /* create space for state information */
-    status = ap_proxy_acquire_connection(scheme, &backend, worker,
-                                         r->server);
+    status = ap_proxy_acquire_connection(scheme, &backend, worker, r->server);
     if (status != OK) {
-        if (backend) {
-            backend->close = 1;
-            ap_proxy_release_connection(scheme, backend, r->server);
-        }
-        return status;
+        goto cleanup;
     }
 
     backend->is_ssl = is_ssl;
     backend->close = 0;
 
-    do { /* while (0): break out */
-        char *locurl = url;
-        /* Step One: Determine Who To Connect To */
-        status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                               uri, &locurl, proxyname, proxyport,
-                                               server_portstr,
-                                               sizeof(server_portstr));
-        if (status != OK)
-            break;
+    /* Step One: Determine Who To Connect To */
+    status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+                                           uri, &locurl, proxyname, proxyport,
+                                           server_portstr,
+                                           sizeof(server_portstr));
+    if (status != OK) {
+        goto cleanup;
+    }
 
-        /* Step Two: Make the Connection */
-        if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02452)
-                          "failed to make connection to backend: %s",
-                          backend->hostname);
-            status = HTTP_SERVICE_UNAVAILABLE;
-            break;
+    /* Step Two: Make the Connection */
+    if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02452)
+                      "failed to make connection to backend: %s",
+                      backend->hostname);
+        status = HTTP_SERVICE_UNAVAILABLE;
+        goto cleanup;
+    }
+
+    /* Step Three: Create conn_rec */
+    if (!backend->connection) {
+        status = ap_proxy_connection_create(scheme, backend, c, r->server);
+        if (status  != OK) {
+            goto cleanup;
         }
-        /* Step Three: Create conn_rec */
-        if (!backend->connection) {
-            if ((status = ap_proxy_connection_create(scheme, backend,
-                                                     c, r->server)) != OK)
-                break;
-        }
+    }
 
-        backend->close = 1; /* must be after ap_proxy_determine_connection */
+    /* Step Three: Process the Request */
+    status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
+                                  server_portstr, scheme);
 
-        /* Step Three: Process the Request */
-        status = proxy_wstunnel_request(p, r, backend, worker, conf, uri, locurl,
-                                      server_portstr, scheme);
-    } while (0);
-
+cleanup:
     /* Do not close the socket */
-    if (status != SUSPENDED) { 
+    if (backend && status != SUSPENDED) { 
+        backend->close = 1;
         ap_proxy_release_connection(scheme, backend, r->server);
     }
     return status;

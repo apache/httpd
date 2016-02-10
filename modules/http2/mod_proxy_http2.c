@@ -221,6 +221,7 @@ static int proxy_http2_handler(request_rec *r,
     apr_pool_t *p = r->pool;
     apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
     const char *ssl_hostname = NULL;
+    conn_rec *backconn;
 
     /* find the scheme */
     if ((url[0] != 'h' && url[0] != 'H') || url[1] != '2') {
@@ -268,82 +269,74 @@ static int proxy_http2_handler(request_rec *r,
         ap_proxy_ssl_connection_cleanup(backend, r);
     }
 
-    do { /* while (0): break out */
-        conn_rec *backconn;
-        
-        /* Step One: Determine the URL to connect to (might be a proxy),
-         * initialize the backend accordingly and determine the server 
-         * port string we can expect in responses. */
-        if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                                    uri, &locurl, proxyname,
-                                                    proxyport, server_portstr,
-                                                    sizeof(server_portstr))) != OK) {
-            break;
+    /* Step One: Determine the URL to connect to (might be a proxy),
+     * initialize the backend accordingly and determine the server 
+     * port string we can expect in responses. */
+    if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+                                                uri, &locurl, proxyname,
+                                                proxyport, server_portstr,
+                                                sizeof(server_portstr))) != OK) {
+        goto cleanup;
+    }
+    
+    if (!ssl_hostname && backend->ssl_hostname) {
+        /* When reusing connections and finding sockets closed, the proxy
+         * framework loses the ssl_hostname setting. This is vital for us,
+         * so we save it once it is known. */
+        ssl_hostname = apr_pstrdup(r->pool, backend->ssl_hostname);
+    }
+    
+    /* Step Two: Make the Connection (or check that an already existing
+     * socket is still usable). On success, we have a socket connected to
+     * backend->hostname. */
+    if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                      "H2: failed to make connection to backend: %s",
+                      backend->hostname);
+        status = HTTP_SERVICE_UNAVAILABLE;
+        goto cleanup;
+    }
+    
+    /* Step Three: Create conn_rec for the socket we have open now. */
+    backconn = backend->connection;
+    if (!backconn) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
+                      "setup new connection: is_ssl=%d %s %s %s, was %s", 
+                      backend->is_ssl, 
+                      backend->ssl_hostname, r->hostname, backend->hostname,
+                      ssl_hostname);
+        if ((status = ap_proxy_connection_create(proxy_function, backend,
+                                                 c, r->server)) != OK) {
+            goto cleanup;
         }
-        
-        if (!ssl_hostname && backend->ssl_hostname) {
-            /* When reusing connections and finding sockets closed, the proxy
-             * framework loses the ssl_hostname setting. This is vital for us,
-             * so we save it once it is known. */
-            ssl_hostname = apr_pstrdup(r->pool, backend->ssl_hostname);
-        }
-        
-        /* Step Two: Make the Connection (or check that an already existing
-         * socket is still usable). On success, we have a socket connected to
-         * backend->hostname. */
-        if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
-                          "H2: failed to make connection to backend: %s",
-                          backend->hostname);
-            status = HTTP_SERVICE_UNAVAILABLE;
-            break;
-        }
-        
-        /* Step Three: Create conn_rec for the socket we have open now. */
         backconn = backend->connection;
-        if (!backconn) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
-                          "setup new connection: is_ssl=%d %s %s %s, was %s", 
-                          backend->is_ssl, 
-                          backend->ssl_hostname, r->hostname, backend->hostname,
-                          ssl_hostname);
-            if ((status = ap_proxy_connection_create(proxy_function, backend,
-                                                     c, r->server)) != OK) {
-                break;
-            }
-            backconn = backend->connection;
-            
-            /*
-             * On SSL connections set a note on the connection what CN is
-             * requested, such that mod_ssl can check if it is requested to do
-             * so.
-             */
-            if (ssl_hostname) {
-                apr_table_setn(backend->connection->notes,
-                               "proxy-request-hostname", ssl_hostname);
-            }
-            
-            if (backend->is_ssl) {
-                apr_table_setn(backend->connection->notes,
-                               "proxy-request-alpn-protos", "h2");
-            }
-        }
-
-        /* Step Four: Send the Request in a new HTTP/2 stream and
-         * loop until we got the response or encounter errors.
+        
+        /*
+         * On SSL connections set a note on the connection what CN is
+         * requested, such that mod_ssl can check if it is requested to do
+         * so.
          */
-        if ((status = proxy_http2_process_stream(p, url, r, &backend, worker,
-                                                 conf, server_portstr, 
-                                                 flushall)) != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
-                          "H2: failed to process request: %s",
-                          r->the_request);
-            backend->close = 1;
-            if (backend) {
-                proxy_run_detach_backend(r, backend);
-            }
+        if (ssl_hostname) {
+            apr_table_setn(backend->connection->notes,
+                           "proxy-request-hostname", ssl_hostname);
         }
-    } while (0);
+        
+        if (backend->is_ssl) {
+            apr_table_setn(backend->connection->notes,
+                           "proxy-request-alpn-protos", "h2");
+        }
+    }
+
+    /* Step Four: Send the Request in a new HTTP/2 stream and
+     * loop until we got the response or encounter errors.
+     */
+    if ((status = proxy_http2_process_stream(p, url, r, &backend, worker,
+                                             conf, server_portstr, 
+                                             flushall)) != OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
+                      "H2: failed to process request: %s",
+                      r->the_request);
+    }
 
     /* clean up before return */
 cleanup:
@@ -351,6 +344,7 @@ cleanup:
         if (status != OK) {
             backend->close = 1;
         }
+        proxy_run_detach_backend(r, backend);
         proxy_http2_cleanup(proxy_function, r, backend);
     }
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, status, r, "leaving handler");
