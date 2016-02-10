@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1673932 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+	<title>Reverse Proxy Guide</title>
+
+	<summary>
+	  <p>In addition to being a "basic" web server, and providing static and
+	  dynamic content to end-users, Apache httpd (as well as most other web
+	  servers) can also act as a reverse proxy server, also-known-as a
+	  "gateway" server.</p>
+
+	  <p>In such scenarios, httpd itself does not generate or host the data,
+	  but rather the content is obtained by one or several backend servers,
+	  which normally have no direct connection to the external network. As
+	  httpd receives a request from a client, the request itself is <em>proxied</em>
+	  to one of these backend servers, which then handles the request, generates
+	  the content and then sends this content back to httpd, which then
+	  generates the actual HTTP response back to the client.</p>
+
+	  <p>There are numerous reasons for such an implementation, but generally
+	  the typical rationales are due to security, high-availability, load-balancing
+	  and centralized authentication/authorization. It is critical in these
+	  implementations that the layout, design and architecture of the backend
+	  infrastructure (those servers which actually handle the requests) are
+	  insulated and protected from the outside; as far as the client is concerned,
+	  the reverse proxy server <em>is</em> the sole source of all content.</p>
+
+	  <p>A typical implementation is below:</p>
+	  <img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" />
+	</summary>
+
+
+	<section id="related">
+	<title>Reverse Proxy</title>
+	<related>
+	  <modulelist>
+	    <module>mod_proxy</module>
+	    <module>mod_proxy_balancer</module>
+	    <module>mod_proxy_hcheck</module>
+	  </modulelist>
+	  <directivelist>
+	    <directive module="mod_proxy">ProxyPass</directive>
+	    <directive module="mod_proxy">BalancerMember</directive>
+	  </directivelist>
+	</related>
+	</section>
+
+    <section id="userdir">
+		<title>Simple reverse proxying</title>
+
+		<p>The <directive module="mod_proxy">ProxyPass</directive>
+		directive specifies the mapping of incoming requests to the backend
+		server (or a cluster of servers known as a <code>Balancer</code>
+		group). The simpliest example proxies all requests (<code>"/"</code>)
+		to a single backend:</p>
+
+		<highlight language="config">
+		ProxyPass "/"  "http://www.example.com"
+		</highlight>
+
+		<p>To ensure that and <code>Location:</code> headers generated from
+		the backend are modified to point to the reverse proxy, instead of
+		back to itself, the <directive module="mod_proxy">ProxyPassReverse</directive>
+		directive is most often required:</p>
+
+		<highlight language="config">
+		ProxyPass "/"  "http://www.example.com"
+		ProxyPassReverse "/"  "http://www.example.com"
+		</highlight>
+
+		<p>Only specific URIs can be proxied, as shown in this example:</p>
+
+		<highlight language="config">
+		ProxyPass "/images"  "http://www.example.com"
+		ProxyPassReverse "/images"  "http://www.example.com"
+		</highlight>
+
+		<p>In the above, any requests which start with the <code>/images</code>
+		path with be proxied to the specified backend, otherwise it will be handled
+		locally.</p>
+	</section>
+
+</manualpage>
