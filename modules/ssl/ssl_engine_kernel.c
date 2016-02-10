@@ -1024,8 +1024,8 @@ int ssl_hook_Access(request_rec *r)
             SSL_set_state(ssl, SSL_ST_ACCEPT);
 #else
             ssl->state = SSL_ST_ACCEPT;
-            SSL_do_handshake(ssl);
 #endif
+            SSL_do_handshake(ssl);
 
 #else /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
