@@ -231,12 +231,12 @@ ProxyPassReverse "/images"  "balancer://myset"
 	  needs to be added to your configuration:
     </p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;Location "/balancer-manager"&gt;
     SetHandler balancer-manager
     Require host localhost
 &lt;/Location&gt;
-</highlight>
+    </highlight>
 
     <note type="warning"><title>Warning</title>
       <p>Do not enable the <em>balancer-manager</em> until you have <a
@@ -269,6 +269,48 @@ ProxyPassReverse "/images"  "balancer://myset"
       <directive module="mod_proxy">BalancerPersist</directive> is enabled.
     </p>
 
+  </section>
+
+  <section id="health-check">
+    <title>Dynamic Health Checks</title>
+
+    <p>
+      Before httpd proxies a request to a worker, it can <em>"test"</em> if that worker
+      is available via setting the <code>ping</code> parameter for that worker using
+      <directive module="mod_proxy">ProxyPass</directive>. Oftentimes it is
+      more useful to check the health of the workers <em>out of band</em>, in a
+      dynamic fashion. This is achieved in Apache httpd by the
+      <module>mod_proxy_hcheck</module> module.
+    </p>
+
+  </section>
+
+  <section id="status">
+    <title>BalancerMember status flags</title>
+
+    <p>
+      In the <em>balancer-manager</em> the current state, or <em>status</em>, of a worker
+      is displayed and can be set/reset. The meanings of these statuses are as follows:
+    </p>
+      <table border="1">
+      	<tr><th>Flag</th><th>String</th><th>Description</th></tr>
+      	<tr><td>&nbsp;</td><td><em>Ok</em></td><td>Worker is available</td></tr>
+      	<tr><td>&nbsp;</td><td><em>Init</em></td><td>Worker has been initialized</td></tr>
+        <tr><td><code>D</code></td><td><em>Dis</em></td><td>Worker is disabled and will not accept any requests; will be
+                    automatically retried.</td></tr>
+        <tr><td><code>S</code></td><td><em>Stop</em></td><td>Worker is administratively stopped; will not accept requests
+                    and will not be automatically retried</td></tr>
+        <tr><td><code>I</code></td><td><em>Ign</em></td><td>Worker is in ignore-errors mode and will always be considered available.</td></tr>
+        <tr><td><code>H</code></td><td><em>Stby</em></td><td>Worker is in hot-standby mode and will only be used if no other
+                    viable workers are available.</td></tr>
+        <tr><td><code>E</code></td><td><em>Err</em></td><td>Worker is in an error state, usually due to failing pre-request check;
+                    requests will not be proxied to this worker, but it will be retried depending on
+                    the <code>retry</code> setting of the worker.</td></tr>
+        <tr><td><code>N</code></td><td><em>Drn</em></td><td>Worker is in drain mode and will only accept existing sticky sessions
+                    destined for itself and ignore all other requests.</td></tr>
+        <tr><td><code>C</code></td><td><em>HcFl</em></td><td>Worker has failed dynamic health check and will not be used until it
+                    passes subsequent health checks.</td></tr>
+      </table>
   </section>
 
 </manualpage>
