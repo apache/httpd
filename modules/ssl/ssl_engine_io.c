@@ -489,6 +489,12 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
             return -1;
         }
 
+        if (block == APR_BLOCK_READ 
+            && APR_STATUS_IS_TIMEUP(inctx->rc)
+            && APR_BRIGADE_EMPTY(inctx->bb)) {
+            /* don't give up, just return the timeout */
+            return -1;
+        }
         if (inctx->rc != APR_SUCCESS) {
             /* Unexpected errors discard the brigade */
             apr_brigade_cleanup(inctx->bb);
@@ -669,6 +675,10 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                         break;
                     }
                     continue;  /* Blocking and nothing yet?  Try again. */
+                }
+                else if (APR_STATUS_IS_TIMEUP(inctx->rc)) {
+                    /* just return it, the calling layer might be fine with it,
+                       and we do not want to bloat the log. */
                 }
                 else {
                     ap_log_cerror(APLOG_MARK, APLOG_INFO, inctx->rc, c, APLOGNO(01991)
