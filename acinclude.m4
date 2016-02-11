@@ -488,6 +488,8 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     ap_openssl_found=""
     ap_openssl_base=""
     ap_openssl_libs=""
+    ap_openssl_mod_cflags=""
+    ap_openssl_mod_ldflags=""
 
     dnl Determine the OpenSSL base directory, if any
     AC_MSG_CHECKING([for user-provided OpenSSL base directory])
@@ -590,9 +592,15 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     CPPFLAGS="$saved_CPPFLAGS"
     LIBS="$saved_LIBS"
     LDFLAGS="$saved_LDFLAGS"
+
+    dnl cache MOD_LDFLAGS, MOD_CFLAGS
+    ap_openssl_mod_cflags=$MOD_CFLAGS
+    ap_openssl_mod_ldflags=$MOD_LDFLAGS
   ])
   if test "x$ac_cv_openssl" = "xyes"; then
     AC_DEFINE(HAVE_OPENSSL, 1, [Define if OpenSSL is available])
+    APR_ADDTO(MOD_LDFLAGS, [$ap_openssl_mod_ldflags])
+    APR_ADDTO(MOD_CFLAGS, [$ap_openssl_mod_cflags])
   fi
 ])
 
