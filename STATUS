@@ -120,6 +120,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works (modulo CHANGES)
      +1: icing, covener, ylavic
      covener: needs MMN bump, but sorting out previous MMN question first.
+     jim: Status, re: MMN bump ??
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
