@@ -220,7 +220,6 @@ static int proxy_http2_handler(request_rec *r,
     conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
-    const char *ssl_hostname = NULL;
     conn_rec *backconn;
 
     /* find the scheme */
@@ -279,13 +278,6 @@ static int proxy_http2_handler(request_rec *r,
         goto cleanup;
     }
     
-    if (!ssl_hostname && backend->ssl_hostname) {
-        /* When reusing connections and finding sockets closed, the proxy
-         * framework loses the ssl_hostname setting. This is vital for us,
-         * so we save it once it is known. */
-        ssl_hostname = apr_pstrdup(r->pool, backend->ssl_hostname);
-    }
-    
     /* Step Two: Make the Connection (or check that an already existing
      * socket is still usable). On success, we have a socket connected to
      * backend->hostname. */
@@ -301,10 +293,9 @@ static int proxy_http2_handler(request_rec *r,
     backconn = backend->connection;
     if (!backconn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
-                      "setup new connection: is_ssl=%d %s %s %s, was %s", 
+                      "setup new connection: is_ssl=%d %s %s %s", 
                       backend->is_ssl, 
-                      backend->ssl_hostname, r->hostname, backend->hostname,
-                      ssl_hostname);
+                      backend->ssl_hostname, r->hostname, backend->hostname);
         if ((status = ap_proxy_connection_create(proxy_function, backend,
                                                  c, r->server)) != OK) {
             goto cleanup;
@@ -316,9 +307,9 @@ static int proxy_http2_handler(request_rec *r,
          * requested, such that mod_ssl can check if it is requested to do
          * so.
          */
-        if (ssl_hostname) {
+        if (backend->ssl_hostname) {
             apr_table_setn(backend->connection->notes,
-                           "proxy-request-hostname", ssl_hostname);
+                           "proxy-request-hostname", backend->ssl_hostname);
         }
         
         if (backend->is_ssl) {
