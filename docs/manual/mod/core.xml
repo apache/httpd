@@ -4178,7 +4178,7 @@ handler</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>2.4.19 and later</compatibility>
+<compatibility>expression argument 2.4.19 and later</compatibility>
 
 <usage>
     <p>When placed into an <code>.htaccess</code> file or a
