@@ -246,6 +246,17 @@ int ssl_hook_ReadReq(request_rec *r)
         sslconn = myConnConfig(r->connection->master);
     }
     
+    /* If "SSLEngine optional" is configured, this is not an SSL
+     * connection, and this isn't a subrequest, send an Upgrade
+     * response header.  Note this must happen before map_to_storage
+     * and OPTIONS * request processing is completed.
+     */
+    if (sc->enabled == SSL_ENABLED_OPTIONAL && !(sslconn && sslconn->ssl)
+        && !r->main) {
+        apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
+        apr_table_mergen(r->headers_out, "Connection", "upgrade");
+    }
+
     if (!sslconn) {
         return DECLINED;
     }
@@ -1317,15 +1328,6 @@ int ssl_hook_Fixup(request_rec *r)
     STACK_OF(X509) *peer_certs;
     SSL *ssl;
     int i;
-
-    /* If "SSLEngine optional" is configured, this is not an SSL
-     * connection, and this isn't a subrequest, send an Upgrade
-     * response header. */
-    if (sc->enabled == SSL_ENABLED_OPTIONAL && !(sslconn && sslconn->ssl)
-        && !r->main) {
-        apr_table_setn(r->headers_out, "Upgrade", "TLS/1.0, HTTP/1.1");
-        apr_table_mergen(r->headers_out, "Connection", "upgrade");
-    }
 
     if (!(sslconn && sslconn->ssl) && r->connection->master) {
         sslconn = myConnConfig(r->connection->master);
