@@ -1176,7 +1176,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                 while (len--) {
                     *s++ = *p++;
                 }
-                p = last;
+                p = NULL;
             }
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                           "setting alpn protos from '%s', protolen=%d", 
