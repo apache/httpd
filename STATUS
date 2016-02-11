@@ -112,14 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) When more than one module calls APACHE_CHECK_OPENSSL, MOD_LDFLAGS and MOD_CFLAGS 
-     remain unset for second or later caller. Fix this by caching the values for 
-     MOD_LDFLAGS and MOD_CFLAGS created during the first run and set them in the 
-     cached case. Change by rpluem
-     trunk patch:  http://svn.apache.org/r1725325
-     2.4.x patch:  trunk works
-     +1: icing, jim, ylavic
-
   *) mod_ssl: Fix missing TLS Upgrade/Connection headers on OPTIONS * requests
      (Note that this is simply a necessary band-aid, and still won't allow h2c
      to peacefully coexist with tls/n.n upgrades, because Upgrade phase needs
