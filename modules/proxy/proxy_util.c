@@ -2717,12 +2717,18 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
     if (conn->sock) {
         if (!(connected = ap_proxy_is_socket_connected(conn->sock))) {
-            /* FIXME: this loses conn->ssl_hostname and it will not be
-             * restablished before the SSL connection is made -> no SNI! */
+            /* This clears conn->scpool (and associated data), so backup and
+             * restore any ssl_hostname for this connection set earlier by
+             * ap_proxy_determine_connection().
+             */
+            const char *ssl_hostname = conn->ssl_hostname;
+
             socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
                          "%s: backend socket is disconnected.",
                          proxy_function);
+
+            conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
         }
     }
     while ((backend_addr || conn->uds_path) && !connected) {
