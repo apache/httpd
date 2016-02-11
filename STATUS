@@ -112,15 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Prevent a server crash in case of an invalid CONNECT request with
-     a custom error page for status code 400 that uses server side includes.
-     PR 58929
-     Trunk version of patch:
-         http://svn.apache.org/r1727544
-     Backport version for 2.4.x of patch:
-         Trunk version of patch works modulo CHANGES
-     +1: rpluem, covener, ylavic
-
   *) core: Add expression support to SetHandler (someone wanted this in
      a well-articulated serverfault post).
      trunk patch:  http://svn.apache.org/r1725149
