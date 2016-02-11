@@ -4173,11 +4173,12 @@ header</description>
 <name>SetHandler</name>
 <description>Forces all matching files to be processed by a
 handler</description>
-<syntax>SetHandler <var>handler-name</var>|None</syntax>
+<syntax>SetHandler <var>handler-name</var>|none|<var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>2.4.19 and later</compatibility>
 
 <usage>
     <p>When placed into an <code>.htaccess</code> file or a
@@ -4209,6 +4210,15 @@ handler</description>
     <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;
+    </highlight>
+
+    <p>String-valued expressions can be used to reference per-request 
+    variables, including backreferences to named regular expressions:</p>
+
+    <highlight language="config">
+&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
 &lt;/FilesMatch&gt;
     </highlight>
 
