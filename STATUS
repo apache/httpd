@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: handle APR_TIMEUP on empty input by keeping connection state valid
-              for later retries.
-     trunk patch:  http://svn.apache.org/r1725940
-     +1: icing, jim, ylavic
-
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
      PR 58929

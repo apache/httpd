@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_ssl: handle TIMEOUT on empty SSL input as non-fatal, returning 
+     APR_TIMEUP and preserving connection state for later retry.
+     [Stefan Eissing]
+     
   *) mod_ssl: Save some TLS record (application data) fragmentations by
      including the last and subsequent suitable buckets when coalescing.
      [Yann Ylavic]
