@@ -1113,6 +1113,7 @@ struct conn_rec {
     char *remote_host;
     /** Only ever set if doing rfc1413 lookups.  N.B. Only access this through
      *  get_remote_logname() */
+    /* TODO: Remove from request_rec, make local to mod_ident */
     char *remote_logname;
 
     /** server IP address */
