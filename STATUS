@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
          http://svn.apache.org/r1588330
      Trunk patch applies clean, modulo CHANGES
-     +1: wrowe
+     +1: wrowe, mrumph
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
