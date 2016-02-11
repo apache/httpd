@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
+     had to be issued because the remote closed the previous/reusable one
+     during idle (keep-alive) time.  [Yann Ylavic]
+
   *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
      urls. Uses, so far, one connection per request, reuses connections.
   
