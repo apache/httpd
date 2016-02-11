@@ -565,7 +565,7 @@ typedef struct {
     ap_regex_t *r;
 
     const char *mime_type;       /* forced with ForceType  */
-    const char *handler;         /* forced with SetHandler */
+    const char *handler;         /* forced by something other than SetHandler */
     const char *output_filters;  /* forced with SetOutputFilters */
     const char *input_filters;   /* forced with SetInputFilters */
     int accept_path_info;        /* forced with AcceptPathInfo */
@@ -642,7 +642,7 @@ typedef struct {
      */
     unsigned int cgi_pass_auth : 2;
     unsigned int qualify_redirect_url :2;
-
+    ap_expr_info_t  *expr_handler;         /* forced with SetHandler */
 } core_dir_config;
 
 /* macro to implement off by default behaviour */

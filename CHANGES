@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.19
+  *) core: Add expression support to SetHandler.
+     [Eric Covener]
 
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
