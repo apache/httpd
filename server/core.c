@@ -887,30 +887,27 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-static APR_INLINE void do_double_reverse (int *double_reverse,
-                                          const char *remote_host,
-                                          apr_sockaddr_t *client_addr,
-                                          apr_pool_t *pool)
+static APR_INLINE void do_double_reverse (conn_rec *conn)
 {
     apr_sockaddr_t *sa;
     apr_status_t rv;
 
-    if (*double_reverse) {
+    if (conn->double_reverse) {
         /* already done */
         return;
     }
 
-    if (remote_host == NULL || remote_host[0] == '\0') {
+    if (conn->remote_host == NULL || conn->remote_host[0] == '\0') {
         /* single reverse failed, so don't bother */
-        *double_reverse = -1;
+        conn->double_reverse = -1;
         return;
     }
 
-    rv = apr_sockaddr_info_get(&sa, remote_host, APR_UNSPEC, 0, 0, pool);
+    rv = apr_sockaddr_info_get(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
     if (rv == APR_SUCCESS) {
         while (sa) {
-            if (apr_sockaddr_equal(sa, client_addr)) {
-                *double_reverse = 1;
+            if (apr_sockaddr_equal(sa, conn->client_addr)) {
+                conn->double_reverse = 1;
                 return;
             }
 
@@ -918,7 +915,7 @@ static APR_INLINE void do_double_reverse (int *double_reverse,
         }
     }
 
-    *double_reverse = -1;
+    conn->double_reverse = -1;
 }
 
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
@@ -956,8 +953,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
             ap_str_tolower(conn->remote_host);
 
             if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
-                do_double_reverse(&conn->double_reverse, conn->remote_host,
-                                  conn->client_addr, conn->pool)
+                do_double_reverse(conn);
                 if (conn->double_reverse != 1) {
                     conn->remote_host = NULL;
                 }
@@ -971,8 +967,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     }
 
     if (type == REMOTE_DOUBLE_REV) {
-        do_double_reverse(&conn->double_reverse, conn->remote_host,
-                          conn->client_addr, conn->pool)
+        do_double_reverse(conn);
         if (conn->double_reverse == -1) {
             return NULL;
         }
@@ -993,80 +988,6 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
         else {
             *str_is_ip = 1;
             return conn->client_ip;
-        }
-    }
-}
-
-AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
-                                               int type, int *str_is_ip)
-{
-    conn_rec *conn = r->connection;
-    int hostname_lookups;
-    int ignored_str_is_ip;
-
-    if (req->useragent_addr == conn->client_addr) {
-        return ap_get_remote_host(conn, r->per_dir_config, type, str_is_ip);
-    }
-
-    if (!str_is_ip) { /* caller doesn't want to know */
-        str_is_ip = &ignored_str_is_ip;
-    }
-    *str_is_ip = 0;
-
-    hostname_lookups = ((core_dir_config *)
-                        ap_get_core_module_config(r->per_dir_config))
-                            ->hostname_lookups;
-    if (hostname_lookups == HOSTNAME_LOOKUP_UNSET) {
-        hostname_lookups = HOSTNAME_LOOKUP_OFF;
-    }
-
-    if (type != REMOTE_NOLOOKUP
-        && r->useragent_host == NULL
-        && (type == REMOTE_DOUBLE_REV
-        || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-
-        if (apr_getnameinfo(&r->useragent_host, r->useragent_addr, 0)
-            == APR_SUCCESS) {
-            ap_str_tolower(r->useragent_host);
-
-            if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
-                do_double_reverse(&r->double_reverse, r->useragent_host,
-                                  r->useragent_addr, r->pool)
-                if (r->double_reverse != 1) {
-                    r->useragent_host = NULL;
-                }
-            }
-        }
-
-        /* if failed, set it to the NULL string to indicate error */
-        if (r->useragent_host == NULL) {
-            r->useragent_host = "";
-        }
-    }
-
-    if (type == REMOTE_DOUBLE_REV) {
-        do_double_reverse(&r->double_reverse, r->useragent_host,
-                          r->useragent_addr, r->pool)
-        if (r->double_reverse == -1) {
-            return NULL;
-        }
-    }
-
-    /*
-     * Return the desired information; either the remote DNS name, if found,
-     * or either NULL (if the hostname was requested) or the IP address
-     * (if any identifier was requested).
-     */
-    if (r->useragent_host != NULL && r->useragent_host[0] != '\0') {
-        return r->useragent_host;
-    }
-    else {
-        if (type == REMOTE_HOST || type == REMOTE_DOUBLE_REV) {
-            return NULL;
-        }
-        else {
-            *str_is_ip = 1;
-            return r->useragent_ip;
         }
     }
 }
@@ -1094,7 +1015,6 @@ AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r)
  * name" as supplied by a possible Host: header or full URI.
  *
  * The DNS option to UseCanonicalName causes this routine to do a
- /
  * reverse lookup on the local IP address of the connection and use
  * that for the ServerName. This makes its value more reliable while
  * at the same time allowing Demon's magic virtual hosting to work.
@@ -5439,7 +5359,7 @@ static void core_dump_config(apr_pool_t *p, server_rec *s)
     }
 }
 
-static int core_upgrade_request(request_rec *r)
+static int core_upgrade_handler(request_rec *r)
 {
     conn_rec *c = r->connection;
     const char *upgrade;
@@ -5467,15 +5387,8 @@ static int core_upgrade_request(request_rec *r)
             if (offers && offers->nelts > 0) {
                 const char *protocol = ap_select_protocol(c, r, NULL, offers);
                 if (protocol && strcmp(protocol, ap_get_protocol(c))) {
-                    apr_status_t rv;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02909)
                                   "Upgrade selects '%s'", protocol);
-                    /* RFC7230 6.7: Stupid constraint, detect request body,
-                     * send 100-continue, read it immediately, and set it aside
-                     * for the filters/handler to process after upgrade
-                     * XXX: TODO
-                     */
-
                     /* Let the client know what we are upgrading to. */
                     apr_table_clear(r->headers_out);
                     apr_table_setn(r->headers_out, "Upgrade", protocol);
@@ -5485,25 +5398,20 @@ static int core_upgrade_request(request_rec *r)
                     r->status_line = ap_get_status_line(r->status);
                     ap_send_interim_response(r, 1);
 
-                    rv = ap_switch_protocol(c, r, r->server, protocol);
-                    if (rv == APR_EOF)
-                    {
-                        /* make sure httpd closes the connection after this */
-                        c->keepalive = AP_CONN_CLOSE;
-                        return DONE;
-                    }
+                    ap_switch_protocol(c, r, r->server, protocol);
+
+                    /* make sure httpd closes the connection after this */
+                    c->keepalive = AP_CONN_CLOSE;
+                    return DONE;
                 }
             }
         }
     }
-    else {
-        /* first request on a master connection, announce our presence
-         * and presume an h2c client will remember the advertisement.
-         */
-        if (!c->keepalives) {
-        /* No upgrade: requested; if we have protocols other than the current
-         * one enabled here, announce them to the client.
-         */
+    else if (!c->keepalives) {
+        /* first request on a master connection, if we have protocols other
+         * than the current one enabled here, announce them to the
+         * client. If the client is already talking a protocol with requests
+         * on slave connections, leave it be. */
         const apr_array_header_t *upgrades;
         ap_get_protocol_upgrades(c, r, NULL, 0, &upgrades);
         if (upgrades && upgrades->nelts > 0) {
@@ -5512,7 +5420,16 @@ static int core_upgrade_request(request_rec *r)
             apr_table_setn(r->headers_out, "Connection", "Upgrade");
         }
     }
+    
+    return DECLINED;
+}
 
+static int core_upgrade_storage(request_rec *r)
+{
+    if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*') &&
+        (r->uri[1] == '\0')) {
+        return core_upgrade_handler(r);
+    }
     return DECLINED;
 }
 
@@ -5538,11 +5455,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_check_config(core_check_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_test_config(core_dump_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
+    ap_hook_map_to_storage(core_upgrade_storage,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(core_child_init,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(ap_logs_child_init,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(core_upgrade_request,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_handler(core_upgrade_handler,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);

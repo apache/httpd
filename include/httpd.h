@@ -1056,16 +1056,6 @@ struct request_rec {
     apr_table_t *trailers_in;
     /** MIME trailer environment from the response */
     apr_table_t *trailers_out;
-
-    /** Originator's DNS name, if known.  NULL if DNS hasn't been checked,
-     *  "" if it has and no address was found.  N.B. Only access this though
-     *  ap_get_useragent_host() */
-    char *useragent_host;
-    /** have we done double-reverse DNS? -1 yes/failure, 0 not yet,
-     *  1 yes/success
-     *  TODO: 2 bit signed bitfield when this structure is compacted
-     */
-    int double_reverse;
 };
 
 /**
