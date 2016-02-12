@@ -1,9 +1,4 @@
 #
-# This Makefile requires the environment var NGH2SRC
-# pointing to the base directory of nghttp2 source tree.
-#
-
-#
 # Declare the sub-directories to be built here
 #
 
@@ -19,6 +14,7 @@ include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
+
 #
 # Make sure all needed macro's are defined
 #
@@ -28,15 +24,6 @@ include $(AP_WORK)/build/NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(APR)/include \
-			$(APRUTIL)/include \
-			$(SRC)/include \
-			$(NGH2SRC)/lib/ \
-			$(NGH2SRC)/lib/includes \
-			$(SERVER)/mpm/NetWare \
-			$(STDMOD)/proxy \
-			$(STDMOD)/ssl \
-			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -49,15 +36,12 @@ XCFLAGS		+= \
 # These defines will come after DEFINES
 #
 XDEFINES	+= \
-			-DHAVE_CONFIG_H \
 			$(EOLIST)
 
 #
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
-			-L$(OBJDIR) \
-			-L../proxy \
 			$(EOLIST)
 
 #
@@ -111,19 +95,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= mod_http2
+NLM_NAME	=
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) HTTP2 Support module (w/ NGHTTP2 Lib)
+NLM_DESCRIPTION	=
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= $(NLM_NAME)
+NLM_THREAD_NAME	=
 
 #
 # If this is specified, it will override VERSION value in
@@ -134,7 +118,8 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	= 65536
+NLM_STACK_SIZE	=
+
 
 #
 # If this is specified it will be used by the link '-entry' directive
@@ -152,7 +137,7 @@ NLM_EXIT_SYM	=
 NLM_CHECK_SYM	=
 
 #
-# If this is specified it will be used by the link '-flags' directive
+# If these are specified it will be used by the link '-flags' directive
 #
 NLM_FLAGS	=
 
@@ -164,36 +149,31 @@ NLM_FLAGS	=
 XDCDATA		=
 
 #
-# Declare all target files (you must add your files here)
-#
-
-#
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/$(NLM_NAME).nlm \
+	$(OBJDIR)/mod_http2.nlm \
+	$(OBJDIR)/mod_http2.nlm \
 	$(EOLIST)
 
 #
 # If there is an LIB target, put it here
 #
 TARGET_lib = \
-	$(OBJDIR)/nghttp2.lib \
 	$(EOLIST)
 
 #
 # These are the OBJ files needed to create the NLM target above.
 # Paths must all use the '/' character
 #
-FILES_nlm_objs := $(sort $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c)))
+FILES_nlm_objs = \
+	$(EOLIST)
 
 #
 # These are the LIB files needed to create the NLM target above.
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	$(PRELUDE) \
-	$(OBJDIR)/nghttp2.lib \
 	$(EOLIST)
 
 #
@@ -201,8 +181,6 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
-	Libc \
-	Apache2 \
 	$(EOLIST)
 
 #
@@ -224,29 +202,26 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@libc.imp \
-	@aprlib.imp \
-	@httpd.imp \
-	@mod_proxy.imp \
 	$(EOLIST)
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	http2_module \
 	$(EOLIST)
 
 #
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
-FILES_lib_objs := $(sort $(patsubst $(NGH2SRC)/lib/%.c,$(OBJDIR)/%.o,$(wildcard $(NGH2SRC)/lib/*.c)))
+FILES_lib_objs = \
+	$(EOLIST)
+
 #
 # implement targets and dependancies (leave this section alone)
 #
 
-libs :: $(OBJDIR) $(NGH2SRC)/lib/config.h $(TARGET_lib)
+libs :: $(OBJDIR) $(TARGET_lib)
 
 nlms :: libs $(TARGET_nlm)
 
@@ -255,75 +230,11 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	$(call COPY,$(OBJDIR)/*.nlm,        $(INSTALLBASE)/modules/)
+	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
 
-clean ::
-	$(call DEL,$(NGH2SRC)/lib/config.h)
 #
 # Any specialized rules here
 #
-vpath %.c $(NGH2SRC)/lib
-
-$(NGH2SRC)/lib/config.h : NWGNUmakefile
-	@echo $(DL)GEN  $@$(DL)
-	@echo $(DL)/* For NetWare target.$(DL) > $@
-	@echo $(DL)** Do not edit - created by Make!$(DL) >> $@
-	@echo $(DL)*/$(DL) >> $@
-	@echo $(DL)#ifndef NGH2_CONFIG_H$(DL) >> $@
-	@echo $(DL)#define NGH2_CONFIG_H$(DL) >> $@
-	@echo #define HAVE_ARPA_INET_H 1 >> $@
-	@echo #define HAVE_CHOWN 1 >> $@
-	@echo #define HAVE_DECL_STRERROR_R 1 >> $@
-	@echo #define HAVE_DLFCN_H 1 >> $@
-	@echo #define HAVE_DUP2 1 >> $@
-	@echo #define HAVE_FCNTL_H 1 >> $@
-	@echo #define HAVE_GETCWD 1 >> $@
-	@echo #define HAVE_INTTYPES_H 1 >> $@
-	@echo #define HAVE_LIMITS_H 1 >> $@
-	@echo #define HAVE_LOCALTIME_R 1 >> $@
-	@echo #define HAVE_MALLOC 1 >> $@
-	@echo #define HAVE_MEMCHR 1 >> $@
-	@echo #define HAVE_MEMMOVE 1 >> $@
-	@echo #define HAVE_MEMORY_H 1 >> $@
-	@echo #define HAVE_MEMSET 1 >> $@
-	@echo #define HAVE_NETDB_H 1 >> $@
-	@echo #define HAVE_NETINET_IN_H 1 >> $@
-	@echo #define HAVE_PTRDIFF_T 1 >> $@
-	@echo #define HAVE_PWD_H 1 >> $@
-	@echo #define HAVE_SOCKET 1 >> $@
-	@echo #define HAVE_SQRT 1 >> $@
-	@echo #define HAVE_STDDEF_H 1 >> $@
-	@echo #define HAVE_STDINT_H 1 >> $@
-	@echo #define HAVE_STDLIB_H 1 >> $@
-	@echo #define HAVE_STRCHR 1 >> $@
-	@echo #define HAVE_STRDUP 1 >> $@
-	@echo #define HAVE_STRERROR 1 >> $@
-	@echo #define HAVE_STRERROR_R 1 >> $@
-	@echo #define HAVE_STRINGS_H 1 >> $@
-	@echo #define HAVE_STRING_H 1 >> $@
-	@echo #define HAVE_STRSTR 1 >> $@
-	@echo #define HAVE_STRTOL 1 >> $@
-	@echo #define HAVE_STRTOUL 1 >> $@
-	@echo #define HAVE_SYSLOG_H 1 >> $@
-	@echo #define HAVE_SYS_SOCKET_H 1 >> $@
-	@echo #define HAVE_SYS_STAT_H 1 >> $@
-	@echo #define HAVE_SYS_TIME_H 1 >> $@
-	@echo #define HAVE_SYS_TYPES_H 1 >> $@
-	@echo #define HAVE_TIME_H 1 >> $@
-	@echo #define HAVE_UNISTD_H 1 >> $@
-
-	@echo #define SIZEOF_INT_P 4 >> $@
-	@echo #define STDC_HEADERS 1 >> $@
-	@echo #define STRERROR_R_CHAR_P 4 >> $@
-
-# Hint to compiler a function parameter is not used
-	@echo #define _U_ >> $@
-
-	@echo #ifndef __cplusplus >> $@
-	@echo #define inline __inline >> $@
-	@echo #endif >> $@
-
-	@echo $(DL)#endif /* NGH2_CONFIG_H */$(DL) >> $@
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
