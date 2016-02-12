@@ -82,7 +82,7 @@
       to a single backend:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
 
 
     <p>
@@ -92,14 +92,14 @@
       directive is most often required:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com"
-ProxyPassReverse "/"  "http://www.example.com"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
+ProxyPassReverse "/"  "http://www.example.com/"</pre>
 
 
     <p>Only specific URIs can be proxied, as shown in this example:</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com"
-ProxyPassReverse "/images"  "http://www.example.com"</pre>
+    <pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com/"
+ProxyPassReverse "/images"  "http://www.example.com/"</pre>
 
 
     <p>In the above, any requests which start with the <code>/images</code>
@@ -130,8 +130,8 @@ ProxyPassReverse "/images"  "http://www.example.com"</pre>
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
-ProxyPass "/images"  "balancer://myset"
-ProxyPassReverse "/images"  "balancer://myset"</pre>
+ProxyPass "/images/"  "balancer://myset/"
+ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
 
     <p>
@@ -170,8 +170,8 @@ ProxyPassReverse "/images"  "balancer://myset"</pre>
     ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
-ProxyPass "/images"  "balancer://myset"
-ProxyPassReverse "/images"  "balancer://myset"</pre>
+ProxyPass "/images"  "balancer://myset/"
+ProxyPassReverse "/images"  "balancer://myset/"</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -199,8 +199,8 @@ ProxyPassReverse "/images"  "balancer://myset"</pre>
     ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
-ProxyPass "/images"  "balancer://myset"
-ProxyPassReverse "/images"  "balancer://myset"</pre>
+ProxyPass "/images/"  "balancer://myset/"
+ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
 
     <p>
