@@ -531,8 +531,7 @@ static int match_headers(request_rec *r)
                     val = r->connection->local_ip;
                     break;
                 case SPECIAL_REMOTE_HOST:
-                    val =  ap_get_remote_host(r->connection, r->per_dir_config,
-                                              REMOTE_NAME, NULL);
+                    val = ap_get_useragent_host(r, REMOTE_NAME, NULL);
                     break;
                 case SPECIAL_REQUEST_URI:
                     val = r->uri;
