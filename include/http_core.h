@@ -159,6 +159,32 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r);
 AP_DECLARE(const char *) ap_document_root(request_rec *r);
 
 /**
+ * Lookup the remote user agent's DNS name or IP address
+ * @ingroup get_remote_hostname
+ * @param req The current request
+ * @param type The type of lookup to perform.  One of:
+ * <pre>
+ *     REMOTE_HOST returns the hostname, or NULL if the hostname
+ *                 lookup fails.  It will force a DNS lookup according to the
+ *                 HostnameLookups setting.
+ *     REMOTE_NAME returns the hostname, or the dotted quad if the
+ *                 hostname lookup fails.  It will force a DNS lookup according
+ *                 to the HostnameLookups setting.
+ *     REMOTE_NOLOOKUP is like REMOTE_NAME except that a DNS lookup is
+ *                     never forced.
+ *     REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
+ *                   a double reverse lookup, regardless of the HostnameLookups
+ *                   setting.  The result is the (double reverse checked)
+ *                   hostname, or NULL if any of the lookups fail.
+ * </pre>
+ * @param str_is_ip unless NULL is passed, this will be set to non-zero on
+ *        output when an IP address string is returned
+ * @return The remote hostname (based on the request useragent_ip)
+ */
+AP_DECLARE(const char *) ap_get_useragent_host(request_rec *req, int type,
+                                               int *str_is_ip);
+
+/**
  * Lookup the remote client's DNS name or IP address
  * @ingroup get_remote_host
  * @param conn The current connection
@@ -180,7 +206,7 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  * </pre>
  * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address
  *        string is returned
- * @return The remote hostname
+ * @return The remote hostname (based on the connection client_ip)
  */
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config, int type, int *str_is_ip);
 
