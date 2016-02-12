@@ -222,6 +222,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Resetting votes:
      +1: icing
 
+  *) mod_watchdog: Error logging
+     trunk patch:  http://svn.apache.org/r1722154
+                   http://svn.apache.org/r1722701
+     2.4.x patch:  trunk works
+     +1: jim
+
+  *) various: APLOGNO
+     trunk patch:  http://svn.apache.org/r1725485
+     2.4.x patch:  trunk works
+                   http://home.apache.org/~jim/patches/aplogno-2.4.patch
+     +1: jim
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
