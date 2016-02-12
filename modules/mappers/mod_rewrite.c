@@ -2067,8 +2067,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     return apr_psprintf(r->pool, "%u", ap_get_server_port(r));
                 }
                 else if (var[7] == 'H' && !strcmp(var, "REMOTE_HOST")) {
-                    result = ap_get_remote_host(r->connection,r->per_dir_config,
-                                                REMOTE_NAME, NULL);
+                    result = ap_get_useragent_host(r, REMOTE_NAME, NULL);
                 }
                 else if (!strcmp(var, "REMOTE_PORT")) {
                     return apr_itoa(r->pool, r->useragent_addr->port);
