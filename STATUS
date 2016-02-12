@@ -185,6 +185,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch applies clean, modulo CHANGES
      +1: wrowe, mrumph
 
+  *) core: Track the useragent_host per-request when mod_remoteip or similar
+     modules track a per-request useragent_ip.  Modules should be updated
+     to inquire for ap_get_useragent_host() in place of ap_get_remote_host().
+     Trunk version of patch:
+         http://svn.apache.org/r1729929
+     Trunk patch to core.c/http_core.h applies, modulo CHANGES & ap_mmn.h
+     +1: wrowe
+
+  *) hostname: Test and log useragent_host per-request across various modules,
+     including the scoreboard, expression and rewrite engines, setenvif,
+     authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.
+     PR55348  [William Rowe]
+     Trunk version of patch:
+         http://svn.apache.org/r1729930
+         http://svn.apache.org/r1729931
+     Trunk patch r1729930 applies, modulo CHANGES
+     Backport patch to r1729931 is noted in the commit log message
+     Requires r1729929 to be applied.
+     +1: wrowe
+ 
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
