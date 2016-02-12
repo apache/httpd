@@ -97,6 +97,10 @@ BEGIN {
        print "#LoadModule socache_shmcb_module modules/socacheshmcb.nlm"
        print "#LoadModule ssl_module modules/mod_ssl.nlm"
     }
+    if (MODHTTP2) {
+       print "#LoadModule http2_module modules/mod_http2.nlm"
+       print "#LoadModule proxy_http2_module modules/proxyhttp2.nlm"
+    }
     print ""
     next
 }

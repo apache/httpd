@@ -173,6 +173,7 @@ BEGIN {
           print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
           print "#LoadModule proxy_scgi_module modules/mod_proxy_scgi.so" > dstfl;
           print "#LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so" > dstfl;
+          print "#LoadModule proxy_http2_module modules/mod_proxy_http2.so" > dstfl;
           print "#LoadModule ratelimit_module modules/mod_ratelimit.so" > dstfl;
           print "#LoadModule reflector_module modules/mod_reflector.so" > dstfl;
           print "#LoadModule remoteip_module modules/mod_remoteip.so" > dstfl;
