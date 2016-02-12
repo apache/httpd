@@ -957,7 +957,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 
             if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
                 do_double_reverse(&conn->double_reverse, conn->remote_host,
-                                  conn->client_addr, conn->pool)
+                                  conn->client_addr, conn->pool);
                 if (conn->double_reverse != 1) {
                     conn->remote_host = NULL;
                 }
@@ -972,7 +972,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 
     if (type == REMOTE_DOUBLE_REV) {
         do_double_reverse(&conn->double_reverse, conn->remote_host,
-                          conn->client_addr, conn->pool)
+                          conn->client_addr, conn->pool);
         if (conn->double_reverse == -1) {
             return NULL;
         }
@@ -1004,7 +1004,7 @@ AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
     int hostname_lookups;
     int ignored_str_is_ip;
 
-    if (req->useragent_addr == conn->client_addr) {
+    if (r->useragent_addr == conn->client_addr) {
         return ap_get_remote_host(conn, r->per_dir_config, type, str_is_ip);
     }
 
@@ -1031,7 +1031,7 @@ AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
 
             if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
                 do_double_reverse(&r->double_reverse, r->useragent_host,
-                                  r->useragent_addr, r->pool)
+                                  r->useragent_addr, r->pool);
                 if (r->double_reverse != 1) {
                     r->useragent_host = NULL;
                 }
@@ -1046,7 +1046,7 @@ AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
 
     if (type == REMOTE_DOUBLE_REV) {
         do_double_reverse(&r->double_reverse, r->useragent_host,
-                          r->useragent_addr, r->pool)
+                          r->useragent_addr, r->pool);
         if (r->double_reverse == -1) {
             return NULL;
         }
