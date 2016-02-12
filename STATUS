@@ -182,6 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
          http://svn.apache.org/r1729929
      Trunk patch to core.c/http_core.h applies, modulo CHANGES & ap_mmn.h
+     Note: httpd.h comment r.e. realiging bit fields must be omitted.
      +1: wrowe
 
   *) hostname: Test and log useragent_host per-request across various modules,
