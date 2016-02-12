@@ -213,7 +213,7 @@ h2_util.lo dnl
 
 dnl # hook module into the Autoconf mechanism (--enable-proxy_http2)
 APACHE_MODULE(proxy_http2, [HTTP/2 proxy module. This module requires a libnghttp2 installation. 
-See --with-nghttp2 on how to manage non-standard locations. ], $proxy_http2_objs, , no, [
+See --with-nghttp2 on how to manage non-standard locations. Also requires --enable-proxy.], $proxy_http2_objs, , no, [
     APACHE_CHECK_NGHTTP2
     if test "$ac_cv_nghttp2" = "yes" ; then
         if test "x$enable_http2" = "xshared"; then
@@ -224,7 +224,7 @@ See --with-nghttp2 on how to manage non-standard locations. ], $proxy_http2_objs
     else
         enable_proxy_http2=no
     fi
-])
+], proxy)
 
 
 dnl #  end of module specific part
