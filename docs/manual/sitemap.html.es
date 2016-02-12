@@ -19,7 +19,7 @@
 <div id="page-header">
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
 <p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
-<img alt="" src="./images/feather.gif" /></div>
+<img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.4</a></div>
@@ -261,7 +261,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_remoteip.html">Módulo Apache mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Módulo Apache mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Módulo Apache mod_request</a></li>
-<li><a href="mod/mod_rewrite.html">Módulo Apache mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Módulo Apache mod_sed</a></li>
 <li><a href="mod/mod_session.html">Módulo Apache mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Módulo Apache mod_session_cookie</a></li>
