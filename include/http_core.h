@@ -160,7 +160,7 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
 
 /**
  * Lookup the remote user agent's DNS name or IP address
- * @ingroup get_remote_hostname
+ * @ingroup get_remote_host
  * @param req The current request
  * @param type The type of lookup to perform.  One of:
  * <pre>
