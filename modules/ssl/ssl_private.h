@@ -444,12 +444,17 @@ typedef struct {
      * partial fix for CVE-2009-3555. */
     enum {
         RENEG_INIT = 0, /* Before initial handshake */
-        RENEG_REJECT, /* After initial handshake; any client-initiated
-                       * renegotiation should be rejected */
-        RENEG_ALLOW, /* A server-initiated renegotiation is taking
-                      * place (as dictated by configuration) */
-        RENEG_ABORT /* Renegotiation initiated by client, abort the
-                     * connection */
+        RENEG_REJECT,   /* After initial handshake; any client-initiated
+                         * renegotiation should be rejected */
+        RENEG_ALLOW,    /* A server-initiated renegotiation is taking
+                         * place (as dictated by configuration) */
+#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+        RENEG_STARTED,  /* A renegotiation has started after RENEG_ALLOW */
+        RENEG_DONE,     /* A renegotiation has finished after RENEG_STARTED */
+        RENEG_ALERT,    /* A renegotiation has finished with an SSL Alert */
+#endif
+        RENEG_ABORT     /* Renegotiation initiated by client, abort the
+                         * connection */
     } reneg_state;
 
     server_rec *server;
