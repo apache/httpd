@@ -163,8 +163,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem,
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
-     Trunk version of patch:
+     Trunk version of patch: <various>
      Backport version for 2.4.x of patch:
+         http://home.apache.org/~jim/patches/hcheck-2.4.patch
+         <Plus docs>
      +1: 
 
   *) mod_remoteip: Prevent an external proxy from presenting an internal proxy
