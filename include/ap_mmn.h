@@ -499,7 +499,9 @@
  * 20150222.8 (2.5.0-dev)  Add ap_getword_conf2[_nc]();
  * 20150222.9 (2.5.0-dev)  Add epxr_hander to core_dir_config.
  * 20150222.10 (2.5.0-dev) Add new ap_update_child_status...() methods,
- *                         add protocol to worker_score in scoreboard.h
+ *                         add protocol to worker_score in scoreboard.h,
+ *                         Add pre_close connection hook and 
+ *                         ap_prep_lingering_close().
  * 20150222.11 (2.5.0-dev) Split useragent_host from the conn_rec into
  *                         the request_rec, with ap_get_useragent_host()
  */
