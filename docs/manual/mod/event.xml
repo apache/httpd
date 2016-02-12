@@ -104,16 +104,12 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         All modules shipped with the server are compatible with the event MPM.</p>
 
         <p>A similar restriction is currently present for requests involving an
-        output filter that needs to read and/or modify the whole response body,
-        like for example mod_ssl, mod_deflate, or mod_include. If the
-        connection to the client blocks while the filter is processing the
+        output filter that needs to read and/or modify the whole response body. 
+        If the connection to the client blocks while the filter is processing the
         data, and the amount of data produced by the filter is too big to be
         buffered in memory, the thread used for the request is not freed while
-        httpd waits until the pending data is sent to the client. Please note that
-        this limitation is only a corner case, it does not mean that the event MPM
-        defaults to worker in presence of TLS/SSL connections and/or compression.</p> 
-        
-        <p>To illustrate this point we can think about the following two situations: 
+        httpd waits until the pending data is sent to the client.<br /> 
+        To illustrate this point we can think about the following two situations: 
         serving a static asset (like a CSS file) versus serving content retrieved from
         FCGI/CGI or a proxied server. The former is predictable, namely the event MPM 
         has full visibility on the end of the content and it can use events: the worker 
