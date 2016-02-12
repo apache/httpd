@@ -206,7 +206,7 @@
                                               [@id='apachehttpserver'])"/>
     </p>&lf;
 
-    <img src="{$path}/images/feather.gif" alt="" />
+    <img src="{$path}/images/feather.png" alt="" />
 </div>&lf; <!-- /page-header -->
 
 <div class="up">
