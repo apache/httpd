@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1728534:1729838 (outdated) -->
+<!-- English Revision: 1729838 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,13 +90,14 @@
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_proxy_ajp</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
 <seealso><module>mod_proxy_fcgi</module></seealso>
 <seealso><module>mod_proxy_ftp</module></seealso>
+<seealso><module>mod_proxy_hcheck</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
 <seealso><module>mod_proxy_scgi</module></seealso>
 <seealso><module>mod_proxy_wstunnel</module></seealso>
-<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
     <section id="forwardreverse"><title>Mandataires directs et
