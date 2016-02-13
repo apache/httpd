@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1542353:1729617 (outdated) -->
+<!-- English Revision: 1729617 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -115,6 +115,23 @@
 
         <p>Voir <a href="public_html.html"
         >R&eacute;pertoires web des utilisateurs (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Guide de configuration des mandataires inverses</dt>
+      <dd>
+        <p>Apache httpd possède des fonctionnalités évoluées de serveur
+	mandataire inverse via ses directives <directive
+	module="mod_proxy">ProxyPass</directive> et <directive
+	module="mod_proxy">BalancerMember</directive> qui permettent
+	d'implémenter un système de mandataire inverse sophistiqué garantissant
+	une haute disponibilité, une répartition et une réattribution de charge,
+	un regroupement de serveurs en grappe (clustering) basé sur le cloud et
+	une reconfiguration dynamique à la volée.</p>
+
+        <p>Voir le <a href="reverse_proxy.html"></a>Guide de configuration des
+	mandataires inverses</p>
       </dd>
     </dl>
 
