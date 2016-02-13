@@ -227,13 +227,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1722154
                    http://svn.apache.org/r1722701
      2.4.x patch:  trunk works
-     +1: jim
+     +1: jim, rjung
 
   *) various: APLOGNO
      trunk patch:  http://svn.apache.org/r1725485
      2.4.x patch:  trunk works
                    http://home.apache.org/~jim/patches/aplogno-2.4.patch
-     +1: jim
+     +1: jim, rjung
      
 PATCHES/ISSUES THAT ARE BEING WORKED
 
