@@ -130,6 +130,9 @@ fonctionnalités de Apache 2.2</a></li></ul><ul class="seealso"><li><a href="#com
       du module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code> a été fusionnée avec la
       directive <code class="directive"><a href="./mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
       et appartient maintenant au module <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>.</li>
+
+      <li>Les directives <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>sont évaluées avant les
+      directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>.</li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
