@@ -2139,7 +2139,9 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         if (state == SSL3_ST_SR_CLNT_HELLO_A
             || state == SSL23_ST_SR_CLNT_HELLO_A) {
 #else
-    if ((where & SSL_CB_HANDSHAKE_START) && scr->reneg_state == RENEG_REJECT) {
+    if (!scr->is_proxy &&
+        (where & SSL_CB_HANDSHAKE_START) &&
+        scr->reneg_state == RENEG_REJECT) {
 #endif
             scr->reneg_state = RENEG_ABORT;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02042)
@@ -2149,13 +2151,18 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
 #endif
     }
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    else if ((where & SSL_CB_HANDSHAKE_START) && scr->reneg_state == RENEG_ALLOW) {
+    else if (!scr->is_proxy &&
+             (where & SSL_CB_HANDSHAKE_START) &&
+             scr->reneg_state == RENEG_ALLOW) {
         scr->reneg_state = RENEG_STARTED;
     }
-    else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_STARTED) {
+    else if (!scr->is_proxy &&
+             (where & SSL_CB_HANDSHAKE_DONE) &&
+             scr->reneg_state == RENEG_STARTED) {
         scr->reneg_state = RENEG_DONE;
     }
-    else if ((where & SSL_CB_ALERT) &&
+    else if (!scr->is_proxy &&
+             (where & SSL_CB_ALERT) &&
              (scr->reneg_state == RENEG_ALLOW || scr->reneg_state == RENEG_STARTED)) {
         scr->reneg_state = RENEG_ALERT;
     }
