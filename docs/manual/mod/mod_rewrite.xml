@@ -1064,7 +1064,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       matches. That is, you don't need the regex to describe the entire
       string, just the part that you wish to match. Thus, using a regex
       of <code>.</code> is often sufficient rather than <code>.*</code>,
-      and the regex <code>abc</code> is <strong>not</code> the same as
+      and the regex <code>abc</code> is <strong>not</strong> the same as
       <code>^abc$</code>.</p>
 
 </note>
