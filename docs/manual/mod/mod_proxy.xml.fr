@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1696886:1729281 (outdated) -->
+<!-- English Revision: 1729281 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,40 +32,40 @@
 
 <summary>
     <note type="warning"><title>Avertissement</title>
-      <p>N'activez pas la fonctionnalit&eacute; de mandataire avec la directive
+      <p>N'activez pas la fonctionnalité de mandataire avec la directive
       <directive module="mod_proxy">ProxyRequests</directive> avant
-      d'avoir <a href="#access">s&eacute;curis&eacute; votre serveur</a>. Les serveurs
-      mandataires ouverts sont dangereux pour votre r&eacute;seau,
+      d'avoir <a href="#access">sécurisé votre serveur</a>. Les serveurs
+      mandataires ouverts sont dangereux pour votre réseau,
       mais aussi pour l'Internet au sens large.</p>
     </note>
 
-    <p>Ce module impl&eacute;mente un mandataire/passerelle pour Apache. Il
-    impl&eacute;mente la fonctionnalit&eacute; de mandataire pour <code>AJP13</code>
+    <p>Ce module implémente un mandataire/passerelle pour Apache. Il
+    implémente la fonctionnalité de mandataire pour <code>AJP13</code>
     (Apache JServe Protocol version 1.3), <code>FTP</code>,
     <code>CONNECT</code> (pour SSL), <code>HTTP/0.9</code>,
-    <code>HTTP/1.0</code>, et <code>HTTP/1.1</code>. Le module peut &ecirc;tre
-    configur&eacute; pour se connecter aux autres modules mandataires qui
-    g&egrave;rent ces protocoles.</p>
+    <code>HTTP/1.0</code>, et <code>HTTP/1.1</code>. Le module peut être
+    configuré pour se connecter aux autres modules mandataires qui
+    gèrent ces protocoles.</p>
 
-    <p>Les diverses fonctionnalit&eacute;s de
-    mandataire d'Apache sont r&eacute;parties entre plusieurs modules
-    compl&eacute;mentaires de <module>mod_proxy</module> :
+    <p>Les diverses fonctionnalités de
+    mandataire d'Apache sont réparties entre plusieurs modules
+    complémentaires de <module>mod_proxy</module> :
     <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>,
     <module>mod_proxy_ajp</module>, <module>mod_proxy_balancer</module>,
     et <module>mod_proxy_connect</module>. Ainsi, si vous voulez
-    utiliser une ou plusieurs fonctionnalit&eacute;s de mandataire
-    particuli&egrave;res, chargez <module>mod_proxy</module> <em>et</em> le(s)
-    module(s) appropri&eacute;(s) dans le serveur (soit statiquement &agrave; la
+    utiliser une ou plusieurs fonctionnalités de mandataire
+    particulières, chargez <module>mod_proxy</module> <em>et</em> le(s)
+    module(s) approprié(s) dans le serveur (soit statiquement à la
     compilation, soit dynamiquement via la directive <directive
     module="mod_so">LoadModule</directive>).</p>
 
-    <p>En outre, d'autres modules fournissent des fonctionnalit&eacute;s
-    &eacute;tendues. <module>mod_cache</module> et ses modules associ&eacute;s
+    <p>En outre, d'autres modules fournissent des fonctionnalités
+    étendues. <module>mod_cache</module> et ses modules associés
     fournissent la mise en cache. Les directives <code>SSLProxy*</code>
     du module <module>mod_ssl</module> permettent de contacter des
     serveurs distants en utilisant le protocole SSL/TLS. Ces modules
-    additionnels devront &ecirc;tre charg&eacute;s et configur&eacute;s pour pouvoir
-    disposer de ces fonctionnalit&eacute;s.</p>
+    additionnels devront être chargés et configurés pour pouvoir
+    disposer de ces fonctionnalités.</p>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
@@ -76,69 +76,69 @@
 
     <section id="forwardreverse"><title>Mandataires directs et
     mandataires/passerelles inverses</title>
-      <p>Apache peut &ecirc;tre configur&eacute; dans les deux modes mandataire
-      <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nomm&eacute;
+      <p>Apache peut être configuré dans les deux modes mandataire
+      <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nommé
       mode <dfn>passerelle</dfn>).</p>
 
       <p>Un <dfn>mandataire direct</dfn> standard est un serveur
-      interm&eacute;diaire qui s'intercale entre le client et le <em>serveur
-      demand&eacute;</em>. Pour obtenir un contenu h&eacute;berg&eacute; par
-      le serveur demand&eacute;, le client envoie une requ&ecirc;te au
-      mandataire en nommant le serveur demand&eacute; comme
+      intermédiaire qui s'intercale entre le client et le <em>serveur
+      demandé</em>. Pour obtenir un contenu hébergé par
+      le serveur demandé, le client envoie une requête au
+      mandataire en nommant le serveur demandé comme
       cible, puis le mandataire extrait le contenu depuis le
-      serveur demand&eacute; et le renvoie enfin au client. Le client doit &ecirc;tre
-      configur&eacute; de mani&egrave;re appropri&eacute;e pour pouvoir utiliser le mandataire
-      direct afin d'acc&eacute;der &agrave; d'autres sites.</p>
+      serveur demandé et le renvoie enfin au client. Le client doit être
+      configuré de manière appropriée pour pouvoir utiliser le mandataire
+      direct afin d'accéder à d'autres sites.</p>
 
-      <p>L'acc&egrave;s &agrave; Internet depuis des clients situ&eacute;s derri&egrave;re un
+      <p>L'accès à Internet depuis des clients situés derrière un
       pare-feu est une utilisation typique du mandataire direct. Le
       mandataire direct peut aussi utiliser la mise en cache (fournie
-      par <module>mod_cache</module>) pour r&eacute;duire la charge du
-      r&eacute;seau.</p>
+      par <module>mod_cache</module>) pour réduire la charge du
+      réseau.</p>
 
-      <p>La fonctionnalit&eacute; de mandataire direct est activ&eacute;e via la
+      <p>La fonctionnalité de mandataire direct est activée via la
       directive <directive module="mod_proxy">ProxyRequests</directive>.
-      Comme les mandataires directs permettent aux clients d'acc&eacute;der &agrave;
+      Comme les mandataires directs permettent aux clients d'accéder à
       des sites quelconques via votre serveur et de dissimuler leur
-      v&eacute;ritable origine, il est indispensable de <a
-      href="#access">s&eacute;curiser votre serveur</a> de fa&ccedil;on &agrave; ce que seuls
-      les clients autoris&eacute;s puissent acc&eacute;der &agrave; votre serveur avant
-      d'activer la fonctionnalit&eacute; de mandataire direct.</p>
+      véritable origine, il est indispensable de <a
+      href="#access">sécuriser votre serveur</a> de façon à ce que seuls
+      les clients autorisés puissent accéder à votre serveur avant
+      d'activer la fonctionnalité de mandataire direct.</p>
 
       <p>Un <dfn>mandataire inverse</dfn> (ou <dfn>passerelle</dfn>),
-      quant &agrave; lui, appara&icirc;t au client comme un serveur web standard.
-      Aucune configuration particuli&egrave;re du client n'est n&eacute;cessaire. Le
+      quant à lui, apparaît au client comme un serveur web standard.
+      Aucune configuration particulière du client n'est nécessaire. Le
       client adresse ses demandes de contenus ordinaires dans l'espace
-      de nommage du mandataire inverse. Ce dernier d&eacute;cide alors o&ugrave;
-      envoyer ces requ&ecirc;tes, et renvoie le contenu au client comme s'il
-      l'h&eacute;bergeait lui-m&ecirc;me.</p>
+      de nommage du mandataire inverse. Ce dernier décide alors où
+      envoyer ces requêtes, et renvoie le contenu au client comme s'il
+      l'hébergeait lui-même.</p>
 
-      <p>L'acc&egrave;s des utilisateurs &agrave; Internet pour un serveur situ&eacute;
-      derri&egrave;re un pare-feu est une utilisation typique du mandataire
+      <p>L'accès des utilisateurs à Internet pour un serveur situé
+      derrière un pare-feu est une utilisation typique du mandataire
       inverse. On peut aussi utiliser les mandataires inverses pour
-      mettre en oeuvre une r&eacute;partition de charge entre plusieurs
-      serveurs en arri&egrave;re-plan, ou fournir un cache pour un serveur
-      d'arri&egrave;re-plan plus lent. Les mandataires inverses peuvent aussi
-      tout simplement servir &agrave; rassembler plusieurs serveurs dans le
-      m&ecirc;me espace de nommage d'URLs.</p>
+      mettre en oeuvre une répartition de charge entre plusieurs
+      serveurs en arrière-plan, ou fournir un cache pour un serveur
+      d'arrière-plan plus lent. Les mandataires inverses peuvent aussi
+      tout simplement servir à rassembler plusieurs serveurs dans le
+      même espace de nommage d'URLs.</p>
 
-      <p>La fonctionnalit&eacute; de mandataire inverse est activ&eacute;e via la
+      <p>La fonctionnalité de mandataire inverse est activée via la
       directive <directive module="mod_proxy">ProxyPass</directive> ou
       le drapeau <code>[P]</code> de la directive <directive
       module="mod_rewrite">RewriteRule</directive>. Il n'est
-      <strong>pas</strong> n&eacute;cessaire de d&eacute;finir <directive
-      module="mod_proxy">ProxyRequests</directive> &agrave; on pour configurer
+      <strong>pas</strong> nécessaire de définir <directive
+      module="mod_proxy">ProxyRequests</directive> à on pour configurer
       un mandataire inverse.</p>
     </section> <!-- /forwardreverse -->
 
     <section id="examples"><title>Exemples simples</title>
 
-    <p>Les exemples ci-dessous illustrent de mani&egrave;re tr&egrave;s basique la
-    mise en oeuvre de la fonctionnalit&eacute; de mandataire et ne sont l&agrave; que
-    pour vous aider &agrave; d&eacute;marrer. Reportez-vous &agrave; la documentation de
+    <p>Les exemples ci-dessous illustrent de manière très basique la
+    mise en oeuvre de la fonctionnalité de mandataire et ne sont là que
+    pour vous aider à démarrer. Reportez-vous à la documentation de
     chaque directive.</p>
 
-    <p>Si en outre, vous d&eacute;sirez activer la mise en cache, consultez la
+    <p>Si en outre, vous désirez activer la mise en cache, consultez la
     documentation de <module>mod_cache</module>.</p>
 
     <example><title>Mandataire inverse</title>
@@ -162,22 +162,22 @@
     </section> <!-- /examples -->
 
     <section id="workers"><title>Gestionnaires de serveurs (workers)</title>
-      <p>Le mandataire g&egrave;re la configuration des serveurs originaux,
-      ainsi que leurs param&egrave;tres de communication dans des objets
-      appel&eacute;s <dfn>workers</dfn> ou Gestionnaires de serveur. Deux
-      workers int&eacute;gr&eacute;s par d&eacute;faut sont disponibles : le worker de
+      <p>Le mandataire gère la configuration des serveurs originaux,
+      ainsi que leurs paramètres de communication dans des objets
+      appelés <dfn>workers</dfn> ou Gestionnaires de serveur. Deux
+      workers intégrés par défaut sont disponibles : le worker de
       mandataire direct et le worker de mandataire inverse. Des workers
-      suppl&eacute;mentaires peuvent &ecirc;tre configur&eacute;s explicitement.</p>
+      supplémentaires peuvent être configurés explicitement.</p>
 
-      <p>Les deux workers par d&eacute;faut ont une configuration fixe et
-      seront utilis&eacute;s si aucun autre worker ne correspond &agrave; la requ&ecirc;te.
+      <p>Les deux workers par défaut ont une configuration fixe et
+      seront utilisés si aucun autre worker ne correspond à la requête.
       Ils n'utilisent ni les connexions HTTP persistantes, ni les jeux
       de connexions. Les connexions TCP vers le serveur original seront
-      donc ouvertes et ferm&eacute;es pour chaque requ&ecirc;te.</p>
+      donc ouvertes et fermées pour chaque requête.</p>
 
-      <p>Les workers configur&eacute;s explicitement sont identifi&eacute;s par leur
-      URL. Dans le cas d'un mandataire inverse, ils sont g&eacute;n&eacute;ralement
-      cr&eacute;&eacute;s et configur&eacute;s via les directives <directive
+      <p>Les workers configurés explicitement sont identifiés par leur
+      URL. Dans le cas d'un mandataire inverse, ils sont généralement
+      créés et configurés via les directives <directive
       module="mod_proxy">ProxyPass</directive> ou <directive
       module="mod_proxy">ProxyPassMatch</directive> :</p>
 
@@ -185,10 +185,10 @@
           ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
       </example>
 
-      <p>Cet exemple cr&eacute;e un worker associ&eacute; &agrave; l'URL du serveur original
-      <code>http://backend.example.com</code>, qui utilisera les d&eacute;lais
-      sp&eacute;cifi&eacute;s. Dans le cas d'un mandataire direct, les workers sont
-      g&eacute;n&eacute;ralement d&eacute;finis via la directive <directive
+      <p>Cet exemple crée un worker associé à l'URL du serveur original
+      <code>http://backend.example.com</code>, qui utilisera les délais
+      spécifiés. Dans le cas d'un mandataire direct, les workers sont
+      généralement définis via la directive <directive
       module="mod_proxy">ProxySet</directive> directive :</p>
 
       <example>
@@ -207,36 +207,36 @@
         &lt;/Proxy&gt;
       </example>
 
-      <p>L'utilisation de workers configur&eacute;s explicitement dans le mode
-      direct n'est pas tr&egrave;s courante, car les mandataires directs
+      <p>L'utilisation de workers configurés explicitement dans le mode
+      direct n'est pas très courante, car les mandataires directs
       communiquent avec de nombreux serveurs originaux. Il est cependant
-      int&eacute;ressant de cr&eacute;er des workers explicites pour certains serveurs
-      originaux si ces derniers sont utilis&eacute;s tr&egrave;s souvent. Les workers
-      configur&eacute;s explicitement n'ont en eux-m&ecirc;mes aucun concept de
+      intéressant de créer des workers explicites pour certains serveurs
+      originaux si ces derniers sont utilisés très souvent. Les workers
+      configurés explicitement n'ont en eux-mêmes aucun concept de
       mandataire direct ou inverse. Ils encapsulent un concept de
-      communication commun avec les serveurs originaux. Un worker cr&eacute;&eacute;
+      communication commun avec les serveurs originaux. Un worker créé
       via la directive <directive
-      module="mod_proxy">ProxyPass</directive> pour &ecirc;tre utilis&eacute; avec un
-      mandataire inverse, sera aussi utilis&eacute; pour les requ&ecirc;tes mandat&eacute;es
-      en direct chaque fois que l'URL du serveur original correspondra &agrave;
+      module="mod_proxy">ProxyPass</directive> pour être utilisé avec un
+      mandataire inverse, sera aussi utilisé pour les requêtes mandatées
+      en direct chaque fois que l'URL du serveur original correspondra à
       l'URL du worker, et vice versa.</p>
 
-      <p>L'URL identifiant un worker direct correspond &agrave; l'URL de son
-      serveur original comportant tout &eacute;l&eacute;ment de chemin &eacute;ventuel :</p>
+      <p>L'URL identifiant un worker direct correspond à l'URL de son
+      serveur original comportant tout élément de chemin éventuel :</p>
 
       <example>
           ProxyPass /examples http://backend.example.com/examples<br />
           ProxyPass /docs http://backend.example.com/docs
       </example>
 
-      <p>Cet exemple d&eacute;finit deux workers diff&eacute;rents, chacun d'entre eux
-      utilisant une configuration et un jeu de connexions s&eacute;par&eacute;s.</p>
+      <p>Cet exemple définit deux workers différents, chacun d'entre eux
+      utilisant une configuration et un jeu de connexions séparés.</p>
 
       <note type="warning"><title>Partage de worker</title>
         <p>Le partage de worker se produit lorsque les URLs des workers
-	se chevauchent, c'est &agrave; dire lorsque l'URL d'un worker
-	correspond &agrave; une partie du d&eacute;but de l'URL d'un autre worker
-	d&eacute;fini plus loin dans le fichier de configuration. Dans
+	se chevauchent, c'est à dire lorsque l'URL d'un worker
+	correspond à une partie du début de l'URL d'un autre worker
+	défini plus loin dans le fichier de configuration. Dans
 	l'exemple suivant,</p>
 
         <example>
@@ -244,58 +244,58 @@
             ProxyPass /examples http://backend.example.com/examples timeout=10
         </example>
 
-        <p>le second worker n'est pas vraiment cr&eacute;&eacute;. C'est le premier
-	worker qui est utilis&eacute; &agrave; sa place. L'avantage de ceci r&eacute;side
+        <p>le second worker n'est pas vraiment créé. C'est le premier
+	worker qui est utilisé à sa place. L'avantage de ceci réside
 	dans le fait qu'il n'y a plus qu'un jeu de connexions, celles-ci
-	&eacute;tant donc r&eacute;utilis&eacute;es plus souvent. Notez que tous les
-	attributs de configuration d&eacute;finis explicitement pour le second
-	worker et certaines valeurs par d&eacute;faut vont &eacute;craser la
-	configuration d&eacute;finie pour le premier worker, ce qui va
+	étant donc réutilisées plus souvent. Notez que tous les
+	attributs de configuration définis explicitement pour le second
+	worker et certaines valeurs par défaut vont écraser la
+	configuration définie pour le premier worker, ce qui va
 	provoquer la journalisation d'un avertissement. Dans l'exemple
-	pr&eacute;c&eacute;dent, la valeur de d&eacute;lai finale pour l'URL
+	précédent, la valeur de délai finale pour l'URL
 	<code>/apps</code> sera <code>10</code> au lieu de <code>60</code> !</p>
 
-        <p>Pour &eacute;viter ce partage, classez vos d&eacute;finitions de workers de
-	l'URL la plus longue &agrave; la plus courte. Si au contraire, vous
+        <p>Pour éviter ce partage, classez vos définitions de workers de
+	l'URL la plus longue à la plus courte. Si au contraire, vous
 	voulez favoriser ce partage, utilisez l'ordre de classement
-	inverse. Voir aussi l'avertissement en rapport &agrave; propos de
+	inverse. Voir aussi l'avertissement en rapport à propos de
 	l'ordre de classement des directives <directive
 	module="mod_proxy">ProxyPass</directive>.</p>
 
       </note> <!-- /worker_sharing -->
 
-      <p>Les workers configur&eacute;s explicitement sont de deux sortes :
-      <dfn>workers directs</dfn> et <dfn>workers &agrave; r&eacute;partition (de
+      <p>Les workers configurés explicitement sont de deux sortes :
+      <dfn>workers directs</dfn> et <dfn>workers à répartition (de
       charge)</dfn>. Ils supportent de nombreux attributs de
-      configuration importants d&eacute;crits ci-dessous dans la directive
+      configuration importants décrits ci-dessous dans la directive
       <directive module="mod_proxy">ProxyPass</directive>. Tous ces
-      attributs peuvent aussi &ecirc;tre d&eacute;finis via la directive <directive
+      attributs peuvent aussi être définis via la directive <directive
       module="mod_proxy">ProxySet</directive>.</p>
 
-      <p>Le jeu d'options disponibles pour un worker direct d&eacute;pend du
-      protocole, qui est sp&eacute;cifi&eacute; dans l'URL du serveur original. Parmi
+      <p>Le jeu d'options disponibles pour un worker direct dépend du
+      protocole, qui est spécifié dans l'URL du serveur original. Parmi
       les protocoles disponibles, on trouve <code>ajp</code>,
       <code>ftp</code>, <code>http</code> et <code>scgi</code>.</p>
 
-      <p>Les workers &agrave; r&eacute;partition sont des workers virtuels qui
-      utilisent des workers directs consid&eacute;r&eacute;s comme leurs membres pour
-      le traitement effectif des requ&ecirc;tes. Chaque r&eacute;partiteur peut
-      poss&eacute;der plusieurs membres. Pour traiter une requ&ecirc;te, il choisit
-      un de ses membres en fonction de l'algorithme de r&eacute;partition de
-      charge d&eacute;fini.</p>
+      <p>Les workers à répartition sont des workers virtuels qui
+      utilisent des workers directs considérés comme leurs membres pour
+      le traitement effectif des requêtes. Chaque répartiteur peut
+      posséder plusieurs membres. Pour traiter une requête, il choisit
+      un de ses membres en fonction de l'algorithme de répartition de
+      charge défini.</p>
 
-      <p>Un worker &agrave; r&eacute;partition est cr&eacute;&eacute; si son URL utilise
-      <code>balancer</code> comme protocole. L'URL de r&eacute;partition
-      identifie de mani&egrave;re unique le worker &agrave; r&eacute;partition. On peut
-      ajouter des membres &agrave; un r&eacute;partiteur via la directive <directive
+      <p>Un worker à répartition est créé si son URL utilise
+      <code>balancer</code> comme protocole. L'URL de répartition
+      identifie de manière unique le worker à répartition. On peut
+      ajouter des membres à un répartiteur via la directive <directive
       module="mod_proxy">BalancerMember</directive>.</p>
 
     </section> <!-- /workers -->
 
-    <section id="access"><title>Contr&ocirc;ler l'acc&egrave;s &agrave; votre
+    <section id="access"><title>Contrôler l'accès à votre
     mandataire</title>
-      <p>Vous pouvez restreindre l'acc&egrave;s &agrave; votre mandataire via le bloc
-      de contr&ocirc;le <directive
+      <p>Vous pouvez restreindre l'accès à votre mandataire via le bloc
+      de contrôle <directive
       module="mod_proxy" type="section">Proxy</directive> comme dans
       l'exemple suivant :</p>
 
@@ -309,71 +309,71 @@
         &lt;/Proxy&gt;
       </example>
 
-      <p>Pour plus de d&eacute;tails sur les directives de contr&ocirc;le d'acc&egrave;s,
+      <p>Pour plus de détails sur les directives de contrôle d'accès,
       voir la documentation du module
       <module>mod_authz_host</module>.</p>
 
-      <p>Restreindre l'acc&egrave;s de mani&egrave;re stricte est essentiel si vous
-      mettez en oeuvre un mandataire direct (en d&eacute;finissant la directive
-      <directive module="mod_proxy">ProxyRequests</directive> &agrave; "on").
-      Dans le cas contraire, votre serveur pourrait &ecirc;tre utilis&eacute; par
-      n'importe quel client pour acc&eacute;der &agrave; des serveurs quelconques,
-      tout en masquant sa v&eacute;ritable identit&eacute;. Ceci repr&eacute;sente un danger
-      non seulement pour votre r&eacute;seau, mais aussi pour l'Internet au
+      <p>Restreindre l'accès de manière stricte est essentiel si vous
+      mettez en oeuvre un mandataire direct (en définissant la directive
+      <directive module="mod_proxy">ProxyRequests</directive> à "on").
+      Dans le cas contraire, votre serveur pourrait être utilisé par
+      n'importe quel client pour accéder à des serveurs quelconques,
+      tout en masquant sa véritable identité. Ceci représente un danger
+      non seulement pour votre réseau, mais aussi pour l'Internet au
       sens large. Dans le cas de la mise en oeuvre d'un mandataire
       inverse (en utilisant la directive <directive
-      module="mod_proxy">ProxyPass</directive> avec <code>ProxyRequests Off</code>), le contr&ocirc;le
-      d'acc&egrave;s est moins critique car les clients ne peuvent contacter
-      que les serveurs que vous avez sp&eacute;cifi&eacute;s.</p>
+      module="mod_proxy">ProxyPass</directive> avec <code>ProxyRequests Off</code>), le contrôle
+      d'accès est moins critique car les clients ne peuvent contacter
+      que les serveurs que vous avez spécifiés.</p>
 
       </section> <!-- /access -->
 
-    <section id="startup"><title>Ralentissement au d&eacute;marragep</title>
+    <section id="startup"><title>Ralentissement au démarragep</title>
       <p>Si vous utilisez la directive <directive module="mod_proxy"
-      >ProxyBlock</directive>, les noms d'h&ocirc;tes sont r&eacute;solus en adresses
-      IP puis ces derni&egrave;res mises en cache au cours du d&eacute;marrage
-      &agrave; des fins de tests de comparaisons ult&eacute;rieurs. Ce processus peut
+      >ProxyBlock</directive>, les noms d'hôtes sont résolus en adresses
+      IP puis ces dernières mises en cache au cours du démarrage
+      à des fins de tests de comparaisons ultérieurs. Ce processus peut
       durer plusieurs secondes (ou d'avantage) en fonction de la vitesse
-      &agrave; laquelle s'effectue la r&eacute;solution des noms d'h&ocirc;tes.</p>
+      à laquelle s'effectue la résolution des noms d'hôtes.</p>
     </section> <!-- /startup -->
 
     <section id="intranet"><title>Mandataire d'Intranet</title>
-      <p>Un serveur mandataire Apache situ&eacute; &agrave; l'int&eacute;rieur d'un Intranet
-      doit faire suivre les requ&ecirc;tes destin&eacute;es &agrave; un serveur externe &agrave;
-      travers le pare-feu de l'entreprise (pour ce faire, d&eacute;finissez la
+      <p>Un serveur mandataire Apache situé à l'intérieur d'un Intranet
+      doit faire suivre les requêtes destinées à un serveur externe à
+      travers le pare-feu de l'entreprise (pour ce faire, définissez la
       directive <directive module="mod_proxy">ProxyRemote</directive> de
-      fa&ccedil;on &agrave; ce qu'elle fasse suivre le <var>protocole</var> concern&eacute;
-      vers le mandataire du pare-feu). Cependant, lorsqu'il doit acc&eacute;der
-      &agrave; des ressources situ&eacute;es dans l'Intranet, il peut se passer du
-      pare-feu pour acc&eacute;der aux serveurs. A cet effet, la directive
+      façon à ce qu'elle fasse suivre le <var>protocole</var> concerné
+      vers le mandataire du pare-feu). Cependant, lorsqu'il doit accéder
+      à des ressources situées dans l'Intranet, il peut se passer du
+      pare-feu pour accéder aux serveurs. A cet effet, la directive
       <directive module="mod_proxy">NoProxy</directive> permet de
-      sp&eacute;cifier quels h&ocirc;tes appartiennent &agrave; l'Intranet et peuvent donc
-      &ecirc;tre acc&eacute;d&eacute;s directement.</p>
+      spécifier quels hôtes appartiennent à l'Intranet et peuvent donc
+      être accédés directement.</p>
 
-      <p>Les utilisateurs d'un Intranet ont tendance &agrave; oublier le nom du
-      domaine local dans leurs requ&ecirc;tes WWW, et demandent par exemple
+      <p>Les utilisateurs d'un Intranet ont tendance à oublier le nom du
+      domaine local dans leurs requêtes WWW, et demandent par exemple
       "http://un-serveur/" au lieu de
       <code>http://un-serveur.example.com/</code>. Certains serveurs
-      mandataires commerciaux acceptent ce genre de requ&ecirc;te et les
+      mandataires commerciaux acceptent ce genre de requête et les
       traitent simplement en utilisant un nom de domaine local
       implicite. Lorsque la directive <directive
-      module="mod_proxy">ProxyDomain</directive> est utilis&eacute;e et si le
-      serveur est <a href="#proxyrequests">configur&eacute; comme
-      mandataire</a>, Apache peut renvoyer une r&eacute;ponse de redirection et
+      module="mod_proxy">ProxyDomain</directive> est utilisée et si le
+      serveur est <a href="#proxyrequests">configuré comme
+      mandataire</a>, Apache peut renvoyer une réponse de redirection et
       ainsi fournir au client l'adresse de serveur correcte,
-      enti&egrave;rement qualifi&eacute;e. C'est la m&eacute;thode &agrave; privil&eacute;gier car le
+      entièrement qualifiée. C'est la méthode à privilégier car le
       fichier des marque-pages de l'utilisateur contiendra alors des
-      noms de serveurs enti&egrave;rement qualifi&eacute;s.</p>
+      noms de serveurs entièrement qualifiés.</p>
     </section> <!-- /intranet -->
 
     <section id="envsettings"><title>Ajustements relatifs au
     protocole</title>
-      <p>Pour les cas o&ugrave; <module>mod_proxy</module> envoie des requ&ecirc;tes
-      vers un serveur qui n'impl&eacute;mente pas correctement les connexions
+      <p>Pour les cas où <module>mod_proxy</module> envoie des requêtes
+      vers un serveur qui n'implémente pas correctement les connexions
       persistantes ou le protocole HTTP/1.1, il existe deux variables
-      d'environnement qui permettent de forcer les requ&ecirc;tes &agrave; utiliser
+      d'environnement qui permettent de forcer les requêtes à utiliser
       le protocole HTTP/1.0 avec connexions non persistantes. Elles
-      peuvent &ecirc;tre d&eacute;finies via la directive <directive
+      peuvent être définies via la directive <directive
       module="mod_env">SetEnv</directive>.</p>
 
       <p>Il s'agit des variables <code>force-proxy-request-1.0</code> et
@@ -391,80 +391,80 @@
 
     </section> <!-- /envsettings -->
 
-    <section id="request-bodies"><title>Corps de requ&ecirc;tes</title>
+    <section id="request-bodies"><title>Corps de requêtes</title>
 
-    <p>Certaines m&eacute;thodes de requ&ecirc;tes comme POST comportent un corps de
-    requ&ecirc;te. Le protocole HTTP stipule que les requ&ecirc;tes qui comportent
+    <p>Certaines méthodes de requêtes comme POST comportent un corps de
+    requête. Le protocole HTTP stipule que les requêtes qui comportent
     un corps doivent soit utiliser un codage de transmission
-    fractionn&eacute;e, soit envoyer un en-t&ecirc;te de requ&ecirc;te
+    fractionnée, soit envoyer un en-tête de requête
     <code>Content-Length</code>. Lorsqu'il fait suivre ce genre de
-    requ&ecirc;te vers le serveur demand&eacute;, <module>mod_proxy_http</module>
-    s'efforce toujours d'envoyer l'en-t&ecirc;te <code>Content-Length</code>.
-    Par contre, si la taille du corps est importante, et si la requ&ecirc;te
-    originale utilise un codage &agrave; fractionnement, ce dernier peut aussi
-    &ecirc;tre utilis&eacute; dans la requ&ecirc;te montante. Ce comportement peut &ecirc;tre
-    contr&ocirc;l&eacute; &agrave; l'aide de <a href="../env.html">variables
-    d'environnement</a>. Ainsi, si elle est d&eacute;finie, la variable
-    <code>proxy-sendcl</code> assure une compatibilit&eacute; maximale avec les
-    serveurs demand&eacute;s en imposant l'envoi de l'en-t&ecirc;te
+    requête vers le serveur demandé, <module>mod_proxy_http</module>
+    s'efforce toujours d'envoyer l'en-tête <code>Content-Length</code>.
+    Par contre, si la taille du corps est importante, et si la requête
+    originale utilise un codage à fractionnement, ce dernier peut aussi
+    être utilisé dans la requête montante. Ce comportement peut être
+    contrôlé à l'aide de <a href="../env.html">variables
+    d'environnement</a>. Ainsi, si elle est définie, la variable
+    <code>proxy-sendcl</code> assure une compatibilité maximale avec les
+    serveurs demandés en imposant l'envoi de l'en-tête
     <code>Content-Length</code>, alors que
     <code>proxy-sendchunked</code> diminue la consommation de ressources
-    en imposant l'utilisation d'un codage &agrave; fractionnement.</p>
+    en imposant l'utilisation d'un codage à fractionnement.</p>
 
     </section> <!-- /request-bodies -->
 
-    <section id="x-headers"><title>En-t&ecirc;tes de requ&ecirc;te du mandataire
+    <section id="x-headers"><title>En-têtes de requête du mandataire
     inverse</title>
 
-    <p>Lorsqu'il est configur&eacute; en mode mandataire inverse (en utilisant
+    <p>Lorsqu'il est configuré en mode mandataire inverse (en utilisant
     par exemple la directive <directive
     module="mod_proxy">ProxyPass</directive>),
-    <module>mod_proxy_http</module> ajoute plusieurs en-t&ecirc;tes de requ&ecirc;te
-    afin de transmettre des informations au serveur demand&eacute;. Ces
-    en-t&ecirc;tes sont les suivants :</p>
+    <module>mod_proxy_http</module> ajoute plusieurs en-têtes de requête
+    afin de transmettre des informations au serveur demandé. Ces
+    en-têtes sont les suivants :</p>
 
     <dl>
       <dt><code>X-Forwarded-For</code></dt>
       <dd>L'adresse IP du client.</dd>
       <dt><code>X-Forwarded-Host</code></dt>
-      <dd>L'h&ocirc;te d'origine demand&eacute; par le client dans l'en-t&ecirc;te de
-      requ&ecirc;te HTTP <code>Host</code>.</dd>
+      <dd>L'hôte d'origine demandé par le client dans l'en-tête de
+      requête HTTP <code>Host</code>.</dd>
       <dt><code>X-Forwarded-Server</code></dt>
-      <dd>Le nom d'h&ocirc;te du serveur mandataire.</dd>
+      <dd>Le nom d'hôte du serveur mandataire.</dd>
     </dl>
 
-    <p>Ces en-t&ecirc;tes doivent &ecirc;tre utilis&eacute;s avec pr&eacute;cautions sur le
-    serveur demand&eacute;, car ils contiendront plus d'une valeur (s&eacute;par&eacute;es
-    par des virgules) si la requ&ecirc;te original contenait d&eacute;j&agrave; un de ces
-    en-t&ecirc;tes. Par exemple, vous pouvez utiliser
-    <code>%{X-Forwarded-For}i</code> dans la cha&icirc;ne de format du journal
-    du serveur demand&eacute; pour enregistrer les adresses IP des clients
+    <p>Ces en-têtes doivent être utilisés avec précautions sur le
+    serveur demandé, car ils contiendront plus d'une valeur (séparées
+    par des virgules) si la requête original contenait déjà un de ces
+    en-têtes. Par exemple, vous pouvez utiliser
+    <code>%{X-Forwarded-For}i</code> dans la chaîne de format du journal
+    du serveur demandé pour enregistrer les adresses IP des clients
     originaux, mais il est possible que vous obteniez plusieurs adresses
-    si la requ&ecirc;te passe &agrave; travers plusieurs mandataires.</p>
+    si la requête passe à travers plusieurs mandataires.</p>
 
     <p>Voir aussi les directives <directive
     module="mod_proxy">ProxyPreserveHost</directive> et <directive
     module="mod_proxy">ProxyVia</directive> directives, qui permettent
-    de contr&ocirc;ler d'autres en-t&ecirc;tes de requ&ecirc;te.</p>
+    de contrôler d'autres en-têtes de requête.</p>
 
    </section> <!--/x-headers -->
 
 
 <directivesynopsis type="section">
 <name>Proxy</name>
-<description>Conteneur de directives s'appliquant &agrave; des ressources
-mandat&eacute;es</description>
+<description>Conteneur de directives s'appliquant à des ressources
+mandatées</description>
 <syntax>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Les directives situ&eacute;es dans une section <directive
+    <p>Les directives situées dans une section <directive
     type="section">Proxy</directive> ne s'appliquent qu'au contenu
-    mandat&eacute; concern&eacute;. Les jokers de style shell sont autoris&eacute;s.</p>
+    mandaté concerné. Les jokers de style shell sont autorisés.</p>
 
-    <p>Par exemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
-    contenu via votre serveur mandataire que les h&ocirc;tes appartenant &agrave;
+    <p>Par exemple, les lignes suivantes n'autoriseront à accéder à un
+    contenu via votre serveur mandataire que les hôtes appartenant à
     <code>votre-reseau.example.com</code> :</p>
 
     <example>
@@ -477,10 +477,10 @@ mandat&eacute;es</description>
       &lt;/Proxy&gt;
     </example>
 
-    <p>Dans l'exemple suivant, tous les fichiers du r&eacute;pertoire
-    <code>foo</code> de <code>example.com</code> seront trait&eacute;s par le
-    filtre <code>INCLUDES</code> lorsqu'ils seront envoy&eacute;s par
-    l'interm&eacute;diaire du serveur mandataire :</p>
+    <p>Dans l'exemple suivant, tous les fichiers du répertoire
+    <code>foo</code> de <code>example.com</code> seront traités par le
+    filtre <code>INCLUDES</code> lorsqu'ils seront envoyés par
+    l'intermédiaire du serveur mandataire :</p>
 
     <example>
       &lt;Proxy http://example.com/foo/*&gt;<br />
@@ -490,19 +490,19 @@ mandat&eacute;es</description>
       &lt;/Proxy&gt;
     </example>
 
-    <note><title>Diff&eacute;rences avec la section de configuration Location</title>
-      <p>Une URL d'arri&egrave;re-plan sera concern&eacute;e par le conteneur Proxy si
-      elle commence par la <var>url-avec-jokers</var>, m&ecirc;me si le
-      dernier segment de chemin de la directive ne correspond qu'&agrave; un
-      pr&eacute;fixe de segment dee chemin de l'URL d'arri&egrave;re-plan. Par exemple, &lt;Proxy
+    <note><title>Différences avec la section de configuration Location</title>
+      <p>Une URL d'arrière-plan sera concernée par le conteneur Proxy si
+      elle commence par la <var>url-avec-jokers</var>, même si le
+      dernier segment de chemin de la directive ne correspond qu'à un
+      préfixe de segment dee chemin de l'URL d'arrière-plan. Par exemple, &lt;Proxy
       http://example.com/foo&gt; correspondra entre autres aux URLs
       http://example.com/foo, http://example.com/foo/bar, et
       http://example.com/foobar. La correspondance de l'URL finale
-      diff&egrave;re du comportement de la section <directive type="section"
+      diffère du comportement de la section <directive type="section"
       module="core">Location</directive> qui, pour le cas de cette note,
       traitera le segment de chemin final comme s'il se terminait par un
       slash.</p>
-      <p>Pour un contr&ocirc;le plus fin de la correspondance des URL, voir la
+      <p>Pour un contrôle plus fin de la correspondance des URL, voir la
       directive <directive type="section">ProxyMatch</directive>.</p>
     </note>
 
@@ -512,8 +512,8 @@ mandat&eacute;es</description>
 
 <directivesynopsis>
 <name>ProxyBadHeader</name>
-<description>D&eacute;termine la mani&egrave;re de traiter les lignes d'en-t&ecirc;te
-incorrectes d'une r&eacute;ponse</description>
+<description>Détermine la manière de traiter les lignes d'en-tête
+incorrectes d'une réponse</description>
 <syntax>ProxyBadHeader IsError|Ignore|StartBody</syntax>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -522,35 +522,35 @@ incorrectes d'une r&eacute;ponse</description>
 
 <usage>
     <p>La directive <directive>ProxyBadHeader</directive> permet de
-    d&eacute;terminer le comportement de <module>mod_proxy</module> lorsqu'il
-    re&ccedil;oit des lignes d'en-t&ecirc;te de r&eacute;ponse dont la syntaxe n'est pas valide (c'est
-    &agrave; dire ne contenant pas de caract&egrave;re ':') en provenance du serveur
+    déterminer le comportement de <module>mod_proxy</module> lorsqu'il
+    reçoit des lignes d'en-tête de réponse dont la syntaxe n'est pas valide (c'est
+    à dire ne contenant pas de caractère ':') en provenance du serveur
     original. Les arguments disponibles sont :</p>
 
     <dl>
     <dt><code>IsError</code></dt>
-    <dd>Annule la requ&ecirc;te et renvoie une r&eacute;ponse de code 502 (mauvaise
-    passerelle). C'est le comportement par d&eacute;faut.</dd>
+    <dd>Annule la requête et renvoie une réponse de code 502 (mauvaise
+    passerelle). C'est le comportement par défaut.</dd>
 
     <dt><code>Ignore</code></dt>
-    <dd>Traite les lignes d'en-t&ecirc;te incorrectes comme si elles n'avaient
-    pas &eacute;t&eacute; envoy&eacute;es.</dd>
+    <dd>Traite les lignes d'en-tête incorrectes comme si elles n'avaient
+    pas été envoyées.</dd>
 
     <dt><code>StartBody</code></dt>
-    <dd>A la r&eacute;ception de la premi&egrave;re ligne d'en-t&ecirc;te incorrecte, les
-    autres en-t&ecirc;tes sont lus et ce qui reste est trait&eacute; en tant que
-    corps. Ceci facilite la prise en compte des serveurs d'arri&egrave;re-plan
-    bogu&eacute;s qui oublient d'ins&eacute;rer une ligne vide entre les
-    en-t&ecirc;tes et le corps.</dd>
+    <dd>A la réception de la première ligne d'en-tête incorrecte, les
+    autres en-têtes sont lus et ce qui reste est traité en tant que
+    corps. Ceci facilite la prise en compte des serveurs d'arrière-plan
+    bogués qui oublient d'insérer une ligne vide entre les
+    en-têtes et le corps.</dd>
     </dl>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyFtpDirCharset</name>
-<description>D&eacute;finit le jeu de caract&egrave;res des listings FTP
-mandat&eacute;s</description>
-<syntax>ProxyFtpDirCharset <var>jeu-caract&egrave;res</var></syntax>
+<description>Définit le jeu de caractères des listings FTP
+mandatés</description>
+<syntax>ProxyFtpDirCharset <var>jeu-caractères</var></syntax>
 <default>ProxyFtpDirCharset ISO-8859-1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
@@ -558,23 +558,23 @@ mandat&eacute;s</description>
 
 <usage>
     <p>La directive <directive>ProxyFtpDirCharset</directive> permet de
-    d&eacute;finir le jeu de caract&egrave;res &agrave; utiliser pour les listings FTP en
-    HTML g&eacute;n&eacute;r&eacute;s par <module>mod_proxy_ftp</module>.</p>
+    définir le jeu de caractères à utiliser pour les listings FTP en
+    HTML générés par <module>mod_proxy_ftp</module>.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
 <name>ProxyMatch</name>
-<description>Conteneur de directives s'appliquant &agrave; des ressources
-mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
+<description>Conteneur de directives s'appliquant à des ressources
+mandatées correspondant à une expression rationnelle</description>
 <syntax>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive type="section">ProxyMatch</directive> est
-    identique &agrave; la directive <directive module="mod_proxy"
-    type="section">Proxy</directive>, &agrave; l'exception qu'elle d&eacute;finit
+    identique à la directive <directive module="mod_proxy"
+    type="section">Proxy</directive>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
 </usage>
@@ -583,7 +583,7 @@ mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
 
 <directivesynopsis>
 <name>ProxyPreserveHost</name>
-<description>Utilise l'en-t&ecirc;te de requ&ecirc;te entrante Host pour la requ&ecirc;te
+<description>Utilise l'en-tête de requête entrante Host pour la requête
 du mandataire</description>
 <syntax>ProxyPreserveHost On|Off</syntax>
 <default>ProxyPreserveHost Off</default>
@@ -592,22 +592,22 @@ du mandataire</description>
 <compatibility>Disponible depuis la version 2.0.31 d'Apache.</compatibility>
 
 <usage>
-    <p>Lorsqu'elle est activ&eacute;e, cette directive va transmettre l'en-t&ecirc;te
-    Host: de la requ&ecirc;te entrante vers le serveur mandat&eacute;, au lieu du nom
-    d'h&ocirc;te sp&eacute;cifi&eacute; par la directive
+    <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
+    Host: de la requête entrante vers le serveur mandaté, au lieu du nom
+    d'hôte spécifié par la directive
     <directive>ProxyPass module="mod_proxy"</directive>.</p>
 
-    <p>Cette directive est habituellement d&eacute;finie &agrave; <code>Off</code>.
-    Elle est principalement utile dans les configurations particuli&egrave;res
-    comme l'h&eacute;bergement virtuel mandat&eacute; en masse &agrave; base de nom, o&ugrave;
-    l'en-t&ecirc;te Host d'origine doit &ecirc;tre &eacute;valu&eacute; par le serveur
-    d'arri&egrave;re-plan.</p>
+    <p>Cette directive est habituellement définie à <code>Off</code>.
+    Elle est principalement utile dans les configurations particulières
+    comme l'hébergement virtuel mandaté en masse à base de nom, où
+    l'en-tête Host d'origine doit être évalué par le serveur
+    d'arrière-plan.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyRequests</name>
-<description>Active la fonctionnalit&eacute; (standard) de mandataire
+<description>Active la fonctionnalité (standard) de mandataire
 direct</description>
 <syntax>ProxyRequests On|Off</syntax>
 <default>ProxyRequests Off</default>
@@ -615,29 +615,29 @@ direct</description>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet d'activer/d&eacute;sactiver la fonctionnalit&eacute; de
-    serveur mandataire direct d'Apache. D&eacute;finir ProxyRequests &agrave;
+    <p>Cette directive permet d'activer/désactiver la fonctionnalité de
+    serveur mandataire direct d'Apache. Définir ProxyRequests à
     <code>Off</code> n'interdit pas l'utilisation de la directive
     <directive module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Pour une configuration typique de mandataire inverse ou
-    passerelle, cette directive doit &ecirc;tre d&eacute;finie &agrave;
+    passerelle, cette directive doit être définie à
     <code>Off</code>.</p>
 
-    <p>Afin d'activer la fonctionnalit&eacute; de mandataire pour des sites
+    <p>Afin d'activer la fonctionnalité de mandataire pour des sites
     HTTP et/ou FTP, les modules <module>mod_proxy_http</module> et/ou
-    <module>mod_proxy_ftp</module> doivent aussi &ecirc;tre charg&eacute;s dans le
+    <module>mod_proxy_ftp</module> doivent aussi être chargés dans le
     serveur.</p>
 
-    <p><module>mod_proxy_connect</module> doit &ecirc;tre activ&eacute; pour pouvoir
+    <p><module>mod_proxy_connect</module> doit être activé pour pouvoir
     mandater (en direct) des sites HTTPS.</p>
 
     <note type="warning"><title>Avertissement</title>
-      <p>N'activez pas la fonctionnalit&eacute; de mandataire avec la directive
+      <p>N'activez pas la fonctionnalité de mandataire avec la directive
       <directive module="mod_proxy">ProxyRequests</directive> avant
-      d'avoir <a href="#access">s&eacute;curis&eacute; votre serveur</a>. Les serveurs
+      d'avoir <a href="#access">sécurisé votre serveur</a>. Les serveurs
       mandataires ouverts sont dangereux non seulement pour votre
-      r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+      réseau, mais aussi pour l'Internet au sens large.</p>
     </note>
 </usage>
 <seealso><a href="#forwardreverse">Mandataires/Passerelles directs et
@@ -646,19 +646,19 @@ inverses</a></seealso>
 
 <directivesynopsis>
 <name>ProxyRemote</name>
-<description>Mandataire distant &agrave; utiliser pour traiter certaines
-requ&ecirc;tes</description>
+<description>Mandataire distant à utiliser pour traiter certaines
+requêtes</description>
 <syntax>ProxyRemote <var>comparaison</var> <var>serveur-distant</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet de d&eacute;finir des mandataires distants pour
+    <p>Cette directive permet de définir des mandataires distants pour
     ce mandataire. <var>comparaison</var> est soit le nom d'un protocole
     que supporte le serveur distant, soit une URL partielle pour
-    laquelle le serveur distant devra &ecirc;tre utilis&eacute;, soit <code>*</code>
-    pour indiquer que le serveur distant doit &ecirc;tre utilis&eacute; pour toutes
-    les requ&ecirc;tes. <var>serveur-distant</var> est une URL partielle
+    laquelle le serveur distant devra être utilisé, soit <code>*</code>
+    pour indiquer que le serveur distant doit être utilisé pour toutes
+    les requêtes. <var>serveur-distant</var> est une URL partielle
     correspondant au serveur distant. Syntaxe : </p>
 
     <example>
@@ -666,11 +666,11 @@ requ&ecirc;tes</description>
           <var>protocole</var>://<var>nom-serveur</var>[:<var>port</var>]
     </example>
 
-    <p><var>protocole</var> est effectivement le protocole &agrave; utiliser
+    <p><var>protocole</var> est effectivement le protocole à utiliser
     pour communiquer avec le serveur distant ; ce module ne supporte que
     <code>http</code> et <code>https</code>. Avec <code>https</code>,
-    les requ&ecirc;tes sont transmises par le mandataire distant via la
-    m&eacute;thode HTTP CONNECT.</p>
+    les requêtes sont transmises par le mandataire distant via la
+    méthode HTTP CONNECT.</p>
 
     <example><title>Exemple</title>
       ProxyRemote http://bons-gars.example.com/ http://gars-mirroirs.example.com:8000<br />
@@ -678,77 +678,77 @@ requ&ecirc;tes</description>
       ProxyRemote ftp http://mandataire-ftp.mon-domaine:8080
     </example>
 
-    <p>Dans la derni&egrave;re ligne de l'exemple, le mandataire va faire
-    suivre les requ&ecirc;tes FTP, encapsul&eacute;es dans une autre requ&ecirc;te mandat&eacute;e
+    <p>Dans la dernière ligne de l'exemple, le mandataire va faire
+    suivre les requêtes FTP, encapsulées dans une autre requête mandatée
     HTTP, vers un autre mandataire capable de les traiter.</p>
 
     <p>Cette directive supporte aussi les configurations de mandataire
-    inverse - un serveur web d'arri&egrave;re-plan peut &ecirc;tre int&eacute;gr&eacute; dans
-    l'espace d'URL d'un serveur virtuel, m&ecirc;me si ce serveur est cach&eacute;
+    inverse - un serveur web d'arrière-plan peut être intégré dans
+    l'espace d'URL d'un serveur virtuel, même si ce serveur est caché
     par un autre mandataire direct.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyRemoteMatch</name>
-<description>Le mandataire distant &agrave; utiliser pour traiter les requ&ecirc;tes
-correspondant &agrave; une expression rationnelle</description>
+<description>Le mandataire distant à utiliser pour traiter les requêtes
+correspondant à une expression rationnelle</description>
 <syntax>ProxyRemoteMatch <var>regex</var> <var>serveur-distant</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive>ProxyRemoteMatch</directive> est
-    identique &agrave; la directive <directive
-    module="mod_proxy">ProxyRemote</directive>, &agrave; l'exception que le
+    identique à la directive <directive
+    module="mod_proxy">ProxyRemote</directive>, à l'exception que le
     premier argument est une <glossary ref="regex">expression
-    rationnelle</glossary> &agrave; mettre en correspondance avec l'URL de la
-    requ&ecirc;te.</p>
+    rationnelle</glossary> à mettre en correspondance avec l'URL de la
+    requête.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>BalancerMember</name>
-<description>Ajoute un membre &agrave; un groupe de r&eacute;partition de
+<description>Ajoute un membre à un groupe de répartition de
 charge</description>
 <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
-  >cl&eacute;=valeur [cl&eacute;=valeur ...]]</var></syntax>
+  >clé=valeur [clé=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.2 d'Apache.</compatibility>
 <usage>
-    <p>Cette directive parmet d'ajouter un membre &agrave; un groupe de
-    r&eacute;partition de charge. Elle peut se trouver dans un conteneur
+    <p>Cette directive parmet d'ajouter un membre à un groupe de
+    répartition de charge. Elle peut se trouver dans un conteneur
     <code>&lt;Proxy <var>balancer://</var>...&gt;</code>, et accepte
-    tous les param&egrave;tres de paires cl&eacute;/valeur que supporte la directive
+    tous les paramètres de paires clé/valeur que supporte la directive
     <directive module="mod_proxy">ProxyPass</directive>.</p>
     <p>L'argument balancerurl n'est requis que s'il ne se trouve pas
-    d&egrave;j&agrave; dans la directive de conteneur <code>&lt;Proxy
-    <var>balancer://</var>...&gt;</code>. Il correspond &agrave; l'URL d'un
-    r&eacute;partiteur de charge d&eacute;fini par une directive <directive
+    dèjà dans la directive de conteneur <code>&lt;Proxy
+    <var>balancer://</var>...&gt;</code>. Il correspond à l'URL d'un
+    répartiteur de charge défini par une directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxySet</name>
-<description>D&eacute;finit diff&eacute;rents param&egrave;tres relatifs &agrave; la r&eacute;partition de
-charge des mandataires et aux membres des groupes de r&eacute;partition de
+<description>Définit différents paramètres relatifs à la répartition de
+charge des mandataires et aux membres des groupes de répartition de
 charge</description>
-<syntax>ProxySet <var>url</var> <var>cl&eacute;=valeur [cl&eacute;=valeur ...]</var></syntax>
+<syntax>ProxySet <var>url</var> <var>clé=valeur [clé=valeur ...]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>ProxySet n'est disponible que depuis la version 2.2
 d'Apache.</compatibility>
 <usage>
-    <p>Cette directive propose une m&eacute;thode alternative pour d&eacute;finir tout
-    param&egrave;tre relatif aux r&eacute;partiteurs de charge et serveurs cibles de
-    mandataires normalement d&eacute;fini via la directive <directive
+    <p>Cette directive propose une méthode alternative pour définir tout
+    paramètre relatif aux répartiteurs de charge et serveurs cibles de
+    mandataires normalement défini via la directive <directive
     module="mod_proxy">ProxyPass</directive>. Si elle se trouve dans un
-    conteneur <code>&lt;Proxy <var>url de r&eacute;partiteur|url de
+    conteneur <code>&lt;Proxy <var>url de répartiteur|url de
     serveur cible</var>&gt;</code>, l'argument <var>url</var> n'est pas
-    n&eacute;cessaire. Comme effet de bord, le r&eacute;partiteur ou serveur cible respectif
-    est cr&eacute;&eacute;. Ceci peut s'av&eacute;rer utile pour la mise en oeuvre d'un
+    nécessaire. Comme effet de bord, le répartiteur ou serveur cible respectif
+    est créé. Ceci peut s'avérer utile pour la mise en oeuvre d'un
     mandataire inverse via une directive <directive
     module="mod_rewrite">RewriteRule</directive> au lieu de <directive
     module="mod_proxy">ProxyPass</directive>.</p>
@@ -780,10 +780,10 @@ d'Apache.</compatibility>
     </example>
 
    <note type="warning"><title>Avertissement</title>
-      <p>Gardez &agrave; l'esprit qu'une m&ecirc;me cl&eacute; de param&egrave;tre peut avoir
-      diff&eacute;rentes significations selon qu'elle s'applique &agrave; un
-      r&eacute;partiteur ou &agrave; un serveur cible, et ceci est illustr&eacute; par les deux
-      exemples pr&eacute;c&eacute;dents o&ugrave; il est question d'un timeout.</p>
+      <p>Gardez à l'esprit qu'une même clé de paramètre peut avoir
+      différentes significations selon qu'elle s'applique à un
+      répartiteur ou à un serveur cible, et ceci est illustré par les deux
+      exemples précédents où il est question d'un timeout.</p>
    </note>
 
 </usage>
@@ -791,26 +791,26 @@ d'Apache.</compatibility>
 
 <directivesynopsis>
 <name>ProxyPass</name>
-<description>R&eacute;f&eacute;rencer des serveurs distants depuis
+<description>Référencer des serveurs distants depuis
 l'espace d'URLs du serveur local</description>
-<syntax>ProxyPass [<var>chemin</var>] !|<var>url</var> [<var>cl&eacute;=valeur</var>
-  <var>[cl&eacute;=valeur</var> ...]] [nocanon] [interpolate]</syntax>
+<syntax>ProxyPass [<var>chemin</var>] !|<var>url</var> [<var>clé=valeur</var>
+  <var>[clé=valeur</var> ...]] [nocanon] [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet r&eacute;f&eacute;rencer des serveurs distants depuis
+    <p>Cette directive permet référencer des serveurs distants depuis
     l'espace d'URLs du serveur local ; le serveur
     local n'agit pas en tant que mandataire au sens conventionnel, mais
-    plut&ocirc;t comme miroir du serveur distant. Le serveur local est
-    souvent nomm&eacute; <dfn>mandataire inverse</dfn> ou
+    plutôt comme miroir du serveur distant. Le serveur local est
+    souvent nommé <dfn>mandataire inverse</dfn> ou
     <dfn>passerelle</dfn>. L'argument <var>chemin</var> est le nom d'un
     chemin virtuel local ; <var>url</var> est une URL partielle pour le
-    serveur distant et ne doit pas contenir de cha&icirc;ne d'arguments.</p>
+    serveur distant et ne doit pas contenir de chaîne d'arguments.</p>
 
-    <note type="warning">En g&eacute;n&eacute;ral, la directive <directive
-    module="mod_proxy">ProxyRequests</directive> doit &ecirc;tre d&eacute;finie &agrave;
+    <note type="warning">En général, la directive <directive
+    module="mod_proxy">ProxyRequests</directive> doit être définie à
     <strong>off</strong> lorsqu'on utilise la directive
     <directive>ProxyPass</directive>.</note>
 
@@ -821,42 +821,42 @@ l'espace d'URLs du serveur local</description>
       ProxyPass /miroir/foo/ http://backend.example.com/
     </example>
 
-    <p>va convertir en interne toute requ&ecirc;te pour
-    <code>http://example.com/miroir/foo/bar</code> en une requ&ecirc;te
-    mandat&eacute;e pour <code>http://backend.example.com/bar</code>.</p>
+    <p>va convertir en interne toute requête pour
+    <code>http://example.com/miroir/foo/bar</code> en une requête
+    mandatée pour <code>http://backend.example.com/bar</code>.</p>
 
     <note type="warning">
     <p>Si le premier argument se termine par un slash
-    <strong>/</strong>, il doit en &ecirc;tre de m&ecirc;me pour le second argument
+    <strong>/</strong>, il doit en être de même pour le second argument
     et vice versa. Dans le cas contraire, il risque de manquer des
-    slashes n&eacute;cessaires dans la requ&ecirc;te r&eacute;sultante vers le serveur
-    d'arri&egrave;re-plan et les r&eacute;sulats ne seront pas ceux attendus.
+    slashes nécessaires dans la requête résultante vers le serveur
+    d'arrière-plan et les résulats ne seront pas ceux attendus.
     </p>
     </note>
 
-    <p>Lorsque cette directive est utilis&eacute;e dans une section <directive
+    <p>Lorsque cette directive est utilisée dans une section <directive
     type="section" module="core">Location</directive>, le premier
-    argument est omis et le r&eacute;pertoire local est obtenu &agrave; partir de
+    argument est omis et le répertoire local est obtenu à partir de
     l'argument de la directive <directive type="section"
-    module="core">Location</directive>. Il en est de m&ecirc;me &agrave; l'int&eacute;rieur
+    module="core">Location</directive>. Il en est de même à l'intérieur
     d'une section <directive type="section"
-    module="core">LocationMatch</directive>, mais le r&eacute;sultat ne sera
-    probablement pas celui attendu car ProxyPassReverse va interpr&eacute;ter
-    l'expression rationnelle litt&eacute;ralement comme un chemin ; si besoin
-    est dans ce cas, d&eacute;finissez la directive ProxyPassReverse en dehors
+    module="core">LocationMatch</directive>, mais le résultat ne sera
+    probablement pas celui attendu car ProxyPassReverse va interpréter
+    l'expression rationnelle littéralement comme un chemin ; si besoin
+    est dans ce cas, définissez la directive ProxyPassReverse en dehors
     de la section, ou dans une section <directive type="section"
-    module="core">Location</directive> s&eacute;par&eacute;e.</p>
+    module="core">Location</directive> séparée.</p>
 
-    <p>La directive ProxyPass ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <p>La directive ProxyPass ne peut pas être placée dans une section
     <directive type="section" module="core">Directory</directive> ou
     <directive type="section" module="core">Files</directive>.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
-    souple, reportez-vous &agrave; la documentaion de la directive <directive
+    souple, reportez-vous à la documentaion de la directive <directive
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
 
-    <p>Le drapeau <code>!</code> permet de soustraire un sous-r&eacute;pertoire
+    <p>Le drapeau <code>!</code> permet de soustraire un sous-répertoire
     du mandat inverse, comme dans l'exemple suivant :</p>    
 
     <example>
@@ -864,58 +864,64 @@ l'espace d'URLs du serveur local</description>
       ProxyPass /miroir/foo http://backend.example.com
     </example>
 
-    <p>va mandater toutes les requ&ecirc;tes pour <code>/miroir/foo</code>
-    vers <code>backend.example.com</code>, <em>sauf</em> les requ&ecirc;tes
+    <p>va mandater toutes les requêtes pour <code>/miroir/foo</code>
+    vers <code>backend.example.com</code>, <em>sauf</em> les requêtes
     pour <code>/miroir/foo/i</code>.</p>
 
     <note type="warning"><title>Ordre de classement des directives
     ProxyPass</title>
       <p>Les directives <directive
       module="mod_proxy">ProxyPass</directive> et <directive
-      module="mod_proxy">ProxyPassMatch</directive> sont trait&eacute;es selon
+      module="mod_proxy">ProxyPassMatch</directive> sont traitées selon
       leur ordre d'apparition dans le fichier de configuration. La
-      premi&egrave;re qui correspond s'applique. Ainsi, vous devez classer les
+      première qui correspond s'applique. Ainsi, vous devez classer les
       directives <directive module="mod_proxy">ProxyPass</directive> qui
-      peuvent entrer en conflit, de l'URL la plus longue &agrave; la plus
+      peuvent entrer en conflit, de l'URL la plus longue à la plus
       courte. Dans le cas contraire, les directives dont l'URL
-      constitue une partie du d&eacute;but de l'URL de directives
+      constitue une partie du début de l'URL de directives
       apparaissant plus loin dans la configuration vont occulter ces
-      derni&egrave;res. Notez que tout ceci est en relation avec le partage de
+      dernières. Notez que tout ceci est en relation avec le partage de
       worker.</p>
 
-      <p>Pour les m&ecirc;mes raisons, les exclusions doivent appara&icirc;tre
+      <p>Pour les mêmes raisons, les exclusions doivent apparaître
       <em>avant</em> les directives <directive>ProxyPass</directive>
-      g&eacute;n&eacute;rales.</p>
+      générales.</p>
 
     </note> <!-- /ordering_proxypass -->
 
-    <p><strong>ProxyPass <code>cl&eacute;=valeur</code> Param&egrave;tres</strong></p>
+    <note type="warning"><title>Ordre d'évaluation des directives ProxyPass et RewriteRule</title>
+      <p>Les directives <directive module="mod_rewrite">RewriteRule</directive>
+      sont évaluées avant les directives <directive
+      module="mod_proxy">ProxyPass</directive>.</p>
++    </note>
+
+    <p><strong>ProxyPass <code>clé=valeur</code> Paramètres</strong></p>
 
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
-    les jeux de connexions vers un serveur d'arri&egrave;re-plan. Ainsi, les
-    connexions cr&eacute;&eacute;es &agrave; la demande peuvent &ecirc;tre conserv&eacute;es dans un
-    jeu pour une utilisation ult&eacute;rieure. Les limites de la taille
-    du jeu de connexions et d'autres param&egrave;tres peuvent &ecirc;tre d&eacute;finis au
+    les jeux de connexions vers un serveur d'arrière-plan. Ainsi, les
+    connexions créées à la demande peuvent être conservées dans un
+    jeu pour une utilisation ultérieure. Les limites de la taille
+    du jeu de connexions et d'autres paramètres peuvent être définis au
     niveau de la directive <directive>ProxyPass</directive> via des
-    arguments <code>cl&eacute;=valeur</code> d&eacute;crits dans les
+    arguments <code>clé=valeur</code> décrits dans les
     tables ci-dessous.</p>
 
-    <p>Par d&eacute;faut, mod_proxy permettra de conserver le nombre maximum de
-    connexions pouvant &ecirc;tre utilis&eacute;es simultan&eacute;ment par le processus
-    enfant concern&eacute; du serveur web. Vous pouvez utiliser le param&egrave;tre
-    <code>max</code> pour r&eacute;duire ce nombre par rapport &agrave; la valeur par
-    d&eacute;faut. Vous pouvez aussi utiliser le param&egrave;tre <code>ttl</code>
-    pour d&eacute;finir une dur&eacute;e de vie optionnelle ; ainsi, les connections
-    qui n'ont pas &eacute;t&eacute; utilis&eacute;es au bout de <code>ttl</code> secondes
-    seront ferm&eacute;es. Le param&egrave;tre <code>ttl</code> permet aussi
-    d'emp&ecirc;cher l'utilisation d'une connexion susceptible d'&ecirc;tre ferm&eacute;e
-    suite &agrave; l'expiration de la dur&eacute;e de vie des connexions persistantes
-    sur le serveur d'arri&egrave;re-plan.</p>
+    <p>Par défaut, mod_proxy permettra de conserver le nombre maximum de
+    connexions pouvant être utilisées simultanément par le processus
+    enfant concerné du serveur web. Vous pouvez utiliser le paramètre
+    <code>max</code> pour réduire ce nombre par rapport à la valeur par
+    défaut. Vous pouvez aussi utiliser le paramètre <code>ttl</code>
+    pour définir une durée de vie optionnelle ; ainsi, les connections
+    qui n'ont pas été utilisées au bout de <code>ttl</code> secondes
+    seront fermées. Le paramètre <code>ttl</code> permet aussi
+    d'empêcher l'utilisation d'une connexion susceptible d'être fermée
+    suite à l'expiration de la durée de vie des connexions persistantes
+    sur le serveur d'arrière-plan.</p>
 
     <p>Le jeu de connexions est maintenu au niveau de chaque processus
-    enfant du serveur web, et <code>max</code> et les autres param&egrave;tres
-    ne font l'objet d'aucune coordination entre les diff&eacute;rents processus
-    enfants, sauf bien sur dans le cas o&ugrave; un seul processus enfant est
+    enfant du serveur web, et <code>max</code> et les autres paramètres
+    ne font l'objet d'aucune coordination entre les différents processus
+    enfants, sauf bien sur dans le cas où un seul processus enfant est
     permis par la configuration du module multiprocessus.</p>
 
     <example>
@@ -923,277 +929,277 @@ l'espace d'URLs du serveur local</description>
     </example>
 
     <table>
-    <tr><th>Param&egrave;tre</th>
-        <th>D&eacute;faut</th>
+    <tr><th>Paramètre</th>
+        <th>Défaut</th>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum d'entr&eacute;es dans le jeu de connexions, sans
-	rapport avec le nombre r&eacute;el de connexions. Ne doit &ecirc;tre modifi&eacute;
-	par rapport &agrave; la valeur par d&eacute;faut que dans des circonstances
-	sp&eacute;ciales o&ugrave; la m&eacute;moire du tas associ&eacute;e aux connexions
-	d'arri&egrave;re-plan doit &ecirc;tre pr&eacute;allou&eacute;e ou conserv&eacute;e.</td></tr>
+        <td>Nombre minimum d'entrées dans le jeu de connexions, sans
+	rapport avec le nombre réel de connexions. Ne doit être modifié
+	par rapport à la valeur par défaut que dans des circonstances
+	spéciales où la mémoire du tas associée aux connexions
+	d'arrière-plan doit être préallouée ou conservée.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
         <td>Nombre maximum de connexions permises vers le serveur
-	d'arri&egrave;re-plan. La valeur par d&eacute;faut pour cette limite est le
+	d'arrière-plan. La valeur par défaut pour cette limite est le
 	nombre de threads par processus pour le module multiprocessus
 	actif. Pour le MPM Prefork, la valeur est toujours 1, alors que
-	pour les autres, on peut la contr&ocirc;ler via la directive
+	pour les autres, on peut la contrôler via la directive
 	<directive>ThreadsPerChild</directive>.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Les entr&eacute;es conserv&eacute;es du jeu de connexions au dessus de
-	cette limite sont lib&eacute;r&eacute;es au cours de certaines op&eacute;rations si
-	elles n'ont pas &eacute;t&eacute; utilis&eacute;es au bout de leur dur&eacute;e de vie
-	d&eacute;finie par le param&egrave;tre <code>ttl</code>. Si l'entr&eacute;e du jeu de
-	connexions est associ&eacute;e &agrave; une connexion, cette derni&egrave;re sera
-	alors ferm&eacute;e. Ce param&egrave;tre ne doit &ecirc;tre modifi&eacute; par rapport &agrave; la
-	valeur par d&eacute;faut que dans des circonstances sp&eacute;ciales o&ugrave; les
-	entr&eacute;es du jeu de connexions, et toutes connexions associ&eacute;es qui
-	ont d&eacute;pass&eacute; leur dur&eacute;e de vie doivent &ecirc;tre respectivement
-	lib&eacute;r&eacute;es ou ferm&eacute;es plus imp&eacute;rativement.</td></tr>
+        <td>Les entrées conservées du jeu de connexions au dessus de
+	cette limite sont libérées au cours de certaines opérations si
+	elles n'ont pas été utilisées au bout de leur durée de vie
+	définie par le paramètre <code>ttl</code>. Si l'entrée du jeu de
+	connexions est associée à une connexion, cette dernière sera
+	alors fermée. Ce paramètre ne doit être modifié par rapport à la
+	valeur par défaut que dans des circonstances spéciales où les
+	entrées du jeu de connexions, et toutes connexions associées qui
+	ont dépassé leur durée de vie doivent être respectivement
+	libérées ou fermées plus impérativement.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
-        <td>Cette cl&eacute; permet de d&eacute;finir le d&eacute;lai maximum d'attente pour
+        <td>Cette clé permet de définir le délai maximum d'attente pour
 	une connexion libre dans le jeu de connexions, en millisecondes.
 	S'il n'y a pas de connexion libre dans le jeu, Apache renverra
-	l'&eacute;tat <code>SERVER_BUSY</code> au client.
+	l'état <code>SERVER_BUSY</code> au client.
     </td></tr>
     <tr><td>connectiontimeout</td>
         <td>timeout</td>
-        <td>D&eacute;lai d'attente d'une connexion en secondes.
-        La dur&eacute;e en secondes pendant laquelle Apache va attendre pour
-	l'&eacute;tablissement d'une connexion vers le serveur d'arri&egrave;re-plan.
-	Le d&eacute;lai peut &ecirc;tre sp&eacute;cifi&eacute; en millisecondes en ajoutant le
+        <td>Délai d'attente d'une connexion en secondes.
+        La durée en secondes pendant laquelle Apache va attendre pour
+	l'établissement d'une connexion vers le serveur d'arrière-plan.
+	Le délai peut être spécifié en millisecondes en ajoutant le
 	suffixe ms.
     </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
-        <td>Vous pouvez utiliser cette cl&eacute; pour forcer mod_proxy &agrave;
-	fermer imm&eacute;diatement une connexion vers le serveur
-	d'arri&egrave;re-plan apr&egrave;s utilisation, et ainsi d&eacute;sactiver le jeu de
-	connexions permanentes vers ce serveur. Ceci peut s'av&eacute;rer utile
-	dans des situations o&ugrave; un pare-feu situ&eacute; entre Apache et le
-	serveur d'arri&egrave;re-plan (quelque soit le protocole) interrompt
-	des connexions de mani&egrave;re silencieuse, ou lorsque le serveur
-	d'arri&egrave;re-plan lui-m&ecirc;me est accessible par rotation de DNS
-	(round-robin DNS). Pour d&eacute;sactiver la r&eacute;utilisation du jeu de
-	connexions, d&eacute;finissez cette cl&eacute; &agrave; <code>On</code>.
+        <td>Vous pouvez utiliser cette clé pour forcer mod_proxy à
+	fermer immédiatement une connexion vers le serveur
+	d'arrière-plan après utilisation, et ainsi désactiver le jeu de
+	connexions permanentes vers ce serveur. Ceci peut s'avérer utile
+	dans des situations où un pare-feu situé entre Apache et le
+	serveur d'arrière-plan (quelque soit le protocole) interrompt
+	des connexions de manière silencieuse, ou lorsque le serveur
+	d'arrière-plan lui-même est accessible par rotation de DNS
+	(round-robin DNS). Pour désactiver la réutilisation du jeu de
+	connexions, définissez cette clé à <code>On</code>.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
-        <td>Permet de d&eacute;finir si le module mandataire doit vider
-	automatiquement le tampon de sortie apr&egrave;s chaque tron&ccedil;on de
-	donn&eacute;es. 'off' signifie que le tampon sera vid&eacute; si n&eacute;cessaire,
-	'on' que le tampon sera vid&eacute; apr&egrave;s chaque envoi d'un
-	tron&ccedil;on de donn&eacute;es, et 'auto' que le tampon sera vid&eacute; apr&egrave;s un
-	d&eacute;lai de 'flushwait' millisecondes si aucune entr&eacute;e n'est re&ccedil;ue.
-	Actuellement, cette cl&eacute; n'est support&eacute;e que par AJP.
+        <td>Permet de définir si le module mandataire doit vider
+	automatiquement le tampon de sortie après chaque tronçon de
+	données. 'off' signifie que le tampon sera vidé si nécessaire,
+	'on' que le tampon sera vidé après chaque envoi d'un
+	tronçon de données, et 'auto' que le tampon sera vidé après un
+	délai de 'flushwait' millisecondes si aucune entrée n'est reçue.
+	Actuellement, cette clé n'est supportée que par AJP.
     </td></tr>
     <tr><td>flushwait</td>
         <td>10</td>
-        <td>Le d&eacute;lai d'attente pour une entr&eacute;e additionnelle, en
+        <td>Le délai d'attente pour une entrée additionnelle, en
 	millisecondes, avant le vidage du tampon en sortie dans le cas
-	o&ugrave; 'flushpackets' est &agrave; 'auto'.
+	où 'flushpackets' est à 'auto'.
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td><p>Cette cl&eacute; doit &ecirc;tre utilis&eacute;e lorsque vous avez un pare-feu
-	entre Apache httpd et le serveur d'arri&egrave;re-plan, et si ce dernier tend
-	&agrave; interrompre les connexions inactives. Cette cl&eacute; va faire en
-	sorte que le syst&egrave;me d'exploitation envoie des messages
+        <td><p>Cette clé doit être utilisée lorsque vous avez un pare-feu
+	entre Apache httpd et le serveur d'arrière-plan, et si ce dernier tend
+	à interrompre les connexions inactives. Cette clé va faire en
+	sorte que le système d'exploitation envoie des messages
 	<code>KEEP_ALIVE</code> sur chacune des connexions inactives et
-	ainsi &eacute;viter la	fermeture de la	connexion par le pare-feu.
+	ainsi éviter la	fermeture de la	connexion par le pare-feu.
 	Pour conserver les connexions persistantes, definissez cette
-	propri&eacute;t&eacute; &agrave; <code>On</code>.</p>
-    <p>La fr&eacute;quence de v&eacute;rification des connexions TCP persistantes
-    initiale et subs&eacute;quentes d&eacute;pend de la configuration globale de l'OS,
-    et peut atteindre 2 heures. Pour &ecirc;tre utile, la fr&eacute;quence configur&eacute;e
-    dans l'OS doit &ecirc;tre inf&eacute;rieure au seuil utilis&eacute; par le pare-feu.</p>
+	propriété à <code>On</code>.</p>
+    <p>La fréquence de vérification des connexions TCP persistantes
+    initiale et subséquentes dépend de la configuration globale de l'OS,
+    et peut atteindre 2 heures. Pour être utile, la fréquence configurée
+    dans l'OS doit être inférieure au seuil utilisé par le pare-feu.</p>
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
-        <td>D&eacute;finit le groupe de r&eacute;partition de charge dont le serveur cible
-	est membre. Le r&eacute;partiteur de charge va essayer tous les membres
-	d'un groupe de r&eacute;partition de charge de num&eacute;ro inf&eacute;rieur avant
-	d'essayer ceux dont le groupe poss&egrave;de un num&eacute;ro sup&eacute;rieur.
+        <td>Définit le groupe de répartition de charge dont le serveur cible
+	est membre. Le répartiteur de charge va essayer tous les membres
+	d'un groupe de répartition de charge de numéro inférieur avant
+	d'essayer ceux dont le groupe possède un numéro supérieur.
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
-        <td>Avec la cl&eacute; ping, le serveur web envoie une requ&ecirc;te
+        <td>Avec la clé ping, le serveur web envoie une requête
 	<code>CPING</code> sur la connexion ajp13 avant de rediriger une
-	requ&ecirc;te. La valeur correspond au d&eacute;lai d'attente de la r&eacute;ponse
-	<code>CPONG</code>. Cette fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e afin de
-	pallier aux probl&egrave;mes de blocage et de surcharge des serveurs
-	Tomcat, et n&eacute;cessite le support de ping/pong ajp13 qui a &eacute;t&eacute;
-	impl&eacute;ment&eacute; dans Tomcat 3.3.2+, 4.1.28+ et 5.0.13+. Le trafic
-	r&eacute;seau peut s'en trouver augment&eacute; en fonctionnement normal, ce
-	qui peut poser probl&egrave;me, mais peut s'en trouver diminu&eacute; dans les
-	cas o&ugrave; les noeuds de cluster sont arr&ecirc;t&eacute;s ou surcharg&eacute;s. Cette
-	cl&eacute; n'est actuellement utilisable qu'avec AJP. Le d&eacute;lai peut
-	aussi &ecirc;tre d&eacute;fini en millisecondes en ajoutant le suffixe
+	requête. La valeur correspond au délai d'attente de la réponse
+	<code>CPONG</code>. Cette fonctionnalité a été ajoutée afin de
+	pallier aux problèmes de blocage et de surcharge des serveurs
+	Tomcat, et nécessite le support de ping/pong ajp13 qui a été
+	implémenté dans Tomcat 3.3.2+, 4.1.28+ et 5.0.13+. Le trafic
+	réseau peut s'en trouver augmenté en fonctionnement normal, ce
+	qui peut poser problème, mais peut s'en trouver diminué dans les
+	cas où les noeuds de cluster sont arrêtés ou surchargés. Cette
+	clé n'est actuellement utilisable qu'avec AJP. Le délai peut
+	aussi être défini en millisecondes en ajoutant le suffixe
 	ms.
     </td></tr>
     <tr><td>loadfactor</td>
         <td>1</td>
-        <td>Facteur de charge du serveur cible &agrave; utiliser avec les
-	membres d'un groupe de r&eacute;partition de charge. Il s'agit d'un
-	nombre entre 1 et 100 d&eacute;finissant le facteur de charge appliqu&eacute;
+        <td>Facteur de charge du serveur cible à utiliser avec les
+	membres d'un groupe de répartition de charge. Il s'agit d'un
+	nombre entre 1 et 100 définissant le facteur de charge appliqué
 	au serveur cible.
     </td></tr>
     <tr><td>redirect</td>
         <td>-</td>
         <td>Route pour la redirection du serveur cible. Cette valeur est en
-	g&eacute;n&eacute;ral d&eacute;finie dynamiquement pour permettre une suppression
-	s&eacute;curis&eacute;e du noeud du cluster. Si cette cl&eacute; est d&eacute;finie, toutes
-	les requ&ecirc;tes sans identifiant de session seront redirig&eacute;es vers
-	le membre de groupe de r&eacute;partition de charge dont la route
-	correspond &agrave; la valeur de la cl&eacute;.
+	général définie dynamiquement pour permettre une suppression
+	sécurisée du noeud du cluster. Si cette clé est définie, toutes
+	les requêtes sans identifiant de session seront redirigées vers
+	le membre de groupe de répartition de charge dont la route
+	correspond à la valeur de la clé.
     </td></tr>
     <tr><td>retry</td>
         <td>60</td>
-        <td>D&eacute;lai entre deux essais du serveur cible du jeu de connexions en
+        <td>Délai entre deux essais du serveur cible du jeu de connexions en
 	secondes. Si le serveur cible du jeu de connexions vers le serveur
-	d'arri&egrave;re-plan est dans un &eacute;tat d'erreur, Apache ne redirigera
-	pas de requ&ecirc;te vers ce serveur avant l'expiration du d&eacute;lai
-	sp&eacute;cifi&eacute;. Ceci permet d'arr&ecirc;ter le serveur d'arri&egrave;re-plan pour
+	d'arrière-plan est dans un état d'erreur, Apache ne redirigera
+	pas de requête vers ce serveur avant l'expiration du délai
+	spécifié. Ceci permet d'arrêter le serveur d'arrière-plan pour
 	maintenance, et de le remettre en ligne plus tard. Une valeur de
-	0 signifie toujours essayer les serveurs cibles dans un &eacute;tat d'erreur
-	sans d&eacute;lai.
+	0 signifie toujours essayer les serveurs cibles dans un état d'erreur
+	sans délai.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
-        <td>La route du serveur cible lorsqu'il est utilis&eacute; au sein d'un
-	r&eacute;partiteur de charge. La route est une valeur ajout&eacute;e &agrave;
+        <td>La route du serveur cible lorsqu'il est utilisé au sein d'un
+	répartiteur de charge. La route est une valeur ajoutée à
 	l'identifiant de session.
     </td></tr>
     <tr><td>status</td>
         <td>-</td>
-        <td>Valeur constitu&eacute;e d'une simple lettre et d&eacute;finissant l'&eacute;tat
-	initial de ce serveur cible : 'D' correspond &agrave; "d&eacute;sactiv&eacute;", 'S' &agrave;
-	"arr&ecirc;t&eacute;", 'I' &agrave; "erreurs ignor&eacute;es", 'H' &agrave; "interruption &agrave; chaud"
-	et 'E' &agrave; "erreur". Une valeur d'&eacute;tat peut &ecirc;tre d&eacute;finie (ce qui
-	correspond au comportement par d&eacute;faut) en pr&eacute;fixant la valeur
-	par '+', ou annul&eacute;e en pr&eacute;fixant la valeur par '-'. Ainsi, la
-	valeur 'S-E' d&eacute;finit l'&eacute;tat de ce serveur cible &agrave; "arr&ecirc;t&eacute;" et supprime
+        <td>Valeur constituée d'une simple lettre et définissant l'état
+	initial de ce serveur cible : 'D' correspond à "désactivé", 'S' à
+	"arrêté", 'I' à "erreurs ignorées", 'H' à "interruption à chaud"
+	et 'E' à "erreur". Une valeur d'état peut être définie (ce qui
+	correspond au comportement par défaut) en préfixant la valeur
+	par '+', ou annulée en préfixant la valeur par '-'. Ainsi, la
+	valeur 'S-E' définit l'état de ce serveur cible à "arrêté" et supprime
 	le drapeau "en-erreur".
     </td></tr>
     <tr><td>timeout</td>
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
-        <td>D&eacute;lai d'attente de la connexion en secondes. Le nombre de
+        <td>Délai d'attente de la connexion en secondes. Le nombre de
 	secondes pendant lesquelles Apache attend l'envoi de
-	donn&eacute;es vers le serveur d'arri&egrave;re-plan.
+	données vers le serveur d'arrière-plan.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Dur&eacute;e de vie des connexions inactives et des entr&eacute;es
-	associ&eacute;es du jeu de connexions. Lorsque cette limite est
-	atteinte, la connexion concern&eacute;e ne sera plus utilis&eacute;e ; elle
-	sera ensuite ferm&eacute;e au bout d'un certain temps.
+        <td>Durée de vie des connexions inactives et des entrées
+	associées du jeu de connexions. Lorsque cette limite est
+	atteinte, la connexion concernée ne sera plus utilisée ; elle
+	sera ensuite fermée au bout d'un certain temps.
     </td></tr>
 
     </table>
 
-    <p>Si l'URL de la directive <directive>ProxyPass</directive> d&eacute;bute par
+    <p>Si l'URL de la directive <directive>ProxyPass</directive> débute par
     <code>balancer://</code> (par exemple:
     <code>balancer://cluster/</code>, toute information relative au
-    chemin est ignor&eacute;e), alors un serveur cible virtuel ne communiquant pas
-    r&eacute;ellement avec le serveur d'arri&egrave;re-plan sera cr&eacute;&eacute;. Celui-ci sera
-    en fait responsable de la gestion de plusieurs serveurs cibles "r&eacute;els". Dans
-    ce cas, un jeu de param&egrave;tres particuliers s'applique &agrave; ce serveur cible
+    chemin est ignorée), alors un serveur cible virtuel ne communiquant pas
+    réellement avec le serveur d'arrière-plan sera créé. Celui-ci sera
+    en fait responsable de la gestion de plusieurs serveurs cibles "réels". Dans
+    ce cas, un jeu de paramètres particuliers s'applique à ce serveur cible
     virtuel. Voir <module>mod_proxy_balancer</module> pour plus
-    d'informations &agrave; propos du fonctionnement du r&eacute;partiteur de
+    d'informations à propos du fonctionnement du répartiteur de
     charge.
     </p>
     <table>
-    <tr><th>Param&egrave;tre</th>
-        <th>D&eacute;faut</th>
+    <tr><th>Paramètre</th>
+        <th>Défaut</th>
         <th>Description</th></tr>
     <tr><td>lbmethod</td>
         <td>byrequests</td>
-        <td>M&eacute;thode de r&eacute;partition de charge utilis&eacute;e. Permet de
-	s&eacute;lectionner la m&eacute;thode de planification de la r&eacute;partition de
-	charge &agrave; utiliser. La valeur est soit <code>byrequests</code>,
-	pour effectuer un d&eacute;compte de requ&ecirc;tes pond&eacute;r&eacute;es, soit
-	<code>bytraffic</code>, pour effectuer une r&eacute;partition en
-	fonction du d&eacute;compte des octets transmis, soit
-	<code>bybusyness</code> (&agrave; partir de la version 2.2.10 du
-	serveur HTTP Apache), pour effectuer une r&eacute;partition en
-	fonction des requ&ecirc;tes en attente. La valeur par d&eacute;faut est
+        <td>Méthode de répartition de charge utilisée. Permet de
+	sélectionner la méthode de planification de la répartition de
+	charge à utiliser. La valeur est soit <code>byrequests</code>,
+	pour effectuer un décompte de requêtes pondérées, soit
+	<code>bytraffic</code>, pour effectuer une répartition en
+	fonction du décompte des octets transmis, soit
+	<code>bybusyness</code> (à partir de la version 2.2.10 du
+	serveur HTTP Apache), pour effectuer une répartition en
+	fonction des requêtes en attente. La valeur par défaut est
 	<code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>1 de moins que le nombre de workers, ou 1 avec un seul
 	worker</td>
-        <td>Nombre maximum d'&eacute;checs avant abandon.
+        <td>Nombre maximum d'échecs avant abandon.
     </td></tr>
     <tr><td>nofailover</td>
         <td>Off</td>
-        <td>Si ce param&egrave;tre est d&eacute;fini &agrave; <code>On</code>, la session va
-	s'interrompre si le serveur cible est dans un &eacute;tat d'erreur ou
-	d&eacute;sactiv&eacute;. D&eacute;finissez ce param&egrave;tre &agrave; On si le serveur
-	d'arri&egrave;re-plan ne supporte pas la r&eacute;plication de session.
+        <td>Si ce paramètre est défini à <code>On</code>, la session va
+	s'interrompre si le serveur cible est dans un état d'erreur ou
+	désactivé. Définissez ce paramètre à On si le serveur
+	d'arrière-plan ne supporte pas la réplication de session.
     </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
-        <td>Nom de session persistant du r&eacute;partiteur. La valeur est
-	g&eacute;n&eacute;ralement du style <code>JSESSIONID</code> ou
-	<code>PHPSESSIONID</code>, et d&eacute;pend du serveur d'application
-	d'arri&egrave;re-plan qui supporte les sessions. Si le serveur
-	d'application d'arri&egrave;re-plan utilise des noms diff&eacute;rents pour
-	les cookies et les identifiants cod&eacute;s d'URL (comme les
-	conteneurs de servlet), s&eacute;parez-les par le caract&egrave;re '|'. La
-	premi&egrave;re partie contient le cookie et la seconde le chemin.
+        <td>Nom de session persistant du répartiteur. La valeur est
+	généralement du style <code>JSESSIONID</code> ou
+	<code>PHPSESSIONID</code>, et dépend du serveur d'application
+	d'arrière-plan qui supporte les sessions. Si le serveur
+	d'application d'arrière-plan utilise des noms différents pour
+	les cookies et les identifiants codés d'URL (comme les
+	conteneurs de servlet), séparez-les par le caractère '|'. La
+	première partie contient le cookie et la seconde le chemin.
     </td></tr>
     <tr><td>scolonpathdelim</td>
         <td>Off</td>
-        <td>Si ce param&egrave;tre est d&eacute;fini &agrave; <code>On</code>, le caract&egrave;re
-	';' sera utilis&eacute; comme s&eacute;parateur de chemin de session
+        <td>Si ce paramètre est défini à <code>On</code>, le caractère
+	';' sera utilisé comme séparateur de chemin de session
 	persistante additionnel. Ceci permet principalement de simuler
 	le comportement de mod_jk lorsqu'on utilise des chemins du style
 	<code>JSESSIONID=6736bcf34;foo=aabfa</code>.
     </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
-        <td>D&eacute;lai du r&eacute;partiteur en secondes. Si ce param&egrave;tre est
-	d&eacute;fini, sa valeur correspond &agrave; la dur&eacute;e maximale d'attente pour
-	un serveur cible libre. Le comportement par d&eacute;faut est de ne pas
+        <td>Délai du répartiteur en secondes. Si ce paramètre est
+	défini, sa valeur correspond à la durée maximale d'attente pour
+	un serveur cible libre. Le comportement par défaut est de ne pas
 	attendre.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>
-        <td>Un code ou une liste de codes d'&eacute;tat HTTP s&eacute;par&eacute;s par des
-	virgules. S'il est d&eacute;fini, ce param&egrave;tre va forcer le worker dans
-	un &eacute;tat d'erreur lorsque le serveur d'arri&egrave;re-plan retounera un
-	code d'&eacute;tat sp&eacute;cifi&eacute; dans la liste. Le r&eacute;tablissement du worker
-	est le m&ecirc;me qu'avec les autres erreurs de worker.
-	Disponible &agrave; partir de la version 2.2.17 du serveur HTTP Apache.
+        <td>Un code ou une liste de codes d'état HTTP séparés par des
+	virgules. S'il est défini, ce paramètre va forcer le worker dans
+	un état d'erreur lorsque le serveur d'arrière-plan retounera un
+	code d'état spécifié dans la liste. Le rétablissement du worker
+	est le même qu'avec les autres erreurs de worker.
+	Disponible à partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
     <tr><td>failontimeout</td>
         <td>Off</td>
-        <td>Si ce param&egrave;tre est d&eacute;fini &agrave; "On", un d&eacute;lai d'attente
-	d&eacute;pass&eacute; en entr&eacute;e/sortie apr&egrave;s envoi d'une requ&ecirc;te au serveur
-	d'arri&egrave;re-plan va mettre le processus en &eacute;tat d'erreur. La
-	sortie de cet &eacute;tat d'erreur se passe de la m&ecirc;me fa&ccedil;on que pour
-	les autres erreurs. Disponible &agrave; partir de la version 2.2.25 du
+        <td>Si ce paramètre est défini à "On", un délai d'attente
+	dépassé en entrée/sortie après envoi d'une requête au serveur
+	d'arrière-plan va mettre le processus en état d'erreur. La
+	sortie de cet état d'erreur se passe de la même façon que pour
+	les autres erreurs. Disponible à partir de la version 2.2.25 du
 	serveur HTTP Apache.
     </td></tr>
     <tr><td>forcerecovery</td>
         <td>On</td>
-        <td>Force la r&eacute;cup&eacute;ration imm&eacute;diate de tous les membres du
-	r&eacute;partiteur sans tenir compte de leur param&egrave;tre de nouvel essai
-	si tous les membres du r&eacute;partiteur sont dans un &eacute;tat d'erreur.
-	Dans certains cas cependant, un serveur d'arri&egrave;re-plan d&eacute;j&agrave;
-	surcharg&eacute; peut voir ses probl&egrave;mes s'aggraver si la r&eacute;cup&eacute;ration
-	de tous les membres du r&eacute;partiteur est forc&eacute;e sans tenir compte
-	de leur param&egrave;tre de nouvel essai. Dans ce cas, d&eacute;finissez ce
-	param&egrave;tre &agrave; <code>Off</code>. Disponible depuis la version
+        <td>Force la récupération immédiate de tous les membres du
+	répartiteur sans tenir compte de leur paramètre de nouvel essai
+	si tous les membres du répartiteur sont dans un état d'erreur.
+	Dans certains cas cependant, un serveur d'arrière-plan déjà
+	surchargé peut voir ses problèmes s'aggraver si la récupération
+	de tous les membres du répartiteur est forcée sans tenir compte
+	de leur paramètre de nouvel essai. Dans ce cas, définissez ce
+	paramètre à <code>Off</code>. Disponible depuis la version
 	2.2.23 du serveur HTTP Apache.
     </td></tr>
      
     </table>
-    <p>Exemple de configuration d'un r&eacute;partiteur</p>
+    <p>Exemple de configuration d'un répartiteur</p>
     <example>
       ProxyPass /zone-speciale http://special.example.com smax=5 max=10<br />
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
@@ -1201,13 +1207,13 @@ l'espace d'URLs du serveur local</description>
       <indent>
         BalancerMember ajp://1.2.3.4:8009<br />
         BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
-        # Serveur moins puissant ; faites-lui traiter moins de requ&ecirc;tes,<br />
+        # Serveur moins puissant ; faites-lui traiter moins de requêtes,<br />
         BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
       </indent>
       &lt;/Proxy&gt;
     </example>
 
-    <p>Configuration d'un serveur cible de r&eacute;serve qui ne sera utilis&eacute; que si
+    <p>Configuration d'un serveur cible de réserve qui ne sera utilisé que si
     aucun autre serveur cible n'est disponible</p>
     <example>
       ProxyPass / balancer://hotcluster/ <br />
@@ -1215,36 +1221,36 @@ l'espace d'URLs du serveur local</description>
       <indent>
         BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
         BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
-        # La ligne suivante configure le serveur cible de r&eacute;serve<br />
+        # La ligne suivante configure le serveur cible de réserve<br />
         BalancerMember ajp://1.2.3.6:8009 status=+H<br />
         ProxySet lbmethod=bytraffic
       </indent>
       &lt;/Proxy&gt;
     </example>
 
-    <p><strong>Mots-cl&eacute;s additionnels de ProxyPass</strong></p>
+    <p><strong>Mots-clés additionnels de ProxyPass</strong></p>
 
     <p>Normalement, mod_proxy va mettre sous leur forme canonique les
-    URLs trait&eacute;es par ProxyPass. Mais ceci peut &ecirc;tre incompatible avec
-    certains serveurs d'arri&egrave;re-plan, et en particulier avec ceux qui
-    utilisent <var>PATH_INFO</var>. Le mot-cl&eacute; optionnel
+    URLs traitées par ProxyPass. Mais ceci peut être incompatible avec
+    certains serveurs d'arrière-plan, et en particulier avec ceux qui
+    utilisent <var>PATH_INFO</var>. Le mot-clé optionnel
     <var>nocanon</var> modifie ce comportement et permet de transmettre
-    le chemin d'URL sous sa forme brute au serveur d'arri&egrave;re-plan. Notez
-    que ceci peut affecter la s&eacute;curit&eacute; de votre serveur d'arri&egrave;re-plan,
-    car la protection limit&eacute;e contre les attaques &agrave; base d'URL que
-    fournit le mandataire est alors supprim&eacute;e.</p>
+    le chemin d'URL sous sa forme brute au serveur d'arrière-plan. Notez
+    que ceci peut affecter la sécurité de votre serveur d'arrière-plan,
+    car la protection limitée contre les attaques à base d'URL que
+    fournit le mandataire est alors supprimée.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
+    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
     httpd 2.2.9), en combinaison avec la directive
-    <directive>ProxyPassInterpolateEnv</directive>, permet &agrave; ProxyPass
-    d'interpoler les variables d'environnement &agrave; l'aide de la syntaxe
+    <directive>ProxyPassInterpolateEnv</directive>, permet à ProxyPass
+    d'interpoler les variables d'environnement à l'aide de la syntaxe
     <var>${VARNAME}</var>. Notez que de nombreuses variables
-    d'environnement standard d&eacute;riv&eacute;es de CGI n'existeront pas lorsque
+    d'environnement standard dérivées de CGI n'existeront pas lorsque
     l'interpolation se produit ; vous devrez alors encore avoir avoir
-    recours &agrave; <module>mod_rewrite</module> pour des r&egrave;gles
-    complexes. Notez aussi que l'interpolation n'est pas support&eacute;e dans
-    la partie protocole d'une URL. La d&eacute;termination dynamique du
-    protocole peut &ecirc;tre effectu&eacute;e &agrave; l'aide de
+    recours à <module>mod_rewrite</module> pour des règles
+    complexes. Notez aussi que l'interpolation n'est pas supportée dans
+    la partie protocole d'une URL. La détermination dynamique du
+    protocole peut être effectuée à l'aide de
     <module>mod_rewrite</module> comme dans l'exemple suivant :</p>
 
     <highlight language="config">
@@ -1268,8 +1274,8 @@ ProxyPassReverse  /mirror/foo/ https://backend.example.com/
 <description>Fait correspondre des serveurs distants dans l'espace d'URL
 du serveur local en utilisant des expressions rationnelles</description>
 <syntax>ProxyPassMatch [<var>regex</var>] !|<var>url</var>
-[<var>cl&eacute;=valeur</var>
-	<var>[cl&eacute;=valeur</var> ...]]</syntax>
+[<var>clé=valeur</var>
+	<var>[clé=valeur</var> ...]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1277,12 +1283,12 @@ du serveur local en utilisant des expressions rationnelles</description>
 d'Apache</compatibility>
 
 <usage>
-    <p>Cette directive est identique &agrave; la directive <directive
+    <p>Cette directive est identique à la directive <directive
     module="mod_proxy">ProxyPass</directive>, mais fait usage des
     expressions rationnelles, au lieu d'une simple comparaison de
-    pr&eacute;fixes. L'expression rationnelle sp&eacute;cifi&eacute;e est compar&eacute;e &agrave;
+    préfixes. L'expression rationnelle spécifiée est comparée à
     l'<var>url</var>, et si elle correspond, le serveur va substituer
-    toute correspondance entre parenth&egrave;ses dans la cha&icirc;ne donn&eacute;e et
+    toute correspondance entre parenthèses dans la chaîne donnée et
     l'utiliser comme nouvelle <var>url</var>.</p>
 
     <p>Supposons que le serveur local a pour adresse
@@ -1292,20 +1298,20 @@ d'Apache</compatibility>
       ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
     </example>
 
-    <p>va provoquer la conversion interne de la requ&ecirc;te locale
-    <code>http://example.com/foo/bar.gif</code> en une requ&ecirc;te mandat&eacute;e
+    <p>va provoquer la conversion interne de la requête locale
+    <code>http://example.com/foo/bar.gif</code> en une requête mandatée
     pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
 
     <note><title>Note</title>
-      <p>L'argument URL doit pouvoir &ecirc;tre interpr&eacute;t&eacute; en tant qu'URL
+      <p>L'argument URL doit pouvoir être interprété en tant qu'URL
       <em>avant</em> les substitutions d'expressions rationnelles (et
-      doit aussi l'&ecirc;tre apr&egrave;s). Ceci limite les correspondances que vous
-      pouvez utiliser. Par exemple, si l'on avait utilis&eacute;</p>
+      doit aussi l'être après). Ceci limite les correspondances que vous
+      pouvez utiliser. Par exemple, si l'on avait utilisé</p>
       <example>
         ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
       </example>
-      <p>dans l'exemple pr&eacute;c&eacute;dent, nous aurions provoqu&eacute; une erreur de
-      syntaxe au d&eacute;marrage du serveur. C'est une bogue (PR 46665 dans
+      <p>dans l'exemple précédent, nous aurions provoqué une erreur de
+      syntaxe au démarrage du serveur. C'est une bogue (PR 46665 dans
       ASF bugzilla), et il est possible de la contourner en reformulant
       la correspondance :</p>
       <example>
@@ -1314,23 +1320,23 @@ d'Apache</compatibility>
     </note>
 
     <p>Le drapeau <code>!</code> vous permet de ne pas mandater un
-    sous-r&eacute;pertoire donn&eacute;.</p>
+    sous-répertoire donné.</p>
 
-    <p>Lorsque cette directive se situe &agrave; l'int&eacute;rieur d'une section
+    <p>Lorsque cette directive se situe à l'intérieur d'une section
     <directive type="section" module="core">LocationMatch</directive>,
     le premier argument est omis et l'expression rationnelle est obtenue
-    &agrave; partir de la directive <directive type="section"
+    à partir de la directive <directive type="section"
     module="core">LocationMatch</directive>.</p>
 
     <p>Si vous avez besoin d'une configuration de mandataire inverse
-    plus flexible, reportez-vous &agrave; la directive <directive
+    plus flexible, reportez-vous à la directive <directive
     module="mod_rewrite">RewriteRule</directive> avec le drapeau
     <code>[P]</code>.</p>
 
     <note type="warning">
-      <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>
-      <p>Lors de la construction de l'URL cible de la r&egrave;gle, il convient
-      de prendre en compte l'impact en mati&egrave;re de s&eacute;curit&eacute; qu'aura le
+      <title>Avertissement à propos de la sécurité</title>
+      <p>Lors de la construction de l'URL cible de la règle, il convient
+      de prendre en compte l'impact en matière de sécurité qu'aura le
       fait de permettre au client d'influencer le jeu d'URLs pour
       lesquelles votre serveur agira en tant que mandataire.
       Assurez-vous que la partie protocole://nom-serveur de l'URL soit
@@ -1341,8 +1347,8 @@ d'Apache</compatibility>
 
 <directivesynopsis>
 <name>ProxyPassReverse</name>
-<description>Ajuste l'URL dans les en-t&ecirc;tes de la r&eacute;ponse HTTP envoy&eacute;e
-par un serveur mandat&eacute; en inverse</description>
+<description>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
+par un serveur mandaté en inverse</description>
 <syntax>ProxyPassReverse [<var>chemin</var>] <var>url</var>
 [<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -1351,27 +1357,27 @@ par un serveur mandat&eacute; en inverse</description>
 
 <usage>
     <p>Cette directive permet de faire en sorte qu'Apache ajuste l'URL
-    dans les en-t&ecirc;tes <code>Location</code>,
-    <code>Content-Location</code> et <code>URI</code> des r&eacute;ponses de
-    redirection HTTP. Ceci est essentiel lorsqu'Apache est utilis&eacute; en
-    tant que mandataire inverse (ou passerelle), afin d'&eacute;viter de
+    dans les en-têtes <code>Location</code>,
+    <code>Content-Location</code> et <code>URI</code> des réponses de
+    redirection HTTP. Ceci est essentiel lorsqu'Apache est utilisé en
+    tant que mandataire inverse (ou passerelle), afin d'éviter de
     court-circuiter le mandataire inverse suite aux redirections HTTP
-    sur le serveur d'arri&egrave;re-plan qui restent derri&egrave;re le mandataire
+    sur le serveur d'arrière-plan qui restent derrière le mandataire
     inverse.</p>
 
-    <p>Seuls les en-t&ecirc;tes de r&eacute;ponse HTTP sp&eacute;cialement mentionn&eacute;s
-    ci-dessus seront r&eacute;&eacute;crits. Apache ne r&eacute;&eacute;crira ni les autres en-t&ecirc;tes
-    de r&eacute;ponse, ni les r&eacute;f&eacute;rences d'URLs dans les pages HTML. Cela
-    signifie que dans le cas o&ugrave; un contenu mandat&eacute; contient des
-    r&eacute;f&eacute;rences &agrave; des URLs absolues, elles court-circuiteront le
+    <p>Seuls les en-têtes de réponse HTTP spécialement mentionnés
+    ci-dessus seront réécrits. Apache ne réécrira ni les autres en-têtes
+    de réponse, ni les références d'URLs dans les pages HTML. Cela
+    signifie que dans le cas où un contenu mandaté contient des
+    références à des URLs absolues, elles court-circuiteront le
     mandataire. Le module <a
     href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-    de Nick Kew est un module tiers qui parcourt le code HTML et r&eacute;&eacute;crit
-    les r&eacute;f&eacute;rences d'URL.</p>
+    de Nick Kew est un module tiers qui parcourt le code HTML et réécrit
+    les références d'URL.</p>
 
     <p><var>chemin</var> est le nom d'un chemin virtuel local.
     <var>url</var> est une URL partielle pour le serveur distant. Ces
-    param&egrave;tres s'utilisent de la m&ecirc;me fa&ccedil;on qu'avec la directive <directive
+    paramètres s'utilisent de la même façon qu'avec la directive <directive
     module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
@@ -1384,51 +1390,51 @@ par un serveur mandat&eacute; en inverse</description>
       ProxyPassReverseCookiePath  /  /miroir/foo/
     </example>
 
-    <p>ne va pas seulement provoquer la conversion interne d'une requ&ecirc;te
+    <p>ne va pas seulement provoquer la conversion interne d'une requête
     locale pour <code>http://example.com/miroir/foo/bar</code> en une
-    requ&ecirc;te mandat&eacute;e pour <code>http://backend.example.com/bar</code>
-    (la fonctionnalit&eacute; fournie par <code>ProxyPass</code>). Il va
+    requête mandatée pour <code>http://backend.example.com/bar</code>
+    (la fonctionnalité fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
     <code>backend.example.com</code> envoie lorsqu'il redirige
     <code>http://backend.example.com/bar</code> vers
     <code>http://backend.example.com/quux</code>. Apache
     corrige ceci en <code>http://example.com/miroir/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
-    nom d'h&ocirc;te utilis&eacute; pour construire l'URL est choisi en respectant la
-    d&eacute;finition de la directive <directive
+    nom d'hôte utilisé pour construire l'URL est choisi en respectant la
+    définition de la directive <directive
     module="core">UseCanonicalName</directive>.</p>
 
     <p>Notez que la directive <directive>ProxyPassReverse</directive>
-    peut aussi &ecirc;tre utilis&eacute;e en conjonction avec la
-    fonctionnalit&eacute; de mandataire (<code>RewriteRule ...  [P]</code>) du module
-    <module>mod_rewrite</module>, car elle ne d&eacute;pend pas d'une directive
+    peut aussi être utilisée en conjonction avec la
+    fonctionnalité de mandataire (<code>RewriteRule ...  [P]</code>) du module
+    <module>mod_rewrite</module>, car elle ne dépend pas d'une directive
     <directive module="mod_proxy">ProxyPass</directive>
     correspondante.</p>
 
-    <p>Le mot-cl&eacute; optionnel <var>interpolate</var> (disponible depuis
-    httpd 2.2.9), utilis&eacute; en combinaison avec la directive
+    <p>Le mot-clé optionnel <var>interpolate</var> (disponible depuis
+    httpd 2.2.9), utilisé en combinaison avec la directive
     <directive>ProxyPassInterpolateEnv</directive>, permet
-    l'interpolation des variables d'environnement sp&eacute;cifi&eacute;es en
+    l'interpolation des variables d'environnement spécifiées en
     utilisant le format <var>${VARNAME}</var> Notez que l'interpolation
-    n'est pas support&eacute;e dans la partie protocole d'une URL.
+    n'est pas supportée dans la partie protocole d'une URL.
     </p>
 
-    <p>Lorsque cette directive est utilis&eacute;e dans une section <directive
+    <p>Lorsque cette directive est utilisée dans une section <directive
     type="section" module="core">Location</directive>, le premier
-    argument est omis et le r&eacute;pertoire local est obtenu &agrave; partir de
+    argument est omis et le répertoire local est obtenu à partir de
     l'argument de la directive <directive type="section"
-    module="core">Location</directive>. Il en est de m&ecirc;me &agrave; l'int&eacute;rieur
+    module="core">Location</directive>. Il en est de même à l'intérieur
     d'une section <directive type="section"
-    module="core">LocationMatch</directive>, mais le r&eacute;sultat ne
-    correspondra probablement pas &agrave; ce que vous attendez, car
-    ProxyPassReverse interpr&egrave;te l'expression rationnelle litt&eacute;ralement
-    comme un chemin ; si n&eacute;cessaire dans cette situation, sp&eacute;cifiez la
+    module="core">LocationMatch</directive>, mais le résultat ne
+    correspondra probablement pas à ce que vous attendez, car
+    ProxyPassReverse interprète l'expression rationnelle littéralement
+    comme un chemin ; si nécessaire dans cette situation, spécifiez la
     directive ProxyPassReverse en dehors de la section, ou dans une
     section <directive type="section" module="core">Location</directive>
-    s&eacute;par&eacute;e.
+    séparée.
     </p>
 
-    <p>Cette directive ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <p>Cette directive ne peut pas être placée dans une section
     <directive type="section" module="core">Directory</directive> ou
     <directive type="section" module="core">Files</directive>.</p>
 </usage>
@@ -1436,18 +1442,18 @@ par un serveur mandat&eacute; en inverse</description>
 
 <directivesynopsis>
 <name>ProxyPassReverseCookieDomain</name>
-<description>Ajuste la cha&icirc;ne correspondant au domaine dans les en-t&ecirc;tes
-Set-Cookie en provenance d'un serveur mandat&eacute;</description>
+<description>Ajuste la chaîne correspondant au domaine dans les en-têtes
+Set-Cookie en provenance d'un serveur mandaté</description>
 <syntax>ProxyPassReverseCookieDomain <var>domaine-interne</var>
 <var>domaine-public</var> [<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <usage>
-<p>L'utilisation de cette directive est similaire &agrave; celle de la
+<p>L'utilisation de cette directive est similaire à celle de la
 directive <directive module="mod_proxy">ProxyPassReverse</directive>,
-mais au lieu de r&eacute;&eacute;crire des en-t&ecirc;tes qui contiennent des URLs, elle
-r&eacute;&eacute;crit la cha&icirc;ne correspondant au domaine dans les en-t&ecirc;tes
+mais au lieu de réécrire des en-têtes qui contiennent des URLs, elle
+réécrit la chaîne correspondant au domaine dans les en-têtes
 <code>Set-Cookie</code>.</p>
 </usage>
 </directivesynopsis>
@@ -1455,8 +1461,8 @@ r&eacute;&eacute;crit la cha&icirc;ne correspondant au domaine dans les en-t&eci
 
 <directivesynopsis>
 <name>ProxyPassReverseCookiePath</name>
-<description>Ajuste la cha&icirc;ne correspondant au chemin dans les en-t&ecirc;tes
-Set-Cookie en provenance d'un serveur mandat&eacute;</description>
+<description>Ajuste la chaîne correspondant au chemin dans les en-têtes
+Set-Cookie en provenance d'un serveur mandaté</description>
 <syntax>ProxyPassReverseCookiePath <var>chemin-interne</var>
 <var>chemin-public</var> [<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -1464,13 +1470,13 @@ Set-Cookie en provenance d'un serveur mandat&eacute;</description>
 </contextlist>
 <usage>
 <p>
-Cette directive s'av&egrave;re utile en conjonction avec la directive
+Cette directive s'avère utile en conjonction avec la directive
 <directive module="mod_proxy">ProxyPassReverse</directive> dans les
-situations o&ugrave; les chemins d'URL d'arri&egrave;re-plan correspondent &agrave; des
+situations où les chemins d'URL d'arrière-plan correspondent à des
 chemins publics sur le mandataire inverse. Cette directive permet de
-r&eacute;&eacute;crire la cha&icirc;ne <code>path</code> dans les en-t&ecirc;tes
-<code>Set-Cookie</code>. Si le d&eacute;but du chemin du cookie correspond &agrave;
-<var>chemin-interne</var>, le chemin du cookie sera remplac&eacute; par
+réécrire la chaîne <code>path</code> dans les en-têtes
+<code>Set-Cookie</code>. Si le début du chemin du cookie correspond à
+<var>chemin-interne</var>, le chemin du cookie sera remplacé par
 <var>chemin-public</var>.
 </p><p>
 Dans l'exemple fourni avec la directive <directive
@@ -1478,7 +1484,7 @@ module="mod_proxy">ProxyPassReverse</directive>, la directive :</p>
     <example>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
-<p>va r&eacute;&eacute;crire un cookie poss&eacute;dant un chemin d'arri&egrave;re-plan <code>/</code>
+<p>va réécrire un cookie possédant un chemin d'arrière-plan <code>/</code>
 (ou <code>/example</code> ou en fait tout chemin)
 en <code>/mirror/foo/</code>..
 </p>
@@ -1488,7 +1494,7 @@ en <code>/mirror/foo/</code>..
 
 <directivesynopsis>
 <name>AllowCONNECT</name>
-<description>Ports autoris&eacute;s &agrave; se <code>CONNECT</code>er &agrave; travers le
+<description>Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</description>
 <syntax>AllowCONNECT <var>port</var> [<var>port</var>] ...</syntax>
 <default>AllowCONNECT 443 563</default>
@@ -1497,27 +1503,27 @@ mandataire</description>
 
 <usage>
     <p>La directive <directive>AllowCONNECT</directive> permet de
-    sp&eacute;cifier une liste de num&eacute;ros de ports auxquels la m&eacute;thode de
+    spécifier une liste de numéros de ports auxquels la méthode de
     mandataire <code>CONNECT</code> pourra se connecter. Les navigateurs
-    d'aujourd'hui utilisent cette m&eacute;thode dans le cas o&ugrave; une connexion
-    <code>https</code> est requise et o&ugrave; le tunneling mandataire sur
+    d'aujourd'hui utilisent cette méthode dans le cas où une connexion
+    <code>https</code> est requise et où le tunneling mandataire sur
     HTTP est en service.</p>
 
-    <p>Par d&eacute;faut, seuls les ports par d&eacute;fauts https (<code>443</code>)
+    <p>Par défaut, seuls les ports par défauts https (<code>443</code>)
     et snews (<code>563</code>) sont pris en compte. Vous pouvez
     utiliser la directive <directive>AllowCONNECT</directive> pour
-    outrepasser ces valeurs par d&eacute;faut et n'autoriser les connexions que
-    vers les ports sp&eacute;cifi&eacute;s.</p>
+    outrepasser ces valeurs par défaut et n'autoriser les connexions que
+    vers les ports spécifiés.</p>
 
-    <p>Notez que le module <module>mod_proxy_connect</module> doit &ecirc;tre
-    charg&eacute; dans le serveur pour pouvoir acc&eacute;der au support de
+    <p>Notez que le module <module>mod_proxy_connect</module> doit être
+    chargé dans le serveur pour pouvoir accéder au support de
     <code>CONNECT</code>.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyBlock</name>
-<description>Termes, serveurs ou domaines bloqu&eacute;s par le
+<description>Termes, serveurs ou domaines bloqués par le
 mandataire</description>
 <syntax>ProxyBlock *|<var>terme</var>|<var>serveur</var>|<var>domaine</var>
 [<var>terme</var>|<var>serveur</var>|<var>domaine</var>] ...</syntax>
@@ -1526,14 +1532,14 @@ mandataire</description>
 
 <usage>
     <p>La directive <directive>ProxyBlock</directive> permet de
-    sp&eacute;cifier une liste de termes, serveurs et/ou domaines, s&eacute;par&eacute;s par
-    des espaces. Les requ&ecirc;tes de documents HTTP, HTTPS, FTP vers des
+    spécifier une liste de termes, serveurs et/ou domaines, séparés par
+    des espaces. Les requêtes de documents HTTP, HTTPS, FTP vers des
     sites dont les noms contiennent des termes, noms de serveur ou
-    domaine correspondants seront <em>bloqu&eacute;s</em> par le serveur
-    mandataire. La module proxy va aussi tenter de d&eacute;terminer les
-    adresses IP des items de la liste qui peuvent correspondre &agrave; des
-    noms d'h&ocirc;tes au cours du d&eacute;marrage, et les mettra en cache &agrave; des
-    fins de comparaisons ult&eacute;rieures. Ceci peut ralentir le d&eacute;marrage du
+    domaine correspondants seront <em>bloqués</em> par le serveur
+    mandataire. La module proxy va aussi tenter de déterminer les
+    adresses IP des items de la liste qui peuvent correspondre à des
+    noms d'hôtes au cours du démarrage, et les mettra en cache à des
+    fins de comparaisons ultérieures. Ceci peut ralentir le démarrage du
     serveur.</p>
 
     <example><title>Exemple</title>
@@ -1541,10 +1547,10 @@ mandataire</description>
     </example>
 
     <p><code>rocky.wotsamattau.edu</code> aurait aussi correspondu s'il
-    avait &eacute;t&eacute; sp&eacute;cifi&eacute; par son adresse IP.</p>
+    avait été spécifié par son adresse IP.</p>
 
     <p>Notez que <code>wotsamattau</code> aurait suffi pour correspondre
-    &agrave; <code>wotsamattau.edu</code>.</p>
+    à <code>wotsamattau.edu</code>.</p>
 
     <p>Notez aussi que</p>
 
@@ -1558,7 +1564,7 @@ mandataire</description>
 
 <directivesynopsis>
 <name>ProxyReceiveBufferSize</name>
-<description>Taille du tampon r&eacute;seau pour les connexions mandat&eacute;es HTTP
+<description>Taille du tampon réseau pour les connexions mandatées HTTP
 et FTP</description>
 <syntax>ProxyReceiveBufferSize <var>octets</var></syntax>
 <default>ProxyReceiveBufferSize 0</default>
@@ -1567,11 +1573,11 @@ et FTP</description>
 
 <usage>
     <p>La directive <directive>ProxyReceiveBufferSize</directive> permet
-    de sp&eacute;cifier une taille de tampon r&eacute;seau explicite (TCP/IP) pour les
-    connexions mandat&eacute;es HTTP et FTP, afin d'am&eacute;liorer le d&eacute;bit de
-    donn&eacute;es. Elle doit &ecirc;tre sup&eacute;rieure &agrave; <code>512</code> ou d&eacute;finie &agrave;
-    <code>0</code> pour indiquer que la taille de tampon par d&eacute;faut du
-    syst&egrave;me doit &ecirc;tre utilis&eacute;e.</p>
+    de spécifier une taille de tampon réseau explicite (TCP/IP) pour les
+    connexions mandatées HTTP et FTP, afin d'améliorer le débit de
+    données. Elle doit être supérieure à <code>512</code> ou définie à
+    <code>0</code> pour indiquer que la taille de tampon par défaut du
+    système doit être utilisée.</p>
 
     <example><title>Exemple</title>
       ProxyReceiveBufferSize 2048
@@ -1581,8 +1587,8 @@ et FTP</description>
 
 <directivesynopsis>
 <name>ProxyIOBufferSize</name>
-<description>D&eacute;termine la taille du tampon interne de transfert de
-donn&eacute;es</description>
+<description>Détermine la taille du tampon interne de transfert de
+données</description>
 <syntax>ProxyIOBufferSize <var>octets</var></syntax>
 <default>ProxyIOBufferSize 8192</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -1590,13 +1596,13 @@ donn&eacute;es</description>
 
 <usage>
     <p>La directive <directive>ProxyIOBufferSize</directive> permet
-    d'ajuster la taille du tampon interne utilis&eacute; comme bloc-note pour
-    les transferts de donn&eacute;es entre entr&eacute;e et sortie. La taille doit
-    &ecirc;tre au minimum &eacute;gale &agrave; <code>8192</code> octets.</p>
+    d'ajuster la taille du tampon interne utilisé comme bloc-note pour
+    les transferts de données entre entrée et sortie. La taille doit
+    être au minimum égale à <code>8192</code> octets.</p>
 
     <p>Lorsqu'on utilise <module>mod_proxy_ajp</module>, la valeur
-    minimale est align&eacute;e sur la limite de 1024 octets, et les valeurs
-    sup&eacute;rieures &agrave; 65536 octets sont ramen&eacute;es &agrave; 65536 octets, comme pr&eacute;conis&eacute;
+    minimale est alignée sur la limite de 1024 octets, et les valeurs
+    supérieures à 65536 octets sont ramenées à 65536 octets, comme préconisé
     par le protocole AJP.</p>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
@@ -1607,55 +1613,55 @@ donn&eacute;es</description>
 
 <directivesynopsis>
 <name>ProxyMaxForwards</name>
-<description>Nombre maximum de mandataires &agrave; travers lesquelles une
-requ&ecirc;te peut &ecirc;tre redirig&eacute;e</description>
+<description>Nombre maximum de mandataires à travers lesquelles une
+requête peut être redirigée</description>
 <syntax>ProxyMaxForwards <var>nombre</var></syntax>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis Apache 2.0 ; comportement par d&eacute;faut
-modifi&eacute; dans 2.2.7</compatibility>
+<compatibility>Disponible depuis Apache 2.0 ; comportement par défaut
+modifié dans 2.2.7</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyMaxForwards</directive> permet de
-    sp&eacute;cifier le nombre maximum de mandataires &agrave; travers lesquels une
-    requ&ecirc;te peut passer dans le cas o&ugrave; la la requ&ecirc;te ne contient pas
-    d'en-t&ecirc;te <code>Max-Forwards</code>. Ceci permet de se pr&eacute;munir
+    spécifier le nombre maximum de mandataires à travers lesquels une
+    requête peut passer dans le cas où la la requête ne contient pas
+    d'en-tête <code>Max-Forwards</code>. Ceci permet de se prémunir
     contre les boucles infinies de mandataires ou contre les attaques de
-    type d&eacute;ni de service.</p>
+    type déni de service.</p>
 
     <example><title>Exemple</title>
       ProxyMaxForwards 15
     </example>
 
-    <p>Notez que la d&eacute;finition de la directive
+    <p>Notez que la définition de la directive
     <directive>ProxyMaxForwards</directive> constitue une violation du
-    protocole HTTP/1.1 (RFC2616), qui interdit &agrave; un mandataire de
-    d&eacute;finir <code>Max-Forwards</code> si le client ne l'a pas fait
-    lui-m&ecirc;me. Les versions pr&eacute;c&eacute;dentes d'Apache la d&eacute;finissaient
-    syst&eacute;matiquement. Une valeur n&eacute;gative de
+    protocole HTTP/1.1 (RFC2616), qui interdit à un mandataire de
+    définir <code>Max-Forwards</code> si le client ne l'a pas fait
+    lui-même. Les versions précédentes d'Apache la définissaient
+    systématiquement. Une valeur négative de
     <directive>ProxyMaxForwards</directive>, y compris la valeur par
-    d&eacute;faut -1, implique un comportement compatible avec le protocole,
+    défaut -1, implique un comportement compatible avec le protocole,
     mais vous expose aux bouclages infinis.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>NoProxy</name>
-<description>Serveurs, domaines ou r&eacute;seaux auquels on se connectera
+<description>Serveurs, domaines ou réseaux auquels on se connectera
 directement</description>
 <syntax>NoProxy <var>domaine</var> [<var>domaine</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive n'a d'utilit&eacute; que pour les serveurs mandataires
+    <p>Cette directive n'a d'utilité que pour les serveurs mandataires
     Apache au sein d'Intranets. La directive
-    <directive>NoProxy</directive> permet de sp&eacute;cifier une liste de
-    sous-r&eacute;seaux, d'adresses IP, de serveurs et/ou de domaines s&eacute;par&eacute;s
-    par des espaces. Une requ&ecirc;te pour un serveur qui correspond &agrave; un ou
-    plusieurs crit&egrave;res sera toujours servie par ce serveur directement,
-    sans &ecirc;tre redirig&eacute;e vers le(s) serveur(s) mandataire(s) d&eacute;fini(s) par
+    <directive>NoProxy</directive> permet de spécifier une liste de
+    sous-réseaux, d'adresses IP, de serveurs et/ou de domaines séparés
+    par des espaces. Une requête pour un serveur qui correspond à un ou
+    plusieurs critères sera toujours servie par ce serveur directement,
+    sans être redirigée vers le(s) serveur(s) mandataire(s) défini(s) par
     la directive <directive
     module="mod_proxy">ProxyRemote</directive>.</p>
 
@@ -1665,7 +1671,7 @@ directement</description>
     </example>
 
     <p>Le type des arguments <var>serveur</var> de la directive
-    <directive>NoProxy</directive> appartiennent &agrave; la liste suivante
+    <directive>NoProxy</directive> appartiennent à la liste suivante
     :</p>
 
     <dl>
@@ -1673,8 +1679,8 @@ directement</description>
     <dt><var><a name="domain" id="domain">Domaine</a></var></dt>
     <dd>
     <p>Un <dfn>domaine</dfn> est ici un nom de domaine DNS partiellement
-    qualifi&eacute; pr&eacute;c&eacute;d&eacute; d'un point. Il repr&eacute;sente une liste de serveurs qui
-    appartiennent logiquement au m&ecirc;me domaine ou &agrave; la m&ecirc;me zonz DNS
+    qualifié précédé d'un point. Il représente une liste de serveurs qui
+    appartiennent logiquement au même domaine ou à la même zonz DNS
     (en d'autres termes, les nom des serveurs se terminent tous par
     <var>domaine</var>).</p>
 
@@ -1683,69 +1689,69 @@ directement</description>
     </example>
 
     <p>Pour faire la distinction entre <var>domaine</var>s et <var><a
-    href="#hostname">nom d'h&ocirc;te</a></var>s (des points de vue &agrave; la fois
+    href="#hostname">nom d'hôte</a></var>s (des points de vue à la fois
     syntaxique et
-    s&eacute;mantique, un domaine DNS pouvant aussi avoir un enregistrement DNS
-    de type A !), les <var>domaine</var>s sont toujours sp&eacute;cifi&eacute;s en les
-    pr&eacute;fixant par un point.</p>
+    sémantique, un domaine DNS pouvant aussi avoir un enregistrement DNS
+    de type A !), les <var>domaine</var>s sont toujours spécifiés en les
+    préfixant par un point.</p>
 
     <note><title>Note</title>
       <p>Les comparaisons de noms de domaines s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Domaine</var>s
-      sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
+      sont toujours censées correspondre à la racine de l'arborescence
       DNS, si bien que les domaines <code>.ExEmple.com</code> et
-      <code>.example.com.</code> (notez le point &agrave; la fin du nom) sont
-      consid&eacute;r&eacute;s comme identiques. Comme une comparaison de domaines ne
-      n&eacute;cessite pas de recherche DNS, elle est beaucoup plus efficace
-      qu'une comparaison de sous-r&eacute;seaux.</p>
+      <code>.example.com.</code> (notez le point à la fin du nom) sont
+      considérés comme identiques. Comme une comparaison de domaines ne
+      nécessite pas de recherche DNS, elle est beaucoup plus efficace
+      qu'une comparaison de sous-réseaux.</p>
     </note></dd>
 
     <!-- ===================== SubNet ======================= -->
-    <dt><var><a name="subnet" id="subnet">Sous-r&eacute;seau</a></var></dt>
+    <dt><var><a name="subnet" id="subnet">Sous-réseau</a></var></dt>
     <dd>
-    <p>Un <dfn>Sous-r&eacute;seau</dfn> est une adresse internet partiellement
-    qualifi&eacute;e sous forme num&eacute;rique (quatre nombres s&eacute;par&eacute;s par des
+    <p>Un <dfn>Sous-réseau</dfn> est une adresse internet partiellement
+    qualifiée sous forme numérique (quatre nombres séparés par des
     points), optionnellement suivie d'un slash et du masque de
-    sous-r&eacute;seau sp&eacute;cifiant le nombre de bits significatifs dans le
-    <var>Sous-r&eacute;seau</var>. Il repr&eacute;sente un sous-r&eacute;seau de serveurs qui
-    peuvent &ecirc;tre atteints depuis la m&ecirc;me interface r&eacute;seau. En l'absence
-    de masque de sous-r&eacute;seau explicite, il est sous-entendu que les
-    digits manquants (ou caract&egrave;res 0) de fin sp&eacute;cifient le masque de
-    sous-r&eacute;seau (Dans ce cas, le masque de sous-r&eacute;seau ne peut &ecirc;tre
+    sous-réseau spécifiant le nombre de bits significatifs dans le
+    <var>Sous-réseau</var>. Il représente un sous-réseau de serveurs qui
+    peuvent être atteints depuis la même interface réseau. En l'absence
+    de masque de sous-réseau explicite, il est sous-entendu que les
+    digits manquants (ou caractères 0) de fin spécifient le masque de
+    sous-réseau (Dans ce cas, le masque de sous-réseau ne peut être
     qu'un multiple de 8). Voici quelques exemples :</p>
 
     <dl>
     <dt><code>192.168</code> ou <code>192.168.0.0</code></dt>
-    <dd>le sous-r&eacute;seau 192.168.0.0 avec un masque de sous-r&eacute;seau
-    implicite de 16 bits significatifs (parfois exprim&eacute; sous la forme
+    <dd>le sous-réseau 192.168.0.0 avec un masque de sous-réseau
+    implicite de 16 bits significatifs (parfois exprimé sous la forme
     <code>255.255.0.0</code>)</dd>
     <dt><code>192.168.112.0/21</code></dt>
-    <dd>le sous-r&eacute;seau <code>192.168.112.0/21</code> avec un masque de
-    sous-r&eacute;seau implicite de 21 bits significatifs (parfois exprim&eacute;
+    <dd>le sous-réseau <code>192.168.112.0/21</code> avec un masque de
+    sous-réseau implicite de 21 bits significatifs (parfois exprimé
     sous la forme<code>255.255.248.0</code>)</dd>
     </dl>
 
-    <p>Comme cas extr&egrave;mes, un <em>Sous-r&eacute;seau</em> avec un masque de
-    sous-r&eacute;seau de 32 bits significatifs est &eacute;quivalent &agrave; une <var><a
-    href="#ipaddr">adresse IP</a></var>, alors qu'un <em>Sous-r&eacute;seau</em> avec un masque de
-    sous-r&eacute;seau de 0 bit significatif (c'est &agrave; dire 0.0.0.0/0) est
-    identique &agrave; la constante <var>_Default_</var>, et peut correspondre
-    &agrave; toute adresse IP.</p></dd>
+    <p>Comme cas extrèmes, un <em>Sous-réseau</em> avec un masque de
+    sous-réseau de 32 bits significatifs est équivalent à une <var><a
+    href="#ipaddr">adresse IP</a></var>, alors qu'un <em>Sous-réseau</em> avec un masque de
+    sous-réseau de 0 bit significatif (c'est à dire 0.0.0.0/0) est
+    identique à la constante <var>_Default_</var>, et peut correspondre
+    à toute adresse IP.</p></dd>
 
     <!-- ===================== IPAddr ======================= -->
     <dt><var><a name="ipaddr" id="ipaddr">Adresse IP</a></var></dt>
     <dd>
     <p>Une <dfn>Adresse IP</dfn> est une adresse internet pleinement
-    qualifi&eacute;e sous forme num&eacute;rique (quatre nombres s&eacute;par&eacute;s par des
-    points). En g&eacute;n&eacute;ral, cette adresse repr&eacute;sente un serveur, mais elle
-    ne doit pas n&eacute;cessairement correspondre &agrave; un nom de domaine DNS.</p>
+    qualifiée sous forme numérique (quatre nombres séparés par des
+    points). En général, cette adresse représente un serveur, mais elle
+    ne doit pas nécessairement correspondre à un nom de domaine DNS.</p>
     <example><title>Exemple</title>
       192.168.123.7
     </example>
 
     <note><title>Note</title>
-      <p>Une <dfn>Adresse IP</dfn> ne n&eacute;cessite pas de r&eacute;solution DNS,
-      et peut ainsi s'av&eacute;rer plus efficace quant aux performances
+      <p>Une <dfn>Adresse IP</dfn> ne nécessite pas de résolution DNS,
+      et peut ainsi s'avérer plus efficace quant aux performances
       d'Apache.</p>
     </note></dd>
 
@@ -1753,12 +1759,12 @@ directement</description>
     <dt><var><a name="hostname" id="hostname">Nom de serveur</a></var></dt>
     <dd>
     <p>Un <dfn>Nom de serveur</dfn> est un nom de domaine DNS pleinement
-    qualifi&eacute; qui peut &ecirc;tre r&eacute;solu en une ou plusieurs adresses IP par le
-    service de noms de domaines DNS. Il repr&eacute;sente un h&ocirc;te logique (par
+    qualifié qui peut être résolu en une ou plusieurs adresses IP par le
+    service de noms de domaines DNS. Il représente un hôte logique (par
     opposition aux <var><a href="#domain">Domaine</a></var>s, voir
-    ci-dessus), et doit pouvoir &ecirc;tre r&eacute;solu en une ou plusieurs <var><a
+    ci-dessus), et doit pouvoir être résolu en une ou plusieurs <var><a
     href="#ipaddr">adresses IP</a></var> (ou souvent en une liste
-    d'h&ocirc;tes avec diff&eacute;rentes <var><a href="#ipaddr">adresses
+    d'hôtes avec différentes <var><a href="#ipaddr">adresses
     IP</a></var>).</p>
 
     <example><title>Exemples</title>
@@ -1768,27 +1774,27 @@ directement</description>
 
     <note><title>Note</title>
       <p>Dans de nombreuses situations, il est plus efficace de
-      sp&eacute;cifier une <var><a href="#ipaddr">adresse IP</a></var> qu'un
-      <var>Nom de serveur</var> car cela &eacute;vite d'avoir &agrave; effectuer une
-      recherche DNS. La r&eacute;solution de nom dans Apache peut prendre un
-      temps tr&egrave;s long lorsque la connexion avec le serveur de noms
+      spécifier une <var><a href="#ipaddr">adresse IP</a></var> qu'un
+      <var>Nom de serveur</var> car cela évite d'avoir à effectuer une
+      recherche DNS. La résolution de nom dans Apache peut prendre un
+      temps très long lorsque la connexion avec le serveur de noms
       utilise une liaison PPP lente.</p>
       <p>Les comparaisons de <var>Nom de serveur</var> s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Noms de serveur</var>
-      sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
+      sont toujours censées correspondre à la racine de l'arborescence
       DNS, si bien que les domaines <code>WWW.ExEmple.com</code> et
-      <code>www.example.com.</code> (notez le point &agrave; la fin du nom) sont
-      consid&eacute;r&eacute;s comme identiques.</p>
+      <code>www.example.com.</code> (notez le point à la fin du nom) sont
+      considérés comme identiques.</p>
      </note></dd>
     </dl>
 </usage>
-<seealso><a href="../dns-caveats.html">Probl&egrave;mes li&eacute;s au DNS</a></seealso>
+<seealso><a href="../dns-caveats.html">Problèmes liés au DNS</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyTimeout</name>
-<description>D&eacute;lai d'attente r&eacute;seau pour les requ&ecirc;tes
-mandat&eacute;es</description>
+<description>Délai d'attente réseau pour les requêtes
+mandatées</description>
 <syntax>ProxyTimeout <var>secondes</var></syntax>
 <default>Valeur de la directive <directive
 module="core">Timeout</directive></default>
@@ -1797,31 +1803,31 @@ module="core">Timeout</directive></default>
 <compatibility>Disponible depuis la version 2.0.31 d'Apache</compatibility>
 
 <usage>
-    <p>Cette directive permet &agrave; l'utilisateur de sp&eacute;cifier un d&eacute;lai pour
-    les requ&ecirc;tes mandat&eacute;es. Ceci s'av&egrave;re utile dans le cas d'un serveur
-    d'applications lent et bogu&eacute; qui a tendance &agrave; se bloquer, et si vous
-    pr&eacute;f&eacute;rez simplement renvoyer une erreur timeout et abandonner la
-    connexion en douceur plut&ocirc;t que d'attendre jusqu'&agrave; ce que le serveur
-    veuille bien r&eacute;pondre.</p>
+    <p>Cette directive permet à l'utilisateur de spécifier un délai pour
+    les requêtes mandatées. Ceci s'avère utile dans le cas d'un serveur
+    d'applications lent et bogué qui a tendance à se bloquer, et si vous
+    préférez simplement renvoyer une erreur timeout et abandonner la
+    connexion en douceur plutôt que d'attendre jusqu'à ce que le serveur
+    veuille bien répondre.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyDomain</name>
-<description>Nom de domaine par d&eacute;faut pour les requ&ecirc;tes
-mandat&eacute;es</description>
+<description>Nom de domaine par défaut pour les requêtes
+mandatées</description>
 <syntax>ProxyDomain <var>Domaine</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive n'a d'utilit&eacute; que pour les serveurs mandataires
+    <p>Cette directive n'a d'utilité que pour les serveurs mandataires
     Apache au sein d'un Intranet. La directive
-    <directive>ProxyDomain</directive> permet de sp&eacute;cifier le domaine
-    par d&eacute;faut auquel le serveur mandataire apache appartient. Si le
-    serveur re&ccedil;oit une requ&ecirc;te pour un h&ocirc;te sans nom de domaine, il va
-    g&eacute;n&eacute;rer une r&eacute;ponse de redirection vers le m&ecirc;me h&ocirc;te suffix&eacute; par le
-    <var>Domaine</var> sp&eacute;cifi&eacute;.</p>
+    <directive>ProxyDomain</directive> permet de spécifier le domaine
+    par défaut auquel le serveur mandataire apache appartient. Si le
+    serveur reçoit une requête pour un hôte sans nom de domaine, il va
+    générer une réponse de redirection vers le même hôte suffixé par le
+    <var>Domaine</var> spécifié.</p>
 
     <example><title>Exemple</title>
       ProxyRemote  *  http://firewall.example.com:81<br />
@@ -1833,39 +1839,39 @@ mandat&eacute;es</description>
 
 <directivesynopsis>
 <name>ProxyVia</name>
-<description>Information fourni dans l'en-t&ecirc;te de r&eacute;ponse HTTP
-<code>Via</code> pour les requ&ecirc;tes mandat&eacute;es</description>
+<description>Information fourni dans l'en-tête de réponse HTTP
+<code>Via</code> pour les requêtes mandatées</description>
 <syntax>ProxyVia On|Off|Full|Block</syntax>
 <default>ProxyVia Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet de contr&ocirc;ler l'utilisation de l'en-t&ecirc;te
-    HTTP <code>Via:</code> par le mandataire. Le but recherch&eacute; est de
-    contr&ocirc;ler le flux des requ&ecirc;tes mandat&eacute;es tout au long d'une cha&icirc;ne
+    <p>Cette directive permet de contrôler l'utilisation de l'en-tête
+    HTTP <code>Via:</code> par le mandataire. Le but recherché est de
+    contrôler le flux des requêtes mandatées tout au long d'une chaîne
     de serveurs mandataires. Voir <a
     href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1),
-    section 14.45 pour une description des lignes d'en-t&ecirc;te
+    section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 
     <ul>
-    <li>Si elle est d&eacute;finie &agrave; <code>Off</code>, valeur par d&eacute;faut, cette
-    directive n'effectue aucun traitement particulier. Si une requ&ecirc;te ou
-    une r&eacute;ponse contient un en-t&ecirc;te <code>Via:</code>, il est transmis
+    <li>Si elle est définie à <code>Off</code>, valeur par défaut, cette
+    directive n'effectue aucun traitement particulier. Si une requête ou
+    une réponse contient un en-tête <code>Via:</code>, il est transmis
     sans modification.</li>
 
-    <li>Si elle est d&eacute;finie &agrave; <code>On</code>, chaque requ&ecirc;te ou r&eacute;ponse
-    se verra ajouter une ligne d'en-t&ecirc;te <code>Via:</code> pour le
+    <li>Si elle est définie à <code>On</code>, chaque requête ou réponse
+    se verra ajouter une ligne d'en-tête <code>Via:</code> pour le
     serveur courant.</li>
 
-    <li>Si elle est d&eacute;finie &agrave; <code>Full</code>, chaque ligne d'en-t&ecirc;te
+    <li>Si elle est définie à <code>Full</code>, chaque ligne d'en-tête
     <code>Via:</code> se verra ajouter la version du serveur Apache sous
     la forme d'un champ de commentaire <code>Via:</code>.</li>
 
-    <li>Si elle est d&eacute;finie &agrave; <code>Block</code>, chaque requ&ecirc;te
-    mandat&eacute;e verra ses lignes d'en-t&ecirc;te <code>Via:</code> supprim&eacute;es.
-    Aucun nouvel en-t&ecirc;te <code>Via:</code> ne sera g&eacute;n&eacute;r&eacute;.</li>
+    <li>Si elle est définie à <code>Block</code>, chaque requête
+    mandatée verra ses lignes d'en-tête <code>Via:</code> supprimées.
+    Aucun nouvel en-tête <code>Via:</code> ne sera généré.</li>
     </ul>
 </usage>
 </directivesynopsis>
@@ -1873,7 +1879,7 @@ mandat&eacute;es</description>
 <directivesynopsis>
 <name>ProxyErrorOverride</name>
 <description>Outrepasser les pages d'erreur pour les contenus
-mandat&eacute;s</description>
+mandatés</description>
 <syntax>ProxyErrorOverride On|Off</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -1882,16 +1888,16 @@ mandat&eacute;s</description>
 
 <usage>
     <p>Cette directive est utile pour les configurations de mandataires
-    inverses, lorsque vous souhaitez que les pages d'erreur envoy&eacute;es
-    aux utilisateurs finaux pr&eacute;sentent un aspect homog&egrave;ne. Elle permet
+    inverses, lorsque vous souhaitez que les pages d'erreur envoyées
+    aux utilisateurs finaux présentent un aspect homogène. Elle permet
     aussi l'inclusion de fichiers (via les SSI de
     <module>mod_include</module>) pour obtenir le code d'erreur et agir
-    en cons&eacute;quence (le comportement par d&eacute;faut afficherait la page
-    d'erreur du serveur mandat&eacute;, alors que c'est le message d'erreur SSI
-    qui sera affich&eacute; si cette directive est &agrave; "on").</p>
+    en conséquence (le comportement par défaut afficherait la page
+    d'erreur du serveur mandaté, alors que c'est le message d'erreur SSI
+    qui sera affiché si cette directive est à "on").</p>
 
-    <p>Cette directive n'affecte pas le traitement des r&eacute;ponses
-    informatives (1xx), de type succ&egrave;s normal (2xx), ou de redirection
+    <p>Cette directive n'affecte pas le traitement des réponses
+    informatives (1xx), de type succès normal (2xx), ou de redirection
     (3xx).</p>
 </usage>
 </directivesynopsis>
@@ -1914,25 +1920,25 @@ les configurations de mandataires inverses</description>
     <directive>ProxyPassReverse</directive>,
     <directive>ProxyPassReverseCookieDomain</directive> et
     <directive>ProxyPassReverseCookiePath</directive>, permet de
-    configurer dynamiquement un mandataire inverse &agrave; l'aide de
-    variables d'environnement, ces derni&egrave;res pouvant &ecirc;tre d&eacute;finies par un
+    configurer dynamiquement un mandataire inverse à l'aide de
+    variables d'environnement, ces dernières pouvant être définies par un
     autre module comme <module>mod_rewrite</module>. Elle affecte les
     directives <directive>ProxyPass</directive>,
     <directive>ProxyPassReverse</directive>,
     <directive>ProxyPassReverseCookieDomain</directive>, et
     <directive>ProxyPassReverseCookiePath</directive>, en leur indiquant
-    de remplacer la cha&icirc;ne <code>${nom_var}</code> dans les directives
+    de remplacer la chaîne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
     <code>nom_var</code> (si l'option <var>interpolate</var> est
-    sp&eacute;cifi&eacute;e).</p>
-    <p>Conservez cette directive &agrave; off (pour les performances du
-    serveur), sauf si vous en avez r&eacute;ellement besoin.</p>
+    spécifiée).</p>
+    <p>Conservez cette directive à off (pour les performances du
+    serveur), sauf si vous en avez réellement besoin.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyStatus</name>
-<description>Affiche l'&eacute;tat du r&eacute;partiteur de charge du mandataire dans
+<description>Affiche l'état du répartiteur de charge du mandataire dans
 mod_status</description>
 <syntax>ProxyStatus Off|On|Full</syntax>
 <default>ProxyStatus Off</default>
@@ -1942,11 +1948,11 @@ mod_status</description>
 <compatibility>Disponible depuis la version 2.2 d'Apache</compatibility>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier si les donn&eacute;es d'&eacute;tat du
-    r&eacute;partiteur de charge du mandataire doivent &ecirc;tre affich&eacute;es via la
-    page d'&eacute;tat du serveur du module <module>mod_status</module>.</p>
+    <p>Cette directive permet de spécifier si les données d'état du
+    répartiteur de charge du mandataire doivent être affichées via la
+    page d'état du serveur du module <module>mod_status</module>.</p>
     <note><title>Note</title>
-      <p>L'argument <strong>Full</strong> produit le m&ecirc;me effet que
+      <p>L'argument <strong>Full</strong> produit le même effet que
       l'argument <strong>On</strong>.</p>
     </note>
 
