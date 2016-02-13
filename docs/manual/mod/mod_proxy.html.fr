@@ -1054,6 +1054,11 @@ l'espace d'URLs du serveur local</td></tr>
 
     </div> 
 
+    <div class="warning"><h3>Ordre d'évaluation des directives ProxyPass et RewriteRule</h3>
+      <p>Les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      sont évaluées avant les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
++    </div>
+
     <p><strong>ProxyPass <code>clé=valeur</code> Paramètres</strong></p>
 
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
