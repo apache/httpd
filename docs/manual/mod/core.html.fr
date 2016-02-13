@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -4551,11 +4549,13 @@ HTTP</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force le traitement des fichiers spécifiés par un
 gestionnaire particulier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetHandler <var>nom gestionnaire</var>|None</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetHandler <var>handler-name</var>|none|<var>expression</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument expression est disponible à partir de la version
+2.4.19 su serveur HTTP Apache</td></tr>
 </table>
     <p>Lorsqu'elle se situe à l'intérieur d'un fichier
     <code>.htaccess</code>, ou d'une section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, cette directive force le
@@ -4585,6 +4585,15 @@ gestionnaire particulier</td></tr>
 
     <pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
+&lt;/FilesMatch&gt;</pre>
+
+
+    <p>Pour référencer des variables spécifiques à une requête, y compris les
+    références arrières vers des expressions rationnelles nommées, vous pouvez
+    utiliser des expressions ayant pour valeur une chaîne : </p>
+
+    <pre class="prettyprint lang-config">&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
 &lt;/FilesMatch&gt;</pre>
 
 
