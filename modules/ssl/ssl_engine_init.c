@@ -489,6 +489,10 @@ static void ssl_set_ctx_protocol_option(server_rec *s,
         SSL_CTX_set_options(ctx, option);
     }
     else if (SSL_CTX_get_options(ctx) & option) {
+        /*
+         * Do not backport to 2.4: SSL_CTX_clear_options()
+         * was only introduced in OpenSSL 0.9.8m.
+         */
         SSL_CTX_clear_options(ctx, option);
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02904)
                      "Allowing SSLProtocol %s even though it is disabled "
