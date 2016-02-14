@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
+ 
   *) hostname: Test and log useragent_host per-request across various modules,
      including the scoreboard, expression and rewrite engines, setenvif,
      authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.

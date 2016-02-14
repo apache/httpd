@@ -151,6 +151,7 @@
 /* OCSP stapling */
 #if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb)
 #define HAVE_OCSP_STAPLING
+/* All exist but are no longer macros since OpenSSL 1.1.0 */
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 /* backward compatibility with OpenSSL < 1.0 */
 #ifndef sk_OPENSSL_STRING_num
