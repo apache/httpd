@@ -683,16 +683,8 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
     for (i = 0; ssl_var_lookup_ssl_cert_dn_rec[i].name != NULL; i++) {
         if (strEQn(var, ssl_var_lookup_ssl_cert_dn_rec[i].name, varlen)
             && strlen(ssl_var_lookup_ssl_cert_dn_rec[i].name) == varlen) {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-            for (j = 0; j < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
-                                                   xsname->entries);
-                 j++) {
-                xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
-                                                xsname->entries, j);
-#else
             for (j = 0; j < X509_NAME_entry_count(xsname); j++) {
                 xsne = X509_NAME_get_entry(xsname, j);
-#endif
 
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
@@ -994,9 +986,6 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
 static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                        X509_NAME *xn, apr_pool_t *p)
 {
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    STACK_OF(X509_NAME_ENTRY) *ents = xn->entries;
-#endif
     X509_NAME_ENTRY *xsne;
     apr_hash_t *count;
     int i, nid;
@@ -1006,16 +995,9 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
     count = apr_hash_make(p);
 
     /* For each RDN... */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    for (i = 0; i < sk_X509_NAME_ENTRY_num(ents); i++) {
-         const char *tag;
-
-         xsne = sk_X509_NAME_ENTRY_value(ents, i);
-#else
     for (i = 0; i < X509_NAME_entry_count(xn); i++) {
          const char *tag;
          xsne = X509_NAME_get_entry(xn, i);
-#endif
 
          /* Retrieve the nid, and check whether this is one of the nids
           * which are to be extracted. */
@@ -1189,11 +1171,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     for (j = 0; j < count; j++) {
         X509_EXTENSION *ext = X509_get_ext(xs, j);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        if (OBJ_cmp(ext->object, oid) == 0) {
-#else
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
-#endif
             BIO *bio = BIO_new(BIO_s_mem());
 
             /* We want to obtain a string representation of the extensions
