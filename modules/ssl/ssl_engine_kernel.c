@@ -32,9 +32,6 @@
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "scoreboard.h"
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-#include "apr_time.h"
-#endif
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifdef HAVE_TLSEXT
@@ -44,11 +41,6 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
 #define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
 #define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
 #define CONNECTION_HEADER "Connection: Upgrade"
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-#define SSL_HANDSHAKE_POLL_MS 10
-#define SSL_HANDSHAKE_MAX_POLLS 500
-#endif
 
 /* Perform an upgrade-to-TLS for the given request, per RFC 2817. */
 static apr_status_t upgrade_connection(request_rec *r)
@@ -955,6 +947,10 @@ int ssl_hook_Access(request_rec *r)
             }
         }
         else {
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+            int rc;
+            char peekbuf[1];
+#endif
             const char *reneg_support;
             request_rec *id = r->main ? r->main : r;
 
@@ -1029,30 +1025,21 @@ int ssl_hook_Access(request_rec *r)
 
 #else /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
-            /* XXX: OpenSSL 1.1.0: SSL_set_state() no longer available.
-             * Need to trigger renegotiation handshake by reading,
-             * until handshake has finished.
-             * The code works for some ciphers with 1.1.0pre2 plus the patch
+            /* Need to trigger renegotiation handshake by reading.
+             * Peeking 0 bytes actually works.
+             * The code needs the following patches on top of OpenSSL 1.1.0pre2:
              * https://github.com/openssl/openssl/commit/311f27852a18fb9c10f0c1283b639f12eea06de2
-             * It does not work for EC and DH. For details see:
+             * https://github.com/openssl/openssl/commit/5b326dc529e19194feaef9a65fa37efbe11eaa7e
+             * It is expected to work without changes with the forthcoming 1.1.0pre3.
              * See: http://marc.info/?t=145493359200002&r=1&w=2
              */
-            /* XXX: Polling is bad, alternatives? */
-            for (i = 0; i < SSL_HANDSHAKE_MAX_POLLS; i++) {
-                has_buffered_data(r);
-                if (sslconn->ssl == NULL ||
-                    sslconn->reneg_state == RENEG_DONE ||
-                    sslconn->reneg_state == RENEG_ALERT) {
-                    break;
-                }
-                apr_sleep(SSL_HANDSHAKE_POLL_MS);
-            }
+            rc = SSL_peek(ssl, peekbuf, 0);
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO()
-                          "Renegotiation loop %d iterations, "
+                          "Renegotiation peek result=%d, "
                           "reneg_state=%d, "
                           "in_init=%d, init_finished=%d, "
                           "state=%s, sslconn->ssl=%s, peer_certs=%s",
-                          i, sslconn->reneg_state,
+                          rc, sslconn->reneg_state,
                           SSL_in_init(ssl), SSL_is_init_finished(ssl),
                           SSL_state_string_long(ssl),
                           sslconn->ssl != NULL ? "yes" : "no",
@@ -2150,23 +2137,6 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         }
 #endif
     }
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    else if (!scr->is_proxy &&
-             (where & SSL_CB_HANDSHAKE_START) &&
-             scr->reneg_state == RENEG_ALLOW) {
-        scr->reneg_state = RENEG_STARTED;
-    }
-    else if (!scr->is_proxy &&
-             (where & SSL_CB_HANDSHAKE_DONE) &&
-             scr->reneg_state == RENEG_STARTED) {
-        scr->reneg_state = RENEG_DONE;
-    }
-    else if (!scr->is_proxy &&
-             (where & SSL_CB_ALERT) &&
-             (scr->reneg_state == RENEG_ALLOW || scr->reneg_state == RENEG_STARTED)) {
-        scr->reneg_state = RENEG_ALERT;
-    }
-#endif
     /* If the first handshake is complete, change state to reject any
      * subsequent client-initiated renegotiation. */
     else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_INIT) {
