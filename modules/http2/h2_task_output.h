@@ -44,14 +44,13 @@ struct h2_task_output {
 
 h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);
 
-void h2_task_output_destroy(h2_task_output *output);
-
 apr_status_t h2_task_output_write(h2_task_output *output,
                                   ap_filter_t* filter,
                                   apr_bucket_brigade* brigade);
 
 void h2_task_output_close(h2_task_output *output);
 
-int h2_task_output_has_started(h2_task_output *output);
+apr_status_t h2_task_output_freeze(h2_task_output *output);
+apr_status_t h2_task_output_thaw(h2_task_output *output);
 
 #endif /* defined(__mod_h2__h2_task_output__) */

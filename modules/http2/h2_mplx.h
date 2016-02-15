@@ -47,7 +47,9 @@ struct apr_thread_cond_t;
 struct h2_workers;
 struct h2_stream_set;
 struct h2_task_queue;
+struct h2_req_engine;
 
+#include <apr_queue.h>
 #include "h2_io.h"
 
 typedef struct h2_mplx h2_mplx;
@@ -87,6 +89,9 @@ struct h2_mplx {
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
+    
+    struct h2_req_engine *engine;
+    apr_queue_t *engine_queue;
 };
 
 
@@ -372,5 +377,25 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
  */
 #define H2_MPLX_REMOVE(e)	APR_RING_REMOVE((e), link)
 
+
+/*******************************************************************************
+ * h2_mplx h2_req_engine handling.
+ ******************************************************************************/
+ 
+typedef apr_status_t h2_mplx_engine_init(struct h2_req_engine *engine, 
+                                         request_rec *r);
+
+apr_status_t h2_mplx_engine_push(h2_mplx *m, struct h2_task *task, 
+                                 const char *engine_type, 
+                                 request_rec *r, h2_mplx_engine_init *einit);
+                                 
+apr_status_t h2_mplx_engine_pull(h2_mplx *m, struct h2_task *task, 
+                                 struct h2_req_engine *engine, 
+                                 apr_time_t timeout, request_rec **pr);
+
+void h2_mplx_engine_done(h2_mplx *m, struct h2_task *task, conn_rec *r_conn);
+                                 
+void h2_mplx_engine_exit(h2_mplx *m, struct h2_task *task, 
+                         struct h2_req_engine *engine);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

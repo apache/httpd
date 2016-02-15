@@ -34,8 +34,6 @@ struct h2_task_input {
 
 h2_task_input *h2_task_input_create(struct h2_task *task, conn_rec *c);
 
-void h2_task_input_destroy(h2_task_input *input);
-
 apr_status_t h2_task_input_read(h2_task_input *input,
                                   ap_filter_t* filter,
                                   apr_bucket_brigade* brigade,

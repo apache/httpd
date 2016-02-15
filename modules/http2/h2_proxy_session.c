@@ -18,6 +18,7 @@
 
 #include <httpd.h>
 #include <mod_proxy.h>
+#include <mod_http2.h>
 
 #include "h2.h"
 #include "h2_request.h"
@@ -60,6 +61,45 @@ static apr_status_t proxy_session_shutdown(void *theconn)
     return APR_SUCCESS;
 }
 
+static int proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
+                              proxy_conn_rec *p_conn,
+                              conn_rec *origin, apr_bucket_brigade *bb,
+                              int flush)
+{
+    apr_status_t status;
+    apr_off_t transferred;
+
+    if (flush) {
+        apr_bucket *e = apr_bucket_flush_create(bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+    }
+    apr_brigade_length(bb, 0, &transferred);
+    if (transferred != -1)
+        p_conn->worker->s->transferred += transferred;
+    status = ap_pass_brigade(origin->output_filters, bb);
+    /* Cleanup the brigade now to avoid buckets lifetime
+     * issues in case of error returned below. */
+    apr_brigade_cleanup(bb);
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, origin, APLOGNO(01084)
+                      "pass request body failed to %pI (%s)",
+                      p_conn->addr, p_conn->hostname);
+        if (origin->aborted) {
+            const char *ssl_note;
+
+            if (((ssl_note = apr_table_get(origin->notes, "SSL_connect_rv"))
+                 != NULL) && (strcmp(ssl_note, "err") == 0)) {
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            return HTTP_GATEWAY_TIME_OUT;
+        }
+        else {
+            return HTTP_BAD_REQUEST;
+        }
+    }
+    return OK;
+}
+
 static ssize_t raw_send(nghttp2_session *ngh2, const uint8_t *data,
                         size_t length, int flags, void *user_data)
 {
@@ -75,9 +115,9 @@ static ssize_t raw_send(nghttp2_session *ngh2, const uint8_t *data,
                                     session->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(session->output, b);
 
-    status = ap_proxy_pass_brigade(session->c->bucket_alloc, session->r, 
-                                   session->p_conn, session->c, 
-                                   session->output, flush);
+    status = proxy_pass_brigade(session->c->bucket_alloc,  
+                                session->p_conn, session->c, 
+                                session->output, flush);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, 
                       "h2_proxy_sesssion(%ld): sending", session->c->id);
@@ -203,6 +243,16 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
     return APR_SUCCESS;
 }
 
+static int log_header(void *ctx, const char *key, const char *value)
+{
+    h2_proxy_stream *stream = ctx;
+    
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r, 
+                  "h2_proxy_stream(%ld-%d), header_out %s: %s", 
+                  stream->session->c->id, stream->id, key, value);
+    return 1;
+}
+
 static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream) 
 {
     h2_proxy_session *session = stream->session;
@@ -254,6 +304,13 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
                                       server_name, portstr)
                        );
     }
+    
+    if (APLOGrtrace2(stream->r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r, 
+                      "h2_proxy_stream(%ld-%d), header_out after merging", 
+                      stream->session->c->id, stream->id);
+        apr_table_do(log_header, stream, stream->r->headers_out, NULL);
+    }
 }
 
 static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
@@ -278,7 +335,8 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
         stream->data_received = 1;
     }
     
-    b = apr_bucket_transient_create((const char*)data, len, session->c->bucket_alloc);
+    b = apr_bucket_transient_create((const char*)data, len, 
+                                    stream->r->connection->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(stream->output, b);
     status = ap_pass_brigade(stream->r->output_filters, stream->output);
     if (status != APR_SUCCESS) {
@@ -344,7 +402,6 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
                                 uint32_t *data_flags, 
                                 nghttp2_data_source *source, void *user_data)
 {
-    h2_proxy_session *session = user_data;
     h2_proxy_stream *stream;
     apr_status_t status = APR_SUCCESS;
     
@@ -358,9 +415,9 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
         status = ap_get_brigade(stream->r->input_filters, stream->input,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
                                 H2MIN(APR_BUCKET_BUFF_SIZE, length));
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c, 
-                      "h2_proxy_stream(%ld-%d): request body read", 
-                      session->c->id, stream->id);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, status, stream->r, 
+                      "h2_proxy_stream(%d): request body read", 
+                      stream->id);
     }
 
     if (status == APR_SUCCESS) {
@@ -396,9 +453,9 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
             apr_bucket_delete(b);
         }
 
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c, 
-                      "h2_proxy_stream(%ld-%d): request body read %ld bytes, flags=%d", 
-                      session->c->id, stream->id, (long)readlen, (int)*data_flags);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, status, stream->r, 
+                      "h2_proxy_stream(%d): request body read %ld bytes, flags=%d", 
+                      stream->id, (long)readlen, (int)*data_flags);
         return readlen;
     }
     else if (APR_STATUS_IS_EAGAIN(status)) {
@@ -424,7 +481,6 @@ h2_proxy_session *h2_proxy_session_setup(request_rec *r, proxy_conn_rec *p_conn,
         session->c = p_conn->connection;
         session->p_conn = p_conn;
         session->conf = conf;
-        session->r = r;
         session->pool = p_conn->scpool;
         session->window_bits_default    = 30;
         session->window_bits_connection = 30;
@@ -471,7 +527,7 @@ apr_status_t h2_proxy_session_open_stream(h2_proxy_session *session, const char 
     h2_proxy_stream *stream;
     apr_uri_t puri;
     const char *authority, *scheme, *path;
-    
+
     stream = apr_pcalloc(r->pool, sizeof(*stream));
 
     stream->pool = r->pool;
@@ -625,9 +681,14 @@ apr_status_t h2_proxy_stream_process(h2_proxy_stream *stream)
     rv = nghttp2_submit_request(session->ngh2, NULL, 
                                 hd->nv, hd->nvlen, pp, stream);
                                 
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
-                  "h2_session(%ld): submit request -> %d", 
-                  session->c->id, rv);
+    if (APLOGcdebug(session->c)) {
+        const char *task_id = apr_table_get(stream->r->connection->notes, 
+                                            H2_TASK_ID_NOTE);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
+                      "h2_session(%ld): submit %s%s -> %d (task %s)", 
+                      session->c->id, stream->req->authority, stream->req->path,
+                      rv, task_id);
+    }
     if (rv > 0) {
         stream->id = rv;
         stream->state = H2_STREAM_ST_OPEN;

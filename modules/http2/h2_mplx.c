@@ -17,7 +17,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <apr_atomic.h>
+#include <apr_queue.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <apr_strings.h>
@@ -27,9 +27,12 @@
 #include <http_core.h>
 #include <http_log.h>
 
+#include "mod_http2.h"
+
 #include "h2_private.h"
 #include "h2_config.h"
 #include "h2_conn.h"
+#include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_io.h"
 #include "h2_io_set.h"
@@ -390,6 +393,9 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
          * for processing, e.g. when we received all HEADERs. But when
          * a stream is cancelled very early, it will not exist. */
         if (io) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c, 
+                          "h2_mplx(%ld-%d): marking stream as done.", 
+                          m->id, stream_id);
             io_stream_done(m, io, rst_error);
         }
 
@@ -415,25 +421,56 @@ static const h2_request *pop_request(h2_mplx *m)
     return req;
 }
 
+static apr_status_t h2_mplx_engine_schedule(h2_mplx *m, request_rec *r)
+{
+    if (!m->engine_queue) {
+        apr_queue_create(&m->engine_queue, 200, m->pool);
+    }
+    return apr_queue_trypush(m->engine_queue, r);
+}
+
 void h2_mplx_request_done(h2_mplx **pm, int stream_id, const h2_request **preq)
 {
     h2_mplx *m = *pm;
     int acquired;
     
     if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                      "h2_mplx(%ld): request(%d) done", m->id, stream_id);
-        if (io) {
-            io->processing_done = 1;
-            if (io->orphaned) {
-                io_destroy(m, io, 0);
-                if (m->join_wait) {
-                    apr_thread_cond_signal(m->join_wait);
+        if (stream_id) {
+            h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): request(%d) done", m->id, stream_id);
+            if (io) {
+                request_rec *r = io->r;
+                
+                if (io->orphaned) {
+                    io->processing_done = 1;
                 }
-            }
-            else {
-                /* hang around until the stream deregisteres */
+                else if (r) {
+                    /* A parked request which is being transferred from
+                     * one worker thread to another. This request_done call
+                     * was from the initial thread and now it is safe to
+                     * schedule it for further processing. */
+                    h2_task_thaw(io->task);
+                    io->task = NULL;
+                    io->r = NULL;
+                    h2_mplx_engine_schedule(*pm, r);
+                }
+                else {
+                    io->processing_done = 1;
+                }
+                
+                if (io->processing_done) {
+                    h2_io_out_close(io, NULL);
+                    if (io->orphaned) {
+                        io_destroy(m, io, 0);
+                        if (m->join_wait) {
+                            apr_thread_cond_signal(m->join_wait);
+                        }
+                    }
+                    else {
+                        /* hang around until the stream deregisteres */
+                    }
+                }
             }
         }
         
@@ -800,7 +837,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
             status = out_write(m, io, f, bb, trailers, iowait);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
                           "h2_mplx(%ld-%d): write with trailers=%s", 
                           m->id, io->id, trailers? "yes" : "no");
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
@@ -1049,3 +1086,107 @@ const h2_request *h2_mplx_pop_request(h2_mplx *m, int *has_more)
     return req;
 }
 
+apr_status_t h2_mplx_engine_push(h2_mplx *m, h2_task *task,
+                                 const char *engine_type, 
+                                 request_rec *r, h2_mplx_engine_init *einit)
+{
+    apr_status_t status;
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
+        h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+        if (!io || io->orphaned) {
+            status = APR_ECONNABORTED;
+        }
+        else {
+            h2_req_engine *engine;
+            
+            apr_table_set(r->connection->notes, H2_TASK_ID_NOTE, task->id);
+            status = APR_EOF;
+            engine = m->engine; /* just a single one for now */
+            if (task->ser_headers) {
+                /* Max compatibility, deny processing of this */
+            }
+            else if (!engine && einit) {
+                engine = apr_pcalloc(r->connection->pool, sizeof(*engine));
+                engine->id = 1;
+                engine->c = r->connection;
+                engine->pool = r->connection->pool;
+                engine->type = apr_pstrdup(engine->pool, engine_type);
+                
+                status = einit(engine, r);
+                if (status == APR_SUCCESS) {
+                    m->engine = engine;
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, status, r,
+                                  "h2_mplx(%ld): init engine %d (%s)", 
+                                  m->c->id, engine->id, engine->type);
+                }
+            }
+            else if (engine && !strcmp(engine->type, engine_type)) {
+                if (status == APR_SUCCESS) {
+                    /* this task will be processed in another thread,
+                     * freeze any I/O for the time being. */
+                    h2_task_freeze(task, r);
+                    io->task = task;
+                    io->r = r;
+                }
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, status, r,
+                              "h2_mplx(%ld): push request %s", 
+                              m->c->id, r->the_request);
+            }
+        }
+        
+        leave_mutex(m, acquired);
+    }
+    return status;
+}
+                                 
+apr_status_t h2_mplx_engine_pull(h2_mplx *m, h2_task *task,
+                                 struct h2_req_engine *engine, 
+                                 apr_time_t timeout, request_rec **pr)
+{   
+    apr_status_t status;
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
+        status = APR_ECONNABORTED;
+        if (m->engine == engine && m->engine_queue) {
+            void *elem;
+            status = apr_queue_trypop(m->engine_queue, &elem);
+            if (status == APR_SUCCESS) {
+                *pr = elem;
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, status, *pr,
+                              "h2_mplx(%ld): request %s pulled by engine %d", 
+                              m->c->id, (*pr)->the_request, engine->id);
+            }
+        }
+        leave_mutex(m, acquired);
+    }
+    return status;
+}
+ 
+void h2_mplx_engine_done(h2_mplx *m, struct h2_task *task, conn_rec *r_conn)
+{
+    int stream_id = task->stream_id;
+    h2_task_output_close(task->output);
+    h2_mplx_request_done(&m, stream_id, NULL);
+    apr_pool_destroy(r_conn->pool);
+}
+                                
+void h2_mplx_engine_exit(h2_mplx *m, struct h2_task *task, 
+                         struct h2_req_engine *engine)
+{
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+        /* TODO: shutdown of engine->c */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                      "h2_mplx(%ld): exit engine %d (%s)", 
+                      m->c->id, engine->id, engine->type);
+        m->engine = NULL;
+        leave_mutex(m, acquired);
+    }
+}

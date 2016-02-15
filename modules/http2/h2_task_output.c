@@ -49,14 +49,6 @@ h2_task_output *h2_task_output_create(h2_task *task, conn_rec *c)
     return output;
 }
 
-void h2_task_output_destroy(h2_task_output *output)
-{
-    if (output->from_h1) {
-        h2_from_h1_destroy(output->from_h1);
-        output->from_h1 = NULL;
-    }
-}
-
 static apr_table_t *get_trailers(h2_task_output *output)
 {
     if (!output->trailers_passed) {
@@ -75,7 +67,7 @@ static apr_table_t *get_trailers(h2_task_output *output)
 }
 
 static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
-                                   apr_bucket_brigade *bb)
+                                   apr_bucket_brigade *bb, const char *caller)
 {
     if (output->state == H2_TASK_OUT_INIT) {
         h2_response *response;
@@ -86,9 +78,10 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
                 /* This happens currently when ap_die(status, r) is invoked
                  * by a read request filter. */
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03204)
-                              "h2_task_output(%s): write without response "
+                              "h2_task_output(%s): write without response by %s "
                               "for %s %s %s",
-                              output->task->id, output->task->request->method, 
+                              output->task->id, caller, 
+                              output->task->request->method, 
                               output->task->request->authority, 
                               output->task->request->path);
                 f->c->aborted = 1;
@@ -108,6 +101,11 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
             h2_task_logio_add_bytes_out(f->c, bytes_written);
         }
         get_trailers(output);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03204)
+                      "h2_task_output(%s): open as needed %s %s %s",
+                      output->task->id, output->task->request->method, 
+                      output->task->request->authority, 
+                      output->task->request->path);
         return h2_mplx_out_open(output->task->mplx, output->task->stream_id, 
                                 response, f, bb, output->task->io);
     }
@@ -116,17 +114,17 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
 
 void h2_task_output_close(h2_task_output *output)
 {
-    open_if_needed(output, NULL, NULL);
+    open_if_needed(output, NULL, NULL, "close");
     if (output->state != H2_TASK_OUT_DONE) {
+        if (output->task->frozen_out 
+            && !APR_BRIGADE_EMPTY(output->task->frozen_out)) {
+            h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
+                NULL, output->task->frozen_out, NULL, NULL);
+        }
         h2_mplx_out_close(output->task->mplx, output->task->stream_id, 
                           get_trailers(output));
         output->state = H2_TASK_OUT_DONE;
     }
-}
-
-int h2_task_output_has_started(h2_task_output *output)
-{
-    return output->state >= H2_TASK_OUT_STARTED;
 }
 
 /* Bring the data from the brigade (which represents the result of the
@@ -144,7 +142,14 @@ apr_status_t h2_task_output_write(h2_task_output *output,
         return APR_SUCCESS;
     }
     
-    status = open_if_needed(output, f, bb);
+    if (output->task->frozen) {
+        h2_util_bb_log(output->c, output->task->stream_id, APLOG_TRACE2,
+                       "frozen task output write", bb);
+        APR_BRIGADE_CONCAT(output->task->frozen_out, bb);
+        return APR_SUCCESS;
+    }
+    
+    status = open_if_needed(output, f, bb, "write");
     if (status != APR_EOF) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_output(%s): opened and passed brigade", 
