@@ -29,7 +29,8 @@ of consuming threads only for connections with active processing</description>
 <identifier>mpm_event_module</identifier>
 
 <summary>
-    <p>The <module>event</module> Multi-Processing Module (MPM) is
+    <p>The <module>event</module> Multi-Processing Module (MPM) is,
+    as its name implies, an asynchronous, event-based implementation
     designed to allow more requests to be served simultaneously by
     passing off some processing work to the listeners threads, freeing up
     the worker threads to serve new requests.</p>
@@ -55,16 +56,18 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
 </section>
 
 <section id="how-it-works"><title>How it Works</title>
-    <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
+    <p>This original goal of this MPM was to fix the 'keep alive problem' in HTTP. After a client
     completes the first request, it can keep the connection
     open, sending further requests using the same socket and saving 
     significant overhead in creating TCP connections. However,
     Apache HTTP Server traditionally keeps an entire child 
     process/thread waiting for data from the client, which brings its own disadvantages. 
-    To solve this problem, this MPM uses a dedicated listener thread for each process 
-    to handle both the Listening sockets, all sockets that are in a Keep Alive state, 
-    sockets where the handler and protocol filters have done their work
-    and the ones where the only remaining thing to do is send the data to the client.
+    To solve this problem, this MPM uses a dedicated listener thread for each process
+    along with a pool of worker threads, sharing queues specific for those
+    requests in keep-alive mode (or, more simply, "readable"), those in write-
+    completion mode, and those in the process of shutting down ("closing").
+    An event loop, triggered on the status of the socket's availability,
+    adjusts these queues and pushes work to the worker pool.
     </p>
 
     <p>The total amount of connections that a single process/threads block can handle is regulated 
