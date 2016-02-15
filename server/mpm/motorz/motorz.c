@@ -110,16 +110,13 @@ motorz_get_keep_alive_timeout(motorz_conn_t *scon)
     }
 }
 
-static void motorz_io_timeout_cb(motorz_core_t * sc, void *baton)
+static void motorz_io_timeout_cb(motorz_core_t *mz, void *baton)
 {
-    /* Code disabled because it does nothing yet but causes a compiler warning */
-#if 0
-    motorz_conn_t *mzon = (motorz_conn_t *) baton;
-    /* pqXXXXX: handle timeouts. */
-    conn_rec *c = scon->c;
 
-    cs = NULL;
-#endif
+    motorz_conn_t *scon = (motorz_conn_t *) baton;
+    conn_rec *c = scon->c;
+    scon->cs.state = CONN_STATE_LINGER;
+    ap_lingering_close(c);
 
     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(02842)
                  "io timeout hit (?)");
