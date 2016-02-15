@@ -129,7 +129,7 @@ struct motorz_core_t {
     apr_pool_t *pool;
     apr_thread_mutex_t *mtx;
     apr_pollset_t *pollset;
-    apr_skiplist *timer_ring;
+    apr_skiplist *timeout_ring;
     apr_thread_pool_t *workers;
 };
 
