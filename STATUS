@@ -234,7 +234,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works
                    http://home.apache.org/~jim/patches/aplogno-2.4.patch
      +1: jim, rjung
-     
+
+  *) mod_heartmonitor: No need to search twice for the same value + fix some style
+     trunk patch:  http://svn.apache.org/r1727842
+     2.4.x patch:  trunk works
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
