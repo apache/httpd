@@ -81,7 +81,7 @@ static apr_status_t motorz_conn_pool_cleanup(void *baton)
         motorz_core_t *mz = scon->mz;
 
         apr_thread_mutex_lock(mz->mtx);
-        apr_skiplist_remove(mz->timer_ring, &scon->timer, NULL);
+        apr_skiplist_remove(mz->timeout_ring, &scon->timer, NULL);
         apr_thread_mutex_unlock(mz->mtx);
     }
 
@@ -119,7 +119,7 @@ static void motorz_io_timeout_cb(motorz_core_t *mz, void *baton)
     ap_lingering_close(c);
 
     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(02842)
-                 "io timeout hit (?)");
+                 "io timeout hit (?) scon: %pp, c: %pp", scon, c);
 }
 
 static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
@@ -198,7 +198,7 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
                          "motorz_io_accept(): entered");
 
     rv = lr->accept_func((void *)&socket, lr, ptrans);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(02845)
                      "motorz_io_accept failed");
         clean_child_exit(APEXIT_CHILDSICK);
@@ -299,9 +299,9 @@ static apr_status_t motorz_io_callback(void *baton, const apr_pollfd_t *pfd)
     return status;
 }
 
-static void motorz_register_timer(motorz_conn_t *scon,
-                                  motorz_timer_cb cb,
-                                  apr_interval_time_t relative_time)
+static void motorz_register_timeout(motorz_conn_t *scon,
+                                    motorz_timer_cb cb,
+                                    apr_interval_time_t relative_time)
 {
     apr_time_t t = apr_time_now() + relative_time;
     motorz_timer_t *elem = &scon->timer;
@@ -313,11 +313,14 @@ static void motorz_register_timer(motorz_conn_t *scon,
     elem->pool = scon->pool;
     elem->mz = mz;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                         "motorz_register_timer(): insert ELEM: %pp", elem);
+
     apr_thread_mutex_lock(mz->mtx);
 #ifdef AP_DEBUG
-    ap_assert(apr_skiplist_insert(mz->timer_ring, elem));
+    ap_assert(apr_skiplist_insert(mz->timeout_ring, elem));
 #else
-    apr_skiplist_insert(mz->timer_ring, elem);
+    apr_skiplist_insert(mz->timeout_ring, elem);
 #endif
     apr_thread_mutex_unlock(mz->mtx);
 }
@@ -435,7 +438,7 @@ read_request:
                  * Set a write timeout for this connection, and let the
                  * event thread poll for writeability.
                  */
-                motorz_register_timer(scon,
+                motorz_register_timeout(scon,
                                       motorz_io_timeout_cb,
                                       motorz_get_timeout(scon));
 
@@ -466,13 +469,15 @@ read_request:
         }
 
         if (scon->cs.state == CONN_STATE_LINGER) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                                  "motorz_io_process(): CONN_STATE_LINGER");
             ap_lingering_close(c);
         }
 
         if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
                                   "motorz_io_process(): CONN_STATE_CHECK_REQUEST_LINE_READABLE");
-            motorz_register_timer(scon,
+            motorz_register_timeout(scon,
                                   motorz_io_timeout_cb,
                                   motorz_get_keep_alive_timeout(scon));
 
@@ -950,8 +955,8 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
-    apr_skiplist_init(&mz->timer_ring, mz->pool);
-    apr_skiplist_set_compare(mz->timer_ring, timer_comp, timer_comp);
+    apr_skiplist_init(&mz->timeout_ring, mz->pool);
+    apr_skiplist_set_compare(mz->timeout_ring, timer_comp, timer_comp);
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(02868)
@@ -1028,7 +1033,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
             apr_interval_time_t timeout = apr_time_from_msec(500);
 
             apr_thread_mutex_lock(mz->mtx);
-            te = apr_skiplist_peek(mz->timer_ring);
+            te = apr_skiplist_peek(mz->timeout_ring);
 
             if (te) {
                 if (tnow < te->expires) {
@@ -1059,9 +1064,9 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
             /* now iterate any timers and push to worker pool */
             while (te && te->expires < tnow) {
-                apr_skiplist_pop(mz->timer_ring, NULL);
+                apr_skiplist_pop(mz->timeout_ring, NULL);
                 motorz_timer_event_process(mz, te);
-                te = apr_skiplist_peek(mz->timer_ring);
+                te = apr_skiplist_peek(mz->timeout_ring);
             }
 
             apr_thread_mutex_unlock(mz->mtx);
@@ -1637,7 +1642,7 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     if (!g_motorz_core) {
         mz = g_motorz_core = ap_retained_data_create(userdata_key, sizeof(*g_motorz_core));
         mz->max_daemons_limit = -1;
-        mz->timer_ring = motorz_timer_ring;
+        mz->timeout_ring = motorz_timer_ring;
         mz->pollset = motorz_pollset;
     }
     ++mz->module_loads;
