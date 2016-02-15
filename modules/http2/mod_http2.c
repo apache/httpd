@@ -35,6 +35,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
+#include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_switch.h"
@@ -121,6 +122,57 @@ static char *http2_var_lookup(apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *, char *name);
 static int http2_is_h2(conn_rec *);
 
+static apr_status_t http2_req_engine_push(const char *engine_type, 
+                                          request_rec *r, 
+                                          h2_req_engine_init *einit)
+{
+    h2_ctx *ctx = h2_ctx_rget(r);
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            return h2_mplx_engine_push(task->mplx, task, engine_type, r, einit);
+        }
+    }
+    return APR_EINVAL;
+}
+
+static apr_status_t http2_req_engine_pull(h2_req_engine *engine, 
+                                          apr_time_t timeout, request_rec **pr)
+{
+    h2_ctx *ctx = h2_ctx_get(engine->c, 0);
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            return h2_mplx_engine_pull(task->mplx, task, engine, timeout, pr);
+        }
+    }
+    return APR_ECONNABORTED;
+}
+
+static void http2_req_engine_done(h2_req_engine *engine, conn_rec *r_conn)
+{
+    h2_ctx *ctx = h2_ctx_get(r_conn, 0);
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            h2_mplx_engine_done(task->mplx, task, r_conn);
+            /* task is destroyed */
+        }
+    }
+}
+
+static void http2_req_engine_exit(h2_req_engine *engine)
+{
+    h2_ctx *ctx = h2_ctx_get(engine->c, 0);
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            h2_mplx_engine_exit(task->mplx, task, engine);
+        }
+    }
+}
+
+
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
  */
@@ -143,6 +195,10 @@ static void h2_hooks(apr_pool_t *pool)
     
     APR_REGISTER_OPTIONAL_FN(http2_is_h2);
     APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_exit);
 
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     

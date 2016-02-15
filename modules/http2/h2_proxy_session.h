@@ -24,7 +24,6 @@ typedef struct h2_proxy_session {
     conn_rec *c;
     proxy_conn_rec *p_conn;
     proxy_server_conf *conf;
-    request_rec *r;
     apr_pool_t *pool;
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
@@ -65,5 +64,7 @@ h2_proxy_session *h2_proxy_session_setup(request_rec *r, proxy_conn_rec *p_connm
 apr_status_t h2_proxy_session_open_stream(h2_proxy_session *s, const char *url,
                                           request_rec *r, h2_proxy_stream **pstream);
 apr_status_t h2_proxy_stream_process(h2_proxy_stream *stream);
+
+#define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
 
 #endif /* h2_proxy_session_h */

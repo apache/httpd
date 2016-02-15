@@ -17,6 +17,7 @@
 
 #include <httpd.h>
 #include <mod_proxy.h>
+#include <mod_http2.h>
 
 
 #include "mod_proxy_http2.h"
@@ -36,6 +37,30 @@ AP_DECLARE_MODULE(proxy_http2) = {
     NULL,              /* command apr_table_t */
     register_hook      /* register hooks */
 };
+
+/* Optional functions from mod_http2 */
+static int (*is_h2)(conn_rec *c);
+static apr_status_t (*req_engine_push)(const char *name, request_rec *r, 
+                                       h2_req_engine_init *einit);
+static apr_status_t (*req_engine_pull)(h2_req_engine *engine, 
+                                       apr_time_t timeout, request_rec **pr);
+static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn);
+static void (*req_engine_exit)(h2_req_engine *engine);
+                                       
+typedef struct h2_proxy_ctx {
+    conn_rec *owner;
+    server_rec *server;
+    const char *proxy_func;
+    char server_portstr[32];
+    proxy_conn_rec *p_conn;
+    proxy_worker *worker;
+    proxy_server_conf *conf;
+    
+    h2_req_engine *engine;
+    unsigned standalone : 1;
+    unsigned is_ssl : 1;
+    unsigned flushall : 1;
+} h2_proxy_ctx;
 
 static int h2_proxy_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
@@ -57,6 +82,21 @@ static int h2_proxy_post_config(apr_pool_t *p, apr_pool_t *plog,
     ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
                  "mod_proxy_http2 (v%s, nghttp2 %s), initializing...",
                  MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
+    
+    is_h2 = APR_RETRIEVE_OPTIONAL_FN(http2_is_h2);
+    req_engine_push = APR_RETRIEVE_OPTIONAL_FN(http2_req_engine_push);
+    req_engine_pull = APR_RETRIEVE_OPTIONAL_FN(http2_req_engine_pull);
+    req_engine_done = APR_RETRIEVE_OPTIONAL_FN(http2_req_engine_done);
+    req_engine_exit = APR_RETRIEVE_OPTIONAL_FN(http2_req_engine_exit);
+    
+    /* we need all of them */
+    if (!req_engine_push || !req_engine_pull 
+        || !req_engine_done || !req_engine_exit) {
+        req_engine_push = NULL;
+        req_engine_pull = NULL;
+        req_engine_done = NULL;
+        req_engine_exit = NULL;
+    }
     
     return status;
 }
@@ -147,59 +187,111 @@ static int proxy_http2_canon(request_rec *r, char *url)
     return OK;
 }
 
-static apr_status_t proxy_http2_cleanup(const char *scheme, request_rec *r,
-                                        proxy_conn_rec *backend)
+static apr_status_t proxy_engine_init(h2_req_engine *engine, request_rec *r)
 {
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "cleanup, releasing connection");
-    ap_proxy_release_connection(scheme, backend, r->server);
-    return OK;
+    h2_proxy_ctx *ctx = ap_get_module_config(engine->c->conn_config, 
+                                             &proxy_http2_module);
+    if (ctx) {
+        ctx->engine = engine;
+        return APR_SUCCESS;
+    }
+    return APR_ENOTIMPL;
 }
 
-static
-int proxy_http2_process_stream(apr_pool_t *p, const char *url, request_rec *r,
-                               proxy_conn_rec **pp_conn, proxy_worker *worker,
-                               proxy_server_conf *conf, char *server_portstr,
-                               int flushall)
-{
-    int rv = APR_ENOTIMPL;
-    proxy_conn_rec *p_conn = *pp_conn;
+static int proxy_engine_run(h2_proxy_ctx *ctx, request_rec *r) {
+    int status = OK;
     h2_proxy_session *session;
     h2_proxy_stream *stream;
     
-    session = h2_proxy_session_setup(r, *pp_conn, conf);
+    /* Step Two: Make the Connection (or check that an already existing
+     * socket is still usable). On success, we have a socket connected to
+     * backend->hostname. */
+    if (ap_proxy_connect_backend(ctx->proxy_func, ctx->p_conn, ctx->worker, 
+                                 ctx->server)) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, ctx->owner, APLOGNO()
+                      "H2: failed to make connection to backend: %s",
+                      ctx->p_conn->hostname);
+        return HTTP_SERVICE_UNAVAILABLE;
+    }
+    
+    /* Step Three: Create conn_rec for the socket we have open now. */
+    if (!ctx->p_conn->connection) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO()
+                      "setup new connection: is_ssl=%d %s %s %s", 
+                      ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
+                      r->hostname, ctx->p_conn->hostname);
+        if ((status = ap_proxy_connection_create(ctx->proxy_func, ctx->p_conn,
+                                                 ctx->owner, 
+                                                 ctx->server)) != OK) {
+            return status;
+        }
+        
+        /*
+         * On SSL connections set a note on the connection what CN is
+         * requested, such that mod_ssl can check if it is requested to do
+         * so.
+         */
+        if (ctx->p_conn->ssl_hostname) {
+            apr_table_setn(ctx->p_conn->connection->notes,
+                           "proxy-request-hostname", ctx->p_conn->ssl_hostname);
+        }
+        
+        if (ctx->is_ssl) {
+            apr_table_setn(ctx->p_conn->connection->notes,
+                           "proxy-request-alpn-protos", "h2");
+        }
+    }
+
+    /* Step Four: Send the Request in a new HTTP/2 stream and
+     * loop until we got the response or encounter errors.
+     */
+    status = APR_ENOTIMPL;
+    session = h2_proxy_session_setup(r, ctx->p_conn, ctx->conf);
     if (!session) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, p_conn->connection, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->p_conn->connection, 
                       "session unavailable");
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
-    /* TODO
-     * - enter http2 client processing loop:
-     *   - send any input in datasource callback from r->input_filters
-     *   - await response HEADERs
-     *   - send any DATA to r->output_filters
-     * - on stream close, check for missing response
-     * - on certain errors, mark connection for close
-     */ 
-    rv = h2_proxy_session_open_stream(session, url, r, &stream);
-    if (rv == OK) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      "process stream(%d): %s %s%s, original: %s", 
-                      stream->id, stream->req->method, 
-                      stream->req->authority, stream->req->path, 
-                      r->the_request);
-        rv = h2_proxy_stream_process(stream);
+    while (r) {
+        conn_rec *r_conn = r->connection;
+        const char *url;
+        
+        url = apr_table_get(r->notes, H2_PROXY_REQ_URL_NOTE);
+        status = h2_proxy_session_open_stream(session, url, r, &stream);
+        if (status == OK) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r_conn, 
+                          "process stream(%d): %s %s%s, original: %s", 
+                          stream->id, stream->req->method, 
+                          stream->req->authority, stream->req->path, 
+                          r->the_request);
+            status = h2_proxy_stream_process(stream);
+        }
+        r = NULL;
+        
+        if (status != OK) {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, status, r_conn, APLOGNO()
+                          "pass request body failed to %pI (%s) from %s (%s)",
+                          ctx->p_conn->addr, ctx->p_conn->hostname ? 
+                          ctx->p_conn->hostname: "", session->c->client_ip, 
+                          session->c->remote_host ? session->c->remote_host: "");
+        }
+        
+        if (!ctx->standalone && req_engine_done && r_conn != ctx->owner) {
+            req_engine_done(ctx->engine, r_conn);
+        }
+        r_conn = NULL;
+        
+        if (!ctx->standalone && req_engine_pull) {
+            status = req_engine_pull(ctx->engine, ctx->server->timeout, &r);
+            if (status != APR_SUCCESS) {
+                status = APR_SUCCESS;
+                break;
+            }
+        }
     }
     
-    if (rv != OK) {
-        conn_rec *c = r->connection;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
-                      "pass request body failed to %pI (%s) from %s (%s)",
-                      p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                      c->client_ip, c->remote_host ? c->remote_host: "");
-    }
-
-    return rv;
+    return status;
 }
 
 static int proxy_http2_handler(request_rec *r, 
@@ -209,18 +301,17 @@ static int proxy_http2_handler(request_rec *r,
                                const char *proxyname,
                                apr_port_t proxyport)
 {
-    const char *proxy_function;
-    proxy_conn_rec *backend;
+    const char *proxy_func;
     char *locurl = url, *u;
     apr_size_t slen;
     int is_ssl = 0;
-    int flushall = 0;
-    int status;
-    char server_portstr[32];
+    apr_status_t status;
     conn_rec *c = r->connection;
-    apr_pool_t *p = r->pool;
+    server_rec *s = r->server;
+    apr_pool_t *p = c->pool;
     apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
-    conn_rec *backconn;
+    h2_proxy_ctx *ctx;
+    const char *engine_type, *hostname;
 
     /* find the scheme */
     if ((url[0] != 'h' && url[0] != 'H') || url[1] != '2') {
@@ -233,22 +324,30 @@ static int proxy_http2_handler(request_rec *r,
     slen = (u - url);
     switch(slen) {
         case 2:
-            proxy_function = "H2";
+            proxy_func = "H2";
             is_ssl = 1;
             break;
         case 3:
             if (url[2] != 'c' && url[2] != 'C') {
                 return DECLINED;
             }
-            proxy_function = "H2C";
+            proxy_func = "H2C";
             break;
         default:
             return DECLINED;
     }
 
-    if (apr_table_get(r->subprocess_env, "proxy-flushall")) {
-        flushall = 1;
-    }
+    ctx = apr_pcalloc(p, sizeof(*ctx));
+    ctx->owner      = c;
+    ctx->server     = s;
+    ctx->proxy_func = proxy_func;
+    ctx->is_ssl     = is_ssl;
+    ctx->worker     = worker;
+    ctx->conf       = conf;
+    ctx->flushall   = apr_table_get(r->subprocess_env, "proxy-flushall")? 1 : 0;
+    
+    ap_set_module_config(c->conn_config, &proxy_http2_module, ctx);
+    apr_table_setn(r->notes, H2_PROXY_REQ_URL_NOTE, url);
 
     /* scheme says, this is for us. */
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "H2: serving URL %s", url);
@@ -256,89 +355,82 @@ static int proxy_http2_handler(request_rec *r,
     /* Get a proxy_conn_rec from the worker, might be a new one, might
      * be one still open from another request, or it might fail if the
      * worker is stopped or in error. */
-    if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
-                                              worker, r->server)) != OK) {
+    if ((status = ap_proxy_acquire_connection(ctx->proxy_func, &ctx->p_conn,
+                                              ctx->worker, s)) != OK) {
         goto cleanup;
     }
 
-    backend->is_ssl = is_ssl;
-    if (is_ssl) {
+    ctx->p_conn->is_ssl = ctx->is_ssl;
+    if (ctx->is_ssl) {
         /* If there is still some data on an existing ssl connection, now
          * would be a good timne to get rid of it. */
-        ap_proxy_ssl_connection_cleanup(backend, r);
+        ap_proxy_ssl_connection_cleanup(ctx->p_conn, r);
     }
 
     /* Step One: Determine the URL to connect to (might be a proxy),
      * initialize the backend accordingly and determine the server 
      * port string we can expect in responses. */
-    if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+    if ((status = ap_proxy_determine_connection(p, r, conf, worker, ctx->p_conn,
                                                 uri, &locurl, proxyname,
-                                                proxyport, server_portstr,
-                                                sizeof(server_portstr))) != OK) {
+                                                proxyport, ctx->server_portstr,
+                                                sizeof(ctx->server_portstr))) != OK) {
         goto cleanup;
     }
     
-    /* Step Two: Make the Connection (or check that an already existing
-     * socket is still usable). On success, we have a socket connected to
-     * backend->hostname. */
-    if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
-                      "H2: failed to make connection to backend: %s",
-                      backend->hostname);
-        status = HTTP_SERVICE_UNAVAILABLE;
-        goto cleanup;
-    }
+    hostname = (ctx->p_conn->ssl_hostname? 
+                ctx->p_conn->ssl_hostname : ctx->p_conn->hostname);
+    engine_type = apr_psprintf(p, "proxy_http2 %s%s", hostname, ctx->server_portstr);
     
-    /* Step Three: Create conn_rec for the socket we have open now. */
-    backconn = backend->connection;
-    if (!backconn) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
-                      "setup new connection: is_ssl=%d %s %s %s", 
-                      backend->is_ssl, 
-                      backend->ssl_hostname, r->hostname, backend->hostname);
-        if ((status = ap_proxy_connection_create(proxy_function, backend,
-                                                 c, r->server)) != OK) {
+    if (c->master && req_engine_push && is_h2 && is_h2(ctx->owner)) {
+        /* If we are have req_engine capabilities, push the handling of this
+         * request (e.g. slave connection) to a proxy_http2 engine which uses 
+         * the same backend. We may be called to create an engine ourself.
+         */
+        status = req_engine_push(engine_type, r, proxy_engine_init);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, status, r, 
+                      "H2: pushing request %s to engine type %s", 
+                      url, engine_type);
+        if (status == APR_SUCCESS && ctx->engine == NULL) {
+            /* Another engine instance has taken over processing of this
+             * request. */
             goto cleanup;
         }
-        backconn = backend->connection;
-        
-        /*
-         * On SSL connections set a note on the connection what CN is
-         * requested, such that mod_ssl can check if it is requested to do
-         * so.
-         */
-        if (backend->ssl_hostname) {
-            apr_table_setn(backend->connection->notes,
-                           "proxy-request-hostname", backend->ssl_hostname);
-        }
-        
-        if (backend->is_ssl) {
-            apr_table_setn(backend->connection->notes,
-                           "proxy-request-alpn-protos", "h2");
-        }
     }
-
-    /* Step Four: Send the Request in a new HTTP/2 stream and
-     * loop until we got the response or encounter errors.
-     */
-    if ((status = proxy_http2_process_stream(p, url, r, &backend, worker,
-                                             conf, server_portstr, 
-                                             flushall)) != OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO()
-                      "H2: failed to process request: %s",
-                      r->the_request);
+    
+    if (!ctx->engine) {
+        /* No engine was available or has been initialized, handle this
+        * request just by ourself. */
+        h2_req_engine *engine = apr_pcalloc(p, sizeof(*engine));
+        engine->id = 0;
+        engine->type = engine_type;
+        engine->pool = p;
+        engine->c = c;
+        ctx->engine = engine;
+        ctx->standalone = 1;
     }
+    
+    status = proxy_engine_run(ctx, r);    
 
-    /* clean up before return */
 cleanup:
-    if (backend) {
-        if (status != OK) {
-            backend->close = 1;
-        }
-        proxy_run_detach_backend(r, backend);
-        proxy_http2_cleanup(proxy_function, r, backend);
+    if (ctx->engine && !ctx->standalone && req_engine_exit) {
+        req_engine_exit(ctx->engine);
     }
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, status, r, "leaving handler");
+    ctx->engine = NULL;
+    
+    if (ctx) {
+        if (ctx->p_conn) {
+            if (status != OK) {
+                ctx->p_conn->close = 1;
+            }
+            proxy_run_detach_backend(r, ctx->p_conn);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "cleanup, releasing connection");
+            ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
+        }
+        ctx->worker = NULL;
+        ctx->conf = NULL;
+        ctx->p_conn = NULL;
+    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c, "leaving handler");
     return status;
 }
 

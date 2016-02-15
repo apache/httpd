@@ -20,6 +20,7 @@ struct h2_response;
 struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
+struct h2_task;
 
 
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
@@ -62,6 +63,9 @@ struct h2_io {
     apr_size_t input_consumed;       /* how many bytes have been read */
         
     int files_handles_owned;
+    
+    struct h2_task *task;            /* parked task */
+    request_rec *r;                  /* parked request */
 };
 
 /*******************************************************************************
