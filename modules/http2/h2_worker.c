@@ -46,7 +46,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
      * not sensitive to which thread it is in.
      * In that sense, memory allocation and lifetime is similar to a master
      * connection.
-     * The mail goal in this is that slave connections and requests will
+     * The main goal in this is that slave connections and requests will
      * - one day - be suspended and resumed in different threads.
      */
     apr_allocator_create(&task_allocator);
