@@ -128,18 +128,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
      +1: minfrin, jim
 
-   * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
-          its parameter when starting httpd as single process (httpd -X).
-     trunk patch: http://svn.apache.org/r1711479
-     2.4.x patch: trunk works
-     +1: jkaluza, jim
-     minfrin: Needs extra parens to suppress a warning:
-              prefork.c:1319:16: note: place parentheses around the assignment
-              to silence this warning
-     jailletc36: This has been done in r1711919
-     ylavic: Also, I don't think the changes on worker/event are needed,
-             only prefork requires the accept mutex in ONE_PROCESS mode.
-
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
      during the mod_ssl unload happening on httpd startup.
@@ -236,6 +224,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+
+   * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
+          its parameter when starting httpd as single process (httpd -X).
+     trunk patch: http://svn.apache.org/r1711479
+     2.4.x patch: trunk works
+     +1: jkaluza, jim
+     minfrin: Needs extra parens to suppress a warning:
+              prefork.c:1319:16: note: place parentheses around the assignment
+              to silence this warning
+     jailletc36: This has been done in r1711919
+     ylavic: Also, I don't think the changes on worker/event are needed,
+             only prefork requires the accept mutex in ONE_PROCESS mode.
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
