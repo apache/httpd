@@ -482,7 +482,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * When adding a new code here add it to status_lines as well.
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 83
+#define RESPONSE_CODES 103
 
 #define HTTP_CONTINUE                        100
 #define HTTP_SWITCHING_PROTOCOLS             101
@@ -532,6 +532,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_PRECONDITION_REQUIRED           428
 #define HTTP_TOO_MANY_REQUESTS               429
 #define HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE 431
+#define HTTP_UNAVAILABLE_FOR_LEGAL_REASONS   451
 #define HTTP_INTERNAL_SERVER_ERROR           500
 #define HTTP_NOT_IMPLEMENTED                 501
 #define HTTP_BAD_GATEWAY                     502
