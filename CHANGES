@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Added support for HTTP code 451. PR58985.
+     [Yehuda Katz <yehuda ymkatz.net>, Jim Jagielski]
+
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
  
   *) hostname: Test and log useragent_host per-request across various modules,
