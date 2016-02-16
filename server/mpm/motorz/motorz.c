@@ -21,11 +21,7 @@
  */
 static motorz_core_t *g_motorz_core;
 static int threads_per_child = 0;
-static int ap_num_kids=0;
-static int ap_daemons_min_free=0;
-static int ap_daemons_max_free=0;
-static int ap_daemons_limit=0;      /* MaxRequestWorkers */
-static int server_limit = 0;
+static int ap_num_kids = 0;
 static int mpm_state = AP_MPMQ_STARTING;
 
 /* one_process --- debugging mode variable; can be set from the command line
@@ -684,7 +680,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = 1;
         break;
     case AP_MPMQ_MAX_DAEMON_USED:
-        *result = ap_daemons_limit;
+        *result = ap_num_kids;
         break;
     case AP_MPMQ_IS_THREADED:
         *result = AP_MPMQ_STATIC;
@@ -693,13 +689,13 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = AP_MPMQ_STATIC;
         break;
     case AP_MPMQ_HARD_LIMIT_DAEMONS:
-        *result = server_limit;
+        *result = ap_num_kids;
         break;
     case AP_MPMQ_HARD_LIMIT_THREADS:
         *result = MAX_THREAD_LIMIT;
         break;
     case AP_MPMQ_MAX_THREADS:
-        *result = 1;
+        *result = threads_per_child;
         break;
     case AP_MPMQ_MIN_SPARE_DAEMONS:
         *result = 0;
@@ -708,7 +704,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = 0;
         break;
     case AP_MPMQ_MAX_SPARE_DAEMONS:
-        *result = ap_daemons_max_free;
+        *result = ap_num_kids;
         break;
     case AP_MPMQ_MAX_SPARE_THREADS:
         *result = 0;
@@ -717,7 +713,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = 0;
         break;
     case AP_MPMQ_MAX_DAEMONS:
-        *result = ap_daemons_limit;
+        *result = ap_num_kids;
         break;
     case AP_MPMQ_MPM_STATE:
         *result = mpm_state;
@@ -1179,7 +1175,7 @@ static void startup_children(motorz_core_t *mz, int number_to_start)
 {
     int i;
 
-    for (i = 0; number_to_start && i < ap_daemons_limit; ++i) {
+    for (i = 0; number_to_start && i < ap_num_kids; ++i) {
         if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
             continue;
         }
@@ -1204,7 +1200,7 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
     free_length = 0;
     free_slots[0] = 0;
 
-    for (i = 0; i < ap_daemons_limit; ++i) {
+    for (i = 0; i < ap_num_kids; ++i) {
         int status;
         ws = &ap_scoreboard_image->servers[i][0];
         status = ws->status;
@@ -1270,14 +1266,8 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* Don't thrash since num_buckets depends on the
      * system and the number of online CPU cores...
      */
-    if (ap_daemons_limit < num_buckets)
-        ap_daemons_limit = num_buckets;
     if (ap_num_kids < num_buckets)
         ap_num_kids = num_buckets;
-    if (ap_daemons_min_free < num_buckets)
-        ap_daemons_min_free = num_buckets;
-    if (ap_daemons_max_free < ap_daemons_min_free + num_buckets)
-        ap_daemons_max_free = ap_daemons_min_free + num_buckets;
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
@@ -1288,9 +1278,6 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * supposed to start up without the 1 second penalty between each fork.
      */
     remaining_children_to_start = ap_num_kids;
-    if (remaining_children_to_start > ap_daemons_limit) {
-        remaining_children_to_start = ap_daemons_limit;
-    }
     if (!mz->is_graceful) {
         startup_children(mz, remaining_children_to_start);
         remaining_children_to_start = 0;
@@ -1354,7 +1341,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                                                            (request_rec *) NULL);
                 motorz_note_child_killed(child_slot, 0, 0);
                 if (remaining_children_to_start
-                    && child_slot < ap_daemons_limit) {
+                    && child_slot < ap_num_kids) {
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
@@ -1438,7 +1425,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* Send SIGUSR1 to the active children */
         active_children = 0;
-        for (index = 0; index < ap_daemons_limit; ++index) {
+        for (index = 0; index < ap_num_kids; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
                 /* Ask each child to close its listeners. */
                 ap_mpm_safe_kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
@@ -1469,7 +1456,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             ap_relieve_child_processes(motorz_note_child_killed);
 
             active_children = 0;
-            for (index = 0; index < ap_daemons_limit; ++index) {
+            for (index = 0; index < ap_num_kids; ++index) {
                 if (ap_mpm_safe_kill(MPM_CHILD_PID(index), 0) == APR_SUCCESS) {
                     active_children = 1;
                     /* Having just one child is enough to stay around */
@@ -1517,7 +1504,7 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * in a very nasty way if we ever have the scoreboard totally
          * file-based (no shared memory)
          */
-        for (index = 0; index < ap_daemons_limit; ++index) {
+        for (index = 0; index < ap_num_kids; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
                 ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
                 /* Ask each child to close its listeners.
@@ -1672,10 +1659,6 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 
     ap_listen_pre_config();
     ap_num_kids = DEFAULT_START_DAEMON;
-    ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
-    ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    server_limit = DEFAULT_SERVER_LIMIT;
-    ap_daemons_limit = server_limit;
     ap_extended_status = 0;
 
     return OK;
@@ -1692,114 +1675,35 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         startup = 1;
     }
 
-    if (server_limit > MAX_SERVER_LIMIT) {
+    if (ap_num_kids > MAX_SERVER_LIMIT) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02886)
-                         "WARNING: ServerLimit of %d exceeds compile-time "
-                         "limit of", server_limit);
+                         "WARNING: StartServers of %d exceeds compile-time "
+                         "limit of", ap_num_kids);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03118)
                          " %d servers, decreasing to %d.",
                          MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02887)
-                         "ServerLimit of %d exceeds compile-time limit "
+                         "StartServers of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
-                         server_limit, MAX_SERVER_LIMIT);
+                         ap_num_kids, MAX_SERVER_LIMIT);
         }
-        server_limit = MAX_SERVER_LIMIT;
+        ap_num_kids = MAX_SERVER_LIMIT;
     }
-    else if (server_limit < 1) {
+    else if (ap_num_kids < 1) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02888)
-                         "WARNING: ServerLimit of %d not allowed, "
-                         "increasing to 1.", server_limit);
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02889)
-                         "ServerLimit of %d not allowed, increasing to 1",
-                         server_limit);
-        }
-        server_limit = 1;
-    }
-
-    /* you cannot change ServerLimit across a restart; ignore
-     * any such attempts
-     */
-    if (!mz->first_server_limit) {
-        mz->first_server_limit = server_limit;
-    }
-    else if (server_limit != mz->first_server_limit) {
-        /* don't need a startup console version here */
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02890)
-                     "changing ServerLimit to %d from original value of %d "
-                     "not allowed during restart",
-                     server_limit, mz->first_server_limit);
-        server_limit = mz->first_server_limit;
-    }
-
-    if (ap_daemons_limit > server_limit) {
-        if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02891)
-                         "WARNING: MaxRequestWorkers of %d exceeds ServerLimit "
-                         "value of", ap_daemons_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03119)
-                         " %d servers, decreasing MaxRequestWorkers to %d.",
-                         server_limit, server_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03120)
-                         " To increase, please see the ServerLimit "
-                         "directive.");
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02892)
-                         "MaxRequestWorkers of %d exceeds ServerLimit value "
-                         "of %d, decreasing to match",
-                         ap_daemons_limit, server_limit);
-        }
-        ap_daemons_limit = server_limit;
-    }
-    else if (ap_daemons_limit < 1) {
-        if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02893)
-                         "WARNING: MaxRequestWorkers of %d not allowed, "
-                         "increasing to 1.", ap_daemons_limit);
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02894)
-                         "MaxRequestWorkers of %d not allowed, increasing to 1",
-                         ap_daemons_limit);
-        }
-        ap_daemons_limit = 1;
-    }
-
-    /* ap_num_kids > ap_daemons_limit checked in motorz_run() */
-    if (ap_num_kids < 1) {
-        if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02895)
                          "WARNING: StartServers of %d not allowed, "
                          "increasing to 1.", ap_num_kids);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02896)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02889)
                          "StartServers of %d not allowed, increasing to 1",
                          ap_num_kids);
         }
         ap_num_kids = 1;
     }
 
-    if (ap_daemons_min_free < 1) {
-        if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02897)
-                         "WARNING: MinSpareServers of %d not allowed, "
-                         "increasing to 1", ap_daemons_min_free);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03121)
-                         " to avoid almost certain server failure.");
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03122)
-                         " Please read the documentation.");
-        } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02898)
-                         "MinSpareServers of %d not allowed, increasing to 1",
-                         ap_daemons_min_free);
-        }
-        ap_daemons_min_free = 1;
-    }
-
-    /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in motorz_run() */
 
     return OK;
 }
@@ -1830,34 +1734,7 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char 
     if (err != NULL) {
         return err;
     }
-
     ap_num_kids = atoi(arg);
-    return NULL;
-}
-
-static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    if (!strcasecmp(cmd->cmd->name, "MaxClients")) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(02899)
-                     "MaxClients is deprecated, use MaxRequestWorkers "
-                     "instead.");
-    }
-    ap_daemons_limit = atoi(arg);
-    return NULL;
-}
-
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    server_limit = atoi(arg);
     return NULL;
 }
 
@@ -1868,7 +1745,6 @@ static const char *set_threads_per_child(cmd_parms * cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
-
     threads_per_child = atoi(arg);
     return NULL;
 }
@@ -1877,10 +1753,6 @@ static const command_rec motorz_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
               "Number of child processes launched at server startup"),
-AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
-              "Deprecated name of MaxRequestWorkers"),
-AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
-              "Maximum value of MaxRequestWorkers for this run of Apache"),
 AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
               "Number of threads each child creates"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
