@@ -4,6 +4,9 @@ Changes with Apache 2.4.19
   *) core: Add expression support to SetHandler.
      [Eric Covener]
 
+  *) mod_remoteip: Prevent an external proxy from presenting an internal
+     proxy. PR 55962. [Mike Rumph]
+
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
      PR 58929 [Ruediger Pluem]
