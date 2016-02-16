@@ -160,21 +160,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1727111
      Backport version for 2.4.x of patch:
          Trunk version of patch works modulo CHANGES
-     +1: rpluem,
+     +1: rpluem, jim
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch:
          http://home.apache.org/~jim/patches/hcheck-2.4.patch
          <Plus docs>
-     +1: 
+     +1: jim
 
   *) mod_remoteip: Prevent an external proxy from presenting an internal proxy
      PR 55962.
      Trunk version of patch:
          http://svn.apache.org/r1588330
      Trunk patch applies clean, modulo CHANGES
-     +1: wrowe, mrumph
+     +1: wrowe, mrumph, jim
 
   *) core: Track the useragent_host per-request when mod_remoteip or similar
      modules track a per-request useragent_ip.  Modules should be updated
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1729960
      2.4.x patch:  trunk works (modulo CHANGES)
      Resetting votes:
-     +1: icing
+     +1: icing, jim
 
   *) mod_watchdog: Error logging
      trunk patch:  http://svn.apache.org/r1722154
@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_heartmonitor: No need to search twice for the same value + fix some style
      trunk patch:  http://svn.apache.org/r1727842
      2.4.x patch:  trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
