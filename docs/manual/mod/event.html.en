@@ -36,7 +36,8 @@ of consuming threads only for connections with active processing</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>event.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>The <code class="module"><a href="../mod/event.html">event</a></code> Multi-Processing Module (MPM) is
+    <p>The <code class="module"><a href="../mod/event.html">event</a></code> Multi-Processing Module (MPM) is,
+    as its name implies, an asynchronous, event-based implementation
     designed to allow more requests to be served simultaneously by
     passing off some processing work to the listeners threads, freeing up
     the worker threads to serve new requests.</p>
@@ -93,16 +94,18 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
-    <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
+    <p>This original goal of this MPM was to fix the 'keep alive problem' in HTTP. After a client
     completes the first request, it can keep the connection
     open, sending further requests using the same socket and saving 
     significant overhead in creating TCP connections. However,
     Apache HTTP Server traditionally keeps an entire child 
     process/thread waiting for data from the client, which brings its own disadvantages. 
-    To solve this problem, this MPM uses a dedicated listener thread for each process 
-    to handle both the Listening sockets, all sockets that are in a Keep Alive state, 
-    sockets where the handler and protocol filters have done their work
-    and the ones where the only remaining thing to do is send the data to the client.
+    To solve this problem, this MPM uses a dedicated listener thread for each process
+    along with a pool of worker threads, sharing queues specific for those
+    requests in keep-alive mode (or, more simply, "readable"), those in write-
+    completion mode, and those in the process of shutting down ("closing").
+    An event loop, triggered on the status of the socket's availability,
+    adjusts these queues and pushes work to the worker pool.
     </p>
 
     <p>The total amount of connections that a single process/threads block can handle is regulated 
@@ -242,7 +245,7 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
     </ul>
 
     <p>This directive can be used to fine-tune the per-process connection
-    limit. A process will only accept new connections if the current number of
+    limit. A <strong>process</strong> will only accept new connections if the current number of
     connections (not counting connections in the "closing" state) is lower
     than:</p>
 
@@ -252,24 +255,33 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
         <var>number of idle workers</var>)
     </strong></p>
 
-    <div class="note"><h3>Idle connections handled by each process</h3>
-    <pre class="prettyprint lang-config">max_connections = ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)
+    <p>An estimation of the maximum concurrent connections across all the processes given
+        an average value of idle worker threads can be calculated with:
+    </p>
 
-ThreadsPerChild = idle_workers + busy_workers
-            
-max_connections = (idle_workers + busy_workers) + (AsyncRequestWorkerFactor * idle_workers)
-                = busy_workers + (AsyncRequestWorkerFactor + 1) * idle_workers 
 
-max_connections = max_idle_connections + busy_workers 
+    <p class="indent"><strong>
+        (<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +
+        (<code class="directive">AsyncRequestWorkerFactor</code> *
+        <var>number of idle workers</var>)) * 
+        <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
+    </strong></p>
 
-max_idle_connections + busy_workers = 
-                busy_workers + (AsyncRequestWorkerFactor + 1) * idle_workers 
+    <div class="note"><h3>Example</h3>
+    <pre class="prettyprint lang-config">ThreadsPerChild = 10
+ServerLimit = 4
+AsyncRequestWorkerFactor = 2
+MaxRequestWorkers = 40
 
-max_idle_connections = (AsyncRequestWorkerFactor + 1) * idle_workers</pre>
+idle_workers = 4 (average for all the processes to keep it simple)
+
+max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
+                = (10 + (2 * 4)) * 4 = 72</pre>
 
     </div>
 
-    <p>The absolute maximum numbers of concurrent connections is:</p>
+    <p>When all the worker threads are idle, then absolute maximum numbers of concurrent 
+        connections can be calculared in a simpler way:</p>
 
     <p class="indent"><strong>
         (<code class="directive">AsyncRequestWorkerFactor</code> + 1) *
@@ -277,7 +289,7 @@ max_idle_connections = (AsyncRequestWorkerFactor + 1) * idle_workers</pre>
     </strong></p>
 
 
-    <div class="note"><h3>Example 1</h3>
+    <div class="note"><h3>Example</h3>
     <pre class="prettyprint lang-config">ThreadsPerChild = 10 
 ServerLimit = 4
 MaxRequestWorkers = 40
@@ -296,21 +308,6 @@ AsyncRequestWorkerFactor = 2</pre>
     
 max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers 
                 = (2 + 1) * 40 = 120</pre>
-
-    </div>
-
-    <p>The above example is only related to a theoretical maximum, let's take a look to a more common use case:</p>
-
-    <div class="note"><h3>Example 2</h3>
-    <pre class="prettyprint lang-config">ThreadsPerChild = 10
-ServerLimit = 4
-AsyncRequestWorkerFactor = 2
-MaxRequestWorkers = 40
-
-idle_workers = 4 (average for all the processes to keep it simple)
-
-max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
-                = (10 + (2 * 4)) * 4 = 72</pre>
 
     </div>
 
