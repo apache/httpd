@@ -361,12 +361,12 @@ see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
 and <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
 containers apply enclosed configuration directives only
 to sites accessed through <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>'s proxy server
-that match the specified URL.  For example, the following configuration
-will prevent the proxy server from being used to access the
-<code>www.example.com</code> website.</p>
+that match the specified URL. For example, the following configuration
+will allow only a subset of clients to access the
+<code>www.example.com</code> website using the proxy server:</p>
 
 <pre class="prettyprint lang-config">&lt;Proxy http://www.example.com/*&gt;
-    Require all granted
+    Require host yournetwork.example.com
 &lt;/Proxy&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -452,12 +452,17 @@ are interpreted, it is important to understand how this works.</p>
     container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
     order.</p>
 
+<div class="note"><h3>Merge is not always Override</h3>
     <p>Later sections override earlier ones, however each module is responsible
     for interpreting what form this override takes.  A later configuration section
     with directives from a given module might cause a conceptual "merge" of some
     directives, all directives, or a complete replacement of the modules
     configuration with the module defaults and directives explicitly listed in
     the later context.</p>
+    <p><code class="directive">Directory</code>, <code class="directive">FilesMatch</code>, 
+    <code class="directive">Location</code> and the other directives discussed in this section 
+    implement the same merging strategy, namely "override" when applied to the same target.</p>
+</div>
 
 <div class="note"><h3>Technical Note</h3>
       There is actually a
@@ -498,6 +503,33 @@ E.</p>
     A
 &lt;/Directory&gt;</pre>
 
+
+<p>Another interesting example is the following one. As described above, 
+<code class="directive">FilesMatch</code> is merged after <code class="directive">Directory</code>, 
+therefore a request for <code>/var/www/index.html</code> will eventually get the "foo" Header set to
+the value "two", not "three" as somebody might expect from a first look.
+</p>
+
+<pre class="prettyprint lang-config">&lt;Directory "/"&gt;
+    Header set foo one
+    &lt;FilesMatch ".*"&gt;
+        Header set foo two
+    &lt;/FilesMatch&gt;
+&lt;/Directory&gt;
+
+&lt;Directory "/var/www"&gt;
+    Header set foo three
+&lt;/Directory&gt;</pre>
+
+
+<p>The chain of values that the "foo" header will get is: "one", "three" and "two". 
+It is important to notice that <code class="directive">Directory</code> and <code class="directive">FilesMatch</code> 
+implement the same merging strategy, namely "override" when 
+applied to the same path. In this example it means that the last directive applied in the merging order,
+<code class="directive">FilesMatch</code>, sets the final value for the "foo" header. 
+</p>
+<p>This is true for .htaccess too, since they have the same priority as <code class="directive">Directory</code>
+in the merging order.</p>
 
 <p>For a more concrete example, consider the following.  Regardless of
 any access restrictions placed in <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections, the <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> section will be
