@@ -452,19 +452,7 @@ are interpreted, it is important to understand how this works.</p>
     container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
     order.</p>
 
-<div class="note"><h3>Merge is not always Override</h3>
-    <p>Later sections override earlier ones, however each module is responsible
-    for interpreting what form this override takes.  A later configuration section
-    with directives from a given module might cause a conceptual "merge" of some
-    directives, all directives, or a complete replacement of the modules
-    configuration with the module defaults and directives explicitly listed in
-    the later context.</p>
-    <p><code class="directive">Directory</code>, <code class="directive">FilesMatch</code>, 
-    <code class="directive">Location</code> and the other directives discussed in this section 
-    implement the same merging strategy, namely "override" when applied to the same target.</p>
-</div>
-
-<div class="note"><h3>Technical Note</h3>
+    <div class="note"><h3>Technical Note</h3>
       There is actually a
       <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
       sequence performed just before the name translation phase
@@ -472,9 +460,51 @@ are interpreted, it is important to understand how this works.</p>
       are used to map URLs to filenames). The results of this
       sequence are completely thrown away after the translation has
       completed.
-</div>
+    </div>
 
-<h3><a name="merge-examples" id="merge-examples">Some Examples</a></h3>
+<h3><a name="relationship-module-configuration" id="relationship-module-configuration">Relationship between modules and configuration sections</a></h3>
+    <p>One question that often arises after reading how configuration sections are
+    merged is related to how and when directives of specific modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+    are processed. The answer is not trivial and needs a bit of background. 
+    Each httpd module manages its own configuration, and each of its directives in httpd.conf specify one piece 
+    of configuration in a particular context. httpd does not execute a command as it is read.</p>
+    <p>At runtime, the core of httpd iterates over the defined configuration sections in the order
+    described above to determine which ones apply to the current request. When the first section matches, 
+    it is considered the current configuration for this request. If a subsequent section matches too, 
+    then each module with a directive in either of the sections is given a chance to merge its configuration between the two sections. The result is a third configuration, and the process goes on until all the configuration sections
+    are evaluated.</p>
+    <p>After the above step, the "real" processing of the HTTP request begins: each module has a chance to run 
+    and perform whatever tasks they like. They can retrieve their own final merged configuration from the core
+    of the httpd to determine how they should act.</p>
+    <p>An example can help to visualize the whole process. The following configuration uses the 
+        <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> directive of <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> to set
+        a specific HTTP header. What value will httpd set in the <code>foo</code> header for a request to
+        <code>/example/index.html</code> ?
+    </p>
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
+    Header set foo one
+    &lt;FilesMatch ".*"&gt;
+        Header set foo three
+    &lt;/FilesMatch&gt;
+&lt;/Directory&gt;
+
+&lt;Directory "/example"&gt;
+    Header set foo two
+&lt;/Directory&gt;</pre>
+    
+    <ul>
+        <li><code class="directive">Directory</code> "/" matches and an initial configuration to set the "foo" header with the value "one" is created.</li>
+        <li><code class="directive">Directory</code> "/example" matches, and since <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> specifies in its code to override in case of a merge, a new configuration is created to set the "foo" header with the value "two".</li>
+        <li><code class="directive">FilesMatch</code> ".*" matches and another merge opportunity arises, causing the "foo" header
+        to be set with the value "three".</li>
+        <li>Eventually during the next steps of the HTTP request processing <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> will be called and it will receive the configuration to set the "foo" header with the value "three". <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> normally uses this configuration to perfom its job, namely setting the foo header. This does not mean that a module can't perform a more complex action like discarding directives because not needed or deprecated, etc..</li>
+    </ul>
+
+    <p>This is true for .htaccess too since they have the same priority as <code class="directive">Directory</code> in the merge order. The important concept to understand is that configuration sections like  <code class="directive">Directory</code> and <code class="directive">FilesMatch</code> are not comparable to module specific directives like <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> or <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> because they operate on different levels.
+    </p>
+
+
+<h3><a name="merge-examples" id="merge-examples">Some useful merge examples to practice</a></h3>
 
 <p>Below is an artificial example to show the order of
 merging. Assuming they all apply to the request, the directives in
@@ -504,32 +534,6 @@ E.</p>
 &lt;/Directory&gt;</pre>
 
 
-<p>Another interesting example is the following one. As described above, 
-<code class="directive">FilesMatch</code> is merged after <code class="directive">Directory</code>, 
-therefore a request for <code>/var/www/index.html</code> will eventually get the "foo" Header set to
-the value "two", not "three" as somebody might expect from a first look.
-</p>
-
-<pre class="prettyprint lang-config">&lt;Directory "/"&gt;
-    Header set foo one
-    &lt;FilesMatch ".*"&gt;
-        Header set foo two
-    &lt;/FilesMatch&gt;
-&lt;/Directory&gt;
-
-&lt;Directory "/var/www"&gt;
-    Header set foo three
-&lt;/Directory&gt;</pre>
-
-
-<p>The chain of values that the "foo" header will get is: "one", "three" and "two". 
-It is important to notice that <code class="directive">Directory</code> and <code class="directive">FilesMatch</code> 
-implement the same merging strategy, namely "override" when 
-applied to the same path. In this example it means that the last directive applied in the merging order,
-<code class="directive">FilesMatch</code>, sets the final value for the "foo" header. 
-</p>
-<p>This is true for .htaccess too, since they have the same priority as <code class="directive">Directory</code>
-in the merging order.</p>
 
 <p>For a more concrete example, consider the following.  Regardless of
 any access restrictions placed in <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections, the <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> section will be
