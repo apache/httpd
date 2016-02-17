@@ -93,6 +93,12 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
                  MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
     
     switch (h2_conn_mpm_type()) {
+        case H2_MPM_SIMPLE:
+        case H2_MPM_MOTORZ:
+        case H2_MPM_NETWARE:
+        case H2_MPM_WINNT:
+            /* not sure we need something extra for those. */
+            break;
         case H2_MPM_EVENT:
         case H2_MPM_WORKER:
             /* all fine, we know these ones */

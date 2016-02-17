@@ -56,6 +56,10 @@ typedef enum {
     H2_MPM_WORKER,
     H2_MPM_EVENT,
     H2_MPM_PREFORK,
+    H2_MPM_MOTORZ,
+    H2_MPM_SIMPLE,
+    H2_MPM_NETWARE,
+    H2_MPM_WINNT,
 } h2_mpm_type_t;
 
 /* Returns the type of MPM module detected */
