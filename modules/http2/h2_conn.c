@@ -60,13 +60,33 @@ static void check_modules(int force)
                 mpm_module = m;
                 break;
             }
-            else if (!strcmp("worker.c", m->name)) {
-                mpm_type = H2_MPM_WORKER;
+            else if (!strcmp("motorz.c", m->name)) {
+                mpm_type = H2_MPM_MOTORZ;
+                mpm_module = m;
+                break;
+            }
+            else if (!strcmp("mpm_netware.c", m->name)) {
+                mpm_type = H2_MPM_NETWARE;
                 mpm_module = m;
                 break;
             }
             else if (!strcmp("prefork.c", m->name)) {
                 mpm_type = H2_MPM_PREFORK;
+                mpm_module = m;
+                break;
+            }
+            else if (!strcmp("simple_api.c", m->name)) {
+                mpm_type = H2_MPM_SIMPLE;
+                mpm_module = m;
+                break;
+            }
+            else if (!strcmp("mpm_winnt.c", m->name)) {
+                mpm_type = H2_MPM_WINNT;
+                mpm_module = m;
+                break;
+            }
+            else if (!strcmp("worker.c", m->name)) {
+                mpm_type = H2_MPM_WORKER;
                 mpm_module = m;
                 break;
             }
@@ -260,8 +280,10 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
     c->sbh                    = master->sbh;
     
     ap_set_module_config(c->conn_config, &core_module, socket);
-    cfg = ap_get_module_config(master->conn_config, h2_conn_mpm_module());
-    ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
+    if (h2_conn_mpm_module()) {
+        cfg = ap_get_module_config(master->conn_config, h2_conn_mpm_module());
+        ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
+    }
 
     return c;
 }
