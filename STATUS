@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
      and Redirect. Limit Redirect expressions to directory (Location) context
      and redirect statuses (implicit or explicit).
@@ -128,6 +123,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~minfrin/httpd-mod_alias-expr2.patch
      +1: minfrin, jim, rpluem
 
+  *) mod_cache_socache: Fix a possible cached entity body corruption when it
+     is received from an origin server in multiple batches and forwarded by
+     mod_proxy.
+     trunk patch: http://svn.apache.org/r1721899
+     2.4.x patch: trunk works, module CHANGES
+     +1: ylavic, jim, rpluem
+
+  *) mod_watchdog: Error logging
+     trunk patch:  http://svn.apache.org/r1722154
+                   http://svn.apache.org/r1722701
+     2.4.x patch:  trunk works
+     +1: jim, rjung, rpluem
+
+  *) various: APLOGNO
+     trunk patch:  http://svn.apache.org/r1725485
+     2.4.x patch:  trunk works
+                   http://home.apache.org/~jim/patches/aplogno-2.4.patch
+     +1: jim, rjung, rpluem
+
+  *) mod_heartmonitor: No need to search twice for the same value + fix some style
+     trunk patch:  http://svn.apache.org/r1727842
+     2.4.x patch:  trunk works
+     +1: jailletc36, jim, rpluem
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
      during the mod_ssl unload happening on httpd startup.
@@ -136,13 +158,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jkaluza
      ylavic: +1 with r1723295 (likewise for ecparams).
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-
-  *) mod_cache_socache: Fix a possible cached entity body corruption when it
-     is received from an origin server in multiple batches and forwarded by
-     mod_proxy.
-     trunk patch: http://svn.apache.org/r1721899
-     2.4.x patch: trunk works, module CHANGES
-     +1: ylavic, jim, rpluem
 
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy.
@@ -180,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport patch to r1729931 is noted in the commit log message
      Requires r1729929 to be applied.
      +1: wrowe
- 
+
   *) core: introducing new hook "pre_close_connection" to give protocols other
      than http/1.1 a chance to send one last frame before close. Scoreboard
      additions to allow update from master connections.
@@ -207,23 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Resetting votes:
      +1: icing, jim
      rpluem says: +1, but I would like to see http://svn.apache.org/r1730865 added.
-
-  *) mod_watchdog: Error logging
-     trunk patch:  http://svn.apache.org/r1722154
-                   http://svn.apache.org/r1722701
-     2.4.x patch:  trunk works
-     +1: jim, rjung, rpluem
-
-  *) various: APLOGNO
-     trunk patch:  http://svn.apache.org/r1725485
-     2.4.x patch:  trunk works
-                   http://home.apache.org/~jim/patches/aplogno-2.4.patch
-     +1: jim, rjung, rpluem
-
-  *) mod_heartmonitor: No need to search twice for the same value + fix some style
-     trunk patch:  http://svn.apache.org/r1727842
-     2.4.x patch:  trunk works
-     +1: jailletc36, jim, rpluem
 
   *) mod_proxy_wstunnel, mod_proxy_connect: Use the correct pool and allocator
      lifetime when sending brigades and buckets down the filter chain to the
