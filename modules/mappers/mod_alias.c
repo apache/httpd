@@ -34,6 +34,7 @@
 #include "http_config.h"
 #include "http_request.h"
 #include "http_log.h"
+#include "ap_expr.h"
 
 
 typedef struct {
@@ -50,10 +51,19 @@ typedef struct {
 } alias_server_conf;
 
 typedef struct {
+    unsigned int alias_set:1;
+    unsigned int redirect_set:1;
     apr_array_header_t *redirects;
+    const ap_expr_info_t *alias;
+    char *handler;
+    const ap_expr_info_t *redirect;
+    int redirect_status;                /* 301, 302, 303, 410, etc */
 } alias_dir_conf;
 
 module AP_MODULE_DECLARE_DATA alias_module;
+
+static char magic_error_value;
+#define PREGSUB_ERROR      (&magic_error_value)
 
 static void *create_alias_config(apr_pool_t *p, server_rec *s)
 {
@@ -91,7 +101,17 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
     (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
     alias_dir_conf *base = (alias_dir_conf *) basev;
     alias_dir_conf *overrides = (alias_dir_conf *) overridesv;
+
     a->redirects = apr_array_append(p, overrides->redirects, base->redirects);
+
+    a->alias = (overrides->alias_set == 0) ? base->alias : overrides->alias;
+    a->handler = (overrides->alias_set == 0) ? base->handler : overrides->handler;
+    a->alias_set = overrides->alias_set || base->alias_set;
+
+    a->redirect = (overrides->redirect_set == 0) ? base->redirect : overrides->redirect;
+    a->redirect_status = (overrides->redirect_set == 0) ? base->redirect_status : overrides->redirect_status;
+    a->redirect_set = overrides->redirect_set || base->redirect_set;
+
     return a;
 }
 
@@ -110,6 +130,12 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     int i;
 
     /* XXX: real can NOT be relative to DocumentRoot here... compat bug. */
+
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
+
+    if (err != NULL) {
+        return err;
+    }
 
     if (use_regex) {
         new->regexp = ap_pregcomp(cmd->pool, fake, AP_REG_EXTENDED);
@@ -155,9 +181,41 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 }
 
 static const char *add_alias(cmd_parms *cmd, void *dummy, const char *fake,
-                             const char *real)
+        const char *real)
 {
-    return add_alias_internal(cmd, dummy, fake, real, 0);
+    if (real) {
+
+        return add_alias_internal(cmd, dummy, fake, real, 0);
+
+    }
+    else {
+        alias_dir_conf *dirconf = (alias_dir_conf *) dummy;
+
+        const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES);
+
+        if (err != NULL) {
+            return err;
+        }
+
+        if (!cmd->path) {
+            return "Alias must have two arguments when used globally";
+        }
+
+        dirconf->alias =
+                ap_expr_parse_cmd(cmd, fake, AP_EXPR_FLAG_STRING_RESULT,
+                        &err, NULL);
+        if (err) {
+            return apr_pstrcat(cmd->temp_pool,
+                    "Cannot parse alias expression '", fake, "': ", err,
+                    NULL);
+        }
+
+        dirconf->handler = cmd->info;
+        dirconf->alias_set = 1;
+
+        return NULL;
+
+    }
 }
 
 static const char *add_alias_regex(cmd_parms *cmd, void *dummy,
@@ -194,15 +252,63 @@ static const char *add_redirect_internal(cmd_parms *cmd,
         status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
         status = HTTP_SEE_OTHER;
-    else if (!strcasecmp(arg1, "gone"))
+    else if (!strcasecmp(arg1, "gone")) {
         status = HTTP_GONE;
-    else if (apr_isdigit(*arg1))
+        grokarg1 = -1;
+    }
+    else if (apr_isdigit(*arg1)) {
         status = atoi(arg1);
-    else
+        if (!ap_is_HTTP_REDIRECT(status)) {
+            grokarg1 = -1;
+        }
+    }
+    else {
         grokarg1 = 0;
+    }
 
     if (arg3 && !grokarg1)
         return "Redirect: invalid first argument (of three)";
+
+    /*
+     * if we have the 2nd arg and we understand the 1st one as a redirect
+     * status (3xx, but not things like 404 /robots.txt), or if we have the
+     * 1st arg but don't understand it, we use the expression syntax assuming
+     * a path from the location.
+     *
+     * if we understand the first arg but have no second arg, we are dealing
+     * with a status like "GONE" or a non-redirect status (e.g. 404, 503).
+     */
+    if (!cmd->path) {
+        /* <Location> context only for now */
+        ;
+    }
+    else if ((grokarg1 > 0 && arg2 && !arg3) || (!grokarg1 && !arg2)) {
+        const char *expr_err = NULL;
+
+        url = grokarg1 ? arg2 : arg1;
+        dirconf->redirect =
+                ap_expr_parse_cmd(cmd, url, AP_EXPR_FLAG_STRING_RESULT,
+                        &expr_err, NULL);
+        if (expr_err) {
+            return apr_pstrcat(cmd->temp_pool,
+                    "Cannot parse redirect expression '", url, "': ", expr_err,
+                    NULL);
+        }
+
+        dirconf->redirect_status = status;
+        dirconf->redirect_set = 1;
+
+        return NULL;
+
+    }
+    else if (grokarg1 < 0 && !arg2) {
+
+        dirconf->redirect_status = status;
+        dirconf->redirect_set = 1;
+
+        return NULL;
+
+    }
 
     /*
      * if we don't have the 3rd arg and we didn't understand the 1st
@@ -269,11 +375,11 @@ static const char *add_redirect_regex(cmd_parms *cmd, void *dirconf,
 
 static const command_rec alias_cmds[] =
 {
-    AP_INIT_TAKE2("Alias", add_alias, NULL, RSRC_CONF,
-                  "a fakename and a realname"),
-    AP_INIT_TAKE2("ScriptAlias", add_alias, "cgi-script", RSRC_CONF,
-                  "a fakename and a realname"),
-    AP_INIT_TAKE23("Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
+    AP_INIT_TAKE12("Alias", add_alias, NULL, RSRC_CONF | ACCESS_CONF,
+                  "a fakename and a realname, or a realname in a Location"),
+    AP_INIT_TAKE12("ScriptAlias", add_alias, "cgi-script", RSRC_CONF | ACCESS_CONF,
+                  "a fakename and a realname, or a realname in a Location"),
+    AP_INIT_TAKE123("Redirect", add_redirect, (void *) HTTP_MOVED_TEMPORARILY,
                    OR_FILEINFO,
                    "an optional status, then document to be redirected and "
                    "destination URL"),
@@ -333,8 +439,79 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
-static char magic_error_value;
-#define PREGSUB_ERROR      (&magic_error_value)
+static char *try_alias(request_rec *r)
+{
+    alias_dir_conf *dirconf =
+            (alias_dir_conf *) ap_get_module_config(r->per_dir_config, &alias_module);
+
+    if (dirconf->alias) {
+        const char *err = NULL;
+
+        char *found = apr_pstrdup(r->pool,
+                ap_expr_str_exec(r, dirconf->alias, &err));
+        if (err) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02825)
+                          "Can't evaluate alias expression: %s", err);
+            return PREGSUB_ERROR;
+        }
+
+        if (dirconf->handler) { /* Set handler, and leave a note for mod_cgi */
+            r->handler = dirconf->handler;
+            apr_table_setn(r->notes, "alias-forced-type", r->handler);
+        }
+        /* XXX This is as SLOW as can be, next step, we optimize
+         * and merge to whatever part of the found path was already
+         * canonicalized.  After I finish eliminating os canonical.
+         * Better fail test for ap_server_root_relative needed here.
+         */
+        found = ap_server_root_relative(r->pool, found);
+        return found;
+
+    }
+
+    return NULL;
+}
+
+static char *try_redirect(request_rec *r, int *status)
+{
+    alias_dir_conf *dirconf =
+            (alias_dir_conf *) ap_get_module_config(r->per_dir_config, &alias_module);
+
+    if (dirconf->redirect_set) {
+        apr_uri_t uri;
+        const char *err = NULL;
+        char *found = "";
+
+        if (dirconf->redirect) {
+
+            found = apr_pstrdup(r->pool,
+                    ap_expr_str_exec(r, dirconf->redirect, &err));
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02826)
+                              "Can't evaluate redirect expression: %s", err);
+                return PREGSUB_ERROR;
+            }
+
+            apr_uri_parse(r->pool, found, &uri);
+            /* Do not escape the query string or fragment. */
+            found = apr_uri_unparse(r->pool, &uri, APR_URI_UNP_OMITQUERY);
+            found = ap_escape_uri(r->pool, found);
+            if (uri.query) {
+                found = apr_pstrcat(r->pool, found, "?", uri.query, NULL);
+            }
+            if (uri.fragment) {
+                found = apr_pstrcat(r->pool, found, "#", uri.fragment, NULL);
+            }
+
+        }
+
+        *status = dirconf->redirect_status;
+        return found;
+
+    }
+
+    return NULL;
+}
 
 static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                             int is_redir, int *status)
@@ -435,7 +612,9 @@ static int translate_alias_redir(request_rec *r)
         return DECLINED;
     }
 
-    if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
+    if ((ret = try_redirect(r, &status)) != NULL
+            || (ret = try_alias_list(r, serverconf->redirects, 1, &status))
+                    != NULL) {
         if (ret == PREGSUB_ERROR)
             return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {
@@ -468,7 +647,9 @@ static int translate_alias_redir(request_rec *r)
         return status;
     }
 
-    if ((ret = try_alias_list(r, serverconf->aliases, 0, &status)) != NULL) {
+    if ((ret = try_alias(r)) != NULL
+            || (ret = try_alias_list(r, serverconf->aliases, 0, &status))
+                    != NULL) {
         r->filename = ret;
         return OK;
     }
@@ -486,7 +667,9 @@ static int fixup_redir(request_rec *r)
 
     /* It may have changed since last time, so try again */
 
-    if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
+    if ((ret = try_redirect(r, &status)) != NULL
+            || (ret = try_alias_list(r, dirconf->redirects, 1, &status))
+                    != NULL) {
         if (ret == PREGSUB_ERROR)
             return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {

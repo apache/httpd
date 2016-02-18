@@ -41,6 +41,9 @@
 <seealso><directive module="core" type="section">ElseIf</directive></seealso>
 <seealso><directive module="core" type="section">Else</directive></seealso>
 <seealso><directive module="core" type="section">ErrorDocument</directive></seealso>
+<seealso><directive module="mod_alias">Alias</directive></seealso>
+<seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
+<seealso><directive module="mod_alias">Redirect</directive></seealso>
 <seealso><directive module="mod_auth_basic">AuthBasicFake</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive></seealso>
 <seealso><directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive></seealso>
