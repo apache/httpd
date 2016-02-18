@@ -29,9 +29,11 @@ APR_DECLARE_OPTIONAL_FN(int,
 
 
 /*******************************************************************************
- * HTTP/2 slave engines
+ * HTTP/2 request engines
  ******************************************************************************/
  
+struct apr_thread_cond_t;
+
 typedef struct h2_req_engine h2_req_engine;
 
 /**
@@ -45,25 +47,17 @@ typedef apr_status_t h2_req_engine_init(h2_req_engine *engine, request_rec *r);
 
 /**
  * The public structure of a h2_req_engine. It gets allocated by the http2
- * infrastructure, assigned id, type, pool and connection and passed to the
+ * infrastructure, assigned id, type, pool, io and connection and passed to the
  * h2_req_engine_init() callback to complete initialization.
  * This happens whenever a new request gets "push"ed for an engine type and
  * no instance, or no free instance, for the type is available.
  */
 struct h2_req_engine {
-    int id;                /* identifier, unique for a master connection */
-    const char *type;      /* name of the engine type */
+    const char *id;        /* identifier */
     apr_pool_t *pool;      /* pool for engine specific allocations */
-    conn_rec *c;           /* connection this engine is assigned to */
-    apr_size_t r_capacity; /* request capacity engine is willing to handle,
-                              may change between invocations. If the engine
-                              sets this to 0, it signals that it no longer
-                              wants more requests. New requests, already 
-                              scheduled for this engine might still arrive for
-                              a time. */
-    apr_size_t r_count;    /* number of request currently assigned, it is the
-                              responsibility of the engine to update this. */
-    void *data;            /* engine specific data */
+    const char *type;      /* name of the engine type */
+    apr_size_t capacity;   /* number of max assigned requests */
+    void *user_data;       /* user specific data */
 };
 
 /**
@@ -95,7 +89,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_pull, (h2_req_engine *engine, 
-                                                apr_time_t timeout,
+                                                apr_read_type_e block,
                                                 request_rec **pr));
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 

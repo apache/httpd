@@ -46,7 +46,7 @@ struct h2_io_set;
 struct apr_thread_cond_t;
 struct h2_workers;
 struct h2_stream_set;
-struct h2_task_queue;
+struct h2_int_queue;
 struct h2_req_engine;
 
 #include <apr_queue.h>
@@ -69,7 +69,7 @@ struct h2_mplx {
 
     unsigned int aborted : 1;
 
-    struct h2_task_queue *q;
+    struct h2_int_queue *q;
     struct h2_io_set *stream_ios;
     struct h2_io_set *ready_ios;
     
@@ -77,6 +77,7 @@ struct h2_mplx {
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
+    struct apr_thread_cond_t *request_done;
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
@@ -91,7 +92,9 @@ struct h2_mplx {
     void *input_consumed_ctx;
     
     struct h2_req_engine *engine;
+    /* TODO: signal for waiting tasks*/
     apr_queue_t *engine_queue;
+    int next_eng_id;
 };
 
 
@@ -127,7 +130,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-void h2_mplx_request_done(h2_mplx **pm, int stream_id, const struct h2_request **preq);
+void h2_mplx_request_done(h2_mplx *m, int stream_id, const struct h2_request **preq);
 
 /**
  * Get the highest stream identifier that has been passed on to processing.
@@ -151,9 +154,13 @@ int h2_mplx_get_max_stream_started(h2_mplx *m);
  */
 apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
 
-/* Return != 0 iff the multiplexer has data for the given stream. 
+/* Return != 0 iff the multiplexer has output data for the given stream. 
  */
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id);
+
+/* Return != 0 iff the multiplexer has input data for the given stream. 
+ */
+int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id);
 
 /**
  * Waits on output data from any stream in this session to become available. 
@@ -385,17 +392,14 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
 typedef apr_status_t h2_mplx_engine_init(struct h2_req_engine *engine, 
                                          request_rec *r);
 
-apr_status_t h2_mplx_engine_push(h2_mplx *m, struct h2_task *task, 
-                                 const char *engine_type, 
+apr_status_t h2_mplx_engine_push(const char *engine_type, 
                                  request_rec *r, h2_mplx_engine_init *einit);
                                  
-apr_status_t h2_mplx_engine_pull(h2_mplx *m, struct h2_task *task, 
-                                 struct h2_req_engine *engine, 
-                                 apr_time_t timeout, request_rec **pr);
+apr_status_t h2_mplx_engine_pull(struct h2_req_engine *engine, 
+                                 apr_read_type_e block, request_rec **pr);
 
-void h2_mplx_engine_done(h2_mplx *m, struct h2_task *task, conn_rec *r_conn);
+void h2_mplx_engine_done(struct h2_req_engine *engine, conn_rec *r_conn);
                                  
-void h2_mplx_engine_exit(h2_mplx *m, struct h2_task *task, 
-                         struct h2_req_engine *engine);
+void h2_mplx_engine_exit(struct h2_req_engine *engine);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

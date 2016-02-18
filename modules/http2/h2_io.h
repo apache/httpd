@@ -63,9 +63,6 @@ struct h2_io {
     apr_size_t input_consumed;       /* how many bytes have been read */
         
     int files_handles_owned;
-    
-    struct h2_task *task;            /* parked task */
-    request_rec *r;                  /* parked request */
 };
 
 /*******************************************************************************
@@ -101,6 +98,10 @@ int h2_io_in_has_eos_for(h2_io *io);
  * Output data is available.
  */
 int h2_io_out_has_data(h2_io *io);
+/**
+ * Input data is available.
+ */
+int h2_io_in_has_data(h2_io *io);
 
 void h2_io_signal(h2_io *io, h2_io_op op);
 void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 

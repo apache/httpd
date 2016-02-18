@@ -29,6 +29,7 @@ struct h2_task_input {
     conn_rec *c;
     struct h2_task *task;
     apr_bucket_brigade *bb;
+    apr_read_type_e block;
 };
 
 
@@ -40,5 +41,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
                                   ap_input_mode_t mode,
                                   apr_read_type_e block,
                                   apr_off_t readbytes);
+
+void h2_task_input_block_set(h2_task_input *input, apr_read_type_e block);
 
 #endif /* defined(__mod_h2__h2_task_input__) */

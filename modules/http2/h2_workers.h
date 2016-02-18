@@ -27,7 +27,6 @@ struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
 struct h2_task;
-struct h2_task_queue;
 
 typedef struct h2_workers h2_workers;
 

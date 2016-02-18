@@ -61,6 +61,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         
         while (req) {
             conn_rec *c, *master = m->c;
+            h2_task *task;
             int stream_id = req->id;
             
             if (!task_pool) {
@@ -81,38 +82,32 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
             
             c = h2_slave_create(master, task_pool, 
                                 worker->thread, worker->socket);
-            if (!c) {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
-                              APLOGNO(02957) "h2_request(%ld-%d): error setting up slave connection", 
-                              m->id, stream_id);
-                h2_mplx_out_rst(m, stream_id, H2_ERR_INTERNAL_ERROR);
+                
+            task = h2_task_create(m->id, req, task_pool, m);
+            h2_ctx_create_for(c, task);
+            
+            h2_task_do(task, c, worker->io, worker->socket);
+            
+            if (task->frozen) {
+                /* this task was handed over to someone else for processing */
+                h2_task_thaw(task);
+                task_pool = NULL;
+                req = NULL;
+                h2_mplx_request_done(m, 0, worker->aborted? NULL : &req);
             }
             else {
-                h2_task *task;
-                
-                task = h2_task_create(m->id, req, task_pool, m);
-                h2_ctx_create_for(c, task);
-                h2_task_do(task, c, worker->io, worker->socket);
-                
-                if (task->frozen) {
-                    /* this task was handed over to someone else for
-                     * processing */
-                    task_pool = NULL;
-                }
-                task = NULL;
+                /* clean our references and report request as done. Signal
+                 * that we want another unless we have been aborted */
+                /* TODO: this will keep a worker attached to this h2_mplx as
+                 * long as it has requests to handle. Might no be fair to
+                 * other mplx's. Perhaps leave after n requests? */
                 apr_thread_cond_signal(worker->io);
+                if (task_pool) {
+                    apr_pool_clear(task_pool);
+                }
+                req = NULL;
+                h2_mplx_request_done(m, stream_id, worker->aborted? NULL : &req);
             }
-            
-            /* clean our references and report request as done. Signal
-             * that we want another unless we have been aborted */
-            /* TODO: this will keep a worker attached to this h2_mplx as
-             * long as it has requests to handle. Might no be fair to
-             * other mplx's. Perhaps leave after n requests? */
-            req = NULL;
-            if (task_pool) {
-                apr_pool_clear(task_pool);
-            }
-            h2_mplx_request_done(&m, stream_id, worker->aborted? NULL : &req);
         }
     }
 

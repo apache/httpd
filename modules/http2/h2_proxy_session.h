@@ -20,50 +20,72 @@
 
 #include <nghttp2/nghttp2.h>
 
-typedef struct h2_proxy_session {
+struct h2_int_queue;
+
+typedef enum {
+    H2_PROXYS_ST_INIT,             /* send initial SETTINGS, etc. */
+    H2_PROXYS_ST_DONE,             /* finished, connection close */
+    H2_PROXYS_ST_IDLE,             /* no streams to process */
+    H2_PROXYS_ST_BUSY,             /* read/write without stop */
+    H2_PROXYS_ST_WAIT,             /* waiting for tasks reporting back */
+    H2_PROXYS_ST_LOCAL_SHUTDOWN,   /* we announced GOAWAY */
+    H2_PROXYS_ST_REMOTE_SHUTDOWN,  /* client announced GOAWAY */
+} h2_proxys_state;
+
+typedef enum {
+    H2_PROXYS_EV_INIT,             /* session was initialized */
+    H2_PROXYS_EV_LOCAL_GOAWAY,     /* we send a GOAWAY */
+    H2_PROXYS_EV_REMOTE_GOAWAY,    /* remote send us a GOAWAY */
+    H2_PROXYS_EV_CONN_ERROR,       /* connection error */
+    H2_PROXYS_EV_PROTO_ERROR,      /* protocol error */
+    H2_PROXYS_EV_CONN_TIMEOUT,     /* connection timeout */
+    H2_PROXYS_EV_NO_IO,            /* nothing has been read or written */
+    H2_PROXYS_EV_STREAM_SUBMITTED, /* stream has been submitted */
+    H2_PROXYS_EV_STREAM_DONE,      /* stream has been finished */
+    H2_PROXYS_EV_STREAM_RESUMED,   /* stream signalled availability of headers/data */
+    H2_PROXYS_EV_DATA_READ,        /* connection data has been read */
+    H2_PROXYS_EV_NGH2_DONE,        /* nghttp2 wants neither read nor write anything */
+    H2_PROXYS_EV_PRE_CLOSE,        /* connection will close after this */
+} h2_proxys_event_t;
+
+
+typedef struct h2_proxy_session h2_proxy_session;
+typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r);
+
+struct h2_proxy_session {
+    const char *id;
     conn_rec *c;
     proxy_conn_rec *p_conn;
     proxy_server_conf *conf;
     apr_pool_t *pool;
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
+    h2_proxy_request_done *done;
+    void *user_data;
+    
     int window_bits_default;
     int window_bits_connection;
 
-    unsigned int goaway_recvd : 1;
-    unsigned int goaway_sent : 1;
-    
+    h2_proxys_state state;
+
+    struct h2_int_queue *streams;
+    struct h2_int_queue *suspended;
+    apr_size_t remote_max_concurrent;
     int max_stream_recv;
     
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
-} h2_proxy_session;
+};
 
-typedef struct h2_proxy_stream {
-    int id;
-    apr_pool_t *pool;
-    h2_proxy_session *session;
+h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
+                                         proxy_server_conf *conf,
+                                         h2_proxy_request_done *done);
 
-    const char *url;
-    request_rec *r;
-    h2_request *req;
+apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
+                                     request_rec *r);
+                                     
+apr_status_t h2_proxy_session_process(h2_proxy_session *s);
 
-    h2_stream_state_t state;
-    unsigned int data_received : 1;
-
-    apr_bucket_brigade *input;
-    apr_bucket_brigade *output;
-    
-    apr_table_t *saves;
-} h2_proxy_stream;
-
-
-h2_proxy_session *h2_proxy_session_setup(request_rec *r, proxy_conn_rec *p_connm,
-                                         proxy_server_conf *conf);
-
-apr_status_t h2_proxy_session_open_stream(h2_proxy_session *s, const char *url,
-                                          request_rec *r, h2_proxy_stream **pstream);
-apr_status_t h2_proxy_stream_process(h2_proxy_stream *stream);
 
 #define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
 

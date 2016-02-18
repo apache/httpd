@@ -141,6 +141,10 @@ SOURCE=./h2_h2.c
 # End Source File
 # Begin Source File
 
+SOURCE=./h2_int_queue.c
+# End Source File
+# Begin Source File
+
 SOURCE=./h2_io.c
 # End Source File
 # Begin Source File
@@ -190,10 +194,6 @@ SOURCE=./h2_task_input.c
 # Begin Source File
 
 SOURCE=./h2_task_output.c
-# End Source File
-# Begin Source File
-
-SOURCE=./h2_task_queue.c
 # End Source File
 # Begin Source File
 
