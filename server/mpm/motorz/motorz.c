@@ -1578,7 +1578,7 @@ static int motorz_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     all_buckets = apr_pcalloc(pconf, num_buckets *
                                      sizeof(motorz_child_bucket));
     for (i = 0; i < num_buckets; i++) {
-        if (rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod)) {
+        if ((rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod))) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s), APLOGNO(03277)
                          "could not open pipe-of-death");
