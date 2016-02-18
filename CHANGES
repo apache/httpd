@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http2: using single connection for several requests *if*
+     master connection uses HTTP/2 itself. Not yet hardened under load.
+     [Stefan Eissing]
+
   *) core: Added support for HTTP code 451. PR58985.
      [Yehuda Katz <yehuda ymkatz.net>, Jim Jagielski]
 
@@ -22,6 +26,7 @@ Changes with Apache 2.5.0
 
   *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
      urls. Uses, so far, one connection per request, reuses connections.
+     [Stefan Eissing]
   
   *) event: use pre_connection hook to properly initialize connection state for
      slave connections. use protocol_switch hook to initialize server config

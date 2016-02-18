@@ -1110,7 +1110,7 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
             size_t len = (frame->goaway.opaque_data_len < s_len)?
             frame->goaway.opaque_data_len : s_len-1;
             memcpy(scratch, frame->goaway.opaque_data, len);
-            scratch[len+1] = '\0';
+            scratch[len] = '\0';
             return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s']",
                                 frame->goaway.error_code, scratch);
         }

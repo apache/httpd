@@ -194,6 +194,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_filter.o \
 	$(OBJDIR)/h2_from_h1.o \
 	$(OBJDIR)/h2_h2.o \
+	$(OBJDIR)/h2_int_queue.o \
 	$(OBJDIR)/h2_io.o \
 	$(OBJDIR)/h2_io_set.o \
 	$(OBJDIR)/h2_mplx.o \
@@ -207,7 +208,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_task.o \
 	$(OBJDIR)/h2_task_input.o \
 	$(OBJDIR)/h2_task_output.o \
-	$(OBJDIR)/h2_task_queue.o \
 	$(OBJDIR)/h2_util.o \
 	$(OBJDIR)/h2_worker.o \
 	$(OBJDIR)/h2_workers.o \

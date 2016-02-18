@@ -26,7 +26,6 @@
 #include "h2_private.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
-#include "h2_task_queue.h"
 #include "h2_worker.h"
 #include "h2_workers.h"
 

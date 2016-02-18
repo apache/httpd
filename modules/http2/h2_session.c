@@ -103,8 +103,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     return stream;
 }
 
-#ifdef H2_NG2_STREAM_API
-
 /**
  * Determine the importance of streams when scheduling tasks.
  * - if both stream depend on the same one, compare weights
@@ -157,20 +155,6 @@ static int stream_pri_cmp(int sid1, int sid2, void *ctx)
     }
     return spri_cmp(sid1, s1, sid2, s2, session);
 }
-
-#else /* ifdef H2_NG2_STREAM_API */
-
-/* In absence of nghttp2_stream API, which gives information about
- * priorities since nghttp2 1.3.x, we just sort the streams by
- * their identifier, aka. order of arrival.
- */
-static int stream_pri_cmp(int sid1, int sid2, void *ctx)
-{
-    (void)ctx;
-    return sid1 - sid2;
-}
-
-#endif /* (ifdef else) H2_NG2_STREAM_API */
 
 static apr_status_t stream_schedule(h2_session *session,
                                     h2_stream *stream, int eos)

@@ -132,50 +132,24 @@ static apr_status_t http2_req_engine_push(const char *engine_type,
                                           request_rec *r, 
                                           h2_req_engine_init *einit)
 {
-    h2_ctx *ctx = h2_ctx_rget(r);
-    if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            return h2_mplx_engine_push(task->mplx, task, engine_type, r, einit);
-        }
-    }
-    return APR_EINVAL;
+    return h2_mplx_engine_push(engine_type, r, einit);
 }
 
 static apr_status_t http2_req_engine_pull(h2_req_engine *engine, 
-                                          apr_time_t timeout, request_rec **pr)
+                                          apr_read_type_e block, 
+                                          request_rec **pr)
 {
-    h2_ctx *ctx = h2_ctx_get(engine->c, 0);
-    if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            return h2_mplx_engine_pull(task->mplx, task, engine, timeout, pr);
-        }
-    }
-    return APR_ECONNABORTED;
+    return h2_mplx_engine_pull(engine, block, pr);
 }
 
 static void http2_req_engine_done(h2_req_engine *engine, conn_rec *r_conn)
 {
-    h2_ctx *ctx = h2_ctx_get(r_conn, 0);
-    if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            h2_mplx_engine_done(task->mplx, task, r_conn);
-            /* task is destroyed */
-        }
-    }
+    h2_mplx_engine_done(engine, r_conn);
 }
 
 static void http2_req_engine_exit(h2_req_engine *engine)
 {
-    h2_ctx *ctx = h2_ctx_get(engine->c, 0);
-    if (ctx) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        if (task) {
-            h2_mplx_engine_exit(task->mplx, task, engine);
-        }
-    }
+    h2_mplx_engine_exit(engine);
 }
 
 

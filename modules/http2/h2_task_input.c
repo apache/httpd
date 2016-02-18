@@ -50,6 +50,7 @@ h2_task_input *h2_task_input_create(h2_task *task, conn_rec *c)
         input->c = c;
         input->task = task;
         input->bb = NULL;
+        input->block = APR_BLOCK_READ;
         
         if (task->ser_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
@@ -73,6 +74,11 @@ h2_task_input *h2_task_input_create(h2_task *task, conn_rec *c)
         }
     }
     return input;
+}
+
+void h2_task_input_block_set(h2_task_input *input, apr_read_type_e block)
+{
+    input->block = block;
 }
 
 apr_status_t h2_task_input_read(h2_task_input *input,
@@ -115,7 +121,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
         return APR_EOF;
     }
     
-    while ((bblen == 0) || (mode == AP_MODE_READBYTES && bblen < readbytes)) {
+    while (bblen == 0) {
         /* Get more data for our stream from mplx.
          */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
@@ -124,26 +130,30 @@ apr_status_t h2_task_input_read(h2_task_input *input,
                       input->task->id, block, 
                       (long)readbytes, (long)bblen);
         
-        /* Although we sometimes get called with APR_NONBLOCK_READs, 
-         we need to fill our buffer blocking. Otherwise we get EAGAIN,
-         return that to our caller and everyone throws up their hands,
-         never calling us again. */
-        status = h2_mplx_in_read(input->task->mplx, APR_BLOCK_READ,
+        /* Override the block mode we get called with depending on the input's
+         * setting. 
+         */
+        status = h2_mplx_in_read(input->task->mplx, block,
                                  input->task->stream_id, input->bb, 
                                  f->r? f->r->trailers_in : NULL, 
                                  input->task->io);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task_input(%s): mplx in read returned",
                       input->task->id);
-        if (status != APR_SUCCESS) {
+        if (APR_STATUS_IS_EAGAIN(status) 
+            && (mode == AP_MODE_GETLINE || block == APR_BLOCK_READ)) {
+            /* chunked input handling does not seem to like it if we
+             * return with APR_EAGAIN from a GETLINE read... 
+             * upload 100k test on test-ser.example.org hangs */
+            status = APR_SUCCESS;
+        }
+        else if (status != APR_SUCCESS) {
             return status;
         }
+        
         status = apr_brigade_length(input->bb, 1, &bblen);
         if (status != APR_SUCCESS) {
             return status;
-        }
-        if ((bblen == 0) && (block == APR_NONBLOCK_READ)) {
-            return h2_util_has_eos(input->bb, -1)? APR_EOF : APR_EAGAIN;
         }
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,

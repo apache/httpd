@@ -75,6 +75,11 @@ int h2_io_in_has_eos_for(h2_io *io)
     return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, -1));
 }
 
+int h2_io_in_has_data(h2_io *io)
+{
+    return io->bbin && h2_util_bb_has_data_or_eos(io->bbin);
+}
+
 int h2_io_out_has_data(h2_io *io)
 {
     return io->bbout && h2_util_bb_has_data_or_eos(io->bbout);
@@ -256,6 +261,18 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
         }
     }
     
+    if (status == APR_SUCCESS && (!io->bbin || APR_BRIGADE_EMPTY(io->bbin))) {
+        if (io->eos_in) {
+            if (!io->eos_in_written) {
+                status = append_eos(io, bb, trailers);
+                io->eos_in_written = 1;
+            }
+        }
+    }
+    
+    if (status == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) {
+        return APR_EAGAIN;
+    }
     return status;
 }
 
