@@ -1167,7 +1167,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     parse_node_t *new, *root = NULL, *current = NULL;
     request_rec *r = ctx->r;
     request_rec *rr = NULL;
-    const char *error = "Invalid expression \"%s\" in file %s";
+    const char *error = APLOGNO(03188) "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
     unsigned regex = 0;
 
@@ -1208,6 +1208,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 continue;
 
             default:
+                /* Intentional no APLOGNO */
+                /* error text provides APLOGNO */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,
                               r->filename);
                 *was_error = 1;
@@ -1333,7 +1335,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 continue;
             }
 
-            error = "Unmatched ')' in \"%s\" in file %s";
+            error = APLOGNO(03189) "Unmatched ')' in \"%s\" in file %s";
             break;
 
         case TOKEN_NOT:
@@ -1358,6 +1360,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
         }
 
+        /* Intentional no APLOGNO */
+        /* error text provides APLOGNO */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr, r->filename);
         *was_error = 1;
         return 0;
@@ -1554,18 +1558,20 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
         case TOKEN_RE:
             if (!error) {
-                error = "No operator before regex in expr \"%s\" in file %s";
+                error = APLOGNO(03190) "No operator before regex in expr \"%s\" in file %s";
             }
         case TOKEN_LBRACE:
             if (!error) {
-                error = "Unmatched '(' in \"%s\" in file %s";
+                error = APLOGNO(03191) "Unmatched '(' in \"%s\" in file %s";
             }
         default:
             if (!error) {
-                error = "internal parser error in \"%s\" in file %s";
+                error = APLOGNO(03192) "internal parser error in \"%s\" in file %s";
             }
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr,r->filename);
+            /* Intentional no APLOGNO */
+            /* error text provides APLOGNO */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, expr, r->filename);
             *was_error = 1;
             return 0;
         }
@@ -1719,6 +1725,8 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         if (error_fmt) {
             ret = -1;
+            /* Intentional no APLOGNO */
+            /* error_fmt provides APLOGNO */
             ap_log_rerror(APLOG_MARK, APLOG_ERR,
                           rv, r, error_fmt, to_send, r->filename);
         }
@@ -1863,6 +1871,8 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
         }
 
         if (error_fmt) {
+            /* Intentional no APLOGNO */
+            /* error text is also sent to client */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, error_fmt, tag_val,
                     r->filename, status ? status : rr ? rr->status : 0);
             if (last_error) {

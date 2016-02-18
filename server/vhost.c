@@ -298,7 +298,7 @@ static void dump_iphash_statistics(server_rec *main_s)
     }
     qsort(count, IPHASH_TABLE_SIZE, sizeof(count[0]), iphash_compare);
     p = buf + apr_snprintf(buf, sizeof(buf),
-                           "iphash: total hashed = %u, avg chain = %u, "
+                           APLOGNO(03235) "iphash: total hashed = %u, avg chain = %u, "
                            "chain lengths (count x len):",
                            total, total / IPHASH_TABLE_SIZE);
     total = 1;
@@ -314,6 +314,8 @@ static void dump_iphash_statistics(server_rec *main_s)
     }
     p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
                       total, count[IPHASH_TABLE_SIZE - 1]);
+    /* Intentional no APLOGNO */
+    /* buf provides APLOGNO */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, main_s, buf);
 }
 #endif

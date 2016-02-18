@@ -624,6 +624,7 @@ static void h2_push_diary_append(h2_push_diary *diary, h2_push_diary_entry *e)
         ne = move_to_last(diary, 0);
         *ne = *e;
     }
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, diary->entries->pool,
                   "push_diary_append: %"APR_UINT64_T_HEX_FMT, ne->hash);
 }
@@ -644,11 +645,13 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
             session->push_diary->dcalc(session->push_diary, &e.hash, push);
             idx = h2_push_diary_find(session->push_diary, e.hash);
             if (idx >= 0) {
+                /* Intentional no APLOGNO */
                 ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
                               "push_diary_update: already there PUSH %s", push->req->path);
                 move_to_last(session->push_diary, idx);
             }
             else {
+                /* Intentional no APLOGNO */
                 ap_log_cerror(APLOG_MARK, GCSLOG_LEVEL, 0, session->c,
                               "push_diary_update: adding PUSH %s", push->req->path);
                 if (!npushes) {
@@ -788,6 +791,7 @@ static apr_status_t gset_encode_next(gset_encoder *encoder, apr_uint64_t pval)
     delta = pval - encoder->last;
     encoder->last = pval;
     flex_bits = (delta >> encoder->fixed_bits);
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, encoder->pool,
                   "h2_push_diary_enc: val=%"APR_UINT64_T_HEX_FMT", delta=%"
                   APR_UINT64_T_HEX_FMT" flex_bits=%ld, "
@@ -866,6 +870,7 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
     encoder.bit = 8;
     encoder.last = 0;
     
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
                   "h2_push_diary_digest_get: %d entries, N=%d, log2n=%d, "
                   "mask_bits=%d, enc.mask_bits=%d, delta_bits=%d, enc.log2p=%d, authority=%s", 
@@ -888,6 +893,7 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
                 gset_encode_next(&encoder, hashes[i]);
             }
         }
+        /* Intentional no APLOGNO */
         ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
                       "h2_push_diary_digest_get: golomb compressed hashes, %d bytes",
                       (int)encoder.offset + 1);
@@ -952,6 +958,7 @@ static apr_status_t gset_decode_next(gset_decoder *decoder, apr_uint64_t *phash)
     *phash = delta + decoder->last_val;
     decoder->last_val = *phash;
     
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, decoder->pool,
                   "h2_push_diary_digest_dec: val=%"APR_UINT64_T_HEX_FMT", delta=%"
                   APR_UINT64_T_HEX_FMT", flex=%d, fixed=%"APR_UINT64_T_HEX_FMT, 
@@ -1026,6 +1033,7 @@ apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authorit
         diary->N = diary->NMax;
     }
     
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
                   "h2_push_diary_digest_set: N=%d, log2n=%d, "
                   "diary->mask_bits=%d, dec.log2p=%d", 
@@ -1040,6 +1048,7 @@ apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authorit
         h2_push_diary_append(diary, &e);
     }
     
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
                   "h2_push_diary_digest_set: diary now with %d entries, mask_bits=%d", 
                   (int)diary->entries->nelts, diary->mask_bits);
@@ -1051,6 +1060,7 @@ apr_status_t h2_push_diary_digest64_set(h2_push_diary *diary, const char *author
 {
     const char *data;
     apr_size_t len = h2_util_base64url_decode(&data, data64url, pool);
+    /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, pool,
                   "h2_push_diary_digest64_set: digest=%s, dlen=%d", 
                   data64url, (int)len);

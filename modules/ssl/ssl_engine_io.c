@@ -1019,6 +1019,8 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
 
     /* and finally log the fact that we've closed the connection */
     if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), loglevel)) {
+        /* Intentional no APLOGNO */
+        /* logno provides APLOGNO */
         ap_log_cserror(APLOG_MARK, loglevel, 0, c, mySrvFromConn(c),
                        "%sConnection closed to child %ld with %s shutdown "
                        "(server %s)",

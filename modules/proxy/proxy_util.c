@@ -653,7 +653,7 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 
 #if 0
     if (addr[i] == ':') {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, APLOGNO(03234)
                      "@@@@ handle optional port in proxy_is_domainname()");
     /* @@@@ handle optional port */
     }

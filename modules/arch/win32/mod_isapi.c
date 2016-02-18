@@ -933,8 +933,8 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
             rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
             if (rv != APR_SUCCESS)
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                              "ServerSupport function "
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03177)
+                              "ServerSupportFunction "
                               "HSE_REQ_SEND_RESPONSE_HEADER "
                               "ap_pass_brigade failed: %s", r->filename);
             return (rv == APR_SUCCESS);
@@ -1135,8 +1135,8 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
         if (rv != APR_SUCCESS)
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "ServerSupport function "
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03178)
+                          "ServerSupportFunction "
                           "HSE_REQ_TRANSMIT_FILE "
                           "ap_pass_brigade failed: %s", r->filename);
 
@@ -1348,8 +1348,8 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
             rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
             if (rv != APR_SUCCESS)
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                              "ServerSupport function "
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03179)
+                              "ServerSupportFunction "
                               "HSE_REQ_SEND_RESPONSE_HEADER_EX "
                               "ap_pass_brigade failed: %s", r->filename);
             return (rv == APR_SUCCESS);

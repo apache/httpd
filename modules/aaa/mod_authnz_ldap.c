@@ -1796,8 +1796,8 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
     {
         if (!util_ldap_ssl_supported(s))
         {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "LDAP: SSL connections (ldaps://) not supported by utilLDAP");
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(03159)
+                         "LDAP: SSL connections (ldaps://) not supported by utilLDAP");
             return(!OK);
         }
     }
