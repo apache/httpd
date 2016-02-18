@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_watchdog: Error logging
-     trunk patch:  http://svn.apache.org/r1722154
-                   http://svn.apache.org/r1722701
-     2.4.x patch:  trunk works
-     +1: jim, rjung, rpluem
-
   *) various: APLOGNO
      trunk patch:  http://svn.apache.org/r1725485
      2.4.x patch:  trunk works
