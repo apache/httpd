@@ -112,13 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_cache_socache: Fix a possible cached entity body corruption when it
-     is received from an origin server in multiple batches and forwarded by
-     mod_proxy.
-     trunk patch: http://svn.apache.org/r1721899
-     2.4.x patch: trunk works, module CHANGES
-     +1: ylavic, jim, rpluem
-
   *) mod_watchdog: Error logging
      trunk patch:  http://svn.apache.org/r1722154
                    http://svn.apache.org/r1722701

@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.19
+
+  *) mod_cache_socache: Fix a possible cached entity body corruption when it
+     is received from an origin server in multiple batches and forwarded by
+     mod_proxy.  [Yann Ylavic]
+
   *) core: Add expression support to SetHandler.
      [Eric Covener]
 
