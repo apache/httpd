@@ -1743,7 +1743,7 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
                          thread_limit, thread_limit);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
-                         "ThreadsPerChild of %d exceeds compile-time limit "
+                         "ThreadsPerChild of %d exceeds run-time limit "
                          "of %d, decreasing to match",
                          threads_per_child, thread_limit);
         }
