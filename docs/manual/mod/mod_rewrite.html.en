@@ -19,7 +19,7 @@
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.gif" /></div>
+<img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
@@ -300,7 +300,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 respectively.</p>
 
                 <p>Those that are special to mod_rewrite include those below.</p>
-        <div class="note">
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -374,7 +373,6 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   (decoded), unlike most other variables below.</dd>
 
                 </dl>
-</div>
         </li>
       </ul>
 
@@ -657,8 +655,8 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 
           For example:
 
-        <pre class="prettyprint lang-config">        RewriteCond /var/www/%{REQUEST_URI} !-f
-        RewriteRule ^(.+) /other/archive/$1 [R]</pre>
+        <pre class="prettyprint lang-config">RewriteCond /var/www/%{REQUEST_URI} !-f
+RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 
 
         </li>
@@ -1056,6 +1054,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
       <code>%{QUERY_STRING}</code> variables respectively.</p>
+
+      <p>In any case, remember that regular expressions are substring
+      matches. That is, you don't need the regex to describe the entire
+      string, just the part that you wish to match. Thus, using a regex
+      of <code>.</code> is often sufficient rather than <code>.*</code>,
+      and the regex <code>abc</code> is <strong>not</strong> the same as
+      <code>^abc$</code>.</p>
 
 </div>
 

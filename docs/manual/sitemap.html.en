@@ -279,6 +279,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_remoteip.html">Apache Module mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Apache Module mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Apache Module mod_request</a></li>
+<li><a href="mod/mod_rewrite.html">Apache Module mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Apache Module mod_sed</a></li>
 <li><a href="mod/mod_session.html">Apache Module mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache Module mod_session_cookie</a></li>
