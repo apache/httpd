@@ -274,6 +274,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_remoteip.html">Apache Modülü mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Apache Modülü mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Apache Modülü mod_request</a></li>
+<li><a href="mod/mod_rewrite.html">Apache Modülü mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Apache Modülü mod_sed</a></li>
 <li><a href="mod/mod_session.html">Apache Modülü mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache Modülü mod_session_cookie</a></li>

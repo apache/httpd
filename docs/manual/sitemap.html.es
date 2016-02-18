@@ -261,6 +261,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_remoteip.html">Módulo Apache mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Módulo Apache mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Módulo Apache mod_request</a></li>
+<li><a href="mod/mod_rewrite.html">Módulo Apache mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Módulo Apache mod_sed</a></li>
 <li><a href="mod/mod_session.html">Módulo Apache mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Módulo Apache mod_session_cookie</a></li>

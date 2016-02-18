@@ -260,6 +260,7 @@
 <li><a href="mod/mod_remoteip.html">Apache 模块 mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Apache 模块 mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Apache 模块 mod_request</a></li>
+<li><a href="mod/mod_rewrite.html">Apache 模块 mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Apache 模块 mod_sed</a></li>
 <li><a href="mod/mod_session.html">Apache 模块 mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache 模块 mod_session_cookie</a></li>
