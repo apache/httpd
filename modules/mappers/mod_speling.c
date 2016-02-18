@@ -395,8 +395,8 @@ static int check_speling(request_rec *r)
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
                           r,
-                          ref ? "Fixed spelling: %s to %s from %s"
-                              : "Fixed spelling: %s to %s%s",
+                          ref ? APLOGNO(03224) "Fixed spelling: %s to %s from %s"
+                              : APLOGNO(03225) "Fixed spelling: %s to %s%s",
                           r->uri, nuri,
                           (ref ? ref : ""));
 
@@ -504,8 +504,8 @@ static int check_speling(request_rec *r)
             apr_pool_destroy(sub_pool);
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                         ref ? "Spelling fix: %s: %d candidates from %s"
-                             : "Spelling fix: %s: %d candidates%s",
+                         ref ? APLOGNO(03226) "Spelling fix: %s: %d candidates from %s"
+                             : APLOGNO(03227) "Spelling fix: %s: %d candidates%s",
                          r->uri, candidates->nelts,
                          (ref ? ref : ""));
 

@@ -776,20 +776,20 @@ static int stapling_cb(SSL *ssl, void *arg)
         rv = get_and_check_cached_response(s, mctx, &rsp, &ok, cinf,
                                            conn->pool);
         if (rv != 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03236)
                          "stapling_cb: error checking for cached response "
                          "after obtaining refresh mutex");
             stapling_refresh_mutex_off(s);
             return rv;
         }
         else if (rsp) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03237)
                          "stapling_cb: don't need to refresh cached response "
                          "after obtaining refresh mutex");
             stapling_refresh_mutex_off(s);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03238)
                          "stapling_cb: still must refresh cached response "
                          "after obtaining refresh mutex");
             rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, &ok,
