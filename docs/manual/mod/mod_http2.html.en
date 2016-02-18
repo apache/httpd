@@ -35,8 +35,8 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.17 and later</td></tr></table>
 <h3>Summary</h3>
 
-        <p>This module provides HTTP/2 (RFC 7540) support for the Apache
-            HTTP Server.</p>
+        <p>This module provides HTTP/2 (<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) 
+        support for the Apache HTTP Server.</p>
         
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
             to provide the core http/2 engine.</p>
@@ -57,9 +57,7 @@
     </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dimensioning">HTTP/2 Dimensioning</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#misdirected">Multiple Hosts and Misdirected Requests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it works</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
@@ -82,25 +80,9 @@
 <ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="envvars" id="envvars">Environment Variables</a></h2>
-        <p>
-            This module can be configured to provide HTTP/2 related information
-            as additional environment variables to the SSI and CGI namespace.
-        </p>
-        
-        <table class="bordered">
-            
-            <tr>
-                <th><a name="table3">Variable Name:</a></th>
-                <th>Value Type:</th>
-                <th>Description:</th>
-            </tr>
-            <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
-            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
-        </table>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="dimensioning" id="dimensioning">HTTP/2 Dimensioning</a></h2>
+<h2><a name="how-it-works" id="how-it-works">How it works</a></h2>
+    
+    <h3><a name="dimensioning" id="dimensioning">HTTP/2 Dimensioning</a></h3>
         <p>
             Enabling HTTP/2 on your Apache Server has impact on the resource
             consumption and if you have a busy site, you may need to consider
@@ -121,8 +103,8 @@
             workers, or shorter H2Workers, will not show up in mod_status. They
             are also not counted against directives such as ThreadsPerChild. However
             they take ThreadsPerChild as default if you have not configured something
-            else via <code class="directive">&lt;H2MinWorkers&gt;</code> and
-            <code class="directive">&lt;H2MaxWorkers&gt;</code>.
+            else via <code class="directive">H2MinWorkers</code> and
+            <code class="directive">H2MaxWorkers</code>.
         </p>
         <p>
             Another thing to watch out for is is memory consumption. Since HTTP/2
@@ -130,12 +112,12 @@
             for and dependencies between them, it will always need more memory
             than HTTP/1.1 processing. There are three directives which steer the
             memory footprint of a HTTP/2 connection:
-            <code class="directive">&lt;H2MaxSessionStreams&gt;</code>,
-            <code class="directive">&lt;H2WindowSize&gt;</code> and
-            <code class="directive">&lt;H2StreamMaxMemSize&gt;</code>.
+            <code class="directive">H2MaxSessionStreams</code>,
+            <code class="directive">H2WindowSize</code> and
+            <code class="directive">H2StreamMaxMemSize</code>.
         </p>
         <p>
-            <code class="directive">&lt;H2MaxSessionStreams&gt;</code> limits the
+            <code class="directive">H2MaxSessionStreams</code> limits the
             number of parallel requests that a client can make on a HTTP/2 connection.
             It depends on your site how many you should allow. The default is 100 which
             is plenty and unless you run into memory problems, I would keep it this
@@ -143,14 +125,14 @@
             use up only a little bit of memory until the actual processing starts.
         </p>
         <p>
-            <code class="directive">&lt;H2WindowSize&gt;</code> controls how much
+            <code class="directive">H2WindowSize</code> controls how much
             the client is allowed to send as body of a request, before it waits
             for the server to encourage more. Or, the other way around, it is the
             amount of request body data the server needs to be able to buffer. This
             is per request.
         </p>
         <p>
-            And last, but not least, <code class="directive">&lt;H2StreamMaxMemSize&gt;</code>
+            And last, but not least, <code class="directive">H2StreamMaxMemSize</code>
             controls how much response data shall be buffered. The request sits in
             a H2Worker thread and is producing data, the HTTP/2 connection tries
             to send this to the client. If the client does not read fast enough,
@@ -158,7 +140,7 @@
             H2Worker.
         </p>
         <p>
-            If you serve a lot of static files, <code class="directive">&lt;H2SessionExtraFiles&gt;</code>
+            If you serve a lot of static files, <code class="directive">H2SessionExtraFiles</code>
             is of interest. This tells the server how many file handles per
             HTTP/2 connection it is allowed to waste for better performance. Because
             when a request produces a static file as the response, the file handle
@@ -168,9 +150,9 @@
             and if too many are used this way, requests may fail under load as
             the amount of open handles has been exceeded.
         </p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="misdirected" id="misdirected">Multiple Hosts and Misdirected Requests</a></h2>
+    
+    
+    <h3><a name="misdirected" id="misdirected">Multiple Hosts and Misdirected Requests</a></h3>
         <p>
             Many sites use the same TLS certificate for multiple virtual hosts. The 
             certificate either has a wildcard name, such as '*.example.org' or carries
@@ -193,6 +175,26 @@
             If you mix things, Apache httpd will detect it and return a special
             response code, 421 Misidrected Request, to the client.
         </p>
+    
+
+    <h3><a name="envvars" id="envvars">Environment Variables</a></h3>
+        <p>
+            This module can be configured to provide HTTP/2 related information
+            as additional environment variables to the SSI and CGI namespace.
+        </p>
+        
+        <table class="bordered">
+            
+            <tr>
+                <th><a name="table3">Variable Name:</a></th>
+                <th>Value Type:</th>
+                <th>Description:</th>
+            </tr>
+            <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
+            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+        </table>
+    
+    
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct">Directive</a></h2>
