@@ -30,8 +30,8 @@
     <compatibility>Available in version 2.4.17 and later</compatibility>
     
     <summary>
-        <p>This module provides HTTP/2 (RFC 7540) support for the Apache
-            HTTP Server.</p>
+        <p>This module provides HTTP/2 (<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) 
+        support for the Apache HTTP Server.</p>
         
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
             to provide the core http/2 engine.</p>
@@ -53,24 +53,7 @@
         
     </summary>
     
-    <section id="envvars"><title>Environment Variables</title>
-        <p>
-            This module can be configured to provide HTTP/2 related information
-            as additional environment variables to the SSI and CGI namespace.
-        </p>
-        
-        <table border="1">
-            <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
-            </columnspec>
-            <tr>
-                <th><a name="table3">Variable Name:</a></th>
-                <th>Value Type:</th>
-                <th>Description:</th>
-            </tr>
-            <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
-            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
-        </table>
-    </section>
+    <section id="how-it-works"><title>How it works</title>
     
     <section id="dimensioning"><title>HTTP/2 Dimensioning</title>
         <p>
@@ -93,8 +76,8 @@
             workers, or shorter H2Workers, will not show up in mod_status. They
             are also not counted against directives such as ThreadsPerChild. However
             they take ThreadsPerChild as default if you have not configured something
-            else via <directive type="section">H2MinWorkers</directive> and
-            <directive type="section">H2MaxWorkers</directive>.
+            else via <directive>H2MinWorkers</directive> and
+            <directive>H2MaxWorkers</directive>.
         </p>
         <p>
             Another thing to watch out for is is memory consumption. Since HTTP/2
@@ -102,12 +85,12 @@
             for and dependencies between them, it will always need more memory
             than HTTP/1.1 processing. There are three directives which steer the
             memory footprint of a HTTP/2 connection:
-            <directive type="section">H2MaxSessionStreams</directive>,
-            <directive type="section">H2WindowSize</directive> and
-            <directive type="section">H2StreamMaxMemSize</directive>.
+            <directive>H2MaxSessionStreams</directive>,
+            <directive>H2WindowSize</directive> and
+            <directive>H2StreamMaxMemSize</directive>.
         </p>
         <p>
-            <directive type="section">H2MaxSessionStreams</directive> limits the
+            <directive>H2MaxSessionStreams</directive> limits the
             number of parallel requests that a client can make on a HTTP/2 connection.
             It depends on your site how many you should allow. The default is 100 which
             is plenty and unless you run into memory problems, I would keep it this
@@ -115,14 +98,14 @@
             use up only a little bit of memory until the actual processing starts.
         </p>
         <p>
-            <directive type="section">H2WindowSize</directive> controls how much
+            <directive>H2WindowSize</directive> controls how much
             the client is allowed to send as body of a request, before it waits
             for the server to encourage more. Or, the other way around, it is the
             amount of request body data the server needs to be able to buffer. This
             is per request.
         </p>
         <p>
-            And last, but not least, <directive type="section">H2StreamMaxMemSize</directive>
+            And last, but not least, <directive>H2StreamMaxMemSize</directive>
             controls how much response data shall be buffered. The request sits in
             a H2Worker thread and is producing data, the HTTP/2 connection tries
             to send this to the client. If the client does not read fast enough,
@@ -130,7 +113,7 @@
             H2Worker.
         </p>
         <p>
-            If you serve a lot of static files, <directive type="section">H2SessionExtraFiles</directive>
+            If you serve a lot of static files, <directive>H2SessionExtraFiles</directive>
             is of interest. This tells the server how many file handles per
             HTTP/2 connection it is allowed to waste for better performance. Because
             when a request produces a static file as the response, the file handle
@@ -166,7 +149,28 @@
             response code, 421 Misidrected Request, to the client.
         </p>
     </section>
+
+    <section id="envvars"><title>Environment Variables</title>
+        <p>
+            This module can be configured to provide HTTP/2 related information
+            as additional environment variables to the SSI and CGI namespace.
+        </p>
+        
+        <table border="1">
+            <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+            </columnspec>
+            <tr>
+                <th><a name="table3">Variable Name:</a></th>
+                <th>Value Type:</th>
+                <th>Description:</th>
+            </tr>
+            <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
+            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+        </table>
+    </section>
     
+    </section>
+
     <directivesynopsis>
         <name>H2Direct</name>
         <description>H2 Direct Protocol Switch</description>
