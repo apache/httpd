@@ -22,6 +22,7 @@
 static motorz_core_t *g_motorz_core;
 static int threads_per_child = 16;
 static int ap_num_kids = DEFAULT_START_DAEMON;
+static int thread_limit = MAX_THREAD_LIMIT/10;
 static int mpm_state = AP_MPMQ_STARTING;
 
 /* one_process --- debugging mode variable; can be set from the command line
@@ -692,7 +693,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = ap_num_kids;
         break;
     case AP_MPMQ_HARD_LIMIT_THREADS:
-        *result = MAX_THREAD_LIMIT;
+        *result = thread_limit;
         break;
     case AP_MPMQ_MAX_THREADS:
         *result = threads_per_child;
@@ -1577,8 +1578,7 @@ static int motorz_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     all_buckets = apr_pcalloc(pconf, num_buckets *
                                      sizeof(motorz_child_bucket));
     for (i = 0; i < num_buckets; i++) {
-        if (!one_process && /* no POD in one_process mode */
-                (rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod))) {
+        if (rv = ap_mpm_pod_open(pconf, &all_buckets[i].pod)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s), APLOGNO(03277)
                          "could not open pipe-of-death");
@@ -1704,21 +1704,50 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         ap_num_kids = 1;
     }
 
-    if (threads_per_child > MAX_THREAD_LIMIT) {
+    if (thread_limit > MAX_THREAD_LIMIT) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00305)
+                         "WARNING: ThreadLimit of %d exceeds compile-time "
+                         "limit of", thread_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03144)
+                         " %d threads, decreasing to %d.",
+                         MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00306)
+                         "ThreadLimit of %d exceeds compile-time limit "
+                         "of %d, decreasing to match",
+                         thread_limit, MAX_THREAD_LIMIT);
+        }
+        thread_limit = MAX_THREAD_LIMIT;
+    }
+    else if (thread_limit < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00307)
+                         "WARNING: ThreadLimit of %d not allowed, "
+                         "increasing to 1.", thread_limit);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00308)
+                         "ThreadLimit of %d not allowed, increasing to 1",
+                         thread_limit);
+        }
+        thread_limit = 1;
+    }
+
+    if (threads_per_child > thread_limit) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
-                         "WARNING: ThreadsPerChild of %d exceeds compile-time "
+                         "WARNING: ThreadsPerChild of %d exceeds run-time "
                          "limit of", threads_per_child);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
                          " %d servers, decreasing to %d.",
-                         MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
+                         thread_limit, thread_limit);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
                          "ThreadsPerChild of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
-                         threads_per_child, MAX_THREAD_LIMIT);
+                         threads_per_child, thread_limit);
         }
-        threads_per_child = MAX_THREAD_LIMIT;
+        threads_per_child = thread_limit;
     }
     else if (threads_per_child < 1) {
         if (startup) {
@@ -1777,12 +1806,25 @@ static const char *set_threads_per_child(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    thread_limit = atoi(arg);
+    return NULL;
+}
+
 static const command_rec motorz_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
               "Number of child processes launched at server startup"),
 AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
               "Number of threads each child creates"),
+AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
+  "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
