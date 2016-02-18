@@ -20,8 +20,8 @@
  * config globals
  */
 static motorz_core_t *g_motorz_core;
-static int threads_per_child = 0;
-static int ap_num_kids = 0;
+static int threads_per_child = 16;
+static int ap_num_kids = DEFAULT_START_DAEMON;
 static int mpm_state = AP_MPMQ_STARTING;
 
 /* one_process --- debugging mode variable; can be set from the command line
@@ -1675,21 +1675,21 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         startup = 1;
     }
 
-    if (ap_num_kids > MAX_SERVER_LIMIT) {
+    if (ap_num_kids > DEFAULT_SERVER_LIMIT) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02886)
                          "WARNING: StartServers of %d exceeds compile-time "
                          "limit of", ap_num_kids);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03118)
                          " %d servers, decreasing to %d.",
-                         MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
+                         DEFAULT_SERVER_LIMIT, DEFAULT_SERVER_LIMIT);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02887)
                          "StartServers of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
-                         ap_num_kids, MAX_SERVER_LIMIT);
+                         ap_num_kids, DEFAULT_SERVER_LIMIT);
         }
-        ap_num_kids = MAX_SERVER_LIMIT;
+        ap_num_kids = DEFAULT_SERVER_LIMIT;
     }
     else if (ap_num_kids < 1) {
         if (startup) {
@@ -1704,6 +1704,34 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         ap_num_kids = 1;
     }
 
+    if (threads_per_child > MAX_THREAD_LIMIT) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+                         "WARNING: ThreadsPerChild of %d exceeds compile-time "
+                         "limit of", threads_per_child);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+                         " %d servers, decreasing to %d.",
+                         MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+                         "ThreadsPerChild of %d exceeds compile-time limit "
+                         "of %d, decreasing to match",
+                         threads_per_child, MAX_THREAD_LIMIT);
+        }
+        threads_per_child = MAX_THREAD_LIMIT;
+    }
+    else if (threads_per_child < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+                         "WARNING: ThreadsPerChild of %d not allowed, "
+                         "increasing to 1.", threads_per_child);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+                         "ThreadsPerChild of %d not allowed, increasing to 1",
+                         threads_per_child);
+        }
+        threads_per_child = 1;
+    }
 
     return OK;
 }

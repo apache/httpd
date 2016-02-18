@@ -29,21 +29,7 @@
 /* Number of servers to spawn off by default --- 
  */
 #ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 1
-#endif
-
-/* Maximum number of *free* server processes --- more than this, and
- * they will die off.
- */
-
-#ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 2
-#endif
-
-/* Minimum --- fewer than this, and more will be created */
-
-#ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 1
+#define DEFAULT_START_DAEMON 2
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
