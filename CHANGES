@@ -230,6 +230,11 @@ Changes with Apache 2.4.17
      records for scalability. [Yingqi Lu <yingqi.lu@intel.com>,
      Jeff Trawick, Jim Jagielski, Yann Ylavic]
 
+  *) mod_alias: Introduce expression parser support for Alias, ScriptAlias
+     and Redirect. Limit Redirect expressions to directory (Location) context
+     and redirect statuses (implicit or explicit).
+     [Graham Leggett, Yann Ylavic, Ruediger Pluem]
+
   *) mod_proxy: Fix a race condition that caused a failed worker to be retried
      before the retry period is over. [Ruediger Pluem]
 
