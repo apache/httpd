@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm: Add a complete_connection hook that confirms whether an MPM is allowed
+     to leave the WRITE_COMPLETION phase. Move filter code out of the MPMs.
+     [Graham Leggett]
+
   *) mod_proxy_http2: using single connection for several requests *if*
      master connection uses HTTP/2 itself. Not yet hardened under load.
      [Stefan Eissing]

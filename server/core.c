@@ -5559,7 +5559,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_htaccess(ap_open_htaccess, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_hook_optional_fn_retrieve(core_optional_fn_retrieve, NULL, NULL,
                                  APR_HOOK_MIDDLE);
-    
+    ap_hook_complete_connection(ap_filter_complete_connection, NULL, NULL,
+                           APR_HOOK_MIDDLE);
+
     /* register the core's insert_filter hook and register core-provided
      * filters
      */

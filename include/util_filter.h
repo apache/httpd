@@ -590,6 +590,18 @@ AP_DECLARE(apr_status_t) ap_filter_reinstate_brigade(ap_filter_t *f,
 AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f);
 
 /**
+ * This function determines whether there is unwritten data in the output
+ * filters, and if so, attempts to make a single write to each filter
+ * with unwritten data.
+ *
+ * @param c The connection.
+ * @return If no unwritten data remains, this function returns DECLINED.
+ * If some unwritten data remains, this function returns OK. If any
+ * attempt to write data failed, this functions returns a positive integer.
+ */
+AP_DECLARE(int) ap_filter_complete_connection(conn_rec *c);
+
+/**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
  * to flush the brigade if the brigade buffer overflows.
  * @param bb The brigade to flush
