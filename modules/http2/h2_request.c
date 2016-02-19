@@ -366,7 +366,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
     
     r->allowed_methods = ap_make_method_list(p, 2);
     
-    r->headers_in      = apr_table_copy(r->pool, req->headers);
+    r->headers_in      = apr_table_clone(r->pool, req->headers);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);

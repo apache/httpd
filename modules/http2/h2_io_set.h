@@ -26,8 +26,6 @@ typedef struct h2_io_set h2_io_set;
 
 h2_io_set *h2_io_set_create(apr_pool_t *pool);
 
-void h2_io_set_destroy(h2_io_set *set);
-
 apr_status_t h2_io_set_add(h2_io_set *set, struct h2_io *io);
 h2_io *h2_io_set_get(h2_io_set *set, int stream_id);
 h2_io *h2_io_set_remove(h2_io_set *set, struct h2_io *io);
@@ -48,9 +46,8 @@ typedef int h2_io_set_iter_fn(void *ctx, struct h2_io *io);
  * @param ctx user data for the callback
  * @return 1 iff iteration completed for all members
  */
-int h2_io_set_iter(h2_io_set *set,
-                   h2_io_set_iter_fn *iter, void *ctx);
+int h2_io_set_iter(h2_io_set *set, h2_io_set_iter_fn *iter, void *ctx);
 
-h2_io *h2_io_set_pop_highest_prio(h2_io_set *set);
+h2_io *h2_io_set_shift(h2_io_set *set);
 
 #endif /* defined(__mod_h2__h2_io_set__) */

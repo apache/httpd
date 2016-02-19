@@ -79,6 +79,7 @@ struct h2_mplx {
     struct apr_thread_cond_t *added_output;
     struct apr_thread_cond_t *request_done;
     struct apr_thread_cond_t *join_wait;
+    apr_socket_t *dummy_socket;
     
     apr_size_t stream_max_mem;
     apr_interval_time_t stream_timeout;
@@ -130,7 +131,9 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-void h2_mplx_request_done(h2_mplx *m, int stream_id, const struct h2_request **preq);
+struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+
+void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
 
 /**
  * Get the highest stream identifier that has been passed on to processing.
@@ -193,8 +196,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request 
  * @param ctx context data for the compare function
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
-
-const struct h2_request *h2_mplx_pop_request(h2_mplx *mplx, int *has_more);
 
 /**
  * Register a callback for the amount of input data consumed per stream. The

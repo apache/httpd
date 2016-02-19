@@ -261,7 +261,7 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
            
     /* Replace these */
     c->master                 = master;
-    c->pool                   = p;        
+    c->pool                   = p;   
     c->current_thread         = thread;
     c->conn_config            = ap_create_conn_config(p);
     c->notes                  = apr_table_make(p, 5);

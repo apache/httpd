@@ -50,7 +50,7 @@ typedef struct h2_task h2_task;
 struct h2_task {
     const char *id;
     int stream_id;
-    apr_pool_t *pool;
+    conn_rec *c;
     struct h2_mplx *mplx;    
     const struct h2_request *request;
     
@@ -67,10 +67,9 @@ struct h2_task {
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        apr_pool_t *pool, struct h2_mplx *mplx);
+                        conn_rec *c, struct h2_mplx *mplx);
 
-apr_status_t h2_task_do(h2_task *task, conn_rec *c, 
-                        struct apr_thread_cond_t *cond, apr_socket_t *socket);
+apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond, apr_socket_t *socket);
 
 void h2_task_register_hooks(void);
 /*

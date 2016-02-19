@@ -35,87 +35,27 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
     apr_status_t status;
-    apr_pool_t *task_pool = NULL;
-    
-    (void)thread;
-    /* Other code might want to see a socket for this connection this
-     * worker processes. Allocate one without further function...
-     */
-    status = apr_socket_create(&worker->socket,
-                               APR_INET, SOCK_STREAM,
-                               APR_PROTO_TCP, worker->pool);
-    if (status != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, status, worker->pool,
-                      APLOGNO(02948) "h2_worker(%d): alloc socket", 
-                      worker->id);
-        worker->worker_done(worker, worker->ctx);
-        return NULL;
-    }
     
     while (!worker->aborted) {
         h2_mplx *m;
-        const h2_request *req;
+        h2_task *task;
         
         /* Get a h2_mplx + h2_request from the main workers queue. */
-        status = worker->get_next(worker, &m, &req, worker->ctx);
+        status = worker->get_next(worker, &m, &task, worker->ctx);
         
-        while (req) {
-            conn_rec *c, *master = m->c;
-            h2_task *task;
-            int stream_id = req->id;
-            
-            if (!task_pool) {
-                apr_allocator_t *task_allocator = NULL;
-                /* We create a root pool with its own allocator to be used for
-                 * processing a request. This is the only way to have the processing
-                 * independant of the worker pool as the h2_mplx pool as well as
-                 * not sensitive to which thread it is in.
-                 * In that sense, memory allocation and lifetime is similar to a master
-                 * connection.
-                 * The main goal in this is that slave connections and requests will
-                 * - one day - be suspended and resumed in different threads.
-                 */
-                apr_allocator_create(&task_allocator);
-                apr_pool_create_ex(&task_pool, NULL, NULL, task_allocator);
-                apr_allocator_owner_set(task_allocator, task_pool);
-            }
-            
-            c = h2_slave_create(master, task_pool, 
-                                worker->thread, worker->socket);
-                
-            task = h2_task_create(m->id, req, task_pool, m);
-            h2_ctx_create_for(c, task);
-            
-            h2_task_do(task, c, worker->io, worker->socket);
+        while (task) {
+            h2_task_do(task, worker->io, m->dummy_socket);
             
             if (task->frozen) {
                 /* this task was handed over to someone else for processing */
                 h2_task_thaw(task);
-                task_pool = NULL;
-                req = NULL;
-                h2_mplx_request_done(m, 0, worker->aborted? NULL : &req);
+                task = NULL;
             }
-            else {
-                /* clean our references and report request as done. Signal
-                 * that we want another unless we have been aborted */
-                /* TODO: this will keep a worker attached to this h2_mplx as
-                 * long as it has requests to handle. Might no be fair to
-                 * other mplx's. Perhaps leave after n requests? */
-                apr_thread_cond_signal(worker->io);
-                if (task_pool) {
-                    apr_pool_clear(task_pool);
-                }
-                req = NULL;
-                h2_mplx_request_done(m, stream_id, worker->aborted? NULL : &req);
-            }
+            apr_thread_cond_signal(worker->io);
+            h2_mplx_task_done(m, task, worker->aborted? NULL : &task);
         }
     }
 
-    if (worker->socket) {
-        apr_socket_close(worker->socket);
-        worker->socket = NULL;
-    }
-    
     worker->worker_done(worker, worker->ctx);
     return NULL;
 }
@@ -135,6 +75,7 @@ h2_worker *h2_worker_create(int id,
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&pool, parent_pool, NULL, allocator);
+    apr_pool_tag(pool, "h2_worker");
     apr_allocator_owner_set(allocator, pool);
 
     w = apr_pcalloc(pool, sizeof(h2_worker));

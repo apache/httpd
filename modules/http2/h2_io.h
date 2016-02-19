@@ -75,11 +75,6 @@ struct h2_io {
 h2_io *h2_io_create(int id, apr_pool_t *pool);
 
 /**
- * Frees any resources hold by the h2_io instance. 
- */
-void h2_io_destroy(h2_io *io);
-
-/**
  * Set the response of this stream.
  */
 void h2_io_set_response(h2_io *io, struct h2_response *response);

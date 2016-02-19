@@ -44,14 +44,6 @@ h2_io *h2_io_create(int id, apr_pool_t *pool)
     return io;
 }
 
-void h2_io_destroy(h2_io *io)
-{
-    if (io->pool) {
-        apr_pool_destroy(io->pool);
-        /* gone */
-    }
-}
-
 void h2_io_set_response(h2_io *io, h2_response *response) 
 {
     AP_DEBUG_ASSERT(io->pool);
