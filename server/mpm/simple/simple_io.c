@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "mpm_common.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "ap_listen.h"
@@ -94,7 +95,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
             int not_complete_yet;
 
-            ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
+            ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
             not_complete_yet = ap_run_complete_connection(c);
 
             if (not_complete_yet > OK) {
