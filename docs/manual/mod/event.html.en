@@ -154,7 +154,7 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
         thread serving the response content can flush the first bytes until <code>EWOULDBLOCK</code>
         or <code>EAGAIN</code> is returned, delegating the rest to the listener. This one in turn
         waits for an event on the socket, and delegates the work to flush the rest of the content
-        to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxed content)
+        to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxied content)
         the MPM can't predict the end of the response and a worker thread has to finish its work
         before returning the control to the listener. The only alternative is to buffer the 
         response in memory, but it wouldn't be the safest option for the sake of the
@@ -231,15 +231,18 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
     no worker thread is available to handle new work on established async
     connections.</p>
 
-    <p>To mitigate this problem, the event MPM does two things: Firstly, it
-    limits the number of connections accepted per process, depending on the
-    number of idle request workers. Secondly, if all workers are busy, it will
-    close connections in keep-alive state even if the keep-alive timeout has
-    not expired. This allows the respective clients to reconnect to a
-    different process which may still have worker threads available.</p>
+    <p>To mitigate this problem, the event MPM does two things:</p>
+    <ul>
+        <li>it limits the number of connections accepted per process, depending on the
+            number of idle request workers;</li>
+        <li>if all workers are busy, it will
+            close connections in keep-alive state even if the keep-alive timeout has
+            not expired. This allows the respective clients to reconnect to a
+            different process which may still have worker threads available.</li>
+    </ul>
 
     <p>This directive can be used to fine-tune the per-process connection
-    limit. A process will only accept new connections if the current number of
+    limit. A <strong>process</strong> will only accept new connections if the current number of
     connections (not counting connections in the "closing" state) is lower
     than:</p>
 
@@ -249,12 +252,63 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
         <var>number of idle workers</var>)
     </strong></p>
 
-    <p>This means the absolute maximum numbers of concurrent connections is:</p>
+    <p>An estimation of the maximum concurrent connections across all the processes given
+        an average value of idle worker threads can be calculated with:
+    </p>
+
+
+    <p class="indent"><strong>
+        (<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +
+        (<code class="directive">AsyncRequestWorkerFactor</code> *
+        <var>number of idle workers</var>)) * 
+        <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
+    </strong></p>
+
+    <div class="note"><h3>Example</h3>
+    <pre class="prettyprint lang-config">ThreadsPerChild = 10
+ServerLimit = 4
+AsyncRequestWorkerFactor = 2
+MaxRequestWorkers = 40
+
+idle_workers = 4 (average for all the processes to keep it simple)
+
+max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
+                = (10 + (2 * 4)) * 4 = 72</pre>
+
+    </div>
+
+    <p>When all the worker threads are idle, then absolute maximum numbers of concurrent 
+        connections can be calculared in a simpler way:</p>
 
     <p class="indent"><strong>
         (<code class="directive">AsyncRequestWorkerFactor</code> + 1) *
         <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
     </strong></p>
+
+
+    <div class="note"><h3>Example</h3>
+    <pre class="prettyprint lang-config">ThreadsPerChild = 10 
+ServerLimit = 4
+MaxRequestWorkers = 40
+AsyncRequestWorkerFactor = 2</pre>
+
+
+    <p>If all the processes have all threads idle then: </p>
+
+    <pre class="prettyprint lang-config">idle_workers = 10</pre>
+
+
+    <p>We can calculate the absolute maximum numbers of concurrent connections in two ways:</p>
+    
+    <pre class="prettyprint lang-config">max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
+                = (10 + (2 * 10)) * 4 = 120
+    
+max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers 
+                = (2 + 1) * 40 = 120</pre>
+
+    </div>
+
+    <p>Tuning <code class="directive">AsyncRequestWorkerFactor</code> requires knowledge about the traffic handled by httpd in each specific use case, so changing the default value requires extensive testing and data gathering from <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> was called
     <code class="directive">MaxClients</code> prior to version 2.3.13. The above value
