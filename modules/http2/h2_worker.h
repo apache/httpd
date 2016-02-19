@@ -31,7 +31,7 @@ typedef struct h2_worker h2_worker;
  * gets aborted (idle timeout, for example). */
 typedef apr_status_t h2_worker_mplx_next_fn(h2_worker *worker,
                                             struct h2_mplx **pm,
-                                            const struct h2_request **preq,
+                                            struct h2_task **ptask,
                                             void *ctx);
 
 /* Invoked just before the worker thread exits. */
@@ -46,7 +46,6 @@ struct h2_worker {
     apr_thread_t *thread;
     apr_pool_t *pool;
     struct apr_thread_cond_t *io;
-    apr_socket_t *socket;
     
     h2_worker_mplx_next_fn *get_next;
     h2_worker_done_fn *worker_done;

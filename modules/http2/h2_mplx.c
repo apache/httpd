@@ -146,14 +146,6 @@ static void h2_mplx_destroy(h2_mplx *m)
                   "h2_mplx(%ld): destroy, ios=%d", 
                   m->id, (int)h2_io_set_size(m->stream_ios));
     m->aborted = 1;
-    if (m->ready_ios) {
-        h2_io_set_destroy(m->ready_ios);
-        m->ready_ios = NULL;
-    }
-    if (m->stream_ios) {
-        h2_io_set_destroy(m->stream_ios);
-        m->stream_ios = NULL;
-    }
     
     check_tx_free(m);
     
@@ -197,6 +189,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         if (!m->pool) {
             return NULL;
         }
+        apr_pool_tag(m->pool, "h2_mplx");
         apr_allocator_owner_set(allocator, m->pool);
         
         status = apr_thread_mutex_create(&m->lock, APR_THREAD_MUTEX_DEFAULT,
@@ -207,6 +200,13 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         }
         
         status = apr_thread_cond_create(&m->request_done, m->pool);
+        if (status != APR_SUCCESS) {
+            h2_mplx_destroy(m);
+            return NULL;
+        }
+    
+        status = apr_socket_create(&m->dummy_socket, APR_INET, SOCK_STREAM,
+                                   APR_PROTO_TCP, m->pool);
         if (status != APR_SUCCESS) {
             h2_mplx_destroy(m);
             return NULL;
@@ -283,7 +283,6 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
 
     h2_io_set_remove(m->stream_ios, io);
     h2_io_set_remove(m->ready_ios, io);
-    h2_io_destroy(io);
     
     if (pool) {
         apr_pool_clear(pool);
@@ -318,6 +317,37 @@ static int stream_done_iter(void *ctx, h2_io *io)
     return io_stream_done((h2_mplx*)ctx, io, 0);
 }
 
+static int stream_print(void *ctx, h2_io *io)
+{
+    h2_mplx *m = ctx;
+    if (io && io->request) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
+                      "->03198: h2_stream(%ld-%d): %s %s %s -> %s %d"
+                      "[orph=%d/started=%d/done=%d/eos_in=%d/eos_out=%d]", 
+                      m->id, io->id, 
+                      io->request->method, io->request->authority, io->request->path,
+                      io->response? "http" : (io->rst_error? "reset" : "?"),
+                      io->response? io->response->http_status : io->rst_error,
+                      io->orphaned, io->processing_started, io->processing_done,
+                      io->eos_in, io->eos_out);
+    }
+    else if (io) {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
+                      "->03198: h2_stream(%ld-%d): NULL -> %s %d"
+                      "[orph=%d/started=%d/done=%d/eos_in=%d/eos_out=%d]", 
+                      m->id, io->id, 
+                      io->response? "http" : (io->rst_error? "reset" : "?"),
+                      io->response? io->response->http_status : io->rst_error,
+                      io->orphaned, io->processing_started, io->processing_done,
+                      io->eos_in, io->eos_out);
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
+                      "->03198: h2_stream(%ld-NULL): NULL", m->id);
+    }
+    return 1;
+}
+
 apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 {
     apr_status_t status;
@@ -337,7 +367,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     
         /* Any remaining ios have handed out requests to workers that are
          * not done yet. Any operation they do on their assigned stream ios will
-         * be errored ECONNRESET/ABORTED, so that should find out pretty soon.
+         * be errored ECONNRESET/ABORTED, so they should find out pretty soon.
          */
         for (i = 0; h2_io_set_size(m->stream_ios) > 0; ++i) {
             m->join_wait = wait;
@@ -357,6 +387,9 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                                   "h2_mplx(%ld): release, waiting for %d seconds now for "
                                   "all h2_workers to return, have still %d requests outstanding", 
                                   m->id, i*wait_secs, (int)h2_io_set_size(m->stream_ios));
+                    if (i == 1) {
+                        h2_io_set_iter(m->stream_ios, stream_print, m);
+                    }
                 }
                 m->aborted = 1;
                 apr_thread_cond_broadcast(m->request_done);
@@ -411,61 +444,6 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
         leave_mutex(m, acquired);
     }
     return status;
-}
-
-static const h2_request *pop_request(h2_mplx *m)
-{
-    const h2_request *req = NULL;
-    int sid;
-    while (!m->aborted && !req && (sid = h2_iq_shift(m->q)) > 0) {
-        h2_io *io = h2_io_set_get(m->stream_ios, sid);
-        if (io) {
-            req = io->request;
-            io->processing_started = 1;
-            if (sid > m->max_stream_started) {
-                m->max_stream_started = sid;
-            }
-        }
-    }
-    return req;
-}
-
-void h2_mplx_request_done(h2_mplx *m, int stream_id, const h2_request **preq)
-{
-    int acquired;
-    
-    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        if (stream_id) {
-            h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                          "h2_mplx(%ld): request(%d) done", m->id, stream_id);
-            if (io) {
-                io->processing_done = 1;
-                h2_mplx_out_close(m, stream_id, NULL);
-                if (io->orphaned) {
-                    io_destroy(m, io, 0);
-                    if (m->join_wait) {
-                        apr_thread_cond_signal(m->join_wait);
-                    }
-                }
-                else {
-                    /* hang around until the stream deregisteres */
-                }
-            }
-            else {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
-                              "h2_mplx(%ld): request(%d) done, no io found", 
-                              m->id, stream_id);
-            }
-            apr_thread_cond_broadcast(m->request_done);
-        }
-        
-        if (preq) {
-            /* someone wants another request, if we have */
-            *preq = pop_request(m);
-        }
-        leave_mutex(m, acquired);
-    }
 }
 
 apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
@@ -666,7 +644,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
 
     AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_pop_highest_prio(m->ready_ios);
+        h2_io *io = h2_io_set_shift(m->ready_ios);
         if (io && !m->aborted) {
             stream = h2_stream_set_get(streams, io->id);
             if (stream) {
@@ -685,7 +663,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
                  * reset by the client. Should no longer happen since such
                  * streams should clear io's from the ready queue.
                  */
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,  
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO()
                               "h2_mplx(%ld): stream for response %d closed, "
                               "resetting io to close request processing",
                               m->id, io->id);
@@ -1019,6 +997,7 @@ static h2_io *open_io(h2_mplx *m, int stream_id)
     
     if (!io_pool) {
         apr_pool_create(&io_pool, m->pool);
+        apr_pool_tag(io_pool, "h2_io");
     }
     else {
         m->spare_pool = NULL;
@@ -1066,25 +1045,104 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
     return status;
 }
 
-const h2_request *h2_mplx_pop_request(h2_mplx *m, int *has_more)
+static h2_task *pop_task(h2_mplx *m)
 {
-    const h2_request *req = NULL;
+    h2_task *task = NULL;
+    int sid;
+    while (!m->aborted && !task && (sid = h2_iq_shift(m->q)) > 0) {
+        h2_io *io = h2_io_set_get(m->stream_ios, sid);
+        if (io) {
+            conn_rec *c;
+            apr_pool_t *task_pool;
+            apr_allocator_t *task_allocator = NULL;
+            
+            /* We create a pool with its own allocator to be used for
+             * processing a request. This is the only way to have the processing
+             * independant of the worker pool as the h2_mplx pool as well as
+             * not sensitive to which thread it is in.
+             * In that sense, memory allocation and lifetime is similar to a master
+             * connection.
+             * The main goal in this is that slave connections and requests will
+             * - one day - be suspended and resumed in different threads.
+             */
+            apr_allocator_create(&task_allocator);
+            apr_pool_create_ex(&task_pool, io->pool, NULL, task_allocator);
+            apr_pool_tag(task_pool, "h2_task");
+            apr_allocator_owner_set(task_allocator, task_pool);
+            
+            c = h2_slave_create(m->c, task_pool, m->c->current_thread, m->dummy_socket);
+            task = h2_task_create(m->id, io->request, c, m);
+            
+            io->processing_started = 1;
+            if (sid > m->max_stream_started) {
+                m->max_stream_started = sid;
+            }
+        }
+    }
+    return task;
+}
+
+h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
+{
+    h2_task *task = NULL;
     apr_status_t status;
     int acquired;
     
     AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
-            req = NULL;
             *has_more = 0;
         }
         else {
-            req = pop_request(m);
+            task = pop_task(m);
             *has_more = !h2_iq_empty(m->q);
         }
         leave_mutex(m, acquired);
     }
-    return req;
+    return task;
+}
+
+void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
+{
+    int acquired;
+    
+    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+        if (task) {
+            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): task(%s) done", m->id, task->id);
+            /* clean our references and report request as done. Signal
+             * that we want another unless we have been aborted */
+            /* TODO: this will keep a worker attached to this h2_mplx as
+             * long as it has requests to handle. Might no be fair to
+             * other mplx's. Perhaps leave after n requests? */
+
+            if (task->c) {
+                apr_pool_destroy(task->c->pool);
+            }
+            task = NULL;
+            if (io) {
+                io->processing_done = 1;
+                h2_mplx_out_close(m, io->id, NULL);
+                if (io->orphaned) {
+                    io_destroy(m, io, 0);
+                    if (m->join_wait) {
+                        apr_thread_cond_signal(m->join_wait);
+                    }
+                }
+                else {
+                    /* hang around until the stream deregisteres */
+                }
+            }
+            apr_thread_cond_broadcast(m->request_done);
+        }
+        
+        if (ptask) {
+            /* caller wants another task */
+            *ptask = pop_task(m);
+        }
+        leave_mutex(m, acquired);
+    }
 }
 
 
@@ -1172,11 +1230,11 @@ apr_status_t h2_mplx_engine_push(const char *engine_type,
             }
             
             if (!engine && einit) {
-                engine = apr_pcalloc(task->pool, sizeof(*engine));
-                engine->pub.id = apr_psprintf(task->pool, "eng-%ld-%d", 
+                engine = apr_pcalloc(task->c->pool, sizeof(*engine));
+                engine->pub.id = apr_psprintf(task->c->pool, "eng-%ld-%d", 
                                                m->id, m->next_eng_id++);
-                engine->pub.pool = task->pool;
-                engine->pub.type = apr_pstrdup(task->pool, engine_type);
+                engine->pub.pool = task->c->pool;
+                engine->pub.type = apr_pstrdup(task->c->pool, engine_type);
                 engine->c = r->connection;
                 engine->m = m;
                 engine->io = task->io;
@@ -1246,6 +1304,7 @@ static apr_status_t engine_pull(h2_mplx *m, h2_req_engine_i *engine,
                           "h2_mplx(%ld): request %s pulled by engine %s", 
                           m->c->id, r->the_request, engine->pub.id);
             engine->no_live++;
+            r->connection->current_thread = engine->c->current_thread;
             *pr = r;
             return APR_SUCCESS;
         }
@@ -1290,11 +1349,12 @@ static void engine_done(h2_mplx *m, h2_req_engine_i *engine, h2_task *task,
                   m->id, task->id, aborted? "aborted":"done", 
                   engine->pub.id);
     h2_task_output_close(task->output);
-    h2_mplx_request_done(m, task->stream_id, NULL);
-    apr_pool_destroy(task->pool);
     engine->no_finished++;
     if (waslive) engine->no_live--;
     engine->no_assigned--;
+    if (task->c != engine->c) { /* do not release what the engine runs on */
+        h2_mplx_task_done(m, task, NULL);
+    }
 }
                                 
 void h2_mplx_engine_done(h2_req_engine *pub_engine, conn_rec *r_conn)
@@ -1322,10 +1382,11 @@ void h2_mplx_engine_exit(h2_req_engine *pub_engine)
             void *entry;
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
                           "h2_mplx(%ld): exit engine %s (%s), "
-                          "has still %d requests queued, "
+                          "has still %d requests queued, shutdown=%d,"
                           "assigned=%ld, live=%ld, finished=%ld", 
                           m->c->id, engine->pub.id, engine->pub.type,
                           (int)apr_queue_size(engine->queue),
+                          engine->shutdown, 
                           (long)engine->no_assigned, (long)engine->no_live,
                           (long)engine->no_finished);
             while (apr_queue_trypop(engine->queue, &entry) == APR_SUCCESS) {
@@ -1338,7 +1399,7 @@ void h2_mplx_engine_exit(h2_req_engine *pub_engine)
                 engine_done(m, engine, task, 0, 1);
             }
         }
-        if (engine->no_assigned > 1 || engine->no_live > 1) {
+        if (engine->no_assigned > 0 || engine->no_live > 0) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
                           "h2_mplx(%ld): exit engine %s (%s), "
                           "assigned=%ld, live=%ld, finished=%ld", 

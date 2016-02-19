@@ -72,8 +72,8 @@ static apr_status_t proxy_session_pre_close(void *theconn)
     h2_proxy_session *session = p_conn->data;
 
     if (session && session->ngh2) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
-                      "proxy_session(%s): shutdown, state=%d, streams=%d",
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
+                      "proxy_session(%s): pool cleanup, state=%d, streams=%d",
                       session->id, session->state, 
                       h2_iq_size(session->streams));
         dispatch_event(session, H2_PROXYS_EV_PRE_CLOSE, 0, NULL);
@@ -200,27 +200,13 @@ static int before_frame_send(nghttp2_session *ngh2,
                              const nghttp2_frame *frame, void *user_data)
 {
     h2_proxy_session *session = user_data;
-    switch (frame->hd.type) {
-        case NGHTTP2_GOAWAY:
-            if (APLOGcinfo(session->c)) {
-                char buffer[256];
-                
-                h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c, APLOGNO()
-                              "h2_session(%s): sent FRAME[%s]",
-                              session->id, buffer);
-            }
-            break;
-        default:
-            if (APLOGcdebug(session->c)) {
-                char buffer[256];
-                
-                h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
-                              "h2_session(%s): sent FRAME[%s]",
-                              session->id, buffer);
-            }
-            break;
+    if (APLOGcdebug(session->c)) {
+        char buffer[256];
+
+        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+                      "h2_session(%s): sent FRAME[%s]",
+                      session->id, buffer);
     }
     return 0;
 }
@@ -546,7 +532,7 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         nghttp2_session_callbacks_set_send_callback(cbs, raw_send);
         
         nghttp2_option_new(&option);
-        nghttp2_option_set_peer_max_concurrent_streams(option, 20);
+        nghttp2_option_set_peer_max_concurrent_streams(option, 100);
         
         nghttp2_session_client_new2(&session->ngh2, cbs, session, option);
         
@@ -720,7 +706,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block)
     status = ap_get_brigade(session->c->input_filters, session->input, 
                             AP_MODE_READBYTES, 
                             block? APR_BLOCK_READ : APR_NONBLOCK_READ, 
-                            APR_BUCKET_BUFF_SIZE);
+                            64 * 1024);
     if (status == APR_SUCCESS) {
         if (APR_BRIGADE_EMPTY(session->input)) {
             status = APR_EAGAIN;
@@ -778,7 +764,7 @@ static apr_status_t check_suspended(h2_proxy_session *session)
                 return APR_SUCCESS;
             }
             else if (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status)) {
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c, 
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, session->c, 
                               "h2_proxy_stream(%s-%d): check input", 
                               session->id, stream_id);
                 h2_iq_remove(session->suspended, stream_id);

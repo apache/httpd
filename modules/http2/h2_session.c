@@ -89,6 +89,7 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     }
     else {
         apr_pool_create(&stream_pool, session->pool);
+        apr_pool_tag(stream_pool, "h2_stream");
     }
     
     stream = h2_stream_open(stream_id, stream_pool, session);
@@ -795,6 +796,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
     if (status != APR_SUCCESS) {
         return NULL;
     }
+    apr_pool_tag(pool, "h2_session");
 
     session = apr_pcalloc(pool, sizeof(h2_session));
     if (session) {

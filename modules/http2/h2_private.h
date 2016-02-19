@@ -24,5 +24,4 @@ extern module AP_MODULE_DECLARE_DATA http2_module;
 
 APLOG_USE_MODULE(http2);
 
-
 #endif

@@ -45,16 +45,6 @@ h2_io_set *h2_io_set_create(apr_pool_t *pool)
     return sp;
 }
 
-void h2_io_set_destroy(h2_io_set *sp)
-{
-    int i;
-    for (i = 0; i < sp->list->nelts; ++i) {
-        h2_io *io = h2_io_IDX(sp->list, i);
-        h2_io_destroy(io);
-    }
-    sp->list->nelts = 0;
-}
-
 static int h2_stream_id_cmp(const void *s1, const void *s2)
 {
     h2_io **pio1 = (h2_io **)s1;
@@ -91,7 +81,7 @@ apr_status_t h2_io_set_add(h2_io_set *sp, h2_io *io)
         int last;
         APR_ARRAY_PUSH(sp->list, h2_io*) = io;
         /* Normally, streams get added in ascending order if id. We
-         * keep the array sorted, so we just need to check of the newly
+         * keep the array sorted, so we just need to check if the newly
          * appended stream has a lower id than the last one. if not,
          * sorting is not necessary.
          */
@@ -111,9 +101,7 @@ static void remove_idx(h2_io_set *sp, int idx)
     --sp->list->nelts;
     n = sp->list->nelts - idx;
     if (n > 0) {
-        /* Close the hole in the array by moving the upper
-         * parts down one step.
-         */
+        /* There are n h2_io* behind idx. Move the rest down */
         h2_io **selts = (h2_io**)sp->list->elts;
         memmove(selts + idx, selts + idx + 1, n * sizeof(h2_io*));
     }
@@ -124,7 +112,7 @@ h2_io *h2_io_set_remove(h2_io_set *sp, h2_io *io)
     int i;
     for (i = 0; i < sp->list->nelts; ++i) {
         h2_io *e = h2_io_IDX(sp->list, i);
-        if (e == io) {
+        if (e->id == io->id) {
             remove_idx(sp, i);
             return e;
         }
@@ -132,7 +120,7 @@ h2_io *h2_io_set_remove(h2_io_set *sp, h2_io *io)
     return NULL;
 }
 
-h2_io *h2_io_set_pop_highest_prio(h2_io_set *set)
+h2_io *h2_io_set_shift(h2_io_set *set)
 {
     /* For now, this just removes the first element in the set.
      * the name is misleading...
