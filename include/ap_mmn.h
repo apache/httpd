@@ -504,6 +504,8 @@
  *                         ap_prep_lingering_close().
  * 20150222.11 (2.5.0-dev) Split useragent_host from the conn_rec into
  *                         the request_rec, with ap_get_useragent_host()
+ * 20150222.12 (2.5.0-dev) Add complete_connection hook,
+ *                         ap_filter_complete_connection().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -511,7 +513,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20150222
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 11                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 12                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

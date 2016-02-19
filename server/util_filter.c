@@ -953,6 +953,39 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f)
     return 0;
 }
 
+AP_DECLARE(int) ap_filter_complete_connection(conn_rec *c)
+{
+    apr_hash_index_t *rindex;
+    int data_in_output_filters = DECLINED;
+
+    rindex = apr_hash_first(NULL, c->filters);
+    while (rindex) {
+        ap_filter_t *f = apr_hash_this_val(rindex);
+
+        if (!APR_BRIGADE_EMPTY(f->bb)) {
+
+            apr_status_t rv;
+
+            rv = ap_pass_brigade(f, c->empty);
+            apr_brigade_cleanup(c->empty);
+            if (APR_SUCCESS != rv) {
+                ap_log_cerror(
+                        APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
+                        "write failure in '%s' output filter", f->frec->name);
+                return rv;
+            }
+
+            if (ap_filter_should_yield(f)) {
+                data_in_output_filters = OK;
+            }
+        }
+
+        rindex = apr_hash_next(rindex);
+    }
+
+    return data_in_output_filters;
+}
+
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
                                                 void *ctx)
 {

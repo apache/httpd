@@ -458,6 +458,16 @@ AP_DECLARE_HOOK(apr_status_t, mpm_resume_suspended, (conn_rec*))
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 
 /**
+ * Hook called to determine whether we should stay within the write completion
+ * phase.
+ * @param c The current connection
+ * @return OK if write completion should continue, DECLINED if write completion
+ * should end gracefully, or a positive error if we should begin to linger.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int, complete_connection, (conn_rec *c))
+
+/**
  * Notification that connection handling is suspending (disassociating from the
  * current thread)
  * @param c The current connection

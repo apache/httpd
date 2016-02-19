@@ -1147,38 +1147,16 @@ read_request:
     }
 
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
-        apr_hash_index_t *rindex;
-        apr_status_t rv = APR_SUCCESS;
-        int data_in_output_filters = 0;
+        int not_complete_yet;
+
         ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
 
-        rindex = apr_hash_first(NULL, c->filters);
-        while (rindex) {
-            ap_filter_t *f = apr_hash_this_val(rindex);
+        not_complete_yet = ap_run_complete_connection(c);
 
-            if (!APR_BRIGADE_EMPTY(f->bb)) {
-
-                rv = ap_pass_brigade(f, c->empty);
-                apr_brigade_cleanup(c->empty);
-                if (APR_SUCCESS != rv) {
-                    ap_log_cerror(
-                            APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00470)
-                            "write failure in '%s' output filter", f->frec->name);
-                    break;
-                }
-
-                if (ap_filter_should_yield(f)) {
-                    data_in_output_filters = 1;
-                }
-            }
-
-            rindex = apr_hash_next(rindex);
-        }
-
-        if (rv != APR_SUCCESS) {
+        if (not_complete_yet > OK) {
             cs->pub.state = CONN_STATE_LINGER;
         }
-        else if (data_in_output_filters) {
+        else if (not_complete_yet == OK) {
             /* Still in WRITE_COMPLETION_STATE:
              * Set a write timeout for this connection, and let the
              * event thread poll for writeability.
