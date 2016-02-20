@@ -52,7 +52,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <directivesynopsis>
 <name>ModemStandard</name>
 <description>Modem standard to simulate</description>
-<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntax>
+<syntax>ModemStandard V.21|V.26bis|V.32|V.34|V.92</syntax>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
