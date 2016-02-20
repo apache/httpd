@@ -54,7 +54,7 @@
     or <directive type="section" module="core">LocationMatch</directive>
     section, <a href="../expr.html">expression syntax</a> can be used
     to manipulate the destination path or URL.
-	</p>
+    </p>
 
     <p><module>mod_alias</module> is designed to handle simple URL
     manipulation tasks.  For more complicated tasks such as
@@ -98,6 +98,7 @@ Alias "/foo" "/gaq"
     would always match before the <code>/foo/bar</code> <directive
     module="mod_alias">Alias</directive>, so the latter directive would be
     ignored.</p>
+
     <p>When the <directive module="mod_alias">Alias</directive>,
     <directive module="mod_alias">ScriptAlias</directive> and 
     <directive module="mod_alias">Redirect</directive> directives are used
@@ -130,7 +131,7 @@ Alias "/foo" "/gaq"
     file systems.</p>
 
     <highlight language="config">
-      Alias "/image" "/ftp/pub/image"
+Alias "/image" "/ftp/pub/image"
     </highlight>
 
     <p>A request for <code>http://example.com/image/foo.gif</code> would cause
@@ -145,7 +146,7 @@ Alias "/foo" "/gaq"
     order to expand the alias. That is, if you use</p>
 
     <highlight language="config">
-      Alias "/icons/" "/usr/local/apache/icons/"
+Alias "/icons/" "/usr/local/apache/icons/"
     </highlight>
 
     <p>then the URL <code>/icons</code> will not be aliased, as it lacks
@@ -176,18 +177,20 @@ Alias "/image" "/ftp/pub/image"
 
     <p>Any number slashes in the <var>URL-path</var> parameter
     matches any number of slashes in the requested URL-path.</p>
+
     <p>If the <directive>Alias</directive> directive is used within a
     <directive type="section" module="core">Location</directive>
     or <directive type="section" module="core">LocationMatch</directive>
     section the URL-path is omitted, and the file-path is interpreted
-    using <a href="../expr.html">expression syntax</a>.</p>
+    using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
-&lt;Location /image&gt;
-    Alias /ftp/pub/image
+&lt;Location "/image"&gt;
+    Alias "/ftp/pub/image"
 &lt;/Location&gt;
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
-    Alias /usr/local/apache/errors/%{env:MATCH_NUMBER}.html
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    Alias "/usr/local/apache/errors/%{env:MATCH_NUMBER}.html"
 &lt;/LocationMatch&gt;
     </highlight>
 
@@ -215,7 +218,7 @@ expressions</description>
     use:</p>
 
     <highlight language="config">
-      AliasMatch "^/icons(/|$)(.*)" "/usr/local/apache/icons$1$2"
+AliasMatch "^/icons(/|$)(.*)" "/usr/local/apache/icons$1$2"
     </highlight>
 
     <p>The full range of <glossary ref="regex">regular expression</glossary>
@@ -224,7 +227,7 @@ expressions</description>
     matching of the URL-path:</p>
 
     <highlight language="config">
-      AliasMatch "(?i)^/image(.*)" "/ftp/pub/image$1"
+AliasMatch "(?i)^/image(.*)" "/ftp/pub/image$1"
     </highlight>
 
     <p>One subtle difference
@@ -249,20 +252,20 @@ expressions</description>
     <p>For example, suppose you want to replace this with AliasMatch:</p>
 
     <highlight language="config">
-      Alias "/image/" "/ftp/pub/image/"
+Alias "/image/" "/ftp/pub/image/"
     </highlight>
 
     <p>This is NOT equivalent - don't do this!  This will send all
     requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
 
     <highlight language="config">
-      AliasMatch "/image/" "/ftp/pub/image/"
+AliasMatch "/image/" "/ftp/pub/image/"
     </highlight>
 
     <p>This is what you need to get the same effect:</p>
 
     <highlight language="config">
-      AliasMatch "^/image/(.*)$" "/ftp/pub/image/$1"
+AliasMatch "^/image/(.*)$" "/ftp/pub/image/$1"
     </highlight>
 
     <p>Of course, there's no point in
@@ -383,22 +386,24 @@ Redirect "/one" "/two"
 Redirect permanent "/one" "http://example.com/two"
 Redirect 303 "/three" "http://example.com/other"
     </highlight>
+
     <p>If the <directive>Redirect</directive> directive is used within a
     <directive type="section" module="core">Location</directive>
     or <directive type="section" module="core">LocationMatch</directive>
     section with the URL-path omitted, then the URL parameter will be
-    interpreted using <a href="../expr.html">expression syntax</a>.</p>
+    interpreted using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
-&lt;Location /one&gt;
-    Redirect permanent http://example.com/two
-&lt;/Location&gt;<br />
-&lt;Location /three&gt;
-    Redirect 303 http://example.com/other
-&lt;/Location&gt;<br />
-&lt;LocationMatch /error/(?&lt;NUMBER&gt;[0-9]+)&gt;
-    Redirect permanent http://example.com/errors/%{env:MATCH_NUMBER}.html
-&lt;/LocationMatch&gt;<br />
+&lt;Location "/one"&gt;
+    Redirect permanent "http://example.com/two"
+&lt;/Location&gt;
+&lt;Location "/three"&gt;
+    Redirect 303 "http://example.com/other"
+&lt;/Location&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+&lt;/LocationMatch&gt;
     </highlight>
 
 </usage>
@@ -426,7 +431,7 @@ of the current URL</description>
     another server, one might use:</p>
 
     <highlight language="config">
-      RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
+RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
     </highlight>
 
     <p>The considerations related to the difference between
@@ -437,7 +442,6 @@ of the current URL</description>
     <directive module="mod_alias">RedirectMatch</directive>.
     See <directive module="mod_alias">AliasMatch</directive> for
     details.</p>
-
 
 </usage>
 </directivesynopsis>
@@ -495,7 +499,7 @@ target as a CGI script</description>
     pathname in the local filesystem.</p>
 
     <highlight language="config">
-      ScriptAlias "/cgi-bin/" "/web/cgi-bin/"
+ScriptAlias "/cgi-bin/" "/web/cgi-bin/"
     </highlight>
 
     <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
@@ -503,7 +507,7 @@ target as a CGI script</description>
     is essentially equivalent to:</p>
     <highlight language="config">
 Alias "/cgi-bin/" "/web/cgi-bin/"
-&lt;Location "/cgi-bin" &gt;
+&lt;Location "/cgi-bin"&gt;
     SetHandler cgi-script
     Options +ExecCGI
 &lt;/Location&gt;
@@ -544,19 +548,21 @@ ScriptAlias "/cgi-bin/" "/web/cgi-handler.pl"
     <directive>ScriptAlias</directive> and revealing the source code
     of the CGI scripts if they are not restricted by a
     <directive module="core">Directory</directive> section.</note>
+
     <p>If the <directive>ScriptAlias</directive> directive is used within
     a <directive type="section" module="core">Location</directive>
     or <directive type="section" module="core">LocationMatch</directive>
     section with the URL-path omitted, then the URL parameter will be
-    interpreted using <a href="../expr.html">expression syntax</a>.</p>
+    interpreted using <a href="../expr.html">expression syntax</a>.<br />
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
-&lt;Location /cgi-bin &gt;
-    ScriptAlias /web/cgi-bin/
+&lt;Location "/cgi-bin"&gt;
+    ScriptAlias "/web/cgi-bin/"
 &lt;/Location&gt;
-&lt;LocationMatch /cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)&gt;
-    ScriptAlias /web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi
-&lt;/LocationMatch&gt;<br />
+&lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    ScriptAlias "/web/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
+&lt;/LocationMatch&gt;
     </highlight>
 
 </usage>
@@ -584,7 +590,7 @@ and designates the target as a CGI script</description>
     might use:</p>
 
     <highlight language="config">
-      ScriptAliasMatch "^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
+ScriptAliasMatch "^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
     </highlight>
 
     <p>As for AliasMatch, the full range of <glossary ref="rexex">regular
@@ -593,7 +599,7 @@ and designates the target as a CGI script</description>
     matching of the URL-path:</p>
 
     <highlight language="config">
-      ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
+ScriptAliasMatch "(?i)^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"
     </highlight>
 
     <p>The considerations related to the difference between
