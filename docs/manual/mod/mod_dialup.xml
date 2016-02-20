@@ -38,7 +38,7 @@ V.92 modem, by adding something like this:</p>
 
 <highlight language="config">
 &lt;Location "/mysite"&gt;
-    ModemStandard V.92
+    ModemStandard "V.92"
 &lt;/Location&gt;
 </highlight>
 
@@ -52,7 +52,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <directivesynopsis>
 <name>ModemStandard</name>
 <description>Modem standard to simulate</description>
-<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntax>
+<syntax>ModemStandard V.21|V.26bis|V.32|V.34|V.92</syntax>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
@@ -60,7 +60,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 
 <highlight language="config">
 &lt;Location "/mysite"&gt;
-    ModemStandard V.26bis
+    ModemStandard "V.26bis"
 &lt;/Location&gt;
 </highlight>
 
