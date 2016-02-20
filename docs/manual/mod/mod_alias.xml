@@ -90,7 +90,7 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
     <highlight language="config">
 Alias "/foo/bar" "/baz"
-Alias "/foo"     "/gaq"
+Alias "/foo" "/gaq"
     </highlight>
 
     <p>But if the above two directives were reversed in order, the
@@ -149,7 +149,7 @@ Alias "/image" "/ftp/pub/image"
 Alias "/icons/" "/usr/local/apache/icons/"
     </highlight>
 
-    <p>then the url <code>/icons</code> will not be aliased, as it lacks
+    <p>then the URL <code>/icons</code> will not be aliased, as it lacks
     that trailing /. Likewise, if you omit the slash on the
     <var>URL-path</var> then you must also omit it from the
     <var>file-path</var>.</p>
@@ -183,7 +183,7 @@ Alias "/image" "/ftp/pub/image"
     or <directive type="section" module="core">LocationMatch</directive>
     section the URL-path is omitted, and the file-path is interpreted
     using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
 &lt;Location "/image"&gt;
@@ -392,7 +392,7 @@ Redirect 303 "/three" "http://example.com/other"
     or <directive type="section" module="core">LocationMatch</directive>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
 &lt;Location "/one"&gt;
@@ -442,7 +442,6 @@ RedirectMatch "(.*)\.gif$" "http://other.example.com$1.jpg"
     <directive module="mod_alias">RedirectMatch</directive>.
     See <directive module="mod_alias">AliasMatch</directive> for
     details.</p>
-
 
 </usage>
 </directivesynopsis>
@@ -555,7 +554,7 @@ ScriptAlias "/cgi-bin/" "/web/cgi-handler.pl"
     or <directive type="section" module="core">LocationMatch</directive>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <highlight language="config">
 &lt;Location "/cgi-bin"&gt;
