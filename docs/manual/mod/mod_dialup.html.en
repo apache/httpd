@@ -40,7 +40,7 @@ by the various old modem standards. So, you can browse your site with a 56k
 V.92 modem, by adding something like this:</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
-    ModemStandard V.92
+    ModemStandard "V.92"
 &lt;/Location&gt;</pre>
 
 
@@ -60,7 +60,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <div class="directive-section"><h2><a name="ModemStandard" id="ModemStandard">ModemStandard</a> <a name="modemstandard" id="modemstandard">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modem standard to simulate</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.92</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.34|V.92</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
@@ -68,7 +68,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <p>Specify what modem standard you wish to simulate.</p>
 
 <pre class="prettyprint lang-config">&lt;Location "/mysite"&gt;
-    ModemStandard V.26bis
+    ModemStandard "V.26bis"
 &lt;/Location&gt;</pre>
 
 
