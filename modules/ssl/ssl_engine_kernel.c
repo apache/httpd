@@ -939,9 +939,7 @@ int ssl_hook_Access(request_rec *r)
             }
         }
         else {
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
             char peekbuf[1];
-#endif
             const char *reneg_support;
             request_rec *id = r->main ? r->main : r;
 
@@ -1001,24 +999,11 @@ int ssl_hook_Access(request_rec *r)
              * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-
-#ifdef OPENSSL_NO_SSL_INTERN
-            SSL_set_state(ssl, SSL_ST_ACCEPT);
-#else
-            ssl->state = SSL_ST_ACCEPT;
-#endif
-            SSL_do_handshake(ssl);
-
-#else /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
-
             /* Need to trigger renegotiation handshake by reading.
              * Peeking 0 bytes actually works.
              * See: http://marc.info/?t=145493359200002&r=1&w=2
              */
             SSL_peek(ssl, peekbuf, 0);
-
-#endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
             sslconn->reneg_state = RENEG_REJECT;
 
@@ -2092,23 +2077,12 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
     /* If the reneg state is to reject renegotiations, check the SSL
      * state machine and move to ABORT if a Client Hello is being
      * read. */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    if ((where & SSL_CB_ACCEPT_LOOP) && scr->reneg_state == RENEG_REJECT) {
-        int state = SSL_get_state((SSL *)ssl);
-
-        if (state == SSL3_ST_SR_CLNT_HELLO_A
-            || state == SSL23_ST_SR_CLNT_HELLO_A) {
-#else
     if (!scr->is_proxy &&
         (where & SSL_CB_HANDSHAKE_START) &&
         scr->reneg_state == RENEG_REJECT) {
-#endif
             scr->reneg_state = RENEG_ABORT;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(02042)
                           "rejecting client initiated renegotiation");
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        }
-#endif
     }
     /* If the first handshake is complete, change state to reject any
      * subsequent client-initiated renegotiation. */
@@ -2312,11 +2286,7 @@ int ssl_callback_SessionTicket(SSL *ssl,
         }
 
         memcpy(keyname, ticket_key->key_name, 16);
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        RAND_pseudo_bytes(iv, EVP_MAX_IV_LENGTH);
-#else
         RAND_bytes(iv, EVP_MAX_IV_LENGTH);
-#endif
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
         HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
