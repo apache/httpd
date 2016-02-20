@@ -109,7 +109,7 @@
     configuration will work as expected:</p>
 
     <pre class="prettyprint lang-config">Alias "/foo/bar" "/baz"
-Alias "/foo"     "/gaq"</pre>
+Alias "/foo" "/gaq"</pre>
 
 
     <p>But if the above two directives were reversed in order, the
@@ -163,7 +163,7 @@ Alias "/foo"     "/gaq"</pre>
     <pre class="prettyprint lang-config">Alias "/icons/" "/usr/local/apache/icons/"</pre>
 
 
-    <p>then the url <code>/icons</code> will not be aliased, as it lacks
+    <p>then the URL <code>/icons</code> will not be aliased, as it lacks
     that trailing /. Likewise, if you omit the slash on the
     <var>URL-path</var> then you must also omit it from the
     <var>file-path</var>.</p>
@@ -194,7 +194,7 @@ Alias "/foo"     "/gaq"</pre>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section the URL-path is omitted, and the file-path is interpreted
     using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
     Alias "/ftp/pub/image"
@@ -392,7 +392,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
     Redirect permanent "http://example.com/two"
@@ -439,7 +439,6 @@ of the current URL</td></tr>
     <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.
     See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
     details.</p>
-
 
 
 </div>
@@ -543,7 +542,7 @@ target as a CGI script</td></tr>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section with the URL-path omitted, then the URL parameter will be
     interpreted using <a href="../expr.html">expression syntax</a>.<br />
-    This syntax is available in Apache 2.4.13 and later.</p>
+    This syntax is available in Apache 2.4.19 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
     ScriptAlias "/web/cgi-bin/"
