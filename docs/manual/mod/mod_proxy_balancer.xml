@@ -30,17 +30,23 @@
 
 <summary>
     <p>This module <em>requires</em> the service of <module
-    >mod_proxy</module>. It provides load balancing support for
-    <code>HTTP</code>, <code>FTP</code> and <code>AJP13</code> protocols
-    </p>
-
-    <p>Load balancing scheduler algorithm is provided by not this
-    module but other modules such as:
-    <module>mod_lbmethod_byrequests</module>,
-    <module>mod_lbmethod_bytraffic</module>,
-    <module>mod_lbmethod_bybusyness</module> and
-    <module>mod_lbmethod_heartbeat</module>.
-    </p>
+    >mod_proxy</module> and it provides load balancing for
+    all the supported protocols. The most important ones are:</p>
+    <ul>
+        <li>HTTP, using <module>mod_proxy_http</module></li>
+        <li>FTP, using <module>mod_proxy_ftp</module></li>
+        <li>AJP13, using <module>mod_proxy_ajp</module></li>
+        <li>WebSocket, using <module>mod_proxy_wstunnel</module></li>
+    </ul>
+    
+    <p>The Load balancing scheduler algorithm is not provided by this
+    module but from other ones such as:</p>
+    <ul>
+        <li><module>mod_lbmethod_byrequests</module></li>
+        <li><module>mod_lbmethod_bytraffic</module></li>
+        <li><module>mod_lbmethod_bybusyness</module></li>
+        <li><module>mod_lbmethod_heartbeat</module></li>
+    </ul>
 
     <p>Thus, in order to get the ability of load balancing,
     <module>mod_proxy</module>, <module>mod_proxy_balancer</module>
