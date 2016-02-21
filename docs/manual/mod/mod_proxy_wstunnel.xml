@@ -34,21 +34,23 @@
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>. It provides support for the tunnelling of web
     socket connections to a backend websockets server. The connection
-    is automagically upgraded to a websocket connection:</p>
+    is automatically upgraded to a websocket connection:</p>
 
-    <highlight language="config">
+    <example><title>HTTP Response</title>
+        <highlight language="config">
 Upgrade: WebSocket
 Connection: Upgrade
-    </highlight>
+        </highlight>
+    </example>
 
-
-    <example><title>Proxying requests to websockets server</title>
+<p>Proxying requests to a websockets server like <code>echo.websocket.org</code> can be done using the
+<directive type="ProxyPass" module="mod_proxy">ProxyPass</directive> directive:</p>
     <highlight language="config">
 ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"
     </highlight>
-    </example>
 
+<p>Load balancing for multiple backends can be achieved using <module>mod_proxy_balancer</module>.</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
