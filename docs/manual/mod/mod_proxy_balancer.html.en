@@ -35,17 +35,23 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_balancer.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides load balancing support for
-    <code>HTTP</code>, <code>FTP</code> and <code>AJP13</code> protocols
-    </p>
-
-    <p>Load balancing scheduler algorithm is provided by not this
-    module but other modules such as:
-    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>,
-    <code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code>,
-    <code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code> and
-    <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code>.
-    </p>
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and it provides load balancing for
+    all the supported protocols. The most important ones are:</p>
+    <ul>
+        <li>HTTP, using <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
+        <li>FTP, using <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+        <li>AJP13, using <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
+        <li>WebSocket, using <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></li>
+    </ul>
+    
+    <p>The Load balancing scheduler algorithm is not provided by this
+    module but from other ones such as:</p>
+    <ul>
+        <li><code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></li>
+    </ul>
 
     <p>Thus, in order to get the ability of load balancing,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>
