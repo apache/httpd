@@ -85,7 +85,6 @@
 typedef struct digest_config_struct {
     const char  *dir_name;
     authn_provider_list *providers;
-    const char  *realm;
     apr_array_header_t *qop_list;
     apr_sha1_ctx_t  nonce_ctx;
     apr_time_t    nonce_lifetime;
@@ -451,6 +450,11 @@ static void *create_digest_dir_config(apr_pool_t *p, char *dir)
     return conf;
 }
 
+
+/*
+ * The realm is no longer precomputed because it may be an expression, which
+ * makes this hooking of AuthName quite weird.
+ */
 static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
@@ -465,21 +469,13 @@ static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
     ap_assert(i < SECRET_LEN);
 #endif
 
-    /* The core already handles the realm, but it's just too convenient to
-     * grab it ourselves too and cache some setups. However, we need to
-     * let the core get at it too, which is why we decline at the end -
-     * this relies on the fact that http_core is last in the list.
-     */
-    conf->realm = realm;
-
     /* we precompute the part of the nonce hash that is constant (well,
      * the host:port would be too, but that varies for .htaccess files
      * and directives outside a virtual host section)
      */
     apr_sha1_init(&conf->nonce_ctx);
     apr_sha1_update_binary(&conf->nonce_ctx, secret, SECRET_LEN);
-    apr_sha1_update_binary(&conf->nonce_ctx, (const unsigned char *) realm,
-                           strlen(realm));
+
 
     return DECLINE_CMD;
 }
@@ -1041,7 +1037,8 @@ static int parse_hdr_and_update_nc(request_rec *r)
  */
 static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
                            const server_rec *server,
-                           const digest_config_rec *conf)
+                           const digest_config_rec *conf, 
+                           const char *realm)
 {
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
@@ -1053,6 +1050,9 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
     apr_sha1_update_binary(&ctx, (const unsigned char *) &server->port,
                          sizeof(server->port));
      */
+
+    apr_sha1_update_binary(&ctx, (const unsigned char *) realm, strlen(realm));
+
     apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
     if (opaque) {
         apr_sha1_update_binary(&ctx, (const unsigned char *) opaque,
@@ -1068,7 +1068,8 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
  */
 static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
                              const server_rec *server,
-                             const digest_config_rec *conf)
+                             const digest_config_rec *conf,
+                             const char *realm)
 {
     char *nonce = apr_palloc(p, NONCE_LEN+1);
     time_rec t;
@@ -1087,7 +1088,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         t.time = 42;
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
-    gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
+    gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
 
     return nonce;
 }
@@ -1197,7 +1198,7 @@ static void note_digest_auth_failure(request_rec *r,
 
     /* Setup nonce */
 
-    nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf);
+    nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf, ap_auth_name(r));
     if (resp->client && conf->nonce_lifetime == 0) {
         memcpy(resp->client->last_nonce, nonce, NONCE_LEN+1);
     }
@@ -1303,7 +1304,7 @@ static authn_status get_hash(request_rec *r, const char *user,
 
 
         /* We expect the password to be md5 hash of user:realm:password */
-        auth_result = provider->get_realm_hash(r, user, conf->realm,
+        auth_result = provider->get_realm_hash(r, user, ap_auth_name(r),
                                                &password);
 
         apr_table_unset(r->notes, AUTHN_PROVIDER_NAME_NOTE);
@@ -1399,7 +1400,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
     apr_base64_decode_binary(nonce_time.arr, resp->nonce);
-    gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
+    gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf, ap_auth_name(r));
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
 
@@ -1546,6 +1547,7 @@ static int authenticate_digest_user(request_rec *r)
     const char        *t;
     int                res;
     authn_status       return_code;
+    const char *realm;
 
     /* do we require Digest auth for this URI? */
 
@@ -1573,6 +1575,7 @@ static int authenticate_digest_user(request_rec *r)
                                                       &auth_digest_module);
     resp->needed_auth = 1;
 
+    realm = ap_auth_name(r);
 
     /* get our conf */
 
@@ -1673,8 +1676,10 @@ static int authenticate_digest_user(request_rec *r)
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
     }
+ 
+    
 
-    if (!conf->realm) {
+    if (!realm) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02533)
                       "realm mismatch - got `%s' but no realm specified",
                       resp->realm);
@@ -1682,10 +1687,10 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_UNAUTHORIZED;
     }
 
-    if (!resp->realm || strcmp(resp->realm, conf->realm)) {
+    if (!resp->realm || strcmp(resp->realm, realm)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01788)
                       "realm mismatch - got `%s' but expected `%s'",
-                      resp->realm, conf->realm);
+                      resp->realm, realm);
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
     }
@@ -1704,7 +1709,7 @@ static int authenticate_digest_user(request_rec *r)
     if (return_code == AUTH_USER_NOT_FOUND) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01790)
                       "user `%s' in realm `%s' not found: %s",
-                      r->user, conf->realm, r->uri);
+                      r->user, realm, r->uri);
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
     }
@@ -1715,7 +1720,7 @@ static int authenticate_digest_user(request_rec *r)
         /* authentication denied in the provider before attempting a match */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01791)
                       "user `%s' in realm `%s' denied by provider: %s",
-                      r->user, conf->realm, r->uri);
+                      r->user, realm, r->uri);
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
     }
@@ -1818,7 +1823,7 @@ static int add_auth_info(request_rec *r)
         if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
             nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"",
                                    gen_nonce(r->pool, r->request_time,
-                                             resp->opaque, r->server, conf),
+                                             resp->opaque, r->server, conf, ap_auth_name(r)),
                                    "\"", NULL);
             if (resp->client)
                 resp->client->nonce_count = 0;
@@ -1826,7 +1831,7 @@ static int add_auth_info(request_rec *r)
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {
         const char *nonce = gen_nonce(r->pool, 0, resp->opaque, r->server,
-                                      conf);
+                                      conf, ap_auth_name(r));
         nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"", nonce, "\"", NULL);
         memcpy(resp->client->last_nonce, nonce, NONCE_LEN+1);
     }

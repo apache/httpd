@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
+     [Eric Covener]
+
   *) mpm: Add a complete_connection hook that confirms whether an MPM is allowed
      to leave the WRITE_COMPLETION phase. Move filter code out of the MPMs.
      [Graham Leggett]
