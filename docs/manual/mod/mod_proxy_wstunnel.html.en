@@ -38,17 +38,19 @@
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the tunnelling of web
     socket connections to a backend websockets server. The connection
-    is automagically upgraded to a websocket connection:</p>
+    is automatically upgraded to a websocket connection:</p>
 
-    <pre class="prettyprint lang-config">Upgrade: WebSocket
+    <div class="example"><h3>HTTP Response</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
 Connection: Upgrade</pre>
-
-
-
-    <div class="example"><h3>Proxying requests to websockets server</h3><pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
-ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 </div>
 
+<p>Proxying requests to a websockets server like <code>echo.websocket.org</code> can be done using the
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive:</p>
+    <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
+ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
+
+
+<p>Load balancing for multiple backends can be achieved using <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>This module provides no
