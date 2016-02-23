@@ -1656,10 +1656,8 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(02886)
                          "WARNING: StartServers of %d exceeds compile-time "
-                         "limit of", ap_num_kids);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03118)
-                         " %d servers, decreasing to %d.",
-                         DEFAULT_SERVER_LIMIT, DEFAULT_SERVER_LIMIT);
+                         "limit of %d servers, decreasing to %d.",
+                         ap_num_kids, DEFAULT_SERVER_LIMIT, DEFAULT_SERVER_LIMIT);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02887)
                          "StartServers of %d exceeds compile-time limit "
@@ -1685,10 +1683,8 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00305)
                          "WARNING: ThreadLimit of %d exceeds compile-time "
-                         "limit of", thread_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03144)
-                         " %d threads, decreasing to %d.",
-                         MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
+                         "limit of %d threads, decreasing to %d.",
+                         thread_limit, MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00306)
                          "ThreadLimit of %d exceeds compile-time limit "
