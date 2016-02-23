@@ -54,7 +54,8 @@ struct h2_io {
     unsigned int request_body   : 1; /* iff request has body */
     unsigned int eos_in         : 1; /* input eos has been seen */
     unsigned int eos_in_written : 1; /* input eos has been forwarded */
-    unsigned int eos_out        : 1; /* output eos has been seen */
+    unsigned int eos_out        : 1; /* output eos is present */
+    unsigned int eos_out_read   : 1; /* output eos has been forwarded */
     
     h2_io_op timed_op;               /* which operation is waited on, if any */
     struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */

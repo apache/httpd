@@ -308,7 +308,7 @@ apr_status_t h2_io_out_readx(h2_io *io,
         return APR_ECONNABORTED;
     }
     
-    if (io->eos_out) {
+    if (io->eos_out_read) {
         *plen = 0;
         *peos = 1;
         return APR_SUCCESS;
@@ -326,7 +326,7 @@ apr_status_t h2_io_out_readx(h2_io *io,
     else {
         status = h2_util_bb_readx(io->bbout, cb, ctx, plen, peos);
         if (status == APR_SUCCESS) {
-            io->eos_out = *peos;
+            io->eos_out_read = *peos;
         }
     }
     
@@ -340,7 +340,7 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
         return APR_ECONNABORTED;
     }
     
-    if (io->eos_out) {
+    if (io->eos_out_read) {
         *plen = 0;
         *peos = 1;
         return APR_SUCCESS;
@@ -351,7 +351,7 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
         return APR_EAGAIN;
     }
 
-    io->eos_out = *peos = h2_util_has_eos(io->bbout, *plen);
+    io->eos_out_read = *peos = h2_util_has_eos(io->bbout, *plen);
     return h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
 }
 
@@ -423,14 +423,17 @@ apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers)
     if (io->rst_error) {
         return APR_ECONNABORTED;
     }
-    if (!io->eos_out) { /* EOS has not been read yet */
+    if (!io->eos_out_read) { /* EOS has not been read yet */
         process_trailers(io, trailers);
         if (!io->bbout) {
             io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
         }
-        if (!h2_util_has_eos(io->bbout, -1)) {
-            APR_BRIGADE_INSERT_TAIL(io->bbout, 
-                                    apr_bucket_eos_create(io->bucket_alloc));
+        if (!io->eos_out) {
+            io->eos_out = 1;
+            if (!h2_util_has_eos(io->bbout, -1)) {
+                APR_BRIGADE_INSERT_TAIL(io->bbout, 
+                                        apr_bucket_eos_create(io->bucket_alloc));
+            }
         }
     }
     return APR_SUCCESS;
