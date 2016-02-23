@@ -22,12 +22,12 @@
 #include <http_core.h>
 #include <http_log.h>
 
+#include "h2.h"
 #include "h2_private.h"
 #include "h2_conn.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
-#include "h2_request.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 
@@ -35,24 +35,28 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
     apr_status_t status;
+    int sticky;
     
     while (!worker->aborted) {
-        h2_mplx *m;
         h2_task *task;
         
-        /* Get a h2_mplx + h2_request from the main workers queue. */
-        status = worker->get_next(worker, &m, &task, worker->ctx);
-        
+        /* Get a h2_task from the main workers queue. */
+        status = worker->get_next(worker, worker->ctx, &task, &sticky);
         while (task) {
-            h2_task_do(task, worker->io, m->dummy_socket);
+            h2_task_do(task, worker->io, task->mplx->dummy_socket);
             
-            if (task->frozen) {
-                /* this task was handed over to someone else for processing */
-                h2_task_thaw(task);
+            /* if someone was waiting on this task, time to wake up */
+            apr_thread_cond_signal(worker->io);
+            /* report the task done and maybe get another one from the same
+             * mplx (= master connection), if we can be sticky. 
+             */
+            if (sticky && !worker->aborted) {
+                h2_mplx_task_done(task->mplx, task, &task);
+            }
+            else {
+                h2_mplx_task_done(task->mplx, task, NULL);
                 task = NULL;
             }
-            apr_thread_cond_signal(worker->io);
-            h2_mplx_task_done(m, task, worker->aborted? NULL : &task);
         }
     }
 

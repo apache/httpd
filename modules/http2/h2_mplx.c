@@ -1108,33 +1108,40 @@ void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
     
     if (enter_mutex(m, &acquired) == APR_SUCCESS) {
         if (task) {
-            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                          "h2_mplx(%ld): task(%s) done", m->id, task->id);
-            /* clean our references and report request as done. Signal
-             * that we want another unless we have been aborted */
-            /* TODO: this will keep a worker attached to this h2_mplx as
-             * long as it has requests to handle. Might no be fair to
-             * other mplx's. Perhaps leave after n requests? */
-
-            if (task->c) {
-                apr_pool_destroy(task->c->pool);
+            if (task->frozen) {
+                /* this task was handed over to an engine for processing */
+                h2_task_thaw(task);
+                /* TODO: can we signal an engine that it can now start on this? */
             }
-            task = NULL;
-            if (io) {
-                io->processing_done = 1;
-                h2_mplx_out_close(m, io->id, NULL);
-                if (io->orphaned) {
-                    io_destroy(m, io, 0);
-                    if (m->join_wait) {
-                        apr_thread_cond_signal(m->join_wait);
+            else {
+                h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                              "h2_mplx(%ld): task(%s) done", m->id, task->id);
+                /* clean our references and report request as done. Signal
+                 * that we want another unless we have been aborted */
+                /* TODO: this will keep a worker attached to this h2_mplx as
+                 * long as it has requests to handle. Might no be fair to
+                 * other mplx's. Perhaps leave after n requests? */
+                
+                if (task->c) {
+                    apr_pool_destroy(task->c->pool);
+                }
+                task = NULL;
+                if (io) {
+                    io->processing_done = 1;
+                    h2_mplx_out_close(m, io->id, NULL);
+                    if (io->orphaned) {
+                        io_destroy(m, io, 0);
+                        if (m->join_wait) {
+                            apr_thread_cond_signal(m->join_wait);
+                        }
+                    }
+                    else {
+                        /* hang around until the stream deregisteres */
                     }
                 }
-                else {
-                    /* hang around until the stream deregisteres */
-                }
+                apr_thread_cond_broadcast(m->request_done);
             }
-            apr_thread_cond_broadcast(m->request_done);
         }
         
         if (ptask) {
