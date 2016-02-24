@@ -149,13 +149,12 @@
 	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
 	en langue anglaise.</message>
 
-        <!-- retirement -->
-        <message id="retired.headline">A savoir</message>
+        <!-- retirement (needs translation) -->
+        <message id="retired.headline">Please note</message>
         <message id="retired.description">
-            <p>Ce document concerne la version <strong>2.0</strong> du serveur HTTP Apache et celle-ci <strong>n'est plus maintenue</strong>. Si vous utilisez cette version, il est fortement recommand&eacute; de mettre &agrave; jour votre serveur vers la version actuelle (<strong>2.4</strong>), et de consulter la documentation correspondante ici :</p>
+            <p> This document refers to a legacy release (<strong>2.2</strong>) of Apache httpd. The active release (<strong>2.4</strong>) is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
         </message>
-        <message id="retired.current">Version actuelle de la documentation du serveur HTTP Apache</message>
-        <message id="retired.document">Pour consulter la version actuelle de ce document, vous pouvez suivre <link>ce lien</link>.</message>
+        <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
 
     </messages>
 </language>

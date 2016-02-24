@@ -317,11 +317,6 @@
     <div class="retired">
         <h4><xsl:value-of select="$message[@id='retired.headline']" /></h4>
         <xsl:apply-templates select="$message[@id='retired.description']" />
-        <ul>
-            <li><a href="http://httpd.apache.org/docs/current/">
-                <xsl:value-of select="$message[@id='retired.current']" /></a>
-            </li>
-        </ul>
         <xsl:if test="not($future = '')">
             <p><xsl:apply-templates select="$message[@id='retired.document']" mode="retired" /></p>
         </xsl:if>
