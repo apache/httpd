@@ -50,6 +50,10 @@
         <highlight language="config">
             Protocols h2 http/1.1
         </highlight>
+
+        <p><code>h2</code> (HTTP/2 over TLS) is the preferred connection scheme chosen by browsers up to now, but the HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption. To enable <code>h2c</code> (HTTP/2 over TCP) please check the <directive module="mod_http2">H2Direct</directive> directive first.</p>
+
+        <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a> for any doubt about the protocol.</p>
         
     </summary>
     
@@ -62,7 +66,7 @@
             carefully the implications.
         </p>
         <p>
-            The first noticable thing after enabling HTTP/2 is that your server
+            The first noticeable thing after enabling HTTP/2 is that your server
             processes will start additional threads. The reason for this is that
             HTTP/2 gives all requests that it receives to its own <em>Worker</em>
             threads for processing, collects the results and streams them out
@@ -146,7 +150,7 @@
         </p>
         <p>
             If you mix things, Apache httpd will detect it and return a special
-            response code, 421 Misidrected Request, to the client.
+            response code, 421 Misdirected Request, to the client.
         </p>
     </section>
 
@@ -312,7 +316,7 @@
             <p>
                 The push diary records a digest (currently using a 64 bit number) of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
-                These value are not persisted, so clients openeing a new connection
+                These value are not persisted, so clients opening a new connection
                 will experience known pushes again. There is ongoing work to enable
                 a client to disclose a digest of the resources it already has, so
                 the diary maybe initialized by the client on each connection setup.
@@ -361,12 +365,12 @@
                 When a stream has more than one dependant, say X1 and X2 both
                 depend on Y, the <em>weight</em> determines the bandwidth
                 allocation. If X1 and X2 have the same weight, they both get
-                half of the available bandwdith. If the weight of X1 is twice
+                half of the available bandwidth. If the weight of X1 is twice
                 as large as that for X2, X1 gets twice the bandwidth of X2.
             </p>
             <p> 
                 Ultimately, every stream depends on the <em>root</em> stream which
-                gets all the bandwidht available, but never sends anything. So all
+                gets all the bandwidth available, but never sends anything. So all
                 its bandwidth is distributed by weight among its children. Which
                 either have data to send or distribute the bandwidth to their
                 own children. And so on. If none of the children have data
