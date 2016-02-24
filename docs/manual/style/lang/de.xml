@@ -148,13 +148,12 @@
             noch nicht &#252;bersetzt. Bitte schauen Sie in die englische
             Version.</message>
 
-        <!-- retirement -->
-        <message id="retired.headline">Bitte beachten!</message>
+        <!-- retirement (needs translation) -->
+        <message id="retired.headline">Please note</message>
         <message id="retired.description">
-            <p>Dieses Dokument bezieht sich auf Version <strong>2.0</strong> des Apache httpd, die <strong>nicht mehr gepflegt wird</strong>. Bitte aktualisieren Sie die Software und verwenden Sie stattdessen eine aktuelle Version des httpd, die an folgender Stelle dokumentiert ist:</p>
+            <p> This document refers to a legacy release (<strong>2.2</strong>) of Apache httpd. The active release (<strong>2.4</strong>) is documented <a href="http://httpd.apache.org/docs/current">here</a>. If you have not already upgraded, please follow <a href="http://httpd.apache.org/docs/current/upgrading.html">this link</a> for more information.</p>
         </message>
-        <message id="retired.current">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</message>
-        <message id="retired.document">Sie können <link>diesem Link</link> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</message>
+        <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
 
     </messages>
 </language>
