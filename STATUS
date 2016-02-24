@@ -184,10 +184,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/r1726026
                    http://svn.apache.org/r1729376
                    http://svn.apache.org/r1729960
+                   http://svn.apache.org/r1730865
      2.4.x patch:  trunk works (modulo CHANGES)
-     Resetting votes:
-     +1: icing, jim
-     rpluem says: +1, but I would like to see http://svn.apache.org/r1730865 added.
+     Resetting votes take 2:
+     +1: jim
 
   *) mod_proxy_wstunnel, mod_proxy_connect: Use the correct pool and allocator
      lifetime when sending brigades and buckets down the filter chain to the
@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/r1730823
      Backport version for 2.4.x of patch:
         http://home.apache.org/~rpluem/patches/proxy_correctlifetime.diff
-     +1: rpluem,
+     +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
