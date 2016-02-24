@@ -82,6 +82,11 @@ void h2_iq_add(h2_int_queue *q, int sid, h2_iq_cmp *cmp, void *ctx);
 int h2_iq_remove(h2_int_queue *q, int sid);
 
 /**
+ * Remove all entries in the queue.
+ */
+void h2_iq_clear(h2_int_queue *q);
+
+/**
  * Sort the stream idqueue again. Call if the task ordering
  * has changed.
  *

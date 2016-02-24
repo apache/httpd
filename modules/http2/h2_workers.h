@@ -39,6 +39,7 @@ struct h2_workers {
     int max_workers;
     int worker_count;
     int idle_workers;
+    int max_idle_secs;
     
     apr_size_t max_tx_handles;
     apr_size_t spare_tx_handles;
@@ -51,8 +52,6 @@ struct h2_workers {
     APR_RING_HEAD(h2_worker_zombies, h2_worker) zombies;
     APR_RING_HEAD(h2_mplx_list, h2_mplx) mplxs;
     int mplx_count;
-    
-    volatile apr_uint32_t max_idle_secs;
     
     struct apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *mplx_added;

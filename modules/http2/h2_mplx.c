@@ -199,7 +199,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
         
-        status = apr_thread_cond_create(&m->request_done, m->pool);
+        status = apr_thread_cond_create(&m->task_done, m->pool);
         if (status != APR_SUCCESS) {
             h2_mplx_destroy(m);
             return NULL;
@@ -218,6 +218,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->stream_timeout = stream_timeout;
         m->workers = workers;
+        m->workers_max = 6;
         
         m->tx_handles_reserved = 0;
         m->tx_chunk_size = 4;
@@ -250,6 +251,7 @@ static void workers_register(h2_mplx *m)
      * Therefore: ref counting for h2_workers in not needed, ref counting
      * for h2_worker using this is critical.
      */
+    m->need_registration = 0;
     h2_workers_register(m->workers, m);
 }
 
@@ -354,13 +356,15 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
     int acquired;
 
     h2_workers_unregister(m->workers, m);
+    
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         int i, wait_secs = 5;
         
         /* disable WINDOW_UPDATE callbacks */
         h2_mplx_set_consumed_cb(m, NULL, NULL);
         
-        apr_thread_cond_broadcast(m->request_done);
+        h2_iq_clear(m->q);
+        apr_thread_cond_broadcast(m->task_done);
         while (!h2_io_set_iter(m->stream_ios, stream_done_iter, m)) {
             /* iterate until all ios have been orphaned or destroyed */
         }
@@ -392,7 +396,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                     }
                 }
                 m->aborted = 1;
-                apr_thread_cond_broadcast(m->request_done);
+                apr_thread_cond_broadcast(m->task_done);
             }
         }
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03056)
@@ -1014,7 +1018,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
-    int was_empty = 0;
+    int do_registration = 0;
     int acquired;
     
     AP_DEBUG_ASSERT(m);
@@ -1030,7 +1034,8 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
                 status = h2_io_in_close(io);
             }
             
-            was_empty = h2_iq_empty(m->q);
+            m->need_registration = m->need_registration || h2_iq_empty(m->q);
+            do_registration = (m->need_registration && m->workers_busy < m->workers_max);
             h2_iq_add(m->q, io->id, cmp, ctx);
             
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
@@ -1039,7 +1044,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
         }
         leave_mutex(m, acquired);
     }
-    if (status == APR_SUCCESS && was_empty) {
+    if (status == APR_SUCCESS && do_registration) {
         workers_register(m);
     }
     return status;
@@ -1049,7 +1054,9 @@ static h2_task *pop_task(h2_mplx *m)
 {
     h2_task *task = NULL;
     int sid;
-    while (!m->aborted && !task && (sid = h2_iq_shift(m->q)) > 0) {
+    while (!m->aborted && !task 
+        && (m->workers_busy < m->workers_max)
+        && (sid = h2_iq_shift(m->q)) > 0) {
         h2_io *io = h2_io_set_get(m->stream_ios, sid);
         if (io) {
             conn_rec *c;
@@ -1077,6 +1084,7 @@ static h2_task *pop_task(h2_mplx *m)
             if (sid > m->max_stream_started) {
                 m->max_stream_started = sid;
             }
+            ++m->workers_busy;
         }
     }
     return task;
@@ -1097,61 +1105,74 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
             task = pop_task(m);
             *has_more = !h2_iq_empty(m->q);
         }
+        
+        if (has_more && !task) {
+            m->need_registration = 1;
+        }
         leave_mutex(m, acquired);
     }
     return task;
 }
 
+static void task_done(h2_mplx *m, h2_task *task)
+{
+    if (task) {
+        if (task->frozen) {
+            /* this task was handed over to an engine for processing */
+            h2_task_thaw(task);
+            /* TODO: can we signal an engine that it can now start on this? */
+        }
+        else {
+            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): task(%s) done", m->id, task->id);
+            /* clean our references and report request as done. Signal
+             * that we want another unless we have been aborted */
+            /* TODO: this will keep a worker attached to this h2_mplx as
+             * long as it has requests to handle. Might no be fair to
+             * other mplx's. Perhaps leave after n requests? */
+            
+            if (task->c) {
+                apr_pool_destroy(task->c->pool);
+            }
+            task = NULL;
+            if (io) {
+                io->processing_done = 1;
+                h2_mplx_out_close(m, io->id, NULL);
+                if (io->orphaned) {
+                    io_destroy(m, io, 0);
+                    if (m->join_wait) {
+                        apr_thread_cond_signal(m->join_wait);
+                    }
+                }
+                else {
+                    /* hang around until the stream deregisteres */
+                }
+            }
+            apr_thread_cond_broadcast(m->task_done);
+        }
+    }
+    
+}
+
 void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
 {
-    int acquired;
+    int acquired, do_registration = 0;
     
     if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        if (task) {
-            if (task->frozen) {
-                /* this task was handed over to an engine for processing */
-                h2_task_thaw(task);
-                /* TODO: can we signal an engine that it can now start on this? */
-            }
-            else {
-                h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                              "h2_mplx(%ld): task(%s) done", m->id, task->id);
-                /* clean our references and report request as done. Signal
-                 * that we want another unless we have been aborted */
-                /* TODO: this will keep a worker attached to this h2_mplx as
-                 * long as it has requests to handle. Might no be fair to
-                 * other mplx's. Perhaps leave after n requests? */
-                
-                if (task->c) {
-                    apr_pool_destroy(task->c->pool);
-                }
-                task = NULL;
-                if (io) {
-                    io->processing_done = 1;
-                    h2_mplx_out_close(m, io->id, NULL);
-                    if (io->orphaned) {
-                        io_destroy(m, io, 0);
-                        if (m->join_wait) {
-                            apr_thread_cond_signal(m->join_wait);
-                        }
-                    }
-                    else {
-                        /* hang around until the stream deregisteres */
-                    }
-                }
-                apr_thread_cond_broadcast(m->request_done);
-            }
-        }
-        
+        task_done(m, task);
+        --m->workers_busy;
         if (ptask) {
             /* caller wants another task */
             *ptask = pop_task(m);
         }
+        do_registration = (m->workers_busy+1 == m->workers_max);
         leave_mutex(m, acquired);
     }
+    if (do_registration) {
+        workers_register(m);
+    }
 }
-
 
 /*******************************************************************************
  * HTTP/2 request engines
@@ -1327,7 +1348,7 @@ static apr_status_t engine_pull(h2_mplx *m, h2_req_engine_i *engine,
             *pr = NULL;
             return APR_EOF;
         }
-        apr_thread_cond_timedwait(m->request_done, m->lock, 
+        apr_thread_cond_timedwait(m->task_done, m->lock, 
                                   apr_time_from_msec(100));
     }
 }
@@ -1351,6 +1372,7 @@ apr_status_t h2_mplx_engine_pull(h2_req_engine *pub_engine,
 static void engine_done(h2_mplx *m, h2_req_engine_i *engine, h2_task *task, 
                         int waslive, int aborted)
 {
+    int acquired;
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,
                   "h2_mplx(%ld): task %s %s by %s", 
                   m->id, task->id, aborted? "aborted":"done", 
@@ -1360,7 +1382,10 @@ static void engine_done(h2_mplx *m, h2_req_engine_i *engine, h2_task *task,
     if (waslive) engine->no_live--;
     engine->no_assigned--;
     if (task->c != engine->c) { /* do not release what the engine runs on */
-        h2_mplx_task_done(m, task, NULL);
+        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+            task_done(m, task);
+            leave_mutex(m, acquired);
+        }
     }
 }
                                 
@@ -1406,7 +1431,7 @@ void h2_mplx_engine_exit(h2_req_engine *pub_engine)
                 engine_done(m, engine, task, 0, 1);
             }
         }
-        if (engine->no_assigned > 0 || engine->no_live > 0) {
+        if (engine->no_assigned > 1 || engine->no_live > 1) {
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
                           "h2_mplx(%ld): exit engine %s (%s), "
                           "assigned=%ld, live=%ld, finished=%ld", 

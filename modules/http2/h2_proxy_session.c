@@ -154,7 +154,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
 {
     h2_proxy_session *session = user_data;
     h2_proxy_stream *stream;
-    int eos;
     
     if (APLOGcdebug(session->c)) {
         char buffer[256];
@@ -168,8 +167,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
     switch (frame->hd.type) {
         case NGHTTP2_HEADERS:
             stream = nghttp2_session_get_stream_user_data(ngh2, frame->hd.stream_id);
-            eos = (frame->hd.flags & NGHTTP2_FLAG_END_STREAM);
-
             break;
         case NGHTTP2_PUSH_PROMISE:
             break;

@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: limiting the amount of h2 workers a HTTP/2 connection can
+     occupy at a time to make DoS life harder. Limiting this to static 6 in
+     honor of http/1.1 connection limits, considering implementing dynamic
+     adjustments based on load and throughput.
+     This does *not* limit the number of streams a client may open, rather the
+     number of server threads a connection might use.
+     [Stefan Eissing]
+     
   *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
      [Eric Covener]
 
