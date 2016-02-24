@@ -524,9 +524,8 @@ static int motorz_setup_pollset(motorz_core_t *mz)
     int i;
     apr_status_t rv;
     int good_methods[] = {APR_POLLSET_KQUEUE, APR_POLLSET_PORT, APR_POLLSET_EPOLL};
-    char *methods[] = {"kqueue", "port", "epoll"};
 
-    for (i = 0; i < sizeof(good_methods) / sizeof(void*); i++) {
+    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
         rv = apr_pollset_create_ex(&mz->pollset,
                                   512,
                                   mz->pool,
@@ -534,7 +533,7 @@ static int motorz_setup_pollset(motorz_core_t *mz)
                                   good_methods[i]);
         if (rv == APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(02852)
-                         "motorz_setup_pollset: apr_pollset_create_ex using %s", methods[i]);
+                         "motorz_setup_pollset: apr_pollset_create_ex using %s", apr_pollset_method_name(mz->pollset));
 
             break;
         }
@@ -551,6 +550,8 @@ static int motorz_setup_pollset(motorz_core_t *mz)
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(02854)
                      "motorz_setup_pollset: apr_pollset_create failed for all possible backends!");
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                 "motorz_setup_pollset: Using %s", apr_pollset_method_name(mz->pollset));
     return rv;
 }
 
