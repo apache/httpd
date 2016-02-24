@@ -87,6 +87,11 @@ int h2_iq_remove(h2_int_queue *q, int sid)
     return 0;
 }
 
+void h2_iq_clear(h2_int_queue *q)
+{
+    q->nelts = 0;
+}
+
 void h2_iq_sort(h2_int_queue *q, h2_iq_cmp *cmp, void *ctx)
 {
     /* Assume that changes in ordering are minimal. This needs,

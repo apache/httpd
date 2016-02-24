@@ -74,10 +74,13 @@ struct h2_mplx {
     struct h2_io_set *ready_ios;
     
     int max_stream_started;      /* highest stream id that started processing */
+    int workers_busy;            /* # of workers processing on this mplx */
+    int workers_max;             /* max # of workers occupied by this mplx */
+    int need_registration;
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
-    struct apr_thread_cond_t *request_done;
+    struct apr_thread_cond_t *task_done;
     struct apr_thread_cond_t *join_wait;
     apr_socket_t *dummy_socket;
     
