@@ -44,6 +44,7 @@ struct apr_thread_cond_t;
 struct h2_ctx;
 struct h2_config;
 struct h2_filter_cin;
+struct h2_ihash_t;
 struct h2_mplx;
 struct h2_priority;
 struct h2_push;
@@ -118,7 +119,7 @@ typedef struct h2_session {
     struct h2_mplx *mplx;           /* multiplexer for stream data */
     
     struct h2_stream *last_stream;  /* last stream worked with */
-    struct h2_stream_set *streams;  /* streams handled by this session */
+    struct h2_ihash_t *streams;     /* streams handled by this session */
     
     apr_pool_t *spare;              /* spare stream pool */
     

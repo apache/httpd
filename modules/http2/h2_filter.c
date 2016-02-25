@@ -28,7 +28,6 @@
 #include "h2_push.h"
 #include "h2_task.h"
 #include "h2_stream.h"
-#include "h2_stream_set.h"
 #include "h2_request.h"
 #include "h2_response.h"
 #include "h2_session.h"
@@ -217,7 +216,7 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     bbout("  \"session_id\": %ld,\n", (long)session->id);
     bbout("  \"streams_max\": %d,\n", (int)session->max_stream_count);
     bbout("  \"this_stream\": %d,\n", stream->id);
-    bbout("  \"streams_open\": %d,\n", (int)h2_stream_set_size(session->streams));
+    bbout("  \"streams_open\": %d,\n", (int)h2_ihash_count(session->streams));
     bbout("  \"max_stream_started\": %d,\n", mplx->max_stream_started);
     bbout("  \"requests_received\": %d,\n", session->requests_received);
     bbout("  \"responses_submitted\": %d,\n", session->responses_submitted);

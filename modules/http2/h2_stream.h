@@ -183,7 +183,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
  * @param stream the stream to check on
  * @return != 0 iff stream has been scheduled
  */
-int h2_stream_is_scheduled(h2_stream *stream);
+int h2_stream_is_scheduled(const h2_stream *stream);
 
 struct h2_response *h2_stream_get_response(h2_stream *stream);
 
@@ -270,21 +270,21 @@ void h2_stream_set_suspended(h2_stream *stream, int suspended);
  * @param stream the stream to check
  * @return != 0 iff stream is suspended.
  */
-int h2_stream_is_suspended(h2_stream *stream);
+int h2_stream_is_suspended(const h2_stream *stream);
 
 /**
  * Check if the stream has open input.
  * @param stream the stream to check
  * @return != 0 iff stream has open input.
  */
-int h2_stream_input_is_open(h2_stream *stream);
+int h2_stream_input_is_open(const h2_stream *stream);
 
 /**
  * Check if the stream has not submitted a response or RST yet.
  * @param stream the stream to check
  * @return != 0 iff stream has not submitted a response or RST.
  */
-int h2_stream_needs_submit(h2_stream *stream);
+int h2_stream_needs_submit(const h2_stream *stream);
 
 /**
  * Submit any server push promises on this stream and schedule

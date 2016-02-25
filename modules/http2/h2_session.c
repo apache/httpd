@@ -38,7 +38,6 @@
 #include "h2_request.h"
 #include "h2_response.h"
 #include "h2_stream.h"
-#include "h2_stream_set.h"
 #include "h2_from_h1.h"
 #include "h2_task.h"
 #include "h2_session.h"
@@ -94,7 +93,7 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
     
     stream = h2_stream_open(stream_id, stream_pool, session);
     
-    h2_stream_set_add(session->streams, stream);
+    h2_ihash_add(session->streams, stream);
     if (H2_STREAM_CLIENT_INITIATED(stream_id)
         && stream_id > session->max_stream_received) {
         ++session->requests_received;
@@ -666,16 +665,12 @@ static void h2_session_destroy(h2_session *session)
     if (APLOGctrace1(session->c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                       "h2_session(%ld): destroy, %d streams open",
-                      session->id, (int)h2_stream_set_size(session->streams));
+                      session->id, (int)h2_ihash_count(session->streams));
     }
     if (session->mplx) {
         h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
         h2_mplx_release_and_join(session->mplx, session->iowait);
         session->mplx = NULL;
-    }
-    if (session->streams) {
-        h2_stream_set_destroy(session->streams);
-        session->streams = NULL;
     }
     if (session->pool) {
         apr_pool_destroy(session->pool);
@@ -822,8 +817,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
             return NULL;
         }
         
-        session->streams = h2_stream_set_create(session->pool, session->max_stream_count);
-        
+        session->streams = h2_ihash_create(session->pool,offsetof(h2_stream, id));
         session->workers = workers;
         session->mplx = h2_mplx_create(c, session->pool, session->config, 
                                        session->s->timeout, workers);
@@ -1032,8 +1026,9 @@ typedef struct {
     int resume_count;
 } resume_ctx;
 
-static int resume_on_data(void *ctx, h2_stream *stream)
+static int resume_on_data(void *ctx, void *val)
 {
+    h2_stream *stream = val;
     resume_ctx *rctx = (resume_ctx*)ctx;
     h2_session *session = rctx->session;
     AP_DEBUG_ASSERT(session);
@@ -1059,7 +1054,7 @@ static int resume_on_data(void *ctx, h2_stream *stream)
 static int h2_session_resume_streams_with_data(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
-    if (!h2_stream_set_is_empty(session->streams)
+    if (!h2_ihash_is_empty(session->streams)
         && session->mplx && !session->mplx->aborted) {
         resume_ctx ctx;
         
@@ -1068,7 +1063,7 @@ static int h2_session_resume_streams_with_data(h2_session *session)
 
         /* Resume all streams where we have data in the out queue and
          * which had been suspended before. */
-        h2_stream_set_iter(session->streams, resume_on_data, &ctx);
+        h2_ihash_iter(session->streams, resume_on_data, &ctx);
         return ctx.resume_count;
     }
     return 0;
@@ -1077,7 +1072,7 @@ static int h2_session_resume_streams_with_data(h2_session *session)
 h2_stream *h2_session_get_stream(h2_session *session, int stream_id)
 {
     if (!session->last_stream || stream_id != session->last_stream->id) {
-        session->last_stream = h2_stream_set_get(session->streams, stream_id);
+        session->last_stream = h2_ihash_get(session->streams, stream_id);
     }
     return session->last_stream;
 }
@@ -1447,7 +1442,7 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
         session->last_stream = NULL;
     }
     if (session->streams) {
-        h2_stream_set_remove(session->streams, stream->id);
+        h2_ihash_remove(session->streams, stream->id);
     }
     h2_stream_destroy(stream);
     
@@ -1592,12 +1587,46 @@ static apr_status_t h2_session_read(h2_session *session, int block)
     return rstatus;
 }
 
+static int unsubmitted_iter(void *ctx, void *val)
+{
+    h2_stream *stream = val;
+    if (h2_stream_needs_submit(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+static int has_unsubmitted_streams(h2_session *session)
+{
+    int has_unsubmitted = 0;
+    h2_ihash_iter(session->streams, unsubmitted_iter, &has_unsubmitted);
+    return has_unsubmitted;
+}
+
+static int suspended_iter(void *ctx, void *val)
+{
+    h2_stream *stream = val;
+    if (h2_stream_is_suspended(stream)) {
+        *((int *)ctx) = 1;
+        return 0;
+    }
+    return 1;
+}
+
+static int has_suspended_streams(h2_session *session)
+{
+    int has_suspended = 0;
+    h2_ihash_iter(session->streams, suspended_iter, &has_suspended);
+    return has_suspended;
+}
+
 static apr_status_t h2_session_submit(h2_session *session)
 {
     apr_status_t status = APR_EAGAIN;
     h2_stream *stream;
     
-    if (h2_stream_set_has_unsubmitted(session->streams)) {
+    if (has_unsubmitted_streams(session)) {
         /* If we have responses ready, submit them now. */
         while ((stream = h2_mplx_next_submit(session->mplx, session->streams))) {
             status = submit_response(session, stream);
@@ -1766,7 +1795,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
-            if (h2_stream_set_is_empty(session->streams)) {
+            if (h2_ihash_is_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
@@ -1782,8 +1811,8 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                                            session->s->timeout) + apr_time_now();
                 }
             }
-            else if (!h2_stream_set_has_unsubmitted(session->streams)
-                     && !h2_stream_set_has_suspended(session->streams)) {
+            else if (!has_unsubmitted_streams(session)
+                     && !has_suspended_streams(session)) {
                 /* none of our streams is waiting for a response or
                  * new output data from task processing, 
                  * switch to blocking reads. We are probably waiting on
@@ -1927,7 +1956,7 @@ static void update_child_status(h2_session *session, int status, const char *msg
     apr_snprintf(session->status, sizeof(session->status),
                  "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
                  msg? msg : "-",
-                 (int)h2_stream_set_size(session->streams), 
+                 (int)h2_ihash_count(session->streams), 
                  (int)session->requests_received,
                  (int)session->responses_submitted,
                  (int)session->pushes_submitted,
@@ -1982,7 +2011,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                no_streams = h2_stream_set_is_empty(session->streams);
+                no_streams = h2_ihash_is_empty(session->streams);
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
                 if (async && !session->r && session->requests_received && no_streams) {
@@ -2066,7 +2095,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 
-                if (!h2_stream_set_is_empty(session->streams)) {
+                if (!h2_ihash_is_empty(session->streams)) {
                     /* resume any streams for which data is available again */
                     h2_session_resume_streams_with_data(session);
                     /* Submit any responses/push_promises that are ready */

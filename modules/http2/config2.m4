@@ -38,7 +38,6 @@ h2_request.lo dnl
 h2_response.lo dnl
 h2_session.lo dnl
 h2_stream.lo dnl
-h2_stream_set.lo dnl
 h2_switch.lo dnl
 h2_task.lo dnl
 h2_task_input.lo dnl

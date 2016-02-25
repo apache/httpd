@@ -233,11 +233,27 @@ static void request_done(h2_proxy_session *session, request_rec *r)
     }
 }
 
+static request_rec *next_request(h2_proxy_ctx *ctx, h2_proxy_session *session, 
+                                 request_rec *r)
+{
+    if (!r && !ctx->standalone) {
+        ctx->engine->capacity = session->remote_max_concurrent;
+        if (req_engine_pull(ctx->engine, APR_NONBLOCK_READ, &r) == APR_SUCCESS) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
+                          "h2_proxy_session(%s): pulled request %s", 
+                          session->id, r->the_request);
+        }
+    }
+    return r; 
+}
+
 static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx, request_rec *r) {
     apr_status_t status = OK;
     h2_proxy_session *session;
     
-setup_session:    
+setup_backend:    
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
+                  "eng(%s): setup backend", ctx->engine->id);
     /* Step Two: Make the Connection (or check that an already existing
      * socket is still usable). On success, we have a socket connected to
      * backend->hostname. */
@@ -280,6 +296,8 @@ setup_session:
     /* Step Four: Send the Request in a new HTTP/2 stream and
      * loop until we got the response or encounter errors.
      */
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
+                  "eng(%s): setup session", ctx->engine->id);
     session = h2_proxy_session_setup(ctx->engine->id, ctx->p_conn, 
                                      ctx->conf, request_done);
     if (!session) {
@@ -289,39 +307,34 @@ setup_session:
     }
     
 run_session:
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
+                  "eng(%s): run session %s", ctx->engine->id, session->id);
     session->user_data = ctx;
-    add_request(session, r);
-    status = APR_EAGAIN;
+    status = h2_proxy_session_process(session);
     while (APR_STATUS_IS_EAGAIN(status)) {
-        status = h2_proxy_session_process(session);
-        
-        if (APR_STATUS_IS_EAGAIN(status) && !ctx->standalone) {
-            ctx->engine->capacity = session->remote_max_concurrent;
-            if (req_engine_pull(ctx->engine, APR_NONBLOCK_READ, &r) == APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                              "h2_proxy_session(%s): pulled request %s", 
-                              session->id, r->the_request);
-                add_request(session, r);
-            }
+        r = next_request(ctx, session, r);
+        if (r) {
+            add_request(session, r);
+            r = NULL;
         }
+        
+        status = h2_proxy_session_process(session);
     }
     
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, ctx->owner, 
+                  "eng(%s): end of session run", ctx->engine->id);
     if (session->state == H2_PROXYS_ST_DONE || status != APR_SUCCESS) {
         ctx->p_conn->close = 1;
     }
     
-    if (!ctx->standalone) { 
-        ctx->engine->capacity = session->remote_max_concurrent;
-        if (req_engine_pull(ctx->engine, APR_NONBLOCK_READ, &r) == APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                          "h2_proxy_session(%s): idle, pulled request %s", 
-                          session->id, r->the_request);
-            add_request(session, r);
-            if (ctx->p_conn->close) {
-                goto setup_session;
-            }
-            goto run_session;
+    r = next_request(ctx, session, r);
+    if (r) { 
+        if (ctx->p_conn->close) {
+            goto setup_backend;
         }
+        add_request(session, r);
+        r = NULL;
+        goto run_session;
     }
 
     if (session->streams && !h2_iq_empty(session->streams)) {
@@ -330,8 +343,9 @@ run_session:
                       "session run done with %d streams unfinished",
                       h2_iq_size(session->streams));
     }
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, 
-                  ctx->p_conn->connection, "session run done");
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, 
+                  ctx->p_conn->connection, "eng(%s): session run done",
+                  ctx->engine->id);
     session->user_data = NULL;
     return status;
 }

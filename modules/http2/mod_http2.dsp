@@ -177,10 +177,6 @@ SOURCE=./h2_stream.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_stream_set.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_switch.c
 # End Source File
 # Begin Source File

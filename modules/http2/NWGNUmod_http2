@@ -203,7 +203,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_response.o \
 	$(OBJDIR)/h2_session.o \
 	$(OBJDIR)/h2_stream.o \
-	$(OBJDIR)/h2_stream_set.o \
 	$(OBJDIR)/h2_switch.o \
 	$(OBJDIR)/h2_task.o \
 	$(OBJDIR)/h2_task_input.o \
