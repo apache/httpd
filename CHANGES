@@ -87,6 +87,16 @@ Changes with Apache 2.4.19
      request body encoding into later stage of processing. Fixes PR 58825.
      [Stefan Eissing]
      
+  *) core: new hook "pre_close_connection" which is run before the lingering
+     close of connections is started. This gives protocol handlers one last
+     chance to use a connection before it goes down.
+     [Stefan Eissing]
+
+  *) mod_status/scoreboard: showing connection protocol in new column, new 
+     ap_update_child_status methods for updating server/description. mod_ssl
+     sets vhost negotiated by servername directly.
+     [Stefan Eissing]
+
 Changes with Apache 2.4.18
 
   *) mod_ssl: for all ssl_engine_vars.c lookups, fall back to master connection
