@@ -34,12 +34,15 @@ APR_HOOK_STRUCT(
             APR_HOOK_LINK(create_connection)
             APR_HOOK_LINK(process_connection)
             APR_HOOK_LINK(pre_connection)
+            APR_HOOK_LINK(pre_close_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),
                             (p, server, csd, conn_id, sbh, alloc), NULL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c, void *csd),(c, csd),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_close_connection,(conn_rec *c),(c),OK,DECLINED)
+
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
@@ -92,6 +95,17 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
     (void)ap_shutdown_conn(c, 1);
 }
 
+AP_DECLARE(int) ap_prep_lingering_close(conn_rec *c)
+{
+    /* Give protocol handlers one last chance to raise their voice */
+    ap_run_pre_close_connection(c);
+    
+    if (c->sbh) {
+        ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
+    }
+    return 0;
+}
+
 /* we now proceed to read from the client until we get EOF, or until
  * MAX_SECS_TO_LINGER has passed.  The reasons for doing this are
  * documented in a draft:
@@ -112,10 +126,10 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
         return 1;
     }
 
-    if (c->sbh) {
-        ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
+    if (ap_prep_lingering_close(c)) {
+        return 1;
     }
-
+    
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c); /* just close it */
     apr_socket_close(csd);

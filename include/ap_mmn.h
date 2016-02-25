@@ -461,6 +461,10 @@
  * 20120211.54 (2.4.19-dev) Add ap_proxy_buckets_lifetime_transform and
  *                          ap_proxy_transfer_between_connections to
  *                          mod_proxy.h
+ * 20120211.55 (2.4.19-dev) Add new ap_update_child_status...() methods,
+ *                          add protocol to worker_score in scoreboard.h,
+ *                          Add pre_close connection hook and 
+ *                          ap_prep_lingering_close().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -468,7 +472,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 54                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 55                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
