@@ -43,15 +43,24 @@
                 consult the "CHANGES" file for potential updates.</p>
         </note>
         
-        <p>You must enable HTTP/2 via <directive
-            module="core">Protocols</directive> in order to use the
-        functionality described in this document:</p>
-        
-        <highlight language="config">
-            Protocols h2 http/1.1
-        </highlight>
+        <p>You must enable HTTP/2 via <directive module="core">Protocols</directive> in order to use the
+        functionality described in this document. The HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption so two schemes are available: <code>h2</code> (HTTP/2 over TLS) and <code>h2c</code> (HTTP/2 over TCP).</p>
 
-        <p><code>h2</code> (HTTP/2 over TLS) is the preferred connection scheme chosen by browsers up to now, but the HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption. To enable <code>h2c</code> (HTTP/2 over TCP) please check the <directive module="mod_http2">H2Direct</directive> directive first.</p>
+        <p>Two useful configuration schemes are:</p>
+        
+        <note><title>HTTP/2 in a VirtualHost context (TLS only)</title>
+        <highlight language="config">
+Protocols h2 http/1.1
+        </highlight>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure <directive>VirtualHost</directive>. HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>) is disabled by default for <code>h2</code>.</p>
+        </note>
+
+        <note><title>HTTP/2 in a Server context (TLS and cleartext)</title>
+        <highlight language="config">
+Protocols h2 h2c http/1.1
+        </highlight>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure <directive>VirtualHost</directive>. Allows HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1 connection or via HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>).</p>
+        </note>
 
         <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a> for any doubt about the protocol.</p>
         
