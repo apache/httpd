@@ -162,6 +162,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Requires r1729929 to be applied.
      +1: wrowe
 
+  *) Use pre_connection hook in event.c to properly setup connection state
+     of slave connections (eliminates hacks in mod_http2).
+     Trunk patch:
+         http://svn.apache.org/r1727603
+     2.4.x patch:
+         Trunk version of patch works modulo CHANGES
+     +1: icing
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
