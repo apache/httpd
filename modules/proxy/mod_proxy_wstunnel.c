@@ -89,61 +89,6 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
     return OK;
 }
 
-
-static apr_status_t proxy_wstunnel_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
-                                     apr_bucket_brigade *bb, char *name, int *sent)
-{
-    apr_status_t rv;
-#ifdef DEBUGGING
-    apr_off_t len;
-#endif
-
-    do {
-        apr_brigade_cleanup(bb);
-        rv = ap_get_brigade(c_i->input_filters, bb, AP_MODE_READBYTES,
-                            APR_NONBLOCK_READ, AP_IOBUFSIZE);
-        if (rv == APR_SUCCESS) {
-            if (c_o->aborted) {
-                return APR_EPIPE;
-            }
-            if (APR_BRIGADE_EMPTY(bb)) {
-                break;
-            }
-#ifdef DEBUGGING
-            len = -1;
-            apr_brigade_length(bb, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02440)
-                          "read %" APR_OFF_T_FMT
-                          " bytes from %s", len, name);
-#endif
-            if (sent) {
-                *sent = 1;
-            }
-            rv = ap_pass_brigade(c_o->output_filters, bb);
-            if (rv == APR_SUCCESS) {
-                ap_fflush(c_o->output_filters, bb);
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02441)
-                              "error on %s - ap_pass_brigade",
-                              name);
-            }
-        } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(02442)
-                          "error on %s - ap_get_brigade",
-                          name);
-        }
-    } while (rv == APR_SUCCESS);
-
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, rv, r, "wstunnel_transfer complete");
-
-    if (APR_STATUS_IS_EAGAIN(rv)) {
-        rv = APR_SUCCESS;
-    }
-
-    return rv;
-}
-
 /*
  * process the request and write the response.
  */
@@ -188,9 +133,11 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
-    if ((rv = ap_proxy_pass_brigade(c->bucket_alloc, r, conn, backconn,
+    if ((rv = ap_proxy_pass_brigade(backconn->bucket_alloc, r, conn, backconn,
                                     header_brigade, 1)) != OK)
         return rv;
+
+    apr_brigade_cleanup(header_brigade);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "setting up poll()");
 
@@ -248,8 +195,14 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
                                   "sock was readable");
-                    done |= proxy_wstunnel_transfer(r, backconn, c, bb,
-                                                    "sock", NULL) != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, backconn,
+                                                                  c,
+                                                                  header_brigade,
+                                                                  bb, "sock",
+                                                                  NULL,
+                                                                  AP_IOBUFSIZE,
+                                                                  0)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
@@ -268,8 +221,14 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
                                   "client was readable");
-                    done |= proxy_wstunnel_transfer(r, c, backconn, bb,
-                                                    "client", &replied) != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, c,
+                                                                  backconn, bb,
+                                                                  header_brigade,
+                                                                  "client",
+                                                                  &replied,
+                                                                  AP_IOBUFSIZE,
+                                                                  0)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)

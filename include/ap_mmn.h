@@ -458,6 +458,9 @@
  *                          Added ap_parse_token_list_strict() to httpd.h
  * 20120211.52 (2.4.17-dev) Add master conn_rec* member in conn_rec.
  * 20120211.53 (2.4.19-dev) Add epxr_hander to core_dir_config.
+ * 20120211.54 (2.4.19-dev) Add ap_proxy_buckets_lifetime_transform and
+ *                          ap_proxy_transfer_between_connections to
+ *                          mod_proxy.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -465,7 +468,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 53                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 54                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
