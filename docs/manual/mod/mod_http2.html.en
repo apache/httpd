@@ -409,10 +409,10 @@
                 Link headers in responses are either set by the application or
                 can be configured via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> as:
             </p>
-            <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">                    &lt;Location /index.html&gt;
-                    Header add Link "&lt;/css/site.css&gt;;rel=preload"
-                    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
-                    &lt;/Location&gt;</pre>
+            <div class="example"><h3>mod_headers example</h3><pre class="prettyprint lang-config">&lt;Location /index.html&gt;
+    Header add Link "&lt;/css/site.css&gt;;rel=preload"
+    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
+&lt;/Location&gt;</pre>
 </div>
             <p>
                 As the example shows, there can be several link headers added
@@ -581,9 +581,9 @@
                 <li>There are also default weights: for 'After' it is 16, 'interleaved' is 256. 
                 </li>
             </ol>
-            <div class="example"><h3>Shorter Priority Rules</h3><pre class="prettyprint lang-config">                    H2PushPriority application/json 32         # an After rule
-                    H2PushPriority image/jpeg before           # weight inherited
-                    H2PushPriority text/css   interleaved      # weight 256 default</pre>
+            <div class="example"><h3>Shorter Priority Rules</h3><pre class="prettyprint lang-config">H2PushPriority application/json 32         # an After rule
+H2PushPriority image/jpeg before           # weight inherited
+H2PushPriority text/css   interleaved      # weight 256 default</pre>
 </div>
         
 </div>
