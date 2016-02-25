@@ -113,33 +113,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) core: introducing new hook "pre_close_connection" to give protocols other
-     than http/1.1 a chance to send one last frame before close. Scoreboard
-     additions to allow update from master connections.
-     Requires MMN bump
-     trunk patch:  http://svn.apache.org/r1727071
-                   http://svn.apache.org/r1727573
-     2.4.x patch:  trunk works (modulo CHANGES)
-     covener: needs MMN bump, but sorting out previous MMN question first.
-     jim: Status, re: MMN bump ??
-     icing: I am embarrassingly bad at this. I propose to include the scoreboard
-            additions into this bump and propose all this together. So the new
-            proposal is (including an old apr_time_now() optimization from jim
-            for scorebaord.c). And that now includes all backports necessary to
-            update mod_http2 in 2.4.x:
-     trunk patch:  
-                   http://svn.apache.org/r1417440
-                   http://svn.apache.org/r1727071
-                   http://svn.apache.org/r1727573
-                   http://svn.apache.org/r1726009
-                   http://svn.apache.org/r1726026
-                   http://svn.apache.org/r1729376
-                   http://svn.apache.org/r1729960
-                   http://svn.apache.org/r1730865
-     2.4.x patch:  trunk works (modulo CHANGES)
-     Resetting votes take 2:
-     +1: jim, icing
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
