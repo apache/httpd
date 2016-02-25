@@ -31,6 +31,7 @@
 #include "ssl_private.h"
 #include "mod_ssl.h"
 #include "util_md5.h"
+#include "scoreboard.h"
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifdef HAVE_TLSEXT
@@ -2202,6 +2203,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
         sslcon->server = s;
         sslcon->cipher_suite = sc->server->auth.cipher_suite;
         
+        ap_update_child_status_from_server(c->sbh, SERVER_BUSY_READ, c, s);
         /*
          * There is one special filter callback, which is set
          * very early depending on the base_server's log level.

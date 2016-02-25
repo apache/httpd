@@ -115,6 +115,7 @@ struct worker_score {
     char client[32];            /* Keep 'em small... */
     char request[64];           /* We just want an idea... */
     char vhost[32];             /* What virtual host is being accessed? */
+    char protocol[16];          /* What protocol is used on the connection? */
 };
 
 typedef struct {
@@ -181,6 +182,10 @@ AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
                                                     int status, request_rec *r);
 AP_DECLARE(int) ap_update_child_status_from_conn(ap_sb_handle_t *sbh, int status, conn_rec *c);
+AP_DECLARE(int) ap_update_child_status_from_server(ap_sb_handle_t *sbh, int status, 
+                                                   conn_rec *c, server_rec *s);
+AP_DECLARE(int) ap_update_child_status_descr(ap_sb_handle_t *sbh, int status, const char *descr);
+
 AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status);
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(ap_sb_handle_t *sbh);
