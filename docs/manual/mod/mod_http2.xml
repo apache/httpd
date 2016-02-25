@@ -273,10 +273,10 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>mod_headers example</title>
                 <highlight language="config">
-                    &lt;Location /index.html&gt;
-                    Header add Link "&lt;/css/site.css&gt;;rel=preload"
-                    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
-                    &lt;/Location&gt;
+&lt;Location /index.html&gt;
+    Header add Link "&lt;/css/site.css&gt;;rel=preload"
+    Header add Link "&lt;/images/logo.jpg&gt;;rel=preload"
+&lt;/Location&gt;
                 </highlight>
             </example>
             <p>
@@ -464,9 +464,9 @@ Protocols h2 h2c http/1.1
             </ol>
             <example><title>Shorter Priority Rules</title>
                 <highlight language="config">
-                    H2PushPriority application/json 32         # an After rule
-                    H2PushPriority image/jpeg before           # weight inherited
-                    H2PushPriority text/css   interleaved      # weight 256 default
+H2PushPriority application/json 32         # an After rule
+H2PushPriority image/jpeg before           # weight inherited
+H2PushPriority text/css   interleaved      # weight 256 default
                 </highlight>
             </example>
         </usage>
