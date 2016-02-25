@@ -326,8 +326,7 @@ static int check_speling(request_rec *r)
          * because it won't find anything matching that spelling.
          * With the extension-munging, it would locate "foobar.html".
          */
-        else if ((cfg->check_case_only == 0) &&
-                 (cfg->check_basename_match == 1)) {
+        else if (cfg->check_basename_match == 1) {
             /*
              * Okay... we didn't find anything. Now we take out the hard-core
              * power tools. There are several cases here. Someone might have

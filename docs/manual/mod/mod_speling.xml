@@ -127,18 +127,14 @@ module</description>
 
 <usage>
     <p>When set, this directive limits the action of the spelling correction
-    to lower/upper case changes.
-    Other potential corrections are not performed.</p>
-
+    to lower/upper case changes.  Other potential corrections are not performed,
+    except when <directive>CheckBasenameMatch</directive> is also set.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CheckBasenameMatch</name>
-<description>Extend the action of the speling module to also check filename
-without paying attention to the extention. (e.g. foo.gif and foo.jpg).
-This can be particulary useful in conjunction with
-<a href="../content-negotiation.html">MultiViews</a></description>
+<description>Also match files with differing file name extensions.</description>
 <syntax>CheckBasenameMatch on|off</syntax>
 <default>CheckBasenameMatch Off</default>
 <contextlist>
@@ -150,8 +146,11 @@ This can be particulary useful in conjunction with
 <override>Options</override>
 
 <usage>
-    <p>This option has no effect if <directive>CheckCaseOnly</directive> is set.</p>
-
+    <p>When set, this directive extends the action of the spelling correction
+    to the file name extension. For example a file <code>foo.gif</code> will
+    match a request for <code>foo</code> or <code>foo.jpg</code>. This can be
+    particulary useful in conjunction with
+    <a href="../content-negotiation.html">MultiViews</a>.</p>
 </usage>
 </directivesynopsis>
 
