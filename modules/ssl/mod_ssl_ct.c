@@ -2755,7 +2755,7 @@ static const char *ct_audit_storage(cmd_parms *cmd, void *x, const char *arg)
 
     sconf->audit_storage = ap_runtime_dir_relative(cmd->pool, arg);
 
-    if (!ctutil_dir_exists(cmd->pool, sconf->audit_storage)) {
+    if (!ctutil_dir_exists(cmd->temp_pool, sconf->audit_storage)) {
         return apr_pstrcat(cmd->pool, "CTAuditStorage: Directory ",
                            sconf->audit_storage,
                            " does not exist", NULL);
@@ -2833,7 +2833,7 @@ static const char *ct_sct_storage(cmd_parms *cmd, void *x, const char *arg)
 
     sconf->sct_storage = ap_runtime_dir_relative(cmd->pool, arg);
 
-    if (!ctutil_dir_exists(cmd->pool, sconf->sct_storage)) {
+    if (!ctutil_dir_exists(cmd->temp_pool, sconf->sct_storage)) {
         return apr_pstrcat(cmd->pool, "CTSCTStorage: Directory ",
                            sconf->sct_storage,
                            " does not exist", NULL);
@@ -2946,8 +2946,8 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
         return err;
     }
 
-    cert_fn = ap_server_root_relative(cmd->pool, cert_fn);
-    sct_dn = ap_server_root_relative(cmd->pool, sct_dn);
+    cert_fn = ap_server_root_relative(p, cert_fn);
+    sct_dn = ap_server_root_relative(p, sct_dn);
 
     rv = ctutil_fopen(cert_fn, "r", &pemfile);
     if (rv != APR_SUCCESS) {
@@ -2963,10 +2963,10 @@ static const char *ct_static_scts(cmd_parms *cmd, void *x, const char *cert_fn,
 
     fclose(pemfile);
 
-    fingerprint = get_cert_fingerprint(cmd->pool, cert);
+    fingerprint = get_cert_fingerprint(p, cert);
     X509_free(cert);
 
-    if (!ctutil_dir_exists(p, sct_dn)) {
+    if (!ctutil_dir_exists(cmd->temp_pool, sct_dn)) {
         return apr_pstrcat(p, "CTStaticSCTs: Directory ", sct_dn,
                            " does not exist", NULL);
     }
@@ -2988,12 +2988,12 @@ static const char *ct_log_client(cmd_parms *cmd, void *x, const char *arg)
     }
 
     if (strcmp(DOTEXE, "")) {
-        if (!ctutil_file_exists(cmd->pool, arg)) {
+        if (!ctutil_file_exists(cmd->temp_pool, arg)) {
             arg = apr_pstrcat(cmd->pool, arg, DOTEXE, NULL);
         }
     }
 
-    if (!ctutil_file_exists(cmd->pool, arg)) {
+    if (!ctutil_file_exists(cmd->temp_pool, arg)) {
         return apr_pstrcat(cmd->pool,
                            "CTLogClient: File ",
                            arg,
