@@ -112,25 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_wstunnel, mod_proxy_connect: Use the correct pool and allocator
-     lifetime when sending brigades and buckets down the filter chain to the
-     backend and the client in mod_proxy_wstunnel and mod_proxy_connect.
-     Trunk version of patch:
-          http://svn.apache.org/r1726776
-          http://svn.apache.org/r1726779
-          http://svn.apache.org/r1726781
-          http://svn.apache.org/r1726782
-          http://svn.apache.org/r1726787
-          http://svn.apache.org/r1727551
-          http://svn.apache.org/r1727553
-          http://svn.apache.org/r1727567
-          http://svn.apache.org/r1728478
-          http://svn.apache.org/r1728481
-          http://svn.apache.org/r1730823
-     Backport version for 2.4.x of patch:
-        http://home.apache.org/~rpluem/patches/proxy_correctlifetime.diff
-     +1: rpluem, jim, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
