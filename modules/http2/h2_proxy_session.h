@@ -21,6 +21,7 @@
 #include <nghttp2/nghttp2.h>
 
 struct h2_int_queue;
+struct h2_ihash_t;
 
 typedef enum {
     H2_PROXYS_ST_INIT,             /* send initial SETTINGS, etc. */
@@ -67,8 +68,9 @@ struct h2_proxy_session {
     int window_bits_connection;
 
     h2_proxys_state state;
+    apr_interval_time_t wait_timeout;
 
-    struct h2_int_queue *streams;
+    struct h2_ihash_t *streams;
     struct h2_int_queue *suspended;
     apr_size_t remote_max_concurrent;
     int max_stream_recv;
@@ -86,6 +88,7 @@ apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
                                      
 apr_status_t h2_proxy_session_process(h2_proxy_session *s);
 
+void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 
 #define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
 

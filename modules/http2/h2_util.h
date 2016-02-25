@@ -61,6 +61,7 @@ void h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
 
 void h2_ihash_add(h2_ihash_t *ih, void *val);
 void h2_ihash_remove(h2_ihash_t *ih, int id);
+void h2_ihash_clear(h2_ihash_t *ih);
  
 /*******************************************************************************
  * common helpers

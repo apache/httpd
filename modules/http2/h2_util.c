@@ -297,6 +297,11 @@ void h2_ihash_remove(h2_ihash_t *ih, int id)
     apr_hash_set(ih->hash, &id, sizeof(id), NULL);
 }
 
+void h2_ihash_clear(h2_ihash_t *ih)
+{
+    apr_hash_clear(ih->hash);
+}
+
 /*******************************************************************************
  * h2_util for apt_table_t
  ******************************************************************************/
