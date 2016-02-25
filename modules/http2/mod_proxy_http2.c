@@ -234,11 +234,13 @@ static void request_done(h2_proxy_session *session, request_rec *r)
 }
 
 static request_rec *next_request(h2_proxy_ctx *ctx, h2_proxy_session *session, 
-                                 request_rec *r)
+                                 request_rec *r, int before_leave)
 {
     if (!r && !ctx->standalone) {
         ctx->engine->capacity = session->remote_max_concurrent;
-        if (req_engine_pull(ctx->engine, APR_NONBLOCK_READ, &r) == APR_SUCCESS) {
+        if (req_engine_pull(ctx->engine, 
+                            before_leave? APR_BLOCK_READ: APR_NONBLOCK_READ, 
+                            &r) == APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                           "h2_proxy_session(%s): pulled request %s", 
                           session->id, r->the_request);
@@ -312,7 +314,7 @@ run_session:
     session->user_data = ctx;
     status = h2_proxy_session_process(session);
     while (APR_STATUS_IS_EAGAIN(status)) {
-        r = next_request(ctx, session, r);
+        r = next_request(ctx, session, r, 0);
         if (r) {
             add_request(session, r);
             r = NULL;
@@ -327,9 +329,15 @@ run_session:
         ctx->p_conn->close = 1;
     }
     
-    r = next_request(ctx, session, r);
+    r = next_request(ctx, session, r, 1);
     if (r) { 
         if (ctx->p_conn->close) {
+            /* the connection is/willbe closed, the session is terminated.
+             * Any open stream of that session needs to
+             * a) be reopened on the new session iff safe to do so
+             * b) reported as done (failed) otherwise
+             */
+            h2_proxy_session_cleanup(session, request_done);
             goto setup_backend;
         }
         add_request(session, r);
@@ -337,11 +345,11 @@ run_session:
         goto run_session;
     }
 
-    if (session->streams && !h2_iq_empty(session->streams)) {
+    if (session->streams && !h2_ihash_is_empty(session->streams)) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, 
                       ctx->p_conn->connection, 
                       "session run done with %d streams unfinished",
-                      h2_iq_size(session->streams));
+                      (int)h2_ihash_count(session->streams));
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, 
                   ctx->p_conn->connection, "eng(%s): session run done",
