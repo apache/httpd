@@ -49,12 +49,21 @@
         </div>
         
         <p>You must enable HTTP/2 via <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> in order to use the
-        functionality described in this document:</p>
+        functionality described in this document. The HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption so two schemes are available: <code>h2</code> (HTTP/2 over TLS) and <code>h2c</code> (HTTP/2 over TCP).</p>
+
+        <p>Two useful configuration schemes are:</p>
         
+        <div class="note"><h3>HTTP/2 in a VirtualHost context (TLS only)</h3>
         <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
 
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure <code class="directive">VirtualHost</code>. HTTP/2 preamble checking (Direct mode, see <code class="directive">H2Direct</code>) is disabled by default for <code>h2</code>.</p>
+        </div>
 
-        <p><code>h2</code> (HTTP/2 over TLS) is the preferred connection scheme chosen by browsers up to now, but the HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption. To enable <code>h2c</code> (HTTP/2 over TCP) please check the <code class="directive"><a href="#h2direct">H2Direct</a></code> directive first.</p>
+        <div class="note"><h3>HTTP/2 in a Server context (TLS and cleartext)</h3>
+        <pre class="prettyprint lang-config">Protocols h2 h2c http/1.1</pre>
+
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure <code class="directive">VirtualHost</code>. Allows HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1 connection or via HTTP/2 preamble checking (Direct mode, see <code class="directive">H2Direct</code>).</p>
+        </div>
 
         <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a> for any doubt about the protocol.</p>
         
