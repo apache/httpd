@@ -143,53 +143,6 @@ static int proxy_connect_canon(request_rec *r, char *url)
     return OK;
 }
 
-/* read available data (in blocks of CONN_BLKSZ) from c_i and copy to c_o */
-static int proxy_connect_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
-                                  apr_bucket_brigade *bb, char *name)
-{
-    int rv;
-#ifdef DEBUGGING
-    apr_off_t len;
-#endif
-
-    do {
-        apr_brigade_cleanup(bb);
-        rv = ap_get_brigade(c_i->input_filters, bb, AP_MODE_READBYTES,
-                            APR_NONBLOCK_READ, CONN_BLKSZ);
-        if (rv == APR_SUCCESS) {
-            if (c_o->aborted)
-                return APR_EPIPE;
-            if (APR_BRIGADE_EMPTY(bb))
-                break;
-#ifdef DEBUGGING
-            len = -1;
-            apr_brigade_length(bb, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01016)
-                          "read %" APR_OFF_T_FMT
-                          " bytes from %s", len, name);
-#endif
-            rv = ap_pass_brigade(c_o->output_filters, bb);
-            if (rv == APR_SUCCESS) {
-                ap_fflush(c_o->output_filters, bb);
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01017)
-                              "error on %s - ap_pass_brigade",
-                              name);
-            }
-        } else if (!APR_STATUS_IS_EAGAIN(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01018)
-                          "error on %s - ap_get_brigade",
-                          name);
-        }
-    } while (rv == APR_SUCCESS);
-
-    if (APR_STATUS_IS_EAGAIN(rv)) {
-        rv = APR_SUCCESS;
-    }
-    return rv;
-}
-
 /* CONNECT handler */
 static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                                  proxy_server_conf *conf,
@@ -205,7 +158,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     conn_rec *backconn;
     int done = 0;
 
-    apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
+    apr_bucket_brigade *bb_front = apr_brigade_create(p, c->bucket_alloc);
+    apr_bucket_brigade *bb_back;
     apr_status_t rv;
     apr_size_t nbytes;
     char buffer[HUGE_STRING_LEN];
@@ -360,6 +314,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
                    backconn->local_addr->port));
 
+
+    bb_back = apr_brigade_create(p, backconn->bucket_alloc);
+
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
      */
@@ -368,24 +325,24 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      */
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                       "sending the CONNECT request to the remote proxy");
-        ap_fprintf(backconn->output_filters, bb,
+        ap_fprintf(backconn->output_filters, bb_back,
                    "CONNECT %s HTTP/1.0" CRLF, r->uri);
-        ap_fprintf(backconn->output_filters, bb,
+        ap_fprintf(backconn->output_filters, bb_back,
                    "Proxy-agent: %s" CRLF CRLF, ap_get_server_banner());
-        ap_fflush(backconn->output_filters, bb);
+        ap_fflush(backconn->output_filters, bb_back);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "Returning 200 OK");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
                               "HTTP/1.0 200 Connection Established" CRLF);
         ap_xlate_proto_to_ascii(buffer, nbytes);
-        ap_fwrite(c->output_filters, bb, buffer, nbytes);
+        ap_fwrite(c->output_filters, bb_front, buffer, nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
                               "Proxy-agent: %s" CRLF CRLF,
                               ap_get_server_banner());
         ap_xlate_proto_to_ascii(buffer, nbytes);
-        ap_fwrite(c->output_filters, bb, buffer, nbytes);
-        ap_fflush(c->output_filters, bb);
+        ap_fwrite(c->output_filters, bb_front, buffer, nbytes);
+        ap_fflush(c->output_filters, bb_front);
 #if 0
         /* This is safer code, but it doesn't work yet.  I'm leaving it
          * here so that I can fix it later.
@@ -439,8 +396,12 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01025)
                                   "sock was readable");
 #endif
-                    done |= proxy_connect_transfer(r, backconn, c, bb,
-                                                   "sock") != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, backconn,
+                                                                  c, bb_back,
+                                                                  bb_front,
+                                                                  "sock", NULL,
+                                                                  CONN_BLKSZ, 1)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
@@ -456,8 +417,14 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01027)
                                   "client was readable");
 #endif
-                    done |= proxy_connect_transfer(r, c, backconn, bb,
-                                                   "client") != APR_SUCCESS;
+                    done |= ap_proxy_transfer_between_connections(r, c,
+                                                                  backconn,
+                                                                  bb_front,
+                                                                  bb_back,
+                                                                  "client",
+                                                                  NULL,
+                                                                  CONN_BLKSZ, 1)
+                                                                 != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02827)
