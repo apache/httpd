@@ -120,7 +120,7 @@ static int close_output(h2_stream *stream)
     return 1;
 }
 
-static int input_open(h2_stream *stream) 
+static int input_open(const h2_stream *stream) 
 {
     switch (stream->state) {
         case H2_STREAM_ST_OPEN:
@@ -328,7 +328,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     return status;
 }
 
-int h2_stream_is_scheduled(h2_stream *stream)
+int h2_stream_is_scheduled(const h2_stream *stream)
 {
     return stream->scheduled;
 }
@@ -435,7 +435,7 @@ void h2_stream_set_suspended(h2_stream *stream, int suspended)
                   stream->session->id, stream->id, stream->suspended);
 }
 
-int h2_stream_is_suspended(h2_stream *stream)
+int h2_stream_is_suspended(const h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
     return stream->suspended;
@@ -479,12 +479,12 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
     return stream->sos->read_to(stream->sos, bb, plen, peos);
 }
 
-int h2_stream_input_is_open(h2_stream *stream) 
+int h2_stream_input_is_open(const h2_stream *stream) 
 {
     return input_open(stream);
 }
 
-int h2_stream_needs_submit(h2_stream *stream)
+int h2_stream_needs_submit(const h2_stream *stream)
 {
     switch (stream->state) {
         case H2_STREAM_ST_OPEN:

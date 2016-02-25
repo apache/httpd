@@ -232,6 +232,72 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
 
 
 /*******************************************************************************
+ * ihash - hash for structs with int identifier
+ ******************************************************************************/
+struct h2_ihash_t {
+    apr_hash_t *hash;
+    size_t ioff;
+};
+
+static unsigned int ihash(const char *key, apr_ssize_t *klen)
+{
+    return (unsigned int)(*((int*)key));
+}
+
+h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int)
+{
+    h2_ihash_t *ih = apr_pcalloc(pool, sizeof(h2_ihash_t));
+    ih->hash = apr_hash_make_custom(pool, ihash);
+    ih->ioff = offset_of_int;
+    return ih;
+}
+
+size_t h2_ihash_count(h2_ihash_t *ih)
+{
+    return apr_hash_count(ih->hash);
+}
+
+int h2_ihash_is_empty(h2_ihash_t *ih)
+{
+    return apr_hash_count(ih->hash) == 0;
+}
+
+void *h2_ihash_get(h2_ihash_t *ih, int id)
+{
+    return apr_hash_get(ih->hash, &id, sizeof(id));
+}
+
+typedef struct {
+    h2_ihash_iter_t *iter;
+    void *ctx;
+} iter_ctx;
+
+static int ihash_iter(void *ctx, const void *key, apr_ssize_t klen, 
+                     const void *val)
+{
+    iter_ctx *ictx = ctx;
+    return ictx->iter(ictx->ctx, (void*)val); /* why is this passed const?*/
+}
+
+void h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx)
+{
+    iter_ctx ictx;
+    ictx.iter = fn;
+    ictx.ctx = ctx;
+    apr_hash_do(ihash_iter, &ictx, ih->hash);
+}
+
+void h2_ihash_add(h2_ihash_t *ih, void *val)
+{
+    apr_hash_set(ih->hash, ((char *)val + ih->ioff), sizeof(int), val);
+}
+
+void h2_ihash_remove(h2_ihash_t *ih, int id)
+{
+    apr_hash_set(ih->hash, &id, sizeof(id), NULL);
+}
+
+/*******************************************************************************
  * h2_util for apt_table_t
  ******************************************************************************/
  

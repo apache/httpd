@@ -38,6 +38,7 @@ struct apr_pool_t;
 struct apr_thread_mutex_t;
 struct apr_thread_cond_t;
 struct h2_config;
+struct h2_ihash_t;
 struct h2_response;
 struct h2_task;
 struct h2_stream;
@@ -45,7 +46,6 @@ struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
 struct h2_workers;
-struct h2_stream_set;
 struct h2_int_queue;
 struct h2_req_engine;
 
@@ -267,7 +267,7 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m);
  * @param bb the brigade to place any existing repsonse body data into
  */
 struct h2_stream *h2_mplx_next_submit(h2_mplx *m, 
-                                      struct h2_stream_set *streams);
+                                      struct h2_ihash_t *streams);
 
 /**
  * Reads output data from the given stream. Will never block, but

@@ -41,7 +41,6 @@
 #include "h2_mplx.h"
 #include "h2_request.h"
 #include "h2_stream.h"
-#include "h2_stream_set.h"
 #include "h2_task.h"
 #include "h2_task_input.h"
 #include "h2_task_output.h"
@@ -640,7 +639,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
     return status;
 }
 
-h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
+h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_ihash_t *streams)
 {
     apr_status_t status;
     h2_stream *stream = NULL;
@@ -650,7 +649,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_stream_set *streams)
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_shift(m->ready_ios);
         if (io && !m->aborted) {
-            stream = h2_stream_set_get(streams, io->id);
+            stream = h2_ihash_get(streams, io->id);
             if (stream) {
                 if (io->rst_error) {
                     h2_stream_rst(stream, io->rst_error);

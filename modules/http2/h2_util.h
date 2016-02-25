@@ -16,6 +16,9 @@
 #ifndef __mod_h2__h2_util__
 #define __mod_h2__h2_util__
 
+/*******************************************************************************
+ * some debugging/format helpers
+ ******************************************************************************/
 struct h2_request;
 struct nghttp2_frame;
 
@@ -30,6 +33,38 @@ void h2_util_camel_case_header(char *s, size_t len);
 
 int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen);
 
+/*******************************************************************************
+ * ihash - hash for structs with int identifier
+ ******************************************************************************/
+typedef struct h2_ihash_t h2_ihash_t;
+typedef int h2_ihash_iter_t(void *ctx, void *val);
+
+/**
+ * Create a hash for structures that have an identifying int member.
+ * @param pool the pool to use
+ * @param offset_of_int the offsetof() the int member in the struct
+ */
+h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int);
+
+size_t h2_ihash_count(h2_ihash_t *ih);
+int h2_ihash_is_empty(h2_ihash_t *ih);
+void *h2_ihash_get(h2_ihash_t *ih, int id);
+
+/**
+ * Iterate over the hash members (without defined order) and invoke
+ * fn for each member until 0 is returned.
+ * @param ih the hash to iterate over
+ * @param fn the function to invoke on each member
+ * @param ctx user supplied data passed into each iteration call
+ */
+void h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
+
+void h2_ihash_add(h2_ihash_t *ih, void *val);
+void h2_ihash_remove(h2_ihash_t *ih, int id);
+ 
+/*******************************************************************************
+ * common helpers
+ ******************************************************************************/
 /**
  * Count the bytes that all key/value pairs in a table have
  * in length (exlucding terminating 0s), plus additional extra per pair.
@@ -40,11 +75,6 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
  */
 apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra);
 
-int h2_req_ignore_header(const char *name, size_t len);
-int h2_req_ignore_trailer(const char *name, size_t len);
-int h2_res_ignore_trailer(const char *name, size_t len);
-int h2_proxy_res_ignore_header(const char *name, size_t len);
-
 /**
  * Return != 0 iff the string s contains the token, as specified in
  * HTTP header syntax, rfc7230.
@@ -54,6 +84,32 @@ int h2_util_contains_token(apr_pool_t *pool, const char *s, const char *token);
 const char *h2_util_first_token_match(apr_pool_t *pool, const char *s, 
                                       const char *tokens[], apr_size_t len);
 
+/** Match a header value against a string constance, case insensitive */
+#define H2_HD_MATCH_LIT(l, name, nlen)  \
+    ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+
+/*******************************************************************************
+ * HTTP/2 header helpers
+ ******************************************************************************/
+int h2_req_ignore_header(const char *name, size_t len);
+int h2_req_ignore_trailer(const char *name, size_t len);
+int h2_res_ignore_trailer(const char *name, size_t len);
+int h2_proxy_res_ignore_header(const char *name, size_t len);
+
+/**
+ * Set the push policy for the given request. Takes request headers into 
+ * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
+ * for details.
+ * 
+ * @param req the request to determine the policy for
+ * @param p the pool to use
+ * @param push_enabled if HTTP/2 server push is generally enabled for this request
+ */
+void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
+
+/*******************************************************************************
+ * base64 url encoding, different table from normal base64
+ ******************************************************************************/
 /**
  * I always wanted to write my own base64url decoder...not. See 
  * https://tools.ietf.org/html/rfc4648#section-5 for description.
@@ -64,8 +120,9 @@ apr_size_t h2_util_base64url_decode(const char **decoded,
 const char *h2_util_base64url_encode(const char *data, 
                                      apr_size_t len, apr_pool_t *pool);
 
-#define H2_HD_MATCH_LIT(l, name, nlen)  \
-    ((nlen == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
+/*******************************************************************************
+ * nghttp2 helpers
+ ******************************************************************************/
 
 #define H2_HD_MATCH_LIT_CS(l, name)  \
     ((strlen(name) == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
@@ -99,6 +156,9 @@ h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p,
 h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
                                        const struct h2_request *req);
 
+/*******************************************************************************
+ * apr brigade helpers
+ ******************************************************************************/
 /**
  * Moves data from one brigade into another. If maxlen > 0, it only
  * moves up to maxlen bytes into the target brigade, making bucket splits
@@ -191,16 +251,5 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_pool_t *p,
                                  apr_off_t *plen,
                                  int *peos);
-
-/**
- * Set the push policy for the given request. Takes request headers into 
- * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
- * for details.
- * 
- * @param req the request to determine the policy for
- * @param p the pool to use
- * @param push_enabled if HTTP/2 server push is generally enabled for this request
- */
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
 
 #endif /* defined(__mod_h2__h2_util__) */
