@@ -762,7 +762,7 @@ AP_DECLARE_HOOK(int,protocol_propose,(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices A list of protocol identifiers, normally the clients whishes
+ * @param choices A list of protocol identifiers, normally the client's wishes
  * @param proposals the list of protocol identifiers proposed by the hooks
  * @return OK or DECLINED
  */
@@ -815,7 +815,7 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
  * @param c The current connection
  * @param r The current request or NULL
  * @param s The server/virtual host selected
- * @param choices A list of protocol identifiers, normally the clients whishes
+ * @param choices A list of protocol identifiers, normally the client's wishes
  * @return The selected protocol or NULL if no protocol could be agreed upon
  */
 AP_DECLARE(const char *) ap_select_protocol(conn_rec *c, request_rec *r, 
