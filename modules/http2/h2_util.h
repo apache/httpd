@@ -66,6 +66,9 @@ void h2_ihash_clear(h2_ihash_t *ih);
 /*******************************************************************************
  * common helpers
  ******************************************************************************/
+/* h2_log2(n) iff n is a power of 2 */
+unsigned char h2_log2(apr_uint32_t n);
+
 /**
  * Count the bytes that all key/value pairs in a table have
  * in length (exlucding terminating 0s), plus additional extra per pair.

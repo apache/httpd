@@ -82,12 +82,13 @@ struct h2_mplx {
     struct apr_thread_cond_t *added_output;
     struct apr_thread_cond_t *task_done;
     struct apr_thread_cond_t *join_wait;
-    apr_socket_t *dummy_socket;
     
     apr_size_t stream_max_mem;
     apr_interval_time_t stream_timeout;
     
     apr_pool_t *spare_pool;           /* spare pool, ready for next io */
+    apr_allocator_t *spare_allocator;
+    
     struct h2_workers *workers;
     apr_size_t tx_handles_reserved;
     apr_size_t tx_chunk_size;

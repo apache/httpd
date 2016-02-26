@@ -145,8 +145,8 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     if (output->task->frozen) {
         h2_util_bb_log(output->c, output->task->stream_id, APLOG_TRACE2,
                        "frozen task output write", bb);
-        APR_BRIGADE_CONCAT(output->task->frozen_out, bb);
-        return APR_SUCCESS;
+        return ap_save_brigade(f, &output->task->frozen_out, &bb, 
+                               output->c->pool);
     }
     
     status = open_if_needed(output, f, bb, "write");

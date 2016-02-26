@@ -69,7 +69,7 @@ struct h2_task {
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
                         conn_rec *c, struct h2_mplx *mplx);
 
-apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond, apr_socket_t *socket);
+apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond);
 
 void h2_task_register_hooks(void);
 /*

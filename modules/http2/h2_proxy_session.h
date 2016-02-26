@@ -64,8 +64,8 @@ struct h2_proxy_session {
     h2_proxy_request_done *done;
     void *user_data;
     
-    int window_bits_default;
-    int window_bits_connection;
+    unsigned char window_bits_stream;
+    unsigned char window_bits_connection;
 
     h2_proxys_state state;
     apr_interval_time_t wait_timeout;
@@ -81,6 +81,8 @@ struct h2_proxy_session {
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          proxy_server_conf *conf,
+                                         unsigned char window_bits_connection,
+                                         unsigned char window_bits_stream,
                                          h2_proxy_request_done *done);
 
 apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,

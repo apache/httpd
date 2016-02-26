@@ -485,6 +485,8 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          proxy_server_conf *conf,
+                                         unsigned char window_bits_connection,
+                                         unsigned char window_bits_stream,
                                          h2_proxy_request_done *done)
 {
     if (!p_conn->data) {
@@ -503,8 +505,8 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         session->conf = conf;
         session->pool = p_conn->scpool;
         session->state = H2_PROXYS_ST_INIT;
-        session->window_bits_default    = 30;
-        session->window_bits_connection = 30;
+        session->window_bits_stream = window_bits_stream;
+        session->window_bits_connection = window_bits_connection;
         session->streams = h2_ihash_create(pool, offsetof(h2_proxy_stream, id));
         session->suspended = h2_iq_create(pool, 5);
         session->done = done;
@@ -543,7 +545,7 @@ static apr_status_t session_start(h2_proxy_session *session)
     settings[0].settings_id = NGHTTP2_SETTINGS_ENABLE_PUSH;
     settings[0].value = 0;
     settings[1].settings_id = NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE;
-    settings[1].value = (1 << session->window_bits_default) - 1;
+    settings[1].value = (1 << session->window_bits_stream) - 1;
     
     rv = nghttp2_submit_settings(session->ngh2, NGHTTP2_FLAG_NONE, settings, 
                                  H2_ALEN(settings));

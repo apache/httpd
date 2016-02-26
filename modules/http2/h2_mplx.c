@@ -203,13 +203,6 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
     
-        status = apr_socket_create(&m->dummy_socket, APR_INET, SOCK_STREAM,
-                                   APR_PROTO_TCP, m->pool);
-        if (status != APR_SUCCESS) {
-            h2_mplx_destroy(m);
-            return NULL;
-        }
-
         m->q = h2_iq_create(m->pool, h2_config_geti(conf, H2_CONF_MAX_STREAMS));
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
@@ -1061,26 +1054,9 @@ static h2_task *pop_task(h2_mplx *m)
         && (sid = h2_iq_shift(m->q)) > 0) {
         h2_io *io = h2_io_set_get(m->stream_ios, sid);
         if (io) {
-            conn_rec *c;
-            apr_pool_t *task_pool;
-            apr_allocator_t *task_allocator = NULL;
-            
-            /* We create a pool with its own allocator to be used for
-             * processing a request. This is the only way to have the processing
-             * independant of the worker pool as the h2_mplx pool as well as
-             * not sensitive to which thread it is in.
-             * In that sense, memory allocation and lifetime is similar to a master
-             * connection.
-             * The main goal in this is that slave connections and requests will
-             * - one day - be suspended and resumed in different threads.
-             */
-            apr_allocator_create(&task_allocator);
-            apr_pool_create_ex(&task_pool, io->pool, NULL, task_allocator);
-            apr_pool_tag(task_pool, "h2_task");
-            apr_allocator_owner_set(task_allocator, task_pool);
-            
-            c = h2_slave_create(m->c, task_pool, m->c->current_thread, m->dummy_socket);
-            task = h2_task_create(m->id, io->request, c, m);
+            conn_rec *slave = h2_slave_create(m->c, m->pool, m->spare_allocator);
+            m->spare_allocator = NULL;
+            task = h2_task_create(m->id, io->request, slave, m);
             
             io->processing_started = 1;
             if (sid > m->max_stream_started) {
@@ -1133,10 +1109,15 @@ static void task_done(h2_mplx *m, h2_task *task)
             /* TODO: this will keep a worker attached to this h2_mplx as
              * long as it has requests to handle. Might no be fair to
              * other mplx's. Perhaps leave after n requests? */
+            h2_mplx_out_close(m, task->stream_id, NULL);
+            if (m->spare_allocator) {
+                apr_allocator_destroy(m->spare_allocator);
+                m->spare_allocator = NULL;
+            }
+            h2_slave_destroy(task->c, &m->spare_allocator);
             task = NULL;
             if (io) {
                 io->processing_done = 1;
-                h2_mplx_out_close(m, io->id, NULL);
                 if (io->orphaned) {
                     io_destroy(m, io, 0);
                     if (m->join_wait) {
@@ -1288,6 +1269,8 @@ apr_status_t h2_mplx_engine_push(const char *engine_type,
                                                m->id, m->next_eng_id++);
                 engine->pub.pool = task->c->pool;
                 engine->pub.type = apr_pstrdup(task->c->pool, engine_type);
+                engine->pub.window_bits = 30;
+                engine->pub.req_window_bits = h2_log2(m->stream_max_mem);
                 engine->c = r->connection;
                 APR_RING_INIT(&engine->entries, h2_req_entry, link);
                 engine->m = m;

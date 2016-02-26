@@ -95,8 +95,7 @@ static apr_status_t h2_response_freeze_filter(ap_filter_t* f,
     if (task->frozen) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                       "h2_response_freeze_filter, saving");
-        APR_BRIGADE_CONCAT(task->frozen_out, bb);
-        return APR_SUCCESS;
+        return ap_save_brigade(f, &task->frozen_out, &bb, task->c->pool);
     }
     
     if (APR_BRIGADE_EMPTY(bb)) {
@@ -204,8 +203,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     return task;
 }
 
-apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond, 
-                        apr_socket_t *socket)
+apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond)
 {
     apr_status_t status;
     
@@ -214,7 +212,7 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond,
     task->input = h2_task_input_create(task, task->c);
     task->output = h2_task_output_create(task, task->c);
     
-    ap_process_connection(task->c, socket);
+    ap_process_connection(task->c, ap_get_conn_socket(task->c));
     
     if (task->frozen) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
