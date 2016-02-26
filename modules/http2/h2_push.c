@@ -276,9 +276,16 @@ static int same_authority(const h2_request *req, const apr_uri_t *uri)
     return 1;
 }
 
-static int set_header(void *ctx, const char *key, const char *value) 
+static int set_push_header(void *ctx, const char *key, const char *value) 
 {
-    apr_table_setn(ctx, key, value);
+    size_t klen = strlen(key);
+    if (H2_HD_MATCH_LIT("User-Agent", key, klen)
+        || H2_HD_MATCH_LIT("Accept", key, klen)
+        || H2_HD_MATCH_LIT("Accept-Encoding", key, klen)
+        || H2_HD_MATCH_LIT("Accept-Language", key, klen)
+        || H2_HD_MATCH_LIT("Cache-Control", key, klen)) {
+        apr_table_setn(ctx, key, value);
+    }
     return 1;
 }
 
@@ -338,11 +345,7 @@ static int add_push(link_ctx *ctx)
                         break;
                 }
                 headers = apr_table_make(ctx->pool, 5);
-                apr_table_do(set_header, headers, ctx->req->headers,
-                             "User-Agent",
-                             "Cache-Control",
-                             "Accept-Language",
-                             NULL);
+                apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
                 req = h2_request_createn(0, ctx->pool, method, ctx->req->scheme,
                                          ctx->req->authority, path, headers,
                                          ctx->req->serialize);
