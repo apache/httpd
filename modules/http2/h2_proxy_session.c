@@ -13,6 +13,7 @@
  * limitations under the License.
  */
 
+#include <stddef.h>
 #include <apr_strings.h>
 #include <nghttp2/nghttp2.h>
 
@@ -139,7 +140,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                          void *user_data) 
 {
     h2_proxy_session *session = user_data;
-    h2_proxy_stream *stream;
     
     if (APLOGcdebug(session->c)) {
         char buffer[256];
@@ -152,7 +152,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
 
     switch (frame->hd.type) {
         case NGHTTP2_HEADERS:
-            stream = nghttp2_session_get_stream_user_data(ngh2, frame->hd.stream_id);
             break;
         case NGHTTP2_PUSH_PROMISE:
             break;
@@ -163,7 +162,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
             break;
         case NGHTTP2_GOAWAY:
             dispatch_event(session, H2_PROXYS_EV_REMOTE_GOAWAY, 0, NULL);
-            /* TODO: close handling */
             if (APLOGcinfo(session->c)) {
                 char buffer[256];
                 
