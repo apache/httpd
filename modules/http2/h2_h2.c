@@ -56,11 +56,9 @@ const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 /*******************************************************************************
  * The optional mod_ssl functions we need. 
  */
-static int (*opt_ssl_engine_disable)(conn_rec*);
-static int (*opt_ssl_is_https)(conn_rec*);
-static char *(*opt_ssl_var_lookup)(apr_pool_t *, server_rec *,
-                                   conn_rec *, request_rec *,
-                                   char *);
+static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *opt_ssl_engine_disable;
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *opt_ssl_is_https;
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *opt_ssl_var_lookup;
 
 
 /*******************************************************************************
