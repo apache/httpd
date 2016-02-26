@@ -300,8 +300,10 @@ setup_backend:
      */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine->id);
-    session = h2_proxy_session_setup(ctx->engine->id, ctx->p_conn, 
-                                     ctx->conf, request_done);
+    session = h2_proxy_session_setup(ctx->engine->id, ctx->p_conn, ctx->conf, 
+                                     ctx->engine->window_bits, 
+                                     ctx->engine->req_window_bits, 
+                                     request_done);
     if (!session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->p_conn->connection, 
                       "session unavailable");
@@ -470,6 +472,8 @@ static int proxy_http2_handler(request_rec *r,
         engine->type = engine_type;
         engine->pool = p;
         engine->capacity = 1;
+        engine->window_bits = 30;
+        engine->req_window_bits = 16;
         ctx->engine = engine;
         ctx->standalone = 1;
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, status, r, 

@@ -56,7 +56,12 @@ struct h2_req_engine {
     const char *id;        /* identifier */
     apr_pool_t *pool;      /* pool for engine specific allocations */
     const char *type;      /* name of the engine type */
-    apr_size_t capacity;   /* number of max assigned requests */
+    unsigned char window_bits;/* preferred size of overall response data
+                            * mod_http2 is willing to buffer as log2 */
+    unsigned char req_window_bits;/* preferred size of response body data
+                            * mod_http2 is willing to buffer per request,
+                            * as log2 */
+    apr_size_t capacity;   /* maximum concurrent requests */
     void *user_data;       /* user specific data */
 };
 

@@ -44,6 +44,7 @@ static struct h2_workers *workers;
 static h2_mpm_type_t mpm_type = H2_MPM_UNKNOWN;
 static module *mpm_module;
 static int async_mpm;
+static apr_socket_t *dummy_socket;
 
 static void check_modules(int force) 
 {
@@ -154,7 +155,12 @@ apr_status_t h2_conn_child_init(apr_pool_t *pool, server_rec *s)
                              NULL, AP_FTYPE_CONNECTION);
    
     status = h2_mplx_child_init(pool, s);
-    
+
+    if (status == APR_SUCCESS) {
+        status = apr_socket_create(&dummy_socket, APR_INET, SOCK_STREAM,
+                                   APR_PROTO_TCP, pool);
+    }
+
     return status;
 }
 
@@ -234,22 +240,30 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
 }
 
 
-conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p, 
-                          apr_thread_t *thread, apr_socket_t *socket)
+conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
+                          apr_allocator_t *allocator)
 {
+    apr_pool_t *pool;
     conn_rec *c;
     void *cfg;
     
     AP_DEBUG_ASSERT(master);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
-                  "h2_conn(%ld): created from master", master->id);
+                  "h2_conn(%ld): create slave", master->id);
     
-    /* This is like the slave connection creation from 2.5-DEV. A
-     * very efficient way - not sure how compatible this is, since
-     * the core hooks are no longer run.
-     * But maybe it's is better this way, not sure yet.
+    /* We create a pool with its own allocator to be used for
+     * processing a request. This is the only way to have the processing
+     * independant of its parent pool in the sense that it can work in
+     * another thread.
      */
-    c = (conn_rec *) apr_palloc(p, sizeof(conn_rec));
+    if (!allocator) {
+        apr_allocator_create(&allocator);
+    }
+    apr_pool_create_ex(&pool, parent, NULL, allocator);
+    apr_pool_tag(pool, "h2_slave_conn");
+    apr_allocator_owner_set(allocator, parent);
+    
+    c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
                       APLOGNO(02913) "h2_task: creating conn");
@@ -260,13 +274,12 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
            
     /* Replace these */
     c->master                 = master;
-    c->pool                   = p;   
-    c->current_thread         = thread;
-    c->conn_config            = ap_create_conn_config(p);
-    c->notes                  = apr_table_make(p, 5);
+    c->pool                   = pool;   
+    c->conn_config            = ap_create_conn_config(pool);
+    c->notes                  = apr_table_make(pool, 5);
     c->input_filters          = NULL;
     c->output_filters         = NULL;
-    c->bucket_alloc           = apr_bucket_alloc_create(p);
+    c->bucket_alloc           = apr_bucket_alloc_create(pool);
     c->data_in_input_filters  = 0;
     c->data_in_output_filters = 0;
     c->clogging_input_filters = 1;
@@ -274,11 +287,18 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
     c->log_id                 = NULL;
     /* Simulate that we had already a request on this connection. */
     c->keepalives             = 1;
-    
+    /* We cannot install the master connection socket on the slaves, as
+     * modules mess with timeouts/blocking of the socket, with
+     * unwanted side effects to the master connection processing.
+     * Fortunately, since we never use the slave socket, we can just install
+     * a single, process-wide dummy and everyone is happy.
+     */
+    ap_set_module_config(c->conn_config, &core_module, dummy_socket);
     /* TODO: these should be unique to this thread */
     c->sbh                    = master->sbh;
-    
-    ap_set_module_config(c->conn_config, &core_module, socket);
+    /* TODO: not all mpm modules have learned about slave connections yet.
+     * copy their config from master to slave.
+     */
     if (h2_conn_mpm_module()) {
         cfg = ap_get_module_config(master->conn_config, h2_conn_mpm_module());
         ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
@@ -287,3 +307,14 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *p,
     return c;
 }
 
+void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
+{
+    apr_allocator_t *allocator = apr_pool_allocator_get(slave->pool);
+    apr_pool_destroy(slave->pool);
+    if (pallocator) {
+        *pallocator = allocator;
+    }
+    else {
+        apr_allocator_destroy(allocator);
+    }
+}
