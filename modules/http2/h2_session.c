@@ -14,6 +14,7 @@
  */
 
 #include <assert.h>
+#include <stddef.h>
 #include <apr_thread_cond.h>
 #include <apr_base64.h>
 #include <apr_strings.h>
