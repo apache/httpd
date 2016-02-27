@@ -29,8 +29,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -402,12 +400,12 @@ et <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMa
 appliquent les directives de configuration qu'ils contiennent uniquement aux
 sites qui correspondent à l'URL spécifiée et auxquels on a
 accédé via le serveur mandataire du module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.
-Par exemple, la configuration suivante
-va interdire l'utilisation du serveur proxy pour accéder au site
-<code>www.example.com</code>.</p>
+Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
+clients à accéder au site <code>www.example.com</code> en passant par le serveur
+mandataire :.</p>
 
 <pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
-    Require all granted
+    Require host yournetwork.example.com
 &lt;/Proxy&gt;</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -500,28 +498,90 @@ sont interprétées.</p>
     <p>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
     le conteneur <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
     prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</p>
-
-    <p>Les sections situées plus loin dans le fichier de configuration prévalent
-    sur celles qui les précèdent ; cependant, chaque
-    module est responsable de la définition de la forme que doit prendre
-    cette prévalence. Une section de configuration ultérieure contenant
-    des directives d'un certain module peut être à l'origine d'une
-    fusion conceptuelle de certaines directives, de toutes les
-    directives, ou un remplacement complet de la configuration du module
-    par ses valeurs par défaut et les directives explicitement définies
-    dans cette section ultérieure.</p>
-
-<div class="note"><h3>Note technique</h3>
-	Une séquence
-	<code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+    
+	<div class="note"><h3>Note technique</h3>
+	Une séquence <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
 	est réellement traitée juste avant la phase de traduction du nom
 	(où <code>Aliases</code> et <code>DocumentRoots</code>
       sont utilisés pour faire correspondre les URLs aux noms de fichiers).
       Les effets de cette séquence disparaissent totalement lorsque
       la traduction est terminée.
-</div>
+	</div>
 
-<h3><a name="merge-examples" id="merge-examples">Quelques exemples</a></h3>
+<h3><a name="relationship-module-configuration" id="relationship-module-configuration">Interactions entre
+modules et sections de configuration</a></h3>
+    <p>Une question se pose souvent après avoir lu comment les sections de
+    configuration sont fusionnées : comment et quand les directives de modules
+    particuliers comme <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> sont-elles interprétées ? La
+    réponse n'est pas triviale et nécessite un approfondissement. Chaque module
+    httpd gère sa propre configuration, et chacune de ses directives dans
+    httpd.conf définit un élément de configuration dans un contexte particulier.
+    httpd n'exécute pas un commande au moment où elle est lue.</p>
+    <p>A l'exécution, le noyau de httpd parcours les sections de configuration
+    dans l'ordre décrit ci-dessus afin de déterminer lesquelles s'appliquent à
+    la requête courante. Lorsqu'une première section s'applique, elle est
+    considérée comme la configuration courante pour cette requête. Si une
+    section suivante s'applique aussi, chaque module qui possède des directives
+    dans chacune de ces sections a la possibilité de fusionner sa configuration
+    entre ces deux sections. Il en résulte une troisième configuration et le
+    processus de fusion se poursuit jusqu'à ce que toutes les sections de
+    configuration aient été évaluées.</p>
+    <p>Après l'étape précédente, le traitement proprement dit de la requête HTTP
+    peut commencer : chaque module peut effectuer toute tâche qui lui incombe,
+    et pour déterminer de quelle manière dont il doit agir, il peut s'appuyer
+    sur le noyau de httpd pour retrouver sa configuration globale issue de la
+    fusion précédente.</p>
+    <p>Un exemple permet de mieux visualiser l'ensemble du processus. la
+    configuration suivante utilise la directive <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> du module
+    <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> pour définir un en-tête HTTP spécifique. Quelle
+    valeur httpd va-t-il affecter à l'en-tête <code>CustomHeaderName</code> pour
+    une requête vers <code>/example/index.html</code> ?
+    </p>
+    <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
+    Header set CustomHeaderName one
+    &lt;FilesMatch ".*"&gt;
+        Header set CustomHeaderName three
+    &lt;/FilesMatch&gt;
+&lt;/Directory&gt;
+
+&lt;Directory "/example"&gt;
+    Header set CustomHeaderName two
+&lt;/Directory&gt;</pre>
+    
+    <ul>
+        <li><code class="directive">Directory</code> "/" s'applique, et une configuration
+	initiale est créée qui définit l'en-tête <code>CustomHeaderName</code>
+	avec la valeur <code>one</code>.</li>
+        <li><code class="directive">Directory</code> "/example" s'applique, et comme
+	<code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> spécifie dans son code que
+	la valeur d'un en-tête doit être écrasée si ce dernier est défini à
+	nouveau, une nouvelle configuration est créée qui définit l'en-tête
+	<code>CustomHeaderName</code> avec la valeur <code>two</code>.</li>
+        <li><code class="directive">FilesMatch</code> ".*" s'applique, une nouvelle
+	opportunité de fusion surgit, et l'en-tête <code>CustomHeaderName</code>
+	est défini à la valeur <code>three</code>.</li>
+        <li>Finalement, au cours des étapes suivantes du traitement de la
+	requête HTTP, <code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> sera sollicité, et il se
+	basera sur la configuration qui a défini l'en-tête
+	<code>CustomHeaderName</code> à la valeur <code>three</code>.
+	<code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code> utilise normalement cette configuration pour
+	accomplir sa tâche, à savoir définir des en-têtes HTTP. Cela ne veut
+	cependant pas dire qu'un module ne peut pas effectuer des actions plus
+	complexes comme désactiver des directives car elle ne sont pas
+	nécessaires ou obsolètes, etc...</li>
+    </ul>
+
+    <p>Ceci est aussi vrai pour les fichiers .htaccess car ils possèdent la même
+    priorité que les sections <code class="directive">Directory</code> dans l'ordre de
+    fusion. Il faut bien comprendre que les sections de configuration comme
+    <code class="directive">Directory</code> et <code class="directive">FilesMatch</code> ne
+    sont pas comparables avec les directives spécifiques de modules comme
+    <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code> ou <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> car elles agissent à des
+    niveaux différents.
+    </p>
+	
+
+<h3><a name="merge-examples" id="merge-examples">Quelques exemples utiles</a></h3>
 
 <p>Voici un exemple imaginaire qui montre l'ordre de combinaison des sections.
 En supposant qu'elles s'appliquent toutes à la requête, les directives de
