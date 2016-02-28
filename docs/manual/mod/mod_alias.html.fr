@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -170,7 +168,7 @@ de fichiers</td></tr>
     <pre class="prettyprint lang-config">Alias "/icons/" "/usr/local/apache/icons/"</pre>
 
 
-    <p>l'alias précédent ne s'appliquera pas à l'url
+    <p>l'alias précédent ne s'appliquera pas à l'URL
     <code>/icons</code> à cause de l'absence du slash final. Ainsi, si
     le slash final est absent du <var>chemin de l'URL</var>, il doit
     aussi l'être du <var>chemin du fichier</var>.</p>
@@ -201,7 +199,7 @@ de fichiers</td></tr>
     <p>Si la directive <code class="directive">Alias</code> est définie au sein
     d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <var>chemin URL</var> est
     omis et <var>chemin fichier</var> est interprété en utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
@@ -405,7 +403,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
     utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;
@@ -559,7 +557,7 @@ et désigne la cible comme script CGI</td></tr>
     sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
     URL</var> est omis, l'argument <var>URL</var> sera interprété en
     utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
-    Cette syntaxe est disponible à partir de la version 2.4.13 du
+    Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
