@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1731351 (outdated) -->
+<!-- English Revision: 1731351 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,15 +28,15 @@ the document to validate. -->
 
 <modulesynopsis metafile="mod_dialup.xml.meta">
 <name>mod_dialup</name>
-<description>Envoie le contenu statique avec une bande passante limit&eacute;e
-d&eacute;finie par les diff&eacute;rents standards des anciens modems.</description>
+<description>Envoie le contenu statique avec une bande passante limitée
+définie par les différents standards des anciens modems.</description>
 <status>Experimental</status>
 <sourcefile>mod_dialup.c</sourcefile>
 <identifier>dialup_module</identifier>
 
 <summary>
 <p>Il s'agit d'un module qui envoie le contenu statique avec une bande
-passante limit&eacute;e d&eacute;finie par les diff&eacute;rents standards des anciens
+passante limitée définie par les différents standards des anciens
 modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 56k V.92 en positionnant une configuration de ce type :</p>
 
@@ -47,23 +47,23 @@ modems. Ainsi, il est possible de naviguer sur votre site avec un modem
 </highlight>
 
 <p>Auparavant, pour faire des modules de limitation de bande passante,
-il fallait monopoliser un thread, pour chaque client, et ins&eacute;rer des
-temporisations pour diminuer la bande passante. Gr&acirc;ce &agrave; cette nouvelle
-fonctionnalit&eacute;, un gestionnaire peut recevoir les r&eacute;ponses &agrave; ses
-callbacks apr&egrave;s N millisecondes, et il sera invoqu&eacute; par le module MPM
-Event dans un thread diff&eacute;rent &agrave; la fin du d&eacute;lai indiqu&eacute;. &Agrave; partir de ce
-moment, le gestionnaire peut continuer &agrave; envoyer des donn&eacute;es au
+il fallait monopoliser un thread, pour chaque client, et insérer des
+temporisations pour diminuer la bande passante. Grâce à cette nouvelle
+fonctionnalité, un gestionnaire peut recevoir les réponses à ses
+callbacks après N millisecondes, et il sera invoqué par le module MPM
+Event dans un thread différent à la fin du délai indiqué. À partir de ce
+moment, le gestionnaire peut continuer à envoyer des données au
 client.</p>
 </summary>
 
 <directivesynopsis>
 <name>ModemStandard</name>
-<description>Standard de modem &agrave; simuler</description>
-<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntax>
+<description>Standard de modem à simuler</description>
+<syntax>ModemStandard V.21|V.26bis|V.32|V.34|V.92</syntax>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-<p>Cette directive permet de sp&eacute;cifier le standard de modem que vous
+<p>Cette directive permet de spécifier le standard de modem que vous
 souhaitez simuler.</p>
 
 <highlight language="config">
