@@ -124,7 +124,7 @@ particulier</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>type-médium</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>chemin URL</var>
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>chemin URL</var>]
 <var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du système
 de fichiers</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
@@ -846,7 +846,7 @@ inactifs</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre minimum de threads inactifs qui seront disponibles
 pour pouvoir traiter les pics de requêtes</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>chemin fichier</var> [<var>chemin fichier</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Charge au démarrage une liste de fichiers en mémoire</td></tr>
-<tr class="odd"><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.92</a></td><td></td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Standard de modem à simuler</td></tr>
+<tr class="odd"><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.34|V.92</a></td><td></td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Standard de modem à simuler</td></tr>
 <tr><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
 fichier</td></tr>
@@ -984,7 +984,7 @@ pleinement qualifiée</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>nom-fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Nom du fichier dont le contenu sera inséré à la fin de
 l'index</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon TCP en entrée</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] <var>chemin URL</var>
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] [<var>chemin URL</var>]
 <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>état</var>] <var>regex</var>
@@ -1086,8 +1086,8 @@ et l'authentification utilisateur</td></tr>
 la coordination des processus enfants</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>méthode</var> <var>script cgi</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active un script CGI dans le cas d'une méthode de requête
 particulière.</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>chemin URL</var>
-<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>chemin URL</var>]
+<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
 et désigne la cible comme script CGI</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fait correspondre une URL à une zone du système de fichiers
