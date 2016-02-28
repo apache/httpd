@@ -169,7 +169,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:
          Trunk version of patch works modulo CHANGES
      +1: icing
-     
+
+  *) Save a few bytes in conf pool when parsing some directives
+     Trunk patch:
+         http://svn.apache.org/r1732252
+         http://svn.apache.org/r1732353
+         http://svn.apache.org/r1732369
+     2.4.x patch:
+         Trunk version of patch works
+     +1: jailletc36
+  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
