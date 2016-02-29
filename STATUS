@@ -112,6 +112,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
+     to OCSP responders through a HTTP proxy.
+     Trunk version of patch:
+         http://svn.apache.org/r1726881
+         http://svn.apache.org/r1727111
+     Backport version for 2.4.x of patch:
+         Trunk version of patch works modulo CHANGES
+     +1: rpluem, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -124,15 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jkaluza
      ylavic: +1 with r1723295 (likewise for ecparams).
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-
-  *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
-     to OCSP responders through a HTTP proxy.
-     Trunk version of patch:
-         http://svn.apache.org/r1726881
-         http://svn.apache.org/r1727111
-     Backport version for 2.4.x of patch:
-         Trunk version of patch works modulo CHANGES
-     +1: rpluem, jim
+     ylavic: working on it...
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
@@ -141,6 +142,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          <Plus docs>
      +1: jim
      ylavic: Needs r1732957 for empty APLOGNO()s.
+     ylavic: Looks like the changes on struct proxy_worker_shared would break
+             startup with "BalancerPersist on" due to the strict checks on
+             the sizes of existing slotmems (slotmem_create/attach)?
 
   *) core: Track the useragent_host per-request when mod_remoteip or similar
      modules track a per-request useragent_ip.  Modules should be updated
@@ -178,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1732369
      2.4.x patch:
          Trunk version of patch works
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) proxy_util: Add missing APLOGNO()s from r1732266 (already backported
                  to 2.4.x/19)
