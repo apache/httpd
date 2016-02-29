@@ -448,7 +448,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
     /* This *could* have changed via the Balancer Manager */
     /* TODO */
     if (hc->s->method != worker->s->method) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03311)
                      "Updating hc worker %s for %s://%s:%d",
                      wptr, worker->s->scheme, worker->s->hostname,
                      (int)port);
@@ -866,18 +866,18 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                 rv =  apr_thread_pool_create(&ctx->hctp, ctx->tpsize,
                                              ctx->tpsize, ctx->p);
                 if (rv != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03312)
                                  "apr_thread_pool_create() with %d threads failed",
                                  ctx->tpsize);
                     /* we can continue on without the threadpools */
                     ctx->hctp = NULL;
                 } else {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03313)
                                  "apr_thread_pool_create() with %d threads succeeded",
                                  ctx->tpsize);
                 }
             } else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03314)
                              "Skipping apr_thread_pool_create()");
                 ctx->hctp = NULL;
             }
@@ -947,7 +947,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 #if HC_USE_THREADS
             rv =  apr_thread_pool_destroy(ctx->hctp);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(03315)
                              "apr_thread_pool_destroy() failed");
             }
 #endif
