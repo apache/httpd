@@ -140,6 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://home.apache.org/~jim/patches/hcheck-2.4.patch
          <Plus docs>
      +1: jim
+     ylavic: Needs r1732957 for empty APLOGNO()s.
 
   *) core: Track the useragent_host per-request when mod_remoteip or similar
      modules track a per-request useragent_ip.  Modules should be updated
@@ -178,7 +179,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:
          Trunk version of patch works
      +1: jailletc36
-  
+
+  *) proxy_util: Add missing APLOGNO()s from r1732266 (already backported
+                 to 2.4.x/19)
+     trunk patch: http://svn.apache.org/r1732954
+     2.4.x patch: trunk works (modulo docs/log-message-tags)
+     +1: ylavic
+
+  *) core: Add missing APLOGNO() from r1729495 (somehow r1725395 was
+           backported in r1729495 but without this "server/core.c" change)
+     trunk patch: http://svn.apache.org/r1725395 (already backported)
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-r1729495_missing_APLOGNO.patch
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
    * core: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
