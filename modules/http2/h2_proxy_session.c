@@ -145,7 +145,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
         char buffer[256];
         
         h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03341)
                       "h2_session(%s): recv FRAME[%s]",
                       session->id, buffer);
     }
@@ -166,7 +166,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                 char buffer[256];
                 
                 h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03342)
                               "h2_session(%s): recv FRAME[%s]",
                               session->id, buffer);
             }
@@ -185,7 +185,7 @@ static int before_frame_send(nghttp2_session *ngh2,
         char buffer[256];
 
         h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03343)
                       "h2_session(%s): sent FRAME[%s]",
                       session->id, buffer);
     }
@@ -361,7 +361,7 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     }
     status = ap_pass_brigade(stream->r->output_filters, stream->output);
     if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO(03344)
                       "h2_session(%s-%d): passing output", 
                       session->id, stream->id);
         nghttp2_submit_rst_stream(ngh2, NGHTTP2_FLAG_NONE,
@@ -849,7 +849,7 @@ static int is_accepting_streams(h2_proxy_session *session)
 static void transit(h2_proxy_session *session, const char *action, 
                     h2_proxys_state nstate)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03345)
                   "h2_proxy_session(%s): transit [%s] -- %s --> [%s]", session->id,
                   state_name(session->state), action, state_name(nstate));
     session->state = nstate;
@@ -1208,7 +1208,7 @@ apr_status_t h2_proxy_session_process(h2_proxy_session *session)
             
         default:
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, session->c,
-                          APLOGNO()"h2_session(%s): unknown state %d", 
+                          APLOGNO(03346)"h2_session(%s): unknown state %d", 
                           session->id, session->state);
             dispatch_event(session, H2_PROXYS_EV_PROTO_ERROR, 0, NULL);
             break;
