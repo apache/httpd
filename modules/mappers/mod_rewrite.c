@@ -5067,6 +5067,19 @@ static int hook_fixup(request_rec *r)
                 return HTTP_BAD_REQUEST;
             }
 
+            /* Check for deadlooping:
+             * At this point we KNOW that at least one rewriting
+             * rule was applied, but when the resulting URL is
+             * the same as the initial URL, we are not allowed to
+             * use the following internal redirection stuff because
+             * this would lead to a deadloop.
+             */
+            if (ofilename != NULL && strcmp(r->filename, ofilename) == 0) {
+                rewritelog((r, 1, dconf->directory, "initial URL equal rewritten"
+                            " URL: %s [IGNORING REWRITE]", r->filename));
+                return OK;
+            }
+
             tmpfilename = r->filename;
 
             /* if there is a valid base-URL then substitute
@@ -5126,20 +5139,6 @@ static int hook_fixup(request_rec *r)
                     }
                 }
             }
-
-            /* Check for deadlooping:
-             * At this point we KNOW that at least one rewriting
-             * rule was applied, but when the resulting URL is
-             * the same as the initial URL, we are not allowed to
-             * use the following internal redirection stuff because
-             * this would lead to a deadloop.
-             */
-            if (ofilename != NULL && strcmp(r->filename, ofilename) == 0) {
-                rewritelog((r, 1, dconf->directory, "initial URL equal rewritten"
-                            " URL: %s [IGNORING REWRITE]", r->filename));
-                return OK;
-            }
-
 
             /* now initiate the internal redirect */
             rewritelog((r, 1, dconf->directory, "internal redirect with %s "
