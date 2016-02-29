@@ -81,7 +81,7 @@ static int h2_proxy_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     
     ngh2 = nghttp2_version(0);
-    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+    ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03349)
                  "mod_proxy_http2 (v%s, nghttp2 %s), initializing...",
                  MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
     
@@ -140,7 +140,7 @@ static int proxy_http2_canon(request_rec *r, char *url)
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(03350)
                       "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
@@ -212,7 +212,7 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
     url = apr_table_get(r->notes, H2_PROXY_REQ_URL_NOTE);
     status = h2_proxy_session_submit(session, url, r);
     if (status != OK) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, r->connection, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, r->connection, APLOGNO(03351)
                       "pass request body failed to %pI (%s) from %s (%s)",
                       ctx->p_conn->addr, ctx->p_conn->hostname ? 
                       ctx->p_conn->hostname: "", session->c->client_ip, 
@@ -261,7 +261,7 @@ setup_backend:
      * backend->hostname. */
     if (ap_proxy_connect_backend(ctx->proxy_func, ctx->p_conn, ctx->worker, 
                                  ctx->server)) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, ctx->owner, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, ctx->owner, APLOGNO(03352)
                       "H2: failed to make connection to backend: %s",
                       ctx->p_conn->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
@@ -269,7 +269,7 @@ setup_backend:
     
     /* Step Three: Create conn_rec for the socket we have open now. */
     if (!ctx->p_conn->connection) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
                       "setup new connection: is_ssl=%d %s %s %s", 
                       ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                       r->hostname, ctx->p_conn->hostname);
