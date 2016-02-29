@@ -285,6 +285,11 @@ PATCHES/ISSUES THAT ARE STALLED
                   http://svn.apache.org/r1618588
      2.4.x patch: http://people.apache.org/~jkaluza/patches/mod_systemd/httpd-2.4.x-mod_systemd.patch
      +1: jkaluza
+     sf comments: The IdleShutdown logic seems broken. Consider a single
+                  active connection that is stalled for 10 seconds. That
+                  connection will be broken after GracefulShutdownTimeout.
+                  A better logic would be to check if there is any open
+                  connection that is not in keep-alive state.
 
    * mod_journald: Add new module mod_journald to log error logs into journald.
                    This patch needs changes done in mod_systemd patch (already
