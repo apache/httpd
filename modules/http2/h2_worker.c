@@ -34,14 +34,13 @@
 static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
-    apr_status_t status;
     int sticky;
     
     while (!worker->aborted) {
         h2_task *task;
         
         /* Get a h2_task from the main workers queue. */
-        status = worker->get_next(worker, worker->ctx, &task, &sticky);
+        worker->get_next(worker, worker->ctx, &task, &sticky);
         while (task) {
             h2_task_do(task, worker->io);
             
