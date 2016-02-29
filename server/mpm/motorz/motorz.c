@@ -127,7 +127,7 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
     motorz_sb_t *sb;
     motorz_conn_t *scon = (motorz_conn_t *) baton;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03316)
                          "motorz_io_setup_conn(): entered");
 
     ap_create_sb_handle(&sbh, scon->pool, 0, 0);
@@ -155,7 +155,7 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
     ap_update_vhost_given_ip(scon->c);
 
     status = ap_run_pre_connection(scon->c, scon->sock);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03317)
                          "motorz_io_setup_conn(): did pre-conn");
     if (status != OK && status != DONE) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(02843)
@@ -191,7 +191,7 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
     apr_pool_create(&ptrans, NULL);
 
     apr_pool_tag(ptrans, "accept");
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03318)
                          "motorz_io_accept(): entered");
 
     rv = lr->accept_func((void *)&socket, lr, ptrans);
@@ -214,7 +214,7 @@ static apr_status_t motorz_io_accept(motorz_core_t *mz, motorz_sb_t *sb)
                                   scon,
                                   APR_THREAD_TASK_PRIORITY_HIGHEST, NULL);
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(03319)
                          "motorz_io_accept(): exited: %d", (int)rv);
 
     return rv;
@@ -227,12 +227,12 @@ static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
 
     scon->c->current_thread = thread;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03320)
                          "motorz_timer_invoke(): entered");
 
     ep->cb(ep->mz, ep->baton);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03321)
                          "motorz_timer_invoke(): exited");
 
     return NULL;
@@ -243,7 +243,7 @@ static apr_status_t motorz_timer_event_process(motorz_core_t *mz, motorz_timer_t
     motorz_conn_t *scon = (motorz_conn_t *)te->baton;
     scon->timer.expires = 0;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03322)
                          "motorz_timer_event_process(): entered");
 
     return apr_thread_pool_push(mz->workers,
@@ -257,7 +257,7 @@ static void *motorz_io_invoke(apr_thread_t *thread, void *baton)
     motorz_conn_t *scon = (motorz_conn_t *) sb->baton;
     apr_status_t rv;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03323)
                          "motorz_io_invoke(): entered");
     scon->c->current_thread = thread;
 
@@ -310,7 +310,7 @@ static void motorz_register_timeout(motorz_conn_t *scon,
     elem->pool = scon->pool;
     elem->mz = mz;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03324)
                          "motorz_register_timer(): insert ELEM: %pp", elem);
 
     apr_thread_mutex_lock(mz->mtx);
@@ -328,7 +328,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
     motorz_core_t *mz;
     conn_rec *c;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03325)
                          "motorz_io_process(): entered");
 
     if (scon->c->clogging_input_filters && !scon->c->aborted) {
@@ -356,7 +356,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
              * therefore, we can accept _SUCCESS or _NOTFOUND,
              * and we still want to keep going
              */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03326)
                                  "motorz_io_process(): apr_pollset_remove");
 
             rv = apr_pollset_remove(mz->pollset, &scon->pfd);
@@ -369,17 +369,17 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
         }
 
         if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03327)
                                  "motorz_io_process(): Set to CONN_STATE_READ_REQUEST_LINE");
             scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
         }
 
 read_request:
         if (scon->cs.state == CONN_STATE_READ_REQUEST_LINE) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03328)
                                  "motorz_io_process(): CONN_STATE_READ_REQUEST_LINE");
             if (!c->aborted) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03329)
                                      "motorz_io_process(): !aborted");
                 ap_run_process_connection(c);
                 /* state will be updated upon return
@@ -388,7 +388,7 @@ read_request:
                  */
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03330)
                                      "motorz_io_process(): aborted");
                 scon->cs.state = CONN_STATE_LINGER;
             }
@@ -397,7 +397,7 @@ read_request:
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
             int not_complete_yet;
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03331)
                                   "motorz_io_process(): CONN_STATE_WRITE_COMPLETION");
 
             ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
@@ -443,13 +443,13 @@ read_request:
         }
 
         if (scon->cs.state == CONN_STATE_LINGER) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03332)
                                   "motorz_io_process(): CONN_STATE_LINGER");
             ap_lingering_close(c);
         }
 
         if (scon->cs.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03333)
                                   "motorz_io_process(): CONN_STATE_CHECK_REQUEST_LINE_READABLE");
             motorz_register_timeout(scon,
                                   motorz_io_timeout_cb,
@@ -489,7 +489,7 @@ static apr_status_t motorz_pollset_cb(motorz_core_t *mz, apr_interval_time_t tim
     while (num > 0) {
         rc = motorz_io_callback(mz, out_pfd);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, NULL, APLOGNO(03334)
                          "Call to motorz_io_callback() failed");
         }
         out_pfd++;
@@ -550,7 +550,7 @@ static int motorz_setup_pollset(motorz_core_t *mz)
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(02854)
                      "motorz_setup_pollset: apr_pollset_create failed for all possible backends!");
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03335)
                  "motorz_setup_pollset: Using %s", apr_pollset_method_name(mz->pollset));
     return rv;
 }
@@ -1709,14 +1709,14 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (threads_per_child > thread_limit) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03336)
                          "WARNING: ThreadsPerChild of %d exceeds run-time "
                          "limit of", threads_per_child);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03337)
                          " %d servers, decreasing to %d.",
                          thread_limit, thread_limit);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(03338)
                          "ThreadsPerChild of %d exceeds run-time limit "
                          "of %d, decreasing to match",
                          threads_per_child, thread_limit);
@@ -1725,11 +1725,11 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
     else if (threads_per_child < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03339)
                          "WARNING: ThreadsPerChild of %d not allowed, "
                          "increasing to 1.", threads_per_child);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(03340)
                          "ThreadsPerChild of %d not allowed, increasing to 1",
                          threads_per_child);
         }
