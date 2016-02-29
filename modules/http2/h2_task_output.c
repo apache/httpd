@@ -101,7 +101,7 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
             h2_task_logio_add_bytes_out(f->c, bytes_written);
         }
         get_trailers(output);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03204)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03348)
                       "h2_task_output(%s): open as needed %s %s %s",
                       output->task->id, output->task->request->method, 
                       output->task->request->authority, 
