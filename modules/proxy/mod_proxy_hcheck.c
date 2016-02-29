@@ -582,13 +582,12 @@ static int hc_read_headers(sctx_t *ctx, request_rec *r)
             "%s", buffer);
     /* for the below, see ap_proxy_http_process_response() */
     if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
-        int major, minor;
+        int major;
         char keepchar;
         int proxy_status = OK;
         const char *proxy_status_line = NULL;
 
         major = buffer[5] - '0';
-        minor = buffer[7] - '0';
         if ((major != 1) || (len >= sizeof(buffer)-1)) {
             return !OK;
         }
