@@ -1166,7 +1166,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             while ((p = apr_strtok(p, ", ", &last))) {
                 len = last - p - (*last? 1 : 0); 
                 if (len > 255) {
-                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03309)
                                   "ALPN proxy protocol identifier too long: %s",
                                   p);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
@@ -1184,7 +1184,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             if (protos != s && SSL_set_alpn_protos(filter_ctx->pssl, 
                                                    (unsigned char *)protos, 
                                                    s - protos)) {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(03310)
                               "error setting alpn protos from '%s'", alpn_note);
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_WARNING, server);
             }
