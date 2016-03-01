@@ -82,10 +82,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CheckBasenameMatch" id="CheckBasenameMatch">CheckBasenameMatch</a> <a name="checkbasenamematch" id="checkbasenamematch">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Extend the action of the speling module to also check filename
-without paying attention to the extention. (e.g. foo.gif and foo.jpg).
-This can be particulary useful in conjunction with
-<a href="../content-negotiation.html">MultiViews</a></td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Also match files with differing file name extensions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CheckBasenameMatch on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CheckBasenameMatch Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
