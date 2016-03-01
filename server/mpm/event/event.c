@@ -3360,7 +3360,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
         ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                      (startup ? NULL : s), APLOGNO(03273)
                      "could not duplicate listeners");
-        return DONE;
+        return !OK;
     }
 
     all_buckets = apr_pcalloc(pconf, num_buckets * sizeof(*all_buckets));
@@ -3370,7 +3370,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s), APLOGNO(03274)
                          "could not open pipe-of-death");
-            return DONE;
+            return !OK;
         }
         all_buckets[i].listeners = listen_buckets[i];
     }
