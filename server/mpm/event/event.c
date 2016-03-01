@@ -3345,7 +3345,7 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
         ap_log_error(APLOG_MARK, APLOG_ALERT | level_flags, 0,
                      (startup ? NULL : s), APLOGNO(03272)
                      "no listening sockets available, shutting down");
-        return DONE;
+        return !OK;
     }
 
     if (one_process) {

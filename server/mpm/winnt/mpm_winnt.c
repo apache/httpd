@@ -1653,7 +1653,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
     if (ap_setup_listeners(s) < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0,
                      NULL, APLOGNO(00451) "no listening sockets available, shutting down");
-        return DONE;
+        return !OK;
     }
 
     return OK;
