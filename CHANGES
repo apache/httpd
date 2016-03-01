@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: Fixed possible read after free when streams were cancelled early
+     by the client. 
+     Fixed apr_uint64_t formatting in a log statement to user proper APR def.
+     Number of worker threads allowed to a connection is adjusting dynamically.
+     Starting with 4, the number is doubled when streams can be served without
+     the server ever having to wait on the client. The number is halfed, when
+     the server has to wait on flow control grants. This can happen with a 
+     maximum frequency of 5 times per second. When a connection occupies too
+     many workers, repeatable requests (GET/HEAD/OPTIONS) are cancelled and
+     placed back in the queue. Should that not suffice and a stream is busy
+     longer than the server timeout, the connection will be aborted.
+  
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 

@@ -2015,7 +2015,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 no_streams = h2_ihash_is_empty(session->streams);
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
-                if (async && !session->r && session->requests_received && no_streams) {
+                if (async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
                     /* We do not return to the async mpm immediately, since under
@@ -2051,7 +2051,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else {
                     /* We wait in smaller increments, using a 1 second timeout.
-                     * That gives us the chance to check for MPMQ_STOPPING often. */
+                     * That gives us the chance to check for MPMQ_STOPPING often. 
+                     */
+                    status = h2_mplx_idle(session->mplx);
+                    if (status != APR_SUCCESS) {
+                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
+                                       H2_ERR_ENHANCE_YOUR_CALM, "less is more");
+                    }
                     h2_filter_cin_timeout_set(session->cin, apr_time_from_sec(1));
                     status = h2_session_read(session, 1);
                     if (status == APR_SUCCESS) {

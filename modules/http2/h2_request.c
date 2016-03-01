@@ -60,10 +60,6 @@ h2_request *h2_request_createn(int id, apr_pool_t *pool,
     return req;
 }
 
-void h2_request_destroy(h2_request *req)
-{
-}
-
 static apr_status_t inspect_clen(h2_request *req, const char *s)
 {
     char *end;
@@ -342,9 +338,20 @@ void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
     dst->authority      = OPT_COPY(p, src->authority);
     dst->path           = OPT_COPY(p, src->path);
     dst->headers        = apr_table_clone(p, src->headers);
+    if (src->trailers) {
+        dst->trailers   = apr_table_clone(p, src->trailers);
+    }
     dst->content_length = src->content_length;
     dst->chunked        = src->chunked;
     dst->eoh            = src->eoh;
+}
+
+h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
+{
+    h2_request *nreq = apr_pcalloc(p, sizeof(*nreq));
+    memcpy(nreq, src, sizeof(*nreq));
+    h2_request_copy(p, nreq, src);
+    return nreq;
 }
 
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)

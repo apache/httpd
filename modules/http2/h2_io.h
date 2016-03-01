@@ -49,8 +49,9 @@ struct h2_io {
     apr_bucket_brigade *tmp;         /* temporary data for chunking */
 
     unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
-    unsigned int processing_started : 1; /* h2_worker started processing for this io */
-    unsigned int processing_done: 1; /* h2_worker finished for this io */
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    unsigned int submitted      : 1; /* response has been submitted to client */
     unsigned int request_body   : 1; /* iff request has body */
     unsigned int eos_in         : 1; /* input eos has been seen */
     unsigned int eos_in_written : 1; /* input eos has been forwarded */
@@ -61,6 +62,8 @@ struct h2_io {
     struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */
     apr_time_t timeout_at;           /* when IO wait will time out */
     
+    apr_time_t started_at;           /* when processing started */
+    apr_time_t done_at;              /* when processing was done */
     apr_size_t input_consumed;       /* how many bytes have been read */
         
     int files_handles_owned;
@@ -73,7 +76,7 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool);
+h2_io *h2_io_create(int id, apr_pool_t *pool, const struct h2_request *request);
 
 /**
  * Set the response of this stream.
@@ -84,6 +87,9 @@ void h2_io_set_response(h2_io *io, struct h2_response *response);
  * Reset the stream with the given error code.
  */
 void h2_io_rst(h2_io *io, int error);
+
+int h2_io_is_repeatable(h2_io *io);
+void h2_io_redo(h2_io *io);
 
 /**
  * The input data is completely queued. Blocked reads will return immediately

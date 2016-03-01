@@ -33,15 +33,45 @@
 #include "h2_task.h"
 #include "h2_util.h"
 
-h2_io *h2_io_create(int id, apr_pool_t *pool)
+h2_io *h2_io_create(int id, apr_pool_t *pool, const h2_request *request)
 {
     h2_io *io = apr_pcalloc(pool, sizeof(*io));
     if (io) {
         io->id = id;
         io->pool = pool;
         io->bucket_alloc = apr_bucket_alloc_create(pool);
+        io->request = h2_request_clone(pool, request);
     }
     return io;
+}
+
+void h2_io_redo(h2_io *io)
+{
+    io->worker_started = 0;
+    io->response = NULL;
+    io->rst_error = 0;
+    if (io->bbin) {
+        apr_brigade_cleanup(io->bbin);
+    }
+    if (io->bbout) {
+        apr_brigade_cleanup(io->bbout);
+    }
+    if (io->tmp) {
+        apr_brigade_cleanup(io->tmp);
+    }
+    io->started_at = io->done_at = 0;
+}
+
+int h2_io_is_repeatable(h2_io *io) {
+    if (io->submitted
+        || io->input_consumed > 0 
+        || !io->request) {
+        /* cannot repeat that. */
+        return 0;
+    }
+    return (!strcmp("GET", io->request->method)
+            || !strcmp("HEAD", io->request->method)
+            || !strcmp("OPTIONS", io->request->method));
 }
 
 void h2_io_set_response(h2_io *io, h2_response *response) 
