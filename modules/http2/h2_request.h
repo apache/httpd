@@ -30,8 +30,6 @@ apr_status_t h2_request_make(h2_request *req, apr_pool_t *pool,
                              const char *authority, const char *path, 
                              apr_table_t *headers);
 
-void h2_request_destroy(h2_request *req);
-
 apr_status_t h2_request_rwrite(h2_request *req, request_rec *r);
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
@@ -46,6 +44,8 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
                                     int eos, int push);
 
 void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src);
+
+h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
 
 /**
  * Create a request_rec representing the h2_request to be

@@ -86,7 +86,6 @@ static h2_task *next_task(h2_workers *workers)
         --workers->mplx_count;
         
         task = h2_mplx_pop_task(m, &has_more);
-        
         if (has_more) {
             H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
             ++workers->mplx_count;

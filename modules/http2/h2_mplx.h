@@ -68,15 +68,22 @@ struct h2_mplx {
     apr_pool_t *pool;
 
     unsigned int aborted : 1;
+    unsigned int need_registration : 1;
 
     struct h2_int_queue *q;
     struct h2_io_set *stream_ios;
     struct h2_io_set *ready_ios;
+    struct h2_io_set *redo_ios;
     
     int max_stream_started;      /* highest stream id that started processing */
     int workers_busy;            /* # of workers processing on this mplx */
-    int workers_max;             /* max # of workers occupied by this mplx */
-    int need_registration;
+    int workers_limit;           /* current # of workers limit, dynamic */
+    int workers_def_limit;       /* default # of workers limit */
+    int workers_max;             /* max, hard limit # of workers in a process */
+    apr_time_t last_idle_block;  /* last time, this mplx entered IDLE while
+                                  * streams were ready */
+    apr_time_t last_limit_change;/* last time, worker limit changed */
+    apr_interval_time_t limit_change_interval;
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
@@ -389,6 +396,16 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
  */
 #define H2_MPLX_REMOVE(e)	APR_RING_REMOVE((e), link)
 
+/*******************************************************************************
+ * h2_mplx DoS protection
+ ******************************************************************************/
+
+/**
+ * Master connection has entered idle mode.
+ * @param m the mplx instance of the master connection
+ * @return != SUCCESS iff connection should be terminated
+ */
+apr_status_t h2_mplx_idle(h2_mplx *m);
 
 /*******************************************************************************
  * h2_mplx h2_req_engine handling.
