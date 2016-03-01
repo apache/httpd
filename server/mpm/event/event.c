@@ -3365,7 +3365,8 @@ static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
 
     all_buckets = apr_pcalloc(pconf, num_buckets * sizeof(*all_buckets));
     for (i = 0; i < num_buckets; i++) {
-        if ((rv = ap_mpm_podx_open(pconf, &all_buckets[i].pod))) {
+        if (!one_process && /* no POD in one_process mode */
+                (rv = ap_mpm_podx_open(pconf, &all_buckets[i].pod))) {
             ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
                          (startup ? NULL : s), APLOGNO(03274)
                          "could not open pipe-of-death");
