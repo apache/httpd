@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) prefork: Initialize the POD when running in ONE_PROCESS (or -X) mode to
+     avoid a crash.  [Jan Kaluza, Yann Ylavic]
+
   *) core: fix a bug in <UnDefine ...> directive processing. When used, the last
      <Define...>'ed variable was also withdrawn. PR 59019
      [Christophe Jaillet]
