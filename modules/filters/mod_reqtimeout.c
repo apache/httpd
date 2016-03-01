@@ -352,6 +352,15 @@ out:
     return rv;
 }
 
+static apr_status_t reqtimeout_pause(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    if (!APR_BRIGADE_EMPTY(bb) && AP_BUCKET_IS_EOR(APR_BRIGADE_LAST(bb))) {
+        reqtimeout_con_cfg *ccfg = f->ctx;
+        ccfg->timeout_at = 0;
+    }
+    return ap_pass_brigade(f->next, bb);
+}
+
 static int reqtimeout_init(conn_rec *c)
 {
     reqtimeout_con_cfg *ccfg;
@@ -369,6 +378,7 @@ static int reqtimeout_init(conn_rec *c)
     if (ccfg == NULL) {
         ccfg = apr_pcalloc(c->pool, sizeof(reqtimeout_con_cfg));
         ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
+        ap_add_output_filter(reqtimeout_filter_name, ccfg, NULL, c);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
     }
 
@@ -605,6 +615,14 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      */
     ap_register_input_filter(reqtimeout_filter_name, reqtimeout_filter, NULL,
                              AP_FTYPE_CONNECTION + 8);
+
+    /*
+     * We need to pause timeout detection in between requests, for
+     * speculative and non-blocking reads, so between each outgoing EOR
+     * and the next pre_read_request call.
+     */
+    ap_register_output_filter(reqtimeout_filter_name, reqtimeout_pause, NULL,
+                              AP_FTYPE_CONNECTION);
 
     /*
      * mod_reqtimeout needs to be called before ap_process_http_request (which
