@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1723295
                   http://svn.apache.org/r1733088
                   http://svn.apache.org/r1733089
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-dh_leaks.patch
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
      +1: ylavic
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
      ylavic: done + CHANGES (votes reset)
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1729847
                   http://svn.apache.org/r1732986
                   http://svn.apache.org/r1733056
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-SNI_reuse-v2.patch
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-SNI_reuse-v2.patch
      +1: ylavic
 
   *) core: Fix a bug in <UnDefine ...> directive processing. When used, the
@@ -213,14 +213,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1711479
                   http://svn.apache.org/r1733064
                   http://svn.apache.org/r1733068
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-prefork-ONE_PROCESS_POD.patch
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-prefork-ONE_PROCESS_POD.patch
      +1: ylavic
 
   *) mod_ssl: When SSLVerify is disabled (NONE), don't force a renegotiation if
      the SSLVerifyDepth applied with the default/handshaken vhost differs from
      the one applicable with the finally selected vhost.
      trunk patch: http://svn.apache.org/r1684171
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSLVerify_NONE_no_reneg_Depth.patch
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-SSLVerify_NONE_no_reneg_Depth.patch
      +1: ylavic
 
   *) core: Ensure that httpd exits with an error status when the MPM fails
