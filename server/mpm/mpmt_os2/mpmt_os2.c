@@ -102,7 +102,7 @@ typedef struct {
     listen_socket_t listeners[1];
 } parent_info_t;
 
-static char master_main();
+static int master_main();
 static void spawn_child(int slot);
 void ap_mpm_child_main(apr_pool_t *pconf);
 static void set_signals();
@@ -157,7 +157,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     }
     else {
         /* Parent process */
-        char restart;
+        int rc;
         is_parent_process = TRUE;
 
         if (ap_setup_listeners(ap_server_conf) < 1) {
@@ -168,15 +168,16 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         ap_log_pid(pconf, ap_pid_fname);
 
-        restart = master_main();
+        rc = master_main();
         ++ap_my_generation;
         ap_scoreboard_image->global->running_generation = ap_my_generation;
 
-        if (!restart) {
+        if (rc != OK) {
             ap_remove_pid(pconf, ap_pid_fname);
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00201)
-                         "caught SIGTERM, shutting down");
-            return DONE;
+                         "caught %s, shutting down",
+                         (rc == DONE) ? "SIGTERM" : "error");
+            return rc;
         }
     }  /* Parent process */
 
@@ -188,7 +189,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 /* Main processing of the parent process
  * returns TRUE if restarting
  */
-static char master_main()
+static int master_main()
 {
     server_rec *s = ap_server_conf;
     ap_listen_rec *lr;
@@ -203,7 +204,7 @@ static char master_main()
     if (ap_setup_listeners(ap_server_conf) < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s, APLOGNO(00202)
                      "no listening sockets available, shutting down");
-        return FALSE;
+        return !OK;
     }
 
     /* Allocate a shared memory block for the array of listeners */
@@ -219,7 +220,7 @@ static char master_main()
     if (rc) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s, APLOGNO(00203)
                      "failure allocating shared memory, shutting down");
-        return FALSE;
+        return !OK;
     }
 
     /* Store the listener sockets in the shared memory area for our children to see */
@@ -236,7 +237,7 @@ static char master_main()
     if (rc) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s, APLOGNO(00204)
                      "failure creating accept mutex, shutting down");
-        return FALSE;
+        return !OK;
     }
 
     parent_info->accept_mutex = ap_mpm_accept_mutex;
@@ -251,7 +252,7 @@ static char master_main()
         if (rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf, APLOGNO(00205)
                          "unable to allocate shared memory for scoreboard , exiting");
-            return FALSE;
+            return !OK;
         }
 
         ap_init_scoreboard(sb_mem);
@@ -266,7 +267,7 @@ static char master_main()
     if (one_process) {
         ap_scoreboard_image->parent[0].pid = getpid();
         ap_mpm_child_main(pconf);
-        return FALSE;
+        return DONE;
     }
 
     while (!restart_pending && !shutdown_pending) {
@@ -318,7 +319,7 @@ static char master_main()
     }
 
     DosFreeMem(parent_info);
-    return restart_pending;
+    return restart_pending ? OK : DONE;
 }
 
 
