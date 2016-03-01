@@ -202,7 +202,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1729826
                   http://svn.apache.org/r1729847
                   http://svn.apache.org/r1732986
-     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-SNI_reuse.patch
+                  http://svn.apache.org/r1733056
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-SNI_reuse-v2.patch
      +1: ylavic
 
   *) core: Fix a bug in <UnDefine ...> directive processing. When used, the
