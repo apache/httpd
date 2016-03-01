@@ -115,7 +115,7 @@ simple_open_logs(apr_pool_t * p,
         ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
                      s, APLOGNO(00256)
                      "simple_open_logs: no listening sockets available, shutting down");
-        return DONE;
+        return !OK;
     }
 
     return OK;
