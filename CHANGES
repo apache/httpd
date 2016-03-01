@@ -138,14 +138,6 @@ Changes with Apache 2.5.0
   *) mime.types: add common extension "m4a" for MPEG 4 Audio.
      PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
 
-  *) mod_ssl: Save some TLS record (application data) fragmentations by
-     including the last and subsequent suitable buckets when coalescing.
-     [Yann Ylavic]
-
-  *) mod_cache_socache: Fix a possible cached entity body corruption when it
-     is received from an origin server in multiple batches and forwarded by
-     mod_proxy.  [Yann Ylavic]
-
   *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
      In earlier version of httpd, you can explicitelly set the 'flusher' parameter
      to 'flush' as a workaround. (i.e. flusher=flush)
@@ -154,10 +146,6 @@ Changes with Apache 2.5.0
 
   *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
      to only staple responses with certificate status "good". [Kaspar Brand]
-
-  *) core: Limit to ten the number of tolerated empty lines between request,
-     and consume them before the pipelining check to avoid possible response
-     delay when reading the next request without flushing.  [Yann Ylavic]
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
@@ -168,9 +156,6 @@ Changes with Apache 2.5.0
 
   *) mpm_event: Free memory earlier when shutting down processes.
      [Stefan Fritsch]
-
-  *) mod_ssl: Make the output filter more friendly with deferred write and
-     response pipelining. [Yann Ylavic, Joe Orton]
 
   *) core/util_script: relax alphanumeric filter of environment variable names
      on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
