@@ -121,11 +121,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      SSLCryptoDevice does not get unregistered because of non-zero refcount
      during the mod_ssl unload happening on httpd startup.
      trunk patch: http://svn.apache.org/r1720129
-     2.4.x patch: http://jkaluza.fedorapeople.org/httpd-2.4.x-dhparams-free.patch
-     +1: jkaluza
-     ylavic: +1 with r1723295 (likewise for ecparams).
+                  http://svn.apache.org/r1723295
+                  http://svn.apache.org/r1733088
+                  http://svn.apache.org/r1733089
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-dh_leaks.patch
+     +1: ylavic
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-     ylavic: working on it...
+     ylavic: done + CHANGES (votes reset)
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
