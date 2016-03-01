@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1732716
      2.4.x patch:
          Trunk version of patch works (modulo CHNAGES)
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
    * prefork: Fix crash in ap_mpm_pod_check call caused by NULL dereference of
            its parameter when starting httpd as single process (httpd -X).
