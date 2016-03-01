@@ -205,6 +205,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-mod_proxy-SNI_reuse.patch
      +1: ylavic
 
+  *) core: Fix a bug in <UnDefine ...> directive processing. When used, the
+           last <Define...>'ed variable was also withdrawn. PR 59019
+     Trunk patch:
+         http://svn.apache.org/r1732716
+     2.4.x patch:
+         Trunk version of patch works (modulo CHNAGES)
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
