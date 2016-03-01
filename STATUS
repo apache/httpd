@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1729929
      Trunk patch to core.c/http_core.h applies, modulo CHANGES & ap_mmn.h
      Note: httpd.h comment r.e. realiging bit fields must be omitted.
-     +1: wrowe
+     +1: wrowe, ylavic
 
   *) hostname: Test and log useragent_host per-request across various modules,
      including the scoreboard, expression and rewrite engines, setenvif,
@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch r1729930 applies, modulo CHANGES
      Backport patch to r1729931 is noted in the commit log message
      Requires r1729929 to be applied.
-     +1: wrowe
+     +1: wrowe, ylavic
 
   *) Use pre_connection hook in event.c to properly setup connection state
      of slave connections (eliminates hacks in mod_http2).
