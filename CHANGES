@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_ssl: Fix possibly leaking custom [EC]DH params on restart.
+  *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
   *) prefork: Initialize the POD when running in ONE_PROCESS (or -X) mode to
