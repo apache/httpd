@@ -216,6 +216,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-prefork-ONE_PROCESS_POD.patch
      +1: ylavic
 
+  *) mod_ssl: When SSLVerify is disabled (NONE), don't force a renegotiation if
+     the SSLVerifyDepth applied with the default/handshaken vhost differs from
+     the one applicable with the finally selected vhost.
+     trunk patch: http://svn.apache.org/r1684171
+     2.4.x patch: http://people.apache.org/~ylavic/httpd-2.4.x-SSLVerify_NONE_no_reneg_Depth.patch
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
