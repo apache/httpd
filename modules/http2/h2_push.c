@@ -276,20 +276,49 @@ static int same_authority(const h2_request *req, const apr_uri_t *uri)
     return 1;
 }
 
-static int set_header(void *ctx, const char *key, const char *value) 
+static int set_push_header(void *ctx, const char *key, const char *value) 
 {
-    apr_table_setn(ctx, key, value);
+    size_t klen = strlen(key);
+    if (H2_HD_MATCH_LIT("User-Agent", key, klen)
+        || H2_HD_MATCH_LIT("Accept", key, klen)
+        || H2_HD_MATCH_LIT("Accept-Encoding", key, klen)
+        || H2_HD_MATCH_LIT("Accept-Language", key, klen)
+        || H2_HD_MATCH_LIT("Cache-Control", key, klen)) {
+        apr_table_setn(ctx, key, value);
+    }
     return 1;
 }
 
+static int has_param(link_ctx *ctx, const char *param)
+{
+    const char *p = apr_table_get(ctx->params, param);
+    return !!p;
+}
+
+static int has_relation(link_ctx *ctx, const char *rel)
+{
+    const char *s, *val = apr_table_get(ctx->params, "rel");
+    if (val) {
+        if (!strcmp(rel, val)) {
+            return 1;
+        }
+        s = ap_strstr_c(val, rel);
+        if (s && (s == val || s[-1] == ' ')) {
+            s += strlen(rel);
+            if (!*s || *s == ' ') {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 static int add_push(link_ctx *ctx)
 {
     /* so, we have read a Link header and need to decide
      * if we transform it into a push.
      */
-    const char *rel = apr_table_get(ctx->params, "rel");
-    if (rel && !strcmp("preload", rel)) {
+    if (has_relation(ctx, "preload") && !has_param(ctx, "nopush")) {
         apr_uri_t uri;
         if (apr_uri_parse(ctx->pool, ctx->link, &uri) == APR_SUCCESS) {
             if (uri.path && same_authority(ctx->req, &uri)) {
@@ -306,9 +335,7 @@ static int add_push(link_ctx *ctx)
                  * TLS (if any) parameters.
                  */
                 path = apr_uri_unparse(ctx->pool, &uri, APR_URI_UNP_OMITSITEPART);
-                
                 push = apr_pcalloc(ctx->pool, sizeof(*push));
-                
                 switch (ctx->req->push_policy) {
                     case H2_PUSH_HEAD:
                         method = "HEAD";
@@ -318,15 +345,10 @@ static int add_push(link_ctx *ctx)
                         break;
                 }
                 headers = apr_table_make(ctx->pool, 5);
-                apr_table_do(set_header, headers, ctx->req->headers,
-                             "User-Agent",
-                             "Cache-Control",
-                             "Accept-Language",
-                             NULL);
-                req = h2_request_createn(0, ctx->pool, ctx->req->config, 
-                                         method, ctx->req->scheme,
-                                         ctx->req->authority, 
-                                         path, headers);
+                apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
+                req = h2_request_createn(0, ctx->pool, method, ctx->req->scheme,
+                                         ctx->req->authority, path, headers,
+                                         ctx->req->serialize);
                 /* atm, we do not push on pushes */
                 h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
@@ -434,38 +456,30 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
     return NULL;
 }
 
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
-{
-    h2_push_policy policy = H2_PUSH_NONE;
-    if (push_enabled) {
-        const char *val = apr_table_get(req->headers, "accept-push-policy");
-        if (val) {
-            if (ap_find_token(p, val, "fast-load")) {
-                policy = H2_PUSH_FAST_LOAD;
-            }
-            else if (ap_find_token(p, val, "head")) {
-                policy = H2_PUSH_HEAD;
-            }
-            else if (ap_find_token(p, val, "default")) {
-                policy = H2_PUSH_DEFAULT;
-            }
-            else if (ap_find_token(p, val, "none")) {
-                policy = H2_PUSH_NONE;
-            }
-            else {
-                /* nothing known found in this header, go by default */
-                policy = H2_PUSH_DEFAULT;
-            }
-        }
-        else {
-            policy = H2_PUSH_DEFAULT;
-        }
-    }
-    req->push_policy = policy;
-}
-
 /*******************************************************************************
  * push diary 
+ *
+ * - The push diary keeps track of resources already PUSHed via HTTP/2 on this
+ *   connection. It records a hash value from the absolute URL of the resource
+ *   pushed.
+ * - Lacking openssl, it uses 'apr_hashfunc_default' for the value
+ * - with openssl, it uses SHA256 to calculate the hash value
+ * - whatever the method to generate the hash, the diary keeps a maximum of 64
+ *   bits per hash, limiting the memory consumption to about 
+ *      H2PushDiarySize * 8 
+ *   bytes. Entries are sorted by most recently used and oldest entries are
+ *   forgotten first.
+ * - Clients can initialize/replace the push diary by sending a 'Cache-Digest'
+ *   header. Currently, this is the base64url encoded value of the cache digest
+ *   as specified in https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
+ *   This draft can be expected to evolve and the definition of the header
+ *   will be added there and refined.
+ * - The cache digest header is a Golomb Coded Set of hash values, but it may
+ *   limit the amount of bits per hash value even further. For a good description
+ *   of GCS, read here:
+ *      http://giovanni.bajo.it/post/47119962313/golomb-coded-sets-smaller-than-bloom-filters
+ * - The means that the push diary might be initialized with hash values of much
+ *   less than 64 bits, leading to more false positives, but smaller digest size.
  ******************************************************************************/
  
  
@@ -688,36 +702,6 @@ apr_array_header_t *h2_push_collect_update(h2_stream *stream,
     return h2_push_diary_update(stream->session, pushes);
 }
 
-/* h2_log2(n) iff n is a power of 2 */
-static unsigned char h2_log2(apr_uint32_t n)
-{
-    int lz = 0;
-    if (!n) {
-        return 0;
-    }
-    if (!(n & 0xffff0000u)) {
-        lz += 16;
-        n = (n << 16);
-    }
-    if (!(n & 0xff000000u)) {
-        lz += 8;
-        n = (n << 8);
-    }
-    if (!(n & 0xf0000000u)) {
-        lz += 4;
-        n = (n << 4);
-    }
-    if (!(n & 0xc0000000u)) {
-        lz += 2;
-        n = (n << 2);
-    }
-    if (!(n & 0x80000000u)) {
-        lz += 1;
-    }
-    
-    return 31 - lz;
-}
-
 static apr_int32_t h2_log2inv(unsigned char log2)
 {
     return log2? (1 << log2) : 1;
@@ -794,8 +778,8 @@ static apr_status_t gset_encode_next(gset_encoder *encoder, apr_uint64_t pval)
     /* Intentional no APLOGNO */
     ap_log_perror(APLOG_MARK, GCSLOG_LEVEL, 0, encoder->pool,
                   "h2_push_diary_enc: val=%"APR_UINT64_T_HEX_FMT", delta=%"
-                  APR_UINT64_T_HEX_FMT" flex_bits=%ld, "
-                  "fixed_bits=%d, fixed_val=%"APR_UINT64_T_HEX_FMT, 
+                  APR_UINT64_T_HEX_FMT" flex_bits=%"APR_UINT64_T_FMT", "
+                  ", fixed_bits=%d, fixed_val=%"APR_UINT64_T_HEX_FMT, 
                   pval, delta, flex_bits, encoder->fixed_bits, delta&encoder->fixed_mask);
     for (; flex_bits != 0; --flex_bits) {
         status = gset_encode_bit(encoder, 1);

@@ -15,6 +15,7 @@
 
 #include <apr_optional.h>
 #include <apr_optional_hooks.h>
+#include <apr_time.h>
 #include <apr_want.h>
 
 #include <httpd.h>
@@ -34,6 +35,7 @@
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
+#include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_switch.h"
@@ -71,7 +73,7 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     void *data = NULL;
-    const char *mod_h2_init_key = "mod_h2_init_counter";
+    const char *mod_h2_init_key = "mod_http2_init_counter";
     nghttp2_info *ngh2;
     apr_status_t status;
     (void)plog;(void)ptemp;
@@ -91,6 +93,12 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
                  MOD_HTTP2_VERSION, ngh2? ngh2->version_str : "unknown");
     
     switch (h2_conn_mpm_type()) {
+        case H2_MPM_SIMPLE:
+        case H2_MPM_MOTORZ:
+        case H2_MPM_NETWARE:
+        case H2_MPM_WINNT:
+            /* not sure we need something extra for those. */
+            break;
         case H2_MPM_EVENT:
         case H2_MPM_WORKER:
             /* all fine, we know these ones */
@@ -109,6 +117,9 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (status == APR_SUCCESS) {
         status = h2_switch_init(p, s);
     }
+    if (status == APR_SUCCESS) {
+        status = h2_task_init(p, s);
+    }
     
     return status;
 }
@@ -116,6 +127,31 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
 static char *http2_var_lookup(apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *, char *name);
 static int http2_is_h2(conn_rec *);
+
+static apr_status_t http2_req_engine_push(const char *engine_type, 
+                                          request_rec *r, 
+                                          h2_req_engine_init *einit)
+{
+    return h2_mplx_engine_push(engine_type, r, einit);
+}
+
+static apr_status_t http2_req_engine_pull(h2_req_engine *engine, 
+                                          apr_read_type_e block, 
+                                          request_rec **pr)
+{
+    return h2_mplx_engine_pull(engine, block, pr);
+}
+
+static void http2_req_engine_done(h2_req_engine *engine, conn_rec *r_conn)
+{
+    h2_mplx_engine_done(engine, r_conn);
+}
+
+static void http2_req_engine_exit(h2_req_engine *engine)
+{
+    h2_mplx_engine_exit(engine);
+}
+
 
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
@@ -129,8 +165,6 @@ static void h2_child_init(apr_pool_t *pool, server_rec *s)
                      APLOGNO(02949) "initializing connection handling");
     }
     
-    APR_REGISTER_OPTIONAL_FN(http2_is_h2);
-    APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
 }
 
 /* Install this module into the apache2 infrastructure.
@@ -139,6 +173,13 @@ static void h2_hooks(apr_pool_t *pool)
 {
     static const char *const mod_ssl[] = { "mod_ssl.c", NULL};
     
+    APR_REGISTER_OPTIONAL_FN(http2_is_h2);
+    APR_REGISTER_OPTIONAL_FN(http2_var_lookup);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
+    APR_REGISTER_OPTIONAL_FN(http2_req_engine_exit);
+
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
     /* Run once after configuration is set, but before mpm children initialize.

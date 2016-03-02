@@ -22,81 +22,43 @@
 #include <http_core.h>
 #include <http_log.h>
 
+#include "h2.h"
 #include "h2_private.h"
 #include "h2_conn.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
-#include "h2_request.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 
 static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
-    apr_status_t status;
-    
-    (void)thread;
-    /* Other code might want to see a socket for this connection this
-     * worker processes. Allocate one without further function...
-     */
-    status = apr_socket_create(&worker->socket,
-                               APR_INET, SOCK_STREAM,
-                               APR_PROTO_TCP, worker->pool);
-    if (status != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, status, worker->pool,
-                      APLOGNO(02948) "h2_worker(%d): alloc socket", 
-                      worker->id);
-        worker->worker_done(worker, worker->ctx);
-        return NULL;
-    }
+    int sticky;
     
     while (!worker->aborted) {
-        h2_mplx *m;
-        const h2_request *req;
+        h2_task *task;
         
-        /* Get a h2_mplx + h2_request from the main workers queue. */
-        status = worker->get_next(worker, &m, &req, worker->ctx);
-        
-        while (req) {
-            conn_rec *c, *master = m->c;
-            int stream_id = req->id;
+        /* Get a h2_task from the main workers queue. */
+        worker->get_next(worker, worker->ctx, &task, &sticky);
+        while (task) {
+            h2_task_do(task, worker->io);
             
-            c = h2_slave_create(master, worker->task_pool, 
-                                worker->thread, worker->socket);
-            if (!c) {
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
-                              APLOGNO(02957) "h2_request(%ld-%d): error setting up slave connection", 
-                              m->id, stream_id);
-                h2_mplx_out_rst(m, stream_id, H2_ERR_INTERNAL_ERROR);
+            /* if someone was waiting on this task, time to wake up */
+            apr_thread_cond_signal(worker->io);
+            /* report the task done and maybe get another one from the same
+             * mplx (= master connection), if we can be sticky. 
+             */
+            if (sticky && !worker->aborted) {
+                h2_mplx_task_done(task->mplx, task, &task);
             }
             else {
-                h2_task *task;
-                
-                task = h2_task_create(m->id, req, worker->task_pool, m);
-                h2_ctx_create_for(c, task);
-                h2_task_do(task, c, worker->io, worker->socket);
+                h2_mplx_task_done(task->mplx, task, NULL);
                 task = NULL;
-                
-                apr_thread_cond_signal(worker->io);
             }
-            
-            /* clean our references and report request as done. Signal
-             * that we want another unless we have been aborted */
-            /* TODO: this will keep a worker attached to this h2_mplx as
-             * long as it has requests to handle. Might no be fair to
-             * other mplx's. Perhaps leave after n requests? */
-            req = NULL;
-            apr_pool_clear(worker->task_pool);
-            h2_mplx_request_done(&m, stream_id, worker->aborted? NULL : &req);
         }
     }
 
-    if (worker->socket) {
-        apr_socket_close(worker->socket);
-        worker->socket = NULL;
-    }
-    
     worker->worker_done(worker, worker->ctx);
     return NULL;
 }
@@ -116,6 +78,7 @@ h2_worker *h2_worker_create(int id,
     apr_allocator_create(&allocator);
     apr_allocator_max_free_set(allocator, ap_max_mem_free);
     apr_pool_create_ex(&pool, parent_pool, NULL, allocator);
+    apr_pool_tag(pool, "h2_worker");
     apr_allocator_owner_set(allocator, pool);
 
     w = apr_pcalloc(pool, sizeof(h2_worker));
@@ -134,7 +97,6 @@ h2_worker *h2_worker_create(int id,
             return NULL;
         }
         
-        apr_pool_create(&w->task_pool, w->pool);
         apr_thread_create(&w->thread, attr, execute, w, w->pool);
     }
     return w;
@@ -171,15 +133,6 @@ void h2_worker_abort(h2_worker *worker)
 int h2_worker_is_aborted(h2_worker *worker)
 {
     return worker->aborted;
-}
-
-h2_task *h2_worker_create_task(h2_worker *worker, h2_mplx *m, 
-                               const h2_request *req)
-{
-    h2_task *task;
-    
-    task = h2_task_create(m->id, req, worker->task_pool, m);
-    return task;
 }
 
 

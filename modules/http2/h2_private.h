@@ -16,26 +16,12 @@
 #ifndef mod_h2_h2_private_h
 #define mod_h2_h2_private_h
 
+#include <apr_time.h>
+
 #include <nghttp2/nghttp2.h>
 
 extern module AP_MODULE_DECLARE_DATA http2_module;
 
 APLOG_USE_MODULE(http2);
-
-
-#define H2_HEADER_METHOD     ":method"
-#define H2_HEADER_METHOD_LEN 7
-#define H2_HEADER_SCHEME     ":scheme"
-#define H2_HEADER_SCHEME_LEN 7
-#define H2_HEADER_AUTH       ":authority"
-#define H2_HEADER_AUTH_LEN   10
-#define H2_HEADER_PATH       ":path"
-#define H2_HEADER_PATH_LEN   5
-#define H2_CRLF             "\r\n"
-
-#define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
-
-#define H2MAX(x,y) ((x) > (y) ? (x) : (y))
-#define H2MIN(x,y) ((x) < (y) ? (x) : (y))
 
 #endif

@@ -27,6 +27,8 @@
 #include <http_request.h>
 #include <http_log.h>
 
+#include "mod_ssl.h"
+
 #include "mod_http2.h"
 #include "h2_private.h"
 
@@ -54,21 +56,9 @@ const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 /*******************************************************************************
  * The optional mod_ssl functions we need. 
  */
-APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec*));
-APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec*));
-
-static int (*opt_ssl_engine_disable)(conn_rec*);
-static int (*opt_ssl_is_https)(conn_rec*);
-/*******************************************************************************
- * SSL var lookup
- */
-APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
-                        (apr_pool_t *, server_rec *,
-                         conn_rec *, request_rec *,
-                         char *));
-static char *(*opt_ssl_var_lookup)(apr_pool_t *, server_rec *,
-                                   conn_rec *, request_rec *,
-                                   char *);
+static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *opt_ssl_engine_disable;
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *opt_ssl_is_https;
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *opt_ssl_var_lookup;
 
 
 /*******************************************************************************
@@ -441,6 +431,7 @@ static int cipher_is_blacklisted(const char *cipher, const char **psource)
  * - process_conn take over connection in case of h2
  */
 static int h2_h2_process_conn(conn_rec* c);
+static int h2_h2_pre_close_conn(conn_rec* c);
 static int h2_h2_post_read_req(request_rec *r);
 
 /*******************************************************************************
@@ -565,7 +556,11 @@ void h2_h2_register_hooks(void)
      */
     ap_hook_process_connection(h2_h2_process_conn, 
                                mod_ssl, mod_reqtimeout, APR_HOOK_LAST);
-                               
+    
+    /* One last chance to properly say goodbye if we have not done so
+     * already. */
+    ap_hook_pre_close_connection(h2_h2_pre_close_conn, NULL, mod_ssl, APR_HOOK_LAST);
+
     /* With "H2SerializeHeaders On", we install the filter in this hook
      * that parses the response. This needs to happen before any other post
      * read function terminates the request with an error. Otherwise we will
@@ -655,6 +650,25 @@ int h2_h2_process_conn(conn_rec* c)
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, "h2_h2, declined");
+    return DECLINED;
+}
+
+static int h2_h2_pre_close_conn(conn_rec *c)
+{
+    h2_ctx *ctx;
+
+    /* slave connection? */
+    if (c->master) {
+        return DECLINED;
+    }
+
+    ctx = h2_ctx_get(c, 0);
+    if (ctx) {
+        /* If the session has been closed correctly already, we will not
+         * fiond a h2_ctx here. The presence indicates that the session
+         * is still ongoing. */
+        return h2_conn_pre_close(ctx, c);
+    }
     return DECLINED;
 }
 

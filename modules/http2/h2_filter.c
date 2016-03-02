@@ -28,7 +28,6 @@
 #include "h2_push.h"
 #include "h2_task.h"
 #include "h2_stream.h"
-#include "h2_stream_set.h"
 #include "h2_request.h"
 #include "h2_response.h"
 #include "h2_session.h"
@@ -92,9 +91,9 @@ h2_filter_cin *h2_filter_cin_create(apr_pool_t *p, h2_filter_cin_cb *cb, void *c
     return cin;
 }
 
-void h2_filter_cin_timeout_set(h2_filter_cin *cin, int timeout_secs)
+void h2_filter_cin_timeout_set(h2_filter_cin *cin, apr_interval_time_t timeout)
 {
-    cin->timeout_secs = timeout_secs;
+    cin->timeout = timeout;
 }
 
 apr_status_t h2_filter_core_input(ap_filter_t* f,
@@ -105,12 +104,12 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
 {
     h2_filter_cin *cin = f->ctx;
     apr_status_t status = APR_SUCCESS;
-    apr_time_t saved_timeout = UNSET;
+    apr_interval_time_t saved_timeout = UNSET;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "core_input(%ld): read, %s, mode=%d, readbytes=%ld, timeout=%d", 
+                  "core_input(%ld): read, %s, mode=%d, readbytes=%ld", 
                   (long)f->c->id, (block == APR_BLOCK_READ)? "BLOCK_READ" : "NONBLOCK_READ", 
-                  mode, (long)readbytes, cin->timeout_secs);
+                  mode, (long)readbytes);
     
     if (mode == AP_MODE_INIT || mode == AP_MODE_SPECULATIVE) {
         return ap_get_brigade(f->next, brigade, mode, block, readbytes);
@@ -137,10 +136,9 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
          * in the scoreboard is preserved.
          */
         if (block == APR_BLOCK_READ) {
-            if (cin->timeout_secs > 0) {
-                apr_time_t t = apr_time_from_sec(cin->timeout_secs);
+            if (cin->timeout > 0) {
                 apr_socket_timeout_get(cin->socket, &saved_timeout);
-                apr_socket_timeout_set(cin->socket, t);
+                apr_socket_timeout_set(cin->socket, cin->timeout);
             }
         }
         status = ap_get_brigade(f->next, cin->bb, AP_MODE_READBYTES,
@@ -148,8 +146,6 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
         if (saved_timeout != UNSET) {
             apr_socket_timeout_set(cin->socket, saved_timeout);
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "core_input(%ld): got_brigade", (long)f->c->id);
     }
     
     switch (status) {
@@ -159,6 +155,8 @@ apr_status_t h2_filter_core_input(ap_filter_t* f,
         case APR_EOF:
         case APR_EAGAIN:
         case APR_TIMEUP:
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                          "core_input(%ld): read", (long)f->c->id);
             break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, f->c, APLOGNO(03046)
@@ -218,7 +216,7 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     bbout("  \"session_id\": %ld,\n", (long)session->id);
     bbout("  \"streams_max\": %d,\n", (int)session->max_stream_count);
     bbout("  \"this_stream\": %d,\n", stream->id);
-    bbout("  \"streams_open\": %d,\n", (int)h2_stream_set_size(session->streams));
+    bbout("  \"streams_open\": %d,\n", (int)h2_ihash_count(session->streams));
     bbout("  \"max_stream_started\": %d,\n", mplx->max_stream_started);
     bbout("  \"requests_received\": %d,\n", session->requests_received);
     bbout("  \"responses_submitted\": %d,\n", session->responses_submitted);
