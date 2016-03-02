@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+  <title>HTTP/2 guide</title>
+
+  <summary>
+    <p>This howto is still a work in progress! Please do not trust completely the following information until the work is finished.</p>
+  </summary>
+  <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>
+
+  <section id="protocol">
+    <title>The HTTP/2 protocol</title>
+    <p>This section should contain an overview of the protocol and links to official docs.</p>
+  </section>
+
+  <section id="building">
+    <title>Build httpd with HTTP/2 support</title>
+    <p>This section should contain info about how to build HTTP/2 support into httpd plus other requirements.</p>
+  </section>
+
+  <section id="configurations">
+    <title>Configurations</title>
+    <p>This section should contain various configuration examples for HTTP/2 (h2, h2c, etc..) plus common pitfalls (for example not setting a strong TLS cipher suite with h2).</p>
+  </section>
+
+  <section id="browsers">
+    <title>Browsers</title>
+    <p>Browser support.</p>
+  </section>
+
+  <section id="tools">
+    <title>Useful tools to debug HTTP/2</title>
+    <p>This section should contain examples of tools to test/debug HTTP/2 connections.</p>
+  </section>
+
+</manualpage>
