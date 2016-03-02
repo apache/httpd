@@ -1362,7 +1362,7 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
     defines = (char **)ap_server_config_defines->elts;
     for (i = 0; i < ap_server_config_defines->nelts; i++) {
         if (strcmp(defines[i], name) == 0) {
-            defines[i] = apr_array_pop(ap_server_config_defines);
+            defines[i] = *(char **)apr_array_pop(ap_server_config_defines);
             break;
         }
     }

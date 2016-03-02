@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.19
 
+  *) core: fix a bug in <UnDefine ...> directive processing. When used, the last
+     <Define...>'ed variable was also withdrawn. PR 59019
+     [Christophe Jaillet]
+
   *) mod_http2: Accept-Encoding is, when present on the initiating request, 
      added to push promises. This lets compressed content work in pushes.
      by the client. [Stefan Eissing]
