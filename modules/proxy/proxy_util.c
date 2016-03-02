@@ -3681,6 +3681,8 @@ static proxy_schemes_t pschemes[] =
     {"fcgi",     8000},
     {"ajp",      AJP13_DEF_PORT},
     {"scgi",     SCGI_DEF_PORT},
+    {"h2c",      DEFAULT_HTTP_PORT},
+    {"h2",       DEFAULT_HTTPS_PORT},
     { NULL, 0xFFFF }     /* unknown port */
 };
 
