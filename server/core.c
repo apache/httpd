@@ -848,35 +848,36 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
-static APR_INLINE void do_double_reverse (conn_rec *conn)
+static APR_INLINE int do_double_reverse (int double_reverse,
+                                         const char *remote_host,
+                                         apr_sockaddr_t *client_addr,
+                                         apr_pool_t *pool)
 {
     apr_sockaddr_t *sa;
     apr_status_t rv;
 
-    if (conn->double_reverse) {
+    if (double_reverse) {
         /* already done */
-        return;
+        return double_reverse;
     }
 
-    if (conn->remote_host == NULL || conn->remote_host[0] == '\0') {
+    if (remote_host == NULL || remote_host[0] == '\0') {
         /* single reverse failed, so don't bother */
-        conn->double_reverse = -1;
-        return;
+        return -1;
     }
 
-    rv = apr_sockaddr_info_get(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
+    rv = apr_sockaddr_info_get(&sa, remote_host, APR_UNSPEC, 0, 0, pool);
     if (rv == APR_SUCCESS) {
         while (sa) {
-            if (apr_sockaddr_equal(sa, conn->client_addr)) {
-                conn->double_reverse = 1;
-                return;
+            if (apr_sockaddr_equal(sa, client_addr)) {
+                return 1;
             }
 
             sa = sa->next;
         }
     }
 
-    conn->double_reverse = -1;
+    return -1;
 }
 
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
@@ -914,7 +915,10 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
             ap_str_tolower(conn->remote_host);
 
             if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
-                do_double_reverse(conn);
+                conn->double_reverse = do_double_reverse(conn->double_reverse,
+                                                         conn->remote_host,
+                                                         conn->client_addr,
+                                                         conn->pool);
                 if (conn->double_reverse != 1) {
                     conn->remote_host = NULL;
                 }
@@ -928,7 +932,9 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     }
 
     if (type == REMOTE_DOUBLE_REV) {
-        do_double_reverse(conn);
+        conn->double_reverse = do_double_reverse(conn->double_reverse,
+                                                 conn->remote_host,
+                                                 conn->client_addr, conn->pool);
         if (conn->double_reverse == -1) {
             return NULL;
         }
@@ -949,6 +955,83 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
         else {
             *str_is_ip = 1;
             return conn->client_ip;
+        }
+    }
+}
+
+AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
+                                               int type, int *str_is_ip)
+{
+    conn_rec *conn = r->connection;
+    int hostname_lookups;
+    int ignored_str_is_ip;
+
+    if (r->useragent_addr == conn->client_addr) {
+        return ap_get_remote_host(conn, r->per_dir_config, type, str_is_ip);
+    }
+
+    if (!str_is_ip) { /* caller doesn't want to know */
+        str_is_ip = &ignored_str_is_ip;
+    }
+    *str_is_ip = 0;
+
+    hostname_lookups = ((core_dir_config *)
+                        ap_get_core_module_config(r->per_dir_config))
+                            ->hostname_lookups;
+    if (hostname_lookups == HOSTNAME_LOOKUP_UNSET) {
+        hostname_lookups = HOSTNAME_LOOKUP_OFF;
+    }
+
+    if (type != REMOTE_NOLOOKUP
+        && r->useragent_host == NULL
+        && (type == REMOTE_DOUBLE_REV
+        || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
+
+        if (apr_getnameinfo(&r->useragent_host, r->useragent_addr, 0)
+            == APR_SUCCESS) {
+            ap_str_tolower(r->useragent_host);
+
+            if (hostname_lookups == HOSTNAME_LOOKUP_DOUBLE) {
+                r->double_reverse = do_double_reverse(r->double_reverse,
+                                                      r->useragent_host,
+                                                      r->useragent_addr,
+                                                      r->pool);
+                if (r->double_reverse != 1) {
+                    r->useragent_host = NULL;
+                }
+            }
+        }
+
+        /* if failed, set it to the NULL string to indicate error */
+        if (r->useragent_host == NULL) {
+            r->useragent_host = "";
+        }
+    }
+
+    if (type == REMOTE_DOUBLE_REV) {
+        r->double_reverse = do_double_reverse(r->double_reverse,
+                                              r->useragent_host,
+                                              r->useragent_addr, r->pool);
+        if (r->double_reverse == -1) {
+            return NULL;
+        }
+    }
+
+    /*
+     * Return the desired information; either the remote DNS name, if found,
+     * or either NULL (if the hostname was requested) or the IP address
+     * (if any identifier was requested).
+     */
+    if (r->useragent_host != NULL && r->useragent_host[0] != '\0') {
+        return r->useragent_host;
+    }
+    else {
+        if (type == REMOTE_HOST || type == REMOTE_DOUBLE_REV) {
+            return NULL;
+        }
+        else {
+            *str_is_ip = 1;
+            return r->useragent_ip;
         }
     }
 }
