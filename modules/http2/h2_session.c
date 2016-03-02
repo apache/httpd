@@ -885,9 +885,15 @@ static h2_session *h2_session_create_int(conn_rec *c,
         
         if (APLOGcdebug(c)) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03200)
-                          "session(%ld) created, max_streams=%d, stream_mem=%d, push_diary(type=%d,N=%d)",
-                          session->id, (int)session->max_stream_count, (int)session->max_stream_mem,
-                          session->push_diary->dtype, (int)session->push_diary->N);
+                          "h2_session(%ld) created, max_streams=%d, "
+                          "stream_mem=%d, workers_limit=%d, workers_max=%d, "
+                          "push_diary(type=%d,N=%d)",
+                          session->id, (int)session->max_stream_count, 
+                          (int)session->max_stream_mem,
+                          session->mplx->workers_limit, 
+                          session->mplx->workers_max, 
+                          session->push_diary->dtype, 
+                          (int)session->push_diary->N);
         }
     }
     return session;
