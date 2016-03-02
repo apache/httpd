@@ -120,7 +120,7 @@ static int close_output(h2_stream *stream)
     return 1;
 }
 
-static int input_open(h2_stream *stream) 
+static int input_open(const h2_stream *stream) 
 {
     switch (stream->state) {
         case H2_STREAM_ST_OPEN:
@@ -158,7 +158,8 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 {
     h2_stream *stream = h2_stream_create(id, pool, session);
     set_state(stream, H2_STREAM_ST_OPEN);
-    stream->request   = h2_request_create(id, pool, session->config);
+    stream->request   = h2_request_create(id, pool, 
+        h2_config_geti(session->config, H2_CONF_SER_HEADERS));
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
@@ -168,11 +169,6 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 apr_status_t h2_stream_destroy(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
-    if (stream->request) {
-        h2_request_destroy(stream->request);
-        stream->request = NULL;
-    }
-    
     if (stream->pool) {
         apr_pool_destroy(stream->pool);
     }
@@ -242,6 +238,9 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
     }
     set_state(stream, H2_STREAM_ST_OPEN);
     status = h2_request_rwrite(stream->request, r);
+    stream->request->serialize = h2_config_geti(h2_config_rget(r), 
+                                                H2_CONF_SER_HEADERS);
+
     return status;
 }
 
@@ -324,7 +323,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     return status;
 }
 
-int h2_stream_is_scheduled(h2_stream *stream)
+int h2_stream_is_scheduled(const h2_stream *stream)
 {
     return stream->scheduled;
 }
@@ -431,7 +430,7 @@ void h2_stream_set_suspended(h2_stream *stream, int suspended)
                   stream->session->id, stream->id, stream->suspended);
 }
 
-int h2_stream_is_suspended(h2_stream *stream)
+int h2_stream_is_suspended(const h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
     return stream->suspended;
@@ -475,12 +474,12 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
     return stream->sos->read_to(stream->sos, bb, plen, peos);
 }
 
-int h2_stream_input_is_open(h2_stream *stream) 
+int h2_stream_input_is_open(const h2_stream *stream) 
 {
     return input_open(stream);
 }
 
-int h2_stream_needs_submit(h2_stream *stream)
+int h2_stream_needs_submit(const h2_stream *stream)
 {
     switch (stream->state) {
         case H2_STREAM_ST_OPEN:

@@ -30,43 +30,34 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
-#include "h2_config.h"
-#include "h2_mplx.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_task.h"
 #include "h2_util.h"
 
 
-h2_request *h2_request_create(int id, apr_pool_t *pool,
-                              const struct h2_config *config)
+h2_request *h2_request_create(int id, apr_pool_t *pool, int serialize)
 {
-    return h2_request_createn(id, pool, config, 
-                              NULL, NULL, NULL, NULL, NULL);
+    return h2_request_createn(id, pool, NULL, NULL, NULL, NULL, NULL,
+                              serialize);
 }
 
 h2_request *h2_request_createn(int id, apr_pool_t *pool,
-                               const struct h2_config *config, 
                                const char *method, const char *scheme,
                                const char *authority, const char *path,
-                               apr_table_t *header)
+                               apr_table_t *header, int serialize)
 {
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
     req->id             = id;
-    req->config         = config;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
     req->path           = path;
     req->headers        = header? header : apr_table_make(pool, 10);
     req->request_time   = apr_time_now();
-
+    req->serialize      = serialize;
+    
     return req;
-}
-
-void h2_request_destroy(h2_request *req)
-{
 }
 
 static apr_status_t inspect_clen(h2_request *req, const char *s)
@@ -139,38 +130,48 @@ static apr_status_t add_all_h1_header(h2_request *req, apr_pool_t *pool,
 }
 
 
-apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
+apr_status_t h2_request_make(h2_request *req, apr_pool_t *pool,
+                             const char *method, const char *scheme, 
+                             const char *authority, const char *path, 
+                             apr_table_t *headers)
 {
-    apr_status_t status;
-    
-    req->config    = h2_config_rget(r);
-    req->method    = r->method;
-    req->scheme    = (r->parsed_uri.scheme? r->parsed_uri.scheme
-                      : ap_http_scheme(r));
-    req->authority = r->hostname;
-    req->path      = apr_uri_unparse(r->pool, &r->parsed_uri, 
-                                     APR_URI_UNP_OMITSITEPART);
+    req->method    = method;
+    req->scheme    = scheme;
+    req->authority = authority;
+    req->path      = path;
 
-    if (!ap_strchr_c(req->authority, ':') && r->server && r->server->port) {
-        apr_port_t defport = apr_uri_port_of_scheme(req->scheme);
-        if (defport != r->server->port) {
-            /* port info missing and port is not default for scheme: append */
-            req->authority = apr_psprintf(r->pool, "%s:%d", req->authority,
-                                          (int)r->server->port);
-        }
-    }
-    
     AP_DEBUG_ASSERT(req->scheme);
     AP_DEBUG_ASSERT(req->authority);
     AP_DEBUG_ASSERT(req->path);
     AP_DEBUG_ASSERT(req->method);
 
-    status = add_all_h1_header(req, r->pool, r->headers_in);
+    return add_all_h1_header(req, pool, headers);
+}
 
+apr_status_t h2_request_rwrite(h2_request *req, request_rec *r)
+{
+    apr_status_t status;
+    const char *scheme, *authority;
+    
+    scheme = (r->parsed_uri.scheme? r->parsed_uri.scheme
+              : ap_http_scheme(r));
+    authority = r->hostname;
+    if (!ap_strchr_c(authority, ':') && r->server && r->server->port) {
+        apr_port_t defport = apr_uri_port_of_scheme(scheme);
+        if (defport != r->server->port) {
+            /* port info missing and port is not default for scheme: append */
+            authority = apr_psprintf(r->pool, "%s:%d", authority,
+                                     (int)r->server->port);
+        }
+    }
+    
+    status = h2_request_make(req, r->pool,  r->method, scheme, authority,
+                             apr_uri_unparse(r->pool, &r->parsed_uri, 
+                                             APR_URI_UNP_OMITSITEPART),
+                             r->headers_in);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
                   "h2_request(%d): rwrite %s host=%s://%s%s",
                   req->id, req->method, req->scheme, req->authority, req->path);
-                  
     return status;
 }
 
@@ -337,9 +338,20 @@ void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
     dst->authority      = OPT_COPY(p, src->authority);
     dst->path           = OPT_COPY(p, src->path);
     dst->headers        = apr_table_clone(p, src->headers);
+    if (src->trailers) {
+        dst->trailers   = apr_table_clone(p, src->trailers);
+    }
     dst->content_length = src->content_length;
     dst->chunked        = src->chunked;
     dst->eoh            = src->eoh;
+}
+
+h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
+{
+    h2_request *nreq = apr_pcalloc(p, sizeof(*nreq));
+    memcpy(nreq, src, sizeof(*nreq));
+    h2_request_copy(p, nreq, src);
+    return nreq;
 }
 
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
@@ -361,7 +373,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
     
     r->allowed_methods = ap_make_method_list(p, 2);
     
-    r->headers_in      = apr_table_copy(r->pool, req->headers);
+    r->headers_in      = apr_table_clone(r->pool, req->headers);
     r->trailers_in     = apr_table_make(r->pool, 5);
     r->subprocess_env  = apr_table_make(r->pool, 25);
     r->headers_out     = apr_table_make(r->pool, 12);
@@ -408,7 +420,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
     }
 
     ap_parse_uri(r, req->path);
-    r->protocol = (char*)"HTTP/2";
+    r->protocol = "HTTP/2";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 

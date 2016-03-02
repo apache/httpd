@@ -35,6 +35,7 @@
 #include "h2_private.h"
 #include "h2_conn.h"
 #include "h2_config.h"
+#include "h2_ctx.h"
 #include "h2_from_h1.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
@@ -85,12 +86,36 @@ static apr_status_t h2_filter_read_response(ap_filter_t* f,
     return h2_from_h1_read_response(task->output->from_h1, f, bb);
 }
 
+static apr_status_t h2_response_freeze_filter(ap_filter_t* f,
+                                              apr_bucket_brigade* bb)
+{
+    h2_task *task = f->ctx;
+    AP_DEBUG_ASSERT(task);
+    
+    if (task->frozen) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                      "h2_response_freeze_filter, saving");
+        return ap_save_brigade(f, &task->frozen_out, &bb, task->c->pool);
+    }
+    
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                  "h2_response_freeze_filter, passing");
+    return ap_pass_brigade(f->next, bb);
+}
+
 /*******************************************************************************
  * Register various hooks
  */
 static const char *const mod_ssl[]        = { "mod_ssl.c", NULL};
 static int h2_task_pre_conn(conn_rec* c, void *arg);
 static int h2_task_process_conn(conn_rec* c);
+
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_task_logio_add_bytes_in;
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out;
 
 void h2_task_register_hooks(void)
 {
@@ -116,6 +141,17 @@ void h2_task_register_hooks(void)
                               NULL, AP_FTYPE_PROTOCOL);
     ap_register_output_filter("H2_TRAILERS", h2_response_trailers_filter,
                               NULL, AP_FTYPE_PROTOCOL);
+    ap_register_output_filter("H2_RESPONSE_FREEZE", h2_response_freeze_filter,
+                              NULL, AP_FTYPE_RESOURCE);
+}
+
+/* post config init */
+apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s)
+{
+    h2_task_logio_add_bytes_in = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_in);
+    h2_task_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+
+    return APR_SUCCESS;
 }
 
 static int h2_task_pre_conn(conn_rec* c, void *arg)
@@ -143,60 +179,80 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
 }
 
 h2_task *h2_task_create(long session_id, const h2_request *req, 
-                        apr_pool_t *pool, h2_mplx *mplx)
+                        conn_rec *c, h2_mplx *mplx)
 {
-    h2_task *task     = apr_pcalloc(pool, sizeof(h2_task));
+    h2_task *task     = apr_pcalloc(c->pool, sizeof(h2_task));
     if (task == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
                       session_id, req->id);
         h2_mplx_out_close(mplx, req->id, NULL);
         return NULL;
     }
     
-    task->id          = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->id          = apr_psprintf(c->pool, "%ld-%d", session_id, req->id);
     task->stream_id   = req->id;
+    task->c           = c;
     task->mplx        = mplx;
     task->request     = req;
     task->input_eos   = !req->body;
-    task->ser_headers = h2_config_geti(req->config, H2_CONF_SER_HEADERS);
+    task->ser_headers = req->serialize;
+
+    h2_ctx_create_for(c, task);
 
     return task;
 }
 
-apr_status_t h2_task_do(h2_task *task, conn_rec *c, apr_thread_cond_t *cond, 
-                        apr_socket_t *socket)
+apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond)
 {
+    apr_status_t status;
+    
     AP_DEBUG_ASSERT(task);
     task->io = cond;
-    task->input = h2_task_input_create(task, c->pool, c->bucket_alloc);
-    task->output = h2_task_output_create(task, c->pool);
+    task->input = h2_task_input_create(task, task->c);
+    task->output = h2_task_output_create(task, task->c);
     
-    ap_process_connection(c, socket);
+    ap_process_connection(task->c, ap_get_conn_socket(task->c));
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                  "h2_task(%s): processing done", task->id);
+    if (task->frozen) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                      "h2_task(%s): process_conn returned frozen task", 
+                      task->id);
+        /* cleanup delayed */
+        status = APR_EAGAIN;
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                      "h2_task(%s): processing done", task->id);
+        status = APR_SUCCESS;
+    }
     
-    h2_task_input_destroy(task->input);
-    h2_task_output_close(task->output);
-    h2_task_output_destroy(task->output);
-    task->io = NULL;
-    
-    return APR_SUCCESS;
+    return status;
 }
 
-static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
+static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
 {
-    request_rec *r;
+    const h2_request *req = task->request;
     conn_state_t *cs = c->cs;
+    request_rec *r;
 
     r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
         
-        if (cs)
+        if (cs) {
             cs->state = CONN_STATE_HANDLER;
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%s): start process_request", task->id);
         ap_process_request(r);
+        if (task->frozen) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                          "h2_task(%s): process_request frozen", task->id);
+        }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%s): process_request done", task->id);
+        
         /* After the call to ap_process_request, the
          * request pool will have been deleted.  We set
          * r=NULL here to ensure that any dereference
@@ -204,11 +260,10 @@ static apr_status_t h2_task_process_request(const h2_request *req, conn_rec *c)
          * will result in a segfault immediately instead
          * of nondeterministic failures later.
          */
-        if (cs)
+        if (cs) 
             cs->state = CONN_STATE_WRITE_COMPLETION;
         r = NULL;
     }
-    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
     c->sbh = NULL;
 
     return APR_SUCCESS;
@@ -227,7 +282,7 @@ static int h2_task_process_conn(conn_rec* c)
         if (!ctx->task->ser_headers) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
                           "h2_h2, processing request directly");
-            h2_task_process_request(ctx->task->request, c);
+            h2_task_process_request(ctx->task, c);
             return DONE;
         }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
@@ -235,3 +290,28 @@ static int h2_task_process_conn(conn_rec* c)
     }
     return DECLINED;
 }
+
+apr_status_t h2_task_freeze(h2_task *task, request_rec *r)
+{   
+    if (!task->frozen) {
+        conn_rec *c = task->c;
+        
+        task->frozen = 1;
+        task->frozen_out = apr_brigade_create(c->pool, c->bucket_alloc);
+        ap_add_output_filter("H2_RESPONSE_FREEZE", task, r, r->connection);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+                      "h2_task(%s), frozen", task->id);
+    }
+    return APR_SUCCESS;
+}
+
+apr_status_t h2_task_thaw(h2_task *task)
+{
+    if (task->frozen) {
+        task->frozen = 0;
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
+                      "h2_task(%s), thawed", task->id);
+    }
+    return APR_SUCCESS;
+}
+

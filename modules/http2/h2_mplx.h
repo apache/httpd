@@ -38,6 +38,7 @@ struct apr_pool_t;
 struct apr_thread_mutex_t;
 struct apr_thread_cond_t;
 struct h2_config;
+struct h2_ihash_t;
 struct h2_response;
 struct h2_task;
 struct h2_stream;
@@ -45,9 +46,10 @@ struct h2_request;
 struct h2_io_set;
 struct apr_thread_cond_t;
 struct h2_workers;
-struct h2_stream_set;
-struct h2_task_queue;
+struct h2_int_queue;
+struct h2_req_engine;
 
+#include <apr_queue.h>
 #include "h2_io.h"
 
 typedef struct h2_mplx h2_mplx;
@@ -66,27 +68,45 @@ struct h2_mplx {
     apr_pool_t *pool;
 
     unsigned int aborted : 1;
+    unsigned int need_registration : 1;
 
-    struct h2_task_queue *q;
+    struct h2_int_queue *q;
     struct h2_io_set *stream_ios;
     struct h2_io_set *ready_ios;
+    struct h2_io_set *redo_ios;
     
     int max_stream_started;      /* highest stream id that started processing */
+    int workers_busy;            /* # of workers processing on this mplx */
+    int workers_limit;           /* current # of workers limit, dynamic */
+    int workers_def_limit;       /* default # of workers limit */
+    int workers_max;             /* max, hard limit # of workers in a process */
+    apr_time_t last_idle_block;  /* last time, this mplx entered IDLE while
+                                  * streams were ready */
+    apr_time_t last_limit_change;/* last time, worker limit changed */
+    apr_interval_time_t limit_change_interval;
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
+    struct apr_thread_cond_t *task_done;
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
-    int stream_timeout_secs;
+    apr_interval_time_t stream_timeout;
     
     apr_pool_t *spare_pool;           /* spare pool, ready for next io */
+    apr_allocator_t *spare_allocator;
+    
     struct h2_workers *workers;
     apr_size_t tx_handles_reserved;
     apr_size_t tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
+    
+    struct h2_req_engine *engine;
+    /* TODO: signal for waiting tasks*/
+    apr_queue_t *engine_queue;
+    int next_eng_id;
 };
 
 
@@ -95,12 +115,15 @@ struct h2_mplx {
  * Object lifecycle and information.
  ******************************************************************************/
 
+apr_status_t h2_mplx_child_init(apr_pool_t *pool, server_rec *s);
+
 /**
  * Create the multiplexer for the given HTTP2 session. 
  * Implicitly has reference count 1.
  */
 h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *master, 
                         const struct h2_config *conf, 
+                        apr_interval_time_t stream_timeout,
                         struct h2_workers *workers);
 
 /**
@@ -119,7 +142,9 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-void h2_mplx_request_done(h2_mplx **pm, int stream_id, const struct h2_request **preq);
+struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+
+void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
 
 /**
  * Get the highest stream identifier that has been passed on to processing.
@@ -143,9 +168,13 @@ int h2_mplx_get_max_stream_started(h2_mplx *m);
  */
 apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
 
-/* Return != 0 iff the multiplexer has data for the given stream. 
+/* Return != 0 iff the multiplexer has output data for the given stream. 
  */
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id);
+
+/* Return != 0 iff the multiplexer has input data for the given stream. 
+ */
+int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id);
 
 /**
  * Waits on output data from any stream in this session to become available. 
@@ -178,8 +207,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request 
  * @param ctx context data for the compare function
  */
 apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx);
-
-const struct h2_request *h2_mplx_pop_request(h2_mplx *mplx, int *has_more);
 
 /**
  * Register a callback for the amount of input data consumed per stream. The
@@ -248,7 +275,7 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m);
  * @param bb the brigade to place any existing repsonse body data into
  */
 struct h2_stream *h2_mplx_next_submit(h2_mplx *m, 
-                                      struct h2_stream_set *streams);
+                                      struct h2_ihash_t *streams);
 
 /**
  * Reads output data from the given stream. Will never block, but
@@ -369,5 +396,32 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
  */
 #define H2_MPLX_REMOVE(e)	APR_RING_REMOVE((e), link)
 
+/*******************************************************************************
+ * h2_mplx DoS protection
+ ******************************************************************************/
+
+/**
+ * Master connection has entered idle mode.
+ * @param m the mplx instance of the master connection
+ * @return != SUCCESS iff connection should be terminated
+ */
+apr_status_t h2_mplx_idle(h2_mplx *m);
+
+/*******************************************************************************
+ * h2_mplx h2_req_engine handling.
+ ******************************************************************************/
+ 
+typedef apr_status_t h2_mplx_engine_init(struct h2_req_engine *engine, 
+                                         request_rec *r);
+
+apr_status_t h2_mplx_engine_push(const char *engine_type, 
+                                 request_rec *r, h2_mplx_engine_init *einit);
+                                 
+apr_status_t h2_mplx_engine_pull(struct h2_req_engine *engine, 
+                                 apr_read_type_e block, request_rec **pr);
+
+void h2_mplx_engine_done(struct h2_req_engine *engine, conn_rec *r_conn);
+                                 
+void h2_mplx_engine_exit(struct h2_req_engine *engine);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

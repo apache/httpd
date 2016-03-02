@@ -2,6 +2,60 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_http2: Accept-Encoding is, when present on the initiating request, 
+     added to push promises. This lets compressed content work in pushes.
+     by the client. [Stefan Eissing]
+
+  *) mod_http2: fixed possible read after free when streams were cancelled early
+     by the client. [Stefan Eissing]
+
+  *) mod_http2: fixed possible deadlock during connection shutdown. Thanks to 
+     @FrankStolle for reporting and getting the necessary data.
+     [Stefan Eissing]
+
+  *) mod_http2: fixed apr_uint64_t formatting in a log statement to user proper 
+     APR def, thanks to @Sp1l.
+     
+  *) mod_http2: number of worker threads allowed to a connection is adjusting 
+     dynamically. Starting with 4, the number is doubled when streams can be 
+     served without block on http/2 connection flow. The number is halfed, when
+     the server has to wait on client flow control grants. 
+     This can happen with a maximum frequency of 5 times per second. 
+     When a connection occupies too many workers, repeatable requests 
+     (GET/HEAD/OPTIONS) are cancelled and placed back in the queue. Should that 
+     not suffice and a stream is busy longer than the server timeout, the 
+     connection will be aborted with error code ENHANCE_YOUR_CALM.
+     This does *not* limit the number of streams a client may open, rather the
+     number of server threads a connection might use.
+     [Stefan Eissing]
+  
+  *) mod_http2: allowing link header to specify multiple "rel" values, 
+     space-separated inside a quoted string. Prohibiting push when Link 
+     parameter "nopush" is present.
+     [Stefan Eissing]
+
+  *) mod_http2: reworked connection state handling. Idle connections accept a
+     GOAWAY from the client without further reply. Otherwise the
+     module makes a best effort to send one last GOAWAY to the client.
+     
+  *) mod_http2: the values from standard directives Timeout and KeepAliveTimeout
+     properly are applied to http/2 connections.
+     [Stefan Eissing]
+
+  *) mod_http2: idle connections are returned to async mpms. new hook
+     "pre_close_connection" used to send GOAWAY frame when not already done.
+     Setting event mpm server config "by hand" for the main connection to
+     the correct negotiated server.
+     [Stefan Eissing]
+
+  *) mod_http2: keep-alive blocking reads are done with 1 second timeouts to
+     check for MPM stopping. Will announce early GOAWAY and finish processing
+     open streams, then close.
+     [Stefan Eissing]
+
+  *) mod_http2: bytes read/written on slave connections are reported via the
+     optional mod_logio functions. Fixes PR 58871.
+
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 
@@ -50,7 +104,7 @@ Changes with Apache 2.4.19
      be inherited by virtual hosts that define a CustomLog.
      [Edward Lu]
 
-  *) mod_http2: connection how keep a "push diary" where hashes of already
+  *) mod_http2: connections how keep a "push diary" where hashes of already
      pushed resources are kept. See directive H2PushDiarySize for managing this.
      Push diaries can be initialized by clients via the "Cache-Digest" request
      header. This carries a base64url encoded. compressed Golomb set as described
@@ -79,11 +133,6 @@ Changes with Apache 2.4.19
 
   *) mod_http2: new r->subprocess_env variables HTTP2 and H2PUSH, set to "on"
      when available for request.
-     [Stefan Eissing]
-
-  *) mod_http2: new config directives and the implementation behind
-     them: H2Timeout, H2KeepAliveTimeout, H2StreamTimeout. Documentation in
-     the http2 manual.
      [Stefan Eissing]
 
   *) mod_http2: fixed bug in input window size calculation by moving chunked

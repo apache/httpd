@@ -71,5 +71,7 @@ const char *h2_ctx_protocol_get(const conn_rec *c);
 int h2_ctx_is_task(h2_ctx *ctx);
 
 struct h2_task *h2_ctx_get_task(h2_ctx *ctx);
+struct h2_task *h2_ctx_cget_task(conn_rec *c);
+struct h2_task *h2_ctx_rget_task(request_rec *r);
 
 #endif /* defined(__mod_h2__h2_ctx__) */

@@ -27,7 +27,6 @@ struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
 struct h2_task;
-struct h2_task_queue;
 
 typedef struct h2_workers h2_workers;
 
@@ -36,8 +35,11 @@ struct h2_workers {
     apr_pool_t *pool;
     
     int next_worker_id;
-    int min_size;
-    int max_size;
+    int min_workers;
+    int max_workers;
+    int worker_count;
+    int idle_workers;
+    int max_idle_secs;
     
     apr_size_t max_tx_handles;
     apr_size_t spare_tx_handles;
@@ -49,10 +51,7 @@ struct h2_workers {
     APR_RING_HEAD(h2_worker_list, h2_worker) workers;
     APR_RING_HEAD(h2_worker_zombies, h2_worker) zombies;
     APR_RING_HEAD(h2_mplx_list, h2_mplx) mplxs;
-    
-    int worker_count;
-    volatile apr_uint32_t max_idle_secs;
-    volatile apr_uint32_t idle_worker_count;
+    int mplx_count;
     
     struct apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *mplx_added;

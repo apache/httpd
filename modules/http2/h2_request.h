@@ -16,48 +16,19 @@
 #ifndef __mod_h2__h2_request__
 #define __mod_h2__h2_request__
 
-/* h2_request is the transformer of HTTP2 streams into HTTP/1.1 internal
- * format that will be fed to various httpd input filters to finally
- * become a request_rec to be handled by soemone.
- */
-struct h2_config;
-struct h2_to_h1;
-struct h2_mplx;
-struct h2_task;
+#include "h2.h"
 
-typedef struct h2_request h2_request;
-
-struct h2_request {
-    int id;             /* stream id */
-
-    const char *method; /* pseudo header values, see ch. 8.1.2.3 */
-    const char *scheme;
-    const char *authority;
-    const char *path;
-    
-    apr_table_t *headers;
-    apr_table_t *trailers;
-
-    apr_time_t request_time;
-    apr_off_t content_length;
-    
-    unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
-    unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
-    unsigned int body    : 1; /* iff this request has a body */
-    unsigned int push_policy; /* which push policy to use for this request */
-    const struct h2_config *config;
-};
-
-h2_request *h2_request_create(int id, apr_pool_t *pool, 
-                              const struct h2_config *config);
+h2_request *h2_request_create(int id, apr_pool_t *pool, int serialize);
 
 h2_request *h2_request_createn(int id, apr_pool_t *pool,
-                               const struct h2_config *config, 
                                const char *method, const char *scheme,
                                const char *authority, const char *path,
-                               apr_table_t *headers);
+                               apr_table_t *headers, int serialize);
 
-void h2_request_destroy(h2_request *req);
+apr_status_t h2_request_make(h2_request *req, apr_pool_t *pool,
+                             const char *method, const char *scheme, 
+                             const char *authority, const char *path, 
+                             apr_table_t *headers);
 
 apr_status_t h2_request_rwrite(h2_request *req, request_rec *r);
 
@@ -73,6 +44,8 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
                                     int eos, int push);
 
 void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src);
+
+h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
 
 /**
  * Create a request_rec representing the h2_request to be

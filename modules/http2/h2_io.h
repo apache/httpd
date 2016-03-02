@@ -20,6 +20,7 @@ struct h2_response;
 struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
+struct h2_task;
 
 
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
@@ -30,8 +31,7 @@ typedef enum {
     H2_IO_READ,
     H2_IO_WRITE,
     H2_IO_ANY,
-}
-h2_io_op;
+} h2_io_op;
 
 typedef struct h2_io h2_io;
 
@@ -51,15 +51,19 @@ struct h2_io {
     unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
     unsigned int worker_started : 1; /* h2_worker started processing for this io */
     unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    unsigned int submitted      : 1; /* response has been submitted to client */
     unsigned int request_body   : 1; /* iff request has body */
     unsigned int eos_in         : 1; /* input eos has been seen */
     unsigned int eos_in_written : 1; /* input eos has been forwarded */
-    unsigned int eos_out        : 1; /* output eos has been seen */
+    unsigned int eos_out        : 1; /* output eos is present */
+    unsigned int eos_out_read   : 1; /* output eos has been forwarded */
     
     h2_io_op timed_op;               /* which operation is waited on, if any */
     struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */
     apr_time_t timeout_at;           /* when IO wait will time out */
     
+    apr_time_t started_at;           /* when processing started */
+    apr_time_t done_at;              /* when processing was done */
     apr_size_t input_consumed;       /* how many bytes have been read */
         
     int files_handles_owned;
@@ -72,12 +76,7 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool);
-
-/**
- * Frees any resources hold by the h2_io instance. 
- */
-void h2_io_destroy(h2_io *io);
+h2_io *h2_io_create(int id, apr_pool_t *pool, const struct h2_request *request);
 
 /**
  * Set the response of this stream.
@@ -89,6 +88,9 @@ void h2_io_set_response(h2_io *io, struct h2_response *response);
  */
 void h2_io_rst(h2_io *io, int error);
 
+int h2_io_is_repeatable(h2_io *io);
+void h2_io_redo(h2_io *io);
+
 /**
  * The input data is completely queued. Blocked reads will return immediately
  * and give either data or EOF.
@@ -98,9 +100,13 @@ int h2_io_in_has_eos_for(h2_io *io);
  * Output data is available.
  */
 int h2_io_out_has_data(h2_io *io);
+/**
+ * Input data is available.
+ */
+int h2_io_in_has_data(h2_io *io);
 
 void h2_io_signal(h2_io *io, h2_io_op op);
-void h2_io_signal_init(h2_io *io, h2_io_op op, int timeout_secs, 
+void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 
                        struct apr_thread_cond_t *cond);
 void h2_io_signal_exit(h2_io *io);
 apr_status_t h2_io_signal_wait(struct h2_mplx *m, h2_io *io);
