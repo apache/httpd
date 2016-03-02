@@ -227,6 +227,12 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
+   * mod_rewrite: PR58854: Revert r1726016 (rewrite looping issue) which was
+     reverted in trunk in r1732896. The fix is bad and breaks old loop
+     avoidance.  
+
+     +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
