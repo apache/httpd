@@ -112,14 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Fix a bug in <UnDefine ...> directive processing. When used, the
-           last <Define...>'ed variable was also withdrawn. PR 59019
-     Trunk patch:
-         http://svn.apache.org/r1732716
-     2.4.x patch:
-         Trunk version of patch works (modulo CHNAGES)
-     +1: jailletc36, ylavic, icing
-
   *) Save a few bytes in conf pool when parsing some directives
      Trunk patch:
          http://svn.apache.org/r1732252
