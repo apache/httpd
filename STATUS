@@ -132,10 +132,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch:
-         http://home.apache.org/~jim/patches/hcheck-2.4.patch
+         http://home.apache.org/~jim/patches/hcheck-2.4-v2.patch
          <Plus docs>
      +1: jim
-     ylavic: Needs r1732957 for empty APLOGNO()s.
      ylavic: Looks like the changes on struct proxy_worker_shared would break
              startup with "BalancerPersist on" due to the strict checks on
              the sizes of existing slotmems (slotmem_create/attach)?
