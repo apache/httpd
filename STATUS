@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1727603
      2.4.x patch:
          Trunk version of patch works modulo CHANGES
-     +1: icing
+     +1: icing, ylavic
 
   *) Save a few bytes in conf pool when parsing some directives
      Trunk patch:
