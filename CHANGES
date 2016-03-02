@@ -1,18 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: Fixed possible read after free when streams were cancelled early
-     by the client. 
-     Fixed apr_uint64_t formatting in a log statement to user proper APR def.
-     Number of worker threads allowed to a connection is adjusting dynamically.
-     Starting with 4, the number is doubled when streams can be served without
-     the server ever having to wait on the client. The number is halfed, when
-     the server has to wait on flow control grants. This can happen with a 
-     maximum frequency of 5 times per second. When a connection occupies too
-     many workers, repeatable requests (GET/HEAD/OPTIONS) are cancelled and
-     placed back in the queue. Should that not suffice and a stream is busy
-     longer than the server timeout, the connection will be aborted.
-  
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
@@ -22,14 +10,6 @@ Changes with Apache 2.5.0
   *) core: fix a bug in <UnDefine ...> directive processing. When used, the last
      <Define...>'ed variable was also withdrawn. PR 59019
      [Christophe Jaillet]
-
-  *) mod_http2: limiting the amount of h2 workers a HTTP/2 connection can
-     occupy at a time to make DoS life harder. Limiting this to static 6 in
-     honor of http/1.1 connection limits, considering implementing dynamic
-     adjustments based on load and throughput.
-     This does *not* limit the number of streams a client may open, rather the
-     number of server threads a connection might use.
-     [Stefan Eissing]
 
   *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
      [Eric Covener]
@@ -70,23 +50,12 @@ Changes with Apache 2.5.0
      early based on SNI selected vhost. 
      [Stefan Eissing]
   
-  *) mod_http2: allowing link header to specify multiple "rel" values, 
-     space-separated inside a quoted string. Prohibiting push when Link parameter
-     "nopush" is present.
-     [Stefan Eissing]
-
   *) core: Prevent a server crash in case of an invalid CONNECT request with
      a custom error page for status code 400 that uses server side includes.
      PR 58929 [Ruediger Pluem]
 
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
-
-  *) mod_http2: idle connections are returned to async mpms. new hook
-     "pre_close_connection" used to send GOAWAY frame when not already done.
-     Setting event mpm server config "by hand" for the main connection to
-     the correct negotiated server.
-     [Stefan Eissing]
 
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
@@ -101,11 +70,6 @@ Changes with Apache 2.5.0
   *) ap_expr: expression support for variable HTTP2=on|off
      [Stefan Eissing]
 
-  *) mod_http2: keep-alive blocking reads are done with 1 second timeouts to
-     check for MPM stopping. Will announce early GOAWAY and finish processing
-     open streams, then close.
-     [Stefan Eissing]
-
   *) mod_proxy_hcheck: Provide for dynamic background health
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
@@ -113,9 +77,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: handle TIMEOUT on empty SSL input as non-fatal, returning 
      APR_TIMEUP and preserving connection state for later retry.
      [Stefan Eissing]
-
-  *) mod_http2: bytes read/written on slave connections are reported via the
-     optional mod_logio functions. Fixes PR 58871.
 
   *) Added many log numbers to log statements that had none.
 
