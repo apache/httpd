@@ -3699,7 +3699,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
 #ifdef DEBUGGING
             len = -1;
             apr_brigade_length(bb_i, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03306)
                           "ap_proxy_transfer_between_connections: "
                           "read %" APR_OFF_T_FMT
                           " bytes from %s", len, name);
@@ -3726,13 +3726,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_transfer_between_connections(
             }
             rv = ap_pass_brigade(c_o->output_filters, bb_o);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(03307)
                               "ap_proxy_transfer_between_connections: "
                               "error on %s - ap_pass_brigade",
                               name);
             }
         } else if (!APR_STATUS_IS_EAGAIN(rv) && !APR_STATUS_IS_EOF(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(03308)
                           "ap_proxy_transfer_between_connections: "
                           "error on %s - ap_get_brigade",
                           name);
