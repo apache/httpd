@@ -112,6 +112,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) proxy_util: Add missing APLOGNO()s from r1732266 (already backported
+                 to 2.4.x/19)
+     trunk patch: http://svn.apache.org/r1732954
+     2.4.x patch: trunk works (modulo docs/log-message-tags)
+     +1: ylavic, icing, jim
+
+  *) core: Add missing APLOGNO() from r1729495 (somehow r1725395 was
+           backported in r1729495 but without this "server/core.c" change)
+     trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/server/core.c?r1=1725395&r2=1725394&pathrev=1725395&view=patch
+     2.4.x patch: trunk above works
+     +1: ylavic, icing, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -148,18 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:
          Trunk version of patch works modulo CHANGES
      +1: icing, ylavic
-
-  *) proxy_util: Add missing APLOGNO()s from r1732266 (already backported
-                 to 2.4.x/19)
-     trunk patch: http://svn.apache.org/r1732954
-     2.4.x patch: trunk works (modulo docs/log-message-tags)
-     +1: ylavic, icing, jim
-
-  *) core: Add missing APLOGNO() from r1729495 (somehow r1725395 was
-           backported in r1729495 but without this "server/core.c" change)
-     trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/server/core.c?r1=1725395&r2=1725394&pathrev=1725395&view=patch
-     2.4.x patch: trunk above works
-     +1: ylavic, icing, jim
 
   *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
      had to be issued because the remote closed the previous/reusable one
