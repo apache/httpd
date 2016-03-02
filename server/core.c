@@ -4449,7 +4449,7 @@ static int core_override_type(request_rec *r)
         const char *val;
         val = ap_expr_str_exec(r, conf->expr_handler, &err);
         if (err) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(03154)
                           "Can't evaluate handler expression: %s", err);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
