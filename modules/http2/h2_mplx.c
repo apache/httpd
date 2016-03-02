@@ -209,7 +209,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->stream_timeout = stream_timeout;
         m->workers = workers;
-        m->workers_max = h2_config_geti(conf, H2_CONF_MAX_WORKERS);
+        m->workers_max = workers->max_workers;
         m->workers_def_limit = 4;
         m->workers_limit = m->workers_def_limit;
         m->last_limit_change = m->last_idle_block = apr_time_now();
