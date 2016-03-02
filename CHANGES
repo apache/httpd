@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.19
 
+  *) core: Track the useragent_host per-request when mod_remoteip or similar
+     modules track a per-request useragent_ip.  Modules should be updated
+     to inquire for ap_get_useragent_host() in place of ap_get_remote_host().
+     [William Rowe]
+
   *) core: fix a bug in <UnDefine ...> directive processing. When used, the last
      <Define...>'ed variable was also withdrawn. PR 59019
      [Christophe Jaillet]

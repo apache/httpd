@@ -112,15 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Track the useragent_host per-request when mod_remoteip or similar
-     modules track a per-request useragent_ip.  Modules should be updated
-     to inquire for ap_get_useragent_host() in place of ap_get_remote_host().
-     Trunk version of patch:
-         http://svn.apache.org/r1729929
-     Trunk patch to core.c/http_core.h applies, modulo CHANGES & ap_mmn.h
-     Note: httpd.h comment r.e. realiging bit fields must be omitted.
-     +1: wrowe, ylavic, icing
-
   *) hostname: Test and log useragent_host per-request across various modules,
      including the scoreboard, expression and rewrite engines, setenvif,
      authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.
