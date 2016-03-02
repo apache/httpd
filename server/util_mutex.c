@@ -165,6 +165,7 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
                                             const char *arg)
 {
     apr_pool_t *p = cmd->pool;
+    apr_pool_t *ptemp = cmd->temp_pool;
     const char **elt;
     const char *mechdir;
     int no_mutex = 0, omit_pid = 0;
@@ -191,7 +192,7 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
                            " (" AP_ALL_AVAILABLE_MUTEXES_STRING ")", NULL);
     }
     else if (rv == APR_BADARG
-             || (mutexdir && !ap_is_directory(p, mutexdir))) {
+             || (mutexdir && !ap_is_directory(ptemp, mutexdir))) {
         return apr_pstrcat(p, "Invalid Mutex directory in argument ",
                            mechdir, NULL);
     }
