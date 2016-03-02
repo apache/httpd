@@ -112,15 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Save a few bytes in conf pool when parsing some directives
-     Trunk patch:
-         http://svn.apache.org/r1732252
-         http://svn.apache.org/r1732353
-         http://svn.apache.org/r1732369
-     2.4.x patch:
-         Trunk version of patch works
-     +1: jailletc36, ylavic, icing
-
   *) core: Track the useragent_host per-request when mod_remoteip or similar
      modules track a per-request useragent_ip.  Modules should be updated
      to inquire for ap_get_useragent_host() in place of ap_get_remote_host().

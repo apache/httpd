@@ -1455,7 +1455,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     /* TODO: ap_configtestonly */
     if (apr_filepath_merge((char**)&conf->ap_document_root, NULL, arg,
                            APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS
-        || !ap_is_directory(cmd->pool, arg)) {
+        || !ap_is_directory(cmd->temp_pool, arg)) {
         if (cmd->server->is_virtual) {
             ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0,
                           cmd->pool, APLOGNO(00112)
@@ -2897,7 +2897,7 @@ static const char *set_runtime_dir(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     if ((apr_filepath_merge((char**)&ap_runtime_dir, NULL,
-                            ap_server_root_relative(cmd->pool, arg),
+                            ap_server_root_relative(cmd->temp_pool, arg),
                             APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
         || !ap_is_directory(cmd->temp_pool, ap_runtime_dir)) {
         return "DefaultRuntimeDir must be a valid directory, absolute or relative to ServerRoot";
