@@ -112,17 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) hostname: Test and log useragent_host per-request across various modules,
-     including the scoreboard, expression and rewrite engines, setenvif,
-     authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.
-     PR55348  [William Rowe]
-     Trunk version of patch:
-         http://svn.apache.org/r1729930
-         http://svn.apache.org/r1729931
-     Trunk patch r1729930 applies, modulo CHANGES
-     Backport patch to r1729931 is noted in the commit log message
-     Requires r1729929 to be applied.
-     +1: wrowe, ylavic, icing
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

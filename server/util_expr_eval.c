@@ -1348,8 +1348,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 3:
         return r->filename;
     case 4:
-        return ap_get_remote_host(r->connection, r->per_dir_config,
-                                  REMOTE_NAME, NULL);
+        return ap_get_useragent_host(r, REMOTE_NAME, NULL);
     case 5:
         return ap_get_remote_logname(r);
     case 6:

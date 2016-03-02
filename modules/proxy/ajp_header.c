@@ -239,7 +239,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         num_headers = t->nelts;
     }
 
-    remote_host = (char *)ap_get_remote_host(r->connection, r->per_dir_config, REMOTE_HOST, NULL);
+    remote_host = (char *)ap_get_useragent_host(r, REMOTE_HOST, NULL);
 
     ajp_msg_reset(msg);
 

@@ -510,15 +510,18 @@ static int update_child_status_internal(int child_num,
             else if (r) {
                 copy_request(ws->request, sizeof(ws->request), r);
             }
-            if (r || c) {
-                val = ap_get_remote_host(c, r? r->per_dir_config : NULL, 
-                                         REMOTE_NOLOOKUP, NULL);
-                if (r && (!val || !strcmp(val, c->client_ip))) {
+            if (r) {
+                if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL)))
                     apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
-                }
-                else {
+                else
                     apr_cpystrn(ws->client, val, sizeof(ws->client));
-                }
+            }
+            else if (c) {
+                if (!(val = ap_get_remote_host(c, c->base_server->lookup_defaults,
+                                               REMOTE_NOLOOKUP, NULL)))
+                    apr_cpystrn(ws->client, c->client_ip, sizeof(ws->client));
+                else
+                    apr_cpystrn(ws->client, val, sizeof(ws->client));
             }
             if (s) {
                 if (c) {
