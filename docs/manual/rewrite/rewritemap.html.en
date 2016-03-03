@@ -374,12 +374,12 @@ RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
 
 
     <p><strong>dash2under.pl</strong></p>
-    <pre class="prettyprint lang-perl">    #!/usr/bin/perl
-    $| = 1; # Turn off I/O buffering
-    while (&lt;STDIN&gt;) {
-        s/-/_/g; # Replace dashes with underscores
-        print $_;
-    }</pre>
+    <pre class="prettyprint lang-perl">#!/usr/bin/perl
+$| = 1; # Turn off I/O buffering
+while (&lt;STDIN&gt;) {
+    s/-/_/g; # Replace dashes with underscores
+    print $_;
+}</pre>
 
 
 <div class="note"><h3>Caution!</h3>
