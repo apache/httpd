@@ -112,34 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
-     SSLCryptoDevice does not get unregistered because of non-zero refcount
-     during the mod_ssl unload happening on httpd startup.
-     trunk patch: http://svn.apache.org/r1720129
-                  http://svn.apache.org/r1723295
-                  http://svn.apache.org/r1733088
-                  http://svn.apache.org/r1733089
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
-     +1: ylavic
-     rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-     ylavic: done + CHANGES (votes reset)
-
-  *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
-     Trunk version of patch: <various>
-     Backport version for 2.4.x of patch:
-         http://home.apache.org/~jim/patches/hcheck-2.4-v2.patch
-         <Plus docs>
-     +1: jim
-     ylavic: Looks like the changes on struct proxy_worker_shared would break
-             startup with "BalancerPersist on" due to the strict checks on
-             the sizes of existing slotmems (slotmem_create/attach)?
-     jim: Yes, that is right (re: breakage)... this would be noted at
-          release.
-
   *) Use pre_connection hook in event.c to properly setup connection state
      of slave connections (eliminates hacks in mod_http2).
      Trunk patch:
@@ -172,6 +144,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684171
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-SSLVerify_NONE_no_reneg_Depth.patch
      +1: ylavic, icing, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
+     SSLCryptoDevice does not get unregistered because of non-zero refcount
+     during the mod_ssl unload happening on httpd startup.
+     trunk patch: http://svn.apache.org/r1720129
+                  http://svn.apache.org/r1723295
+                  http://svn.apache.org/r1733088
+                  http://svn.apache.org/r1733089
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
+     +1: ylavic
+     rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
+     ylavic: done + CHANGES (votes reset)
+
+  *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
+     Trunk version of patch: <various>
+     Backport version for 2.4.x of patch:
+         http://home.apache.org/~jim/patches/hcheck-2.4-v2.patch
+         <Plus docs>
+     +1: jim
+     ylavic: Looks like the changes on struct proxy_worker_shared would break
+             startup with "BalancerPersist on" due to the strict checks on
+             the sizes of existing slotmems (slotmem_create/attach)?
+     jim: Yes, that is right (re: breakage)... this would be noted at
+          release.
 
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.
