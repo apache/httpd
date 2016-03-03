@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.19
 
+  *) event: use pre_connection hook to properly initialize connection state for
+     slave connections. use protocol_switch hook to initialize server config
+     early based on SNI selected vhost. 
+     [Stefan Eissing]
+  
   *) hostname: Test and log useragent_host per-request across various modules,
      including the scoreboard, expression and rewrite engines, setenvif,
      authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.

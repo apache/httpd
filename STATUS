@@ -112,14 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Use pre_connection hook in event.c to properly setup connection state
-     of slave connections (eliminates hacks in mod_http2).
-     Trunk patch:
-         http://svn.apache.org/r1727603
-     2.4.x patch:
-         Trunk version of patch works modulo CHANGES
-     +1: icing, ylavic, jim
-
   *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
      had to be issued because the remote closed the previous/reusable one
      during idle (keep-alive) time.
