@@ -75,6 +75,9 @@ Changes with Apache 2.4.19
   *) mod_http2: bytes read/written on slave connections are reported via the
      optional mod_logio functions. Fixes PR 58871.
 
+  *) prefork: Initialize the POD when running in ONE_PROCESS (or -X) mode to
+     avoid a crash.  [Jan Kaluza, Yann Ylavic]
+
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 
