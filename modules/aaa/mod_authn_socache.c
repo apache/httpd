@@ -297,21 +297,13 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     authn_cache_dircfg *dcfg;
     const char *key;
     apr_time_t expiry;
-    int i;
-    int use_cache = 0;
 
     /* first check whether we're cacheing for this module */
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     if (!configured || !dcfg->providers) {
         return;
     }
-    for (i = 0; i < dcfg->providers->nelts; ++i) {
-        if (!strcmp(module, APR_ARRAY_IDX(dcfg->providers, i, const char*))) {
-            use_cache = 1;
-            break;
-        }
-    }
-    if (!use_cache) {
+    if (!ap_array_str_contains(dcfg->providers, module)) {
         return;
     }
 
