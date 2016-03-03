@@ -149,8 +149,8 @@ may be used, and give examples of each.</p>
     </p>
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap lc "int:tolower"
-RewriteRule "(.*?[A-Z]+.*)" "${lc:$1}" [R]</pre>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule (.*) ${lc:$1} [R]</pre>
 
 
     <div class="note">
