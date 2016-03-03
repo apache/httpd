@@ -323,6 +323,11 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_BALANCER_MAX_HOSTNAME_SIZE PROXY_WORKER_MAX_HOSTNAME_SIZE
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
 
+/* RFC-1035 mentions limits of 255 for host-names and 253 for domain-names,
+ * dotted together(?) this would fit the below size (+ trailing NUL).
+ */
+#define PROXY_WORKER_RFC1035_NAME_SIZE  512
+
 #define PROXY_MAX_PROVIDER_NAME_SIZE    16
 
 #define PROXY_STRNCPY(dst, src) ap_proxy_strncpy((dst), (src), (sizeof(dst)))
