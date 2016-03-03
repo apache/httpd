@@ -323,7 +323,7 @@ by many requests.
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
     <pre class="prettyprint lang-config">RewriteMap lc int:tolower
-RewriteRule "(.*?[A-Z]+.*)" "${lc:$1}" [R]</pre>
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
 
     <div class="note">
@@ -370,12 +370,12 @@ RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
 
 
     <p><strong>dash2under.pl</strong></p>
-    <pre class="prettyprint lang-perl">    #!/usr/bin/perl
-    $| = 1; # Turn off I/O buffering
-    while (&lt;STDIN&gt;) {
-        s/-/_/g; # Replace dashes with underscores
-        print $_;
-    }</pre>
+    <pre class="prettyprint lang-perl">#!/usr/bin/perl
+$| = 1; # Turn off I/O buffering
+while (&lt;STDIN&gt;) {
+    s/-/_/g; # Replace dashes with underscores
+    print $_;
+}</pre>
 
 
 <div class="note"><h3>Caution!</h3>
