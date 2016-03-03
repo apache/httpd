@@ -140,6 +140,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              the sizes of existing slotmems (slotmem_create/attach)?
      jim: Yes, that is right (re: breakage)... this would be noted at
           release.
+     ylavic: OK, this is just that persisted slotmems won't be reused on first
+             startup, not that the startup will fail (as I first thought).
 
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.
