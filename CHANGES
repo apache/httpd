@@ -78,6 +78,10 @@ Changes with Apache 2.4.19
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 
+  *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
+     had to be issued because the remote closed the previous/reusable one
+     during idle (keep-alive) time.  [Yann Ylavic]
+
   *) mod_cache_socache: Fix a possible cached entity body corruption when it
      is received from an origin server in multiple batches and forwarded by
      mod_proxy.  [Yann Ylavic]
