@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
+     [Yann Ylavic]
+
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
