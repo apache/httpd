@@ -119,7 +119,7 @@
     </dl>
 
     <dl>
-      <dt>Guide de configuration des mandataires inverses</dt>
+      <dt>Mandataires inverses</dt>
       <dd>
         <p>Apache httpd possède des fonctionnalités évoluées de serveur
 	mandataire inverse via ses directives <directive
