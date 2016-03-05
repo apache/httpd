@@ -29,8 +29,6 @@
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -119,6 +117,20 @@
 	spécifié par la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
 
         <p>Voir <a href="public_html.html">Répertoires web des utilisateurs (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+    <dl>
+      <dt>Mandataires inverses</dt>
+      <dd>
+        <p>Apache httpd possède des fonctionnalités évoluées de serveur
+	mandataire inverse via ses directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> qui permettent
+	d'implémenter un système de mandataire inverse sophistiqué garantissant
+	une haute disponibilité, une répartition et une réattribution de charge,
+	un regroupement de serveurs en grappe (clustering) basé sur le cloud et
+	une reconfiguration dynamique à la volée.</p>
+
+        <p>Voir le <a href="reverse_proxy.html" />Guide de configuration des
+	mandataires inverses</p>
       </dd>
     </dl>
 

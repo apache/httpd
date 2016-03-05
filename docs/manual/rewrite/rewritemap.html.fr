@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/rewritemap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
@@ -350,7 +348,7 @@ directive <code>RewriteMap</code>.</p>
 
     <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
     <pre class="prettyprint lang-config">RewriteMap lc int:tolower
-RewriteRule "(.*?[A-Z]+.*)" "${lc:$1}" [R]</pre>
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
 
     <div class="note">
