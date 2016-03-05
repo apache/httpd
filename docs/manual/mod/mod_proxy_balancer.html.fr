@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy_balancer.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la répartition de charge</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -41,18 +39,25 @@ la répartition de charge</td></tr>
 <h3>Sommaire</h3>
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
-    chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support de
-    la répartition de charge pour les protocoles <code>HTTP</code>,
-    <code>FTP</code> et <code>AJP13</code>.
-    </p>
+    chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et il fournit le support de
+    la répartition de charge pour tous les protocoles supportés. Parmi ces
+    protocoles, les plus importants sont :</p>
+    <ul>
+        <li>HTTP, avec le module <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
+        <li>FTP, avec le module <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+        <li>AJP13, avec le module <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
+        <li>WebSocket, avec le module <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></li>
+    </ul>
+    
 
-    <p>L'algorithme de planification de la répartition de charge est
-    fourni par des modules tels que
-    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>,
-    <code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code>,
-    <code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code> and
-    <code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code>.
-    </p>
+    <p>L'algorithme de planification de la répartition de charge n'est pas
+    fourni par ce module, mais par ceux-ci :</p>
+    <ul>
+        <li><code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code></li>
+        <li><code class="module"><a href="../mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></li>
+    </ul>
 
     <p>Ainsi, pour mettre en oeuvre la répartition de charge,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et
