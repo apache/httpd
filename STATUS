@@ -153,6 +153,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-exit_with_error_on_mpm_failure.patch
      +1: ylavic, jim
 
+  *) Synch 2.4.x with trunk, Strip useless apr_brigade_cleanup() calls.
+     trunk patch: http://svn.apache.org/r1601624
+     2.4.x patch: trunk patch works
+     +1: jailletc36
+
+  *) Use ap_array_str_contains to simplify code
+     trunk patch: http://svn.apache.org/r1733523
+                  http://svn.apache.org/r1733691
+     2.4.x patch: trunk patch works
+     +1: jailletc36
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
