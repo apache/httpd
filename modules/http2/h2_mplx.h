@@ -47,6 +47,7 @@ struct h2_io_set;
 struct apr_thread_cond_t;
 struct h2_workers;
 struct h2_int_queue;
+struct h2_ngn_shed;
 struct h2_req_engine;
 
 #include <apr_queue.h>
@@ -75,19 +76,19 @@ struct h2_mplx {
     struct h2_io_set *ready_ios;
     struct h2_io_set *redo_ios;
     
-    int max_stream_started;      /* highest stream id that started processing */
-    int workers_busy;            /* # of workers processing on this mplx */
-    int workers_limit;           /* current # of workers limit, dynamic */
-    int workers_def_limit;       /* default # of workers limit */
-    int workers_max;             /* max, hard limit # of workers in a process */
-    apr_time_t last_idle_block;  /* last time, this mplx entered IDLE while
-                                  * streams were ready */
-    apr_time_t last_limit_change;/* last time, worker limit changed */
+    apr_uint32_t max_stream_started; /* highest stream id that started processing */
+    apr_uint32_t workers_busy;       /* # of workers processing on this mplx */
+    apr_uint32_t workers_limit;      /* current # of workers limit, dynamic */
+    apr_uint32_t workers_def_limit;  /* default # of workers limit */
+    apr_uint32_t workers_max;        /* max, hard limit # of workers in a process */
+    apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
+                                      * streams were ready */
+    apr_time_t last_limit_change;    /* last time, worker limit changed */
     apr_interval_time_t limit_change_interval;
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
-    struct apr_thread_cond_t *task_done;
+    struct apr_thread_cond_t *req_added;
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
@@ -102,11 +103,8 @@ struct h2_mplx {
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
-    
-    struct h2_req_engine *engine;
-    /* TODO: signal for waiting tasks*/
-    apr_queue_t *engine_queue;
-    int next_eng_id;
+
+    struct h2_ngn_shed *ngn_shed;
 };
 
 
@@ -308,12 +306,16 @@ apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
  * of bytes buffered reaches configured max.
  * @param stream_id the stream identifier
  * @param filter the apache filter context of the data
+ * @param blocking == 0 iff call should return with APR_INCOMPLETE if
+ *                 the full brigade cannot be written at once
  * @param bb the bucket brigade to append
  * @param trailers optional trailers for response, maybe NULL
  * @param iowait a conditional used for block/signalling in h2_mplx
  */
 apr_status_t h2_mplx_out_write(h2_mplx *mplx, int stream_id, 
-                               ap_filter_t* filter, apr_bucket_brigade *bb,
+                               ap_filter_t* filter, 
+                               int blocking,
+                               apr_bucket_brigade *bb,
                                apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait);
 
@@ -408,20 +410,24 @@ APR_RING_INSERT_TAIL((b), ap__b, h2_mplx, link);	\
 apr_status_t h2_mplx_idle(h2_mplx *m);
 
 /*******************************************************************************
- * h2_mplx h2_req_engine handling.
+ * h2_req_engine handling
  ******************************************************************************/
- 
-typedef apr_status_t h2_mplx_engine_init(struct h2_req_engine *engine, 
-                                         request_rec *r);
 
-apr_status_t h2_mplx_engine_push(const char *engine_type, 
-                                 request_rec *r, h2_mplx_engine_init *einit);
-                                 
-apr_status_t h2_mplx_engine_pull(struct h2_req_engine *engine, 
-                                 apr_read_type_e block, request_rec **pr);
+typedef apr_status_t h2_mplx_req_engine_init(struct h2_req_engine *engine, 
+                                             const char *id, 
+                                             const char *type,
+                                             apr_pool_t *pool, 
+                                             apr_uint32_t req_buffer_size,
+                                             request_rec *r);
 
-void h2_mplx_engine_done(struct h2_req_engine *engine, conn_rec *r_conn);
-                                 
-void h2_mplx_engine_exit(struct h2_req_engine *engine);
+apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
+                                     request_rec *r, 
+                                     h2_mplx_req_engine_init *einit);
+apr_status_t h2_mplx_req_engine_pull(struct h2_req_engine *ngn, 
+                                     apr_read_type_e block, 
+                                     apr_uint32_t capacity, 
+                                     request_rec **pr);
+void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn);
+void h2_mplx_req_engine_exit(struct h2_req_engine *ngn);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

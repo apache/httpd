@@ -30,16 +30,21 @@ typedef enum {
     H2_TASK_OUT_INIT,
     H2_TASK_OUT_STARTED,
     H2_TASK_OUT_DONE,
-} h2_task_output_state_t;
+} h2_task_out_state_t;
 
 typedef struct h2_task_output h2_task_output;
 
 struct h2_task_output {
     conn_rec *c;
     struct h2_task *task;
-    h2_task_output_state_t state;
+    h2_task_out_state_t state;
     struct h2_from_h1 *from_h1;
+    
     unsigned int trailers_passed : 1;
+
+    apr_off_t written;
+    apr_bucket_brigade *bb;
+    apr_bucket_brigade *frozen_bb;
 };
 
 h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);

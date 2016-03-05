@@ -213,6 +213,16 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, int flush)
     return h2_conn_io_flush_int(io, flush, 0);
 }
 
+apr_status_t h2_conn_io_flush(h2_conn_io *io)
+{
+    /* make sure we always write a flush, even if our buffers are empty.
+     * We want to flush not only our buffers, but alse ones further down
+     * the connection filters. */
+    apr_bucket *b = apr_bucket_flush_create(io->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(io->output, b);
+    return h2_conn_io_flush_int(io, 0, 0);
+}
+
 apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
 {
     apr_off_t len = 0;
