@@ -121,7 +121,7 @@
     </dl>
 
     <dl>
-      <dt>Guide de configuration des mandataires inverses</dt>
+      <dt>Mandataires inverses</dt>
       <dd>
         <p>Apache httpd possède des fonctionnalités évoluées de serveur
 	mandataire inverse via ses directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> qui permettent
