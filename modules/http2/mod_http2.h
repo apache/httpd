@@ -43,27 +43,12 @@ typedef struct h2_req_engine h2_req_engine;
  * @param engine the allocated, partially filled structure
  * @param r      the first request to process, or NULL
  */
-typedef apr_status_t h2_req_engine_init(h2_req_engine *engine, request_rec *r);
-
-/**
- * The public structure of a h2_req_engine. It gets allocated by the http2
- * infrastructure, assigned id, type, pool, io and connection and passed to the
- * h2_req_engine_init() callback to complete initialization.
- * This happens whenever a new request gets "push"ed for an engine type and
- * no instance, or no free instance, for the type is available.
- */
-struct h2_req_engine {
-    const char *id;        /* identifier */
-    apr_pool_t *pool;      /* pool for engine specific allocations */
-    const char *type;      /* name of the engine type */
-    unsigned char window_bits;/* preferred size of overall response data
-                            * mod_http2 is willing to buffer as log2 */
-    unsigned char req_window_bits;/* preferred size of response body data
-                            * mod_http2 is willing to buffer per request,
-                            * as log2 */
-    apr_size_t capacity;   /* maximum concurrent requests */
-    void *user_data;       /* user specific data */
-};
+typedef apr_status_t h2_req_engine_init(h2_req_engine *engine, 
+                                        const char *id, 
+                                        const char *type,
+                                        apr_pool_t *pool, 
+                                        apr_uint32_t req_buffer_size,
+                                        request_rec *r);
 
 /**
  * Push a request to an engine with the specified name for further processing.
@@ -95,6 +80,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_pull, (h2_req_engine *engine, 
                                                 apr_read_type_e block,
+                                                apr_uint32_t capacity,
                                                 request_rec **pr));
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 

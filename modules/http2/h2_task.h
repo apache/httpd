@@ -58,12 +58,11 @@ struct h2_task {
     unsigned int input_eos   : 1;
     unsigned int ser_headers : 1;
     unsigned int frozen      : 1;
+    unsigned int blocking    : 1;
     
     struct h2_task_input *input;
     struct h2_task_output *output;
     struct apr_thread_cond_t *io;   /* used to wait for events on */
-
-    apr_bucket_brigade *frozen_out;
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
@@ -82,5 +81,7 @@ extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out
 
 apr_status_t h2_task_freeze(h2_task *task, request_rec *r);
 apr_status_t h2_task_thaw(h2_task *task);
+
+void h2_task_set_io_blocking(h2_task *task, int blocking);
 
 #endif /* defined(__mod_h2__h2_task__) */

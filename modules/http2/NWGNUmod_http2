@@ -198,6 +198,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_io.o \
 	$(OBJDIR)/h2_io_set.o \
 	$(OBJDIR)/h2_mplx.o \
+	$(OBJDIR)/h2_ngn_shed.o \
 	$(OBJDIR)/h2_push.o \
 	$(OBJDIR)/h2_request.o \
 	$(OBJDIR)/h2_response.o \

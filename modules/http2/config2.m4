@@ -33,6 +33,7 @@ h2_int_queue.lo dnl
 h2_io.lo dnl
 h2_io_set.lo dnl
 h2_mplx.lo dnl
+h2_ngn_shed.lo dnl
 h2_push.lo dnl
 h2_request.lo dnl
 h2_response.lo dnl
@@ -200,7 +201,8 @@ is usually linked shared and requires loading. ], $http2_objs, , most, [
 ])
 
 # Ensure that other modules can pick up mod_http2.h
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+# icing: hold back for now until it is more stable
+#APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 
 

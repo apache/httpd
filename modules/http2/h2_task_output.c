@@ -77,14 +77,14 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
             if (f) {
                 /* This happens currently when ap_die(status, r) is invoked
                  * by a read request filter. */
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03204)
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, output->c, APLOGNO(03204)
                               "h2_task_output(%s): write without response by %s "
                               "for %s %s %s",
                               output->task->id, caller, 
                               output->task->request->method, 
                               output->task->request->authority, 
                               output->task->request->path);
-                f->c->aborted = 1;
+                output->c->aborted = 1;
             }
             if (output->task->io) {
                 apr_thread_cond_broadcast(output->task->io);
@@ -94,37 +94,48 @@ static apr_status_t open_if_needed(h2_task_output *output, ap_filter_t *f,
         
         if (h2_task_logio_add_bytes_out) {
             /* counter headers as if we'd do a HTTP/1.1 serialization */
-            /* TODO: counter a virtual status line? */
-            apr_off_t bytes_written;
-            apr_brigade_length(bb, 0, &bytes_written);
-            bytes_written += h2_util_table_bytes(response->headers, 3)+1;
-            h2_task_logio_add_bytes_out(f->c, bytes_written);
+            output->written = h2_util_table_bytes(response->headers, 3)+1;
+            h2_task_logio_add_bytes_out(output->c, output->written);
         }
         get_trailers(output);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03348)
-                      "h2_task_output(%s): open as needed %s %s %s",
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, output->c, APLOGNO(03348)
+                      "h2_task(%s): open response to %s %s %s",
                       output->task->id, output->task->request->method, 
                       output->task->request->authority, 
                       output->task->request->path);
         return h2_mplx_out_open(output->task->mplx, output->task->stream_id, 
                                 response, f, bb, output->task->io);
     }
-    return APR_EOF;
+    return APR_SUCCESS;
 }
 
-void h2_task_output_close(h2_task_output *output)
+static apr_status_t write_brigade_raw(h2_task_output *output, 
+                                      ap_filter_t* f, apr_bucket_brigade* bb)
 {
-    open_if_needed(output, NULL, NULL, "close");
-    if (output->state != H2_TASK_OUT_DONE) {
-        if (output->task->frozen_out 
-            && !APR_BRIGADE_EMPTY(output->task->frozen_out)) {
-            h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
-                NULL, output->task->frozen_out, NULL, NULL);
-        }
-        h2_mplx_out_close(output->task->mplx, output->task->stream_id, 
-                          get_trailers(output));
-        output->state = H2_TASK_OUT_DONE;
+    apr_off_t written, left;
+    apr_status_t status;
+
+    apr_brigade_length(bb, 0, &written);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, output->c,
+                  "h2_task(%s): write response body (%ld bytes)", 
+                  output->task->id, (long)written);
+    
+    status = h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
+                               f, output->task->blocking, bb, 
+                               get_trailers(output), output->task->io);
+    if (status == APR_INCOMPLETE) {
+        apr_brigade_length(bb, 0, &left);
+        written -= left;
+        status = APR_SUCCESS;
     }
+
+    if (status == APR_SUCCESS) {
+        output->written += written;
+        if (h2_task_logio_add_bytes_out) {
+            h2_task_logio_add_bytes_out(output->c, written);
+        }
+    }
+    return status;
 }
 
 /* Bring the data from the brigade (which represents the result of the
@@ -137,34 +148,57 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     apr_status_t status;
     
     if (APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_task_output(%s): empty write", output->task->id);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, output->c,
+                      "h2_task(%s): empty write", output->task->id);
         return APR_SUCCESS;
     }
     
     if (output->task->frozen) {
         h2_util_bb_log(output->c, output->task->stream_id, APLOG_TRACE2,
                        "frozen task output write", bb);
-        return ap_save_brigade(f, &output->task->frozen_out, &bb, 
-                               output->c->pool);
+        return ap_save_brigade(f, &output->frozen_bb, &bb, output->c->pool);
     }
     
     status = open_if_needed(output, f, bb, "write");
-    if (status != APR_EOF) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "h2_task_output(%s): opened and passed brigade", 
-                      output->task->id);
-        return status;
+    
+    /* Attempt to write saved brigade first */
+    if (status == APR_SUCCESS && output->bb 
+        && !APR_BRIGADE_EMPTY(output->bb)) {
+        status = write_brigade_raw(output, f, output->bb);
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "h2_task_output(%s): write brigade", output->task->id);
-    if (h2_task_logio_add_bytes_out) {
-        apr_off_t bytes_written;
-        apr_brigade_length(bb, 0, &bytes_written);
-        h2_task_logio_add_bytes_out(f->c, bytes_written);
+    /* If there is nothing saved (anymore), try to write the brigade passed */
+    if (status == APR_SUCCESS
+        && (!output->bb || APR_BRIGADE_EMPTY(output->bb))
+        && !APR_BRIGADE_EMPTY(bb)) {
+        status = write_brigade_raw(output, f, bb);
     }
-    return h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
-                             f, bb, get_trailers(output), output->task->io);
+    
+    /* If the passed brigade is not empty, save it before return */
+    if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, output->c,
+                      "h2_task(%s): could not write all, saving brigade", 
+                      output->task->id);
+        if (!output->bb) {
+            output->bb = apr_brigade_create(output->c->pool, output->c->bucket_alloc);
+        }
+        return ap_save_brigade(f, &output->bb, &bb, output->c->pool);
+    }
+    
+    return status;
+}
+
+void h2_task_output_close(h2_task_output *output)
+{
+    open_if_needed(output, NULL, NULL, "close");
+    if (output->state != H2_TASK_OUT_DONE) {
+        if (output->frozen_bb && !APR_BRIGADE_EMPTY(output->frozen_bb)) {
+            h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
+                NULL, 1, output->frozen_bb, NULL, NULL);
+        }
+        h2_mplx_out_close(output->task->mplx, output->task->stream_id, 
+                          get_trailers(output));
+        output->state = H2_TASK_OUT_DONE;
+    }
 }
 

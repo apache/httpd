@@ -597,15 +597,6 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                      (long)session->frames_sent);
     }
     ++session->frames_sent;
-    switch (frame->hd.type) {
-        case NGHTTP2_HEADERS:
-        case NGHTTP2_DATA:
-            /* no explicit flushing necessary */
-            break;
-        default:
-            session->flush = 1;
-            break;
-    }
     return 0;
 }
 
@@ -2021,6 +2012,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 no_streams = h2_ihash_is_empty(session->streams);
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
+                /* make certain, the client receives everything before we idle */
+                h2_conn_io_flush(&session->io);
                 if (async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
@@ -2176,6 +2169,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                   "h2_session: wait for data, %ld micros", 
                                   (long)session->wait_us);
                 }
+                /* make certain, the client receives everything before we idle */
+                h2_conn_io_flush(&session->io);
                 status = h2_mplx_out_trywait(session->mplx, session->wait_us, 
                                              session->iowait);
                 if (status == APR_SUCCESS) {
@@ -2212,8 +2207,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
     
 out:
-    h2_conn_io_pass(&session->io, session->flush);
-    session->flush = 0;
+    h2_conn_io_flush(&session->io);
     
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): [%s] process returns", 

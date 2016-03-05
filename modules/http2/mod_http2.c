@@ -128,28 +128,29 @@ static char *http2_var_lookup(apr_pool_t *, server_rec *,
                          conn_rec *, request_rec *, char *name);
 static int http2_is_h2(conn_rec *);
 
-static apr_status_t http2_req_engine_push(const char *engine_type, 
+static apr_status_t http2_req_engine_push(const char *ngn_type, 
                                           request_rec *r, 
                                           h2_req_engine_init *einit)
 {
-    return h2_mplx_engine_push(engine_type, r, einit);
+    return h2_mplx_req_engine_push(ngn_type, r, einit);
 }
 
-static apr_status_t http2_req_engine_pull(h2_req_engine *engine, 
+static apr_status_t http2_req_engine_pull(h2_req_engine *ngn, 
                                           apr_read_type_e block, 
+                                          apr_uint32_t capacity, 
                                           request_rec **pr)
 {
-    return h2_mplx_engine_pull(engine, block, pr);
+    return h2_mplx_req_engine_pull(ngn, block, capacity, pr);
 }
 
-static void http2_req_engine_done(h2_req_engine *engine, conn_rec *r_conn)
+static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
 {
-    h2_mplx_engine_done(engine, r_conn);
+    h2_mplx_req_engine_done(ngn, r_conn);
 }
 
-static void http2_req_engine_exit(h2_req_engine *engine)
+static void http2_req_engine_exit(h2_req_engine *ngn)
 {
-    h2_mplx_engine_exit(engine);
+    h2_mplx_req_engine_exit(ngn);
 }
 
 
