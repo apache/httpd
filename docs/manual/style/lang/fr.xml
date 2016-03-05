@@ -153,9 +153,10 @@
         <message id="retired.headline">A savoir</message>
         <message id="retired.description">
             <p>Ce document concerne une version ancienne (<strong>2.2</strong>)
-	    du serveur HTTP Apache. La version actuelle est document&eacute;e <a
+	    du serveur HTTP Apache. La version actuelle est
+	    document&#233;e <a
 	    href="http://httpd.apache.org/docs/current">ici</a>. Si vous n'avez
-	    pas encore effectu&eacute; la mise &agrave; jour, veuillez suivre <a
+	    pas encore effectu&#233; la mise &#232; jour, veuillez suivre <a
 	    href="http://httpd.apache.org/docs/current/upgrading.html">ce
 	    lien</a> pour plus d'informations.</p>
         </message>
