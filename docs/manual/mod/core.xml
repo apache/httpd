@@ -4219,7 +4219,7 @@ handler</description>
     <highlight language="config">
 &lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
      SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
-&lt;/FilesMatch&gt;
+&lt;/LocationMatch&gt;
     </highlight>
 
     <p>You can override an earlier defined <directive>SetHandler</directive>
