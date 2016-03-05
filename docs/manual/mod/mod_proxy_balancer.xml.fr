@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1731594 (outdated) -->
+<!-- English Revision: 1731594 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -26,7 +26,7 @@
 
 <name>mod_proxy_balancer</name>
 <description>Extension de <module>mod_proxy</module> pour le support de
-la r&eacute;partition de charge</description>
+la répartition de charge</description>
 <status>Extension</status>
 <sourcefile>mod_proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
@@ -34,76 +34,83 @@ la r&eacute;partition de charge</description>
 
 <summary>
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
-    chargement de <module>mod_proxy</module>. Il fournit le support de
-    la r&eacute;partition de charge pour les protocoles <code>HTTP</code>,
-    <code>FTP</code> et <code>AJP13</code>.
-    </p>
+    chargement de <module>mod_proxy</module>, et il fournit le support de
+    la répartition de charge pour tous les protocoles supportés. Parmi ces
+    protocoles, les plus importants sont :</p>
+    <ul>
+        <li>HTTP, avec le module <module>mod_proxy_http</module></li>
+        <li>FTP, avec le module <module>mod_proxy_ftp</module></li>
+        <li>AJP13, avec le module <module>mod_proxy_ajp</module></li>
+        <li>WebSocket, avec le module <module>mod_proxy_wstunnel</module></li>
+    </ul>
+    
 
-    <p>L'algorithme de planification de la r&eacute;partition de charge est
-    fourni par des modules tels que
-    <module>mod_lbmethod_byrequests</module>,
-    <module>mod_lbmethod_bytraffic</module>,
-    <module>mod_lbmethod_bybusyness</module> and
-    <module>mod_lbmethod_heartbeat</module>.
-    </p>
+    <p>L'algorithme de planification de la répartition de charge n'est pas
+    fourni par ce module, mais par ceux-ci :</p>
+    <ul>
+        <li><module>mod_lbmethod_byrequests</module></li>
+        <li><module>mod_lbmethod_bytraffic</module></li>
+        <li><module>mod_lbmethod_bybusyness</module></li>
+        <li><module>mod_lbmethod_heartbeat</module></li>
+    </ul>
 
-    <p>Ainsi, pour mettre en oeuvre la r&eacute;partition de charge,
+    <p>Ainsi, pour mettre en oeuvre la répartition de charge,
     <module>mod_proxy</module>, <module>mod_proxy_balancer</module> et
     au moins un des modules fournissant l'algorithme de planification de
-    la r&eacute;partition de charge doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+    la répartition de charge doivent être chargés dans le serveur.</p>
 
     <note type="warning"><title>Avertissement</title>
-      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
-      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
       serveurs mandataires ouverts sont dangereux non seulement pour
-      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+      votre réseau, mais aussi pour l'Internet au sens large.</p>
     </note>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
 <section id="scheduler">
-    <title>L'algorithme de planification de la r&eacute;partition de
+    <title>L'algorithme de planification de la répartition de
     charge</title>
     <p>A l'heure actuelle, 3 algorithmes de planification de la
-    r&eacute;partition de charge sont disponibles : ils se basent
-    respectivement sur le comptage des requ&ecirc;tes, la mesure du trafic et
-    le comptage des requ&ecirc;tes en attente. Ils sont contr&ocirc;l&eacute;s par la
-    valeur de <code>lbmethod</code> dans la d&eacute;finition du r&eacute;partiteur.
+    répartition de charge sont disponibles : ils se basent
+    respectivement sur le comptage des requêtes, la mesure du trafic et
+    le comptage des requêtes en attente. Ils sont contrôlés par la
+    valeur de <code>lbmethod</code> dans la définition du répartiteur.
     Voir la directive <directive
-    module="mod_proxy">ProxyPass</directive> pour plus de d&eacute;tails, et en
-    particulier la configuration du r&eacute;partiteur et de ses membres.</p>
+    module="mod_proxy">ProxyPass</directive> pour plus de détails, et en
+    particulier la configuration du répartiteur et de ses membres.</p>
 </section>
 
 <section id="stickyness">
-    <title>R&eacute;partition de charge avec abonnement utilisateur
+    <title>Répartition de charge avec abonnement utilisateur
     (stickyness)</title>
-    <p>Le r&eacute;partiteur supporte l'abonnement utilisateur. Lorsqu'une
-    requ&ecirc;te est mandat&eacute;e vers un serveur d'arri&egrave;re-plan particulier,
-    toutes les requ&ecirc;tes suivantes du m&ecirc;me utilisateur seront alors
-    mandat&eacute;es vers le m&ecirc;me serveur d'arri&egrave;re-plan. De nombreux
-    r&eacute;partiteurs de charge impl&eacute;mentent cette fonctionnalit&eacute; via une
+    <p>Le répartiteur supporte l'abonnement utilisateur. Lorsqu'une
+    requête est mandatée vers un serveur d'arrière-plan particulier,
+    toutes les requêtes suivantes du même utilisateur seront alors
+    mandatées vers le même serveur d'arrière-plan. De nombreux
+    répartiteurs de charge implémentent cette fonctionnalité via une
     table qui associe les adresses IP des clients aux serveurs
-    d'arri&egrave;re-plan. Cette approche est transparente aux clients et aux
-    serveurs d'arri&egrave;re-plan, mais induit certains probl&egrave;mes :
-    distribution de charge in&eacute;gale si les clients se trouvent eux-m&ecirc;mes
-    derri&egrave;re un mandataire, erreurs d'abonnement lorsqu'un client
-    poss&egrave;de une adresse IP dynamique qui peut changer au cours d'une
-    session et perte d'abonnement en cas de d&eacute;passement de la table de
+    d'arrière-plan. Cette approche est transparente aux clients et aux
+    serveurs d'arrière-plan, mais induit certains problèmes :
+    distribution de charge inégale si les clients se trouvent eux-mêmes
+    derrière un mandataire, erreurs d'abonnement lorsqu'un client
+    possède une adresse IP dynamique qui peut changer au cours d'une
+    session et perte d'abonnement en cas de dépassement de la table de
     correspondances.</p>
-    <p>Le module <module>mod_proxy_balancer</module> impl&eacute;mente
+    <p>Le module <module>mod_proxy_balancer</module> implémente
     l'abonnement selon deux alternatives : les cookies et le codage
-    d'URL. Le cookie peut &ecirc;tre fourni par le serveur d'arri&egrave;re-plan ou
-    par le serveur web Apache lui-m&ecirc;me, alors que le codage d'URL est en
-    g&eacute;n&eacute;ral effectu&eacute; par le serveur d'arri&egrave;re-plan.</p>
+    d'URL. Le cookie peut être fourni par le serveur d'arrière-plan ou
+    par le serveur web Apache lui-même, alors que le codage d'URL est en
+    général effectué par le serveur d'arrière-plan.</p>
 
 </section>
 
 <section id="example">
-    <title>Exemples de configuration d'un r&eacute;partiteur</title>
-    <p>Avant de nous plonger dans les d&eacute;tails techniques, voici un
+    <title>Exemples de configuration d'un répartiteur</title>
+    <p>Avant de nous plonger dans les détails techniques, voici un
     exemple d'utilisation de <module>mod_proxy_balancer</module> mettant
-    en oeuvre la r&eacute;partition de charge entre deux serveurs
-    d'arri&egrave;re-plan :
+    en oeuvre la répartition de charge entre deux serveurs
+    d'arrière-plan :
     </p>
 
     <highlight language="config">
@@ -116,10 +123,10 @@ ProxyPassReverse "/test" "balancer://mycluster"
     </highlight>
 
 
-    <p>Voici un autre exemple de r&eacute;partiteur de charge avec
+    <p>Voici un autre exemple de répartiteur de charge avec
     abonnement utilisant <module>mod_headers</module>,
-    fonctionnant m&ecirc;me si le serveur d'arri&egrave;re-plan ne d&eacute;finit pas de
-    cookie de session appropri&eacute; :
+    fonctionnant même si le serveur d'arrière-plan ne définit pas de
+    cookie de session approprié :
     </p>
 
     <highlight language="config">
@@ -136,81 +143,81 @@ ProxyPassReverse "/test" "balancer://mycluster"
 </section>
 
 <section id="environment">
-    <title>Variables d'environnement export&eacute;es</title>
-    <p>A l'heure actuelle, 6 variables d'environnement sont export&eacute;es :</p>
+    <title>Variables d'environnement exportées</title>
+    <p>A l'heure actuelle, 6 variables d'environnement sont exportées :</p>
 
     <dl>
     <!-- ============= BALANCER_SESSION_STICKY =============== -->
     <dt><var><a name="balancer_session_sticky" id="balancer_session_sticky">BALANCER_SESSION_STICKY</a></var></dt>
     <dd>
-    <p>Cette variable se voir assign&eacute;e la valeur de
-    <var>stickysession</var> pour la requ&ecirc;te courante. Il s'agit du
-    nom du cookie ou du param&egrave;tre de requ&ecirc;te utilis&eacute; pour les sessions
+    <p>Cette variable se voir assignée la valeur de
+    <var>stickysession</var> pour la requête courante. Il s'agit du
+    nom du cookie ou du paramètre de requête utilisé pour les sessions
     avec abonnement.</p>
     </dd>
 
     <!-- ============= BALANCER_SESSION_ROUTE ================ -->
     <dt><var><a name="balancer_session_route" id="balancer_session_route">BALANCER_SESSION_ROUTE</a></var></dt>
     <dd>
-    <p>Cette variable se voit assign&eacute;e la <var>route</var> interpr&eacute;t&eacute;e
-    pour la requ&ecirc;te courante.</p>
+    <p>Cette variable se voit assignée la <var>route</var> interprétée
+    pour la requête courante.</p>
     </dd>
 
     <!-- ============= BALANCER_NAME ========================= -->
     <dt><var><a name="balancer_name" id="balancer_name">BALANCER_NAME</a></var></dt>
     <dd>
-    <p>Cette variable se voit assign&eacute; le nom du r&eacute;partiteur pour la
-    requ&ecirc;te courante. Il s'agit d'une valeur du style
+    <p>Cette variable se voit assigné le nom du répartiteur pour la
+    requête courante. Il s'agit d'une valeur du style
     <code>balancer://foo</code>.</p>
     </dd>
 
     <!-- ============= BALANCER_WORKER_NAME ================== -->
     <dt><var><a name="balancer_worker_name" id="balancer_worker_name">BALANCER_WORKER_NAME</a></var></dt>
     <dd>
-    <p>Cette variable se voit assign&eacute; le nom du membre du groupe de
-    r&eacute;partition de charge utilis&eacute; pour la requ&ecirc;te courante. Il s'agit
+    <p>Cette variable se voit assigné le nom du membre du groupe de
+    répartition de charge utilisé pour la requête courante. Il s'agit
     d'une valeur du style <code>http://hostA:1234</code>.</p>
     </dd>
 
     <!-- ============= BALANCER_WORKER_ROUTE ================= -->
     <dt><var><a name="balancer_worker_route" id="balancer_worker_route">BALANCER_WORKER_ROUTE</a></var></dt>
     <dd>
-    <p>Cette variable se voit assign&eacute;e la <var>route</var> du membre du
-    groupe de r&eacute;partition de charge qui sera utilis&eacute; pour la requ&ecirc;te
+    <p>Cette variable se voit assignée la <var>route</var> du membre du
+    groupe de répartition de charge qui sera utilisé pour la requête
     courante.</p>
     </dd>
 
     <!-- ============= BALANCER_ROUTE_CHANGED ================= -->
     <dt><var><a name="balancer_route_changed" id="balancer_route_changed">BALANCER_ROUTE_CHANGED</a></var></dt>
     <dd>
-    <p>Cette variable est d&eacute;finie &agrave; 1 si la route de la session ne
-    correspond pas &agrave; celle du membre du groupe de r&eacute;partition de charge
+    <p>Cette variable est définie à 1 si la route de la session ne
+    correspond pas à celle du membre du groupe de répartition de charge
     (BALANCER_SESSION_ROUTE != BALANCER_WORKER_ROUTE), ou si la session
-    ne poss&egrave;de pas encore de route &eacute;tablie. Elle peut servir &agrave;
-    d&eacute;terminer quand il est &eacute;ventuellement n&eacute;cessaire d'envoyer au
-    client une route mise &agrave; jour lorsque les sessions persistantes sont
-    utilis&eacute;es.</p>
+    ne possède pas encore de route établie. Elle peut servir à
+    déterminer quand il est éventuellement nécessaire d'envoyer au
+    client une route mise à jour lorsque les sessions persistantes sont
+    utilisées.</p>
     </dd>
     </dl>
 
 </section>
 
 <section id="balancer_manager">
-    <title>Activation du support du gestionnaire de r&eacute;partiteur</title>
-    <p>Cette fonctionnalit&eacute; <em>n&eacute;cessite</em> le chargement du module
-    <module>mod_status</module>. Le gestionnaire de r&eacute;partiteur permet
-    la mise &agrave; jour dynamique des membres du groupe de r&eacute;partition de
-    charge. Vous pouvez utiliser le gestionnaire de r&eacute;partiteur pour
+    <title>Activation du support du gestionnaire de répartiteur</title>
+    <p>Cette fonctionnalité <em>nécessite</em> le chargement du module
+    <module>mod_status</module>. Le gestionnaire de répartiteur permet
+    la mise à jour dynamique des membres du groupe de répartition de
+    charge. Vous pouvez utiliser le gestionnaire de répartiteur pour
     modifier le facteur de charge d'un membre particulier, ou passer ce
     dernier en mode hors ligne.
     </p>
 
-    <p>Ainsi, pour mettre en oeuvre la gestion du r&eacute;partiteur de charge,
+    <p>Ainsi, pour mettre en oeuvre la gestion du répartiteur de charge,
     <module>mod_status</module> et <module>mod_proxy_balancer</module>
-    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+    doivent être chargés dans le serveur.</p>
 
-    <p>Pour permettre la gestion du r&eacute;partiteur de charge aux
-    navigateurs appartenant au domaine example.com, ajoutez ces lignes &agrave;
+    <p>Pour permettre la gestion du répartiteur de charge aux
+    navigateurs appartenant au domaine example.com, ajoutez ces lignes à
     votre fichier de configuration <code>httpd.conf</code> :</p>
 <highlight language="config">
 &lt;Location "/balancer-manager"&gt;
@@ -219,73 +226,73 @@ ProxyPassReverse "/test" "balancer://mycluster"
 &lt;/Location&gt;
 </highlight>
 
-    <p>Vous pourrez alors acc&eacute;der au gestionnaire du r&eacute;partiteur de
+    <p>Vous pourrez alors accéder au gestionnaire du répartiteur de
     charge en utilisant un navigateur web pour afficher la page
     <code>http://nom.de.votre.serveur/balancer-manager</code>. Notez que
-    pour pouvoir contr&ocirc;ler dynamiquement un membre de groupe de
-    r&eacute;partition, ce dernier ne doit pas &ecirc;tre d&eacute;fini au sein d'une
+    pour pouvoir contrôler dynamiquement un membre de groupe de
+    répartition, ce dernier ne doit pas être défini au sein d'une
     section <code>&lt;Location ...&gt;</code>.</p>
 </section>
 
 <section id="stickyness_implementation">
-    <title>D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
+    <title>Détails à propos de la répartition de charge par abonnement
     (stickyness)</title>
-    <p>Si l'abonnement s'appuie sur un cookie, vous devez d&eacute;finir le nom
-    de ce cookie dont le contenu pr&eacute;cise le serveur d'arri&egrave;re-plan &agrave;
+    <p>Si l'abonnement s'appuie sur un cookie, vous devez définir le nom
+    de ce cookie dont le contenu précise le serveur d'arrière-plan à
     utiliser. Pour ce faire, on utilise l'attribut
     <var>stickysession</var> avec la directive <directive
     module="mod_proxy">ProxyPass</directive> ou <directive
     module="mod_proxy">ProxySet</directive>. Le nom du cookie est
-    sensible &agrave; la casse. Le r&eacute;partiteur extrait le contenu du cookie et
-    recherche un serveur membre dont la <var>route</var> correspond &agrave;
-    cette valeur. La route doit aussi &ecirc;tre d&eacute;finie dans la directive <directive
+    sensible à la casse. Le répartiteur extrait le contenu du cookie et
+    recherche un serveur membre dont la <var>route</var> correspond à
+    cette valeur. La route doit aussi être définie dans la directive <directive
     module="mod_proxy">ProxyPass</directive> ou <directive
-    module="mod_proxy">ProxySet</directive>. Le cookie peut &ecirc;tre d&eacute;fini
-    soit par le serveur d'arri&egrave;re-plan, soit, comme indiqu&eacute; dans l'<a
+    module="mod_proxy">ProxySet</directive>. Le cookie peut être défini
+    soit par le serveur d'arrière-plan, soit, comme indiqué dans l'<a
     href="#example">exemple</a> ci-dessus par le serveur web Apache
-    lui-m&ecirc;me.</p>
-    <p>Certains serveurs d'arri&egrave;re-plan, tels qu'Apache Tomcat,
-    utilisent une forme sensiblement diff&eacute;rente de cookie d'abonnement.
-    Tomcat ajoute le nom de l'instance Tomcat &agrave; la fin de son
-    identifiant de session, pr&eacute;c&eacute;d&eacute; par un point. Ainsi, si le serveur
+    lui-même.</p>
+    <p>Certains serveurs d'arrière-plan, tels qu'Apache Tomcat,
+    utilisent une forme sensiblement différente de cookie d'abonnement.
+    Tomcat ajoute le nom de l'instance Tomcat à la fin de son
+    identifiant de session, précédé par un point. Ainsi, si le serveur
     web Apache trouve un point dans la valeur du cookie d'abonnement, il
-    n'utilisera que la partie situ&eacute;e apr&egrave;s ce point pour
-    rechercher sa route. Pour que Tomcat puisse conna&icirc;tre son nom
-    d'instance, vous devez d&eacute;finir l'attribut <code>jvmRoute</code> dans
-    son fichier de configuration <code>conf/server.xml</code> &agrave; la
+    n'utilisera que la partie située après ce point pour
+    rechercher sa route. Pour que Tomcat puisse connaître son nom
+    d'instance, vous devez définir l'attribut <code>jvmRoute</code> dans
+    son fichier de configuration <code>conf/server.xml</code> à la
     valeur de la <var>route</var> du serveur qui se connecte au Tomcat
-    consid&eacute;r&eacute;. Le nom du cookie de session utilis&eacute; par Tomcat (et plus
-    g&eacute;n&eacute;ralement par les applications web Java &agrave; base de servlets) est
-    <code>JSESSIONID</code> (en majuscules), mais peut &ecirc;tre modifi&eacute;.</p>
+    considéré. Le nom du cookie de session utilisé par Tomcat (et plus
+    généralement par les applications web Java à base de servlets) est
+    <code>JSESSIONID</code> (en majuscules), mais peut être modifié.</p>
 
-    <p>La seconde m&eacute;thode pour impl&eacute;menter l'abonnement est le codage
-    d'URL. Ici, le serveur web recherche un param&egrave;tre dans l'URL de la
-    requ&ecirc;te. Le nom du param&egrave;tre est sp&eacute;cifi&eacute; par l'attribut
+    <p>La seconde méthode pour implémenter l'abonnement est le codage
+    d'URL. Ici, le serveur web recherche un paramètre dans l'URL de la
+    requête. Le nom du paramètre est spécifié par l'attribut
     <var>stickysession</var>. Pour trouver un serveur membre, on
-    recherche un serveur dont la <var>route</var> est &eacute;gale &agrave; la valeur
-    du param&egrave;tre. Comme il n'est pas ais&eacute; d'extraire et de manipuler
-    tous les liens URL contenus dans les r&eacute;ponses, le travail consistant
-    &agrave; ajouter les param&egrave;tres &agrave; chaque lien est g&eacute;n&eacute;ralement effectu&eacute; par
-    le serveur d'arri&egrave;re-plan qui g&eacute;n&egrave;re le contenu. Bien qu'il soit
+    recherche un serveur dont la <var>route</var> est égale à la valeur
+    du paramètre. Comme il n'est pas aisé d'extraire et de manipuler
+    tous les liens URL contenus dans les réponses, le travail consistant
+    à ajouter les paramètres à chaque lien est généralement effectué par
+    le serveur d'arrière-plan qui génère le contenu. Bien qu'il soit
     possible dans certains cas d'effectuer ces ajouts au niveau du
     serveur web via les modules <module>mod_substitute</module> ou
-    <module>mod_sed</module>, cette m&eacute;thode peut d&eacute;grader les
+    <module>mod_sed</module>, cette méthode peut dégrader les
     performances.</p>
 
-    <p>Les standards Java impl&eacute;mentent le codage d'URL de mani&egrave;re
-    sensiblement diff&eacute;rente. Ils ajoutent une information de chemin &agrave;
+    <p>Les standards Java implémentent le codage d'URL de manière
+    sensiblement différente. Ils ajoutent une information de chemin à
     l'URL en utilisant un point-virgule (<code>;</code>) comme
-    s&eacute;parateur, puis ajoutent enfin l'identifiant de session. Comme dans
-    le cas des cookies, Apache Tomcat peut ins&eacute;rer la valeur de
+    séparateur, puis ajoutent enfin l'identifiant de session. Comme dans
+    le cas des cookies, Apache Tomcat peut insérer la valeur de
     l'attribut <code>jvmRoute</code> dans cette information de chemin.
     Pour qu'Apache puisse trouver ce genre d'information de chemin, vous
-    devez d&eacute;finir <code>scolonpathdelim</code> &agrave; <code>On</code> dans la
+    devez définir <code>scolonpathdelim</code> à <code>On</code> dans la
     directive <directive module="mod_proxy">ProxyPass</directive> ou
     <directive module="mod_proxy">ProxySet</directive>.</p>
 
-    <p>Enfin, vous pouvez utiliser simultan&eacute;ment les cookies et le codage
-    d'URL en d&eacute;finissant le nom du cookie et le nom du param&egrave;tre d'URL
-    s&eacute;par&eacute;s par une barre verticale (<code>|</code>) comme dans
+    <p>Enfin, vous pouvez utiliser simultanément les cookies et le codage
+    d'URL en définissant le nom du cookie et le nom du paramètre d'URL
+    séparés par une barre verticale (<code>|</code>) comme dans
     l'exemple suivant :</p>
     <highlight language="config">
 ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid scolonpathdelim=On
@@ -294,60 +301,60 @@ ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid sco
     BalancerMember "http://192.168.1.51:80" route=node2
 &lt;/Proxy&gt;
     </highlight>
-    <p>Si le cookie et le param&egrave;tre de requ&ecirc;te fournissent tous deux une
-    information de route correcte pour la m&ecirc;me requ&ecirc;te, c'est
-    l'information en provenance du param&egrave;tre de requ&ecirc;te qui sera
+    <p>Si le cookie et le paramètre de requête fournissent tous deux une
+    information de route correcte pour la même requête, c'est
+    l'information en provenance du paramètre de requête qui sera
     retenue.</p>
 </section>
 
 <section id="stickyness_troubleshooting">
-    <title>R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
+    <title>Résolution des problèmes liés à la répartition de charge par
     abonnement</title>
-    <p>Si vous &ecirc;tes confront&eacute; &agrave; des erreurs d'abonnement, comme la
-    n&eacute;cessit&eacute; pour les utilisateurs de se reconnecter suite &agrave; une perte
-    de session d'application, vous devez tout d'abord v&eacute;rifier si ceci
-    n'est pas du &agrave; une indisponibilit&eacute; sporadique des serveurs
-    d'arri&egrave;re-plan ou &agrave; une erreur de configuration. La pr&eacute;sence de
+    <p>Si vous êtes confronté à des erreurs d'abonnement, comme la
+    nécessité pour les utilisateurs de se reconnecter suite à une perte
+    de session d'application, vous devez tout d'abord vérifier si ceci
+    n'est pas du à une indisponibilité sporadique des serveurs
+    d'arrière-plan ou à une erreur de configuration. La présence de
     messages d'erreur de type proxy dans le journal des erreurs d'Apache
-    pourra r&eacute;v&eacute;ler des probl&egrave;mes de stabilit&eacute; au niveau des serveurs
-    d'arri&egrave;re-plan.</p>
-    <p>Pour contr&ocirc;ler votre configuration, regardez tout d'abord si
-    l'abonnement est &agrave; base de cookie ou de codage d'URL. L'&eacute;tape
-    suivante consiste &agrave; enregistrer certaines donn&eacute;es dans le journal
-    des acc&egrave;s en utilisant un <directive module="mod_log_config">format
-    de journalisation</directive> personnalis&eacute;. Les champs int&eacute;ressants
+    pourra révéler des problèmes de stabilité au niveau des serveurs
+    d'arrière-plan.</p>
+    <p>Pour contrôler votre configuration, regardez tout d'abord si
+    l'abonnement est à base de cookie ou de codage d'URL. L'étape
+    suivante consiste à enregistrer certaines données dans le journal
+    des accès en utilisant un <directive module="mod_log_config">format
+    de journalisation</directive> personnalisé. Les champs intéressants
     sont les suivants :</p>
     <dl>
     <dt><code>%{MONCOOKIE}C</code></dt>
     <dd>La valeur que contient le cookie de nom <code>MONCOOKIE</code>.
-    Le nom doit correspondre au nom d&eacute;fini par l'attribut
+    Le nom doit correspondre au nom défini par l'attribut
     <var>stickysession</var>.</dd>
     <dt><code>%{Set-Cookie}o</code></dt>
-    <dd>Ce champ contient tout cookie d&eacute;fini par le serveur
-    d'arri&egrave;re-plan. Vous pouvez ainsi v&eacute;rifier si le serveur
-    d'arri&egrave;re-plan d&eacute;finit bien le cookie de session auquel vous vous
-    attendez, et &agrave; quelle valeur il est d&eacute;fini.</dd>
+    <dd>Ce champ contient tout cookie défini par le serveur
+    d'arrière-plan. Vous pouvez ainsi vérifier si le serveur
+    d'arrière-plan définit bien le cookie de session auquel vous vous
+    attendez, et à quelle valeur il est défini.</dd>
     <dt><code>%{BALANCER_SESSION_STICKY}e</code></dt>
-    <dd>Le nom du cookie ou du param&egrave;tre de requ&ecirc;te utilis&eacute; pour la
+    <dd>Le nom du cookie ou du paramètre de requête utilisé pour la
     recherche de l'information de routage.</dd>
     <dt><code>%{BALANCER_SESSION_ROUTE}e</code></dt>
-    <dd>L'information de routage extraite de la requ&ecirc;te.</dd>
+    <dd>L'information de routage extraite de la requête.</dd>
     <dt><code>%{BALANCER_WORKER_ROUTE}e</code></dt>
     <dd>La route du serveur choisi.</dd>
     <dt><code>%{BALANCER_ROUTE_CHANGED}e</code></dt>
     <dd>Contient la valeur <code>1</code> si la route extraite de la
-    requ&ecirc;te est diff&eacute;rente de la route du serveur ; autrement dit, le
-    traitement de la requ&ecirc;te n'a pas pu &ecirc;tre effectu&eacute; dans le cadre
-    d'une r&eacute;partition de charge par abonnement.</dd>
+    requête est différente de la route du serveur ; autrement dit, le
+    traitement de la requête n'a pas pu être effectué dans le cadre
+    d'une répartition de charge par abonnement.</dd>
     </dl>
-    <p>Les pertes de session sont souvent dues &agrave; des expirations de
-    session dont la valeur peut en g&eacute;n&eacute;ral &ecirc;tre configur&eacute;e au niveau du
-    serveur d'arri&egrave;re-plan.</p>
-    <p>Si le niveau de journalisation est d&eacute;fini &agrave; <code>debug</code> ou
-    plus, le r&eacute;partiteur journalise aussi des informations d&eacute;taill&eacute;es &agrave;
+    <p>Les pertes de session sont souvent dues à des expirations de
+    session dont la valeur peut en général être configurée au niveau du
+    serveur d'arrière-plan.</p>
+    <p>Si le niveau de journalisation est défini à <code>debug</code> ou
+    plus, le répartiteur journalise aussi des informations détaillées à
     propos de l'abonnement dans le journal des erreurs, ce qui facilite
-    la r&eacute;solution des probl&egrave;mes d'abonnement. Notez cependant que le
-    volume de journalisation pourra alors s'av&eacute;rer trop important pour
+    la résolution des problèmes d'abonnement. Notez cependant que le
+    volume de journalisation pourra alors s'avérer trop important pour
     un serveur en production sous forte charge.</p>
 </section>
 
