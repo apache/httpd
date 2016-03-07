@@ -1003,16 +1003,10 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
     apr_brigade_destroy(tmp_bb);
 }
 
-request_rec *ap_read_request(conn_rec *conn)
+request_rec *ap_create_request(conn_rec *conn)
 {
     request_rec *r;
     apr_pool_t *p;
-    const char *expect;
-    int access_status;
-    apr_bucket_brigade *tmp_bb;
-    apr_socket_t *csd;
-    apr_interval_time_t cur_timeout;
-
 
     apr_pool_create(&p, conn->pool);
     apr_pool_tag(p, "request");
@@ -1051,6 +1045,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->read_body       = REQUEST_NO_BODY;
 
     r->status          = HTTP_OK;  /* Until further notice */
+    r->header_only     = 0;
     r->the_request     = NULL;
 
     /* Begin by presuming any module can make its own path_info assumptions,
@@ -1060,6 +1055,20 @@ request_rec *ap_read_request(conn_rec *conn)
 
     r->useragent_addr = conn->client_addr;
     r->useragent_ip = conn->client_ip;
+
+    return r;
+}
+
+request_rec *ap_read_request(conn_rec *conn)
+{
+    const char *expect;
+    int access_status;
+    apr_bucket_brigade *tmp_bb;
+    apr_socket_t *csd;
+    apr_interval_time_t cur_timeout;
+
+
+    request_rec *r = ap_create_request(conn);
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
