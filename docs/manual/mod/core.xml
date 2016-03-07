@@ -4454,7 +4454,7 @@ certain events before failing a request</description>
     <p>The <directive>TimeOut</directive> directive defines the length
     of time Apache httpd will wait for I/O in various circumstances:</p>
 
-    <ol>
+    <ul>
       <li><p>When reading data from the client, the length of time to
       wait for a TCP packet to arrive if the read buffer is
       empty.</p>
@@ -4476,7 +4476,7 @@ certain events before failing a request</description>
       <li>In <module>mod_proxy</module>, the default timeout value if
       <directive module="mod_proxy">ProxyTimeout</directive> is not
       configured.</li>
-    </ol>
+    </ul>
 
 </usage>
 </directivesynopsis>
