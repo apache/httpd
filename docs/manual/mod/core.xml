@@ -4455,9 +4455,13 @@ certain events before failing a request</description>
     of time Apache httpd will wait for I/O in various circumstances:</p>
 
     <ol>
-      <li>When reading data from the client, the length of time to
+      <li><p>When reading data from the client, the length of time to
       wait for a TCP packet to arrive if the read buffer is
-      empty.</li>
+      empty.</p>
+      <p> For initial data on a new connection, this directive doesn't
+      take effect until after any configured <directive module="core">
+      AcceptFilter</directive> has passed the new connection to the server.</p>
+      </li>
 
       <li>When writing data to the client, the length of time to wait
       for an acknowledgement of a packet if the send buffer is
