@@ -7,13 +7,6 @@ Changes with Apache 2.5.0
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
-  *) prefork: Initialize the POD when running in ONE_PROCESS (or -X) mode to
-     avoid a crash.  [Jan Kaluza, Yann Ylavic]
-
-  *) core: fix a bug in <UnDefine ...> directive processing. When used, the last
-     <Define...>'ed variable was also withdrawn. PR 59019
-     [Christophe Jaillet]
-
   *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
      [Eric Covener]
 
@@ -30,20 +23,6 @@ Changes with Apache 2.5.0
 
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
  
-  *) hostname: Test and log useragent_host per-request across various modules,
-     including the scoreboard, expression and rewrite engines, setenvif,
-     authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.
-     PR55348  [William Rowe]
- 
-  *) core: Track the useragent_host per-request when mod_remoteip or similar
-     modules track a per-request useragent_ip.  Modules should be updated
-     to inquire for ap_get_useragent_host() in place of ap_get_remote_host().
-     [William Rowe]
-
-  *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
-     had to be issued because the remote closed the previous/reusable one
-     during idle (keep-alive) time.  [Yann Ylavic]
-
   *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
      urls. Uses, so far, one connection per request, reuses connections.
      [Stefan Eissing]
@@ -53,13 +32,6 @@ Changes with Apache 2.5.0
      early based on SNI selected vhost. 
      [Stefan Eissing]
   
-  *) core: Prevent a server crash in case of an invalid CONNECT request with
-     a custom error page for status code 400 that uses server side includes.
-     PR 58929 [Ruediger Pluem]
-
-  *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
-     to OCSP responders through a HTTP proxy. [Ruediger Pluem]
-
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
 
@@ -77,39 +49,10 @@ Changes with Apache 2.5.0
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
 
-  *) mod_ssl: handle TIMEOUT on empty SSL input as non-fatal, returning 
-     APR_TIMEUP and preserving connection state for later retry.
-     [Stefan Eissing]
-
   *) Added many log numbers to log statements that had none.
 
   *) core: Add expression support to SetHandler.
      [Eric Covener]
-
-  *) mod_proxy_fcgi: Suppress HTTP error 503 and message 01075, 
-     "Error dispatching request", when the cause appears to be 
-     due to the client closing the connection. 
-     PR58118.  [Tobias Adolph <adolph lrz.de>]
-
-  *) mod_cgid: Message 02550, failure to flush a response to the client,
-     is now logged at TRACE1 level to match the underlying core output filter
-     severity.  [Eric Covener]
-
-  *) mod_rewrite: Avoid looping on relative substitutions that
-     result in the same filename we started with. PR 58854.
-     [Eric Covener]
-
-  *) mime.types: add common extension "m4a" for MPEG 4 Audio.
-     PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
-
-  *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
-     In earlier version of httpd, you can explicitelly set the 'flusher' parameter
-     to 'flush' as a workaround. (i.e. flusher=flush)
-     Add documentation for the 'flusher' parameter when defining a proxy worker.
-     [Christophe Jaillet]
-
-  *) mod_ssl: For the "SSLStaplingReturnResponderErrors off" case, make sure
-     to only staple responses with certificate status "good". [Kaspar Brand]
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
