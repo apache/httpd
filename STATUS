@@ -171,6 +171,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36
 
+  *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
+     hook returns an error.
+     trunk patch: http://svn.apache.org/r1734006
+     2.4.x patch: trunk patch works (modulo CHANGES)
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
