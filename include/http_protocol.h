@@ -54,6 +54,13 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
  */
 
 /**
+ * Read an empty request and set reasonable defaults.
+ * @param c The current connection
+ * @return The new request_rec
+ */
+request_rec *ap_create_request(conn_rec *c);
+
+/**
  * Read a request and fill in the fields.
  * @param c The current connection
  * @return The new request_rec

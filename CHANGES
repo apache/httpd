@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
+
   *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
      hook returns an error. [Graham Leggett]
 
