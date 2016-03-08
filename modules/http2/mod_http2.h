@@ -74,8 +74,9 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
  * @param timeout     wait a maximum amount of time for a new slave, 0 will not wait
  * @param pslave      the slave connection that needs processing or NULL
  * @return APR_SUCCESS if new request was assigned
- *         APR_EAGAIN/APR_TIMEUP if no new request is available
- *         APR_ECONNABORTED if the engine needs to shut down
+ *         APR_EAGAIN  if no new request is available
+ *         APR_EOF          if engine may shut down, as no more request will be scheduled
+ *         APR_ECONNABORTED if the engine needs to shut down immediately
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_pull, (h2_req_engine *engine, 
@@ -85,15 +86,6 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 
                                                 conn_rec *rconn));
-/**
- * The given request engine is done processing and needs to be excluded
- * from further handling. 
- * @param engine      the engine to exit
- */
-APR_DECLARE_OPTIONAL_FN(void,
-                        http2_req_engine_exit, (h2_req_engine *engine));
-
-
 #define H2_TASK_ID_NOTE     "http2-task-id"
 
 #endif

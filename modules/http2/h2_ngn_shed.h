@@ -17,6 +17,7 @@
 #define h2_req_shed_h
 
 struct h2_req_engine;
+struct h2_task;
 
 typedef struct h2_ngn_shed h2_ngn_shed;
 struct h2_ngn_shed {
@@ -29,6 +30,9 @@ struct h2_ngn_shed {
     unsigned int aborted : 1;
     apr_uint32_t req_buffer_size; /* preferred buffer size for responses */
 };
+
+const char *h2_req_engine_get_id(h2_req_engine *engine);
+int h2_req_engine_is_shutdown(h2_req_engine *engine);
 
 typedef apr_status_t h2_shed_ngn_init(h2_req_engine *engine, 
                                       const char *id, 
@@ -55,8 +59,9 @@ apr_status_t h2_ngn_shed_pull_req(h2_ngn_shed *shed, h2_req_engine *pub_ngn,
                                   apr_uint32_t capacity, 
                                   int want_shutdown, request_rec **pr);
 
-apr_status_t h2_ngn_shed_done_req(h2_ngn_shed *shed, 
-                                  struct h2_req_engine *ngn, conn_rec *r_conn);
+apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed, 
+                                   struct h2_req_engine *ngn, 
+                                   struct h2_task *task);
 
 void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn);
 

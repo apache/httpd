@@ -428,6 +428,5 @@ apr_status_t h2_mplx_req_engine_pull(struct h2_req_engine *ngn,
                                      apr_uint32_t capacity, 
                                      request_rec **pr);
 void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn);
-void h2_mplx_req_engine_exit(struct h2_req_engine *ngn);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

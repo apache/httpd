@@ -148,12 +148,6 @@ static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
     h2_mplx_req_engine_done(ngn, r_conn);
 }
 
-static void http2_req_engine_exit(h2_req_engine *ngn)
-{
-    h2_mplx_req_engine_exit(ngn);
-}
-
-
 /* Runs once per created child process. Perform any process 
  * related initionalization here.
  */
@@ -179,7 +173,6 @@ static void h2_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_push);
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_pull);
     APR_REGISTER_OPTIONAL_FN(http2_req_engine_done);
-    APR_REGISTER_OPTIONAL_FN(http2_req_engine_exit);
 
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool, "installing hooks");
     
