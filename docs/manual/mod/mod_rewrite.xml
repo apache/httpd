@@ -1365,6 +1365,14 @@ cannot use <code>$N</code> in the substitution string!
         ...</a></em></td>
     </tr>
     <tr>
+        <td>qslast|QSA</td>
+        <td>Interpret the last (right-most) question mark as the query string
+            delimeter, instead of the first (left-most) as normally used.  
+        <em><a href="../rewrite/flags.html#flag_qsl">details
+        ...</a></em></td>
+    </tr>
+ 
+    <tr>
         <td>redirect|R[=<em>code</em>]</td>
         <td>Forces an external redirect, optionally with the specified
         HTTP status code. <em><a
