@@ -177,6 +177,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: minfrin
 
+  *) mod_rewrite: PR58854: Revert r1726016 (rewrite looping issue) which was
+     reverted in trunk in r1732896. The fix is bad and breaks old loop
+     avoidance.  
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
@@ -220,12 +224,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              Do you think we'd better remove the prefetch, or maybe just
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
-
-   * mod_rewrite: PR58854: Revert r1726016 (rewrite looping issue) which was
-     reverted in trunk in r1732896. The fix is bad and breaks old loop
-     avoidance.  
-
-     +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
