@@ -859,7 +859,8 @@ to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
 OpenSSL version being used for mod_ssl: with version 1.0.0 or later,
 <code>openssl list-public-key-algorithms</code> will output a list
-of supported algorithms.
+of supported algorithms, see also the note below about limitations
+of OpenSSL versions prior to 1.0.2 and the ways to work around them.
 </p>
 
 <p>
@@ -906,6 +907,33 @@ With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
 <a href="../ssl/ssl_faq.html#javadh">FAQ answer</a> for working around
 such issues.
+</p>
+</note>
+
+<note>
+<title>Default DH parameters when using multiple certificates and OpenSSL
+versions prior to 1.0.2</title>
+<p>
+When using multiple certificates to support different authentication algorithms
+(like RSA, DSA, but mainly ECC) and OpenSSL prior to 1.0.2, it is recommended
+to either use custom DH parameters (preferably) by adding them to the
+first certificate file (as described above), or to order the
+<directive>SSLCertificateFile</directive> directives such that RSA/DSA
+certificates are placed <strong>after</strong> the ECC one.
+</p>
+<p>
+This is due to a limitation in older versions of OpenSSL which don't let the
+Apache HTTP Server determine the currently selected certificate at handshake
+time (when the DH parameters must be sent to the peer) but instead always
+provide the last configured certificate. Consequently, the server may select
+default DH parameters based on the length of the wrong certificate's key (ECC
+keys are much smaller than RSA/DSA ones and their length is not relevant for
+selecting DH primes).
+</p>
+<p>
+Since custom DH parameters always take precedence over the default ones, this
+issue can be avoided by creating and configuring them (as described above),
+thus using a custom/suitable length.
 </p>
 </note>
 
