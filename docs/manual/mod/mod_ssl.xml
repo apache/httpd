@@ -914,7 +914,7 @@ When using multiple certificates to support different authentication algorithms
 to either use custom DH parameters (preferably) by adding them to the
 first certificate file (as described above), or to order the
 <directive>SSLCertificateFile</directive> directives such that RSA/DSA
-certificates are placed <strong>after<strong> the ECC one.
+certificates are placed <strong>after</strong> the ECC one.
 </p>
 <p>
 This is due to a limitation in older versions of OpenSSL which don't let the
