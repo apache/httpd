@@ -61,6 +61,8 @@ struct h2_proxy_session {
     apr_pool_t *pool;
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
+    unsigned int aborted : 1;
+
     h2_proxy_request_done *done;
     void *user_data;
     
@@ -87,7 +89,15 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
 
 apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
                                      request_rec *r);
-                                     
+                       
+/** 
+ * Perform a step in processing the proxy session. Will return aftert
+ * one read/write cycle and indicate session status by status code.
+ * @param s the session to process
+ * @return APR_EAGAIN  when processing needs to be invoked again
+ *         APR_SUCCESS when all streams have been processed, session still live
+ *         APR_EOF     when the session has been terminated
+ */
 apr_status_t h2_proxy_session_process(h2_proxy_session *s);
 
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);

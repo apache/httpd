@@ -41,6 +41,7 @@ struct apr_thread_cond_t;
 struct h2_conn;
 struct h2_mplx;
 struct h2_task;
+struct h2_req_engine;
 struct h2_request;
 struct h2_resp_head;
 struct h2_worker;
@@ -63,6 +64,8 @@ struct h2_task {
     struct h2_task_input *input;
     struct h2_task_output *output;
     struct apr_thread_cond_t *io;   /* used to wait for events on */
+    
+    struct h2_req_engine *engine;
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 

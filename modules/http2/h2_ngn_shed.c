@@ -45,6 +45,7 @@
 typedef struct h2_ngn_entry h2_ngn_entry;
 struct h2_ngn_entry {
     APR_RING_ENTRY(h2_ngn_entry) link;
+    h2_task *task;
     request_rec *r;
 };
 
@@ -72,6 +73,7 @@ struct h2_req_engine {
     const char *type;      /* name of the engine type */
     apr_pool_t *pool;      /* pool for engine specific allocations */
     conn_rec *c;           /* connection this engine is assigned to */
+    h2_task *task;         /* the task this engine is base on, running in */
     h2_ngn_shed *shed;
 
     unsigned int shutdown : 1; /* engine is being shut down */
@@ -81,9 +83,17 @@ struct h2_req_engine {
     apr_uint32_t no_assigned;  /* # of assigned requests */
     apr_uint32_t no_live;      /* # of live */
     apr_uint32_t no_finished;  /* # of finished */
-
-    apr_thread_cond_t *io;     /* condition var for waiting on data */
 };
+
+const char *h2_req_engine_get_id(h2_req_engine *engine)
+{
+    return engine->id;
+}
+
+int h2_req_engine_is_shutdown(h2_req_engine *engine)
+{
+    return engine->shutdown;
+}
 
 h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
                                 apr_uint32_t req_buffer_size)
@@ -119,14 +129,13 @@ void h2_ngn_shed_abort(h2_ngn_shed *shed)
     shed->aborted = 1;
 }
 
-static apr_status_t ngn_schedule(h2_req_engine *ngn, request_rec *r)
+static void ngn_add_req(h2_req_engine *ngn, h2_task *task, request_rec *r)
 {
-    h2_ngn_entry *entry = apr_pcalloc(r->pool, sizeof(*entry));
-
+    h2_ngn_entry *entry = apr_pcalloc(task->c->pool, sizeof(*entry));
     APR_RING_ELEM_INIT(entry, link);
+    entry->task = task;
     entry->r = r;
     H2_REQ_ENTRIES_INSERT_TAIL(&ngn->entries, entry);
-    return APR_SUCCESS;
 }
 
 
@@ -134,7 +143,6 @@ apr_status_t h2_ngn_shed_push_req(h2_ngn_shed *shed, const char *ngn_type,
                                   h2_task *task, request_rec *r, 
                                   h2_req_engine_init *einit){
     h2_req_engine *ngn;
-    apr_status_t status = APR_EOF;
 
     AP_DEBUG_ASSERT(shed);
     
@@ -147,73 +155,69 @@ apr_status_t h2_ngn_shed_push_req(h2_ngn_shed *shed, const char *ngn_type,
     ngn = apr_hash_get(shed->ngns, ngn_type, APR_HASH_KEY_STRING);
     if (ngn) {
         if (ngn->shutdown) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                           "h2_ngn_shed(%ld): %s in shutdown", 
                           shed->c->id, ngn->id);
-            ngn = NULL;
         }
         else if (ngn->no_assigned >= ngn->capacity) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
                           "h2_ngn_shed(%ld): %s over capacity %d/%d", 
                           shed->c->id, ngn->id, ngn->no_assigned,
                           ngn->capacity);
-            ngn = NULL;
         }
-        else if (ngn_schedule(ngn, r) == APR_SUCCESS) {
+        else {
             /* this task will be processed in another thread,
              * freeze any I/O for the time being. */
             h2_task_freeze(task, r);
+            ngn_add_req(ngn, task, r);
             ngn->no_assigned++;
-            status = APR_SUCCESS;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
                           "h2_ngn_shed(%ld): pushed request %s to %s", 
                           shed->c->id, task->id, ngn->id);
-        }
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
-                          "h2_ngn_shed(%ld): engine error adding req %s", 
-                          shed->c->id, ngn->id);
-            ngn = NULL;
+            return APR_SUCCESS;
         }
     }
     
-    if (!ngn && einit) {
-        ngn = apr_pcalloc(task->c->pool, sizeof(*ngn));
-        ngn->id = apr_psprintf(task->c->pool, "ngn-%ld-%d", 
-                                   shed->c->id, shed->next_ngn_id++);
-        ngn->pool = task->c->pool;
-        ngn->type = apr_pstrdup(task->c->pool, ngn_type);
-        ngn->c = r->connection;
-        APR_RING_INIT(&ngn->entries, h2_ngn_entry, link);
-        ngn->shed = shed;
-        ngn->capacity = 100;
-        ngn->io = task->io;
-        ngn->no_assigned = 1;
-        ngn->no_live = 1;
+    /* none of the existing engines has capacity */
+    if (einit) {
+        apr_status_t status;
+        h2_req_engine *newngn;
         
-        status = einit(ngn, ngn->id, ngn->type, ngn->pool,
+        newngn = apr_pcalloc(task->c->pool, sizeof(*ngn));
+        newngn->id = apr_psprintf(task->c->pool, "ngn-%ld-%d", 
+                                   shed->c->id, shed->next_ngn_id++);
+        newngn->pool = task->c->pool;
+        newngn->type = apr_pstrdup(task->c->pool, ngn_type);
+        newngn->c = r->connection;
+        APR_RING_INIT(&newngn->entries, h2_ngn_entry, link);
+        newngn->shed = shed;
+        newngn->capacity = 100;
+        newngn->no_assigned = 1;
+        newngn->no_live = 1;
+        
+        status = einit(newngn, newngn->id, newngn->type, newngn->pool,
                        shed->req_buffer_size, r);
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c,
                       "h2_ngn_shed(%ld): init engine %s (%s)", 
-                      shed->c->id, ngn->id, ngn->type);
+                      shed->c->id, newngn->id, newngn->type);
         if (status == APR_SUCCESS) {
-            apr_hash_set(shed->ngns, ngn->type, APR_HASH_KEY_STRING, ngn);
+            newngn->task = task;
+            AP_DEBUG_ASSERT(task->engine == NULL);
+            task->engine = newngn;
+            apr_hash_set(shed->ngns, newngn->type, APR_HASH_KEY_STRING, newngn);
         }
+        return status;
     }
-    return status;
+    return APR_EOF;
 }
 
 static h2_ngn_entry *pop_non_frozen(h2_req_engine *ngn)
 {
     h2_ngn_entry *entry;
-    h2_task *task;
-
     for (entry = H2_REQ_ENTRIES_FIRST(&ngn->entries);
          entry != H2_REQ_ENTRIES_SENTINEL(&ngn->entries);
          entry = H2_NGN_ENTRY_NEXT(entry)) {
-        task = h2_ctx_rget_task(entry->r);
-        AP_DEBUG_ASSERT(task);
-        if (!task->frozen) {
+        if (!entry->task->frozen) {
             H2_NGN_ENTRY_REMOVE(entry);
             return entry;
         }
@@ -235,62 +239,60 @@ apr_status_t h2_ngn_shed_pull_req(h2_ngn_shed *shed,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, shed->c,
                       "h2_ngn_shed(%ld): abort while pulling requests %s", 
                       shed->c->id, ngn->id);
-        return APR_EOF;
+        ngn->shutdown = 1;
+        return APR_ECONNABORTED;
     }
     
     ngn->capacity = capacity;
-    if (!H2_REQ_ENTRIES_EMPTY(&ngn->entries) 
-        && (entry = pop_non_frozen(ngn))) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, entry->r,
+    if (H2_REQ_ENTRIES_EMPTY(&ngn->entries)) {
+        if (want_shutdown) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
+                          "h2_ngn_shed(%ld): emtpy queue, shutdown engine %s", 
+                          shed->c->id, ngn->id);
+            ngn->shutdown = 1;
+        }
+        return ngn->shutdown? APR_EOF : APR_EAGAIN;
+    }
+    
+    if ((entry = pop_non_frozen(ngn))) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, entry->task->c,
                       "h2_ngn_shed(%ld): pulled request %s for engine %s", 
-                      shed->c->id, entry->r->the_request, ngn->id);
+                      shed->c->id, entry->task->id, ngn->id);
         ngn->no_live++;
-        entry->r->connection->current_thread = ngn->c->current_thread;
         *pr = entry->r;
         return APR_SUCCESS;
-    }
-    else if (want_shutdown) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
-                      "h2_ngn_shed(%ld): emtpy queue, shutdown engine %s", 
-                      shed->c->id, ngn->id);
-        ngn->shutdown = 1;
-        return APR_EOF;
     }
     return APR_EAGAIN;
 }
                                  
-static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn, h2_task *task, 
-                                  int waslive, int aborted)
+static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn, 
+                                  h2_task *task, int waslive, int aborted, 
+                                  int close)
 {
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c,
                   "h2_ngn_shed(%ld): task %s %s by %s", 
                   shed->c->id, task->id, aborted? "aborted":"done", ngn->id);
-    h2_task_output_close(task->output);
     ngn->no_finished++;
     if (waslive) ngn->no_live--;
     ngn->no_assigned--;
-    if (task->c != ngn->c) { /* do not release what the engine runs on */
-        return APR_SUCCESS;
+
+    if (close) {
+        h2_task_output_close(task->output);
     }
-    return APR_EAGAIN;
+    return APR_SUCCESS;
 }
                                 
-apr_status_t h2_ngn_shed_done_req(h2_ngn_shed *shed, 
-                                  h2_req_engine *ngn, conn_rec *r_conn)
+apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed, 
+                                    struct h2_req_engine *ngn, h2_task *task)
 {
-    h2_task *task = h2_ctx_cget_task(r_conn);
-    if (task) {
-        return ngn_done_task(shed, ngn, task, 1, 0);
-    }
-    return APR_ECONNABORTED;
+    return ngn_done_task(shed, ngn, task, 1, 0, 0);
 }
                                 
 void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
 {
     h2_req_engine *existing;
     
-    if (!shed->aborted 
-        && !H2_REQ_ENTRIES_EMPTY(&ngn->entries)) {
+    if (!shed->aborted && !H2_REQ_ENTRIES_EMPTY(&ngn->entries)) {
         h2_ngn_entry *entry;
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, shed->c,
                       "h2_ngn_shed(%ld): exit engine %s (%s), "
@@ -309,7 +311,7 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
                           "h2_ngn_shed(%ld): engine %s has queued task %s, "
                           "frozen=%d, aborting",
                           shed->c->id, ngn->id, task->id, task->frozen);
-            ngn_done_task(shed, ngn, task, 0, 1);
+            ngn_done_task(shed, ngn, task, 0, 1, 1);
         }
     }
     if (!shed->aborted && (ngn->no_assigned > 1 || ngn->no_live > 1)) {
@@ -321,7 +323,7 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
                       (long)ngn->no_finished);
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, shed->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c,
                       "h2_ngn_shed(%ld): exit engine %s (%s)", 
                       shed->c->id, ngn->id, ngn->type);
     }

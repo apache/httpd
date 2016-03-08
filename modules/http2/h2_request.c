@@ -354,7 +354,7 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
     return nreq;
 }
 
-request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
+request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 {
     int access_status = HTTP_OK;    
     
@@ -362,7 +362,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
 
     r->headers_in = apr_table_clone(r->pool, req->headers);
 
-    ap_run_pre_read_request(r, conn);
+    ap_run_pre_read_request(r, c);
     
     /* Time to populate r with the data we have. */
     r->request_time = req->request_time;
@@ -405,11 +405,11 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
         /* Request check post hooks failed. An example of this would be a
          * request for a vhost where h2 is disabled --> 421.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, conn, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
                       "h2_request(%d): access_status=%d, request_create failed",
                       req->id, access_status);
         ap_die(access_status, r);
-        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_update_child_status(c->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
         r = NULL;
         goto traceout;

@@ -402,6 +402,12 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                 apr_thread_cond_broadcast(m->req_added);
             }
         }
+        
+        if (!h2_io_set_is_empty(m->stream_ios)) {
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c, 
+                          "h2_mplx(%ld): release_join, %d streams still open", 
+                          m->id, (int)h2_io_set_size(m->stream_ios));
+        }
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03056)
                       "h2_mplx(%ld): release_join -> destroy", m->id);
         leave_mutex(m, acquired);
@@ -844,7 +850,7 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                 h2_response *r = h2_response_die(stream_id, APR_EGENERAL, 
                                                  io->request, m->pool);
                 status = out_open(m, stream_id, r, NULL, NULL, NULL);
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
                               "h2_mplx(%ld-%d): close, no response, no rst", 
                               m->id, io->id);
             }
@@ -1135,12 +1141,27 @@ static void task_done(h2_mplx *m, h2_task *task)
              * long as it has requests to handle. Might no be fair to
              * other mplx's. Perhaps leave after n requests? */
             h2_mplx_out_close(m, task->stream_id, NULL);
+            
+            if (task->engine) {
+                /* should already have been done by the task, but as
+                 * a last resort, we get rid of it here. */
+                if (!h2_req_engine_is_shutdown(task->engine)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+                                  "h2_mplx(%ld): task(%s) has not-shutdown "
+                                  "engine(%s)", m->id, task->id, 
+                                  h2_req_engine_get_id(task->engine));
+                }
+                h2_ngn_shed_done_ngn(m->ngn_shed, task->engine);
+            }
+            
             if (m->spare_allocator) {
                 apr_allocator_destroy(m->spare_allocator);
                 m->spare_allocator = NULL;
             }
+            
             h2_slave_destroy(task->c, &m->spare_allocator);
             task = NULL;
+            
             if (io) {
                 apr_time_t now = apr_time_now();
                 if (!io->orphaned && m->redo_ios
@@ -1389,23 +1410,23 @@ apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn,
     *pr = NULL;
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         int want_shutdown = (block == APR_BLOCK_READ);
-        if (0 && want_shutdown) {
+        if (want_shutdown && !h2_iq_empty(m->q)) {
             /* For a blocking read, check first if requests are to be
              * had and, if not, wait a short while before doing the
              * blocking, and if unsuccessful, terminating read.
              */
-            status = h2_ngn_shed_pull_req(shed, ngn, capacity, 0, pr);
-            if (status != APR_EAGAIN) {
-                return status;
+            status = h2_ngn_shed_pull_req(shed, ngn, capacity, 1, pr);
+            if (APR_STATUS_IS_EAGAIN(status)) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                              "h2_mplx(%ld): start block engine pull", m->id);
+                apr_thread_cond_timedwait(m->req_added, m->lock, 
+                                          apr_time_from_msec(20));
+                status = h2_ngn_shed_pull_req(shed, ngn, capacity, 1, pr);
             }
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c,
-                          "h2_mplx(%ld): start block engine pull", m->id);
-            apr_thread_cond_timedwait(m->req_added, m->lock, 
-                                      apr_time_from_msec(100));
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, status, m->c,
-                          "h2_mplx(%ld): done block engine pull", m->id);
         }
-        status = h2_ngn_shed_pull_req(shed, ngn, capacity, want_shutdown, pr);
+        else {
+            status = h2_ngn_shed_pull_req(shed, ngn, capacity, want_shutdown, pr);
+        }
         leave_mutex(m, acquired);
     }
     return status;
@@ -1413,29 +1434,23 @@ apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn,
  
 void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
 {
-    h2_ngn_shed *shed = h2_ngn_shed_get_shed(ngn);
-    h2_mplx *m = h2_ngn_shed_get_ctx(shed);
-    int acquired;
+    h2_task *task = h2_ctx_cget_task(r_conn);
+    
+    if (task) {
+        h2_mplx *m = task->mplx;
+        int acquired;
 
-    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        if (h2_ngn_shed_done_req(shed, ngn, r_conn) == APR_SUCCESS) {
-            h2_task *task = h2_ctx_cget_task(r_conn);
-            if (task) {
+        if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+            h2_ngn_shed_done_task(m->ngn_shed, ngn, task);
+            if (task->engine) { 
+                /* cannot report that as done until engine returns */
+            }
+            else {
+                h2_task_output_close(task->output);
                 task_done(m, task);
             }
+            leave_mutex(m, acquired);
         }
-        leave_mutex(m, acquired);
     }
 }
                                 
-void h2_mplx_req_engine_exit(h2_req_engine *ngn)
-{
-    h2_ngn_shed *shed = h2_ngn_shed_get_shed(ngn);
-    h2_mplx *m = h2_ngn_shed_get_ctx(shed);
-    int acquired;
-    
-    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        h2_ngn_shed_done_ngn(shed, ngn);
-        leave_mutex(m, acquired);
-    }
-}
