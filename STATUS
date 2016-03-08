@@ -182,6 +182,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      avoidance.  
      +1 covener
 
+  *) mod_rewrite: Add QSL flag as a way to allow rewrites to files with question
+                  marks in their names. PR58777
+     trunk patch: http://svn.apache.org/r1734125
+     2.4.x patch: trunk works (modulo CHANGES and compat in docs)
+     +1 covener
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
