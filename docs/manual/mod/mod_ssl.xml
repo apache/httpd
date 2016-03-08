@@ -927,7 +927,7 @@ selecting DH primes).
 </p>
 <p>
 Since custom DH parameters always take precedence over the default ones, this
-issue can't be avoided by creating and configuring them (as described above),
+issue can be avoided by creating and configuring them (as described above),
 thus using the custom/suitable length.
 </p>
 </note>
