@@ -171,6 +171,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define RULEFLAG_QSDISCARD          (1<<16)
 #define RULEFLAG_END                (1<<17)
 #define RULEFLAG_ESCAPENOPLUS       (1<<18)
+#define RULEFLAG_QSLAST             (1<<19)
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -752,7 +753,8 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
  * split out a QUERY_STRING part from
  * the current URI string
  */
-static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard)
+static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard, 
+                               int qslast)
 {
     char *q;
     int split;
@@ -771,7 +773,8 @@ static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard)
         rewritelog((r, 2, NULL, "discarding query string"));
     }
 
-    q = ap_strchr(r->filename, '?');
+    q = qslast ? ap_strrchr(r->filename, '?') : ap_strchr(r->filename, '?');
+
     if (q != NULL) {
         char *olduri;
         apr_size_t len;
@@ -779,7 +782,9 @@ static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard)
         olduri = apr_pstrdup(r->pool, r->filename);
         *q++ = '\0';
         if (qsappend) {
-            r->args = apr_pstrcat(r->pool, q, "&", r->args, NULL);
+            if (*q) { 
+                r->args = apr_pstrcat(r->pool, q, "&" , r->args, NULL);
+            }
         }
         else {
             r->args = apr_pstrdup(r->pool, q);
@@ -3638,6 +3643,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         } else if ( !strcasecmp(key, "SD")
                 || !strcasecmp(key, "sdiscard") ) {       /* qsdiscard */
             cfg->flags |= RULEFLAG_QSDISCARD;
+        } else if ( !strcasecmp(key, "SL")
+                || !strcasecmp(key, "slast") ) {          /* qslast */
+            cfg->flags |= RULEFLAG_QSLAST;
         }
         else {
             ++error;
@@ -4191,7 +4199,9 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         r->path_info = NULL;
     }
 
-    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND, p->flags & RULEFLAG_QSDISCARD);
+    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND, 
+                          p->flags & RULEFLAG_QSDISCARD, 
+                          p->flags & RULEFLAG_QSLAST);
 
     /* Add the previously stripped per-directory location prefix, unless
      * (1) it's an absolute URL path and
