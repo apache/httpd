@@ -155,6 +155,9 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
             }
             break;
         case NGHTTP2_GOAWAY:
+            /* we expect the remote server to tell us the highest stream id
+             * that it has started processing. */
+            session->last_stream_id = frame->goaway.last_stream_id;
             dispatch_event(session, H2_PROXYS_EV_REMOTE_GOAWAY, 0, NULL);
             if (APLOGcinfo(session->c)) {
                 char buffer[256];
@@ -1057,7 +1060,7 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         h2_ihash_remove(session->streams, stream_id);
         h2_iq_remove(session->suspended, stream_id);
         if (session->done) {
-            session->done(session, stream->r);
+            session->done(session, stream->r, 1, 1);
         }
     }
     
@@ -1279,11 +1282,12 @@ typedef struct {
     h2_proxy_request_done *done;
 } cleanup_iter_ctx;
 
-static int cleanup_iter(void *udata, void *val)
+static int done_iter(void *udata, void *val)
 {
     cleanup_iter_ctx *ctx = udata;
     h2_proxy_stream *stream = val;
-    ctx->done(ctx->session, stream->r);
+    int touched = (stream->id <= ctx->session->last_stream_id);
+    ctx->done(ctx->session, stream->r, 0, touched);
     return 1;
 }
 
@@ -1294,10 +1298,10 @@ void h2_proxy_session_cleanup(h2_proxy_session *session,
         cleanup_iter_ctx ctx;
         ctx.session = session;
         ctx.done = done;
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                       "h2_proxy_session(%s): terminated, %d streams unfinished",
                       session->id, (int)h2_ihash_count(session->streams));
-        h2_ihash_iter(session->streams, cleanup_iter, &ctx);
+        h2_ihash_iter(session->streams, done_iter, &ctx);
         h2_ihash_clear(session->streams);
     }
 }

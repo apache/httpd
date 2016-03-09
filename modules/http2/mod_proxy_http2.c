@@ -239,21 +239,46 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
     return status;
 }
 
-static void request_done(h2_proxy_session *session, request_rec *r)
+static void request_done(h2_proxy_session *session, request_rec *r,
+                         int complete, int touched)
 {   
     h2_proxy_ctx *ctx = session->user_data;
+    const char *task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
     
-    if (r == ctx->rbase) {
+    if (!complete && !touched) {
+        /* untouched request, need rescheduling */
+        if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
+            if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
+                /* push to engine */
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, r->connection, 
+                              "h2_proxy_session(%s): rescheduled request %s",
+                              ctx->engine_id, task_id);
+                return;
+            }
+        }
+    }
+    
+    if (r == ctx->rbase && complete) {
         ctx->r_status = APR_SUCCESS;
     }
     
-    if (req_engine_done && ctx->engine) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
-                      "h2_proxy_session(%s): request %s",
-                      ctx->engine_id, r->the_request);
-        req_engine_done(ctx->engine, r->connection);
+    if (complete) {
+        if (req_engine_done && ctx->engine) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                          "h2_proxy_session(%s): finished request %s",
+                          ctx->engine_id, task_id);
+            req_engine_done(ctx->engine, r->connection);
+        }
     }
-}
+    else {
+        if (req_engine_done && ctx->engine) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                          "h2_proxy_session(%s): failed request %s",
+                          ctx->engine_id, task_id);
+            req_engine_done(ctx->engine, r->connection);
+        }
+    }
+}    
 
 static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
 {
@@ -404,7 +429,8 @@ static int proxy_http2_handler(request_rec *r,
     apr_pool_t *p = c->pool;
     apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
     h2_proxy_ctx *ctx;
-
+    int reconnected = 0;
+    
     /* find the scheme */
     if ((url[0] != 'h' && url[0] != 'H') || url[1] != '2') {
        return DECLINED;
@@ -531,7 +557,7 @@ run_session:
     }
 
 cleanup:
-    if (ctx->engine && next_request(ctx, 1) == APR_SUCCESS) {
+    if (!reconnected && ctx->engine && next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -539,6 +565,7 @@ cleanup:
             ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
             ctx->p_conn = NULL;
         }
+        reconnected = 1; /* we do this only once, then fail */
         goto run_connect;
     }
     
