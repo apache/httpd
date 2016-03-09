@@ -1003,7 +1003,7 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
     apr_brigade_destroy(tmp_bb);
 }
 
-request_rec *ap_create_request(conn_rec *conn)
+AP_DECLARE(request_rec *) ap_create_request(conn_rec *conn)
 {
     request_rec *r;
     apr_pool_t *p;
