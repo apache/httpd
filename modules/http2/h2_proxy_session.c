@@ -225,8 +225,9 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
 {
     if (n[0] == ':') {
         if (!stream->data_received && !strncmp(":status", n, nlen)) {
-            char *s = apr_pstrndup(stream->pool, v, vlen);
+            char *s = apr_pstrndup(stream->r->pool, v, vlen);
             
+            apr_table_setn(stream->r->notes, "proxy-status", s);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
                           "h2_proxy_stream(%s-%d): got status %s", 
                           stream->session->id, stream->id, s);
