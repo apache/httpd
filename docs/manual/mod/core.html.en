@@ -4379,7 +4379,7 @@ handler</td></tr>
 
     <pre class="prettyprint lang-config">&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
      SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
-&lt;/FilesMatch&gt;</pre>
+&lt;/LocationMatch&gt;</pre>
 
 
     <p>You can override an earlier defined <code class="directive">SetHandler</code>
@@ -4472,10 +4472,14 @@ certain events before failing a request</td></tr>
     <p>The <code class="directive">TimeOut</code> directive defines the length
     of time Apache httpd will wait for I/O in various circumstances:</p>
 
-    <ol>
-      <li>When reading data from the client, the length of time to
+    <ul>
+      <li><p>When reading data from the client, the length of time to
       wait for a TCP packet to arrive if the read buffer is
-      empty.</li>
+      empty.</p>
+      <p> For initial data on a new connection, this directive doesn't
+      take effect until after any configured <code class="directive"><a href="#acceptfilter">
+      AcceptFilter</a></code> has passed the new connection to the server.</p>
+      </li>
 
       <li>When writing data to the client, the length of time to wait
       for an acknowledgement of a packet if the send buffer is
@@ -4490,7 +4494,7 @@ certain events before failing a request</td></tr>
       <li>In <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, the default timeout value if
       <code class="directive"><a href="../mod/mod_proxy.html#proxytimeout">ProxyTimeout</a></code> is not
       configured.</li>
-    </ol>
+    </ul>
 
 
 </div>
