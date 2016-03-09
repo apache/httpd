@@ -150,7 +150,7 @@ not dynamically checked at all.</p>
 <div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr name {<a href="../expr.html">ap_expr</a> expression}</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr name {ap_expr expression}</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
@@ -165,7 +165,10 @@ not dynamically checked at all.</p>
 ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234</pre>
 </div>
 
-    <p><em>NOTE:</em> The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+    <div class="note">
+    The <a href="../expr.html">expression</a> can use curly-parens ("{}") as
+    quoting deliminators in addition to normal quotes.
+    </div>
 
     <p>If using a health check method (eg: <code>GET</code>) which results in a response
     body, that body itself can be checked via <code>ap_expr</code> using the <code>hc()</code>
