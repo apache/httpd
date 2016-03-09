@@ -257,6 +257,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_hcheck.html">Módulo Apache mod_proxy_hcheck</a></li>
 <li><a href="mod/mod_proxy_html.html">Módulo Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
+<li><a href="mod/mod_proxy_http2.html">Módulo Apache mod_proxy_http2</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
 <li><a href="mod/mod_proxy_wstunnel.html">Módulo Apache mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Módulo Apache mod_ratelimit</a></li>

@@ -1339,17 +1339,25 @@ cannot use <code>$N</code> in the substitution string!
         ...</a></em></td>
     </tr>
 <tr class="odd">
+        <td>qslast|QSL</td>
+        <td>Interpret the last (right-most) question mark as the query string
+            delimeter, instead of the first (left-most) as normally used.  
+            Available in 2.4.19 and later.
+        <em><a href="../rewrite/flags.html#flag_qsl">details
+        ...</a></em></td>
+    </tr>
+<tr>
         <td>redirect|R[=<em>code</em>]</td>
         <td>Forces an external redirect, optionally with the specified
         HTTP status code. <em><a href="../rewrite/flags.html#flag_r">details ...</a></em>
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>skip|S=<em>num</em></td>
         <td>Tells the rewriting engine to skip the next <em>num</em>
         rules if the current rule matches. <em><a href="../rewrite/flags.html#flag_s">details ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>type|T=<em>MIME-type</em></td>
         <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file
         to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
