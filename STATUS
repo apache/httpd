@@ -186,6 +186,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1705217
      2.4.x patch: trunk patch works
      +1: jailletc36
+     ylavic: As asked on dev@ (in reply to r1705217), what about CVE-2014-6271
+             (shellshock) with unix-like shells (or even maybe native windows
+             ones too)? 
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
