@@ -201,10 +201,11 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
     
-        m->q = h2_iq_create(m->pool, h2_config_geti(conf, H2_CONF_MAX_STREAMS));
+        m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
+        m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
+        m->q = h2_iq_create(m->pool, m->max_streams);
         m->stream_ios = h2_io_set_create(m->pool);
         m->ready_ios = h2_io_set_create(m->pool);
-        m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->stream_timeout = stream_timeout;
         m->workers = workers;
         m->workers_max = workers->max_workers;
@@ -216,7 +217,8 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->tx_handles_reserved = 0;
         m->tx_chunk_size = 4;
         
-        m->ngn_shed = h2_ngn_shed_create(m->pool, m->c, m->stream_max_mem);
+        m->ngn_shed = h2_ngn_shed_create(m->pool, m->c, m->max_streams, 
+                                         m->stream_max_mem);
         h2_ngn_shed_set_ctx(m->ngn_shed , m);
     }
     return m;
@@ -1085,6 +1087,7 @@ static h2_task *pop_task(h2_mplx *m)
             conn_rec *slave = h2_slave_create(m->c, m->pool, m->spare_allocator);
             m->spare_allocator = NULL;
             task = h2_task_create(m->id, io->request, slave, m);
+            apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
             io->worker_started = 1;
             io->started_at = apr_time_now();
             if (sid > m->max_stream_started) {
@@ -1124,16 +1127,20 @@ static void task_done(h2_mplx *m, h2_task *task)
 {
     if (task) {
         if (task->frozen) {
-            /* this task was handed over to an engine for processing */
+            /* this task was handed over to an engine for processing 
+             * and the original worker has finished. That means the 
+             * engine may start processing now. */
             h2_task_thaw(task);
-            /* TODO: not implemented yet... */
-            /*h2_task_set_io_blocking(task, 0);*/
+            /* we do not want the task to block on writing response
+             * bodies into the mplx. */
+            /* FIXME: this implementation is incomplete. */
+            h2_task_set_io_blocking(task, 0);
             apr_thread_cond_broadcast(m->req_added);
         }
         else {
             h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
             
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): task(%s) done", m->id, task->id);
             /* clean our references and report request as done. Signal
              * that we want another unless we have been aborted */
@@ -1143,8 +1150,6 @@ static void task_done(h2_mplx *m, h2_task *task)
             h2_mplx_out_close(m, task->stream_id, NULL);
             
             if (task->engine) {
-                /* should already have been done by the task, but as
-                 * a last resort, we get rid of it here. */
                 if (!h2_req_engine_is_shutdown(task->engine)) {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
                                   "h2_mplx(%ld): task(%s) has not-shutdown "
@@ -1369,7 +1374,7 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
  ******************************************************************************/
 
 apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
-                              request_rec *r, h2_req_engine_init *einit)
+                                     request_rec *r, h2_req_engine_init *einit)
 {
     apr_status_t status;
     h2_mplx *m;
@@ -1381,7 +1386,6 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
         return APR_ECONNABORTED;
     }
     m = task->mplx;
-    AP_DEBUG_ASSERT(m);
     
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
@@ -1389,9 +1393,9 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
             status = APR_ECONNABORTED;
         }
         else {
-            status = h2_ngn_shed_push_req(m->ngn_shed, ngn_type, task, r, einit);
+            status = h2_ngn_shed_push_req(m->ngn_shed, ngn_type, 
+                                          task, r, einit);
         }
-        
         leave_mutex(m, acquired);
     }
     return status;

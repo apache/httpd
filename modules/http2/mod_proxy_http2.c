@@ -305,7 +305,10 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
         if (status == APR_SUCCESS) {
             apr_status_t s2;
             /* ongoing processing, call again */
-            ctx->capacity = H2MAX(100, session->remote_max_concurrent);
+            if (session->remote_max_concurrent > 0
+                && session->remote_max_concurrent != ctx->capacity) {
+                ctx->capacity = session->remote_max_concurrent;
+            }
             s2 = next_request(ctx, 0);
             if (s2 == APR_ECONNABORTED) {
                 /* master connection gone */
@@ -528,10 +531,12 @@ run_session:
 cleanup:
     if (ctx->engine && next_request(ctx, 1) == APR_SUCCESS) {
         /* Still more to do, tear down old conn and start over */
-        ctx->p_conn->close = 1;
-        proxy_run_detach_backend(r, ctx->p_conn);
-        ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
-        ctx->p_conn = NULL;
+        if (ctx->p_conn) {
+            ctx->p_conn->close = 1;
+            proxy_run_detach_backend(r, ctx->p_conn);
+            ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
+            ctx->p_conn = NULL;
+        }
         goto run_connect;
     }
     

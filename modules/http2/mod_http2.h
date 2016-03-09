@@ -86,6 +86,4 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 
                                                 conn_rec *rconn));
-#define H2_TASK_ID_NOTE     "http2-task-id"
-
 #endif

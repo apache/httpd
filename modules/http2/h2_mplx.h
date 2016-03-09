@@ -76,6 +76,7 @@ struct h2_mplx {
     struct h2_io_set *ready_ios;
     struct h2_io_set *redo_ios;
     
+    apr_uint32_t max_streams;        /* max # of concurrent streams */
     apr_uint32_t max_stream_started; /* highest stream id that started processing */
     apr_uint32_t workers_busy;       /* # of workers processing on this mplx */
     apr_uint32_t workers_limit;      /* current # of workers limit, dynamic */

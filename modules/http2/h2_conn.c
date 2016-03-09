@@ -310,6 +310,9 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
 void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
 {
     apr_allocator_t *allocator = apr_pool_allocator_get(slave->pool);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
+                  "h2_slave_conn(%ld): destroy (task=%s)", slave->id,
+                  apr_table_get(slave->notes, H2_TASK_ID_NOTE));
     apr_pool_destroy(slave->pool);
     if (pallocator) {
         *pallocator = allocator;

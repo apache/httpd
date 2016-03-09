@@ -357,6 +357,7 @@ apr_status_t h2_io_out_readx(h2_io *io,
         status = h2_util_bb_readx(io->bbout, cb, ctx, plen, peos);
         if (status == APR_SUCCESS) {
             io->eos_out_read = *peos;
+            io->output_consumed += *plen;
         }
     }
     
@@ -366,6 +367,8 @@ apr_status_t h2_io_out_readx(h2_io *io,
 apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb, 
                                apr_off_t *plen, int *peos)
 {
+    apr_status_t status;
+    
     if (io->rst_error) {
         return APR_ECONNABORTED;
     }
@@ -382,7 +385,9 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
     }
 
     io->eos_out_read = *peos = h2_util_has_eos(io->bbout, *plen);
-    return h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
+    status = h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
+    io->output_consumed += *plen;
+    return status;
 }
 
 static void process_trailers(h2_io *io, apr_table_t *trailers)
