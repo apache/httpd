@@ -550,6 +550,7 @@ sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
+sslocspproxyurl	mod/mod_ssl.html#sslocspproxyurl
 sslocsprespondertimeout	mod/mod_ssl.html#sslocsprespondertimeout
 sslocspresponsemaxage	mod/mod_ssl.html#sslocspresponsemaxage
 sslocspresponsetimeskew	mod/mod_ssl.html#sslocspresponsetimeskew
