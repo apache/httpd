@@ -8,9 +8,6 @@ Changes with Apache 2.5.0
   *) mod_reqtimeout: Prevent long response times from triggering a timeout once
      the request has been fully read.  PR 59045.  [Yann Ylavic]
 
-  *) mod_rewrite: Add QSL|qslast flag to allow rewrites to files with 
-     literal question marks in their names. PR 58777. [Eric Covener]
-
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
 
   *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
