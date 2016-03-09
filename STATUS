@@ -190,6 +190,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              (shellshock) with unix-like shells (or even maybe native windows
              ones too)? 
 
+  *) mod_reqtimeout: Prevent long response times from triggering a timeout once
+     the request has been fully read.  PR 59045.
+     trunk patch: http://svn.apache.org/r1734239
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
