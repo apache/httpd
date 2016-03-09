@@ -136,7 +136,7 @@ not dynamically checked at all.</p>
 <directivesynopsis>
 <name>ProxyHCExpr</name>
 <description>Creates a named condition expression to use to determine health of the backend based on its response.</description>
-<syntax>ProxyHCExpr name {<a href="../expr.html">ap_expr</a> expression}</syntax>
+<syntax>ProxyHCExpr name {ap_expr expression}</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -154,7 +154,10 @@ ProxyPass "/apps"     "http://backend.example.com/" hcexpr=ok234
     </highlight>
     </example>
 
-    <p><em>NOTE:</em> The expression can use curly-parens ("{}") as quoting deliminators in addition to normal quotes.</p>
+    <note>
+    The <a href="../expr.html">expression</a> can use curly-parens ("{}") as
+    quoting deliminators in addition to normal quotes.
+    </note>
 
     <p>If using a health check method (eg: <code>GET</code>) which results in a response
     body, that body itself can be checked via <code>ap_expr</code> using the <code>hc()</code>
