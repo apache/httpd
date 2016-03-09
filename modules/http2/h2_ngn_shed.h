@@ -24,10 +24,11 @@ struct h2_ngn_shed {
     conn_rec *c;
     apr_pool_t *pool;
     apr_hash_t *ngns;
-    int next_ngn_id;
     void *user_ctx;
     
     unsigned int aborted : 1;
+    
+    apr_uint32_t default_capacity;
     apr_uint32_t req_buffer_size; /* preferred buffer size for responses */
 };
 
@@ -42,6 +43,7 @@ typedef apr_status_t h2_shed_ngn_init(h2_req_engine *engine,
                                       request_rec *r);
 
 h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
+                                apr_uint32_t default_capactiy, 
                                 apr_uint32_t req_buffer_size); 
 
 void h2_ngn_shed_set_ctx(h2_ngn_shed *shed, void *user_ctx);

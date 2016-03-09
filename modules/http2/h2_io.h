@@ -65,6 +65,7 @@ struct h2_io {
     apr_time_t started_at;           /* when processing started */
     apr_time_t done_at;              /* when processing was done */
     apr_size_t input_consumed;       /* how many bytes have been read */
+    apr_size_t output_consumed;      /* how many bytes have been written out */
         
     int files_handles_owned;
 };

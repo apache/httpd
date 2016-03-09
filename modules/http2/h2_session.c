@@ -1561,7 +1561,7 @@ static apr_status_t h2_session_read(h2_session *session, int block)
                     }
                     else {
                         /* uncommon status, log on INFO so that we see this */
-                        ap_log_cerror( APLOG_MARK, APLOG_INFO, status, c,
+                        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, c,
                                       APLOGNO(02950) 
                                       "h2_session(%ld): error reading, terminating",
                                       session->id);
@@ -1745,7 +1745,7 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "h2_session(%ld): conn error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -1762,7 +1762,7 @@ static void h2_session_ev_proto_error(h2_session *session, int arg, const char *
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "h2_session(%ld): proto error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -2157,7 +2157,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     /* waited long enough */
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, APR_TIMEUP, c,
                                   "h2_session: wait for data");
-                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
+                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
+                    break;
                 }
                 else {
                     /* repeating, increase timer for graceful backoff */
@@ -2182,7 +2183,11 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     transit(session, "wait cycle", H2_SESSION_ST_BUSY);
                 }
                 else {
-                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, "cond wait error", 0);
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
+                                  "h2_session(%ld): waiting on conditional",
+                                  session->id);
+                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, 
+                                        "cond wait error", 0);
                 }
                 break;
                 

@@ -77,6 +77,7 @@ struct h2_req_engine {
     h2_ngn_shed *shed;
 
     unsigned int shutdown : 1; /* engine is being shut down */
+    unsigned int done : 1;     /* engine has finished */
 
     APR_RING_HEAD(h2_req_entries, h2_ngn_entry) entries;
     apr_uint32_t capacity;     /* maximum concurrent requests */
@@ -96,6 +97,7 @@ int h2_req_engine_is_shutdown(h2_req_engine *engine)
 }
 
 h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
+                                apr_uint32_t default_capacity, 
                                 apr_uint32_t req_buffer_size)
 {
     h2_ngn_shed *shed;
@@ -103,6 +105,7 @@ h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
     shed = apr_pcalloc(pool, sizeof(*shed));
     shed->c = c;
     shed->pool = pool;
+    shed->default_capacity = default_capacity;
     shed->req_buffer_size = req_buffer_size;
     shed->ngns = apr_hash_make(pool);
     
@@ -146,63 +149,53 @@ apr_status_t h2_ngn_shed_push_req(h2_ngn_shed *shed, const char *ngn_type,
 
     AP_DEBUG_ASSERT(shed);
     
-    apr_table_set(r->connection->notes, H2_TASK_ID_NOTE, task->id);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
+                  "h2_ngn_shed(%ld): PUSHing request (task=%s)", shed->c->id, 
+                  apr_table_get(r->connection->notes, H2_TASK_ID_NOTE));
     if (task->ser_headers) {
         /* Max compatibility, deny processing of this */
         return APR_EOF;
     }
     
     ngn = apr_hash_get(shed->ngns, ngn_type, APR_HASH_KEY_STRING);
-    if (ngn) {
-        if (ngn->shutdown) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                          "h2_ngn_shed(%ld): %s in shutdown", 
-                          shed->c->id, ngn->id);
-        }
-        else if (ngn->no_assigned >= ngn->capacity) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
-                          "h2_ngn_shed(%ld): %s over capacity %d/%d", 
-                          shed->c->id, ngn->id, ngn->no_assigned,
-                          ngn->capacity);
-        }
-        else {
-            /* this task will be processed in another thread,
-             * freeze any I/O for the time being. */
-            h2_task_freeze(task, r);
-            ngn_add_req(ngn, task, r);
-            ngn->no_assigned++;
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c,
-                          "h2_ngn_shed(%ld): pushed request %s to %s", 
-                          shed->c->id, task->id, ngn->id);
-            return APR_SUCCESS;
-        }
+    if (ngn && !ngn->shutdown) {
+        /* this task will be processed in another thread,
+         * freeze any I/O for the time being. */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                      "h2_ngn_shed(%ld): pushing request %s to %s", 
+                      shed->c->id, task->id, ngn->id);
+        h2_task_freeze(task, r);
+        /* FIXME: sometimes ngn is garbage, probly alread freed */
+        ngn_add_req(ngn, task, r);
+        ngn->no_assigned++;
+        return APR_SUCCESS;
     }
     
-    /* none of the existing engines has capacity */
+    /* no existing engine or being shut down, start a new one */
     if (einit) {
         apr_status_t status;
+        apr_pool_t *pool = task->c->pool;
         h2_req_engine *newngn;
         
-        newngn = apr_pcalloc(task->c->pool, sizeof(*ngn));
-        newngn->id = apr_psprintf(task->c->pool, "ngn-%ld-%d", 
-                                   shed->c->id, shed->next_ngn_id++);
-        newngn->pool = task->c->pool;
-        newngn->type = apr_pstrdup(task->c->pool, ngn_type);
-        newngn->c = r->connection;
-        APR_RING_INIT(&newngn->entries, h2_ngn_entry, link);
+        newngn = apr_pcalloc(pool, sizeof(*ngn));
+        newngn->pool = pool;
+        newngn->id   = apr_psprintf(pool, "ngn-%s", task->id);
+        newngn->type = apr_pstrdup(pool, ngn_type);
+        newngn->c    = task->c;
         newngn->shed = shed;
-        newngn->capacity = 100;
+        newngn->capacity = shed->default_capacity;
         newngn->no_assigned = 1;
         newngn->no_live = 1;
+        APR_RING_INIT(&newngn->entries, h2_ngn_entry, link);
         
         status = einit(newngn, newngn->id, newngn->type, newngn->pool,
                        shed->req_buffer_size, r);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c,
-                      "h2_ngn_shed(%ld): init engine %s (%s)", 
+                      "h2_ngn_shed(%ld): create engine %s (%s)", 
                       shed->c->id, newngn->id, newngn->type);
         if (status == APR_SUCCESS) {
-            newngn->task = task;
             AP_DEBUG_ASSERT(task->engine == NULL);
+            newngn->task = task;
             task->engine = newngn;
             apr_hash_set(shed->ngns, newngn->type, APR_HASH_KEY_STRING, newngn);
         }
@@ -290,7 +283,9 @@ apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed,
                                 
 void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
 {
-    h2_req_engine *existing;
+    if (ngn->done) {
+        return;
+    }
     
     if (!shed->aborted && !H2_REQ_ENTRIES_EMPTY(&ngn->entries)) {
         h2_ngn_entry *entry;
@@ -323,13 +318,11 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
                       (long)ngn->no_finished);
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c,
-                      "h2_ngn_shed(%ld): exit engine %s (%s)", 
-                      shed->c->id, ngn->id, ngn->type);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
+                      "h2_ngn_shed(%ld): exit engine %s", 
+                      shed->c->id, ngn->id);
     }
     
-    existing = apr_hash_get(shed->ngns, ngn->type, APR_HASH_KEY_STRING);
-    if (existing == ngn) {
-        apr_hash_set(shed->ngns, ngn->type, APR_HASH_KEY_STRING, NULL);
-    }
+    apr_hash_set(shed->ngns, ngn->type, APR_HASH_KEY_STRING, NULL);
+    ngn->done = 1;
 }

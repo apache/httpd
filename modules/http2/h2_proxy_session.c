@@ -130,6 +130,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                          void *user_data) 
 {
     h2_proxy_session *session = user_data;
+    int n;
     
     if (APLOGcdebug(session->c)) {
         char buffer[256];
@@ -147,7 +148,10 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
             break;
         case NGHTTP2_SETTINGS:
             if (frame->settings.niv > 0) {
-                session->remote_max_concurrent = nghttp2_session_get_remote_settings(ngh2, NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS);
+                n = nghttp2_session_get_remote_settings(ngh2, NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS);
+                if (n > 0) {
+                    session->remote_max_concurrent = n;
+                }
             }
             break;
         case NGHTTP2_GOAWAY:
@@ -156,7 +160,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                 char buffer[256];
                 
                 h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c, APLOGNO(03342)
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03342)
                               "h2_proxy_session(%s): recv FRAME[%s]",
                               session->id, buffer);
             }
@@ -253,7 +257,6 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
 static int log_header(void *ctx, const char *key, const char *value)
 {
     h2_proxy_stream *stream = ctx;
-    
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r, 
                   "h2_proxy_stream(%s-%d), header_out %s: %s", 
                   stream->session->id, stream->id, key, value);
@@ -329,7 +332,6 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     apr_bucket *b;
     apr_status_t status;
     
-    /*nghttp2_session_consume(ngh2, stream_id, len);*/
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, 
@@ -352,8 +354,6 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     if (flags & NGHTTP2_DATA_FLAG_EOF) {
         b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(stream->output, b);
-        /*b = apr_bucket_eos_create(stream->r->connection->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(stream->output, b);*/
     }
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, 
@@ -368,6 +368,7 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
                                   stream_id, NGHTTP2_STREAM_CLOSED);
         return NGHTTP2_ERR_STREAM_CLOSING;
     }
+    nghttp2_session_consume(ngh2, stream_id, len);
     return 0;
 }
 
@@ -530,7 +531,7 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         
         nghttp2_option_new(&option);
         nghttp2_option_set_peer_max_concurrent_streams(option, 100);
-        nghttp2_option_set_no_auto_window_update(option, 0);
+        nghttp2_option_set_no_auto_window_update(option, 1);
         
         nghttp2_session_client_new2(&session->ngh2, cbs, session, option);
         
@@ -638,12 +639,10 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
                                 hd->nv, hd->nvlen, pp, stream);
                                 
     if (APLOGcdebug(session->c)) {
-        const char *task_id = apr_table_get(stream->r->connection->notes, 
-                                            H2_TASK_ID_NOTE);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      "h2_proxy_session(%s): submit %s%s -> %d (task %s)", 
+                      "h2_proxy_session(%s): submit %s%s -> %d", 
                       session->id, stream->req->authority, stream->req->path,
-                      rv, task_id);
+                      rv);
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
@@ -751,7 +750,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
         /* nop */
     }
     else if (!APR_STATUS_IS_EAGAIN(status)) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, status, session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, 
                       "h2_proxy_session(%s): read error", session->id);
         dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, status, NULL);
     }
@@ -1294,7 +1293,7 @@ void h2_proxy_session_cleanup(h2_proxy_session *session,
         cleanup_iter_ctx ctx;
         ctx.session = session;
         ctx.done = done;
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c, 
                       "h2_proxy_session(%s): terminated, %d streams unfinished",
                       session->id, (int)h2_ihash_count(session->streams));
         h2_ihash_iter(session->streams, cleanup_iter, &ctx);
