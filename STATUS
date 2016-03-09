@@ -156,13 +156,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Synch 2.4.x with trunk, Strip useless apr_brigade_cleanup() calls.
      trunk patch: http://svn.apache.org/r1601624
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) Use ap_array_str_contains to simplify code
      trunk patch: http://svn.apache.org/r1733523
                   http://svn.apache.org/r1733691
      2.4.x patch: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) core/util_script: relax alphanumeric filter of enviroment variable names
           on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
@@ -175,18 +175,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      hook returns an error.
      trunk patch: http://svn.apache.org/r1734006
      2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: minfrin
+     +1: minfrin, jim
 
   *) mod_rewrite: PR58854: Revert r1726016 (rewrite looping issue) which was
      reverted in trunk in r1732896. The fix is bad and breaks old loop
-     avoidance.  
-     +1 covener
+     avoidance.
+     +1 covener, jim
 
   *) mod_rewrite: Add QSL flag as a way to allow rewrites to files with question
                   marks in their names. PR58777
      trunk patch: http://svn.apache.org/r1734125
      2.4.x patch: trunk works (modulo CHANGES and compat in docs)
-     +1 covener
+     +1 covener, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
