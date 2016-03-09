@@ -185,6 +185,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic
 
 
+  *) mod_rewrite: bug in recently backported r1734125.
+     trunk patch: http://svn.apache.org/r1734294.
+     2.4.x patch: trunk works
+     +1 covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
