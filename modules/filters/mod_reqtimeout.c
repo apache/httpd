@@ -177,16 +177,6 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
 
-    if (block == APR_NONBLOCK_READ && mode == AP_MODE_SPECULATIVE) { 
-        /*  The source of these above us in the core is check_pipeline(), which
-         *  is between requests but before this filter knows to reset timeouts 
-         *  during pre_read_request().  If they appear elsewhere, just don't 
-         *  check or extend the time since they won't block and we'll see the
-         *  bytes again later
-         */
-        return ap_get_brigade(f->next, bb, mode, block, readbytes);
-    }
-
     if (ccfg->in_keep_alive) {
         /* For this read[_request line()], wait for the first byte using the
          * normal keep-alive timeout (hence don't take this expected idle time
@@ -211,7 +201,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         }
     }
     else if (ccfg->timeout_at == 0) {
-        /* no timeout set */
+        /* no timeout set, or in between requests */
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
@@ -315,8 +305,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             APR_BRIGADE_PREPEND(bb, ccfg->tmpbb);
 
     }
-    else {
-        /* mode != AP_MODE_GETLINE */
+    else { /* mode != AP_MODE_GETLINE */
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
         /* Don't extend the timeout in speculative mode, wait for
          * the real (relevant) bytes to be asked later, within the
@@ -352,6 +341,15 @@ out:
     return rv;
 }
 
+static apr_status_t reqtimeout_eor(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    if (!APR_BRIGADE_EMPTY(bb) && AP_BUCKET_IS_EOR(APR_BRIGADE_LAST(bb))) {
+        reqtimeout_con_cfg *ccfg = f->ctx;
+        ccfg->timeout_at = 0;
+    }
+    return ap_pass_brigade(f->next, bb);
+}
+
 static int reqtimeout_init(conn_rec *c)
 {
     reqtimeout_con_cfg *ccfg;
@@ -369,6 +367,7 @@ static int reqtimeout_init(conn_rec *c)
     if (ccfg == NULL) {
         ccfg = apr_pcalloc(c->pool, sizeof(reqtimeout_con_cfg));
         ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
+        ap_add_output_filter(reqtimeout_filter_name, ccfg, NULL, c);
         ap_add_input_filter(reqtimeout_filter_name, ccfg, NULL, c);
     }
 
@@ -605,6 +604,14 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      */
     ap_register_input_filter(reqtimeout_filter_name, reqtimeout_filter, NULL,
                              AP_FTYPE_CONNECTION + 8);
+
+    /*
+     * We need to pause timeout detection in between requests, for
+     * speculative and non-blocking reads, so between each outgoing EOR
+     * and the next pre_read_request call.
+     */
+    ap_register_output_filter(reqtimeout_filter_name, reqtimeout_eor, NULL,
+                              AP_FTYPE_CONNECTION);
 
     /*
      * mod_reqtimeout needs to be called before ap_process_http_request (which
