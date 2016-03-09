@@ -1801,12 +1801,14 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     transit(session, "no io", H2_SESSION_ST_DONE);
                 }
                 else {
+                    apr_time_t now = apr_time_now();
                     /* When we have no streams, no task event are possible,
                      * switch to blocking reads */
                     transit(session, "no io", H2_SESSION_ST_IDLE);
                     session->idle_until = (session->requests_received? 
                                            session->s->keep_alive_timeout : 
-                                           session->s->timeout) + apr_time_now();
+                                           session->s->timeout) + now;
+                    session->keep_sync_until = now + apr_time_from_sec(1);
                 }
             }
             else if (!has_unsubmitted_streams(session)
@@ -1817,6 +1819,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                  * window updates. */
                 transit(session, "no io", H2_SESSION_ST_IDLE);
                 session->idle_until = apr_time_now() + session->s->timeout;
+                session->keep_sync_until = session->idle_until;
             }
             else {
                 /* Unable to do blocking reads, as we wait on events from
@@ -2014,7 +2017,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                               : SERVER_BUSY_READ), "idle");
                 /* make certain, the client receives everything before we idle */
                 h2_conn_io_flush(&session->io);
-                if (async && no_streams && !session->r && session->requests_received) {
+                if (!session->keep_sync_until 
+                    && async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
                     /* We do not return to the async mpm immediately, since under
@@ -2067,7 +2071,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* nothing to read */
                     }
                     else if (APR_STATUS_IS_TIMEUP(status)) {
-                        if (apr_time_now() > session->idle_until) {
+                        apr_time_t now = apr_time_now();
+                        if (now > session->keep_sync_until) {
+                            /* if we are on an async mpm, now is the time that
+                             * we may dare to pass control to it. */
+                            session->keep_sync_until = 0;
+                        }
+                        if (now > session->idle_until) {
                             dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
                         }
                         /* continue reading handling */

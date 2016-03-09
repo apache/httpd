@@ -108,6 +108,7 @@ typedef struct h2_session {
     
     apr_time_t start_wait;          /* Time we started waiting for sth. to happen */
     apr_time_t idle_until;          /* Time we shut down due to sheer boredom */
+    apr_time_t keep_sync_until;     /* Time we sync wait until passing to async mpm */
     
     apr_pool_t *pool;               /* pool to use in session handling */
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */

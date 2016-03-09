@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: give control to async mpm for keepalive timeouts only when
+     no streams are open and even if only after 1 sec delay. Under load, event
+     mpm discards connections otherwise too quickly.
+  
   *) mod_proxy_http2: rescheduling of requests that have not been processed
      by the backend when receiving a GOAWAY frame before done.
      [Stefan Eissign]
