@@ -653,7 +653,7 @@ This is useful when mapping to files that have literal question marks in
 their filename.  If no query string is used in the substitution, 
 a question mark can be appended to it in combination with this flag.  </p>
 
-<p> This flag is available in version 2.5.0 and later.</p>
+<p> This flag is available in version 2.4.19 and later.</p>
 
 </section>
 
