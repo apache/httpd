@@ -20,8 +20,8 @@
 #include <mpm_common.h>
 #include <httpd.h>
 #include <mod_proxy.h>
-#include <mod_http2.h>
 
+#include "mod_http2.h"
 #include "h2.h"
 #include "h2_int_queue.h"
 #include "h2_request.h"
