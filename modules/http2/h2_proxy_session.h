@@ -51,7 +51,8 @@ typedef enum {
 
 
 typedef struct h2_proxy_session h2_proxy_session;
-typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r);
+typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
+                                   int complete, int touched);
 
 struct h2_proxy_session {
     const char *id;
@@ -75,7 +76,7 @@ struct h2_proxy_session {
     struct h2_ihash_t *streams;
     struct h2_int_queue *suspended;
     apr_size_t remote_max_concurrent;
-    int max_stream_recv;
+    int last_stream_id;     /* last stream id processed by backend, or 0 */
     
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;

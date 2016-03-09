@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http2: rescheduling of requests that have not been processed
+     by the backend when receiving a GOAWAY frame before done.
+     [Stefan Eissign]
+     
   *) mod_reqtimeout: Prevent long response times from triggering a timeout once
      the request has been fully read.  PR 59045.  [Yann Ylavic]
 

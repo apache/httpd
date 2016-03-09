@@ -164,7 +164,9 @@ apr_status_t h2_ngn_shed_push_req(h2_ngn_shed *shed, const char *ngn_type,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_ngn_shed(%ld): pushing request %s to %s", 
                       shed->c->id, task->id, ngn->id);
-        h2_task_freeze(task, r);
+        if (!h2_task_is_detached(task)) {
+            h2_task_freeze(task, r);
+        }
         /* FIXME: sometimes ngn is garbage, probly alread freed */
         ngn_add_req(ngn, task, r);
         ngn->no_assigned++;
