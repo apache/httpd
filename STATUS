@@ -129,13 +129,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: minfrin, jim, ylavic
 
-  *) mod_rewrite: Add QSL flag as a way to allow rewrites to files with question
-                  marks in their names. PR58777
-     trunk patch: http://svn.apache.org/r1734125
-     2.4.x patch: trunk works (modulo CHANGES and compat in docs)
-     +1 covener, jim, ylavic
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
