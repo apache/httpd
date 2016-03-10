@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Use ap_array_str_contains to simplify code
-     trunk patch: http://svn.apache.org/r1733523
-                  http://svn.apache.org/r1733691
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jim, ylavic
-
   *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
      hook returns an error.
      trunk patch: http://svn.apache.org/r1734006
