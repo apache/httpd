@@ -139,4 +139,9 @@ struct h2_response {
 };
 
 
+/* Note key to attach connection task id to conn_rec/request_rec instances */
+
+#define H2_TASK_ID_NOTE     "http2-task-id"
+
+
 #endif /* defined(__mod_h2__h2__) */

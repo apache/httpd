@@ -56,8 +56,9 @@ void *h2_ihash_get(h2_ihash_t *ih, int id);
  * @param ih the hash to iterate over
  * @param fn the function to invoke on each member
  * @param ctx user supplied data passed into each iteration call
+ * @param 0 if one iteration returned 0, otherwise != 0
  */
-void h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
+int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
 
 void h2_ihash_add(h2_ihash_t *ih, void *val);
 void h2_ihash_remove(h2_ihash_t *ih, int id);

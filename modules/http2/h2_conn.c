@@ -239,58 +239,6 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
     return status;
 }
 
-/* This is an internal mpm event.c struct which is disguised
- * as a conn_state_t so that mpm_event can have special connection
- * state information without changing the struct seen on the outside.
- *
- * For our task connections we need to create a new beast of this type
- * and fill it with enough meaningful things that mpm_event reads and
- * starts processing out task request.
- */
-typedef struct event_conn_state_t event_conn_state_t;
-struct event_conn_state_t {
-    /** APR_RING of expiration timeouts */
-    APR_RING_ENTRY(event_conn_state_t) timeout_list;
-    /** the expiration time of the next keepalive timeout */
-    apr_time_t expiration_time;
-    /** connection record this struct refers to */
-    conn_rec *c;
-    /** request record (if any) this struct refers to */
-    request_rec *r;
-    /** is the current conn_rec suspended?  (disassociated with
-     * a particular MPM thread; for suspend_/resume_connection
-     * hooks)
-     */
-    int suspended;
-    /** memory pool to allocate from */
-    apr_pool_t *p;
-    /** bucket allocator */
-    apr_bucket_alloc_t *bucket_alloc;
-    /** poll file descriptor information */
-    apr_pollfd_t pfd;
-    /** public parts of the connection state */
-    conn_state_t pub;
-};
-APR_RING_HEAD(timeout_head_t, event_conn_state_t);
-
-static void fix_event_conn(conn_rec *c, conn_rec *master) 
-{
-    event_conn_state_t *master_cs = ap_get_module_config(master->conn_config, 
-                                                         h2_conn_mpm_module());
-    event_conn_state_t *cs = apr_pcalloc(c->pool, sizeof(event_conn_state_t));
-    cs->bucket_alloc = apr_bucket_alloc_create(c->pool);
-    
-    ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cs);
-    
-    cs->c = c;
-    cs->r = NULL;
-    cs->p = master_cs->p;
-    cs->pfd = master_cs->pfd;
-    cs->pub = master_cs->pub;
-    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
-    
-    c->cs = &(cs->pub);
-}
 
 conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
                           apr_allocator_t *allocator)
@@ -356,20 +304,15 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
         ap_set_module_config(c->conn_config, h2_conn_mpm_module(), cfg);
     }
 
-    switch (h2_conn_mpm_type()) {
-        case H2_MPM_EVENT: 
-            fix_event_conn(c, master);
-            break;
-        default:
-            break;
-    }
-    
     return c;
 }
 
 void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
 {
     apr_allocator_t *allocator = apr_pool_allocator_get(slave->pool);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
+                  "h2_slave_conn(%ld): destroy (task=%s)", slave->id,
+                  apr_table_get(slave->notes, H2_TASK_ID_NOTE));
     apr_pool_destroy(slave->pool);
     if (pallocator) {
         *pallocator = allocator;
