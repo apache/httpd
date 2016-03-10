@@ -93,18 +93,9 @@ int h2_io_is_repeatable(h2_io *io);
 void h2_io_redo(h2_io *io);
 
 /**
- * The input data is completely queued. Blocked reads will return immediately
- * and give either data or EOF.
- */
-int h2_io_in_has_eos_for(h2_io *io);
-/**
  * Output data is available.
  */
 int h2_io_out_has_data(h2_io *io);
-/**
- * Input data is available.
- */
-int h2_io_in_has_data(h2_io *io);
 
 void h2_io_signal(h2_io *io, h2_io_op op);
 void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 
@@ -127,7 +118,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
 /**
  * Appends given bucket to the input.
  */
-apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb);
+apr_status_t h2_io_in_write(h2_io *io, const char *d, apr_size_t len, int eos);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will

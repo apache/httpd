@@ -57,7 +57,6 @@ struct h2_stream {
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
-    apr_bucket_brigade *bbin;   /* input DATA */
 
     struct h2_sos *sos;         /* stream output source, e.g. to read output from */
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
@@ -65,15 +64,6 @@ struct h2_stream {
 
 
 #define H2_STREAM_RST(s, def)    (s->rst_error? s->rst_error : (def))
-
-/**
- * Create a stream in IDLE state.
- * @param id      the stream identifier
- * @param pool    the memory pool to use for this stream
- * @param session the session this stream belongs to
- * @return the newly created IDLE stream
- */
-h2_stream *h2_stream_create(int id, apr_pool_t *pool, struct h2_session *session);
 
 /**
  * Create a stream in OPEN state.
@@ -155,7 +145,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream);
  * @param len the number of bytes to write
  */
 apr_status_t h2_stream_write_data(h2_stream *stream,
-                                  const char *data, size_t len);
+                                  const char *data, size_t len, int eos);
 
 /**
  * Reset the stream. Stream write/reads will return errors afterwards.
