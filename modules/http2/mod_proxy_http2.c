@@ -17,7 +17,7 @@
 
 #include <httpd.h>
 #include <mod_proxy.h>
-#include <mod_http2.h>
+#include "mod_http2.h"
 
 
 #include "mod_proxy_http2.h"
