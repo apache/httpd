@@ -68,8 +68,8 @@
     <p>The usage of these directives is:</p>
 
     <highlight language="config">
-Require host address
-Require ip ip.address
+Require host <var>address</var>
+Require ip <var>ip.address</var>
     </highlight>
 
     <p>In the first form, <var>address</var> is a fully qualified
@@ -98,14 +98,16 @@ Require ip ip.address
     Require all granted
     Require not ip 10.252.46.165
 &lt;/RequireAll&gt;
-</highlight>
+    </highlight>
 
     <p>Visitors coming from that address (<code>10.252.46.165</code>)
     will not be able to see the content covered by this directive. If, 
     instead, you have a machine name, rather than an IP address, you 
     can use that.</p>
 
-    <highlight language="config">Require not host <var>host.example.com</var></highlight>
+    <highlight language="config">
+Require not host <var>host.example.com</var>
+    </highlight>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
@@ -172,7 +174,7 @@ Require expr %{HTTP_USER_AGENT} != 'BadBot'
 RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
-RewriteRule "^/fridge" "-" [F]
+RewriteRule "^/fridge"     "-" [F]
     </highlight>
 
     <p>This will return a 403 Forbidden response for any request after 8pm
@@ -203,4 +205,3 @@ RewriteRule "^/fridge" "-" [F]
 </section>
 
 </manualpage>
-
