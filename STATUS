@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Synch 2.4.x with trunk, Strip useless apr_brigade_cleanup() calls.
-     trunk patch: http://svn.apache.org/r1601624
-     2.4.x patch: trunk patch works
-     +1: jailletc36, jim, ylavic
-
   *) Use ap_array_str_contains to simplify code
      trunk patch: http://svn.apache.org/r1733523
                   http://svn.apache.org/r1733691
