@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
-     hook returns an error.
-     trunk patch: http://svn.apache.org/r1734006
-     2.4.x patch: trunk patch works (modulo CHANGES)
-     +1: minfrin, jim, ylavic
-
   *) mod_rewrite: bug in recently backported r1734125.
      trunk patch: http://svn.apache.org/r1734294.
      2.4.x patch: trunk works

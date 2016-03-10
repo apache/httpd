@@ -468,7 +468,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
      * attach this to the socket. Additionally we register this attachment
      * so we can detach later.
      */
-    if (!(ssl = SSL_new(mctx->ssl_ctx))) {
+    if (!(sslconn->ssl = ssl = SSL_new(mctx->ssl_ctx))) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01962)
                       "Unable to create a new SSL connection from the SSL "
                       "context");
@@ -496,8 +496,6 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 
     SSL_set_app_data(ssl, c);
     modssl_set_app_data2(ssl, NULL); /* will be request_rec */
-
-    sslconn->ssl = ssl;
 
     SSL_set_verify_result(ssl, X509_V_OK);
 

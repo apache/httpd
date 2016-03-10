@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
+     hook returns an error. [Graham Leggett]
+
   *) mod_rewrite: Add QSL|qslast flag to allow rewrites to files with
      literal question marks in their names. PR 58777. [Eric Covener]
 
