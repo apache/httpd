@@ -591,7 +591,6 @@ static void setaside_remaining_output(ap_filter_t *f,
             }
             ap_save_brigade(f, &(ctx->buffered_bb), &bb,
                             ctx->deferred_write_pool);
-            apr_brigade_cleanup(bb);
         }
     }
     else if (ctx->deferred_write_pool) {
