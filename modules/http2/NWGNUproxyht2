@@ -237,6 +237,7 @@ FILES_nlm_Ximports = \
 	ap_proxy_port_of_scheme \
 	ap_proxy_release_connection \
 	ap_proxy_ssl_connection_cleanup \
+	ap_sock_disable_nagle \
 	proxy_hook_canon_handler \
 	proxy_hook_scheme_handler \
 	proxy_module \

@@ -260,8 +260,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	http2_module \
-	@$(OBJDIR)/mod_http2.imp \        
+	@$(OBJDIR)/mod_http2.imp \
 	$(EOLIST)
 
 #
@@ -370,6 +369,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) h2_iq_add,$(DL) >> $@
 	@echo $(DL) h2_iq_create,$(DL) >> $@
 	@echo $(DL) h2_iq_remove,$(DL) >> $@
+	@echo $(DL) h2_log2,$(DL) >> $@
 	@echo $(DL) h2_proxy_res_ignore_header,$(DL) >> $@
 	@echo $(DL) h2_request_create,$(DL) >> $@
 	@echo $(DL) h2_request_make,$(DL) >> $@
@@ -379,6 +379,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
 	@echo $(DL) nghttp2_option_del,$(DL) >> $@
 	@echo $(DL) nghttp2_option_new,$(DL) >> $@
+	@echo $(DL) nghttp2_option_set_no_auto_window_update,$(DL) >> $@
 	@echo $(DL) nghttp2_option_set_peer_max_concurrent_streams,$(DL) >> $@
 	@echo $(DL) nghttp2_session_callbacks_del,$(DL) >> $@
 	@echo $(DL) nghttp2_session_callbacks_new,$(DL) >> $@
