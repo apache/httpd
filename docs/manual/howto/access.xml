@@ -68,8 +68,8 @@
     <p>The usage of these directives is:</p>
 
     <highlight language="config">
-Require host <var>address</var>
-Require ip <var>ip.address</var>
+Require host address
+Require ip ip.address
     </highlight>
 
     <p>In the first form, <var>address</var> is a fully qualified
