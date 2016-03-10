@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_reqtimeout: Prevent long response times from triggering a timeout once
+     the request has been fully read.  PR 59045.  [Yann Ylavic]
+
   *) mod_http2: give control to async mpm for keepalive timeouts only when
      no streams are open and even if only after 1 sec delay. Under load, event
      mpm discards connections otherwise too quickly. [Stefan Eissing]
