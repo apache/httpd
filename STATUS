@@ -168,6 +168,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, rpluem
 
+  *) ap_expr: expression support for variable HTTP2=on|off
+     trunk patch: http://svn.apache.org/r1726167
+     2.4.x patch: https://eissing.org/expr_http2_2.4.patch
+     +1: icing
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
