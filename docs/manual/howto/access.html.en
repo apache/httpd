@@ -71,8 +71,9 @@
 
     <p>The usage of these directives is:</p>
 
-    <pre class="prettyprint lang-config">Require host address
-Require ip ip.address</pre>
+    <pre class="prettyprint lang-config">Require host <var>address</var>
+Require ip <var>ip.address</var>
+    </pre>
 
 
     <p>In the first form, <var>address</var> is a fully qualified
@@ -107,7 +108,8 @@ Require ip ip.address</pre>
     instead, you have a machine name, rather than an IP address, you 
     can use that.</p>
 
-    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var></pre>
+    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
+    </pre>
 
 
     <p>And, if you'd like to block access from an entire domain,
@@ -167,7 +169,7 @@ Require not host gov</pre>
     <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
-RewriteRule "^/fridge" "-" [F]</pre>
+RewriteRule "^/fridge"     "-" [F]</pre>
 
 
     <p>This will return a 403 Forbidden response for any request after 8pm
