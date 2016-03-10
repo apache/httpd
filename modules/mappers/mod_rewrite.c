@@ -762,12 +762,15 @@ static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard,
             r->args = apr_pstrdup(r->pool, q);
         }
 
-        len = strlen(r->args);
-        if (!len) {
-            r->args = NULL;
-        }
-        else if (r->args[len-1] == '&') {
-            r->args[len-1] = '\0';
+        if (r->args) { 
+           len = strlen(r->args);
+      
+           if (!len) {
+               r->args = NULL;
+           }
+           else if (r->args[len-1] == '&') {
+               r->args[len-1] = '\0';
+           }
         }
 
         rewritelog((r, 3, NULL, "split uri=%s -> uri=%s, args=%s", olduri,

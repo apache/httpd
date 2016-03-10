@@ -112,10 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: bug in recently backported r1734125.
-     trunk patch: http://svn.apache.org/r1734294.
-     2.4.x patch: trunk works
-     +1 covener, rpluem, ylavic
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
