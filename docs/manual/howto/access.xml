@@ -98,7 +98,7 @@ Require ip <var>ip.address</var>
     Require all granted
     Require not ip 10.252.46.165
 &lt;/RequireAll&gt;
-</highlight>
+    </highlight>
 
     <p>Visitors coming from that address (<code>10.252.46.165</code>)
     will not be able to see the content covered by this directive. If,
