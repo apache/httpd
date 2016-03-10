@@ -129,6 +129,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (modulo CHANGES)
      +1: minfrin, jim, ylavic
 
+  *) mod_rewrite: bug in recently backported r1734125.
+     trunk patch: http://svn.apache.org/r1734294.
+     2.4.x patch: trunk works
+     +1 covener, rpluem, ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -142,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
      +1: ylavic
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-     ylavic: done + CHANGES (votes reset)
+     ylavic: r1723295 + CHANGES entry now included => votes reset
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
@@ -184,11 +189,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, rpluem
 
-
-  *) mod_rewrite: bug in recently backported r1734125.
-     trunk patch: http://svn.apache.org/r1734294.
-     2.4.x patch: trunk works
-     +1 covener, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
