@@ -45,6 +45,14 @@ h2_io *h2_io_create(int id, apr_pool_t *pool, const h2_request *request)
     return io;
 }
 
+static void check_bbin(h2_io *io)
+{
+    if (!io->bbin) {
+        io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
+        io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
+    }
+}
+
 void h2_io_redo(h2_io *io)
 {
     io->worker_started = 0;
@@ -85,21 +93,10 @@ void h2_io_set_response(h2_io *io, h2_response *response)
     }
 }
 
-
 void h2_io_rst(h2_io *io, int error)
 {
     io->rst_error = error;
     io->eos_in = 1;
-}
-
-int h2_io_in_has_eos_for(h2_io *io)
-{
-    return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, -1));
-}
-
-int h2_io_in_has_data(h2_io *io)
-{
-    return io->bbin && h2_util_bb_has_data_or_eos(io->bbin);
 }
 
 int h2_io_out_has_data(h2_io *io)
@@ -298,7 +295,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     return status;
 }
 
-apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
+apr_status_t h2_io_in_write(h2_io *io, const char *d, apr_size_t len, int eos)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;
@@ -307,13 +304,12 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
     if (io->eos_in) {
         return APR_EOF;
     }
-    io->eos_in = h2_util_has_eos(bb, -1);
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        if (!io->bbin) {
-            io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
-            io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
-        }
-        return h2_util_move(io->bbin, bb, -1, NULL, "h2_io_in_write");
+    if (eos) {
+        io->eos_in = 1;
+    }
+    if (len > 0) {
+        check_bbin(io);
+        return apr_brigade_write(io->bbin, NULL, NULL, d, len);
     }
     return APR_SUCCESS;
 }

@@ -498,7 +498,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
 }
 
 apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id, 
-                              apr_bucket_brigade *bb)
+                              const char *data, apr_size_t len, int eos)
 {
     apr_status_t status;
     int acquired;
@@ -508,7 +508,7 @@ apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id,
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_pre");
-            status = h2_io_in_write(io, bb);
+            status = h2_io_in_write(io, data, len, eos);
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_post");
             h2_io_signal(io, H2_IO_READ);
             io_process_events(m, io);
@@ -896,46 +896,6 @@ apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error)
         leave_mutex(m, acquired);
     }
     return status;
-}
-
-int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id)
-{
-    int has_eos = 0;
-    int acquired;
-    
-    apr_status_t status;
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            has_eos = h2_io_in_has_eos_for(io);
-        }
-        else {
-            has_eos = 1;
-        }
-        leave_mutex(m, acquired);
-    }
-    return has_eos;
-}
-
-int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id)
-{
-    apr_status_t status;
-    int has_data = 0;
-    int acquired;
-    
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            has_data = h2_io_in_has_data(io);
-        }
-        else {
-            has_data = 0;
-        }
-        leave_mutex(m, acquired);
-    }
-    return has_data;
 }
 
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id)

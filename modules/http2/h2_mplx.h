@@ -171,10 +171,6 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
  */
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id);
 
-/* Return != 0 iff the multiplexer has input data for the given stream. 
- */
-int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id);
-
 /**
  * Waits on output data from any stream in this session to become available. 
  * Returns APR_TIMEUP if no data arrived in the given time.
@@ -238,19 +234,13 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
  * Appends data to the input of the given stream. Storage of input data is
  * not subject to flow control.
  */
-apr_status_t h2_mplx_in_write(h2_mplx *mplx, int stream_id, 
-                              apr_bucket_brigade *bb);
+apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id, 
+                              const char *data, apr_size_t len, int eos);
 
 /**
  * Closes the input for the given stream_id.
  */
 apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id);
-
-/**
- * Returns != 0 iff the input for the given stream has been closed. There
- * could still be data queued, but it can be read without blocking.
- */
-int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id);
 
 /**
  * Invoke the consumed callback for all streams that had bytes read since the 
