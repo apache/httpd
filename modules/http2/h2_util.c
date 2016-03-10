@@ -309,12 +309,12 @@ static int ihash_iter(void *ctx, const void *key, apr_ssize_t klen,
     return ictx->iter(ictx->ctx, (void*)val); /* why is this passed const?*/
 }
 
-void h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx)
+int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx)
 {
     iter_ctx ictx;
     ictx.iter = fn;
     ictx.ctx = ctx;
-    apr_hash_do(ihash_iter, &ictx, ih->hash);
+    return apr_hash_do(ihash_iter, &ictx, ih->hash);
 }
 
 void h2_ihash_add(h2_ihash_t *ih, void *val)
@@ -1212,8 +1212,9 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
             frame->goaway.opaque_data_len : s_len-1;
             memcpy(scratch, frame->goaway.opaque_data, len);
             scratch[len] = '\0';
-            return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s']",
-                                frame->goaway.error_code, scratch);
+            return apr_snprintf(buffer, maxlen, "GOAWAY[error=%d, reason='%s', "
+                                "last_stream=%d]", frame->goaway.error_code, 
+                                scratch, frame->goaway.last_stream_id);
         }
         case NGHTTP2_WINDOW_UPDATE: {
             return apr_snprintf(buffer, maxlen,

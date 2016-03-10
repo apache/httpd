@@ -93,16 +93,16 @@ static apr_status_t h2_response_freeze_filter(ap_filter_t* f,
     AP_DEBUG_ASSERT(task);
     
     if (task->frozen) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
                       "h2_response_freeze_filter, saving");
-        return ap_save_brigade(f, &task->frozen_out, &bb, task->c->pool);
+        return ap_save_brigade(f, &task->output->frozen_bb, &bb, task->c->pool);
     }
     
     if (APR_BRIGADE_EMPTY(bb)) {
         return APR_SUCCESS;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
                   "h2_response_freeze_filter, passing");
     return ap_pass_brigade(f->next, bb);
 }
@@ -197,10 +197,16 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     task->request     = req;
     task->input_eos   = !req->body;
     task->ser_headers = req->serialize;
+    task->blocking    = 1;
 
     h2_ctx_create_for(c, task);
 
     return task;
+}
+
+void h2_task_set_io_blocking(h2_task *task, int blocking)
+{
+    task->blocking = blocking;
 }
 
 apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond)
@@ -212,6 +218,8 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond)
     task->input = h2_task_input_create(task, task->c);
     task->output = h2_task_output_create(task, task->c);
     
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                  "h2_task(%s): process connection", task->id);
     ap_process_connection(task->c, ap_get_conn_socket(task->c));
     
     if (task->frozen) {
@@ -236,6 +244,8 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
     conn_state_t *cs = c->cs;
     request_rec *r;
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                  "h2_task(%s): create request_rec", task->id);
     r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
@@ -264,6 +274,15 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
             cs->state = CONN_STATE_WRITE_COMPLETION;
         r = NULL;
     }
+    else if (!r) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%s): create request_rec failed, r=NULL", task->id);
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_task(%s): create request_rec failed, r->status=%d", 
+                      task->id, r->status);
+    }
     c->sbh = NULL;
 
     return APR_SUCCESS;
@@ -280,13 +299,17 @@ static int h2_task_process_conn(conn_rec* c)
     ctx = h2_ctx_get(c, 0);
     if (h2_ctx_is_task(ctx)) {
         if (!ctx->task->ser_headers) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                           "h2_h2, processing request directly");
             h2_task_process_request(ctx->task, c);
             return DONE;
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                       "h2_task(%s), serialized handling", ctx->task->id);
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
+                      "slave_conn(%ld): has no task", c->id);
     }
     return DECLINED;
 }
@@ -297,7 +320,7 @@ apr_status_t h2_task_freeze(h2_task *task, request_rec *r)
         conn_rec *c = task->c;
         
         task->frozen = 1;
-        task->frozen_out = apr_brigade_create(c->pool, c->bucket_alloc);
+        task->output->frozen_bb = apr_brigade_create(c->pool, c->bucket_alloc);
         ap_add_output_filter("H2_RESPONSE_FREEZE", task, r, r->connection);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
                       "h2_task(%s), frozen", task->id);
@@ -312,6 +335,11 @@ apr_status_t h2_task_thaw(h2_task *task)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
                       "h2_task(%s), thawed", task->id);
     }
+    task->detached = 1;
     return APR_SUCCESS;
 }
 
+int h2_task_is_detached(h2_task *task)
+{
+    return task->detached;
+}

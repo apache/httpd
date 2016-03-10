@@ -597,15 +597,6 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
                      (long)session->frames_sent);
     }
     ++session->frames_sent;
-    switch (frame->hd.type) {
-        case NGHTTP2_HEADERS:
-        case NGHTTP2_DATA:
-            /* no explicit flushing necessary */
-            break;
-        default:
-            session->flush = 1;
-            break;
-    }
     return 0;
 }
 
@@ -1570,7 +1561,7 @@ static apr_status_t h2_session_read(h2_session *session, int block)
                     }
                     else {
                         /* uncommon status, log on INFO so that we see this */
-                        ap_log_cerror( APLOG_MARK, APLOG_INFO, status, c,
+                        ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, c,
                                       APLOGNO(02950) 
                                       "h2_session(%ld): error reading, terminating",
                                       session->id);
@@ -1754,7 +1745,7 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "h2_session(%ld): conn error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -1771,7 +1762,7 @@ static void h2_session_ev_proto_error(h2_session *session, int arg, const char *
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c,
                           "h2_session(%ld): proto error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -1810,12 +1801,14 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     transit(session, "no io", H2_SESSION_ST_DONE);
                 }
                 else {
+                    apr_time_t now = apr_time_now();
                     /* When we have no streams, no task event are possible,
                      * switch to blocking reads */
                     transit(session, "no io", H2_SESSION_ST_IDLE);
                     session->idle_until = (session->requests_received? 
                                            session->s->keep_alive_timeout : 
-                                           session->s->timeout) + apr_time_now();
+                                           session->s->timeout) + now;
+                    session->keep_sync_until = now + apr_time_from_sec(1);
                 }
             }
             else if (!has_unsubmitted_streams(session)
@@ -1826,6 +1819,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                  * window updates. */
                 transit(session, "no io", H2_SESSION_ST_IDLE);
                 session->idle_until = apr_time_now() + session->s->timeout;
+                session->keep_sync_until = session->idle_until;
             }
             else {
                 /* Unable to do blocking reads, as we wait on events from
@@ -2021,7 +2015,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 no_streams = h2_ihash_is_empty(session->streams);
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
-                if (async && no_streams && !session->r && session->requests_received) {
+                /* make certain, the client receives everything before we idle */
+                h2_conn_io_flush(&session->io);
+                if (!session->keep_sync_until 
+                    && async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
                     /* We do not return to the async mpm immediately, since under
@@ -2074,7 +2071,13 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* nothing to read */
                     }
                     else if (APR_STATUS_IS_TIMEUP(status)) {
-                        if (apr_time_now() > session->idle_until) {
+                        apr_time_t now = apr_time_now();
+                        if (now > session->keep_sync_until) {
+                            /* if we are on an async mpm, now is the time that
+                             * we may dare to pass control to it. */
+                            session->keep_sync_until = 0;
+                        }
+                        if (now > session->idle_until) {
                             dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
                         }
                         /* continue reading handling */
@@ -2164,7 +2167,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     /* waited long enough */
                     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, APR_TIMEUP, c,
                                   "h2_session: wait for data");
-                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, NULL);
+                    dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
+                    break;
                 }
                 else {
                     /* repeating, increase timer for graceful backoff */
@@ -2176,6 +2180,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                   "h2_session: wait for data, %ld micros", 
                                   (long)session->wait_us);
                 }
+                /* make certain, the client receives everything before we idle */
+                h2_conn_io_flush(&session->io);
                 status = h2_mplx_out_trywait(session->mplx, session->wait_us, 
                                              session->iowait);
                 if (status == APR_SUCCESS) {
@@ -2187,7 +2193,11 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     transit(session, "wait cycle", H2_SESSION_ST_BUSY);
                 }
                 else {
-                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, "cond wait error", 0);
+                    ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
+                                  "h2_session(%ld): waiting on conditional",
+                                  session->id);
+                    h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, 
+                                        "cond wait error", 0);
                 }
                 break;
                 
@@ -2212,8 +2222,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
     
 out:
-    h2_conn_io_pass(&session->io, session->flush);
-    session->flush = 0;
+    h2_conn_io_flush(&session->io);
     
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): [%s] process returns", 

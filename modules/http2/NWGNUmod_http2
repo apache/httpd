@@ -198,6 +198,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_io.o \
 	$(OBJDIR)/h2_io_set.o \
 	$(OBJDIR)/h2_mplx.o \
+	$(OBJDIR)/h2_ngn_shed.o \
 	$(OBJDIR)/h2_push.o \
 	$(OBJDIR)/h2_request.o \
 	$(OBJDIR)/h2_response.o \
@@ -259,7 +260,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	http2_module \
+	@$(OBJDIR)/mod_http2.imp \
 	$(EOLIST)
 
 #
@@ -273,7 +274,7 @@ FILES_lib_objs := $(sort $(patsubst $(NGH2SRC)/lib/%.c,$(OBJDIR)/%.o,$(wildcard 
 
 libs :: $(OBJDIR) $(NGH2SRC)/lib/config.h $(TARGET_lib)
 
-nlms :: libs $(TARGET_nlm)
+nlms :: libs $(OBJDIR)/mod_http2.imp $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the
@@ -289,7 +290,8 @@ clean ::
 #
 vpath %.c $(NGH2SRC)/lib
 
-$(NGH2SRC)/lib/config.h : NWGNUmakefile
+$(NGH2SRC)/lib/config.h : NWGNUmod_http2
+	@-$(RM) $@
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL)/* For NetWare target.$(DL) > $@
 	@echo $(DL)** Do not edit - created by Make!$(DL) >> $@
@@ -351,6 +353,60 @@ $(NGH2SRC)/lib/config.h : NWGNUmakefile
 	@echo $(DL)#endif /* NGH2_CONFIG_H */$(DL) >> $@
 
 #
+# Exports from mod_http2 for mod_proxy_http2
+$(OBJDIR)/mod_http2.imp : NWGNUmod_http2
+	@-$(RM) $@
+	@echo $(DL)GEN  $@$(DL)
+	@echo $(DL) (HTTP2)$(DL) > $@
+	@echo $(DL) http2_module,$(DL) >> $@
+	@echo $(DL) h2_ihash_add,$(DL) >> $@
+	@echo $(DL) h2_ihash_clear,$(DL) >> $@
+	@echo $(DL) h2_ihash_count,$(DL) >> $@
+	@echo $(DL) h2_ihash_create,$(DL) >> $@
+	@echo $(DL) h2_ihash_is_empty,$(DL) >> $@
+	@echo $(DL) h2_ihash_iter,$(DL) >> $@
+	@echo $(DL) h2_ihash_remove,$(DL) >> $@
+	@echo $(DL) h2_iq_add,$(DL) >> $@
+	@echo $(DL) h2_iq_create,$(DL) >> $@
+	@echo $(DL) h2_iq_remove,$(DL) >> $@
+	@echo $(DL) h2_log2,$(DL) >> $@
+	@echo $(DL) h2_proxy_res_ignore_header,$(DL) >> $@
+	@echo $(DL) h2_request_create,$(DL) >> $@
+	@echo $(DL) h2_request_make,$(DL) >> $@
+	@echo $(DL) h2_util_camel_case_header,$(DL) >> $@
+	@echo $(DL) h2_util_frame_print,$(DL) >> $@
+	@echo $(DL) h2_util_ngheader_make_req,$(DL) >> $@
+	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
+	@echo $(DL) nghttp2_option_del,$(DL) >> $@
+	@echo $(DL) nghttp2_option_new,$(DL) >> $@
+	@echo $(DL) nghttp2_option_set_no_auto_window_update,$(DL) >> $@
+	@echo $(DL) nghttp2_option_set_peer_max_concurrent_streams,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_del,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_new,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_before_frame_send_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_data_chunk_recv_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_frame_recv_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_header_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_on_stream_close_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_callbacks_set_send_callback,$(DL) >> $@
+	@echo $(DL) nghttp2_session_client_new2,$(DL) >> $@
+	@echo $(DL) nghttp2_session_consume,$(DL) >> $@
+	@echo $(DL) nghttp2_session_del,$(DL) >> $@
+	@echo $(DL) nghttp2_session_get_remote_settings,$(DL) >> $@
+	@echo $(DL) nghttp2_session_get_stream_user_data,$(DL) >> $@
+	@echo $(DL) nghttp2_session_mem_recv,$(DL) >> $@
+	@echo $(DL) nghttp2_session_resume_data,$(DL) >> $@
+	@echo $(DL) nghttp2_session_send,$(DL) >> $@
+	@echo $(DL) nghttp2_session_want_read,$(DL) >> $@
+	@echo $(DL) nghttp2_session_want_write,$(DL) >> $@
+	@echo $(DL) nghttp2_strerror,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_goaway,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_request,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_rst_stream,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_settings,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_window_update,$(DL) >> $@
+	@echo $(DL) nghttp2_version$(DL) >> $@
+
 # Include the 'tail' makefile that has targets that depend on variables defined
 # in this makefile
 #
