@@ -427,8 +427,8 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 if (rv != APR_SUCCESS)
                     goto err;
                 APR_BRIGADE_CONCAT(ctx->passbb, ctx->pattbb);
+                apr_brigade_cleanup(ctx->linebb);
             }
-            apr_brigade_cleanup(ctx->linebb);
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
         }

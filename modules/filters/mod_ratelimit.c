@@ -116,7 +116,6 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
 
         if (!APR_BRIGADE_EMPTY(ctx->holdingbb)) {
             APR_BRIGADE_CONCAT(bb, ctx->holdingbb);
-            apr_brigade_cleanup(ctx->holdingbb);
         }
 
         while (ctx->state == RATE_FULLSPEED && !APR_BRIGADE_EMPTY(bb)) {
