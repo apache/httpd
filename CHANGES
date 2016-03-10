@@ -1,17 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: give control to async mpm for keepalive timeouts only when
-     no streams are open and even if only after 1 sec delay. Under load, event
-     mpm discards connections otherwise too quickly.
-  
   *) mod_proxy_http2: rescheduling of requests that have not been processed
      by the backend when receiving a GOAWAY frame before done.
-     [Stefan Eissign]
+     [Stefan Eissing]
      
-  *) mod_reqtimeout: Prevent long response times from triggering a timeout once
-     the request has been fully read.  PR 59045.  [Yann Ylavic]
-
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
 
   *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
