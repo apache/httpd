@@ -46,7 +46,7 @@ struct h2_io {
 
     apr_bucket_brigade *bbin;        /* input data for stream */
     apr_bucket_brigade *bbout;       /* output data from stream */
-    apr_bucket_brigade *tmp;         /* temporary data for chunking */
+    apr_bucket_brigade *bbtmp;       /* temporary data for chunking */
 
     unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
     unsigned int worker_started : 1; /* h2_worker started processing for this io */
