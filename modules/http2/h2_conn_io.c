@@ -43,18 +43,18 @@
  * which seems to create less TCP packets overall
  */
 #define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
-
 #define WRITE_BUFFER_SIZE     (5*WRITE_SIZE_MAX)
+
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
                              const h2_config *cfg, 
                              apr_pool_t *pool)
 {
-    io->connection         = c;
-    io->output             = apr_brigade_create(pool, c->bucket_alloc);
-    io->buflen             = 0;
-    io->is_tls             = h2_h2_is_tls(c);
-    io->buffer_output      = io->is_tls;
+    io->c             = c;
+    io->output        = apr_brigade_create(pool, c->bucket_alloc);
+    io->buflen        = 0;
+    io->is_tls        = h2_h2_is_tls(c);
+    io->buffer_output = io->is_tls;
     
     if (io->buffer_output) {
         io->bufsize = WRITE_BUFFER_SIZE;
@@ -65,8 +65,9 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
     }
     
     if (io->is_tls) {
-        /* That is where we start with, 
-         * see https://issues.apache.org/jira/browse/TS-2503 */
+        /* This is what we start with, 
+         * see https://issues.apache.org/jira/browse/TS-2503 
+         */
         io->warmup_size    = h2_config_geti64(cfg, H2_CONF_TLS_WARMUP_SIZE);
         io->cooldown_usecs = (h2_config_geti(cfg, H2_CONF_TLS_COOLDOWN_SECS) 
                               * APR_USEC_PER_SEC);
@@ -79,9 +80,10 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
     }
 
     if (APLOGctrace1(c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
-                      "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, cd_secs=%f",
-                      io->connection->id, io->buffer_output, (long)io->warmup_size,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
+                      "h2_conn_io(%ld): init, buffering=%d, warmup_size=%ld, "
+                      "cd_secs=%f", io->c->id, io->buffer_output, 
+                      (long)io->warmup_size,
                       ((float)io->cooldown_usecs/APR_USEC_PER_SEC));
     }
 
@@ -141,17 +143,17 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io)
         /* long time not written, reset write size */
         io->write_size = WRITE_SIZE_INITIAL;
         io->bytes_written = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
                       "h2_conn_io(%ld): timeout write size reset to %ld", 
-                      (long)io->connection->id, (long)io->write_size);
+                      (long)io->c->id, (long)io->write_size);
     }
     else if (io->write_size < WRITE_SIZE_MAX 
              && io->bytes_written >= io->warmup_size) {
         /* connection is hot, use max size */
         io->write_size = WRITE_SIZE_MAX;
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
                       "h2_conn_io(%ld): threshold reached, write size now %ld", 
-                      (long)io->connection->id, (long)io->write_size);
+                      (long)io->c->id, (long)io->write_size);
     }
     
     bcount = (int)(remaining / io->write_size);
@@ -179,43 +181,39 @@ apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
 
 static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
 {
-    if (io->buflen > 0 || !APR_BRIGADE_EMPTY(io->output)) {
-        pass_out_ctx ctx;
-        
-        if (io->buflen > 0) {
-            /* something in the buffer, put it in the output brigade */
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
-                          "h2_conn_io: flush, flushing %ld bytes", (long)io->buflen);
-            bucketeer_buffer(io);
-        }
-        
-        if (force) {
-            APR_BRIGADE_INSERT_TAIL(io->output,
-                                    apr_bucket_flush_create(io->output->bucket_alloc));
-        }
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
-                      "h2_conn_io: flush");
-        /* Send it out */
-        io->buflen = 0;
-        ctx.c = io->connection;
-        ctx.io = eoc? NULL : io;
-        
-        return pass_out(io->output, &ctx);
-        /* no more access after this, as we might have flushed an EOC bucket
-         * that de-allocated us all. */
+    pass_out_ctx ctx;
+    
+    if (io->buflen == 0 && APR_BRIGADE_EMPTY(io->output)) {
+        return APR_SUCCESS;
     }
-    return APR_SUCCESS;
+        
+    if (io->buflen > 0) {
+        /* something in the buffer, put it in the output brigade */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
+                      "h2_conn_io: flush, flushing %ld bytes", 
+                      (long)io->buflen);
+        bucketeer_buffer(io);
+    }
+    
+    if (force) {
+        apr_bucket *b = apr_bucket_flush_create(io->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(io->output, b);
+    }
+    
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c, "h2_conn_io: flush");
+    /* Send it out */
+    io->buflen = 0;
+    ctx.c = io->c;
+    ctx.io = eoc? NULL : io;
+    
+    return pass_out(io->output, &ctx);
+    /* no more access after this, as we might have flushed an EOC bucket
+     * that de-allocated us all. */
 }
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
-    /* make sure we always write a flush, even if our buffers are empty.
-     * We want to flush not only our buffers, but alse ones further down
-     * the connection filters. */
-    apr_bucket *b = apr_bucket_flush_create(io->connection->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(io->output, b);
-    return h2_conn_io_flush_int(io, 0, 0);
+    return h2_conn_io_flush_int(io, 1, 0);
 }
 
 apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
@@ -234,9 +232,7 @@ apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
 
 apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
 {
-    apr_bucket *b = h2_bucket_eoc_create(io->connection->bucket_alloc, session);
-    APR_BRIGADE_INSERT_TAIL(io->output, b);
-    b = apr_bucket_flush_create(io->connection->bucket_alloc);
+    apr_bucket *b = h2_bucket_eoc_create(io->c->bucket_alloc, session);
     APR_BRIGADE_INSERT_TAIL(io->output, b);
     return h2_conn_io_flush_int(io, 0, 1);
 }
@@ -247,10 +243,10 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
     apr_status_t status = APR_SUCCESS;
     pass_out_ctx ctx;
     
-    ctx.c = io->connection;
+    ctx.c = io->c;
     ctx.io = io;
     if (io->bufsize > 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->connection,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
                       "h2_conn_io: buffering %ld bytes", (long)length);
                       
         if (!APR_BRIGADE_EMPTY(io->output)) {
@@ -278,7 +274,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, status, io->connection,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, status, io->c,
                       "h2_conn_io: writing %ld bytes to brigade", (long)length);
         status = apr_brigade_write(io->output, pass_out, &ctx, buf, length);
     }
