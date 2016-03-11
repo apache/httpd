@@ -613,7 +613,7 @@ static int get_form_auth(request_rec * r,
 
     /* have we isolated the user and pw before? */
     get_notes_auth(r, sent_user, sent_pw, sent_method, sent_mimetype);
-    if (*sent_user && *sent_pw) {
+    if (sent_user && *sent_user && sent_pw && *sent_pw) {
         return OK;
     }
 
