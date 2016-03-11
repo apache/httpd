@@ -229,6 +229,13 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->fips = FALSE;
         }
 #endif
+
+        if (sc->server && sc->server->crl_check_flags == UNSET) {
+            sc->server->crl_check_flags = 0;
+        }
+        if (sc->proxy && sc->proxy->crl_check_flags == UNSET) {
+            sc->proxy->crl_check_flags = 0;
+        }
     }
 
 #if APR_HAS_THREADS
