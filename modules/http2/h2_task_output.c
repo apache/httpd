@@ -155,8 +155,8 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     
     if (output->task->frozen) {
         h2_util_bb_log(output->c, output->task->stream_id, APLOG_TRACE2,
-                       "frozen task output write", bb);
-        return ap_save_brigade(f, &output->frozen_bb, &bb, output->c->pool);
+                       "frozen task output write, ignored", bb);
+        return APR_SUCCESS;
     }
     
     status = open_if_needed(output, f, bb, "write");
@@ -190,18 +190,11 @@ apr_status_t h2_task_output_write(h2_task_output *output,
 
 void h2_task_output_close(h2_task_output *output)
 {
-    if (output->task->frozen) {
-        return;
-    }
     open_if_needed(output, NULL, NULL, "close");
     if (output->state != H2_TASK_OUT_DONE) {
-        if (output->frozen_bb && !APR_BRIGADE_EMPTY(output->frozen_bb)) {
-            h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
-                NULL, 1, output->frozen_bb, NULL, NULL);
-        }
-        output->state = H2_TASK_OUT_DONE;
         h2_mplx_out_close(output->task->mplx, output->task->stream_id, 
                           get_trailers(output));
+        output->state = H2_TASK_OUT_DONE;
     }
 }
 

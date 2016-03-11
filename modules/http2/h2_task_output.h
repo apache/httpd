@@ -44,7 +44,6 @@ struct h2_task_output {
 
     apr_off_t written;
     apr_bucket_brigade *bb;
-    apr_bucket_brigade *frozen_bb;
 };
 
 h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);

@@ -367,7 +367,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     return status;
 }
 
-static apr_status_t setup_engine(h2_proxy_ctx *ctx)
+static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx)
 {
     conn_rec *c = ctx->owner;
     const char *engine_type, *hostname;
@@ -386,10 +386,10 @@ static apr_status_t setup_engine(h2_proxy_ctx *ctx)
             == APR_SUCCESS && ctx->engine == NULL) {
             /* Another engine instance has taken over processing of this
              * request. */
-            ctx->r_status = APR_SUCCESS;
+            ctx->r_status = SUSPENDED;
             ctx->next = NULL;
             
-            return APR_EOF;
+            return APR_SUCCESS;
         }
     }
     
@@ -501,8 +501,14 @@ run_connect:
         goto cleanup;
     }
     
-    if (!ctx->engine && setup_engine(ctx) != APR_SUCCESS) {
-        goto cleanup;
+    /* If we are not already hosting an engine, try to push the request 
+     * to an already existing engine or host a new engine here. */
+    if (!ctx->engine) {
+        push_request_somewhere(ctx);
+        if (ctx->r_status == SUSPENDED) {
+            /* request was pushed to another engine */
+            goto cleanup;
+        }
     }
     
     /* Step Two: Make the Connection (or check that an already existing
