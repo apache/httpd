@@ -686,7 +686,7 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason,
                           h2_mplx_get_max_stream_started(session->mplx), 
                           reason, (uint8_t*)err, err? strlen(err):0);
     status = nghttp2_session_send(session->ngh2);
-    h2_conn_io_pass(&session->io, 1);
+    h2_conn_io_flush(&session->io);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03069)
                   "session(%ld): sent GOAWAY, err=%d, msg=%s", 
                   session->id, reason, err? err : "");
@@ -1018,7 +1018,6 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         }
     }
     
-    h2_conn_io_pass(&session->io, 1);
     return status;
 }
 
@@ -2019,7 +2018,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
                 /* make certain, the client receives everything before we idle */
-                h2_conn_io_flush(&session->io);
                 if (!session->keep_sync_until 
                     && async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
@@ -2183,8 +2181,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                   "h2_session: wait for data, %ld micros", 
                                   (long)session->wait_us);
                 }
-                /* make certain, the client receives everything before we idle */
-                h2_conn_io_flush(&session->io);
                 status = h2_mplx_out_trywait(session->mplx, session->wait_us, 
                                              session->iowait);
                 if (status == APR_SUCCESS) {
@@ -2217,7 +2213,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
         }
 
-        h2_conn_io_pass(&session->io, 1);
+        h2_conn_io_flush(&session->io);
         if (!nghttp2_session_want_read(session->ngh2) 
                  && !nghttp2_session_want_write(session->ngh2)) {
             dispatch_event(session, H2_SESSION_EV_NGH2_DONE, 0, NULL); 

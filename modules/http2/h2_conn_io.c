@@ -208,11 +208,6 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_io_pass(h2_conn_io *io, int flush)
-{
-    return h2_conn_io_flush_int(io, flush, 0);
-}
-
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
     /* make sure we always write a flush, even if our buffers are empty.
@@ -232,7 +227,7 @@ apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
     }
     len += io->buflen;
     if (len >= WRITE_BUFFER_SIZE) {
-        return h2_conn_io_pass(io, 0);
+        return h2_conn_io_flush_int(io, 0, 0);
     }
     return APR_SUCCESS;
 }
@@ -259,13 +254,13 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                       "h2_conn_io: buffering %ld bytes", (long)length);
                       
         if (!APR_BRIGADE_EMPTY(io->output)) {
-            status = h2_conn_io_pass(io, 0);
+            status = h2_conn_io_flush_int(io, 0, 0);
         }
         
         while (length > 0 && (status == APR_SUCCESS)) {
             apr_size_t avail = io->bufsize - io->buflen;
             if (avail <= 0) {
-                h2_conn_io_pass(io, 0);
+                h2_conn_io_flush_int(io, 0, 0);
             }
             else if (length > avail) {
                 memcpy(io->buffer + io->buflen, buf, avail);
