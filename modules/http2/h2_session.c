@@ -1956,15 +1956,20 @@ static const int MAX_WAIT_MICROS = 200 * 1000;
 
 static void update_child_status(h2_session *session, int status, const char *msg)
 {
-    apr_snprintf(session->status, sizeof(session->status),
-                 "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
-                 msg? msg : "-",
-                 (int)h2_ihash_count(session->streams), 
-                 (int)session->requests_received,
-                 (int)session->responses_submitted,
-                 (int)session->pushes_submitted,
-                 (int)session->pushes_reset + session->streams_reset);
-    ap_update_child_status_descr(session->c->sbh, status, session->status);
+    /* Assume that we also change code/msg when something really happened and
+     * avoid updating the scoreboard in between */
+    if (session->last_status_code != status 
+        || session->last_status_msg != msg) {
+        apr_snprintf(session->status, sizeof(session->status),
+                     "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
+                     msg? msg : "-",
+                     (int)h2_ihash_count(session->streams), 
+                     (int)session->requests_received,
+                     (int)session->responses_submitted,
+                     (int)session->pushes_submitted,
+                     (int)session->pushes_reset + session->streams_reset);
+        ap_update_child_status_descr(session->c->sbh, status, session->status);
+    }
 }
 
 apr_status_t h2_session_process(h2_session *session, int async)
@@ -2094,10 +2099,12 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_LOCAL_SHUTDOWN:
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
+                    ap_update_child_status(session->c->sbh, SERVER_BUSY_READ, NULL);
                     h2_filter_cin_timeout_set(session->cin, session->s->timeout);
                     status = h2_session_read(session, 0);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
+                        update_child_status(session, SERVER_BUSY_READ, "busy");
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
                     }
                     else if (status == APR_EAGAIN) {
@@ -2134,7 +2141,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 
-                while (nghttp2_session_want_write(session->ngh2)) {
+                if (nghttp2_session_want_write(session->ngh2)) {
                     ap_update_child_status(session->c->sbh, SERVER_BUSY_WRITE, NULL);
                     status = h2_session_send(session);
                     if (status == APR_SUCCESS) {
@@ -2150,7 +2157,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 if (have_read || have_written) {
                     if (session->wait_us) {
                         session->wait_us = 0;
-                        update_child_status(session, SERVER_BUSY_READ, "busy");
                     }
                 }
                 else if (!nghttp2_session_want_write(session->ngh2)) {

@@ -26,7 +26,7 @@ struct h2_session;
  * directly without copying.
  */
 typedef struct {
-    conn_rec *connection;
+    conn_rec *c;
     apr_bucket_brigade *output;
 
     int is_tls;

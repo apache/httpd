@@ -130,6 +130,8 @@ typedef struct h2_session {
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     char status[64];                /* status message for scoreboard */
+    int last_status_code;           /* the one already reported */
+    const char *last_status_msg;    /* the one already reported */
 } h2_session;
 
 
