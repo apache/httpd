@@ -77,7 +77,6 @@ apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, struct h2_session *session);
  * @param io the connection io
  * @param flush if a flush bucket should be appended to any output
  */
-apr_status_t h2_conn_io_pass(h2_conn_io *io, int flush);
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
 
 /**
