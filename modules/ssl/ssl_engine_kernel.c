@@ -1581,10 +1581,11 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, conn,
                     X509_STORE_CTX_get_current_cert(ctx), APLOGNO(02275)
                     "Certificate Verification, depth %d, "
-                    "CRL checking mode: %s", errdepth,
+                    "CRL checking mode: %s (%x)", errdepth,
                     mctx->crl_check_mode == SSL_CRLCHECK_CHAIN ?
                     "chain" : (mctx->crl_check_mode == SSL_CRLCHECK_LEAF ?
-                               "leaf" : "none"));
+                               "leaf" : "none"),
+                    mctx->crl_check_flags);
 
     /*
      * Check for optionally acceptable non-verifiable issuer situation
@@ -1631,6 +1632,12 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      */
     if (!ok && errnum == X509_V_ERR_CRL_HAS_EXPIRED) {
         X509_STORE_CTX_set_error(ctx, -1);
+    }
+
+    if (!ok && errnum == X509_V_ERR_UNABLE_TO_GET_CRL
+            && (sc->server->crl_check_flags & MODSSL_CCF_NO_CRL_FOR_CERT_OK)) {
+        errnum = X509_V_OK;
+        ok = TRUE;
     }
 
 #ifndef OPENSSL_NO_OCSP

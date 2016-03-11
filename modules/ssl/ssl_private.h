@@ -338,6 +338,7 @@ typedef enum {
 /**
   * CRL checking modes
   */
+#define MODSSL_CCF_NO_CRL_FOR_CERT_OK (1 << 0)
 typedef enum {
     SSL_CRLCHECK_UNSET = UNSET,
     SSL_CRLCHECK_NONE  = 0,
@@ -601,6 +602,7 @@ typedef struct {
     const char    *crl_path;
     const char    *crl_file;
     ssl_crlcheck_t crl_check_mode;
+    int            crl_check_flags;
 
 #ifdef HAVE_OCSP_STAPLING
     /** OCSP stapling options */

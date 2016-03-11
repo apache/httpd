@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
+     to opt-in previous behaviour (2.2) with CRLs verification when checking
+     certificate(s) with no corresponding CRL.  [Yann Ylavic]
+
   *) mod_proxy_http2: rescheduling of requests that have not been processed
      by the backend when receiving a GOAWAY frame before done.
      [Stefan Eissing]

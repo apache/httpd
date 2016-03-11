@@ -124,7 +124,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(CARevocationFile, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) file "
                 "('/path/to/file' - PEM encoded)")
-    SSL_CMD_SRV(CARevocationCheck, TAKE1,
+    SSL_CMD_SRV(CARevocationCheck, RAW_ARGS,
                 "SSL CA Certificate Revocation List (CRL) checking mode")
     SSL_CMD_ALL(VerifyClient, TAKE1,
                 "SSL Client verify type "
@@ -202,7 +202,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(ProxyCARevocationFile, TAKE1,
                 "SSL Proxy: CA Certificate Revocation List (CRL) file "
                 "('/path/to/file' - PEM encoded)")
-    SSL_CMD_SRV(ProxyCARevocationCheck, TAKE1,
+    SSL_CMD_SRV(ProxyCARevocationCheck, RAW_ARGS,
                 "SSL Proxy: CA Certificate Revocation List (CRL) checking mode")
     SSL_CMD_SRV(ProxyMachineCertificateFile, TAKE1,
                "SSL Proxy: file containing client certificates "
