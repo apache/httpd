@@ -502,7 +502,7 @@ AP_DECLARE(int) ap_should_client_block(request_rec *r);
  */
 AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bufsiz);
 
-/*
+/**
  * Map specific APR codes returned by the filter stack to HTTP error
  * codes, or the default status code provided. Use it as follows:
  *
