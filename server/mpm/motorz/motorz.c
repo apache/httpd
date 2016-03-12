@@ -402,7 +402,7 @@ read_request:
 
             ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
 
-            not_complete_yet = ap_run_complete_connection(c);
+            not_complete_yet = ap_run_output_pending(c);
 
             if (not_complete_yet > OK) {
                 scon->cs.state = CONN_STATE_LINGER;
@@ -433,7 +433,7 @@ read_request:
             else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted) {
                 scon->cs.state = CONN_STATE_LINGER;
             }
-            else if (c->data_in_input_filters) {
+            else if (ap_run_input_pending(c) == OK) {
                 scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
                 goto read_request;
             }

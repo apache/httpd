@@ -1151,7 +1151,7 @@ read_request:
 
         ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
 
-        not_complete_yet = ap_run_complete_connection(c);
+        not_complete_yet = ap_run_output_pending(c);
 
         if (not_complete_yet > OK) {
             cs->pub.state = CONN_STATE_LINGER;
@@ -1177,7 +1177,7 @@ read_request:
             listener_may_exit) {
             cs->pub.state = CONN_STATE_LINGER;
         }
-        else if (c->data_in_input_filters) {
+        else if (ap_run_input_pending(c) == OK) {
             cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
             goto read_request;
         }

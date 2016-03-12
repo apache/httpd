@@ -39,6 +39,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "mpm_common.h"
 #include "util_filter.h"
 #include "util_charset.h"
 #include "scoreboard.h"
@@ -236,7 +237,6 @@ static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
     apr_size_t cr = 0;
     char buf[2];
 
-    c->data_in_input_filters = 0;
     while (c->keepalive != AP_CONN_CLOSE && !c->aborted) {
         apr_size_t len = cr + 1;
 
@@ -276,7 +276,6 @@ static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
                  * where this possible failure comes from (metadata,
                  * morphed EOF socket => empty bucket? debug only here).
                  */
-                c->data_in_input_filters = 1;
                 log_level = APLOG_DEBUG;
             }
             ap_log_cerror(APLOG_MARK, log_level, rv, c, APLOGNO(02968)
@@ -295,7 +294,6 @@ static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
                 num_blank_lines--;
             }
             else {
-                c->data_in_input_filters = 1;
                 break;
             }
         }
@@ -308,7 +306,6 @@ static void check_pipeline(conn_rec *c, apr_bucket_brigade *bb)
                 cr = 1;
             }
             else {
-                c->data_in_input_filters = 1;
                 break;
             }
         }
@@ -452,7 +449,7 @@ AP_DECLARE(void) ap_process_request(request_rec *r)
 
     ap_process_async_request(r);
 
-    if (!c->data_in_input_filters) {
+    if (ap_run_input_pending(c) != OK) {
         bb = apr_brigade_create(c->pool, c->bucket_alloc);
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);

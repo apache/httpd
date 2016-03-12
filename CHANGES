@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Extend support for setting aside data from the network input filter
+     to any connection or request input filter. [Graham Leggett]
+
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
      certificate(s) with no corresponding CRL.  [Yann Ylavic]
