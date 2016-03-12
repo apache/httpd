@@ -465,7 +465,15 @@ AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
  * should end gracefully, or a positive error if we should begin to linger.
  * @ingroup hooks
  */
-AP_DECLARE_HOOK(int, complete_connection, (conn_rec *c))
+AP_DECLARE_HOOK(int, output_pending, (conn_rec *c))
+
+/**
+ * Hook called to determine whether any data is pending in the input filters.
+ * @param c The current connection
+ * @return OK if we can read without blocking, DECLINED if a read would block.
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(int, input_pending, (conn_rec *c))
 
 /**
  * Notification that connection handling is suspending (disassociating from the

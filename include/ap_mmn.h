@@ -507,14 +507,17 @@
  * 20150222.12 (2.5.0-dev) Add complete_connection hook,
  *                         ap_filter_complete_connection().
  * 20150222.13 (2.5.0-dev) Add ap_create_request().
+ * 20160312.0 (2.5.0-dev)  Rename complete_connection to output_pending,
+ *                         add ap_filter_input_pending(),
+ *                         ap_filter_prepare_brigade(), ap_filter_direction_e
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20150222
+#define MODULE_MAGIC_NUMBER_MAJOR 20160312
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 13                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

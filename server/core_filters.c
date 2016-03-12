@@ -84,7 +84,6 @@ struct core_output_filter_ctx {
 };
 
 struct core_filter_ctx {
-    apr_bucket_brigade *b;
     apr_bucket_brigade *tmpbb;
 };
 
@@ -116,19 +115,19 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (!ctx)
     {
         net->in_ctx = ctx = apr_palloc(f->c->pool, sizeof(*ctx));
-        ctx->b = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+        ap_filter_prepare_brigade(f, NULL);
         ctx->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         /* seed the brigade with the client socket. */
-        rv = ap_run_insert_network_bucket(f->c, ctx->b, net->client_socket);
+        rv = ap_run_insert_network_bucket(f->c, f->bb, net->client_socket);
         if (rv != APR_SUCCESS)
             return rv;
     }
-    else if (APR_BRIGADE_EMPTY(ctx->b)) {
+    else if (APR_BRIGADE_EMPTY(f->bb)) {
         return APR_EOF;
     }
 
     /* ### This is bad. */
-    BRIGADE_NORMALIZE(ctx->b);
+    BRIGADE_NORMALIZE(f->bb);
 
     /* check for empty brigade again *AFTER* BRIGADE_NORMALIZE()
      * If we have lost our socket bucket (see above), we are EOF.
@@ -136,13 +135,13 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
      * Ideally, this should be returning SUCCESS with EOS bucket, but
      * some higher-up APIs (spec. read_request_line via ap_rgetline)
      * want an error code. */
-    if (APR_BRIGADE_EMPTY(ctx->b)) {
+    if (APR_BRIGADE_EMPTY(f->bb)) {
         return APR_EOF;
     }
 
     if (mode == AP_MODE_GETLINE) {
         /* we are reading a single LF line, e.g. the HTTP headers */
-        rv = apr_brigade_split_line(b, ctx->b, block, HUGE_STRING_LEN);
+        rv = apr_brigade_split_line(b, f->bb, block, HUGE_STRING_LEN);
         /* We should treat EAGAIN here the same as we do for EOF (brigade is
          * empty).  We do this by returning whatever we have read.  This may
          * or may not be bogus, but is consistent (for now) with EOF logic.
@@ -170,10 +169,10 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * mean that there is another request, just a blank line.
          */
         while (1) {
-            if (APR_BRIGADE_EMPTY(ctx->b))
+            if (APR_BRIGADE_EMPTY(f->bb))
                 return APR_EOF;
 
-            e = APR_BRIGADE_FIRST(ctx->b);
+            e = APR_BRIGADE_FIRST(f->bb);
 
             rv = apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
 
@@ -212,7 +211,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         apr_bucket *e;
 
         /* Tack on any buckets that were set aside. */
-        APR_BRIGADE_CONCAT(b, ctx->b);
+        APR_BRIGADE_CONCAT(b, f->bb);
 
         /* Since we've just added all potential buckets (which will most
          * likely simply be the socket bucket) we know this is the end,
@@ -230,7 +229,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         AP_DEBUG_ASSERT(readbytes > 0);
 
-        e = APR_BRIGADE_FIRST(ctx->b);
+        e = APR_BRIGADE_FIRST(f->bb);
         rv = apr_bucket_read(e, &str, &len, block);
 
         if (APR_STATUS_IS_EAGAIN(rv) && block == APR_NONBLOCK_READ) {
@@ -267,7 +266,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             /* We already registered the data in e in len */
             e = APR_BUCKET_NEXT(e);
             while ((len < readbytes) && (rv == APR_SUCCESS)
-                   && (e != APR_BRIGADE_SENTINEL(ctx->b))) {
+                   && (e != APR_BRIGADE_SENTINEL(f->bb))) {
                 /* Check for the availability of buckets with known length */
                 if (e->length != -1) {
                     len += e->length;
@@ -295,22 +294,22 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             readbytes = len;
         }
 
-        rv = apr_brigade_partition(ctx->b, readbytes, &e);
+        rv = apr_brigade_partition(f->bb, readbytes, &e);
         if (rv != APR_SUCCESS) {
             return rv;
         }
 
         /* Must do move before CONCAT */
-        ctx->tmpbb = apr_brigade_split_ex(ctx->b, e, ctx->tmpbb);
+        ctx->tmpbb = apr_brigade_split_ex(f->bb, e, ctx->tmpbb);
 
         if (mode == AP_MODE_READBYTES) {
-            APR_BRIGADE_CONCAT(b, ctx->b);
+            APR_BRIGADE_CONCAT(b, f->bb);
         }
         else if (mode == AP_MODE_SPECULATIVE) {
             apr_bucket *copy_bucket;
 
-            for (e = APR_BRIGADE_FIRST(ctx->b);
-                 e != APR_BRIGADE_SENTINEL(ctx->b);
+            for (e = APR_BRIGADE_FIRST(f->bb);
+                 e != APR_BRIGADE_SENTINEL(f->bb);
                  e = APR_BUCKET_NEXT(e))
             {
                 rv = apr_bucket_copy(e, &copy_bucket);
@@ -322,7 +321,7 @@ apr_status_t ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
 
         /* Take what was originally there and place it back on ctx->b */
-        APR_BRIGADE_CONCAT(ctx->b, ctx->tmpbb);
+        APR_BRIGADE_CONCAT(f->bb, ctx->tmpbb);
     }
     return APR_SUCCESS;
 }

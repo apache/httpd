@@ -184,6 +184,17 @@ typedef enum {
 } ap_filter_type;
 
 /**
+ * These flags indicate whether the given filter is an input filter or an
+ * output filter.
+ */
+typedef enum {
+    /** Input filters */
+    AP_FILTER_INPUT     = 1,
+    /** Output filters */
+    AP_FILTER_OUTPUT    = 2,
+} ap_filter_direction_e;
+
+/**
  * This is the request-time context structure for an installed filter (in
  * the output filter chain). It provides the callback to use for filtering,
  * the request this filter is associated with (which is important when
@@ -247,6 +258,9 @@ struct ap_filter_rec_t {
 
     /** Protocol flags for this filter */
     unsigned int proto_flags;
+
+    /** Whether the filter is an input or output filter */
+    ap_filter_direction_e direction;
 };
 
 /**
@@ -543,6 +557,19 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **b, apr_pool_t *p);
 
 /**
+ * Prepare the filter to allow brigades to be set aside. This can be used
+ * within an input filter to allocate space to set aside data in the input
+ * filters, or can be used within an output filter by being called via
+ * ap_filter_setaside_brigade().
+ * @param f The current filter
+ * @param pool The pool that was used to create the brigade. In a request
+ * filter this will be the request pool, in a connection filter this will
+ * be the connection pool.
+ * @returns OK if a brigade was created, DECLINED otherwise.
+ */
+AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p);
+
+/**
  * Prepare a bucket brigade to be setaside, creating a dedicated pool if
  * necessary within the filter to handle the lifetime of the setaside brigade.
  * @param f The current filter
@@ -599,7 +626,18 @@ AP_DECLARE(int) ap_filter_should_yield(ap_filter_t *f);
  * If some unwritten data remains, this function returns OK. If any
  * attempt to write data failed, this functions returns a positive integer.
  */
-AP_DECLARE(int) ap_filter_complete_connection(conn_rec *c);
+AP_DECLARE(int) ap_filter_output_pending(conn_rec *c);
+
+/**
+ * This function determines whether there is pending data in the input
+ * filters. Pending data is data that has been read from the underlying
+ * socket but not yet returned to the application.
+ *
+ * @param c The connection.
+ * @return If no pending data remains, this function returns DECLINED.
+ * If some pending data remains, this function returns OK.
+ */
+AP_DECLARE(int) ap_filter_input_pending(conn_rec *c);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade

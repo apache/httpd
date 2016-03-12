@@ -96,7 +96,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             int not_complete_yet;
 
             ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
-            not_complete_yet = ap_run_complete_connection(c);
+            not_complete_yet = ap_run_output_pending(c);
 
             if (not_complete_yet > OK) {
                 scon->cs.state = CONN_STATE_LINGER;
@@ -133,7 +133,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted) {
                 scon->cs.state = CONN_STATE_LINGER;
             }
-            else if (c->data_in_input_filters) {
+            else if (ap_run_input_pending(c) == OK) {
                 scon->cs.state = CONN_STATE_READ_REQUEST_LINE;
             }
             else {

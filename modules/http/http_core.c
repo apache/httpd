@@ -254,6 +254,7 @@ static int ap_process_http_connection(conn_rec *c)
 
 static int http_create_request(request_rec *r)
 {
+    /* FIXME: we must only add these filters if we are an HTTP request */
     if (!r->main && !r->prev) {
         ap_add_output_filter_handle(ap_byterange_filter_handle,
                                     NULL, r, r->connection);

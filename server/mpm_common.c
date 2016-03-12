@@ -75,7 +75,8 @@
     APR_HOOK_LINK(mpm_resume_suspended) \
     APR_HOOK_LINK(end_generation) \
     APR_HOOK_LINK(child_status) \
-    APR_HOOK_LINK(complete_connection) \
+    APR_HOOK_LINK(output_pending) \
+    APR_HOOK_LINK(input_pending) \
     APR_HOOK_LINK(suspend_connection) \
     APR_HOOK_LINK(resume_connection)
 
@@ -118,7 +119,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_socket_callback_timeout,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_unregister_socket_callback,
                             (apr_socket_t **s, apr_pool_t *p),
                             (s, p), APR_ENOTIMPL)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, complete_connection,
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, output_pending,
+                            (conn_rec *c), (c), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, input_pending,
                             (conn_rec *c), (c), DECLINED)
 
 AP_IMPLEMENT_HOOK_VOID(end_generation,
