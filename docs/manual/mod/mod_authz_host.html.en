@@ -73,7 +73,8 @@ address)</td></tr>
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive is used during the authorization phase to ensure that a user is allowed or
     denied access to a resource.  mod_authz_host extends the
-    authorization types with <code>ip</code>, <code>host</code> and <code>local</code>.
+    authorization types with <code>ip</code>, <code>host</code>,
+    <code>forward-dns</code> and <code>local</code>.
     Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
@@ -162,6 +163,28 @@ Require host .net example.edu</pre>
     that it matches the original IP address.  Only if the forward
     and reverse DNS are consistent and the hostname matches will
     access be allowed.</p>
+
+
+
+<h3><a name="reqfwddns" id="reqfwddns">Require forward-dns</a></h3>
+
+    <p>The <code>forward-dns</code> provider allows access to the server
+    to be controlled based on simple host names.  When
+    <code>Require forward-dns <var>host-name</var></code> is specified,
+    all IP addresses corresponding to <code><var>host-name</var></code>
+    are allowed access.</p>
+
+    <p>In contrast to the <code>host</code> provider, this provider does not
+    rely on reverse DNS lookups: it simply queries the DNS for the host name
+    and allows a client if its IP matches.  As a consequence, it will only
+    work with host names, not domain names.  However, as the reverse DNS is
+    not used, it will work with clients which use a dynamic DNS service.</p>
+
+    <pre class="prettyprint lang-config">Require forward-dns bla.example.org</pre>
+
+
+    <p>A client the IP of which is resolved from the name
+    <code>bla.example.org</code> will be granted access.</p>
 
 
 
