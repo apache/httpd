@@ -598,6 +598,7 @@ static void add_include_vars(request_rec *r)
     apr_table_setn(e, "DATE_GMT", LAZY_VALUE);
     apr_table_setn(e, "LAST_MODIFIED", LAZY_VALUE);
     apr_table_setn(e, "DOCUMENT_URI", r->uri);
+    apr_table_setn(e, "DOCUMENT_ARGS", r->args ? r->args : "");
     if (r->path_info && *r->path_info) {
         apr_table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
     }

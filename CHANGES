@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
+     request for the SSI document.  [Jeff Trawick]
+
   *) core: Extend support for setting aside data from the network input filter
      to any connection or request input filter. [Graham Leggett]
 
