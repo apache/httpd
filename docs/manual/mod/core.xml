@@ -4824,7 +4824,7 @@ for external processing, e.g. to a CGI script.</p>
 
 <directivesynopsis>
 <name>QualifyRedirectURL</name>
-<description>Controls whether the REDIRECT_URL environent variable is 
+<description>Controls whether the REDIRECT_URL environment variable is 
              fully qualified</description>
 <syntax>QualifyRedirectURL ON|OFF</syntax>
 <default>QualifyRedirectURL OFF</default>
