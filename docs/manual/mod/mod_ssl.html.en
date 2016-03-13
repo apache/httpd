@@ -461,11 +461,13 @@ this directory contains the appropriate symbolic links.</p>
 <div class="directive-section"><h2><a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <em>flag</em>s available in httpd 2.5-dev or
+later</td></tr>
 </table>
 <p>
 Enables certificate revocation list (CRL) checking. At least one of
@@ -475,21 +477,31 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-<div class="note">
-<h3>When set to <code>chain</code> or <code>leaf</code>,
-CRLs <em>must</em> be available for successful validation</h3>
-<p>
-Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
-no CRL(s) were found in any of the locations configured with
-<code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
-or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
-With the introduction of this directive, the behavior has been changed:
-when checking is enabled, CRLs <em>must</em> be present for the validation
-to succeed - otherwise it will fail with an
-<code>"unable to get certificate CRL"</code> error.
-</p>
-</div>
+<p>The available <em>flag</em>s are:</p>
+<ul>
+<li><code>no_crl_for_cert_ok</code>
+    <p>
+    Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+    no CRL(s) for the checked certificate(s) were found in any of the locations
+    configured with <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
+    or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
+    </p>
+    <p>
+    With the introduction of <code class="directive">SSLCARevocationFile</code>,
+    the behavior has been changed: by default with <code>chain</code> or
+    <code>leaf</code>, CRLs <strong>must</strong> be present for the
+    validation to succeed - otherwise it will fail with an
+    <code>"unable to get certificate CRL"</code> error.
+    </p>
+    <p>
+    The <em>flag</em> <code>no_crl_for_cert_ok</code> allows to restore
+    previous behaviour.
+    </p>
+</li>
+</ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain</pre>
+</div>
+<div class="example"><h3>Compatibility with versions 2.2</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain no_crl_for_cert_ok</pre>
 </div>
 
 </div>
