@@ -1221,7 +1221,7 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-The available <em>flag</em>s are:</p>
+<p>The available <em>flag</em>s are:</p>
 <ul>
 <li><code>no_crl_for_cert_ok</code>
     <p>
