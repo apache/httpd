@@ -543,10 +543,22 @@ AddOutputFilter INCLUDES .shtml
       the user.</dd>
 
       <dt><code>QUERY_STRING_UNESCAPED</code></dt>
-      <dd>If a query string is present, this variable contains the
-      (%-decoded) query string, which is <em>escaped</em> for shell
-      usage (special characters like <code>&amp;</code> etc. are
-      preceded by backslashes).</dd>
+      <dd>If a query string is present in the request for the active
+      SSI document, this variable contains the (%-decoded) query
+      string, which is <em>escaped</em> for shell usage (special
+      characters like <code>&amp;</code> etc. are preceded by
+      backslashes).  It is not set if a query string is not
+      present.  Use <code>DOCUMENT_ARGS</code> if shell escaping
+      is not desired.</dd>
+
+      <dt><code>DOCUMENT_ARGS</code></dt>
+      <dd>This variable contains the query string of the active SSI
+      document, or the empty string if a query string is not
+      included.  For subrequests invoked through the
+      <code>include</code> SSI directive, <code>QUERY_STRING</code>
+      will represent the query string of the subrequest and
+      <code>DOCUMENT_ARGS</code> will represent the query string of
+      the SSI document.</dd>
     </dl>
 </section>
 
