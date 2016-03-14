@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_http2: fixes incorrect denial of requests without :authority header.
+     [Stefan Eissing]
+     
   *) mod_reqtimeout: Prevent long response times from triggering a timeout once
      the request has been fully read.  PR 59045.  [Yann Ylavic]
 
