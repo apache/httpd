@@ -673,6 +673,9 @@ typedef struct {
 
     unsigned int qualify_redirect_url :2;
     ap_expr_info_t  *expr_handler;         /* forced with SetHandler */
+
+    /** Table of rules for building CGI variables, NULL if none configured */
+    apr_hash_t *cgi_var_rules;
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
