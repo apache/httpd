@@ -67,6 +67,7 @@ struct h2_mplx {
     volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
+    apr_bucket_alloc_t *bucket_alloc;
 
     unsigned int aborted : 1;
     unsigned int need_registration : 1;

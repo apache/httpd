@@ -201,6 +201,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
     
+        m->bucket_alloc = apr_bucket_alloc_create(m->pool);
         m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->q = h2_iq_create(m->pool, m->max_streams);
@@ -266,7 +267,7 @@ static int io_process_events(h2_mplx *m, h2_io *io)
 
 static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
-    apr_pool_t *pool = io->pool;
+    apr_pool_t *pool;
     
     /* cleanup any buffered input */
     h2_io_in_shutdown(io);
@@ -275,7 +276,6 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         io_process_events(m, io);
     }
     
-    io->pool = NULL;    
     /* The pool is cleared/destroyed which also closes all
      * allocated file handles. Give this count back to our
      * file handle pool. */
@@ -286,7 +286,19 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
     if (m->redo_ios) {
         h2_io_set_remove(m->redo_ios, io);
     }
-    
+
+    if (io->task) {
+        if (m->spare_allocator) {
+            apr_allocator_destroy(m->spare_allocator);
+            m->spare_allocator = NULL;
+        }
+        
+        h2_slave_destroy(io->task->c, &m->spare_allocator);
+        io->task = NULL;
+    }
+
+    pool = io->pool;
+    io->pool = NULL;    
     if (pool) {
         apr_pool_clear(pool);
         if (m->spare_pool) {
@@ -856,12 +868,17 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                               "h2_mplx(%ld-%d): close, no response, no rst", 
                               m->id, io->id);
             }
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                          "h2_mplx(%ld-%d): close with trailers=%s", 
-                          m->id, io->id, trailers? "yes" : "no");
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
+                          "h2_mplx(%ld-%d): close with eor=%s, trailers=%s", 
+                          m->id, io->id, io->eor? "yes" : "no", 
+                          trailers? "yes" : "no");
             status = h2_io_out_close(io, trailers);
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
             
+            if (io->eor) {
+                apr_bucket_delete(io->eor);
+                io->eor = NULL;
+            }
             have_out_data_for(m, stream_id);
         }
         else {
@@ -987,7 +1004,7 @@ static h2_io *open_io(h2_mplx *m, int stream_id, const h2_request *request)
         m->spare_pool = NULL;
     }
     
-    io = h2_io_create(stream_id, io_pool, request);
+    io = h2_io_create(stream_id, io_pool, m->bucket_alloc, request);
     h2_io_set_add(m->stream_ios, io);
     
     return io;
@@ -1044,9 +1061,9 @@ static h2_task *pop_task(h2_mplx *m)
             }
         }
         else if (io) {
-            conn_rec *slave = h2_slave_create(m->c, m->pool, m->spare_allocator);
+            conn_rec *slave = h2_slave_create(m->c, io->pool, m->spare_allocator);
             m->spare_allocator = NULL;
-            task = h2_task_create(m->id, io->request, slave, m);
+            io->task = task = h2_task_create(m->id, io->request, slave, m);
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
             io->worker_started = 1;
             io->started_at = apr_time_now();
@@ -1119,14 +1136,6 @@ static void task_done(h2_mplx *m, h2_task *task)
                 h2_ngn_shed_done_ngn(m->ngn_shed, task->engine);
             }
             
-            if (m->spare_allocator) {
-                apr_allocator_destroy(m->spare_allocator);
-                m->spare_allocator = NULL;
-            }
-            
-            h2_slave_destroy(task->c, &m->spare_allocator);
-            task = NULL;
-            
             if (io) {
                 apr_time_t now = apr_time_now();
                 if (!io->orphaned && m->redo_ios
@@ -1168,8 +1177,13 @@ static void task_done(h2_mplx *m, h2_task *task)
                     }
                 }
                 else {
-                    /* hang around until the stream deregisteres */
+                    /* hang around until the stream deregisters */
                 }
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+                              "h2_mplx(%ld): task %s without corresp. h2_io",
+                              m->id, task->id);
             }
         }
     }
@@ -1410,7 +1424,6 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
                 /* cannot report that as done until engine returns */
             }
             else {
-                h2_task_output_close(task->output);
                 task_done(m, task);
             }
             leave_mutex(m, acquired);

@@ -23,6 +23,7 @@
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
+#include <http_request.h>
 
 #include "h2_private.h"
 #include "h2_h2.h"
@@ -33,13 +34,15 @@
 #include "h2_task.h"
 #include "h2_util.h"
 
-h2_io *h2_io_create(int id, apr_pool_t *pool, const h2_request *request)
+h2_io *h2_io_create(int id, apr_pool_t *pool, 
+                    apr_bucket_alloc_t *bucket_alloc,
+                    const h2_request *request)
 {
     h2_io *io = apr_pcalloc(pool, sizeof(*io));
     if (io) {
         io->id = id;
         io->pool = pool;
-        io->bucket_alloc = apr_bucket_alloc_create(pool);
+        io->bucket_alloc = bucket_alloc;
         io->request = h2_request_clone(pool, request);
     }
     return io;
@@ -413,28 +416,36 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
                              apr_size_t *pfile_buckets_allowed)
 {
     apr_status_t status;
+    apr_bucket *b;
     int start_allowed;
     
     if (io->rst_error) {
         return APR_ECONNABORTED;
     }
 
+    if (!io->eor) {
+        /* Filter the EOR bucket and set it aside. We prefer to tear down
+         * the request when the whole h2 stream is done */
+        for (b = APR_BRIGADE_FIRST(bb);
+             b != APR_BRIGADE_SENTINEL(bb);
+             b = APR_BUCKET_NEXT(b))
+        {
+            if (AP_BUCKET_IS_EOR(b)) {
+                APR_BUCKET_REMOVE(b);
+                io->eor = b;
+                break;
+            }
+        }     
+    }
+    
     if (io->eos_out) {
-        apr_off_t len;
+        apr_off_t len = 0;
         /* We have already delivered an EOS bucket to a reader, no
          * sense in storing anything more here.
          */
-        status = apr_brigade_length(bb, 1, &len);
-        if (status == APR_SUCCESS) {
-            if (len > 0) {
-                /* someone tries to write real data after EOS, that
-                 * does not look right. */
-                status = APR_EOF;
-            }
-            /* cleanup, as if we had moved the data */
-            apr_brigade_cleanup(bb);
-        }
-        return status;
+        apr_brigade_length(bb, 0, &len);
+        apr_brigade_cleanup(bb);
+        return (len > 0)? APR_EOF : APR_SUCCESS;
     }
 
     process_trailers(io, trailers);

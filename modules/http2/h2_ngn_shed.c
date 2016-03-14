@@ -261,8 +261,7 @@ apr_status_t h2_ngn_shed_pull_req(h2_ngn_shed *shed,
 }
                                  
 static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn, 
-                                  h2_task *task, int waslive, int aborted, 
-                                  int close)
+                                  h2_task *task, int waslive, int aborted)
 {
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c,
                   "h2_ngn_shed(%ld): task %s %s by %s", 
@@ -271,16 +270,13 @@ static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn,
     if (waslive) ngn->no_live--;
     ngn->no_assigned--;
 
-    if (close) {
-        h2_task_output_close(task->output);
-    }
     return APR_SUCCESS;
 }
                                 
 apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed, 
                                     struct h2_req_engine *ngn, h2_task *task)
 {
-    return ngn_done_task(shed, ngn, task, 1, 0, 0);
+    return ngn_done_task(shed, ngn, task, 1, 0);
 }
                                 
 void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
@@ -308,7 +304,7 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
                           "h2_ngn_shed(%ld): engine %s has queued task %s, "
                           "frozen=%d, aborting",
                           shed->c->id, ngn->id, task->id, task->frozen);
-            ngn_done_task(shed, ngn, task, 0, 1, 1);
+            ngn_done_task(shed, ngn, task, 0, 1);
         }
     }
     if (!shed->aborted && (ngn->no_assigned > 1 || ngn->no_live > 1)) {
