@@ -238,11 +238,20 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
         return APR_EINVAL;
     }
 
-    /* Always set the "Host" header from :authority, see rfc7540, ch. 8.1.2.3 */
+    /* rfc7540, ch. 8.1.2.3:
+     * - if we have :authority, it overrides any Host header 
+     * - :authority MUST be ommited when converting h1->h2, so we
+     *   might get a stream without, but then Host needs to be there */
     if (!req->authority) {
-        return APR_BADARG;
+        const char *host = apr_table_get(req->headers, "Host");
+        if (!host) {
+            return APR_BADARG;
+        }
+        req->authority = host;
     }
-    apr_table_setn(req->headers, "Host", req->authority);
+    else {
+        apr_table_setn(req->headers, "Host", req->authority);
+    }
 
     s = apr_table_get(req->headers, "Content-Length");
     if (s) {

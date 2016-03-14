@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixes incorrect denial of requests without :authority header.
+     [Stefan Eissing]
+     
   *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
      request for the SSI document.  [Jeff Trawick]
 
