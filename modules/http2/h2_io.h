@@ -44,6 +44,9 @@ struct h2_io {
     struct h2_response *response;    /* response to request */
     int rst_error;                   /* h2 related stream abort error */
 
+    apr_bucket *eor;                 /* the EOR bucket, set aside */
+    struct h2_task *task;            /* the task once started */
+    
     apr_bucket_brigade *bbin;        /* input data for stream */
     apr_bucket_brigade *bbout;       /* output data from stream */
     apr_bucket_brigade *bbtmp;       /* temporary data for chunking */
@@ -77,7 +80,9 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool, const struct h2_request *request);
+h2_io *h2_io_create(int id, apr_pool_t *pool, 
+                    apr_bucket_alloc_t *bucket_alloc, 
+                    const struct h2_request *request);
 
 /**
  * Set the response of this stream.

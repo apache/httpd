@@ -537,6 +537,7 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                 else {
                     const char *data;
                     apr_size_t len;
+
                     status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
                     if (status == APR_SUCCESS && len > 0) {
                         status = apr_brigade_write(to, NULL, NULL, data, len);
