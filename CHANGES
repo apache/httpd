@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: New CGIVar directive can configure REQUEST_URI to represent the
+     current URI being processed instead of always the original request.
+     [Jeff Trawick]
+
   *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
      request for the SSI document.  [Jeff Trawick]
 
