@@ -102,6 +102,7 @@ static const char *const safe_env_lst[] =
     "CONTEXT_PREFIX=",
     "DATE_GMT=",
     "DATE_LOCAL=",
+    "DOCUMENT_ARGS=",
     "DOCUMENT_NAME=",
     "DOCUMENT_PATH_INFO=",
     "DOCUMENT_ROOT=",
