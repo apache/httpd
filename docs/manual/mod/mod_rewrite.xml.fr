@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1728314:1734260 (outdated) -->
+<!-- English Revision: 1734260 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1509,7 +1509,16 @@ substitution !
         ...</a></em></td>
     </tr>
     <tr>
-        <td>redirect|R[=<em>code</em>]</td>
+        <td>qslast|QSL</td>
+        <td>Interprète le dernier (le plus à droite) point d'interrogation comme
+	le délimiteur de la chaîne de paramètres de la requête, au lieu du
+	premier (le plus à gauche) comme c'est le cas habituellement. Disponble
+	à partir de la version 2.4.19 du serveur HTTP Apache. <em><a
+	href="../rewrite/flags.html#flag_qsl">détails ...</a></em></td>
+    </tr>
+ 
+    <tr>
+	<td>redirect|R[=<em>code</em>]</td>
         <td>Force une redirection externe, avec un code de statut HTTP
 	optionnel. <em><a
         href="../rewrite/flags.html#flag_r">détails ...</a></em>
