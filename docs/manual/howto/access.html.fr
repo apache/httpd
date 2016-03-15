@@ -115,7 +115,8 @@ Require ip ip.address</pre>
     l'accès à une machine en fonction de son nom, vous pouvez ajouter
     ceci :</p>
 
-    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var></pre>
+    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
+    </pre>
 
 
     <p>Et si vous voulez interdire l'accès à un domaine particulier,
@@ -178,7 +179,7 @@ d'accès</a></h2>
     <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
-RewriteRule "^/fridge" "-" [F]</pre>
+RewriteRule "^/fridge"     "-" [F]</pre>
 
 
     <p>Toute requête arrivant après 20h ou avant 7h du matin provoquera

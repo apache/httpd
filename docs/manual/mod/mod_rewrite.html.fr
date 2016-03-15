@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1448,17 +1446,24 @@ substitution !
         ...</a></em></td>
     </tr>
 <tr class="odd">
-        <td>redirect|R[=<em>code</em>]</td>
+        <td>qslast|QSL</td>
+        <td>Interprète le dernier (le plus à droite) point d'interrogation comme
+	le délimiteur de la chaîne de paramètres de la requête, au lieu du
+	premier (le plus à gauche) comme c'est le cas habituellement. Disponble
+	à partir de la version 2.4.19 du serveur HTTP Apache. <em><a href="../rewrite/flags.html#flag_qsl">détails ...</a></em></td>
+    </tr>
+<tr>
+	<td>redirect|R[=<em>code</em>]</td>
         <td>Force une redirection externe, avec un code de statut HTTP
 	optionnel. <em><a href="../rewrite/flags.html#flag_r">détails ...</a></em>
         </td>
     </tr>
-<tr>
+<tr class="odd">
         <td>skip|S=<em>nombre</em></td>
         <td>Si la règle courante s'applique, le moteur de réécriture
 	doit sauter les <em>nombre</em> règles suivantes. <em><a href="../rewrite/flags.html#flag_s">détails ...</a></em></td>
     </tr>
-<tr class="odd">
+<tr>
         <td>type|T=<em>MIME-type</em></td>
         <td>Force l'attribution du <a class="glossarylink" href="../glossary.html#type-mime" title="voir glossaire">Type-MIME</a>
 	spécifié au fichier cible. <em><a href="../rewrite/flags.html#flag_t">détails ...</a></em></td>
