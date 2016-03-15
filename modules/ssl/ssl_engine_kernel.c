@@ -1635,7 +1635,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     }
 
     if (!ok && errnum == X509_V_ERR_UNABLE_TO_GET_CRL
-            && (sc->server->crl_check_flags & MODSSL_CCF_NO_CRL_FOR_CERT_OK)) {
+            && (mctx->crl_check_flags & MODSSL_CCF_NO_CRL_FOR_CERT_OK)) {
         errnum = X509_V_OK;
         ok = TRUE;
     }
