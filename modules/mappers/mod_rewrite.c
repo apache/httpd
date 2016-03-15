@@ -4548,6 +4548,7 @@ static int hook_uri2file(request_rec *r)
     unsigned int port;
     int rulestatus;
     void *skipdata;
+    const char *oargs;
 
     /*
      *  retrieve the config structures
@@ -4596,6 +4597,12 @@ static int hook_uri2file(request_rec *r)
                     r->uri));
         return DECLINED;
     }
+
+    /*
+     *  remember the original query string for later check, since we don't
+     *  want to apply URL-escaping when no substitution has changed it.
+     */
+    oargs = r->args;
 
     /*
      *  add the SCRIPT_URL variable to the env. this is a bit complicated
@@ -4731,11 +4738,21 @@ static int hook_uri2file(request_rec *r)
 
             /* append the QUERY_STRING part */
             if (r->args) {
+                char *escaped_args = NULL;
+                int noescape = (rulestatus == ACTION_NOESCAPE ||
+                                (oargs && !strcmp(r->args, oargs)));
+
                 r->filename = apr_pstrcat(r->pool, r->filename, "?",
-                                          (rulestatus == ACTION_NOESCAPE)
+                                          noescape
                                             ? r->args
-                                            : ap_escape_uri(r->pool, r->args),
+                                            : (escaped_args =
+                                               ap_escape_uri(r->pool, r->args)),
                                           NULL);
+
+                rewritelog((r, 1, NULL, "%s %s to query string for redirect %s",
+                            noescape ? "copying" : "escaping",
+                            r->args ,
+                            noescape ? "" : escaped_args));
             }
 
             /* determine HTTP redirect response code */

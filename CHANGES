@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_rewrite: Don't implicitly URL-escape the original query string
+     when no substitution has changed it (like PR50447 but server context)
+     [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]
+
   *) core: New CGIVar directive can configure REQUEST_URI to represent the
      current URI being processed instead of always the original request.
      [Jeff Trawick]
