@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1733414:1734076 (outdated) -->
+<!-- English Revision: 1734076 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1027,7 +1027,8 @@ d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le
 nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
 avec mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
 list-public-key-algorithms</code> affiche la liste des algorithmes
-supportés.
+supportés. Voir aussi la note ci-dessous à propos des limitations des versions
+d'OpenSSL antérieures à 1.0.2 et la manière de les contourner.
 </p>
 
 <p>Les fichiers peuvent aussi contenir des certificats de CA
@@ -1075,6 +1076,37 @@ Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
 cours de la négociation - voir cette <a
 href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour
 contourner les problèmes de ce genre.
+</p>
+</note>
+
+<note>
+<title>Paramètres DH par défaut lorsqu'on utilise plusieurs certificats et une
+version d'OpenSSL antérieure à 1.0.2.</title>
+<p>
+Lorsqu'on utilise plusieurs certificats pour supporter différents algorithmes
+d'authentification (comme RSA, DSA, mais principalement ECC) et une
+version d'OpenSSL antérieure à 1.0.2, il est recommandé soit d'utiliser des
+paramètres DH spécifiques (solution à privilégier) en les ajoutant au premier
+fichier certificat (comme décrit ci-dessus), soit d'ordonner les directives
+<directive>SSLCertificateFile</directive> de façon à ce que les certificats
+RSA/DSA soit placés <strong>après</strong> les certificats ECC.
+</p>
+<p>
+Cette limitation est présente dans les anciennes versions d'OpenSSL qui
+présentent toujours le dernier certificat configuré, au lieu
+de laisser le serveur HTTP Apache déterminer le certificat sélectionné lors de
+la phase de négociation de la connexion (lorsque les paramètres DH doivent être
+envoyés à l'hôte distant).
+De ce fait, le serveur peut sélectionner des paramètres DH par défaut basés sur
+la longueur de la clé du mauvais certificat (les clés ECC sont beaucoup plus
+petites que les clés RSA/DSA et leur longueur n'est pas pertinente pour la
+sélection des nombres premiers DH).
+</p>
+<p>
+Ce problème peut être résolu en créant et configurant des paramètres DH
+spécifiques (comme décrit ci-dessus), car ils l'emportent toujours sur les
+paramètres DH par défaut, et vous pourrez ainsi utiliser une longueur spécifique
+et appropriée.
 </p>
 </note>
 

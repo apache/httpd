@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1729922:1733954 (outdated) -->
+<!-- English Revision: 1733954 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4636,7 +4636,7 @@ host</context>
     <highlight language="config">
 &lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
      SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
-&lt;/FilesMatch&gt;
+&lt;/LocationMatch&gt;
     </highlight>
 
     <p>Vous pouvez écraser la définition antérieure d'une directive
@@ -4731,10 +4731,15 @@ host</context></contextlist>
     temps maximum pendant lequel Apache httpd va attendre des entrées/sorties
     selon les circonstances :</p>
 
-    <ol>
-      <li>Lors de la lecture de données en provenance du client, le
+    <ul>
+      <li><p>Lors de la lecture de données en provenance du client, le
       temps maximum jusqu'à l'arrivée d'un paquet TCP si le tampon est
-      vide.</li>
+      vide.</p>
+      <p>Pour les données initiales d'une nouvelle connexion, et tant qu'une
+      directive <directive module="core">AcceptFilter</directive> n'aura pas
+      transmis cette nouvelle connexion au serveur, cette directive n'aura aucun
+      effet.</p>
+      </li>
 
       <li>Lors de l'écriture de données destinées au client, le temps
       maximum jusqu'à l'arrivée de l'accusé-réception d'un paquet si le
@@ -4749,7 +4754,7 @@ host</context></contextlist>
       <li>Avec <module>mod_proxy</module>, la valeur du délai par défaut
       si <directive module="mod_proxy">ProxyTimeout</directive> n'est
       pas défini.</li>
-    </ol>
+    </ul>
 
 </usage>
 </directivesynopsis>
