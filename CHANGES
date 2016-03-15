@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
+     or sockets. [Graham Leggett]
+
   *) mod_rewrite: Don't implicitly URL-escape the original query string
      when no substitution has changed it (like PR50447 but server context)
      [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]
