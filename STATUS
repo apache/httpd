@@ -167,6 +167,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://eissing.org/expr_http2_2.4.patch
      +1: icing
 
+  *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
+                  Fix counting of inflated bytes in deflate_in_filter() when
+                  asked to flush
+     trunk patch: http://svn.apache.org/r1619483
+     2.4.x patch: trunk works
+     +1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
