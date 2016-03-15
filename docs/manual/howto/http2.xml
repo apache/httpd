@@ -34,26 +34,19 @@
 
   <section id="protocol">
     <title>The HTTP/2 protocol</title>
-    <p>The HTTP/2 protocol offers an excellent documentation and we strongly suggest to check the following links before proceeding:</p>
-    <dl>
-      <dt><a href="http://httpwg.org/specs/rfc7540.html">RFC 7540</a></dt>
-      <dd>The Hypertext Transfer Protocol version 2 - very dense of information but also really nice for newcomers.</dd>
-      <dt><a href="https://http2.github.io/faq/">HTTP/2 FAQ</a></dt>
-      <dd>A lot of answers to common questions about the HTTP/2 protocol.</dd>
-      <dt><a href="http://httpwg.org/specs/rfc7541.html">RFC 7541</a></dt>
-      <dd>HPACK, the header compression specification for HTTP/2</dd>
-    </dl>
-    <p>There are some new terms and gotchas that need to be kept in mind while reading this document:</p>
-    <ul>
-      <li>HTTP/2 is a <strong>binary protocol</strong>, as opposed to HTTP 1.1 that is plain text. The latter is meant to be human readable (for example sniffing network traffic) meanwhile the former is not. More info in the official FAQ <a href="https://http2.github.io/faq/#why-is-http2-binary">question</a>.</li>
-      <li><strong>h2</strong> is HTTP/2 over TLS (protocol negotiation via ALPN).</li>
-      <li><strong>h2c</strong> is HTTP/2 over TCP.</li>
-      <li>A <strong>frame</strong> is the smallest unit of communication within an HTTP/2 connection, consisting of a header and a variable-length sequence of octets structured according to the frame type. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer"> section</a>.</li>
-      <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer"> section</a></li>
-      <li>HTTP/2 is able to run <strong>multiple streams</strong> of data over the same TCP connection, avoiding the classic HTTP 1.1 head of blocking slow request and avoiding to re-instantiate TCP connections for each request/response (KeepAlive patched the problem in HTTP 1.1 but did not fully solve it).</li>
-      <li>TODO: header compression.</li>
-      <li>TODO: more!</li>
-    </ul>
+    <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP.
+    It focuses on making more efficient use of network resources. It does not change the fundamentals
+    of HTTP, the semantics. There are still request and responses and headers and all that. So, if
+    you already know HTTP/1, you know 95% about HTTP/2 as well.</p>
+    <p>There has been a lot written about HTTP/2 and how it works. The most normative is, of course,
+    its <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> 
+    (<a href="http://httpwg.org/specs/rfc7540.html">also available in more readable formatting, YMMV</a>).
+    So, there you'll find the nuts and bolts.</p>
+    <p>But, as RFC do, it's not really a good thing to read first. It's better to first understand
+    <em>what</em> a thing wants to do and then read the RFC about <em>how</em> it is done. A much
+    better document to start with is <a href="https://daniel.haxx.se/http2/">http2  explained</a>
+    by Daniel Stenberg, the author of <a href="https://curl.haxx.se">curl</a>. It is available in
+    an ever growing list of languages, too!</p>
   </section>
 
   <section id="implementation">
@@ -71,84 +64,94 @@
   
   <section id="building">
     <title>Build httpd with HTTP/2 support</title>
-    <p>Building a httpd release is described in <a href="//docs/current/install.html">this document</a> and it involves adding parameters to a <code>configure</code> script. The ones specific for HTTP/2 are:</p>
-    <dl>
-      <dt>--enable-http2</dt>
-      <dd>This enables the module 'http2' which does implement the HTTP/2 protocol.</dd>
-      <dt>--with-nghttp2=dir</dt>
-      <dd>This specifies a non-standard location for the library <a href="https://nghttp2.org/">libnghttp2</a> which is necessary for the http2 module. If nghttp2 is in a standard place, the configure process will pick it up automatically.</dd>
-      <dt>--enable-nghttp2-staticlib-deps</dt>
-      <dd>Ultra-rarely needed option used to statically link the nghttp2 library to the server. On most platforms, this only has an effect when there is no shared nghttp2 library to be found.</dd>
-    </dl>
-    <p>The instructions to build <a href="https://nghttp2.org/">libnghttp2</a> from the sources (if needed) are described in the related page.</p>
-    <p>An up to date TLS library that implements ALPN is needed to negotiate the <code>h2</code> protocol (secure variant of HTTP/2, please check above for more info). OpenSSL fully supports ALPN from <code>1.0.2</code> onwards.</p>
+    <p><a href="../mod/mod_http2.html">mod_http2</a> uses the library of <a href="https://nghttp2.org">nghttp2</a>
+    as its implementation base. In order to build <code>mod_http2</code> you need at least version 1.2.1 of
+    <code>libnghttp2</code> installed on your system.</p>
+    <p>When you <code>./configure</code> you Apache httpd source tree, you need to give it 
+    '<code>--enable-http2</code>' as additional argument to trigger the build of the module.
+    Should your <code>libnghttp2</code> reside in an unusual place (whatever that is on your
+    operating system), you may announce its location with '<code>--with-nghttp2=&lt;path&gt;</code>'
+    to <code>configure</code>.</p>
+    <p>While that should do the trick for most, they are people who might prefer a statically
+    linked <code>nghttp2</code> in this module. For those, the option <code>--enable-nghttp2-staticlib-deps</code>
+    exists. It works quite similar to how one statically links openssl to mod_ssl.</p>
+    <p>Speaking of SSL, you need to be aware that most browsers will speak HTTP/2 only on <code>https:</code>
+    URLs, so you need a server with SSL support. But not only that, you will need a SSL library
+    that supports the <code>ALPN</code> extension. If OpenSSL is the library you use, you need
+    at least version 1.0.2.</p>
   </section>
 
-  <section id="protocol-configuration">
-    <title>Protocol Configuration</title>
-    <p>This section should contain various configuration examples for HTTP/2 (h2, h2c, etc..) plus common pitfalls (for example not setting a strong TLS cipher suite with h2).</p>
-    
-    <p>The first thing to do is to load the mod_http2 module and to enable some basic logging:</p>
+  <section id="basic-config">
+    <title>Basic Configuration</title>
+
+    <p>When you have a <code>httpd</code> built with <code>mod_http2</code> you need some
+    basic configuration for it becoming active. The first thing, as with every Apache module,
+    is that you need to load it:</p>
     <highlight language="config">
-# Load the http2 module
 LoadModule http2_module modules/mod_http2.so
-
-# Enable basic logging for the http2 module
-&lt;IfModule http2_module&gt;
-  LogLevel http2:info
-&lt;/IfModule&gt;
     </highlight>
-    <p>Before reading the next sections please think about the following questions:</p>
-    <ul>
-      <li>Is HTTP/2 support needed at server level or only in a specific VirtualHost?</li>
-      <li>Is HTTP/2 support needed for secure (<code>h2</code>) and insecure (<code>h2c</code>) connections or only the former?</li>
-    </ul>
-    <section><title>Server wide</title>
-    <p>In order to simply add HTTP/2 support at server level for secure/insecure connections the following config is sufficient:</p>
+    
+    <p>The second directive you need to add to your server configuration is</p>
     <highlight language="config">
-# Enable HTTP/2 and HTTP 1.1
-Protocols h2 h2c http/1.1
-    </highlight>
-    <p>Detailed list of things that will be enabled by this configuration:</p>
-    <ul>
-      <li>HTTP/2 negotiation (h2) via TLS ALPN for secure <directive>VirtualHost</directive>.</li>
-      <li>HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1 connection or via HTTP/2 preamble checking (Direct mode, see <directive module="mod_http2">H2Direct</directive>).</li>
-    </ul>
-    <p>Something to notice is the difference in the protocol negotiation between <code>h2</code> and <code>h2c</code>: the former uses the TLS ALPN extensions meanwhile the latter requires to establish a HTTP 1.1 connection first and then Upgrade it to HTTP/2 (this step is handled transparently by the httpd server - websockets use the same procedure too).</p>
-  </section>
-
-  <section><title>Secure VirtualHost only</title>
-    <p>A very common scenario is enabling HTTP/2 only for a secure <directive>VirtualHost</directive>, leaving HTTP 1.1 for insecure connections:</p>
-    <highlight language="config">
-# Enable HTTP/2 and HTTP 1.1
 Protocols h2 http/1.1
-
-&lt;VirtualHost *:443&gt;
-  # [...] refers to content truncated
-  SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:[...]
-  SSLHonorCipherOrder on
-  SSLCertificateFile &lt;path&gt;
-  SSLCertificateKeyFile &lt;path&gt;
-  [...]
+</highlight>
+    <p>This allows h2, the secure variant, to be the preferred protocol on your server
+    connections. When you want to enable all HTTP/2 variants, you simply write:</p>
+    <highlight language="config">
+Protocols h2 h2c http/1.1
+</highlight>
+    <p>Depending on where you put this directive, it affects all connections or just
+    the ones to a certain virtual host. You can nest it, as in:</p>
+    <highlight language="config">
+Protocols http/1.1
+&lt;VirtualHost ...&gt;
+    ServerName test.example.org
+    Protocols h2 http/1.1
 &lt;/VirtualHost&gt;
+</highlight>
+
+    <p>This allows only HTTP/1 on connections, except SSL connections to <code>test.example.org</code>
+    which offer HTTP/2.</p>
+    <p>The order of protocols mentioned is also relevant. By default, the first one is the 
+    most peferred protocol. When a client offers multiple choices, the one most to the 
+    left is selected. In</p>
+    <highlight language="config">
+Protocols http/1.1 h2
+</highlight>
+    <p>the most preferred protocol is HTTP/1 and it will always be selected unless a 
+    client <em>only</em> supports h2. Since we want to talk HTTP/2 to clients that
+    support it, the better order is</p>
+    <highlight language="config">
+Protocols h2 h2c http/1.1
+</highlight>
+
+    <p>There is one more thing to ordering: the client has its own preferences, too. If
+    you want, you can configure your server to select the protocol most preferred by
+    the client:</p>
+    <highlight language="config">
+ProtocolsHonorOrder Off
     </highlight>
-    <p>Detailed list of things that will be enabled by this configuration:</p>
-    <ul>
-      <li>HTTP/2 negotiation (h2) via TLS ALPN only for the secure <directive>VirtualHost</directive>.</li>
-      <li>HTTP 1.1 for both secure and insecure connections (HTTP/2 cleartext negotiation - <code>h2c</code> - is not allowed in this config).</li>
-    </ul>
-  <p><strong>Please note</strong>: the <directive module="mod_ssl">SSLCipherSuite</directive> needs to be configured with a strong TLS cipher suite. The current version of mod_http2 does not enforce any cipher but most clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid long debugging sessions! If you want to be sure about the cipher suite to choose please avoid the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
-  </section>
-  </section>
-
-  <section id="module-configuration">
-    <title>Module Configuration</title>
-    <p>This section should contain examples of mod_http2 configurations.</p>
+    <p>makes the order <em>you</em> wrote the Protocols irrelevant and only the client's
+    ordering will decide.</p>
+    <p>A last thing: the protocols you configure are not checked for correctness
+    or spelling. You can mention protocols that do not exist, so there is no need
+    to guard <code>Protocols</code> with any <code>IfModule</code> checks.</p>
+    <p>For more advanced tips on configuration, see the <a href="../mod/mod_http2.html#dimensioning">
+    modules section about dimensioning</a> and <a href="../mod/mod_http2.html#misdirected">
+    how to manage multiple hosts with the same certificate</a>.</p>
   </section>
 
-  <section id="browsers">
-    <title>Browsers</title>
-    <p>Browser support.</p>
+  <section id="clients">
+    <title>Clients</title>
+    <p>Almost all modern browsers support HTTP/2, but only over SSL connections: Firefox (v43),
+    Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome for Android (v49)
+    and Internet Explorer (v11 on Windows10) (<a href="http://caniuse.com/#search=http2">source</a>).</p>
+    <p>Other clients, as well as servers, are listed 
+    <a href="https://github.com/http2/http2-spec/wiki/Implementations">on the Implementations wiki</a>,
+    among them implementations for c, c++, common lisp, dart, erlang, haskell, java, nodejs,  php, 
+    python, perl, ruby, rust, scala and swift.</p>
+    <p>Several of the non-browser client implementations support HTTP/2 over cleartext, h2c. The
+    most versatile being <a href="https://curl.haxx.se">curl</a>.</p>
   </section>
 
   <section id="tools">
