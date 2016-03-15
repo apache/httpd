@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -695,7 +693,8 @@ d'authentification au niveau du serveur - souvent RSA, DSA et ECC. Le
 nombre d'algorithmes supportés dépend de la version d'OpenSSL utilisée
 avec mod_ssl : à partir de la version 1.0.0, la commande <code>openssl
 list-public-key-algorithms</code> affiche la liste des algorithmes
-supportés.
+supportés. Voir aussi la note ci-dessous à propos des limitations des versions
+d'OpenSSL antérieures à 1.0.2 et la manière de les contourner.
 </p>
 
 <p>Les fichiers peuvent aussi contenir des certificats de CA
@@ -740,6 +739,37 @@ clé du certificat RSA/DSA. En particulier avec les clients basés sur
 Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
 cours de la négociation - voir cette <a href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour
 contourner les problèmes de ce genre.
+</p>
+</div>
+
+<div class="note">
+<h3>Paramètres DH par défaut lorsqu'on utilise plusieurs certificats et une
+version d'OpenSSL antérieure à 1.0.2.</h3>
+<p>
+Lorsqu'on utilise plusieurs certificats pour supporter différents algorithmes
+d'authentification (comme RSA, DSA, mais principalement ECC) et une
+version d'OpenSSL antérieure à 1.0.2, il est recommandé soit d'utiliser des
+paramètres DH spécifiques (solution à privilégier) en les ajoutant au premier
+fichier certificat (comme décrit ci-dessus), soit d'ordonner les directives
+<code class="directive">SSLCertificateFile</code> de façon à ce que les certificats
+RSA/DSA soit placés <strong>après</strong> les certificats ECC.
+</p>
+<p>
+Cette limitation est présente dans les anciennes versions d'OpenSSL qui
+présentent toujours le dernier certificat configuré, au lieu
+de laisser le serveur HTTP Apache déterminer le certificat sélectionné lors de
+la phase de négociation de la connexion (lorsque les paramètres DH doivent être
+envoyés à l'hôte distant).
+De ce fait, le serveur peut sélectionner des paramètres DH par défaut basés sur
+la longueur de la clé du mauvais certificat (les clés ECC sont beaucoup plus
+petites que les clés RSA/DSA et leur longueur n'est pas pertinente pour la
+sélection des nombres premiers DH).
+</p>
+<p>
+Ce problème peut être résolu en créant et configurant des paramètres DH
+spécifiques (comme décrit ci-dessus), car ils l'emportent toujours sur les
+paramètres DH par défaut, et vous pourrez ainsi utiliser une longueur spécifique
+et appropriée.
 </p>
 </div>
 
