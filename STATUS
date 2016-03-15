@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   asked to flush
      trunk patch: http://svn.apache.org/r1619483
      2.4.x patch: trunk works
-     +1: 
+     +1: ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
