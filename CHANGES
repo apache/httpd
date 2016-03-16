@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http: Make sure HTTP filters are added on HTTP requests only.
-     [Graham Leggett]
-     
   *) mod_rewrite: Don't implicitly URL-escape the original query string
      when no substitution has changed it (like PR50447 but server context)
      [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]

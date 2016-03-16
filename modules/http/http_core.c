@@ -34,8 +34,6 @@
 
 #include "mod_core.h"
 
-module AP_MODULE_DECLARE_DATA http_module;
-
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
@@ -49,10 +47,6 @@ AP_DECLARE_DATA const char *ap_multipart_boundary;
  * use a different processing function
  */
 static int async_mpm = 0;
-
-typedef struct {
-    int is_http;
-} http_conn_conf;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
                                           const char *arg)
@@ -248,29 +242,9 @@ static int ap_process_http_sync_connection(conn_rec *c)
     return OK;
 }
 
-static int http_pre_connection(conn_rec *c, void *csd)
-{
-    const char *protocol = ap_get_protocol(c);
-
-    http_conn_conf *cconf = apr_pcalloc(c->pool, sizeof(*cconf));
-
-    if (!strcmp(AP_PROTOCOL_HTTP1, protocol)) {
-        cconf->is_http = 1;
-    }
-
-    ap_set_module_config(c->conn_config, &http_module, cconf);
-
-    return OK;
-}
-
 static int ap_process_http_connection(conn_rec *c)
 {
-    http_conn_conf *cconf = ap_get_module_config(c->conn_config, &http_module);
-
-    if (!cconf || !cconf->is_http) {
-        return DECLINED;
-    }
-    else if (async_mpm && !c->clogging_input_filters) {
+    if (async_mpm && !c->clogging_input_filters) {
         return ap_process_http_async_connection(c);
     }
     else {
@@ -280,6 +254,7 @@ static int ap_process_http_connection(conn_rec *c)
 
 static int http_create_request(request_rec *r)
 {
+    /* FIXME: we must only add these filters if we are an HTTP request */
     if (!r->main && !r->prev) {
         ap_add_output_filter_handle(ap_byterange_filter_handle,
                                     NULL, r, r->connection);
@@ -320,8 +295,6 @@ static int http_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(http_post_config, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_pre_connection(http_pre_connection, NULL, NULL,
-            APR_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection, NULL, NULL,
                                APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
