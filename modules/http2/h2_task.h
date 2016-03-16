@@ -66,7 +66,9 @@ struct h2_task {
     struct h2_task_output *output;
     struct apr_thread_cond_t *io;   /* used to wait for events on */
     
-    struct h2_req_engine *engine;
+    struct h2_req_engine *engine;   /* engine hosted by this task */
+    struct h2_req_engine *assigned; /* engine that task has been assigned to */
+    request_rec *r;                 /* request being processed in this task */
 };
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
@@ -83,7 +85,7 @@ apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s);
 extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_task_logio_add_bytes_in;
 extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out;
 
-apr_status_t h2_task_freeze(h2_task *task, request_rec *r);
+apr_status_t h2_task_freeze(h2_task *task);
 apr_status_t h2_task_thaw(h2_task *task);
 int h2_task_is_detached(h2_task *task);
 

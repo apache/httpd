@@ -23,6 +23,7 @@
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
+#include <http_request.h>
 
 #include "h2_private.h"
 #include "h2_h2.h"
@@ -33,16 +34,44 @@
 #include "h2_task.h"
 #include "h2_util.h"
 
-h2_io *h2_io_create(int id, apr_pool_t *pool, const h2_request *request)
+h2_io *h2_io_create(int id, apr_pool_t *pool, 
+                    apr_bucket_alloc_t *bucket_alloc,
+                    const h2_request *request)
 {
     h2_io *io = apr_pcalloc(pool, sizeof(*io));
     if (io) {
         io->id = id;
         io->pool = pool;
-        io->bucket_alloc = apr_bucket_alloc_create(pool);
+        io->bucket_alloc = bucket_alloc;
         io->request = h2_request_clone(pool, request);
     }
     return io;
+}
+
+static void check_bbin(h2_io *io)
+{
+    if (!io->bbin) {
+        io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
+    }
+}
+
+static void check_bbout(h2_io *io)
+{
+    if (!io->bbout) {
+        io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
+    }
+}
+
+static void check_bbtmp(h2_io *io)
+{
+    if (!io->bbtmp) {
+        io->bbtmp = apr_brigade_create(io->pool, io->bucket_alloc);
+    }
+}
+
+static void append_eos(h2_io *io, apr_bucket_brigade *bb)
+{
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(io->bucket_alloc));
 }
 
 void h2_io_redo(h2_io *io)
@@ -56,8 +85,8 @@ void h2_io_redo(h2_io *io)
     if (io->bbout) {
         apr_brigade_cleanup(io->bbout);
     }
-    if (io->tmp) {
-        apr_brigade_cleanup(io->tmp);
+    if (io->bbtmp) {
+        apr_brigade_cleanup(io->bbtmp);
     }
     io->started_at = io->done_at = 0;
 }
@@ -85,21 +114,10 @@ void h2_io_set_response(h2_io *io, h2_response *response)
     }
 }
 
-
 void h2_io_rst(h2_io *io, int error)
 {
     io->rst_error = error;
     io->eos_in = 1;
-}
-
-int h2_io_in_has_eos_for(h2_io *io)
-{
-    return io->eos_in || (io->bbin && h2_util_has_eos(io->bbin, -1));
-}
-
-int h2_io_in_has_data(h2_io *io)
-{
-    return io->bbin && h2_util_bb_has_data_or_eos(io->bbin);
 }
 
 int h2_io_out_has_data(h2_io *io)
@@ -199,8 +217,8 @@ static int add_trailer(void *ctx, const char *key, const char *value)
     return (status == APR_SUCCESS);
 }
 
-static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb, 
-                               apr_table_t *trailers)
+static apr_status_t in_append_eos(h2_io *io, apr_bucket_brigade *bb, 
+                                  apr_table_t *trailers)
 {
     apr_status_t status = APR_SUCCESS;
     apr_table_t *t = io->request->trailers;
@@ -222,7 +240,7 @@ static apr_status_t append_eos(h2_io *io, apr_bucket_brigade *bb,
             status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
         }
     }
-    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(io->bucket_alloc));
+    append_eos(io, bb);
     return status;
 }
 
@@ -239,7 +257,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     if (!io->bbin || APR_BRIGADE_EMPTY(io->bbin)) {
         if (io->eos_in) {
             if (!io->eos_in_written) {
-                status = append_eos(io, bb, trailers);
+                status = in_append_eos(io, bb, trailers);
                 io->eos_in_written = 1;
                 return status;
             }
@@ -250,26 +268,27 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     
     if (io->request->chunked) {
         /* the reader expects HTTP/1.1 chunked encoding */
-        status = h2_util_move(io->tmp, io->bbin, maxlen, NULL, "h2_io_in_read_chunk");
+        check_bbtmp(io);
+        status = h2_util_move(io->bbtmp, io->bbin, maxlen, NULL, "h2_io_in_read_chunk");
         if (status == APR_SUCCESS) {
             apr_off_t tmp_len = 0;
             
-            apr_brigade_length(io->tmp, 1, &tmp_len);
+            apr_brigade_length(io->bbtmp, 1, &tmp_len);
             if (tmp_len > 0) {
                 io->input_consumed += tmp_len;
                 status = apr_brigade_printf(bb, NULL, NULL, "%lx\r\n", 
                                             (unsigned long)tmp_len);
                 if (status == APR_SUCCESS) {
-                    status = h2_util_move(bb, io->tmp, -1, NULL, "h2_io_in_read_tmp1");
+                    status = h2_util_move(bb, io->bbtmp, -1, NULL, "h2_io_in_read_tmp1");
                     if (status == APR_SUCCESS) {
                         status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
                     }
                 }
             }
             else {
-                status = h2_util_move(bb, io->tmp, -1, NULL, "h2_io_in_read_tmp2");
+                status = h2_util_move(bb, io->bbtmp, -1, NULL, "h2_io_in_read_tmp2");
             }
-            apr_brigade_cleanup(io->tmp);
+            apr_brigade_cleanup(io->bbtmp);
         }
     }
     else {
@@ -286,7 +305,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     if (status == APR_SUCCESS && (!io->bbin || APR_BRIGADE_EMPTY(io->bbin))) {
         if (io->eos_in) {
             if (!io->eos_in_written) {
-                status = append_eos(io, bb, trailers);
+                status = in_append_eos(io, bb, trailers);
                 io->eos_in_written = 1;
             }
         }
@@ -298,7 +317,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
     return status;
 }
 
-apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
+apr_status_t h2_io_in_write(h2_io *io, const char *d, apr_size_t len, int eos)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;
@@ -307,13 +326,12 @@ apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb)
     if (io->eos_in) {
         return APR_EOF;
     }
-    io->eos_in = h2_util_has_eos(bb, -1);
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        if (!io->bbin) {
-            io->bbin = apr_brigade_create(io->pool, io->bucket_alloc);
-            io->tmp = apr_brigade_create(io->pool, io->bucket_alloc);
-        }
-        return h2_util_move(io->bbin, bb, -1, NULL, "h2_io_in_write");
+    if (eos) {
+        io->eos_in = 1;
+    }
+    if (len > 0) {
+        check_bbin(io);
+        return apr_brigade_write(io->bbin, NULL, NULL, d, len);
     }
     return APR_SUCCESS;
 }
@@ -328,27 +346,36 @@ apr_status_t h2_io_in_close(h2_io *io)
     return APR_SUCCESS;
 }
 
+static int is_out_readable(h2_io *io, apr_off_t *plen, int *peos, 
+                           apr_status_t *ps)
+{
+    if (io->rst_error) {
+        *ps = APR_ECONNABORTED;
+        return 0;
+    }
+    if (io->eos_out_read) {
+        *plen = 0;
+        *peos = 1;
+        *ps = APR_SUCCESS;
+        return 0;
+    }
+    else if (!io->bbout) {
+        *plen = 0;
+        *peos = 0;
+        *ps = APR_EAGAIN;
+        return 0;
+    }
+    return 1;
+}
+
 apr_status_t h2_io_out_readx(h2_io *io,  
                              h2_io_data_cb *cb, void *ctx, 
                              apr_off_t *plen, int *peos)
 {
     apr_status_t status;
-    
-    if (io->rst_error) {
-        return APR_ECONNABORTED;
+    if (!is_out_readable(io, plen, peos, &status)) {
+        return status;
     }
-    
-    if (io->eos_out_read) {
-        *plen = 0;
-        *peos = 1;
-        return APR_SUCCESS;
-    }
-    else if (!io->bbout) {
-        *plen = 0;
-        *peos = 0;
-        return APR_EAGAIN;
-    }
-    
     if (cb == NULL) {
         /* just checking length available */
         status = h2_util_bb_avail(io->bbout, plen, peos);
@@ -360,7 +387,6 @@ apr_status_t h2_io_out_readx(h2_io *io,
             io->output_consumed += *plen;
         }
     }
-    
     return status;
 }
 
@@ -368,24 +394,13 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
                                apr_off_t *plen, int *peos)
 {
     apr_status_t status;
-    
-    if (io->rst_error) {
-        return APR_ECONNABORTED;
+    if (!is_out_readable(io, plen, peos, &status)) {
+        return status;
     }
-    
-    if (io->eos_out_read) {
-        *plen = 0;
-        *peos = 1;
-        return APR_SUCCESS;
-    }
-    else if (!io->bbout) {
-        *plen = 0;
-        *peos = 0;
-        return APR_EAGAIN;
-    }
-
-    io->eos_out_read = *peos = h2_util_has_eos(io->bbout, *plen);
     status = h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
+    if (status == APR_SUCCESS && io->eos_out && APR_BRIGADE_EMPTY(io->bbout)) {
+        io->eos_out_read = *peos = 1;
+    }
     io->output_consumed += *plen;
     return status;
 }
@@ -403,6 +418,7 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
                              apr_size_t *pfile_buckets_allowed)
 {
     apr_status_t status;
+    apr_bucket *b;
     int start_allowed;
     
     if (io->rst_error) {
@@ -410,27 +426,33 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
     }
 
     if (io->eos_out) {
-        apr_off_t len;
+        apr_off_t len = 0;
         /* We have already delivered an EOS bucket to a reader, no
          * sense in storing anything more here.
          */
-        status = apr_brigade_length(bb, 1, &len);
-        if (status == APR_SUCCESS) {
-            if (len > 0) {
-                /* someone tries to write real data after EOS, that
-                 * does not look right. */
-                status = APR_EOF;
-            }
-            /* cleanup, as if we had moved the data */
-            apr_brigade_cleanup(bb);
-        }
-        return status;
+        apr_brigade_length(bb, 0, &len);
+        apr_brigade_cleanup(bb);
+        return (len > 0)? APR_EOF : APR_SUCCESS;
     }
 
+    /* Filter the EOR bucket and set it aside. We prefer to tear down
+     * the request when the whole h2 stream is done */
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b))
+    {
+        if (AP_BUCKET_IS_EOR(b)) {
+            APR_BUCKET_REMOVE(b);
+            io->eor = b;
+            break;
+        }
+        else if (APR_BUCKET_IS_EOS(b)) {
+            io->eos_out = 1;
+            break;
+        }
+    }     
+    
     process_trailers(io, trailers);
-    if (!io->bbout) {
-        io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
-    }
     
     /* Let's move the buckets from the request processing in here, so
      * that the main thread can read them when it has time/capacity.
@@ -442,6 +464,7 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
      * many open files already buffered. Otherwise we will run out of
      * file handles.
      */
+    check_bbout(io);
     start_allowed = *pfile_buckets_allowed;
     status = h2_util_move(io->bbout, bb, maxlen, pfile_buckets_allowed, 
                           "h2_io_out_write");
@@ -460,14 +483,11 @@ apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers)
     }
     if (!io->eos_out_read) { /* EOS has not been read yet */
         process_trailers(io, trailers);
-        if (!io->bbout) {
-            io->bbout = apr_brigade_create(io->pool, io->bucket_alloc);
-        }
         if (!io->eos_out) {
+            check_bbout(io);
             io->eos_out = 1;
             if (!h2_util_has_eos(io->bbout, -1)) {
-                APR_BRIGADE_INSERT_TAIL(io->bbout, 
-                                        apr_bucket_eos_create(io->bucket_alloc));
+                append_eos(io, io->bbout);
             }
         }
     }

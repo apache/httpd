@@ -195,12 +195,13 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
             return NULL;
         }
         
-        status = apr_thread_cond_create(&m->req_added, m->pool);
+        status = apr_thread_cond_create(&m->task_thawed, m->pool);
         if (status != APR_SUCCESS) {
             h2_mplx_destroy(m);
             return NULL;
         }
     
+        m->bucket_alloc = apr_bucket_alloc_create(m->pool);
         m->max_streams = h2_config_geti(conf, H2_CONF_MAX_STREAMS);
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
         m->q = h2_iq_create(m->pool, m->max_streams);
@@ -253,7 +254,7 @@ static void workers_register(h2_mplx *m)
     h2_workers_register(m->workers, m);
 }
 
-static int io_process_events(h2_mplx *m, h2_io *io)
+static int io_in_consumed_signal(h2_mplx *m, h2_io *io)
 {
     if (io->input_consumed && m->input_consumed) {
         m->input_consumed(m->input_consumed_ctx, 
@@ -264,18 +265,28 @@ static int io_process_events(h2_mplx *m, h2_io *io)
     return 0;
 }
 
+static int io_out_consumed_signal(h2_mplx *m, h2_io *io)
+{
+    if (io->output_consumed && io->task && io->task->assigned) {
+        h2_req_engine_out_consumed(io->task->assigned, io->task->c, 
+                                   io->output_consumed);
+        io->output_consumed = 0;
+        return 1;
+    }
+    return 0;
+}
+
 static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
-    apr_pool_t *pool = io->pool;
+    apr_pool_t *pool;
     
     /* cleanup any buffered input */
     h2_io_in_shutdown(io);
     if (events) {
         /* Process outstanding events before destruction */
-        io_process_events(m, io);
+        io_in_consumed_signal(m, io);
     }
     
-    io->pool = NULL;    
     /* The pool is cleared/destroyed which also closes all
      * allocated file handles. Give this count back to our
      * file handle pool. */
@@ -286,8 +297,20 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
     if (m->redo_ios) {
         h2_io_set_remove(m->redo_ios, io);
     }
-    
-    if (pool) {
+
+    if (io->task) {
+        if (m->spare_allocator) {
+            apr_allocator_destroy(m->spare_allocator);
+            m->spare_allocator = NULL;
+        }
+        
+        h2_slave_destroy(io->task->c, &m->spare_allocator);
+        io->task = NULL;
+    }
+
+    pool = io->pool;
+    io->pool = NULL;    
+    if (0 && pool) {
         apr_pool_clear(pool);
         if (m->spare_pool) {
             apr_pool_destroy(m->spare_pool);
@@ -365,7 +388,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_mplx_set_consumed_cb(m, NULL, NULL);
         
         h2_iq_clear(m->q);
-        apr_thread_cond_broadcast(m->req_added);
+        apr_thread_cond_broadcast(m->task_thawed);
         while (!h2_io_set_iter(m->stream_ios, stream_done_iter, m)) {
             /* iterate until all ios have been orphaned or destroyed */
         }
@@ -401,7 +424,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                     }
                 }
                 h2_mplx_abort(m);
-                apr_thread_cond_broadcast(m->req_added);
+                apr_thread_cond_broadcast(m->task_thawed);
             }
         }
         
@@ -448,7 +471,7 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
          * for processing, e.g. when we received all HEADERs. But when
          * a stream is cancelled very early, it will not exist. */
         if (io) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c, 
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
                           "h2_mplx(%ld-%d): marking stream as done.", 
                           m->id, stream_id);
             io_stream_done(m, io, rst_error);
@@ -498,7 +521,7 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
 }
 
 apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id, 
-                              apr_bucket_brigade *bb)
+                              const char *data, apr_size_t len, int eos)
 {
     apr_status_t status;
     int acquired;
@@ -508,10 +531,10 @@ apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id,
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_pre");
-            status = h2_io_in_write(io, bb);
+            status = h2_io_in_write(io, data, len, eos);
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_write_post");
             h2_io_signal(io, H2_IO_READ);
-            io_process_events(m, io);
+            io_in_consumed_signal(m, io);
         }
         else {
             status = APR_ECONNABORTED;
@@ -533,7 +556,7 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
             status = h2_io_in_close(io);
             H2_MPLX_IO_IN(APLOG_TRACE2, m, io, "h2_mplx_in_close");
             h2_io_signal(io, H2_IO_READ);
-            io_process_events(m, io);
+            io_in_consumed_signal(m, io);
         }
         else {
             status = APR_ECONNABORTED;
@@ -541,6 +564,12 @@ apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id)
         leave_mutex(m, acquired);
     }
     return status;
+}
+
+void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx)
+{
+    m->input_consumed = cb;
+    m->input_consumed_ctx = ctx;
 }
 
 typedef struct {
@@ -551,16 +580,10 @@ typedef struct {
 static int update_window(void *ctx, h2_io *io)
 {
     update_ctx *uctx = (update_ctx*)ctx;
-    if (io_process_events(uctx->m, io)) {
+    if (io_in_consumed_signal(uctx->m, io)) {
         ++uctx->streams_updated;
     }
     return 1;
-}
-
-void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx)
-{
-    m->input_consumed = cb;
-    m->input_consumed_ctx = ctx;
 }
 
 apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
@@ -690,7 +713,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_ihash_t *streams)
                      * shutdown input and send out any events (e.g. window
                      * updates) asap. */
                     h2_io_in_shutdown(io);
-                    io_process_events(m, io);
+                    io_in_consumed_signal(m, io);
                 }
             }
             
@@ -717,8 +740,10 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && !APR_BRIGADE_EMPTY(bb) 
            && !is_aborted(m, &status)) {
         
-        status = h2_io_out_write(io, bb, m->stream_max_mem, trailers,
-                                 &m->tx_handles_reserved);
+        status = h2_io_out_write(io, bb, blocking? m->stream_max_mem : INT_MAX, 
+                                 trailers, &m->tx_handles_reserved);
+        io_out_consumed_signal(m, io);
+        
         /* Wait for data to drain until there is room again or
          * stream timeout expires */
         h2_io_signal_init(io, H2_IO_WRITE, m->stream_timeout, iowait);
@@ -728,6 +753,9 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
                && (m->stream_max_mem <= h2_io_out_length(io))
                && !is_aborted(m, &status)) {
             if (!blocking) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                              "h2_mplx(%ld-%d): incomplete write", 
+                              m->id, io->id);
                 return APR_INCOMPLETE;
             }
             trailers = NULL;
@@ -856,11 +884,13 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                               "h2_mplx(%ld-%d): close, no response, no rst", 
                               m->id, io->id);
             }
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                          "h2_mplx(%ld-%d): close with trailers=%s", 
-                          m->id, io->id, trailers? "yes" : "no");
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
+                          "h2_mplx(%ld-%d): close with eor=%s, trailers=%s", 
+                          m->id, io->id, io->eor? "yes" : "no", 
+                          trailers? "yes" : "no");
             status = h2_io_out_close(io, trailers);
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
+            io_out_consumed_signal(m, io);
             
             have_out_data_for(m, stream_id);
         }
@@ -896,46 +926,6 @@ apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error)
         leave_mutex(m, acquired);
     }
     return status;
-}
-
-int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id)
-{
-    int has_eos = 0;
-    int acquired;
-    
-    apr_status_t status;
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            has_eos = h2_io_in_has_eos_for(io);
-        }
-        else {
-            has_eos = 1;
-        }
-        leave_mutex(m, acquired);
-    }
-    return has_eos;
-}
-
-int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id)
-{
-    apr_status_t status;
-    int has_data = 0;
-    int acquired;
-    
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            has_data = h2_io_in_has_data(io);
-        }
-        else {
-            has_data = 0;
-        }
-        leave_mutex(m, acquired);
-    }
-    return has_data;
 }
 
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id)
@@ -1027,7 +1017,7 @@ static h2_io *open_io(h2_mplx *m, int stream_id, const h2_request *request)
         m->spare_pool = NULL;
     }
     
-    io = h2_io_create(stream_id, io_pool, request);
+    io = h2_io_create(stream_id, io_pool, m->bucket_alloc, request);
     h2_io_set_add(m->stream_ios, io);
     
     return io;
@@ -1086,7 +1076,7 @@ static h2_task *pop_task(h2_mplx *m)
         else if (io) {
             conn_rec *slave = h2_slave_create(m->c, m->pool, m->spare_allocator);
             m->spare_allocator = NULL;
-            task = h2_task_create(m->id, io->request, slave, m);
+            io->task = task = h2_task_create(m->id, io->request, slave, m);
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
             io->worker_started = 1;
             io->started_at = apr_time_now();
@@ -1123,7 +1113,7 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     return task;
 }
 
-static void task_done(h2_mplx *m, h2_task *task)
+static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
 {
     if (task) {
         if (task->frozen) {
@@ -1135,7 +1125,7 @@ static void task_done(h2_mplx *m, h2_task *task)
              * bodies into the mplx. */
             /* FIXME: this implementation is incomplete. */
             h2_task_set_io_blocking(task, 0);
-            apr_thread_cond_broadcast(m->req_added);
+            apr_thread_cond_broadcast(m->task_thawed);
         }
         else {
             h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
@@ -1149,6 +1139,18 @@ static void task_done(h2_mplx *m, h2_task *task)
              * other mplx's. Perhaps leave after n requests? */
             h2_mplx_out_close(m, task->stream_id, NULL);
             
+            if (ngn && io) {
+                apr_off_t bytes = io->output_consumed + h2_io_out_length(io);
+                if (bytes > 0) {
+                    /* we need to report consumed and current buffered output
+                     * to the engine. The request will be streamed out or cancelled,
+                     * no more data is coming from it and the engine should update
+                     * its calculations before we destroy this information. */
+                    h2_req_engine_out_consumed(ngn, task->c, bytes);
+                    io->output_consumed = 0;
+                }
+            }
+            
             if (task->engine) {
                 if (!h2_req_engine_is_shutdown(task->engine)) {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
@@ -1158,14 +1160,6 @@ static void task_done(h2_mplx *m, h2_task *task)
                 }
                 h2_ngn_shed_done_ngn(m->ngn_shed, task->engine);
             }
-            
-            if (m->spare_allocator) {
-                apr_allocator_destroy(m->spare_allocator);
-                m->spare_allocator = NULL;
-            }
-            
-            h2_slave_destroy(task->c, &m->spare_allocator);
-            task = NULL;
             
             if (io) {
                 apr_time_t now = apr_time_now();
@@ -1208,8 +1202,13 @@ static void task_done(h2_mplx *m, h2_task *task)
                     }
                 }
                 else {
-                    /* hang around until the stream deregisteres */
+                    /* hang around until the stream deregisters */
                 }
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
+                              "h2_mplx(%ld): task %s without corresp. h2_io",
+                              m->id, task->id);
             }
         }
     }
@@ -1220,7 +1219,7 @@ void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
     int acquired;
     
     if (enter_mutex(m, &acquired) == APR_SUCCESS) {
-        task_done(m, task);
+        task_done(m, task, NULL);
         --m->workers_busy;
         if (ptask) {
             /* caller wants another task */
@@ -1373,8 +1372,37 @@ apr_status_t h2_mplx_idle(h2_mplx *m)
  * HTTP/2 request engines
  ******************************************************************************/
 
+typedef struct {
+    h2_mplx * m;
+    h2_req_engine *ngn;
+    int streams_updated;
+} ngn_update_ctx;
+
+static int ngn_update_window(void *ctx, h2_io *io)
+{
+    ngn_update_ctx *uctx = ctx;
+    if (io && io->task && io->task->assigned == uctx->ngn
+        && io_out_consumed_signal(uctx->m, io)) {
+        ++uctx->streams_updated;
+    }
+    return 1;
+}
+
+static apr_status_t ngn_out_update_windows(h2_mplx *m, h2_req_engine *ngn)
+{
+    ngn_update_ctx ctx;
+        
+    ctx.m = m;
+    ctx.ngn = ngn;
+    ctx.streams_updated = 0;
+    h2_io_set_iter(m->stream_ios, ngn_update_window, &ctx);
+    
+    return ctx.streams_updated? APR_SUCCESS : APR_EAGAIN;
+}
+
 apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
-                                     request_rec *r, h2_req_engine_init *einit)
+                                     request_rec *r,
+                                     http2_req_engine_init *einit)
 {
     apr_status_t status;
     h2_mplx *m;
@@ -1386,6 +1414,7 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
         return APR_ECONNABORTED;
     }
     m = task->mplx;
+    task->r = r;
     
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
@@ -1393,8 +1422,7 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
             status = APR_ECONNABORTED;
         }
         else {
-            status = h2_ngn_shed_push_req(m->ngn_shed, ngn_type, 
-                                          task, r, einit);
+            status = h2_ngn_shed_push_task(m->ngn_shed, ngn_type, task, einit);
         }
         leave_mutex(m, acquired);
     }
@@ -1409,30 +1437,37 @@ apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn,
     h2_ngn_shed *shed = h2_ngn_shed_get_shed(ngn);
     h2_mplx *m = h2_ngn_shed_get_ctx(shed);
     apr_status_t status;
+    h2_task *task = NULL;
     int acquired;
     
-    *pr = NULL;
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         int want_shutdown = (block == APR_BLOCK_READ);
+
+        /* Take this opportunity to update output consummation 
+         * for this engine */
+        ngn_out_update_windows(m, ngn);
+        
         if (want_shutdown && !h2_iq_empty(m->q)) {
             /* For a blocking read, check first if requests are to be
              * had and, if not, wait a short while before doing the
              * blocking, and if unsuccessful, terminating read.
              */
-            status = h2_ngn_shed_pull_req(shed, ngn, capacity, 1, pr);
+            status = h2_ngn_shed_pull_task(shed, ngn, capacity, 1, &task);
             if (APR_STATUS_IS_EAGAIN(status)) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                               "h2_mplx(%ld): start block engine pull", m->id);
-                apr_thread_cond_timedwait(m->req_added, m->lock, 
+                apr_thread_cond_timedwait(m->task_thawed, m->lock, 
                                           apr_time_from_msec(20));
-                status = h2_ngn_shed_pull_req(shed, ngn, capacity, 1, pr);
+                status = h2_ngn_shed_pull_task(shed, ngn, capacity, 1, &task);
             }
         }
         else {
-            status = h2_ngn_shed_pull_req(shed, ngn, capacity, want_shutdown, pr);
+            status = h2_ngn_shed_pull_task(shed, ngn, capacity,
+                                           want_shutdown, &task);
         }
         leave_mutex(m, acquired);
     }
+    *pr = task? task->r : NULL;
     return status;
 }
  
@@ -1445,14 +1480,16 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
         int acquired;
 
         if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+            ngn_out_update_windows(m, ngn);
             h2_ngn_shed_done_task(m->ngn_shed, ngn, task);
             if (task->engine) { 
                 /* cannot report that as done until engine returns */
             }
             else {
-                h2_task_output_close(task->output);
-                task_done(m, task);
+                task_done(m, task, ngn);
             }
+            /* Take this opportunity to update output consummation 
+             * for this engine */
             leave_mutex(m, acquired);
         }
     }

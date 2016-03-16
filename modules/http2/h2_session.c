@@ -235,8 +235,11 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
         }
         return 0;
     }
-    
-    status = h2_stream_write_data(stream, (const char *)data, len);
+
+    /* FIXME: enabling setting EOS this way seems to break input handling
+     * in mod_proxy_http2. why? */
+    status = h2_stream_write_data(stream, (const char *)data, len,
+                                  0 /*flags & NGHTTP2_FLAG_END_STREAM*/);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c,
                   "h2_stream(%ld-%d): data_chunk_recv, written %ld bytes",
                   session->id, stream_id, (long)len);
@@ -683,7 +686,9 @@ static apr_status_t h2_session_shutdown(h2_session *session, int reason,
                           h2_mplx_get_max_stream_started(session->mplx), 
                           reason, (uint8_t*)err, err? strlen(err):0);
     status = nghttp2_session_send(session->ngh2);
-    h2_conn_io_pass(&session->io, 1);
+    if (status == APR_SUCCESS) {
+        status = h2_conn_io_flush(&session->io);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03069)
                   "session(%ld): sent GOAWAY, err=%d, msg=%s", 
                   session->id, reason, err? err : "");
@@ -1015,7 +1020,6 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         }
     }
     
-    h2_conn_io_pass(&session->io, 1);
     return status;
 }
 
@@ -1430,6 +1434,9 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
 {
     apr_pool_t *pool = h2_stream_detach_pool(stream);
 
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                  "h2_stream(%ld-%d): cleanup by EOS bucket destroy", 
+                  session->id, stream->id);
     /* this may be called while the session has already freed
      * some internal structures or even when the mplx is locked. */
     if (session->mplx) {
@@ -1702,6 +1709,7 @@ static void h2_session_ev_init(h2_session *session, int arg, const char *msg)
 
 static void h2_session_ev_local_goaway(h2_session *session, int arg, const char *msg)
 {
+    session->local_shutdown = 1;
     switch (session->state) {
         case H2_SESSION_ST_LOCAL_SHUTDOWN:
             /* already did that? */
@@ -1954,15 +1962,20 @@ static const int MAX_WAIT_MICROS = 200 * 1000;
 
 static void update_child_status(h2_session *session, int status, const char *msg)
 {
-    apr_snprintf(session->status, sizeof(session->status),
-                 "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
-                 msg? msg : "-",
-                 (int)h2_ihash_count(session->streams), 
-                 (int)session->requests_received,
-                 (int)session->responses_submitted,
-                 (int)session->pushes_submitted,
-                 (int)session->pushes_reset + session->streams_reset);
-    ap_update_child_status_descr(session->c->sbh, status, session->status);
+    /* Assume that we also change code/msg when something really happened and
+     * avoid updating the scoreboard in between */
+    if (session->last_status_code != status 
+        || session->last_status_msg != msg) {
+        apr_snprintf(session->status, sizeof(session->status),
+                     "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
+                     msg? msg : "-",
+                     (int)h2_ihash_count(session->streams), 
+                     (int)session->requests_received,
+                     (int)session->responses_submitted,
+                     (int)session->pushes_submitted,
+                     (int)session->pushes_reset + session->streams_reset);
+        ap_update_child_status_descr(session->c->sbh, status, session->status);
+    }
 }
 
 apr_status_t h2_session_process(h2_session *session, int async)
@@ -2016,7 +2029,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
                                               : SERVER_BUSY_READ), "idle");
                 /* make certain, the client receives everything before we idle */
-                h2_conn_io_flush(&session->io);
                 if (!session->keep_sync_until 
                     && async && no_streams && !session->r && session->requests_received) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
@@ -2093,10 +2105,12 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_LOCAL_SHUTDOWN:
             case H2_SESSION_ST_REMOTE_SHUTDOWN:
                 if (nghttp2_session_want_read(session->ngh2)) {
+                    ap_update_child_status(session->c->sbh, SERVER_BUSY_READ, NULL);
                     h2_filter_cin_timeout_set(session->cin, session->s->timeout);
                     status = h2_session_read(session, 0);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
+                        update_child_status(session, SERVER_BUSY_READ, "busy");
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
                     }
                     else if (status == APR_EAGAIN) {
@@ -2133,7 +2147,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 
-                while (nghttp2_session_want_write(session->ngh2)) {
+                if (nghttp2_session_want_write(session->ngh2)) {
                     ap_update_child_status(session->c->sbh, SERVER_BUSY_WRITE, NULL);
                     status = h2_session_send(session);
                     if (status == APR_SUCCESS) {
@@ -2149,7 +2163,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 if (have_read || have_written) {
                     if (session->wait_us) {
                         session->wait_us = 0;
-                        update_child_status(session, SERVER_BUSY_READ, "busy");
                     }
                 }
                 else if (!nghttp2_session_want_write(session->ngh2)) {
@@ -2180,8 +2193,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                   "h2_session: wait for data, %ld micros", 
                                   (long)session->wait_us);
                 }
-                /* make certain, the client receives everything before we idle */
-                h2_conn_io_flush(&session->io);
                 status = h2_mplx_out_trywait(session->mplx, session->wait_us, 
                                              session->iowait);
                 if (status == APR_SUCCESS) {
@@ -2190,7 +2201,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else if (status == APR_TIMEUP) {
                     /* go back to checking all inputs again */
-                    transit(session, "wait cycle", H2_SESSION_ST_BUSY);
+                    transit(session, "wait cycle", session->local_shutdown? 
+                            H2_SESSION_ST_LOCAL_SHUTDOWN : H2_SESSION_ST_BUSY);
                 }
                 else {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
@@ -2214,7 +2226,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
         }
 
-        h2_conn_io_pass(&session->io, 1);
+        status = h2_conn_io_flush(&session->io);
+        if (status != APR_SUCCESS) {
+            dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+        }
         if (!nghttp2_session_want_read(session->ngh2) 
                  && !nghttp2_session_want_write(session->ngh2)) {
             dispatch_event(session, H2_SESSION_EV_NGH2_DONE, 0, NULL); 
