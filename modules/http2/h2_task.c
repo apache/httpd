@@ -86,27 +86,6 @@ static apr_status_t h2_filter_read_response(ap_filter_t* f,
     return h2_from_h1_read_response(task->output->from_h1, f, bb);
 }
 
-static apr_status_t h2_response_freeze_filter(ap_filter_t* f,
-                                              apr_bucket_brigade* bb)
-{
-    h2_task *task = f->ctx;
-    AP_DEBUG_ASSERT(task);
-    
-    if (task->frozen) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
-                      "h2_response_freeze_filter, saving");
-        return ap_save_brigade(f, &task->output->frozen_bb, &bb, task->c->pool);
-    }
-    
-    if (APR_BRIGADE_EMPTY(bb)) {
-        return APR_SUCCESS;
-    }
-
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
-                  "h2_response_freeze_filter, passing");
-    return ap_pass_brigade(f->next, bb);
-}
-
 /*******************************************************************************
  * Register various hooks
  */
@@ -141,8 +120,6 @@ void h2_task_register_hooks(void)
                               NULL, AP_FTYPE_PROTOCOL);
     ap_register_output_filter("H2_TRAILERS", h2_response_trailers_filter,
                               NULL, AP_FTYPE_PROTOCOL);
-    ap_register_output_filter("H2_RESPONSE_FREEZE", h2_response_freeze_filter,
-                              NULL, AP_FTYPE_RESOURCE);
 }
 
 /* post config init */
@@ -314,15 +291,11 @@ static int h2_task_process_conn(conn_rec* c)
     return DECLINED;
 }
 
-apr_status_t h2_task_freeze(h2_task *task, request_rec *r)
+apr_status_t h2_task_freeze(h2_task *task)
 {   
     if (!task->frozen) {
-        conn_rec *c = task->c;
-        
         task->frozen = 1;
-        task->output->frozen_bb = apr_brigade_create(c->pool, c->bucket_alloc);
-        ap_add_output_filter("H2_RESPONSE_FREEZE", task, r, r->connection);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
                       "h2_task(%s), frozen", task->id);
     }
     return APR_SUCCESS;

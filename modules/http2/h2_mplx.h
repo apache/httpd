@@ -67,6 +67,7 @@ struct h2_mplx {
     volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
+    apr_bucket_alloc_t *bucket_alloc;
 
     unsigned int aborted : 1;
     unsigned int need_registration : 1;
@@ -89,7 +90,7 @@ struct h2_mplx {
 
     apr_thread_mutex_t *lock;
     struct apr_thread_cond_t *added_output;
-    struct apr_thread_cond_t *req_added;
+    struct apr_thread_cond_t *task_thawed;
     struct apr_thread_cond_t *join_wait;
     
     apr_size_t stream_max_mem;
@@ -171,10 +172,6 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
  */
 int h2_mplx_out_has_data_for(h2_mplx *m, int stream_id);
 
-/* Return != 0 iff the multiplexer has input data for the given stream. 
- */
-int h2_mplx_in_has_data_for(h2_mplx *m, int stream_id);
-
 /**
  * Waits on output data from any stream in this session to become available. 
  * Returns APR_TIMEUP if no data arrived in the given time.
@@ -238,19 +235,13 @@ apr_status_t h2_mplx_in_read(h2_mplx *m, apr_read_type_e block,
  * Appends data to the input of the given stream. Storage of input data is
  * not subject to flow control.
  */
-apr_status_t h2_mplx_in_write(h2_mplx *mplx, int stream_id, 
-                              apr_bucket_brigade *bb);
+apr_status_t h2_mplx_in_write(h2_mplx *m, int stream_id, 
+                              const char *data, apr_size_t len, int eos);
 
 /**
  * Closes the input for the given stream_id.
  */
 apr_status_t h2_mplx_in_close(h2_mplx *m, int stream_id);
-
-/**
- * Returns != 0 iff the input for the given stream has been closed. There
- * could still be data queued, but it can be read without blocking.
- */
-int h2_mplx_in_has_eos_for(h2_mplx *m, int stream_id);
 
 /**
  * Invoke the consumed callback for all streams that had bytes read since the 
@@ -414,12 +405,15 @@ apr_status_t h2_mplx_idle(h2_mplx *m);
  * h2_req_engine handling
  ******************************************************************************/
 
+typedef void h2_output_consumed(void *ctx, conn_rec *c, apr_off_t consumed);
 typedef apr_status_t h2_mplx_req_engine_init(struct h2_req_engine *engine, 
                                              const char *id, 
                                              const char *type,
                                              apr_pool_t *pool, 
                                              apr_uint32_t req_buffer_size,
-                                             request_rec *r);
+                                             request_rec *r,
+                                             h2_output_consumed **pconsumed,
+                                             void **pbaton);
 
 apr_status_t h2_mplx_req_engine_push(const char *ngn_type, 
                                      request_rec *r, 

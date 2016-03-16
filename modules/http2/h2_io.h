@@ -44,9 +44,12 @@ struct h2_io {
     struct h2_response *response;    /* response to request */
     int rst_error;                   /* h2 related stream abort error */
 
+    apr_bucket *eor;                 /* the EOR bucket, set aside */
+    struct h2_task *task;            /* the task once started */
+    
     apr_bucket_brigade *bbin;        /* input data for stream */
     apr_bucket_brigade *bbout;       /* output data from stream */
-    apr_bucket_brigade *tmp;         /* temporary data for chunking */
+    apr_bucket_brigade *bbtmp;       /* temporary data for chunking */
 
     unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
     unsigned int worker_started : 1; /* h2_worker started processing for this io */
@@ -77,7 +80,9 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool, const struct h2_request *request);
+h2_io *h2_io_create(int id, apr_pool_t *pool, 
+                    apr_bucket_alloc_t *bucket_alloc, 
+                    const struct h2_request *request);
 
 /**
  * Set the response of this stream.
@@ -93,18 +98,9 @@ int h2_io_is_repeatable(h2_io *io);
 void h2_io_redo(h2_io *io);
 
 /**
- * The input data is completely queued. Blocked reads will return immediately
- * and give either data or EOF.
- */
-int h2_io_in_has_eos_for(h2_io *io);
-/**
  * Output data is available.
  */
 int h2_io_out_has_data(h2_io *io);
-/**
- * Input data is available.
- */
-int h2_io_in_has_data(h2_io *io);
 
 void h2_io_signal(h2_io *io, h2_io_op op);
 void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 
@@ -127,7 +123,7 @@ apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb,
 /**
  * Appends given bucket to the input.
  */
-apr_status_t h2_io_in_write(h2_io *io, apr_bucket_brigade *bb);
+apr_status_t h2_io_in_write(h2_io *io, const char *d, apr_size_t len, int eos);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will

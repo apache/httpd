@@ -41,13 +41,6 @@
 #include "h2_util.h"
 
 
-#define H2_STREAM_IN(lvl,s,msg) \
-    do { \
-        if (APLOG_C_IS_LEVEL((s)->session->c,lvl)) \
-        h2_util_bb_log((s)->session->c,(s)->id,lvl,msg,(s)->bbin); \
-    } while(0)
-    
-
 static int state_transition[][7] = {
     /*  ID OP RL RR CI CO CL */
 /*ID*/{  1, 0, 0, 0, 0, 0, 0 },
@@ -144,19 +137,13 @@ static int output_open(h2_stream *stream)
 
 static h2_sos *h2_sos_mplx_create(h2_stream *stream, h2_response *response);
 
-h2_stream *h2_stream_create(int id, apr_pool_t *pool, h2_session *session)
+h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
 {
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
     stream->id        = id;
     stream->state     = H2_STREAM_ST_IDLE;
     stream->pool      = pool;
     stream->session   = session;
-    return stream;
-}
-
-h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
-{
-    h2_stream *stream = h2_stream_create(id, pool, session);
     set_state(stream, H2_STREAM_ST_OPEN);
     stream->request   = h2_request_create(id, pool, 
         h2_config_geti(session->config, H2_CONF_SER_HEADERS));
@@ -296,8 +283,6 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     if (status == APR_SUCCESS) {
         if (!eos) {
             stream->request->body = 1;
-            stream->bbin = apr_brigade_create(stream->pool, 
-                                              stream->session->c->bucket_alloc);
         }
         stream->input_remaining = stream->request->content_length;
         
@@ -328,33 +313,6 @@ int h2_stream_is_scheduled(const h2_stream *stream)
     return stream->scheduled;
 }
 
-static apr_status_t h2_stream_input_flush(h2_stream *stream)
-{
-    apr_status_t status = APR_SUCCESS;
-    if (stream->bbin && !APR_BRIGADE_EMPTY(stream->bbin)) {
-
-        status = h2_mplx_in_write(stream->session->mplx, stream->id, stream->bbin);
-        if (status != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->mplx->c,
-                          "h2_stream(%ld-%d): flushing input data",
-                          stream->session->id, stream->id);
-        }
-    }
-    return status;
-}
-
-static apr_status_t input_flush(apr_bucket_brigade *bb, void *ctx) 
-{
-    (void)bb;
-    return h2_stream_input_flush(ctx);
-}
-
-static apr_status_t input_add_data(h2_stream *stream,
-                                   const char *data, size_t len)
-{
-    return apr_brigade_write(stream->bbin, input_flush, stream, data, len);
-}
-
 apr_status_t h2_stream_close_input(h2_stream *stream)
 {
     apr_status_t status = APR_SUCCESS;
@@ -368,28 +326,23 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
         return APR_ECONNRESET;
     }
     
-    H2_STREAM_IN(APLOG_TRACE2, stream, "close_pre");
-    if (close_input(stream) && stream->bbin) {
-        status = h2_stream_input_flush(stream);
-        if (status == APR_SUCCESS) {
-            status = h2_mplx_in_close(stream->session->mplx, stream->id);
-        }
+    if (close_input(stream)) {
+        status = h2_mplx_in_close(stream->session->mplx, stream->id);
     }
-    H2_STREAM_IN(APLOG_TRACE2, stream, "close_post");
     return status;
 }
 
 apr_status_t h2_stream_write_data(h2_stream *stream,
-                                  const char *data, size_t len)
+                                  const char *data, size_t len, int eos)
 {
     apr_status_t status = APR_SUCCESS;
     
     AP_DEBUG_ASSERT(stream);
-    if (input_closed(stream) || !stream->request->eoh || !stream->bbin) {
+    if (input_closed(stream) || !stream->request->eoh) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                      "h2_stream(%ld-%d): writing denied, closed=%d, eoh=%d, bbin=%d", 
+                      "h2_stream(%ld-%d): writing denied, closed=%d, eoh=%d", 
                       stream->session->id, stream->id, input_closed(stream),
-                      stream->request->eoh, !!stream->bbin);
+                      stream->request->eoh);
         return APR_EINVAL;
     }
 
@@ -397,7 +350,6 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
                   "h2_stream(%ld-%d): add %ld input bytes", 
                   stream->session->id, stream->id, (long)len);
 
-    H2_STREAM_IN(APLOG_TRACE2, stream, "write_data_pre");
     if (!stream->request->chunked) {
         stream->input_remaining -= len;
         if (stream->input_remaining < 0) {
@@ -413,11 +365,10 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
         }
     }
     
-    status = input_add_data(stream, data, len);
-    if (status == APR_SUCCESS) {
-        status = h2_stream_input_flush(stream);
+    status = h2_mplx_in_write(stream->session->mplx, stream->id, data, len, eos);
+    if (eos) {
+        close_input(stream);
     }
-    H2_STREAM_IN(APLOG_TRACE2, stream, "write_data_post");
     return status;
 }
 

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.19
 
+  *) mod_http2: fixes problem with wrong lifetime of file buckets on main
+     connection. [Stefan Eissing]
+     
   *) mod_http2: fixes incorrect denial of requests without :authority header.
      [Stefan Eissing]
      

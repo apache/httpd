@@ -44,7 +44,6 @@ struct h2_task_output {
 
     apr_off_t written;
     apr_bucket_brigade *bb;
-    apr_bucket_brigade *frozen_bb;
 };
 
 h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);
@@ -52,8 +51,6 @@ h2_task_output *h2_task_output_create(struct h2_task *task, conn_rec *c);
 apr_status_t h2_task_output_write(h2_task_output *output,
                                   ap_filter_t* filter,
                                   apr_bucket_brigade* brigade);
-
-void h2_task_output_close(h2_task_output *output);
 
 apr_status_t h2_task_output_freeze(h2_task_output *output);
 apr_status_t h2_task_output_thaw(h2_task_output *output);

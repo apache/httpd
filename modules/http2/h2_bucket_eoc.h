@@ -21,6 +21,7 @@ struct h2_session;
 /** End Of HTTP/2 SESSION (H2EOC) bucket */
 extern const apr_bucket_type_t h2_bucket_type_eoc;
 
+#define H2_BUCKET_IS_H2EOC(e)     (e->type == &h2_bucket_type_eoc)
 
 apr_bucket * h2_bucket_eoc_make(apr_bucket *b, 
                                 struct h2_session *session);
