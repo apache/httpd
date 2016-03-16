@@ -196,7 +196,6 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
  * @param bb the brigade to check on
  * @return != 0 iff brigade holds FLUSH or EOS bucket (or both)
  */
-int h2_util_has_flush_or_eos(apr_bucket_brigade *bb);
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
 int h2_util_bb_has_data(apr_bucket_brigade *bb);
 int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb);
@@ -256,5 +255,14 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_pool_t *p,
                                  apr_off_t *plen,
                                  int *peos);
+
+/**
+ * Get an approximnation of the memory footprint of the given
+ * brigade. This varies from apr_brigade_length as
+ * - no buckets are ever read
+ * - only buckets known to allocate memory (HEAP+POOL) are counted
+ * - the bucket struct itself is counted
+ */
+apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb);
 
 #endif /* defined(__mod_h2__h2_util__) */

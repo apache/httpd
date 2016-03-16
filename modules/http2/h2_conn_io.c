@@ -14,16 +14,18 @@
  */
 
 #include <assert.h>
-
+#include <apr_strings.h>
 #include <ap_mpm.h>
 
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
+#include <http_request.h>
 
 #include "h2_private.h"
 #include "h2_bucket_eoc.h"
+#include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_conn_io.h"
 #include "h2_h2.h"
@@ -45,6 +47,84 @@
 #define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
 #define WRITE_BUFFER_SIZE     (5*WRITE_SIZE_MAX)
 
+
+static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level, 
+                              const char *tag, apr_bucket_brigade *bb)
+{
+    char buffer[16 * 1024];
+    const char *line = "(null)";
+    apr_size_t bmax = sizeof(buffer)/sizeof(buffer[0]);
+    int off = 0;
+    apr_bucket *b;
+    
+    if (bb) {
+        memset(buffer, 0, bmax--);
+        for (b = APR_BRIGADE_FIRST(bb); 
+             bmax && (b != APR_BRIGADE_SENTINEL(bb));
+             b = APR_BUCKET_NEXT(b)) {
+            
+            if (APR_BUCKET_IS_METADATA(b)) {
+                if (APR_BUCKET_IS_EOS(b)) {
+                    off += apr_snprintf(buffer+off, bmax-off, "eos ");
+                }
+                else if (APR_BUCKET_IS_FLUSH(b)) {
+                    off += apr_snprintf(buffer+off, bmax-off, "flush ");
+                }
+                else if (AP_BUCKET_IS_EOR(b)) {
+                    off += apr_snprintf(buffer+off, bmax-off, "eor ");
+                }
+                else if (H2_BUCKET_IS_H2EOC(b)) {
+                    off += apr_snprintf(buffer+off, bmax-off, "h2eoc ");
+                }
+                else if (H2_BUCKET_IS_H2EOS(b)) {
+                    off += apr_snprintf(buffer+off, bmax-off, "h2eos ");
+                }
+                else {
+                    off += apr_snprintf(buffer+off, bmax-off, "meta(unknown) ");
+                }
+            }
+            else {
+                const char *btype = "data";
+                if (APR_BUCKET_IS_FILE(b)) {
+                    btype = "file";
+                }
+                else if (APR_BUCKET_IS_PIPE(b)) {
+                    btype = "pipe";
+                }
+                else if (APR_BUCKET_IS_SOCKET(b)) {
+                    btype = "socket";
+                }
+                else if (APR_BUCKET_IS_HEAP(b)) {
+                    btype = "heap";
+                }
+                else if (APR_BUCKET_IS_TRANSIENT(b)) {
+                    btype = "transient";
+                }
+                else if (APR_BUCKET_IS_IMMORTAL(b)) {
+                    btype = "immortal";
+                }
+#if APR_HAS_MMAP
+                else if (APR_BUCKET_IS_MMAP(b)) {
+                    btype = "mmap";
+                }
+#endif
+                else if (APR_BUCKET_IS_POOL(b)) {
+                    btype = "pool";
+                }
+                
+                off += apr_snprintf(buffer+off, bmax-off, "%s[%ld] ", 
+                                    btype, 
+                                    (long)(b->length == ((apr_size_t)-1)? 
+                                           -1 : b->length));
+            }
+        }
+        line = *buffer? buffer : "(empty)";
+    }
+    /* Intentional no APLOGNO */
+    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%ld-%d)-%s: %s", 
+                  c->id, stream_id, tag, line);
+
+}
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
                              const h2_config *cfg, 
@@ -112,16 +192,17 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
     }
     
     ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
-    status = apr_brigade_length(bb, 0, &bblen);
-    if (status == APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03044)
+    apr_brigade_length(bb, 0, &bblen);
+    h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", bb);
+    status = ap_pass_brigade(c->output_filters, bb);
+    if (status == APR_SUCCESS && pctx->io) {
+        pctx->io->bytes_written += (apr_size_t)bblen;
+        pctx->io->last_write = apr_time_now();
+    }
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03044)
                       "h2_conn_io(%ld): pass_out brigade %ld bytes",
                       c->id, (long)bblen);
-        status = ap_pass_brigade(c->output_filters, bb);
-        if (status == APR_SUCCESS && pctx->io) {
-            pctx->io->bytes_written += (apr_size_t)bblen;
-            pctx->io->last_write = apr_time_now();
-        }
     }
     apr_brigade_cleanup(bb);
     return status;
@@ -179,9 +260,10 @@ apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
     return APR_SUCCESS;
 }
 
-static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
+static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int flush, int eoc)
 {
     pass_out_ctx ctx;
+    apr_bucket *b;
     
     if (io->buflen == 0 && APR_BRIGADE_EMPTY(io->output)) {
         return APR_SUCCESS;
@@ -195,13 +277,12 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int force, int eoc)
         bucketeer_buffer(io);
     }
     
-    if (force) {
-        apr_bucket *b = apr_bucket_flush_create(io->c->bucket_alloc);
+    if (flush) {
+        b = apr_bucket_flush_create(io->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c, "h2_conn_io: flush");
-    /* Send it out */
     io->buflen = 0;
     ctx.c = io->c;
     ctx.io = eoc? NULL : io;
@@ -221,11 +302,11 @@ apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
     apr_off_t len = 0;
     
     if (!APR_BRIGADE_EMPTY(io->output)) {
-        apr_brigade_length(io->output, 0, &len);
+        len = h2_brigade_mem_size(io->output);
     }
     len += io->buflen;
     if (len >= WRITE_BUFFER_SIZE) {
-        return h2_conn_io_flush_int(io, 0, 0);
+        return h2_conn_io_flush_int(io, 1, 0);
     }
     return APR_SUCCESS;
 }
@@ -256,7 +337,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
         while (length > 0 && (status == APR_SUCCESS)) {
             apr_size_t avail = io->bufsize - io->buflen;
             if (avail <= 0) {
-                h2_conn_io_flush_int(io, 0, 0);
+                status = h2_conn_io_flush_int(io, 0, 0);
             }
             else if (length > avail) {
                 memcpy(io->buffer + io->buflen, buf, avail);

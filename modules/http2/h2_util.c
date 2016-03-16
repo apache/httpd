@@ -14,7 +14,6 @@
  */
 
 #include <assert.h>
-
 #include <apr_strings.h>
 
 #include <httpd.h>
@@ -636,20 +635,6 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
     return status;
 }
 
-int h2_util_has_flush_or_eos(apr_bucket_brigade *bb)
-{
-    apr_bucket *b;
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b))
-    {
-        if (APR_BUCKET_IS_EOS(b) || APR_BUCKET_IS_FLUSH(b)) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
 {
     apr_bucket *b, *end;
@@ -949,6 +934,27 @@ apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
     *plen = len;
     return APR_SUCCESS;
 }
+
+apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb)
+{
+    apr_bucket *b;
+    apr_off_t total = 0;
+
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b))
+    {
+        total += sizeof(*b);
+        if (b->length > 0) {
+            if (APR_BUCKET_IS_HEAP(b)
+                || APR_BUCKET_IS_POOL(b)) {
+                total += b->length;
+            }
+        }
+    }
+    return total;
+}
+
 
 /*******************************************************************************
  * h2_ngheader

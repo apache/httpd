@@ -158,8 +158,7 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     }
     
     /* Attempt to write saved brigade first */
-    if (status == APR_SUCCESS && output->bb 
-        && !APR_BRIGADE_EMPTY(output->bb)) {
+    if (status == APR_SUCCESS && output->bb && !APR_BRIGADE_EMPTY(output->bb)) {
         status = write_brigade_raw(output, f, output->bb);
     }
     

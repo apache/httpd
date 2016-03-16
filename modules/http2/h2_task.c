@@ -291,7 +291,7 @@ static int h2_task_process_conn(conn_rec* c)
     return DECLINED;
 }
 
-apr_status_t h2_task_freeze(h2_task *task, request_rec *r)
+apr_status_t h2_task_freeze(h2_task *task)
 {   
     if (!task->frozen) {
         task->frozen = 1;

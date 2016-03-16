@@ -103,6 +103,9 @@ apr_status_t h2_proxy_session_process(h2_proxy_session *s);
 
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 
+void h2_proxy_session_update_window(h2_proxy_session *s, 
+                                    conn_rec *c, apr_off_t bytes);
+
 #define H2_PROXY_REQ_URL_NOTE   "h2-proxy-req-url"
 
 #endif /* h2_proxy_session_h */

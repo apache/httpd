@@ -21,6 +21,7 @@ struct h2_stream;
 /** End Of HTTP/2 STREAM (H2EOS) bucket */
 extern const apr_bucket_type_t h2_bucket_type_eos;
 
+#define H2_BUCKET_IS_H2EOS(e)     (e->type == &h2_bucket_type_eos)
 
 apr_bucket *h2_bucket_eos_make(apr_bucket *b, struct h2_stream *stream);
 

@@ -42,7 +42,7 @@ AP_DECLARE_MODULE(proxy_http2) = {
 /* Optional functions from mod_http2 */
 static int (*is_h2)(conn_rec *c);
 static apr_status_t (*req_engine_push)(const char *name, request_rec *r, 
-                                       h2_req_engine_init *einit);
+                                       http2_req_engine_init *einit);
 static apr_status_t (*req_engine_pull)(h2_req_engine *engine, 
                                        apr_read_type_e block, 
                                        apr_uint32_t capacity, 
@@ -71,7 +71,8 @@ typedef struct h2_proxy_ctx {
     unsigned is_ssl : 1;
     unsigned flushall : 1;
     
-    apr_status_t r_status; /* status of our first request work */
+    apr_status_t r_status;     /* status of our first request work */
+    h2_proxy_session *session; /* current http2 session against backend */
 } h2_proxy_ctx;
 
 static int h2_proxy_post_config(apr_pool_t *p, apr_pool_t *plog,
@@ -196,12 +197,23 @@ static int proxy_http2_canon(request_rec *r, char *url)
     return OK;
 }
 
+static void out_consumed(void *baton, conn_rec *c, apr_off_t bytes)
+{
+    h2_proxy_ctx *ctx = baton;
+    
+    if (ctx->session) {
+        h2_proxy_session_update_window(ctx->session, c, bytes);
+    }
+}
+
 static apr_status_t proxy_engine_init(h2_req_engine *engine, 
                                         const char *id, 
                                         const char *type,
                                         apr_pool_t *pool, 
                                         apr_uint32_t req_buffer_size,
-                                        request_rec *r)
+                                        request_rec *r,
+                                        http2_output_consumed **pconsumed,
+                                        void **pctx)
 {
     h2_proxy_ctx *ctx = ap_get_module_config(r->connection->conn_config, 
                                              &proxy_http2_module);
@@ -212,6 +224,8 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
         ctx->engine_pool = pool;
         ctx->req_buffer_size = req_buffer_size;
         ctx->capacity = 100;
+        *pconsumed = out_consumed;
+        *pctx = ctx;
         return APR_SUCCESS;
     }
     ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, 
@@ -250,7 +264,7 @@ static void request_done(h2_proxy_session *session, request_rec *r,
         if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
             if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
                 /* push to engine */
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, r->connection, 
+                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
                               "h2_proxy_session(%s): rescheduled request %s",
                               ctx->engine_id, task_id);
                 return;
@@ -287,8 +301,8 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
     }
     else if (req_engine_pull && ctx->engine) {
         apr_status_t status;
-        status = req_engine_pull(ctx->engine, 
-                                 before_leave? APR_BLOCK_READ: APR_NONBLOCK_READ, 
+        status = req_engine_pull(ctx->engine, before_leave? 
+                                 APR_BLOCK_READ: APR_NONBLOCK_READ, 
                                  ctx->capacity, &ctx->next);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, ctx->owner, 
                       "h2_proxy_engine(%s): pulled request %s", 
@@ -301,40 +315,39 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
 
 static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     apr_status_t status = OK;
-    h2_proxy_session *session;
     
     /* Step Four: Send the Request in a new HTTP/2 stream and
      * loop until we got the response or encounter errors.
      */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine_id);
-    session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
-                                     30, h2_log2(ctx->req_buffer_size), 
-                                     request_done);
-    if (!session) {
+    ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
+                                          30, h2_log2(ctx->req_buffer_size), 
+                                          request_done);
+    if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
                       "session unavailable");
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
-                  "eng(%s): run session %s", ctx->engine_id, session->id);
-    session->user_data = ctx;
+                  "eng(%s): run session %s", ctx->engine_id, ctx->session->id);
+    ctx->session->user_data = ctx;
     
     while (1) {
         if (ctx->next) {
-            add_request(session, ctx->next);
+            add_request(ctx->session, ctx->next);
             ctx->next = NULL;
         }
         
-        status = h2_proxy_session_process(session);
+        status = h2_proxy_session_process(ctx->session);
         
         if (status == APR_SUCCESS) {
             apr_status_t s2;
             /* ongoing processing, call again */
-            if (session->remote_max_concurrent > 0
-                && session->remote_max_concurrent != ctx->capacity) {
-                ctx->capacity = session->remote_max_concurrent;
+            if (ctx->session->remote_max_concurrent > 0
+                && ctx->session->remote_max_concurrent != ctx->capacity) {
+                ctx->capacity = ctx->session->remote_max_concurrent;
             }
             s2 = next_request(ctx, 0);
             if (s2 == APR_ECONNABORTED) {
@@ -344,7 +357,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = s2;
                 break;
             }
-            if (!ctx->next && h2_ihash_is_empty(session->streams)) {
+            if (!ctx->next && h2_ihash_is_empty(ctx->session->streams)) {
                 break;
             }
         }
@@ -357,12 +370,13 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
              * a) be reopened on the new session iff safe to do so
              * b) reported as done (failed) otherwise
              */
-            h2_proxy_session_cleanup(session, request_done);
+            h2_proxy_session_cleanup(ctx->session, request_done);
             break;
         }
     }
     
-    session->user_data = NULL;
+    ctx->session->user_data = NULL;
+    ctx->session = NULL;
     
     return status;
 }
@@ -556,6 +570,8 @@ run_session:
         /* session and connection still ok */
         if (next_request(ctx, 1) == APR_SUCCESS) {
             /* more requests, run again */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
+                          "run_session, again");
             goto run_session;
         }
         /* done */

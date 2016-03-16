@@ -36,6 +36,8 @@ struct apr_thread_cond_t;
 
 typedef struct h2_req_engine h2_req_engine;
 
+typedef void http2_output_consumed(void *ctx, conn_rec *c, apr_off_t consumed);
+
 /**
  * Initialize a h2_req_engine. The structure will be passed in but
  * only the name and master are set. The function should initialize
@@ -43,12 +45,14 @@ typedef struct h2_req_engine h2_req_engine;
  * @param engine the allocated, partially filled structure
  * @param r      the first request to process, or NULL
  */
-typedef apr_status_t h2_req_engine_init(h2_req_engine *engine, 
-                                        const char *id, 
-                                        const char *type,
-                                        apr_pool_t *pool, 
-                                        apr_uint32_t req_buffer_size,
-                                        request_rec *r);
+typedef apr_status_t http2_req_engine_init(h2_req_engine *engine, 
+                                           const char *id, 
+                                           const char *type,
+                                           apr_pool_t *pool, 
+                                           apr_uint32_t req_buffer_size,
+                                           request_rec *r,
+                                           http2_output_consumed **pconsumed,
+                                           void **pbaton);
 
 /**
  * Push a request to an engine with the specified name for further processing.
@@ -66,7 +70,7 @@ typedef apr_status_t h2_req_engine_init(h2_req_engine *engine,
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_push, (const char *engine_type, 
                                                 request_rec *r,
-                                                h2_req_engine_init *einit));
+                                                http2_req_engine_init *einit));
 
 /**
  * Get a new request for processing in this engine.
