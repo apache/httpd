@@ -20,7 +20,7 @@
 module AP_MODULE_DECLARE_DATA proxy_wstunnel_module;
 
 typedef struct {
-    int mpm_can_poll;
+    signed char is_async;
     apr_time_t idle_timeout;
     apr_time_t async_delay;
 } proxyws_dir_conf;
@@ -39,7 +39,7 @@ typedef struct ws_baton_t {
 
 static void proxy_wstunnel_callback(void *b);
 
-static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_poll) {
+static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_async) {
     request_rec *r = baton->r;
     conn_rec *c = r->connection;
     proxy_conn_rec *conn = baton->proxy_connrec;
@@ -62,7 +62,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                 continue;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) { 
-                if (try_poll) {
+                if (try_async) { 
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02542) "Attempting to go async");
                     return SUSPENDED;
                 }
@@ -182,28 +182,15 @@ static void proxy_wstunnel_cancel_callback(void *b)
  */
 static void proxy_wstunnel_callback(void *b) { 
     int status;
+    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     ws_baton_t *baton = (ws_baton_t*)b;
     proxyws_dir_conf *dconf = ap_get_module_config(baton->r->per_dir_config, &proxy_wstunnel_module);
     apr_pool_clear(baton->subpool);
-    status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->mpm_can_poll);
+    status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async);
     if (status == SUSPENDED) {
-        apr_pollfd_t *pfd;
-
-        apr_array_header_t *pfds = apr_array_make(baton->subpool, 2, sizeof(apr_pollfd_t));
-
-        pfd = apr_array_push(pfds);
-        pfd->desc_type = APR_POLL_SOCKET;
-        pfd->reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
-        pfd->desc.s = baton->client_soc;
-        pfd->p = baton->subpool;
-
-        pfd = apr_array_push(pfds);
-        pfd->desc_type = APR_POLL_SOCKET;
-        pfd->reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
-        pfd->desc.s = baton->server_soc;
-        pfd->p = baton->subpool;
-
-        ap_mpm_register_poll_callback_timeout(pfds,
+        sockets[0] = baton->client_soc;
+        sockets[1] = baton->server_soc;
+        ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
             proxy_wstunnel_callback, 
             proxy_wstunnel_cancel_callback, 
             baton, 
@@ -311,6 +298,7 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_socket_t *client_socket = ap_get_conn_socket(c);
     ws_baton_t *baton = apr_pcalloc(r->pool, sizeof(ws_baton_t));
+    apr_socket_t *sockets[3] = {NULL, NULL, NULL};
     int status;
     proxyws_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &proxy_wstunnel_module);
 
@@ -382,30 +370,16 @@ static int proxy_wstunnel_request(apr_pool_t *p, request_rec *r,
     baton->scheme = scheme;
     apr_pool_create(&baton->subpool, r->pool);
 
-    if (!dconf->mpm_can_poll) {
-        status = proxy_wstunnel_pump(baton, dconf->idle_timeout, dconf->mpm_can_poll);
+    if (!dconf->is_async) { 
+        status = proxy_wstunnel_pump(baton, dconf->idle_timeout, dconf->is_async);
     }  
     else { 
-        status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->mpm_can_poll);
+        status = proxy_wstunnel_pump(baton, dconf->async_delay, dconf->is_async); 
         apr_pool_clear(baton->subpool);
         if (status == SUSPENDED) {
-            apr_pollfd_t *pfd;
-
-            apr_array_header_t *pfds = apr_array_make(baton->subpool, 2, sizeof(apr_pollfd_t));
-
-            pfd = apr_array_push(pfds);
-            pfd->desc_type = APR_POLL_SOCKET;
-            pfd->reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
-            pfd->desc.s = baton->client_soc;
-            pfd->p = baton->subpool;
-
-            pfd = apr_array_push(pfds);
-            pfd->desc_type = APR_POLL_SOCKET;
-            pfd->reqevents = APR_POLLIN | APR_POLLERR | APR_POLLHUP;
-            pfd->desc.s = baton->server_soc;
-            pfd->p = baton->subpool;
-
-            rv = ap_mpm_register_poll_callback_timeout(pfds,
+            sockets[0] = baton->client_soc;
+            sockets[1] = baton->server_soc;
+            rv = ap_mpm_register_socket_callback_timeout(sockets, baton->subpool, 1, 
                          proxy_wstunnel_callback, 
                          proxy_wstunnel_cancel_callback, 
                          baton, 
@@ -530,8 +504,6 @@ static void *create_proxyws_dir_config(apr_pool_t *p, char *dummy)
 
     new->idle_timeout = -1; /* no timeout */
 
-    ap_mpm_query(AP_MPMQ_CAN_POLL, &new->mpm_can_poll);
-
     return (void *) new;
 }
 
@@ -552,11 +524,15 @@ static const char * proxyws_set_aysnch_delay(cmd_parms *cmd, void *conf, const c
 
 static const command_rec ws_proxy_cmds[] =
 {
+    AP_INIT_FLAG("ProxyWebsocketAsync", ap_set_flag_slot_char, (void*)APR_OFFSETOF(proxyws_dir_conf, is_async), 
+                 RSRC_CONF|ACCESS_CONF,
+                 "on if idle websockets connections should be monitored asyncronously"),
+
     AP_INIT_TAKE1("ProxyWebsocketIdleTimeout", proxyws_set_idle, NULL, RSRC_CONF|ACCESS_CONF,
                  "timeout for activity in either direction, unlimited by default"),
 
     AP_INIT_TAKE1("ProxyWebsocketAsyncDelay", proxyws_set_aysnch_delay, NULL, RSRC_CONF|ACCESS_CONF,
-                 "amount of time to poll before going asynchronous"),
+                 "amount of time to poll before going asyncronous"),
     {NULL}
 };
 
