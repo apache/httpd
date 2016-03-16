@@ -5,9 +5,6 @@ Changes with Apache 2.5.0
      observing data actually send out on the frontend h2 connection. 
      [Stefan Eissing]
      
-  *) mod_http2: fixes problem with wrong lifetime of file buckets on main
-     connection. [Stefan Eissing]
-     
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
