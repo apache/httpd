@@ -180,8 +180,6 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_HAS_SERF             16
 /** MPM supports suspending/resuming connections */
 #define AP_MPMQ_CAN_SUSPEND          17
-/** MPM supports additional pollfds */
-#define AP_MPMQ_CAN_POLL             18
 /** @} */
 
 /**
@@ -204,56 +202,55 @@ typedef void (ap_mpm_callback_fn_t)(void *baton);
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
 AP_DECLARE(apr_status_t) ap_mpm_resume_suspended(conn_rec *c);
 /* only added support in the Event MPM....  check for APR_ENOTIMPL */
-AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
-        apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton);
+AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
+                                                       ap_mpm_callback_fn_t *cbfn,
+                                                       void *baton);
 
 /**
- * Register a callback on the readability or writability on a group of
- * sockets/pipes.
- * @param pfds Array of apr_pollfd_t
+ * Register a callback on the readability or writability on a group of sockets
+ * @param s Null-terminated list of sockets
  * @param p pool for use between registration and callback
+ * @param for_read Whether the sockets are monitored for read or writability
  * @param cbfn The callback function
  * @param baton userdata for the callback function
- * @return APR_SUCCESS if all sockets/pipes could be added to a pollset,
+ * @return APR_SUCCESS if all sockets could be added to a pollset, 
  * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
- * @remark When activity is found on any 1 socket/pipe in the list, all are removed
+ * @remark When activity is found on any 1 socket in the list, all are removed 
  * from the pollset and only 1 callback is issued.
  */
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pds,
-        ap_mpm_callback_fn_t *cbfn, void *baton);
-
-/**
- * Register a callback on the readability or writability on a group of sockets/pipes,
- * with a timeout.
- * @param pfds Array of apr_pollfd_t
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback(apr_socket_t **s,
+                                                         apr_pool_t *p,
+                                                         int for_read, 
+                                                         ap_mpm_callback_fn_t *cbfn,
+                                                         void *baton);
+ /**
+ * Register a callback on the readability or writability on a group of sockets, with a timeout
+ * @param s Null-terminated list of sockets
  * @param p pool for use between registration and callback
+ * @param for_read Whether the sockets are monitored for read or writability
  * @param cbfn The callback function
  * @param tofn The callback function if the timeout expires
  * @param baton userdata for the callback function
  * @param timeout timeout for I/O in microseconds, unlimited if <= 0
- * @return APR_SUCCESS if all sockets/pipes could be added to a pollset,
+ * @return APR_SUCCESS if all sockets could be added to a pollset, 
  * APR_ENOTIMPL if no asynch support, or an apr_pollset_add error.
- * @remark When activity is found on any 1 socket/pipe in the list, all are removed
+ * @remark When activity is found on any 1 socket in the list, all are removed 
  * from the pollset and only 1 callback is issued. 
  * @remark For each call, only one of tofn or cbfn will be called, never both.
  */
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_array_header_t *pfds, ap_mpm_callback_fn_t *cbfn,
-        ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout);
+AP_DECLARE(apr_status_t) ap_mpm_register_socket_callback_timeout(apr_socket_t **s,
+                                                         apr_pool_t *p,
+                                                         int for_read, 
+                                                         ap_mpm_callback_fn_t *cbfn,
+                                                         ap_mpm_callback_fn_t *tofn,
+                                                         void *baton,
+                                                         apr_time_t timeout);
 
 
-/**
-* Unregister a previously registered callback.
-* @param pfds Array of apr_pollfd_t
-* @param p pool for use between registration and callback
-* @return APR_SUCCESS if all sockets/pipes could be removed from the pollset,
-* APR_ENOTIMPL if no asynch support, or an apr_pollset_remove error.
-* @remark This function triggers the cleanup registered on the pool p during
-* callback registration.
-*/
-AP_DECLARE(apr_status_t) ap_mpm_unregister_poll_callback(apr_array_header_t *pfds);
+AP_DECLARE(apr_status_t) ap_mpm_unregister_socket_callback(apr_socket_t **s, 
+                                                           apr_pool_t *p);
 
 typedef enum mpm_child_status {
     MPM_CHILD_STARTED,
