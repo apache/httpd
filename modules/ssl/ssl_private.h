@@ -336,14 +336,15 @@ typedef enum {
     || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
 
 /**
-  * CRL checking modes
+  * CRL checking mask (mode | flags)
   */
-#define MODSSL_CCF_NO_CRL_FOR_CERT_OK (1 << 0)
 typedef enum {
-    SSL_CRLCHECK_UNSET = UNSET,
-    SSL_CRLCHECK_NONE  = 0,
-    SSL_CRLCHECK_LEAF  = 1,
-    SSL_CRLCHECK_CHAIN = 2
+    SSL_CRLCHECK_NONE  = (0),
+    SSL_CRLCHECK_LEAF  = (1 << 0),
+    SSL_CRLCHECK_CHAIN = (1 << 1),
+
+#define SSL_CRLCHECK_FLAGS (~0x3)
+    SSL_CRLCHECK_NO_CRL_FOR_CERT_OK = (1 << 2)
 } ssl_crlcheck_t;
 
 /**
@@ -601,8 +602,7 @@ typedef struct {
     /** certificate revocation list */
     const char    *crl_path;
     const char    *crl_file;
-    ssl_crlcheck_t crl_check_mode;
-    int            crl_check_flags;
+    int            crl_check_mask;
 
 #ifdef HAVE_OCSP_STAPLING
     /** OCSP stapling options */

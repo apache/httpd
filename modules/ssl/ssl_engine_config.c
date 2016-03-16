@@ -121,8 +121,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 
     mctx->crl_path            = NULL;
     mctx->crl_file            = NULL;
-    mctx->crl_check_mode      = SSL_CRLCHECK_UNSET;
-    mctx->crl_check_flags     = UNSET;
+    mctx->crl_check_mask      = UNSET;
 
     mctx->auth.ca_cert_path   = NULL;
     mctx->auth.ca_cert_file   = NULL;
@@ -272,8 +271,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
 
     cfgMerge(crl_path, NULL);
     cfgMerge(crl_file, NULL);
-    cfgMerge(crl_check_mode, SSL_CRLCHECK_UNSET);
-    cfgMergeInt(crl_check_flags);
+    cfgMergeInt(crl_check_mask);
 
     cfgMergeString(auth.ca_cert_path);
     cfgMergeString(auth.ca_cert_file);
@@ -975,21 +973,36 @@ const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd,
 
 static const char *ssl_cmd_crlcheck_parse(cmd_parms *parms,
                                           const char *arg,
-                                          ssl_crlcheck_t *mode)
+                                          int *mask)
 {
-    if (strcEQ(arg, "none")) {
-        *mode = SSL_CRLCHECK_NONE;
+    const char *w;
+
+    w = ap_getword_conf(parms->temp_pool, &arg);
+    if (strcEQ(w, "none")) {
+        *mask = SSL_CRLCHECK_NONE;
     }
-    else if (strcEQ(arg, "leaf")) {
-        *mode = SSL_CRLCHECK_LEAF;
+    else if (strcEQ(w, "leaf")) {
+        *mask = SSL_CRLCHECK_LEAF;
     }
-    else if (strcEQ(arg, "chain")) {
-        *mode = SSL_CRLCHECK_CHAIN;
+    else if (strcEQ(w, "chain")) {
+        *mask = SSL_CRLCHECK_CHAIN;
     }
     else {
         return apr_pstrcat(parms->temp_pool, parms->cmd->name,
-                           ": Invalid argument '", arg, "'",
+                           ": Invalid argument '", w, "'",
                            NULL);
+    }
+
+    while (*arg) {
+        w = ap_getword_conf(parms->temp_pool, &arg);
+        if (strcEQ(w, "no_crl_for_cert_ok")) {
+            *mask |= SSL_CRLCHECK_NO_CRL_FOR_CERT_OK;
+        }
+        else {
+            return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                               ": Invalid argument '", w, "'",
+                               NULL);
+        }
     }
 
     return NULL;
@@ -1000,29 +1013,8 @@ const char *ssl_cmd_SSLCARevocationCheck(cmd_parms *cmd,
                                          const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err, *w;
 
-    w = ap_getword_conf(cmd->temp_pool, &arg);
-    err = ssl_cmd_crlcheck_parse(cmd, w, &sc->server->crl_check_mode);
-    if (err || sc->server->crl_check_mode == SSL_CRLCHECK_NONE) {
-        return err;
-    }
-
-    if (sc->server->crl_check_flags == UNSET) {
-        sc->server->crl_check_flags = 0;
-    }
-    while (*arg) {
-        w = ap_getword_conf(cmd->temp_pool, &arg);
-        if (strcEQ(w, "no_crl_for_cert_ok")) {
-            sc->server->crl_check_flags |= MODSSL_CCF_NO_CRL_FOR_CERT_OK;
-        }
-        else {
-            return apr_pstrcat(cmd->temp_pool, cmd->cmd->name,
-                               ": Invalid flag '", w, "'",
-                               NULL);
-        }
-    }
-    return NULL;
+    return ssl_cmd_crlcheck_parse(cmd, arg, &sc->server->crl_check_mask);
 }
 
 static const char *ssl_cmd_verify_parse(cmd_parms *parms,
@@ -1535,29 +1527,8 @@ const char *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *cmd,
                                               const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *err, *w;
 
-    w = ap_getword_conf(cmd->temp_pool, &arg);
-    err = ssl_cmd_crlcheck_parse(cmd, w, &sc->proxy->crl_check_mode);
-    if (err || sc->proxy->crl_check_mode == SSL_CRLCHECK_NONE) {
-        return err;
-    }
-
-    if (sc->proxy->crl_check_flags == UNSET) {
-        sc->proxy->crl_check_flags = 0;
-    }
-    while (*arg) {
-        w = ap_getword_conf(cmd->temp_pool, &arg);
-        if (strcEQ(w, "no_crl_for_cert_ok")) {
-            sc->proxy->crl_check_flags |= MODSSL_CCF_NO_CRL_FOR_CERT_OK;
-        }
-        else {
-            return apr_pstrcat(cmd->temp_pool, cmd->cmd->name,
-                               ": Invalid flag '", w, "'",
-                               NULL);
-        }
-    }
-    return NULL;
+    return ssl_cmd_crlcheck_parse(cmd, arg, &sc->proxy->crl_check_mask);
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
