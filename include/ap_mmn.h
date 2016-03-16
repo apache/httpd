@@ -510,12 +510,19 @@
  * 20160312.0 (2.5.0-dev)  Rename complete_connection to output_pending,
  *                         add ap_filter_input_pending(),
  *                         ap_filter_prepare_brigade(), ap_filter_direction_e
+ * 20160315.0 (2.5.0-dev)  Rename ap_mpm_register_socket_callback,
+ *                         ap_mpm_register_socket_callback_timeout and
+ *                         ap_mpm_unregister_socket_callback to
+ *                         ap_mpm_register_poll_callback,
+ *                         ap_mpm_register_poll_callback_timeout and
+ *                         ap_mpm_unregister_poll_callback. Add
+ *                         AP_MPMQ_CAN_POLL.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20160312
+#define MODULE_MAGIC_NUMBER_MAJOR 20160315
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                 /* 0...n */
 

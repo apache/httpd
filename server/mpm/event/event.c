@@ -337,12 +337,11 @@ typedef struct
 
 typedef struct
 {
- ap_mpm_callback_fn_t *cbfunc;
- void *user_baton; 
- apr_pollfd_t **pfds;
- int nsock;
- timer_event_t *cancel_event;    /* If a timeout was requested, a pointer to the timer event */
- unsigned int signaled:1;
+    ap_mpm_callback_fn_t *cbfunc;
+    void *user_baton;
+    apr_array_header_t *pfds;
+    timer_event_t *cancel_event; /* If a timeout was requested, a pointer to the timer event */
+    unsigned int signaled :1;
 } socket_callback_baton_t;
 
 /* data retained by event across load/unload of the module
@@ -589,6 +588,9 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
         *result = retained->my_generation;
         break;
     case AP_MPMQ_CAN_SUSPEND:
+        *result = 1;
+        break;
+    case AP_MPMQ_CAN_POLL:
         *result = 1;
         break;
     default:
@@ -1480,7 +1482,7 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
                                              ap_mpm_callback_fn_t *cbfn,
                                              void *baton,
                                              int insert, 
-                                             apr_pollfd_t **remove)
+                                             apr_array_header_t *remove)
 {
     timer_event_t *te;
     /* oh yeah, and make locking smarter/fine grained. */
@@ -1514,7 +1516,7 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
 static apr_status_t event_register_timed_callback_ex(apr_time_t t,
                                                   ap_mpm_callback_fn_t *cbfn,
                                                   void *baton, 
-                                                  apr_pollfd_t **remove)
+                                                  apr_array_header_t *remove)
 {
     event_get_timer_event(t + apr_time_now(), cbfn, baton, 1, remove);
     return APR_SUCCESS;
@@ -1528,95 +1530,79 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
     return APR_SUCCESS;
 }
 
-static apr_status_t event_register_socket_callback_ex(apr_socket_t **s, 
-                                                  apr_pool_t *p, 
-                                                  int for_read,
+static apr_status_t event_cleanup_poll_callback(void *data)
+{
+    apr_status_t final_rc = APR_SUCCESS;
+    apr_array_header_t *pfds = data;
+    int i;
+
+    for (i = 0; i < pfds->nelts; i++) {
+        apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
+        if (pfd->client_data) {
+            apr_status_t rc;
+            rc = apr_pollset_remove(event_pollset, pfd);
+            if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
+                final_rc = rc;
+            }
+        }
+    }
+
+    return final_rc;
+}
+
+static apr_status_t event_register_poll_callback_ex(apr_array_header_t *pfds,
                                                   ap_mpm_callback_fn_t *cbfn,
                                                   ap_mpm_callback_fn_t *tofn,
-                                                  void *baton, 
+                                                  void *baton,
                                                   apr_time_t timeout)
 {
+    socket_callback_baton_t *scb = apr_pcalloc(pfds->pool, sizeof(*scb));
+    listener_poll_type *pt = apr_palloc(pfds->pool, sizeof(*pt));
     apr_status_t rc, final_rc= APR_SUCCESS;
-    int i = 0, nsock;
-    socket_callback_baton_t *scb = apr_pcalloc(p, sizeof(*scb));
-    listener_poll_type *pt = apr_palloc(p, sizeof(*pt));
-    apr_pollfd_t **pfds = NULL;
-
-    while(s[i] != NULL) { 
-        i++; 
-    }
-    nsock = i;
-
-    pfds = apr_pcalloc(p, (nsock+1) * sizeof(apr_pollfd_t*));
+    int i;
 
     pt->type = PT_USER;
     pt->baton = scb;
 
     scb->cbfunc = cbfn;
     scb->user_baton = baton;
-    scb->nsock = nsock;
     scb->pfds = pfds;
 
-    for (i = 0; i<nsock; i++) { 
-        pfds[i] = apr_pcalloc(p, sizeof(apr_pollfd_t));
-        pfds[i]->desc_type = APR_POLL_SOCKET;
-        pfds[i]->reqevents = (for_read ? APR_POLLIN : APR_POLLOUT) | APR_POLLERR | APR_POLLHUP;
-        pfds[i]->desc.s = s[i];
-        pfds[i]->p = p;
-        pfds[i]->client_data = pt;
+    apr_pool_pre_cleanup_register(pfds->pool, pfds, event_cleanup_poll_callback);
+
+    for (i = 0; i < pfds->nelts; i++) {
+        apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
+        pfd->reqevents = (pfd->reqevents) | APR_POLLERR | APR_POLLHUP;
+        pfd->client_data = pt;
     }
 
     if (timeout > 0) { 
         /* XXX:  This cancel timer event count fire before the pollset is updated */
         scb->cancel_event = event_get_timer_event(timeout + apr_time_now(), tofn, baton, 1, pfds);
     }
-    for (i = 0; i<nsock; i++) { 
-        rc = apr_pollset_add(event_pollset, pfds[i]);
+    for (i = 0; i < pfds->nelts; i++) {
+        apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
+        rc = apr_pollset_add(event_pollset, pfd);
         if (rc != APR_SUCCESS) {
             final_rc = rc;
         }
     }
     return final_rc;
 }
-static apr_status_t event_register_socket_callback(apr_socket_t **s, 
-                                                  apr_pool_t *p, 
-                                                  int for_read,
-                                                  ap_mpm_callback_fn_t *cbfn,
-                                                  void *baton)
+
+static apr_status_t event_register_poll_callback(apr_array_header_t *pfds,
+                                                 ap_mpm_callback_fn_t *cbfn,
+                                                 void *baton)
 {
-    return event_register_socket_callback_ex(s, p, for_read, 
-                                             cbfn, 
-                                             NULL, /* no timeout function */
-                                             baton, 
-                                             0     /* no timeout */);
+    return event_register_poll_callback_ex(pfds,
+                                           cbfn,
+                                           NULL, /* no timeout function */
+                                           baton,
+                                           0     /* no timeout */);
 }
-static apr_status_t event_unregister_socket_callback(apr_socket_t **s, apr_pool_t *p)
+static apr_status_t event_unregister_poll_callback(apr_array_header_t *pfds)
 {
-    int i = 0, nsock;
-    apr_status_t final_rc = APR_SUCCESS;
-    apr_pollfd_t **pfds = NULL;
-
-    while(s[i] != NULL) { 
-        i++; 
-    }
-    nsock = i;
- 
-    pfds = apr_palloc(p, nsock * sizeof(apr_pollfd_t*));
-
-    for (i = 0; i<nsock; i++) { 
-        apr_status_t rc;
-        pfds[i] = apr_pcalloc(p, sizeof(apr_pollfd_t));
-        pfds[i]->desc_type = APR_POLL_SOCKET;
-        pfds[i]->reqevents = APR_POLLERR | APR_POLLHUP;
-        pfds[i]->desc.s = s[i];
-        pfds[i]->client_data = NULL;
-        rc = apr_pollset_remove(event_pollset, pfds[i]);
-        if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
-            final_rc = rc;
-        }
-    }
-
-    return final_rc;
+    return apr_pool_cleanup_run(pfds->pool, pfds, event_cleanup_poll_callback);
 }
 
 /*
@@ -1828,10 +1814,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             if (te->when < now + EVENT_FUDGE_FACTOR) {
                 apr_skiplist_pop(timer_skiplist, NULL);
                 if (!te->canceled) { 
-                    if (te->remove != NULL) {
-                        apr_pollfd_t **pfds;
-                        for (pfds = (te->remove); *pfds != NULL; pfds++) { 
-                            apr_pollset_remove(event_pollset, *pfds);
+                    if (te->remove) {
+                        int i;
+                        for (i = 0; i < te->remove->nelts; i++) {
+                            apr_pollfd_t *pfd = (apr_pollfd_t *)te->remove->elts + i;
+                            apr_pollset_remove(event_pollset, pfd);
                         }
                     }
                     push_timer2worker(te);
@@ -2056,8 +2043,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                                0, /* don't insert it */
                                                NULL /* no associated socket callback */);
                     /* remove all sockets in my set */
-                    for (i = 0; i < baton->nsock; i++) { 
-                        apr_pollset_remove(event_pollset, baton->pfds[i]); 
+                    for (i = 0; i < baton->pfds->nelts; i++) {
+                        apr_pollfd_t *pfd = (apr_pollfd_t *)baton->pfds->elts + i;
+                        apr_pollset_remove(event_pollset, pfd);
+                        pfd->client_data = NULL;
                     }
 
                     push_timer2worker(te);
@@ -3789,11 +3778,11 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_mpm_query(event_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
-    ap_hook_mpm_register_socket_callback(event_register_socket_callback, NULL, NULL,
+    ap_hook_mpm_register_poll_callback(event_register_poll_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
-    ap_hook_mpm_register_socket_callback_timeout(event_register_socket_callback_ex, NULL, NULL,
+    ap_hook_mpm_register_poll_callback_timeout(event_register_poll_callback_ex, NULL, NULL,
                                         APR_HOOK_MIDDLE);
-    ap_hook_mpm_unregister_socket_callback(event_unregister_socket_callback, NULL, NULL,
+    ap_hook_mpm_unregister_poll_callback(event_unregister_poll_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_pre_read_request(event_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(event_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
