@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) ap_expr: expression support for variable HTTP2=on|off
      trunk patch: http://svn.apache.org/r1726167
      2.4.x patch: https://eissing.org/expr_http2_2.4.patch
-     +1: icing
+     +1: icing, ylavic
 
   *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
                   Fix counting of inflated bytes in deflate_in_filter() when
@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Was fixed in 2010 for directory context.
      trunk patch: http://svn.apache.org/r1735088
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, ylavic
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
