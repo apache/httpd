@@ -85,6 +85,7 @@ typedef struct h2_session {
     unsigned int reprioritize  : 1; /* scheduled streams priority changed */
     unsigned int eoc_written   : 1; /* h2 eoc bucket written */
     unsigned int flush         : 1; /* flushing output necessary */
+    unsigned int local_shutdown: 1; /* GOAWAY has been sent by us */
     apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
     
     int unsent_submits;             /* number of submitted, but not yet written responses. */

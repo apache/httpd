@@ -372,7 +372,6 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
                                   stream_id, NGHTTP2_STREAM_CLOSED);
         return NGHTTP2_ERR_STREAM_CLOSING;
     }
-    nghttp2_session_consume(ngh2, stream_id, len);
     return 0;
 }
 
@@ -1042,6 +1041,7 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
                       "h2_proxy_sesssion(%s): stream(%d) closed", 
                       session->id, stream_id);
+        
         if (!stream->data_received) {
             apr_bucket *b;
             /* if the response had no body, this is the time to flush
@@ -1286,7 +1286,8 @@ static int done_iter(void *udata, void *val)
 {
     cleanup_iter_ctx *ctx = udata;
     h2_proxy_stream *stream = val;
-    int touched = (stream->id <= ctx->session->last_stream_id);
+    int touched = (!ctx->session->last_stream_id || 
+                   stream->id <= ctx->session->last_stream_id);
     ctx->done(ctx->session, stream->r, 0, touched);
     return 1;
 }
@@ -1303,6 +1304,52 @@ void h2_proxy_session_cleanup(h2_proxy_session *session,
                       session->id, (int)h2_ihash_count(session->streams));
         h2_ihash_iter(session->streams, done_iter, &ctx);
         h2_ihash_clear(session->streams);
+    }
+}
+
+typedef struct {
+    h2_proxy_session *session;
+    conn_rec *c;
+    apr_off_t bytes;
+    int updated;
+} win_update_ctx;
+
+static int win_update_iter(void *udata, void *val)
+{
+    win_update_ctx *ctx = udata;
+    h2_proxy_stream *stream = val;
+    
+    if (stream->r && stream->r->connection == ctx->c) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, ctx->session->c, 
+                      "h2_proxy_session(%s-%d): win_update %ld bytes",
+                      ctx->session->id, (int)stream->id, (long)ctx->bytes);
+        nghttp2_session_consume(ctx->session->ngh2, stream->id, ctx->bytes);
+        ctx->updated = 1;
+        return 0;
+    }
+    return 1;
+}
+
+
+void h2_proxy_session_update_window(h2_proxy_session *session, 
+                                    conn_rec *c, apr_off_t bytes)
+{
+    if (session->streams && !h2_ihash_is_empty(session->streams)) {
+        win_update_ctx ctx;
+        ctx.session = session;
+        ctx.c = c;
+        ctx.bytes = bytes;
+        ctx.updated = 0;
+        h2_ihash_iter(session->streams, win_update_iter, &ctx);
+        
+        if (!ctx.updated) {
+            /* could not find the stream any more, possibly closed, update
+             * the connection window at least */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
+                          "h2_proxy_session(%s): win_update conn %ld bytes",
+                          session->id, (long)bytes);
+            nghttp2_session_consume_connection(session->ngh2, (size_t)bytes);
+        }
     }
 }
 

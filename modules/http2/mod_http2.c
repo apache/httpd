@@ -130,7 +130,7 @@ static int http2_is_h2(conn_rec *);
 
 static apr_status_t http2_req_engine_push(const char *ngn_type, 
                                           request_rec *r, 
-                                          h2_req_engine_init *einit)
+                                          http2_req_engine_init *einit)
 {
     return h2_mplx_req_engine_push(ngn_type, r, einit);
 }

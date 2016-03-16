@@ -397,8 +397,10 @@ apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb,
     if (!is_out_readable(io, plen, peos, &status)) {
         return status;
     }
-    io->eos_out_read = *peos = h2_util_has_eos(io->bbout, *plen);
     status = h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
+    if (status == APR_SUCCESS && io->eos_out && APR_BRIGADE_EMPTY(io->bbout)) {
+        io->eos_out_read = *peos = 1;
+    }
     io->output_consumed += *plen;
     return status;
 }
@@ -423,21 +425,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         return APR_ECONNABORTED;
     }
 
-    if (!io->eor) {
-        /* Filter the EOR bucket and set it aside. We prefer to tear down
-         * the request when the whole h2 stream is done */
-        for (b = APR_BRIGADE_FIRST(bb);
-             b != APR_BRIGADE_SENTINEL(bb);
-             b = APR_BUCKET_NEXT(b))
-        {
-            if (AP_BUCKET_IS_EOR(b)) {
-                APR_BUCKET_REMOVE(b);
-                io->eor = b;
-                break;
-            }
-        }     
-    }
-    
     if (io->eos_out) {
         apr_off_t len = 0;
         /* We have already delivered an EOS bucket to a reader, no
@@ -448,6 +435,23 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         return (len > 0)? APR_EOF : APR_SUCCESS;
     }
 
+    /* Filter the EOR bucket and set it aside. We prefer to tear down
+     * the request when the whole h2 stream is done */
+    for (b = APR_BRIGADE_FIRST(bb);
+         b != APR_BRIGADE_SENTINEL(bb);
+         b = APR_BUCKET_NEXT(b))
+    {
+        if (AP_BUCKET_IS_EOR(b)) {
+            APR_BUCKET_REMOVE(b);
+            io->eor = b;
+            break;
+        }
+        else if (APR_BUCKET_IS_EOS(b)) {
+            io->eos_out = 1;
+            break;
+        }
+    }     
+    
     process_trailers(io, trailers);
     
     /* Let's move the buckets from the request processing in here, so
