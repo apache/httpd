@@ -494,9 +494,6 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                     if (APR_BUCKET_IS_EOS(b)) {
                         APR_BRIGADE_INSERT_TAIL(to, apr_bucket_eos_create(to->bucket_alloc));
                     }
-                    else if (APR_BUCKET_IS_FLUSH(b)) {
-                        APR_BRIGADE_INSERT_TAIL(to, apr_bucket_flush_create(to->bucket_alloc));
-                    }
                     else {
                         /* ignore */
                     }

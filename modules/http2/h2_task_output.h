@@ -26,20 +26,13 @@ struct h2_mplx;
 struct h2_task;
 struct h2_from_h1;
 
-typedef enum {
-    H2_TASK_OUT_INIT,
-    H2_TASK_OUT_STARTED,
-    H2_TASK_OUT_DONE,
-} h2_task_out_state_t;
-
 typedef struct h2_task_output h2_task_output;
 
 struct h2_task_output {
-    conn_rec *c;
     struct h2_task *task;
-    h2_task_out_state_t state;
     struct h2_from_h1 *from_h1;
     
+    unsigned int response_open : 1;
     unsigned int trailers_passed : 1;
 
     apr_off_t written;

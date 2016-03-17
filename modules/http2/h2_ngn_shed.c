@@ -145,7 +145,7 @@ void h2_ngn_shed_abort(h2_ngn_shed *shed)
 
 static void ngn_add_task(h2_req_engine *ngn, h2_task *task)
 {
-    h2_ngn_entry *entry = apr_pcalloc(task->c->pool, sizeof(*entry));
+    h2_ngn_entry *entry = apr_pcalloc(task->pool, sizeof(*entry));
     APR_RING_ELEM_INIT(entry, link);
     entry->task = task;
     H2_REQ_ENTRIES_INSERT_TAIL(&ngn->entries, entry);
@@ -186,7 +186,7 @@ apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type,
     /* no existing engine or being shut down, start a new one */
     if (einit) {
         apr_status_t status;
-        apr_pool_t *pool = task->c->pool;
+        apr_pool_t *pool = task->pool;
         h2_req_engine *newngn;
         
         newngn = apr_pcalloc(pool, sizeof(*ngn));

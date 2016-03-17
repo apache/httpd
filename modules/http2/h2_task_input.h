@@ -26,7 +26,6 @@ struct h2_task;
 
 typedef struct h2_task_input h2_task_input;
 struct h2_task_input {
-    conn_rec *c;
     struct h2_task *task;
     apr_bucket_brigade *bb;
     apr_read_type_e block;
