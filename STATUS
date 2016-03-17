@@ -175,7 +175,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-no_crl_for_cert_ok.patch
      +1: ylavic
 
-
+  *) mod_proxy_http2: add http2 proxy support in new, experimental module. 
+     Includes backport of r1729208 to set ALPN protocols for ssl backend
+     connections. 
+     Trunk version of patch: <various>
+     Backport version for 2.4.x of patch: https://eissing.org/proxy_http2_2.4.patch
+     +1: icing
+     
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
