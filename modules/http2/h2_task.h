@@ -50,11 +50,10 @@ typedef struct h2_task h2_task;
 
 struct h2_task {
     const char *id;
-    int stream_id;
-    conn_rec *c;
-    struct h2_mplx *mplx;
     apr_pool_t *pool;
+    struct h2_mplx *mplx;
     const struct h2_request *request;
+    conn_rec *c;
     
     unsigned int filters_set : 1;
     unsigned int input_eos   : 1;
@@ -72,10 +71,20 @@ struct h2_task {
     request_rec *r;                 /* request being processed in this task */
 };
 
-h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        conn_rec *c, struct h2_mplx *mplx);
+h2_task *h2_task_create(apr_pool_t *pool, const struct h2_request *req, 
+                        struct h2_mplx *mplx);
 
 void h2_task_destroy(h2_task *task);
+
+/**
+ * Attach the task to the given connection, install filter etc.
+ */
+void h2_task_attach(h2_task *task, conn_rec *c);
+/**
+ * Remove any attachments to the connection again, if still attached.
+ * Return the connection or NULL if none was attached.
+ */
+conn_rec *h2_task_detach(h2_task *task);
 
 apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond);
 

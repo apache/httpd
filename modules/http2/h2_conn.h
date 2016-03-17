@@ -70,6 +70,7 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
                           apr_allocator_t *allocator);
 void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator);
 
+apr_status_t h2_slave_needs_pre_run(conn_rec *slave);
 apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd);
 void h2_slave_run_connection(conn_rec *slave);
 
