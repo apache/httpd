@@ -153,6 +153,7 @@ XDCDATA		=
 #
 TARGET_nlm = \
 	$(OBJDIR)/mod_http2.nlm \
+	$(OBJDIR)/mod_http2.nlm \
 	$(EOLIST)
 
 #

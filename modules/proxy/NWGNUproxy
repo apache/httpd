@@ -273,6 +273,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) proxy_run_scheme_handler,$(DL)>> $@
 	@echo $(DL) ap_proxy_acquire_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_backend_broke,$(DL)>> $@
+	@echo $(DL) ap_proxy_buckets_lifetime_transform,$(DL)>> $@
 	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
@@ -318,6 +319,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_strncpy,$(DL)>> $@
 	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
+	@echo $(DL) ap_proxy_transfer_between_connections,$(DL)>> $@
 	@echo $(DL) ap_proxy_valid_balancer_name,$(DL)>> $@
 	@echo $(DL) ap_proxy_worker_name,$(DL)>> $@
 	@echo $(DL) ap_proxyerror$(DL)>> $@
