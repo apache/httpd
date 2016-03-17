@@ -123,57 +123,47 @@ apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s)
     return APR_SUCCESS;
 }
 
-h2_task *h2_task_create(apr_pool_t *pool, const h2_request *req, h2_mplx *mplx)
+h2_task *h2_task_create(long session_id, const h2_request *req, 
+                        conn_rec *c, h2_mplx *mplx)
 {
-    h2_task *task = apr_pcalloc(pool, sizeof(h2_task));
+    apr_pool_t *pool;
+    h2_task *task;
+    
+    apr_pool_create(&pool, c->pool);
+    task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, pool,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
-                      mplx->id, req->id);
+                      session_id, req->id);
         h2_mplx_out_close(mplx, req->id, NULL);
         return NULL;
     }
-    task->id          = apr_psprintf(pool, "%ld-%d", mplx->id, req->id);
-    task->pool        = pool;
+    
+    task->id          = apr_psprintf(pool, "%ld-%d", session_id, req->id);
+    task->stream_id   = req->id;
+    task->c           = c;
     task->mplx        = mplx;
+    task->pool        = pool;
     task->request     = req;
     task->input_eos   = !req->body;
     task->ser_headers = req->serialize;
     task->blocking    = 1;
-    return task;
-}
 
-conn_rec *h2_task_detach(h2_task *task)
-{
-    conn_rec *c = task->c;
-    if (c) {
-        task->c = NULL;
-        ap_remove_input_filter_byhandle(c->output_filters, "H2_TO_H1");
-        ap_remove_output_filter_byhandle(c->output_filters, "H1_TO_H2");
-        apr_table_setn(c->notes, H2_TASK_ID_NOTE, NULL);
-    }
-    return c;
+    h2_ctx_create_for(c, task);
+    /* Add our own, network level in- and output filters. */
+    ap_add_input_filter("H2_TO_H1", task, NULL, c);
+    ap_add_output_filter("H1_TO_H2", task, NULL, c);
+
+    return task;
 }
 
 void h2_task_destroy(h2_task *task)
 {
-    h2_task_detach(task);
+    ap_remove_input_filter_byhandle(task->c->input_filters, "H2_TO_H1");
+    ap_remove_output_filter_byhandle(task->c->output_filters, "H1_TO_H2");
     if (task->pool) {
         apr_pool_destroy(task->pool);
-        /* memory gone */
     }
-}
-
-void h2_task_attach(h2_task *task, conn_rec *c)
-{
-    if (task->c) {
-        h2_task_detach(task);
-    }
-    task->c = c;
-    h2_ctx_create_for(c, task);
-    apr_table_setn(c->notes, H2_TASK_ID_NOTE, task->id);
-    ap_add_input_filter("H2_TO_H1", task, NULL, c);
-    ap_add_output_filter("H1_TO_H2", task, NULL, c);
 }
 
 void h2_task_set_io_blocking(h2_task *task, int blocking)

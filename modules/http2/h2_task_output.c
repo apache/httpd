@@ -39,7 +39,7 @@ h2_task_output *h2_task_output_create(h2_task *task, conn_rec *c)
     h2_task_output *output = apr_pcalloc(task->pool, sizeof(h2_task_output));
     if (output) {
         output->task = task;
-        output->from_h1 = h2_from_h1_create(task->request->id, task->pool);
+        output->from_h1 = h2_from_h1_create(task->stream_id, task->pool);
     }
     return output;
 }
@@ -96,7 +96,7 @@ static apr_status_t open_response(h2_task_output *output, ap_filter_t *f,
                   output->task->id, output->task->request->method, 
                   output->task->request->authority, 
                   output->task->request->path);
-    return h2_mplx_out_open(output->task->mplx, output->task->request->id, 
+    return h2_mplx_out_open(output->task->mplx, output->task->stream_id, 
                             response, f, bb, output->task->io);
 }
 
@@ -111,7 +111,7 @@ static apr_status_t write_brigade_raw(h2_task_output *output,
                   "h2_task(%s): write response body (%ld bytes)", 
                   output->task->id, (long)written);
     
-    status = h2_mplx_out_write(output->task->mplx, output->task->request->id, 
+    status = h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
                                f, output->task->blocking, bb, 
                                get_trailers(output), output->task->io);
     if (status == APR_INCOMPLETE) {
@@ -145,7 +145,7 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     }
     
     if (output->task->frozen) {
-        h2_util_bb_log(output->task->c, output->task->request->id, APLOG_TRACE2,
+        h2_util_bb_log(output->task->c, output->task->stream_id, APLOG_TRACE2,
                        "frozen task output write, ignored", bb);
         return APR_SUCCESS;
     }

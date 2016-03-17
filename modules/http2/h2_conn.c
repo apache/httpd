@@ -284,7 +284,8 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
     c->clogging_input_filters = 1;
     c->log                    = NULL;
     c->log_id                 = NULL;
-    c->keepalives             = 0;
+    /* Simulate that we had already a request on this connection. */
+    c->keepalives             = 1;
     /* We cannot install the master connection socket on the slaves, as
      * modules mess with timeouts/blocking of the socket, with
      * unwanted side effects to the master connection processing.
@@ -325,13 +326,6 @@ void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
 
 apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
 {
-    /* We always start slaves with 1 */
-    slave->keepalives = 1;
     return ap_run_pre_connection(slave, csd);
-}
-
-apr_status_t h2_slave_needs_pre_run(conn_rec *slave)
-{
-    return slave->keepalives == 0;
 }
 
