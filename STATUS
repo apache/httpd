@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_rewrite: Don't escape an unchanged query string, in server context. 
-                  Was fixed in 2010 for directory context.
-     trunk patch: http://svn.apache.org/r1735088
-     2.4.x patch: trunk works
-     +1 covener, ylavic, icing
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
