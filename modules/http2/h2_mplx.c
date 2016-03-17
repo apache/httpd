@@ -299,15 +299,16 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
     }
 
     if (io->task) {
-        conn_rec *slave = io->task->c;
+        conn_rec *slave = h2_task_detach(io->task);
         h2_task_destroy(io->task);
         io->task = NULL;
-        
-        if (m->spare_slaves->nelts < m->spare_slaves->nalloc) {
-            APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
-        }
-        else {
-            h2_slave_destroy(slave, NULL);
+        if (slave) {
+            if (m->spare_slaves->nelts < m->spare_slaves->nalloc) {
+                APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
+            }
+            else {
+                h2_slave_destroy(slave, NULL);
+            }
         }
     }
 
@@ -1050,14 +1051,15 @@ apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req,
     return status;
 }
 
-static h2_task *pop_task(h2_mplx *m)
+static h2_request *pop_request(h2_mplx *m)
 {
-    h2_task *task = NULL;
-    int sid;
-    while (!m->aborted && !task 
+    h2_request *req = NULL;
+    int stream_id;
+    
+    while (!m->aborted && !req 
         && (m->workers_busy < m->workers_limit)
-        && (sid = h2_iq_shift(m->q)) > 0) {
-        h2_io *io = h2_io_set_get(m->stream_ios, sid);
+        && (stream_id = h2_iq_shift(m->q)) > 0) {
+        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && io->orphaned) {
             io_destroy(m, io, 0);
             if (m->join_wait) {
@@ -1065,35 +1067,45 @@ static h2_task *pop_task(h2_mplx *m)
             }
         }
         else if (io) {
-            conn_rec *slave, **pslave;
-            
-            pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
-            if (pslave) {
-                slave = *pslave;
-            }
-            else {
-                slave = h2_slave_create(m->c, m->pool, NULL);
-                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
-            }
-            
-            
-            io->task = task = h2_task_create(m->id, io->request, slave, m);
-            apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
-            
-            io->worker_started = 1;
+            req = io->request;
             io->started_at = apr_time_now();
-            if (sid > m->max_stream_started) {
-                m->max_stream_started = sid;
+            if (stream_id > m->max_stream_started) {
+                m->max_stream_started = stream_id;
             }
+            io->worker_started = 1;
             ++m->workers_busy;
         }
     }
-    return task;
+    return req;
 }
 
-h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
+static conn_rec *get_slave(h2_mplx *m) 
 {
-    h2_task *task = NULL;
+    conn_rec **pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
+    if (pslave) {
+        return *pslave;
+    }
+    else {
+        return h2_slave_create(m->c, m->pool, NULL);
+    }
+}
+
+conn_rec *h2_mplx_get_slave(h2_mplx *m) 
+{
+    conn_rec *slave = NULL;
+    int acquired;
+
+    AP_DEBUG_ASSERT(m);
+    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+        slave = get_slave(m);
+        leave_mutex(m, acquired);
+    }
+    return slave;    
+}
+
+h2_request *h2_mplx_pop_request(h2_mplx *m, int *has_more)
+{
+    h2_request *req = NULL;
     apr_status_t status;
     int acquired;
     
@@ -1103,16 +1115,16 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
             *has_more = 0;
         }
         else {
-            task = pop_task(m);
+            req = pop_request(m);
             *has_more = !h2_iq_empty(m->q);
         }
         
-        if (has_more && !task) {
+        if (!req && has_more) {
             m->need_registration = 1;
         }
         leave_mutex(m, acquired);
     }
-    return task;
+    return req;
 }
 
 static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
@@ -1130,7 +1142,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             apr_thread_cond_broadcast(m->task_thawed);
         }
         else {
-            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+            h2_io *io = h2_io_set_get(m->stream_ios, task->request->id);
             
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): task(%s) done", m->id, task->id);
@@ -1139,7 +1151,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             /* TODO: this will keep a worker attached to this h2_mplx as
              * long as it has requests to handle. Might no be fair to
              * other mplx's. Perhaps leave after n requests? */
-            h2_mplx_out_close(m, task->stream_id, NULL);
+            h2_mplx_out_close(m, task->request->id, NULL);
             
             if (ngn && io) {
                 apr_off_t bytes = io->output_consumed + h2_io_out_length(io);
@@ -1216,16 +1228,16 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
     }
 }
 
-void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_task **ptask)
+void h2_mplx_task_done(h2_mplx *m, h2_task *task, h2_request **preq)
 {
     int acquired;
     
     if (enter_mutex(m, &acquired) == APR_SUCCESS) {
         task_done(m, task, NULL);
         --m->workers_busy;
-        if (ptask) {
+        if (preq) {
             /* caller wants another task */
-            *ptask = pop_task(m);
+            *preq = pop_request(m);
         }
         leave_mutex(m, acquired);
     }
@@ -1419,11 +1431,12 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
     task->r = r;
     
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+        h2_io *io = h2_io_set_get(m->stream_ios, task->request->id);
         if (!io || io->orphaned) {
             status = APR_ECONNABORTED;
         }
         else {
+            io->task = task;
             status = h2_ngn_shed_push_task(m->ngn_shed, ngn_type, task, einit);
         }
         leave_mutex(m, acquired);

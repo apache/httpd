@@ -141,9 +141,10 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, struct apr_thread_cond_t *wait
  */
 void h2_mplx_abort(h2_mplx *mplx);
 
-struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
+struct h2_request *h2_mplx_pop_request(h2_mplx *mplx, int *has_more);
 
-void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
+void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, 
+                       struct h2_request **prequest);
 
 /**
  * Get the highest stream identifier that has been passed on to processing.
@@ -152,6 +153,8 @@ void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask)
  * @return highest stream identifier for which processing started
  */
 int h2_mplx_get_max_stream_started(h2_mplx *m);
+
+conn_rec *h2_mplx_get_slave(h2_mplx *m);
 
 /*******************************************************************************
  * IO lifetime of streams.

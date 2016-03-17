@@ -34,14 +34,27 @@
 static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 {
     h2_worker *worker = (h2_worker *)wctx;
+    h2_mplx *mplx;
+    h2_request *req;
     int sticky;
     
     while (!worker->aborted) {
-        h2_task *task;
         
         /* Get a h2_task from the main workers queue. */
-        worker->get_next(worker, worker->ctx, &task, &sticky);
-        while (task) {
+        worker->get_next(worker, worker->ctx, &mplx, &req, &sticky);
+        while (req) {
+            h2_task *task;
+            apr_pool_t *pool;
+            conn_rec *slave;
+            
+            slave = h2_mplx_get_slave(mplx);
+            if (h2_slave_needs_pre_run(slave)) {
+                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
+            }
+            
+            apr_pool_create(&pool, slave->pool);
+            task = h2_task_create(pool, req, mplx);
+            h2_task_attach(task, slave);
             h2_task_do(task, worker->io);
             
             /* if someone was waiting on this task, time to wake up */
@@ -49,13 +62,14 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
             /* report the task done and maybe get another one from the same
              * mplx (= master connection), if we can be sticky. 
              */
+            req = NULL;
             if (sticky && !worker->aborted) {
-                h2_mplx_task_done(task->mplx, task, &task);
+                h2_mplx_task_done(mplx, task, &req);
             }
             else {
-                h2_mplx_task_done(task->mplx, task, NULL);
-                task = NULL;
+                h2_mplx_task_done(mplx, task, NULL);
             }
+            task = NULL;
         }
     }
 

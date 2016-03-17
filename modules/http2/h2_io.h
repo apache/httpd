@@ -40,7 +40,7 @@ struct h2_io {
     apr_pool_t *pool;                /* stream pool */
     apr_bucket_alloc_t *bucket_alloc;
     
-    const struct h2_request *request;/* request on this io */
+    struct h2_request *request;      /* request on this io */
     struct h2_response *response;    /* response to request */
     int rst_error;                   /* h2 related stream abort error */
 

@@ -90,6 +90,9 @@ apr_status_t h2_task_input_read(h2_task_input *input,
     apr_status_t status = APR_SUCCESS;
     apr_off_t bblen = 0;
     
+    AP_DEBUG_ASSERT(input);
+    AP_DEBUG_ASSERT(input->task);
+    AP_DEBUG_ASSERT(f->c);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task_input(%s): read, block=%d, mode=%d, readbytes=%ld", 
                   input->task->id, block, mode, (long)readbytes);
@@ -133,7 +136,7 @@ apr_status_t h2_task_input_read(h2_task_input *input,
          * setting. 
          */
         status = h2_mplx_in_read(input->task->mplx, block,
-                                 input->task->stream_id, input->bb, 
+                                 input->task->request->id, input->bb, 
                                  f->r? f->r->trailers_in : NULL, 
                                  input->task->io);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
