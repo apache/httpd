@@ -1,8 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: slave connections are now reused. [Stefan Eissing]
-  
   *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 
      observing data actually send out on the frontend h2 connection. 
      [Stefan Eissing]
