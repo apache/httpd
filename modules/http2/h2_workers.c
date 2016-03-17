@@ -61,9 +61,9 @@ static void cleanup_zombies(h2_workers *workers, int lock)
     }
 }
 
-static h2_request *next_request(h2_workers *workers, h2_mplx **pmplx)
+static h2_task *next_task(h2_workers *workers)
 {
-    h2_request *req = NULL;
+    h2_task *task = NULL;
     h2_mplx *last = NULL;
     int has_more;
     
@@ -76,7 +76,7 @@ static h2_request *next_request(h2_workers *workers, h2_mplx **pmplx)
      * new mplx to arrive. Depending on how many workers do exist,
      * we do a timed wait or block indefinitely.
      */
-    while (!req && !H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
+    while (!task && !H2_MPLX_LIST_EMPTY(&workers->mplxs)) {
         h2_mplx *m = H2_MPLX_LIST_FIRST(&workers->mplxs);
         
         if (last == m) {
@@ -85,7 +85,7 @@ static h2_request *next_request(h2_workers *workers, h2_mplx **pmplx)
         H2_MPLX_REMOVE(m);
         --workers->mplx_count;
         
-        req = h2_mplx_pop_request(m, &has_more);
+        task = h2_mplx_pop_task(m, &has_more);
         if (has_more) {
             H2_MPLX_LIST_INSERT_TAIL(&workers->mplxs, m);
             ++workers->mplx_count;
@@ -93,13 +93,8 @@ static h2_request *next_request(h2_workers *workers, h2_mplx **pmplx)
                 last = m;
             }
         }
-        
-        if (req) {
-            *pmplx = m;
-            return req;
-        }
     }
-    return req;
+    return task;
 }
 
 /**
@@ -107,17 +102,14 @@ static h2_request *next_request(h2_workers *workers, h2_mplx **pmplx)
  * or the max_wait timer expires and more than min workers exist.
  */
 static apr_status_t get_mplx_next(h2_worker *worker, void *ctx, 
-                                  h2_mplx **pmplx, h2_request **preq, 
-                                  int *psticky)
+                                  h2_task **ptask, int *psticky)
 {
     apr_status_t status;
     apr_time_t wait_until = 0, now;
     h2_workers *workers = ctx;
-    h2_request *req = NULL;
-    h2_mplx *mplx = NULL;
+    h2_task *task = NULL;
     
-    *preq = NULL;
-    *pmplx = NULL;
+    *ptask = NULL;
     *psticky = 0;
     
     status = apr_thread_mutex_lock(workers->lock);
@@ -127,7 +119,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, void *ctx,
                      "h2_worker(%d): looking for work", h2_worker_get_id(worker));
         
         while (!h2_worker_is_aborted(worker) && !workers->aborted
-               && !(req = next_request(workers, &mplx))) {
+               && !(task = next_task(workers))) {
         
             /* Need to wait for a new tasks to arrive. If we are above
              * minimum workers, we do a timed wait. When timeout occurs
@@ -169,10 +161,10 @@ static apr_status_t get_mplx_next(h2_worker *worker, void *ctx,
             }
         }
         
-        /* Here, we either have gotten a request or decided to shut down
+        /* Here, we either have gotten task or decided to shut down
          * the calling worker.
          */
-        if (req) {
+        if (task) {
             /* Ok, we got something to give back to the worker for execution. 
              * If we have more idle workers than h2_mplx in our queue, then
              * we let the worker be sticky, e.g. making it poll the task's
@@ -182,8 +174,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, void *ctx,
              * has no new tasks to process, so the worker will get back here
              * eventually.
              */
-            *preq = req;
-            *pmplx = mplx;
+            *ptask = task;
             *psticky = (workers->max_workers >= workers->mplx_count);
             
             if (workers->mplx_count && workers->idle_workers > 1) {
@@ -195,7 +186,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, void *ctx,
         apr_thread_mutex_unlock(workers->lock);
     }
     
-    return *preq? APR_SUCCESS : APR_EOF;
+    return *ptask? APR_SUCCESS : APR_EOF;
 }
 
 static void worker_done(h2_worker *worker, void *ctx)
