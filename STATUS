@@ -112,6 +112,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_rewrite: Don't escape an unchanged query string, in server context. 
+                  Was fixed in 2010 for directory context.
+     trunk patch: http://svn.apache.org/r1735088
+     2.4.x patch: trunk works
+     +1 covener, ylavic, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -124,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1733088
                   http://svn.apache.org/r1733089
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
-     +1: ylavic
+     +1: ylavic, icing
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
      ylavic: r1723295 + CHANGES entry now included => votes reset
 
@@ -172,13 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   asked to flush
      trunk patch: http://svn.apache.org/r1619483
      2.4.x patch: trunk works
-     +1: ylavic
-
-  *) mod_rewrite: Don't escape an unchanged query string, in server context. 
-                  Was fixed in 2010 for directory context.
-     trunk patch: http://svn.apache.org/r1735088
-     2.4.x patch: trunk works
-     +1 covener, ylavic
+     +1: ylavic, icing
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
