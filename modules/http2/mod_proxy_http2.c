@@ -51,6 +51,7 @@ static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn);
                                        
 typedef struct h2_proxy_ctx {
     conn_rec *owner;
+    apr_pool_t *pool;
     request_rec *rbase;
     server_rec *server;
     const char *proxy_func;
@@ -218,12 +219,28 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
     h2_proxy_ctx *ctx = ap_get_module_config(r->connection->conn_config, 
                                              &proxy_http2_module);
     if (ctx) {
+        conn_rec *c = ctx->owner;
+        h2_proxy_ctx *nctx;
+        
+        /* we need another lifetime for this. If we do not host
+         * an engine, the context lives in r->pool. Since we expect
+         * to server more than r, we need to live longer */
+        nctx = apr_pcalloc(pool, sizeof(*nctx));
+        if (nctx == NULL) {
+            return APR_ENOMEM;
+        }
+        memcpy(nctx, ctx, sizeof(*nctx));
+        ctx = nctx;
+        ctx->pool = pool;
         ctx->engine = engine;
         ctx->engine_id = id;
         ctx->engine_type = type;
         ctx->engine_pool = pool;
         ctx->req_buffer_size = req_buffer_size;
         ctx->capacity = 100;
+
+        ap_set_module_config(c->conn_config, &proxy_http2_module, ctx);
+
         *pconsumed = out_consumed;
         *pctx = ctx;
         return APR_SUCCESS;
@@ -381,14 +398,14 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     return status;
 }
 
-static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx)
+static h2_proxy_ctx *push_request_somewhere(h2_proxy_ctx *ctx)
 {
     conn_rec *c = ctx->owner;
     const char *engine_type, *hostname;
     
     hostname = (ctx->p_conn->ssl_hostname? 
                 ctx->p_conn->ssl_hostname : ctx->p_conn->hostname);
-    engine_type = apr_psprintf(c->pool, "proxy_http2 %s%s", hostname, 
+    engine_type = apr_psprintf(ctx->pool, "proxy_http2 %s%s", hostname, 
                                ctx->server_portstr);
     
     if (c->master && req_engine_push && ctx->next && is_h2 && is_h2(c)) {
@@ -397,22 +414,25 @@ static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx)
          * uses the same backend. We may be called to create an engine 
          * ourself. */
         if (req_engine_push(engine_type, ctx->next, proxy_engine_init)
-            == APR_SUCCESS && ctx->engine == NULL) {
-            /* Another engine instance has taken over processing of this
-             * request. */
-            ctx->r_status = SUSPENDED;
-            ctx->next = NULL;
-            
-            return APR_SUCCESS;
+            == APR_SUCCESS) {
+            /* to renew the lifetime, we might have set a new ctx */
+            ctx = ap_get_module_config(c->conn_config, &proxy_http2_module);
+            if (ctx->engine == NULL) {
+                /* Another engine instance has taken over processing of this
+                 * request. */
+                ctx->r_status = SUSPENDED;
+                ctx->next = NULL;
+                return ctx;
+            }
         }
     }
     
     if (!ctx->engine) {
         /* No engine was available or has been initialized, handle this
          * request just by ourself. */
-        ctx->engine_id = apr_psprintf(c->pool, "eng-proxy-%ld", c->id);
+        ctx->engine_id = apr_psprintf(ctx->pool, "eng-proxy-%ld", c->id);
         ctx->engine_type = engine_type;
-        ctx->engine_pool = c->pool;
+        ctx->engine_pool = ctx->pool;
         ctx->req_buffer_size = (32*1024);
         ctx->standalone = 1;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
@@ -423,7 +443,7 @@ static apr_status_t push_request_somewhere(h2_proxy_ctx *ctx)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                       "H2: hosting engine %s", ctx->engine_id);
     }
-    return APR_SUCCESS;
+    return ctx;
 }
 
 static int proxy_http2_handler(request_rec *r, 
@@ -438,11 +458,8 @@ static int proxy_http2_handler(request_rec *r,
     apr_size_t slen;
     int is_ssl = 0;
     apr_status_t status;
-    conn_rec *c = r->connection;
-    server_rec *s = r->server;
-    apr_pool_t *p = c->pool;
-    apr_uri_t *uri = apr_palloc(p, sizeof(*uri));
     h2_proxy_ctx *ctx;
+    apr_uri_t uri;
     int reconnected = 0;
     
     /* find the scheme */
@@ -468,11 +485,11 @@ static int proxy_http2_handler(request_rec *r,
         default:
             return DECLINED;
     }
-
-    ctx = apr_pcalloc(p, sizeof(*ctx));
-    ctx->owner      = c;
+    ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    ctx->owner      = r->connection;
+    ctx->pool       = r->pool;
     ctx->rbase      = r;
-    ctx->server     = s;
+    ctx->server     = r->server;
     ctx->proxy_func = proxy_func;
     ctx->is_ssl     = is_ssl;
     ctx->worker     = worker;
@@ -481,7 +498,7 @@ static int proxy_http2_handler(request_rec *r,
     ctx->r_status   = HTTP_SERVICE_UNAVAILABLE;
     ctx->next       = r;
     r = NULL;
-    ap_set_module_config(c->conn_config, &proxy_http2_module, ctx);
+    ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, ctx);
 
     /* scheme says, this is for us. */
     apr_table_setn(ctx->rbase->notes, H2_PROXY_REQ_URL_NOTE, url);
@@ -493,7 +510,7 @@ run_connect:
      * be one still open from another request, or it might fail if the
      * worker is stopped or in error. */
     if ((status = ap_proxy_acquire_connection(ctx->proxy_func, &ctx->p_conn,
-                                              ctx->worker, s)) != OK) {
+                                              ctx->worker, ctx->server)) != OK) {
         goto cleanup;
     }
 
@@ -507,8 +524,8 @@ run_connect:
     /* Step One: Determine the URL to connect to (might be a proxy),
      * initialize the backend accordingly and determine the server 
      * port string we can expect in responses. */
-    if ((status = ap_proxy_determine_connection(p, ctx->rbase, conf, worker, 
-                                                ctx->p_conn, uri, &locurl, 
+    if ((status = ap_proxy_determine_connection(ctx->pool, ctx->rbase, conf, worker, 
+                                                ctx->p_conn, &uri, &locurl, 
                                                 proxyname, proxyport, 
                                                 ctx->server_portstr,
                                                 sizeof(ctx->server_portstr))) != OK) {
@@ -518,7 +535,7 @@ run_connect:
     /* If we are not already hosting an engine, try to push the request 
      * to an already existing engine or host a new engine here. */
     if (!ctx->engine) {
-        push_request_somewhere(ctx);
+        ctx = push_request_somewhere(ctx);
         if (ctx->r_status == SUSPENDED) {
             /* request was pushed to another engine */
             goto cleanup;
@@ -601,7 +618,8 @@ cleanup:
         ctx->p_conn = NULL;
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, "leaving handler");
+    ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, NULL);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, "leaving handler");
     return ctx->r_status;
 }
 

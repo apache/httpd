@@ -96,8 +96,7 @@ struct h2_mplx {
     apr_size_t stream_max_mem;
     apr_interval_time_t stream_timeout;
     
-    apr_pool_t *spare_pool;           /* spare pool, ready for next io */
-    apr_allocator_t *spare_allocator;
+    apr_array_header_t *spare_slaves; /* spare slave connections */
     
     struct h2_workers *workers;
     apr_size_t tx_handles_reserved;

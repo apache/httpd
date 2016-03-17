@@ -218,6 +218,8 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->tx_handles_reserved = 0;
         m->tx_chunk_size = 4;
         
+        m->spare_slaves = apr_array_make(m->pool, 10, sizeof(conn_rec*));
+        
         m->ngn_shed = h2_ngn_shed_create(m->pool, m->c, m->max_streams, 
                                          m->stream_max_mem);
         h2_ngn_shed_set_ctx(m->ngn_shed , m);
@@ -278,8 +280,6 @@ static int io_out_consumed_signal(h2_mplx *m, h2_io *io)
 
 static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
-    apr_pool_t *pool;
-    
     /* cleanup any buffered input */
     h2_io_in_shutdown(io);
     if (events) {
@@ -299,23 +299,20 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
     }
 
     if (io->task) {
-        if (m->spare_allocator) {
-            apr_allocator_destroy(m->spare_allocator);
-            m->spare_allocator = NULL;
-        }
-        
-        h2_slave_destroy(io->task->c, &m->spare_allocator);
+        conn_rec *slave = io->task->c;
+        h2_task_destroy(io->task);
         io->task = NULL;
+        
+        if (m->spare_slaves->nelts < m->spare_slaves->nalloc) {
+            APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
+        }
+        else {
+            h2_slave_destroy(slave, NULL);
+        }
     }
 
-    pool = io->pool;
-    io->pool = NULL;    
-    if (0 && pool) {
-        apr_pool_clear(pool);
-        if (m->spare_pool) {
-            apr_pool_destroy(m->spare_pool);
-        }
-        m->spare_pool = pool;
+    if (io->pool) {
+        apr_pool_destroy(io->pool);
     }
 
     check_tx_free(m);
@@ -1006,17 +1003,11 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 
 static h2_io *open_io(h2_mplx *m, int stream_id, const h2_request *request)
 {
-    apr_pool_t *io_pool = m->spare_pool;
+    apr_pool_t *io_pool;
     h2_io *io;
     
-    if (!io_pool) {
-        apr_pool_create(&io_pool, m->pool);
-        apr_pool_tag(io_pool, "h2_io");
-    }
-    else {
-        m->spare_pool = NULL;
-    }
-    
+    apr_pool_create(&io_pool, m->pool);
+    apr_pool_tag(io_pool, "h2_io");
     io = h2_io_create(stream_id, io_pool, m->bucket_alloc, request);
     h2_io_set_add(m->stream_ios, io);
     
@@ -1074,10 +1065,21 @@ static h2_task *pop_task(h2_mplx *m)
             }
         }
         else if (io) {
-            conn_rec *slave = h2_slave_create(m->c, m->pool, m->spare_allocator);
-            m->spare_allocator = NULL;
+            conn_rec *slave, **pslave;
+            
+            pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
+            if (pslave) {
+                slave = *pslave;
+            }
+            else {
+                slave = h2_slave_create(m->c, m->pool, NULL);
+                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
+            }
+            
+            
             io->task = task = h2_task_create(m->id, io->request, slave, m);
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
+            
             io->worker_started = 1;
             io->started_at = apr_time_now();
             if (sid > m->max_stream_started) {
