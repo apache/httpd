@@ -105,6 +105,9 @@ Changes with Apache 2.4.19
      the SSLVerifyDepth applied with the default/handshaken vhost differs from
      the one applicable with the finally selected vhost.  [Yann Ylavic]
 
+  *) core: Ensure that httpd exits with an error status when the MPM fails
+     to run.  [Yann Ylavic]
+
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 
