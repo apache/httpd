@@ -60,6 +60,15 @@
     better document to start with is <a href="https://daniel.haxx.se/http2/">http2  explained</a>
     by Daniel Stenberg, the author of <a href="https://curl.haxx.se">curl</a>. It is available in
     an ever growing list of languages, too!</p>
+    <p>Too Long, Didn't read: there are some new terms and gotchas that need to be kept in mind while reading this document:</p>
+    <ul>
+        <li>HTTP/2 is a <strong>binary protocol</strong>, as opposed to HTTP 1.1 that is plain text. The latter is meant to be human readable (for example sniffing network traffic) meanwhile the former is not. More info in the official FAQ <a href="https://http2.github.io/faq/#why-is-http2-binary">question</a>.</li>
+        <li><strong>h2</strong> is HTTP/2 over TLS (protocol negotiation via ALPN).</li>
+        <li><strong>h2c</strong> is HTTP/2 over TCP.</li>
+        <li>A <strong>frame</strong> is the smallest unit of communication within an HTTP/2 connection, consisting of a header and a variable-length sequence of octets structured according to the frame type. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer"> section</a>.</li>
+        <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer"> section</a>.</li>
+        <li>HTTP/2 is able to run <strong>multiple streams</strong> of data over the same TCP connection, avoiding the classic HTTP 1.1 head of blocking slow request and avoiding to re-instantiate TCP connections for each request/response (KeepAlive patched the problem in HTTP 1.1 but did not fully solve it).</li>
+    </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="implementation" id="implementation">HTTP/2 in Apache httpd</a></h2>
@@ -121,8 +130,11 @@
 
     <p>This allows only HTTP/1 on connections, except SSL connections to <code>test.example.org</code>
     which offer HTTP/2.</p>
+    <div class="note"><h3>Choose a strong SSLCipherSuite</h3>
+     <p>The <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> needs to be configured with a strong TLS cipher suite. The current version of mod_http2 does not enforce any cipher but most clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid long debugging sessions! If you want to be sure about the cipher suite to choose please avoid the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
+    </div>
     <p>The order of protocols mentioned is also relevant. By default, the first one is the 
-    most peferred protocol. When a client offers multiple choices, the one most to the 
+    most preferred protocol. When a client offers multiple choices, the one most to the 
     left is selected. In</p>
     <pre class="prettyprint lang-config">Protocols http/1.1 h2</pre>
 
@@ -178,11 +190,11 @@
     never sent and the response to it will arrive soon..."</p>
     <p>But there are restrictions: the client can disable this feature and the
     server may only ever PUSH on a request that came from the client.</p>
-    <p>The intention is to allow the server to send resources to the clien that
+    <p>The intention is to allow the server to send resources to the client that
     it will most likely need: a css or javascript resource that belongs to a html
     page the client requested. A set of images that is referenced by a css, etc.</p>
     <p>The advantage for the client is that it saves the time to send the request which
-    may range from a few milli seconds to half a second, depending on where on the 
+    may range from a few milliseconds to half a second, depending on where on the 
     globe both are located. The disadvantage is that the client may get sent
     things it already has in its cache. Sure, HTTP/2 allows for the early cancellation
     of such requests, but still there are resources wasted.</p>
