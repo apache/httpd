@@ -112,6 +112,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Ensure that httpd exits with an error status when the MPM fails
+     to run.
+     trunk patch: http://svn.apache.org/r1629925
+                  http://svn.apache.org/r1629927
+                  http://svn.apache.org/r1629928
+                  http://svn.apache.org/r1733162
+                  http://svn.apache.org/r1733173
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-exit_with_error_on_mpm_failure.patch
+     +1: ylavic, jim, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -141,16 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           release.
      ylavic: OK, this is just that persisted slotmems won't be reused on first
              startup, not that the startup will fail (as I first thought).
-
-  *) core: Ensure that httpd exits with an error status when the MPM fails
-     to run.
-     trunk patch: http://svn.apache.org/r1629925
-                  http://svn.apache.org/r1629927
-                  http://svn.apache.org/r1629928
-                  http://svn.apache.org/r1733162
-                  http://svn.apache.org/r1733173
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-exit_with_error_on_mpm_failure.patch
-     +1: ylavic, jim
 
   *) core/util_script: relax alphanumeric filter of enviroment variable names
           on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
