@@ -52,7 +52,8 @@ struct h2_task {
     const char *id;
     int stream_id;
     conn_rec *c;
-    struct h2_mplx *mplx;    
+    struct h2_mplx *mplx;
+    apr_pool_t *pool;
     const struct h2_request *request;
     
     unsigned int filters_set : 1;
@@ -73,6 +74,8 @@ struct h2_task {
 
 h2_task *h2_task_create(long session_id, const struct h2_request *req, 
                         conn_rec *c, struct h2_mplx *mplx);
+
+void h2_task_destroy(h2_task *task);
 
 apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond);
 

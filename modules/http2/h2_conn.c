@@ -239,7 +239,6 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
     return status;
 }
 
-
 conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
                           apr_allocator_t *allocator)
 {
@@ -262,7 +261,7 @@ conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
     apr_pool_create_ex(&pool, parent, NULL, allocator);
     apr_pool_tag(pool, "h2_slave_conn");
     apr_allocator_owner_set(allocator, pool);
-    
+
     c = (conn_rec *) apr_palloc(pool, sizeof(conn_rec));
     if (c == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, master, 
@@ -324,3 +323,9 @@ void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
     }
     apr_pool_destroy(slave->pool);
 }
+
+apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd)
+{
+    return ap_run_pre_connection(slave, csd);
+}
+

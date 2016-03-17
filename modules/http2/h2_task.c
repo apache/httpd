@@ -55,7 +55,7 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            apr_read_type_e block,
                                            apr_off_t readbytes)
 {
-    h2_task *task = filter->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     if (!task->input) {
         return APR_ECONNABORTED;
@@ -67,7 +67,7 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
                                             apr_bucket_brigade* brigade)
 {
-    h2_task *task = filter->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     if (!task->output) {
         return APR_ECONNABORTED;
@@ -75,15 +75,15 @@ static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
     return h2_task_output_write(task->output, filter, brigade);
 }
 
-static apr_status_t h2_filter_read_response(ap_filter_t* f,
+static apr_status_t h2_filter_read_response(ap_filter_t* filter,
                                             apr_bucket_brigade* bb)
 {
-    h2_task *task = f->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     if (!task->output || !task->output->from_h1) {
         return APR_ECONNABORTED;
     }
-    return h2_from_h1_read_response(task->output->from_h1, f, bb);
+    return h2_from_h1_read_response(task->output->from_h1, filter, bb);
 }
 
 /*******************************************************************************
@@ -142,15 +142,13 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     ctx = h2_ctx_get(c, 0);
     (void)arg;
     if (h2_ctx_is_task(ctx)) {
-        h2_task *task = h2_ctx_get_task(ctx);
-        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "h2_h2, pre_connection, found stream task");
         
         /* Add our own, network level in- and output filters.
          */
-        ap_add_input_filter("H2_TO_H1", task, NULL, c);
-        ap_add_output_filter("H1_TO_H2", task, NULL, c);
+        ap_add_input_filter("H2_TO_H1", NULL, NULL, c);
+        ap_add_output_filter("H1_TO_H2", NULL, NULL, c);
     }
     return OK;
 }
@@ -158,7 +156,11 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
 h2_task *h2_task_create(long session_id, const h2_request *req, 
                         conn_rec *c, h2_mplx *mplx)
 {
-    h2_task *task     = apr_pcalloc(c->pool, sizeof(h2_task));
+    apr_pool_t *pool;
+    h2_task *task;
+    
+    apr_pool_create(&pool, c->pool);
+    task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
@@ -167,18 +169,25 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
         return NULL;
     }
     
-    task->id          = apr_psprintf(c->pool, "%ld-%d", session_id, req->id);
+    task->id          = apr_psprintf(pool, "%ld-%d", session_id, req->id);
     task->stream_id   = req->id;
     task->c           = c;
     task->mplx        = mplx;
+    task->pool        = pool;
     task->request     = req;
     task->input_eos   = !req->body;
     task->ser_headers = req->serialize;
     task->blocking    = 1;
 
     h2_ctx_create_for(c, task);
-
     return task;
+}
+
+void h2_task_destroy(h2_task *task)
+{
+    if (task->pool) {
+        apr_pool_destroy(task->pool);
+    }
 }
 
 void h2_task_set_io_blocking(h2_task *task, int blocking)
@@ -197,7 +206,7 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_cond_t *cond)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                   "h2_task(%s): process connection", task->id);
-    ap_process_connection(task->c, ap_get_conn_socket(task->c));
+    ap_run_process_connection(task->c);
     
     if (task->frozen) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
