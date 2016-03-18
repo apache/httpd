@@ -112,6 +112,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ap_expr: expression support for variable HTTP2=on|off
+     trunk patch: http://svn.apache.org/r1726167
+     2.4.x patch: https://eissing.org/expr_http2_2.4.patch
+     +1: icing, ylavic, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -151,11 +155,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: As asked on dev@ (in reply to r1705217), what about CVE-2014-6271
              (shellshock) with unix-like shells (or even maybe native windows
              ones too)? 
-
-  *) ap_expr: expression support for variable HTTP2=on|off
-     trunk patch: http://svn.apache.org/r1726167
-     2.4.x patch: https://eissing.org/expr_http2_2.4.patch
-     +1: icing, ylavic
 
   *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
                   Fix counting of inflated bytes in deflate_in_filter() when
