@@ -227,23 +227,22 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
     return m;
 }
 
-int h2_mplx_get_max_stream_started(h2_mplx *m)
+apr_uint32_t h2_mplx_shutdown(h2_mplx *m)
 {
-    int stream_id = 0;
-    int acquired;
+    int acquired, max_stream_started = 0;
     
-    enter_mutex(m, &acquired);
-    stream_id = m->max_stream_started;
-    leave_mutex(m, acquired);
-    
-    return stream_id;
+    if (enter_mutex(m, &acquired) == APR_SUCCESS) {
+        max_stream_started = m->max_stream_started;
+        /* Clear schedule queue, disabling existing streams from starting */ 
+        h2_iq_clear(m->q);
+        leave_mutex(m, acquired);
+    }
+    return max_stream_started;
 }
 
 static void workers_register(h2_mplx *m)
 {
-    /* Initially, there was ref count increase for this as well, but
-     * this is not needed, even harmful.
-     * h2_workers is only a hub for all the h2_worker instances.
+    /* h2_workers is only a hub for all the h2_worker instances.
      * At the end-of-life of this h2_mplx, we always unregister at
      * the workers. The thing to manage are all the h2_worker instances
      * out there. Those may hold a reference to this h2_mplx and we cannot
@@ -311,6 +310,10 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         }
     }
 
+    if (io->eor) {
+        apr_bucket_delete(io->eor);
+        io->eor = NULL;
+    }
     if (io->pool) {
         apr_pool_destroy(io->pool);
     }
@@ -473,7 +476,6 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error)
                           m->id, stream_id);
             io_stream_done(m, io, rst_error);
         }
-
         leave_mutex(m, acquired);
     }
     return status;
@@ -992,7 +994,6 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
         }
         else {
             h2_iq_sort(m->q, cmp, ctx);
-            
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): reprioritize tasks", m->id);
         }
