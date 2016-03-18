@@ -174,13 +174,25 @@
 <div class="section">
 <h2><a name="tools" id="tools">Useful tools to debug HTTP/2</a></h2>
     
-    <p><a href="https://curl.haxx.se">curl</a>.</p>
-    <p>And for really deep inspection <a href="https://www.wireshark.org">wireshark</a>.</p>
-    <p>The <a href="https://nghttp2.org">nghttp2</a> package also includes clients, such as
-    <code>nghttp</code> and <code>h2load</code>, the latter one being very useful in putting
-    some stress on your server.</p>
-    <p>Chrome offers also detailed HTTP/2 logs on its connections via the 
-    <a href="chrome://net-internals/#http2">special net-internals page</a>.</p>
+    <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
+    your version supports HTTP/2 checking its <code>Features</code>:</p>
+    <pre class="prettyprint lang-config">    $ curl -V
+    curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
+    Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...] 
+    Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
+    </pre>
+
+    <div class="note"><h3>Mac OS homebrew notes</h3>
+    brew install curl --with-openssl --with-nghttp2 
+    </div>
+    <p>And for really deep inspection <a href="https://wiki.wireshark.org/HTTP2">wireshark</a>.</p>
+    <p>The <a href="https://nghttp2.org">nghttp2</a> package also includes clients, such as:</p>
+    <ul>
+        <li><a href="https://nghttp2.org/documentation/nghttp.1.html">nghttp</a> - useful to visualize the HTTP/2 frames and get a better idea of the protocol.</li>
+        <li><a href="https://nghttp2.org/documentation/h2load-howto.html">h2load</a> - useful to stress-test your server.</li>
+    </ul>
+    <p>Chrome offers detailed HTTP/2 logs on its connections via the 
+    <a href="chrome://net-internals/#http2">special net-internals page</a>. There is also an interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> to visualize when your browser is using HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="push" id="push">Server Push</a></h2>
