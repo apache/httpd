@@ -1495,6 +1495,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if (toclose) {
                 backend->close = 1;
                 if (toclose < 0) {
+                    proxy_run_detach_backend(r, backend);
                     return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                          "Malformed connection header");
                 }
