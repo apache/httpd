@@ -129,6 +129,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
      ylavic: r1723295 + CHANGES entry now included => votes reset
 
+  *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
+                  Fix counting of inflated bytes in deflate_in_filter() when
+                  asked to flush
+     trunk patch: http://svn.apache.org/r1619483
+     2.4.x patch: trunk works
+     +1: ylavic, icing, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -155,13 +162,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: As asked on dev@ (in reply to r1705217), what about CVE-2014-6271
              (shellshock) with unix-like shells (or even maybe native windows
              ones too)? 
-
-  *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
-                  Fix counting of inflated bytes in deflate_in_filter() when
-                  asked to flush
-     trunk patch: http://svn.apache.org/r1619483
-     2.4.x patch: trunk works
-     +1: ylavic, icing
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
