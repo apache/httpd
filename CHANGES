@@ -19,8 +19,8 @@
      no streams are open and even if only after 1 sec delay. Under load, event
      mpm discards connections otherwise too quickly. [Stefan Eissing]
   
-  *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
-     hook returns an error. [Graham Leggett]
+  *) mod_ssl: Don't lose track of the SSL context if an unlikely failure occurs
+     in ssl_init_ssl_connection().  [Graham Leggett]
 
   *) mod_rewrite: Add QSL|qslast flag to allow rewrites to files with
      literal question marks in their names. PR 58777. [Eric Covener]
