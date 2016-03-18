@@ -117,9 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://eissing.org/expr_http2_2.4.patch
      +1: icing, ylavic, trawick
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
      SSLCryptoDevice does not get unregistered because of non-zero refcount
      during the mod_ssl unload happening on httpd startup.
@@ -128,9 +125,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1733088
                   http://svn.apache.org/r1733089
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
-     +1: ylavic, icing
+     +1: ylavic, icing, trawick
      rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
      ylavic: r1723295 + CHANGES entry now included => votes reset
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
