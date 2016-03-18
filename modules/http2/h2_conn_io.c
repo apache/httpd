@@ -265,7 +265,7 @@ static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int flush, int eoc)
     pass_out_ctx ctx;
     apr_bucket *b;
     
-    if (!flush && io->buflen == 0 && APR_BRIGADE_EMPTY(io->output)) {
+    if (io->buflen == 0 && APR_BRIGADE_EMPTY(io->output)) {
         return APR_SUCCESS;
     }
         
