@@ -99,6 +99,16 @@ typedef enum {
     H2_SESSION_ST_REMOTE_SHUTDOWN,  /* client announced GOAWAY */
 } h2_session_state;
 
+typedef struct h2_session_props {
+    apr_uint32_t accepted_max;      /* the highest remote stream id was/will be handled */
+    apr_uint32_t completed_max;     /* the highest remote stream completed */
+    apr_uint32_t emitted_count;     /* the number of local streams sent */
+    apr_uint32_t emitted_max;       /* the highest local stream id sent */
+    apr_uint32_t error;             /* the last session error encountered */
+    unsigned int accepting : 1;     /* if the session is accepting new streams */
+} h2_session_props;
+
+
 /* h2_request is the transformer of HTTP2 streams into HTTP/1.1 internal
  * format that will be fed to various httpd input filters to finally
  * become a request_rec to be handled by soemone.
