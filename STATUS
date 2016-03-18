@@ -181,8 +181,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch: https://eissing.org/proxy_http2_2.4.patch
      +1: icing
-     
-     
+
+  *) mod_authz_host: add "forward-dns" authorization provider
+     trunk patch: http://svn.apache.org/r1734412
+     2.4.x patch: trunk should work (possible minor issue on next-number)
+     +1: fabien
+
+ 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
