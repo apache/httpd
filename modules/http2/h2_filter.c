@@ -218,7 +218,7 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     bbout("  \"this_stream\": %d,\n", stream->id);
     bbout("  \"streams_open\": %d,\n", (int)h2_ihash_count(session->streams));
     bbout("  \"max_stream_started\": %d,\n", mplx->max_stream_started);
-    bbout("  \"requests_received\": %d,\n", session->requests_received);
+    bbout("  \"requests_received\": %d,\n", session->remote.emitted_count);
     bbout("  \"responses_submitted\": %d,\n", session->responses_submitted);
     bbout("  \"streams_reset\": %d, \n", session->streams_reset);
     bbout("  \"pushes_promised\": %d,\n", session->pushes_promised);

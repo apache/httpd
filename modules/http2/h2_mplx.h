@@ -63,11 +63,11 @@ typedef void h2_mplx_consumed_cb(void *ctx, int stream_id, apr_off_t consumed);
 
 struct h2_mplx {
     long id;
-    APR_RING_ENTRY(h2_mplx) link;
-    volatile int refs;
     conn_rec *c;
     apr_pool_t *pool;
     apr_bucket_alloc_t *bucket_alloc;
+
+    APR_RING_ENTRY(h2_mplx) link;
 
     unsigned int aborted : 1;
     unsigned int need_registration : 1;
@@ -146,12 +146,11 @@ struct h2_task *h2_mplx_pop_task(h2_mplx *mplx, int *has_more);
 void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask);
 
 /**
- * Get the highest stream identifier that has been passed on to processing.
- * Maybe 0 in case no stream has been processed yet.
- * @param m the multiplexer
- * @return highest stream identifier for which processing started
+ * Shut down the multiplexer gracefully. Will no longer schedule new streams
+ * but let the ongoing ones finish normally.
+ * @return the highest stream id being/been processed
  */
-int h2_mplx_get_max_stream_started(h2_mplx *m);
+apr_uint32_t h2_mplx_shutdown(h2_mplx *m);
 
 /*******************************************************************************
  * IO lifetime of streams.

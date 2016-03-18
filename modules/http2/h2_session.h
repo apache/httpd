@@ -80,18 +80,29 @@ typedef struct h2_session {
                                      * of 'h2c', NULL otherwise */
     server_rec *s;                  /* server/vhost we're starting on */
     const struct h2_config *config; /* Relevant config for this session */
-    
+    apr_pool_t *pool;               /* pool to use in session */
+    struct h2_mplx *mplx;           /* multiplexer for stream data */
+    struct h2_workers *workers;     /* for executing stream tasks */
+    struct h2_filter_cin *cin;      /* connection input filter context */
+    h2_conn_io io;                  /* io on httpd conn filters */
+    struct h2_ihash_t *streams;     /* streams handled by this session */
+    struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
+
     h2_session_state state;         /* state session is in */
+    
+    h2_session_props local;         /* properties of local session */
+    h2_session_props remote;        /* properites of remote session */
+    
     unsigned int reprioritize  : 1; /* scheduled streams priority changed */
     unsigned int eoc_written   : 1; /* h2 eoc bucket written */
     unsigned int flush         : 1; /* flushing output necessary */
-    unsigned int local_shutdown: 1; /* GOAWAY has been sent by us */
     apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
+    
+    struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     int unsent_submits;             /* number of submitted, but not yet written responses. */
     int unsent_promises;            /* number of submitted, but not yet written push promised */
                                          
-    int requests_received;          /* number of http/2 requests received */
     int responses_submitted;        /* number of http/2 responses submitted */
     int streams_reset;              /* number of http/2 streams reset by client */
     int pushes_promised;            /* number of http/2 push promises submitted */
@@ -101,9 +112,6 @@ typedef struct h2_session {
     apr_size_t frames_received;     /* number of http/2 frames received */
     apr_size_t frames_sent;         /* number of http/2 frames sent */
     
-    int max_stream_received;        /* highest stream id created */
-    int max_stream_handled;         /* highest stream id completed */
-    
     apr_size_t max_stream_count;    /* max number of open streams */
     apr_size_t max_stream_mem;      /* max buffer memory for a single stream */
     
@@ -111,24 +119,10 @@ typedef struct h2_session {
     apr_time_t idle_until;          /* Time we shut down due to sheer boredom */
     apr_time_t keep_sync_until;     /* Time we sync wait until passing to async mpm */
     
-    apr_pool_t *pool;               /* pool to use in session handling */
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
     
-    struct h2_filter_cin *cin;      /* connection input filter context */
-    h2_conn_io io;                  /* io on httpd conn filters */
-
-    struct h2_mplx *mplx;           /* multiplexer for stream data */
-    
-    struct h2_stream *last_stream;  /* last stream worked with */
-    struct h2_ihash_t *streams;     /* streams handled by this session */
-    
     apr_pool_t *spare;              /* spare stream pool */
-    
-    struct nghttp2_session *ngh2;   /* the nghttp2 session (internal use) */
-    struct h2_workers *workers;     /* for executing stream tasks */
-    
-    struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     char status[64];                /* status message for scoreboard */
     int last_status_code;           /* the one already reported */
