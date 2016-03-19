@@ -169,6 +169,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              that could/should be a (short) follow up, though if it can be done
              before the third vote feel free to keep mine :)
 
+  *) mod_ssl: Add hooks to allow mod_ssl_ct to work on 2.4.x branch
+     Note: mod_ssl_ct in trunk also uses a proxy hook (proxy_detach_backend),
+           but that is only to set some envvars for logging, not for
+           functionality.  I think a better solution is required in that case.
+     trunk revisions: r1587607, r1588868
+     2.4.x patch: https://emptyhammock.com/media/downloads/mod_ssl_openssl-to-2.4.x.txt
+     +1: trawick
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
