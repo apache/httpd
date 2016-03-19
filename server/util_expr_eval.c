@@ -1254,11 +1254,15 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
 
+APR_DECLARE_OPTIONAL_FN(int, http2_is_h2, (conn_rec *));
+static APR_OPTIONAL_FN_TYPE(http2_is_h2) *is_http2 = NULL;
+
 static const char *conn_var_names[] = {
     "HTTPS",                    /*  0 */
     "IPV6",                     /*  1 */
     "CONN_LOG_ID",              /*  2 */
     "CONN_REMOTE_ADDR",         /*  3 */
+    "HTTP2",                    /*  4 */
     NULL
 };
 
@@ -1292,6 +1296,11 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return c->log_id;
     case 3:
         return c->client_ip;
+    case 4:
+        if (is_http2 && is_http2(c))
+            return "on";
+        else
+            return "off";
     default:
         ap_assert(0);
         return NULL;
@@ -1782,6 +1791,7 @@ static int ap_expr_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *s)
 {
     is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+    is_http2 = APR_RETRIEVE_OPTIONAL_FN(http2_is_h2);
     apr_pool_cleanup_register(pconf, &is_https, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
     return OK;

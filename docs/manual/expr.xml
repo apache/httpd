@@ -254,6 +254,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
+    <tr><td><code>HTTP2</code></td>
+        <td>"<code>on</code>" if the request uses http/2,
+            "<code>off</code>" otherwise</td></tr>
     <tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" if the request uses https,
             "<code>off</code>" otherwise</td></tr>
