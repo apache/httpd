@@ -647,11 +647,6 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
                       session->id, stream->req->authority, stream->req->path,
                       rv);
     }
-    else {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      "h2_proxy_session(%s-%d): submit %s%s", 
-                      session->id, rv, stream->req->authority, stream->req->path);
-    }
     
     if (rv > 0) {
         stream->id = rv;
