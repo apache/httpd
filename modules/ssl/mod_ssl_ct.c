@@ -1666,7 +1666,6 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
 {
     apr_status_t rv = APR_SUCCESS;
 
-#if AP_MODULE_MAGIC_AT_LEAST(20130702,2)
     if (conncfg->serverhello_sct_list) {
         ap_log_cdata(APLOG_MARK, APLOG_TRACE6, c, "SCT(s) from ServerHello",
                      conncfg->serverhello_sct_list,
@@ -1687,7 +1686,6 @@ static apr_status_t validate_server_data(apr_pool_t *p, conn_rec *c,
                      conncfg->ocsp_sct_list_size,
                      AP_LOG_DATA_SHOW_OFFSET);
     }
-#endif /* httpd has ap_log_*data() */
 
     if (!conncfg->all_scts) {
         conncfg->all_scts = apr_array_make(p, 4, sizeof(ct_sct_data));
