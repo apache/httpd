@@ -112,6 +112,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: fix r->handler = None case sensitivity
+     trunk patch: http://svn.apache.org/r1735786
+     2.4.x patch: trunk works
+     +1: covener, ylavic, jim
+   
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -163,12 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1734412
      2.4.x patch: trunk should work (possible minor issue on next-number)
      +1: fabien
-
-  *) core: fix r->handler = None case sensitivity
-     trunk patch: http://svn.apache.org/r1735786
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
-   
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
