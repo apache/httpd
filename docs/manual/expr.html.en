@@ -224,26 +224,29 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>HANDLER</code></td>
         <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
-<tr class="odd"><td><code>HTTPS</code></td>
+<tr class="odd"><td><code>HTTP2</code></td>
+        <td>"<code>on</code>" if the request uses http/2,
+            "<code>off</code>" otherwise</td></tr>
+<tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" if the request uses https,
             "<code>off</code>" otherwise</td></tr>
-<tr><td><code>IPV6</code></td>
+<tr class="odd"><td><code>IPV6</code></td>
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
-<tr class="odd"><td><code>REQUEST_STATUS</code></td>
+<tr><td><code>REQUEST_STATUS</code></td>
         <td>The HTTP error status of the request (not available during <code class="directive">&lt;If &gt;</code>)</td></tr>
-<tr><td><code>REQUEST_LOG_ID</code></td>
+<tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr class="odd"><td><code>CONN_LOG_ID</code></td>
+<tr><td><code>CONN_LOG_ID</code></td>
         <td>The error log id of the connection (see
             <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
-<tr><td><code>CONN_REMOTE_ADDR</code></td>
+<tr class="odd"><td><code>CONN_REMOTE_ADDR</code></td>
         <td>The peer IP address of the connection (see the
             <code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
-<tr class="odd"><td><code>CONTEXT_PREFIX</code></td>
+<tr><td><code>CONTEXT_PREFIX</code></td>
         <td /></tr>
-<tr><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
+<tr class="odd"><td><code>CONTEXT_DOCUMENT_ROOT</code></td>
         <td /></tr>
 </table>
 
