@@ -110,6 +110,9 @@
   *) core: Ensure that httpd exits with an error status when the MPM fails
      to run.  [Yann Ylavic]
 
+  *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
+     [Jan Kaluza, Yann Ylavic]
+
   *) mod_ssl: Add SSLOCSPProxyURL to add the possibility to do all queries
      to OCSP responders through a HTTP proxy. [Ruediger Pluem]
 

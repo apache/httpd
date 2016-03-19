@@ -1026,7 +1026,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
     X509 *cert;
     DH *dhparams;
 #ifdef HAVE_ECC
-    EC_GROUP *ecparams;
+    EC_GROUP *ecparams = NULL;
     int nid;
     EC_KEY *eckey = NULL;
 #endif
@@ -1174,6 +1174,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
                      BN_num_bits(dhparams->p), vhost_id, certfile);
+        DH_free(dhparams);
     }
 
 #ifdef HAVE_ECC
@@ -1202,6 +1203,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
 #endif
     }
     EC_KEY_free(eckey);
+    EC_GROUP_free(ecparams);
 #endif
 
     return APR_SUCCESS;
