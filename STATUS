@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: fix r->handler = None case sensitivity
      trunk patch: http://svn.apache.org/r1735786
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
    
  
 PATCHES/ISSUES THAT ARE BEING WORKED
