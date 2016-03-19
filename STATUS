@@ -112,12 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
-                  Fix counting of inflated bytes in deflate_in_filter() when
-                  asked to flush
-     trunk patch: http://svn.apache.org/r1619483
-     2.4.x patch: trunk works
-     +1: ylavic, icing, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
