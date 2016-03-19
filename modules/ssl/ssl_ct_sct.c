@@ -278,14 +278,12 @@ apr_status_t sct_parse(const char *source,
                  "SCT from %s: version %d timestamp %s hash alg %d sig alg %d",
                  source, fields->version, fields->timestr,
                  fields->hash_alg, fields->sig_alg);
-#if AP_MODULE_MAGIC_AT_LEAST(20130702,2)
     ap_log_data(APLOG_MARK, APLOG_DEBUG, s, "Log Id",
                 fields->logid, sizeof(fields->logid),
                 AP_LOG_DATA_SHOW_OFFSET);
     ap_log_data(APLOG_MARK, APLOG_DEBUG, s, "Signature",
                 fields->sig, fields->siglen,
                 AP_LOG_DATA_SHOW_OFFSET);
-#endif /* httpd has ap_log_*data() */
 
     ap_assert(!(fields->signed_data && rv != APR_SUCCESS));
 
