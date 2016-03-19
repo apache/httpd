@@ -112,18 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Free dhparams when getting DH params. This fixes issue when
-     SSLCryptoDevice does not get unregistered because of non-zero refcount
-     during the mod_ssl unload happening on httpd startup.
-     trunk patch: http://svn.apache.org/r1720129
-                  http://svn.apache.org/r1723295
-                  http://svn.apache.org/r1733088
-                  http://svn.apache.org/r1733089
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-dh_leaks.patch
-     +1: ylavic, icing, trawick
-     rpluem says: Can we get an updated 2.4.x proposal that includes r1723295?
-     ylavic: r1723295 + CHANGES entry now included => votes reset
-
   *) mod_deflate: follow up to r1619444 (and to r1619383). (backported in r1669555)
                   Fix counting of inflated bytes in deflate_in_filter() when
                   asked to flush
