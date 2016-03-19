@@ -178,8 +178,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Includes backport of r1729208 to set ALPN protocols for ssl backend
      connections. 
      Trunk version of patch: <various>
-     Backport version for 2.4.x of patch: https://eissing.org/proxy_http2_2.4.patch
+     Backport version for 2.4.x of patch: https://www.eissing.org/proxy_http2_2.4v2.patch 
      +1: icing
+     updated patch after review by cjaillet, merged 1735668,1735748 from trunk
 
   *) mod_authz_host: add "forward-dns" authorization provider
      trunk patch: http://svn.apache.org/r1734412
