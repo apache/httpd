@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      connections. 
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch: https://www.eissing.org/proxy_http2_2.4v2.patch 
-     +1: icing
+     +1: icing, ylavic
      updated patch after review by cjaillet, merged 1735668,1735748 from trunk
 
   *) mod_authz_host: add "forward-dns" authorization provider
