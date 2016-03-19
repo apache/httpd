@@ -4773,16 +4773,16 @@ static int core_override_type(request_rec *r)
                           "Can't evaluate handler expression: %s", err);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        if (val != ap_strstr_c(val, "proxy:unix")) { 
+            /* Retained for compatibility --  but not for UDS */
+            char *tmp = apr_pstrdup(r->pool, val);
+            ap_str_tolower(tmp);
+            val = tmp;
+        }
+
         if (strcmp(val, "none")) { 
-            if (val != ap_strstr_c(val, "proxy:unix")) { 
-                /* Retained for compatibility --  but not for UDS */
-                char *tmp = apr_pstrdup(r->pool, val);
-                ap_str_tolower(tmp);
-                r->handler = tmp;
-            }
-            else { 
-                r->handler = val;
-            }
+            r->handler = val;
         }
     }
     else if (conf->handler && strcmp(conf->handler, "none")) { 
