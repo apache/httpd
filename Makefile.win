@@ -1132,6 +1132,7 @@ BEGIN {
 		modules\mappers\mod_rewrite.h \
 		modules\proxy\mod_proxy.h \
 		modules\ssl\mod_ssl.h \
+		modules\ssl\mod_ssl_openssl.h \
           ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y

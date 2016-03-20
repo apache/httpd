@@ -234,6 +234,7 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/proxy/mod_proxy.h \
         $(srcdir)/modules/session/mod_session.h \
 	$(srcdir)/modules/ssl/mod_ssl.h \
+	$(srcdir)/modules/ssl/mod_ssl_openssl.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
 
 install-include:

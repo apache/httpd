@@ -467,6 +467,7 @@
  *                          ap_prep_lingering_close().
  * 20120211.56 (2.4.19-dev) Split useragent_host from the conn_rec into
  *                          the request_rec, with ap_get_useragent_host()
+ * 20120211.57 (2.4.19-dev) Add mod_ssl_openssl.h and OpenSSL-specific hooks
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -474,7 +475,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 56                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 57                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
