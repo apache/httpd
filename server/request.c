@@ -1606,9 +1606,6 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         return OK;
     }
 
-    cache = prep_walk_cache(AP_NOTE_FILE_WALK, r);
-    cached = (cache->cached != NULL);
-
     /* No tricks here, there are just no <Files > to parse in this context.
      * We won't destroy the cache, just in case _this_ redirect is later
      * redirected again to a context containing the same or similar <Files >.
@@ -1616,6 +1613,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     if (!num_sec) {
         return OK;
     }
+
+    cache = prep_walk_cache(AP_NOTE_FILE_WALK, r);
+    cached = (cache->cached != NULL);
 
     /* Get the basename .. and copy for the cache just
      * in case r->filename is munged by another module
