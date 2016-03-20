@@ -166,6 +166,13 @@
 #endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 #endif /* if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb) */
 
+/* session id constness */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define IDCONST
+#else
+#define IDCONST const
+#endif
+
 /* TLS session tickets */
 #if defined(SSL_CTX_set_tlsext_ticket_key_cb)
 #define HAVE_TLS_SESSION_TICKETS
@@ -803,7 +810,7 @@ int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
 int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
-SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
+SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, IDCONST unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(const SSL *, int, int);
 #ifdef HAVE_TLSEXT
@@ -824,10 +831,10 @@ int ssl_callback_alpn_select(SSL *ssl, const unsigned char **out,
 apr_status_t ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
 void         ssl_scache_kill(server_rec *);
-BOOL         ssl_scache_store(server_rec *, UCHAR *, int,
+BOOL         ssl_scache_store(server_rec *, IDCONST UCHAR *, int,
                               apr_time_t, SSL_SESSION *, apr_pool_t *);
-SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
-void         ssl_scache_remove(server_rec *, UCHAR *, int,
+SSL_SESSION *ssl_scache_retrieve(server_rec *, IDCONST UCHAR *, int, apr_pool_t *);
+void         ssl_scache_remove(server_rec *, IDCONST UCHAR *, int,
                                apr_pool_t *);
 
 /** OCSP Stapling Support */
