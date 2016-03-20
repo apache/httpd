@@ -29,7 +29,12 @@
                                             -- Unknown    */
 #include "ssl_private.h"
 #include "mod_ssl.h"
+#include "mod_ssl_openssl.h"
 #include "apr_date.h"
+
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, proxy_post_handshake,
+                                    (conn_rec *c,SSL *ssl),
+                                    (c,ssl),OK,DECLINED);
 
 /*  _________________________________________________________________
 **
@@ -1091,6 +1096,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         const char *hostname_note = apr_table_get(c->notes,
                                                   "proxy-request-hostname");
         BOOL proxy_ssl_check_peer_ok = TRUE;
+        int post_handshake_rc = OK;
+
         sc = mySrvConfig(server);
 
 #ifdef HAVE_TLSEXT
@@ -1182,11 +1189,17 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             }
         }
 
+        if (proxy_ssl_check_peer_ok == TRUE) {
+            /* another chance to fail */
+            post_handshake_rc = ssl_run_proxy_post_handshake(c, filter_ctx->pssl);
+        }
+
         if (cert) {
             X509_free(cert);
         }
 
-        if (proxy_ssl_check_peer_ok != TRUE) {
+        if (proxy_ssl_check_peer_ok != TRUE
+            || (post_handshake_rc != OK && post_handshake_rc != DECLINED)) {
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             apr_table_setn(c->notes, "SSL_connect_rv", "err");

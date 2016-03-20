@@ -29,6 +29,27 @@
 #include "httpd.h"
 #include "apr_optional.h"
 
+/* Create a set of SSL_DECLARE(type), SSL_DECLARE_NONSTD(type) and
+ * SSL_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define SSL_DECLARE(type)            type
+#define SSL_DECLARE_NONSTD(type)     type
+#define SSL_DECLARE_DATA
+#elif defined(SSL_DECLARE_STATIC)
+#define SSL_DECLARE(type)            type __stdcall
+#define SSL_DECLARE_NONSTD(type)     type
+#define SSL_DECLARE_DATA
+#elif defined(SSL_DECLARE_EXPORT)
+#define SSL_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define SSL_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define SSL_DECLARE_DATA             __declspec(dllexport)
+#else
+#define SSL_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define SSL_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define SSL_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 /** The ssl_var_lookup() optional function retrieves SSL environment
  * variables. */
 APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
