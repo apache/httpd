@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            functionality.  I think a better solution is required in that case.
      trunk revisions: r1587607, r1588868
      2.4.x patch: https://emptyhammock.com/media/downloads/mod_ssl_openssl-to-2.4.x.txt
-     +1: trawick, ylavic
+     +1: trawick, ylavic, jim
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
