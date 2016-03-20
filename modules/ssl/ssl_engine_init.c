@@ -474,6 +474,7 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
 }
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 /*
  * Enable/disable SSLProtocol. If the mod_ssl enables protocol
  * which is disabled by default by OpenSSL, show a warning.
@@ -499,6 +500,7 @@ static void ssl_set_ctx_protocol_option(server_rec *s,
                      "by OpenSSL by default on this system", name);
     }
 }
+#endif
 
 static apr_status_t ssl_init_ctx_protocol(server_rec *s,
                                           apr_pool_t *p,
@@ -510,6 +512,9 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     char *cp;
     int protocol = mctx->protocol;
     SSLSrvConfigRec *sc = mySrvConfig(s);
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    int prot;
+#endif
 
     /*
      *  Create the new per-server SSL context
@@ -535,6 +540,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "Creating new SSL context (protocols: %s)", cp);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #ifndef OPENSSL_NO_SSL3
     if (protocol == SSL_PROTOCOL_SSLV3) {
         method = mctx->pkp ?
@@ -565,12 +571,18 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
             SSLv23_client_method() : /* proxy */
             SSLv23_server_method();  /* server */
     }
+#else
+    method = mctx->pkp ?
+        TLS_client_method() : /* proxy */
+        TLS_server_method();  /* server */
+#endif
     ctx = SSL_CTX_new(method);
 
     mctx->ssl_ctx = ctx;
 
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
@@ -588,6 +600,43 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     ssl_set_ctx_protocol_option(s, ctx, SSL_OP_NO_TLSv1_2,
                                 protocol & SSL_PROTOCOL_TLSV1_2, "TLSv1.2");
 #endif
+
+#else /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
+    /* We first determine the maximum protocol version we should provide */
+    if (protocol & SSL_PROTOCOL_TLSV1_2) {
+        prot = TLS1_2_VERSION;
+    } else if (protocol & SSL_PROTOCOL_TLSV1_1) {
+        prot = TLS1_1_VERSION;
+    } else if (protocol & SSL_PROTOCOL_TLSV1) {
+        prot = TLS1_VERSION;
+#ifndef OPENSSL_NO_SSL3
+    } else if (protocol & SSL_PROTOCOL_SSLV3) {
+        prot = SSL3_VERSION;
+#endif
+    } else {
+        SSL_CTX_free(ctx);
+        mctx->ssl_ctx = NULL;
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                "No SSL protocols available [hint: SSLProtocol]");
+        return ssl_die(s);
+    }
+    SSL_CTX_set_max_proto_version(ctx, prot);
+
+    /* Next we scan for the minimal protocol version we should provide,
+     * but we do not allow holes between max and min */
+    if (prot == TLS1_2_VERSION && protocol & SSL_PROTOCOL_TLSV1_1) {
+        prot = TLS1_1_VERSION;
+    }
+    if (prot == TLS1_1_VERSION && protocol & SSL_PROTOCOL_TLSV1) {
+        prot = TLS1_VERSION;
+    }
+#ifndef OPENSSL_NO_SSL3
+    if (prot == TLS1_VERSION && protocol & SSL_PROTOCOL_SSLV3) {
+        prot = SSL3_VERSION;
+    }
+#endif
+    SSL_CTX_set_min_proto_version(ctx, prot);
+#endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
 #ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
     if (sc->cipher_server_pref == TRUE) {
