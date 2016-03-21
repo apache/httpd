@@ -391,6 +391,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) nghttp2_session_callbacks_set_send_callback,$(DL) >> $@
 	@echo $(DL) nghttp2_session_client_new2,$(DL) >> $@
 	@echo $(DL) nghttp2_session_consume,$(DL) >> $@
+	@echo $(DL) nghttp2_session_consume_connection,$(DL) >> $@
 	@echo $(DL) nghttp2_session_del,$(DL) >> $@
 	@echo $(DL) nghttp2_session_get_remote_settings,$(DL) >> $@
 	@echo $(DL) nghttp2_session_get_stream_user_data,$(DL) >> $@
