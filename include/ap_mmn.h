@@ -497,7 +497,7 @@
  * 20150222.6 (2.5.0-dev)  Add async_filter to conn_rec.
  * 20150222.7 (2.5.0-dev)  Add ap_casecmpstr[n]();
  * 20150222.8 (2.5.0-dev)  Add ap_getword_conf2[_nc]();
- * 20150222.9 (2.5.0-dev)  Add epxr_hander to core_dir_config.
+ * 20150222.9 (2.5.0-dev)  Add expr_handler to core_dir_config.
  * 20150222.10 (2.5.0-dev) Add new ap_update_child_status...() methods,
  *                         add protocol to worker_score in scoreboard.h,
  *                         Add pre_close connection hook and 
@@ -510,6 +510,7 @@
  * 20160312.0 (2.5.0-dev)  Rename complete_connection to output_pending,
  *                         add ap_filter_input_pending(),
  *                         ap_filter_prepare_brigade(), ap_filter_direction_e
+ * 20160312.1 (2.5.0-dev)  Add cgi_var_rules to core_dir_config.
  * 20160315.0 (2.5.0-dev)  Rename ap_mpm_register_socket_callback,
  *                         ap_mpm_register_socket_callback_timeout and
  *                         ap_mpm_unregister_socket_callback to
