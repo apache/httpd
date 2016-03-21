@@ -4,8 +4,10 @@
      several stages of initialization and connection handling.  See
      mod_ssl_openssl.h.  [Jeff Trawick]
 
-  *) mod_http2: disabling PUSH when client sends GOAWAY.
-  
+  *) mod_http2: disabling PUSH when client sends GOAWAY. Slave connections are 
+     reused for several requests, improved performance and better memory use. 
+     [Stefan Eissing]  
+     
   *) mod_rewrite: Don't implicitly URL-escape the original query string
      when no substitution has changed it (like PR50447 but server context)
      [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]
