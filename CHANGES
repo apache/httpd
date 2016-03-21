@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+  *) mod_authz_host: Add a new "forward-dns" authorization type, not relying on
+     reverse DNS lookups.  [Fabien]
+
   *) mod_ssl: Add hooks to allow other modules to perform processing at
      several stages of initialization and connection handling.  See
      mod_ssl_openssl.h.  [Jeff Trawick]
@@ -7,26 +10,26 @@
   *) mod_http2: disabling PUSH when client sends GOAWAY. Slave connections are 
      reused for several requests, improved performance and better memory use. 
      [Stefan Eissing]  
-     
+
   *) mod_rewrite: Don't implicitly URL-escape the original query string
      when no substitution has changed it (like PR50447 but server context)
      [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]
 
   *) mod_http2: fixes problem with wrong lifetime of file buckets on main
      connection. [Stefan Eissing]
-     
+
   *) mod_http2: fixes incorrect denial of requests without :authority header.
      [Stefan Eissing]
-     
+
   *) mod_reqtimeout: Prevent long response times from triggering a timeout once
      the request has been fully read.  PR 59045.  [Yann Ylavic]
 
   *) ap_expr: expression support for variable HTTP2=on|off. [Stefan Eissing]
-     
+
   *) mod_http2: give control to async mpm for keepalive timeouts only when
      no streams are open and even if only after 1 sec delay. Under load, event
      mpm discards connections otherwise too quickly. [Stefan Eissing]
-  
+
   *) mod_ssl: Don't lose track of the SSL context if an unlikely failure occurs
      in ssl_init_ssl_connection().  [Graham Leggett]
 
@@ -37,12 +40,12 @@
      slave connections. use protocol_switch hook to initialize server config
      early based on SNI selected vhost. 
      [Stefan Eissing]
-  
+
   *) hostname: Test and log useragent_host per-request across various modules,
      including the scoreboard, expression and rewrite engines, setenvif,
      authz_host, access_compat, custom logging, ssl and REMOTE_HOST variables.
      PR55348  [William Rowe]
- 
+
   *) core: Track the useragent_host per-request when mod_remoteip or similar
      modules track a per-request useragent_ip.  Modules should be updated
      to inquire for ap_get_useragent_host() in place of ap_get_remote_host().
@@ -65,7 +68,7 @@
 
   *) mod_http2: fixed apr_uint64_t formatting in a log statement to user proper 
      APR def, thanks to @Sp1l.
-     
+
   *) mod_http2: number of worker threads allowed to a connection is adjusting 
      dynamically. Starting with 4, the number is doubled when streams can be 
      served without block on http/2 connection flow. The number is halfed, when
@@ -78,7 +81,7 @@
      This does *not* limit the number of streams a client may open, rather the
      number of server threads a connection might use.
      [Stefan Eissing]
-  
+
   *) mod_http2: allowing link header to specify multiple "rel" values, 
      space-separated inside a quoted string. Prohibiting push when Link 
      parameter "nopush" is present.
@@ -87,7 +90,7 @@
   *) mod_http2: reworked connection state handling. Idle connections accept a
      GOAWAY from the client without further reply. Otherwise the
      module makes a best effort to send one last GOAWAY to the client.
-     
+
   *) mod_http2: the values from standard directives Timeout and KeepAliveTimeout
      properly are applied to http/2 connections.
      [Stefan Eissing]
@@ -143,7 +146,7 @@
   *) mod_ssl: handle TIMEOUT on empty SSL input as non-fatal, returning 
      APR_TIMEUP and preserving connection state for later retry.
      [Stefan Eissing]
-     
+
   *) mod_ssl: Save some TLS record (application data) fragmentations by
      including the last and subsequent suitable buckets when coalescing.
      [Yann Ylavic]
@@ -180,7 +183,7 @@
          SetHandler http2-status
      </Location>
      [Stefan Eissing]
-  
+
   *) mod_http2: Fixed flushing of last GOAWAY frame. Previously, that frame
      did not always reach the client, causing some to fail the next request.
      Fixed calculation of last stream id accepted as described in rfc7540. 
@@ -201,7 +204,7 @@
   *) mod_http2: fixed bug in input window size calculation by moving chunked
      request body encoding into later stage of processing. Fixes PR 58825.
      [Stefan Eissing]
-     
+
   *) core: new hook "pre_close_connection" which is run before the lingering
      close of connections is started. This gives protocol handlers one last
      chance to use a connection before it goes down.
