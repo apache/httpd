@@ -245,7 +245,7 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
         *pctx = ctx;
         return APR_SUCCESS;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, 
+    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(03368)
                   "h2_proxy_session, engine init, no ctx found");
     return APR_ENOTIMPL;
 }
@@ -282,6 +282,7 @@ static void request_done(h2_proxy_session *session, request_rec *r,
             if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
                 /* push to engine */
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                              APLOGNO(03369)
                               "h2_proxy_session(%s): rescheduled request %s",
                               ctx->engine_id, task_id);
                 return;
@@ -296,6 +297,7 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     if (complete) {
         if (req_engine_done && ctx->engine) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                          APLOGNO(03370)
                           "h2_proxy_session(%s): finished request %s",
                           ctx->engine_id, task_id);
             req_engine_done(ctx->engine, r->connection);
@@ -304,6 +306,7 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     else {
         if (req_engine_done && ctx->engine) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                          APLOGNO(03371)
                           "h2_proxy_session(%s): failed request %s",
                           ctx->engine_id, task_id);
             req_engine_done(ctx->engine, r->connection);
@@ -343,11 +346,11 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                                           request_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
-                      "session unavailable");
+                      APLOGNO(03372) "session unavailable");
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03373)
                   "eng(%s): run session %s", ctx->engine_id, ctx->session->id);
     ctx->session->user_data = ctx;
     
@@ -370,7 +373,8 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
             if (s2 == APR_ECONNABORTED) {
                 /* master connection gone */
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, s2, ctx->owner, 
-                              "eng(%s): pull request", ctx->engine_id);
+                              APLOGNO(03374) "eng(%s): pull request", 
+                              ctx->engine_id);
                 status = s2;
                 break;
             }
@@ -381,7 +385,8 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
         else {
             /* end of processing, maybe error */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
-                          "eng(%s): end of session run", ctx->engine_id);
+                          APLOGNO(03375) "eng(%s): end of session run", 
+                          ctx->engine_id);
             /*
              * Any open stream of that session needs to
              * a) be reopened on the new session iff safe to do so
@@ -587,7 +592,7 @@ run_session:
         /* session and connection still ok */
         if (next_request(ctx, 1) == APR_SUCCESS) {
             /* more requests, run again */
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03376)
                           "run_session, again");
             goto run_session;
         }
@@ -619,7 +624,8 @@ cleanup:
     }
 
     ap_set_module_config(ctx->owner->conn_config, &proxy_http2_module, NULL);
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, "leaving handler");
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
+                  APLOGNO(03377) "leaving handler");
     return ctx->r_status;
 }
 
