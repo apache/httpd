@@ -551,7 +551,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <code>include</code> SSI directive, <code>QUERY_STRING</code>
       will represent the query string of the subrequest and
       <code>DOCUMENT_ARGS</code> will represent the query string of
-      the SSI document.  (Available in Apache HTTP Server 2.5.0 and
+      the SSI document.  (Available in Apache HTTP Server 2.4.19 and
       later.)</dd>
 
       <dt><code>DOCUMENT_NAME</code></dt>
