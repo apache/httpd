@@ -642,8 +642,8 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
                                 hd->nv, hd->nvlen, pp, stream);
                                 
     if (APLOGcdebug(session->c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      "h2_proxy_session(%s): submit %s%s -> %d", APLOGNO(03363)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03363)
+                      "h2_proxy_session(%s): submit %s%s -> %d", 
                       session->id, stream->req->authority, stream->req->path,
                       rv);
     }
