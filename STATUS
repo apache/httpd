@@ -112,14 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) DOCUMENT_ARGS, set by mod_include to represent args to SSI document;
-     unlike UNESCAPED_QUERY_STRING, not shell-escaped
-     trunk patch: r1734817, r1734955, r1734989 (but version compat and CHANGES
-                  need to be manipulated)
-     2.4.x patch: https://emptyhammock.com/media/downloads/DOCUMENT_ARGS-to-2.4.x.txt
-     +1: trawick, jim, ylavic
-     ylavic: The second CHANGES entry added in the patch should not be merged...
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

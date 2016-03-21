@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+  *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
+     request for the SSI document.  [Jeff Trawick]
+
   *) mod_authz_host: Add a new "forward-dns" authorization type, not relying on
      reverse DNS lookups.  [Fabien]
 
