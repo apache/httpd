@@ -2655,6 +2655,10 @@ static ct_server_config *copy_ct_server_config(apr_pool_t *p,
     return sconf;
 }
 
+#if AP_MODULE_MAGIC_AT_LEAST(20140207,2)
+/* Only trunk has the proxy_detach_backend hook; without it,
+ * no way to set the envvars which represent backend CT status
+ */
 static int ssl_ct_detach_backend(request_rec *r,
                                  proxy_conn_rec *backend)
 {
@@ -2698,6 +2702,7 @@ static int ssl_ct_detach_backend(request_rec *r,
 
     return OK;
 }
+#endif
 
 static void ct_register_hooks(apr_pool_t *p)
 {
@@ -2709,8 +2714,10 @@ static void ct_register_hooks(apr_pool_t *p)
                         APR_HOOK_MIDDLE);
     ap_hook_post_read_request(ssl_ct_post_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(ssl_ct_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+#if AP_MODULE_MAGIC_AT_LEAST(20140207,2)
     APR_OPTIONAL_HOOK(proxy, detach_backend, ssl_ct_detach_backend, NULL, NULL,
                       APR_HOOK_MIDDLE);
+#endif
     APR_OPTIONAL_HOOK(ssl, init_server, ssl_ct_init_server, NULL, NULL,
                       APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(ssl, pre_handshake,
