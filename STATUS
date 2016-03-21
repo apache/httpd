@@ -161,6 +161,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      updated patch with APLOGNOs by merging 1735931,1735935 from trunk
      updated patch with APLOGNOs by merging 1735942 from trunk
 
+  *) CGIVar for controlling building of REQUEST_URI (and future uses)
+     As mentioned on dev@:
+     * This is intended to replace existing methods of configuring how various
+       CGI vars should be built over the long term, though only REQUEST_URI is
+       handled for now.
+     * If the mechanism should be usable by third-party modules for its own
+       concerns, a check for recognized-envvar can be removed from the command
+       processor and the rest of the code will let the third-party module do
+       the right thing since the rule for a var is a character string in a table,
+       not a separate core_dir_config flag with enumerated values.
+     Trunk patch: r1734947, 1735952
+     2.4.x patch: https://emptyhammock.com/media/downloads/CGIVar-to-2.4.x.txt
+     +1: trawick
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
