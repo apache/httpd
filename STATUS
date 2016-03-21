@@ -173,7 +173,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        not a separate core_dir_config flag with enumerated values.
      Trunk patch: r1734947, 1735952
      2.4.x patch: https://emptyhammock.com/media/downloads/CGIVar-to-2.4.x.txt
-     +1: trawick
+     +1: trawick, ylavic
+
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
