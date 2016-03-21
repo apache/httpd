@@ -231,9 +231,11 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
     }
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #if APR_HAS_THREADS
     ssl_util_thread_setup(p);
 #endif
+#endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
     /*
      * SSL external crypto device ("engine") support
