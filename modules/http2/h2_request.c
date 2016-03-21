@@ -414,7 +414,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
         /* Request check post hooks failed. An example of this would be a
          * request for a vhost where h2 is disabled --> 421.
          */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03367)
                       "h2_request(%d): access_status=%d, request_create failed",
                       req->id, access_status);
         ap_die(access_status, r);
