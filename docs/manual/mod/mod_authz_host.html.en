@@ -186,7 +186,7 @@ Require host .net example.edu</pre>
     <p>A client the IP of which is resolved from the name
     <code>bla.example.org</code> will be granted access.</p>
 
-    <p>The <code>forward-dns</code> provider was added in 2.4.19</p>
+    <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 
 
 <h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
