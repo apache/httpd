@@ -179,7 +179,7 @@ Require forward-dns bla.example.org
     <p>A client the IP of which is resolved from the name
     <code>bla.example.org</code> will be granted access.</p>
 
-    <p>The <code>forward-dns</code> provider was added in 2.4.19</p>
+    <p>The <code>forward-dns</code> provider was added in 2.4.19.</p>
 </section>
 
 <section id="reqlocal"><title>Require local</title>
