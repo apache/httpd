@@ -723,7 +723,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
             }
             else {
                 /* cannot block on timeout */
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, session->c, APLOGNO(03379)
                               "h2_proxy_session(%s): unable to get conn socket", 
                               session->id);
                 return APR_ENOTIMPL;
@@ -748,7 +748,7 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
         /* nop */
     }
     else if (!APR_STATUS_IS_EAGAIN(status)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO()
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO(03380)
                       "h2_proxy_session(%s): read error", session->id);
         dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, status, NULL);
     }
@@ -764,7 +764,7 @@ apr_status_t h2_proxy_session_submit(h2_proxy_session *session,
     
     status = open_stream(session, url, r, &stream);
     if (status == OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03381)
                       "process stream(%d): %s %s%s, original: %s", 
                       stream->id, stream->req->method, 
                       stream->req->authority, stream->req->path, 
@@ -800,7 +800,7 @@ static apr_status_t check_suspended(h2_proxy_session *session)
             }
             else if (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status)) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, session->c, 
-                              APLOGNO() "h2_proxy_stream(%s-%d): check input", 
+                              APLOGNO(03382) "h2_proxy_stream(%s-%d): check input", 
                               session->id, stream_id);
                 h2_iq_remove(session->suspended, stream_id);
                 dispatch_event(session, H2_PROXYS_EV_STREAM_RESUMED, 0, NULL);
