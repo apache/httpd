@@ -112,7 +112,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  
+  *) mod_authz_host: add "forward-dns" authorization provider
+     trunk patch: http://svn.apache.org/r1734412
+     2.4.x patch: trunk should work (possible minor issue on next-number)
+     +1: fabien, ylavic, jim
+     ylavic: I would have liked more (doc) emphasis on the lower security of
+             "Require forward-dns" vs "Require host"'s double DNS lookup but
+             that could/should be a (short) follow up, though if it can be done
+             before the third vote feel free to keep mine :)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,15 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      updated patch after review by cjaillet, merged 1735668,1735748 from trunk
      updated patch with APLOGNOs by merging 1735931,1735935 from trunk
      updated patch with APLOGNOs by merging 1735942 from trunk
-
-  *) mod_authz_host: add "forward-dns" authorization provider
-     trunk patch: http://svn.apache.org/r1734412
-     2.4.x patch: trunk should work (possible minor issue on next-number)
-     +1: fabien, ylavic, jim
-     ylavic: I would have liked more (doc) emphasis on the lower security of
-             "Require forward-dns" vs "Require host"'s double DNS lookup but
-             that could/should be a (short) follow up, though if it can be done
-             before the third vote feel free to keep mine :)
 
  
 PATCHES/ISSUES THAT ARE BEING WORKED
