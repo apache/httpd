@@ -699,7 +699,7 @@ static apr_status_t filters_cleanup(void *data)
 {
     ap_filter_t **key = data;
 
-    apr_hash_set((*key)->c->filters, key, sizeof(ap_filter_t **), NULL);
+    apr_hash_set((*key)->c->filters, key, sizeof *key, NULL);
 
     return APR_SUCCESS;
 }
