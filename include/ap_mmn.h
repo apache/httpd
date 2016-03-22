@@ -518,6 +518,7 @@
  *                         ap_mpm_register_poll_callback_timeout and
  *                         ap_mpm_unregister_poll_callback. Add
  *                         AP_MPMQ_CAN_POLL.
+ * 20160315.1 (2.5.0-dev)  Add AP_IMPLEMENT_OPTIONAL_HOOK_RUN_FIRST.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
