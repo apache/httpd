@@ -112,7 +112,7 @@
  * @param decline The "decline" return value
  * @return ok, decline or an error.
  * @note If IMPLEMENTing a hook that is not linked into the Apache core,
- * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
+ * (e.g. within a dso) use AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL instead.
  */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
         APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
@@ -132,7 +132,7 @@
  * @param decline The "decline" return value
  * @return decline or an error.
  * @note If IMPLEMENTing a hook that is not linked into the Apache core
- * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
+ * (e.g. within a dso) use AP_IMPLEMENT_OPTIONAL_HOOK_RUN_FIRST instead.
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
         APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
@@ -151,6 +151,16 @@
                                            decline) \
         APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
                                             args_use,ok,decline)
+
+/**
+ * Implement an optional hook. This is exactly the same as a standard hook
+ * implementation, except the hook is optional.
+ * @see AP_IMPLEMENT_HOOK_RUN_FIRST
+ */
+#define AP_IMPLEMENT_OPTIONAL_HOOK_RUN_FIRST(ret,name,args_decl,args_use, \
+                                             decline) \
+        APR_IMPLEMENT_OPTIONAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
+                                              args_use,decline)
 
 /**
  * Hook an optional hook. Unlike static hooks, this uses a macro instead of a
