@@ -1151,7 +1151,7 @@ struct conn_rec {
     struct apr_bucket_alloc_t *bucket_alloc;
     /** The current state of this connection; may be NULL if not used by MPM */
     conn_state_t *cs;
-    /** No longer used, replaced with ap_filter_input_pending() */
+    /** Is there data pending in the input filters or connection? */
     int data_in_input_filters;
     /** No longer used, replaced with ap_filter_should_yield() */
     int data_in_output_filters;

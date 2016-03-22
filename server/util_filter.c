@@ -713,9 +713,8 @@ AP_DECLARE(int) ap_filter_prepare_brigade(ap_filter_t *f, apr_pool_t **p)
 
         pool = f->r ? f->r->pool : f->c->pool;
 
-        key = apr_palloc(pool, sizeof(ap_filter_t **));
-        *key = f;
-        apr_hash_set(f->c->filters, key, sizeof(ap_filter_t **), f);
+        key = apr_pmemdup(pool, &f, sizeof f);
+        apr_hash_set(f->c->filters, key, sizeof key, f);
 
         f->bb = apr_brigade_create(pool, f->c->bucket_alloc);
 
