@@ -29,6 +29,10 @@
 #include "apr_want.h"
 #include "apr_general.h"
 
+#if APR_HAVE_LIMITS_H
+#include <limits.h>
+#endif
+
 #include "ap_socache.h"
 
 /* XXX Unfortunately, there are still many unsigned ints in use here, so we
