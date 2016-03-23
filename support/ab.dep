@@ -1,0 +1,37 @@
+# Microsoft Developer Studio Generated Dependency File, included by ab.mak
+
+.\ab.c : \
+	"..\include\ap_release.h"\
+	"..\srclib\apr-util\include\apr_base64.h"\
+	"..\srclib\apr-util\include\apr_xlate.h"\
+	"..\srclib\apr-util\include\apu.h"\
+	"..\srclib\apr\include\apr.h"\
+	"..\srclib\apr\include\apr_allocator.h"\
+	"..\srclib\apr\include\apr_dso.h"\
+	"..\srclib\apr\include\apr_errno.h"\
+	"..\srclib\apr\include\apr_file_info.h"\
+	"..\srclib\apr\include\apr_file_io.h"\
+	"..\srclib\apr\include\apr_general.h"\
+	"..\srclib\apr\include\apr_getopt.h"\
+	"..\srclib\apr\include\apr_global_mutex.h"\
+	"..\srclib\apr\include\apr_inherit.h"\
+	"..\srclib\apr\include\apr_lib.h"\
+	"..\srclib\apr\include\apr_network_io.h"\
+	"..\srclib\apr\include\apr_poll.h"\
+	"..\srclib\apr\include\apr_pools.h"\
+	"..\srclib\apr\include\apr_portable.h"\
+	"..\srclib\apr\include\apr_proc_mutex.h"\
+	"..\srclib\apr\include\apr_shm.h"\
+	"..\srclib\apr\include\apr_signal.h"\
+	"..\srclib\apr\include\apr_strings.h"\
+	"..\srclib\apr\include\apr_tables.h"\
+	"..\srclib\apr\include\apr_thread_mutex.h"\
+	"..\srclib\apr\include\apr_thread_proc.h"\
+	"..\srclib\apr\include\apr_time.h"\
+	"..\srclib\apr\include\apr_user.h"\
+	"..\srclib\apr\include\apr_want.h"\
+	
+
+..\build\win32\httpd.rc : \
+	"..\include\ap_release.h"\
+	
