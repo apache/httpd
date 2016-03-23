@@ -564,11 +564,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_bytraffic.mak  CFG="mod_lbmethod_bytraffic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_heartbeat.mak  CFG="mod_lbmethod_heartbeat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
-!IFDEF ALL
-	cd modules\proxy\examples
-	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_rr.mak CFG="mod_lbmethod_rr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..\..
-!ENDIF
 	cd modules\session
 	 $(MAKE) $(MAKEOPT) -f mod_session.mak        CFG="mod_session - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_session_cookie.mak CFG="mod_session_cookie - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -836,9 +831,6 @@ _copybin:
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_byrequests.$(src_so) "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_bytraffic.$(src_so)  "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_heartbeat.$(src_so)  "$(inst_so)" <.y
-!IFDEF ALL
-	copy modules\proxy\examples\$(LONG)\mod_lbmethod_rr.$(src_so) "$(inst_so)" <.y
-!ENDIF
 	copy modules\session\$(LONG)\mod_session.$(src_so)        "$(inst_so)" <.y
 	copy modules\session\$(LONG)\mod_session_cookie.$(src_so) "$(inst_so)" <.y
 	copy modules\session\$(LONG)\mod_session_dbd.$(src_so)    "$(inst_so)" <.y
