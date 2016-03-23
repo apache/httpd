@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.20
 
+  *) mod_http2: Fix build on Windows from dsp files.
+     [Stefan Eissing] 
 
 Changes with Apache 2.4.19
 
