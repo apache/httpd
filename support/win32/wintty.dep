@@ -1,0 +1,5 @@
+# Microsoft Developer Studio Generated Dependency File, included by wintty.mak
+
+..\..\build\win32\httpd.rc : \
+	"..\..\include\ap_release.h"\
+	

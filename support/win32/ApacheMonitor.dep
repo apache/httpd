@@ -1,0 +1,18 @@
+# Microsoft Developer Studio Generated Dependency File, included by ApacheMonitor.mak
+
+.\ApacheMonitor.c : \
+	".\ApacheMonitor.h"\
+	
+
+.\ApacheMonitor.rc : \
+	"..\..\build\win32\httpd.rc"\
+	"..\..\include\ap_release.h"\
+	".\apache_header.bmp"\
+	".\ApacheMonitor.h"\
+	".\ApacheMonitor.ico"\
+	".\ApacheMonitor.manifest"\
+	".\aprun.ico"\
+	".\apstop.ico"\
+	".\srun.bmp"\
+	".\sstop.bmp"\
+	
