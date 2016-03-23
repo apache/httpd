@@ -86,7 +86,6 @@ mod_dav_lock.so             0x707C0000    0x00020000
 mod_auth_form.so            0x707E0000    0x00020000
 mod_example_ipc.so          0x70800000    0x00010000
 mod_request.so              0x70810000    0x00010000
-mod_lbmethod_rr.so          0x70820000    0x00010000
 mod_session.so              0x70830000    0x00020000
 mod_session_cookie.so       0x70850000    0x00010000
 mod_session_crypto.so       0x70860000    0x00020000
