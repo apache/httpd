@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fix for missing score board updates on request count, fix for
+     memory leak on slave connection reuse.
+     
   *) mod_http2: disabling PUSH when client sends GOAWAY.
   
   *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 

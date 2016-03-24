@@ -279,6 +279,8 @@ static int io_out_consumed_signal(h2_mplx *m, h2_io *io)
 
 static void io_destroy(h2_mplx *m, h2_io *io, int events)
 {
+    int reuse_slave;
+    
     /* cleanup any buffered input */
     h2_io_in_shutdown(io);
     if (events) {
@@ -297,12 +299,16 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         h2_io_set_remove(m->redo_ios, io);
     }
 
+    reuse_slave = ((m->spare_slaves->nelts < m->spare_slaves->nalloc)
+                    && !io->rst_error && io->eor);
     if (io->task) {
         conn_rec *slave = io->task->c;
         h2_task_destroy(io->task);
         io->task = NULL;
         
-        if (m->spare_slaves->nelts < m->spare_slaves->nalloc) {
+        if (reuse_slave) {
+            apr_bucket_delete(io->eor);
+            io->eor = NULL;
             APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
         }
         else {
@@ -310,10 +316,6 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         }
     }
 
-    if (io->eor) {
-        apr_bucket_delete(io->eor);
-        io->eor = NULL;
-    }
     if (io->pool) {
         apr_pool_destroy(io->pool);
     }
@@ -1119,6 +1121,8 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
 static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
 {
     if (task) {
+        h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
+        
         if (task->frozen) {
             /* this task was handed over to an engine for processing 
              * and the original worker has finished. That means the 
@@ -1131,8 +1135,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             apr_thread_cond_broadcast(m->task_thawed);
         }
         else {
-            h2_io *io = h2_io_set_get(m->stream_ios, task->stream_id);
-            
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): task(%s) done", m->id, task->id);
             /* clean our references and report request as done. Signal
