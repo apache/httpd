@@ -20,6 +20,7 @@
 #include <http_core.h>
 #include <http_log.h>
 #include <http_connection.h>
+#include <http_request.h>
 
 #include "h2_private.h"
 #include "h2_conn.h"
@@ -136,6 +137,7 @@ static apr_status_t write_brigade_raw(h2_task_output *output,
 apr_status_t h2_task_output_write(h2_task_output *output,
                                   ap_filter_t* f, apr_bucket_brigade* bb)
 {
+    apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
     
     if (APR_BRIGADE_EMPTY(bb)) {
@@ -147,6 +149,16 @@ apr_status_t h2_task_output_write(h2_task_output *output,
     if (output->task->frozen) {
         h2_util_bb_log(output->task->c, output->task->stream_id, APLOG_TRACE2,
                        "frozen task output write, ignored", bb);
+        while (!APR_BRIGADE_EMPTY(bb)) {
+            b = APR_BRIGADE_FIRST(bb);
+            if (AP_BUCKET_IS_EOR(b)) {
+                /* TODO: keep it */
+                APR_BUCKET_REMOVE(b);
+            }
+            else {
+                apr_bucket_delete(b);
+            }
+        }
         return APR_SUCCESS;
     }
     

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.20
 
+  *) mod_http2: fix for missing score board updates on request count, fix for
+     memory leak on slave connection reuse.
+     
   *) mod_http2: Fix build on Windows from dsp files.
      [Stefan Eissing] 
 
