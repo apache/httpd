@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -3258,11 +3257,12 @@ LogLevel info ssl_module:warn</pre>
           bir muteksi tutarken olağandışı bir şekilde sonlanırsa httpd donar
           ve isteklere yanıt vermeyi durdurur. Bu olduğunda sunucuyu bu
           durumdan kurtarmak için elle yeniden başlatmak gerekir.</p>
-        <p>Bu duruma karşı bir mekanizma sağlayan Solaris dikkate değer bir
-          istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk süreç
-          olağandışı bir şekilde sonlandıktan sonra muteksin kurtarılmasını
-          sağlar.</p>
-        <p>Sisteminiz <code>pthread_mutexattr_setrobust_np()</code> işlevini
+        <p>Bu duruma karşı bir mekanizma sağlayan Solaris ve Linux dikkate 
+          değer bir istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk 
+          süreç olağandışı bir şekilde sonlandıktan sonra muteksin 
+          kurtarılmasını sağlar.</p>
+        <p>Sisteminiz POSIX uyumluysa veya 
+          <code>pthread_mutexattr_setrobust_np()</code> işlevini
           sağlıyorsa <code>pthread</code> seçeneğini rahatça
           kullanabilirsiniz.</p>
         </div>
@@ -3963,7 +3963,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ServerName [<var>şema</var>://]<var>alan-adı</var>|<var>ip-adresi</var>[:<var>port</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -3971,13 +3971,17 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </table>
     <p><code class="directive">ServerName</code> yönergesi, sunucunun kendini
       betimlemekte kullanacağı şema, konak adı ve port değerlerini belirler.
-      Bu, yönlendirme URL’leri oluşturulurken kullanılır.</p>
+    </p>
 
-    <p>Ek olarak, <a href="../vhosts/name-based.html">isme dayalı sanal
+    <p><a href="../vhosts/name-based.html">isme dayalı sanal
       konaklar</a> kullanılırken bir sanal konağı eşsiz bir şekilde betimlemek
-      için de <code class="directive">ServerName</code> kullanılır (muhtemelen
+      için <code class="directive">ServerName</code> kullanılır (muhtemelen
       <code class="directive">ServerAlias</code> ile birlikte).</p>
 
+    <p>Ek olarak, <code class="directive">UseCanonicalName</code> yönergesine 
+      öntanımlı olmayan bir değer atanarak özüne yönlendiren URL'ler 
+      oluştururken de bu yönerge kullanılır.</p>
+      
     <p>Örneğin, HTTP
       sunucusunun barındırıldığı makinenin ismi <code>mail.example.com</code>
       olduğu halde makinenin bir de <code>www.example.com</code> diye bir de
@@ -3992,8 +3996,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       iptal eder.</p>
 
     <p>Bir <code class="directive">ServerName</code> ataması yapılmamışsa sunucu
-      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu
-      yapacaktır.</p>
+      istemciye görünen sunucu ismini anlamak için önce işletim sistemine 
+      sistemin konak adını sorar. Bu başarılı olmazsa sistem üzerinde IP 
+      adresine bir ters DNS sorgusu yapar.</p>
 
     <p><code class="directive">ServerName</code> yönergesinde bir port belirtilmediği
       takdirde sunucu, isteğin geldiği portu kullanacaktır. Öngörülebilirlik ve
@@ -4194,12 +4199,12 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetHandler <var>eylemci-ismi</var>|None</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetHandler <var>eylemci-ismi</var>|none|<var>ifade</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache httpd 2.0’da core modülüne taşındı.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>ifade seçeneği 2.4.19 sürümünde eklendi</td></tr>
 </table>
     <p>Bir <code>.htaccess</code> dosyasına veya bir <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> ya da <code class="directive"><a href="#location">&lt;Location&gt;</a></code> bölümüne yerleştirildiğinde, eşleşen
       tüm dosyaların, ismi <var>eylemci-ismi</var> ile belirtilen <a href="../handler.html">eylemci</a> tarafından çözümlenmesine sebep olur.
@@ -4226,6 +4231,15 @@ sebep olur.</td></tr>
     <pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;</pre>
+
+
+    <p>Dizge değerli ifadeler istek öncesi değişkenleri içerecek şekilde 
+      düzenlenebilir. Buna ismli düzenli ifadelere yapılan geriye başvurular 
+      dahildir:</p>
+
+    <pre class="prettyprint lang-config">&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
+&lt;/LocationMatch&gt;</pre>
 
 
      <p>Evvelce tanımlanmış bir <code class="directive">SetHandler</code> yönergesini
@@ -4314,9 +4328,13 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
     <p><code class="directive">TimeOut</code> yönergesi Apache httpd’nin aşağıdaki
       durumlarda G/Ç için bekleyeceği süreyi belirler:</p>
 
-    <ol>
-      <li>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir TCP
-        paketinin gelmesini bekleyeceği süre.</li>
+    <ul>
+      <li><p>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir 
+        TCP paketinin gelmesini bekleyeceği süre.</p>
+      <p>Yeni bir bağlantıda ilk veri için, sunucuya yeni bağlantıyı aktaran 
+        bir <code class="directive"><a href="#acceptfilter">AcceptFilter</a></code> yönergesi ile 
+        ilgili yapılandırma ele alınıncaya kadar bu yönerge etkilenmez.</p>
+      </li>
 
       <li>Veriyi istemciye yazarken, gönderme tamponu dolu olduğu takdirde bir
         paket alındısı için beklenecek süre.</li>
@@ -4329,7 +4347,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 
       <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> modülünde, <code class="directive"><a href="../mod/mod_proxy.html#proxytimeout">ProxyTimeout</a></code> yönergesi
         yapılandırılmamışsa öntanımlı zaman aşımı değeri.</li>
-    </ol>
+    </ul>
 
 
 </div>

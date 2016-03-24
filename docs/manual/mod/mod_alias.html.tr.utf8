@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -51,6 +50,15 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       yönlendirmekte kullanılır. Çoğunlukla özkaynak başka bir yere
       taşındığında kullanılır.</p>
 
+    <p><code class="directive"><a href="#alias">Alias</a></code>,
+      <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ve 
+      <code class="directive"><a href="#redirect">Redirect</a></code> yönergeleri
+      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+      veya <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+      bölümleri içinde kullanıldığında hedef yolu veya URL'yi betimlemek için 
+      <a href="../expr.html">ifade sözdizimi</a> kullanılabilir.
+    </p>
+    
     <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> modülü basit URL değiştirme görevlerini
       yerine getirmek için tasarlanmıştır. Sorgu dizgelerini işleme sokmak
       gibi daha karmaşık görevler için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü ile
@@ -109,14 +117,24 @@ Alias "/foo" "/gaq"</pre>
       <code>/foo</code> rumuzu  daima <code>/foo/bar</code> rumuzundan önce
       eşleşecek, dolayısıyla ikinci yönerge yok sayılacaktı.</p>
 
+    <p><code class="directive"><a href="#alias">Alias</a></code>,
+      <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ve 
+      <code class="directive"><a href="#redirect">Redirect</a></code> yönergeleri
+      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+      veya <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+      bölümleri içinde kullanıldığında bu yönergeler küresel olarak tanımlı
+      <code class="directive"><a href="#alias">Alias</a></code>,
+      <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> ve 
+      <code class="directive"><a href="#redirect">Redirect</a></code> yönergelerinden öncelikli olur.
+    </p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
 <var>dizin-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
 </table>
@@ -170,6 +188,21 @@ Alias "/foo" "/gaq"</pre>
 
     <p><var>URL-yolu</var> değiştirgesindeki bölü çizgilerinin sayısı istek
       URL-yolundakiler kadardır.</p>
+    
+    <p>Eğer <code class="directive">Alias</code> yönergesi
+      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+      veya <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+      bölümleri içinde kullanılırsa URL-yolu yoksayılır ve dosya-yolu 
+      <a href="../expr.html">ifade sözdizimi</a> kullanılarak yorumlanır.<br />
+      Bu sözdizimi Apache 2.4.19 ve sonrasında kulanılabilir.</p>
+    
+    <pre class="prettyprint lang-config">&lt;Location "/image"&gt;
+    Alias "/ftp/pub/image"
+&lt;/Location&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    Alias "/usr/local/apache/errors/%{env:MATCH_NUMBER}.html"
+&lt;/LocationMatch&gt;</pre>
+
 
   
 </div>
@@ -255,7 +288,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
 yönlendirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Redirect [<var>durum</var>] <var>URL-yolu</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Redirect [<var>durum</var>] [<var>URL-yolu</var>]
 <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -295,17 +328,21 @@ Redirect "/bir" "/iki"</pre>
       yönlendirilir. <code>POST</code>'ların iptal edileceğini unutmayın.<br />
       Sadece tam yol parçaları eşleştirilir, bu nedenle
       <code>http://example.com/hizmetfesmekan.txt</code> isteği yukarıdaki
-      yönlendirme ile eşleşmeyecektir.
-      Düzenli ifadelerin kullanıldığı daha karmaşık eşleşmeler
-      için <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>
-      yönergesine bakınız.</p>
+      yönlendirme ile eşleşmeyecektir. <a href="../expr.html">İfade 
+      sözdizimi</a> kullanılan daha karmaşık eşleşmeler için URL-yolu seçeneği 
+      aşağıda açıklandığı gibi yoksayılır. Düzenli ifadelerin kullanıldığı daha 
+      karmaşık eşleşmeler için <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>
+      yönergesine de bakınız.</p>
 
 
     <div class="note"><h3>Bilginize</h3>
       <p>Yapılandırma dosyasında yer alış sırasına bakmaksızın
         <code class="directive">Redirect</code> yönergeleri
         <code class="directive">Alias</code> ve <code class="directive">ScriptAlias</code>
-        yönergelerinden önce ele alınır.</p></div>
+        yönergelerinden önce ele alınır. <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> bölümü içinde kullanılmış bir  
+        <code class="directive">Redirect</code> yönergesi URL-yolu belirtilmiş  
+        <code class="directive">Redirect</code> ve  <code class="directive">Alias</code> 
+        yönergelerine göre önceliklidir.</p></div>
 
       <p>Herhangi bir <code><em>durum</em></code> belirtilmemişse "geçici"
         yönlendirme (HTTP durum kodu: 302) yapılır. Bu, istemciye özkaynağın
@@ -342,6 +379,25 @@ Redirect "/bir" "/iki"</pre>
 
     <pre class="prettyprint lang-config">Redirect permanent "/bir" "http://example.com/iki"
 Redirect 30" "/yedi" http://example.com/baskabisey"</pre>
+
+
+    <p>Eğer <code class="directive">Redirect</code> yönergesi URL-yolu belirtilmemiş 
+      bir <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+      veya <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+      bölümü içinde yer alıyorsa, URL seçeneği <a href="../expr.html">ifade 
+      sözdizimi</a> kullanılarak yorumlanır.<br />
+      Bu sözdizimi Apache 2.4.19 ve sonrasında kullanılabilir.</p>
+
+    <pre class="prettyprint lang-config">&lt;Location "/bir"&gt;
+    Redirect permanent "http://example.com/iki"
+&lt;/Location&gt;
+&lt;Location "/yedi"&gt;
+    Redirect 303 "http://example.com/baskabisey"
+&lt;/Location&gt;
+&lt;LocationMatch "/error/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    Redirect permanent "http://example.com/errors/%{env:MATCH_NUMBER}.html"
+&lt;/LocationMatch&gt;</pre>
+
 
   
 </div>
@@ -411,9 +467,9 @@ URL’ye yönlendirir.</td></tr>
 <div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAlias <var>URL-yolu</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAlias [<var>URL-yolu</var>]
 <var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
 </table>
@@ -433,7 +489,7 @@ URL’ye yönlendirir.</td></tr>
       olur. Bu yapılandırma aslında şuna eşdeğerdir:</p>
 
     <pre class="prettyprint lang-config">Alias "/cgi-bin/" "/siteler/cgi-bin/"
-&lt;Location "/cgi-bin" &gt;
+&lt;Location "/cgi-bin"&gt;
     SetHandler cgi-script
     Options +ExecCGI
 &lt;/Location&gt;</pre>
@@ -472,6 +528,22 @@ URL’ye yönlendirir.</td></tr>
      çıkabilir; bu bakımdan <code class="directive">ScriptAlias</code> yönergesini yok
      sayan URL yollarının belirtilebilme olasılığı gözardı
      edilmemelidir.</div>
+   
+    <p>Eğer <code class="directive">ScriptAlias</code> yönergesi URL-yolu belirtilmemiş 
+      bir <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
+      veya <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+      bölümü içinde yer alıyorsa, URL seçeneği <a href="../expr.html">ifade 
+      sözdizimi</a> kullanılarak yorumlanır.<br />
+      Bu sözdizimi Apache 2.4.19 ve sonrasında kullanılabilir.</p>
+
+    <pre class="prettyprint lang-config">&lt;Location "/cgi-bin"&gt;
+    ScriptAlias "/siteler/cgi-bin/"
+&lt;/Location&gt;
+&lt;LocationMatch "/cgi-bin/errors/(?&lt;NUMBER&gt;[0-9]+)"&gt;
+    ScriptAlias "/siteler/cgi-bin/errors/%{env:MATCH_NUMBER}.cgi"
+&lt;/LocationMatch&gt;</pre>
+
+    
   
 <h3>Ayrıca bakınız:</h3>
 <ul>

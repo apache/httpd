@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
 yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
@@ -184,7 +183,9 @@ ve etkin modül listesine ekler.</td></tr>
       <code><em>modül</em></code> ismiyle ekler. <code><em>modül</em></code>,
       modülün kaynak dosyasında <code>module</code> türündeki tek harici
       değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
-      geçer. Örneğin,</p>
+      geçer.</p>
+    
+    <p>Örneğin,</p>
 
     <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
 
