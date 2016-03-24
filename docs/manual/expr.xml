@@ -40,7 +40,7 @@
 <seealso><directive module="core" type="section">If</directive></seealso>
 <seealso><directive module="core" type="section">ElseIf</directive></seealso>
 <seealso><directive module="core" type="section">Else</directive></seealso>
-<seealso><directive module="core" type="section">ErrorDocument</directive></seealso>
+<seealso><directive module="core">ErrorDocument</directive></seealso>
 <seealso><directive module="mod_alias">Alias</directive></seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_alias">Redirect</directive></seealso>
