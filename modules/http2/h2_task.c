@@ -245,7 +245,6 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
                       "h2_task(%s): create request_rec failed, r->status=%d", 
                       task->id, r->status);
     }
-    c->sbh = NULL;
 
     return APR_SUCCESS;
 }
