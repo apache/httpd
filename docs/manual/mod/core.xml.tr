@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1722608:1733954 (outdated) -->
+<!-- English Revision: 1733954 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -3233,11 +3233,12 @@ LogLevel info
           bir muteksi tutarken olağandışı bir şekilde sonlanırsa httpd donar
           ve isteklere yanıt vermeyi durdurur. Bu olduğunda sunucuyu bu
           durumdan kurtarmak için elle yeniden başlatmak gerekir.</p>
-        <p>Bu duruma karşı bir mekanizma sağlayan Solaris dikkate değer bir
-          istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk süreç
-          olağandışı bir şekilde sonlandıktan sonra muteksin kurtarılmasını
-          sağlar.</p>
-        <p>Sisteminiz <code>pthread_mutexattr_setrobust_np()</code> işlevini
+        <p>Bu duruma karşı bir mekanizma sağlayan Solaris ve Linux dikkate 
+          değer bir istisnadır. Bu mekanizma, bir muteksi tutan bir çocuk 
+          süreç olağandışı bir şekilde sonlandıktan sonra muteksin 
+          kurtarılmasını sağlar.</p>
+        <p>Sisteminiz POSIX uyumluysa veya 
+          <code>pthread_mutexattr_setrobust_np()</code> işlevini
           sağlıyorsa <code>pthread</code> seçeneğini rahatça
           kullanabilirsiniz.</p>
         </note>
@@ -3901,7 +3902,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <directivesynopsis>
 <name>ServerName</name>
 <description>Sunucunun özdeşleşeceği konak ismi ve port.</description>
-<syntax>ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
+<syntax>ServerName [<var>şema</var>://]<var>alan-adı</var>|<var>ip-adresi</var>[:<var>port</var>]
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -3909,13 +3910,17 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <usage>
     <p><directive>ServerName</directive> yönergesi, sunucunun kendini
       betimlemekte kullanacağı şema, konak adı ve port değerlerini belirler.
-      Bu, yönlendirme URL’leri oluşturulurken kullanılır.</p>
+    </p>
 
-    <p>Ek olarak, <a href="../vhosts/name-based.html">isme dayalı sanal
+    <p><a href="../vhosts/name-based.html">isme dayalı sanal
       konaklar</a> kullanılırken bir sanal konağı eşsiz bir şekilde betimlemek
-      için de <directive>ServerName</directive> kullanılır (muhtemelen
+      için <directive>ServerName</directive> kullanılır (muhtemelen
       <directive>ServerAlias</directive> ile birlikte).</p>
 
+    <p>Ek olarak, <directive>UseCanonicalName</directive> yönergesine 
+      öntanımlı olmayan bir değer atanarak özüne yönlendiren URL'ler 
+      oluştururken de bu yönerge kullanılır.</p>
+      
     <p>Örneğin, HTTP
       sunucusunun barındırıldığı makinenin ismi <code>mail.example.com</code>
       olduğu halde makinenin bir de <code>www.example.com</code> diye bir de
@@ -3929,8 +3934,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       iptal eder.</p>
 
     <p>Bir <directive>ServerName</directive> ataması yapılmamışsa sunucu
-      istemciye görünen sunucu ismi için IP adresine bir ters DNS sorgusu
-      yapacaktır.</p>
+      istemciye görünen sunucu ismini anlamak için önce işletim sistemine 
+      sistemin konak adını sorar. Bu başarılı olmazsa sistem üzerinde IP 
+      adresine bir ters DNS sorgusu yapar.</p>
 
     <p><directive>ServerName</directive> yönergesinde bir port belirtilmediği
       takdirde sunucu, isteğin geldiği portu kullanacaktır. Öngörülebilirlik ve
@@ -4122,12 +4128,12 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <name>SetHandler</name>
 <description>Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</description>
-<syntax>SetHandler <var>eylemci-ismi</var>|None</syntax>
+<syntax>SetHandler <var>eylemci-ismi</var>|none|<var>ifade</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Apache httpd 2.0’da core modülüne taşındı.</compatibility>
+<compatibility>ifade seçeneği 2.4.19 sürümünde eklendi</compatibility>
 
 <usage>
     <p>Bir <code>.htaccess</code> dosyasına veya bir <directive type="section"
@@ -4159,6 +4165,16 @@ sebep olur.</description>
 &lt;FilesMatch "\.php$"&gt;
     SetHandler application/x-httpd-php
 &lt;/FilesMatch&gt;
+    </highlight>
+
+    <p>Dizge değerli ifadeler istek öncesi değişkenleri içerecek şekilde 
+      düzenlenebilir. Buna ismli düzenli ifadelere yapılan geriye başvurular 
+      dahildir:</p>
+
+    <highlight language="config">
+&lt;LocationMatch ^/app/(?&lt;sub&gt;[^/]+)/&gt;
+     SetHandler "proxy:unix:/var/run/app_%{env:MATCH_sub}.sock|fcgi://localhost:8080"
+&lt;/LocationMatch&gt;
     </highlight>
 
      <p>Evvelce tanımlanmış bir <directive>SetHandler</directive> yönergesini
@@ -4244,9 +4260,13 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
     <p><directive>TimeOut</directive> yönergesi Apache httpd’nin aşağıdaki
       durumlarda G/Ç için bekleyeceği süreyi belirler:</p>
 
-    <ol>
-      <li>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir TCP
-        paketinin gelmesini bekleyeceği süre.</li>
+    <ul>
+      <li><p>Veriyi istemciden okurken, okuma tamponu boş olduğu takdirde bir 
+        TCP paketinin gelmesini bekleyeceği süre.</p>
+      <p>Yeni bir bağlantıda ilk veri için, sunucuya yeni bağlantıyı aktaran 
+        bir <directive module="core">AcceptFilter</directive> yönergesi ile 
+        ilgili yapılandırma ele alınıncaya kadar bu yönerge etkilenmez.</p>
+      </li>
 
       <li>Veriyi istemciye yazarken, gönderme tamponu dolu olduğu takdirde bir
         paket alındısı için beklenecek süre.</li>
@@ -4260,7 +4280,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       <li><module>mod_proxy</module> modülünde, <directive
         module="mod_proxy">ProxyTimeout</directive> yönergesi
         yapılandırılmamışsa öntanımlı zaman aşımı değeri.</li>
-    </ol>
+    </ul>
 
 </usage>
 </directivesynopsis>

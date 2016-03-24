@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1433863:1727635 (outdated) -->
+<!-- English Revision: 1727635 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -150,7 +150,9 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LoadFile libexec/libxmlparse.so</highlight>
+    <highlight language="config">
+LoadFile libexec/libxmlparse.so
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -173,7 +175,9 @@ ve etkin modül listesine ekler.</description>
       modülün kaynak dosyasında <code>module</code> türündeki tek harici
       değişkenin ismi olup modül belgelerinde <a
       href="module-dict.html#ModuleIdentifier" >Modül Betimleyici</a> olarak
-      geçer. Örneğin,</p>
+      geçer.</p>
+    
+    <p>Örneğin,</p>
 
     <highlight language="config">
 LoadModule status_module modules/mod_status.so
