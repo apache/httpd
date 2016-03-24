@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
@@ -95,8 +94,8 @@ BrowserMatch MSIE !netscape</pre>
     ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
     değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
-  <pre class="prettyprint lang-config">BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
+  <pre class="prettyprint lang-config">BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot</pre>
 
 
   <p>Başka örnekler:</p>
@@ -215,10 +214,10 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
     <p>İlk biçemde değişkene "1" değeri atanır. İkincisinde atanmış bir
       değişken atanmamış yapılır. Üçüncüsünde ise değişkene belirtilen
-      <code><em>değer</em></code> bire bir atanır. 2.0.52 sürümünden itibaren
+      <code><em>değer</em></code> bire bir atanır. 2.0.51 sürümünden itibaren
       Apache httpd parantezli düzenli ifadelerin sonuçları ile değiştirilmek
       üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
-      gösterimleri tanınmaktadır.</p>
+      gösterimleri tanınmaktadır. <code>$0</code> bu kalıp ile eşleşen tüm dizgeye erişir.</p>
 
     <pre class="prettyprint lang-config">SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
 SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg
@@ -227,6 +226,8 @@ SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm
 SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi
 
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf Request_URI "\.(.*)$" EXTENSION=$1
 
 SetEnvIf ^TS  ^[a-z]  TS_VAR</pre>
 
