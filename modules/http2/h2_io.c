@@ -425,16 +425,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         return APR_ECONNABORTED;
     }
 
-    if (io->eos_out) {
-        apr_off_t len = 0;
-        /* We have already delivered an EOS bucket to a reader, no
-         * sense in storing anything more here.
-         */
-        apr_brigade_length(bb, 0, &len);
-        apr_brigade_cleanup(bb);
-        return (len > 0)? APR_EOF : APR_SUCCESS;
-    }
-
     /* Filter the EOR bucket and set it aside. We prefer to tear down
      * the request when the whole h2 stream is done */
     for (b = APR_BRIGADE_FIRST(bb);
