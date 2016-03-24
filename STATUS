@@ -177,6 +177,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Bad Jeff: The MMN change was missing originally, same patch updated :(
      +1: trawick, ylavic
 
+  *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
+     proxy_post_handshake hook fails. 
+     Trunk patch: r1645529 (works)
+     2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
+     +1: trawick
  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
