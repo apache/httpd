@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1722340:1722704 (outdated) -->
+<!-- English Revision: 1722704 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -574,6 +574,7 @@ TransferLog "logs/access_log"
 expr=<var>ifade</var>]</syntax>
 <contextlist><context>server config</context>
 </contextlist>
+<compatibility>Apache HTTP Sunucusunun 2.4.19 ve sonraki sürümlerinde kullanılabilir.</compatibility>
 
 <usage>
 

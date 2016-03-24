@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1557618:1727648 (outdated) -->
+<!-- English Revision: 1727648 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -83,8 +83,8 @@ BrowserMatch MSIE !netscape
     değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
 
   <highlight language="config">
-BrowserMatchNoCase Robot is_a_robot
-SetEnvIfNoCase User-Agent Robot is_a_robot
+BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot
   </highlight>
 
   <p>Başka örnekler:</p>
@@ -213,10 +213,10 @@ SetEnvIfNoCase User-Agent Robot is_a_robot
 
     <p>İlk biçemde değişkene "1" değeri atanır. İkincisinde atanmış bir
       değişken atanmamış yapılır. Üçüncüsünde ise değişkene belirtilen
-      <code><em>değer</em></code> bire bir atanır. 2.0.52 sürümünden itibaren
+      <code><em>değer</em></code> bire bir atanır. 2.0.51 sürümünden itibaren
       Apache httpd parantezli düzenli ifadelerin sonuçları ile değiştirilmek
       üzere <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
-      gösterimleri tanınmaktadır.</p>
+      gösterimleri tanınmaktadır. <code>$0</code> bu kalıp ile eşleşen tüm dizgeye erişir.</p>
 
     <highlight language="config">
 SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif
@@ -226,6 +226,8 @@ SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm
 SetEnvIf Referer belgeler\.alanismi\.example\.com dahili_site_istendi
 
 SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf Request_URI "\.(.*)$" EXTENSION=$1
 
 SetEnvIf ^TS  ^[a-z]  TS_VAR
     </highlight>

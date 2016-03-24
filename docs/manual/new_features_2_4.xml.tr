@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1688011:1726941 (outdated) -->
+<!-- English Revision: 1726941 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -185,6 +185,9 @@
       <dt><module>mod_authnz_fcgi</module> (2.4.10'dan itibaren kullanılabilir)</dt>
       <dd>Kimlik kanıtlama ve/veya istemcileri yetkilendirmek için FastCGI
         yetkilendirme uygulamalarını etkinleştirir.</dd>
+
+      <dt><module>mod_http2</module> (2.4.17'den itibaren kullanılabilir)</dt>
+      <dd>HTTP/2 aktarım katmanı desteği.</dd>
     </dl>
   </section>
 

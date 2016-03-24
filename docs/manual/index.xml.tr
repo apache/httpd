@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1524238:1732097 (outdated) -->
+<!-- English Revision: 1732097 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -79,6 +79,7 @@ Belgeleri</title>
     <page href="howto/htaccess.html">.htaccess dosyaları</page>
     <page href="howto/ssi.html">Sunucu Taraflı İçerik Yerleştirme (SSI)</page>
     <page href="howto/public_html.html">Kullanıcı Dizinleri (public_html)</page>
+    <page href="howto/reverse_proxy.html">Ters vekil yapılandırma rehberi</page>
 </category>
 
 <category id="platform"><title>Platformlara Özgü Bilgiler</title>
