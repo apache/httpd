@@ -812,7 +812,7 @@ static void show_server_data()
     do {
        printf(" %d", lr->bind_addr->port);
        lr = lr->next;
-    } while(lr && lr != ap_listeners);
+    } while (lr && lr != ap_listeners);
 
     /* Display dynamic modules loaded */
     printf("\n");
@@ -1022,7 +1022,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00228)
                          "WARNING: MaxThreads of %d exceeds compile-time "
                          "limit of %d threads, decreasing to %d. "
-                         "To increase, please see the HARD_THREAD_LIMIT"
+                         "To increase, please see the HARD_THREAD_LIMIT "
                          "define in server/mpm/netware%s.",
                          ap_threads_limit, HARD_THREAD_LIMIT, HARD_THREAD_LIMIT,
                          MPM_HARD_LIMITS_FILE);
