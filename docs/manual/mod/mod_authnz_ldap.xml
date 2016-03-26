@@ -369,7 +369,9 @@ Require ldap-user "Joe Manager"
     <p>If the <code>uid</code> attribute was used instead of the
     <code>cn</code> attribute in the URL above, the above three lines
     could be condensed to</p>
-<highlight language="config">Require ldap-user bjenson fuser jmanager</highlight>
+<highlight language="config">
+Require ldap-user bjenson fuser jmanager
+</highlight>
 </section>
 
 <section id="reqgroup"><title>Require ldap-group</title>
@@ -388,7 +390,9 @@ uniqueMember: cn=Fred User, o=Example
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<highlight language="config">Require ldap-group cn=Administrators, o=Example</highlight>
+<highlight language="config">
+Require ldap-group cn=Administrators, o=Example
+</highlight>
 
     <p>Members can also be found within sub-groups of a specified LDAP group
     if <directive module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive>
@@ -453,7 +457,9 @@ AuthLDAPMaxSubGroupDepth 1
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<highlight language="config">Require ldap-dn cn=Barbara Jenson, o=Example</highlight>
+<highlight language="config">
+Require ldap-dn cn=Barbara Jenson, o=Example
+</highlight>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive>
@@ -470,7 +476,9 @@ AuthLDAPMaxSubGroupDepth 1
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <highlight language="config">Require ldap-attribute employeeType=active</highlight>
+    <highlight language="config">
+Require ldap-attribute "employeeType=active"
+</highlight>
 
     <p>Multiple attribute/value pairs can be specified on the same line
     separated by spaces or they can be specified in multiple
@@ -483,7 +491,9 @@ AuthLDAPMaxSubGroupDepth 1
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <highlight language="config">Require ldap-attribute city="San Jose" status=active</highlight>
+    <highlight language="config">
+Require ldap-attribute city="San Jose" "status=active"
+</highlight>
 
 </section>
 
@@ -497,7 +507,9 @@ AuthLDAPMaxSubGroupDepth 1
     <p>The following directive would grant access to anyone having a cell phone
     and is in the marketing department</p>
 
-    <highlight language="config">Require ldap-filter &amp;(cell=*)(department=marketing)</highlight>
+    <highlight language="config">
+Require ldap-filter "&amp;(cell=*)(department=marketing)"
+</highlight>
 
     <p>The difference between the <code>Require ldap-filter</code> directive and the
     <code>Require ldap-attribute</code> directive is that <code>ldap-filter</code>
@@ -527,7 +539,8 @@ Require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server.
-<highlight language="config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
+<highlight language="config">
+AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"
 Require valid-user
 </highlight>
       </li>
@@ -805,7 +818,7 @@ authorization</description>
 <directivesynopsis>
 <name>AuthLDAPBindAuthoritative</name>
 <description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</description>
-<syntax>AuthLDAPBindAuthoritative<em>off|on</em></syntax>
+<syntax>AuthLDAPBindAuthoritative off|on</syntax>
 <default>AuthLDAPBindAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -814,7 +827,7 @@ authorization</description>
     <p>By default, subsequent authentication providers are only queried if a
     user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
     password cannot be verified with an LDAP bind.
-    If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive>
+    If <directive>AuthLDAPBindAuthoritative</directive>
     is set to <em>off</em>, other configured authentication modules will have
     a chance to validate the user if the LDAP bind (with the current user's credentials)
     fails for any reason.</p>
@@ -831,7 +844,7 @@ authorization</description>
 <name>AuthLDAPInitialBindAsUser</name>
 <description>Determines if the server does the initial DN lookup using the basic authentication users'
 own username, instead of anonymously or with hard-coded credentials for the server</description>
-<syntax>AuthLDAPInitialBindAsUser <em>off|on</em></syntax>
+<syntax>AuthLDAPInitialBindAsUser off|on</syntax>
 <default>AuthLDAPInitialBindAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -868,7 +881,7 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 <name>AuthLDAPInitialBindPattern</name>
 <description>Specifies the transformation of the basic authentication username to be used when binding to the LDAP server
 to perform a DN lookup</description>
-<syntax>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></syntax>
+<syntax>AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></syntax>
 <default>AuthLDAPInitialBindPattern (.*) $1 (remote username used verbatim)</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -887,8 +900,12 @@ to perform a DN lookup</description>
         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
     </p>
 
-    <highlight language="config"> AuthLDAPInitialBindPattern (.+) $1@example.com </highlight>
-    <highlight language="config"> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</highlight>
+    <highlight language="config">
+AuthLDAPInitialBindPattern (.+) $1@example.com
+    </highlight>
+    <highlight language="config">
+AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com
+    </highlight>
 
     <note><title>Not available with authorization-only</title>
         This directive can only be used if this module authenticates the user, and
@@ -933,7 +950,7 @@ to perform a DN lookup</description>
     that the bind password is probably sensitive data, and should be
     properly protected. You should only use the <directive
     module="mod_authnz_ldap">AuthLDAPBindDN</directive> and <directive
-    module="mod_authnz_ldap">AuthLDAPBindPassword</directive> if you
+    >AuthLDAPBindPassword</directive> if you
     absolutely need them to search the directory.</p>
 
     <p>If the value begins with exec: the resulting command will be
@@ -1142,7 +1159,8 @@ query to set the REMOTE_USER environment variable</description>
     value of the attribute specified. Make sure that this attribute is
     included in the list of attributes in the AuthLDAPUrl definition,
     otherwise this directive will have no effect. This directive, if
-    present, takes precedence over AuthLDAPRemoteUserIsDN. This
+    present, takes precedence over <directive module="mod_authnz_ldap"
+    >AuthLDAPRemoteUserIsDN</directive>. This
     directive is useful should you want people to log into a website
     using an email address, but a backend application expects the
     username as a userid.</p>
@@ -1215,8 +1233,9 @@ are groups.</description>
 <usage>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The
-    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
-    labels of group members and the <code>AuthLDAPGroupAttribute</code>
+    <directive>AuthLDAPSubGroupAttribute</directive> directive identifies the
+    labels of group members and the <directive module="mod_authnz_ldap"
+    >AuthLDAPGroupAttribute</directive>
     directive identifies the labels of the user members. Multiple
     attributes can be used by specifying this directive multiple times.
     If not specified, then <module>mod_authnz_ldap</module> uses the
@@ -1238,9 +1257,10 @@ objects that are groups during sub-group processing.</description>
 <usage>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The
-    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
+    <directive module="mod_authnz_ldap">AuthLDAPSubGroupAttribute</directive>
+    directive identifies the
     labels of members that may be sub-groups of the current group
-    (as opposed to user members). The <code>AuthLDAPSubGroupClass</code>
+    (as opposed to user members). The <directive>AuthLDAPSubGroupClass</directive>
     directive specifies the LDAP objectClass values used in verifying that
     these potential sub-groups are in fact group objects. Verified sub-groups
     can then be searched for more user or sub-group members. Multiple
@@ -1263,7 +1283,9 @@ objects that are groups during sub-group processing.</description>
     to use. The syntax of the URL is</p>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
-<highlight language="config">AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</highlight>
+<highlight language="config">
+AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."
+</highlight>
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
 You can of course use search parameters on each of these.</p>
@@ -1336,7 +1358,7 @@ You can of course use search parameters on each of these.</p>
         limited to approximately 8000 characters (the definition of
         <code>MAX_STRING_LEN</code> in the Apache source code). This
         should be more than sufficient for any application. In 2.4.10 and later,
-        The word "none" may be used to not use any filter, which may be 
+        the keyword <code>none</code> disables the use of a filter; this is
         required by some primitive LDAP servers.</dd>
 </dl>
 
@@ -1368,7 +1390,7 @@ You can of course use search parameters on each of these.</p>
 </dl>
 
     <p>See above for examples of <directive
-    module="mod_authnz_ldap">AuthLDAPURL</directive> URLs.</p>
+    module="mod_authnz_ldap">AuthLDAPUrl</directive> URLs.</p>
 </usage>
 </directivesynopsis>
 
