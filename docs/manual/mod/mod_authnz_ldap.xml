@@ -855,7 +855,7 @@ authorization</description>
 <directivesynopsis>
 <name>AuthLDAPBindAuthoritative</name>
 <description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</description>
-<syntax>AuthLDAPBindAuthoritative<em>off|on</em></syntax>
+<syntax>AuthLDAPBindAuthoritative off|on</syntax>
 <default>AuthLDAPBindAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -864,7 +864,7 @@ authorization</description>
     <p>By default, subsequent authentication providers are only queried if a
     user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
     password cannot be verified with an LDAP bind.
-    If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive>
+    If <directive>AuthLDAPBindAuthoritative</directive>
     is set to <em>off</em>, other configured authentication modules will have
     a chance to validate the user if the LDAP bind (with the current user's credentials)
     fails for any reason.</p>
@@ -881,7 +881,7 @@ authorization</description>
 <name>AuthLDAPInitialBindAsUser</name>
 <description>Determines if the server does the initial DN lookup using the basic authentication users'
 own username, instead of anonymously or with hard-coded credentials for the server</description>
-<syntax>AuthLDAPInitialBindAsUser <em>off|on</em></syntax>
+<syntax>AuthLDAPInitialBindAsUser off|on</syntax>
 <default>AuthLDAPInitialBindAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -918,7 +918,7 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 <name>AuthLDAPInitialBindPattern</name>
 <description>Specifies the transformation of the basic authentication username to be used when binding to the LDAP server
 to perform a DN lookup</description>
-<syntax>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></syntax>
+<syntax>AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></syntax>
 <default>AuthLDAPInitialBindPattern (.*) $1 (remote username used verbatim)</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -987,7 +987,7 @@ AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com
     that the bind password is probably sensitive data, and should be
     properly protected. You should only use the <directive
     module="mod_authnz_ldap">AuthLDAPBindDN</directive> and <directive
-    module="mod_authnz_ldap">AuthLDAPBindPassword</directive> if you
+    >AuthLDAPBindPassword</directive> if you
     absolutely need them to search the directory.</p>
 
     <p>If the value begins with exec: the resulting command will be
@@ -1274,8 +1274,9 @@ are groups.</description>
 <usage>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The
-    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
-    labels of group members and the <code>AuthLDAPGroupAttribute</code>
+    <directive>AuthLDAPSubGroupAttribute</directive> directive identifies the
+    labels of group members and the <directive module="mod_authnz_ldap"
+    >AuthLDAPGroupAttribute</directive>
     directive identifies the labels of the user members. Multiple
     attributes can be used by specifying this directive multiple times.
     If not specified, then <module>mod_authnz_ldap</module> uses the
@@ -1297,9 +1298,10 @@ objects that are groups during sub-group processing.</description>
 <usage>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The
-    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
+    <directive module="mod_authnz_ldap">AuthLDAPSubGroupAttribute</directive>
+    directive identifies the
     labels of members that may be sub-groups of the current group
-    (as opposed to user members). The <code>AuthLDAPSubGroupClass</code>
+    (as opposed to user members). The <directive>AuthLDAPSubGroupClass</directive>
     directive specifies the LDAP objectClass values used in verifying that
     these potential sub-groups are in fact group objects. Verified sub-groups
     can then be searched for more user or sub-group members. Multiple
@@ -1429,7 +1431,7 @@ You can of course use search parameters on each of these.</p>
 </dl>
 
     <p>See above for examples of <directive
-    module="mod_authnz_ldap">AuthLDAPURL</directive> URLs.</p>
+    module="mod_authnz_ldap">AuthLDAPUrl</directive> URLs.</p>
 </usage>
 </directivesynopsis>
 
