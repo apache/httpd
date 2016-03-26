@@ -88,6 +88,20 @@
     </dl>
 
     <dl>
+      <dt>HTTP/2 with httpd</dt>
+      <dd>
+      <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP. 
+        It focuses on making more efficient use of network resources without changing the semantis of HTTP.
+        This guide explains how HTTP/2 is implemented in httpd, showing basic configurations tips and 
+        best practices.
+      </p>
+
+        <p>See: <a href="http2.html">HTTP/2 guide</a></p>
+      </dd>
+    </dl>
+
+
+    <dl>
       <dt>Introduction to Server Side Includes</dt>
       <dd>
         <p>SSI (Server Side Includes) are directives that are placed in
