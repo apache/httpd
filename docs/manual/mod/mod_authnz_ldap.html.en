@@ -759,8 +759,8 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub</pre>
     directives to <em>every</em> <code>.htaccess</code> file
     that gets created in the web</p>
 <pre class="prettyprint lang-config">AuthLDAPURL       "the url"
-AuthGroupFile     mygroupfile
-Require group     mygroupfile</pre>
+AuthGroupFile     "mygroupfile"
+Require group     "mygroupfile"</pre>
 
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>
@@ -1399,9 +1399,9 @@ You can of course use search parameters on each of these.</p>
         will search for all objects in the tree. Filters are
         limited to approximately 8000 characters (the definition of
         <code>MAX_STRING_LEN</code> in the Apache source code). This
-        should be more than sufficient for any application. The keyword
-        <code>none</code> disables the use of a filter; this is required
-        by some primitive LDAP servers.</dd>
+        should be more than sufficient for any application. In 2.4.10 and later,
+        the keyword <code>none</code> disables the use of a filter; this is
+        required by some primitive LDAP servers.</dd>
 </dl>
 
     <p>When doing searches, the attribute, filter and username passed
