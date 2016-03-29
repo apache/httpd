@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
+     [Petr <pgajdos suse.cz>]
+     
   *) mod_http2: more efficient passing of response bodies with less contention
      and file bucket forwarding. [Stefan Eissing] 
      
