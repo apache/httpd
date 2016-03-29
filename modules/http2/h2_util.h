@@ -243,18 +243,44 @@ void h2_util_bb_log(conn_rec *c, int stream_id, int level,
 
 /**
  * Transfer buckets from one brigade to another with a limit on the 
- * maximum amount of bytes transfered.
+ * maximum amount of bytes transfered. Sets aside the buckets to
+ * pool p.
  * @param to   brigade to transfer buckets to
  * @param from brigades to remove buckets from
  * @param p    pool that buckets should be setaside to
  * @param plen maximum bytes to transfer, actual bytes transferred
  * @param peos if an EOS bucket was transferred
  */
+apr_status_t h2_ltransfer_brigade(apr_bucket_brigade *to,
+                                  apr_bucket_brigade *from, 
+                                  apr_pool_t *p,
+                                  apr_off_t *plen,
+                                  int *peos);
+
+/**
+ * Transfer all buckets from one brigade to another. Sets aside the buckets to
+ * pool p.
+ * @param to   brigade to transfer buckets to
+ * @param from brigades to remove buckets from
+ * @param p    pool that buckets should be setaside to
+ */
 apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
                                  apr_bucket_brigade *from, 
-                                 apr_pool_t *p,
-                                 apr_off_t *plen,
-                                 int *peos);
+                                 apr_pool_t *p);
+
+/**
+ * Transfer buckets from one brigade to another with a limit on the 
+ * maximum amount of bytes transfered. Does no setaside magic, lifetime
+ * of brigades must fit. 
+ * @param to   brigade to transfer buckets to
+ * @param from brigades to remove buckets from
+ * @param plen maximum bytes to transfer, actual bytes transferred
+ * @param peos if an EOS bucket was transferred
+ */
+apr_status_t h2_append_brigade(apr_bucket_brigade *to,
+                               apr_bucket_brigade *from, 
+                               apr_off_t *plen,
+                               int *peos);
 
 /**
  * Get an approximnation of the memory footprint of the given

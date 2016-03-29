@@ -613,40 +613,9 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
     return status;
 }
 
-apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
-                               h2_io_data_cb *cb, void *ctx, 
-                               apr_off_t *plen, int *peos,
-                               apr_table_t **ptrailers)
-{
-    apr_status_t status;
-    int acquired;
-    
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
-            
-            status = h2_io_out_readx(io, cb, ctx, plen, peos);
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
-            if (status == APR_SUCCESS && cb) {
-                h2_io_signal(io, H2_IO_WRITE);
-            }
-        }
-        else {
-            status = APR_ECONNABORTED;
-        }
-        
-        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
-        leave_mutex(m, acquired);
-    }
-    return status;
-}
-
-apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
-                                 apr_bucket_brigade *bb, 
-                                 apr_off_t *plen, int *peos,
-                                 apr_table_t **ptrailers)
+apr_status_t h2_mplx_out_get_brigade(h2_mplx *m, int stream_id, 
+                                     apr_bucket_brigade *bb, 
+                                     apr_off_t len, apr_table_t **ptrailers)
 {
     apr_status_t status;
     int acquired;
@@ -655,11 +624,11 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_pre");
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_get_brigade_pre");
             
-            status = h2_io_out_read_to(io, bb, plen, peos);
+            status = h2_io_out_get_brigade(io, bb, len);
             
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_post");
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_get_brigade_post");
             if (status == APR_SUCCESS) {
                 h2_io_signal(io, H2_IO_WRITE);
             }
@@ -667,7 +636,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
-        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
+        *ptrailers = io->response? io->response->trailers : NULL;
         leave_mutex(m, acquired);
     }
     return status;
