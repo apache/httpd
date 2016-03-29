@@ -687,7 +687,7 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *
     request_rec *r;
     wctx_t *wctx;
     hc_condition_t *cond;
-    const char *method;
+    const char *method = NULL;
 
     hc = hc_get_hcworker(ctx, worker, ptemp);
     wctx = (wctx_t *)hc->context;
@@ -715,27 +715,21 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *
             break;
 
         case HEAD:
-            if (!wctx->req) {
-                wctx->req = apr_psprintf(ctx->p,
-                                   "HEAD %s%s%s HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
-                                   (wctx->path ? wctx->path : ""),
-                                   (wctx->path && *hc->s->hcuri ? "/" : "" ),
-                                   (*hc->s->hcuri ? hc->s->hcuri : ""),
-                                   hc->s->hostname, (int)hc->s->port);
-            }
             method = "HEAD";
-            break;
-
+            /* fallthru */
         case GET:
+            if (!method) { /* did we fall thru? If not, we are GET */
+                method = "GET";
+            }
             if (!wctx->req) {
                 wctx->req = apr_psprintf(ctx->p,
-                                   "GET %s%s%s HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
+                                   "%s %s%s%s HTTP/1.0\r\nHost: %s:%d\r\n\r\n",
+                                   method,
                                    (wctx->path ? wctx->path : ""),
                                    (wctx->path && *hc->s->hcuri ? "/" : "" ),
                                    (*hc->s->hcuri ? hc->s->hcuri : ""),
                                    hc->s->hostname, (int)hc->s->port);
             }
-            method = "GET";
             break;
 
         default:
@@ -923,15 +917,15 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->worker = worker;
                             baton->ptemp = ptemp;
 
-                            if (ctx->hctp) {
-#if HC_USE_THREADS
-                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton,
-                                                          APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
-#endif
-                                ;
-                            } else {
+                            if (!ctx->hctp) {
                                 hc_check(NULL, baton);
                             }
+#if HC_USE_THREADS
+                            else {
+                                rv = apr_thread_pool_push(ctx->hctp, hc_check, (void *)baton,
+                                                          APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+                            }
+#endif
                         }
                         workers++;
                     }
