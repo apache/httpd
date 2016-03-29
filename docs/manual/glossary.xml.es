@@ -68,7 +68,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 
 		<dt><a name="header" id="header">Cabecera.</a></dt> <dd>Es la parte de la
-		petición y la respuesta <glossary href="http">HTTP</glossary> que se
+		petición y la respuesta <glossary ref="http">HTTP</glossary> que se
 		envía antes del contenido propiamente dicho, y que contiene
 		meta-información describiendo el contenido.</dd>
 
@@ -77,9 +77,9 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		de red tales como un servidor o un cliente. Un certificado
 		contiene piezas de información X.509 sobre su poseedor
 		(llamado sujeto) y sobre la <glossary
-		href="certificationauthority">Autoridad Certificadora</glossary>
+		ref="certificationauthority">Autoridad Certificadora</glossary>
 		(llamada el emisor) que lo firma, más la <glossary
-		href="publickey">clave pública</glossary> del propietario y la firma de
+		ref="publickey">clave pública</glossary> del propietario y la firma de
 		la AC(Autoridad Certificadora). Las entidades de red verifican las firmas usando
 		certificados de las AC.<br />
 		Consulte: <a href="ssl/">Encriptado SSL/TLS</a>
@@ -89,7 +89,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="publickey" id="publickey">Clave Pública.</a></dt> 
 		<dd>La clave disponible
-		públicamente en un <glossary href="publickeycryptography">sistema
+		públicamente en un <glossary ref="publickeycryptography">sistema
 		criptográfico de Clave Pública</glossary>, usado para encriptar
 		mensajes destinados a su propietario y para desencriptar firmas hechas
 		por su propietario.<br /> Consulte: <a href="ssl/">Encriptado
@@ -99,14 +99,14 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="privatekey" id="privatekey">Clave Privada.</a></dt>
 		<dd>La clave secreta
-		de un <glossary href="publickeycryptography">Sistema criptográfico de
+		de un <glossary ref="publickeycryptography">Sistema criptográfico de
 		Clave Pública</glossary>, usada para desencriptar los mensajes entrantes
 		y firmar los salientes.<br /> Consulte: <a href="ssl/">Encriptado
 		SSL/TLS</a></dd>
 
 
 		<dt><a name="connect" id="connect">CONNECT</a></dt> <dd>Un <glossary
-		href="method">método</glossary> de HTTP para hacer proxy a canales de
+		ref="method">método</glossary> de HTTP para hacer proxy a canales de
 		datos sin usar HTTP. Puede usarse para encapsular otros protocolos,
 		tales como el protocolo SSL.</dd>
 
@@ -140,13 +140,13 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dd>Un comando de
 		configuración que controla uno o más aspectos del
 		comportamiento de Apache.  Las directivas se ponen en el <glossary
-		href="configurationfile">Fichero de Configuración</glossary><br />
+		ref="configurationfile">Fichero de Configuración</glossary><br />
 		Consulte: <a href="mod/directives.html">Índice de
 		Directivas</a></dd>
 
 		<dt><a name="configurationdirective" id="configurationdirective">Directivas de
 		configuración.</a></dt> <dd>Consulte: <glossary
-		href="directive">Directivas</glossary></dd>
+		ref="directive">Directivas</glossary></dd>
 
 		<dt><a name="apacheportableruntime"
 		id="apacheportableruntime">Entorno Portable de tiempo de ejecución de Apache, </a> <a
@@ -198,16 +198,16 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="configurationfile" id="configurationfile">Fichero de Configuración.</a></dt>
 		<dd>Un fichero de texto que contiene <glossary
-		href="directive">Directivas</glossary> que controlan la configuración
+		ref="directive">Directivas</glossary> que controlan la configuración
 		de Apache.<br /> Consulte: <a href="configuring.html">Ficheros de
 		Configuración</a></dd>
 
 
 		<dt><a name="htaccess" id="htaccess">.htaccess</a></dt> 
 		<dd>Un <glossary
-		href="configurationfile">fichero de configuración</glossary> que se
+		ref="configurationfile">fichero de configuración</glossary> que se
 		pone dentro de la estructura de directorios del sitio web y aplica <glossary
-		href="directive">directivas</glossary> de configuración al directorio
+		ref="directive">directivas</glossary> de configuración al directorio
 		en el que está y a sus subdirectorios. A pesar de su nombre, este
 		fichero puede contener cualquier tipo de directivas, no solo
 		directivas de control de acceso.<br /> Consulte: <a
@@ -215,7 +215,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
 		<dd>Es el <glossary
-		href="configurationfile">fichero de configuración</glossary> principal
+		ref="configurationfile">fichero de configuración</glossary> principal
 		de Apache. Su ubicación por defecto es
 		<code>/usr/local/apache2/conf/httpd.conf</code>, pero puede moverse
 		usando opciones de configuración al compilar o al iniciar
@@ -229,7 +229,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		cliente al servidor, mientras que los filtros de salida procesan la
 		información en el servidor antes de enviársela al
 		cliente. Por ejemplo, el filtro de salida <code>INCLUDES</code>
-		procesa documentos para <glossary href="ssi">Server Side Includes</glossary>.<br />
+		procesa documentos para <glossary ref="ssi">Server Side Includes</glossary>.<br />
 		Consulte: <a href="filter.html">Filtros</a></dd>
 
 
@@ -237,7 +237,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dt><a name="digitalsignature" id="digitalsignature">Firma Digital</a></dt>
 		<dd>Un bloque de
 		texto encriptado que verifica la validez de un certificado o de otro
-		fichero. Una <glossary href="certificationauthority">Autoridad
+		fichero. Una <glossary ref="certificationauthority">Autoridad
 		Certificadora</glossary> crea una firma generando un hash a partir de la
 		<em>Clave Pública</em> que lleva incorporada en un
 		<em>Certificado</em>, después encriptando el hash con su propia
@@ -254,14 +254,14 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		ficheros son simplemente servidos por el servidor, pero sobre algunos
 		tipos de ficheros se ejecutan acciones complementarias.  Por ejemplo,
 		el handler <code>cgi-script</code> designa los ficheros a ser
-		procesados como <glossary href="cgi">CGIs</glossary>.<br /> Consulte: <a
+		procesados como <glossary ref="cgi">CGIs</glossary>.<br /> Consulte: <a
 		href="handler.html">Uso de Handlers en Apache</a></dd>
 
 		<dt><a name="apacheextensiontool" id="apacheextensiontool">Herramienta de extensión de
 		Apache.</a> <a name="apxs" id="apxs">(apxs)</a></dt>
 		<dd>Es un script escrito en Perl que ayuda a compilar el código
-		fuente de algunos <glossary href="module">módulos</glossary> para 
-		convertirlos en Objetos Dinámicos Compartidos (<glossary href="dso.html">DSO</glossary>s)
+		fuente de algunos <glossary ref="module">módulos</glossary> para 
+		convertirlos en Objetos Dinámicos Compartidos (<glossary ref="dso.html">DSO</glossary>s)
 		y ayuda a instalarlos en el Servidor Web de Apache.<br /> 
 		Consulte: Manual de: <program>apxs</program></dd>
 
@@ -355,7 +355,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="method" id="method">Método</a></dt> 
 		<dd>En el contexto de <glossary
-		href="http">HTTP</glossary>, es una acción a ejecutar sobre un recurso,
+		ref="http">HTTP</glossary>, es una acción a ejecutar sobre un recurso,
 		especificado en la líneas de petición por el cliente.
 		Algunos de los métodos disponibles en HTTP son <code>GET</code>,
 		<code>POST</code>, y <code>PUT</code>.</dd>
@@ -373,7 +373,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		Mail".  Consiste en dos componentes, uno principal y otro secundario,
 		separados por una barra.  Algunos ejemplos son <code>text/html</code>,
 		<code>image/gif</code>, y <code>application/octet-stream</code>.  En
-		HTTP, el tipo MIME se transmite en la <glossary href="header">cabecera</glossary>
+		HTTP, el tipo MIME se transmite en la <glossary ref="header">cabecera</glossary>
 		del <code>Tipo Contenido</code>.<br /> Consulte: <a
 		href="mod/mod_mime.html">mod_mime</a></dd>
 
@@ -405,7 +405,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dt><a name="dynamicsharedobject" id="dynamicsharedobject">Objetos Dinámicos
 		Compartidos</a> <a name="dso">(DSO, dinamic shared objects)</a></dt>
 		<dd>Los <glossary
-		href="module">Módulos</glossary> compilados de forma separada al
+		ref="module">Módulos</glossary> compilados de forma separada al
 		binario httpd de Apache se pueden cargar según se necesiten.<br
 		/> Consulte: <a href="dso.html">Soporte de Objetos Dinámicos
 		Compartidos</a></dd>
@@ -420,17 +420,17 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dd>La palabra o frase
 		que protege los archivos de clave privada.  Evita que usuarios no
 		autorizados los encripten. Normalmente es solo la clave de
-		encriptado/desencriptado usada por los <glossary name="cipher">Algoritmos de
+		encriptado/desencriptado usada por los <glossary ref="cipher">Algoritmos de
 		Cifrado</glossary>.<br /> Consulte: <a href="ssl/">Encriptado
 		SSL/TLS</a></dd>
 
 		<dt><a name="certificatsigningrequest" id="certificatsigningrequest">Petición de firma de
 		Certificado.</a> <a name="csr">(CSR)</a></dt> 
 		<dd>Es la petición a
-		una <glossary href="certificationauthority">Autoridad Certificadora</glossary> para
-		que firme un <glossary href="certificate">certificado</glossary> aún sin
+		una <glossary ref="certificationauthority">Autoridad Certificadora</glossary> para
+		que firme un <glossary ref="certificate">certificado</glossary> aún sin
 		firmar. La Autoridad Certificadora firma el <em>Certificado</em> con
-		la <glossary href="privatekey">Clave Privada</glossary> de su 
+		la <glossary ref="privatekey">Clave Privada</glossary> de su 
 		<em>certificado</em>. Una vez que el CSR está firmado, se 
 		convierte en un auténtico certificado.<br /> 
 		Consulte: <a href="ssl/">Encriptado SSL/TLS</a></dd>
@@ -450,7 +450,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dd>Protocolo de transferencia de
 		Hipertexto (Seguro), es el mecanismo de comunicación encriptado
 		estándar en World Wide Web. En realidad es HTTP sobre <glossary
-		href="ssl">SSL</glossary>.<br /> Consulte: <a href="ssl/">Encriptado
+		ref="ssl">SSL</glossary>.<br /> Consulte: <a href="ssl/">Encriptado
 		SSL/TLS</a></dd>
 
 		<dt><a name="proxy" id="proxy">Proxy</a></dt> <dd>Un servidor intermedio que se
@@ -508,7 +508,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		Consulte: <a href="ssl/"> Encriptado SSL/TLS</a></dd>
 
 
-		<dt><a name="subrequest" id="subrequest">Subconsulta/a></dt>
+		<dt><a name="subrequest" id="subrequest">Subconsulta</a></dt>
 		<dd>Apache proporciona una API de subconsultasd a los módulos,
 		que permiten a otros sistemas de ficheros o paths de URL ser parcial o totalmente evaluados
 		por el servidor. Un ejemplo de los que usan esta API sería
@@ -523,8 +523,8 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="ciphertext" id="ciphertext">Texto cifrado.</a></dt> 
 		<dd>El resultado de
-		haber aplicado a un <glossary href="plaintext">texto plano</glossary> un <glossary
-		href="cipher">algoritmo de cifrado</glossary>.<br /> Consultar: <a
+		haber aplicado a un <glossary ref="plaintext">texto plano</glossary> un <glossary
+		ref="cipher">algoritmo de cifrado</glossary>.<br /> Consultar: <a
 		href="ssl/">Encriptado SSL/TLS</a></dd>
 
 
