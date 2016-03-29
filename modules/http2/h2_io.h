@@ -151,13 +151,9 @@ apr_status_t h2_io_in_shutdown(h2_io *io);
  * @param plen the requested max len, set to amount of data on return
  * @param peos != 0 iff the end of stream has been reached
  */
-apr_status_t h2_io_out_readx(h2_io *io,  
-                             h2_io_data_cb *cb, void *ctx, 
-                             apr_off_t *plen, int *peos);
-
-apr_status_t h2_io_out_read_to(h2_io *io, 
-                               apr_bucket_brigade *bb, 
-                               apr_off_t *plen, int *peos);
+apr_status_t h2_io_out_get_brigade(h2_io *io, 
+                                   apr_bucket_brigade *bb, 
+                                   apr_off_t len);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
                              apr_size_t maxlen, apr_table_t *trailers,

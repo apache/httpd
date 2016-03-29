@@ -555,6 +555,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     unsigned char padlen;
     int eos;
     h2_stream *stream;
+    apr_bucket *b;
     
     (void)ngh2;
     (void)source;
@@ -599,16 +600,10 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         }
     }
     else {
-        apr_bucket *b;
-        char *header = apr_pcalloc(stream->pool, 10);
-        memcpy(header, (const char *)framehd, 9);
-        if (padlen) {
-            header[9] = (char)padlen;
+        status = h2_conn_io_write(&session->io, (const char *)framehd, 9);
+        if (padlen && status == APR_SUCCESS) {
+            status = h2_conn_io_write(&session->io, (const char *)&padlen, 1);
         }
-        b = apr_bucket_pool_create(header, padlen? 10 : 9, 
-                                   stream->pool, session->c->bucket_alloc);
-        status = h2_conn_io_writeb(&session->io, b);
-        
         if (status == APR_SUCCESS) {
             apr_off_t len = length;
             status = h2_stream_read_to(stream, session->io.output, &len, &eos);
