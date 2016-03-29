@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      trunk patch: http://svn.apache.org/r1737014
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, trawick
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
