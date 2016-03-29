@@ -203,8 +203,8 @@ apr_status_t h2_stream_set_response(h2_stream *stream,
  *         APR_EAGAIN if not data is available and end of stream has not been
  *         reached yet.
  */
-apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_off_t *plen, int *peos);
+apr_status_t h2_stream_out_prepare(h2_stream *stream, 
+                                   apr_off_t *plen, int *peos);
 
 /**
  * Read data from the stream output.
