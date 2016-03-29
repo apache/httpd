@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1447968:1729668 (outdated) -->
+<!-- English Revision: 1729668 -->
+<!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
+<!-- Reviewed by: Sergio Ramos -->
 
-<!-- =========== Translated by: Luis Gil de Bernabé  -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
