@@ -387,17 +387,17 @@ int h2_stream_is_suspended(const h2_stream *stream)
     return stream->suspended;
 }
 
-apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_off_t *plen, int *peos)
+apr_status_t h2_stream_out_prepare(h2_stream *stream, 
+                                   apr_off_t *plen, int *peos)
 {
     if (stream->rst_error) {
+        *plen = 0;
+        *peos = 1;
         return APR_ECONNRESET;
     }
 
-    if (!stream->sos) {
-        return APR_EGENERAL;
-    }
-    return stream->sos->prep_read(stream->sos, plen, peos);
+    AP_DEBUG_ASSERT(stream->sos);
+    return stream->sos->prepare(stream->sos, plen, peos);
 }
 
 apr_status_t h2_stream_readx(h2_stream *stream, 
@@ -516,8 +516,8 @@ static apr_status_t mplx_transfer(h2_sos_mplx *msos, int stream_id,
     }
     status = h2_mplx_out_get_brigade(msos->m, stream_id, msos->tmp, 
                                      msos->buffer_size-1, &trailers);
-    if (status == APR_SUCCESS) {
-        status = h2_transfer_brigade(msos->bb, msos->tmp, pool);
+    if (!APR_BRIGADE_EMPTY(msos->tmp)) {
+        h2_transfer_brigade(msos->bb, msos->tmp, pool);
     }
     if (trailers) {
         msos->trailers = trailers;
@@ -534,6 +534,9 @@ static apr_status_t h2_sos_mplx_read_to(h2_sos *sos, apr_bucket_brigade *bb,
     status = h2_append_brigade(bb, msos->bb, plen, peos);
     if (status == APR_SUCCESS && !*peos && !*plen) {
         status = APR_EAGAIN;
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, msos->m->c,
+                      "h2_stream(%ld-%d): read_to, len=%ld eos=%d",
+                      msos->m->id, sos->stream->id, (long)*plen, *peos);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
                   "h2_stream(%ld-%d): read_to, len=%ld eos=%d",
@@ -551,30 +554,30 @@ static apr_status_t h2_sos_mplx_readx(h2_sos *sos, h2_io_data_cb *cb, void *ctx,
     if (status == APR_SUCCESS && !*peos && !*plen) {
         status = APR_EAGAIN;
     }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, msos->m->c,
                   "h2_stream(%ld-%d): readx, len=%ld eos=%d",
                   msos->m->id, sos->stream->id, (long)*plen, *peos);
     return status;
 }
 
-static apr_status_t h2_sos_mplx_prep_read(h2_sos *sos, apr_off_t *plen, int *peos)
+static apr_status_t h2_sos_mplx_prepare(h2_sos *sos, apr_off_t *plen, int *peos)
 {
     h2_sos_mplx *msos = sos->ctx;
     apr_status_t status = APR_SUCCESS;
     
-    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prep_read_pre");
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prepare_pre");
     
     if (APR_BRIGADE_EMPTY(msos->bb)) {
         status = mplx_transfer(msos, sos->stream->id, sos->stream->pool);
     }
-    status = h2_util_bb_avail(msos->bb, plen, peos);
+    h2_util_bb_avail(msos->bb, plen, peos);
     
-    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prep_read_post");
+    H2_SOS_MPLX_OUT(APLOG_TRACE2, msos, "h2_sos_mplx prepare_post");
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, msos->m->c,
-                  "h2_stream(%ld-%d): prep_read, len=%ld eos=%d, trailers=%s",
+                  "h2_stream(%ld-%d): prepare, len=%ld eos=%d, trailers=%s",
                   msos->m->id, sos->stream->id, (long)*plen, *peos,
                   msos->trailers? "yes" : "no");
-    if (status == APR_SUCCESS && !*peos && !*plen) {
+    if (!*peos && !*plen) {
         status = APR_EAGAIN;
     }
     
@@ -617,7 +620,7 @@ static h2_sos *h2_sos_mplx_create(h2_stream *stream, h2_response *response)
     
     sos->ctx = msos;
     sos->buffer = h2_sos_mplx_buffer;
-    sos->prep_read = h2_sos_mplx_prep_read;
+    sos->prepare = h2_sos_mplx_prepare;
     sos->readx = h2_sos_mplx_readx;
     sos->read_to = h2_sos_mplx_read_to;
     sos->get_trailers = h2_sos_mplx_get_trailers;

@@ -1109,7 +1109,12 @@ static int resume_on_data(void *ctx, void *val)
     AP_DEBUG_ASSERT(stream);
     
     if (h2_stream_is_suspended(stream)) {
-        if (h2_mplx_out_has_data_for(stream->session->mplx, stream->id)) {
+        apr_status_t status;
+        apr_off_t len = -1;
+        int eos;
+        
+        status = h2_stream_out_prepare(stream, &len, &eos);
+        if (status == APR_SUCCESS) {
             int rv;
             h2_stream_set_suspended(stream, 0);
             ++rctx->resume_count;
@@ -1118,8 +1123,9 @@ static int resume_on_data(void *ctx, void *val)
             ap_log_cerror(APLOG_MARK, nghttp2_is_fatal(rv)?
                           APLOG_ERR : APLOG_DEBUG, 0, session->c,
                           APLOGNO(02936) 
-                          "h2_stream(%ld-%d): resuming %s",
-                          session->id, stream->id, rv? nghttp2_strerror(rv) : "");
+                          "h2_stream(%ld-%d): resuming %s, len=%ld, eos=%d",
+                          session->id, stream->id, 
+                          rv? nghttp2_strerror(rv) : "", (long)len, eos);
         }
     }
     return 1;
@@ -1184,7 +1190,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     
     AP_DEBUG_ASSERT(!h2_stream_is_suspended(stream));
     
-    status = h2_stream_prep_read(stream, &nread, &eos);
+    status = h2_stream_out_prepare(stream, &nread, &eos);
     if (nread) {
         *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
     }
@@ -1208,11 +1214,6 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                           "h2_stream(%ld-%d): suspending",
                           session->id, (int)stream_id);
             return NGHTTP2_ERR_DEFERRED;
-            
-        case APR_EOF:
-            nread = 0;
-            eos = 1;
-            break;
             
         default:
             nread = 0;

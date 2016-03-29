@@ -355,7 +355,7 @@ apr_status_t h2_io_out_get_brigade(h2_io *io, apr_bucket_brigade *bb,
     if (io->eos_out_read) {
         return APR_EOF;
     }
-    else if (!io->bbout) {
+    else if (!io->bbout || APR_BRIGADE_EMPTY(io->bbout)) {
         return APR_EAGAIN;
     }
     else {
