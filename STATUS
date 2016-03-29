@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/r1731929
                   http://svn.apache.org/r1736681
      2.4.x patch: http://home.apache.org/~jailletc36/1731929.diff
-     +1: jailletc36
+     +1: jailletc36, ylavic
 
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      trunk patch: http://svn.apache.org/r1737014
