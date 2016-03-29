@@ -145,13 +145,11 @@ static int xlate_name(request_rec *r)
     key.dsize = strlen(key.dptr);
 
     rv = apr_dbm_fetch(db, key, &val);
-    apr_dbm_close(db);
-    if (rv != APR_SUCCESS) {
-        return DECLINED;
+    if (rv == APR_SUCCESS) {
+        backend = apr_pstrmemdup(r->pool, val.dptr, val.dsize);
     }
-
-    backend = apr_pstrmemdup(r->pool, val.dptr, val.dsize);
-    if (!backend) {
+    apr_dbm_close(db);
+    if (rv != APR_SUCCESS || !backend) {
         return DECLINED;
     }
 
