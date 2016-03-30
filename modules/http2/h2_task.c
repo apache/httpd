@@ -143,6 +143,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     task->stream_id   = req->id;
     task->c           = c;
     task->mplx        = mplx;
+    task->c->keepalives = mplx->c->keepalives;
     task->pool        = pool;
     task->request     = req;
     task->input_eos   = !req->body;
