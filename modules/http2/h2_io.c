@@ -108,9 +108,15 @@ void h2_io_set_response(h2_io *io, h2_response *response)
     AP_DEBUG_ASSERT(io->pool);
     AP_DEBUG_ASSERT(response);
     AP_DEBUG_ASSERT(!io->response);
-    io->response = h2_response_clone(io->pool, response);
+    /* we used to clone the response into the io->pool. But
+     * we have much tighter control over the EOR bucket nowadays,
+     * so just use the instance given */
+    io->response = response;
     if (response->rst_error) {
         h2_io_rst(io, response->rst_error);
+    }
+    else if (response->content_length == 0) {
+        io->eos_out = 1;
     }
 }
 
@@ -378,16 +384,8 @@ apr_status_t h2_io_out_get_brigade(h2_io *io, apr_bucket_brigade *bb,
     }
 }
 
-static void process_trailers(h2_io *io, apr_table_t *trailers)
-{
-    if (trailers && io->response) {
-        h2_response_set_trailers(io->response, 
-                                 apr_table_clone(io->pool, trailers));
-    }
-}
-
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen, apr_table_t *trailers,
+                             apr_size_t maxlen, 
                              apr_size_t *pfile_buckets_allowed)
 {
     apr_status_t status;
@@ -415,8 +413,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         }
     }     
     
-    process_trailers(io, trailers);
-    
     /* Let's move the buckets from the request processing in here, so
      * that the main thread can read them when it has time/capacity.
      *
@@ -439,13 +435,12 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
 }
 
 
-apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers)
+apr_status_t h2_io_out_close(h2_io *io)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;
     }
     if (!io->eos_out_read) { /* EOS has not been read yet */
-        process_trailers(io, trailers);
         if (!io->eos_out) {
             check_bbout(io);
             io->eos_out = 1;

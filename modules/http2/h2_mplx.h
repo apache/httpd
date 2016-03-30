@@ -190,7 +190,8 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function
  */
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const struct h2_request *r, 
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, 
+                             const struct h2_request *r, 
                              h2_stream_pri_cmp *cmp, void *ctx);
 
 /**
@@ -289,21 +290,18 @@ apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
  * @param blocking == 0 iff call should return with APR_INCOMPLETE if
  *                 the full brigade cannot be written at once
  * @param bb the bucket brigade to append
- * @param trailers optional trailers for response, maybe NULL
  * @param iowait a conditional used for block/signalling in h2_mplx
  */
 apr_status_t h2_mplx_out_write(h2_mplx *mplx, int stream_id, 
                                ap_filter_t* filter, 
                                int blocking,
                                apr_bucket_brigade *bb,
-                               apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait);
 
 /**
- * Closes the output for stream stream_id. Optionally forwards trailers
- * fromt the processed stream.  
+ * Closes the output for stream stream_id. 
  */
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers);
+apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id);
 
 apr_status_t h2_mplx_out_rst(h2_mplx *m, int stream_id, int error);
 

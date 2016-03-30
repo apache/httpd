@@ -342,6 +342,7 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
 void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
 {
     /* keep the dst id */
+    dst->initiated_on   = src->initiated_on;
     dst->method         = OPT_COPY(p, src->method);
     dst->scheme         = OPT_COPY(p, src->scheme);
     dst->authority      = OPT_COPY(p, src->authority);
@@ -350,9 +351,15 @@ void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
     if (src->trailers) {
         dst->trailers   = apr_table_clone(p, src->trailers);
     }
+    else {
+        dst->trailers   = NULL;
+    }
     dst->content_length = src->content_length;
     dst->chunked        = src->chunked;
     dst->eoh            = src->eoh;
+    dst->body           = src->body;
+    dst->serialize      = src->serialize;
+    dst->push_policy    = src->push_policy;
 }
 
 h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)

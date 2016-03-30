@@ -33,7 +33,6 @@ struct h2_task_output {
     struct h2_from_h1 *from_h1;
     
     unsigned int response_open : 1;
-    unsigned int trailers_passed : 1;
 
     apr_off_t written;
     apr_bucket_brigade *bb;
