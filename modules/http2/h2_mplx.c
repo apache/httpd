@@ -1048,7 +1048,7 @@ static h2_task *pop_task(h2_mplx *m)
                 h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
             }
             
-            
+            ++m->c->keepalives;
             io->task = task = h2_task_create(m->id, io->request, slave, m);
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
             
