@@ -9,18 +9,18 @@ Changes with Apache 2.5.0
 
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList 
      are "None". PR 58528.
-     [Michael Schlenker <msc contact.de, Rudiger Plum, Daniel Ruggeri]
+     [Michael Schlenker <msc contact.de, Ruediger Pluem, Daniel Ruggeri]
 
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      [Petr <pgajdos suse.cz>]
-     
+
   *) mod_http2: more efficient passing of response bodies with less contention
-     and file bucket forwarding. [Stefan Eissing] 
-     
+     and file bucket forwarding. [Stefan Eissing]
+
   *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 
      observing data actually send out on the frontend h2 connection. 
      [Stefan Eissing]
-     
+
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
