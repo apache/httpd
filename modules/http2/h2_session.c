@@ -491,7 +491,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           session->id, (int)frame->hd.stream_id,
                           (int)frame->rst_stream.error_code);
             stream = h2_session_get_stream(session, frame->hd.stream_id);
-            if (stream && stream->initiated_on) {
+            if (stream && stream->request && stream->request->initiated_on) {
                 ++session->pushes_reset;
             }
             else {
@@ -1270,17 +1270,20 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         rv = NGHTTP2_PROTOCOL_ERROR;
     }
     else if (response && response->headers) {
-        nghttp2_data_provider provider;
+        nghttp2_data_provider provider, *pprovider = NULL;
         h2_ngheader *ngh;
         const h2_priority *prio;
-        
-        memset(&provider, 0, sizeof(provider));
-        provider.source.fd = stream->id;
-        provider.read_callback = stream_data_cb;
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03073)
                       "h2_stream(%ld-%d): submit response %d",
                       session->id, stream->id, response->http_status);
+        
+        if (response->content_length != 0) {
+            memset(&provider, 0, sizeof(provider));
+            provider.source.fd = stream->id;
+            provider.read_callback = stream_data_cb;
+            pprovider = &provider;
+        }
         
         /* If this stream is not a pushed one itself,
          * and HTTP/2 server push is enabled here,
@@ -1297,7 +1300,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
          *    as the client, having this resource in its cache, might
          *    also have the pushed ones as well.
          */
-        if (!stream->initiated_on
+        if (stream->request && !stream->request->initiated_on
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
             
@@ -1313,7 +1316,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
                                         response->headers);
         rv = nghttp2_submit_response(session->ngh2, response->stream_id,
-                                     ngh->nv, ngh->nvlen, &provider);
+                                     ngh->nv, ngh->nvlen, pprovider);
     }
     else {
         int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
@@ -1327,7 +1330,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     }
     
     stream->submitted = 1;
-    if (stream->initiated_on) {
+    if (stream->request && stream->request->initiated_on) {
         ++session->pushes_submitted;
     }
     else {

@@ -166,7 +166,8 @@ Protocols h2 h2c http/1.1
     <section id="envvars"><title>Environment Variables</title>
         <p>
             This module can be configured to provide HTTP/2 related information
-            as additional environment variables to the SSI and CGI namespace.
+            as additional environment variables to the SSI and CGI namespace, as well
+            as in custom log configurations (see <code>%{VAR_NAME}e</code>).
         </p>
         
         <table border="1">
@@ -178,7 +179,12 @@ Protocols h2 h2c http/1.1
                 <th>Description:</th>
             </tr>
             <tr><td><code>HTTP2</code></td><td>flag</td><td>HTTP/2 is being used.</td></tr>
-            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this request and also supported by the client.</td></tr>
+            <tr><td><code>H2PUSH</code></td><td>flag</td><td>HTTP/2 Server Push is enabled for this connection and also supported by the client.</td></tr>
+            <tr><td><code>H2_PUSH</code></td><td>flag</td><td>alternate name for <code>H2PUSH</code></td></tr>
+            <tr><td><code>H2_PUSHED</code></td><td>string</td><td>empty or <code>PUSHED</code> for a request being pushed by the server.</td></tr>
+            <tr><td><code>H2_PUSHED_ON</code></td><td>number</td><td>HTTP/2 stream number that triggered the push of this request.</td></tr>
+            <tr><td><code>H2_STREAM_ID</code></td><td>number</td><td>HTTP/2 stream number of this request.</td></tr>
+            <tr><td><code>H2_STREAM_TAG</code></td><td>string</td><td>HTTP/2 process unique stream identifier, consisting of connection id and stream id separated by <code>-</code>.</td></tr>
         </table>
     </section>
     

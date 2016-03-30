@@ -15,6 +15,7 @@
 
 #include <apr_optional.h>
 #include <apr_optional_hooks.h>
+#include <apr_strings.h>
 #include <apr_time.h>
 #include <apr_want.h>
 
@@ -198,36 +199,83 @@ static void h2_hooks(apr_pool_t *pool)
     ap_hook_handler(h2_filter_h2_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-static char *value_of_HTTP2(apr_pool_t *p, server_rec *s,
-                              conn_rec *c, request_rec *r)
+static const char *val_HTTP2(apr_pool_t *p, server_rec *s,
+                             conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
-    return c && http2_is_h2(c)? "on" : "off";
+    return ctx? "on" : "off";
 }
 
-static char *value_of_H2PUSH(apr_pool_t *p, server_rec *s,
-                             conn_rec *c, request_rec *r)
+static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
+                               conn_rec *c, request_rec *r, h2_ctx *ctx)
 {
-    h2_ctx *ctx;
-    if (r) {
-        ctx = h2_ctx_rget(r);
-        if (ctx) {
+    if (ctx) {
+        if (r) {
             h2_task *task = h2_ctx_get_task(ctx);
-            return (task && task->request->push_policy != H2_PUSH_NONE)? "on" : "off";
+            if (task && task->request->push_policy != H2_PUSH_NONE) {
+                return "on";
+            }
         }
-    }
-    else if (c) {
-        ctx = h2_ctx_get(c, 0);
-        return ctx && h2_session_push_enabled(ctx->session)? "on" : "off";
+        else if (c && h2_session_push_enabled(ctx->session)) {
+            return "on";
+        }
     }
     else if (s) {
         const h2_config *cfg = h2_config_sget(s);
-        return cfg && h2_config_geti(cfg, H2_CONF_PUSH)? "on" : "off";
+        if (cfg && h2_config_geti(cfg, H2_CONF_PUSH)) {
+            return "on";
+        }
     }
     return "off";
 }
 
-typedef char *h2_var_lookup(apr_pool_t *p, server_rec *s,
-                             conn_rec *c, request_rec *r);
+static const char *val_H2_PUSHED(apr_pool_t *p, server_rec *s,
+                                 conn_rec *c, request_rec *r, h2_ctx *ctx)
+{
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
+            return "PUSHED";
+        }
+    }
+    return "";
+}
+
+static const char *val_H2_PUSHED_ON(apr_pool_t *p, server_rec *s,
+                                    conn_rec *c, request_rec *r, h2_ctx *ctx)
+{
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
+            return apr_itoa(p, task->request->initiated_on);
+        }
+    }
+    return "";
+}
+
+static const char *val_H2_STREAM_TAG(apr_pool_t *p, server_rec *s,
+                                     conn_rec *c, request_rec *r, h2_ctx *ctx)
+{
+    if (ctx) {
+        h2_task *task = h2_ctx_get_task(ctx);
+        if (task) {
+            return task->id;
+        }
+    }
+    return "";
+}
+
+static const char *val_H2_STREAM_ID(apr_pool_t *p, server_rec *s,
+                                    conn_rec *c, request_rec *r, h2_ctx *ctx)
+{
+    const char *cp = val_H2_STREAM_TAG(p, s, c, r, ctx);
+    if (cp && (cp = ap_strchr_c(cp, '-'))) {
+        return ++cp;
+    }
+    return NULL;
+}
+
+typedef const char *h2_var_lookup(apr_pool_t *p, server_rec *s,
+                                  conn_rec *c, request_rec *r, h2_ctx *ctx);
 typedef struct h2_var_def {
     const char *name;
     h2_var_lookup *lookup;
@@ -235,8 +283,13 @@ typedef struct h2_var_def {
 } h2_var_def;
 
 static h2_var_def H2_VARS[] = {
-    { "HTTP2",     value_of_HTTP2,  1 },
-    { "H2PUSH",    value_of_H2PUSH, 1 },
+    { "HTTP2",               val_HTTP2,  1 },
+    { "H2PUSH",              val_H2_PUSH, 1 },
+    { "H2_PUSH",             val_H2_PUSH, 1 },
+    { "H2_PUSHED",           val_H2_PUSHED, 1 },
+    { "H2_PUSHED_ON",        val_H2_PUSHED_ON, 1 },
+    { "H2_STREAM_ID",        val_H2_STREAM_ID, 1 },
+    { "H2_STREAM_TAG",       val_H2_STREAM_TAG, 1 },
 };
 
 #ifndef H2_ALEN
@@ -257,7 +310,9 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
     for (i = 0; i < H2_ALEN(H2_VARS); ++i) {
         h2_var_def *vdef = &H2_VARS[i];
         if (!strcmp(vdef->name, name)) {
-            return vdef->lookup(p, s, c, r);
+            h2_ctx *ctx = (r? h2_ctx_rget(r) : 
+                           h2_ctx_get(c->master? c->master : c, 0));
+            return (char *)vdef->lookup(p, s, c, r, ctx);
         }
     }
     return "";
@@ -273,7 +328,8 @@ static int h2_h2_fixups(request_rec *r)
             h2_var_def *vdef = &H2_VARS[i];
             if (vdef->subprocess) {
                 apr_table_setn(r->subprocess_env, vdef->name, 
-                               vdef->lookup(r->pool, r->server, r->connection, r));
+                               vdef->lookup(r->pool, r->server, r->connection, 
+                                            r, ctx));
             }
         }
     }

@@ -235,7 +235,7 @@ void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
                               const h2_request *req)
 {
     h2_request_copy(stream->pool, stream->request, req);
-    stream->initiated_on = initiated_on;
+    stream->request->initiated_on = initiated_on;
     stream->request->eoh = 0;
 }
 
@@ -476,7 +476,7 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
     h2_response *response = h2_stream_get_response(stream);
     
-    if (stream->initiated_on && response) {
+    if (response && stream->request && stream->request->initiated_on) {
         const char *ctype = apr_table_get(response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */

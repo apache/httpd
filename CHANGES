@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: incrementing keepalives on each request started so that logging
+     %k gives increasing numbers per master http2 connection. 
+     New documented variables in env, usable in custom log formats: H2_PUSH,
+     H2_PUSHED, H2_PUSHED_ON, H2_STREAM_ID and H2_STREAM_TAG.
+     [Stefan Eissing]
+
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList 
      are "None". PR 58528.
      [Michael Schlenker <msc contact.de, Rudiger Plum, Daniel Ruggeri]
