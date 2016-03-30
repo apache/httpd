@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Do not read .htaccess if AllowOverride and AllowOverrideList 
+     are "None". PR 58528.
+     [Michael Schlenker <msc contact.de, Rudiger Plum, Daniel Ruggeri]
+
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      [Petr <pgajdos suse.cz>]
      
