@@ -164,8 +164,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1734807
                   http://svn.apache.org/r1735159
                   http://svn.apache.org/r1735337
+                  http://svn.apache.org/r1737265
      2.4.x patch: trunk works (modulo CHANGES) or
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-no_crl_for_cert_ok.patch
+                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-no_crl_for_cert_ok-v2.patch
      +1: ylavic
 
   *) mod_proxy_http2: add http2 proxy support in new, experimental module. 
