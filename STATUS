@@ -120,6 +120,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works
      +1: jailletc36, sf, ylavic
 
+  *) Synch 2.4.x with trunk - merge some multi-line log messages in MPMs (+ one style 
+     adjustment in mpm_netware.c, merged accidendly)
+     Trunk patch: http://svn.apache.org/r1731929
+                  http://svn.apache.org/r1736681
+     2.4.x patch: http://home.apache.org/~jailletc36/1731929.diff
+     +1: jailletc36, ylavic, wrowe
+
+  *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
+     trunk patch: http://svn.apache.org/r1737014
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, trawick, wrowe
+
+  *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
+     are "None". PR 58528.
+     trunk patch: http://svn.apache.org/r1737114
+     2.4.x patch: http://people.apache.org/~druggeri/patches/2.4.x.AllowOverrideListFix.PR58528.patch
+     +1: druggeri, ylavic, wrowe
+     ylavic: please also apply r1737148 on merge to fix the typo on "Ruediger" (CHANGES entry)
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -180,25 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
-
-  *) Synch 2.4.x with trunk - merge some multi-line log messages in MPMs (+ one style 
-     adjustment in mpm_netware.c, merged accidendly)
-     Trunk patch: http://svn.apache.org/r1731929
-                  http://svn.apache.org/r1736681
-     2.4.x patch: http://home.apache.org/~jailletc36/1731929.diff
-     +1: jailletc36, ylavic
-
-  *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
-     trunk patch: http://svn.apache.org/r1737014
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick
-
-  *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
-     are "None". PR 58528.
-     trunk patch: http://svn.apache.org/r1737114
-     2.4.x patch: http://people.apache.org/~druggeri/patches/2.4.x.AllowOverrideListFix.PR58528.patch
-     +1: druggeri, ylavic
-     ylavic: please also apply r1737148 on merge to fix the typo on "Ruediger" (CHANGES entry)
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
