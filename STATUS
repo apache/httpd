@@ -113,6 +113,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core/util_script: relax alphanumeric filter of enviroment variable names
+          on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
+          unadulterated in 64 bit versions of Windows. PR 46751.
+     trunk patch: http://svn.apache.org/r1705217
+     2.4.x patch: trunk patch works
+     +1: jailletc36, sf, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -130,18 +137,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           release.
      ylavic: OK, this is just that persisted slotmems won't be reused on first
              startup, not that the startup will fail (as I first thought).
-
-  *) core/util_script: relax alphanumeric filter of enviroment variable names
-          on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
-          unadulterated in 64 bit versions of Windows. PR 46751.
-     trunk patch: http://svn.apache.org/r1705217
-     2.4.x patch: trunk patch works
-     +1: jailletc36, sf
-     ylavic: As asked on dev@ (in reply to r1705217), what about CVE-2014-6271
-             (shellshock) with unix-like shells (or even maybe native windows
-             ones too)? 
-     sf: I think if there were such shells they should be fixed by now. And
-         these names with ( ) are quite common under windows.
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
@@ -184,6 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: r1645529 (works)
      2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
      +1: trawick
+     ylavic: there may be missing bits, see thread for commit r1736510.
 
   *) Synch 2.4.x with trunk - merge some multi-line log messages in MPMs (+ one style 
      adjustment in mpm_netware.c, merged accidendly)
@@ -201,7 +197,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      are "None". PR 58528.
      trunk patch: http://svn.apache.org/r1737114
      2.4.x patch: http://people.apache.org/~druggeri/patches/2.4.x.AllowOverrideListFix.PR58528.patch
-     +1: druggeri
+     +1: druggeri, ylavic
+     ylavic: please also apply r1737148 on merge to fix the typo on "Ruediger" (CHANGES entry)
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
