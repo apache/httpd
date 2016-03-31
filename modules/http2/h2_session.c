@@ -1875,6 +1875,9 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
+            if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
+                dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+            }
             if (h2_ihash_is_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
@@ -2247,6 +2250,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 if (session->wait_us <= 0) {
                     session->wait_us = 10;
                     session->start_wait = apr_time_now();
+                    if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
+                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                    }
                     update_child_status(session, SERVER_BUSY_READ, "wait");
                 }
                 else if ((apr_time_now() - session->start_wait) >= session->s->timeout) {
@@ -2299,10 +2305,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
         }
 
-        status = h2_conn_io_flush(&session->io);
-        if (status != APR_SUCCESS) {
-            dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
-        }
         if (!nghttp2_session_want_read(session->ngh2) 
                  && !nghttp2_session_want_write(session->ngh2)) {
             dispatch_event(session, H2_SESSION_EV_NGH2_DONE, 0, NULL); 
@@ -2314,8 +2316,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
     }
     
 out:
-    h2_conn_io_flush(&session->io);
-    
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): [%s] process returns", 
                   session->id, state_name(session->state));
