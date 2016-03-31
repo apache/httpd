@@ -70,6 +70,28 @@ static const char *get_sos_filter(apr_table_t *notes)
     return notes? apr_table_get(notes, H2_RESP_SOS_NOTE) : NULL;
 }
 
+static void check_clen(h2_response *response, request_rec *r, apr_pool_t *pool)
+{
+    
+    if (r && r->header_only) {
+        response->content_length = 0;
+    }
+    else if (response->headers) {
+        const char *s = apr_table_get(response->headers, "Content-Length");
+        if (s) {
+            char *end;
+            response->content_length = apr_strtoi64(s, &end, 10);
+            if (s == end) {
+                ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
+                              pool, APLOGNO(02956) 
+                              "h2_response: content-length"
+                              " value not parsed: %s", s);
+                response->content_length = -1;
+            }
+        }
+    }
+}
+
 static h2_response *h2_response_create_int(int stream_id,
                                            int rst_error,
                                            int http_status,
@@ -78,7 +100,6 @@ static h2_response *h2_response_create_int(int stream_id,
                                            apr_pool_t *pool)
 {
     h2_response *response;
-    const char *s;
 
     if (!headers) {
         return NULL;
@@ -96,19 +117,7 @@ static h2_response *h2_response_create_int(int stream_id,
     response->headers        = headers;
     response->sos_filter     = get_sos_filter(notes);
     
-    s = apr_table_get(headers, "Content-Length");
-    if (s) {
-        char *end;
-        
-        response->content_length = apr_strtoi64(s, &end, 10);
-        if (s == end) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, APR_EINVAL, 
-                          pool, APLOGNO(02956) 
-                          "h2_response: content-length"
-                          " value not parsed: %s", s);
-            response->content_length = -1;
-        }
-    }
+    check_clen(response, NULL, pool);
     return response;
 }
 
@@ -138,6 +147,8 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     response->headers        = header;
     response->sos_filter     = get_sos_filter(r->notes);
 
+    check_clen(response, r, pool);
+    
     if (response->http_status == HTTP_FORBIDDEN) {
         const char *cause = apr_table_get(r->notes, "ssl-renegotiate-forbidden");
         if (cause) {

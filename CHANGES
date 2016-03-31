@@ -2,8 +2,17 @@
 
 Changes with Apache 2.4.20
 
+  *) mod_http2: incrementing keepalives on each request started so that logging
+     %k gives increasing numbers per master http2 connection. 
+     New documented variables in env, usable in custom log formats: H2_PUSH,
+     H2_PUSHED, H2_PUSHED_ON, H2_STREAM_ID and H2_STREAM_TAG.
+     [Stefan Eissing]
+
+  *) mod_http2: more efficient passing of response bodies with less contention
+     and file bucket forwarding. [Stefan Eissing]
+
   *) mod_http2: fix for missing score board updates on request count, fix for
-     memory leak on slave connection reuse.
+     memory leak on slave connection reuse. [Stefan Eissing]
      
   *) mod_http2: Fix build on Windows from dsp files.
      [Stefan Eissing] 

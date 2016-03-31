@@ -306,12 +306,13 @@ static void io_destroy(h2_mplx *m, h2_io *io, int events)
         h2_task_destroy(io->task);
         io->task = NULL;
         
-        if (reuse_slave) {
+        if (reuse_slave && slave->keepalive == AP_CONN_KEEPALIVE) {
             apr_bucket_delete(io->eor);
             io->eor = NULL;
             APR_ARRAY_PUSH(m->spare_slaves, conn_rec*) = slave;
         }
         else {
+            slave->sbh = NULL;
             h2_slave_destroy(slave, NULL);
         }
     }
@@ -613,40 +614,9 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
     return status;
 }
 
-apr_status_t h2_mplx_out_readx(h2_mplx *m, int stream_id, 
-                               h2_io_data_cb *cb, void *ctx, 
-                               apr_off_t *plen, int *peos,
-                               apr_table_t **ptrailers)
-{
-    apr_status_t status;
-    int acquired;
-    
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
-        if (io && !io->orphaned) {
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_pre");
-            
-            status = h2_io_out_readx(io, cb, ctx, plen, peos);
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_readx_post");
-            if (status == APR_SUCCESS && cb) {
-                h2_io_signal(io, H2_IO_WRITE);
-            }
-        }
-        else {
-            status = APR_ECONNABORTED;
-        }
-        
-        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
-        leave_mutex(m, acquired);
-    }
-    return status;
-}
-
-apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id, 
-                                 apr_bucket_brigade *bb, 
-                                 apr_off_t *plen, int *peos,
-                                 apr_table_t **ptrailers)
+apr_status_t h2_mplx_out_get_brigade(h2_mplx *m, int stream_id, 
+                                     apr_bucket_brigade *bb, 
+                                     apr_off_t len, apr_table_t **ptrailers)
 {
     apr_status_t status;
     int acquired;
@@ -655,11 +625,11 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_pre");
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_get_brigade_pre");
             
-            status = h2_io_out_read_to(io, bb, plen, peos);
+            status = h2_io_out_get_brigade(io, bb, len);
             
-            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_read_to_post");
+            H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_get_brigade_post");
             if (status == APR_SUCCESS) {
                 h2_io_signal(io, H2_IO_WRITE);
             }
@@ -667,7 +637,7 @@ apr_status_t h2_mplx_out_read_to(h2_mplx *m, int stream_id,
         else {
             status = APR_ECONNABORTED;
         }
-        *ptrailers = (*peos && io->response)? io->response->trailers : NULL;
+        *ptrailers = io->response? io->response->trailers : NULL;
         leave_mutex(m, acquired);
     }
     return status;
@@ -728,7 +698,6 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_ihash_t *streams)
 static apr_status_t out_write(h2_mplx *m, h2_io *io, 
                               ap_filter_t* f, int blocking,
                               apr_bucket_brigade *bb,
-                              apr_table_t *trailers,
                               struct apr_thread_cond_t *iowait)
 {
     apr_status_t status = APR_SUCCESS;
@@ -742,7 +711,7 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
            && !is_aborted(m, &status)) {
         
         status = h2_io_out_write(io, bb, blocking? m->stream_max_mem : INT_MAX, 
-                                 trailers, &m->tx_handles_reserved);
+                                 &m->tx_handles_reserved);
         io_out_consumed_signal(m, io);
         
         /* Wait for data to drain until there is room again or
@@ -759,7 +728,6 @@ static apr_status_t out_write(h2_mplx *m, h2_io *io,
                               m->id, io->id);
                 return APR_INCOMPLETE;
             }
-            trailers = NULL;
             if (f) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                               "h2_mplx(%ld-%d): waiting for out drain", 
@@ -797,7 +765,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response,
             check_tx_reservation(m);
         }
         if (bb) {
-            status = out_write(m, io, f, 0, bb, response->trailers, iowait);
+            status = out_write(m, io, f, 0, bb, iowait);
             if (status == APR_INCOMPLETE) {
                 /* write will have transferred as much data as possible.
                    caller has to deal with non-empty brigade */
@@ -838,7 +806,6 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response,
 apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id, 
                                ap_filter_t* f, int blocking,
                                apr_bucket_brigade *bb,
-                               apr_table_t *trailers,
                                struct apr_thread_cond_t *iowait)
 {
     apr_status_t status;
@@ -848,10 +815,9 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_io *io = h2_io_set_get(m->stream_ios, stream_id);
         if (io && !io->orphaned) {
-            status = out_write(m, io, f, blocking, bb, trailers, iowait);
+            status = out_write(m, io, f, blocking, bb, iowait);
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
-                          "h2_mplx(%ld-%d): write with trailers=%s", 
-                          m->id, io->id, trailers? "yes" : "no");
+                          "h2_mplx(%ld-%d): write", m->id, io->id);
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_write");
             
             have_out_data_for(m, stream_id);
@@ -864,7 +830,7 @@ apr_status_t h2_mplx_out_write(h2_mplx *m, int stream_id,
     return status;
 }
 
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
+apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
 {
     apr_status_t status;
     int acquired;
@@ -886,10 +852,9 @@ apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id, apr_table_t *trailers)
                               m->id, io->id);
             }
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
-                          "h2_mplx(%ld-%d): close with eor=%s, trailers=%s", 
-                          m->id, io->id, io->eor? "yes" : "no", 
-                          trailers? "yes" : "no");
-            status = h2_io_out_close(io, trailers);
+                          "h2_mplx(%ld-%d): close with eor=%s", 
+                          m->id, io->id, io->eor? "yes" : "no");
+            status = h2_io_out_close(io);
             H2_MPLX_IO_OUT(APLOG_TRACE2, m, io, "h2_mplx_out_close");
             io_out_consumed_signal(m, io);
             
@@ -1018,7 +983,8 @@ static h2_io *open_io(h2_mplx *m, int stream_id, const h2_request *request)
 }
 
 
-apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, const h2_request *req, 
+apr_status_t h2_mplx_process(h2_mplx *m, int stream_id, 
+                             const h2_request *req, 
                              h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status;
@@ -1080,7 +1046,9 @@ static h2_task *pop_task(h2_mplx *m)
                 new_conn = 1;
             }
             
+            slave->sbh = m->c->sbh;
             io->task = task = h2_task_create(m->id, io->request, slave, m);
+            m->c->keepalives++;
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
             if (new_conn) {
                 h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
@@ -1144,7 +1112,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             /* TODO: this will keep a worker attached to this h2_mplx as
              * long as it has requests to handle. Might no be fair to
              * other mplx's. Perhaps leave after n requests? */
-            h2_mplx_out_close(m, task->stream_id, NULL);
+            h2_mplx_out_close(m, task->stream_id);
             
             if (ngn && io) {
                 apr_off_t bytes = io->output_consumed + h2_io_out_length(io);

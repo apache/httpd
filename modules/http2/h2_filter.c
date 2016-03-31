@@ -275,9 +275,9 @@ static apr_status_t h2_sos_h2_status_read_to(h2_sos *sos, apr_bucket_brigade *bb
     return sos->prev->read_to(sos->prev, bb, plen, peos);
 }
 
-static apr_status_t h2_sos_h2_status_prep_read(h2_sos *sos, apr_off_t *plen, int *peos)
+static apr_status_t h2_sos_h2_status_prepare(h2_sos *sos, apr_off_t *plen, int *peos)
 {
-    return sos->prev->prep_read(sos->prev, plen, peos);
+    return sos->prev->prepare(sos->prev, plen, peos);
 }
 
 static apr_status_t h2_sos_h2_status_readx(h2_sos *sos, h2_io_data_cb *cb, void *ctx,
@@ -304,7 +304,7 @@ static h2_sos *h2_sos_h2_status_create(h2_sos *prev)
     sos->response     = response;
     sos->stream       = prev->stream;
     sos->buffer       = h2_sos_h2_status_buffer;
-    sos->prep_read    = h2_sos_h2_status_prep_read;
+    sos->prepare      = h2_sos_h2_status_prepare;
     sos->readx        = h2_sos_h2_status_readx;
     sos->read_to      = h2_sos_h2_status_read_to;
     sos->get_trailers = h2_sos_h2_status_get_trailers;
