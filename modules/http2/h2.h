@@ -117,7 +117,8 @@ typedef struct h2_request h2_request;
 
 struct h2_request {
     int id;             /* stream id */
-
+    int initiated_on;   /* initiating stream id (PUSH) or 0 */
+    
     const char *method; /* pseudo header values, see ch. 8.1.2.3 */
     const char *scheme;
     const char *authority;

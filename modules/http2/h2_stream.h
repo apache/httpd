@@ -43,7 +43,6 @@ typedef struct h2_stream h2_stream;
 
 struct h2_stream {
     int id;                     /* http2 stream id */
-    int initiated_on;           /* http2 stream id this was initiated on or 0 */
     h2_stream_state_t state;    /* http/2 state of this stream */
     struct h2_session *session; /* the session this stream belongs to */
     
@@ -203,8 +202,8 @@ apr_status_t h2_stream_set_response(h2_stream *stream,
  *         APR_EAGAIN if not data is available and end of stream has not been
  *         reached yet.
  */
-apr_status_t h2_stream_prep_read(h2_stream *stream, 
-                                 apr_off_t *plen, int *peos);
+apr_status_t h2_stream_out_prepare(h2_stream *stream, 
+                                   apr_off_t *plen, int *peos);
 
 /**
  * Read data from the stream output.

@@ -108,9 +108,15 @@ void h2_io_set_response(h2_io *io, h2_response *response)
     AP_DEBUG_ASSERT(io->pool);
     AP_DEBUG_ASSERT(response);
     AP_DEBUG_ASSERT(!io->response);
-    io->response = h2_response_clone(io->pool, response);
+    /* we used to clone the response into the io->pool. But
+     * we have much tighter control over the EOR bucket nowadays,
+     * so just use the instance given */
+    io->response = response;
     if (response->rst_error) {
         h2_io_rst(io, response->rst_error);
+    }
+    else if (response->content_length == 0) {
+        io->eos_out = 1;
     }
 }
 
@@ -346,75 +352,40 @@ apr_status_t h2_io_in_close(h2_io *io)
     return APR_SUCCESS;
 }
 
-static int is_out_readable(h2_io *io, apr_off_t *plen, int *peos, 
-                           apr_status_t *ps)
+apr_status_t h2_io_out_get_brigade(h2_io *io, apr_bucket_brigade *bb, 
+                                   apr_off_t len)
 {
     if (io->rst_error) {
-        *ps = APR_ECONNABORTED;
-        return 0;
+        return APR_ECONNABORTED;
     }
     if (io->eos_out_read) {
-        *plen = 0;
-        *peos = 1;
-        *ps = APR_SUCCESS;
-        return 0;
+        return APR_EOF;
     }
-    else if (!io->bbout) {
-        *plen = 0;
-        *peos = 0;
-        *ps = APR_EAGAIN;
-        return 0;
-    }
-    return 1;
-}
-
-apr_status_t h2_io_out_readx(h2_io *io,  
-                             h2_io_data_cb *cb, void *ctx, 
-                             apr_off_t *plen, int *peos)
-{
-    apr_status_t status;
-    if (!is_out_readable(io, plen, peos, &status)) {
-        return status;
-    }
-    if (cb == NULL) {
-        /* just checking length available */
-        status = h2_util_bb_avail(io->bbout, plen, peos);
+    else if (!io->bbout || APR_BRIGADE_EMPTY(io->bbout)) {
+        return APR_EAGAIN;
     }
     else {
-        status = h2_util_bb_readx(io->bbout, cb, ctx, plen, peos);
-        if (status == APR_SUCCESS) {
-            io->eos_out_read = *peos;
-            io->output_consumed += *plen;
+        apr_status_t status;
+        apr_off_t pre_len, post_len;
+        /* Allow file handles pass through without limits. If they
+         * already have the lifetime of this stream, we might as well
+         * pass them on to the master connection */
+        apr_size_t files = INT_MAX;
+        
+        apr_brigade_length(bb, 0, &pre_len);
+        status = h2_util_move(bb, io->bbout, len, &files, "h2_io_read_to");
+        if (status == APR_SUCCESS && io->eos_out 
+            && APR_BRIGADE_EMPTY(io->bbout)) {
+            io->eos_out_read = 1;
         }
-    }
-    return status;
-}
-
-apr_status_t h2_io_out_read_to(h2_io *io, apr_bucket_brigade *bb, 
-                               apr_off_t *plen, int *peos)
-{
-    apr_status_t status;
-    if (!is_out_readable(io, plen, peos, &status)) {
+        apr_brigade_length(bb, 0, &post_len);
+        io->output_consumed += (post_len - pre_len);
         return status;
-    }
-    status = h2_util_move(bb, io->bbout, *plen, NULL, "h2_io_read_to");
-    if (status == APR_SUCCESS && io->eos_out && APR_BRIGADE_EMPTY(io->bbout)) {
-        io->eos_out_read = *peos = 1;
-    }
-    io->output_consumed += *plen;
-    return status;
-}
-
-static void process_trailers(h2_io *io, apr_table_t *trailers)
-{
-    if (trailers && io->response) {
-        h2_response_set_trailers(io->response, 
-                                 apr_table_clone(io->pool, trailers));
     }
 }
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen, apr_table_t *trailers,
+                             apr_size_t maxlen, 
                              apr_size_t *pfile_buckets_allowed)
 {
     apr_status_t status;
@@ -442,8 +413,6 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
         }
     }     
     
-    process_trailers(io, trailers);
-    
     /* Let's move the buckets from the request processing in here, so
      * that the main thread can read them when it has time/capacity.
      *
@@ -466,13 +435,12 @@ apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb,
 }
 
 
-apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers)
+apr_status_t h2_io_out_close(h2_io *io)
 {
     if (io->rst_error) {
         return APR_ECONNABORTED;
     }
     if (!io->eos_out_read) { /* EOS has not been read yet */
-        process_trailers(io, trailers);
         if (!io->eos_out) {
             check_bbout(io);
             io->eos_out = 1;

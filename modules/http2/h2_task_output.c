@@ -45,23 +45,6 @@ h2_task_output *h2_task_output_create(h2_task *task, conn_rec *c)
     return output;
 }
 
-static apr_table_t *get_trailers(h2_task_output *output)
-{
-    if (!output->trailers_passed) {
-        h2_response *response = h2_from_h1_get_response(output->from_h1);
-        if (response && response->trailers) {
-            output->trailers_passed = 1;
-            if (h2_task_logio_add_bytes_out) {
-                /* counter trailers as if we'd do a HTTP/1.1 serialization */
-                h2_task_logio_add_bytes_out(output->task->c, 
-                                            h2_util_table_bytes(response->trailers, 3)+1);
-            }
-            return response->trailers;
-        }
-    }
-    return NULL;
-}
-
 static apr_status_t open_response(h2_task_output *output, ap_filter_t *f,
                                   apr_bucket_brigade *bb, const char *caller)
 {
@@ -71,7 +54,7 @@ static apr_status_t open_response(h2_task_output *output, ap_filter_t *f,
         if (f) {
             /* This happens currently when ap_die(status, r) is invoked
              * by a read request filter. */
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, output->task->c, APLOGNO(03204)
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, output->task->c, APLOGNO(03204)
                           "h2_task_output(%s): write without response by %s "
                           "for %s %s %s",
                           output->task->id, caller, 
@@ -91,7 +74,6 @@ static apr_status_t open_response(h2_task_output *output, ap_filter_t *f,
         output->written = h2_util_table_bytes(response->headers, 3)+1;
         h2_task_logio_add_bytes_out(output->task->c, output->written);
     }
-    get_trailers(output);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, output->task->c, APLOGNO(03348)
                   "h2_task(%s): open response to %s %s %s",
                   output->task->id, output->task->request->method, 
@@ -113,8 +95,7 @@ static apr_status_t write_brigade_raw(h2_task_output *output,
                   output->task->id, (long)written);
     
     status = h2_mplx_out_write(output->task->mplx, output->task->stream_id, 
-                               f, output->task->blocking, bb, 
-                               get_trailers(output), output->task->io);
+                               f, output->task->blocking, bb, output->task->io);
     if (status == APR_INCOMPLETE) {
         apr_brigade_length(bb, 0, &left);
         written -= left;

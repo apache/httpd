@@ -165,7 +165,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
                       session_id, req->id);
-        h2_mplx_out_close(mplx, req->id, NULL);
+        h2_mplx_out_close(mplx, req->id);
         return NULL;
     }
     
@@ -173,6 +173,7 @@ h2_task *h2_task_create(long session_id, const h2_request *req,
     task->stream_id   = req->id;
     task->c           = c;
     task->mplx        = mplx;
+    task->c->keepalives = mplx->c->keepalives;
     task->pool        = pool;
     task->request     = req;
     task->input_eos   = !req->body;

@@ -37,7 +37,7 @@ typedef struct h2_io h2_io;
 
 struct h2_io {
     int id;                          /* stream identifier */
-    apr_pool_t *pool;                /* stream pool */
+     apr_pool_t *pool;                /* stream pool */
     apr_bucket_alloc_t *bucket_alloc;
     
     const struct h2_request *request;/* request on this io */
@@ -151,23 +151,19 @@ apr_status_t h2_io_in_shutdown(h2_io *io);
  * @param plen the requested max len, set to amount of data on return
  * @param peos != 0 iff the end of stream has been reached
  */
-apr_status_t h2_io_out_readx(h2_io *io,  
-                             h2_io_data_cb *cb, void *ctx, 
-                             apr_off_t *plen, int *peos);
-
-apr_status_t h2_io_out_read_to(h2_io *io, 
-                               apr_bucket_brigade *bb, 
-                               apr_off_t *plen, int *peos);
+apr_status_t h2_io_out_get_brigade(h2_io *io, 
+                                   apr_bucket_brigade *bb, 
+                                   apr_off_t len);
 
 apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen, apr_table_t *trailers,
+                             apr_size_t maxlen, 
                              apr_size_t *pfile_buckets_allowed);
 
 /**
  * Closes the input. After existing data has been read, APR_EOF will
  * be returned.
  */
-apr_status_t h2_io_out_close(h2_io *io, apr_table_t *trailers);
+apr_status_t h2_io_out_close(h2_io *io);
 
 /**
  * Gives the overall length of the data that is currently queued for
