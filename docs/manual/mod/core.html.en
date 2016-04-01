@@ -429,6 +429,14 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     completely ignored. In this case, the server will not even attempt
     to read <code>.htaccess</code> files in the filesystem.</p>
 
+    <div class="note"><h3>AllowOverrideList bug in versions &lt;= 2.4.18</h3>
+    <p><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> will not prevent 
+    .htaccess files processing when explicitly set with None in httpd versions &lt;= 2.4.18 due to a 
+    <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=58528">bug</a>.
+    Set only <code class="directive"><a href="#allowoverride">AllowOverride</a></code> to None as workaround if 
+    you are unable to upgrade to httpd &gt; 2.4.18</p>
+    </div>
+
     <p>When this directive is set to <code>All</code>, then any
     directive which has the .htaccess <a href="directive-dict.html#Context">Context</a> is allowed in
     <code>.htaccess</code> files.</p>
@@ -583,6 +591,14 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     then <a href="#accessfilename">.htaccess</a> files are completely
     ignored.  In this case, the server will not even attempt to read
     <code>.htaccess</code> files in the filesystem.</p>
+
+    <div class="note"><h3>AllowOverrideList bug in versions &lt;= 2.4.18</h3>
+    <p><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> will not prevent 
+    .htaccess files processing when explicitly set with None in httpd versions &lt;= 2.4.18 due to a 
+    <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=58528">bug</a>.
+    Set only <code class="directive"><a href="#allowoverride">AllowOverride</a></code> to None as workaround if 
+    you are unable to upgrade to httpd &gt; 2.4.18</p>
+    </div>
 
     <p>Example:</p>
 
