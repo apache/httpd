@@ -29,14 +29,14 @@
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-perhaps one of the most important concepts about mod_rewrite - namely,
+perhaps one of the most important concepts about <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> - namely,
 when to avoid using it.</p>
 
-<p>mod_rewrite should be considered a last resort, when other
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> should be considered a last resort, when other
 alternatives are found wanting. Using it when there are simpler
 alternatives leads to configurations which are confusing, fragile, and
 hard to maintain. Understanding what other alternatives are available is
-a very important step towards mod_rewrite mastery.</p>
+a very important step towards <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mastery.</p>
 
 <p>Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
@@ -99,12 +99,12 @@ following:</p>
 <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     ServerName www.example.com
     Redirect "/" "https://www.example.com/"
-&lt;/VirtualHost &gt;
+&lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:443&gt;
     ServerName www.example.com
     # ... SSL configuration goes here
-&lt;/VirtualHost &gt;</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 <p>The use of <code>RewriteRule</code> to perform this task may be
@@ -125,15 +125,15 @@ task in a <code>.htaccess</code> file instead.</p>
 <p>The <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive
 provides mapping from a URI to a directory - usually a directory outside
 of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Although it
-is possible to perform this mapping with <code>mod_rewrite</code>,
-<code>Alias</code> is the preferred method, for reasons of simplicity
-and performance.</p>
+is possible to perform this mapping with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> is the preferred method, for
+reasons of simplicity and performance.</p>
 
 <div class="example"><h3>Using Alias</h3><pre class="prettyprint lang-config">Alias "/cats" "/var/www/virtualhosts/felines/htdocs"</pre>
 </div>
 
 <p>
-The use of <code>mod_rewrite</code> to perform this mapping may be
+The use of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to perform this mapping may be
 appropriate when you do not have access to the server configuration
 files. Alias may only be used in server or virtualhost context, and not
 in a <code>.htaccess</code> file.
@@ -147,7 +147,8 @@ server.</p>
 <h2><a name="vhosts" id="vhosts">Virtual Hosting</a></h2>
 <p>Although it is possible to handle <a href="vhosts.html">virtual hosts
 with mod_rewrite</a>, it is seldom the right way. Creating individual
-&lt;VirtualHost&gt; blocks is almost always the right way to go. In the
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks is
+almost always the right way to go. In the
 event that you have an enormous number of virtual hosts, consider using
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> to create these hosts automatically.</p>
 
@@ -167,7 +168,7 @@ seems like the right approach.</p>
 <div class="section">
 <h2><a name="proxy" id="proxy">Simple Proxying</a></h2>
 
-<p><code>RewriteRule</code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]</pre>
@@ -218,7 +219,8 @@ header, response header, or environment variable, replacing
 
 <p>See especially the <a href="../expr.html">expression evaluation
 documentation</a> for a overview of what types of expressions you can
-use in &lt;If&gt; sections, and in certain other directives.</p>
+use in <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> sections,
+and in certain other directives.</p>
 
 </div></div>
 <div class="bottomlang">
