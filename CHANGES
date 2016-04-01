@@ -4,11 +4,11 @@ Changes with Apache 2.4.20
 
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
      are "None". PR 58528.
-     [Michael Schlenker <msc contact.de, Ruediger Plum, Daniel Ruggeri]
+     [Michael Schlenker <msc contact.de, Ruediger Pluem, Daniel Ruggeri]
 
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      [Petr <pgajdos suse.cz>]
-     
+
   *) core/util_script: relax alphanumeric filter of enviroment variable names
      on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
      unadulterated in 64 bit versions of Windows. PR 46751.  
