@@ -113,13 +113,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
-     are "None". PR 58528.
-     trunk patch: http://svn.apache.org/r1737114
-     2.4.x patch: http://people.apache.org/~druggeri/patches/2.4.x.AllowOverrideListFix.PR58528.patch
-     +1: druggeri, ylavic, wrowe
-     ylavic: please also apply r1737148 on merge to fix the typo on "Ruediger" (CHANGES entry)
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
