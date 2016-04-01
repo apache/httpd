@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
+     according the number of listeners buckets.  [Yann Ylavic]
+
   *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 
      observing data actually send out on the frontend h2 connection. 
      [Stefan Eissing]
