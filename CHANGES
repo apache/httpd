@@ -1,13 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) core: Do not read .htaccess if AllowOverride and AllowOverrideList 
-     are "None". PR 58528.
-     [Michael Schlenker <msc contact.de, Ruediger Pluem, Daniel Ruggeri]
-
-  *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
-     [Petr <pgajdos suse.cz>]
-
   *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 
      observing data actually send out on the frontend h2 connection. 
      [Stefan Eissing]
@@ -15,16 +8,9 @@ Changes with Apache 2.5.0
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
-  *) mod_rewrite: Don't implicitly URL-escape the original query string
-     when no substitution has changed it (like PR50447 but server context)
-     [Evgeny Kotkov <evgeny.kotkov visualsvn.com>]
-
   *) core: New CGIVar directive can configure REQUEST_URI to represent the
      current URI being processed instead of always the original request.
      [Jeff Trawick]
-
-  *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
-     request for the SSI document.  [Jeff Trawick]
 
   *) core: Extend support for setting aside data from the network input filter
      to any connection or request input filter. [Graham Leggett]
@@ -39,14 +25,8 @@ Changes with Apache 2.5.0
      
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
 
-  *) mod_ssl: Don't lose track of the SSL context if the ssl_run_pre_handshake()
-     hook returns an error. [Graham Leggett]
-
   *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
      [Yann Ylavic]
-
-  *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
-     [Jan Kaluza, Yann Ylavic]
 
   *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
      [Eric Covener]
@@ -78,17 +58,11 @@ Changes with Apache 2.5.0
      in the past that also has Cache-Control: max-age or s-maxage.
      PR55156. [Eric Covener]
 
-  *) ap_expr: expression support for variable HTTP2=on|off
-     [Stefan Eissing]
-
   *) mod_proxy_hcheck: Provide for dynamic background health
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
 
   *) Added many log numbers to log statements that had none.
-
-  *) core: Add expression support to SetHandler.
-     [Eric Covener]
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
      configure the session/cookie expiry's update interval. PR 57300.
@@ -100,11 +74,6 @@ Changes with Apache 2.5.0
   *) mpm_event: Free memory earlier when shutting down processes.
      [Stefan Fritsch]
 
-  *) core/util_script: relax alphanumeric filter of environment variable names
-     on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
-     unadulterated in 64 bit versions of Windows. PR 46751.  
-     [John <john leineweb de>]
-
   *) mod_auth_digest: remove AuthDigestEnableQueryStringHack which is no
      more documented since dec 2012 (r1415960). [Christophe Jaillet]
 
@@ -113,13 +82,6 @@ Changes with Apache 2.5.0
 
   *) mod_dir: Responses that go through "FallbackResource" might appear to
      hang due to unterminated chunked encoding. PR58292. [Eric Covener]
-
-  *) mod_substitute: Fix configuraton merge order.
-     PR 57641 [<Marc.Stern approach.be>]
-
-  *) mod_ssl: When SSLVerify is disabled (NONE), don't force a renegotiation if
-     the SSLVerifyDepth applied with the default/handshaken vhost differs from
-     the one applicable with the finally selected vhost.  [Yann Ylavic]
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
@@ -220,13 +182,6 @@ Changes with Apache 2.5.0
 
   *) Add module mod_ssl_ct, which provides an implementation of Certificate
      Transparency (RFC 6962) for httpd.  [Jeff Trawick]
-
-  *) mod_remoteip: Prevent an external proxy from presenting an internal
-     proxy. PR 55962. [Mike Rumph]
-
-  *) mod_ssl: Add hooks to allow other modules to perform processing at
-     several stages of initialization and connection handling.  See
-     mod_ssl_openssl.h.  [Jeff Trawick]
 
   *) mod_proxy_wstunnel: Avoid sending error responses down an upgraded
      websockets connection as it is being close down. [Eric Covener]
