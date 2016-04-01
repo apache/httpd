@@ -1517,11 +1517,13 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         int all_dead_threads = 1;
         int child_threads_active = 0;
 
-        if (i >= retained->max_daemons_limit && totally_free_length == retained->idle_spawn_rate[child_bucket])
+        if (i >= retained->max_daemons_limit &&
+            totally_free_length == retained->idle_spawn_rate[child_bucket]) {
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
              */
             break;
+        }
         ps = &ap_scoreboard_image->parent[i];
         for (j = 0; j < threads_per_child; j++) {
             ws = &ap_scoreboard_image->servers[i][j];
@@ -1555,7 +1557,8 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
             }
         }
         active_thread_count += child_threads_active;
-        if (any_dead_threads && totally_free_length < retained->idle_spawn_rate[child_bucket]
+        if (any_dead_threads
+                && totally_free_length < retained->idle_spawn_rate[child_bucket]
                 && free_length < MAX_SPAWN_RATE / num_buckets
                 && (!ps->pid               /* no process in the slot */
                     || ps->quiescing)) {   /* or at least one is going away */
