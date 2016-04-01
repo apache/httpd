@@ -812,7 +812,7 @@ static void show_server_data()
     do {
        printf(" %d", lr->bind_addr->port);
        lr = lr->next;
-    } while(lr && lr != ap_listeners);
+    } while (lr && lr != ap_listeners);
 
     /* Display dynamic modules loaded */
     printf("\n");
@@ -1021,15 +1021,11 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00228)
                          "WARNING: MaxThreads of %d exceeds compile-time "
-                         "limit of", ap_threads_limit);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03125)
-                         " %d threads, decreasing to %d.",
-                         HARD_THREAD_LIMIT, HARD_THREAD_LIMIT);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03126)
-                         " To increase, please see the HARD_THREAD_LIMIT"
-                         "define in");
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03127)
-                         " server/mpm/netware%s.", MPM_HARD_LIMITS_FILE);
+                         "limit of %d threads, decreasing to %d. "
+                         "To increase, please see the HARD_THREAD_LIMIT "
+                         "define in server/mpm/netware%s.",
+                         ap_threads_limit, HARD_THREAD_LIMIT, HARD_THREAD_LIMIT,
+                         MPM_HARD_LIMITS_FILE);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00229)
                          "MaxThreads of %d exceeds compile-time limit "
@@ -1071,11 +1067,8 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00233)
                          "WARNING: MinSpareThreads of %d not allowed, "
-                         "increasing to 1", ap_threads_min_free);
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03128)
-                         " to avoid almost certain server failure.");
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(03129)
-                         " Please read the documentation.");
+                         "increasing to 1 to avoid almost certain server failure. "
+                         "Please read the documentation.", ap_threads_min_free);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00234)
                          "MinSpareThreads of %d not allowed, increasing to 1",
