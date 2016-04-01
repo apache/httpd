@@ -113,11 +113,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
-     trunk patch: http://svn.apache.org/r1737014
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, trawick, wrowe
-
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
      are "None". PR 58528.
      trunk patch: http://svn.apache.org/r1737114
