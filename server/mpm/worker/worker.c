@@ -1833,8 +1833,8 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_daemons_limit = num_buckets;
     if (ap_daemons_to_start < num_buckets)
         ap_daemons_to_start = num_buckets;
-    if (min_spare_threads < threads_per_child * num_buckets)
-        min_spare_threads = threads_per_child * num_buckets;
+    if (min_spare_threads < threads_per_child * (num_buckets - 1) + num_buckets)
+        min_spare_threads = threads_per_child * (num_buckets - 1) + num_buckets;
     if (max_spare_threads < min_spare_threads + threads_per_child * num_buckets)
         max_spare_threads = min_spare_threads + threads_per_child * num_buckets;
 
