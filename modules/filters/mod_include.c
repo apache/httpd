@@ -1764,6 +1764,15 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 }
 
 /*
+ * <!--#comment blah blah blah ... -->
+ */
+static apr_status_t handle_comment(include_ctx_t *ctx, ap_filter_t *f,
+                                   apr_bucket_brigade *bb)
+{
+    return APR_SUCCESS;
+}
+
+/*
  * <!--#include virtual|file="..." [onerror|virtual|file="..."] ... -->
  *
  * Output each file/virtual in turn until one of them returns an error.
@@ -4161,6 +4170,7 @@ static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
         ssi_pfn_register("endif", handle_endif);
         ssi_pfn_register("fsize", handle_fsize);
         ssi_pfn_register("config", handle_config);
+        ssi_pfn_register("comment", handle_comment);
         ssi_pfn_register("include", handle_include);
         ssi_pfn_register("flastmod", handle_flastmod);
         ssi_pfn_register("printenv", handle_printenv);
