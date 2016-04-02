@@ -59,11 +59,11 @@
 <div class="section">
 <h2><a name="usage" id="usage">Usage</a></h2>
 
-<p>Macros are defined using <code class="directive">&lt;Macro&gt;</code> blocks, which contain the portion of
+<p>Macros are defined using <code class="directive"><a href="#macro">&lt;Macro&gt;</a></code> blocks, which contain the portion of
 your configuration that needs to be repeated, complete with variables
 for those parts that will need to be substituted.</p>
 
-<p>For example,  you might use a macro to define a <code class="directive">&lt;VirtualHost&gt;</code> block, in order to define
+<p>For example, you might use a macro to define a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block, in order to define
 multiple similar virtual hosts:</p>
 
 <pre class="prettyprint lang-config">&lt;Macro VHost $name $domain&gt;
@@ -91,13 +91,14 @@ Use VHost apache apache.org
 UndefMacro VHost</pre>
 
 
-<p>At server startup time, each of these <code class="directive">Use</code>
+<p>At server startup time, each of these <code class="directive"><a href="#use">Use</a></code>
 invocations would be expanded into a full virtualhost, as
-described by the <code class="directive">Macro</code> definition.</p>
+described by the <code class="directive"><a href="#macro">&lt;Macro&gt;</a></code>
+definition.</p>
 
-<p>The <code class="directive">UndefMacro</code> directive is used so that later
-macros using the same variable names don't result in conflicting
-definitions.</p>
+<p>The <code class="directive"><a href="#undefmacro">UndefMacro</a></code> directive is
+used so that later macros using the same variable names don't result in
+conflicting definitions.</p>
 
 <p>A more elaborate version of this example may be seen below in the
 Examples section.</p>
@@ -204,8 +205,8 @@ UndefMacro DirGroup</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
 </table>
-    <p>The <code class="directive">Macro</code> directive controls the definition of
-    a macro within the server runtime configuration files.
+    <p>The <code class="directive">&lt;Macro&gt;</code> directive controls the
+    definition of a macro within the server runtime configuration files.
     The first argument is the name of the macro.
     Other arguments are parameters to the macro. It is good practice to prefix
     parameter names with any of '<code>$%@</code>', and not macro names
