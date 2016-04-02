@@ -29,8 +29,6 @@
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -93,6 +91,22 @@
     </dl>
 
     <dl>
+      <dt>HTTP/2 avec httpd</dt>
+      <dd>
+      <p>HTTP/2 est une évolution du protocole de la couche application le plus
+      connu au monde, HTTP. Les efforts se sont concentrés sur une amélioration
+      de l'efficacité de l'utilisation des ressources réseau sans modifier la
+      sémantique de HTTP. Ce guide explique la manière dont HTTP/2 est
+      implémenté dans httpd, donne des conseils pour une configuration de base
+      ainsi qu'une liste de recommandations.
+      </p>
+
+        <p>Voir le <a href="http2.html">guide HTTP/2</a></p>
+      </dd>
+    </dl>
+
+
+    <dl>    
       <dt>Introduction au Inclusions côté Serveur (Server Side Includes
       ou SSI)</dt>
       <dd>
@@ -125,12 +139,12 @@
     <dl>
       <dt>Mandataires inverses</dt>
       <dd>
-        <p>Apache httpd possÃ¨de des fonctionnalitÃ©s Ã©voluÃ©es de serveur
+        <p>Apache httpd possède des fonctionnalités évoluées de serveur
 	mandataire inverse via ses directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> qui permettent
-	d'implÃ©menter un systÃ¨me de mandataire inverse sophistiquÃ© garantissant
-	une haute disponibilitÃ©, une rÃ©partition et une rÃ©attribution de charge,
-	un regroupement de serveurs en grappe (clustering) basÃ© sur le cloud et
-	une reconfiguration dynamique Ã&nbsp; la volÃ©e.</p>
+	d'implémenter un système de mandataire inverse sophistiqué garantissant
+	une haute disponibilité, une répartition et une réattribution de charge,
+	un regroupement de serveurs en grappe (clustering) basé sur le cloud et
+	une reconfiguration dynamique à la volée.</p>
 
         <p>Voir le <a href="reverse_proxy.html" />Guide de configuration des
 	mandataires inverses</p>
