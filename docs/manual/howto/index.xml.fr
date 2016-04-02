@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1729617:1736686 (outdated) -->
+<!-- English Revision: 1736686 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,25 +34,25 @@
     <dl>
       <dt>Authentification et autorisation</dt>
       <dd>
-        <p>L'authentification repr&eacute;sente tout processus par lequel vous
-	v&eacute;rifiez si quelqu'un correspond bien &agrave; l'identit&eacute; qu'il
-	d&eacute;clare poss&eacute;der. L'autorisation repr&eacute;sente tout processus
-	permettant de savoir si une personne est autoris&eacute;e &agrave; aller l&agrave; o&ugrave;
-	elle veut aller, ou &agrave; obtenir les informations qu'elle demande.</p>
+        <p>L'authentification représente tout processus par lequel vous
+	vérifiez si quelqu'un correspond bien à l'identité qu'il
+	déclare posséder. L'autorisation représente tout processus
+	permettant de savoir si une personne est autorisée à aller là où
+	elle veut aller, ou à obtenir les informations qu'elle demande.</p>
 
         <p>Voir <a href="auth.html">Authentification, Autorisation</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Contr&ocirc;le d'acc&egrave;s</dt>
+      <dt>Contrôle d'accès</dt>
       <dd>
-        <p>Le contr&ocirc;le d'acc&egrave;s se r&eacute;f&egrave;re au processus permettant
-	d'interdire ou d'accorder l'acc&egrave;s &agrave; une ressource en fonction de
-	certains crit&egrave;res, et il existe de nombreuses fa&ccedil;ons d'y
+        <p>Le contrôle d'accès se réfère au processus permettant
+	d'interdire ou d'accorder l'accès à une ressource en fonction de
+	certains critères, et il existe de nombreuses façons d'y
 	parvenir.</p>
 
-        <p>Voir <a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></p>
+        <p>Voir <a href="access.html">Contrôle d'accès</a></p>
       </dd>
     </dl>
 
@@ -60,13 +60,13 @@
       <dt>Contenu dynamique avec CGI</dt>
       <dd>
         <p>L'Interface Passerelle Commune CGI (Common Gateway Interface)
-	d&eacute;finit pour le serveur web une m&eacute;thode d'interaction avec des
-	programmes externes g&eacute;n&eacute;rateurs de contenu, souvent nomm&eacute;s
-	programmes CGI ou scripts CGI. Il s'agit d'une m&eacute;thode
+	définit pour le serveur web une méthode d'interaction avec des
+	programmes externes générateurs de contenu, souvent nommés
+	programmes CGI ou scripts CGI. Il s'agit d'une méthode
 	simple permettant d'ajouter du contenu
-	dynamique &agrave; votre site web. Ce document se veut une introduction
-	&agrave; la configuration de CGI sur votre serveur web Apache et &agrave;
-	l'&eacute;criture de programmes CGI.</p>
+	dynamique à votre site web. Ce document se veut une introduction
+	à la configuration de CGI sur votre serveur web Apache et à
+	l'écriture de programmes CGI.</p>
 
         <p>Voir <a href="cgi.html">CGI : contenu dynamique</a></p>
       </dd>
@@ -76,24 +76,40 @@
       <dt>Fichiers <code>.htaccess</code></dt>
       <dd>
         <p>Les fichiers <code>.htaccess</code> permettent de modifier la
-	configuration du serveur au niveau de chaque r&eacute;pertoire. &Agrave; cet
-	effet, un fichier est plac&eacute; dans un r&eacute;pertoire particulier du site
-	web, et les directives de configuration qu'il contient s'appliquent &agrave; ce
-	r&eacute;pertoire et &agrave; tous ses sous-r&eacute;pertoires.</p>
+	configuration du serveur au niveau de chaque répertoire. À cet
+	effet, un fichier est placé dans un répertoire particulier du site
+	web, et les directives de configuration qu'il contient s'appliquent à ce
+	répertoire et à tous ses sous-répertoires.</p>
 
         <p>Voir <a href="htaccess.html">Fichiers <code>.htaccess</code></a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Introduction au Inclusions c&ocirc;t&eacute; Serveur (Server Side Includes
+      <dt>HTTP/2 avec httpd</dt>
+      <dd>
+      <p>HTTP/2 est une évolution du protocole de la couche application le plus
+      connu au monde, HTTP. Les efforts se sont concentrés sur une amélioration
+      de l'efficacité de l'utilisation des ressources réseau sans modifier la
+      sémantique de HTTP. Ce guide explique la manière dont HTTP/2 est
+      implémenté dans httpd, donne des conseils pour une configuration de base
+      ainsi qu'une liste de recommandations.
+      </p>
+
+        <p>Voir le <a href="http2.html">guide HTTP/2</a></p>
+      </dd>
+    </dl>
+
+
+    <dl>    
+      <dt>Introduction au Inclusions côté Serveur (Server Side Includes
       ou SSI)</dt>
       <dd>
         <p>Les SSI sont des directives que l'on place dans des pages
-	HTML, et qui sont &eacute;valu&eacute;es par le serveur lorsque ces pages sont
-	servies. Elles vous permettent d'ajouter du contenu g&eacute;n&eacute;r&eacute;
-	dynamiquement &agrave; une page HTML existante, sans avoir &agrave; servir
-	l'int&eacute;gralit&eacute; de la page via un programme CGI, ou toute autre
+	HTML, et qui sont évaluées par le serveur lorsque ces pages sont
+	servies. Elles vous permettent d'ajouter du contenu généré
+	dynamiquement à une page HTML existante, sans avoir à servir
+	l'intégralité de la page via un programme CGI, ou toute autre
 	technologie dynamique.</p>
 
         <p>Voir <a href="ssi.html">Server Side Includes (SSI)</a></p>
@@ -101,20 +117,20 @@
     </dl>
 
     <dl>
-      <dt>R&eacute;pertoires web de l'utilisateur</dt>
+      <dt>Répertoires web de l'utilisateur</dt>
       <dd>
-        <p>Sur les syst&egrave;mes multi-utilisateurs, vous pouvez laisser
-	chaque utilisateur disposer d'un site web dans son r&eacute;pertoire home
+        <p>Sur les systèmes multi-utilisateurs, vous pouvez laisser
+	chaque utilisateur disposer d'un site web dans son répertoire home
 	via la directive <directive
 	module="mod_userdir">UserDir</directive>. Les visiteurs de l'URL
 	<code>http://example.com/~nom-utilisateur/</code> vont recevoir
-	du contenu situ&eacute; dans le r&eacute;pertoire home de l'utilisateur
-	"<code>nom-utilisateur</code>", et dans le sous-r&eacute;pertoire
-	sp&eacute;cifi&eacute; par la directive <directive
+	du contenu situé dans le répertoire home de l'utilisateur
+	"<code>nom-utilisateur</code>", et dans le sous-répertoire
+	spécifié par la directive <directive
 	module="mod_userdir">UserDir</directive>.</p>
 
         <p>Voir <a href="public_html.html"
-        >R&eacute;pertoires web des utilisateurs (<code>public_html</code>)</a></p>
+        >Répertoires web des utilisateurs (<code>public_html</code>)</a></p>
       </dd>
     </dl>
 
