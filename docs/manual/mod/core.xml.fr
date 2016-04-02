@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1733954 -->
+<!-- English Revision: 1736594 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1380,12 +1380,12 @@ host</context>
     d'expression. Exemples :</p>
 
     <highlight language="config">
-ErrorDocument 500 http://foo.example.com/cgi-bin/tester
-ErrorDocument 404 /cgi-bin/bad_urls.pl
+ErrorDocument 500 http://example.com/cgi-bin/server-error.cgi
+ErrorDocument 404 /errors/bad_urls.php
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Sorry can't allow you access today"
 ErrorDocument 403 Forbidden!
-ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
+ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}
     </highlight>
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>
