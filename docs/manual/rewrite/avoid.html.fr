@@ -30,15 +30,15 @@
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit peut-être un des concepts les
-plus importants à propos de mod_rewrite - à savoir, quand doit-on éviter
+plus importants à propos de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> - à savoir, quand doit-on éviter
 de l'utiliser.</p>
 
-<p>mod_rewrite doit être considéré comme un dernier recours,
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> doit être considéré comme un dernier recours,
 lorsqu'aucune alternative n'est possible. Utiliser mod_rewrite lorsqu'il
 existe des alternatives plus simples conduit à des configurations
 confuses, fragiles, et difficiles à maintenir. La compréhension des
 autres alternatives disponibles est une étape très importante sur le
-chemin de la maîtrise de mod_rewrite.</p>
+chemin de la maîtrise de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <p>Vous devez vous attacher à comprendre le
 fonctionnement des exemples, car la plupart d'entre eux ne
@@ -106,12 +106,12 @@ utilisez cette définition :</p>
 <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
 ServerName www.example.com
 Redirect "/" "https://www.example.com/"
-&lt;/VirtualHost &gt;
+&lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:443&gt;
 ServerName www.example.com
 #  ... insérer ici la configuration SSL
-&lt;/VirtualHost &gt;</pre>
+&lt;/VirtualHost&gt;</pre>
 
 
 <p>L'utilisation de la directive <code>RewriteRule</code> pour accomplir
@@ -135,15 +135,15 @@ de mettre en correspondance un URI avec un répertoire, ce dernier étant
 en général situé en dehors de l'arborescence définie par la directive
 <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Bien qu'il soit
 possible d'effectuer cette mise en correspondance avec
-<code>mod_rewrite</code>, il est préférable d'utiliser la directive
-<code>Alias</code> pour des raisons de simplicité et de performances.</p>
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, il est préférable d'utiliser la directive
+<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> pour des raisons de simplicité
+et de performances.</p>
 
-<div class="example"><h3>Utilisation de la directive Alias</h3><pre class="prettyprint lang-config">Alias "/cats"
-"/var/www/virtualhosts/felines/htdocs"</pre>
+<div class="example"><h3>Utilisation de la directive Alias</h3><pre class="prettyprint lang-config">Alias "/cats" "/var/www/virtualhosts/felines/htdocs"</pre>
 </div>
 
 <p>
-Pour effectuer cette mise en correspondance, <code>mod_rewrite</code>
+Pour effectuer cette mise en correspondance, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 s'impose si vous n'avez pas accès aux fichiers de configuration du
 serveur. En effet, la directive Alias ne peut pas être utilisée dans un
 fichier <code>.htaccess</code>, mais seulement dans un contexte de
@@ -159,7 +159,8 @@ sur votre serveur.</p>
 <p>Bien qu'il soit possible de gérer les <a href="vhosts.html">serveurs
 virtuels avec mod_rewrite</a>, il s'agit rarement de la bonne méthode.
 Il est pratiquement toujours préférable de créer des blocs
-&lt;VirtualHost&gt; individuels. Dans l'éventualité où vous devez gérer
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> individuels.
+Dans l'éventualité où vous devez gérer
 un grand nombre de serveurs virtuels, vous devez vous tourner vers
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> pour créer ces serveurs
 automatiquement.</p>
@@ -181,7 +182,8 @@ cela semble être tout de même la meilleure approche.</p>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandat simple</a></h2>
 
-<p>La directive <code>RewriteRule</code> fournit le drapeau <a href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
+<p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> fournit
+le drapeau <a href="flags.html#flag_p">[P]</a> qui permet de faire passer les URIs
 réécrits par <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://serveur-images.local/images$1" [P]</pre>
@@ -235,7 +237,7 @@ d'environnement.</p>
 
 <p>Voir en particulier la <a href="../expr.html">documentation sur
 l'évaluation des expressions</a> pour une vue d'ensemble des types
-d'expressions que vous pouvez utiliser dans les sections &lt;If&gt;,
+d'expressions que vous pouvez utiliser dans les sections <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
 ainsi que dans certaines directives.</p>
 
 </div></div>

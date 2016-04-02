@@ -473,11 +473,10 @@ version 2.4.10</td></tr>
     <dd>La directive s'applique si et seulement si <var>expression</var>
     est évaluée à true. Vous trouverez plus de détails à propos de la
     syntaxe et de l'évaluation des expressions dans la documentation <a href="../expr.html">ap_expr</a>.
-    <div class="example"><p><code>
-         # Cet exemple retarde l'évaluation de la clause de condition par
+    <pre class="prettyprint lang-config">         # Cet exemple retarde l'évaluation de la clause de condition par
 	 # rapport à &lt;If&gt;
-         Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
-        </code></p></div>
+         Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"</pre>
+
     </dd>
     </dl>
 

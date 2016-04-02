@@ -896,7 +896,7 @@ durant la phase d'autorisation</td></tr>
 d'authentification lorsque le serveur ne peut pas valider les données
 d'authentification de l'utilisateur, alors que ce dernier possède un
 DN.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPBindAuthoritative off|on</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPBindAuthoritative on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
@@ -907,7 +907,7 @@ DN.</td></tr>
     si un utilisateur ne possède pas de DN, mais ne le sont pas si
     l'utilisateur possède un DN et si son mot de passe ne peut pas être
     vérifié lors d'une connexion au serveur LDAP. Si la directive
-    <code class="directive"><a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></code> est
+    <code class="directive">AuthLDAPBindAuthoritative</code> est
     définie à <em>off</em>, d'autres modules d'authentification
     configurés auront une chance de valider le mot de passe de
     l'utilisateur si la tentative de connexion au serveur LDAP échoue
@@ -959,7 +959,8 @@ serveur HTTP Apache.</td></tr>
     conjonction avec le DN de connexion. Notez que ce mot de passe
     constitue en général une donnée sensible, et doit donc être protégé
     de manière appropriée. Vous ne devez utiliser les directives
-    <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> et <code class="directive"><a href="#authldapbindpassword">AuthLDAPBindPassword</a></code> que si
+    <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> et
+    <code class="directive">AuthLDAPBindPassword</code> que si
     vous en avez vraiment besoin pour effectuer une recherche dans
     l'annuaire.</p>
 
@@ -1143,7 +1144,7 @@ DN en utilisant le nom propre de l'utilisateur pour l'authentification
 de base
 et non de manière anonyme, ou en utilisant des données d'authentification
 codées en dur pour le serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindAsUser <em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindAsUser off|on</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPInitialBindAsUser off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
@@ -1186,7 +1187,7 @@ codées en dur pour le serveur</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie la modification a apporter au nom d'utilisateur
 pour l'authentification de base lors de l'authentification auprès du
 serveur LDAP pour effectuer une recherche de DN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPInitialBindPattern (.*) $1 (nom de l'utilisateur
 distant utilisé tel quel)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
@@ -1288,7 +1289,7 @@ d'environnement REMOTE_USER</td></tr>
     spécifié. Assurez-vous que cet attribut soit bien inclus dans la
     liste d'attributs spécifiés dans la définition de AuthLDAPUrl ; dans
     le cas contraire, cette directive n'aurait aucun effet. Si elle est
-    présente, cette directive l'emporte sur AuthLDAPRemoteUserIsDN. Elle
+    présente, cette directive l'emporte sur <code class="directive"><a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></code>. Elle
     peut s'avérer utile par exemple, si vous souhaitez que les
     utilisateurs se connectent à un site web en utilisant leur adresse
     email, alors qu'une application sous-jacente nécessite un nom
@@ -1372,13 +1373,13 @@ Apache</td></tr>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des
     utilisateurs et des membres qui sont eux-mêmes des groupes (appelés
     sous-groupes ou groupes imbriqués). La directive
-    <code>AuthLDAPSubGroupAttribute</code> spécifie l'attribut utilisé
+    <code class="directive">AuthLDAPSubGroupAttribute</code> spécifie l'attribut utilisé
     pour identifier les groupes, alors que la directive
-    <code>AuthLDAPGroupAttribute</code> spécifie l'attribut utilisé
-    pour identifier les utilisateurs. On peut spécifier plusieurs
-    attributs en répétant la directive plusieurs fois. Si elle n'est pas
-    définie, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> utilise les attributs
-    <code>member</code> et <code>uniqueMember</code>.</p>
+    <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code>
+    spécifie l'attribut utilisé pour identifier les utilisateurs. On peut
+    spécifier plusieurs attributs en répétant la directive plusieurs fois. Si
+    elle n'est pas définie, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> utilise les
+    attributs <code>member</code> et <code>uniqueMember</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1399,10 +1400,11 @@ Apache</td></tr>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des
     utilisateurs et des membres qui sont eux-mêmes des groupes (appelés
     sous-groupes ou groupes imbriqués). La directive
-    <code>AuthLDAPSubGroupAttribute</code> permet d'identifier les
+    <code class="directive"><a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></code>
+    permet d'identifier les
     membres qui sont des sous-groupes du groupe courant (à l'opposé des
     membres utilisateurs). La directive
-    <code>AuthLDAPSubGroupClass</code> permet de spécifier les valeurs
+    <code class="directive">AuthLDAPSubGroupClass</code> permet de spécifier les valeurs
     d'objectClass LDAP utilisées pour vérifier que certains membres sont
     en fait des objets groupe. Les sous-groupes ainsi identifiés peuvent
     alors faire l'objet d'une recherche d'autres membres utilisateurs ou
@@ -1515,7 +1517,7 @@ spécifiés.</p>
 	de la macro <code>MAX_STRING_LEN</code> dans le code source
 	d'Apache), ce qui s'avère plus que suffisant pour la plupart des
 	applications. Depuis la version 2.4.10, il est possible
-	d'utiliser le paramètre "none" pour spécifier qu'aucun filtre
+	d'utiliser le paramètre <code>none</code> pour spécifier qu'aucun filtre
 	n'est activé ; ce paramètre est obligatoire avec certains
 	serveurs LDAP primitifs.</dd>
 </dl>
@@ -1552,7 +1554,7 @@ spécifiés.</p>
 </dl>
 
     <p>Voir plus haut pour des exemples d'URLs définies par la directive
-    <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>.</p>
+    <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code>.</p>
 
 </div>
 </div>
