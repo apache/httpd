@@ -232,7 +232,7 @@ groupes d'utilisateurs permettant de définir les autorisations des
 utilisateurs</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix <em>préfixe</em></a></td><td> AUTHORIZE_ </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le préfixe ajouté aux variables d'environnement
 durant la phase d'autorisation</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si l'on doit utiliser d'autres fournisseurs
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative off|on</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Détermine si l'on doit utiliser d'autres fournisseurs
 d'authentification lorsque le serveur ne peut pas valider les données
 d'authentification de l'utilisateur, alors que ce dernier possède un
 DN.</td></tr>
@@ -251,12 +251,12 @@ alias</td></tr>
 utilisateur à un groupe.</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Utilise le DN de l'utilisateur pour vérifier son
 appartenance à un groupe</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser <em>off|on</em></a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur effectue la recherche initiale du
+<tr><td><a href="mod_authnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser off|on</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Détermine si le serveur effectue la recherche initiale du
 DN en utilisant le nom propre de l'utilisateur pour l'authentification
 de base
 et non de manière anonyme, ou en utilisant des données d'authentification
 codées en dur pour le serveur</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></a></td><td> (.*) $1 (nom de l'u +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie la modification a apporter au nom d'utilisateur
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></a></td><td> (.*) $1 (nom de l'u +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie la modification a apporter au nom d'utilisateur
 pour l'authentification de base lors de l'authentification auprès du
 serveur LDAP pour effectuer une recherche de DN</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth <var>Nombre</var></a></td><td> 10 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie la profondeur d'imbrication des sous-groupes
