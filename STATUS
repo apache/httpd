@@ -175,6 +175,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
 
+  *) mod_include: add the <!--#comment ...> syntax in order to include comments
+     in a SSI file.
+     Trunk patch: http://svn.apache.org/r1737476
+     2.4.x patch: trunk patch works (compatibility note to be adjusted)
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
