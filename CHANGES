@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.4.21
+
+
 Changes with Apache 2.4.20
 
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
