@@ -384,8 +384,8 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
 <usage>
       <p>The <directive>RewriteBase</directive> directive specifies the
       URL prefix to be used for per-directory (htaccess)
-      <directive>RewriteRule</directive> directives that substitute a relative
-      path.</p>
+      <directive module="mod_rewrite">RewriteRule</directive> directives that
+      substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
       in a substitution in per-directory (htaccess) context unless either
       of the following conditions are true:</p>
@@ -395,7 +395,8 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
                (as opposed to reachable by other means, such as
                <directive module="mod_alias">Alias</directive>).</li>
           <li> The <em>filesystem</em> path to the directory containing the
-               <directive>RewriteRule</directive>, suffixed by the relative
+               <directive module="mod_rewrite">RewriteRule</directive>,
+               suffixed by the relative
                substitution is also valid as a URL path on the server
                (this is rare).</li>
           <li> In Apache HTTP Server 2.4.11 and later, this directive may be
