@@ -572,6 +572,13 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             <strong>-l</strong> by using the <strong>-L</strong> or
             <strong>-h</strong> variant.</dd>
 
+            <dt><strong>-ne</strong></dt>
+            <dd>Is numerically <strong>n</strong>ot <strong>e</strong>qual to<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the two are numerically different. This is equivalent to
+            <code>!-ne</code></dd>
+
            </dl>
         </li>
 
@@ -605,7 +612,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             it can impact your server's performance!
            </dd>
 
-            <dt><strong>-H</strong></dt>
+            <dt><strong>-h</strong></dt>
             <dd>Is symbolic link, bash convention.<br />
             See <strong>-l</strong>.
             </dd>
@@ -769,9 +776,10 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <code>RewriteEngine on</code> directive for each virtual host
       in which you wish to use rewrite rules.</p>
 
-      <p><code class="directive">RewriteMap</code> directives of the type <code>prg</code>
+      <p><code class="directive"><a href="#rewritemap">RewriteMap</a></code> directives
+      of the type <code>prg</code>
       are not started during server initialization if they're defined in a
-      context that does not have <code class="directive">RewriteEngine</code>  set to
+      context that does not have <code class="directive">RewriteEngine</code> set to
       <code>on</code></p>
 
 </div>
@@ -1086,7 +1094,7 @@ relative substitutions.</li>
 
 <li> If you wish to match against the full URL-path in a per-directory
 (htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
-a <code class="directive">RewriteCond</code>.</li>
+a <code class="directive"><a href="#rewritecond">RewriteCond</a></code>.</li>
 
 <li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
 <em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
@@ -1193,9 +1201,11 @@ cannot use <code>$N</code> in the substitution string!
       (<strong>N</strong>=0..9), which will be replaced
       by the contents of the <strong>N</strong>th group of the
       matched <em>Pattern</em>. The server-variables are the same
-      as for the <em>TestString</em> of a <code>RewriteCond</code>
+      as for the <em>TestString</em> of a
+      <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
       directive. The mapping-functions come from the
-      <code>RewriteMap</code> directive and are explained there.
+      <code class="directive"><a href="#rewritemap">RewriteMap</a></code>
+      directive and are explained there.
       These three types of variables are expanded in the order above.</p>
 
       <p>Rewrite rules are applied to the results of previous rewrite
@@ -1222,7 +1232,7 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Additionally you can set special <a name="rewriteflags" id="rewriteflags">actions</a> to be performed by
       appending <strong><code>[</code><em>flags</em><code>]</code></strong>
-      as the third argument to the <code>RewriteRule</code>
+      as the third argument to the <code class="directive">RewriteRule</code>
       directive. <em>Flags</em> is a comma-separated list, surround by square
       brackets, of any of the flags in the following table. More
       details, and examples, for each flag, are available in the <a href="../rewrite/flags.html">Rewrite Flags document</a>.</p>
