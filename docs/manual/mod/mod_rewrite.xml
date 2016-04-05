@@ -849,7 +849,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the two are numerically different. This is equivalent to
-            <code>!-ne</code></dd>
+            <code>!-eq</code>.</dd>
 
            </dl>
         </li>
