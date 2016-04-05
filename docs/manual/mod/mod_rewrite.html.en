@@ -118,8 +118,8 @@ URLs on the fly</td></tr>
 </table>
       <p>The <code class="directive">RewriteBase</code> directive specifies the
       URL prefix to be used for per-directory (htaccess)
-      <code class="directive">RewriteRule</code> directives that substitute a relative
-      path.</p>
+      <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives that
+      substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
       in a substitution in per-directory (htaccess) context unless either
       of the following conditions are true:</p>
@@ -129,7 +129,8 @@ URLs on the fly</td></tr>
                (as opposed to reachable by other means, such as
                <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
           <li> The <em>filesystem</em> path to the directory containing the
-               <code class="directive">RewriteRule</code>, suffixed by the relative
+               <code class="directive"><a href="#rewriterule">RewriteRule</a></code>,
+               suffixed by the relative
                substitution is also valid as a URL path on the server
                (this is rare).</li>
           <li> In Apache HTTP Server 2.4.11 and later, this directive may be
