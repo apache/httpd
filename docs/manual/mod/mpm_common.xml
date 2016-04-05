@@ -274,6 +274,13 @@ in *BSDs.</compatibility>
     then make each child handle a single bucket (with round-robin distribution
     of the buckets at children creation time).</p>
 
+    <note><title>Meaning of "online" CPU core</title>
+    <p>On Linux (and also BSD) a CPU core can be turned on/off if 
+    <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a> 
+    is configured, therefore <directive>ListenCoresBucketsRatio</directive> needs to
+    take this parameter into account while calculating the number of buckets to create.</p>
+    </note>
+
     <p><directive>ListenCoresBucketsRatio</directive> can improve the
     scalability when accepting new connections is/becomes the bottleneck.
     On systems with a large number of CPU cores, enabling this feature has
@@ -283,7 +290,10 @@ in *BSDs.</compatibility>
     <p>There must be at least twice the number of CPU cores than the
     configured <var>ratio</var> for this to be active. The recommended
     <var>ratio</var> is <code>8</code>, hence at least <code>16</code>
-    cores should be available at runtime when this value is used.</p>
+    cores should be available at runtime when this value is used.
+    The right <var>ratio</var> to obtain maximum performance needs to be calculated
+    for each target system, testing multiple values and observing the variations in your 
+    key performance metrics.</p>
 </usage>
 </directivesynopsis>
 
@@ -472,7 +482,9 @@ spikes</description>
     <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
     basis. If there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
-    than <var>number</var>.</p>
+    than <var>number</var>. Please also note that additional processes/threads
+    might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
+    is enabled.</p>
 
     <p><module>mpm_netware</module> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
