@@ -349,6 +349,7 @@ typedef struct {
 } proxy_hashes ;
 
 /* Runtime worker status informations. Shared in scoreboard */
+/* The addition of member uds_path in 2.4.7 was an incompatible API change. */
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
     char      scheme[PROXY_WORKER_MAX_SCHEME_SIZE];   /* scheme to use ajp|http|https */

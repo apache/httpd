@@ -1350,8 +1350,10 @@ Changes with Apache 2.4.7
      (not overridable via SSLCipherSuite). [Kaspar Brand]
 
   *) mod_proxy: Added support for unix domain sockets as the
-     backend server endpoint [Jim Jagielski, Blaise Tarr
-     <blaise tarr gmail com>]
+     backend server endpoint. This also introduces an unintended
+     incompatibility for third party modules using the mod_proxy
+     proxy_worker_shared structure, especially for balancer lbmethod
+     modules. [Jim Jagielski, Blaise Tarr <blaise tarr gmail com>]
 
   *) Add experimental cmake-based build system for Windows.  [Jeff Trawick,
      Tom Donovan]
