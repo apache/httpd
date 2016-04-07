@@ -300,14 +300,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\fcgistarter.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\fcgistarter.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="fcgistarter.exe" /d LONG_NAME="Apache fcgi command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\fcgistarter.res" /i "../include" /i "../srclib/apr/include" /i "../build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="fcgistarter.exe" /d LONG_NAME="Apache fcgi command line utility" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "fcgistarter - Win32 Debug"
 
 
 "$(INTDIR)\fcgistarter.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\fcgistarter.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="fcgistarter.exe" /d LONG_NAME="Apache fcgi command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\fcgistarter.res" /i "../include" /i "../srclib/apr/include" /i "../build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="fcgistarter.exe" /d LONG_NAME="Apache fcgi command line utility" $(SOURCE)
 
 
 !ENDIF 

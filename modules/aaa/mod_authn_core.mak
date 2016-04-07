@@ -359,14 +359,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_authn_core.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_core.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d BIN_NAME="mod_authn_core.so" /d LONG_NAME="authn_core_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_core.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "NDEBUG" /d BIN_NAME="mod_authn_core.so" /d LONG_NAME="authn_core_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_authn_core - Win32 Debug"
 
 
 "$(INTDIR)\mod_authn_core.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_core.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d BIN_NAME="mod_authn_core.so" /d LONG_NAME="authn_core_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_core.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "_DEBUG" /d BIN_NAME="mod_authn_core.so" /d LONG_NAME="authn_core_module for Apache" $(SOURCE)
 
 
 !ENDIF 

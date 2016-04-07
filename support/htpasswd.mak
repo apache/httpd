@@ -304,14 +304,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\htpasswd.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\htpasswd.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="htpasswd.exe" /d LONG_NAME="Apache htpasswd command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\htpasswd.res" /i "../include" /i "../srclib/apr/include" /i "../build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="htpasswd.exe" /d LONG_NAME="Apache htpasswd command line utility" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
 
 
 "$(INTDIR)\htpasswd.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\htpasswd.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="htpasswd.exe" /d LONG_NAME="Apache htpasswd command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\htpasswd.res" /i "../include" /i "../srclib/apr/include" /i "../build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="htpasswd.exe" /d LONG_NAME="Apache htpasswd command line utility" $(SOURCE)
 
 
 !ENDIF 
