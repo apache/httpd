@@ -1348,6 +1348,7 @@
 	"..\..\include\http_connection.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
+	"..\..\include\http_request.h"\
 	"..\..\include\httpd.h"\
 	"..\..\include\os.h"\
 	"..\..\include\util_cfgtree.h"\
@@ -1614,6 +1615,7 @@
 	"..\..\srclib\apr\include\apr_proc_mutex.h"\
 	"..\..\srclib\apr\include\apr_ring.h"\
 	"..\..\srclib\apr\include\apr_shm.h"\
+	"..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\srclib\apr\include\apr_thread_mutex.h"\
 	"..\..\srclib\apr\include\apr_thread_proc.h"\

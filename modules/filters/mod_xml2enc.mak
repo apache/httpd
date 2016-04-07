@@ -252,14 +252,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\httpd.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\httpd.res" /i "../../include" /i "../../srclib/apr/include" /i "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d BIN_NAME="mod_xml2enc.so" /d LONG_NAME="xml2enc_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\httpd.res" /i "../../include" /i "../../srclib/apr/include" /i "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /i "../../build\win32" /d "NDEBUG" /d BIN_NAME="mod_xml2enc.so" /d LONG_NAME="xml2enc_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_xml2enc - Win32 Debug"
 
 
 "$(INTDIR)\httpd.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\httpd.res" /i "../../include" /i "../../srclib/apr/include" /i "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d BIN_NAME="mod_xml2enc.so" /d LONG_NAME="xml2enc_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\httpd.res" /i "../../include" /i "../../srclib/apr/include" /i "../../srclib/apr-util/include" /i "../../srclib/libxml2/include" /i "../../build\win32" /d "_DEBUG" /d BIN_NAME="mod_xml2enc.so" /d LONG_NAME="xml2enc_module for Apache" $(SOURCE)
 
 
 !ENDIF 

@@ -331,14 +331,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_socache_memcache.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_socache_memcache.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d BIN_NAME="mod_socache_memcache.so" /d LONG_NAME="socache_memcache_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_socache_memcache.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "NDEBUG" /d BIN_NAME="mod_socache_memcache.so" /d LONG_NAME="socache_memcache_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_socache_memcache - Win32 Debug"
 
 
 "$(INTDIR)\mod_socache_memcache.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_socache_memcache.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d BIN_NAME="mod_socache_memcache.so" /d LONG_NAME="socache_memcache_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_socache_memcache.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "_DEBUG" /d BIN_NAME="mod_socache_memcache.so" /d LONG_NAME="socache_memcache_module for Apache" $(SOURCE)
 
 
 !ENDIF 

@@ -359,14 +359,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_cache_socache.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cache_socache.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d BIN_NAME="mod_cache_socache.so" /d LONG_NAME="cache_socache_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cache_socache.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "NDEBUG" /d BIN_NAME="mod_cache_socache.so" /d LONG_NAME="cache_socache_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_cache_socache - Win32 Debug"
 
 
 "$(INTDIR)\mod_cache_socache.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cache_socache.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d BIN_NAME="mod_cache_socache.so" /d LONG_NAME="cache_socache_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cache_socache.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "_DEBUG" /d BIN_NAME="mod_cache_socache.so" /d LONG_NAME="cache_socache_module for Apache" $(SOURCE)
 
 
 !ENDIF 

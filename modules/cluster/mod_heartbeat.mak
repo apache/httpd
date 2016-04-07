@@ -363,14 +363,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_heartbeat.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_heartbeat.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "NDEBUG" /d BIN_NAME="mod_heartbeat.so" /d LONG_NAME="heartbeat_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_heartbeat.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "NDEBUG" /d BIN_NAME="mod_heartbeat.so" /d LONG_NAME="heartbeat_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_heartbeat - Win32 Debug"
 
 
 "$(INTDIR)\mod_heartbeat.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_heartbeat.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\build\httpd-2.4\build\win32" /d "_DEBUG" /d BIN_NAME="mod_heartbeat.so" /d LONG_NAME="heartbeat_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_heartbeat.res" /i "../../include" /i "../../srclib/apr/include" /i "../../build\win32" /d "_DEBUG" /d BIN_NAME="mod_heartbeat.so" /d LONG_NAME="heartbeat_module for Apache" $(SOURCE)
 
 
 !ENDIF 
