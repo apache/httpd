@@ -423,7 +423,10 @@
  * 20120211.26 (2.4.7-dev) Add util_fcgi.h, FastCGI protocol support
  * 20120211.27 (2.4.7-dev) Add ap_podx_restart_t and ap_mpm_podx_*
  * 20120211.28 (2.4.7-dev) Add ap_regname
- * 20120211.29 (2.4.7-dev) Add uds_path to proxy_conn_rec
+ * 20120211.29 (2.4.7-dev) Add uds_path to proxy_conn_rec and proxy_worker_shared.
+ *                         The change to proxy_worker_shared is an
+ *                         unintended API break, especially for balancer
+ *                         lbmethod modules.
  * 20120211.30 (2.4.7-dev) REWRITE_REDIRECT_HANDLER_NAME in mod_rewrite.h
  * 20120211.31 (2.4.7-dev) Add ap_proxy_port_of_scheme()
  * 20120211.32 (2.4.10-dev) Add SSL reusable SNI to mod_proxy.h's proxy_conn_rec
