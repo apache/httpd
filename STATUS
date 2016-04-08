@@ -121,16 +121,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch:
-         http://home.apache.org/~jim/patches/hcheck-2.4-v2.patch
+         http://home.apache.org/~jim/patches/hcheck-2.4-v3.patch
          <Plus docs>
      +1: jim
-     ylavic: Looks like the changes on struct proxy_worker_shared would break
-             startup with "BalancerPersist on" due to the strict checks on
-             the sizes of existing slotmems (slotmem_create/attach)?
-     jim: Yes, that is right (re: breakage)... this would be noted at
-          release.
-     ylavic: OK, this is just that persisted slotmems won't be reused on first
-             startup, not that the startup will fail (as I first thought).
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
