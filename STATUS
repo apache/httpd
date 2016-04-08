@@ -175,6 +175,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (compatibility note to be adjusted)
      +1: jailletc36
 
+  *) core: block Define and Undefine in vhost and directory context. Because
+     it is EXEC_ON_READ, it "breaks out" of these contexts anyway.
+     trunk patch: http://svn.apache.org/r1656063
+                  http://svn.apache.org/r1656122
+     2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
+
+     +1: covener (I need to review the docs manually in this area)
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
