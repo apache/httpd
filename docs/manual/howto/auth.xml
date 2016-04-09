@@ -582,7 +582,7 @@ Require host <var>domain_name</var>
         module="mod_access_compat">Allow</directive> or <directive
         module="mod_access_compat">Deny</directive> with new ones like
         <directive module="mod_authz_core">Require</directive> is technically possible
-        but discouraged. This module was created to support
+        but discouraged. The <module>mod_access_compat</module> module was created to support
         configurations containing only old directives to facilitate the 2.4 upgrade.
         Please check the <a href="../upgrading.html">upgrading</a> guide for more
         information.
