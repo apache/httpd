@@ -570,6 +570,18 @@ Require group GroupName</pre>
         <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> are no longer needed.
         However to provide backwards compatibility for older configurations, these
         directives have been moved to the <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> module.</p>
+
+        <div class="warning"><h3>Note</h3>
+        <p>The directives provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> have
+        been deprecated by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
+        Mixing old directives like <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> or <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> with new ones like
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> is technically possible
+        but discouraged. This module was created to support
+        configurations containing only old directives to facilitate the 2.4 upgrade.
+        Please check the <a href="../upgrading.html">upgrading</a> guide for more
+        information.
+        </p>
+        </div>
     
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
