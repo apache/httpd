@@ -131,7 +131,7 @@ répertoire</td></tr>
       <p>La directive <code class="directive">RewriteBase</code> permet de
       spécifier le préfixe d'URL à utiliser dans un contexte de
       répertoire (htaccess) pour les directives
-      <code class="directive">RewriteRule</code> qui réécrivent vers un chemin
+      <code class="directive"><a href="#rewriterule">RewriteRule</a></code> qui réécrivent vers un chemin
       relatif.</p>
       <p>Cette directive est <em>obligatoire</em> si vous utilisez un
       chemin relatif dans une substitution, et dans un contexte de
@@ -144,7 +144,7 @@ répertoire</td></tr>
 	  dire que pour y accéder, il n'est pas nécessaire d'utiliser
 	  une directive telle qu'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
           <li>Le chemin du système de fichiers vers le répertoire
-	  contenant la <code class="directive">RewriteRule</code>, suffixé par
+	  contenant la <code class="directive"><a href="#rewriterule">RewriteRule</a></code>, suffixé par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
 	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
@@ -620,6 +620,13 @@ la réécriture soit effectuée
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</dd>
 
+            <dt><strong>-ne</strong></dt>
+            <dd>Est numériquement <strong>n</strong>on <strong>é</strong>gal à<br />
+	     La <em>Chaîne de test</em> est considérée comme un entier et est
+	     numériquement comparée à l'<em>expression de comparaison</em>. Vrai
+	     si les deux éléments comparés sont numériquement différents.
+	     Equivalent à <code>!-eq</code>.</dd>	    
+
            </dl>
         </li>
 
@@ -646,7 +653,7 @@ la réécriture soit effectuée
 	    utiliser avec précautions car les performances du serveur
 	    peuvent s'en trouver affectées !</dd>
 
-	    <dt><strong>-H</strong></dt>
+	    <dt><strong>-h</strong></dt>
 	    <dd>est un lien symbolique, selon la convention bash<br />
             Voir <strong>-l</strong>.</dd>
 
@@ -818,7 +825,7 @@ moteur de réécriture</td></tr>
       hôte virtuel pour lequel vous souhaitez utiliser des règles
       de réécriture.</p>
 
-      <p>Les directives <code class="directive">RewriteMap</code> du type
+      <p>Les directives <code class="directive"><a href="#rewritemap">RewriteMap</a></code> du type
       <code>prg</code> ne sont pas prises en compte au cours de
       l'initialisation du serveur si elle ont été définies dans un
       contexte où la directive <code class="directive">RewriteEngine</code> n'a
@@ -1174,7 +1181,7 @@ relatives.</li>
 l'intégralité du
 chemin de l'URL dans un contexte de répertoire (htaccess), vous devez
 utiliser la variable <code>%{REQUEST_URI}</code> dans la directive
-<code class="directive">RewriteCond</code>.</li>
+<code class="directive"><a href="#rewritecond">RewriteCond</a></code>.</li>
 
 <li>Le prefixe supprimé se termine toujours par un slash, ce qui
 signifie que la comparaison s'effectue avec une chaîne qui ne comporte
@@ -1294,8 +1301,8 @@ substitution !
       seront remplacés par le contenu du <strong>N</strong>ème groupe
       du <em>Modèle</em> qui correspondait. Les variables du serveur
       sont les mêmes que dans la <em>Chaîne_de_test</em> d'une
-      directive <code>RewriteCond</code>. Les fonctions de comparaison
-      sont issues de la directive <code>RewriteMap</code> dans la
+      directive <code class="directive"><a href="#rewritecond">RewriteCond</a></code>. Les
+      fonctions de comparaison sont issues de la directive <code class="directive"><a href="#rewritemap">RewriteMap</a></code> dans la
       section de laquelle elles sont décrites. Ces trois types de
       variables sont évaluées dans l'ordre ci-dessus.</p>
 
@@ -1330,7 +1337,7 @@ substitution !
       des
       <strong><code>[</code><em>drapeaux</em><code>]</code></strong>
       comme troisième argument de la directive
-      <code>RewriteRule</code>. Séparés par des virgules au sein d'une
+      <code class="directive">RewriteRule</code>. Séparés par des virgules au sein d'une
       liste encadrée par des crochets, les <em>drapeaux</em> peuvent
       être choisis dans la table suivante. Vous trouverez plus de
       détails, et des exemples pour chaque drapeau dans le <a href="../rewrite/flags.html">document à propos des drapeaux de
