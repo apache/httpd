@@ -68,7 +68,14 @@ ce module sont devenues obsolètes depuis la refonte d'authz. Voir
     <div class="warning"><h3>Note</h3>
       <p>Les directives fournies par le module
       <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> sont devenues obsolètes depuis
-      la refonte d'authz. Voir <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
+      la refonte du module <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Mélanger d'anciennes
+      directives comme <code class="directive"><a href="#order">Order</a></code>, <code class="directive"><a href="#allow">Allow</a></code> ou <code class="directive"><a href="#deny">Deny</a></code> avec des nouvelles comme
+      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est techniquement
+      possible mais déconseillé. En effet, <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> a
+      été conçu pour supporter des configurations ne contenant que des anciennes
+      directives afin de faciliter le passage à la version 2.4. Voir le document
+      <a href="../upgrading.html">upgrading</a> pour plus de détails.
+      </p>
     </div>
 
     <p>En général, les directives de restriction d'accès s'appliquent à
