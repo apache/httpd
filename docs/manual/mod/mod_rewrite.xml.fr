@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1734260:1737774 (outdated) -->
+<!-- English Revision: 1737774 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -133,7 +133,7 @@ moteur de réécriture</description>
       hôte virtuel pour lequel vous souhaitez utiliser des règles
       de réécriture.</p>
 
-      <p>Les directives <directive>RewriteMap</directive> du type
+      <p>Les directives <directive module="mod_rewrite">RewriteMap</directive> du type
       <code>prg</code> ne sont pas prises en compte au cours de
       l'initialisation du serveur si elle ont été définies dans un
       contexte où la directive <directive>RewriteEngine</directive> n'a
@@ -431,7 +431,7 @@ répertoire</description>
       <p>La directive <directive>RewriteBase</directive> permet de
       spécifier le préfixe d'URL à utiliser dans un contexte de
       répertoire (htaccess) pour les directives
-      <directive>RewriteRule</directive> qui réécrivent vers un chemin
+      <directive module="mod_rewrite">RewriteRule</directive> qui réécrivent vers un chemin
       relatif.</p>
       <p>Cette directive est <em>obligatoire</em> si vous utilisez un
       chemin relatif dans une substitution, et dans un contexte de
@@ -445,7 +445,7 @@ répertoire</description>
 	  une directive telle qu'<directive
 	  module="mod_alias">Alias</directive>).</li>
           <li>Le chemin du système de fichiers vers le répertoire
-	  contenant la <directive>RewriteRule</directive>, suffixé par
+	  contenant la <directive module="mod_rewrite">RewriteRule</directive>, suffixé par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
 	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
@@ -933,6 +933,13 @@ la réécriture soit effectuée
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</dd>
 
+            <dt><strong>-ne</strong></dt>
+            <dd>Est numériquement <strong>n</strong>on <strong>é</strong>gal à<br />
+	     La <em>Chaîne de test</em> est considérée comme un entier et est
+	     numériquement comparée à l'<em>expression de comparaison</em>. Vrai
+	     si les deux éléments comparés sont numériquement différents.
+	     Equivalent à <code>!-eq</code>.</dd>	    
+
            </dl>
         </li>
 
@@ -959,7 +966,7 @@ la réécriture soit effectuée
 	    utiliser avec précautions car les performances du serveur
 	    peuvent s'en trouver affectées !</dd>
 
-	    <dt><strong>-H</strong></dt>
+	    <dt><strong>-h</strong></dt>
 	    <dd>est un lien symbolique, selon la convention bash<br />
             Voir <strong>-l</strong>.</dd>
 
@@ -1202,7 +1209,7 @@ relatives.</li>
 l'intégralité du
 chemin de l'URL dans un contexte de répertoire (htaccess), vous devez
 utiliser la variable <code>%{REQUEST_URI}</code> dans la directive
-<directive>RewriteCond</directive>.</li>
+<directive module="mod_rewrite">RewriteCond</directive>.</li>
 
 <li>Le prefixe supprimé se termine toujours par un slash, ce qui
 signifie que la comparaison s'effectue avec une chaîne qui ne comporte
@@ -1328,8 +1335,9 @@ substitution !
       seront remplacés par le contenu du <strong>N</strong>ème groupe
       du <em>Modèle</em> qui correspondait. Les variables du serveur
       sont les mêmes que dans la <em>Chaîne_de_test</em> d'une
-      directive <code>RewriteCond</code>. Les fonctions de comparaison
-      sont issues de la directive <code>RewriteMap</code> dans la
+      directive <directive module="mod_rewrite">RewriteCond</directive>. Les
+      fonctions de comparaison sont issues de la directive <directive
+      module="mod_rewrite">RewriteMap</directive> dans la
       section de laquelle elles sont décrites. Ces trois types de
       variables sont évaluées dans l'ordre ci-dessus.</p>
 
@@ -1366,7 +1374,7 @@ substitution !
       des
       <strong><code>[</code><em>drapeaux</em><code>]</code></strong>
       comme troisième argument de la directive
-      <code>RewriteRule</code>. Séparés par des virgules au sein d'une
+      <directive>RewriteRule</directive>. Séparés par des virgules au sein d'une
       liste encadrée par des crochets, les <em>drapeaux</em> peuvent
       être choisis dans la table suivante. Vous trouverez plus de
       détails, et des exemples pour chaque drapeau dans le <a
