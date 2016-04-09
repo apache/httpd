@@ -573,6 +573,21 @@ Require host <var>domain_name</var>
         <directive module="mod_access_compat">Satisfy</directive> are no longer needed.
         However to provide backwards compatibility for older configurations, these
         directives have been moved to the <module>mod_access_compat</module> module.</p>
+
+        <note type="warning"><title>Note</title>
+        <p>The directives provided by <module>mod_access_compat</module> have
+        been deprecated by <module>mod_authz_host</module>.
+        Mixing old directives like <directive
+        module="mod_access_compat">Order</directive>, <directive
+        module="mod_access_compat">Allow</directive> or <directive
+        module="mod_access_compat">Deny</directive> with new ones like
+        <directive module="mod_authz_core">Require</directive> is technically possible
+        but discouraged. This module was created to support
+        configurations containing only old directives to facilitate the 2.4 upgrade.
+        Please check the <a href="../upgrading.html">upgrading</a> guide for more
+        information.
+        </p>
+        </note>
     </section>
 
 </section>
