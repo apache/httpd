@@ -487,7 +487,7 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
     return rv;
 }
 
-static apr_status_t queue_interrupt_all(fd_queue_t *queue, int term)
+static apr_status_t queue_interrupt(fd_queue_t *queue, int all, int term)
 {
     apr_status_t rv;
 
@@ -501,16 +501,24 @@ static apr_status_t queue_interrupt_all(fd_queue_t *queue, int term)
     if (term) {
         queue->terminated = 1;
     }
-    apr_thread_cond_broadcast(queue->not_empty);
+    if (all)
+        apr_thread_cond_broadcast(queue->not_empty);
+    else
+        apr_thread_cond_signal(queue->not_empty);
     return apr_thread_mutex_unlock(queue->one_big_mutex);
 }
 
 apr_status_t ap_queue_interrupt_all(fd_queue_t * queue)
 {
-    return queue_interrupt_all(queue, 0);
+    return queue_interrupt(queue, 1, 0);
+}
+
+apr_status_t ap_queue_interrupt_one(fd_queue_t * queue)
+{
+    return queue_interrupt(queue, 0, 0);
 }
 
 apr_status_t ap_queue_term(fd_queue_t * queue)
 {
-    return queue_interrupt_all(queue, 1);
+    return queue_interrupt(queue, 1, 1);
 }
