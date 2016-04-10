@@ -334,6 +334,7 @@ int is_ssl;
 SSL_CTX *ssl_ctx;
 char *ssl_cipher = NULL;
 char *ssl_info = NULL;
+char *ssl_tmp_key = NULL;
 BIO *bio_out,*bio_err;
 #endif
 
@@ -709,6 +710,39 @@ static void ssl_proceed_handshake(struct connection *c)
                              SSL_CIPHER_get_name(ci),
                              pk_bits, sk_bits);
             }
+            if (ssl_tmp_key == NULL) {
+                EVP_PKEY *key;
+                if (SSL_get_server_tmp_key(c->ssl, &key)) {
+                    ssl_tmp_key = xmalloc(128);
+                    switch (EVP_PKEY_id(key)) {
+                    case EVP_PKEY_RSA:
+                        apr_snprintf(ssl_tmp_key, 128, "RSA %d bits",
+                                     EVP_PKEY_bits(key));
+                        break;
+                    case EVP_PKEY_DH:
+                        apr_snprintf(ssl_tmp_key, 128, "DH %d bits",
+                                     EVP_PKEY_bits(key));
+                        break;
+#ifndef OPENSSL_NO_EC
+                    case EVP_PKEY_EC: {
+                        const char *cname;
+                        EC_KEY *ec = EVP_PKEY_get1_EC_KEY(key);
+                        int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+                        EC_KEY_free(ec);
+                        cname = EC_curve_nid2nist(nid);
+                        if (!cname)
+                            cname = OBJ_nid2sn(nid);
+
+                        apr_snprintf(ssl_tmp_key, 128, "ECDH %s %d bits",
+                                     cname,
+                                     EVP_PKEY_bits(key));
+                        break;
+                        }
+#endif
+                    }
+                    EVP_PKEY_free(key);
+                }
+            }
             write_request(c);
             do_next = 0;
             break;
@@ -857,6 +891,9 @@ static void output_results(int sig)
 #ifdef USE_SSL
     if (is_ssl && ssl_info) {
         printf("SSL/TLS Protocol:       %s\n", ssl_info);
+    }
+    if (is_ssl && ssl_tmp_key) {
+        printf("Server Temp Key:        %s\n", ssl_tmp_key);
     }
 #endif
     printf("\n");
