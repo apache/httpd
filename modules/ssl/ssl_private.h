@@ -205,6 +205,7 @@
 #define BIO_set_data(x,v)     (x->ptr=v)
 #define BIO_get_shutdown(x)   (x->shutdown)
 #define BIO_set_shutdown(x,v) (x->shutdown=v)
+#define DH_bits(x)            (BN_num_bits(x->p))
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
