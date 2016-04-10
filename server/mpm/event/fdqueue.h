@@ -101,6 +101,7 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
                                     event_conn_state_t ** ecs, apr_pool_t ** p,
                                     timer_event_t ** te);
 apr_status_t ap_queue_interrupt_all(fd_queue_t * queue);
+apr_status_t ap_queue_interrupt_one(fd_queue_t * queue);
 apr_status_t ap_queue_term(fd_queue_t * queue);
 
 #endif /* FDQUEUE_H */

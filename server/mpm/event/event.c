@@ -950,6 +950,8 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs)
         || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
         apr_socket_close(csd);
         ap_push_pool(worker_queue_info, cs->p);
+        if (dying)
+            ap_queue_interrupt_one(worker_queue);
         return 0;
     }
     return start_lingering_close_common(cs, 0);
@@ -973,6 +975,8 @@ static int stop_lingering_close(event_conn_state_t *cs)
         AP_DEBUG_ASSERT(0);
     }
     ap_push_pool(worker_queue_info, cs->p);
+    if (dying)
+        ap_queue_interrupt_one(worker_queue);
     return 0;
 }
 
@@ -1645,6 +1649,8 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     TO_QUEUE_ELEM_INIT(cs);
 
     ap_push_pool(worker_queue_info, cs->p);
+    if (dying)
+        ap_queue_interrupt_one(worker_queue);
 }
 
 /* call 'func' for all elements of 'q' with timeout less than 'timeout_time'.
