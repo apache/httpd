@@ -188,6 +188,8 @@ static apr_uint32_t connection_count = 0;   /* Number of open connections */
 static apr_uint32_t lingering_count = 0;    /* Number of connections in lingering close */
 static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
 static apr_uint32_t clogged_count = 0;      /* Number of threads processing ssl conns */
+static apr_uint32_t threads_shutdown = 0;   /* Number of threads that have shutdown
+                                               early during graceful termination */
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
@@ -1283,6 +1285,7 @@ static void close_listeners(int process_slot, int *closed)
         kill(ap_my_pid, SIGTERM);
 
         ap_free_idle_pools(worker_queue_info);
+        ap_queue_interrupt_all(worker_queue);
     }
 }
 
@@ -1785,6 +1788,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              *keepalive_q->total,
                              apr_atomic_read32(&lingering_count),
                              apr_atomic_read32(&suspended_count));
+                if (dying) {
+                    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
+                                 "%u/%u workers shutdown",
+                                 apr_atomic_read32(&threads_shutdown),
+                                 threads_per_child);
+                }
                 apr_thread_mutex_unlock(timeout_mutex);
             }
         }
@@ -2129,6 +2138,34 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     return NULL;
 }
 
+/*
+ * During graceful shutdown, if there are more running worker threads than
+ * open connections, exit one worker thread.
+ *
+ * return 1 if thread should exit, 0 if it should continue running.
+ */
+static int worker_thread_should_exit_early(void)
+{
+    for (;;) {
+        apr_uint32_t conns = apr_atomic_read32(&connection_count);
+        apr_uint32_t dead = apr_atomic_read32(&threads_shutdown);
+        apr_uint32_t newdead;
+
+        AP_DEBUG_ASSERT(dead <= threads_per_child);
+        if (conns >= threads_per_child - dead)
+            return 0;
+
+        newdead = dead + 1;
+        if (apr_atomic_cas32(&threads_shutdown, newdead, dead) == dead) {
+            /*
+             * No other thread has exited in the mean time, safe to exit
+             * this one.
+             */
+            return 1;
+        }
+    }
+}
+
 /* XXX For ungraceful termination/restart, we definitely don't want to
  *     wait for active connections to finish but we may want to wait
  *     for idle workers to get out of the queue code and release mutexes,
@@ -2175,6 +2212,9 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                                             dying ? SERVER_GRACEFUL : SERVER_READY, NULL);
       worker_pop:
         if (workers_may_exit) {
+            break;
+        }
+        if (dying && worker_thread_should_exit_early()) {
             break;
         }
 
