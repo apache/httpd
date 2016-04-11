@@ -30,32 +30,142 @@
     <compatibility>Available in version 2.4.17 and later</compatibility>
     
     <summary>
-        <p>This module provides HTTP/2 (RFC 7540) support for the Apache
-            HTTP Server.</p>
+        <p>This module provides HTTP/2 (<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) 
+        support for the Apache HTTP Server.</p>
         
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
             to provide the core http/2 engine.</p>
         
         <note type="warning"><title>Warning</title>
-          <p>This module is experimental. Its behaviors, directives, and 
-          defaults are subject to more change from release to 
-          release relative to other standard modules. Users are encouraged to 
-          consult the "CHANGES" file for potential updates.</p>
+            <p>This module is experimental. Its behaviors, directives, and 
+                defaults are subject to more change from release to 
+                release relative to other standard modules. Users are encouraged to 
+                consult the "CHANGES" file for potential updates.</p>
+        </note>
+        
+        <p>You must enable HTTP/2 via <directive module="core">Protocols</directive> in order to use the
+        functionality described in this document. The HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption so two schemes are available: <code>h2</code> (HTTP/2 over TLS) and <code>h2c</code> (HTTP/2 over TCP).</p>
+
+        <p>Two useful configuration schemes are:</p>
+        
+        <note><title>HTTP/2 in a VirtualHost context (TLS only)</title>
+        <highlight language="config">
+Protocols h2 http/1.1
+        </highlight>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure <directive>VirtualHost</directive>. HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>) is disabled by default for <code>h2</code>.</p>
         </note>
 
-        <p>You must enable HTTP/2 via <directive
-        module="core">Protocols</directive> in order to use the
-        functionality described in this document:</p>
-
+        <note><title>HTTP/2 in a Server context (TLS and cleartext)</title>
         <highlight language="config">
-            Protocols h2 http/1.1
+Protocols h2 h2c http/1.1
         </highlight>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure <directive>VirtualHost</directive>. Allows HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1 connection or via HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>).</p>
+        </note>
 
+        <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a> for any doubt about the protocol.</p>
+        
     </summary>
     
+    <section id="how-it-works"><title>How it works</title>
+    
+    <section id="dimensioning"><title>HTTP/2 Dimensioning</title>
+        <p>
+            Enabling HTTP/2 on your Apache Server has impact on the resource
+            consumption and if you have a busy site, you may need to consider
+            carefully the implications.
+        </p>
+        <p>
+            The first noticeable thing after enabling HTTP/2 is that your server
+            processes will start additional threads. The reason for this is that
+            HTTP/2 gives all requests that it receives to its own <em>Worker</em>
+            threads for processing, collects the results and streams them out
+            to the client.
+        </p>
+        <p>
+            In the current implementation, these workers use a separate thread
+            pool from the MPM workers that you might be familiar with. This is
+            just how things are right now and not intended to be like this forever.
+            (It might be forever for the 2.4.x release line, though.) So, HTTP/2
+            workers, or shorter H2Workers, will not show up in mod_status. They
+            are also not counted against directives such as ThreadsPerChild. However
+            they take ThreadsPerChild as default if you have not configured something
+            else via <directive>H2MinWorkers</directive> and
+            <directive>H2MaxWorkers</directive>.
+        </p>
+        <p>
+            Another thing to watch out for is is memory consumption. Since HTTP/2
+            keeps more state on the server to manage all the open request, priorities
+            for and dependencies between them, it will always need more memory
+            than HTTP/1.1 processing. There are three directives which steer the
+            memory footprint of a HTTP/2 connection:
+            <directive>H2MaxSessionStreams</directive>,
+            <directive>H2WindowSize</directive> and
+            <directive>H2StreamMaxMemSize</directive>.
+        </p>
+        <p>
+            <directive>H2MaxSessionStreams</directive> limits the
+            number of parallel requests that a client can make on a HTTP/2 connection.
+            It depends on your site how many you should allow. The default is 100 which
+            is plenty and unless you run into memory problems, I would keep it this
+            way. Most requests that browsers send are GETs without a body, so they
+            use up only a little bit of memory until the actual processing starts.
+        </p>
+        <p>
+            <directive>H2WindowSize</directive> controls how much
+            the client is allowed to send as body of a request, before it waits
+            for the server to encourage more. Or, the other way around, it is the
+            amount of request body data the server needs to be able to buffer. This
+            is per request.
+        </p>
+        <p>
+            And last, but not least, <directive>H2StreamMaxMemSize</directive>
+            controls how much response data shall be buffered. The request sits in
+            a H2Worker thread and is producing data, the HTTP/2 connection tries
+            to send this to the client. If the client does not read fast enough,
+            the connection will buffer this amount of data and then suspend the
+            H2Worker.
+        </p>
+        <p>
+            If you serve a lot of static files, <directive>H2SessionExtraFiles</directive>
+            is of interest. This tells the server how many file handles per
+            HTTP/2 connection it is allowed to waste for better performance. Because
+            when a request produces a static file as the response, the file handle
+            gets passed around and is buffered and not the file contents. That allows
+            to serve many large files without wasting memory or copying data 
+            unnecessarily. However file handles are a limited resource for a process,
+            and if too many are used this way, requests may fail under load as
+            the amount of open handles has been exceeded.
+        </p>
+    </section>
+    
+    <section id="misdirected"><title>Multiple Hosts and Misdirected Requests</title>
+        <p>
+            Many sites use the same TLS certificate for multiple virtual hosts. The 
+            certificate either has a wildcard name, such as '*.example.org' or carries
+            several alternate names. Browsers using HTTP/2 will recognize that and reuse
+            an already opened connection for such hosts.
+        </p>
+        <p>
+            While this is great for performance, it comes at a price: such vhosts 
+            need more care in their configuration. The problem is that you will have
+            multiple requests for multiple hosts on the same TLS connection. And that
+            makes renegotiation impossible, in face the HTTP/2 standard forbids it.
+        </p>
+        <p>
+            So, if you have several virtual hosts using the same certificate and
+            want to use HTTP/2 for them, you need to make sure that all vhosts have
+            exactly the same SSL configuration. You need the same protocol, 
+            ciphers and settings for client verification.
+        </p>
+        <p>
+            If you mix things, Apache httpd will detect it and return a special
+            response code, 421 Misdirected Request, to the client.
+        </p>
+    </section>
+
     <section id="envvars"><title>Environment Variables</title>
-        
-        <p>This module can be configured to provide HTTP/2 related information
+        <p>
+            This module can be configured to provide HTTP/2 related information
             as additional environment variables to the SSI and CGI namespace, as well
             as in custom log configurations (see <code>%{VAR_NAME}e</code>).
         </p>
@@ -76,7 +186,8 @@
             <tr><td><code>H2_STREAM_ID</code></td><td>number</td><td>HTTP/2 stream number of this request.</td></tr>
             <tr><td><code>H2_STREAM_TAG</code></td><td>string</td><td>HTTP/2 process unique stream identifier, consisting of connection id and stream id separated by <code>-</code>.</td></tr>
         </table>
-        
+    </section>
+    
     </section>
 
     <directivesynopsis>
@@ -128,7 +239,7 @@
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2Push</name>
         <description>H2 Server Push Switch</description>
@@ -198,7 +309,7 @@
             </p>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2PushDiarySize</name>
         <description>H2 Server Push Diary Size</description>
@@ -220,7 +331,7 @@
             <p>
                 The push diary records a digest (currently using a 64 bit number) of pushed
                 resources (their URL) to avoid duplicate pushes on the same connection.
-                These value are not persisted, so clients openeing a new connection
+                These value are not persisted, so clients opening a new connection
                 will experience known pushes again. There is ongoing work to enable
                 a client to disclose a digest of the resources it already has, so
                 the diary maybe initialized by the client on each connection setup.
@@ -235,7 +346,7 @@
             </p>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>H2 Server Push Priority</description>
@@ -246,7 +357,7 @@
             <context>virtual host</context>
         </contextlist>
         <compatibility>Available in version 2.4.18 and later. For having an
-        effect, a nghttp2 library version 1.5.0 or newer is necessary.</compatibility>
+            effect, a nghttp2 library version 1.5.0 or newer is necessary.</compatibility>
         
         <usage>
             <p>
@@ -269,12 +380,12 @@
                 When a stream has more than one dependant, say X1 and X2 both
                 depend on Y, the <em>weight</em> determines the bandwidth
                 allocation. If X1 and X2 have the same weight, they both get
-                half of the available bandwdith. If the weight of X1 is twice
+                half of the available bandwidth. If the weight of X1 is twice
                 as large as that for X2, X1 gets twice the bandwidth of X2.
             </p>
             <p> 
                 Ultimately, every stream depends on the <em>root</em> stream which
-                gets all the bandwidht available, but never sends anything. So all
+                gets all the bandwidth available, but never sends anything. So all
                 its bandwidth is distributed by weight among its children. Which
                 either have data to send or distribute the bandwidth to their
                 own children. And so on. If none of the children have data
@@ -352,7 +463,7 @@
             </p>
             <ol>
                 <li>'*' is the only special content-type that matches all others. 
-                 'image/*' will not work.</li>
+                    'image/*' will not work.</li>
                 <li>The default dependency is 'After'. </li>
                 <li>There are also default weights: for 'After' it is 16, 'interleaved' is 256. 
                 </li>
@@ -366,7 +477,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2Upgrade</name>
         <description>H2 Upgrade Protocol Switch</description>
@@ -462,7 +573,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2WindowSize</name>
         <description>Size of Stream Window for upstream data.</description>
@@ -490,7 +601,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2MinWorkers</name>
         <description>Minimal number of worker threads to use per child process.</description>
@@ -512,7 +623,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2MaxWorkers</name>
         <description>Maximum number of worker threads to use per child process.</description>
@@ -534,7 +645,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2MaxWorkerIdleSeconds</name>
         <description>Maximum number of seconds h2 workers remain idle until shut down.</description>
@@ -556,7 +667,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2SessionExtraFiles</name>
         <description>Number of Extra File Handles</description>
@@ -597,7 +708,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2SerializeHeaders</name>
         <description>Serialize Request/Response Processing Switch</description>
@@ -625,7 +736,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2ModernTLSOnly</name>
         <description>Require HTTP/2 connections to be "modern TLS" only</description>
@@ -636,7 +747,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             <context>virtual host</context>
         </contextlist>
         <compatibility>Available in version 2.4.18 and later.</compatibility>
-
+        
         <usage>
             <p>
                 This directive toggles the security checks on HTTP/2 connections
@@ -673,7 +784,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </example>
         </usage>
     </directivesynopsis>
-
+    
     <directivesynopsis>
         <name>H2TLSWarmUpSize</name>
         <description></description>
@@ -695,7 +806,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <p>
                 Measurements by <a href="https://www.igvita.com">google performance
-                labs</a> show that best performance on TLS connections is reached,
+                    labs</a> show that best performance on TLS connections is reached,
                 if initial record sizes stay below the MTU level, to allow a
                 complete record to fit into an IP packet.
             </p>
@@ -772,99 +883,4 @@ H2PushPriority text/css   interleaved      # weight 256 default
         </usage>
     </directivesynopsis>
     
-    <directivesynopsis>
-        <name>H2Timeout</name>
-        <description>Timeout (in seconds) for HTTP/2 connections</description>
-        <syntax>H2Timeout seconds</syntax>
-        <default>H2Timeout 5</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Available in version 2.4.19 and later.</compatibility>
-
-        <usage>
-            <p>
-                This directive sets the timeout for read/write operations on
-                connections where HTTP/2 is negotiated. This can be used server wide or for specific
-                <directive module="core" type="section">VirtualHost</directive>s. 
-            </p>
-            <p>
-                This directive is similar to the 
-                <directive module="core" type="section">Timeout</directive>, but
-                applies only to HTTP/2 connections.
-            </p>
-            <p>
-                A value of 0 enforces no timeout.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2KeepAliveTimeout</name>
-        <description>Timeout (in seconds) for idle HTTP/2 connections</description>
-        <syntax>H2KeepAliveTimeout seconds</syntax>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Available in version 2.4.19 and later.</compatibility>
-
-        <usage>
-            <p>
-                This directive sets the timeout for read/write operations on
-                idle connections where HTTP/2 is negotiated. This can be used server wide or for specific
-                <directive module="core" type="section">VirtualHost</directive>s. 
-            </p>
-            <p>
-                This directive is similar to the 
-                <directive module="core" type="section">KeepAliveTimeout</directive>, but
-                applies only to HTTP/2 connections. A HTTP/2 connection is considered
-                idle when no streams are open, e.g. no requests are ongoing.
-            </p>
-            <p>
-                By default, for non-async MPMs (prefork, worker) the keepalive timeout
-                will be the same as H2Timeout. For async MPMs, the keepalive handling for
-                HTTP/1 connections applies as no special action is taken.
-            </p>
-        </usage>
-    </directivesynopsis>
-
-    <directivesynopsis>
-        <name>H2StreamTimeout</name>
-        <description>Timeout (in seconds) for idle HTTP/2 connections</description>
-        <syntax>H2StreamTimeout seconds</syntax>
-        <default>H2StreamTimeout 0</default>
-        <contextlist>
-            <context>server config</context>
-            <context>virtual host</context>
-        </contextlist>
-        <compatibility>Available in version 2.4.19 and later.</compatibility>
-
-        <usage>
-            <p>
-                This directive sets the timeout for read/write operations on
-                HTTP/2 streams, e.g. individual requests. This can be used server wide or for specific
-                <directive module="core" type="section">VirtualHost</directive>s. 
-            </p>
-            <p>
-                Due to the nature of HTTP/2, which sends multiple requests over a single
-                connection and has priority scheduling, individual streams might not
-                see input for much longer times than HTTP/1.1 requests would. 
-            </p>
-            <p>
-                A value of 0 enforces no timeout, so could wait on chances to receive
-                input or write data indefinitely. This expose a server to
-                risks of thread exhaustion. 
-            </p>
-            <p>
-                Depending on your handling of pushed streams,
-                priorities and general responsiveness, a site might need to increase
-                this value. For example, if you PUSH a large resource <em>before</em>
-                the requested one, the initial stream will not write until the
-                pushed resource is fully sent.
-            </p>
-        </usage>
-    </directivesynopsis>
-
 </modulesynopsis>
