@@ -537,7 +537,8 @@ static int status_handler(request_rec *r)
         int busy_workers = 0, idle_workers = 0;
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
-                     "<tr><th rowspan=\"2\">PID</th>"
+                     "<tr><th rowspan=\"2\">Slot</th>"
+		         "<th rowspan=\"2\">PID</th>"
                          "<th colspan=\"2\">Connections</th>\n"
                          "<th colspan=\"2\">Threads</th>"
                          "<th colspan=\"4\">Async connections</th></tr>\n"
@@ -554,11 +555,12 @@ static int status_handler(request_rec *r)
                 busy_workers     += thread_busy_buffer[i];
                 idle_workers     += thread_idle_buffer[i];
                 if (!short_report)
-                    ap_rprintf(r, "<tr><td>%" APR_PID_T_FMT "</td><td>%u</td>"
-                                      "<td>%s</td><td>%u</td><td>%u</td>"
+                    ap_rprintf(r, "<tr><td>%u</td><td>%" APR_PID_T_FMT "</td>"
+                                      "<td>%u</td><td>%s</td><td>%u</td>"
                                       "<td>%u</td><td>%u</td><td>%u</td>"
+                                      "<td>%u</td>"
                                       "</tr>\n",
-                               ps_record->pid, ps_record->connections,
+                               i, ps_record->pid, ps_record->connections,
                                ps_record->not_accepting ? "no" : "yes",
                                thread_busy_buffer[i], thread_idle_buffer[i],
                                ps_record->write_completion,
