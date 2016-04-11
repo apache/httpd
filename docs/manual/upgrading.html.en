@@ -138,6 +138,15 @@
       although for compatibility with old configurations, the new
       module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> is provided.</p>
 
+      <div class="note"><h3>Mixing old and new directives</h3>
+      <p>Mixing old directives like <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code> or <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code> with new ones like
+      <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> is technically possible 
+      but discouraged. <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> was created to support 
+      configurations containing only old directives to facilitate the 2.4 upgrade. 
+      Please check the examples below to get a better idea about issues that might arise.
+      </p>
+      </div>
+
       <p>Here are some examples of old and new ways to do the same
       access control.</p>
 
@@ -164,6 +173,53 @@ Allow from example.org</pre>
 </div>
       <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require host example.org</pre>
 </div>
+
+      <p>In the following example, mixing old and new directives leads to 
+      unexpected results.</p>
+ 
+      <div class="example"><h3>Mixing old and new directives: NOT WORKING AS EXPECTED</h3><pre class="prettyprint lang-config">DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Order deny,allow
+    Deny from all
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Require 127.0.0.1
+&lt;/Location&gt;
+
+access.log - GET /server-status 403 127.0.0.1
+error.log - AH01797: client denied by server configuration: /var/www/html/server-status</pre>
+</div>
+      <p>Why httpd denies access to servers-status even if the configuration seems to allow it?
+        Because <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> directives take precedence
+        over the <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code> one in this configuration 
+        <a href="sections.html#merging">merge</a> scenario.</p>
+
+      <p>This example conversely works as expected:</p>
+
+      <div class="example"><h3>Mixing old and new directives: WORKING AS EXPECTED</h3><pre class="prettyprint lang-config">DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Require all denied
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow From 127.0.0.1
+&lt;/Location&gt;
+
+access.log - GET /server-status 200 127.0.0.1</pre>
+</div> 
+      <p>So even if mixing configuration is still
+        possible, please try to avoid it when upgrading: either keep old directives and then migrate
+        to the new ones on a later stage or just migrate everything in bulk.  
+      </p>
     
 
     
