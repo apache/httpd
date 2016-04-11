@@ -137,6 +137,19 @@
       although for compatibility with old configurations, the new
       module <module>mod_access_compat</module> is provided.</p>
 
+      <note><title>Mixing old and new directives</title>
+      <p>Mixing old directives like <directive
+      module="mod_access_compat">Order</directive>, <directive
+      module="mod_access_compat">Allow</directive> or <directive
+      module="mod_access_compat">Deny</directive> with new ones like
+      <directive
+      module="mod_authz_core">Require</directive> is technically possible 
+      but discouraged. <module>mod_access_compat</module> was created to support 
+      configurations containing only old directives to facilitate the 2.4 upgrade. 
+      Please check the examples below to get a better idea about issues that might arise.
+      </p>
+      </note>
+
       <p>Here are some examples of old and new ways to do the same
       access control.</p>
 
@@ -187,6 +200,61 @@ Allow from example.org
         Require host example.org
         </highlight>
       </example>
+
+      <p>In the following example, mixing old and new directives leads to 
+      unexpected results.</p>
+ 
+      <example>
+        <title>Mixing old and new directives: NOT WORKING AS EXPECTED</title>
+          <highlight language="config">
+DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Order deny,allow
+    Deny from all
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Require 127.0.0.1
+&lt;/Location&gt;
+
+access.log - GET /server-status 403 127.0.0.1
+error.log - AH01797: client denied by server configuration: /var/www/html/server-status
+          </highlight>
+      </example>
+      <p>Why httpd denies access to servers-status even if the configuration seems to allow it?
+        Because <module>mod_access_compat</module> directives take precedence
+        over the <module>mod_authz_host</module> one in this configuration 
+        <a href="sections.html#merging">merge</a> scenario.</p>
+
+      <p>This example conversely works as expected:</p>
+
+      <example>
+        <title>Mixing old and new directives: WORKING AS EXPECTED</title>
+        <highlight language="config">
+DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Require all denied
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow From 127.0.0.1
+&lt;/Location&gt;
+
+access.log - GET /server-status 200 127.0.0.1
+        </highlight>
+      </example> 
+      <p>So even if mixing configuration is still
+        possible, please try to avoid it when upgrading: either keep old directives and then migrate
+        to the new ones on a later stage or just migrate everything in bulk.  
+      </p>
     </section>
 
     </section>
