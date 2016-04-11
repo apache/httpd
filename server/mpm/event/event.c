@@ -167,15 +167,16 @@
 #endif
 #define WORKER_FACTOR_SCALE   16  /* scale factor to allow fractional values */
 static unsigned int worker_factor = DEFAULT_WORKER_FACTOR * WORKER_FACTOR_SCALE;
+    /* AsyncRequestWorkerFactor * 16 */
 
-static int threads_per_child = 0;   /* Worker threads per child */
-static int ap_daemons_to_start = 0;
-static int min_spare_threads = 0;
-static int max_spare_threads = 0;
+static int threads_per_child = 0;           /* ThreadsPerChild */
+static int ap_daemons_to_start = 0;         /* StartServers */
+static int min_spare_threads = 0;           /* MinSpareThreads */
+static int max_spare_threads = 0;           /* MaxSpareThreads */
 static int ap_daemons_limit = 0;
-static int max_workers = 0;
-static int server_limit = 0;
-static int thread_limit = 0;
+static int max_workers = 0;                 /* MaxRequestWorkers */
+static int server_limit = 0;                /* ServerLimit */
+static int thread_limit = 0;                /* ThreadLimit */
 static int had_healthy_child = 0;
 static int dying = 0;
 static int workers_may_exit = 0;
