@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_status: Display the process slot number in the async connection
+     overview. [Stefan Fritsch]
+
   *) mod_include: add the <!--#comment ...> syntax in order to include comments
      in a SSI file. [Christophe Jaillet based on a suggestion from Rob]
 
