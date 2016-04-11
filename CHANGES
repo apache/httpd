@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_event: Don't take over scoreboard slots from gracefully finishing
+     threads. [Stefan Fritsch]
+
   *) mod_status: Display the process slot number in the async connection
      overview. [Stefan Fritsch]
 
