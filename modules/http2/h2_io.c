@@ -43,7 +43,7 @@ h2_io *h2_io_create(int id, apr_pool_t *pool,
         io->id = id;
         io->pool = pool;
         io->bucket_alloc = bucket_alloc;
-        io->request = h2_request_clone(pool, request);
+        io->request = request;
     }
     return io;
 }

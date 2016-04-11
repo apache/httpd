@@ -235,7 +235,8 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
     const char *s;
     
     if (req->eoh) {
-        return APR_EINVAL;
+        /* already done */
+        return APR_SUCCESS;
     }
 
     /* rfc7540, ch. 8.1.2.3:
@@ -337,37 +338,18 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
     return add_h1_trailer(req, pool, name, nlen, value, vlen);
 }
 
-#define OPT_COPY(p, s)  ((s)? apr_pstrdup(p, s) : NULL)
-
-void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src)
-{
-    /* keep the dst id */
-    dst->initiated_on   = src->initiated_on;
-    dst->method         = OPT_COPY(p, src->method);
-    dst->scheme         = OPT_COPY(p, src->scheme);
-    dst->authority      = OPT_COPY(p, src->authority);
-    dst->path           = OPT_COPY(p, src->path);
-    dst->headers        = apr_table_clone(p, src->headers);
-    if (src->trailers) {
-        dst->trailers   = apr_table_clone(p, src->trailers);
-    }
-    else {
-        dst->trailers   = NULL;
-    }
-    dst->content_length = src->content_length;
-    dst->chunked        = src->chunked;
-    dst->eoh            = src->eoh;
-    dst->body           = src->body;
-    dst->serialize      = src->serialize;
-    dst->push_policy    = src->push_policy;
-}
-
 h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
 {
-    h2_request *nreq = apr_pcalloc(p, sizeof(*nreq));
-    memcpy(nreq, src, sizeof(*nreq));
-    h2_request_copy(p, nreq, src);
-    return nreq;
+    h2_request *dst = apr_pmemdup(p, src, sizeof(*dst));
+    dst->method       = apr_pstrdup(p, src->method);
+    dst->scheme       = apr_pstrdup(p, src->scheme);
+    dst->authority    = apr_pstrdup(p, src->authority);
+    dst->path         = apr_pstrdup(p, src->path);
+    dst->headers      = apr_table_clone(p, src->headers);
+    if (src->trailers) {
+        dst->trailers = apr_table_clone(p, src->trailers);
+    }
+    return dst;
 }
 
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)

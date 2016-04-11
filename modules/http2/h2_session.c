@@ -121,7 +121,8 @@ static void cleanup_streams(h2_session *session)
     }
 }
 
-h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
+h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
+                                  int initiated_on, const h2_request *req)
 {
     h2_stream * stream;
     apr_pool_t *stream_pool;
@@ -135,7 +136,8 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
         apr_pool_tag(stream_pool, "h2_stream");
     }
     
-    stream = h2_stream_open(stream_id, stream_pool, session);
+    stream = h2_stream_open(stream_id, stream_pool, session, 
+                            initiated_on, req);
     
     h2_ihash_add(session->streams, stream);
     if (H2_STREAM_CLIENT_INITIATED(stream_id)) {
@@ -360,7 +362,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
         /* nop */
     }
     else {
-        s = h2_session_open_stream((h2_session *)userp, frame->hd.stream_id);
+        s = h2_session_open_stream(userp, frame->hd.stream_id, 0, NULL);
     }
     return s? 0 : NGHTTP2_ERR_START_STREAM_NOT_ALLOWED;
 }
@@ -1030,7 +1032,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         }
         
         /* Now we need to auto-open stream 1 for the request we got. */
-        stream = h2_session_open_stream(session, 1);
+        stream = h2_session_open_stream(session, 1, 0, NULL);
         if (!stream) {
             status = APR_EGENERAL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, session->r,
@@ -1372,9 +1374,8 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                   session->id, is->id, nid,
                   push->req->method, push->req->path, is->id);
                   
-    stream = h2_session_open_stream(session, nid);
+    stream = h2_session_open_stream(session, nid, is->id, push->req);
     if (stream) {
-        h2_stream_set_h2_request(stream, is->id, push->req);
         status = stream_schedule(session, stream, 1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c,

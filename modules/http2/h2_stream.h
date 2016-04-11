@@ -71,7 +71,8 @@ struct h2_stream {
  * @param session the session this stream belongs to
  * @return the newly opened stream
  */
-h2_stream *h2_stream_open(int id, apr_pool_t *pool, struct h2_session *session);
+h2_stream *h2_stream_open(int id, apr_pool_t *pool, struct h2_session *session,
+                          int initiated_on, const struct h2_request *req);
 
 /**
  * Destroy any resources held by this stream. Will destroy memory pool
@@ -105,15 +106,6 @@ apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
  * @param r the request with all the meta data
  */
 apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r);
-
-/**
- * Initialize stream->request with the given h2_request.
- * 
- * @param stream the stream to init the request for
- * @param req the request for initializing, will be copied
- */
-void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
-                              const struct h2_request *req);
 
 /*
  * Add a HTTP/2 header (including pseudo headers) or trailer 

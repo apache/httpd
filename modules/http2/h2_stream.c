@@ -137,16 +137,29 @@ static int output_open(h2_stream *stream)
 
 static h2_sos *h2_sos_mplx_create(h2_stream *stream, h2_response *response);
 
-h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session)
+h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
+                          int initiated_on, const h2_request *creq)
 {
+    h2_request *req;
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
+    
     stream->id        = id;
     stream->state     = H2_STREAM_ST_IDLE;
     stream->pool      = pool;
     stream->session   = session;
     set_state(stream, H2_STREAM_ST_OPEN);
-    stream->request   = h2_request_create(id, pool, 
-        h2_config_geti(session->config, H2_CONF_SER_HEADERS));
+    
+    if (creq) {
+        /* take it into out pool and assure correct id's */
+        req = h2_request_clone(pool, creq);
+        req->id = id;
+        req->initiated_on = initiated_on;
+    }
+    else {
+        req = h2_request_create(id, pool, 
+                h2_config_geti(session->config, H2_CONF_SER_HEADERS));
+    }
+    stream->request = req; 
     
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
@@ -231,14 +244,6 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
     return status;
 }
 
-void h2_stream_set_h2_request(h2_stream *stream, int initiated_on,
-                              const h2_request *req)
-{
-    h2_request_copy(stream->pool, stream->request, req);
-    stream->request->initiated_on = initiated_on;
-    stream->request->eoh = 0;
-}
-
 apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen)
@@ -298,7 +303,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     }
     else {
         h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
                       "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
                       stream->session->id, stream->id,
                       stream->request->method, stream->request->scheme,
