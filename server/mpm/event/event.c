@@ -2408,7 +2408,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             int status =
                 ap_scoreboard_image->servers[my_child_num][i].status;
 
-            if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
+            if (status != SERVER_DEAD) {
                 continue;
             }
 
