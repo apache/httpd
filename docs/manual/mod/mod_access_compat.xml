@@ -59,9 +59,19 @@ have been deprecated by the new authz refactoring.  Please see
 
     <note type="warning"><title>Note</title>
       <p>The directives provided by <module>mod_access_compat</module> have
-      been deprecated by the new authz refactoring. Please see
-      <module>mod_authz_host</module>.</p>
-    </note>
+      been deprecated by <module>mod_authz_host</module>. 
+      Mixing old directives like <directive
+      module="mod_access_compat">Order</directive>, <directive
+      module="mod_access_compat">Allow</directive> or <directive
+      module="mod_access_compat">Deny</directive> with new ones like
+      <directive
+      module="mod_authz_core">Require</directive> is technically possible 
+      but discouraged. This module was created to support 
+      configurations containing only old directives to facilitate the 2.4 upgrade. 
+      Please check the <a href="../upgrading.html">upgrading</a> guide for more
+      information.
+      </p>
+      </note>
 
     <p>In general, access restriction directives apply to all
     access methods (<code>GET</code>, <code>PUT</code>,
