@@ -98,7 +98,8 @@ Protocols h2 h2c http/1.1
             just how things are right now and not intended to be like this forever.
             (It might be forever for the 2.4.x release line, though.) So, HTTP/2
             workers, or shorter H2Workers, will not show up in <module>mod_status</module>. They
-            are also not counted against directives such as ThreadsPerChild. However
+            are also not counted against directives such as <directive module="mpm_common"
+            >ThreadsPerChild</directive>. However
             they take <directive module="mpm_common">ThreadsPerChild</directive>
             as default if you have not configured something
             else via <directive module="mod_http2">H2MinWorkers</directive> and
@@ -363,7 +364,7 @@ H2Push off
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>H2 Server Push Priority</description>
-        <syntax>H2PushPriority mime-type [after|before|interleaved] [weight]</syntax>
+        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</syntax>
         <default>H2PushPriority * After 16</default>
         <contextlist>
             <context>server config</context>
@@ -855,7 +856,7 @@ H2TLSWarmUpSize 0
     <directivesynopsis>
         <name>H2TLSCoolDownSecs</name>
         <description></description>
-        <syntax>H2TLSCoolDownSecs seconds</syntax>
+        <syntax>H2TLSCoolDownSecs <em>seconds</em></syntax>
         <default>H2TLSCoolDownSecs 1</default>
         <contextlist>
             <context>server config</context>
