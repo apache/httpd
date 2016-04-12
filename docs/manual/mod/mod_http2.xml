@@ -34,7 +34,7 @@
         support for the Apache HTTP Server.</p>
         
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
-            to provide the core http/2 engine.</p>
+        to provide the core http/2 engine.</p>
         
         <note type="warning"><title>Warning</title>
             <p>This module is experimental. Its behaviors, directives, and 
@@ -43,8 +43,11 @@
                 consult the "CHANGES" file for potential updates.</p>
         </note>
         
-        <p>You must enable HTTP/2 via <directive module="core">Protocols</directive> in order to use the
-        functionality described in this document. The HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption">does not require</a> the use of encryption so two schemes are available: <code>h2</code> (HTTP/2 over TLS) and <code>h2c</code> (HTTP/2 over TCP).</p>
+        <p>You must enable HTTP/2 via <directive module="core">Protocols</directive>
+        in order to use the functionality described in this document. The
+        HTTP/2 protocol <a href="https://http2.github.io/faq/#does-http2-require-encryption"
+        >does not require</a> the use of encryption so two schemes are available:
+        <code>h2</code> (HTTP/2 over TLS) and <code>h2c</code> (HTTP/2 over TCP).</p>
 
         <p>Two useful configuration schemes are:</p>
         
@@ -52,17 +55,25 @@
         <highlight language="config">
 Protocols h2 http/1.1
         </highlight>
-        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure <directive>VirtualHost</directive>. HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>) is disabled by default for <code>h2</code>.</p>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN in a secure
+        <directive module="core" type="section">VirtualHost</directive>.
+        HTTP/2 preamble checking (Direct mode, see <directive module="mod_http2"
+        >H2Direct</directive>) is disabled by default for <code>h2</code>.</p>
         </note>
 
         <note><title>HTTP/2 in a Server context (TLS and cleartext)</title>
         <highlight language="config">
 Protocols h2 h2c http/1.1
         </highlight>
-        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure <directive>VirtualHost</directive>. Allows HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1 connection or via HTTP/2 preamble checking (Direct mode, see <directive>H2Direct</directive>).</p>
+        <p>Allows HTTP/2 negotiation (h2) via TLS ALPN for secure
+        <directive module="core" type="section">VirtualHost</directive>. Allows
+        HTTP/2 cleartext negotiation (h2c) upgrading from an initial HTTP/1.1
+        connection or via HTTP/2 preamble checking (Direct mode, see
+        <directive module="mod_http2">H2Direct</directive>).</p>
         </note>
 
-        <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a> for any doubt about the protocol.</p>
+        <p>Refer to the official <a href="https://http2.github.io/faq">HTTP/2 FAQ</a>
+        for any doubt about the protocol.</p>
         
     </summary>
     
@@ -86,11 +97,12 @@ Protocols h2 h2c http/1.1
             pool from the MPM workers that you might be familiar with. This is
             just how things are right now and not intended to be like this forever.
             (It might be forever for the 2.4.x release line, though.) So, HTTP/2
-            workers, or shorter H2Workers, will not show up in mod_status. They
+            workers, or shorter H2Workers, will not show up in <module>mod_status</module>. They
             are also not counted against directives such as ThreadsPerChild. However
-            they take ThreadsPerChild as default if you have not configured something
-            else via <directive>H2MinWorkers</directive> and
-            <directive>H2MaxWorkers</directive>.
+            they take <directive module="mpm_common">ThreadsPerChild</directive>
+            as default if you have not configured something
+            else via <directive module="mod_http2">H2MinWorkers</directive> and
+            <directive module="mod_http2">H2MaxWorkers</directive>.
         </p>
         <p>
             Another thing to watch out for is is memory consumption. Since HTTP/2
@@ -98,12 +110,12 @@ Protocols h2 h2c http/1.1
             for and dependencies between them, it will always need more memory
             than HTTP/1.1 processing. There are three directives which steer the
             memory footprint of a HTTP/2 connection:
-            <directive>H2MaxSessionStreams</directive>,
-            <directive>H2WindowSize</directive> and
-            <directive>H2StreamMaxMemSize</directive>.
+            <directive module="mod_http2">H2MaxSessionStreams</directive>,
+            <directive module="mod_http2">H2WindowSize</directive> and
+            <directive module="mod_http2">H2StreamMaxMemSize</directive>.
         </p>
         <p>
-            <directive>H2MaxSessionStreams</directive> limits the
+            <directive module="mod_http2">H2MaxSessionStreams</directive> limits the
             number of parallel requests that a client can make on a HTTP/2 connection.
             It depends on your site how many you should allow. The default is 100 which
             is plenty and unless you run into memory problems, I would keep it this
@@ -111,14 +123,14 @@ Protocols h2 h2c http/1.1
             use up only a little bit of memory until the actual processing starts.
         </p>
         <p>
-            <directive>H2WindowSize</directive> controls how much
+            <directive module="mod_http2">H2WindowSize</directive> controls how much
             the client is allowed to send as body of a request, before it waits
             for the server to encourage more. Or, the other way around, it is the
             amount of request body data the server needs to be able to buffer. This
             is per request.
         </p>
         <p>
-            And last, but not least, <directive>H2StreamMaxMemSize</directive>
+            And last, but not least, <directive module="mod_http2">H2StreamMaxMemSize</directive>
             controls how much response data shall be buffered. The request sits in
             a H2Worker thread and is producing data, the HTTP/2 connection tries
             to send this to the client. If the client does not read fast enough,
@@ -126,7 +138,7 @@ Protocols h2 h2c http/1.1
             H2Worker.
         </p>
         <p>
-            If you serve a lot of static files, <directive>H2SessionExtraFiles</directive>
+            If you serve a lot of static files, <directive module="mod_http2">H2SessionExtraFiles</directive>
             is of interest. This tells the server how many file handles per
             HTTP/2 connection it is allowed to waste for better performance. Because
             when a request produces a static file as the response, the file handle
@@ -216,8 +228,9 @@ Protocols h2 h2c http/1.1
             </p>
             <p>
                 When a server/vhost does not have h2 or h2c enabled via
-                <directive module="core" type="section">Protocols</directive>,
-                the connection is never inspected for a HTTP/2 preamble. H2Direct
+                <directive module="core">Protocols</directive>,
+                the connection is never inspected for a HTTP/2 preamble.
+                <directive>H2Direct</directive>
                 does not matter then. This is important for connections that
                 use protocols where an initial read might hang indefinitely, such
                 as NNTP.
@@ -234,7 +247,7 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2Direct on
+H2Direct on
                 </highlight>
             </example>
         </usage>
@@ -298,7 +311,7 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2Push off
+H2Push off
                 </highlight>
             </example>
             <p>
@@ -313,7 +326,7 @@ Protocols h2 h2c http/1.1
     <directivesynopsis>
         <name>H2PushDiarySize</name>
         <description>H2 Server Push Diary Size</description>
-        <syntax>H2PushDiarySize n</syntax>
+        <syntax>H2PushDiarySize <em>n</em></syntax>
         <default>H2PushDiarySize 256</default>
         <contextlist>
             <context>server config</context>
@@ -373,7 +386,7 @@ Protocols h2 h2c http/1.1
             <p>
                 When a stream <em>depends</em> on another, say X depends on Y,
                 then Y gets all bandwidth before X gets any. Note that this
-                does not men that Y will block X. If Y has no data to send, 
+                does not mean that Y will block X. If Y has no data to send, 
                 all bandwidth allocated to Y can be used by X.
             </p>
             <p>
@@ -411,7 +424,7 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>Default Priority Rule</title>
                 <highlight language="config">
-                    H2PushPriority * After 16
+H2PushPriority * After 16
                 </highlight>
             </example>
             <p>
@@ -422,7 +435,7 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>Interleaved Priority Rule</title>
                 <highlight language="config">
-                    H2PushPriority text/css Interleaved 256
+H2PushPriority text/css Interleaved 256
                 </highlight>
             </example>
             <p>
@@ -441,7 +454,7 @@ Protocols h2 h2c http/1.1
             </p>
             <example><title>Before Priority Rule</title>
                 <highlight language="config">
-                    H2PushPriority application/json Before
+H2PushPriority application/json Before
                 </highlight>
             </example>
             <p>
@@ -511,16 +524,16 @@ H2PushPriority text/css   interleaved      # weight 256 default
                 Please be aware that Upgrades are only accepted for requests
                 that carry no body. POSTs and PUTs with content will never
                 trigger an upgrade to HTTP/2. 
-                See <directive type="section">H2Direct</directive> for an 
+                See <directive module="mod_http2">H2Direct</directive> for an 
                 alternative to Upgrade.
             </p>
             <p>
                 This mode only has an effect when h2 or h2c is enabled via
-                the <directive module="core" type="section">Protocols</directive>.
+                the <directive module="core">Protocols</directive>.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2Upgrade on
+H2Upgrade on
                 </highlight>
             </example>
         </usage>
@@ -543,7 +556,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2MaxSessionStreams 20
+H2MaxSessionStreams 20
                 </highlight>
             </example>
         </usage>
@@ -568,7 +581,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2StreamMaxMemSize 128000
+H2StreamMaxMemSize 128000
                 </highlight>
             </example>
         </usage>
@@ -596,7 +609,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2WindowSize 128000
+H2WindowSize 128000
                 </highlight>
             </example>
         </usage>
@@ -613,12 +626,12 @@ H2PushPriority text/css   interleaved      # weight 256 default
             <p>
                 This directive sets the minimum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
+                <module>mod_http2</module> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2MinWorkers 10
+H2MinWorkers 10
                 </highlight>
             </example>
         </usage>
@@ -635,12 +648,12 @@ H2PushPriority text/css   interleaved      # weight 256 default
             <p>
                 This directive sets the maximum number of worker threads to spawn
                 per child process for HTTP/2 processing. If this directive is not used,
-                <code>mod_http2</code> will chose a value suitable for the <code>mpm</code>
+                <module>mod_http2</module> will chose a value suitable for the <code>mpm</code>
                 module loaded.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2MaxWorkers 20
+H2MaxWorkers 20
                 </highlight>
             </example>
         </usage>
@@ -658,11 +671,11 @@ H2PushPriority text/css   interleaved      # weight 256 default
             <p>
                 This directive sets the maximum number of seconds a h2 worker may 
                 idle until it shuts itself down. This only happens while the number of
-                h2 workers exceeds <code>H2MinWorkers</code>.
+                h2 workers exceeds <directive module="mod_http2">H2MinWorkers</directive>.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2MaxWorkerIdleSeconds 20
+H2MaxWorkerIdleSeconds 20
                 </highlight>
             </example>
         </usage>
@@ -698,7 +711,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </pre>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2SessionExtraFiles 10
+H2SessionExtraFiles 10
                 </highlight>
             </example>
             <p>
@@ -731,7 +744,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2SerializeHeaders on
+H2SerializeHeaders on
                 </highlight>
             </example>
         </usage>
@@ -768,18 +781,18 @@ H2PushPriority text/css   interleaved      # weight 256 default
                 in OpSec, this is a moving target and can be expected to evolve in the future.
             </p>
             <p>
-                One purpose of having these checks in mod_http2 is to enforce this
+                One purpose of having these checks in <module>mod_http2</module> is to enforce this
                 security level for all connections, not only those from browsers. The other
                 purpose is to prevent the negotiation of HTTP/2 as a protocol should
                 the requirements not be met.
             </p>
             <p>
                 Ultimately, the security of the TLS connection is determined by the
-                server configuration directives for mod_ssl.
+                server configuration directives for <module>mod_ssl</module>.
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2ModernTLSOnly off
+H2ModernTLSOnly off
                 </highlight>
             </example>
         </usage>
@@ -788,7 +801,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
     <directivesynopsis>
         <name>H2TLSWarmUpSize</name>
         <description></description>
-        <syntax>H2TLSWarmUpSize amount</syntax>
+        <syntax>H2TLSWarmUpSize <em>amount</em></syntax>
         <default>H2TLSWarmUpSize 1048576</default>
         <contextlist>
             <context>server config</context>
@@ -833,7 +846,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2TLSWarmUpSize 0
+H2TLSWarmUpSize 0
                 </highlight>
             </example>
         </usage>
@@ -859,8 +872,8 @@ H2PushPriority text/css   interleaved      # weight 256 default
                 <directive module="core" type="section">VirtualHost</directive>s. 
             </p>
             <p>
-                See <directive type="section">H2TLSWarmUpSize</directive> for a
-                description of TLS warmup. H2TLSCoolDownSecs reflects the fact
+                See <directive module="mod_http2">H2TLSWarmUpSize</directive> for a
+                description of TLS warmup. <directive>H2TLSCoolDownSecs</directive> reflects the fact
                 that connections may deteriorate over time (and TCP flow adjusts)
                 for idle connections as well. It is beneficial to overall performance
                 to fall back to the pre-warmup phase after a number of seconds that
@@ -877,7 +890,7 @@ H2PushPriority text/css   interleaved      # weight 256 default
             </p>
             <example><title>Example</title>
                 <highlight language="config">
-                    H2TLSCoolDownSecs 0
+H2TLSCoolDownSecs 0
                 </highlight>
             </example>
         </usage>
