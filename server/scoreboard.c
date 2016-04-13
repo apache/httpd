@@ -497,19 +497,21 @@ static int update_child_status_internal(int child_num,
             ws->conn_bytes = 0;
             ws->last_used = apr_time_now();
         }
-        if (status == SERVER_READY) {
-            ws->client[0]='\0';
-            ws->vhost[0]='\0';
-            ws->request[0]='\0';
-            ws->protocol[0]='\0';
-        }
-        else {
+
+        /* Keep existing values until working again */
+        if (status > SERVER_READY) {
+            int was_ready = (old_status == SERVER_READY);
+
             if (descr) {
                 apr_cpystrn(ws->request, descr, sizeof(ws->request));
             }
             else if (r) {
                 copy_request(ws->request, sizeof(ws->request), r);
             }
+            else if (was_ready) {
+                ws->request[0] = '\0';
+            }
+
             if (r) {
                 if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL)))
                     apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
@@ -523,6 +525,10 @@ static int update_child_status_internal(int child_num,
                 else
                     apr_cpystrn(ws->client, val, sizeof(ws->client));
             }
+            else if (was_ready) {
+                ws->client[0] = '\0';
+            }
+
             if (s) {
                 if (c) {
                     apr_snprintf(ws->vhost, sizeof(ws->vhost), "%s:%d",
@@ -532,9 +538,16 @@ static int update_child_status_internal(int child_num,
                     apr_cpystrn(ws->vhost, s->server_hostname, sizeof(ws->vhost));
                 }
             }
+            else if (was_ready) {
+                ws->vhost[0] = '\0';
+            }
+
             if (c) {
                 val = ap_get_protocol(c);
                 apr_cpystrn(ws->protocol, val, sizeof(ws->protocol));
+            }
+            else if (was_ready) {
+                ws->protocol[0] = '\0';
             }
         }
     }
