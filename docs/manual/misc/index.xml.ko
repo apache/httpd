@@ -53,7 +53,7 @@
         말아야 할 일".</p>
       </dd>
 
-      <dt><a href="rewriteguide.html">URL 재작성 지침서</a></dt>
+      <dt><a href="rewrite/">URL 재작성 지침서</a></dt>
 
       <dd>
         <p>이 문서는 <module>mod_rewrite</module> <a

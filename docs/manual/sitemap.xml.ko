@@ -59,7 +59,7 @@
 <page href="filter.html">필터</page>
 <page href="suexec.html">suEXEC 지원</page>
 <page href="misc/perf-tuning.html">성능향상 힌트</page>
-<page href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</page>
+<page href="rewrite/">URL 재작성(rewriting) 지침서</page>
 </category>
 
 <category id="vhosts">
