@@ -220,7 +220,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     created by <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> or
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> <var>prog</var>.
     Note that it does not prevent CGI programs running under alternative
-    process and security models such as <a href="http://fastcgi.coremail.cn">mod_fcgid</a>, which is a recommended solution in Solaris.</p>
+    process and security models such as <a href="https://httpd.apache.org/mod_fcgid/">mod_fcgid</a>, which is a recommended solution in Solaris.</p>
     <p>If set to <var>On</var> or <var>Secure</var>, the virtual host
     is permitted to run external programs and scripts as above.
     Setting <code class="directive">VHostCGIMode</code> <var>Secure</var> has

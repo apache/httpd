@@ -70,8 +70,8 @@
     適切に設定して、<code class="program"><a href="./programs/httpd.html">httpd</a></code> バイナリを起動します。
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> はどんなコマンドライン引数も通過させますので、
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> のどのコマンドラインオプションも
-    <code class="program"><a href="./programs/apchectl.html">apchectl</a></code> のオプションとして使用できます。
-    また、<code class="program"><a href="./programs/apchectl.html">apchectl</a></code> スクリプトを直接編集し、
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> のオプションとして使用できます。
+    また、<code class="program"><a href="./programs/apachectl.html">apachectl</a></code> スクリプトを直接編集し、
     スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> バイナリの正しい位置を指定したり、<em>常に</em>
     付加させるコマンドライン引数を指定したりすることができます。</p>
