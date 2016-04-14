@@ -141,10 +141,8 @@
     解析することです。一般的なログ解析はこの文書の範囲外で、
     ウェブサーバ自身の仕事というわけでもありません。この話や、
     ログ解析を行なうアプリケーションの情報を得るには、<a
-    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">
-    Open Directory</a> や <a
-    href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">
-    Yahoo</a> を調べてください。</p>
+    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
+    Open Directory</a> を調べてください。</p>
 
     <p>いろんなバージョンの Apache httpd が mod_log_config,
     mod_log_agent, <code>TransferLog</code> ディレクティブといった、

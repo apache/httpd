@@ -134,8 +134,7 @@
     것이다. 이 문서는 일반적인 로그 분석에 대해서 다루지 않으며,
     로그 분석은 실제 웹서버가 할 일이 아니다. 로그 분석에 대한
     정보와 로그를 분석하는 소프트웨어에 대해서는 <a
-    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">Open Directory</a>나
-    <a href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">Yahoo</a>를
+    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">Open Directory</a>나
     참고하라.</p>
 
     <p>아파치 웹서버는 이전부터 mod_log_referer, mod_log_agent,
