@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_privileges.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_privileges.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des privilèges de Solaris et de l'exécution des
 serveurs virtuels sous différents identifiants
 utilisateurs.</td></tr>
@@ -248,7 +250,7 @@ personnalisé).</td></tr>
     programmes de réécriture externes utilisés par la directive
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Notez que
     ceci n'empêche pas l'exécution de programmes CGI via d'autres
-    processus et sous d'autres modèles de sécurité comme <a href="http://fastcgi.coremail.cn">mod_fcgid</a>, ce qui est la
+    processus et sous d'autres modèles de sécurité comme <a href="https://httpd.apache.org/mod_fcgid/">mod_fcgid</a>, ce qui est la
     solution recommandée sous Solaris.</p>
     <p>Si cette directive est définie à <var>On</var> ou
     <var>Secure</var>, le serveur virtuel pourra exécuter les scripts et

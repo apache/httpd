@@ -29,6 +29,8 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -211,8 +213,7 @@
     dehors du sujet de ce document et ne fait pas vraiment partie intégrante
     du travail du serveur web lui-même. Pour plus d'informations à propos de ce
     sujet et des applications dédiées à l'analyse de journaux, vous pouvez vous
-    référer à <a href="http://dmoz.org/Computers/Software/Internet/     Site_Management/Log_analysis/">Open Directory</a> ou
-    <a href="http://dir.yahoo.com/Computers_and_Internet/Software/     Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">Yahoo</a>.</p>
+    référer à <a href="http://dmoz.org/Computers/Software/Internet/     Site_Management/Log_Analysis/">Open Directory</a>.</p>
 
     <p>Différentes versions du démon Apache httpd utilisaient d'autres modules
     et directives pour contrôler la journalisation des accès, à l'instar de
