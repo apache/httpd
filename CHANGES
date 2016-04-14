@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) http: Respond with "408 Request Timeout" when a timeout occurs while
+     reading the request body.  [Yann Ylavic]
+
   *) scoreboard/status: Keep workers' previous Client, VHost and Request values
      when idle, like in 2.4.18 and earlier.  [Yann Ylavic]
 
