@@ -62,8 +62,8 @@
     適切に設定して、<program>httpd</program> バイナリを起動します。
     <program>apachectl</program> はどんなコマンドライン引数も通過させますので、
     <program>httpd</program> のどのコマンドラインオプションも
-    <program>apchectl</program> のオプションとして使用できます。
-    また、<program>apchectl</program> スクリプトを直接編集し、
+    <program>apachectl</program> のオプションとして使用できます。
+    また、<program>apachectl</program> スクリプトを直接編集し、
     スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
     <program>httpd</program> バイナリの正しい位置を指定したり、<em>常に</em>
     付加させるコマンドライン引数を指定したりすることができます。</p>
