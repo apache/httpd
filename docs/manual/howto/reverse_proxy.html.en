@@ -235,7 +235,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
 
     <div class="warning"><h3>Warning</h3>
-      <p>Do not enable the <em>balancer-manager</em> until you have <a href="mod_proxy.html#access">secured your server</a>. In
+      <p>Do not enable the <em>balancer-manager</em> until you have <a href="../../mod_proxy.html#access">secured your server</a>. In
       particular, ensure that access to the URL is tightly
       restricted.</p>
     </div>

@@ -209,7 +209,7 @@ ProxyPassReverse /foo/ http://internal.example.com/bar/
     프로그램을 사용할 수 있다. 재작성 엔진은 위에서 다룬 세
     종류 대응, 즉, 내부 리다이렉션 (alias), 외부 리다이렉션,
     프록시, 모두를 지원한다. mod_rewrite를 사용하는 실제 예는
-    <a href="misc/rewriteguide.html">URL 제작성 지침서</a>에서
+    <a href="rewrite/">URL 제작성 지침서</a>에서
     설명한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

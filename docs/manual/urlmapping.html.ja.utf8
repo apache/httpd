@@ -243,7 +243,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
     決めることもできます。リライトエンジンは上で挙げられている三つのマッピング
     すべてを行なうことができます: 内部のリダイレクト (エイリアス)、
     外部のリダイレクト、プロキシです。mod_rewrite を使う多くの実用的な例は
-    <a href="misc/rewriteguide.html">URL リライトガイド</a>
+    <a href="rewrite/">URL リライトガイド</a>
     で説明されています。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

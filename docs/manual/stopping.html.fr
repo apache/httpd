@@ -265,8 +265,8 @@ vous recevrez un message concernant ces erreurs.</div>
 
     <p>Vous devez aussi prendre garde aux autres situations de compétition,
     comme l'utilisation de l'enregistrement des logs avec un transfert de ceux-ci
-    dans le style <code class="program"><a href="./programs/rotation des logs.html">rotation des logs</a></code>. Plusieurs instances
-    du programme de <code class="program"><a href="./programs/rotation des logs.html">rotation des logs</a></code> qui tentent d'effectuer
+    dans le style <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Plusieurs instances
+    du programme de <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> qui tentent d'effectuer
     une rotation des mêmes fichiers de log en même temps peuvent détruire
     mutuellement leurs propres fichiers de log.</p></div>
 </div></div>
