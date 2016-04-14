@@ -324,7 +324,7 @@ personnalis&eacute;).</compatibility>
     <directive module="mod_rewrite">RewriteMap</directive>. Notez que
     ceci n'emp&ecirc;che pas l'ex&eacute;cution de programmes CGI via d'autres
     processus et sous d'autres mod&egrave;les de s&eacute;curit&eacute; comme <a
-    href="http://fastcgi.coremail.cn">mod_fcgid</a>, ce qui est la
+    href="https://httpd.apache.org/mod_fcgid/">mod_fcgid</a>, ce qui est la
     solution recommand&eacute;e sous Solaris.</p>
     <p>Si cette directive est d&eacute;finie &agrave; <var>On</var> ou
     <var>Secure</var>, le serveur virtuel pourra ex&eacute;cuter les scripts et
