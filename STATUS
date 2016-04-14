@@ -186,8 +186,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) scoreboard/status: Keep previous worker connection/request data when idle as
      prior to 2.4.20.
      trunk patch: http://svn.apache.org/r1739008
+     trunk patch: http://svn.apache.org/r1739146
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
+     ylavic: diff with 2.4.19 after this merge:
+             http://home.apache.org/~ylavic/patches/scoreboard-2.4.19.diff
 
   
 PATCHES/ISSUES THAT ARE BEING WORKED
