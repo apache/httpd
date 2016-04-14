@@ -494,7 +494,6 @@ static int update_child_status_internal(int child_num,
             ws->last_used = apr_time_now();
         }
 
-        /* Keep existing values until working again */
         if (descr) {
             apr_cpystrn(ws->request, descr, sizeof(ws->request));
         }
