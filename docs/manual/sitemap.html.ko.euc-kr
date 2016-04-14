@@ -84,7 +84,7 @@
 <li><a href="filter.html">필터</a></li>
 <li><a href="suexec.html">suEXEC 지원</a></li>
 <li><a href="misc/perf-tuning.html">성능향상 힌트</a></li>
-<li><a href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</a></li>
+<li><a href="rewrite/">URL 재작성(rewriting) 지침서</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">아파치 가상호스트 문서</a></h2>

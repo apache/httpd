@@ -27,6 +27,8 @@
 <a href="../fr/misc/relevant_standards.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p>Cette page documente tous les standards applicables que suit le
     serveur HTTP Apache, accompagnés d'une brève description.</p>
