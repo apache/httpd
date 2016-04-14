@@ -61,7 +61,7 @@
 <page href="filter.html">フィルタ</page>
 <page href="suexec.html">suEXEC サポート</page>
 <page href="misc/perf-tuning.html">性能に関するヒント</page>
-<page href="misc/rewriteguide.html">URL リライトガイド</page>
+<page href="rewrite/">URL リライトガイド</page>
 </category>
 
 <category id="vhosts">

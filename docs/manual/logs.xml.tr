@@ -204,9 +204,8 @@
       Bu konu ve günlük incelemesi yapan uygulamalar hakkında daha ayrıntılı
       bilgi edinmek için <a
       href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/"
-      >dmoz.org</a> veya <a
-      href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/"
-      >Yahoo</a>’ya bakınız.</p>
+      >dmoz.org</a>
+      bakınız.</p>
 
     <p>Apache httpd’nin çeşitli sürümlerinde erişim günlüklerini denetlemek
       için kullanılan diğer modüller ve yönergeler arasında mod_log_referer,

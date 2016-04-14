@@ -210,10 +210,9 @@
     part of the job of the web server itself. For more information
     about this topic, and for applications which perform log
     analysis, check the <a
-    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">
-    Open Directory</a> or <a
-    href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">
-    Yahoo</a>.</p>
+    href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_Analysis/">
+    Open Directory</a>.
+    </p>
 
     <p>Various versions of Apache httpd have used other modules and
     directives to control access logging, including

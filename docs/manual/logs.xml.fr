@@ -225,9 +225,8 @@
     du travail du serveur web lui-m&ecirc;me. Pour plus d'informations &agrave; propos de ce
     sujet et des applications d&eacute;di&eacute;es &agrave; l'analyse de journaux, vous pouvez vous
     r&eacute;f&eacute;rer &agrave; <a href="http://dmoz.org/Computers/Software/Internet/
-    Site_Management/Log_analysis/">Open Directory</a> ou
-    <a href="http://dir.yahoo.com/Computers_and_Internet/Software/
-    Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">Yahoo</a>.</p>
+    Site_Management/Log_analysis/">Open Directory</a>.
+    </p>
 
     <p>Diff&eacute;rentes versions du d&eacute;mon Apache httpd utilisaient d'autres modules
     et directives pour contr&ocirc;ler la journalisation des acc&egrave;s, &agrave; l'instar de
