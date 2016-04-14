@@ -175,6 +175,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk patch works (compatibility note to be adjusted)
      +1: jailletc36
 
+  *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
+     according the number of listeners buckets.
+     trunk patch: http://svn.apache.org/r1737447
+                  http://svn.apache.org/r1737449
+                  http://svn.apache.org/r1737451
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
+  *) scoreboard/status: Keep previous worker connection/request data when idle as
+     prior to 2.4.20.
+     trunk patch: http://svn.apache.org/r1739008
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
   
 PATCHES/ISSUES THAT ARE BEING WORKED
 
