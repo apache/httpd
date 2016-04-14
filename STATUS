@@ -188,11 +188,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1739008
      trunk patch: http://svn.apache.org/r1739146
      trunk patch: http://svn.apache.org/r1739151
+     trunk patch: http://svn.apache.org/r1739193
      2.4.x patch: trunk works (modulo CHANGES) or
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-scoreboard_preserve.patch
+                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-scoreboard_preserve-v2.patch
      +1: ylavic
-     ylavic: diff with 2.4.19 after this merge:
-             http://home.apache.org/~ylavic/patches/scoreboard-2.4.19.diff
+     ylavic: diff with 2.4.18 after this merge:
+             http://home.apache.org/~ylavic/patches/scoreboard-2.4.18.diff
 
   
 PATCHES/ISSUES THAT ARE BEING WORKED
