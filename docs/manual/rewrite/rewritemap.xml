@@ -165,8 +165,8 @@ RewriteRule (.*) ${lc:$1} [R]
     <title>txt: Plain text maps</title>
 
     <p>When a MapType of <code>txt</code> is used, the MapSource is a filesystem path to a
-    plain-text mapping file, containing space-separated key/value pair
-    per line. Optionally, a line may be contain a comment, starting with
+    plain-text mapping file, containing one space-separated key/value pair
+    per line. Optionally, a line may contain a comment, starting with
     a '#' character.</p>
 
     <p>A valid text rewrite map file will have the following syntax:</p>
