@@ -26,7 +26,8 @@
     <p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 the use of the <directive module="mod_rewrite">RewriteMap</directive> directive,
-and provides examples of each of the various <code>RewriteMap</code> types.</p>
+and provides examples of each of the various <directive module="mod_rewrite"
+>RewriteMap</directive> types.</p>
 
     <note type="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
@@ -57,8 +58,8 @@ configuration.</note>
    the <directive module="mod_rewrite">RewriteMap</directive> reference
    documentation.</p>
 
-   <p>The syntax of the <code>RewriteMap</code> directive is as
-   follows:</p>
+   <p>The syntax of the <directive module="mod_rewrite">RewriteMap</directive>
+   directive is as follows:</p>
 
 <highlight language="config">
 RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
@@ -85,12 +86,12 @@ RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
       if no <em>DefaultValue</em> was specified.</p>
 
     <p>For example, you can define a
-      <directive>RewriteMap</directive> as:</p>
+      <directive module="mod_rewrite">RewriteMap</directive> as:</p>
     <highlight language="config">
 RewriteMap examplemap "txt:/path/to/file/map.txt"
     </highlight>
     <p>You would then be able to use this map in a
-      <directive>RewriteRule</directive> as follows:</p>
+      <directive module="mod_rewrite">RewriteRule</directive> as follows:</p>
       <highlight language="config">
 RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       </highlight>
@@ -104,13 +105,13 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"
 
 <note><title>Per-directory and .htaccess context</title>
 <p>
-The <code>RewriteMap</code> directive  may not be used in
-&lt;Directory&gt; sections or <code>.htaccess</code> files. You must
+The <directive module="mod_rewrite">RewriteMap</directive> directive may not be
+used in <directive module="core" type="section">Directory</directive> sections or
+<code>.htaccess</code> files. You must
 declare the map in server or virtualhost context. You may use the map,
-once created, in your <code>RewriteRule</code> and
-<code>RewriteCond</code> directives in those scopes. You just can't
-<strong>declare</strong> it in those scopes.
-</p>
+once created, in your <directive module="mod_rewrite">RewriteRule</directive> and
+<directive module="mod_rewrite">RewriteCond</directive> directives in those
+scopes. You just can't <strong>declare</strong> it in those scopes.</p>
 </note>
 
 <p>The sections that follow describe the various <em>MapType</em>s that
@@ -121,7 +122,8 @@ may be used, and give examples of each.</p>
     <title>int: Internal Function</title>
 
     <p>When a MapType of <code>int</code> is used, the MapSource is one
-    of the available internal RewriteMap functions.  Module authors can provide
+    of the available internal <directive module="mod_rewrite">RewriteMap</directive>
+    functions.  Module authors can provide
     additional internal functions by registering them with the
     <code>ap_register_rewrite_mapfunc</code> API.
     The functions that are provided by default are:
@@ -141,14 +143,16 @@ may be used, and give examples of each.</p>
     </ul>
 
     <p>
-    To use one of these functions, create a <code>RewriteMap</code> referencing
-    the int function, and then use that in your <code>RewriteRule</code>:
+    To use one of these functions, create a <directive module="mod_rewrite"
+    >RewriteMap</directive> referencing
+    the int function, and then use that in your <directive module="mod_rewrite"
+    >RewriteRule</directive>:
     </p>
 
    <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
     <highlight language="config">
 RewriteMap lc int:tolower
-RewriteRule (.*) ${lc:$1} [R]
+RewriteRule "(.*)" "${lc:$1}" [R]
     </highlight>
 
     <note>
@@ -177,7 +181,8 @@ RewriteRule (.*) ${lc:$1} [R]
       <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # comment<br />
     </example>
 
-    <p>When the RewriteMap is invoked the argument is looked for in the
+    <p>When the <directive module="mod_rewrite">RewriteMap</directive> is invoked
+    the argument is looked for in the
     first argument of a line, and, if found, the substitution value is
     returned.</p>
 
@@ -210,7 +215,8 @@ telephone  328
     </example>
 
     <p>Thus, when <code>http://example.com/product/television</code> is
-    requested, the <code>RewriteRule</code> is applied, and the request
+    requested, the <directive module="mod_rewrite">RewriteRule</directive> is
+    applied, and the request
     is internally mapped to <code>/prods.php?id=993</code>.</p>
 
     <note><title>Note: .htaccess files</title>
@@ -265,10 +271,10 @@ RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]
     </highlight>
 
     <p>So, when an image is requested and the first of these rules is
-    matched, <code>RewriteMap</code> looks up the string
+    matched, <directive module="mod_rewrite">RewriteMap</directive> looks up the string
     <code>static</code> in the map file, which returns one of the
     specified hostnames at random, which is then used in the
-    <code>RewriteRule</code> target.</p>
+    <directive module="mod_rewrite">RewriteRule</directive> target.</p>
 
     <p>If you wanted to have one of the servers more likely to be chosen
     (for example, if one of the server has more memory than the others,
@@ -297,7 +303,8 @@ static   www1|www1|www2|www3|www4
 RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"
  </highlight>
 
-    <p>The type can be sdbm, gdbm, ndbm or db.
+    <p>The type can be <code>sdbm</code>, <code>gdbm</code>, <code>ndbm</code> 
+    or <code>db</code>.
     However, it is recommended that you just use the <a
     href="../programs/httxt2dbm.html">httxt2dbm</a> utility that is
     provided with Apache HTTP Server, as it will use the correct DBM library,
@@ -312,7 +319,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 </example>
 
 <p>You can then reference the resulting file in your
-<code>RewriteMap</code> directive:</p>
+<directive module="mod_rewrite">RewriteMap</directive> directive:</p>
 
 <highlight language="config">
 RewriteMap mapname "dbm:/etc/apache/mapfile.map"
@@ -323,7 +330,7 @@ RewriteMap mapname "dbm:/etc/apache/mapfile.map"
 a common base name. For example, you may have two files named
 <code>mapfile.map.dir</code> and <code>mapfiile.map.pag</code>. This is
 normal, and you need only use the base name <code>mapfile.map</code> in
-your <code>RewriteMap</code> directive.</p>
+your <directive module="mod_rewrite">RewriteMap</directive> directive.</p>
 </note>
 
 <note><title>Cached lookups</title>
@@ -372,7 +379,7 @@ by many requests.
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
 
-<p><strong>Rewrite configuration</strong></p>
+    <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
 RewriteMap d2u "prg:/www/bin/dash2under.programlisting" apache:apache<br />
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"
@@ -427,27 +434,27 @@ this process, or if the script itself is very slow.</li>
     restarted.</p>
 
     <p>If a query returns more than one row, a random row from
-the result set is used.</p>
+    the result set is used.</p>
 
-	<example><title>Example</title>
+    <example><title>Example</title>
     <highlight language="config">
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     </highlight>
-</example>
+    </example>
 
   </section>
   <section id="summary">
     <title>Summary</title>
 
-    <p>The <directive>RewriteMap</directive> directive can occur more than
-    once. For each mapping-function use one
-    <directive>RewriteMap</directive> directive to declare its rewriting
-    mapfile.</p>
+    <p>The <directive module="mod_rewrite">RewriteMap</directive> directive can
+    occur more than once. For each mapping-function use one
+    <directive module="mod_rewrite">RewriteMap</directive> directive to declare
+    its rewriting mapfile.</p>
 
     <p>While you cannot <strong>declare</strong> a map in
     per-directory context (<code>.htaccess</code> files or
-    &lt;Directory&gt; blocks) it is possible to
-    <strong>use</strong> this map in per-directory context. </p>
+    <directive module="core" type="section">Directory</directive> blocks) it is
+    possible to <strong>use</strong> this map in per-directory context.</p>
 
   </section>
 </manualpage>
