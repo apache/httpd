@@ -551,7 +551,8 @@
       </tr>
 
       <tr>
-        <td><code><a href="http://java.apache.org/">mod_jserv</a>
+        <td><code><a
+        href="https://tomcat.apache.org/connectors-doc-archive/jk2/">JK</a> (Formerly mod_jserv)
         </code></td>
         <td class="centered">-</td>
         <td>JAVA still being ported.</td>
