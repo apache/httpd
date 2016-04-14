@@ -260,8 +260,8 @@ vous recevrez un message concernant ces erreurs.</note>
 
     <p>Vous devez aussi prendre garde aux autres situations de comp&eacute;tition,
     comme l'utilisation de l'enregistrement des logs avec un transfert de ceux-ci
-    dans le style <program>rotation des logs</program>. Plusieurs instances
-    du programme de <program>rotation des logs</program> qui tentent d'effectuer
+    dans le style <program>rotatelogs</program>. Plusieurs instances
+    du programme de <program>rotatelogs</program> qui tentent d'effectuer
     une rotation des m&ecirc;mes fichiers de log en m&ecirc;me temps peuvent d&eacute;truire
     mutuellement leurs propres fichiers de log.</p></note>
 </section>
