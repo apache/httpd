@@ -242,7 +242,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
 }
 
 /*******************************************************************************
- * task input handling
+ * task output handling
  ******************************************************************************/
 
 static apr_status_t open_response(h2_task *task)
@@ -312,6 +312,7 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
+    int flush = 0;
     
     if (APR_BRIGADE_EMPTY(bb)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
@@ -349,7 +350,22 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
     }
     
     /* If there is nothing saved (anymore), try to write the brigade passed */
-    if ((!task->output.bb || APR_BRIGADE_EMPTY(task->output.bb)) && !APR_BRIGADE_EMPTY(bb)) {
+    if ((!task->output.bb || APR_BRIGADE_EMPTY(task->output.bb)) 
+        && !APR_BRIGADE_EMPTY(bb)) {
+        /* check if we have a flush before the end-of-request */
+        if (!task->output.response_open) {
+            for (b = APR_BRIGADE_FIRST(bb);
+                 b != APR_BRIGADE_SENTINEL(bb);
+                 b = APR_BUCKET_NEXT(b)) {
+                if (AP_BUCKET_IS_EOR(b)) {
+                    break;
+                }
+                else if (APR_BUCKET_IS_FLUSH(b)) {
+                    flush = 1;
+                }
+            }
+        }
+
         status = send_out(task, bb); 
         if (status != APR_SUCCESS) {
             return status;
@@ -368,13 +384,25 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
         return ap_save_brigade(f, &task->output.bb, &bb, task->pool);
     }
     
-    if (!task->output.response_open) {
-        /* data is in the output beam, if we have not opened the response,
-         * do so now. */
+    if (!task->output.response_open 
+        && (flush || h2_beam_get_mem_used(task->output.beam) > (32*1024))) {
+        /* if we have enough buffered or we got a flush bucket, open
+        * the response now. */
         status = open_response(task);
         task->output.response_open = 1;
     }
     
+    return status;
+}
+
+static apr_status_t output_finish(h2_task *task)
+{
+    apr_status_t status = APR_SUCCESS;
+    
+    if (!task->output.response_open) {
+        status = open_response(task);
+        task->output.response_open = 1;
+    }
     return status;
 }
 
@@ -461,7 +489,6 @@ h2_task *h2_task_create(conn_rec *c, const h2_request *req,
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
                       c->id, req->id);
-        h2_mplx_out_close(mplx, req->id);
         return NULL;
     }
     
@@ -505,8 +532,6 @@ void h2_task_set_io_blocking(h2_task *task, int blocking)
 
 apr_status_t h2_task_do(h2_task *task)
 {
-    apr_status_t status;
-    
     AP_DEBUG_ASSERT(task);
     
     task->input.block = APR_BLOCK_READ;
@@ -546,16 +571,13 @@ apr_status_t h2_task_do(h2_task *task)
                       "h2_task(%s): process_conn returned frozen task", 
                       task->id);
         /* cleanup delayed */
-        status = APR_EAGAIN;
+        return APR_EAGAIN;
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_task(%s): processing done", task->id);
-        h2_mplx_out_close(task->mplx, task->stream_id);
-        status = APR_SUCCESS;
+        return output_finish(task);
     }
-    
-    return status;
 }
 
 static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)

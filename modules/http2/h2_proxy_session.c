@@ -354,10 +354,10 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     b = apr_bucket_transient_create((const char*)data, len, 
                                     stream->r->connection->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(stream->output, b);
-    if (flags & NGHTTP2_DATA_FLAG_EOF) {
-        b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(stream->output, b);
-    }
+    /* always flush after a DATA frame, as we have no other indication
+     * of buffer use */
+    b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(stream->output, b);
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03359)
                   "h2_proxy_session(%s): pass response data for "
