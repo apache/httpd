@@ -803,6 +803,30 @@ apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam)
     return l;
 }
 
+apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
+{
+    apr_thread_mutex_t *lock;
+    apr_bucket *b;
+    apr_off_t l = 0;
+    int acquired;
+    
+    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+        for (b = H2_BLIST_FIRST(&beam->red); 
+            b != H2_BLIST_SENTINEL(&beam->red);
+            b = APR_BUCKET_NEXT(b)) {
+            if (APR_BUCKET_IS_FILE(b)) {
+                /* do not count */
+            }
+            else {
+                /* should all have determinate length */
+                l += b->length;
+            }
+        }
+        leave_yellow(beam, lock, acquired);
+    }
+    return l;
+}
+
 int h2_beam_empty(h2_bucket_beam *beam)
 {
     apr_thread_mutex_t *lock;

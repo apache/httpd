@@ -284,6 +284,11 @@ void h2_beam_on_file_beam(h2_bucket_beam *beam,
  */
 apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam);
 
+/**
+ * Get the memory used by the buffered buckets, approximately.
+ */
+apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam);
+
 int h2_beam_closed(h2_bucket_beam *beam);
 int h2_beam_empty(h2_bucket_beam *beam);
 

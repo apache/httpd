@@ -2,7 +2,8 @@
 Changes with Apache 2.5.0
 
   *) mod_http2: new "bucket beam" technology to transport buckets across
-     threads without buffer copy.
+     threads without buffer copy. Delaying response start until flush or
+     enough body data has been accumulated. [Stefan Eissing]
      
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  [Yann Ylavic]
