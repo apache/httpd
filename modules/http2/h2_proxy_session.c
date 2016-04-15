@@ -23,7 +23,6 @@
 
 #include "mod_http2.h"
 #include "h2.h"
-#include "h2_int_queue.h"
 #include "h2_request.h"
 #include "h2_util.h"
 #include "h2_proxy_session.h"

@@ -208,17 +208,26 @@ static apr_status_t bbout(apr_bucket_brigade *bb, const char *fmt, ...)
     return rv;
 }
 
-static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
+static apr_status_t h2_status_stream_filter(h2_stream *stream)
 {
-    h2_stream *stream = sos->stream;
     h2_session *session = stream->session;
     h2_mplx *mplx = session->mplx;
+    conn_rec *c = session->c;
     h2_push_diary *diary;
+    apr_bucket_brigade *bb;
     apr_status_t status;
     
-    if (!bb) {
-        bb = apr_brigade_create(stream->pool, session->c->bucket_alloc);
+    if (!stream->response) {
+        return APR_EINVAL;
     }
+    
+    if (!stream->buffer) {
+        stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+    }
+    bb = stream->buffer;
+    
+    apr_table_unset(stream->response->headers, "Content-Length");
+    stream->response->content_length = -1;
     
     bbout(bb, "{\n");
     bbout(bb, "  \"HTTP2\": \"on\",\n");
@@ -266,57 +275,15 @@ static apr_status_t h2_sos_h2_status_buffer(h2_sos *sos, apr_bucket_brigade *bb)
     bbout(bb, "  \"bytes_sent\": %"APR_UINT64_T_FMT"\n", session->io.bytes_written);
     bbout(bb, "}\n");
     
-    return sos->prev->buffer(sos->prev, bb);
+    return APR_SUCCESS;
 }
 
-static apr_status_t h2_sos_h2_status_read_to(h2_sos *sos, apr_bucket_brigade *bb, 
-                                             apr_off_t *plen, int *peos)
+apr_status_t h2_stream_filter(h2_stream *stream)
 {
-    return sos->prev->read_to(sos->prev, bb, plen, peos);
-}
-
-static apr_status_t h2_sos_h2_status_prepare(h2_sos *sos, apr_off_t *plen, int *peos)
-{
-    return sos->prev->prepare(sos->prev, plen, peos);
-}
-
-static apr_status_t h2_sos_h2_status_readx(h2_sos *sos, h2_io_data_cb *cb, void *ctx,
-                                           apr_off_t *plen, int *peos)
-{
-    return sos->prev->readx(sos->prev, cb, ctx, plen, peos);
-}
-
-static apr_table_t *h2_sos_h2_status_get_trailers(h2_sos *sos)
-{
-    return sos->prev->get_trailers(sos->prev);
-}
-
-static h2_sos *h2_sos_h2_status_create(h2_sos *prev) 
-{
-    h2_sos *sos;
-    h2_response *response = prev->response;
-    
-    apr_table_unset(response->headers, "Content-Length");
-    response->content_length = -1;
-
-    sos = apr_pcalloc(prev->stream->pool, sizeof(*sos));
-    sos->prev         = prev;
-    sos->response     = response;
-    sos->stream       = prev->stream;
-    sos->buffer       = h2_sos_h2_status_buffer;
-    sos->prepare      = h2_sos_h2_status_prepare;
-    sos->readx        = h2_sos_h2_status_readx;
-    sos->read_to      = h2_sos_h2_status_read_to;
-    sos->get_trailers = h2_sos_h2_status_get_trailers;
-    
-    return sos;
-}
-
-h2_sos *h2_filter_sos_create(const char *name, struct h2_sos *prev)
-{
-    if (!strcmp(H2_SOS_H2_STATUS, name)) {
-        return h2_sos_h2_status_create(prev);
+    const char *fname = stream->response? stream->response->sos_filter : NULL; 
+    if (fname && !strcmp(H2_SOS_H2_STATUS, fname)) {
+        return h2_status_stream_filter(stream);
     }
-    return prev;
+    return APR_SUCCESS;
 }
 

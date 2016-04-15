@@ -33,12 +33,10 @@
 #include "h2_conn.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
-#include "h2_int_queue.h"
 #include "h2_mplx.h"
 #include "h2_response.h"
 #include "h2_request.h"
 #include "h2_task.h"
-#include "h2_task_output.h"
 #include "h2_util.h"
 #include "h2_ngn_shed.h"
 

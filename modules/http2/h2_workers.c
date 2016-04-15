@@ -116,7 +116,7 @@ static apr_status_t get_mplx_next(h2_worker *worker, void *ctx,
     if (status == APR_SUCCESS) {
         ++workers->idle_workers;
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                     "h2_worker(%d): looking for work", h2_worker_get_id(worker));
+                     "h2_worker(%d): looking for work", worker->id);
         
         while (!h2_worker_is_aborted(worker) && !workers->aborted
                && !(task = next_task(workers))) {
@@ -195,7 +195,7 @@ static void worker_done(h2_worker *worker, void *ctx)
     apr_status_t status = apr_thread_mutex_lock(workers->lock);
     if (status == APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                     "h2_worker(%d): done", h2_worker_get_id(worker));
+                     "h2_worker(%d): done", worker->id);
         H2_WORKER_REMOVE(worker);
         --workers->worker_count;
         H2_WORKER_LIST_INSERT_TAIL(&workers->zombies, worker);
@@ -213,7 +213,7 @@ static apr_status_t add_worker(h2_workers *workers)
         return APR_ENOMEM;
     }
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, workers->s,
-                 "h2_workers: adding worker(%d)", h2_worker_get_id(w));
+                 "h2_workers: adding worker(%d)", w->id);
     ++workers->worker_count;
     H2_WORKER_LIST_INSERT_TAIL(&workers->workers, w);
     return APR_SUCCESS;

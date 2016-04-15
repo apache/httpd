@@ -16,6 +16,7 @@
 #ifndef __mod_h2__h2_io__
 #define __mod_h2__h2_io__
 
+struct h2_bucket_beam;
 struct h2_response;
 struct apr_thread_cond_t;
 struct h2_mplx;
@@ -37,40 +38,23 @@ typedef struct h2_io h2_io;
 
 struct h2_io {
     int id;                          /* stream identifier */
-     apr_pool_t *pool;                /* stream pool */
-    apr_bucket_alloc_t *bucket_alloc;
+    apr_pool_t *pool;                /* io pool */
     
-    const struct h2_request *request;/* request on this io */
-    struct h2_response *response;    /* response to request */
-    int rst_error;                   /* h2 related stream abort error */
+    const struct h2_request *request;/* request to process */
+    struct h2_response *response;    /* response to submit */
 
-    apr_bucket *eor;                 /* the EOR bucket, set aside */
+    struct h2_bucket_beam *beam_in;  /* request body buckets */
+    struct h2_bucket_beam *beam_out; /* response body buckets */
+
     struct h2_task *task;            /* the task once started */
-    
-    apr_bucket_brigade *bbin;        /* input data for stream */
-    apr_bucket_brigade *bbout;       /* output data from stream */
-    apr_bucket_brigade *bbtmp;       /* temporary data for chunking */
-
-    unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
-    unsigned int worker_started : 1; /* h2_worker started processing for this io */
-    unsigned int worker_done    : 1; /* h2_worker finished for this io */
-    unsigned int submitted      : 1; /* response has been submitted to client */
-    unsigned int request_body   : 1; /* iff request has body */
-    unsigned int eos_in         : 1; /* input eos has been seen */
-    unsigned int eos_in_written : 1; /* input eos has been forwarded */
-    unsigned int eos_out        : 1; /* output eos is present */
-    unsigned int eos_out_read   : 1; /* output eos has been forwarded */
-    
-    h2_io_op timed_op;               /* which operation is waited on, if any */
-    struct apr_thread_cond_t *timed_cond; /* condition to wait on, maybe NULL */
-    apr_time_t timeout_at;           /* when IO wait will time out */
-    
     apr_time_t started_at;           /* when processing started */
     apr_time_t done_at;              /* when processing was done */
-    apr_size_t input_consumed;       /* how many bytes have been read */
-    apr_size_t output_consumed;      /* how many bytes have been written out */
-        
-    int files_handles_owned;
+    
+    int rst_error;                   /* h2 related stream abort error */
+    unsigned int orphaned       : 1; /* h2_stream is gone for this io */    
+    unsigned int submitted      : 1; /* response has been submitted to client */
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
 };
 
 /*******************************************************************************
@@ -80,96 +64,25 @@ struct h2_io {
 /**
  * Creates a new h2_io for the given stream id. 
  */
-h2_io *h2_io_create(int id, apr_pool_t *pool, 
-                    apr_bucket_alloc_t *bucket_alloc, 
-                    const struct h2_request *request);
+h2_io *h2_io_create(int id, apr_pool_t *pool, const struct h2_request *request);
 
 /**
  * Set the response of this stream.
  */
-void h2_io_set_response(h2_io *io, struct h2_response *response);
+void h2_io_set_response(h2_io *io, struct h2_response *response,
+                        struct h2_bucket_beam *output);
 
 /**
  * Reset the stream with the given error code.
  */
 void h2_io_rst(h2_io *io, int error);
 
-int h2_io_is_repeatable(h2_io *io);
+int h2_io_can_redo(h2_io *io);
 void h2_io_redo(h2_io *io);
 
 /**
- * Output data is available.
+ * Shuts all input/output down. Clears any buckets buffered and closes.
  */
-int h2_io_out_has_data(h2_io *io);
-
-void h2_io_signal(h2_io *io, h2_io_op op);
-void h2_io_signal_init(h2_io *io, h2_io_op op, apr_interval_time_t timeout, 
-                       struct apr_thread_cond_t *cond);
-void h2_io_signal_exit(h2_io *io);
-apr_status_t h2_io_signal_wait(struct h2_mplx *m, h2_io *io);
-
-void h2_io_make_orphaned(h2_io *io, int error);
-
-/*******************************************************************************
- * Input handling of streams.
- ******************************************************************************/
-/**
- * Reads the next bucket from the input. Returns APR_EAGAIN if none
- * is currently available, APR_EOF if end of input has been reached.
- */
-apr_status_t h2_io_in_read(h2_io *io, apr_bucket_brigade *bb, 
-                           apr_size_t maxlen, apr_table_t *trailers);
-
-/**
- * Appends given bucket to the input.
- */
-apr_status_t h2_io_in_write(h2_io *io, const char *d, apr_size_t len, int eos);
-
-/**
- * Closes the input. After existing data has been read, APR_EOF will
- * be returned.
- */
-apr_status_t h2_io_in_close(h2_io *io);
-
-/**
- * Shuts all input down. Will close input and mark any data buffered
- * as consumed.
- */
-apr_status_t h2_io_in_shutdown(h2_io *io);
-
-/*******************************************************************************
- * Output handling of streams.
- ******************************************************************************/
-
-/**
- * Read a bucket from the output head. Return APR_EAGAIN if non is available,
- * APR_EOF if none available and output has been closed. 
- * May be called with buffer == NULL in order to find out how much data
- * is available.
- * @param io the h2_io to read output from
- * @param buffer the buffer to copy the data to, may be NULL
- * @param plen the requested max len, set to amount of data on return
- * @param peos != 0 iff the end of stream has been reached
- */
-apr_status_t h2_io_out_get_brigade(h2_io *io, 
-                                   apr_bucket_brigade *bb, 
-                                   apr_off_t len);
-
-apr_status_t h2_io_out_write(h2_io *io, apr_bucket_brigade *bb, 
-                             apr_size_t maxlen, 
-                             apr_size_t *pfile_buckets_allowed);
-
-/**
- * Closes the input. After existing data has been read, APR_EOF will
- * be returned.
- */
-apr_status_t h2_io_out_close(h2_io *io);
-
-/**
- * Gives the overall length of the data that is currently queued for
- * output.
- */
-apr_off_t h2_io_out_length(h2_io *io);
-
+void h2_io_shutdown(h2_io *io);
 
 #endif /* defined(__mod_h2__h2_io__) */

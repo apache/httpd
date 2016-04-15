@@ -20,7 +20,7 @@
 
 #include <nghttp2/nghttp2.h>
 
-struct h2_int_queue;
+struct h2_iqueue;
 struct h2_ihash_t;
 
 typedef enum {
@@ -74,7 +74,7 @@ struct h2_proxy_session {
     apr_interval_time_t wait_timeout;
 
     struct h2_ihash_t *streams;
-    struct h2_int_queue *suspended;
+    struct h2_iqueue *suspended;
     apr_size_t remote_max_concurrent;
     int last_stream_id;     /* last stream id processed by backend, or 0 */
     

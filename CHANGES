@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: new "bucket beam" technology to transport buckets across
+     threads without buffer copy.
+     
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  [Yann Ylavic]
 

@@ -38,6 +38,7 @@ struct h2_request;
 struct h2_response;
 struct h2_session;
 struct h2_sos;
+struct h2_bucket_beam;
 
 typedef struct h2_stream h2_stream;
 
@@ -48,8 +49,14 @@ struct h2_stream {
     
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
+    struct h2_bucket_beam *input;
+
+    struct h2_response *response;
+    struct h2_bucket_beam *output;
+    apr_bucket_brigade *buffer;
+    apr_bucket_brigade *tmp;
+
     int rst_error;              /* stream error for RST_STREAM */
-    
     unsigned int aborted   : 1; /* was aborted */
     unsigned int suspended : 1; /* DATA sending has been suspended */
     unsigned int scheduled : 1; /* stream has been scheduled */
@@ -57,7 +64,6 @@ struct h2_stream {
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
 
-    struct h2_sos *sos;         /* stream output source, e.g. to read output from */
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
 };
 
@@ -75,12 +81,14 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, struct h2_session *session,
                           int initiated_on, const struct h2_request *req);
 
 /**
- * Destroy any resources held by this stream. Will destroy memory pool
- * if still owned by the stream.
- *
- * @param stream the stream to destroy
+ * Cleanup any resources still held by the stream, called by last bucket.
  */
-apr_status_t h2_stream_destroy(h2_stream *stream);
+void h2_stream_eos_destroy(h2_stream *stream);
+
+/**
+ * Destroy memory pool if still owned by the stream.
+ */
+void h2_stream_destroy(h2_stream *stream);
 
 /**
  * Removes stream from h2_session and destroys it.
@@ -179,7 +187,7 @@ struct h2_response *h2_stream_get_response(h2_stream *stream);
  */
 apr_status_t h2_stream_set_response(h2_stream *stream, 
                                     struct h2_response *response,
-                                    apr_bucket_brigade *bb);
+                                    struct h2_bucket_beam *output);
 
 /**
  * Do a speculative read on the stream output to determine the 
