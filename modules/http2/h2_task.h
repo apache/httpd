@@ -38,6 +38,7 @@
  */
 
 struct apr_thread_cond_t;
+struct h2_bucket_beam;
 struct h2_conn;
 struct h2_mplx;
 struct h2_task;
@@ -55,29 +56,42 @@ struct h2_task {
     struct h2_mplx *mplx;
     apr_pool_t *pool;
     const struct h2_request *request;
+    apr_bucket *eor;
+    struct apr_thread_cond_t *cond;
     
     unsigned int filters_set : 1;
-    unsigned int input_eos   : 1;
     unsigned int ser_headers : 1;
     unsigned int frozen      : 1;
     unsigned int blocking    : 1;
     unsigned int detached    : 1;
     
-    struct h2_task_input *input;
-    struct h2_task_output *output;
-    struct apr_thread_cond_t *io;   /* used to wait for events on */
+    struct {
+        struct h2_bucket_beam *beam;
+        apr_bucket_brigade *bb;
+        apr_read_type_e block;
+        unsigned int chunked : 1;
+        unsigned int eos : 1;
+        unsigned int eos_written : 1;
+    } input;
+    struct {
+        struct h2_bucket_beam *beam;
+        struct h2_from_h1 *from_h1;
+        unsigned int response_open : 1;
+        apr_off_t written;
+        apr_bucket_brigade *bb;
+    } output;
     
     struct h2_req_engine *engine;   /* engine hosted by this task */
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
     request_rec *r;                 /* request being processed in this task */
 };
 
-h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        conn_rec *c, struct h2_mplx *mplx);
+h2_task *h2_task_create(conn_rec *c, const struct h2_request *req, 
+                        struct h2_bucket_beam *input, struct h2_mplx *mplx);
 
 void h2_task_destroy(h2_task *task);
 
-apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond);
+apr_status_t h2_task_do(h2_task *task);
 
 void h2_task_register_hooks(void);
 /*

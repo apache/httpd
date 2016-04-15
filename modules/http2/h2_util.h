@@ -16,6 +16,8 @@
 #ifndef __mod_h2__h2_util__
 #define __mod_h2__h2_util__
 
+#include <nghttp2/nghttp2.h>
+
 /*******************************************************************************
  * some debugging/format helpers
  ******************************************************************************/
@@ -63,7 +65,120 @@ int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
 void h2_ihash_add(h2_ihash_t *ih, void *val);
 void h2_ihash_remove(h2_ihash_t *ih, int id);
 void h2_ihash_clear(h2_ihash_t *ih);
- 
+
+/*******************************************************************************
+ * ilist - sorted list for structs with int identifier as first member
+ ******************************************************************************/
+typedef struct h2_ilist_t h2_ilist_t;
+typedef int h2_ilist_iter_t(void *ctx, void *val);
+
+h2_ilist_t *h2_ilist_create(apr_pool_t *pool);
+
+apr_status_t h2_ilist_add(h2_ilist_t *list, void *val);
+void *h2_ilist_get(h2_ilist_t *list, int id);
+void *h2_ilist_shift(h2_ilist_t *list);
+void *h2_ilist_remove(h2_ilist_t *list, int id);
+
+int h2_ilist_empty(h2_ilist_t *list);
+apr_size_t h2_ilist_count(h2_ilist_t *list);
+
+/* Iterator over all h2_io* in the set or until a
+ * callback returns 0. It is not safe to add or remove
+ * set members during iteration.
+ *
+ * @param set the set of h2_io to iterate over
+ * @param iter the function to call for each io
+ * @param ctx user data for the callback
+ * @return 1 iff iteration completed for all members
+ */
+int h2_ilist_iter(h2_ilist_t *lis, h2_ilist_iter_t *iter, void *ctx);
+
+/*******************************************************************************
+ * iqueue - sorted list of int with user defined ordering
+ ******************************************************************************/
+typedef struct h2_iqueue {
+    int *elts;
+    int head;
+    int nelts;
+    int nalloc;
+    apr_pool_t *pool;
+} h2_iqueue;
+
+/**
+ * Comparator for two int to determine their order.
+ *
+ * @param i1 first int to compare
+ * @param i2 second int to compare
+ * @param ctx provided user data
+ * @return value is the same as for strcmp() and has the effect:
+ *    == 0: s1 and s2 are treated equal in ordering
+ *     < 0: s1 should be sorted before s2
+ *     > 0: s2 should be sorted before s1
+ */
+typedef int h2_iq_cmp(int i1, int i2, void *ctx);
+
+/**
+ * Allocate a new queue from the pool and initialize.
+ * @param id the identifier of the queue
+ * @param pool the memory pool
+ */
+h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity);
+
+/**
+ * Return != 0 iff there are no tasks in the queue.
+ * @param q the queue to check
+ */
+int h2_iq_empty(h2_iqueue *q);
+
+/**
+ * Return the number of int in the queue.
+ * @param q the queue to get size on
+ */
+int h2_iq_count(h2_iqueue *q);
+
+/**
+ * Add a stream idto the queue. 
+ *
+ * @param q the queue to append the task to
+ * @param sid the stream id to add
+ * @param cmp the comparator for sorting
+ * @param ctx user data for comparator 
+ */
+void h2_iq_add(h2_iqueue *q, int i, h2_iq_cmp *cmp, void *ctx);
+
+/**
+ * Remove the stream id from the queue. Return != 0 iff task
+ * was found in queue.
+ * @param q the task queue
+ * @param sid the stream id to remove
+ * @return != 0 iff task was found in queue
+ */
+int h2_iq_remove(h2_iqueue *q, int i);
+
+/**
+ * Remove all entries in the queue.
+ */
+void h2_iq_clear(h2_iqueue *q);
+
+/**
+ * Sort the stream idqueue again. Call if the task ordering
+ * has changed.
+ *
+ * @param q the queue to sort
+ * @param cmp the comparator for sorting
+ * @param ctx user data for the comparator 
+ */
+void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx);
+
+/**
+ * Get the first stream id from the queue or NULL if the queue is empty. 
+ * The task will be removed.
+ *
+ * @param q the queue to get the first task from
+ * @return the first stream id of the queue, 0 if empty
+ */
+int h2_iq_shift(h2_iqueue *q);
+
 /*******************************************************************************
  * common helpers
  ******************************************************************************/
@@ -164,33 +279,23 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
 /*******************************************************************************
  * apr brigade helpers
  ******************************************************************************/
-/**
- * Moves data from one brigade into another. If maxlen > 0, it only
- * moves up to maxlen bytes into the target brigade, making bucket splits
- * if needed.
- * @param to the brigade to move the data to
- * @param from the brigade to get the data from
- * @param maxlen of bytes to move, <= 0 for all
- * @param pfile_buckets_allowed how many file buckets may be moved, 
- *        may be 0 or NULL
- * @param msg message for use in logging
- */
-apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, apr_size_t *pfile_buckets_allowed, 
-                          const char *msg);
 
 /**
- * Copies buckets from one brigade into another. If maxlen > 0, it only
- * copies up to maxlen bytes into the target brigade, making bucket splits
- * if needed.
- * @param to the brigade to copy the data to
- * @param from the brigade to get the data from
- * @param maxlen of bytes to copy, <= 0 for all
- * @param msg message for use in logging
+ * Concatenate at most length bytes from src to dest brigade, splitting
+ * buckets if necessary and reading buckets of indeterminate length.
  */
-apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, const char *msg);
-
+apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest, 
+                                      apr_bucket_brigade *src,
+                                      apr_off_t length);
+                                
+/**
+ * Copy at most length bytes from src to dest brigade, splitting
+ * buckets if necessary and reading buckets of indeterminate length.
+ */
+apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest, 
+                                    apr_bucket_brigade *src,
+                                    apr_off_t length);
+                                
 /**
  * Return != 0 iff there is a FLUSH or EOS bucket in the brigade.
  * @param bb the brigade to check on
@@ -198,7 +303,6 @@ apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from,
  */
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
 int h2_util_bb_has_data(apr_bucket_brigade *bb);
-int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb);
 
 /**
  * Check how many bytes of the desired amount are available and if the
@@ -230,6 +334,21 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
                               apr_off_t *plen, int *peos);
 
 /**
+ * Print a bucket's meta data (type and length) to the buffer.
+ * @return number of characters printed
+ */
+apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax, 
+                                apr_bucket *b, const char *sep);
+                                
+/**
+ * Prints the brigade bucket types and lengths into the given buffer
+ * up to bmax.
+ * @return number of characters printed
+ */
+apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax, 
+                            const char *tag, const char *sep, 
+                            apr_bucket_brigade *bb);
+/**
  * Logs the bucket brigade (which bucket types with what length)
  * to the log at the given level.
  * @param c the connection to log for
@@ -240,33 +359,6 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
  */
 void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
                     const char *tag, apr_bucket_brigade *bb);
-
-/**
- * Transfer buckets from one brigade to another with a limit on the 
- * maximum amount of bytes transfered. Sets aside the buckets to
- * pool p.
- * @param to   brigade to transfer buckets to
- * @param from brigades to remove buckets from
- * @param p    pool that buckets should be setaside to
- * @param plen maximum bytes to transfer, actual bytes transferred
- * @param peos if an EOS bucket was transferred
- */
-apr_status_t h2_ltransfer_brigade(apr_bucket_brigade *to,
-                                  apr_bucket_brigade *from, 
-                                  apr_pool_t *p,
-                                  apr_off_t *plen,
-                                  int *peos);
-
-/**
- * Transfer all buckets from one brigade to another. Sets aside the buckets to
- * pool p.
- * @param to   brigade to transfer buckets to
- * @param from brigades to remove buckets from
- * @param p    pool that buckets should be setaside to
- */
-apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
-                                 apr_bucket_brigade *from, 
-                                 apr_pool_t *p);
 
 /**
  * Transfer buckets from one brigade to another with a limit on the 

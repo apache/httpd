@@ -112,7 +112,7 @@ static void cleanup_streams(h2_session *session)
     while (1) {
         h2_ihash_iter(session->streams, find_cleanup_stream, &ctx);
         if (ctx.candidate) {
-            h2_session_stream_destroy(session, ctx.candidate);
+            h2_session_stream_done(session, ctx.candidate);
             ctx.candidate = NULL;
         }
         else {
@@ -1277,8 +1277,9 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         const h2_priority *prio;
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03073)
-                      "h2_stream(%ld-%d): submit response %d",
-                      session->id, stream->id, response->http_status);
+                      "h2_stream(%ld-%d): submit response %d, REMOTE_WINDOW_SIZE=%u",
+                      session->id, stream->id, response->http_status,
+                      (unsigned int)nghttp2_session_get_stream_remote_window_size(session->ngh2, stream->id));
         
         if (response->content_length != 0) {
             memset(&provider, 0, sizeof(provider));
@@ -1504,21 +1505,24 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
     return status;
 }
 
-apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
+apr_status_t h2_session_stream_done(h2_session *session, h2_stream *stream)
 {
     apr_pool_t *pool = h2_stream_detach_pool(stream);
-
+    int stream_id = stream->id;
+    int rst_error = stream->rst_error;
+    
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                   "h2_stream(%ld-%d): cleanup by EOS bucket destroy", 
-                  session->id, stream->id);
+                  session->id, stream_id);
+    if (session->streams) {
+        h2_ihash_remove(session->streams, stream_id);
+    }
+    
+    h2_stream_cleanup(stream);
     /* this may be called while the session has already freed
      * some internal structures or even when the mplx is locked. */
     if (session->mplx) {
-        h2_mplx_stream_done(session->mplx, stream->id, stream->rst_error);
-    }
-    
-    if (session->streams) {
-        h2_ihash_remove(session->streams, stream->id);
+        h2_mplx_stream_done(session->mplx, stream_id, rst_error);
     }
     h2_stream_destroy(stream);
     
@@ -1529,6 +1533,7 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
         }
         session->spare = pool;
     }
+
     return APR_SUCCESS;
 }
 
@@ -2217,9 +2222,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                     /* send out window updates for our inputs */
                     status = h2_mplx_in_update_windows(session->mplx);
-                    if (status != APR_SUCCESS && status != APR_EAGAIN) {
+                    if (status != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
-                                         H2_ERR_INTERNAL_ERROR, "window update error");
+                                       H2_ERR_INTERNAL_ERROR, 
+                                       "window update error");
                         break;
                     }
                 }

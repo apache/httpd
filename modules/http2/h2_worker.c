@@ -42,10 +42,8 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         /* Get a h2_task from the main workers queue. */
         worker->get_next(worker, worker->ctx, &task, &sticky);
         while (task) {
-            h2_task_do(task, worker->io);
-            
-            /* if someone was waiting on this task, time to wake up */
-            apr_thread_cond_signal(worker->io);
+        
+            h2_task_do(task);
             /* report the task done and maybe get another one from the same
              * mplx (= master connection), if we can be sticky. 
              */
@@ -64,40 +62,20 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
 }
 
 h2_worker *h2_worker_create(int id,
-                            apr_pool_t *parent_pool,
+                            apr_pool_t *pool,
                             apr_threadattr_t *attr,
                             h2_worker_mplx_next_fn *get_next,
                             h2_worker_done_fn *worker_done,
                             void *ctx)
 {
-    apr_allocator_t *allocator = NULL;
-    apr_pool_t *pool = NULL;
-    h2_worker *w;
-    apr_status_t status;
-    
-    apr_allocator_create(&allocator);
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&pool, parent_pool, NULL, allocator);
-    apr_pool_tag(pool, "h2_worker");
-    apr_allocator_owner_set(allocator, pool);
-
-    w = apr_pcalloc(pool, sizeof(h2_worker));
+    h2_worker *w = apr_pcalloc(pool, sizeof(h2_worker));
     if (w) {
-        APR_RING_ELEM_INIT(w, link);
-        
         w->id = id;
-        w->pool = pool;
-
+        APR_RING_ELEM_INIT(w, link);
         w->get_next = get_next;
         w->worker_done = worker_done;
         w->ctx = ctx;
-        
-        status = apr_thread_cond_create(&w->io, w->pool);
-        if (status != APR_SUCCESS) {
-            return NULL;
-        }
-        
-        apr_thread_create(&w->thread, attr, execute, w, w->pool);
+        apr_thread_create(&w->thread, attr, execute, w, pool);
     }
     return w;
 }
@@ -109,20 +87,7 @@ apr_status_t h2_worker_destroy(h2_worker *worker)
         apr_thread_join(&status, worker->thread);
         worker->thread = NULL;
     }
-    if (worker->io) {
-        apr_thread_cond_destroy(worker->io);
-        worker->io = NULL;
-    }
-    if (worker->pool) {
-        apr_pool_destroy(worker->pool);
-        /* worker is gone */
-    }
     return APR_SUCCESS;
-}
-
-int h2_worker_get_id(h2_worker *worker)
-{
-    return worker->id;
 }
 
 void h2_worker_abort(h2_worker *worker)
