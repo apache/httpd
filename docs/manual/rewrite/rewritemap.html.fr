@@ -26,15 +26,13 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/rewritemap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
     module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit l'utilisation de la
     directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, et
     fournit des exemples pour chacun des différents types de
-    <code>RewriteMap</code>.</p>
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
     <div class="warning">Notez que la plupart de ces exemples ne
     fonctionneront pas en l'état dans le contexte de votre configuration
@@ -44,11 +42,11 @@
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#int">int: Fonction interne</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#txt">txt: tables de correspondances au format texte</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd: Fichier texte à valeurs de substitution multiples
     choisies de manière aléatoire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm: Fichier condensé DBM</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#int">int: Fonction interne</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#prg">prg: Programme de réécriture externe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd ou fastdbd: requête SQL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#summary">Résumé</a></li>
@@ -71,7 +69,7 @@
    données, ceux-ci étant par ailleurs énumérés dans la documentation de
    référence de <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
-   <p>La syntaxe de la directive <code>RewriteMap</code> est la suivante
+   <p>La syntaxe de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> est la suivante
    :</p>
 
 <pre class="prettyprint lang-config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em></pre>
@@ -101,11 +99,11 @@
     vide si aucune <em>DefaultValue</em> n'a été spécifiée.</p>
 
     <p>Par exemple, vous pouvez définir une directive
-    <code class="directive">RewriteMap</code> comme suit :</p>
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> comme suit :</p>
     <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
 
     <p>Vous pourrez par la suite utiliser cette table de correspondances
-    dans une directive <code class="directive">RewriteRule</code> comme suit :</p>
+    dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> comme suit :</p>
 <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
 
 
@@ -117,8 +115,8 @@ si la recherche dans la table de correspondances est infructueuse :</p>
 
 <div class="note"><h3>Contexte de répertoire et fichiers.htaccess</h3>
 <p>
-Vous ne pouvez utiliser la directive <code>RewriteMap</code> ni dans
-les sections &lt;Directory&gt;, ni dans les fichiers
+Vous ne pouvez utiliser la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ni dans
+les sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, ni dans les fichiers
 <code>.htaccess</code>. Vous devez déclarer la table de correspondances
 au niveau du serveur principal ou dans un contexte de serveur virtuel.
 En revanche, si vous ne pouvez pas déclarer la table dans une section
@@ -131,6 +129,50 @@ créée.
 <p>Les sections suivantes décrivent les différents types de tables de
 correspondances <em>type-map</em> disponibles, et fournissent des
 exemples pour chacun d'entre eux.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="int" id="int">int: Fonction interne</a></h2>
+    
+
+    <p>Lorsque le type-map <code>int</code> est spécifié, la source est
+    une des fonctions RewriteMap internes disponibles. Les développeurs
+    de modules peuvent fournir des fonctions internes supplémentaires en
+    les enregistrant via l'API <code>ap_register_rewrite_mapfunc</code>.
+    Les fonctions fournies par défaut sont :
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br />
+             Met tous les caractères de la clé en majuscules.</li>
+      <li><strong>tolower</strong>:<br />
+             Met tous les caractères de la clé en minuscules.</li>
+      <li><strong>escape</strong>:<br />
+             Protège les caractères spéciaux de la clé en les
+	     transformant en leur code hexadécimal.</li>
+      <li><strong>unescape</strong>:<br />
+             Retraduit les codes hexadécimaux de la clé en caractères
+	     spéciaux.</li>
+    </ul>
+
+    <p>
+    Pour utiliser une de ces fonctions, créez une
+    <code>RewriteMap</code> faisant référence à cette fonction int, et
+    utilisez-la dans votre règle <code>RewriteRule</code> :
+    </p>
+
+    <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
+
+
+    <div class="note">
+    <p>Notez que cet exemple n'est fourni qu'à titre d'illustration,
+    et ne constitue en aucun cas une recommandation. Si vous voulez
+    rendre des URLs insensibles à la casse, vous devez plutôt vous
+    tourner vers <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code>.
+    </p>
+    </div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="txt" id="txt">txt: tables de correspondances au format texte</a></h2>
@@ -146,11 +188,11 @@ exemples pour chacun d'entre eux.</p>
     <p>Voici un exemple d'entrées valides dans un fichier de
     correspondances :</p>
 
-    <p class="indent">
+    <div class="example"><p><code>
       # Ligne de commentaires<br />
       <strong><em>clé</em> <em>valeur-substitution</em></strong><br />
       <strong><em>clé</em> <em>valeur-substitution</em></strong> # commentaire<br />
-    </p>
+    </code></p></div>
 
     <p>Lorsque la table de correspondance fait l'objet d'une recherche,
     la valeur spécifiée est recherchée dans le premier champ, et si elle
@@ -187,8 +229,9 @@ TELEPHONE  328
     </code></p></div>
 
     <p>Ainsi, lorsqu'une requête pour
-    <code>http://example.com/produit/TELEVISION</code> arrive, elle est
-    transformée en interne en <code>/prods.php?id=993</code>.</p>
+    <code>http://example.com/produit/TELEVISION</code> arrive, la directive
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> s'applique, et la
+    requête est transformée en interne en <code>/prods.php?id=993</code>.</p>
 
     <div class="note"><h3>Note: fichiers .htaccess</h3>
     L'exemple donné est conçu pour être utilisé dans un contexte de
@@ -242,16 +285,16 @@ dynamique  www5|www6
     <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
 
 RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1" [NC,P,L]
-RewriteRule "^/(.*)" "http://${servers:dynamic}/$1" [P,L]</pre>
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
 
 
 
     <p>Ainsi, lorsqu'une image est demandée et que la première règle
-    convient, <code>RewriteMap</code> recherche la chaîne
+    convient, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> recherche la chaîne
     <code>statique</code> dans le fichier de correspondances qui
     renvoie un des noms de serveurs spécifiés de manière aléatoire,
     ce dernier étant utilisé dans la cible de la règle
-    <code>RewriteRule</code>.</p>
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>.</p>
 
     <p>Si vous voulez qu'un des serveurs soit plus souvent sollicité que
     les autres (par exemple s'il possède plus de mémoire, et peut donc
@@ -280,7 +323,8 @@ statique   www1|www1|www2|www3|www4
  <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
 
 
-    <p>Ce type peut être choisi parmi sdbm, gdbm, ndbm ou db. Il est
+    <p>Ce type peut être choisi parmi <code>sdbm</code>, <code>gdbm</code>,
+    <code>ndbm</code> ou <code>db</code>. Il est
     cependant recommandé d'utiliser l'utilitaire <a href="../programs/httxt2dbm.html">httxt2dbm</a> fourni avec le
     serveur HTTP Apache, car il utilise la bibliothèque DBM appropriée,
     à savoir celle qui a été utilisée lors de la compilation de httpd.</p>
@@ -294,7 +338,7 @@ $ httxt2dbm -i fichier-map.txt -o fichier-map.map
 </code></p></div>
 
 <p>Vous pouvez alors faire référence au fichier obtenu dans votre
-directive <code>RewriteMap</code> :</p>
+directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> :</p>
 <pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
 
 
@@ -304,7 +348,7 @@ même nom de base sont créés. Par exemple, vous pouvez obtenir deux
 fichiers nommés <code>fichier-map.map.dir</code> et
 <code>fichier-map.map.pag</code>. Ceci est tout à fait normal, et vous
 ne devez utiliser que le nom de base <code>fichier-map.map</code> dans votre
-directive <code>RewriteMap</code>.</p>
+directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 </div>
 
 <div class="note"><h3>Mise en cache des recherches</h3>
@@ -316,50 +360,6 @@ directive <code>RewriteMap</code>.</p>
     correspondances consultées par de nombreuses requêtes.
 </p>
 </div>
-
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="int" id="int">int: Fonction interne</a></h2>
-    
-
-    <p>Lorsque le type-map <code>int</code> est spécifié, la source est
-    une des fonctions RewriteMap internes disponibles. Les développeurs
-    de modules peuvent fournir des fonctions internes supplémentaires en
-    les enregistrant via l'API <code>ap_register_rewrite_mapfunc</code>.
-    Les fonctions fournies par défaut sont :
-    </p>
-
-    <ul>
-      <li><strong>toupper</strong>:<br />
-             Met tous les caractères de la clé en majuscules.</li>
-      <li><strong>tolower</strong>:<br />
-             Met tous les caractères de la clé en minuscules.</li>
-      <li><strong>escape</strong>:<br />
-             Protège les caractères spéciaux de la clé en les
-	     transformant en leur code hexadécimal.</li>
-      <li><strong>unescape</strong>:<br />
-             Retraduit les codes hexadécimaux de la clé en caractères
-	     spéciaux.</li>
-    </ul>
-
-    <p>
-    Pour utiliser une de ces fonctions, créez une
-    <code>RewriteMap</code> faisant référence à cette fonction int, et
-    utilisez-la dans votre règle <code>RewriteRule</code> :
-    </p>
-
-    <p> <strong>Redirige un URI vers son équivalent en minuscules</strong></p>
-    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
-RewriteRule "(.*)" "${lc:$1}" [R]</pre>
-
-
-    <div class="note">
-    <p>Notez que cet exemple n'est fourni qu'à titre d'illustration,
-    et ne constitue en aucun cas une recommandation. Si vous voulez
-    rendre des URLs insensibles à la casse, vous devez plutôt vous
-    tourner vers <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code>.
-    </p>
-    </div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -459,14 +459,14 @@ script lui-même est très lent.</li>
 <h2><a name="summary" id="summary">Résumé</a></h2>
     
 
-    <p>La directive <code class="directive">RewriteMap</code> peut apparaître
+    <p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> peut apparaître
     plusieurs fois. Utilisez une directive
-    <code class="directive">RewriteMap</code> pour chaque fonction de mise en
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> pour chaque fonction de mise en
     correspondance pour déclarer son fichier de correspondances.</p>
 
     <p>Bien que l'on ne puisse pas <strong>déclarer</strong> de fonction
     de mise en correspondance dans un contexte de répertoire (fichier
-    <code>.htaccess</code> ou section &lt;Directory&gt;), il est
+    <code>.htaccess</code> ou section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>), il est
     possible d'utiliser cette fonction dans un tel contexte.</p>
 
   </div></div>
