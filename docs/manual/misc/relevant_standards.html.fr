@@ -27,8 +27,6 @@
 <a href="../fr/misc/relevant_standards.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Cette page documente tous les standards applicables que suit le
     serveur HTTP Apache, accompagnés d'une brève description.</p>
@@ -195,7 +193,7 @@
       présenté dans le lien ci-dessus), est un jeu de codes sur trois
       lettres (639-2).</dd>
 
-      <dt><a href="http://www.iso.ch/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/index.html">
+      <dt><a href="http://www.iso.org/iso/country_codes">
       ISO 3166-1</a></dt>
 
       <dd>Ce document présente les noms de pays (les noms raccourcis
