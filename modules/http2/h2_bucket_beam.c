@@ -287,7 +287,7 @@ static apr_status_t beam_cleanup(void *data)
     h2_bucket_beam *beam = data;
 
     if (beam->live_beam_buckets) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->life_pool, 
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->life_pool, APLOGNO(03383)
                       "h2_beam(%d-%s) cleanup with live %d buckets", 
                       beam->id, beam->tag, (int)beam->live_beam_buckets);
     }
