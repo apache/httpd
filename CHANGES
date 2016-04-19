@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: disabling mmap for file buckets transport due to segmenation
+     faults when files change on the fly.
+     
   *) mod_http2: new "bucket beam" technology to transport buckets across
      threads without buffer copy. Delaying response start until flush or
      enough body data has been accumulated. [Stefan Eissing]

@@ -21,7 +21,9 @@
 #include <apr_thread_cond.h>
 
 #include <httpd.h>
+#include <http_log.h>
 
+#include "h2_private.h"
 #include "h2_util.h"
 #include "h2_bucket_beam.h"
 
@@ -284,6 +286,11 @@ static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
 
+    if (beam->live_beam_buckets) {
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->life_pool, 
+                      "h2_beam(%d-%s) cleanup with live %d buckets", 
+                      beam->id, beam->tag, (int)beam->live_beam_buckets);
+    }
     AP_DEBUG_ASSERT(beam->live_beam_buckets == 0);
     h2_blist_cleanup(&beam->red);
     h2_blist_cleanup(&beam->purge);
@@ -619,7 +626,7 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
                              apr_off_t readbytes)
 {
     apr_thread_mutex_t *lock;
-    apr_bucket *bred, *bgreen;
+    apr_bucket *bred, *bgreen, *ng;
     int acquired, transferred = 0;
     apr_status_t status = APR_SUCCESS;
     apr_off_t remain = readbytes;
@@ -683,8 +690,14 @@ transfer:
                     }
                     ++beam->files_beamed;
                 }
-                apr_brigade_insert_file(bb, fd, bred->start, bred->length, 
-                                        bb->p);
+                ng = apr_brigade_insert_file(bb, fd, bred->start, bred->length, 
+                                             bb->p);
+#if APR_HAS_MMAP
+                /* disable mmap handling as this leads to segfaults when
+                 * the underlying file is changed while memory pointer has
+                 * been handed out. See also PR 59348 */
+                apr_bucket_file_enable_mmap(ng, 0);
+#endif
                 remain -= bred->length;
                 ++transferred;
             }
