@@ -454,7 +454,7 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
     }
     
     if (!APR_BRIGADE_EMPTY(from)) {
-        apr_bucket *b, *end;
+        apr_bucket *b, *nb, *end;
         
         status = last_not_included(from, maxlen, same_alloc,
                                    pfile_buckets_allowed, &end);
@@ -526,8 +526,11 @@ apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from,
                             return status;
                         }
                     }
-                    apr_brigade_insert_file(to, fd, b->start, b->length, 
-                                            to->p);
+                    nb = apr_brigade_insert_file(to, fd, b->start, b->length, 
+                                                 to->p);
+#if APR_HAS_MMAP
+                    apr_bucket_file_enable_mmap(nb, 0);
+#endif
                     --(*pfile_buckets_allowed);
                 }
                 else {

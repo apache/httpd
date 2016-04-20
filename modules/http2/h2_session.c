@@ -2172,6 +2172,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         /* continue reading handling */
                     }
                     else {
+                        ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
+                                      "h2_session(%ld): idle(1 sec timeout) "
+                                      "read failed", session->id);
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "error");
                     }
                 }
