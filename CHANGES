@@ -2,7 +2,13 @@
 
 Changes with Apache 2.4.21
 
-
+  *) mod_http2: r->protocol changed to "HTTP/2.0" (was "HTTP/2") as this will
+     give expected syntax in CGI's SERVER_PROTOCOL is more compatible with
+     existing major/minor handling. Fixes PR 59313.
+  
+  *) mod_http2: disabling mmap for file buckets transport due to segmenation
+     faults when files change on the fly.
+     
 Changes with Apache 2.4.20
 
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
