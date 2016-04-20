@@ -71,6 +71,9 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NOM</message>
         <message id="hyphenation">C&#233;sure</message>
+        <message id="foundabug">Bugfix checklist:</message>
+        <message id="httpdchangelog">Httpd changelog</message>
+        <message id="httpdopenbugs">Open bugs</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntaxe</message>

@@ -73,6 +73,9 @@
         <message id="uppercase">ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ</message>
         <message id="name-section">İSİM</message>
         <message id="hyphenation">.nh</message>
+        <message id="foundabug">Bugfix checklist:</message>
+        <message id="httpdchangelog">Httpd changelog</message>
+        <message id="httpdopenbugs">Open bugs</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sözdizimi</message>
