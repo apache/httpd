@@ -66,6 +66,9 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NAME</message>
         <message id="hyphenation"></message>
+        <message id="foundabug">Bugfix checklist:</message>
+        <message id="httpdchangelog">Httpd changelog</message>
+        <message id="httpdopenbugs">Open bugs</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">構文</message>

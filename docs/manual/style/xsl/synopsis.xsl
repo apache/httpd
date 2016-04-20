@@ -244,6 +244,26 @@
                         </xsl:choose>
                     </xsl:if> <!-- /!is-chm -->
 
+                    <h3>
+                       <xsl:value-of select="$message[@id='foundabug']" />
+                    </h3>
+                    <ul class="seealso">
+                        <li>
+                            <a href="http://httpd.apache.org/dev/dist/CHANGES_2.4">
+                                <xsl:value-of
+                                    select="$message[@id='httpdchangelog']" />
+                            </a>
+                        </li>
+                        <li>
+                            <!-- The line below is not splitted in multiple
+                                 lines to avoid rendering a broken URL -->
+                            <a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity">
+                                <xsl:value-of
+                                    select="$message[@id='httpdopenbugs']" />
+                            </a>
+                        </li>
+                    </ul>
+
                     <xsl:if test="seealso">
 	                    <h3>
                             <xsl:value-of select="$message
