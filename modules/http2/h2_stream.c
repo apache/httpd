@@ -24,6 +24,7 @@
 #include <nghttp2/nghttp2.h>
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_bucket_beam.h"
 #include "h2_conn.h"
 #include "h2_config.h"
@@ -174,6 +175,10 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
 void h2_stream_cleanup(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
+    if (stream->input) {
+        h2_beam_destroy(stream->input);
+        stream->input = NULL;
+    }
     if (stream->buffer) {
         apr_brigade_cleanup(stream->buffer);
     }

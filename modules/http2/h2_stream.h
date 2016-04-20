@@ -30,7 +30,6 @@
  * The h2_response gives the HEADER frames to sent to the client, followed
  * by DATA frames read from the h2_stream until EOS is reached.
  */
-#include "h2_io.h"
 
 struct h2_mplx;
 struct h2_priority;

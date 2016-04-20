@@ -49,7 +49,7 @@ typedef int h2_ihash_iter_t(void *ctx, void *val);
 h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int);
 
 size_t h2_ihash_count(h2_ihash_t *ih);
-int h2_ihash_is_empty(h2_ihash_t *ih);
+int h2_ihash_empty(h2_ihash_t *ih);
 void *h2_ihash_get(h2_ihash_t *ih, int id);
 
 /**

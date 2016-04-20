@@ -26,6 +26,7 @@
 #include <http_request.h>
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_filter.h"

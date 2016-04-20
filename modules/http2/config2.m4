@@ -30,7 +30,6 @@ h2_ctx.lo dnl
 h2_filter.lo dnl
 h2_from_h1.lo dnl
 h2_h2.lo dnl
-h2_io.lo dnl
 h2_mplx.lo dnl
 h2_ngn_shed.lo dnl
 h2_push.lo dnl

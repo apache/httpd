@@ -403,7 +403,7 @@ SET(mod_http2_extra_sources
   modules/http2/h2_conn.c            modules/http2/h2_conn_io.c
   modules/http2/h2_ctx.c             modules/http2/h2_filter.c
   modules/http2/h2_from_h1.c         modules/http2/h2_h2.c
-  modules/http2/h2_io.c              modules/http2/h2_bucket_beam.c
+  modules/http2/h2_bucket_beam.c
   modules/http2/h2_mplx.c            modules/http2/h2_push.c
   modules/http2/h2_request.c         modules/http2/h2_response.c
   modules/http2/h2_session.c         modules/http2/h2_stream.c 

@@ -52,7 +52,6 @@ struct h2_ngn_shed;
 struct h2_req_engine;
 
 #include <apr_queue.h>
-#include "h2_io.h"
 
 typedef struct h2_mplx h2_mplx;
 
@@ -73,10 +72,12 @@ struct h2_mplx {
     unsigned int aborted : 1;
     unsigned int need_registration : 1;
 
-    struct h2_iqueue *q;
-    struct h2_ilist_t *stream_ios;
-    struct h2_ilist_t *ready_ios;
-    struct h2_ilist_t *redo_ios;
+    struct h2_ihash_t *streams;     /* all streams currently processing */
+    struct h2_iqueue *q;            /* all stream ids that need to be started */
+    
+    struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
+    struct h2_ihash_t *ready_tasks; /* all tasks ready for submit */
+    struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
     apr_uint32_t max_streams;        /* max # of concurrent streams */
     apr_uint32_t max_stream_started; /* highest stream id that started processing */
@@ -241,8 +242,7 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
  * Opens the output for the given stream with the specified response.
  */
 apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
-                              struct h2_response *response,
-                              struct h2_bucket_beam *output);
+                              struct h2_response *response);
 
 /**
  * Closes the output for stream stream_id. 
