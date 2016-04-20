@@ -195,7 +195,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_filter.o \
 	$(OBJDIR)/h2_from_h1.o \
 	$(OBJDIR)/h2_h2.o \
-	$(OBJDIR)/h2_io.o \
 	$(OBJDIR)/h2_mplx.o \
 	$(OBJDIR)/h2_ngn_shed.o \
 	$(OBJDIR)/h2_push.o \

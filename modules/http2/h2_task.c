@@ -33,6 +33,7 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_bucket_beam.h"
 #include "h2_conn.h"
 #include "h2_config.h"
@@ -272,8 +273,7 @@ static apr_status_t open_response(h2_task *task)
                   task->id, task->request->method, 
                   task->request->authority, 
                   task->request->path);
-    return h2_mplx_out_open(task->mplx, task->stream_id, 
-                            response, task->output.beam);
+    return h2_mplx_out_open(task->mplx, task->stream_id, response);
 }
 
 static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
@@ -441,6 +441,63 @@ static apr_status_t h2_filter_read_response(ap_filter_t* f,
 }
 
 /*******************************************************************************
+ * task things
+ ******************************************************************************/
+ 
+void h2_task_set_response(h2_task *task, h2_response *response) 
+{
+    AP_DEBUG_ASSERT(response);
+    AP_DEBUG_ASSERT(!task->response);
+    /* we used to clone the response into out own pool. But
+     * we have much tighter control over the EOR bucket nowadays,
+     * so just use the instance given */
+    task->response = response;
+    if (response->rst_error) {
+        h2_task_rst(task, response->rst_error);
+    }
+}
+
+
+int h2_task_can_redo(h2_task *task) {
+    if (task->submitted
+        || (task->input.beam && h2_beam_was_received(task->input.beam)) 
+        || !task->request) {
+        /* cannot repeat that. */
+        return 0;
+    }
+    return (!strcmp("GET", task->request->method)
+            || !strcmp("HEAD", task->request->method)
+            || !strcmp("OPTIONS", task->request->method));
+}
+
+void h2_task_redo(h2_task *task)
+{
+    task->response = NULL;
+    task->rst_error = 0;
+}
+
+void h2_task_rst(h2_task *task, int error)
+{
+    task->rst_error = error;
+    if (task->input.beam) {
+        h2_beam_abort(task->input.beam);
+    }
+    if (task->output.beam) {
+        h2_beam_abort(task->output.beam);
+    }
+}
+
+void h2_task_shutdown(h2_task *task)
+{
+    if (task->input.beam) {
+        h2_beam_shutdown(task->input.beam);
+    }
+    if (task->output.beam) {
+        h2_beam_shutdown(task->output.beam);
+    }
+}
+
+/*******************************************************************************
  * Register various hooks
  */
 static int h2_task_process_conn(conn_rec* c);
@@ -517,6 +574,10 @@ void h2_task_destroy(h2_task *task)
 {
     ap_remove_input_filter_byhandle(task->c->input_filters, "H2_TO_H1");
     ap_remove_output_filter_byhandle(task->c->output_filters, "H1_TO_H2");
+    if (task->output.beam) {
+        h2_beam_destroy(task->output.beam);
+        task->output.beam = NULL;
+    }
     if (task->eor) {
         apr_bucket_destroy(task->eor);
     }

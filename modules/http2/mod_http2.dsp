@@ -145,10 +145,6 @@ SOURCE=./h2_h2.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_io.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_mplx.c
 # End Source File
 # Begin Source File

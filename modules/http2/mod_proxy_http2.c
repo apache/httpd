@@ -377,7 +377,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = s2;
                 break;
             }
-            if (!ctx->next && h2_ihash_is_empty(ctx->session->streams)) {
+            if (!ctx->next && h2_ihash_empty(ctx->session->streams)) {
                 break;
             }
         }

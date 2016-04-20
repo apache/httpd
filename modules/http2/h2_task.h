@@ -44,7 +44,7 @@ struct h2_mplx;
 struct h2_task;
 struct h2_req_engine;
 struct h2_request;
-struct h2_resp_head;
+struct h2_response;
 struct h2_worker;
 
 typedef struct h2_task h2_task;
@@ -53,17 +53,10 @@ struct h2_task {
     const char *id;
     int stream_id;
     conn_rec *c;
-    struct h2_mplx *mplx;
     apr_pool_t *pool;
-    const struct h2_request *request;
-    apr_bucket *eor;
-    struct apr_thread_cond_t *cond;
     
-    unsigned int filters_set : 1;
-    unsigned int ser_headers : 1;
-    unsigned int frozen      : 1;
-    unsigned int blocking    : 1;
-    unsigned int detached    : 1;
+    const struct h2_request *request;
+    struct h2_response *response;
     
     struct {
         struct h2_bucket_beam *beam;
@@ -81,6 +74,24 @@ struct h2_task {
         apr_bucket_brigade *bb;
     } output;
     
+    struct h2_mplx *mplx;
+    struct apr_thread_cond_t *cond;
+    
+    int rst_error;                   /* h2 related stream abort error */
+    unsigned int filters_set    : 1;
+    unsigned int ser_headers    : 1;
+    unsigned int frozen         : 1;
+    unsigned int blocking       : 1;
+    unsigned int detached       : 1;
+    unsigned int orphaned       : 1; /* h2_stream is gone for this task */    
+    unsigned int submitted      : 1; /* response has been submitted to client */
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    
+    apr_time_t started_at;           /* when processing started */
+    apr_time_t done_at;              /* when processing was done */
+    apr_bucket *eor;
+    
     struct h2_req_engine *engine;   /* engine hosted by this task */
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
     request_rec *r;                 /* request being processed in this task */
@@ -92,6 +103,21 @@ h2_task *h2_task_create(conn_rec *c, const struct h2_request *req,
 void h2_task_destroy(h2_task *task);
 
 apr_status_t h2_task_do(h2_task *task);
+
+void h2_task_set_response(h2_task *task, struct h2_response *response);
+
+void h2_task_redo(h2_task *task);
+int h2_task_can_redo(h2_task *task);
+
+/**
+ * Reset the task with the given error code, resets all input/output.
+ */
+void h2_task_rst(h2_task *task, int error);
+
+/**
+ * Shuts all input/output down. Clears any buckets buffered and closes.
+ */
+void h2_task_shutdown(h2_task *task);
 
 void h2_task_register_hooks(void);
 /*

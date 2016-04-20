@@ -29,6 +29,7 @@
 #include "mod_http2.h"
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_config.h"
 #include "h2_conn.h"
 #include "h2_ctx.h"

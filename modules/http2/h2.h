@@ -149,6 +149,9 @@ struct h2_response {
     const char  *sos_filter;
 };
 
+typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
+
+typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
 /* Note key to attach connection task id to conn_rec/request_rec instances */
 

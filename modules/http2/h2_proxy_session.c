@@ -878,7 +878,7 @@ static void ev_init(h2_proxy_session *session, int arg, const char *msg)
 {
     switch (session->state) {
         case H2_PROXYS_ST_INIT:
-            if (h2_ihash_is_empty(session->streams)) {
+            if (h2_ihash_empty(session->streams)) {
                 transit(session, "init", H2_PROXYS_ST_IDLE);
             }
             else {
@@ -985,7 +985,7 @@ static void ev_no_io(h2_proxy_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
-            if (h2_ihash_is_empty(session->streams)) {
+            if (h2_ihash_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
@@ -1289,7 +1289,7 @@ static int done_iter(void *udata, void *val)
 void h2_proxy_session_cleanup(h2_proxy_session *session, 
                               h2_proxy_request_done *done)
 {
-    if (session->streams && !h2_ihash_is_empty(session->streams)) {
+    if (session->streams && !h2_ihash_empty(session->streams)) {
         cleanup_iter_ctx ctx;
         ctx.session = session;
         ctx.done = done;
@@ -1328,7 +1328,7 @@ static int win_update_iter(void *udata, void *val)
 void h2_proxy_session_update_window(h2_proxy_session *session, 
                                     conn_rec *c, apr_off_t bytes)
 {
-    if (session->streams && !h2_ihash_is_empty(session->streams)) {
+    if (session->streams && !h2_ihash_empty(session->streams)) {
         win_update_ctx ctx;
         ctx.session = session;
         ctx.c = c;

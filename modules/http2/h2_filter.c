@@ -22,6 +22,7 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_conn_io.h"
 #include "h2_ctx.h"
 #include "h2_mplx.h"
