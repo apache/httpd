@@ -120,7 +120,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) Suppress 'h2' announcements in Upgrade: header as declared illegal by
      http-wg.
-     trunk patch: http://svn.apache.org/r1740075
+     trunk patches: http://svn.apache.org/r1740075
+                    http://svn.apache.org/r1740119
      2.4.x: trunk works modulo CHANGES
   +1: icing
      
