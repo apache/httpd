@@ -1,15 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: r->protocol changed to "HTTP/2.0" (was "HTTP/2") as this will
-     give expected syntax in CGI's SERVER_PROTOCOL is more compatible with
-     existing major/minor handling. Fixes PR 59313.
-  
   *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
      header as commanded by http-wg.
-     
-  *) mod_http2: disabling mmap for file buckets transport due to segmenation
-     faults when files change on the fly.
      
   *) mod_http2: new "bucket beam" technology to transport buckets across
      threads without buffer copy. Delaying response start until flush or
