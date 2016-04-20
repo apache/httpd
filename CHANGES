@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
+     header as commanded by http-wg.
+     
   *) mod_http2: disabling mmap for file buckets transport due to segmenation
      faults when files change on the fly.
      
