@@ -255,6 +255,10 @@ PATCHES/ISSUES THAT ARE BEING WORKED
 
      +1: covener (I need to review the docs manually in this area)
 
+   * core: improve error message when docroot is unreadable.
+     trunk patch: http://svn.apache.org/r1506474
+     2.4.x patch: trunk works
+     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
