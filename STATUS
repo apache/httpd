@@ -168,6 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://emptyhammock.com/media/downloads/CGIVar-to-2.4.x.txt
        Bad Jeff: The MMN change was missing originally, same patch updated :(
      +1: trawick, ylavic
+     trawick: If someone has an idea to make this more palatable, I'm all ears.
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
