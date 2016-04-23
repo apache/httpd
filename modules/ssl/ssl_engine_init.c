@@ -74,7 +74,7 @@ static int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 #endif
 
 /*
- * Grab well-defined DH parameters from OpenSSL, see the get_rfc*
+ * Grab well-defined DH parameters from OpenSSL, see the BN_get_rfc*
  * functions in <openssl/bn.h> for all available primes.
  */
 static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *))
@@ -105,12 +105,12 @@ static struct dhparam {
     DH *dh;                           /* ...this, used for keys.... */
     const unsigned int min;           /* ...of length >= this. */
 } dhparams[] = {
-    { get_rfc3526_prime_8192, NULL, 6145 },
-    { get_rfc3526_prime_6144, NULL, 4097 },
-    { get_rfc3526_prime_4096, NULL, 3073 },
-    { get_rfc3526_prime_3072, NULL, 2049 },
-    { get_rfc3526_prime_2048, NULL, 1025 },
-    { get_rfc2409_prime_1024, NULL, 0 }
+    { BN_get_rfc3526_prime_8192, NULL, 6145 },
+    { BN_get_rfc3526_prime_6144, NULL, 4097 },
+    { BN_get_rfc3526_prime_4096, NULL, 3073 },
+    { BN_get_rfc3526_prime_3072, NULL, 2049 },
+    { BN_get_rfc3526_prime_2048, NULL, 1025 },
+    { BN_get_rfc2409_prime_1024, NULL, 0 }
 };
 
 static void init_dh_params(void)
