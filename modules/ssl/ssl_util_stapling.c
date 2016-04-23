@@ -79,7 +79,7 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     X509 *issuer = NULL;
     int i;
     X509_STORE *st = SSL_CTX_get_cert_store(mctx->ssl_ctx);
-    X509_STORE_CTX inctx;
+    X509_STORE_CTX *inctx;
     STACK_OF(X509) *extra_certs = NULL;
 
 #ifdef OPENSSL_NO_SSL_INTERN
@@ -100,13 +100,14 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
         }
     }
 
-    if (!X509_STORE_CTX_init(&inctx, st, NULL, NULL))
+    inctx = X509_STORE_CTX_new();
+    if (!X509_STORE_CTX_init(inctx, st, NULL, NULL))
         return 0;
-    if (X509_STORE_CTX_get1_issuer(&issuer, &inctx, x) <= 0)
+    if (X509_STORE_CTX_get1_issuer(&issuer, inctx, x) <= 0)
         issuer = NULL;
-    X509_STORE_CTX_cleanup(&inctx);
+    X509_STORE_CTX_cleanup(inctx);
+    X509_STORE_CTX_free(inctx);
     return issuer;
-
 }
 
 int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
