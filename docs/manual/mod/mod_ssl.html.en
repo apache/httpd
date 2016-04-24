@@ -2186,7 +2186,7 @@ The following five storage <em>type</em>s are currently supported:</p>
 
 <li><code>dc:UNIX:/path/to/socket</code>
 
-    <p>This makes use of the <a href="http://www.distcache.org/">distcache</a> distributed session
+    <p>This makes use of the <a href="http://distcache.sourceforge.net/">distcache</a> distributed session
     caching libraries.  The argument should specify the location of
     the server or proxy to be used using the distcache address syntax;
     for example, <code>UNIX:/path/to/socket</code> specifies a UNIX

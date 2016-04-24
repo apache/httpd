@@ -35,9 +35,9 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_socache_dc.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p><code>mod_socache_dc</code> is a shared object cache provider
+    <p><code class="module"><a href="../mod/mod_socache_dc.html">mod_socache_dc</a></code> is a shared object cache provider
     which provides for creation and access to a cache backed by the
-    <a href="http://www.distcache.org/">distcache</a>
+    <a href="http://distcache.sourceforge.net/">distcache</a>
     distributed session caching libraries.
     </p>
 
