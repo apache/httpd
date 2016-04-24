@@ -29,9 +29,9 @@
 <identifier>socache_dc_module</identifier>
 
 <summary>
-    <p><code>mod_socache_dc</code> is a shared object cache provider
+    <p><module>mod_socache_dc</module> is a shared object cache provider
     which provides for creation and access to a cache backed by the
-    <a href="http://www.distcache.org/">distcache</a>
+    <a href="http://distcache.sourceforge.net/">distcache</a>
     distributed session caching libraries.
     </p>
 

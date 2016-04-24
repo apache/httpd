@@ -51,7 +51,7 @@
      The choice of underlying DBM used may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
     <dt>"dc" (<module>mod_socache_dc</module>)</dt>
-    <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
+    <dd>This makes use of the <a href="http://distcache.sourceforge.net/">distcache</a>
     distributed session caching libraries.</dd>
     <dt>"memcache" (<module>mod_socache_memcache</module>)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
