@@ -73,8 +73,9 @@
         <message id="name-section">NAVN</message>
         <message id="hyphenation"></message>
         <message id="foundabug">Bugfix checklist:</message>
-        <message id="httpdchangelog">Httpd changelog</message>
-        <message id="httpdopenbugs">Open bugs</message>
+        <message id="httpdchangelog">HTTPD changelog</message>
+        <message id="httpdknownissues">Known issues</message>
+        <message id="httpdreportabug">Report a bug</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntaks</message>
