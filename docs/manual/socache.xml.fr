@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 
-<!-- English Revision : 1305167 -->
+<!-- English Revision: 1305167:1740717 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
