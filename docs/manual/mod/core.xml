@@ -420,7 +420,8 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
       <dd>
-      Allow use of AllowOverride option to treat syntax errors in
+      Allow use of AllowOverride option to treat invalid (unrecognized
+      or disallowed) directives in
       .htaccess as nonfatal. Instead of causing an Internal Server
       Error, disallowed or unrecognised directives will be ignored
       and a warning logged:
