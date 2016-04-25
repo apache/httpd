@@ -1199,6 +1199,8 @@ read_request:
         start_lingering_close_blocking(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+        ap_update_child_status_from_conn(sbh, SERVER_BUSY_KEEPALIVE, c);
+
         /* It greatly simplifies the logic to use a single timeout value per q
          * because the new element can just be added to the end of the list and
          * it will stay sorted in expiration time sequence.  If brand new
