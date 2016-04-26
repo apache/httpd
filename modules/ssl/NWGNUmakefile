@@ -55,6 +55,7 @@ XINCDIRS	+= \
 			$(SRC)/include \
 			$(STDMOD)/cache \
 			$(STDMOD)/generators \
+			$(STDMOD)/proxy \
 			$(SERVER)/mpm/NetWare \
 			$(NWOS) \
 			$(EOLIST)
