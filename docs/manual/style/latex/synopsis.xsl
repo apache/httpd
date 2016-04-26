@@ -326,6 +326,9 @@
 <xsl:when test="normalize-space(.) = '.htaccess'">
     <xsl:value-of select="$message[@id='htaccess']" />
 </xsl:when>
+<xsl:when test="normalize-space(.) = 'proxy section'">
+    <xsl:value-of select="$message[@id='proxy']" />
+</xsl:when>
 <xsl:otherwise> <!-- error -->
     <xsl:message terminate="yes">
         unknown context: <xsl:value-of select="." />
