@@ -2,7 +2,7 @@
 Changes with Apache 2.5.0
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
-     allowing different TLS configurations per backend.  [Yann Ylavic]
+     allowing per backend TLS configuration.  [Yann Ylavic]
 
   *) mod_http2: eliminating h2_io instances for streams, reducing memory
      pools and footprint. [Stefan Eissing]
