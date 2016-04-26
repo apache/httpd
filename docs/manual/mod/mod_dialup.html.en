@@ -54,7 +54,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#modemstandard">ModemStandard</a></li>
 </ul>
-<h3>Bugfix checklist:</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">HTTPD changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dialup">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dialup">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dialup">Report a bug</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ModemStandard" id="ModemStandard">ModemStandard</a> <a name="modemstandard" id="modemstandard">Directive</a></h2>
