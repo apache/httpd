@@ -231,6 +231,7 @@ FILES_nlm_Ximports = \
 	ap_proxy_canonenc \
 	ap_proxy_connect_backend \
 	ap_proxy_connection_create \
+	ap_proxy_connection_create_ex \
 	ap_proxy_cookie_reverse_map \
 	ap_proxy_determine_connection \
 	ap_proxy_location_reverse_map \

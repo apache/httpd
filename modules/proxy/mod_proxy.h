@@ -587,10 +587,10 @@ APR_DECLARE_OPTIONAL_FN(const char *, set_worker_hc_param,
                         (apr_pool_t *, server_rec *, proxy_worker *,
                          const char *, const char *, void *));
 
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, section_post_config,
-                          (apr_pool_t *p, apr_pool_t *plog,
-                           apr_pool_t *ptemp, server_rec *s,
-                           ap_conf_vector_t *section_config))
+PROXY_DECLARE_OPTIONAL_HOOK(proxy, PROXY, int, section_post_config,
+                            (apr_pool_t *p, apr_pool_t *plog,
+                             apr_pool_t *ptemp, server_rec *s,
+                             ap_conf_vector_t *section_config))
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler,
                           (request_rec *r, proxy_worker *worker,
