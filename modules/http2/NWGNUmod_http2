@@ -359,7 +359,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) h2_ihash_clear,$(DL) >> $@
 	@echo $(DL) h2_ihash_count,$(DL) >> $@
 	@echo $(DL) h2_ihash_create,$(DL) >> $@
-	@echo $(DL) h2_ihash_is_empty,$(DL) >> $@
+	@echo $(DL) h2_ihash_empty,$(DL) >> $@
 	@echo $(DL) h2_ihash_iter,$(DL) >> $@
 	@echo $(DL) h2_ihash_remove,$(DL) >> $@
 	@echo $(DL) h2_iq_add,$(DL) >> $@
