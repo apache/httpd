@@ -150,6 +150,11 @@ typedef void h2_beam_mutex_leave(void *ctx,
 typedef void h2_beam_consumed_callback(void *ctx, h2_bucket_beam *beam,
                                        apr_off_t bytes);
 
+typedef struct h2_beam_proxy h2_beam_proxy;
+typedef struct {
+    APR_RING_HEAD(h2_beam_proxy_list, h2_beam_proxy) list;
+} h2_bproxy_list;
+
 typedef int h2_beam_can_beam_callback(void *ctx, h2_bucket_beam *beam,
                                       apr_file_t *file);
 
@@ -160,10 +165,10 @@ struct h2_bucket_beam {
     h2_blist hold;
     h2_blist purge;
     apr_bucket_brigade *green;
+    h2_bproxy_list proxies;
     apr_pool_t *life_pool;
     
     apr_size_t max_buf_size;
-    apr_size_t live_beam_buckets;
     apr_size_t files_beamed;  /* how many file handles have been set aside */
     apr_file_t *last_beamed;  /* last file beamed */
     apr_off_t sent_bytes;     /* amount of bytes send */
@@ -238,11 +243,6 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam);
  * Empty the buffer and close.
  */
 void h2_beam_shutdown(h2_bucket_beam *beam);
-
-/**
- * Reset the beam to its intial, empty state.
- */
-void h2_beam_reset(h2_bucket_beam *beam);
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,
