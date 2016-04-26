@@ -519,6 +519,10 @@
  *                         ap_mpm_unregister_poll_callback. Add
  *                         AP_MPMQ_CAN_POLL.
  * 20160315.1 (2.5.0-dev)  Add AP_IMPLEMENT_OPTIONAL_HOOK_RUN_FIRST.
+ * 20160315.2 (2.5.0-dev)  Add optional proxy_{hook,run}_section_post_config(),
+ *                         ap_proxy_connection_create_ex() and section_config
+ *                         to struct proxy_{worker,balancer} in mod_proxy.h,
+ *                         and optional ssl_engine_set() to mod_ssl.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -526,7 +530,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20160315
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
