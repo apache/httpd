@@ -64,7 +64,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
  * @param io the connection io
  * @param b the bucket to append
  */
-apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b);
+apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b, int flush);
 
 /**
  * Append an End-Of-Connection bucket to the output that, once destroyed,
