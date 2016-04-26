@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1659855 -->
-
+<!-- English revision: 1741065 -->
+<!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -31,6 +31,10 @@
         <charset>windows-1252</charset>
         <settings>Spanish (Spain), sorting order: international</settings>
     </chm>
+
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
 
     <!-- Some strings might be used in other contexts, than stated in the -->
     <!-- comments...                                                      -->
@@ -95,6 +99,7 @@
         <message id="virtualhost" letter="v">virtual host</message>
         <message id="directory" letter="d">directory</message>
         <message id="htaccess" letter="h">.htaccess</message>
+        <message id="proxy" letter="p">sección de proxy</message>
 
         <!-- Used for directive lists -->
         <message id="directives">Directivas</message>
@@ -143,7 +148,7 @@
         <message id="langavail">Idiomas disponibles</message>
 
         <!-- not up to date -->
-        <message id="outofdate">Esta traducción podría estar
+        <message id="outofdate">Ésta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
             recientementes.</message>
