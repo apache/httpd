@@ -26,6 +26,9 @@
 #else
 APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
+                                              ap_conf_vector_t *,
+                                              int proxy, int enable));
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                         (apr_pool_t *, server_rec *,
@@ -797,7 +800,7 @@ static int proxy_walk(request_rec *r)
 {
     proxy_server_conf *sconf = ap_get_module_config(r->server->module_config,
                                                     &proxy_module);
-    ap_conf_vector_t *per_dir_defaults = r->server->lookup_defaults;
+    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
     ap_conf_vector_t **sec_proxy = (ap_conf_vector_t **) sconf->sec_proxy->elts;
     ap_conf_vector_t *entry_config;
     proxy_dir_conf *entry_proxy;
@@ -2313,6 +2316,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
                      "Sharing worker '%s' instead of creating new worker '%s'",
                      ap_proxy_worker_name(cmd->pool, worker), name);
     }
+    if (!worker->section_config) {
+        worker->section_config = balancer->section_config;
+    }
 
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
@@ -2465,7 +2471,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
-    cmd->override = OR_ALL|ACCESS_CONF;
+    cmd->override = OR_ALL|ACCESS_CONF|PROXY_CONF;
 
     if (!strncasecmp(cmd->path, "proxy:", 6))
         cmd->path += 6;
@@ -2521,6 +2527,9 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
             }
+            if (!balancer->section_config) {
+                balancer->section_config = new_dir_conf;
+            }
         }
         else {
             worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
@@ -2543,6 +2552,9 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                                    "ProxyPassMatch/<ProxyMatch> can't be used "
                                    "altogether with the same worker name ",
                                    "(", worker->s->name, ")", NULL);
+            }
+            if (!worker->section_config) {
+                worker->section_config = new_dir_conf;
             }
         }
         if (worker == NULL && balancer == NULL) {
@@ -2651,6 +2663,7 @@ static const command_rec proxy_cmds[] =
 
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *proxy_ssl_disable = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_engine_set) *proxy_ssl_engine = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *proxy_is_https = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *proxy_ssl_val = NULL;
 
@@ -2671,6 +2684,30 @@ PROXY_DECLARE(int) ap_proxy_ssl_disable(conn_rec *c)
 {
     if (proxy_ssl_disable) {
         return proxy_ssl_disable(c);
+    }
+
+    return 0;
+}
+
+PROXY_DECLARE(int) ap_proxy_ssl_engine(conn_rec *c,
+                                       ap_conf_vector_t *per_dir_config,
+                                       int enable)
+{
+    /*
+     * if c == NULL just check if the optional function was imported
+     * else run the optional function so ssl filters are inserted
+     */
+    if (proxy_ssl_engine) {
+        return c ? proxy_ssl_engine(c, per_dir_config, 1, enable) : 1;
+    }
+
+    if (!per_dir_config) {
+        if (enable) {
+            return ap_proxy_ssl_enable(c);
+        }
+        else {
+            return ap_proxy_ssl_disable(c);
+        }
     }
 
     return 0;
@@ -2698,10 +2735,11 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
 }
 
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
-                             apr_pool_t *ptemp, server_rec *s)
+                             apr_pool_t *ptemp, server_rec *main_s)
 {
+    server_rec *s = main_s;
     apr_status_t rv = ap_global_mutex_create(&proxy_mutex, NULL,
-            proxy_id, NULL, s, pconf, 0);
+                                             proxy_id, NULL, s, pconf, 0);
     if (rv != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02478)
         "failed to create %s mutex", proxy_id);
@@ -2710,10 +2748,27 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
+    proxy_ssl_engine = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_set);
     proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
+
+    for (; s; s = s->next) {
+        int rc, i;
+        proxy_server_conf *sconf =
+            ap_get_module_config(s->module_config, &proxy_module);
+        ap_conf_vector_t **sections =
+            (ap_conf_vector_t **)sconf->sec_proxy->elts;
+
+        for (i = 0; i < sconf->sec_proxy->nelts; ++i) {
+            rc = proxy_run_section_post_config(pconf, ptemp, plog,
+                                               s, sections[i]);
+            if (rc != OK && rc != DECLINED) {
+                return rc;
+            }
+        }
+    }
 
     return OK;
 }
@@ -3000,6 +3055,12 @@ APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, post_request,
                                        request_rec *r,
                                        proxy_server_conf *conf),(worker,
                                        balancer,r,conf),DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, section_post_config,
+                                    (apr_pool_t *p, apr_pool_t *plog,
+                                     apr_pool_t *ptemp, server_rec *s,
+                                     ap_conf_vector_t *section_config),
+                                    (p, ptemp, plog, s, section_config),
+                                    OK, DECLINED)
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, fixups,
                                     (request_rec *r), (r),
                                     OK, DECLINED)

@@ -218,10 +218,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->server->sc = sc;
         }
 
-        if (sc->proxy) {
-            sc->proxy->sc = sc;
-        }
-
         /*
          * Create the server host:port string because we need it a lot
          */
@@ -240,9 +236,6 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
          * UNSET, then SSL is disabled on this vhost.  */
         if (sc->enabled == SSL_ENABLED_UNSET) {
             sc->enabled = SSL_ENABLED_FALSE;
-        }
-        if (sc->proxy_enabled == UNSET) {
-            sc->proxy_enabled = FALSE;
         }
 
         if (sc->session_cache_timeout == UNSET) {
@@ -362,15 +355,19 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     }
 
     for (s = base_server; s; s = s->next) {
-        sc = mySrvConfig(s);
+        SSLDirConfigRec *sdc = ap_get_module_config(s->lookup_defaults,
+                                                    &ssl_module);
 
+        sc = mySrvConfig(s);
         if (sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) {
             if ((rv = ssl_run_init_server(s, p, 0, sc->server->ssl_ctx)) != APR_SUCCESS) {
                 return rv;
             }
         }
-        else if (sc->proxy_enabled == SSL_ENABLED_TRUE) {
-            if ((rv = ssl_run_init_server(s, p, 1, sc->proxy->ssl_ctx)) != APR_SUCCESS) {
+
+        if (sdc->proxy_enabled) {
+            rv = ssl_run_init_server(s, p, 1, sdc->proxy->ssl_ctx);
+            if (rv != APR_SUCCESS) {
                 return rv;
             }
         }
@@ -1565,18 +1562,65 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
     return APR_SUCCESS;
 }
 
+#define MODSSL_CFG_ITEM_FREE(func, item) \
+    if (item) { \
+        func(item); \
+        item = NULL; \
+    }
+
+static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
+{
+    MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
+
+#ifdef HAVE_SRP
+    if (mctx->srp_vbase != NULL) {
+        SRP_VBASE_free(mctx->srp_vbase);
+        mctx->srp_vbase = NULL;
+    }
+#endif
+}
+
+static apr_status_t ssl_cleanup_proxy_ctx(void *data)
+{
+    modssl_ctx_t *mctx = data;
+
+    ssl_init_ctx_cleanup(mctx);
+
+    if (mctx->pkp->certs) {
+        int i = 0;
+        int ncerts = sk_X509_INFO_num(mctx->pkp->certs);
+
+        if (mctx->pkp->ca_certs) {
+            for (i = 0; i < ncerts; i++) {
+                if (mctx->pkp->ca_certs[i] != NULL) {
+                    sk_X509_pop_free(mctx->pkp->ca_certs[i], X509_free);
+                }
+            }
+        }
+
+        sk_X509_INFO_pop_free(mctx->pkp->certs, X509_INFO_free);
+        mctx->pkp->certs = NULL;
+    }
+
+    return APR_SUCCESS;
+}
+
 static apr_status_t ssl_init_proxy_ctx(server_rec *s,
                                        apr_pool_t *p,
                                        apr_pool_t *ptemp,
-                                       SSLSrvConfigRec *sc)
+                                       modssl_ctx_t *proxy)
 {
     apr_status_t rv;
 
-    if ((rv = ssl_init_ctx(s, p, ptemp, sc->proxy)) != APR_SUCCESS) {
+    apr_pool_cleanup_register(p, proxy,
+                              ssl_cleanup_proxy_ctx,
+                              apr_pool_cleanup_null);
+
+    if ((rv = ssl_init_ctx(s, p, ptemp, proxy)) != APR_SUCCESS) {
         return rv;
     }
 
-    if ((rv = ssl_init_proxy_certs(s, p, ptemp, sc->proxy)) != APR_SUCCESS) {
+    if ((rv = ssl_init_proxy_certs(s, p, ptemp, proxy)) != APR_SUCCESS) {
         return rv;
     }
 
@@ -1698,6 +1742,8 @@ apr_status_t ssl_init_ConfigureServer(server_rec *s,
                                       SSLSrvConfigRec *sc,
                                       apr_array_header_t *pphrases)
 {
+    SSLDirConfigRec *sdc = ap_get_module_config(s->lookup_defaults,
+                                                &ssl_module);
     apr_status_t rv;
 
     /* Initialize the server if SSL is enabled or optional.
@@ -1711,11 +1757,17 @@ apr_status_t ssl_init_ConfigureServer(server_rec *s,
         }
     }
 
-    if (sc->proxy_enabled) {
-        if ((rv = ssl_init_proxy_ctx(s, p, ptemp, sc)) != APR_SUCCESS) {
+    sdc->proxy->sc = sc;
+    if (sdc->proxy_enabled == TRUE) {
+        rv = ssl_init_proxy_ctx(s, p, ptemp, sdc->proxy);
+        if (rv != APR_SUCCESS) {
             return rv;
         }
     }
+    else {
+        sdc->proxy_enabled = FALSE;
+    }
+    sdc->proxy_post_config = 1;
 
     return APR_SUCCESS;
 }
@@ -1808,6 +1860,35 @@ apr_status_t ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 #endif
 
     return APR_SUCCESS;
+}
+
+int ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                  apr_pool_t *ptemp, server_rec *s,
+                                  ap_conf_vector_t *section_config)
+{
+    SSLDirConfigRec *sdc = ap_get_module_config(s->lookup_defaults,
+                                                &ssl_module);
+    SSLDirConfigRec *pdc = ap_get_module_config(section_config,
+                                                &ssl_module);
+    if (pdc) {
+        pdc->proxy->sc = mySrvConfig(s);
+        ssl_config_proxy_merge(p, sdc, pdc);
+        if (pdc->proxy_enabled) {
+            apr_status_t rv;
+
+            rv = ssl_init_proxy_ctx(s, p, ptemp, pdc->proxy);
+            if (rv != APR_SUCCESS) {
+                return !OK;
+            }
+
+            rv = ssl_run_init_server(s, p, 1, pdc->proxy->ssl_ctx);
+            if (rv != APR_SUCCESS) {
+                return !OK;
+            }
+        }
+        pdc->proxy_post_config = 1;
+    }
+    return OK;
 }
 
 static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a,
@@ -1954,45 +2035,6 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 #endif
 }
 
-#define MODSSL_CFG_ITEM_FREE(func, item) \
-    if (item) { \
-        func(item); \
-        item = NULL; \
-    }
-
-static void ssl_init_ctx_cleanup(modssl_ctx_t *mctx)
-{
-    MODSSL_CFG_ITEM_FREE(SSL_CTX_free, mctx->ssl_ctx);
-
-#ifdef HAVE_SRP
-    if (mctx->srp_vbase != NULL) {
-        SRP_VBASE_free(mctx->srp_vbase);
-        mctx->srp_vbase = NULL;
-    }
-#endif
-}
-
-static void ssl_init_ctx_cleanup_proxy(modssl_ctx_t *mctx)
-{
-    ssl_init_ctx_cleanup(mctx);
-
-    if (mctx->pkp->certs) {
-        int i = 0;
-        int ncerts = sk_X509_INFO_num(mctx->pkp->certs);
-
-        if (mctx->pkp->ca_certs) {
-            for (i = 0; i < ncerts; i++) {
-                if (mctx->pkp->ca_certs[i] != NULL) {
-                    sk_X509_pop_free(mctx->pkp->ca_certs[i], X509_free);
-                }
-            }
-        }
-
-        sk_X509_INFO_pop_free(mctx->pkp->certs, X509_INFO_free);
-        mctx->pkp->certs = NULL;
-    }
-}
-
 apr_status_t ssl_init_ModuleKill(void *data)
 {
     SSLSrvConfigRec *sc;
@@ -2010,8 +2052,6 @@ apr_status_t ssl_init_ModuleKill(void *data)
      */
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
-
-        ssl_init_ctx_cleanup_proxy(sc->proxy);
 
         ssl_init_ctx_cleanup(sc->server);
     }

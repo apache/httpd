@@ -277,14 +277,18 @@ APLOG_USE_MODULE(ssl);
 #define strIsEmpty(s)    (s == NULL || s[0] == NUL)
 
 #define myConnConfig(c) \
-(SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module)
-#define myCtxConfig(sslconn, sc) (sslconn->is_proxy ? sc->proxy : sc->server)
+    ((SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module))
 #define myConnConfigSet(c, val) \
-ap_set_module_config(c->conn_config, &ssl_module, val)
-#define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
-#define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
-#define myModConfig(srv) (mySrvConfig((srv)))->mc
-#define mySrvFromConn(c) (myConnConfig(c))->server
+    ap_set_module_config(c->conn_config, &ssl_module, val)
+#define mySrvConfig(srv) \
+    ((SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module))
+#define myDirConfig(req) \
+    ((SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module))
+#define myCtxConfig(sslconn, sc) \
+    (sslconn->is_proxy ? sslconn->dc->proxy : sc->server)
+#define myModConfig(srv) mySrvConfig((srv))->mc
+#define mySrvFromConn(c) myConnConfig(c)->server
+#define myDirConfigFromConn(c) myConnConfig(c)->dc
 #define mySrvConfigFromConn(c) mySrvConfig(mySrvFromConn(c))
 #define myModConfigFromConn(c) myModConfig(mySrvFromConn(c))
 
@@ -455,6 +459,9 @@ typedef struct {
  * (i.e. the global configuration for each httpd process)
  */
 
+typedef struct SSLSrvConfigRec SSLSrvConfigRec;
+typedef struct SSLDirConfigRec SSLDirConfigRec;
+
 typedef enum {
     SSL_SHUTDOWN_TYPE_UNSET,
     SSL_SHUTDOWN_TYPE_STANDARD,
@@ -493,6 +500,7 @@ typedef struct {
     } reneg_state;
 
     server_rec *server;
+    SSLDirConfigRec *dc;
     
     const char *cipher_suite; /* cipher suite used in last reneg */
 } SSLConnRec;
@@ -613,8 +621,6 @@ typedef struct {
 } ssl_ctx_param_t;
 #endif
 
-typedef struct SSLSrvConfigRec SSLSrvConfigRec;
-
 typedef struct {
     SSLSrvConfigRec *sc; /** pointer back to server config */
     SSL_CTX *ssl_ctx;
@@ -676,22 +682,21 @@ typedef struct {
     SSL_CONF_CTX *ssl_ctx_config; /* Configuration context */
     apr_array_header_t *ssl_ctx_param; /* parameters to pass to SSL_CTX */
 #endif
+
+    BOOL ssl_check_peer_cn;
+    BOOL ssl_check_peer_name;
+    BOOL ssl_check_peer_expire;
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
     ssl_enabled_t    enabled;
-    BOOL             proxy_enabled;
     const char      *vhost_id;
     int              vhost_id_len;
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
     BOOL             insecure_reneg;
     modssl_ctx_t    *server;
-    modssl_ctx_t    *proxy;
-    ssl_enabled_t    proxy_ssl_check_peer_expire;
-    ssl_enabled_t    proxy_ssl_check_peer_cn;
-    ssl_enabled_t    proxy_ssl_check_peer_name;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
 #endif
@@ -709,7 +714,7 @@ struct SSLSrvConfigRec {
  * (i.e. the local configuration for all &lt;Directory>
  *  and .htaccess contexts)
  */
-typedef struct {
+struct SSLDirConfigRec {
     BOOL          bSSLRequired;
     apr_array_header_t *aRequirement;
     ssl_opt_t     nOptions;
@@ -718,11 +723,13 @@ typedef struct {
     const char   *szCipherSuite;
     ssl_verify_t  nVerifyClient;
     int           nVerifyDepth;
-    const char   *szCACertificatePath;
-    const char   *szCACertificateFile;
     const char   *szUserName;
     apr_size_t    nRenegBufferSize;
-} SSLDirConfigRec;
+
+    modssl_ctx_t *proxy;
+    BOOL          proxy_enabled;
+    BOOL          proxy_post_config;
+};
 
 /**
  *  function prototypes
@@ -739,6 +746,8 @@ void        *ssl_config_server_create(apr_pool_t *, server_rec *);
 void        *ssl_config_server_merge(apr_pool_t *, void *, void *);
 void        *ssl_config_perdir_create(apr_pool_t *, char *);
 void        *ssl_config_perdir_merge(apr_pool_t *, void *, void *);
+void         ssl_config_proxy_merge(apr_pool_t *,
+                                    SSLDirConfigRec *, SSLDirConfigRec *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
@@ -816,6 +825,9 @@ apr_status_t ssl_init_Engine(server_rec *, apr_pool_t *);
 apr_status_t ssl_init_ConfigureServer(server_rec *, apr_pool_t *, apr_pool_t *, SSLSrvConfigRec *,
                                       apr_array_header_t *);
 apr_status_t ssl_init_CheckServers(server_rec *, apr_pool_t *);
+int          ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                           apr_pool_t *ptemp, server_rec *s,
+                                           ap_conf_vector_t *section_config);
 STACK_OF(X509_NAME)
             *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *);
 void         ssl_init_Child(apr_pool_t *, server_rec *);

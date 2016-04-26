@@ -2982,11 +2982,12 @@ static apr_status_t connection_shutdown(void *theconn)
 }
 
 
-PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
-                                              proxy_conn_rec *conn,
-                                              conn_rec *c,
-                                              server_rec *s)
+static int proxy_connection_create(const char *proxy_function,
+                                   proxy_conn_rec *conn,
+                                   request_rec *r, server_rec *s)
 {
+    ap_conf_vector_t *per_dir_config = (r) ? r->per_dir_config
+                                           : conn->worker->section_config;
     apr_sockaddr_t *backend_addr = conn->addr;
     int rc;
     apr_interval_time_t current_timeout;
@@ -3020,7 +3021,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 
     /* For ssl connection to backend */
     if (conn->is_ssl) {
-        if (!ap_proxy_ssl_enable(conn->connection)) {
+        if (!ap_proxy_ssl_engine(conn->connection, per_dir_config, 1)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          s, APLOGNO(00961) "%s: failed to enable ssl support "
                          "for %pI (%s)", proxy_function,
@@ -3030,7 +3031,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     }
     else {
         /* TODO: See if this will break FTP */
-        ap_proxy_ssl_disable(conn->connection);
+        ap_proxy_ssl_engine(conn->connection, per_dir_config, 0);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00962)
@@ -3060,6 +3061,21 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     apr_pool_pre_cleanup_register(conn->scpool, conn, connection_shutdown);
 
     return OK;
+}
+
+PROXY_DECLARE(int) ap_proxy_connection_create_ex(const char *proxy_function,
+                                                 proxy_conn_rec *conn,
+                                                 request_rec *r)
+{
+    return proxy_connection_create(proxy_function, conn, r, r->server);
+}
+
+PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
+                                              proxy_conn_rec *conn,
+                                              conn_rec *c, server_rec *s)
+{
+    (void) c; /* unused */
+    return proxy_connection_create(proxy_function, conn, NULL, s);
 }
 
 int ap_proxy_lb_workers(void)

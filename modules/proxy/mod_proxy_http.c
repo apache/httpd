@@ -2083,8 +2083,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         /* Step Three: Create conn_rec */
         backconn = backend->connection;
         if (!backconn) {
-            if ((status = ap_proxy_connection_create(proxy_function, backend,
-                                                     c, r->server)) != OK)
+            if ((status = ap_proxy_connection_create_ex(proxy_function,
+                                                        backend, r)) != OK)
                 break;
             backconn = backend->connection;
 

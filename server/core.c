@@ -1312,7 +1312,10 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                 || (found = find_parent(cmd->directive, "<FilesMatch"))
                 || (found = find_parent(cmd->directive, "<If"))
                 || (found = find_parent(cmd->directive, "<ElseIf"))
-                || (found = find_parent(cmd->directive, "<Else"))))) {
+                || (found = find_parent(cmd->directive, "<Else"))))
+        || ((forbidden & NOT_IN_PROXY)
+            && ((found = find_parent(cmd->directive, "<Proxy"))
+                || (found = find_parent(cmd->directive, "<ProxyMatch"))))) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
                            " cannot occur within ", found->directive,
                            "> section", NULL);

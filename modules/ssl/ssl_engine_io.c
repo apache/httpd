@@ -1191,7 +1191,9 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 #endif
         BOOL proxy_ssl_check_peer_ok = TRUE;
         int post_handshake_rc = OK;
+        SSLDirConfigRec *dc;
 
+        dc = sslconn->dc;
         sc = mySrvConfig(server);
 
 #ifdef HAVE_TLSEXT
@@ -1239,7 +1241,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
          */
         if (hostname_note &&
 #ifndef OPENSSL_NO_SSL3
-            sc->proxy->protocol != SSL_PROTOCOL_SSLV3 &&
+            dc->proxy->protocol != SSL_PROTOCOL_SSLV3 &&
 #endif
             apr_ipsubnet_create(&ip, hostname_note, NULL,
                                 c->pool) != APR_SUCCESS) {
@@ -1268,7 +1270,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 
         cert = SSL_get_peer_certificate(filter_ctx->pssl);
 
-        if (sc->proxy_ssl_check_peer_expire != SSL_ENABLED_FALSE) {
+        if (dc->proxy->ssl_check_peer_expire != FALSE) {
             if (!cert
                 || (X509_cmp_current_time(
                      X509_get_notBefore(cert)) >= 0)
@@ -1279,7 +1281,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                               "SSL Proxy: Peer certificate is expired");
             }
         }
-        if ((sc->proxy_ssl_check_peer_name != SSL_ENABLED_FALSE) &&
+        if ((dc->proxy->ssl_check_peer_name != FALSE) &&
             hostname_note) {
             apr_table_unset(c->notes, "proxy-request-hostname");
             if (!cert
@@ -1291,7 +1293,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                               "for hostname %s", hostname_note);
             }
         }
-        else if ((sc->proxy_ssl_check_peer_cn != SSL_ENABLED_FALSE) &&
+        else if ((dc->proxy->ssl_check_peer_cn != FALSE) &&
             hostname_note) {
             const char *hostname;
             int match = 0;
