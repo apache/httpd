@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 106753 -->
-
+<!-- English revision: 1669920 -->
+<!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -36,39 +36,39 @@
     <!-- comments...                                                      -->
     <messages>
         <!-- language link titles -->
-        <message id="nativename">Espa&#241;ol</message>
+        <message id="nativename">Español</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">Funcionalidad B&#225;sica y M&#243;dulos
-            de MultiProcesamiento</message>
-        <message id="othermodules">Otros M&#243;dulos</message>
-        <message id="obsoletemodules">M&#243;dulos Obsoletos</message>
+        <message id="corefeatures">Funcionalidad Básica y Módulos
+            de Multi-Procesamiento</message>
+        <message id="othermodules">Otros Módulos</message>
+        <message id="obsoletemodules">Módulos Obsoletos</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">M&#243;dulos Obsoletos de
+        <message id="obsoleteapachemodule">Módulos Obsoletos de
             Apache</message>
-        <message id="apachemodule">M&#243;dulo Apache</message>
-        <message id="apachecore">Funcionalidad B&#225;sica de Apache</message>
+        <message id="apachemodule">Módulo Apache</message>
+        <message id="apachecore">Funcionalidad Básica de Apache</message>
         <message id="apachempmcommon">Directivas Comunes de los MPM de
             Apache</message>
         <message id="apachempm">MPM de Apache</message>
 
         <!-- Used in description box for modulesynopsis -->
-        <message id="description">Descripci&#243;n</message>
-        <message id="seealso">Consulte tambi&#233;n</message>
+        <message id="description">Descripción</message>
+        <message id="seealso">Consulte también</message>
         <message id="topics">Temas</message>
         <message id="status">Estado</message>
-        <message id="moduleidentifier">Identificador de M&#243;dulos</message>
-        <message id="sourcefile">Fichero de C&#243;digo Fuente</message>
+        <message id="moduleidentifier">Identificador de Módulos</message>
+        <message id="sourcefile">Ficheros de Código Fuente</message>
         <message id="compatibility">Compatibilidad</message>
 
         <!-- Used in manualpage -->
-        <message id="relatedmodules">M&#243;dulos Relacionados</message>
+        <message id="relatedmodules">Módulos Relacionados</message>
         <message id="relateddirectives">Directivas Relacionadas</message>
         <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
-        <message id="name-section">NAME</message>
-        <message id="hyphenation"></message>
+        <message id="name-section">NOMBRE</message>
+        <message id="hyphenation">Cesura</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxis</message>
@@ -76,15 +76,15 @@
         <message id="context">Contexto</message>
         <message id="override">Prevalece sobre</message>
         <message id="status">Estado</message>
-        <message id="module">M&#243;dulo</message>
+        <message id="module">Módulo</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
         <message id="mpm" letter="M">MPM</message>
         <message id="core" letter="C">Core</message>
-        <message id="extension" letter="E">Extensi&#243;n</message>
+        <message id="extension" letter="E">Extensión</message>
         <message id="experimental" letter="X">Experimental</message>
-        <message id="external" letter="T">External</message>
+        <message id="external" letter="T">Externo</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">server config</message>
@@ -102,7 +102,7 @@
              if "yes", the 'Directive' word is place before the name instead of
              being placed behind. See fr.xml for an example. -->
         <message id="directive">Directiva</message>
-        <message id="nodirectives">Este m&#243;dulo no suministra ninguna
+        <message id="nodirectives">Este módulo no suministra ninguna
             directiva.</message>
 
         <!-- Used in summaries -->
@@ -113,35 +113,35 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
-        <message id="apachehttpserver">Versi&#243;n &httpd.major;.&httpd.minor;
+        <message id="apachehttpserver">Versión &httpd.major;.&httpd.minor;
             del Servidor HTTP Apache</message>
-        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="apachedocalt">[DOCUMENTACIÓN DE APACHE]</message>
         <message id="search">Buscar en Google</message> <!-- search button -->
-        <message id="index">&#205;ndice</message> <!-- deprecated -->
-        <message id="home">P&#225;gina Inicial</message> <!-- deprecated -->
+        <message id="index">Índice</message> <!-- deprecated -->
+        <message id="home">Página Principal</message> <!-- deprecated -->
         <message id="comments">Comentarios</message>
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
         <message id="http-server">Servidor HTTP</message>
-        <message id="documentation">Documentaci&#243;n</message>
-        <message id="version">Versi&#243;n &httpd.major;.&httpd.minor;</message>
+        <message id="documentation">Documentación</message>
+        <message id="version">Versión &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
-        <message id="modules">M&#243;dulos</message>
+        <message id="modules">Módulos</message>
         <message id="faq">Preguntas Frecuentes</message>
         <message id="glossary">Glosario</message>
-        <message id="sitemap">Mapa de este sitio web</message>
+        <message id="sitemap">Mapa del sitio web</message>
 
         <!-- footer line -->
-        <message id="before-license">Licencia bajo los t&#233;rminos de la</message>
+        <message id="before-license">Licencia bajo los términos de la</message>
         <message id="after-license"></message>
         <message id="langavail">Idiomas disponibles</message>
 
         <!-- not up to date -->
-        <message id="outofdate">Esta traducci&#243;n podr&#237;a estar
-            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
-            documentaci&#243;n para comprobar si se han producido cambios
+        <message id="outofdate">Ésta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
             recientemente.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">The documentation for this directive has
@@ -149,12 +149,12 @@
             version.</message>
 
         <!-- retirement -->
-        <message id="retired.headline">Please note</message>
+        <message id="retired.headline">Por favor Nota</message>
         <message id="retired.description">
-            <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
+             <p>Esta documentación hace referencia a la versión <strong>2.0</strong> de Apache httpd, que <strong>ya no tiene soporte ni es mantenida</strong>. Actualice,y consulte la versión actual de httpd en su lugar, documentado en:</p>
         </message>
-        <message id="retired.current">Current release version of Apache HTTP Server documentation</message>
-        <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
+        <message id="retired.current">Versión actual de la documentación de Apache HTTP Server</message>
+        <message id="retired.document">Usted puede seguir <link>éste enlace </link> para ir a la versión actual de este documento.</message>
 
     </messages>
 </language>
