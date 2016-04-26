@@ -563,9 +563,9 @@ run_connect:
                       "setup new connection: is_ssl=%d %s %s %s", 
                       ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
                       locurl, ctx->p_conn->hostname);
-        if ((status = ap_proxy_connection_create(ctx->proxy_func, ctx->p_conn,
-                                                 ctx->owner, 
-                                                 ctx->server)) != OK) {
+        status = ap_proxy_connection_create_ex(ctx->proxy_func,
+                                               ctx->p_conn, ctx->rbase);
+        if (status != OK) {
             goto cleanup;
         }
         

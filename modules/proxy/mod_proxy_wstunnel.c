@@ -447,7 +447,6 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     const char *upgrade;
     char *scheme;
-    conn_rec *c = r->connection;
     apr_pool_t *p = r->pool;
     char *locurl = url;
     apr_uri_t *uri;
@@ -504,7 +503,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Three: Create conn_rec */
     if (!backend->connection) {
-        status = ap_proxy_connection_create(scheme, backend, c, r->server);
+        status = ap_proxy_connection_create_ex(scheme, backend, r);
         if (status  != OK) {
             goto cleanup;
         }

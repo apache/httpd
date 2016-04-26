@@ -864,6 +864,11 @@ static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                           cmd->name);
             return NULL;
         }
+        else if (parms->directive && parms->directive->parent) {
+            return apr_pstrcat(parms->pool, cmd->name, " not allowed in ",
+                               parms->directive->parent->directive, ">",
+                               " context", NULL);
+        }
         else {
             return apr_pstrcat(parms->pool, cmd->name,
                                " not allowed here", NULL);

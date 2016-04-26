@@ -1568,8 +1568,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     server_rec *s       = r ? r->server : mySrvFromConn(conn);
 
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    SSLDirConfigRec *dc = r ? myDirConfig(r) : NULL;
     SSLConnRec *sslconn = myConnConfig(conn);
+    SSLDirConfigRec *dc = r ? myDirConfig(r) : sslconn->dc;
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
     int crl_check_mode  = mctx->crl_check_mask & ~SSL_CRLCHECK_FLAGS;
 
@@ -1761,11 +1761,12 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
+    SSLDirConfigRec *dc = myDirConfigFromConn(c);
     X509_NAME *ca_name, *issuer, *ca_issuer;
     X509_INFO *info;
     X509 *ca_cert;
     STACK_OF(X509_NAME) *ca_list;
-    STACK_OF(X509_INFO) *certs = sc->proxy->pkp->certs;
+    STACK_OF(X509_INFO) *certs;
     STACK_OF(X509) *ca_certs;
     STACK_OF(X509) **ca_cert_chains;
     int i, j, k;
@@ -1774,6 +1775,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
                  SSLPROXY_CERT_CB_LOG_FMT "entered",
                  sc->vhost_id);
 
+    certs = (dc && dc->proxy) ? dc->proxy->pkp->certs : NULL;
     if (!certs || (sk_X509_INFO_num(certs) <= 0)) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02268)
                      SSLPROXY_CERT_CB_LOG_FMT
@@ -1798,7 +1800,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
         return TRUE;
     }
 
-    ca_cert_chains = sc->proxy->pkp->ca_certs;
+    ca_cert_chains = dc->proxy->pkp->ca_certs;
     for (i = 0; i < sk_X509_NAME_num(ca_list); i++) {
         ca_name = sk_X509_NAME_value(ca_list, i);
 

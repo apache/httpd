@@ -85,13 +85,15 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ssl_get_tls_cb,
                         (apr_pool_t *p, conn_rec *c, const char *type,
                          unsigned char **buf, apr_size_t *size));
 
-/** The ssl_proxy_enable() and ssl_engine_disable() optional functions
- * are used by mod_proxy to enable use of SSL for outgoing
+/** The ssl_proxy_enable() and ssl_engine_{set,disable}() optional
+ * functions are used by mod_proxy to enable use of SSL for outgoing
  * connections. */
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
-
 APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
+APR_DECLARE_OPTIONAL_FN(int, ssl_engine_set, (conn_rec *,
+                                              ap_conf_vector_t *,
+                                              int proxy, int enable));
 
 #endif /* __MOD_SSL_H__ */
 /** @} */

@@ -1189,7 +1189,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     if (!backend->connection) {
-        status = ap_proxy_connection_create("FTP", backend, c, r->server);
+        status = ap_proxy_connection_create_ex("FTP", backend, r);
         if (status != OK) {
             proxy_ftp_cleanup(r, backend);
             return status;
@@ -2035,7 +2035,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
      * We do not do SSL over the data connection, even if the virtual host we
      * are in might have SSL enabled
      */
-    ap_proxy_ssl_disable(data);
+    ap_proxy_ssl_engine(data, r->per_dir_config, 0);
     /* set up the connection filters */
     rc = ap_run_pre_connection(data, data_sock);
     if (rc != OK && rc != DONE) {
