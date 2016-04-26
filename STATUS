@@ -118,12 +118,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) Suppress 'h2' announcements in Upgrade: header as declared illegal by
-     http-wg.
+  *) Suppress 'h2' announcements in Upgrade: header as such Upgrade: requests
+     are not honored by mod_http2. 
      trunk patches: http://svn.apache.org/r1740075
                     http://svn.apache.org/r1740119
      2.4.x: trunk works modulo CHANGES
-  +1: icing
+     +1: icing
      
   *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
      Trunk version of patch: <various>
