@@ -71,8 +71,8 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NOM</message>
         <message id="hyphenation">C&#233;sure</message>
-        <message id="foundabug">Bugfix checklist:</message>
-        <message id="httpdchangelog">HTTPD changelog</message>
+        <message id="foundabug">Bugfix checklist</message>
+        <message id="httpdchangelog">httpd changelog</message>
         <message id="httpdknownissues">Known issues</message>
         <message id="httpdreportabug">Report a bug</message>
 

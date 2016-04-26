@@ -248,6 +248,21 @@
                        <xsl:value-of select="$message[@id='foundabug']" />
                     </h3>
                     <ul class="seealso">
+                        <!-- Bugzilla mpm components are prefixed with
+                            'mpm_', meanwhile the page name in the docs do
+                            not contain it. For example, Bugzilla has
+                            the 'mpm_event' component and the doc has the
+                            'event' page. This creates an inconsistency
+                            in the URL generation, fixed by the following
+                            check. -->
+                        <xsl:variable name="bugzilla_prefix">
+                            <xsl:choose>
+                                <xsl:when test="name='worker' or name='event'
+                                                or name='prefork'">
+                                    <xsl:value-of select="string('mpm_')"/>
+                                </xsl:when>
+                            </xsl:choose>
+                        </xsl:variable>
                         <li>
                             <!-- The link below is not dynamic and points only
                                  to the 2.4 release since it makes sense to keep
@@ -258,22 +273,6 @@
                             </a>
                         </li>
                         <li>
-                            <!-- Bugzilla mpm components are prefixed with
-                                'mpm_', meanwhile the page name in the docs do
-                                not contain it. For example, Bugzilla has
-                                the 'mpm_event' component and the doc has the
-                                'event' page. This creates an inconsistency
-                                in the URL generation, fixed by the following
-                                check. -->
-                            <xsl:variable name="bugzilla_prefix">
-                                <xsl:choose>
-                                    <xsl:when test="name='worker' or name='event'
-                                                    or name='prefork'">
-                                        <xsl:value-of select="string('mpm_')"/>
-                                    </xsl:when>
-                                </xsl:choose>
-                            </xsl:variable>
-
                             <!-- The line below is not splitted in multiple
                                  lines to avoid rendering a broken URL. -->
                             <a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component={$bugzilla_prefix}{name}">
@@ -284,7 +283,7 @@
                         <li>
                             <!-- The line below is not splitted in multiple
                                  lines to avoid rendering a broken URL. -->
-                            <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">
+                            <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component={$bugzilla_prefix}{name}">
                                 <xsl:value-of
                                     select="$message[@id='httpdreportabug']" />
                             </a>

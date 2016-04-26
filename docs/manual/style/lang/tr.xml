@@ -73,8 +73,8 @@
         <message id="uppercase">ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ</message>
         <message id="name-section">İSİM</message>
         <message id="hyphenation">.nh</message>
-        <message id="foundabug">Bugfix checklist:</message>
-        <message id="httpdchangelog">HTTPD changelog</message>
+        <message id="foundabug">Bugfix checklist</message>
+        <message id="httpdchangelog">httpd changelog</message>
         <message id="httpdknownissues">Known issues</message>
         <message id="httpdreportabug">Report a bug</message>
 
