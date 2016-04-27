@@ -95,7 +95,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
         if (scon->cs.state == CONN_STATE_WRITE_COMPLETION) {
             int not_complete_yet;
 
-            ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
+            ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
             not_complete_yet = ap_run_output_pending(c);
 
             if (not_complete_yet > OK) {

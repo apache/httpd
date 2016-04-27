@@ -400,7 +400,7 @@ read_request:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03331)
                                   "motorz_io_process(): CONN_STATE_WRITE_COMPLETION");
 
-            ap_update_child_status_from_conn(scon->sbh, SERVER_BUSY_WRITE, c);
+            ap_update_child_status(scon->sbh, SERVER_BUSY_WRITE, NULL);
 
             not_complete_yet = ap_run_output_pending(c);
 
@@ -928,7 +928,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
     ap_create_sb_handle(&sbh, pchild, my_child_num, 0);
 
-    (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
+    ap_update_child_status(sbh, SERVER_READY, NULL);
 
     apr_skiplist_init(&mz->timeout_ring, mz->pool);
     apr_skiplist_set_compare(mz->timeout_ring, timer_comp, timer_comp);
@@ -1001,7 +1001,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
             clean_child_exit(0);
         }
 
-        (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
+        ap_update_child_status(sbh, SERVER_READY, NULL);
         {
             apr_time_t tnow = apr_time_now();
             motorz_timer_t *te;
@@ -1086,8 +1086,7 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
         return -1;
     }
 
-    (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
-                                               (request_rec *) NULL);
+    ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING, NULL);
 
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, APLOGNO(02872) "fork: Unable to fork new process");
@@ -1095,8 +1094,7 @@ static int make_child(motorz_core_t *mz, server_rec *s, int slot, int bucket)
         /* fork didn't succeed. Fix the scoreboard or else
          * it will say SERVER_STARTING forever and ever
          */
-        (void) ap_update_child_status_from_indexes(slot, 0, SERVER_DEAD,
-                                                   (request_rec *) NULL);
+        ap_update_child_status_from_indexes(slot, 0, SERVER_DEAD, NULL);
 
         /* In case system resources are maxxed out, we don't want
          * Apache running away with the CPU trying to fork over and
@@ -1316,8 +1314,8 @@ static int motorz_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
             /* non-fatal death... note that it's gone in the scoreboard. */
             if (child_slot >= 0) {
-                (void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
-                                                           (request_rec *) NULL);
+                ap_update_child_status_from_indexes(child_slot, 0,
+                                                    SERVER_DEAD, NULL);
                 motorz_note_child_killed(child_slot, 0, 0);
                 if (remaining_children_to_start
                     && child_slot < ap_num_kids) {

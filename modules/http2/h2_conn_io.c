@@ -191,7 +191,7 @@ static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx)
         return APR_SUCCESS;
     }
     
-    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_WRITE, c);
+    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
     apr_brigade_length(bb, 0, &bblen);
     h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", bb);
     status = ap_pass_brigade(c->output_filters, bb);
