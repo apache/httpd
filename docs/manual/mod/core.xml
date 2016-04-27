@@ -635,7 +635,7 @@ variables</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Available in Apache HTTP Server 2.5 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.4.21 and later</compatibility>
 
 <usage>
   <p>This directive controls how some CGI variables are set.</p>

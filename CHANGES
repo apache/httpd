@@ -42,10 +42,6 @@ Changes with Apache 2.5.0
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
-  *) core: New CGIVar directive can configure REQUEST_URI to represent the
-     current URI being processed instead of always the original request.
-     [Jeff Trawick]
-
   *) core: Extend support for setting aside data from the network input filter
      to any connection or request input filter. [Graham Leggett]
 
