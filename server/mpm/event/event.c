@@ -1158,7 +1158,7 @@ read_request:
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
         int not_complete_yet;
 
-        ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
+        ap_update_child_status(sbh, SERVER_BUSY_WRITE, NULL);
 
         not_complete_yet = ap_run_output_pending(c);
 
@@ -1199,7 +1199,7 @@ read_request:
         start_lingering_close_blocking(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-        ap_update_child_status_from_conn(sbh, SERVER_BUSY_KEEPALIVE, c);
+        ap_update_child_status(sbh, SERVER_BUSY_KEEPALIVE, NULL);
 
         /* It greatly simplifies the logic to use a single timeout value per q
          * because the new element can just be added to the end of the list and
@@ -2224,7 +2224,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         }
 
         ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                            dying ? SERVER_GRACEFUL : SERVER_READY, NULL);
+                                            dying ? SERVER_GRACEFUL
+                                                  : SERVER_READY, NULL);
       worker_pop:
         if (workers_may_exit) {
             break;
@@ -2280,9 +2281,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                        dying ? SERVER_DEAD :
-                                        SERVER_GRACEFUL,
-                                        (request_rec *) NULL);
+                                        dying ? SERVER_DEAD
+                                              : SERVER_GRACEFUL, NULL);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
@@ -3044,8 +3044,7 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
 
                 for (i = 0; i < threads_per_child; i++)
                     ap_update_child_status_from_indexes(child_slot, i,
-                                                        SERVER_DEAD,
-                                                        (request_rec *) NULL);
+                                                        SERVER_DEAD, NULL);
 
                 event_note_child_killed(child_slot, 0, 0);
                 ps = &ap_scoreboard_image->parent[child_slot];

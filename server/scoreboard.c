@@ -501,7 +501,7 @@ static int update_child_status_internal(int child_num,
             copy_request(ws->request, sizeof(ws->request), r);
         }
 
-        if (r) {
+        if (r && r->useragent_ip) {
             if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL)))
                 apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
             else

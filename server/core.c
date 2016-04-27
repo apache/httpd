@@ -5166,7 +5166,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *s,
     core_server_config *sconf = ap_get_core_module_config(s->module_config);
 
     c->sbh = sbh;
-    (void)ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *)NULL);
+    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
