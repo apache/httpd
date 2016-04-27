@@ -32,9 +32,11 @@
         <settings>Spanish (Spain), sorting order: international</settings>
     </chm>
 
+   <!-- currently no deployment of non-english man pages
     <man>
         <charset>ISO-8859-1</charset>
     </man>
+-->
 
     <!-- Some strings might be used in other contexts, than stated in the -->
     <!-- comments...                                                      -->
