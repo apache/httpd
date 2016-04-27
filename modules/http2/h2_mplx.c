@@ -112,18 +112,24 @@ static void leave_mutex(h2_mplx *m, int acquired)
     }
 }
 
-static apr_status_t io_mutex_enter(void *ctx, 
-                                   apr_thread_mutex_t **plock, int *acquired)
+static void beam_leave(void *ctx, apr_thread_mutex_t *lock)
 {
-    h2_mplx *m = ctx;
-    *plock = m->lock;
-    return enter_mutex(m, acquired);
+    leave_mutex(ctx, 1);
 }
 
-static void io_mutex_leave(void *ctx, apr_thread_mutex_t *lock, int acquired)
+static apr_status_t beam_enter(void *ctx, h2_beam_lock *pbl)
 {
     h2_mplx *m = ctx;
-    leave_mutex(m, acquired);
+    int acquired;
+    apr_status_t status;
+    
+    status = enter_mutex(m, &acquired);
+    if (status == APR_SUCCESS) {
+        pbl->mutex = m->lock;
+        pbl->leave = acquired? beam_leave : NULL;
+        pbl->leave_ctx = m;
+    }
+    return status;
 }
 
 static void stream_output_consumed(void *ctx, 
@@ -366,7 +372,6 @@ static int task_stream_done(h2_mplx *m, h2_task *task, int rst_error)
         /* cleanup once task is done */
         task->orphaned = 1;
         if (task->input.beam) {
-            /* TODO: this is currently allocated by the stream and will disappear */
             h2_beam_shutdown(task->input.beam);
             task->input.beam = NULL;
         }
@@ -638,8 +643,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response)
         h2_beam_on_consumed(task->output.beam, stream_output_consumed, task);
         m->tx_handles_reserved -= h2_beam_get_files_beamed(task->output.beam);
         h2_beam_on_file_beam(task->output.beam, can_beam_file, m);
-        h2_beam_mutex_set(task->output.beam, io_mutex_enter, io_mutex_leave, 
-                          task->cond, m);
+        h2_beam_mutex_set(task->output.beam, beam_enter, task->cond, m);
     }
     
     h2_ihash_add(m->ready_tasks, task);
@@ -670,42 +674,34 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response)
     return status;
 }
 
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id)
+static apr_status_t out_close(h2_mplx *m, h2_task *task)
 {
-    apr_status_t status;
-    int acquired;
+    apr_status_t status = APR_SUCCESS;
     
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_task *task = h2_ihash_get(m->tasks, stream_id);
-        if (task && !task->orphaned) {
-            if (!task->response && !task->rst_error) {
-                /* In case a close comes before a response was created,
-                 * insert an error one so that our streams can properly
-                 * reset.
-                 */
-                h2_response *r = h2_response_die(stream_id, APR_EGENERAL, 
-                                                 task->request, m->pool);
-                status = out_open(m, stream_id, r);
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
-                              "h2_mplx(%ld-%d): close, no response, no rst", 
-                              m->id, stream_id);
-            }
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
-                          "h2_mplx(%ld-%d): close", m->id, stream_id);
-            if (task->output.beam) {
-                status = h2_beam_close(task->output.beam);
-                h2_beam_log(task->output.beam, stream_id, "out_close", m->c, 
-                            APLOG_TRACE2);
-            }
-            output_consumed_signal(m, task);
-            have_out_data_for(m, stream_id);
-        }
-        else {
-            status = APR_ECONNABORTED;
-        }
-        leave_mutex(m, acquired);
+    if (!task || task->orphaned) {
+        return APR_ECONNABORTED;
     }
+    
+    if (!task->response && !task->rst_error) {
+        /* In case a close comes before a response was created,
+         * insert an error one so that our streams can properly
+         * reset.
+         */
+        h2_response *r = h2_response_die(task->stream_id, APR_EGENERAL, 
+                                         task->request, m->pool);
+        status = out_open(m, task->stream_id, r);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
+                      "h2_mplx(%s): close, no response, no rst", task->id);
+    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
+                  "h2_mplx(%s): close", task->id);
+    if (task->output.beam) {
+        status = h2_beam_close(task->output.beam);
+        h2_beam_log(task->output.beam, task->stream_id, "out_close", m->c, 
+                    APLOG_TRACE2);
+    }
+    output_consumed_signal(m, task);
+    have_out_data_for(m, task->stream_id);
     return status;
 }
 
@@ -832,17 +828,17 @@ static h2_task *pop_task(h2_mplx *m)
             
             task->worker_started = 1;
             task->started_at = apr_time_now();
-            
-            if (task->input.beam) {
-                h2_beam_timeout_set(task->input.beam, m->stream_timeout);
-                h2_beam_on_consumed(task->input.beam, stream_input_consumed, m);
-                h2_beam_on_file_beam(task->input.beam, can_beam_file, m);
-                h2_beam_mutex_set(task->input.beam, io_mutex_enter, 
-                                  io_mutex_leave, task->cond, m);
-            }
             if (sid > m->max_stream_started) {
                 m->max_stream_started = sid;
             }
+
+            if (stream->input) {
+                h2_beam_timeout_set(stream->input, m->stream_timeout);
+                h2_beam_on_consumed(stream->input, stream_input_consumed, m);
+                h2_beam_on_file_beam(stream->input, can_beam_file, m);
+                h2_beam_mutex_set(stream->input, beam_enter, task->cond, m);
+            }
+
             ++m->workers_busy;
         }
     }
@@ -886,18 +882,12 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             /* FIXME: this implementation is incomplete. */
             h2_task_set_io_blocking(task, 0);
             apr_thread_cond_broadcast(m->task_thawed);
+            return;
         }
         else {
-            apr_time_t now = apr_time_now();
-            
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                           "h2_mplx(%ld): task(%s) done", m->id, task->id);
-            /* clean our references and report request as done. Signal
-             * that we want another unless we have been aborted */
-            /* TODO: this will keep a worker attached to this h2_mplx as
-             * long as it has requests to handle. Might no be fair to
-             * other mplx's. Perhaps leave after n requests? */
-            h2_mplx_out_close(m, task->stream_id);
+            out_close(m, task);
             
             if (ngn) {
                 apr_off_t bytes = 0;
@@ -930,29 +920,33 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                 h2_task_redo(task);
                 h2_ihash_remove(m->redo_tasks, task->stream_id);
                 h2_iq_add(m->q, task->stream_id, NULL, NULL);
+                return;
             }
-            else {
-                task->worker_done = 1;
-                task->done_at = now;
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                              "h2_mplx(%s): request done, %f ms"
-                              " elapsed", task->id, 
-                              (task->done_at - task->started_at) / 1000.0);
-                if (task->started_at > m->last_idle_block) {
-                    /* this task finished without causing an 'idle block', e.g.
-                     * a block by flow control.
-                     */
-                    if (now - m->last_limit_change >= m->limit_change_interval
-                        && m->workers_limit < m->workers_max) {
-                        /* Well behaving stream, allow it more workers */
-                        m->workers_limit = H2MIN(m->workers_limit * 2, 
-                                                 m->workers_max);
-                        m->last_limit_change = now;
-                        m->need_registration = 1;
-                        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                                      "h2_mplx(%ld): increase worker limit to %d",
-                                      m->id, m->workers_limit);
-                    }
+            
+            task->worker_done = 1;
+            task->done_at = apr_time_now();
+            if (task->output.beam) {
+                h2_beam_on_consumed(task->output.beam, NULL, NULL);
+                h2_beam_mutex_set(task->output.beam, NULL, NULL, NULL);
+            }
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                          "h2_mplx(%s): request done, %f ms"
+                          " elapsed", task->id, 
+                          (task->done_at - task->started_at) / 1000.0);
+            if (task->started_at > m->last_idle_block) {
+                /* this task finished without causing an 'idle block', e.g.
+                 * a block by flow control.
+                 */
+                if (task->done_at- m->last_limit_change >= m->limit_change_interval
+                    && m->workers_limit < m->workers_max) {
+                    /* Well behaving stream, allow it more workers */
+                    m->workers_limit = H2MIN(m->workers_limit * 2, 
+                                             m->workers_max);
+                    m->last_limit_change = task->done_at;
+                    m->need_registration = 1;
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
+                                  "h2_mplx(%ld): increase worker limit to %d",
+                                  m->id, m->workers_limit);
                 }
             }
             

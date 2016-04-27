@@ -199,22 +199,20 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  * bucket beam that can transport buckets across threads
  ******************************************************************************/
 
-static apr_status_t enter_yellow(h2_bucket_beam *beam, 
-                                 apr_thread_mutex_t **plock, int *pacquired)
+static apr_status_t enter_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
     if (beam->m_enter) {
-        return beam->m_enter(beam->m_ctx, plock, pacquired);
+        return beam->m_enter(beam->m_ctx, pbl);
     }
-    *plock = NULL;
-    *pacquired = 0;
+    pbl->mutex = NULL;
+    pbl->leave = NULL;
     return APR_SUCCESS;
 }
 
-static void leave_yellow(h2_bucket_beam *beam, 
-                         apr_thread_mutex_t *lock, int acquired)
+static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
-    if (acquired && beam->m_leave) {
-        beam->m_leave(beam->m_ctx, lock, acquired);
+    if (pbl->leave) {
+        pbl->leave(pbl->leave_ctx, pbl->mutex);
     }
 }
 
@@ -269,12 +267,12 @@ static apr_status_t wait_cond(h2_bucket_beam *beam, apr_thread_mutex_t *lock)
 }
 
 static apr_status_t r_wait_space(h2_bucket_beam *beam, apr_read_type_e block,
-                                 apr_thread_mutex_t *lock, apr_off_t *premain) 
+                                 h2_beam_lock *pbl, apr_off_t *premain) 
 {
     *premain = calc_space_left(beam);
     while (!beam->aborted && *premain <= 0 
-           && (block == APR_BLOCK_READ) && lock) {
-        apr_status_t status = wait_cond(beam, lock);
+           && (block == APR_BLOCK_READ) && pbl->mutex) {
+        apr_status_t status = wait_cond(beam, pbl->mutex);
         if (APR_STATUS_IS_TIMEUP(status)) {
             return status;
         }
@@ -292,10 +290,9 @@ static void h2_beam_prep_purge(h2_bucket_beam *beam, apr_bucket *bred)
 
 static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
 
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         /* even when beam buckets are split, only the one where
          * refcount drops to 0 will call us */
         H2_BPROXY_REMOVE(proxy);
@@ -307,13 +304,13 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
             proxy->bred = NULL;
         }
         /* notify anyone waiting on space to become available */
-        if (!lock) {
+        if (!bl.mutex) {
             r_purge_reds(beam);
         }
         else if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
         }
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
@@ -391,18 +388,18 @@ static apr_status_t beam_cleanup(void *data)
 
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam)
 {
-    apr_pool_cleanup_kill(beam->life_pool, beam, beam_cleanup);
+    apr_pool_cleanup_kill(beam->red_pool, beam, beam_cleanup);
     return beam_cleanup(beam);
 }
 
-apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *life_pool, 
+apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *red_pool, 
                             int id, const char *tag, 
                             apr_size_t max_buf_size)
 {
     h2_bucket_beam *beam;
     apr_status_t status = APR_SUCCESS;
     
-    beam = apr_pcalloc(life_pool, sizeof(*beam));
+    beam = apr_pcalloc(red_pool, sizeof(*beam));
     if (!beam) {
         return APR_ENOMEM;
     }
@@ -413,10 +410,10 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *life_pool,
     H2_BLIST_INIT(&beam->hold);
     H2_BLIST_INIT(&beam->purge);
     H2_BPROXY_LIST_INIT(&beam->proxies);
-    beam->life_pool = life_pool;
+    beam->red_pool = red_pool;
     beam->max_buf_size = max_buf_size;
 
-    apr_pool_pre_cleanup_register(life_pool, beam, beam_cleanup);
+    apr_pool_pre_cleanup_register(red_pool, beam, beam_cleanup);
     *pbeam = beam;
     
     return status;
@@ -424,83 +421,68 @@ apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *life_pool,
 
 void h2_beam_buffer_size_set(h2_bucket_beam *beam, apr_size_t buffer_size)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->max_buf_size = buffer_size;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
 apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     apr_size_t buffer_size = 0;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         buffer_size = beam->max_buf_size;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return buffer_size;
 }
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,
-                       h2_beam_mutex_leave m_leave,
                        apr_thread_cond_t *cond,
                        void *m_ctx)
 {
-    apr_thread_mutex_t *lock;
-    h2_beam_mutex_leave *prev_leave;
-    void *prev_ctx;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
-        prev_ctx = beam->m_ctx;
-        prev_leave = beam->m_leave;
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->m_enter = m_enter;
-        beam->m_leave = m_leave;
         beam->m_ctx   = m_ctx;
         beam->m_cond  = cond;
-        if (acquired && prev_leave) {
-            /* special tactics when NULLing a lock */
-            prev_leave(prev_ctx, lock, acquired);
-        }
+        leave_yellow(beam, &bl);
     }
 }
 
 void h2_beam_timeout_set(h2_bucket_beam *beam, apr_interval_time_t timeout)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->timeout = timeout;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
 apr_interval_time_t h2_beam_timeout_get(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     apr_interval_time_t timeout = 0;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         timeout = beam->timeout;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return timeout;
 }
 
 void h2_beam_abort(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_reds(beam);
         h2_blist_cleanup(&beam->red);
         beam->aborted = 1;
@@ -508,32 +490,30 @@ void h2_beam_abort(h2_bucket_beam *beam)
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
         }
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
 apr_status_t h2_beam_close(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_reds(beam);
         beam_close(beam);
         report_consumption(beam);
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
 }
 
 void h2_beam_shutdown(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam_shutdown(beam, 1);
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
@@ -541,7 +521,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
                                   apr_bucket *bred,
                                   apr_read_type_e block,
                                   apr_pool_t *pool,
-                                  apr_thread_mutex_t *lock)
+                                  h2_beam_lock *pbl)
 {
     const char *data;
     apr_size_t len;
@@ -570,7 +550,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         }
         
         if (space_left < bred->length) {
-            status = r_wait_space(beam, block, lock, &space_left);
+            status = r_wait_space(beam, block, pbl, &space_left);
             if (status != APR_SUCCESS) {
                 return status;
             }
@@ -596,23 +576,33 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
          * affected by this. */
         status = apr_bucket_setaside(bred, pool);
     }
-    else if (APR_BUCKET_IS_HEAP(bred) || APR_BUCKET_IS_POOL(bred)) {
-        /* For heap/pool buckets read from a green thread is fine. The
+    else if (APR_BUCKET_IS_HEAP(bred)) {
+        /* For heap buckets read from a green thread is fine. The
          * data will be there and live until the bucket itself is
          * destroyed. */
         status = APR_SUCCESS;
+    }
+    else if (APR_BUCKET_IS_POOL(bred)) {
+        /* pool buckets are bastards that register at pool cleanup
+         * to morph themselves into heap buckets. That may happen anytime,
+         * even after the bucket data pointer has been read. So at
+         * any time inside the green thread, the pool bucket memory
+         * may disappear. yikes. */
+        status = apr_bucket_read(bred, &data, &len, APR_BLOCK_READ);
+        if (status == APR_SUCCESS) {
+            apr_bucket_heap_make(bred, data, len, NULL);
+        }
     }
     else if (APR_BUCKET_IS_FILE(bred)) {
         /* For file buckets the problem is their internal readpool that
          * is used on the first read to allocate buffer/mmap.
          * Since setting aside a file bucket will de-register the
          * file cleanup function from the previous pool, we need to
-         * call that from a red thread. Do it now and make our
-         * yellow pool the owner. 
+         * call that from a red thread. 
          * Additionally, we allow callbacks to prevent beaming file
          * handles across. The use case for this is to limit the number 
          * of open file handles and rather use a less efficient beam
-         * transport. */ 
+         * transport. */
         apr_file_t *fd = ((apr_bucket_file *)bred->data)->fd;
         int can_beam = 1;
         if (beam->last_beamed != fd && beam->can_beam_fn) {
@@ -622,13 +612,16 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
             beam->last_beamed = fd;
             status = apr_bucket_setaside(bred, pool);
         }
+        /* else: enter ENOTIMPL case below */
     }
     
     if (status == APR_ENOTIMPL) {
         /* we have no knowledge about the internals of this bucket,
-         * but on read, it needs to make the data available somehow.
-         * So we do this while still in a red thread. The data will
-         * live at least os long as the red bucket itself. */
+         * but hope that after read, its data stays immutable for the
+         * lifetime of the bucket. (see pool bucket handling above for
+         * a counter example).
+         * We do the read while in a red thread, so that the bucket may
+         * use pools/allocators safely. */
         if (space_left < APR_BUCKET_BUFF_SIZE) {
             space_left = APR_BUCKET_BUFF_SIZE;
         }
@@ -656,13 +649,12 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
                           apr_bucket_brigade *red_brigade, 
                           apr_read_type_e block)
 {
-    apr_thread_mutex_t *lock;
     apr_bucket *bred;
     apr_status_t status = APR_SUCCESS;
-    int acquired;
+    h2_beam_lock bl;
 
     /* Called from the red thread to add buckets to the beam */
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_reds(beam);
         
         if (beam->aborted) {
@@ -672,14 +664,14 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             while (!APR_BRIGADE_EMPTY(red_brigade)
                    && status == APR_SUCCESS) {
                 bred = APR_BRIGADE_FIRST(red_brigade);
-                status = append_bucket(beam, bred, block, red_brigade->p, lock);
+                status = append_bucket(beam, bred, block, beam->red_pool, &bl);
             }
             if (beam->m_cond) {
                 apr_thread_cond_broadcast(beam->m_cond);
             }
         }
         report_consumption(beam);
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return status;
 }
@@ -689,14 +681,14 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
                              apr_read_type_e block,
                              apr_off_t readbytes)
 {
-    apr_thread_mutex_t *lock;
+    h2_beam_lock bl;
     apr_bucket *bred, *bgreen, *ng;
-    int acquired, transferred = 0;
+    int transferred = 0;
     apr_status_t status = APR_SUCCESS;
     apr_off_t remain = readbytes;
     
     /* Called from the green thread to take buckets from the beam */
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
         if (beam->aborted) {
             status = APR_ECONNABORTED;
@@ -817,8 +809,8 @@ transfer:
                 status = APR_EOF;
             }
         }
-        else if (block == APR_BLOCK_READ && lock && beam->m_cond) {
-            status = wait_cond(beam, lock);
+        else if (block == APR_BLOCK_READ && bl.mutex && beam->m_cond) {
+            status = wait_cond(beam, bl.mutex);
             if (status != APR_SUCCESS) {
                 goto leave;
             }
@@ -828,7 +820,7 @@ transfer:
             status = APR_EAGAIN;
         }
 leave:        
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return status;
 }
@@ -836,57 +828,53 @@ leave:
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
                          h2_beam_consumed_callback *cb, void *ctx)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->consumed_fn = cb;
         beam->consumed_ctx = ctx;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
 void h2_beam_on_file_beam(h2_bucket_beam *beam, 
                           h2_beam_can_beam_callback *cb, void *ctx)
 {
-    apr_thread_mutex_t *lock;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->can_beam_fn = cb;
         beam->can_beam_ctx = ctx;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
 }
 
 
 apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
     apr_bucket *b;
     apr_off_t l = 0;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         for (b = H2_BLIST_FIRST(&beam->red); 
             b != H2_BLIST_SENTINEL(&beam->red);
             b = APR_BUCKET_NEXT(b)) {
             /* should all have determinate length */
             l += b->length;
         }
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return l;
 }
 
 apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
     apr_bucket *b;
     apr_off_t l = 0;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         for (b = H2_BLIST_FIRST(&beam->red); 
             b != H2_BLIST_SENTINEL(&beam->red);
             b = APR_BUCKET_NEXT(b)) {
@@ -898,21 +886,20 @@ apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam)
                 l += b->length;
             }
         }
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return l;
 }
 
 int h2_beam_empty(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
     int empty = 1;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         empty = (H2_BLIST_EMPTY(&beam->red) 
                  && (!beam->green || APR_BRIGADE_EMPTY(beam->green)));
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return empty;
 }
@@ -924,26 +911,24 @@ int h2_beam_closed(h2_bucket_beam *beam)
 
 int h2_beam_was_received(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
     int happend = 0;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         happend = (beam->received_bytes > 0);
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return happend;
 }
 
 apr_size_t h2_beam_get_files_beamed(h2_bucket_beam *beam)
 {
-    apr_thread_mutex_t *lock;
     apr_size_t n = 0;
-    int acquired;
+    h2_beam_lock bl;
     
-    if (enter_yellow(beam, &lock, &acquired) == APR_SUCCESS) {
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         n = beam->files_beamed;
-        leave_yellow(beam, lock, acquired);
+        leave_yellow(beam, &bl);
     }
     return n;
 }

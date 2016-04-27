@@ -678,7 +678,6 @@ static int h2_h2_post_read_req(request_rec *r)
         struct h2_task *task = h2_ctx_get_task(ctx);
         /* This hook will get called twice on internal redirects. Take care
          * that we manipulate filters only once. */
-        /* our slave connection? */
         if (task && !task->filters_set) {
             ap_filter_t *f;
             

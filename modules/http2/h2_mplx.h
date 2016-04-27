@@ -244,11 +244,6 @@ struct h2_stream *h2_mplx_next_submit(h2_mplx *m,
 apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
                               struct h2_response *response);
 
-/**
- * Closes the output for stream stream_id. 
- */
-apr_status_t h2_mplx_out_close(h2_mplx *m, int stream_id);
-
 /*******************************************************************************
  * h2_mplx list Manipulation.
  ******************************************************************************/
