@@ -114,17 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) scoreboard/status: Keep previous worker connection/request data when idle as
-     prior to 2.4.20.
-     trunk patch: http://svn.apache.org/r1739008
-     trunk patch: http://svn.apache.org/r1739146
-     trunk patch: http://svn.apache.org/r1739151
-     trunk patch: http://svn.apache.org/r1739193
-     2.4.x patch: trunk works (modulo CHANGES) or
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-scoreboard_preserve-v2.patch
-     +1: ylavic, rpluem, jim
-     ylavic: diff with 2.4.18 after this merge:
-             http://home.apache.org/~ylavic/patches/scoreboard-2.4.18.diff
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

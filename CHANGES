@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) scoreboard/status: Restore behavior of showing workers' previous Client,
+     VHost and Request values when idle, like in 2.4.18 and earlier. 
+
   *) mod_http2: r->protocol changed to "HTTP/2.0" (was "HTTP/2") as this will
      give expected syntax in CGI's SERVER_PROTOCOL is more compatible with
      existing major/minor handling. Fixes PR 59313.
