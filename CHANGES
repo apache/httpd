@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.21
 
+  *) core: New CGIVar directive can configure REQUEST_URI to represent the
+     current URI being processed instead of always the original request.
+     [Jeff Trawick]
+
   *) scoreboard/status: Restore behavior of showing workers' previous Client,
      VHost and Request values when idle, like in 2.4.18 and earlier. 
 

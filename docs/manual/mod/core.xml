@@ -598,6 +598,32 @@ variables</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CGIVar</name>
+<description>Controls how some CGI variables are set</description>
+<syntax>CGIVar <var>variable</var> <var>rule</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Available in Apache HTTP Server 2.4.21 and later</compatibility>
+
+<usage>
+  <p>This directive controls how some CGI variables are set.</p>
+
+  <p><strong>REQUEST_URI</strong> rules:</p>
+  <dl>
+    <dt><code>original-uri</code> (default)</dt>
+    <dd>The value is taken from the original request line, and will not
+    reflect internal redirects or subrequests which change the requested
+    resource.</dd>
+    <dt><code>current-uri</code></dt>
+    <dd>The value reflects the resource currently being processed,
+    which may be different than the original request from the client
+    due to internal redirects or subrequests.</dd>
+  </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ContentDigest</name>
 <description>Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</description>

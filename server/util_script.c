@@ -370,12 +370,25 @@ static char *original_uri(request_rec *r)
 AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
+    core_dir_config *conf =
+        (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
+    int request_uri_from_original = 1;
+    const char *request_uri_rule;
 
     apr_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
     apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
     apr_table_setn(e, "REQUEST_METHOD", r->method);
     apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
-    apr_table_setn(e, "REQUEST_URI", original_uri(r));
+
+    if (conf->cgi_var_rules) {
+        request_uri_rule = apr_hash_get(conf->cgi_var_rules, "REQUEST_URI",
+                                        APR_HASH_KEY_STRING);
+        if (request_uri_rule && !strcmp(request_uri_rule, "current-uri")) {
+            request_uri_from_original = 0;
+        }
+    }
+    apr_table_setn(e, "REQUEST_URI",
+                   request_uri_from_original ? original_uri(r) : r->uri);
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
