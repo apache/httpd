@@ -175,8 +175,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) Correct scoreboard behaviors in multiple MPMs and mod_http2 to avoid
+     clobbering the most recent request line at unexpect times.  Corrects
+     a notable regression in 2.4.20 and in some earlier edge cases.
+     PR 59333
+     See r1741310 for more precise patch details
+     trunk patch: http://svn.apache.org/r1741310
+     2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310.patch
+     +1: wrowe
 
-  
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
