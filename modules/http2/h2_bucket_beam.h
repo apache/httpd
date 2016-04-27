@@ -139,14 +139,19 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  * technology where humans are kept inside the transporter's memory
  * buffers until the transmission is complete. Star gates use a similar trick.
  */
+
+typedef void h2_beam_mutex_leave(void *ctx,  struct apr_thread_mutex_t *lock);
+
+typedef struct {
+    apr_thread_mutex_t *mutex;
+    h2_beam_mutex_leave *leave;
+    void *leave_ctx;
+} h2_beam_lock;
+
 typedef struct h2_bucket_beam h2_bucket_beam;
 
-typedef apr_status_t h2_beam_mutex_enter(void *ctx, 
-                                         struct apr_thread_mutex_t **plock, 
-                                         int *acquired);
-typedef void h2_beam_mutex_leave(void *ctx, 
-                                 struct apr_thread_mutex_t *lock, 
-                                 int acquired);
+typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
+
 typedef void h2_beam_consumed_callback(void *ctx, h2_bucket_beam *beam,
                                        apr_off_t bytes);
 
@@ -166,7 +171,7 @@ struct h2_bucket_beam {
     h2_blist purge;
     apr_bucket_brigade *green;
     h2_bproxy_list proxies;
-    apr_pool_t *life_pool;
+    apr_pool_t *red_pool;
     
     apr_size_t max_buf_size;
     apr_size_t files_beamed;  /* how many file handles have been set aside */
@@ -181,7 +186,6 @@ struct h2_bucket_beam {
 
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;
-    h2_beam_mutex_leave *m_leave;
     struct apr_thread_cond_t *m_cond;
     apr_interval_time_t timeout;
     
@@ -199,15 +203,22 @@ struct h2_bucket_beam {
  * that is only used inside that same mutex.
  *
  * @param pbeam will hold the created beam on return
- * @param life_pool     pool for allocating initial structure and cleanups
+ * @param red_pool      pool usable on red side, beam lifeline
  * @param buffer_size   maximum memory footprint of buckets buffered in beam, or
  *                      0 for no limitation
+ *
+ * Call from the red side only.
  */
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam,
-                            apr_pool_t *life_pool, 
+                            apr_pool_t *red_pool, 
                             int id, const char *tag, 
                             apr_size_t buffer_size);
 
+/**
+ * Destroys the beam immediately without cleanup.
+ *
+ * Call from the red side only.
+ */ 
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam);
 
 /**
@@ -215,6 +226,8 @@ apr_status_t h2_beam_destroy(h2_bucket_beam *beam);
  * internally as long as they have not been processed by the receiving side.
  * All accepted buckets are removed from the given brigade. Will return with
  * APR_EAGAIN on non-blocking sends when not all buckets could be accepted.
+ * 
+ * Call from the red side only.
  */
 apr_status_t h2_beam_send(h2_bucket_beam *beam,  
                           apr_bucket_brigade *red_buckets, 
@@ -225,28 +238,52 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
  * when reading past an EOS bucket. Reads can be blocking until data is 
  * available or the beam has been closed. Non-blocking calls return APR_EAGAIN
  * if no data is available.
+ *
+ * Call from the green side only.
  */
 apr_status_t h2_beam_receive(h2_bucket_beam *beam, 
                              apr_bucket_brigade *green_buckets, 
                              apr_read_type_e block,
                              apr_off_t readbytes);
 
+/**
+ * Determine if beam is closed. May still contain buffered data. 
+ * 
+ * Call from red or green side.
+ */
+int h2_beam_closed(h2_bucket_beam *beam);
+
+/**
+ * Determine if beam is empty. 
+ * 
+ * Call from red or green side.
+ */
+int h2_beam_empty(h2_bucket_beam *beam);
+
+/**
+ * Abort the beam. Will cleanup any buffered buckets and answer all send
+ * and receives with APR_ECONNABORTED.
+ * 
+ * Call from the red side only.
+ */
 void h2_beam_abort(h2_bucket_beam *beam);
 
 /**
- * Close the beam. Does not need to be invoked if certain that an EOS bucket
- * has been sent. 
+ * Close the beam. Sending an EOS bucket serves the same purpose. 
+ * 
+ * Call from the red side only.
  */
 apr_status_t h2_beam_close(h2_bucket_beam *beam);
 
 /**
  * Empty the buffer and close.
+ * 
+ * Call from the red side only.
  */
 void h2_beam_shutdown(h2_bucket_beam *beam);
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,
-                       h2_beam_mutex_leave m_leave,
                        struct apr_thread_cond_t *cond,
                        void *m_ctx);
 
@@ -272,6 +309,8 @@ apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam);
  * @param beam the beam to set the callback on
  * @param cb   the callback or NULL
  * @param ctx  the context to use in callback invocation
+ * 
+ * Call from the red side, callbacks invoked on red side.
  */
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
                          h2_beam_consumed_callback *cb, void *ctx);
@@ -288,9 +327,6 @@ apr_off_t h2_beam_get_buffered(h2_bucket_beam *beam);
  * Get the memory used by the buffered buckets, approximately.
  */
 apr_off_t h2_beam_get_mem_used(h2_bucket_beam *beam);
-
-int h2_beam_closed(h2_bucket_beam *beam);
-int h2_beam_empty(h2_bucket_beam *beam);
 
 /**
  * Return != 0 iff (some) data from the beam has been received.
