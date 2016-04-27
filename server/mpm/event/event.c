@@ -1158,7 +1158,7 @@ read_request:
     if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
         int not_complete_yet;
 
-        ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, NULL);
+        ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
 
         not_complete_yet = ap_run_output_pending(c);
 
@@ -1199,7 +1199,7 @@ read_request:
         start_lingering_close_blocking(cs);
     }
     else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
-        ap_update_child_status_from_conn(sbh, SERVER_BUSY_KEEPALIVE, NULL);
+        ap_update_child_status_from_conn(sbh, SERVER_BUSY_KEEPALIVE, c);
 
         /* It greatly simplifies the logic to use a single timeout value per q
          * because the new element can just be added to the end of the list and
