@@ -50,6 +50,7 @@ CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN" "libhttpd
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\h2_alt_svc.obj"
+	-@erase "$(INTDIR)\h2_bucket_beam.obj"
 	-@erase "$(INTDIR)\h2_bucket_eoc.obj"
 	-@erase "$(INTDIR)\h2_bucket_eos.obj"
 	-@erase "$(INTDIR)\h2_config.obj"
@@ -59,9 +60,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_filter.obj"
 	-@erase "$(INTDIR)\h2_from_h1.obj"
 	-@erase "$(INTDIR)\h2_h2.obj"
-	-@erase "$(INTDIR)\h2_int_queue.obj"
-	-@erase "$(INTDIR)\h2_io.obj"
-	-@erase "$(INTDIR)\h2_io_set.obj"
 	-@erase "$(INTDIR)\h2_mplx.obj"
 	-@erase "$(INTDIR)\h2_ngn_shed.obj"
 	-@erase "$(INTDIR)\h2_push.obj"
@@ -71,8 +69,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_stream.obj"
 	-@erase "$(INTDIR)\h2_switch.obj"
 	-@erase "$(INTDIR)\h2_task.obj"
-	-@erase "$(INTDIR)\h2_task_input.obj"
-	-@erase "$(INTDIR)\h2_task_output.obj"
 	-@erase "$(INTDIR)\h2_util.obj"
 	-@erase "$(INTDIR)\h2_worker.obj"
 	-@erase "$(INTDIR)\h2_workers.obj"
@@ -133,6 +129,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib nghttp2.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_http2.pdb" /debug /out:"$(OUTDIR)\mod_http2.so" /implib:"$(OUTDIR)\mod_http2.lib" /libpath:"..\..\srclib\nghttp2\lib\MSVC_obj" /base:@..\..\os\win32\BaseAddr.ref,mod_http2.so /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\h2_alt_svc.obj" \
+	"$(INTDIR)\h2_bucket_beam.obj" \
 	"$(INTDIR)\h2_bucket_eoc.obj" \
 	"$(INTDIR)\h2_bucket_eos.obj" \
 	"$(INTDIR)\h2_config.obj" \
@@ -142,9 +139,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_filter.obj" \
 	"$(INTDIR)\h2_from_h1.obj" \
 	"$(INTDIR)\h2_h2.obj" \
-	"$(INTDIR)\h2_int_queue.obj" \
-	"$(INTDIR)\h2_io.obj" \
-	"$(INTDIR)\h2_io_set.obj" \
 	"$(INTDIR)\h2_mplx.obj" \
 	"$(INTDIR)\h2_ngn_shed.obj" \
 	"$(INTDIR)\h2_push.obj" \
@@ -154,8 +148,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_stream.obj" \
 	"$(INTDIR)\h2_switch.obj" \
 	"$(INTDIR)\h2_task.obj" \
-	"$(INTDIR)\h2_task_input.obj" \
-	"$(INTDIR)\h2_task_output.obj" \
 	"$(INTDIR)\h2_util.obj" \
 	"$(INTDIR)\h2_worker.obj" \
 	"$(INTDIR)\h2_workers.obj" \
@@ -208,6 +200,7 @@ CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN" "libhttpd - W
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\h2_alt_svc.obj"
+	-@erase "$(INTDIR)\h2_bucket_beam.obj"
 	-@erase "$(INTDIR)\h2_bucket_eoc.obj"
 	-@erase "$(INTDIR)\h2_bucket_eos.obj"
 	-@erase "$(INTDIR)\h2_config.obj"
@@ -217,9 +210,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_filter.obj"
 	-@erase "$(INTDIR)\h2_from_h1.obj"
 	-@erase "$(INTDIR)\h2_h2.obj"
-	-@erase "$(INTDIR)\h2_int_queue.obj"
-	-@erase "$(INTDIR)\h2_io.obj"
-	-@erase "$(INTDIR)\h2_io_set.obj"
 	-@erase "$(INTDIR)\h2_mplx.obj"
 	-@erase "$(INTDIR)\h2_ngn_shed.obj"
 	-@erase "$(INTDIR)\h2_push.obj"
@@ -229,8 +219,6 @@ CLEAN :
 	-@erase "$(INTDIR)\h2_stream.obj"
 	-@erase "$(INTDIR)\h2_switch.obj"
 	-@erase "$(INTDIR)\h2_task.obj"
-	-@erase "$(INTDIR)\h2_task_input.obj"
-	-@erase "$(INTDIR)\h2_task_output.obj"
 	-@erase "$(INTDIR)\h2_util.obj"
 	-@erase "$(INTDIR)\h2_worker.obj"
 	-@erase "$(INTDIR)\h2_workers.obj"
@@ -291,6 +279,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib nghttp2d.lib /nologo /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_http2.pdb" /debug /out:"$(OUTDIR)\mod_http2.so" /implib:"$(OUTDIR)\mod_http2.lib" /libpath:"..\..\srclib\nghttp2\lib\MSVC_obj" /base:@..\..\os\win32\BaseAddr.ref,mod_http2.so 
 LINK32_OBJS= \
 	"$(INTDIR)\h2_alt_svc.obj" \
+	"$(INTDIR)\h2_bucket_beam.obj" \
 	"$(INTDIR)\h2_bucket_eoc.obj" \
 	"$(INTDIR)\h2_bucket_eos.obj" \
 	"$(INTDIR)\h2_config.obj" \
@@ -300,9 +289,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_filter.obj" \
 	"$(INTDIR)\h2_from_h1.obj" \
 	"$(INTDIR)\h2_h2.obj" \
-	"$(INTDIR)\h2_int_queue.obj" \
-	"$(INTDIR)\h2_io.obj" \
-	"$(INTDIR)\h2_io_set.obj" \
 	"$(INTDIR)\h2_mplx.obj" \
 	"$(INTDIR)\h2_ngn_shed.obj" \
 	"$(INTDIR)\h2_push.obj" \
@@ -312,8 +298,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\h2_stream.obj" \
 	"$(INTDIR)\h2_switch.obj" \
 	"$(INTDIR)\h2_task.obj" \
-	"$(INTDIR)\h2_task_input.obj" \
-	"$(INTDIR)\h2_task_output.obj" \
 	"$(INTDIR)\h2_util.obj" \
 	"$(INTDIR)\h2_worker.obj" \
 	"$(INTDIR)\h2_workers.obj" \
@@ -438,6 +422,11 @@ SOURCE=./h2_alt_svc.c
 "$(INTDIR)\h2_alt_svc.obj" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=./h2_bucket_beam.c
+
+"$(INTDIR)/h2_bucket_beam.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=./h2_bucket_eoc.c
 
 "$(INTDIR)\h2_bucket_eoc.obj" : $(SOURCE) "$(INTDIR)"
@@ -483,21 +472,6 @@ SOURCE=./h2_h2.c
 "$(INTDIR)\h2_h2.obj" : $(SOURCE) "$(INTDIR)"
 
 
-SOURCE=./h2_int_queue.c
-
-"$(INTDIR)\h2_int_queue.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_io.c
-
-"$(INTDIR)\h2_io.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_io_set.c
-
-"$(INTDIR)\h2_io_set.obj" : $(SOURCE) "$(INTDIR)"
-
-
 SOURCE=./h2_mplx.c
 
 "$(INTDIR)\h2_mplx.obj" : $(SOURCE) "$(INTDIR)"
@@ -541,16 +515,6 @@ SOURCE=./h2_switch.c
 SOURCE=./h2_task.c
 
 "$(INTDIR)\h2_task.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_task_input.c
-
-"$(INTDIR)\h2_task_input.obj" : $(SOURCE) "$(INTDIR)"
-
-
-SOURCE=./h2_task_output.c
-
-"$(INTDIR)\h2_task_output.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=./h2_util.c
