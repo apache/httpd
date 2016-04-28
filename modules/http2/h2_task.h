@@ -38,12 +38,13 @@
  */
 
 struct apr_thread_cond_t;
+struct h2_bucket_beam;
 struct h2_conn;
 struct h2_mplx;
 struct h2_task;
 struct h2_req_engine;
 struct h2_request;
-struct h2_resp_head;
+struct h2_response;
 struct h2_worker;
 
 typedef struct h2_task h2_task;
@@ -52,32 +53,71 @@ struct h2_task {
     const char *id;
     int stream_id;
     conn_rec *c;
-    struct h2_mplx *mplx;
     apr_pool_t *pool;
+    
     const struct h2_request *request;
+    struct h2_response *response;
     
-    unsigned int filters_set : 1;
-    unsigned int input_eos   : 1;
-    unsigned int ser_headers : 1;
-    unsigned int frozen      : 1;
-    unsigned int blocking    : 1;
-    unsigned int detached    : 1;
+    struct {
+        struct h2_bucket_beam *beam;
+        apr_bucket_brigade *bb;
+        apr_read_type_e block;
+        unsigned int chunked : 1;
+        unsigned int eos : 1;
+        unsigned int eos_written : 1;
+    } input;
+    struct {
+        struct h2_bucket_beam *beam;
+        struct h2_from_h1 *from_h1;
+        unsigned int response_open : 1;
+        apr_off_t written;
+        apr_bucket_brigade *bb;
+    } output;
     
-    struct h2_task_input *input;
-    struct h2_task_output *output;
-    struct apr_thread_cond_t *io;   /* used to wait for events on */
+    struct h2_mplx *mplx;
+    struct apr_thread_cond_t *cond;
+    
+    int rst_error;                   /* h2 related stream abort error */
+    unsigned int filters_set    : 1;
+    unsigned int ser_headers    : 1;
+    unsigned int frozen         : 1;
+    unsigned int blocking       : 1;
+    unsigned int detached       : 1;
+    unsigned int orphaned       : 1; /* h2_stream is gone for this task */    
+    unsigned int submitted      : 1; /* response has been submitted to client */
+    unsigned int worker_started : 1; /* h2_worker started processing for this io */
+    unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    
+    apr_time_t started_at;           /* when processing started */
+    apr_time_t done_at;              /* when processing was done */
+    apr_bucket *eor;
     
     struct h2_req_engine *engine;   /* engine hosted by this task */
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
     request_rec *r;                 /* request being processed in this task */
 };
 
-h2_task *h2_task_create(long session_id, const struct h2_request *req, 
-                        conn_rec *c, struct h2_mplx *mplx);
+h2_task *h2_task_create(conn_rec *c, const struct h2_request *req, 
+                        struct h2_bucket_beam *input, struct h2_mplx *mplx);
 
 void h2_task_destroy(h2_task *task);
 
-apr_status_t h2_task_do(h2_task *task, struct apr_thread_cond_t *cond);
+apr_status_t h2_task_do(h2_task *task);
+
+void h2_task_set_response(h2_task *task, struct h2_response *response);
+
+void h2_task_redo(h2_task *task);
+int h2_task_can_redo(h2_task *task);
+
+/**
+ * Reset the task with the given error code, resets all input/output.
+ */
+void h2_task_rst(h2_task *task, int error);
+
+/**
+ * Shuts all input/output down. Clears any buckets buffered and closes.
+ */
+apr_status_t h2_task_shutdown(h2_task *task, int block);
 
 void h2_task_register_hooks(void);
 /*

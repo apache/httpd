@@ -43,8 +43,6 @@ apr_status_t h2_request_add_trailer(h2_request *req, apr_pool_t *pool,
 apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, 
                                     int eos, int push);
 
-void h2_request_copy(apr_pool_t *p, h2_request *dst, const h2_request *src);
-
 h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src);
 
 /**

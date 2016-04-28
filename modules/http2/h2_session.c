@@ -28,6 +28,7 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_bucket_eoc.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
@@ -112,7 +113,7 @@ static void cleanup_streams(h2_session *session)
     while (1) {
         h2_ihash_iter(session->streams, find_cleanup_stream, &ctx);
         if (ctx.candidate) {
-            h2_session_stream_destroy(session, ctx.candidate);
+            h2_session_stream_done(session, ctx.candidate);
             ctx.candidate = NULL;
         }
         else {
@@ -121,7 +122,8 @@ static void cleanup_streams(h2_session *session)
     }
 }
 
-h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
+h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
+                                  int initiated_on, const h2_request *req)
 {
     h2_stream * stream;
     apr_pool_t *stream_pool;
@@ -135,7 +137,8 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id)
         apr_pool_tag(stream_pool, "h2_stream");
     }
     
-    stream = h2_stream_open(stream_id, stream_pool, session);
+    stream = h2_stream_open(stream_id, stream_pool, session, 
+                            initiated_on, req);
     
     h2_ihash_add(session->streams, stream);
     if (H2_STREAM_CLIENT_INITIATED(stream_id)) {
@@ -309,8 +312,9 @@ static apr_status_t stream_release(h2_session *session,
                                    h2_stream *stream,
                                    uint32_t error_code) 
 {
+    conn_rec *c = session->c;
     if (!error_code) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_stream(%ld-%d): handled, closing", 
                       session->id, (int)stream->id);
         if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
@@ -320,7 +324,7 @@ static apr_status_t stream_release(h2_session *session,
         }
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03065)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(03065)
                       "h2_stream(%ld-%d): closing with err=%d %s", 
                       session->id, (int)stream->id, (int)error_code,
                       h2_h2_err_description(error_code));
@@ -328,8 +332,7 @@ static apr_status_t stream_release(h2_session *session,
     }
     
     return h2_conn_io_writeb(&session->io,
-                             h2_bucket_eos_create(session->c->bucket_alloc, 
-                                                  stream));
+                             h2_bucket_eos_create(c->bucket_alloc, stream), 0);
 }
 
 static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
@@ -360,7 +363,7 @@ static int on_begin_headers_cb(nghttp2_session *ngh2,
         /* nop */
     }
     else {
-        s = h2_session_open_stream((h2_session *)userp, frame->hd.stream_id);
+        s = h2_session_open_stream(userp, frame->hd.stream_id, 0, NULL);
     }
     return s? 0 : NGHTTP2_ERR_START_STREAM_NOT_ALLOWED;
 }
@@ -615,7 +618,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         if (status == APR_SUCCESS && padlen) {
             b = apr_bucket_immortal_create(immortal_zeros, padlen, 
                                            session->c->bucket_alloc);
-            status = h2_conn_io_writeb(&session->io, b);
+            status = h2_conn_io_writeb(&session->io, b, 0);
         }
     }
     
@@ -1030,7 +1033,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
         }
         
         /* Now we need to auto-open stream 1 for the request we got. */
-        stream = h2_session_open_stream(session, 1);
+        stream = h2_session_open_stream(session, 1, 0, NULL);
         if (!stream) {
             status = APR_EGENERAL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, session->r,
@@ -1134,7 +1137,7 @@ static int resume_on_data(void *ctx, void *val)
 static int h2_session_resume_streams_with_data(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
-    if (!h2_ihash_is_empty(session->streams)
+    if (!h2_ihash_empty(session->streams)
         && session->mplx && !session->mplx->aborted) {
         resume_ctx ctx;
         
@@ -1275,8 +1278,9 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
         const h2_priority *prio;
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03073)
-                      "h2_stream(%ld-%d): submit response %d",
-                      session->id, stream->id, response->http_status);
+                      "h2_stream(%ld-%d): submit response %d, REMOTE_WINDOW_SIZE=%u",
+                      session->id, stream->id, response->http_status,
+                      (unsigned int)nghttp2_session_get_stream_remote_window_size(session->ngh2, stream->id));
         
         if (response->content_length != 0) {
             memset(&provider, 0, sizeof(provider));
@@ -1372,9 +1376,8 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                   session->id, is->id, nid,
                   push->req->method, push->req->path, is->id);
                   
-    stream = h2_session_open_stream(session, nid);
+    stream = h2_session_open_stream(session, nid, is->id, push->req);
     if (stream) {
-        h2_stream_set_h2_request(stream, is->id, push->req);
         status = stream_schedule(session, stream, 1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c,
@@ -1503,22 +1506,21 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
     return status;
 }
 
-apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
+apr_status_t h2_session_stream_done(h2_session *session, h2_stream *stream)
 {
     apr_pool_t *pool = h2_stream_detach_pool(stream);
-
+    int stream_id = stream->id;
+    int rst_error = stream->rst_error;
+    
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                   "h2_stream(%ld-%d): cleanup by EOS bucket destroy", 
-                  session->id, stream->id);
-    /* this may be called while the session has already freed
-     * some internal structures or even when the mplx is locked. */
-    if (session->mplx) {
-        h2_mplx_stream_done(session->mplx, stream->id, stream->rst_error);
+                  session->id, stream_id);
+    if (session->streams) {
+        h2_ihash_remove(session->streams, stream_id);
     }
     
-    if (session->streams) {
-        h2_ihash_remove(session->streams, stream->id);
-    }
+    h2_stream_cleanup(stream);
+    h2_mplx_stream_done(session->mplx, stream_id, rst_error);
     h2_stream_destroy(stream);
     
     if (pool) {
@@ -1528,6 +1530,7 @@ apr_status_t h2_session_stream_destroy(h2_session *session, h2_stream *stream)
         }
         session->spare = pool;
     }
+
     return APR_SUCCESS;
 }
 
@@ -1757,12 +1760,51 @@ static int is_accepting_streams(h2_session *session)
     }
 }
 
+static void update_child_status(h2_session *session, int status, const char *msg)
+{
+    /* Assume that we also change code/msg when something really happened and
+     * avoid updating the scoreboard in between */
+    if (session->last_status_code != status 
+        || session->last_status_msg != msg) {
+        apr_snprintf(session->status, sizeof(session->status),
+                     "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
+                     msg? msg : "-",
+                     (int)h2_ihash_count(session->streams), 
+                     (int)session->remote.emitted_count,
+                     (int)session->responses_submitted,
+                     (int)session->pushes_submitted,
+                     (int)session->pushes_reset + session->streams_reset);
+        ap_update_child_status_descr(session->c->sbh, status, session->status);
+    }
+}
+
 static void transit(h2_session *session, const char *action, h2_session_state nstate)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03078)
-                  "h2_session(%ld): transit [%s] -- %s --> [%s]", session->id,
-                  state_name(session->state), action, state_name(nstate));
-    session->state = nstate;
+    if (session->state != nstate) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03078)
+                      "h2_session(%ld): transit [%s] -- %s --> [%s]", session->id,
+                      state_name(session->state), action, state_name(nstate));
+        session->state = nstate;
+        switch (session->state) {
+            case H2_SESSION_ST_IDLE:
+                update_child_status(session, (h2_ihash_empty(session->streams)? 
+                                              SERVER_BUSY_KEEPALIVE
+                                              : SERVER_BUSY_READ), "idle");
+                break;
+            case H2_SESSION_ST_REMOTE_SHUTDOWN:
+                update_child_status(session, SERVER_CLOSING, "remote goaway");
+                break;
+            case H2_SESSION_ST_LOCAL_SHUTDOWN:
+                update_child_status(session, SERVER_CLOSING, "local goaway");
+                break;
+            case H2_SESSION_ST_DONE:
+                update_child_status(session, SERVER_CLOSING, "done");
+                break;
+            default:
+                /* nop */
+                break;
+        }
+    }
 }
 
 static void h2_session_ev_init(h2_session *session, int arg, const char *msg)
@@ -1771,7 +1813,6 @@ static void h2_session_ev_init(h2_session *session, int arg, const char *msg)
         case H2_SESSION_ST_INIT:
             transit(session, "init", H2_SESSION_ST_BUSY);
             break;
-
         default:
             /* nop */
             break;
@@ -1878,7 +1919,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
             if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
                 dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
             }
-            if (h2_ihash_is_empty(session->streams)) {
+            if (h2_ihash_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
@@ -2037,29 +2078,11 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
 
 static const int MAX_WAIT_MICROS = 200 * 1000;
 
-static void update_child_status(h2_session *session, int status, const char *msg)
-{
-    /* Assume that we also change code/msg when something really happened and
-     * avoid updating the scoreboard in between */
-    if (session->last_status_code != status 
-        || session->last_status_msg != msg) {
-        apr_snprintf(session->status, sizeof(session->status),
-                     "%s, streams: %d/%d/%d/%d/%d (open/recv/resp/push/rst)", 
-                     msg? msg : "-",
-                     (int)h2_ihash_count(session->streams), 
-                     (int)session->remote.emitted_count,
-                     (int)session->responses_submitted,
-                     (int)session->pushes_submitted,
-                     (int)session->pushes_reset + session->streams_reset);
-        ap_update_child_status_descr(session->c->sbh, status, session->status);
-    }
-}
-
 apr_status_t h2_session_process(h2_session *session, int async)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = session->c;
-    int rv, have_written, have_read, mpm_state, no_streams;
+    int rv, have_written, have_read, mpm_state;
 
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): process start, async=%d", session->id, async);
@@ -2102,12 +2125,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_IDLE:
-                no_streams = h2_ihash_is_empty(session->streams);
-                update_child_status(session, (no_streams? SERVER_BUSY_KEEPALIVE
-                                              : SERVER_BUSY_READ), "idle");
                 /* make certain, the client receives everything before we idle */
                 if (!session->keep_sync_until 
-                    && async && no_streams && !session->r && session->remote.emitted_count) {
+                    && async && h2_ihash_empty(session->streams)
+                    && !session->r && session->remote.emitted_count) {
                     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                                   "h2_session(%ld): async idle, nonblock read", session->id);
                     /* We do not return to the async mpm immediately, since under
@@ -2190,7 +2211,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     status = h2_session_read(session, 0);
                     if (status == APR_SUCCESS) {
                         have_read = 1;
-                        update_child_status(session, SERVER_BUSY_READ, "busy");
                         dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
                     }
                     else if (status == APR_EAGAIN) {
@@ -2205,7 +2225,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 
-                if (!h2_ihash_is_empty(session->streams)) {
+                if (!h2_ihash_empty(session->streams)) {
                     /* resume any streams for which data is available again */
                     h2_session_resume_streams_with_data(session);
                     /* Submit any responses/push_promises that are ready */
@@ -2220,9 +2240,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                     /* send out window updates for our inputs */
                     status = h2_mplx_in_update_windows(session->mplx);
-                    if (status != APR_SUCCESS && status != APR_EAGAIN) {
+                    if (status != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
-                                         H2_ERR_INTERNAL_ERROR, "window update error");
+                                       H2_ERR_INTERNAL_ERROR, 
+                                       "window update error");
                         break;
                     }
                 }
@@ -2257,7 +2278,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
                     }
-                    update_child_status(session, SERVER_BUSY_READ, "wait");
                 }
                 else if ((apr_time_now() - session->start_wait) >= session->s->timeout) {
                     /* waited long enough */
@@ -2297,7 +2317,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 break;
                 
             case H2_SESSION_ST_DONE:
-                update_child_status(session, SERVER_CLOSING, "done");
                 status = APR_EOF;
                 goto out;
                 

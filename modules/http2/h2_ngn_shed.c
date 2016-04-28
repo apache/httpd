@@ -29,16 +29,15 @@
 #include "mod_http2.h"
 
 #include "h2_private.h"
+#include "h2.h"
 #include "h2_config.h"
 #include "h2_conn.h"
 #include "h2_ctx.h"
 #include "h2_h2.h"
-#include "h2_int_queue.h"
 #include "h2_mplx.h"
 #include "h2_response.h"
 #include "h2_request.h"
 #include "h2_task.h"
-#include "h2_task_output.h"
 #include "h2_util.h"
 #include "h2_ngn_shed.h"
 
@@ -296,7 +295,8 @@ static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn,
     ngn->no_finished++;
     if (waslive) ngn->no_live--;
     ngn->no_assigned--;
-
+    task->assigned = NULL;
+    
     return APR_SUCCESS;
 }
                                 

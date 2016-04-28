@@ -198,9 +198,14 @@ struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
  * 
  * @param session the session to register in
  * @param stream_id the new stream identifier
+ * @param initiated_on the stream id this one is initiated on or 0
+ * @param req the request for this stream or NULL if not known yet
  * @return the new stream
  */
-struct h2_stream *h2_session_open_stream(h2_session *session, int stream_id);
+struct h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
+                                         int initiated_on, 
+                                         const h2_request *req);
+
 
 /**
  * Returns if client settings have push enabled.
@@ -213,8 +218,8 @@ int h2_session_push_enabled(h2_session *session);
  * @param session the session to which the stream belongs
  * @param stream the stream to destroy
  */
-apr_status_t h2_session_stream_destroy(h2_session *session, 
-                                       struct h2_stream *stream);
+apr_status_t h2_session_stream_done(h2_session *session, 
+                                    struct h2_stream *stream);
 
 /**
  * Submit a push promise on the stream and schedule the new steam for

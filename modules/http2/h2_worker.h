@@ -16,7 +16,6 @@
 #ifndef __mod_h2__h2_worker__
 #define __mod_h2__h2_worker__
 
-struct apr_thread_cond_t;
 struct h2_mplx;
 struct h2_request;
 struct h2_task;
@@ -39,19 +38,14 @@ typedef void h2_worker_done_fn(h2_worker *worker, void *ctx);
 
 
 struct h2_worker {
+    int id;
     /** Links to the rest of the workers */
     APR_RING_ENTRY(h2_worker) link;
-    
-    int id;
     apr_thread_t *thread;
-    apr_pool_t *pool;
-    struct apr_thread_cond_t *io;
-    
     h2_worker_mplx_next_fn *get_next;
     h2_worker_done_fn *worker_done;
     void *ctx;
-    
-    unsigned int aborted : 1;
+    int aborted;
 };
 
 /**
@@ -135,8 +129,6 @@ h2_worker *h2_worker_create(int id,
 apr_status_t h2_worker_destroy(h2_worker *worker);
 
 void h2_worker_abort(h2_worker *worker);
-
-int h2_worker_get_id(h2_worker *worker);
 
 int h2_worker_is_aborted(h2_worker *worker);
 
