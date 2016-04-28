@@ -181,7 +181,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 59333
      See r1741310 for more precise patch details
      trunk patch: http://svn.apache.org/r1741310
-     2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310.patch
+                  http://svn.apache.org/r1741461
+     2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310-1741461.patch
      +1: wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
