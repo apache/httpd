@@ -295,7 +295,8 @@ static apr_status_t ngn_done_task(h2_ngn_shed *shed, h2_req_engine *ngn,
     ngn->no_finished++;
     if (waslive) ngn->no_live--;
     ngn->no_assigned--;
-
+    task->assigned = NULL;
+    
     return APR_SUCCESS;
 }
                                 

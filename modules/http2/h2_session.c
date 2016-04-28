@@ -332,7 +332,7 @@ static apr_status_t stream_release(h2_session *session,
     }
     
     return h2_conn_io_writeb(&session->io,
-                             h2_bucket_eos_create(c->bucket_alloc, stream), 1);
+                             h2_bucket_eos_create(c->bucket_alloc, stream), 0);
 }
 
 static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
@@ -618,7 +618,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         if (status == APR_SUCCESS && padlen) {
             b = apr_bucket_immortal_create(immortal_zeros, padlen, 
                                            session->c->bucket_alloc);
-            status = h2_conn_io_writeb(&session->io, b, 1);
+            status = h2_conn_io_writeb(&session->io, b, 0);
         }
     }
     

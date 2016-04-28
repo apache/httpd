@@ -314,9 +314,15 @@ static void task_destroy(h2_mplx *m, h2_task *task, int events)
 {
     conn_rec *slave = NULL;
     int reuse_slave = 0;
+    apr_status_t status;
     
     /* cleanup any buffered input */
-    h2_task_shutdown(task);
+    status = h2_task_shutdown(task, 0);
+    if (status != APR_SUCCESS){
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO() 
+                      "h2_task(%s): shutdown", task->id);
+    }
+    
     if (events) {
         /* Process outstanding events before destruction */
         input_consumed_signal(m, task);
@@ -365,14 +371,24 @@ static int task_stream_done(h2_mplx *m, h2_task *task, int rst_error)
     if (task->worker_done) {
         /* already finished or not even started yet */
         h2_iq_remove(m->q, task->stream_id);
-        task_destroy(m, task, 1);
+        task_destroy(m, task, 0);
         return 0;
     }
     else {
         /* cleanup once task is done */
         task->orphaned = 1;
         if (task->input.beam) {
-            h2_beam_shutdown(task->input.beam);
+            apr_status_t status;
+            status = h2_beam_shutdown(task->input.beam, APR_NONBLOCK_READ);
+            if (status == APR_EAGAIN) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
+                              "h2_stream(%ld-%d): wait on input shutdown", 
+                              m->id, task->stream_id);
+                status = h2_beam_shutdown(task->input.beam, APR_BLOCK_READ);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c, 
+                              "h2_stream(%ld-%d): input shutdown returned", 
+                              m->id, task->stream_id);
+            }
             task->input.beam = NULL;
         }
         if (rst_error) {
@@ -471,13 +487,9 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
             }
         }
         
-        if (!h2_ihash_empty(m->tasks)) {
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, m->c, 
-                          "h2_mplx(%ld): release_join, %d tasks still open", 
-                          m->id, (int)h2_ihash_count(m->tasks));
-        }
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03056)
-                      "h2_mplx(%ld): release_join -> destroy", m->id);
+                      "h2_mplx(%ld): release_join (%d tasks left) -> destroy", 
+                      m->id, (int)h2_ihash_count(m->tasks));
         leave_mutex(m, acquired);
         h2_mplx_destroy(m);
         /* all gone */
@@ -612,7 +624,7 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m, h2_ihash_t *streams)
                 else {
                     /* hang around until the h2_task is done, but
                      * shutdown input/output and send out any events asap. */
-                    h2_task_shutdown(task);
+                    h2_task_shutdown(task, 0);
                     input_consumed_signal(m, task);
                 }
             }
@@ -951,7 +963,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             }
             
             if (task->orphaned) {
-                /* TODO: add to purge list */
                 task_destroy(m, task, 0);
                 if (m->join_wait) {
                     apr_thread_cond_signal(m->join_wait);
