@@ -179,6 +179,7 @@ struct h2_bucket_beam {
     apr_off_t sent_bytes;     /* amount of bytes send */
     apr_off_t received_bytes; /* amount of bytes received */
     apr_off_t reported_bytes; /* amount of bytes reported as consumed */
+    apr_size_t buckets_sent;
     
     unsigned int aborted : 1;
     unsigned int closed : 1;
@@ -276,11 +277,16 @@ void h2_beam_abort(h2_bucket_beam *beam);
 apr_status_t h2_beam_close(h2_bucket_beam *beam);
 
 /**
- * Empty the buffer and close.
- * 
+ * Empty any buffered data and return APR_SUCCESS when all buckets
+ * in transit have been handled. When called with APR_BLOCK_READ and
+ * with a mutex installed, will wait until this is the case. Otherwise
+ * APR_EAGAIN is returned.
+ * If a timeout is set on the beam, waiting might also time out and
+ * return APR_ETIMEUP.
+ *
  * Call from the red side only.
  */
-void h2_beam_shutdown(h2_bucket_beam *beam);
+apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block);
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,

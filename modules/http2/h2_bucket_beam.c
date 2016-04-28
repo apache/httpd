@@ -67,6 +67,7 @@ struct h2_beam_proxy {
     APR_RING_ENTRY(h2_beam_proxy) link;
     h2_bucket_beam *beam;
     apr_bucket *bred;
+    apr_size_t n;
 };
 
 static const char Dummy = '\0';
@@ -108,7 +109,7 @@ static void beam_bucket_destroy(void *data)
 
 static apr_bucket * h2_beam_bucket_make(apr_bucket *b, 
                                         h2_bucket_beam *beam,
-                                        apr_bucket *bred)
+                                        apr_bucket *bred, apr_size_t n)
 {
     h2_beam_proxy *d;
 
@@ -116,7 +117,8 @@ static apr_bucket * h2_beam_bucket_make(apr_bucket *b,
     H2_BPROXY_LIST_INSERT_TAIL(&beam->proxies, d);
     d->beam = beam;
     d->bred = bred;
-
+    d->n = n;
+    
     b = apr_bucket_shared_make(b, d, 0, bred? bred->length : 0);
     b->type = &h2_bucket_type_beam;
 
@@ -125,14 +127,15 @@ static apr_bucket * h2_beam_bucket_make(apr_bucket *b,
 
 static apr_bucket *h2_beam_bucket_create(h2_bucket_beam *beam,
                                          apr_bucket *bred,
-                                         apr_bucket_alloc_t *list)
+                                         apr_bucket_alloc_t *list,
+                                         apr_size_t n)
 {
     apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
-    return h2_beam_bucket_make(b, beam, bred);
+    return h2_beam_bucket_make(b, beam, bred, n);
 }
 
 /*static apr_status_t beam_bucket_setaside(apr_bucket *b, apr_pool_t *pool)
@@ -282,15 +285,10 @@ static apr_status_t r_wait_space(h2_bucket_beam *beam, apr_read_type_e block,
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
 }
 
-static void h2_beam_prep_purge(h2_bucket_beam *beam, apr_bucket *bred)
-{
-    APR_BUCKET_REMOVE(bred);
-    H2_BLIST_INSERT_TAIL(&beam->purge, bred);
-}
-
 static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
 {
     h2_beam_lock bl;
+    apr_bucket *b, *next;
 
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         /* even when beam buckets are split, only the one where
@@ -300,8 +298,48 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
          * bucket bred is about to be destroyed.
          * remove it from the hold, where it should be now */
         if (proxy->bred) {
-            h2_beam_prep_purge(beam, proxy->bred);
-            proxy->bred = NULL;
+            for (b = H2_BLIST_FIRST(&beam->hold); 
+                 b != H2_BLIST_SENTINEL(&beam->hold);
+                 b = APR_BUCKET_NEXT(b)) {
+                 if (b == proxy->bred) {
+                    break;
+                 }
+            }
+            if (b != H2_BLIST_SENTINEL(&beam->hold)) {
+                /* bucket is in hold as it should be, mark this one
+                 * and all before it for purging. We might have placed meta
+                 * buckets without a green proxy into the hold before it 
+                 * and schedule them for purging now */
+                for (b = H2_BLIST_FIRST(&beam->hold); 
+                     b != H2_BLIST_SENTINEL(&beam->hold);
+                     b = next) {
+                    next = APR_BUCKET_NEXT(b);
+                    if (b == proxy->bred) {
+                        APR_BUCKET_REMOVE(b);
+                        H2_BLIST_INSERT_TAIL(&beam->purge, b);
+                        break;
+                    }
+                    else if (APR_BUCKET_IS_METADATA(b)) {
+                        APR_BUCKET_REMOVE(b);
+                        H2_BLIST_INSERT_TAIL(&beam->purge, b);
+                    }
+                    else {
+                        /* another data bucket before this one in hold. this
+                         * is normal since DATA buckets need not be destroyed
+                         * in order */
+                    }
+                }
+                
+                proxy->bred = NULL;
+            }
+            else {
+                /* it should be there unless we screwed up */
+                ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->red_pool, 
+                              APLOGNO() "h2_beam(%d-%s): emitted bucket not "
+                              "in hold, n=%d", beam->id, beam->tag, 
+                              (int)proxy->n);
+                AP_DEBUG_ASSERT(!proxy->bred);
+            }
         }
         /* notify anyone waiting on space to become available */
         if (!bl.mutex) {
@@ -344,45 +382,17 @@ static apr_status_t beam_close(h2_bucket_beam *beam)
     return APR_SUCCESS;
 }
 
-static void beam_shutdown(h2_bucket_beam *beam, int disconnect)
-{
-    if (disconnect && !H2_BPROXY_LIST_EMPTY(&beam->proxies)) {
-        /* If we are called before all green buckets we put out
-         * there have been destroyed, we need to disentangle ourself.
-         * We NULLify the beam and red buckets in every proxy from us, so
-         * a) red memory is no longer read
-         * b) destruction of the proxy no longer calls back to this beam
-         * This does not protect against races when red and green thread are still
-         * running concurrently and it does not protect from passed out red
-         * memory to still being accessed.
-         */
-        while (!H2_BPROXY_LIST_EMPTY(&beam->proxies)) {
-            h2_beam_proxy *proxy = H2_BPROXY_LIST_FIRST(&beam->proxies);
-            H2_BPROXY_REMOVE(proxy);
-            proxy->beam = NULL;
-            if (proxy->bred) {
-                h2_beam_prep_purge(beam, proxy->bred);
-                proxy->bred = NULL;
-            }
-        }
-    }
-    r_purge_reds(beam);
-    h2_blist_cleanup(&beam->red);
-    beam_close(beam);
-    report_consumption(beam);
-}
-
 static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
     
-    if (beam->green) {
-        apr_brigade_destroy(beam->green);
-        beam->green = NULL;
-    }
-    beam_shutdown(beam, 0);
+    beam_close(beam);
+    r_purge_reds(beam);
+    h2_blist_cleanup(&beam->red);
+    report_consumption(beam);
     h2_blist_cleanup(&beam->purge);
     h2_blist_cleanup(&beam->hold);
+    
     return APR_SUCCESS;
 }
 
@@ -507,14 +517,29 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
 }
 
-void h2_beam_shutdown(h2_bucket_beam *beam)
+apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block)
 {
+    apr_status_t status;
     h2_beam_lock bl;
     
-    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        beam_shutdown(beam, 1);
+    if ((status = enter_yellow(beam, &bl)) == APR_SUCCESS) {
+        r_purge_reds(beam);
+        h2_blist_cleanup(&beam->red);
+        beam_close(beam);
+        report_consumption(beam);
+        
+        while (status == APR_SUCCESS 
+               && (!H2_BPROXY_LIST_EMPTY(&beam->proxies)
+                   || (beam->green && !APR_BRIGADE_EMPTY(beam->green)))) {
+            if (block == APR_NONBLOCK_READ || !bl.mutex) {
+                status = APR_EAGAIN;
+                break;
+            }
+            status = wait_cond(beam, bl.mutex);
+        }
         leave_yellow(beam, &bl);
     }
+    return status;
 }
 
 static apr_status_t append_bucket(h2_bucket_beam *beam, 
@@ -763,7 +788,8 @@ transfer:
                  * the red brigade.
                  * the beam bucket will notify us on destruction that bred is
                  * no longer needed. */
-                bgreen = h2_beam_bucket_create(beam, bred, bb->bucket_alloc);
+                bgreen = h2_beam_bucket_create(beam, bred, bb->bucket_alloc,
+                                               beam->buckets_sent++);
             }
             
             /* Place the red bucket into our hold, to be destroyed when no

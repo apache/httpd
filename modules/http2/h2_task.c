@@ -253,7 +253,7 @@ static apr_status_t open_response(h2_task *task)
     if (!response) {
         /* This happens currently when ap_die(status, r) is invoked
          * by a read request filter. */
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, task->c, APLOGNO(03204)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03204)
                       "h2_task(%s): write without response for %s %s %s",
                       task->id, 
                       task->request->method, 
@@ -487,14 +487,21 @@ void h2_task_rst(h2_task *task, int error)
     }
 }
 
-void h2_task_shutdown(h2_task *task)
+apr_status_t h2_task_shutdown(h2_task *task, int block)
 {
-    if (task->input.beam) {
-        h2_beam_shutdown(task->input.beam);
-    }
     if (task->output.beam) {
-        h2_beam_shutdown(task->output.beam);
+        apr_status_t status;
+        status = h2_beam_shutdown(task->output.beam, APR_NONBLOCK_READ);
+        if (block && status == APR_EAGAIN) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c,
+                          "h2_task(%s): output shutdown waiting", task->id);
+            status = h2_beam_shutdown(task->output.beam, APR_BLOCK_READ);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, task->c,
+                          "h2_task(%s): output shutdown done", task->id);
+        }
+        return status;
     }
+    return APR_SUCCESS;
 }
 
 /*******************************************************************************
