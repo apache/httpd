@@ -708,12 +708,13 @@ static void h2_session_cleanup(h2_session *session)
 static void h2_session_destroy(h2_session *session)
 {
     AP_DEBUG_ASSERT(session);
+    
     h2_session_cleanup(session);
-
+    h2_ihash_clear(session->streams);
+    
     if (APLOGctrace1(session->c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "h2_session(%ld): destroy, %d streams open",
-                      session->id, (int)h2_ihash_count(session->streams));
+                      "h2_session(%ld): destroy", session->id);
     }
     if (session->mplx) {
         h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
