@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1741310
                   http://svn.apache.org/r1741461
      2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310-1741461.patch
-     +1: wrowe
+     +1: wrowe, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
