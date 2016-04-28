@@ -286,7 +286,7 @@ size_t h2_ihash_count(h2_ihash_t *ih)
     return apr_hash_count(ih->hash);
 }
 
-int h2_ihash_is_empty(h2_ihash_t *ih)
+int h2_ihash_empty(h2_ihash_t *ih)
 {
     return apr_hash_count(ih->hash) == 0;
 }
@@ -332,6 +332,301 @@ void h2_ihash_clear(h2_ihash_t *ih)
 }
 
 /*******************************************************************************
+ * ilist - sorted list for structs with int identifier
+ ******************************************************************************/
+
+#define h2_ilist_IDX(list, i) ((int**)(list)->elts)[i]
+
+struct h2_ilist_t {
+    apr_array_header_t *l;
+};
+
+h2_ilist_t *h2_ilist_create(apr_pool_t *pool)
+{
+    h2_ilist_t *list = apr_pcalloc(pool, sizeof(h2_ilist_t));
+    if (list) {
+        list->l = apr_array_make(pool, 100, sizeof(int*));
+        if (!list->l) {
+            return NULL;
+        }
+    }
+    return list;
+}
+
+static int h2_ilist_cmp(const void *s1, const void *s2)
+{
+    int **pi1 = (int **)s1;
+    int **pi2 = (int **)s2;
+    return *(*pi1) - *(*pi2);
+}
+
+void *h2_ilist_get(h2_ilist_t *list, int id)
+{
+    /* we keep the array sorted by id, so lookup can be done
+     * by bsearch.
+     */
+    int **pi;
+    int *pkey = &id;
+
+    pi = bsearch(&pkey, list->l->elts, list->l->nelts, 
+                 list->l->elt_size, h2_ilist_cmp);
+    return pi? *pi : NULL;
+}
+
+static void h2_ilist_sort(h2_ilist_t *list)
+{
+    qsort(list->l->elts, list->l->nelts, list->l->elt_size, h2_ilist_cmp);
+}
+
+apr_status_t h2_ilist_add(h2_ilist_t *list, void *val)
+{
+    int *pi = val;
+    void *existing = h2_ilist_get(list, *pi);
+    if (!existing) {
+        int last;
+        APR_ARRAY_PUSH(list->l, void*) = val;
+        /* Often, values get added in ascending order of id. We
+         * keep the array sorted, so we just need to check if the newly
+         * appended stream has a lower id than the last one. if not,
+         * sorting is not necessary.
+         */
+        last = list->l->nelts - 1;
+        if (last > 0 
+            && *h2_ilist_IDX(list->l, last) < *h2_ilist_IDX(list->l, last-1)) {
+            h2_ilist_sort(list);
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static void remove_idx(h2_ilist_t *list, int idx)
+{
+    int n;
+    --list->l->nelts;
+    n = list->l->nelts - idx;
+    if (n > 0) {
+        /* There are n h2_io* behind idx. Move the rest down */
+        int **selts = (int**)list->l->elts;
+        memmove(selts + idx, selts + idx + 1, n * sizeof(int*));
+    }
+}
+
+void *h2_ilist_remove(h2_ilist_t *list, int id)
+{
+    int i;
+    for (i = 0; i < list->l->nelts; ++i) {
+        int *e = h2_ilist_IDX(list->l, i);
+        if (id == *e) {
+            remove_idx(list, i);
+            return e;
+        }
+    }
+    return NULL;
+}
+
+void *h2_ilist_shift(h2_ilist_t *list)
+{
+    if (list->l->nelts > 0) {
+        int *pi = h2_ilist_IDX(list->l, 0);
+        remove_idx(list, 0);
+        return pi;
+    }
+    return NULL;
+}
+
+int h2_ilist_empty(h2_ilist_t *list)
+{
+    return list->l->nelts == 0;
+}
+
+int h2_ilist_iter(h2_ilist_t *list, h2_ilist_iter_t *iter, void *ctx)
+{
+    int i;
+    for (i = 0; i < list->l->nelts; ++i) {
+        int *pi = h2_ilist_IDX(list->l, i);
+        if (!iter(ctx, pi)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+apr_size_t h2_ilist_count(h2_ilist_t *list)
+{
+    return list->l->nelts;
+}
+
+/*******************************************************************************
+ * iqueue - sorted list of int
+ ******************************************************************************/
+
+static void iq_grow(h2_iqueue *q, int nlen);
+static void iq_swap(h2_iqueue *q, int i, int j);
+static int iq_bubble_up(h2_iqueue *q, int i, int top, 
+                        h2_iq_cmp *cmp, void *ctx);
+static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
+                          h2_iq_cmp *cmp, void *ctx);
+
+h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity)
+{
+    h2_iqueue *q = apr_pcalloc(pool, sizeof(h2_iqueue));
+    if (q) {
+        q->pool = pool;
+        iq_grow(q, capacity);
+        q->nelts = 0;
+    }
+    return q;
+}
+
+int h2_iq_empty(h2_iqueue *q)
+{
+    return q->nelts == 0;
+}
+
+int h2_iq_count(h2_iqueue *q)
+{
+    return q->nelts;
+}
+
+
+void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
+{
+    int i;
+    
+    if (q->nelts >= q->nalloc) {
+        iq_grow(q, q->nalloc * 2);
+    }
+    
+    i = (q->head + q->nelts) % q->nalloc;
+    q->elts[i] = sid;
+    ++q->nelts;
+    
+    if (cmp) {
+        /* bubble it to the front of the queue */
+        iq_bubble_up(q, i, q->head, cmp, ctx);
+    }
+}
+
+int h2_iq_remove(h2_iqueue *q, int sid)
+{
+    int i;
+    for (i = 0; i < q->nelts; ++i) {
+        if (sid == q->elts[(q->head + i) % q->nalloc]) {
+            break;
+        }
+    }
+    
+    if (i < q->nelts) {
+        ++i;
+        for (; i < q->nelts; ++i) {
+            q->elts[(q->head+i-1)%q->nalloc] = q->elts[(q->head+i)%q->nalloc];
+        }
+        --q->nelts;
+        return 1;
+    }
+    return 0;
+}
+
+void h2_iq_clear(h2_iqueue *q)
+{
+    q->nelts = 0;
+}
+
+void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
+{
+    /* Assume that changes in ordering are minimal. This needs,
+     * best case, q->nelts - 1 comparisions to check that nothing
+     * changed.
+     */
+    if (q->nelts > 0) {
+        int i, ni, prev, last;
+        
+        /* Start at the end of the queue and create a tail of sorted
+         * entries. Make that tail one element longer in each iteration.
+         */
+        last = i = (q->head + q->nelts - 1) % q->nalloc;
+        while (i != q->head) {
+            prev = (q->nalloc + i - 1) % q->nalloc;
+            
+            ni = iq_bubble_up(q, i, prev, cmp, ctx);
+            if (ni == prev) {
+                /* i bubbled one up, bubble the new i down, which
+                 * keeps all tasks below i sorted. */
+                iq_bubble_down(q, i, last, cmp, ctx);
+            }
+            i = prev;
+        };
+    }
+}
+
+
+int h2_iq_shift(h2_iqueue *q)
+{
+    int sid;
+    
+    if (q->nelts <= 0) {
+        return 0;
+    }
+    
+    sid = q->elts[q->head];
+    q->head = (q->head + 1) % q->nalloc;
+    q->nelts--;
+    
+    return sid;
+}
+
+static void iq_grow(h2_iqueue *q, int nlen)
+{
+    if (nlen > q->nalloc) {
+        int *nq = apr_pcalloc(q->pool, sizeof(int) * nlen);
+        if (q->nelts > 0) {
+            int l = ((q->head + q->nelts) % q->nalloc) - q->head;
+            
+            memmove(nq, q->elts + q->head, sizeof(int) * l);
+            if (l < q->nelts) {
+                /* elts wrapped, append elts in [0, remain] to nq */
+                int remain = q->nelts - l;
+                memmove(nq + l, q->elts, sizeof(int) * remain);
+            }
+        }
+        q->elts = nq;
+        q->nalloc = nlen;
+        q->head = 0;
+    }
+}
+
+static void iq_swap(h2_iqueue *q, int i, int j)
+{
+    int x = q->elts[i];
+    q->elts[i] = q->elts[j];
+    q->elts[j] = x;
+}
+
+static int iq_bubble_up(h2_iqueue *q, int i, int top, 
+                        h2_iq_cmp *cmp, void *ctx) 
+{
+    int prev;
+    while (((prev = (q->nalloc + i - 1) % q->nalloc), i != top) 
+           && (*cmp)(q->elts[i], q->elts[prev], ctx) < 0) {
+        iq_swap(q, prev, i);
+        i = prev;
+    }
+    return i;
+}
+
+static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
+                          h2_iq_cmp *cmp, void *ctx)
+{
+    int next;
+    while (((next = (q->nalloc + i + 1) % q->nalloc), i != bottom) 
+           && (*cmp)(q->elts[i], q->elts[next], ctx) > 0) {
+        iq_swap(q, next, i);
+        i = next;
+    }
+    return i;
+}
+
+/*******************************************************************************
  * h2_util for apt_table_t
  ******************************************************************************/
  
@@ -367,15 +662,6 @@ apr_size_t h2_util_table_bytes(apr_table_t *t, apr_size_t pair_extra)
 /*******************************************************************************
  * h2_util for bucket brigades
  ******************************************************************************/
-
-/* DEEP_COPY==0 crashes under load. I think the setaside is fine, 
- * however buckets moved to another thread will still be
- * free'd against the old bucket_alloc. *And* if the old
- * pool gets destroyed too early, the bucket disappears while
- * still needed.
- */
-static const int DEEP_COPY = 1;
-static const int FILE_MOVE = 1;
 
 static apr_status_t last_not_included(apr_bucket_brigade *bb, 
                                       apr_off_t maxlen, 
@@ -434,203 +720,95 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
     return status;
 }
 
-#define LOG_BUCKETS     0
-#define LOG_LEVEL APLOG_INFO
-
-apr_status_t h2_util_move(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, apr_size_t *pfile_buckets_allowed, 
-                          const char *msg)
+apr_status_t h2_brigade_concat_length(apr_bucket_brigade *dest, 
+                                      apr_bucket_brigade *src,
+                                      apr_off_t length)
 {
+    apr_bucket *b, *next;
+    apr_off_t remain = length;
     apr_status_t status = APR_SUCCESS;
-    int same_alloc;
     
-    AP_DEBUG_ASSERT(to);
-    AP_DEBUG_ASSERT(from);
-    same_alloc = (to->bucket_alloc == from->bucket_alloc 
-                  || to->p == from->p);
-
-    if (!FILE_MOVE) {
-        pfile_buckets_allowed = NULL;
-    }
-    
-    if (!APR_BRIGADE_EMPTY(from)) {
-        apr_bucket *b, *nb, *end;
+    for (b = APR_BRIGADE_FIRST(src); 
+         b != APR_BRIGADE_SENTINEL(src);
+         b = next) {
+        next = APR_BUCKET_NEXT(b);
         
-        status = last_not_included(from, maxlen, same_alloc,
-                                   pfile_buckets_allowed, &end);
-        if (status != APR_SUCCESS) {
-            return status;
+        if (APR_BUCKET_IS_METADATA(b)) {
+            /* fall through */
         }
-        
-        while (!APR_BRIGADE_EMPTY(from) && status == APR_SUCCESS) {
-            b = APR_BRIGADE_FIRST(from);
-            if (b == end) {
-                break;
+        else {
+            if (remain == b->length) {
+                /* fall through */
             }
-            
-            if (same_alloc || (b->list == to->bucket_alloc)) {
-                /* both brigades use the same bucket_alloc and auto-cleanups
-                 * have the same life time. It's therefore safe to just move
-                 * directly. */
-                APR_BUCKET_REMOVE(b);
-                APR_BRIGADE_INSERT_TAIL(to, b);
-#if LOG_BUCKETS
-                ap_log_perror(APLOG_MARK, LOG_LEVEL, 0, to->p, APLOGNO(03205)
-                              "h2_util_move: %s, passed bucket(same bucket_alloc) "
-                              "%ld-%ld, type=%s",
-                              msg, (long)b->start, (long)b->length, 
-                              APR_BUCKET_IS_METADATA(b)? 
-                              (APR_BUCKET_IS_EOS(b)? "EOS": 
-                               (APR_BUCKET_IS_FLUSH(b)? "FLUSH" : "META")) : 
-                              (APR_BUCKET_IS_FILE(b)? "FILE" : "DATA"));
-#endif
-            }
-            else if (DEEP_COPY) {
-                /* we have not managed the magic of passing buckets from
-                 * one thread to another. Any attempts result in
-                 * cleanup of pools scrambling memory.
-                 */
-                if (APR_BUCKET_IS_METADATA(b)) {
-                    if (APR_BUCKET_IS_EOS(b)) {
-                        APR_BRIGADE_INSERT_TAIL(to, apr_bucket_eos_create(to->bucket_alloc));
-                    }
-                    else {
-                        /* ignore */
-                    }
-                }
-                else if (pfile_buckets_allowed 
-                         && *pfile_buckets_allowed > 0 
-                         && APR_BUCKET_IS_FILE(b)) {
-                    /* We do not want to read files when passing buckets, if
-                     * we can avoid it. However, what we've come up so far
-                     * is not working corrently, resulting either in crashes or
-                     * too many open file descriptors.
-                     */
-                    apr_bucket_file *f = (apr_bucket_file *)b->data;
-                    apr_file_t *fd = f->fd;
-                    int setaside = (f->readpool != to->p);
-#if LOG_BUCKETS
-                    ap_log_perror(APLOG_MARK, LOG_LEVEL, 0, to->p, APLOGNO(03206)
-                                  "h2_util_move: %s, moving FILE bucket %ld-%ld "
-                                  "from=%lx(p=%lx) to=%lx(p=%lx), setaside=%d",
-                                  msg, (long)b->start, (long)b->length, 
-                                  (long)from, (long)from->p, 
-                                  (long)to, (long)to->p, setaside);
-#endif
-                    if (setaside) {
-                        status = apr_file_setaside(&fd, fd, to->p);
-                        if (status != APR_SUCCESS) {
-                            ap_log_perror(APLOG_MARK, APLOG_ERR, status, to->p,
-                                          APLOGNO(02947) "h2_util: %s, setaside FILE", 
-                                          msg);
-                            return status;
-                        }
-                    }
-                    nb = apr_brigade_insert_file(to, fd, b->start, b->length, 
-                                                 to->p);
-#if APR_HAS_MMAP
-                    apr_bucket_file_enable_mmap(nb, 0);
-#endif
-                    --(*pfile_buckets_allowed);
-                }
-                else {
-                    const char *data;
-                    apr_size_t len;
-
-                    status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
-                    if (status == APR_SUCCESS && len > 0) {
-                        status = apr_brigade_write(to, NULL, NULL, data, len);
-#if LOG_BUCKETS
-                        ap_log_perror(APLOG_MARK, LOG_LEVEL, 0, to->p, APLOGNO(03207)
-                                      "h2_util_move: %s, copied bucket %ld-%ld "
-                                      "from=%lx(p=%lx) to=%lx(p=%lx)",
-                                      msg, (long)b->start, (long)b->length, 
-                                      (long)from, (long)from->p, 
-                                      (long)to, (long)to->p);
-#endif
-                    }
-                }
-                apr_bucket_delete(b);
+            else if (remain <= 0) {
+                return status;
             }
             else {
-                apr_bucket_setaside(b, to->p);
-                APR_BUCKET_REMOVE(b);
-                APR_BRIGADE_INSERT_TAIL(to, b);
-#if LOG_BUCKETS
-                ap_log_perror(APLOG_MARK, LOG_LEVEL, 0, to->p, APLOGNO(03208)
-                              "h2_util_move: %s, passed setaside bucket %ld-%ld "
-                              "from=%lx(p=%lx) to=%lx(p=%lx)",
-                              msg, (long)b->start, (long)b->length, 
-                              (long)from, (long)from->p, 
-                              (long)to, (long)to->p);
-#endif
+                if (b->length == ((apr_size_t)-1)) {
+                    const char *ign;
+                    apr_size_t ilen;
+                    status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
+                    if (status != APR_SUCCESS) {
+                        return status;
+                    }
+                }
+            
+                if (remain < b->length) {
+                    apr_bucket_split(b, remain);
+                }
             }
         }
+        APR_BUCKET_REMOVE(b);
+        APR_BRIGADE_INSERT_TAIL(dest, b);
+        remain -= b->length;
     }
-    
     return status;
 }
 
-apr_status_t h2_util_copy(apr_bucket_brigade *to, apr_bucket_brigade *from, 
-                          apr_off_t maxlen, const char *msg)
+apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest, 
+                                    apr_bucket_brigade *src,
+                                    apr_off_t length)
 {
+    apr_bucket *b, *next;
+    apr_off_t remain = length;
     apr_status_t status = APR_SUCCESS;
-    int same_alloc;
-
-    (void)msg;
-    AP_DEBUG_ASSERT(to);
-    AP_DEBUG_ASSERT(from);
-    same_alloc = (to->bucket_alloc == from->bucket_alloc);
-
-    if (!APR_BRIGADE_EMPTY(from)) {
-        apr_bucket *b, *end, *cpy;
+    
+    for (b = APR_BRIGADE_FIRST(src); 
+         b != APR_BRIGADE_SENTINEL(src);
+         b = next) {
+        next = APR_BUCKET_NEXT(b);
         
-        status = last_not_included(from, maxlen, 0, 0, &end);
+        if (APR_BUCKET_IS_METADATA(b)) {
+            /* fall through */
+        }
+        else {
+            if (remain == b->length) {
+                /* fall through */
+            }
+            else if (remain <= 0) {
+                return status;
+            }
+            else {
+                if (b->length == ((apr_size_t)-1)) {
+                    const char *ign;
+                    apr_size_t ilen;
+                    status = apr_bucket_read(b, &ign, &ilen, APR_BLOCK_READ);
+                    if (status != APR_SUCCESS) {
+                        return status;
+                    }
+                }
+            
+                if (remain < b->length) {
+                    apr_bucket_split(b, remain);
+                }
+            }
+        }
+        status = apr_bucket_copy(b, &b);
         if (status != APR_SUCCESS) {
             return status;
         }
-
-        for (b = APR_BRIGADE_FIRST(from);
-             b != APR_BRIGADE_SENTINEL(from) && b != end;
-             b = APR_BUCKET_NEXT(b))
-        {
-            if (same_alloc) {
-                status = apr_bucket_copy(b, &cpy);
-                if (status != APR_SUCCESS) {
-                    break;
-                }
-                APR_BRIGADE_INSERT_TAIL(to, cpy);
-            }
-            else {
-                if (APR_BUCKET_IS_METADATA(b)) {
-                    if (APR_BUCKET_IS_EOS(b)) {
-                        APR_BRIGADE_INSERT_TAIL(to, apr_bucket_eos_create(to->bucket_alloc));
-                    }
-                    else if (APR_BUCKET_IS_FLUSH(b)) {
-                        APR_BRIGADE_INSERT_TAIL(to, apr_bucket_flush_create(to->bucket_alloc));
-                    }
-                    else {
-                        /* ignore */
-                    }
-                }
-                else {
-                    const char *data;
-                    apr_size_t len;
-                    status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
-                    if (status == APR_SUCCESS && len > 0) {
-                        status = apr_brigade_write(to, NULL, NULL, data, len);
-#if LOG_BUCKETS                        
-                        ap_log_perror(APLOG_MARK, LOG_LEVEL, 0, to->p, APLOGNO(03209)
-                                      "h2_util_copy: %s, copied bucket %ld-%ld "
-                                      "from=%lx(p=%lx) to=%lx(p=%lx)",
-                                      msg, (long)b->start, (long)b->length, 
-                                      (long)from, (long)from->p, 
-                                      (long)to, (long)to->p);
-#endif
-                    }
-                }
-            }
-        }
+        APR_BRIGADE_INSERT_TAIL(dest, b);
+        remain -= b->length;
     }
     return status;
 }
@@ -663,25 +841,6 @@ int h2_util_bb_has_data(apr_bucket_brigade *bb)
          b = APR_BUCKET_NEXT(b))
     {
         if (!AP_BUCKET_IS_EOR(b)) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int h2_util_bb_has_data_or_eos(apr_bucket_brigade *bb)
-{
-    apr_bucket *b;
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b))
-    {
-        if (APR_BUCKET_IS_METADATA(b)) {
-            if (APR_BUCKET_IS_EOS(b)) {
-                return 1;
-            }
-        }
-        else {
             return 1;
         }
     }
@@ -792,186 +951,102 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
     return status;
 }
 
-void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
-                    const char *tag, apr_bucket_brigade *bb)
+apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax, 
+                                apr_bucket *b, const char *sep)
 {
-    char buffer[16 * 1024];
-    const char *line = "(null)";
-    apr_size_t bmax = sizeof(buffer)/sizeof(buffer[0]);
-    int off = 0;
+    apr_size_t off = 0;
+    if (sep && *sep) {
+        off += apr_snprintf(buffer+off, bmax-off, "%s", sep);
+    }
+    
+    if (APR_BUCKET_IS_METADATA(b)) {
+        if (APR_BUCKET_IS_EOS(b)) {
+            off += apr_snprintf(buffer+off, bmax-off, "eos");
+        }
+        else if (APR_BUCKET_IS_FLUSH(b)) {
+            off += apr_snprintf(buffer+off, bmax-off, "flush");
+        }
+        else if (AP_BUCKET_IS_EOR(b)) {
+            off += apr_snprintf(buffer+off, bmax-off, "eor");
+        }
+        else {
+            off += apr_snprintf(buffer+off, bmax-off, "meta(unknown)");
+        }
+    }
+    else {
+        const char *btype = "data";
+        if (APR_BUCKET_IS_FILE(b)) {
+            btype = "file";
+        }
+        else if (APR_BUCKET_IS_PIPE(b)) {
+            btype = "pipe";
+        }
+        else if (APR_BUCKET_IS_SOCKET(b)) {
+            btype = "socket";
+        }
+        else if (APR_BUCKET_IS_HEAP(b)) {
+            btype = "heap";
+        }
+        else if (APR_BUCKET_IS_TRANSIENT(b)) {
+            btype = "transient";
+        }
+        else if (APR_BUCKET_IS_IMMORTAL(b)) {
+            btype = "immortal";
+        }
+#if APR_HAS_MMAP
+        else if (APR_BUCKET_IS_MMAP(b)) {
+            btype = "mmap";
+        }
+#endif
+        else if (APR_BUCKET_IS_POOL(b)) {
+            btype = "pool";
+        }
+        
+        off += apr_snprintf(buffer+off, bmax-off, "%s[%ld]", 
+                            btype, 
+                            (long)(b->length == ((apr_size_t)-1)? 
+                                   -1 : b->length));
+    }
+    return off;
+}
+
+apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax, 
+                            const char *tag, const char *sep, 
+                            apr_bucket_brigade *bb)
+{
+    apr_size_t off = 0;
+    const char *sp = "";
     apr_bucket *b;
     
     if (bb) {
         memset(buffer, 0, bmax--);
+        off += apr_snprintf(buffer+off, bmax-off, "%s(", tag);
         for (b = APR_BRIGADE_FIRST(bb); 
              bmax && (b != APR_BRIGADE_SENTINEL(bb));
              b = APR_BUCKET_NEXT(b)) {
             
-            if (APR_BUCKET_IS_METADATA(b)) {
-                if (APR_BUCKET_IS_EOS(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "eos ");
-                }
-                else if (APR_BUCKET_IS_FLUSH(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "flush ");
-                }
-                else if (AP_BUCKET_IS_EOR(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "eor ");
-                }
-                else {
-                    off += apr_snprintf(buffer+off, bmax-off, "meta(unknown) ");
-                }
-            }
-            else {
-                const char *btype = "data";
-                if (APR_BUCKET_IS_FILE(b)) {
-                    btype = "file";
-                }
-                else if (APR_BUCKET_IS_PIPE(b)) {
-                    btype = "pipe";
-                }
-                else if (APR_BUCKET_IS_SOCKET(b)) {
-                    btype = "socket";
-                }
-                else if (APR_BUCKET_IS_HEAP(b)) {
-                    btype = "heap";
-                }
-                else if (APR_BUCKET_IS_TRANSIENT(b)) {
-                    btype = "transient";
-                }
-                else if (APR_BUCKET_IS_IMMORTAL(b)) {
-                    btype = "immortal";
-                }
-#if APR_HAS_MMAP
-                else if (APR_BUCKET_IS_MMAP(b)) {
-                    btype = "mmap";
-                }
-#endif
-                else if (APR_BUCKET_IS_POOL(b)) {
-                    btype = "pool";
-                }
-                
-                off += apr_snprintf(buffer+off, bmax-off, "%s[%ld] ", 
-                                    btype, 
-                                    (long)(b->length == ((apr_size_t)-1)? 
-                                           -1 : b->length));
-            }
+            off += h2_util_bucket_print(buffer+off, bmax-off, b, sp);
+            sp = " ";
         }
-        line = *buffer? buffer : "(empty)";
+        off += apr_snprintf(buffer+off, bmax-off, ")%s", sep);
     }
+    else {
+        off += apr_snprintf(buffer+off, bmax-off, "%s(null)%s", tag, sep);
+    }
+    return off;
+}
+
+void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
+                    const char *tag, apr_bucket_brigade *bb)
+{
+    char buffer[4 * 1024];
+    const char *line = "(null)";
+    apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
+    
+    len = h2_util_bb_print(buffer, bmax, tag, "", bb);
     /* Intentional no APLOGNO */
-    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%ld-%d)-%s: %s", 
-                  c->id, stream_id, tag, line);
-
-}
-
-apr_status_t h2_ltransfer_brigade(apr_bucket_brigade *to,
-                                 apr_bucket_brigade *from, 
-                                 apr_pool_t *p,
-                                 apr_off_t *plen,
-                                 int *peos)
-{
-    apr_bucket *e;
-    apr_off_t len = 0, remain = *plen;
-    apr_status_t rv;
-
-    *peos = 0;
-    
-    while (!APR_BRIGADE_EMPTY(from)) {
-        e = APR_BRIGADE_FIRST(from);
-        
-        if (APR_BUCKET_IS_METADATA(e)) {
-            if (APR_BUCKET_IS_EOS(e)) {
-                *peos = 1;
-            }
-        }
-        else {        
-            if (remain > 0 && e->length == ((apr_size_t)-1)) {
-                const char *ign;
-                apr_size_t ilen;
-                rv = apr_bucket_read(e, &ign, &ilen, APR_BLOCK_READ);
-                if (rv != APR_SUCCESS) {
-                    return rv;
-                }
-            }
-            
-            if (remain < e->length) {
-                if (remain <= 0) {
-                    return APR_SUCCESS;
-                }
-                apr_bucket_split(e, remain);
-            }
-        }
-        
-        rv = apr_bucket_setaside(e, p);
-        
-        /* If the bucket type does not implement setaside, then
-         * (hopefully) morph it into a bucket type which does, and set
-         * *that* aside... */
-        if (rv == APR_ENOTIMPL) {
-            const char *s;
-            apr_size_t n;
-            
-            rv = apr_bucket_read(e, &s, &n, APR_BLOCK_READ);
-            if (rv == APR_SUCCESS) {
-                rv = apr_bucket_setaside(e, p);
-            }
-        }
-        
-        if (rv != APR_SUCCESS) {
-            /* Return an error but still save the brigade if
-             * ->setaside() is really not implemented. */
-            if (rv != APR_ENOTIMPL) {
-                return rv;
-            }
-        }
-        
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(to, e);
-        len += e->length;
-        remain -= e->length;
-    }
-    
-    *plen = len;
-    return APR_SUCCESS;
-}
-
-apr_status_t h2_transfer_brigade(apr_bucket_brigade *to,
-                                 apr_bucket_brigade *from, 
-                                 apr_pool_t *p)
-{
-    apr_bucket *e;
-    apr_status_t rv;
-
-    while (!APR_BRIGADE_EMPTY(from)) {
-        e = APR_BRIGADE_FIRST(from);
-        
-        rv = apr_bucket_setaside(e, p);
-        
-        /* If the bucket type does not implement setaside, then
-         * (hopefully) morph it into a bucket type which does, and set
-         * *that* aside... */
-        if (rv == APR_ENOTIMPL) {
-            const char *s;
-            apr_size_t n;
-            
-            rv = apr_bucket_read(e, &s, &n, APR_BLOCK_READ);
-            if (rv == APR_SUCCESS) {
-                rv = apr_bucket_setaside(e, p);
-            }
-        }
-        
-        if (rv != APR_SUCCESS) {
-            /* Return an error but still save the brigade if
-             * ->setaside() is really not implemented. */
-            if (rv != APR_ENOTIMPL) {
-                return rv;
-            }
-        }
-        
-        APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(to, e);
-    }
-    return APR_SUCCESS;
+    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%ld-%d): %s", 
+                  c->id, stream_id, len? buffer : line);
 }
 
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
@@ -1353,5 +1428,125 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
         }
     }
     req->push_policy = policy;
+}
+
+/*******************************************************************************
+ * ap_casecmpstr, when will it be backported?
+ ******************************************************************************/
+#if !APR_CHARSET_EBCDIC
+/*
+ * Provide our own known-fast implementation of str[n]casecmp()
+ * NOTE: Only ASCII alpha characters 41-5A are folded to 61-7A,
+ * other 8-bit latin alphabetics are never case-folded!
+ */
+static const unsigned char ucharmap[] = {
+    0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,
+    0x8,  0x9,  0xa,  0xb,  0xc,  0xd,  0xe,  0xf,
+    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+    0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+    0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
+    0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+    0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f,
+    0x40,  'a',  'b',  'c',  'd',  'e',  'f',  'g',
+     'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',
+     'p',  'q',  'r',  's',  't',  'u',  'v',  'w',
+     'x',  'y',  'z', 0x5b, 0x5c, 0x5d, 0x5e, 0x5f,
+    0x60,  'a',  'b',  'c',  'd',  'e',  'f',  'g',
+     'h',  'i',  'j',  'k',  'l',  'm',  'n',  'o',
+     'p',  'q',  'r',  's',  't',  'u',  'v',  'w',
+     'x',  'y',  'z', 0x7b, 0x7c, 0x7d, 0x7e, 0x7f,
+    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
+    0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f,
+    0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97,
+    0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0x9f,
+    0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7,
+    0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf,
+    0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7,
+    0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbe, 0xbf,
+    0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7,
+    0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf,
+    0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7,
+    0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde, 0xdf,
+    0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7,
+    0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xee, 0xef,
+    0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7,
+    0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
+};
+
+#else /* APR_CHARSET_EBCDIC */
+/* Derived from apr-iconv/ccs/cp037.c for EBCDIC case comparison,
+   provides unique identity of every char value (strict ISO-646
+   conformance, arbitrary election of an ISO-8859-1 ordering, and
+   very arbitrary control code assignments into C1 to achieve
+   identity and a reversible mapping of code points),
+   then folding the equivalences of ASCII 41-5A into 61-7A, 
+   presenting comparison results in a somewhat ISO/IEC 10646
+   (ASCII-like) order, depending on the EBCDIC code page in use.
+ */
+static const unsigned char ucharmap[] = {
+	0x00, 0x01, 0x02, 0x03, 0x9C, 0x09, 0x86, 0x7F,
+	0x97, 0x8D, 0x8E, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+	0x10, 0x11, 0x12, 0x13, 0x9D, 0x85, 0x08, 0x87,
+	0x18, 0x19, 0x92, 0x8F, 0x1C, 0x1D, 0x1E, 0x1F,
+	0x80, 0x81, 0x82, 0x83, 0x84, 0x0A, 0x17, 0x1B,
+	0x88, 0x89, 0x8A, 0x8B, 0x8C, 0x05, 0x06, 0x07,
+	0x90, 0x91, 0x16, 0x93, 0x94, 0x95, 0x96, 0x04,
+	0x98, 0x99, 0x9A, 0x9B, 0x14, 0x15, 0x9E, 0x1A,
+	0x20, 0xA0, 0xE2, 0xE4, 0xE0, 0xE1, 0xE3, 0xE5,
+	0xE7, 0xF1, 0xA2, 0x2E, 0x3C, 0x28, 0x2B, 0x7C,
+	0x26, 0xE9, 0xEA, 0xEB, 0xE8, 0xED, 0xEE, 0xEF,
+	0xEC, 0xDF, 0x21, 0x24, 0x2A, 0x29, 0x3B, 0xAC,
+	0x2D, 0x2F, 0xC2, 0xC4, 0xC0, 0xC1, 0xC3, 0xC5,
+	0xC7, 0xD1, 0xA6, 0x2C, 0x25, 0x5F, 0x3E, 0x3F,
+	0xF8, 0xC9, 0xCA, 0xCB, 0xC8, 0xCD, 0xCE, 0xCF,
+	0xCC, 0x60, 0x3A, 0x23, 0x40, 0x27, 0x3D, 0x22,
+	0xD8, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
+	0x68, 0x69, 0xAB, 0xBB, 0xF0, 0xFD, 0xFE, 0xB1,
+	0xB0, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70,
+	0x71, 0x72, 0xAA, 0xBA, 0xE6, 0xB8, 0xC6, 0xA4,
+	0xB5, 0x7E, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+	0x79, 0x7A, 0xA1, 0xBF, 0xD0, 0xDD, 0xDE, 0xAE,
+	0x5E, 0xA3, 0xA5, 0xB7, 0xA9, 0xA7, 0xB6, 0xBC,
+	0xBD, 0xBE, 0x5B, 0x5D, 0xAF, 0xA8, 0xB4, 0xD7,
+	0x7B, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
+	0x68, 0x69, 0xAD, 0xF4, 0xF6, 0xF2, 0xF3, 0xF5,
+	0x7D, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F, 0x70,
+	0x71, 0x72, 0xB9, 0xFB, 0xFC, 0xF9, 0xFA, 0xFF,
+	0x5C, 0xF7, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+	0x79, 0x7A, 0xB2, 0xD4, 0xD6, 0xD2, 0xD3, 0xD5,
+	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+	0x38, 0x39, 0xB3, 0xDB, 0xDC, 0xD9, 0xDA, 0x9F
+};
+#endif
+
+int h2_casecmpstr(const char *s1, const char *s2)
+{
+    const unsigned char *ps1 = (const unsigned char *) s1;
+    const unsigned char *ps2 = (const unsigned char *) s2;
+
+    while (ucharmap[*ps1] == ucharmap[*ps2]) {
+        if (*ps1++ == '\0') {
+            return (0);
+        }
+        ps2++;
+    }
+    return (ucharmap[*ps1] - ucharmap[*ps2]);
+}
+
+int h2_casecmpstrn(const char *s1, const char *s2, apr_size_t n)
+{
+    const unsigned char *ps1 = (const unsigned char *) s1;
+    const unsigned char *ps2 = (const unsigned char *) s2;
+    while (n--) {
+        if (ucharmap[*ps1] != ucharmap[*ps2]) {
+            return (ucharmap[*ps1] - ucharmap[*ps2]);
+        }
+        if (*ps1++ == '\0') {
+            break;
+        }
+        ps2++;
+    }
+    return (0);
 }
 

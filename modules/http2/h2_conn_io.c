@@ -254,9 +254,13 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io)
     return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b)
+apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b, int flush)
 {
     APR_BRIGADE_INSERT_TAIL(io->output, b);
+    if (flush) {
+        b = apr_bucket_flush_create(io->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(io->output, b);
+    }
     return APR_SUCCESS;
 }
 
@@ -315,7 +319,7 @@ apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
 {
     apr_bucket *b = h2_bucket_eoc_create(io->c->bucket_alloc, session);
     APR_BRIGADE_INSERT_TAIL(io->output, b);
-    return h2_conn_io_flush_int(io, 0, 1);
+    return h2_conn_io_flush_int(io, 1, 1);
 }
 
 apr_status_t h2_conn_io_write(h2_conn_io *io, 

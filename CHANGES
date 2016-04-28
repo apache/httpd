@@ -2,6 +2,21 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_http2: fixed a bug that caused mod_proxy_http2 to be called for window
+     updates on requests it had already reported done. Added synchronization
+     on early connection/stream close that lets ongoing requests safely drain
+     their input filters.
+     [Stefan Eissing]
+
+  *) mod_http2: scoreboard updates that summarize the h2 session (and replace
+     the last request information) will only happen when the session is idle or 
+     in shutdown/done phase. [Stefan Eissing]
+     
+  *) mod_http2: new "bucket beam" technology to transport buckets across
+     threads without buffer copy. Delaying response start until flush or
+     enough body data has been accumulated. Overall significanlty smaller
+     memory footprint. [Stefan Eissing]
+     
   *) core: New CGIVar directive can configure REQUEST_URI to represent the
      current URI being processed instead of always the original request.
      [Jeff Trawick]
