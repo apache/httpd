@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in a SSI file.
      Trunk patch: http://svn.apache.org/r1737476
      2.4.x patch: trunk patch works (compatibility note to be adjusted)
-     +1: jailletc36
+     +1: jailletc36, gsmith
 
   *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
      according the number of listeners buckets.
