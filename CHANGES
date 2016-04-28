@@ -1,32 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: fixed a bug that caused mod_proxy_http2 to be called for window
-     updates on requests it had already reported done. Added synchronization
-     on early connection/stream close that lets ongoing requests safely drain
-     their input filters.
-     [Stefan Eissing]
-
-  *) mod_http2: scoreboard updates that summarize the h2 session (and replace
-     the last request information) will only happen when the session is idle or 
-     in shutdown/done phase. [Stefan Eissing]
-     
-  *) mod_http2: HTTP protocol string reported internally, logged and used in
-     SERVER_PROTOCOL changed to "HTTP/2.0" for HTTP/2 connections. 
-     [Stefan Eissing]
-     
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 
-  *) mod_http2: eliminating h2_io instances for streams, reducing memory
-     pools and footprint. [Stefan Eissing]
-     
   *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
      header as commanded by http-wg. [Stefan Eissing]
-     
-  *) mod_http2: new "bucket beam" technology to transport buckets across
-     threads without buffer copy. Delaying response start until flush or
-     enough body data has been accumulated. [Stefan Eissing]
      
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  [Yann Ylavic]
