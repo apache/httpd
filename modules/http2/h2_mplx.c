@@ -319,7 +319,7 @@ static void task_destroy(h2_mplx *m, h2_task *task, int events)
     /* cleanup any buffered input */
     status = h2_task_shutdown(task, 0);
     if (status != APR_SUCCESS){
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO() 
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO(03385) 
                       "h2_task(%s): shutdown", task->id);
     }
     

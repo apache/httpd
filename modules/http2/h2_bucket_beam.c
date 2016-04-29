@@ -335,7 +335,7 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
             else {
                 /* it should be there unless we screwed up */
                 ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->red_pool, 
-                              APLOGNO() "h2_beam(%d-%s): emitted bucket not "
+                              APLOGNO(03384) "h2_beam(%d-%s): emitted bucket not "
                               "in hold, n=%d", beam->id, beam->tag, 
                               (int)proxy->n);
                 AP_DEBUG_ASSERT(!proxy->bred);
