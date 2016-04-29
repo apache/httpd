@@ -110,7 +110,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#handlers">How handlers work</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pools">Resource allocation and resource pools</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#config">Configuration, commands and the like</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="basics" id="basics">Basic concepts</a></h2>
