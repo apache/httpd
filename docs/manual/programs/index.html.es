@@ -16,7 +16,7 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -30,10 +30,6 @@
 <a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>
@@ -43,60 +39,81 @@
 <h2><a name="index" id="index">Índice</a></h2>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
 
       <dd>Servidor Apache del Protocolo de Transmisión de
       Hipertexto (HTTP)</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
 
       <dd>Interfaz de control del servidor HTTP Apache </dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
 
       <dd>Herramienta de benchmarking del Servidor HTTP Apache</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
 
       <dd>Herramienta de Extensión de Apache</dd>
 
-      <dt><a href="configure.html">configure</a></dt>
+      <dt><code class="program"><a href="../programs/configure.html">configure</a></code></dt>
 
       <dd>Configuración de la estructura de directorios de Apache</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
 
       <dd>Crea y actualiza los archivos de autentificación de usuarios
       en formato DBM para autentificación básica</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
+
+      <dd>Ejecuta un programa FastCGI.</dd>
+
+      <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
+
+      <dd>Vacía la caché del disco.</dd>
+
+      <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
       <dd>Crea y actualiza los ficheros de autentificación de usuarios
       para autentificación tipo digest</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
+
+      <dd>Manipula la base de datos DBM de contraseñas.</dd>
+
+      <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
       <dd>Crea y actualiza los ficheros de autentificación de usuarios
-      para autentificación básica</dd>
+      para autentificación tipo básica</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
 
-      <dd>Resuelve los nombres de host para direcciones IP que estén
+      <dd>Crea ficheros dbm para que se usen con RewriteMap</dd>
+
+      <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
+
+      <dd>Resuelve los nombres de host para direcciones IP que están
       en los ficheros log de Apache</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
 
-      <dd>Renueva los logs de Apache sin parar el servidor</dd>
+      <dd>Logea de forma periódica el estado del servidor.</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
-      <dd>Switch User For Exec. Programa para cambiar la identidad de
-      usuario con la que se ejecuta un CGI</dd>
+      <dd>Renueva los logs de Apache sin tener que parar el servidor</dd>
 
-      <dt><a href="other.html">Otros Programas</a></dt>
-      <dd>Herramientas de soporte sin sección propia en la
-      documentación.</dd>
-    </dl>
+      <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
+
+      <dd>Divide un archivo de registro multi-host virtual en 
+      	archivos de registro por host</dd>
+
+      <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
+
+      <dd>Programa para cambiar la identidad de
+      	 usuario con la que se ejecuta un CGI</dd>
+  </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -107,7 +124,7 @@
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
