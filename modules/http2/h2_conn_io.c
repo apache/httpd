@@ -131,7 +131,7 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
                              apr_pool_t *pool)
 {
     io->c             = c;
-    io->output        = apr_brigade_create(pool, c->bucket_alloc);
+    io->output        = apr_brigade_create(c->pool, c->bucket_alloc);
     io->buflen        = 0;
     io->is_tls        = h2_h2_is_tls(c);
     io->buffer_output = io->is_tls;

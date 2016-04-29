@@ -83,7 +83,6 @@ struct h2_task {
     unsigned int frozen         : 1;
     unsigned int blocking       : 1;
     unsigned int detached       : 1;
-    unsigned int orphaned       : 1; /* h2_stream is gone for this task */    
     unsigned int submitted      : 1; /* response has been submitted to client */
     unsigned int worker_started : 1; /* h2_worker started processing for this io */
     unsigned int worker_done    : 1; /* h2_worker finished for this io */
