@@ -17,7 +17,7 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -33,7 +33,7 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
+<div class="outofdate">Ésta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
             recientemente.</div>
@@ -51,6 +51,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -564,6 +565,19 @@ variables</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.4.13 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Controls how some CGI variables are set</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 2.4.21 and later</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
@@ -4397,7 +4411,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/core.html';
 })(window, document);
 //--><!]]></script></div><div id="footer">
 <p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

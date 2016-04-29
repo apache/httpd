@@ -51,6 +51,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -541,6 +542,19 @@ variables</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache HTTP Server 2.4.13 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a>-<a name="cgivar" id="cgivar">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Controls how some CGI variables are set</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache HTTP Server 2.4.21 and later</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
             noch nicht übersetzt. Bitte schauen Sie in die englische
             Version.</p></div>

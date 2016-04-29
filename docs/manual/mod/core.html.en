@@ -48,6 +48,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -660,6 +661,32 @@ variables</td></tr>
     and <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>.  Third-party modules that don't
     use <code>ap_add_common_vars()</code> may choose to respect the setting
     as well.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls how some CGI variables are set</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.4.21 and later</td></tr>
+</table>
+  <p>This directive controls how some CGI variables are set.</p>
+
+  <p><strong>REQUEST_URI</strong> rules:</p>
+  <dl>
+    <dt><code>original-uri</code> (default)</dt>
+    <dd>The value is taken from the original request line, and will not
+    reflect internal redirects or subrequests which change the requested
+    resource.</dd>
+    <dt><code>current-uri</code></dt>
+    <dd>The value reflects the resource currently being processed,
+    which may be different than the original request from the client
+    due to internal redirects or subrequests.</dd>
+  </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
