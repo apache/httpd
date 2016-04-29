@@ -108,7 +108,7 @@ static int xlate_name(request_rec *r)
 {
     int i;
     const char *name;
-    char *backend;
+    char *backend = NULL;
     apr_dbm_t *db;
     apr_status_t rv;
     apr_datum_t key, val;
