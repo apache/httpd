@@ -206,7 +206,6 @@ dnl #  list of module object files
 proxy_http2_objs="dnl
 mod_proxy_http2.lo dnl
 h2_proxy_session.lo dnl
-h2_request.lo dnl
 h2_util.lo dnl
 "
 

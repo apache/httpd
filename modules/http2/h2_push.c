@@ -346,9 +346,9 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_request_createn(0, ctx->pool, method, ctx->req->scheme,
-                                         ctx->req->authority, path, headers,
-                                         ctx->req->serialize);
+                req = h2_req_createn(0, ctx->pool, method, ctx->req->scheme,
+                                     ctx->req->authority, path, headers,
+                                     ctx->req->serialize);
                 /* atm, we do not push on pushes */
                 h2_request_end_headers(req, ctx->pool, 1, 0);
                 push->req = req;
