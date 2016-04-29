@@ -52,7 +52,7 @@ Be sure to check the CHANGES file before upgrading.</note>
 strength and a potential security risk. It is <strong>not</strong> recommended
 that you use this module on a server that is shared with users you do not
 trust, as it can be abused to change the internal workings of httpd.</p>
-</note> 
+</note>
 
 </summary>
 
