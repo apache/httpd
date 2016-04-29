@@ -54,7 +54,7 @@
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
 <li><a href="../howto/cgi.html">Dynamic Content with CGI</a></li>
 <li><a href="../handler.html">Apache httpd's Handler Use</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+<li><a href="#comments_section">Comments</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Directive</a></h2>
