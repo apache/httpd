@@ -21,7 +21,7 @@
 
 
 #include "mod_proxy_http2.h"
-#include "h2_request.h"
+#include "h2.h"
 #include "h2_util.h"
 #include "h2_version.h"
 #include "h2_proxy_session.h"

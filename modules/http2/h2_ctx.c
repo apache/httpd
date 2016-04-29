@@ -23,7 +23,6 @@
 #include "h2_session.h"
 #include "h2_task.h"
 #include "h2_ctx.h"
-#include "h2_private.h"
 
 static h2_ctx *h2_ctx_create(const conn_rec *c)
 {

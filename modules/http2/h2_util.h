@@ -276,6 +276,25 @@ h2_ngheader *h2_util_ngheader_make_res(apr_pool_t *p,
 h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
                                        const struct h2_request *req);
 
+apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
+                               const char *name, size_t nlen,
+                               const char *value, size_t vlen);
+
+/*******************************************************************************
+ * h2_request helpers
+ ******************************************************************************/
+
+struct h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
+                                  const char *scheme, const char *authority, 
+                                  const char *path, apr_table_t *header,
+                                  int serialize);
+struct h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize);
+
+apr_status_t h2_req_make(struct h2_request *req, apr_pool_t *pool,
+                         const char *method, const char *scheme, 
+                         const char *authority, const char *path, 
+                         apr_table_t *headers);
+
 /*******************************************************************************
  * apr brigade helpers
  ******************************************************************************/
@@ -357,8 +376,16 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
  * @param tag a short message text about the context
  * @param bb the brigade to log
  */
-void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
-                    const char *tag, apr_bucket_brigade *bb);
+#define h2_util_bb_log(c, i, level, tag, bb) \
+do { \
+    char buffer[4 * 1024]; \
+    const char *line = "(null)"; \
+    apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
+    len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
+    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld-%d): %s", \
+        (c)->id, (int)(i), (len? buffer : line)); \
+} while(0)
+
 
 /**
  * Transfer buckets from one brigade to another with a limit on the 

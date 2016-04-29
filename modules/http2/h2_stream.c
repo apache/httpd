@@ -53,12 +53,19 @@ static int state_transition[][7] = {
 /*CL*/{  1, 1, 0, 0, 1, 1, 1 },
 };
 
-#define H2_STREAM_OUT_LOG(lvl,s,msg) \
-    do { \
-        if (APLOG_C_IS_LEVEL((s)->session->c,lvl)) \
-        h2_util_bb_log((s)->session->c,(s)->session->id,lvl,msg,(s)->buffer); \
-    } while(0)
-    
+static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, char *tag)
+{
+    if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
+        conn_rec *c = s->session->c;
+        char buffer[4 * 1024];
+        const char *line = "(null)";
+        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
+        
+        len = h2_util_bb_print(buffer, bmax, tag, "", s->buffer);
+        ap_log_cerror(APLOG_MARK, lvl, 0, c, "bb_dump(%ld-%d): %s", 
+                      c->id, s->id, len? buffer : line);
+    }
+}
 
 static int set_state(h2_stream *stream, h2_stream_state_t state)
 {
@@ -162,7 +169,7 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
         req->initiated_on = initiated_on;
     }
     else {
-        req = h2_request_create(id, pool, 
+        req = h2_req_create(id, pool, 
                 h2_config_geti(session->config, H2_CONF_SER_HEADERS));
     }
     stream->request = req; 
@@ -232,6 +239,11 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
     status = h2_request_rwrite(stream->request, r);
     stream->request->serialize = h2_config_geti(h2_config_rget(r), 
                                                 H2_CONF_SER_HEADERS);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
+                  "h2_request(%d): rwrite %s host=%s://%s%s",
+                  stream->request->id, stream->request->method, 
+                  stream->request->scheme, stream->request->authority, 
+                  stream->request->path);
 
     return status;
 }

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2/mod_proxy_http2: h2_request.c is no longer shared between these
+     modules. This simplifies building on platforms such as Windows, as module
+     reference used in logging is now clear.
+     
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 

@@ -23,7 +23,6 @@
 
 #include "mod_http2.h"
 #include "h2.h"
-#include "h2_request.h"
 #include "h2_util.h"
 #include "h2_proxy_session.h"
 
@@ -553,9 +552,11 @@ static apr_status_t session_start(h2_proxy_session *session)
     apr_socket_t *s;
     
     s = ap_get_conn_socket(session->c);
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(DOXYGEN)
     if (s) {
         ap_sock_disable_nagle(s);
     }
+#endif
     
     settings[0].settings_id = NGHTTP2_SETTINGS_ENABLE_PUSH;
     settings[0].value = 0;
@@ -592,7 +593,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->input = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     stream->output = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     
-    stream->req = h2_request_create(1, stream->pool, 0);
+    stream->req = h2_req_create(1, stream->pool, 0);
 
     apr_uri_parse(stream->pool, url, &puri);
     scheme = (strcmp(puri.scheme, "h2")? "http" : "https");
@@ -603,8 +604,8 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
         authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
     }
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
-    h2_request_make(stream->req, stream->pool, r->method, scheme,
-                    authority, path, r->headers_in);
+    h2_req_make(stream->req, stream->pool, r->method, scheme,
+                authority, path, r->headers_in);
 
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);

@@ -20,8 +20,12 @@
 
 #include <nghttp2/nghttp2.h>
 
+#ifdef IS_MOD_PROXY_HTTP2
+extern module AP_MODULE_DECLARE_DATA proxy_http2_module;
+APLOG_USE_MODULE(proxy_http2);
+#else
 extern module AP_MODULE_DECLARE_DATA http2_module;
-
 APLOG_USE_MODULE(http2);
+#endif 
 
 #endif
