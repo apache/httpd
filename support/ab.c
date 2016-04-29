@@ -725,11 +725,13 @@ static void ssl_proceed_handshake(struct connection *c)
                         break;
 #ifndef OPENSSL_NO_EC
                     case EVP_PKEY_EC: {
-                        const char *cname;
+                        const char *cname = NULL;
                         EC_KEY *ec = EVP_PKEY_get1_EC_KEY(key);
                         int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
                         EC_KEY_free(ec);
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
                         cname = EC_curve_nid2nist(nid);
+#endif
                         if (!cname)
                             cname = OBJ_nid2sn(nid);
 
