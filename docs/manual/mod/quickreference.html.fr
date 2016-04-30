@@ -414,7 +414,7 @@ programme CGI</td></tr>
 scripts CGI</td></tr>
 <tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Active la transmission d'en-têtes d'autorisation HTTP aux scripts en
 tant que variables CGI</td></tr>
-<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>variable</var> <var>rule</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls how some CGI variables are set</td></tr>
+<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>variable</var> <var>rule</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contrôle la manière dont certaines variables CGI sont définies</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>jeu de caractères</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Jeu de caractère vers lequel la traduction doit
 s'effectuer</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Précise les détails de la traduction du jeu de

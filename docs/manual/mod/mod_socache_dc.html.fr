@@ -29,18 +29,16 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_socache_dc.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_socache_dc.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournisseur de cache d'objets partagés basé sur dc.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>socache_dc_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_socache_dc.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Le module <code>mod_socache_dc</code> est un fournisseur de cache
+    <p>Le module <code class="module"><a href="../mod/mod_socache_dc.html">mod_socache_dc</a></code> est un fournisseur de cache
     d'objets partagés qui permet la création et l'accès à un cache
     maintenu par les bibliothèques de mise en cache de sessions
-    distribuées <a href="http://www.distcache.org/">distcache</a>.
+    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.
     </p>
 
     <p>Vous trouverez des détails à propos des autres fournisseurs de
