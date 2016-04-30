@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1737396:1741251 (outdated) -->
+<!-- English Revision: 1741251 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -458,12 +458,11 @@ All pour les versions antérieures</default>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
-      <dd>
-      Permet d'utiliser l'option AllowOverride pour rendre les erreurs
-      de syntaxe non fatales dans les fichiers .htaccess : au lieu de
-      causer une Internal Server Error, les directives non autorisées ou
-      non reconnues seront ignorées et un avertissement enregistré dans
-      le journal :
+      <dd>Permet d'utiliser l'option AllowOverride pour rendre non fatales les
+      directives invalides (non reconnues ou non permises) dans les fichiers
+      .htaccess : au lieu de causer une Internal Server Error, les directives
+      non autorisées ou non reconnues seront ignorées et un avertissement
+      enregistré dans le journal : 
       <ul>
           <li><strong>Nonfatal=Override</strong> rend les directives
 	  interdite par AllowOverride non fatales.</li>
@@ -474,7 +473,7 @@ All pour les versions antérieures</default>
 	  précédentes non fatales.</li>
       </ul>
       <p>Notez qu'une erreur de syntaxe dans une directive valide
-      causera toujours une internal server error.</p>
+      causera toujours une Internal Server Error.</p>
       <note type="warning"><title>Sécurité</title>
           Les erreurs non fatales peuvent être à l'origine de problèmes
 	  de sécurité pour les utilisateurs de fichiers .htaccess. Par
@@ -520,8 +519,8 @@ All pour les versions antérieures</default>
 
     <p>Dans l'exemple ci-dessus, toutes les directives qui ne font
     partie ni du groupe <code>AuthConfig</code>, ni du groupe
-    <code>Indexes</code>, provoquent une erreur "internal
-    server error".</p>
+    <code>Indexes</code>, provoquent une erreur "Internal
+    Server Error".</p>
 
     <note><p>Pour des raisons de sécurité et de performance, ne
     définissez pas <code>AllowOverride</code> à autre chose que
@@ -691,7 +690,7 @@ Apache</compatibility>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.4.21 du serveur HTTP Apache</compatibility>
 
 <usage>
   <p>Cette directive permet de contrôler la manière dont certaines variables CGI

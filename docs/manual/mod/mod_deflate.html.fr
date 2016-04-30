@@ -61,7 +61,7 @@ client</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
 </ul>
-<h3>Voir aussi</h3>
+<h3>Récapitulatif des corrections de bogues</h3><ul class="seealso"><li><a href="http://httpd.apache.org/dev/dist/CHANGES_2.4">Journal des modifications de Httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity">Rapports de bogues ouverts</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Les filtres</a></li>
 </ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
