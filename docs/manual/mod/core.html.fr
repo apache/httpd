@@ -127,7 +127,9 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
-<h3>Récapitulatif des corrections de bogues</h3><ul class="seealso"><li><a href="http://httpd.apache.org/dev/dist/CHANGES_2.4">Journal des modifications de Httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity">Rapports de bogues ouverts</a></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><a href="#comments_section">Commentaires</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="acceptfilter" id="acceptfilter">Directive</a> <a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a></h2>
@@ -504,12 +506,11 @@ All pour les versions antérieures</code></td></tr>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
-      <dd>
-      Permet d'utiliser l'option AllowOverride pour rendre les erreurs
-      de syntaxe non fatales dans les fichiers .htaccess : au lieu de
-      causer une Internal Server Error, les directives non autorisées ou
-      non reconnues seront ignorées et un avertissement enregistré dans
-      le journal :
+      <dd>Permet d'utiliser l'option AllowOverride pour rendre non fatales les
+      directives invalides (non reconnues ou non permises) dans les fichiers
+      .htaccess : au lieu de causer une Internal Server Error, les directives
+      non autorisées ou non reconnues seront ignorées et un avertissement
+      enregistré dans le journal : 
       <ul>
           <li><strong>Nonfatal=Override</strong> rend les directives
 	  interdite par AllowOverride non fatales.</li>
@@ -520,7 +521,7 @@ All pour les versions antérieures</code></td></tr>
 	  précédentes non fatales.</li>
       </ul>
       <p>Notez qu'une erreur de syntaxe dans une directive valide
-      causera toujours une internal server error.</p>
+      causera toujours une Internal Server Error.</p>
       <div class="warning"><h3>Sécurité</h3>
           Les erreurs non fatales peuvent être à l'origine de problèmes
 	  de sécurité pour les utilisateurs de fichiers .htaccess. Par
@@ -564,8 +565,8 @@ All pour les versions antérieures</code></td></tr>
 
     <p>Dans l'exemple ci-dessus, toutes les directives qui ne font
     partie ni du groupe <code>AuthConfig</code>, ni du groupe
-    <code>Indexes</code>, provoquent une erreur "internal
-    server error".</p>
+    <code>Indexes</code>, provoquent une erreur "Internal
+    Server Error".</p>
 
     <div class="note"><p>Pour des raisons de sécurité et de performance, ne
     définissez pas <code>AllowOverride</code> à autre chose que
@@ -736,7 +737,7 @@ Apache</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.21 du serveur HTTP Apache</td></tr>
 </table>
   <p>Cette directive permet de contrôler la manière dont certaines variables CGI
   sont définies.</p>
