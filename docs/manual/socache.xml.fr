@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 
-<!-- English Revision: 1305167:1740717 (outdated) -->
+<!-- English Revision: 1740717 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,27 +25,27 @@
 
 <manualpage metafile="socache.xml.meta">
 
-  <title>Le cache des objets partag&eacute;s du serveur HTTP Apache</title>
+  <title>Le cache des objets partagés du serveur HTTP Apache</title>
 
   <summary>
-    <p>Le cache des objets partag&eacute;s est un concept de partage de donn&eacute;es
-    de base entre tous les processus d'un serveur, sans se pr&eacute;occuper du
-    <a href="mpm.html">mod&egrave;le de threads et de processus</a>. On
-    l'utilise lorsque les avantages apport&eacute;s par le partage de donn&eacute;es
-    entre processus contrebalance la perte de performances cons&eacute;cutive &agrave;
+    <p>Le cache des objets partagés est un concept de partage de données
+    de base entre tous les processus d'un serveur, sans se préoccuper du
+    <a href="mpm.html">modèle de threads et de processus</a>. On
+    l'utilise lorsque les avantages apportés par le partage de données
+    entre processus contrebalance la perte de performances consécutive à
     la communication interprocessus.</p>
   </summary>
 
   <section id="providers">
-    <title>Fournisseurs du cache d'objets partag&eacute;s</title>
-    <p>Le cache d'objets partag&eacute;s en tant que tel est une abstraction.
-    Il est impl&eacute;ment&eacute; par quatre modules diff&eacute;rents. Pour pouvoir
-    utiliser le cache, un ou plusieurs de ces modules doivent &ecirc;tre
-    pr&eacute;sents et configur&eacute;s.</p>
-    <p>Le seul &eacute;l&eacute;ment de configuration consiste &agrave; d&eacute;finir le
-    fournisseur de cache &agrave; utiliser. Ceci est de la responsabilit&eacute; des
+    <title>Fournisseurs du cache d'objets partagés</title>
+    <p>Le cache d'objets partagés en tant que tel est une abstraction.
+    Il est implémenté par quatre modules différents. Pour pouvoir
+    utiliser le cache, un ou plusieurs de ces modules doivent être
+    présents et configurés.</p>
+    <p>Le seul élément de configuration consiste à définir le
+    fournisseur de cache à utiliser. Ceci est de la responsabilité des
     modules qui utilisent le cache, et pour cela, ils activent la
-    s&eacute;lection via des directives telles que <directive
+    sélection via des directives telles que <directive
     module="mod_cache_socache">CacheSocache</directive>, <directive
     module="mod_authn_socache">AuthnCacheSOCache</directive>, <directive
     module="mod_ssl">SSLSessionCache</directive>, et <directive
@@ -54,18 +54,18 @@
     <dl>
     <dt>"dbm" (<module>mod_socache_dbm</module>)</dt>
     <dd>Celui-ci utilise un fichier de hashage DBM. Le choix de la
-    DBM sous-jacente peut &ecirc;tre configurable si la version
-    d'APR install&eacute;e supporte de multiples impl&eacute;mentations de DBM.</dd>
+    DBM sous-jacente peut être configurable si la version
+    d'APR installée supporte de multiples implémentations de DBM.</dd>
     <dt>"dc" (<module>mod_socache_dc</module>)</dt>
-    <dd>Celui-ci utilise les biblioth&egrave;ques de mise en cache de sessions
-    distribu&eacute;es <a href="http://www.distcache.org/">distcache</a>.</dd>
+    <dd>Celui-ci utilise les bibliothèques de mise en cache de sessions
+    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.</dd>
     <dt>"memcache" (<module>mod_socache_memcache</module>)</dt>
-    <dd>Celui-ci utilise le syst&egrave;me &agrave; hautes performances de mise en
-    cache d'objets de m&eacute;moire distribu&eacute;e <a
+    <dd>Celui-ci utilise le système à hautes performances de mise en
+    cache d'objets de mémoire distribuée <a
     href="http://memcached.org/">memcached</a>.</dd>
     <dt>"shmcb" (<module>mod_socache_shmcb</module>)</dt>
-    <dd>Celui-ci utilise un tampon cyclique &agrave; hautes performances au
-    sein d'un segment de m&eacute;moire partag&eacute;e.</dd>
+    <dd>Celui-ci utilise un tampon cyclique à hautes performances au
+    sein d'un segment de mémoire partagée.</dd>
     </dl>
 
     <p>L'API fournit les fonctions suivantes :</p>
@@ -73,27 +73,27 @@
     <dl>
       <dt>const char *create(ap_socache_instance_t **instance, const char *arg,
                           apr_pool_t *tmp, apr_pool_t *p);</dt>
-      <dd>Cette fonction permet de cr&eacute;er un cache de session bas&eacute; sur
-      la cha&icirc;ne de configuration sp&eacute;cifi&eacute;e. Le pointeur d'instance
-      renvoy&eacute; dans le param&egrave;tre instance sera pass&eacute; comme premier
-      argument des invocations subs&eacute;quentes.</dd>
+      <dd>Cette fonction permet de créer un cache de session basé sur
+      la chaîne de configuration spécifiée. Le pointeur d'instance
+      renvoyé dans le paramètre instance sera passé comme premier
+      argument des invocations subséquentes.</dd>
 
       <dt>apr_status_t init(ap_socache_instance_t *instance, const char *cname,
                          const struct ap_socache_hints *hints,
                          server_rec *s, apr_pool_t *pool)</dt>
       <dd>Cette fonction permet d'initialiser le cache. L'argument cname
-      doit avoir une longueur maximale de 16 caract&egrave;res et permet
-      d'identifier de mani&egrave;re unique l'utilisateur du cache au sein du
-      serveur ; il est recommand&eacute; d'utiliser le nom du module, par
-      exemple "mod_ssl-sess". Comme cette cha&icirc;ne peut &ecirc;tre utilis&eacute;e au
-      sein d'un syst&egrave;me de fichiers, il est conseill&eacute; de n'utiliser que
-      des caract&egrave;res alphanum&eacute;riques [a-z0-9_-]. Si l'argument hints
-      n'est pas &eacute;gal &agrave; NULL, il fournit un ensemble d'indications au
-      fournisseur. La valeur retourn&eacute;e est le code d'erreur APR.</dd>
+      doit avoir une longueur maximale de 16 caractères et permet
+      d'identifier de manière unique l'utilisateur du cache au sein du
+      serveur ; il est recommandé d'utiliser le nom du module, par
+      exemple "mod_ssl-sess". Comme cette chaîne peut être utilisée au
+      sein d'un système de fichiers, il est conseillé de n'utiliser que
+      des caractères alphanumériques [a-z0-9_-]. Si l'argument hints
+      n'est pas égal à NULL, il fournit un ensemble d'indications au
+      fournisseur. La valeur retournée est le code d'erreur APR.</dd>
 
       <dt>void destroy(ap_socache_instance_t *instance, server_rec *s)</dt>
-      <dd>Cette fonction permet de d&eacute;truire l'instance de cache
-      sp&eacute;cifi&eacute;e.</dd>
+      <dd>Cette fonction permet de détruire l'instance de cache
+      spécifiée.</dd>
 
       <dt>apr_status_t store(ap_socache_instance_t *instance, server_rec *s,
                           const unsigned char *id, unsigned int idlen,
@@ -115,12 +115,12 @@
       <dd>Supprime un objet du cache.</dd>
 
       <dt>void status(ap_socache_instance_t *instance, request_rec *r, int flags)</dt>
-      <dd>Descend le d&eacute;tail d'une instance de cache &agrave; destination de mod_status.</dd>
+      <dd>Descend le détail d'une instance de cache à destination de mod_status.</dd>
 
       <dt>apr_status_t iterate(ap_socache_instance_t *instance, server_rec *s,
                             void *userctx, ap_socache_iterator_t *iterator,
                             apr_pool_t *pool)</dt>
-      <dd>Descend tous les objets en cache &agrave; destination d'une fonction <code>iterator callback</code>.</dd>
+      <dd>Descend tous les objets en cache à destination d'une fonction <code>iterator callback</code>.</dd>
     </dl>
 
   </section>
