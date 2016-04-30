@@ -77,10 +77,10 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Récapitulatif des corrections de bogues</h3><ul class="seealso"><li><a href="http://httpd.apache.org/dev/dist/CHANGES_2.4">Journal des modifications de Httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity">Rapports de bogues ouverts</a></li></ul><h3>Voir aussi</h3>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event">Report a bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="worker.html">Le MPM worker</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+<li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a></h2>
@@ -116,6 +116,12 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     statut de la disponibilité du socket ajuste ces files d'attente et distribue
     le travail au jeu de threads de travail.
     </p>
+
+    <p>Cette nouvelle architecture, en exploitant les sockets non blocants et
+    les fonctionnalités des noyaux modernes mis en valeur par
+    <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> (comme epoll de Linux), n'a plus besoin du
+    <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> <code>mpm-accept</code> pour
+    éviter le problème de "thundering herd".</p>
 
     <p>La directive <code class="directive">AsyncRequestWorkerFactor</code> permet de
     définir le nombre total de connexions qu'un bloc processus/thread peut

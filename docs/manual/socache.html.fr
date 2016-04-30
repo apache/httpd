@@ -54,7 +54,7 @@
     d'APR installée supporte de multiples implémentations de DBM.</dd>
     <dt>"dc" (<code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code>)</dt>
     <dd>Celui-ci utilise les bibliothèques de mise en cache de sessions
-    distribuées <a href="http://www.distcache.org/">distcache</a>.</dd>
+    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.</dd>
     <dt>"memcache" (<code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>)</dt>
     <dd>Celui-ci utilise le système à hautes performances de mise en
     cache d'objets de mémoire distribuée <a href="http://memcached.org/">memcached</a>.</dd>
