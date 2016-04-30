@@ -67,6 +67,10 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NAME</message>
         <message id="hyphenation"></message>
+        <message id="foundabug">Bugfix checklist</message>
+        <message id="httpdchangelog">httpd changelog</message>
+        <message id="httpdknownissues">Known issues</message>
+        <message id="httpdreportabug">Report a bug</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntax</message>

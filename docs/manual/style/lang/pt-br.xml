@@ -70,6 +70,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">M&#243;dulos Relacionados</message>
         <message id="relateddirectives">Diretrizes Relacionadas</message>
+        <message id="foundabug">Bugfix checklist</message>
+        <message id="httpdchangelog">httpd changelog</message>
+        <message id="httpdknownissues">Known issues</message>
+        <message id="httpdreportabug">Report a bug</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxe</message>
