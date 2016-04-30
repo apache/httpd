@@ -43,13 +43,13 @@ of consuming threads only for connections with active processing</description>
 <seealso><a href="worker.html">The worker MPM</a></seealso>
 
 <section id="event-worker-relationship"><title>Relationship with the Worker MPM</title>
-<p><module>event</module> is based on the <module>worker</module> MPM, which implements a hybrid 
+<p><module>event</module> is based on the <module>worker</module> MPM, which implements a hybrid
 multi-process multi-threaded server. A single control process (the parent) is responsible for launching
 child processes. Each child process creates a fixed number of server
 threads as specified in the <directive module="mpm_common">ThreadsPerChild</directive> directive, as well
 as a listener thread which listens for connections and passes them to a worker thread for processing when they arrive.</p>
 
-<p>Run-time configuration directives are identical to those provided by <module>worker</module>, with the only addition 
+<p>Run-time configuration directives are identical to those provided by <module>worker</module>, with the only addition
 of the <directive>AsyncRequestWorkerFactor</directive>.</p>
 
 </section>
@@ -57,17 +57,22 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
 <section id="how-it-works"><title>How it Works</title>
     <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
     completes the first request, it can keep the connection
-    open, sending further requests using the same socket and saving 
+    open, sending further requests using the same socket and saving
     significant overhead in creating TCP connections. However,
-    Apache HTTP Server traditionally keeps an entire child 
-    process/thread waiting for data from the client, which brings its own disadvantages. 
+    Apache HTTP Server traditionally keeps an entire child
+    process/thread waiting for data from the client, which brings its own disadvantages.
     To solve this problem, this MPM uses a dedicated listener thread for each process 
     to handle both the Listening sockets, all sockets that are in a Keep Alive state, 
     sockets where the handler and protocol filters have done their work
     and the ones where the only remaining thing to do is send the data to the client.
     </p>
 
-    <p>The total amount of connections that a single process/threads block can handle is regulated 
+    <p>This new architecture, leveraging non blocking sockets and modern kernel
+       features exposed by <glossary>APR</glossary> (like Linux's epoll),
+       does not require anymore the <code>mpm_accept</code> <directive module="core">Mutex</directive>
+       configured to avoid the thundering herd problem.</p>
+
+    <p>The total amount of connections that a single process/threads block can handle is regulated
         by the <directive>AsyncRequestWorkerFactor</directive> directive.</p>
 
     <section id="async-connections"><title>Async connections</title>
@@ -82,9 +87,9 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             <dd>Keep Alive handling is the most basic improvement from the worker MPM.
             Once a worker thread finishes to flush the response to the client, it can offload the
             socket handling to the listener thread, that in turns will wait for any event from the
-            OS, like "the socket is readable". If any new request comes from the client, then the 
-            listener will forward it to the first worker thread available. Conversely, if the 
-            <directive module="core">KeepAliveTimeout</directive> occurs then the socket will be 
+            OS, like "the socket is readable". If any new request comes from the client, then the
+            listener will forward it to the first worker thread available. Conversely, if the
+            <directive module="core">KeepAliveTimeout</directive> occurs then the socket will be
             closed by the listener. In this way the worker threads are not responsible for idle
             sockets and they can be re-used to serve other requests.</dd>
 
@@ -92,7 +97,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             <dd>Sometimes the MPM needs to perform a lingering close, namely sending back an early error to the client while it is still transmitting data to httpd. Sending the response and then closing the connection immediately is not the correct thing to do since the client (still trying to send the rest of the request) would get a connection reset and could not read the httpd's response. So in such cases, httpd tries to read the rest of the request to allow the client to consume the response. The lingering close is time bounded but it can take relatively long time, so a worker thread can offload this work to the listener.</dd>
         </dl>
 
-        <p>These improvements are valid for both HTTP/HTTPS connections.</p> 
+        <p>These improvements are valid for both HTTP/HTTPS connections.</p>
 
     </section>
 
@@ -104,21 +109,21 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         All modules shipped with the server are compatible with the event MPM.</p>
 
         <p>A similar restriction is currently present for requests involving an
-        output filter that needs to read and/or modify the whole response body. 
+        output filter that needs to read and/or modify the whole response body.
         If the connection to the client blocks while the filter is processing the
         data, and the amount of data produced by the filter is too big to be
         buffered in memory, the thread used for the request is not freed while
-        httpd waits until the pending data is sent to the client.<br /> 
-        To illustrate this point we can think about the following two situations: 
+        httpd waits until the pending data is sent to the client.<br />
+        To illustrate this point we can think about the following two situations:
         serving a static asset (like a CSS file) versus serving content retrieved from
-        FCGI/CGI or a proxied server. The former is predictable, namely the event MPM 
-        has full visibility on the end of the content and it can use events: the worker 
+        FCGI/CGI or a proxied server. The former is predictable, namely the event MPM
+        has full visibility on the end of the content and it can use events: the worker
         thread serving the response content can flush the first bytes until <code>EWOULDBLOCK</code>
         or <code>EAGAIN</code> is returned, delegating the rest to the listener. This one in turn
         waits for an event on the socket, and delegates the work to flush the rest of the content
         to the first idle worker thread. Meanwhile in the latter example (FCGI/CGI/proxied content)
         the MPM can't predict the end of the response and a worker thread has to finish its work
-        before returning the control to the listener. The only alternative is to buffer the 
+        before returning the control to the listener. The only alternative is to buffer the
         response in memory, but it wouldn't be the safest option for the sake of the
         server's stability and memory footprint.
         </p>
@@ -132,8 +137,8 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
             <li>kqueue (BSD) </li>
             <li>event ports (Solaris) </li>
         </ul>
-        <p>Before these new APIs where made available, the traditional <code>select</code> and <code>poll</code> APIs had to be used. 
-        Those APIs get slow if used to handle many connections or if the set of connections rate of change is high. 
+        <p>Before these new APIs where made available, the traditional <code>select</code> and <code>poll</code> APIs had to be used.
+        Those APIs get slow if used to handle many connections or if the set of connections rate of change is high.
         The new APIs allow to monitor much more connections and they perform way better when the set of connections to monitor changes frequently. So these APIs made it possible to write the event MPM, that scales much better with the typical HTTP pattern of many idle connections.</p>
 
         <p>The MPM assumes that the underlying <code>apr_pollset</code>
@@ -260,7 +265,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
     <p class="indent"><strong>
         (<directive module="mpm_common">ThreadsPerChild</directive> +
         (<directive>AsyncRequestWorkerFactor</directive> *
-        <var>number of idle workers</var>)) * 
+        <var>number of idle workers</var>)) *
         <directive module="mpm_common">ServerLimit</directive>
     </strong></p>
 
@@ -274,13 +279,13 @@ MaxRequestWorkers = 40
 
 idle_workers = 4 (average for all the processes to keep it simple)
 
-max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
+max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit
                 = (10 + (2 * 4)) * 4 = 72
-    
+
     </highlight>
     </note>
 
-    <p>When all the worker threads are idle, then absolute maximum numbers of concurrent 
+    <p>When all the worker threads are idle, then absolute maximum numbers of concurrent
         connections can be calculared in a simpler way:</p>
 
     <p class="indent"><strong>
@@ -291,12 +296,12 @@ max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) 
 
     <note><title>Example</title>
     <highlight language="config">
-    
-ThreadsPerChild = 10 
+
+ThreadsPerChild = 10
 ServerLimit = 4
 MaxRequestWorkers = 40
-AsyncRequestWorkerFactor = 2 
-    
+AsyncRequestWorkerFactor = 2
+
     </highlight>
 
     <p>If all the processes have all threads idle then: </p>
@@ -304,15 +309,15 @@ AsyncRequestWorkerFactor = 2
     <highlight language="config">idle_workers = 10</highlight>
 
     <p>We can calculate the absolute maximum numbers of concurrent connections in two ways:</p>
-    
+
     <highlight language="config">
-    
-max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit 
+
+max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) * ServerLimit
                 = (10 + (2 * 10)) * 4 = 120
-    
-max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers 
+
+max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers
                 = (2 + 1) * 40 = 120
-    
+
     </highlight>
     </note>
 
