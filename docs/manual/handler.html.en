@@ -37,7 +37,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">What is a Handler</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programmer">Programmer's Note</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="definition" id="definition">What is a Handler</a></h2>
