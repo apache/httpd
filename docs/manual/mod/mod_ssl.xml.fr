@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1734076:1740719 (outdated) -->
+<!-- English Revision: 1740719 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -618,7 +618,7 @@ supportés :</p>
 
     <p>Cette valeur utilise les bibliothèques de mise en cache de
     sessions distribuée sur <a
-    href="http://www.distcache.org/">cache distant "distcache"</a>.
+    href="http://distcache.sourceforge.net/">distcache</a>.
     L'argument doit spécifier le serveur ou mandataire à utiliser en
     utilisant la syntaxe d'adressage distcache ; par exemple,
     <code>UNIX:/chemin/vers/socket</code> spécifie une socket de domaine

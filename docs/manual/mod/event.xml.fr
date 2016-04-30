@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1731251 -->
+<!-- English Revision: 1741733 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -77,6 +77,12 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
     filtres de gestionnaire et de protocole ont fait leur travail, et ceux pour
     lesquels la seule chose restant à faire est l'envoi des données au client.
     </p>
+
+    <p>Cette nouvelle architecture, en exploitant les sockets non blocants et
+    les fonctionnalités des noyaux modernes mis en valeur par
+    <glossary>APR</glossary> (comme epoll de Linux), n'a plus besoin du
+    <directive module="core">Mutex</directive> <code>mpm-accept</code> pour
+    éviter le problème de "thundering herd".</p>
 
     <p>La directive <directive>AsyncRequestWorkerFactor</directive> permet de
     définir le nombre total de connexions qu'un bloc processus/thread peut

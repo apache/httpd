@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1370771:1740719 (outdated) -->
+<!-- English Revision: 1740719 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,20 +25,20 @@
 <modulesynopsis metafile="mod_socache_dc.xml.meta">
 
 <name>mod_socache_dc</name>
-<description>Fournisseur de cache d'objets partag&eacute;s bas&eacute; sur dc.</description>
+<description>Fournisseur de cache d'objets partagés basé sur dc.</description>
 <status>Extension</status>
 <sourcefile>mod_socache_dc.c</sourcefile>
 <identifier>socache_dc_module</identifier>
 
 <summary>
-    <p>Le module <code>mod_socache_dc</code> est un fournisseur de cache
-    d'objets partag&eacute;s qui permet la cr&eacute;ation et l'acc&egrave;s &agrave; un cache
-    maintenu par les biblioth&egrave;ques de mise en cache de sessions
-    distribu&eacute;es <a href="http://www.distcache.org/">distcache</a>.
+    <p>Le module <module>mod_socache_dc</module> est un fournisseur de cache
+    d'objets partagés qui permet la création et l'accès à un cache
+    maintenu par les bibliothèques de mise en cache de sessions
+    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.
     </p>
 
-    <p>Vous trouverez des d&eacute;tails &agrave; propos des autres fournisseurs de
-    cache d'objets partag&eacute;s <a href="../socache.html">ici</a>.
+    <p>Vous trouverez des détails à propos des autres fournisseurs de
+    cache d'objets partagés <a href="../socache.html">ici</a>.
     </p>
 
 </summary>
