@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1736594:1741250 (outdated) -->
+<!-- English Revision: 1741250 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -649,6 +649,33 @@ Apache</compatibility>
     <module>mod_include</module> ou <module>mod_ext_filter</module>. Les
     modules tiers qui n'utilisent pas <code>ap_add_common_vars()</code>
     peuvent aussi choisir de prendre en compte cette option.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CGIVar</name>
+<description>Contrôle la manière dont certaines variables CGI sont définies</description>
+<syntax>CGIVar <var>variable</var> <var>rule</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.21 du serveur HTTP Apache</compatibility>
+
+<usage>
+  <p>Cette directive permet de contrôler la manière dont certaines variables CGI
+  sont définies.</p>
+
+  <p>règles <strong>REQUEST_URI</strong> :</p>
+  <dl>
+    <dt><code>original-uri</code> (valeur par défaut)</dt>
+    <dd>La valeur est extraite de la requête originale, et ne tient pas compte
+    des redirections internes ou des sous-requêtes qui pourraient modifier la
+    ressource demandée.</dd>
+    <dt><code>current-uri</code></dt>
+    <dd>La valeur reflète la ressource en cours de traitement ; elle peut être
+    différente de la ressource demandée dans la requête initiale du client suite à
+    d'éventuelles redirections internes ou sous-requêtes.</dd>
+  </dl>
 </usage>
 </directivesynopsis>
 
