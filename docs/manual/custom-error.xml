@@ -56,10 +56,10 @@
     FileInfo.</p>
 
     <highlight language="config">
-ErrorDocument 500 "Sorry, our script crashed. Oh dear"<br />
-ErrorDocument 500 /cgi-bin/crash-recover<br />
-ErrorDocument 500 http://error.example.com/server_error.html<br />
-ErrorDocument 404 /errors/not_found.html <br />
+ErrorDocument 500 "Sorry, our script crashed. Oh dear"
+ErrorDocument 500 /cgi-bin/crash-recover
+ErrorDocument 500 http://error.example.com/server_error.html
+ErrorDocument 404 /errors/not_found.html
 ErrorDocument 401 /subscription/how_to_subscribe.html
     </highlight>
 
@@ -147,8 +147,8 @@ ErrorDocument 401 /subscription/how_to_subscribe.html
 
        <highlight language="perl">
 ...
-print  "Content-type: text/html\n"; <br />
-printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
+print  "Content-type: text/html\n";
+printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
 ...
       </highlight>
 
@@ -175,8 +175,8 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
     <p>In your server configuration file, you'll see a line such as:</p>
 
     <highlight language="config">
-    # Multi-language error messages<br />
-    #Include conf/extra/httpd-multilang-errordoc.conf
+# Multi-language error messages
+#Include conf/extra/httpd-multilang-errordoc.conf
     </highlight>
 
     <p>Uncommenting this <code>Include</code> line will enable this

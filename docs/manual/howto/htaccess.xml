@@ -307,7 +307,7 @@ Options Includes
 &lt;/Directory&gt;
 
 &lt;Location "/"&gt;
-    Options +IncludesNoExec -ExecCGI<br />
+    Options +IncludesNoExec -ExecCGI
 &lt;/Location&gt;
     </highlight>
 
