@@ -1054,16 +1054,16 @@ r:activeconfig() -- Get a walkable tree of the active (virtualhost-specific) htt
 <section id="logging"><title>Logging Functions</title>
 
 <highlight language="lua">
-        -- examples of logging messages<br />
-        r:trace1("This is a trace log message") -- trace1 through trace8 can be used <br />
-        r:debug("This is a debug log message")<br />
-        r:info("This is an info log message")<br />
-        r:notice("This is a notice log message")<br />
-        r:warn("This is a warn log message")<br />
-        r:err("This is an err log message")<br />
-        r:alert("This is an alert log message")<br />
-        r:crit("This is a crit log message")<br />
-        r:emerg("This is an emerg log message")<br />
+-- examples of logging messages
+r:trace1("This is a trace log message") -- trace1 through trace8 can be used
+r:debug("This is a debug log message")
+r:info("This is an info log message")
+r:notice("This is a notice log message")
+r:warn("This is a warn log message")
+r:err("This is an err log message")
+r:alert("This is an alert log message")
+r:crit("This is a crit log message")
+r:emerg("This is an emerg log message")
 </highlight>
 
 </section>

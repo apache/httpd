@@ -148,8 +148,8 @@ UserDir disabled root jro fish
     using a configuration like the following:</p>
 
     <highlight language="config">
-      UserDir disabled<br />
-      UserDir enabled rbowen krietz
+UserDir disabled
+UserDir enabled rbowen krietz
     </highlight>
 
     <p>See <directive module="mod_userdir">UserDir</directive>

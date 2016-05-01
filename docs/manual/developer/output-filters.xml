@@ -122,12 +122,12 @@
 
     <example><title>How to handle an empty brigade</title>
     <highlight language="c">
-    apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
-    {
-        if (APR_BRIGADE_EMPTY(bb)) {
-            return APR_SUCCESS;
-        }
-        ....
+apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
+    ...
     </highlight>
     </example>
 
@@ -281,16 +281,16 @@ const char *data;
 apr_size_t length;
 
 while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
-   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
-   if (rv) ...;
-   /* Remove bucket e from bb. */
-   APR_BUCKET_REMOVE(e);
-   /* Insert it into  temporary brigade. */
-   APR_BRIGADE_INSERT_HEAD(tmpbb, e);
-   /* Pass brigade downstream. */
-   rv = ap_pass_brigade(f->next, tmpbb);
-   if (rv) ...;
-   apr_brigade_cleanup(tmpbb);
+    rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
+    if (rv) ...;
+    /* Remove bucket e from bb. */
+    APR_BUCKET_REMOVE(e);
+    /* Insert it into  temporary brigade. */
+    APR_BRIGADE_INSERT_HEAD(tmpbb, e);
+    /* Pass brigade downstream. */
+    rv = ap_pass_brigade(f->next, tmpbb);
+    if (rv) ...;
+    apr_brigade_cleanup(tmpbb);
 }
 </highlight>
     </example>
@@ -311,26 +311,24 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     <example><title>Example code to maintain filter state</title>
 <highlight language="c">
 struct dummy_state {
-   apr_bucket_brigade *tmpbb;
-   int filter_state;
-   ...
+    apr_bucket_brigade *tmpbb;
+    int filter_state;
+    ...
 };
 
 apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-
     struct dummy_state *state;
 
     state = f->ctx;
     if (state == NULL) {
 
-       /* First invocation for this response: initialise state structure.
-        */
-       f->ctx = state = apr_palloc(f->r->pool, sizeof *state);
+        /* First invocation for this response: initialise state structure.
+         */
+        f->ctx = state = apr_palloc(f->r->pool, sizeof *state);
 
-       state->tmpbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-       state->filter_state = ...;
-
+        state->tmpbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        state->filter_state = ...;
     }
     ...
 </highlight>
@@ -430,7 +428,8 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
         /* Retry, using a blocking read. */
         mode = APR_BLOCK_READ;
         continue;
-    } else if (rv != APR_SUCCESS) {
+    }
+    else if (rv != APR_SUCCESS) {
         /* handle errors */
     }
 

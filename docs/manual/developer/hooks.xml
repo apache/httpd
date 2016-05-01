@@ -65,7 +65,7 @@
       takes a <code>request_rec *</code> and an <code>int</code> and is
       called <code>do_something</code>, then declare it like this:</p>
       <highlight language="c">
-        AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
+AP_DECLARE_HOOK(int, do_something, (request_rec *r, int n))
       </highlight>
 
       <p>This should go in a header which modules will include if
@@ -96,7 +96,7 @@ APR_HOOK_STRUCT(
         hooks are called, and the caller is implemented like this:</p>
 
         <highlight language="c">
-          AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
+AP_IMPLEMENT_HOOK_VOID(do_something, (request_rec *r, int n), (r, n))
         </highlight>
 
         <p>The second and third arguments are the dummy argument
@@ -118,7 +118,7 @@ void ap_run_do_something(request_rec *r, int n)
         the first hook that does something interesting, like so:</p>
 
         <highlight language="c">
-          AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, do_something, (request_rec *r, int n), (r, n), DECLINED)
         </highlight>
 
         <p>The first hook that does <em>not</em> return <code>DECLINED</code>
@@ -135,7 +135,7 @@ void ap_run_do_something(request_rec *r, int n)
         return is the return value. Declare these like so:</p>
 
         <highlight language="c">
-          AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, do_something, (request_rec *r, int n), (r, n), OK, DECLINED)
         </highlight>
 
         <p>Again, <code>OK</code> and <code>DECLINED</code> are the traditional
@@ -165,7 +165,7 @@ ret=ap_run_do_something(r, n);
       of the correct type:</p>
 
       <highlight language="c">
-static int my_something_doer(request_rec *r, int n)<br />
+static int my_something_doer(request_rec *r, int n)
 {
     ...
     return OK;
