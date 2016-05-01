@@ -1862,9 +1862,9 @@ NoProxy         .example.com 192.168.112.0/21
 
     <example><title>Example</title>
     <highlight language="config">
-      ProxyRemote  *  http://firewall.example.com:81<br />
-      NoProxy         .example.com 192.168.112.0/21<br />
-      ProxyDomain     .example.com
+ProxyRemote  "*"  "http://firewall.example.com:81"
+NoProxy           ".example.com" "192.168.112.0/21"
+ProxyDomain       ".example.com"
       </highlight>
     </example>
 </usage>

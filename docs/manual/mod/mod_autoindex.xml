@@ -980,7 +980,7 @@ indexing</description>
      so far. Consider the following example:</p>
 
      <highlight language="config">
-IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize
      </highlight>
 
