@@ -109,8 +109,8 @@ existing HTML documents.</p>
     do this. You can tell Apache to parse any file with a
     particular file extension, such as <code>.shtml</code>, with
     the following directives:</p>
-<pre class="prettyprint lang-config">        AddType text/html .shtml<br />
-        AddOutputFilter INCLUDES .shtml</pre>
+<pre class="prettyprint lang-config">AddType text/html .shtml
+AddOutputFilter INCLUDES .shtml</pre>
 
 
     <p>One disadvantage to this approach is that if you wanted to

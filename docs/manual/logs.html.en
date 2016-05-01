@@ -446,9 +446,9 @@ CustomLog logs/access_log common env=!dontlog</pre>
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english</pre>
+      <pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english
+CustomLog logs/english_log common env=english
+CustomLog logs/non_english_log common env=!english</pre>
 
 
       <p>In a caching scenario one would want to know about
