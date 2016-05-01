@@ -671,7 +671,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 
         </li>
 
-	<li>
+        <li>
            <p>If the <em>TestString</em> has the special value <code>expr</code>, the
            <em>CondPattern</em> will be treated as an
            <a href="../expr.html">ap_expr</a>.</p>
@@ -682,7 +682,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
             to block unwanted hotlinking.
            </p>
 
-           <pre class="prettyprint lang-config">RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           <pre class="prettyprint lang-config">RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
 RewriteRule "^/images" "-" [F]</pre>
 
         </li>

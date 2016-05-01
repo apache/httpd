@@ -131,12 +131,12 @@
     brigade should have no side effects (such as changing any state
     private to the filter).</p>
 
-    <div class="example"><h3>How to handle an empty brigade</h3><pre class="prettyprint lang-c">    apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
-    {
-        if (APR_BRIGADE_EMPTY(bb)) {
-            return APR_SUCCESS;
-        }
-        ....</pre>
+    <div class="example"><h3>How to handle an empty brigade</h3><pre class="prettyprint lang-c">apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_SUCCESS;
+    }
+    ...</pre>
 </div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -281,16 +281,16 @@ const char *data;
 apr_size_t length;
 
 while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
-   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
-   if (rv) ...;
-   /* Remove bucket e from bb. */
-   APR_BUCKET_REMOVE(e);
-   /* Insert it into  temporary brigade. */
-   APR_BRIGADE_INSERT_HEAD(tmpbb, e);
-   /* Pass brigade downstream. */
-   rv = ap_pass_brigade(f-&gt;next, tmpbb);
-   if (rv) ...;
-   apr_brigade_cleanup(tmpbb);
+    rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
+    if (rv) ...;
+    /* Remove bucket e from bb. */
+    APR_BUCKET_REMOVE(e);
+    /* Insert it into  temporary brigade. */
+    APR_BRIGADE_INSERT_HEAD(tmpbb, e);
+    /* Pass brigade downstream. */
+    rv = ap_pass_brigade(f-&gt;next, tmpbb);
+    if (rv) ...;
+    apr_brigade_cleanup(tmpbb);
 }</pre>
 </div>
 
@@ -307,26 +307,24 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     a new brigade per invocation as described in the <a href="#brigade">Brigade structure</a> section.</p>
 
     <div class="example"><h3>Example code to maintain filter state</h3><pre class="prettyprint lang-c">struct dummy_state {
-   apr_bucket_brigade *tmpbb;
-   int filter_state;
-   ...
+    apr_bucket_brigade *tmpbb;
+    int filter_state;
+    ...
 };
 
 apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-
     struct dummy_state *state;
     
     state = f-&gt;ctx;
     if (state == NULL) {
     
-       /* First invocation for this response: initialise state structure.
-        */
-       f-&gt;ctx = state = apr_palloc(f-&gt;r-&gt;pool, sizeof *state);
+        /* First invocation for this response: initialise state structure.
+         */
+        f-&gt;ctx = state = apr_palloc(f-&gt;r-&gt;pool, sizeof *state);
 
-       state-&gt;tmpbb = apr_brigade_create(f-&gt;r-&gt;pool, f-&gt;c-&gt;bucket_alloc);
-       state-&gt;filter_state = ...;
-
+        state-&gt;tmpbb = apr_brigade_create(f-&gt;r-&gt;pool, f-&gt;c-&gt;bucket_alloc);
+        state-&gt;filter_state = ...;
     }
     ...</pre>
 </div>
@@ -421,7 +419,8 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
         /* Retry, using a blocking read. */
         mode = APR_BLOCK_READ;
         continue;
-    } else if (rv != APR_SUCCESS) {
+    }
+    else if (rv != APR_SUCCESS) {
         /* handle errors */
     }
 
