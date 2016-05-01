@@ -70,8 +70,8 @@ URLs on the fly</description>
 
     <example><title>Example</title>
     <highlight language="config">
-      LogLevel alert rewrite:trace3
-      </highlight>
+LogLevel alert rewrite:trace3
+    </highlight>
     </example>
 
     <note><title>RewriteLog</title>
@@ -941,7 +941,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]
 
         </li>
 
-	<li>
+        <li>
            <p>If the <em>TestString</em> has the special value <code>expr</code>, the
            <em>CondPattern</em> will be treated as an
            <a href="../expr.html">ap_expr</a>.</p>
@@ -953,7 +953,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]
            </p>
 
            <highlight language="config">
-RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
 RewriteRule "^/images" "-" [F]
            </highlight>
         </li>

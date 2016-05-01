@@ -64,7 +64,7 @@ AddOutputFilter INCLUDES .shtml
     is set):</p>
 
     <highlight language="config">
-      Options +Includes
+Options +Includes
     </highlight>
 
     <p>For backwards compatibility, the <code>server-parsed</code>
@@ -823,7 +823,7 @@ AddOutputFilter INCLUDES .shtml
     looks for to mark the end of an include element.</p>
 
     <highlight language="config">
-      SSIEndTag "%&gt;"
+SSIEndTag "%&gt;"
     </highlight>
 
 </usage>
@@ -844,7 +844,7 @@ AddOutputFilter INCLUDES .shtml
     displays when a variable is not set and &quot;echoed&quot;.</p>
 
     <highlight language="config">
-      SSIUndefinedEcho "&lt;!-- undef --&gt;"
+SSIUndefinedEcho "&lt;!-- undef --&gt;"
     </highlight>
 </usage>
 </directivesynopsis>
@@ -871,7 +871,7 @@ directive]&quot;</default>
     errmsg=<var>message</var> --&gt;</code> element.</p>
 
     <highlight language="config">
-      SSIErrorMsg "&lt;!-- Error --&gt;"
+SSIErrorMsg "&lt;!-- Error --&gt;"
     </highlight>
 </usage>
 </directivesynopsis>
@@ -893,8 +893,8 @@ directive]&quot;</default>
     different times).</p>
 
     <highlight language="config">
-      SSIStartTag "&lt;%"<br />
-      SSIEndTag   "%&gt;"
+SSIStartTag "&lt;%"
+SSIEndTag   "%&gt;"
     </highlight>
 
     <p>The example given above, which also specifies a matching
@@ -930,7 +930,7 @@ displayed</description>
     timefmt=<var>formatstring</var> --&gt;</code> element.</p>
 
     <highlight language="config">
-      SSITimeFormat "%R, %B %d, %Y"
+SSITimeFormat "%R, %B %d, %Y"
     </highlight>
 
     <p>The above directive would cause times to be displayed in the

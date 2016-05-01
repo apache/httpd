@@ -476,9 +476,9 @@ CustomLog logs/access_log common env=!dontlog
       different log file.</p>
 
       <highlight language="config">
-        SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
-        CustomLog logs/non_english_log common env=!english
+SetEnvIf Accept-Language "en" english
+CustomLog logs/english_log common env=english
+CustomLog logs/non_english_log common env=!english
       </highlight>
 
       <p>In a caching scenario one would want to know about
