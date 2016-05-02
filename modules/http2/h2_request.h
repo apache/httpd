@@ -18,7 +18,8 @@
 
 #include "h2.h"
 
-apr_status_t h2_request_rwrite(h2_request *req, request_rec *r);
+apr_status_t h2_request_rwrite(h2_request *req, apr_pool_t *pool, 
+                               request_rec *r);
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,

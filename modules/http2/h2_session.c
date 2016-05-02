@@ -315,6 +315,9 @@ static apr_status_t stream_release(h2_session *session,
                                    uint32_t error_code) 
 {
     conn_rec *c = session->c;
+    apr_bucket *b;
+    apr_status_t status;
+    
     if (!error_code) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_stream(%ld-%d): handled, closing", 
@@ -333,8 +336,11 @@ static apr_status_t stream_release(h2_session *session,
         h2_stream_rst(stream, error_code);
     }
     
-    return h2_conn_io_writeb(&session->io,
-                             h2_bucket_eos_create(c->bucket_alloc, stream), 0);
+    b = h2_bucket_eos_create(c->bucket_alloc, stream);
+    APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
+    status = h2_conn_io_pass(&session->io, session->bbtmp);
+    apr_brigade_cleanup(session->bbtmp);
+    return status;
 }
 
 static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
@@ -538,13 +544,6 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     return 0;
 }
 
-static apr_status_t pass_data(void *ctx, 
-                              const char *data, apr_off_t length)
-{
-    return h2_conn_io_write(&((h2_session*)ctx)->io, data, length);
-}
-
-
 static char immortal_zeros[H2_MAX_PADLEN];
 
 static int on_send_data_cb(nghttp2_session *ngh2, 
@@ -582,49 +581,30 @@ static int on_send_data_cb(nghttp2_session *ngh2,
                   "h2_stream(%ld-%d): send_data_cb for %ld bytes",
                   session->id, (int)stream_id, (long)length);
                   
-    if (h2_conn_io_is_buffered(&session->io)) {
-        status = h2_conn_io_write(&session->io, (const char *)framehd, 9);
-        if (status == APR_SUCCESS) {
-            if (padlen) {
-                status = h2_conn_io_write(&session->io, (const char *)&padlen, 1);
-            }
-            
-            if (status == APR_SUCCESS) {
-                apr_off_t len = length;
-                status = h2_stream_readx(stream, pass_data, session, &len, &eos);
-                if (status == APR_SUCCESS && len != length) {
-                    status = APR_EINVAL;
-                }
-            }
-            
-            if (status == APR_SUCCESS && padlen) {
-                if (padlen) {
-                    status = h2_conn_io_write(&session->io, immortal_zeros, padlen);
-                }
-            }
-        }
+    status = h2_conn_io_write(&session->io, (const char *)framehd, 9);
+    if (padlen && status == APR_SUCCESS) {
+        status = h2_conn_io_write(&session->io, (const char *)&padlen, 1);
     }
-    else {
-        status = h2_conn_io_write(&session->io, (const char *)framehd, 9);
-        if (padlen && status == APR_SUCCESS) {
-            status = h2_conn_io_write(&session->io, (const char *)&padlen, 1);
-        }
-        if (status == APR_SUCCESS) {
-            apr_off_t len = length;
-            status = h2_stream_read_to(stream, session->io.output, &len, &eos);
-            if (status == APR_SUCCESS && len != length) {
-                status = APR_EINVAL;
-            }
-        }
-            
-        if (status == APR_SUCCESS && padlen) {
-            b = apr_bucket_immortal_create(immortal_zeros, padlen, 
-                                           session->c->bucket_alloc);
-            status = h2_conn_io_writeb(&session->io, b, 0);
+    
+    if (status == APR_SUCCESS) {
+        apr_off_t len = length;
+        status = h2_stream_read_to(stream, session->bbtmp, &len, &eos);
+        if (status == APR_SUCCESS && len != length) {
+            status = APR_EINVAL;
         }
     }
     
+    if (status == APR_SUCCESS && padlen) {
+        b = apr_bucket_immortal_create(immortal_zeros, padlen, 
+                                       session->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
+    }
     
+    if (status == APR_SUCCESS) {
+        status = h2_conn_io_pass(&session->io, session->bbtmp);
+    }
+        
+    apr_brigade_cleanup(session->bbtmp);
     if (status == APR_SUCCESS) {
         stream->data_frames_sent++;
         h2_conn_io_consider_pass(&session->io);
@@ -684,44 +664,30 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     return APR_SUCCESS;
 }
 
-static void h2_session_cleanup(h2_session *session)
-{
-    AP_DEBUG_ASSERT(session);
-    /* This is an early cleanup of the session that may
-     * discard what is no longer necessary for *new* streams
-     * and general HTTP/2 processing.
-     * At this point, all frames are in transit or somehwere in
-     * our buffers or passed down output filters.
-     * h2 streams might still being written out.
-     */
-    if (session->c) {
-        h2_ctx_clear(session->c);
-    }
-    if (session->ngh2) {
-        nghttp2_session_del(session->ngh2);
-        session->ngh2 = NULL;
-    }
-}
-
 static void h2_session_destroy(h2_session *session)
 {
-    AP_DEBUG_ASSERT(session);
-    
-    h2_session_cleanup(session);
-    AP_DEBUG_ASSERT(session->open_streams == h2_ihash_count(session->streams));
+    AP_DEBUG_ASSERT(session);    
+
     h2_ihash_clear(session->streams);
-    session->open_streams = 0;
-    
-    ap_remove_input_filter_byhandle((session->r? session->r->input_filters :
-                                     session->c->input_filters), "H2_IN");
-    if (APLOGctrace1(session->c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "h2_session(%ld): destroy", session->id);
-    }
     if (session->mplx) {
         h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
         h2_mplx_release_and_join(session->mplx, session->iowait);
         session->mplx = NULL;
+    }
+
+    ap_remove_input_filter_byhandle((session->r? session->r->input_filters :
+                                     session->c->input_filters), "H2_IN");
+    if (session->ngh2) {
+        nghttp2_session_del(session->ngh2);
+        session->ngh2 = NULL;
+    }
+    if (session->c) {
+        h2_ctx_clear(session->c);
+    }
+
+    if (APLOGctrace1(session->c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                      "h2_session(%ld): destroy", session->id);
     }
     if (session->pool) {
         apr_pool_destroy(session->pool);
@@ -903,7 +869,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
                                             h2_session_receive, session);
         ap_add_input_filter("H2_IN", session->cin, r, c);
 
-        h2_conn_io_init(&session->io, c, session->config, session->pool);
+        h2_conn_io_init(&session->io, c, session->config);
         session->bbtmp = apr_brigade_create(session->pool, c->bucket_alloc);
         
         status = init_callbacks(c, &callbacks);
@@ -1504,7 +1470,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
 apr_status_t h2_session_stream_done(h2_session *session, h2_stream *stream)
 {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                  "h2_stream(%ld-%d): cleanup by EOS bucket destroy", 
+                  "h2_stream(%ld-%d): EOS bucket cleanup -> done", 
                   session->id, stream->id);
     h2_ihash_remove(session->streams, stream->id);
     --session->open_streams;

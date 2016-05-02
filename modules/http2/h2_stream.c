@@ -203,6 +203,9 @@ void h2_stream_cleanup(h2_stream *stream)
 void h2_stream_destroy(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
+                  "h2_stream(%ld-%d): destroy", 
+                  stream->session->id, stream->id);
     if (stream->input) {
         h2_beam_destroy(stream->input);
         stream->input = NULL;
@@ -248,7 +251,7 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
         return APR_ECONNRESET;
     }
     set_state(stream, H2_STREAM_ST_OPEN);
-    status = h2_request_rwrite(stream->request, r);
+    status = h2_request_rwrite(stream->request, stream->pool, r);
     stream->request->serialize = h2_config_geti(h2_config_rget(r), 
                                                 H2_CONF_SER_HEADERS);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
@@ -453,12 +456,14 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
     return status;
 }
 
+static const apr_size_t DATA_CHUNK_SIZE = ((16*1024) - 100 - 9); 
+
 apr_status_t h2_stream_out_prepare(h2_stream *stream,
                                    apr_off_t *plen, int *peos)
 {
     conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
-    apr_off_t requested = (*plen > 0)? *plen : 32*1024;
+    apr_off_t requested;
 
     if (stream->rst_error) {
         *plen = 0;
@@ -466,11 +471,19 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
         return APR_ECONNRESET;
     }
 
+    if (*plen > 0) {
+        requested = H2MIN(*plen, DATA_CHUNK_SIZE);
+    }
+    else {
+        requested = DATA_CHUNK_SIZE;
+    }
+    *plen = requested;
+    
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
     h2_util_bb_avail(stream->buffer, plen, peos);
-    if (!*peos && !*plen) {
+    if (!*peos && *plen < requested) {
         /* try to get more data */
-        status = fill_buffer(stream, H2MIN(requested, 32*1024));
+        status = fill_buffer(stream, (requested - *plen) + DATA_CHUNK_SIZE);
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->buffer, eos);
@@ -487,27 +500,6 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
     if (!*peos && !*plen && status == APR_SUCCESS) {
         return APR_EAGAIN;
     }
-    return status;
-}
-
-
-apr_status_t h2_stream_readx(h2_stream *stream, 
-                             h2_io_data_cb *cb, void *ctx,
-                             apr_off_t *plen, int *peos)
-{
-    conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS;
-
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-    status = h2_util_bb_readx(stream->buffer, cb, ctx, plen, peos);
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
-    }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
-                  "h2_stream(%ld-%d): readx, len=%ld eos=%d",
-                  c->id, stream->id, (long)*plen, *peos);
     return status;
 }
 
