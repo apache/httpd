@@ -39,14 +39,13 @@ typedef struct {
     apr_int64_t bytes_written;
     
     int buffer_output;
-    char *buffer;
-    apr_size_t buflen;
-    apr_size_t bufsize;
+    char *scratch;
+    apr_size_t ssize;
+    apr_size_t slen;
 } h2_conn_io;
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
-                             const struct h2_config *cfg, 
-                             apr_pool_t *pool);
+                             const struct h2_config *cfg);
 
 int h2_conn_io_is_buffered(h2_conn_io *io);
 
@@ -59,12 +58,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
                          const char *buf,
                          size_t length);
 
-/**
- * Append a bucket to the buffered output.
- * @param io the connection io
- * @param b the bucket to append
- */
-apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b, int flush);
+apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
 
 /**
  * Append an End-Of-Connection bucket to the output that, once destroyed,

@@ -167,6 +167,7 @@ static int can_beam_file(void *ctx, h2_bucket_beam *beam,  apr_file_t *file)
 }
 
 static void have_out_data_for(h2_mplx *m, int stream_id);
+static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master);
 
 static void check_tx_reservation(h2_mplx *m) 
 {
@@ -193,8 +194,12 @@ static int purge_stream(void *ctx, void *val)
 {
     h2_mplx *m = ctx;
     h2_stream *stream = val;
+    h2_task *task = h2_ihash_get(m->tasks, stream->id);
     h2_ihash_remove(m->spurge, stream->id);
     h2_stream_destroy(stream);
+    if (task) {
+        task_destroy(m, task, 1);
+    }
     return 0;
 }
 
@@ -386,7 +391,7 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
 
 static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error) 
 {
-    h2_task *task = h2_ihash_get(m->tasks, stream->id);
+    h2_task *task;
     
     /* Situation: we are, on the master connection, done with processing
      * the stream. Either we have handled it successfully, or the stream
@@ -417,29 +422,28 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
      * memory. We should either copy it on task creation or wait with the
      * stream destruction until the task is done. 
      */
+    h2_iq_remove(m->q, stream->id);
+    h2_ihash_remove(m->ready_tasks, stream->id);
     h2_ihash_remove(m->streams, stream->id);
     if (stream->input) {
         m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
     }
     h2_stream_cleanup(stream);
 
+    task = h2_ihash_get(m->tasks, stream->id);
     if (task) {
-        /* Remove task from ready set, we will never submit it */
-        h2_ihash_remove(m->ready_tasks, stream->id);
-        task->input.beam = NULL;
-        
         if (!task->worker_done) {
             /* task still running, cleanup once it is done */
             if (rst_error) {
                 h2_task_rst(task, rst_error);
             }
-            /* FIXME: this should work, but does not
+            /* FIXME: this should work, but does not 
             h2_ihash_add(m->shold, stream);
             return;*/
+            task->input.beam = NULL;
         }
         else {
             /* already finished */
-            h2_iq_remove(m->q, task->stream_id);
             task_destroy(m, task, 0);
         }
     }
@@ -492,6 +496,17 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         /* disable WINDOW_UPDATE callbacks */
         h2_mplx_set_consumed_cb(m, NULL, NULL);
         
+        if (!h2_ihash_empty(m->shold)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): start release_join with %d streams in hold", 
+                          m->id, (int)h2_ihash_count(m->shold));
+        }
+        if (!h2_ihash_empty(m->spurge)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): start release_join with %d streams to purge", 
+                          m->id, (int)h2_ihash_count(m->spurge));
+        }
+        
         h2_iq_clear(m->q);
         apr_thread_cond_broadcast(m->task_thawed);
         while (!h2_ihash_iter(m->streams, stream_done_iter, m)) {
@@ -499,19 +514,25 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         }
         AP_DEBUG_ASSERT(h2_ihash_empty(m->streams));
     
+        if (!h2_ihash_empty(m->shold)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): 2. release_join with %d streams in hold", 
+                          m->id, (int)h2_ihash_count(m->shold));
+        }
+        if (!h2_ihash_empty(m->spurge)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): 2. release_join with %d streams to purge", 
+                          m->id, (int)h2_ihash_count(m->spurge));
+        }
+        
         /* If we still have busy workers, we cannot release our memory
-         * pool yet, as slave connections have child pools of their respective
-         * h2_io's.
-         * Any remaining ios are processed in these workers. Any operation 
-         * they do on their input/outputs will be errored ECONNRESET/ABORTED, 
-         * so processing them should fail and workers *should* return.
+         * pool yet, as tasks have references to us.
+         * Any operation on the task slave connection will from now on
+         * be errored ECONNRESET/ABORTED, so processing them should fail 
+         * and workers *should* return in a timely fashion.
          */
         for (i = 0; m->workers_busy > 0; ++i) {
             m->join_wait = wait;
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                          "h2_mplx(%ld): release_join, waiting on %d tasks to report back", 
-                          m->id, (int)h2_ihash_count(m->tasks));
-                          
             status = apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(wait_secs));
             
             if (APR_STATUS_IS_TIMEUP(status)) {
@@ -534,13 +555,23 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                 apr_thread_cond_broadcast(m->task_thawed);
             }
         }
-        AP_DEBUG_ASSERT(h2_ihash_empty(m->tasks));
-        AP_DEBUG_ASSERT(h2_ihash_empty(m->shold));
-        purge_streams(m);
         
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, APLOGNO(03056)
-                      "h2_mplx(%ld): release_join (%d tasks left) -> destroy", 
-                      m->id, (int)h2_ihash_count(m->tasks));
+        AP_DEBUG_ASSERT(h2_ihash_empty(m->shold));
+        if (!h2_ihash_empty(m->spurge)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%ld): release_join %d streams to purge", 
+                          m->id, (int)h2_ihash_count(m->spurge));
+            purge_streams(m);
+        }
+        AP_DEBUG_ASSERT(h2_ihash_empty(m->spurge));
+        AP_DEBUG_ASSERT(h2_ihash_empty(m->tasks));
+        
+        if (!h2_ihash_empty(m->tasks)) {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03056)
+                          "h2_mplx(%ld): release_join -> destroy, "
+                          "%d tasks still present", 
+                          m->id, (int)h2_ihash_count(m->tasks));
+        }
         leave_mutex(m, acquired);
         h2_mplx_destroy(m);
         /* all gone */
@@ -928,16 +959,17 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         h2_task_thaw(task);
         /* we do not want the task to block on writing response
          * bodies into the mplx. */
-        /* FIXME: this implementation is incomplete. */
         h2_task_set_io_blocking(task, 0);
         apr_thread_cond_broadcast(m->task_thawed);
         return;
     }
     else {
-        h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
+        h2_stream *stream;
+        
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                       "h2_mplx(%ld): task(%s) done", m->id, task->id);
         out_close(m, task);
+        stream = h2_ihash_get(m->streams, task->stream_id);
         
         if (ngn) {
             apr_off_t bytes = 0;
@@ -979,9 +1011,8 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             h2_beam_on_consumed(task->output.beam, NULL, NULL);
             h2_beam_mutex_set(task->output.beam, NULL, NULL, NULL);
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
-                      "h2_mplx(%s): request done, %f ms"
-                      " elapsed", task->id, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                      "h2_mplx(%s): request done, %f ms elapsed", task->id, 
                       (task->done_at - task->started_at) / 1000.0);
         if (task->started_at > m->last_idle_block) {
             /* this task finished without causing an 'idle block', e.g.
@@ -1002,11 +1033,17 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         
         if (stream) {
             /* hang around until the stream deregisters */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                          "h2_mplx(%s): task_done, stream still open", 
+                          task->id);
         }
         else {
+            /* stream done, was it placed in hold? */
             stream = h2_ihash_get(m->shold, task->stream_id);
-            task_destroy(m, task, 0);
             if (stream) {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                              "h2_mplx(%s): task_done, stream in hold", 
+                              task->id);
                 stream->response = NULL; /* ref from task memory */
                 /* We cannot destroy the stream here since this is 
                  * called from a worker thread and freeing memory pools
@@ -1014,6 +1051,12 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                  * parent pool / allocator) */
                 h2_ihash_remove(m->shold, stream->id);
                 h2_ihash_add(m->spurge, stream);
+            }
+            else {
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
+                              "h2_mplx(%s): task_done, stream not found", 
+                              task->id);
+                task_destroy(m, task, 0);
             }
             
             if (m->join_wait) {
