@@ -99,15 +99,15 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
     significant overhead in creating TCP connections. However,
     Apache HTTP Server traditionally keeps an entire child
     process/thread waiting for data from the client, which brings its own disadvantages.
-    To solve this problem, this MPM uses a dedicated listener thread for each process 
-    to handle both the Listening sockets, all sockets that are in a Keep Alive state, 
+    To solve this problem, this MPM uses a dedicated listener thread for each process
+    to handle both the Listening sockets, all sockets that are in a Keep Alive state,
     sockets where the handler and protocol filters have done their work
     and the ones where the only remaining thing to do is send the data to the client.
     </p>
 
-    <p>This new architecture, leveraging non blocking sockets and modern kernel
+    <p>This new architecture, leveraging non-blocking sockets and modern kernel
        features exposed by <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> (like Linux's epoll),
-       does not require anymore the <code>mpm_accept</code> <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
+       no longer requires the <code>mpm-accept</code> <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
        configured to avoid the thundering herd problem.</p>
 
     <p>The total amount of connections that a single process/threads block can handle is regulated
