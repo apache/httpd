@@ -108,9 +108,9 @@ of the <code class="directive">AsyncRequestWorkerFactor</code>.</p>
     adjusts these queues and pushes work to the worker pool.
     </p>
 
-    <p>This new architecture, leveraging non blocking sockets and modern kernel
+    <p>This new architecture, leveraging non-blocking sockets and modern kernel
        features exposed by <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> (like Linux's epoll),
-       does not require anymore the <code>mpm_accept</code> <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
+       no longer requires the <code>mpm-accept</code> <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
        configured to avoid the thundering herd problem.</p>
 
     <p>The total amount of connections that a single process/threads block can handle is regulated
