@@ -719,7 +719,7 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
         if (beam->aborted) {
-            if (!!APR_BRIGADE_EMPTY(beam->green)) {
+            if (!APR_BRIGADE_EMPTY(beam->green)) {
                 apr_brigade_cleanup(beam->green);
             }
             status = APR_ECONNABORTED;
