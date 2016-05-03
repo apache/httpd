@@ -234,8 +234,9 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      trunk patch: http://svn.apache.org/r1656063
                   http://svn.apache.org/r1656122
      2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
-
      +1: covener (I need to review the docs manually in this area)
+     -1: wrowe (blocking will break "working" .conf files on a subversion update
+                meant to pick up security fixes.  "Alerting" I would agree to.)
 
    * core: improve error message when docroot is unreadable.
      trunk patch: http://svn.apache.org/r1506474
