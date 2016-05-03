@@ -682,7 +682,7 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
                   "h2_task(%s): create request_rec", task->id);
     r = h2_request_create_rec(req, c);
     if (r && (r->status == HTTP_OK)) {
-        ap_update_child_status(c->sbh, SERVER_BUSY_READ, r);
+        ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         
         if (cs) {
             cs->state = CONN_STATE_HANDLER;
