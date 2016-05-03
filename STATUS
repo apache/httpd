@@ -185,6 +185,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310-1741461.patch
      +1: wrowe, ylavic
 
+   * Guard against premature invocation of ap_get_useragent_host()
+     when the read_request hook has not satisfied r->useragent_addr;
+     trunk patch: http://svn.apache.org/r1742135
+     2.4.x patch: trunk works
+     +1: wrowe 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
@@ -242,12 +248,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      trunk patch: http://svn.apache.org/r1506474
      2.4.x patch: trunk works
      +1: jorton, 
-
-   * Guard against premature invocation of ap_get_useragent_host()
-     when the read_request hook has not satisfied r->useragent_addr;
-     trunk patch: http://svn.apache.org/r1742135
-     2.4.x patch: trunk works
-     +1: wrowe 
 
 PATCHES/ISSUES THAT ARE STALLED
 
