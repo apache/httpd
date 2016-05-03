@@ -114,6 +114,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Correct scoreboard behaviors in multiple MPMs and mod_http2 to avoid
+     clobbering the most recent request line at unexpect times.  Corrects
+     a notable regression in 2.4.20 and in some earlier edge cases.
+     PR 59333
+     See r1741310 for more precise patch details
+     trunk patch: http://svn.apache.org/r1741310
+                  http://svn.apache.org/r1741461
+     2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310-1741461.patch
+     +1: wrowe, ylavic, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -174,16 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1737451
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) Correct scoreboard behaviors in multiple MPMs and mod_http2 to avoid
-     clobbering the most recent request line at unexpect times.  Corrects
-     a notable regression in 2.4.20 and in some earlier edge cases.
-     PR 59333
-     See r1741310 for more precise patch details
-     trunk patch: http://svn.apache.org/r1741310
-                  http://svn.apache.org/r1741461
-     2.4.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-httpd-2.4-r1741310-1741461.patch
-     +1: wrowe, ylavic, rpluem
 
    * Guard against premature invocation of ap_get_useragent_host()
      when the read_request hook has not satisfied r->useragent_addr;
