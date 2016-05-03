@@ -234,15 +234,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
         jim: Non-blocking seems the best way to handle...
 
 
-   * core: block Define and Undefine in vhost and directory context. Because
-     it is EXEC_ON_READ, it "breaks out" of these contexts anyway.
-     trunk patch: http://svn.apache.org/r1656063
-                  http://svn.apache.org/r1656122
-     2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
-     +1: covener (I need to review the docs manually in this area)
-     -1: wrowe (blocking will break "working" .conf files on a subversion update
-                meant to pick up security fixes.  "Alerting" I would agree to.)
-
    * core: improve error message when docroot is unreadable.
      trunk patch: http://svn.apache.org/r1506474
      2.4.x patch: trunk works
@@ -386,4 +377,14 @@ PATCHES/ISSUES THAT ARE STALLED
             of the scripts to function 'out of the box', what about a new
             cgi-examples/ dir alongside cgi-bin/? Otherwise manual/cgi/examples
             might work?
+
+   * core: block Define and Undefine in vhost and directory context. Because
+     it is EXEC_ON_READ, it "breaks out" of these contexts anyway.
+     trunk patch: http://svn.apache.org/r1656063
+                  http://svn.apache.org/r1656122
+     2.4.x patch:  http://people.apache.org/~covener/patches/2.4.x-define-limits.diff
+     +1: covener (I need to review the docs manually in this area)
+     -1: wrowe (blocking will break "working" .conf files on a subversion update
+                meant to pick up security fixes.  "Alerting" I would agree to.)
+
 
