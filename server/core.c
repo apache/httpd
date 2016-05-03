@@ -1014,7 +1014,10 @@ AP_DECLARE(const char *) ap_get_useragent_host(request_rec *r,
     int hostname_lookups;
     int ignored_str_is_ip;
 
-    if (r->useragent_addr == conn->client_addr) {
+    /* Guard here when examining the host before the read_request hook
+     * has populated an r->useragent_addr
+     */
+    if (!r->useragent_addr || (r->useragent_addr == conn->client_addr)) {
         return ap_get_remote_host(conn, r->per_dir_config, type, str_is_ip);
     }
 
