@@ -94,6 +94,7 @@ application/ecmascript				ecma
 # application/edi-consent
 # application/edi-x12
 # application/edifact
+# application/efi
 # application/emergencycalldata.comment+xml
 # application/emergencycalldata.deviceinfo+xml
 # application/emergencycalldata.providerinfo+xml
@@ -358,6 +359,7 @@ application/vnd.3gpp.pic-bw-large		plb
 application/vnd.3gpp.pic-bw-small		psb
 application/vnd.3gpp.pic-bw-var			pvb
 # application/vnd.3gpp.sms
+# application/vnd.3gpp.sms+xml
 # application/vnd.3gpp.srvcc-ext+xml
 # application/vnd.3gpp.srvcc-info+xml
 # application/vnd.3gpp.state-and-event-info+xml
@@ -365,6 +367,7 @@ application/vnd.3gpp.pic-bw-var			pvb
 # application/vnd.3gpp2.bcmcsinfo+xml
 # application/vnd.3gpp2.sms
 application/vnd.3gpp2.tcap			tcap
+# application/vnd.3lightssoftware.imagescal
 application/vnd.3m.post-it-notes		pwn
 application/vnd.accpac.simply.aso		aso
 application/vnd.accpac.simply.imp		imp
@@ -435,6 +438,7 @@ application/vnd.cluetrust.cartomobile-config-pkg	c11amz
 # application/vnd.commerce-battelle
 application/vnd.commonspace			csp
 application/vnd.contact.cmsg			cdbcmsg
+# application/vnd.coreos.ignition+json
 application/vnd.cosmocaller			cmc
 application/vnd.crick.clicker			clkx
 application/vnd.crick.clicker.keyboard		clkk
@@ -899,6 +903,7 @@ application/vnd.oma.dd2+xml			dd2
 # application/vnd.omads-file+xml
 # application/vnd.omads-folder+xml
 # application/vnd.omaloc-supl-init
+# application/vnd.onepager
 # application/vnd.openblox.game+xml
 # application/vnd.openblox.game-binary
 # application/vnd.openeye.oeb
@@ -1146,6 +1151,7 @@ application/vnd.uoml+xml			uoml
 application/vnd.vcx				vcx
 # application/vnd.vd-study
 # application/vnd.vectorworks
+# application/vnd.vel+json
 # application/vnd.verimatrix.vcas
 # application/vnd.vidsoft.vidconference
 application/vnd.visio				vsd vst vss vsw
@@ -1675,6 +1681,7 @@ text/plain					txt text conf def list log in
 # text/provenance-notation
 # text/prs.fallenstein.rst
 text/prs.lines.tag				dsc
+# text/prs.prop.logic
 # text/raptorfec
 # text/red
 # text/rfc822-headers
