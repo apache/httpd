@@ -41,7 +41,7 @@
     have to be present in the server.</p>
 
     <p><module>mod_proxy_http2</module> works with incoming requests
-    over HTTP/1.1 and HTTP/2 requests. If <module>mod_proxy_http2</module>
+    over HTTP/1.1 and HTTP/2 requests. If <module>mod_http2</module>
     handles the frontend connection, requests against the same HTTP/2
     backend are sent over a single connection, whenever possible.</p>
 
