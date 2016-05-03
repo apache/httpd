@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) Scoreboard: Fix a regression in 2.4.20 that causes wrong request data
+     to be displayed on the status page. PR 59333. [Yann Ylavic, William Rowe]
+
   *) mod_http2: fixed a bug that caused mod_proxy_http2 to be called for window
      updates on requests it had already reported done. Added synchronization
      on early connection/stream close that lets ongoing requests safely drain
@@ -11,12 +14,12 @@ Changes with Apache 2.4.21
   *) mod_http2: scoreboard updates that summarize the h2 session (and replace
      the last request information) will only happen when the session is idle or 
      in shutdown/done phase. [Stefan Eissing]
-     
+
   *) mod_http2: new "bucket beam" technology to transport buckets across
      threads without buffer copy. Delaying response start until flush or
      enough body data has been accumulated. Overall significanlty smaller
      memory footprint. [Stefan Eissing]
-     
+
   *) core: New CGIVar directive can configure REQUEST_URI to represent the
      current URI being processed instead of always the original request.
      [Jeff Trawick]
@@ -27,10 +30,10 @@ Changes with Apache 2.4.21
   *) mod_http2: r->protocol changed to "HTTP/2.0" (was "HTTP/2") as this will
      give expected syntax in CGI's SERVER_PROTOCOL is more compatible with
      existing major/minor handling. Fixes PR 59313.
-  
+
   *) mod_http2: disabling mmap for file buckets transport due to segmenation
      faults when files change on the fly.
-     
+
 Changes with Apache 2.4.20
 
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
@@ -42,7 +45,7 @@ Changes with Apache 2.4.20
 
   *) core/util_script: relax alphanumeric filter of enviroment variable names
      on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
-     unadulterated in 64 bit versions of Windows. PR 46751.  
+     unadulterated in 64 bit versions of Windows. PR 46751.
      [John <john leineweb de>]
 
   *) mod_http2: incrementing keepalives on each request started so that logging
@@ -56,7 +59,7 @@ Changes with Apache 2.4.20
 
   *) mod_http2: fix for missing score board updates on request count, fix for
      memory leak on slave connection reuse. [Stefan Eissing]
-     
+
   *) mod_http2: Fix build on Windows from dsp files.
      [Stefan Eissing] 
 

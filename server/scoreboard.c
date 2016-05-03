@@ -500,8 +500,11 @@ static int update_child_status_internal(int child_num,
         else if (r) {
             copy_request(ws->request, sizeof(ws->request), r);
         }
+        else if (c) {
+            ws->request[0]='\0';
+        }
 
-        if (r) {
+        if (r && r->useragent_ip) {
             if (!(val = ap_get_useragent_host(r, REMOTE_NOLOOKUP, NULL)))
                 apr_cpystrn(ws->client, r->useragent_ip, sizeof(ws->client));
             else
@@ -523,6 +526,9 @@ static int update_child_status_internal(int child_num,
             else {
                 apr_cpystrn(ws->vhost, s->server_hostname, sizeof(ws->vhost));
             }
+        }
+        else if (c) {
+            ws->vhost[0]='\0';
         }
 
         if (c) {

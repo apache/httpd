@@ -928,7 +928,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
     ap_scoreboard_image->servers[process_slot][thread_slot].tid = apr_os_thread_current();
     ap_scoreboard_image->servers[process_slot][thread_slot].generation = retained->my_generation;
-    ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
+    ap_update_child_status_from_indexes(process_slot, thread_slot,
+                                        SERVER_STARTING, NULL);
 
 #ifdef HAVE_PTHREAD_KILL
     unblock_signal(WORKER_SIGNAL);
@@ -949,7 +950,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
             is_idle = 1;
         }
 
-        ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
+        ap_update_child_status_from_indexes(process_slot, thread_slot,
+                                            SERVER_READY, NULL);
 worker_pop:
         if (workers_may_exit) {
             break;
@@ -995,7 +997,8 @@ worker_pop:
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
-        (dying) ? SERVER_DEAD : SERVER_GRACEFUL, (request_rec *) NULL);
+                                        dying ? SERVER_DEAD
+                                              : SERVER_GRACEFUL, NULL);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
@@ -1730,8 +1733,8 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
                 process_score *ps;
 
                 for (i = 0; i < threads_per_child; i++)
-                    ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD,
-                                                        (request_rec *) NULL);
+                    ap_update_child_status_from_indexes(child_slot, i,
+                                                        SERVER_DEAD, NULL);
 
                 worker_note_child_killed(child_slot, 0, 0);
                 ps = &ap_scoreboard_image->parent[child_slot];
