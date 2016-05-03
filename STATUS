@@ -242,6 +242,12 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      2.4.x patch: trunk works
      +1: jorton, 
 
+   * Guard against premature invocation of ap_get_useragent_host()
+     when the read_request hook has not satisfied r->useragent_addr;
+     trunk patch: http://svn.apache.org/r1742135
+     2.4.x patch: trunk works
+     +1: wrowe 
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
