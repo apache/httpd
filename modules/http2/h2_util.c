@@ -23,8 +23,7 @@
 
 #include <nghttp2/nghttp2.h>
 
-#include "h2_private.h"
-#include "h2_request.h"
+#include "h2.h"
 #include "h2_util.h"
 
 /* h2_log2(n) iff n is a power of 2 */
@@ -1036,19 +1035,6 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
     return off;
 }
 
-void h2_util_bb_log(conn_rec *c, int stream_id, int level, 
-                    const char *tag, apr_bucket_brigade *bb)
-{
-    char buffer[4 * 1024];
-    const char *line = "(null)";
-    apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
-    
-    len = h2_util_bb_print(buffer, bmax, tag, "", bb);
-    /* Intentional no APLOGNO */
-    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%ld-%d): %s", 
-                  c->id, stream_id, len? buffer : line);
-}
-
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                apr_bucket_brigade *from, 
                                apr_off_t *plen,
@@ -1066,6 +1052,8 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
         if (APR_BUCKET_IS_METADATA(e)) {
             if (APR_BUCKET_IS_EOS(e)) {
                 *peos = 1;
+                apr_bucket_delete(e);
+                continue;
             }
         }
         else {        
@@ -1313,6 +1301,107 @@ int h2_proxy_res_ignore_header(const char *name, size_t len)
             || ignore_header(H2_LIT_ARGS(IgnoredProxyRespHds), name, len));
 }
 
+apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
+                               const char *name, size_t nlen,
+                               const char *value, size_t vlen)
+{
+    char *hname, *hvalue;
+    
+    if (h2_req_ignore_header(name, nlen)) {
+        return APR_SUCCESS;
+    }
+    else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
+        const char *existing = apr_table_get(headers, "cookie");
+        if (existing) {
+            char *nval;
+            
+            /* Cookie header come separately in HTTP/2, but need
+             * to be merged by "; " (instead of default ", ")
+             */
+            hvalue = apr_pstrndup(pool, value, vlen);
+            nval = apr_psprintf(pool, "%s; %s", existing, hvalue);
+            apr_table_setn(headers, "Cookie", nval);
+            return APR_SUCCESS;
+        }
+    }
+    else if (H2_HD_MATCH_LIT("host", name, nlen)) {
+        if (apr_table_get(headers, "Host")) {
+            return APR_SUCCESS; /* ignore duplicate */
+        }
+    }
+    
+    hname = apr_pstrndup(pool, name, nlen);
+    hvalue = apr_pstrndup(pool, value, vlen);
+    h2_util_camel_case_header(hname, nlen);
+    apr_table_mergen(headers, hname, hvalue);
+    
+    return APR_SUCCESS;
+}
+
+/*******************************************************************************
+ * h2 request handling
+ ******************************************************************************/
+
+h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
+                           const char *scheme, const char *authority, 
+                           const char *path, apr_table_t *header, int serialize)
+{
+    h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
+    
+    req->id             = id;
+    req->method         = method;
+    req->scheme         = scheme;
+    req->authority      = authority;
+    req->path           = path;
+    req->headers        = header? header : apr_table_make(pool, 10);
+    req->request_time   = apr_time_now();
+    req->serialize      = serialize;
+    
+    return req;
+}
+
+h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize)
+{
+    return h2_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
+}
+
+typedef struct {
+    apr_table_t *headers;
+    apr_pool_t *pool;
+} h1_ctx;
+
+static int set_h1_header(void *ctx, const char *key, const char *value)
+{
+    h1_ctx *x = ctx;
+    size_t klen = strlen(key);
+    if (!h2_req_ignore_header(key, klen)) {
+        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
+    }
+    return 1;
+}
+
+apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
+                         const char *method, const char *scheme, 
+                         const char *authority, const char *path, 
+                         apr_table_t *headers)
+{
+    h1_ctx x;
+
+    req->method    = method;
+    req->scheme    = scheme;
+    req->authority = authority;
+    req->path      = path;
+
+    AP_DEBUG_ASSERT(req->scheme);
+    AP_DEBUG_ASSERT(req->authority);
+    AP_DEBUG_ASSERT(req->path);
+    AP_DEBUG_ASSERT(req->method);
+
+    x.pool = pool;
+    x.headers = req->headers;
+    apr_table_do(set_h1_header, &x, headers, NULL);
+    return APR_SUCCESS;
+}
 
 /*******************************************************************************
  * frame logging

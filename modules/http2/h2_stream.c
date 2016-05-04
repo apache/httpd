@@ -53,12 +53,19 @@ static int state_transition[][7] = {
 /*CL*/{  1, 1, 0, 0, 1, 1, 1 },
 };
 
-#define H2_STREAM_OUT_LOG(lvl,s,msg) \
-    do { \
-        if (APLOG_C_IS_LEVEL((s)->session->c,lvl)) \
-        h2_util_bb_log((s)->session->c,(s)->session->id,lvl,msg,(s)->buffer); \
-    } while(0)
-    
+static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, char *tag)
+{
+    if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
+        conn_rec *c = s->session->c;
+        char buffer[4 * 1024];
+        const char *line = "(null)";
+        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
+        
+        len = h2_util_bb_print(buffer, bmax, tag, "", s->buffer);
+        ap_log_cerror(APLOG_MARK, lvl, 0, c, "bb_dump(%ld-%d): %s", 
+                      c->id, s->id, len? buffer : line);
+    }
+}
 
 static int set_state(h2_stream *stream, h2_stream_state_t state)
 {
@@ -143,6 +150,30 @@ static int output_open(h2_stream *stream)
     }
 }
 
+static apr_status_t stream_pool_cleanup(void *ctx)
+{
+    h2_stream *stream = ctx;
+    apr_status_t status;
+    
+    if (stream->input) {
+        h2_beam_destroy(stream->input);
+        stream->input = NULL;
+    }
+    if (stream->files) {
+        apr_file_t *file;
+        int i;
+        for (i = 0; i < stream->files->nelts; ++i) {
+            file = APR_ARRAY_IDX(stream->files, i, apr_file_t*);
+            status = apr_file_close(file);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, stream->session->c, 
+                          "h2_stream(%ld-%d): destroy, closed file %d", 
+                          stream->session->id, stream->id, i);
+        }
+        stream->files = NULL;
+    }
+    return APR_SUCCESS;
+}
+
 h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
                           int initiated_on, const h2_request *creq)
 {
@@ -162,11 +193,13 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
         req->initiated_on = initiated_on;
     }
     else {
-        req = h2_request_create(id, pool, 
+        req = h2_req_create(id, pool, 
                 h2_config_geti(session->config, H2_CONF_SER_HEADERS));
     }
     stream->request = req; 
     
+    apr_pool_cleanup_register(pool, stream, stream_pool_cleanup, 
+                              apr_pool_cleanup_null);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
     return stream;
@@ -175,19 +208,30 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
 void h2_stream_cleanup(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
-    if (stream->input) {
-        h2_beam_destroy(stream->input);
-        stream->input = NULL;
-    }
     if (stream->buffer) {
         apr_brigade_cleanup(stream->buffer);
+    }
+    if (stream->input) {
+        apr_status_t status;
+        status = h2_beam_shutdown(stream->input, APR_NONBLOCK_READ);
+        if (status == APR_EAGAIN) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
+                          "h2_stream(%ld-%d): wait on input shutdown", 
+                          stream->session->id, stream->id);
+            status = h2_beam_shutdown(stream->input, APR_BLOCK_READ);
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c, 
+                          "h2_stream(%ld-%d): input shutdown returned", 
+                          stream->session->id, stream->id);
+        }
     }
 }
 
 void h2_stream_destroy(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
-    h2_stream_cleanup(stream);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
+                  "h2_stream(%ld-%d): destroy", 
+                  stream->session->id, stream->id);
     if (stream->pool) {
         apr_pool_destroy(stream->pool);
     }
@@ -229,9 +273,14 @@ apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
         return APR_ECONNRESET;
     }
     set_state(stream, H2_STREAM_ST_OPEN);
-    status = h2_request_rwrite(stream->request, r);
+    status = h2_request_rwrite(stream->request, stream->pool, r);
     stream->request->serialize = h2_config_geti(h2_config_rget(r), 
                                                 H2_CONF_SER_HEADERS);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
+                  "h2_request(%d): rwrite %s host=%s://%s%s",
+                  stream->request->id, stream->request->method, 
+                  stream->request->scheme, stream->request->authority, 
+                  stream->request->path);
 
     return status;
 }
@@ -394,11 +443,43 @@ int h2_stream_is_suspended(const h2_stream *stream)
 
 static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
 {
+    conn_rec *c = stream->session->c;
+    apr_bucket *b;
+    apr_status_t status;
+    
     if (!stream->output) {
         return APR_EOF;
     }
-    return h2_beam_receive(stream->output, stream->buffer, 
-                           APR_NONBLOCK_READ, amount);
+    status = h2_beam_receive(stream->output, stream->buffer, 
+                             APR_NONBLOCK_READ, amount);
+    /* The buckets we reveive are using the stream->buffer pool as
+     * lifetime which is exactly what we want since this is stream->pool.
+     *
+     * However: when we send these buckets down the core output filters, the
+     * filter might decide to setaside them into a pool of its own. And it
+     * might decide, after having sent the buckets, to clear its pool.
+     *
+     * This is problematic for file buckets because it then closed the contained
+     * file. Any split off buckets we sent afterwards will result in a 
+     * APR_EBADF.
+     */
+    for (b = APR_BRIGADE_FIRST(stream->buffer);
+         b != APR_BRIGADE_SENTINEL(stream->buffer);
+         b = APR_BUCKET_NEXT(b)) {
+        if (APR_BUCKET_IS_FILE(b)) {
+            apr_bucket_file *f = (apr_bucket_file *)b->data;
+            apr_pool_t *fpool = apr_file_pool_get(f->fd);
+            if (fpool != c->pool) {
+                apr_bucket_setaside(b, c->pool);
+                if (!stream->files) {
+                    stream->files = apr_array_make(stream->pool, 
+                                                   5, sizeof(apr_file_t*));
+                }
+                APR_ARRAY_PUSH(stream->files, apr_file_t*) = f->fd;
+            }
+        }
+    }
+    return status;
 }
 
 apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
@@ -429,12 +510,14 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
     return status;
 }
 
+static const apr_size_t DATA_CHUNK_SIZE = ((16*1024) - 100 - 9); 
+
 apr_status_t h2_stream_out_prepare(h2_stream *stream,
                                    apr_off_t *plen, int *peos)
 {
     conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
-    apr_off_t requested = (*plen > 0)? *plen : 32*1024;
+    apr_off_t requested;
 
     if (stream->rst_error) {
         *plen = 0;
@@ -442,11 +525,19 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
         return APR_ECONNRESET;
     }
 
+    if (*plen > 0) {
+        requested = H2MIN(*plen, DATA_CHUNK_SIZE);
+    }
+    else {
+        requested = DATA_CHUNK_SIZE;
+    }
+    *plen = requested;
+    
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
     h2_util_bb_avail(stream->buffer, plen, peos);
-    if (!*peos && !*plen) {
+    if (!*peos && *plen < requested) {
         /* try to get more data */
-        status = fill_buffer(stream, H2MIN(requested, 32*1024));
+        status = fill_buffer(stream, (requested - *plen) + DATA_CHUNK_SIZE);
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(stream->buffer, eos);
@@ -463,27 +554,6 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
     if (!*peos && !*plen && status == APR_SUCCESS) {
         return APR_EAGAIN;
     }
-    return status;
-}
-
-
-apr_status_t h2_stream_readx(h2_stream *stream, 
-                             h2_io_data_cb *cb, void *ctx,
-                             apr_off_t *plen, int *peos)
-{
-    conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS;
-
-    if (stream->rst_error) {
-        return APR_ECONNRESET;
-    }
-    status = h2_util_bb_readx(stream->buffer, cb, ctx, plen, peos);
-    if (status == APR_SUCCESS && !*peos && !*plen) {
-        status = APR_EAGAIN;
-    }
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, c,
-                  "h2_stream(%ld-%d): readx, len=%ld eos=%d",
-                  c->id, stream->id, (long)*plen, *peos);
     return status;
 }
 
