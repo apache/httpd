@@ -73,6 +73,8 @@ struct h2_mplx {
     unsigned int need_registration : 1;
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
+    struct h2_ihash_t *shold;       /* all streams done with task ongoing */
+    struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
     struct h2_iqueue *q;            /* all stream ids that need to be started */
     
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
@@ -167,7 +169,7 @@ apr_uint32_t h2_mplx_shutdown(h2_mplx *m);
  * @param rst_error if != 0, the stream was reset with the error given
  *
  */
-apr_status_t h2_mplx_stream_done(h2_mplx *m, int stream_id, int rst_error);
+apr_status_t h2_mplx_stream_done(h2_mplx *m, struct h2_stream *stream);
 
 /**
  * Waits on output data from any stream in this session to become available. 
@@ -235,8 +237,7 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m);
  * @param m the mplxer to get a response from
  * @param bb the brigade to place any existing repsonse body data into
  */
-struct h2_stream *h2_mplx_next_submit(h2_mplx *m, 
-                                      struct h2_ihash_t *streams);
+struct h2_stream *h2_mplx_next_submit(h2_mplx *m);
 
 /**
  * Opens the output for the given stream with the specified response.

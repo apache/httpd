@@ -45,7 +45,6 @@
  * which seems to create less TCP packets overall
  */
 #define WRITE_SIZE_MAX        (TLS_DATA_MAX - 100) 
-#define WRITE_BUFFER_SIZE     (5*WRITE_SIZE_MAX)
 
 
 static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level, 
@@ -127,22 +126,13 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
 }
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
-                             const h2_config *cfg, 
-                             apr_pool_t *pool)
+                             const h2_config *cfg)
 {
     io->c             = c;
-    io->output        = apr_brigade_create(pool, c->bucket_alloc);
-    io->buflen        = 0;
+    io->output        = apr_brigade_create(c->pool, c->bucket_alloc);
     io->is_tls        = h2_h2_is_tls(c);
     io->buffer_output = io->is_tls;
-    
-    if (io->buffer_output) {
-        io->bufsize = WRITE_BUFFER_SIZE;
-        io->buffer = apr_pcalloc(pool, io->bufsize);
-    }
-    else {
-        io->bufsize = 0;
-    }
+    io->pass_threshold = h2_config_geti64(cfg, H2_CONF_STREAM_MAX_MEM) / 2;
     
     if (io->is_tls) {
         /* This is what we start with, 
@@ -151,12 +141,13 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
         io->warmup_size    = h2_config_geti64(cfg, H2_CONF_TLS_WARMUP_SIZE);
         io->cooldown_usecs = (h2_config_geti(cfg, H2_CONF_TLS_COOLDOWN_SECS) 
                               * APR_USEC_PER_SEC);
-        io->write_size     = WRITE_SIZE_INITIAL; 
+        io->write_size     = (io->cooldown_usecs > 0? 
+                              WRITE_SIZE_INITIAL : WRITE_SIZE_MAX); 
     }
     else {
         io->warmup_size    = 0;
         io->cooldown_usecs = 0;
-        io->write_size     = io->bufsize;
+        io->write_size     = 0;
     }
 
     if (APLOGctrace1(c)) {
@@ -170,54 +161,94 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
     return APR_SUCCESS;
 }
 
-int h2_conn_io_is_buffered(h2_conn_io *io)
+#define LOG_SCRATCH 0
+
+static void append_scratch(h2_conn_io *io) 
 {
-    return io->bufsize > 0;
+    if (io->scratch && io->slen > 0) {
+        apr_bucket *b = apr_bucket_heap_create(io->scratch, io->slen,
+                                               apr_bucket_free,
+                                               io->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(io->output, b);
+#if LOG_SCRATCH
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                      "h2_conn_io(%ld): append_scratch(%ld)", 
+                      io->c->id, (long)io->slen);
+#endif
+        io->scratch = NULL;
+        io->slen = io->ssize = 0;
+    }
 }
 
-typedef struct {
-    conn_rec *c;
-    h2_conn_io *io;
-} pass_out_ctx;
-
-static apr_status_t pass_out(apr_bucket_brigade *bb, void *ctx) 
-{
-    pass_out_ctx *pctx = ctx;
-    conn_rec *c = pctx->c;
-    apr_status_t status;
-    apr_off_t bblen;
+static apr_size_t assure_scratch_space(h2_conn_io *io) {
+    apr_size_t remain = io->ssize - io->slen; 
+    if (io->scratch && remain == 0) {
+        append_scratch(io);
+    }
+    if (!io->scratch) {
+        /* we control the size and it is larger than what buckets usually
+         * allocate. */
+        io->scratch = apr_bucket_alloc(io->write_size, io->c->bucket_alloc);
+        io->ssize = io->write_size;
+        io->slen = 0;
+        remain = io->ssize;
+    }
+    return remain;
+}
     
-    if (APR_BRIGADE_EMPTY(bb)) {
+static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
+{
+    apr_status_t status;
+    const char *data;
+    apr_size_t len;
+    
+    if (!b->length) {
         return APR_SUCCESS;
     }
     
-    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
-    apr_brigade_length(bb, 0, &bblen);
-    h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", bb);
-    status = ap_pass_brigade(c->output_filters, bb);
-    if (status == APR_SUCCESS && pctx->io) {
-        pctx->io->bytes_written += (apr_size_t)bblen;
-        pctx->io->last_write = apr_time_now();
+    AP_DEBUG_ASSERT(b->length <= (io->ssize - io->slen));
+    if (APR_BUCKET_IS_FILE(b)) {
+        apr_bucket_file *f = (apr_bucket_file *)b->data;
+        apr_file_t *fd = f->fd;
+        apr_off_t offset = b->start;
+        apr_size_t len = b->length;
+        
+        /* file buckets will either mmap (which we do not want) or
+         * read 8000 byte chunks and split themself. However, we do
+         * know *exactly* how many bytes we need where.
+         */
+        status = apr_file_seek(fd, APR_SET, &offset);
+        if (status != APR_SUCCESS) {
+            return status;
+        }
+        status = apr_file_read(fd, io->scratch + io->slen, &len);
+#if LOG_SCRATCH
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, status, io->c,
+                      "h2_conn_io(%ld): FILE_to_scratch(%ld)", 
+                      io->c->id, (long)len); 
+#endif
+        if (status != APR_SUCCESS && status != APR_EOF) {
+            return status;
+        }
+        io->slen += len;
     }
-    if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03044)
-                      "h2_conn_io(%ld): pass_out brigade %ld bytes",
-                      c->id, (long)bblen);
+    else {
+        status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+        if (status == APR_SUCCESS) {
+#if LOG_SCRATCH
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                          "h2_conn_io(%ld): read_to_scratch(%ld)", 
+                          io->c->id, (long)b->length); 
+#endif
+            memcpy(io->scratch+io->slen, data, len);
+            io->slen += len;
+        }
     }
-    apr_brigade_cleanup(bb);
     return status;
 }
 
-/* Bring the current buffer content into the output brigade, appropriately
- * chunked.
- */
-static apr_status_t bucketeer_buffer(h2_conn_io *io)
+static void check_write_size(h2_conn_io *io) 
 {
-    const char *data = io->buffer;
-    apr_size_t remaining = io->buflen;
-    apr_bucket *b;
-    int bcount, i;
-
     if (io->write_size > WRITE_SIZE_INITIAL 
         && (io->cooldown_usecs > 0)
         && (apr_time_now() - io->last_write) >= io->cooldown_usecs) {
@@ -236,134 +267,156 @@ static apr_status_t bucketeer_buffer(h2_conn_io *io)
                       "h2_conn_io(%ld): threshold reached, write size now %ld", 
                       (long)io->c->id, (long)io->write_size);
     }
-    
-    bcount = (int)(remaining / io->write_size);
-    for (i = 0; i < bcount; ++i) {
-        b = apr_bucket_transient_create(data, io->write_size, 
-                                        io->output->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(io->output, b);
-        data += io->write_size;
-        remaining -= io->write_size;
-    }
-    
-    if (remaining > 0) {
-        b = apr_bucket_transient_create(data, remaining, 
-                                        io->output->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(io->output, b);
-    }
-    return APR_SUCCESS;
 }
 
-apr_status_t h2_conn_io_writeb(h2_conn_io *io, apr_bucket *b, int flush)
+static apr_status_t pass_output(h2_conn_io *io, int flush, int eoc)
 {
-    APR_BRIGADE_INSERT_TAIL(io->output, b);
-    if (flush) {
-        b = apr_bucket_flush_create(io->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(io->output, b);
-    }
-    return APR_SUCCESS;
-}
-
-static apr_status_t h2_conn_io_flush_int(h2_conn_io *io, int flush, int eoc)
-{
-    pass_out_ctx ctx;
+    conn_rec *c = io->c;
     apr_bucket *b;
+    apr_off_t bblen;
+    apr_status_t status;
     
-    if (io->buflen == 0 && APR_BRIGADE_EMPTY(io->output)) {
+    append_scratch(io);
+    if (flush) {
+        b = apr_bucket_flush_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(io->output, b);
+    }
+    
+    if (APR_BRIGADE_EMPTY(io->output)) {
         return APR_SUCCESS;
     }
-        
-    if (io->buflen > 0) {
-        /* something in the buffer, put it in the output brigade */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
-                      "h2_conn_io: flush, flushing %ld bytes", 
-                      (long)io->buflen);
-        bucketeer_buffer(io);
-    }
     
-    if (flush) {
-        b = apr_bucket_flush_create(io->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(io->output, b);
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c, "h2_conn_io: pass_output");
+    ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, NULL);
+    apr_brigade_length(io->output, 0, &bblen);
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c, "h2_conn_io: flush");
-    io->buflen = 0;
-    ctx.c = io->c;
-    ctx.io = eoc? NULL : io;
-    
-    return pass_out(io->output, &ctx);
-    /* no more access after this, as we might have flushed an EOC bucket
+    h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", io->output);
+    status = ap_pass_brigade(c->output_filters, io->output);
+
+    /* careful with access after this, as we might have flushed an EOC bucket
      * that de-allocated us all. */
+    if (!eoc) {
+        apr_brigade_cleanup(io->output);
+        if (status == APR_SUCCESS) {
+            io->bytes_written += (apr_size_t)bblen;
+            io->last_write = apr_time_now();
+        }
+    }
+    
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03044)
+                      "h2_conn_io(%ld): pass_out brigade %ld bytes",
+                      c->id, (long)bblen);
+    }
+    return status;
 }
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
-    return h2_conn_io_flush_int(io, 1, 0);
-}
-
-apr_status_t h2_conn_io_consider_pass(h2_conn_io *io)
-{
-    apr_off_t len = 0;
-    
-    if (!APR_BRIGADE_EMPTY(io->output)) {
-        len = h2_brigade_mem_size(io->output);
-    }
-    len += io->buflen;
-    if (len >= WRITE_BUFFER_SIZE) {
-        return h2_conn_io_flush_int(io, 1, 0);
-    }
-    return APR_SUCCESS;
+    return pass_output(io, 1, 0);
 }
 
 apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
 {
     apr_bucket *b = h2_bucket_eoc_create(io->c->bucket_alloc, session);
     APR_BRIGADE_INSERT_TAIL(io->output, b);
-    return h2_conn_io_flush_int(io, 1, 1);
+    return pass_output(io, 1, 1);
 }
 
-apr_status_t h2_conn_io_write(h2_conn_io *io, 
-                              const char *buf, size_t length)
+apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
 {
     apr_status_t status = APR_SUCCESS;
-    pass_out_ctx ctx;
+    apr_size_t remain;
     
-    ctx.c = io->c;
-    ctx.io = io;
-    if (io->bufsize > 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
-                      "h2_conn_io: buffering %ld bytes", (long)length);
-                      
-        if (!APR_BRIGADE_EMPTY(io->output)) {
-            status = h2_conn_io_flush_int(io, 0, 0);
-        }
-        
-        while (length > 0 && (status == APR_SUCCESS)) {
-            apr_size_t avail = io->bufsize - io->buflen;
-            if (avail <= 0) {
-                status = h2_conn_io_flush_int(io, 0, 0);
-            }
-            else if (length > avail) {
-                memcpy(io->buffer + io->buflen, buf, avail);
-                io->buflen += avail;
-                length -= avail;
-                buf += avail;
+    if (io->buffer_output) {
+        while (length > 0) {
+            remain = assure_scratch_space(io);
+            if (remain >= length) {
+#if LOG_SCRATCH
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                              "h2_conn_io(%ld): write_to_scratch(%ld)", 
+                              io->c->id, (long)length); 
+#endif
+                memcpy(io->scratch + io->slen, data, length);
+                io->slen += length;
+                length = 0;
             }
             else {
-                memcpy(io->buffer + io->buflen, buf, length);
-                io->buflen += length;
-                length = 0;
-                break;
+#if LOG_SCRATCH
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                              "h2_conn_io(%ld): write_to_scratch(%ld)", 
+                              io->c->id, (long)remain); 
+#endif
+                memcpy(io->scratch + io->slen, data, remain);
+                io->slen += remain;
+                data += remain;
+                length -= remain;
             }
         }
-        
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, status, io->c,
-                      "h2_conn_io: writing %ld bytes to brigade", (long)length);
-        status = apr_brigade_write(io->output, pass_out, &ctx, buf, length);
+        status = apr_brigade_write(io->output, NULL, NULL, data, length);
+    }
+    return status;
+}
+
+apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
+{
+    apr_bucket *b;
+    apr_status_t status = APR_SUCCESS;
+    
+    check_write_size(io);
+    while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
+        b = APR_BRIGADE_FIRST(bb);
+        
+        if (APR_BUCKET_IS_METADATA(b)) {
+            /* need to finish any open scratch bucket, as meta data 
+             * needs to be forward "in order". */
+            append_scratch(io);
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(io->output, b);
+        }
+        else if (io->buffer_output) {
+            apr_size_t remain = assure_scratch_space(io);
+            if (b->length > remain) {
+                apr_bucket_split(b, remain);
+                if (io->slen == 0) {
+                    /* complete write_size bucket, append unchanged */
+                    APR_BUCKET_REMOVE(b);
+                    APR_BRIGADE_INSERT_TAIL(io->output, b);
+#if LOG_SCRATCH
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                                  "h2_conn_io(%ld): pass bucket(%ld)", 
+                                  io->c->id, (long)b->length);
+#endif
+                    continue;
+                }
+            }
+            else {
+                /* bucket fits in remain, copy to scratch */
+                read_to_scratch(io, b);
+                apr_bucket_delete(b);
+                continue;
+            }
+        }
+        else {
+            /* no buffering, forward buckets setaside on flush */
+            if (APR_BUCKET_IS_TRANSIENT(b)) {
+                apr_bucket_setaside(b, io->c->pool);
+            }
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(io->output, b);
+        }
     }
     
+    if (status == APR_SUCCESS) {
+        if (!APR_BRIGADE_EMPTY(io->output)) {
+            apr_off_t len = h2_brigade_mem_size(io->output);
+            if (len >= io->pass_threshold) {
+                return pass_output(io, 0, 0);
+            }
+        }
+    }
     return status;
 }
 

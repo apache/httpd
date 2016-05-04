@@ -485,6 +485,9 @@ void h2_task_rst(h2_task *task, int error)
     if (task->output.beam) {
         h2_beam_abort(task->output.beam);
     }
+    if (task->c) {
+        task->c->aborted = 1;
+    }
 }
 
 apr_status_t h2_task_shutdown(h2_task *task, int block)

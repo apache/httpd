@@ -54,6 +54,7 @@ struct h2_stream {
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
     apr_bucket_brigade *tmp;
+    apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
@@ -62,7 +63,6 @@ struct h2_stream {
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
-
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
 };
 
@@ -203,23 +203,6 @@ apr_status_t h2_stream_set_response(h2_stream *stream,
  */
 apr_status_t h2_stream_out_prepare(h2_stream *stream, 
                                    apr_off_t *plen, int *peos);
-
-/**
- * Read data from the stream output.
- * 
- * @param stream the stream to read from
- * @param cb callback to invoke for byte chunks read. Might be invoked
- *        multiple times (with different values) for one read operation.
- * @param ctx context data for callback
- * @param plen (in-/out) max. number of bytes to read and on return actual
- *        number of bytes read
- * @param peos (out) != 0 iff end of stream has been reached while reading
- * @return APR_SUCCESS if out information was computed successfully.
- *         APR_EAGAIN if not data is available and end of stream has not been
- *         reached yet.
- */
-apr_status_t h2_stream_readx(h2_stream *stream, h2_io_data_cb *cb, 
-                             void *ctx, apr_off_t *plen, int *peos);
 
 /**
  * Read a maximum number of bytes into the bucket brigade.

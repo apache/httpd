@@ -100,6 +100,8 @@ typedef struct h2_session {
     
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
+    int open_streams;               /* number of streams open */
+    int unanswered_streams;         /* number of streams waiting for response */
     int unsent_submits;             /* number of submitted, but not yet written responses. */
     int unsent_promises;            /* number of submitted, but not yet written push promised */
                                          
@@ -121,8 +123,6 @@ typedef struct h2_session {
     
     apr_bucket_brigade *bbtmp;      /* brigade for keeping temporary data */
     struct apr_thread_cond_t *iowait; /* our cond when trywaiting for data */
-    
-    apr_pool_t *spare;              /* spare stream pool */
     
     char status[64];                /* status message for scoreboard */
     int last_status_code;           /* the one already reported */
@@ -189,9 +189,6 @@ void h2_session_close(h2_session *session);
  * once we have all the response headers. */
 apr_status_t h2_session_handle_response(h2_session *session,
                                         struct h2_stream *stream);
-
-/* Get the h2_stream for the given stream idenrtifier. */
-struct h2_stream *h2_session_get_stream(h2_session *session, int stream_id);
 
 /**
  * Create and register a new stream under the given id.

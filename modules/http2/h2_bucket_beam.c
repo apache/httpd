@@ -204,8 +204,12 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
 
 static apr_status_t enter_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
 {
-    if (beam->m_enter) {
-        return beam->m_enter(beam->m_ctx, pbl);
+    h2_beam_mutex_enter *enter = beam->m_enter;
+    if (enter) {
+        void *ctx = beam->m_ctx;
+        if (ctx) {
+            return enter(ctx, pbl);
+        }
     }
     pbl->mutex = NULL;
     pbl->leave = NULL;
@@ -535,6 +539,9 @@ apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block)
                 status = APR_EAGAIN;
                 break;
             }
+            if (beam->m_cond) {
+                apr_thread_cond_broadcast(beam->m_cond);
+            }
             status = wait_cond(beam, bl.mutex);
         }
         leave_yellow(beam, &bl);
@@ -716,6 +723,9 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
         if (beam->aborted) {
+            if (!APR_BRIGADE_EMPTY(beam->green)) {
+                apr_brigade_cleanup(beam->green);
+            }
             status = APR_ECONNABORTED;
             goto leave;
         }
@@ -781,6 +791,10 @@ transfer:
 #endif
                 remain -= bred->length;
                 ++transferred;
+                APR_BUCKET_REMOVE(bred);
+                H2_BLIST_INSERT_TAIL(&beam->hold, bred);
+                ++transferred;
+                continue;
             }
             else {
                 /* create a "green" standin bucket. we took care about the

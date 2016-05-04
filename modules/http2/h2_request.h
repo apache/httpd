@@ -18,19 +18,8 @@
 
 #include "h2.h"
 
-h2_request *h2_request_create(int id, apr_pool_t *pool, int serialize);
-
-h2_request *h2_request_createn(int id, apr_pool_t *pool,
-                               const char *method, const char *scheme,
-                               const char *authority, const char *path,
-                               apr_table_t *headers, int serialize);
-
-apr_status_t h2_request_make(h2_request *req, apr_pool_t *pool,
-                             const char *method, const char *scheme, 
-                             const char *authority, const char *path, 
-                             apr_table_t *headers);
-
-apr_status_t h2_request_rwrite(h2_request *req, request_rec *r);
+apr_status_t h2_request_rwrite(h2_request *req, apr_pool_t *pool, 
+                               request_rec *r);
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool,
                                    const char *name, size_t nlen,
