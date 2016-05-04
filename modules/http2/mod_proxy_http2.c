@@ -125,12 +125,12 @@ static int proxy_http2_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (ap_casecmpstrn(url, "h2c:", 4) == 0) {
+    if (h2_casecmpstrn(url, "h2c:", 4) == 0) {
         url += 4;
         scheme = "h2c";
         http_scheme = "http";
     }
-    else if (ap_casecmpstrn(url, "h2:", 3) == 0) {
+    else if (h2_casecmpstrn(url, "h2:", 3) == 0) {
         url += 3;
         scheme = "h2";
         http_scheme = "https";
