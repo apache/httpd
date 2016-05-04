@@ -90,6 +90,7 @@ static apr_status_t enter_mutex(h2_mplx *m, int *pacquired)
      * This allow recursive entering of the mutex from the saem thread,
      * which is what we need in certain situations involving callbacks
      */
+    AP_DEBUG_ASSERT(m);
     apr_threadkey_private_get(&mutex, thread_lock);
     if (mutex == m->lock) {
         *pacquired = 0;
@@ -342,6 +343,8 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
     int reuse_slave = 0;
     apr_status_t status;
     
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
+                  "h2_task(%s): destroy", task->id);
     /* cleanup any buffered input */
     status = h2_task_shutdown(task, 0);
     if (status != APR_SUCCESS){
@@ -393,6 +396,8 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
 {
     h2_task *task;
     
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
+                  "h2_stream(%ld-%d): done", m->c->id, stream->id);
     /* Situation: we are, on the master connection, done with processing
      * the stream. Either we have handled it successfully, or the stream
      * was reset by the client or the connection is gone and we are 
@@ -890,6 +895,7 @@ static h2_task *pop_task(h2_mplx *m)
         stream = h2_ihash_get(m->streams, sid);
         if (stream) {
             conn_rec *slave, **pslave;
+            int new_conn = 0;
 
             pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
             if (pslave) {
@@ -897,16 +903,19 @@ static h2_task *pop_task(h2_mplx *m)
             }
             else {
                 slave = h2_slave_create(m->c, m->pool, NULL);
-                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
+                new_conn = 1;
             }
             
             slave->sbh = m->c->sbh;
+            slave->aborted = 0;
             task = h2_task_create(slave, stream->request, stream->input, m);
             h2_ihash_add(m->tasks, task);
             
             m->c->keepalives++;
             apr_table_setn(slave->notes, H2_TASK_ID_NOTE, task->id);
-            
+            if (new_conn) {
+                h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
+            }
             task->worker_started = 1;
             task->started_at = apr_time_now();
             if (sid > m->max_stream_started) {

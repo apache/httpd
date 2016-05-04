@@ -54,6 +54,7 @@ struct h2_stream {
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
     apr_bucket_brigade *tmp;
+    apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
@@ -62,7 +63,6 @@ struct h2_stream {
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
-
     apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
 };
 

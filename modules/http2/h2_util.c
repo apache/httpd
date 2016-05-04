@@ -1052,6 +1052,8 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
         if (APR_BUCKET_IS_METADATA(e)) {
             if (APR_BUCKET_IS_EOS(e)) {
                 *peos = 1;
+                apr_bucket_delete(e);
+                continue;
             }
         }
         else {        

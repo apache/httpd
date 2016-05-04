@@ -39,6 +39,8 @@ typedef struct {
     apr_int64_t bytes_written;
     
     int buffer_output;
+    apr_size_t pass_threshold;
+    
     char *scratch;
     apr_size_t ssize;
     apr_size_t slen;
@@ -46,8 +48,6 @@ typedef struct {
 
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
                              const struct h2_config *cfg);
-
-int h2_conn_io_is_buffered(h2_conn_io *io);
 
 /**
  * Append data to the buffered output.
@@ -72,12 +72,5 @@ apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, struct h2_session *session);
  * @param flush if a flush bucket should be appended to any output
  */
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
-
-/**
- * Check the amount of buffered output and pass it on if enough has accumulated.
- * @param io the connection io
- * @param flush if a flush bucket should be appended to any output
- */
-apr_status_t h2_conn_io_consider_pass(h2_conn_io *io);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */

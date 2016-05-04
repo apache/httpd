@@ -416,7 +416,7 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
                                            apr_read_type_e block,
                                            apr_off_t readbytes)
 {
-    h2_task *task = filter->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     return input_read(task, filter, brigade, mode, block, readbytes);
 }
@@ -424,20 +424,20 @@ static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
 static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
                                             apr_bucket_brigade* brigade)
 {
-    h2_task *task = filter->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     return output_write(task, filter, brigade);
 }
 
-static apr_status_t h2_filter_read_response(ap_filter_t* f,
+static apr_status_t h2_filter_read_response(ap_filter_t* filter,
                                             apr_bucket_brigade* bb)
 {
-    h2_task *task = f->ctx;
+    h2_task *task = h2_ctx_cget_task(filter->c);
     AP_DEBUG_ASSERT(task);
     if (!task->output.from_h1) {
         return APR_ECONNABORTED;
     }
-    return h2_from_h1_read_response(task->output.from_h1, f, bb);
+    return h2_from_h1_read_response(task->output.from_h1, filter, bb);
 }
 
 /*******************************************************************************
@@ -485,6 +485,9 @@ void h2_task_rst(h2_task *task, int error)
     if (task->output.beam) {
         h2_beam_abort(task->output.beam);
     }
+    if (task->c) {
+        task->c->aborted = 1;
+    }
 }
 
 apr_status_t h2_task_shutdown(h2_task *task, int block)
@@ -507,6 +510,8 @@ apr_status_t h2_task_shutdown(h2_task *task, int block)
 /*******************************************************************************
  * Register various hooks
  */
+static const char *const mod_ssl[]        = { "mod_ssl.c", NULL};
+static int h2_task_pre_conn(conn_rec* c, void *arg);
 static int h2_task_process_conn(conn_rec* c);
 
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_task_logio_add_bytes_in;
@@ -514,6 +519,12 @@ APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out;
 
 void h2_task_register_hooks(void)
 {
+    /* This hook runs on new connections before mod_ssl has a say.
+     * Its purpose is to prevent mod_ssl from touching our pseudo-connections
+     * for streams.
+     */
+    ap_hook_pre_connection(h2_task_pre_conn,
+                           NULL, mod_ssl, APR_HOOK_FIRST);
     /* When the connection processing actually starts, we might 
      * take over, if the connection is for a task.
      */
@@ -539,6 +550,28 @@ apr_status_t h2_task_init(apr_pool_t *pool, server_rec *s)
     h2_task_logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
 
     return APR_SUCCESS;
+}
+
+static int h2_task_pre_conn(conn_rec* c, void *arg)
+{
+    h2_ctx *ctx;
+    
+    if (!c->master) {
+        return OK;
+    }
+    
+    ctx = h2_ctx_get(c, 0);
+    (void)arg;
+    if (h2_ctx_is_task(ctx)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                      "h2_h2, pre_connection, found stream task");
+        
+        /* Add our own, network level in- and output filters.
+         */
+        ap_add_input_filter("H2_TO_H1", NULL, NULL, c);
+        ap_add_output_filter("H1_TO_H2", NULL, NULL, c);
+    }
+    return OK;
 }
 
 h2_task *h2_task_create(conn_rec *c, const h2_request *req, 
@@ -570,17 +603,11 @@ h2_task *h2_task_create(conn_rec *c, const h2_request *req,
     apr_thread_cond_create(&task->cond, pool);
 
     h2_ctx_create_for(c, task);
-    /* Add our own, network level in- and output filters. */
-    ap_add_input_filter("H2_TO_H1", task, NULL, c);
-    ap_add_output_filter("H1_TO_H2", task, NULL, c);
-
     return task;
 }
 
 void h2_task_destroy(h2_task *task)
 {
-    ap_remove_input_filter_byhandle(task->c->input_filters, "H2_TO_H1");
-    ap_remove_output_filter_byhandle(task->c->output_filters, "H1_TO_H2");
     if (task->output.beam) {
         h2_beam_destroy(task->output.beam);
         task->output.beam = NULL;

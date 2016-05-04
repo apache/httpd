@@ -607,7 +607,6 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     apr_brigade_cleanup(session->bbtmp);
     if (status == APR_SUCCESS) {
         stream->data_frames_sent++;
-        h2_conn_io_consider_pass(&session->io);
         return 0;
     }
     else {
@@ -1862,9 +1861,6 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
-            if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
-                dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
-            }
             if (!session->open_streams) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
@@ -1889,6 +1885,10 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                  * new output data from task processing, 
                  * switch to blocking reads. We are probably waiting on
                  * window updates. */
+                if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
+                    dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                    return;
+                }
                 transit(session, "no io", H2_SESSION_ST_IDLE);
                 session->idle_until = apr_time_now() + session->s->timeout;
                 session->keep_sync_until = session->idle_until;
@@ -2221,6 +2221,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     session->start_wait = apr_time_now();
                     if (h2_conn_io_flush(&session->io) != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                        break;
                     }
                 }
                 else if ((apr_time_now() - session->start_wait) >= session->s->timeout) {
@@ -2246,10 +2247,14 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     session->wait_us = 0;
                     dispatch_event(session, H2_SESSION_EV_DATA_READ, 0, NULL);
                 }
-                else if (status == APR_TIMEUP) {
+                else if (APR_STATUS_IS_TIMEUP(status)) {
                     /* go back to checking all inputs again */
                     transit(session, "wait cycle", session->local.accepting? 
                             H2_SESSION_ST_BUSY : H2_SESSION_ST_LOCAL_SHUTDOWN);
+                }
+                else if (APR_STATUS_IS_ECONNRESET(status) 
+                         || APR_STATUS_IS_ECONNABORTED(status)) {
+                    dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
                 }
                 else {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
@@ -2286,7 +2291,7 @@ out:
     ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_session(%ld): [%s] process returns", 
                   session->id, state_name(session->state));
-
+    
     if ((session->state != H2_SESSION_ST_DONE)
         && (APR_STATUS_IS_EOF(status)
             || APR_STATUS_IS_ECONNRESET(status) 
