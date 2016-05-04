@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: slave connections have conn_rec->aborted flag set when a stream
+     has been reset by the client.
+     
   *) mod_http2: merge of some 2.4.x adaptions re filters on slave connections.
      Small fixes in bucket beams when forwarding file buckets. Output handling
      on master connection uses less FLUSH and passes automatically when more
