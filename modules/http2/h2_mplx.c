@@ -764,12 +764,17 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response)
 static apr_status_t out_close(h2_mplx *m, h2_task *task)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
+    h2_stream *stream;
     
-    if (!task || !stream) {
+    if (!task) {
         return APR_ECONNABORTED;
     }
-    
+
+    stream = h2_ihash_get(m->streams, task->stream_id);
+    if (!stream) {
+        return APR_ECONNABORTED;
+    }
+
     if (!task->response && !task->rst_error) {
         /* In case a close comes before a response was created,
          * insert an error one so that our streams can properly
