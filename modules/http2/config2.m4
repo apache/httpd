@@ -100,7 +100,6 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
         pkglookup="`$PKGCONFIG --cflags-only-I libnghttp2`"
         APR_ADDTO(CPPFLAGS, [$pkglookup])
         APR_ADDTO(MOD_CFLAGS, [$pkglookup])
-        APR_ADDTO(ab_CFLAGS, [$pkglookup])
         pkglookup="`$PKGCONFIG $PKGCONFIG_LIBOPTS --libs-only-L libnghttp2`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
         APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
@@ -115,7 +114,6 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
     if test "x$ap_nghttp2_base" != "x" -a "x$ap_nghttp2_found" = "x"; then
       APR_ADDTO(CPPFLAGS, [-I$ap_nghttp2_base/include])
       APR_ADDTO(MOD_CFLAGS, [-I$ap_nghttp2_base/include])
-      APR_ADDTO(ab_CFLAGS, [-I$ap_nghttp2_base/include])
       APR_ADDTO(LDFLAGS, [-L$ap_nghttp2_base/lib])
       APR_ADDTO(MOD_LDFLAGS, [-L$ap_nghttp2_base/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
@@ -140,9 +138,6 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
       ap_nghttp2_libs="${ap_nghttp2_libs:--lnghttp2} `$apr_config --libs`"
       APR_ADDTO(MOD_LDFLAGS, [$ap_nghttp2_libs])
       APR_ADDTO(LIBS, [$ap_nghttp2_libs])
-      APR_SETVAR(ab_LDFLAGS, [$MOD_LDFLAGS])
-      APACHE_SUBST(ab_CFLAGS)
-      APACHE_SUBST(ab_LDFLAGS)
 
       dnl Run library and function checks
       liberrors=""
