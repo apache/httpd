@@ -30,6 +30,10 @@
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Ésta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientementes.</div>
 
 
     <p>Aunque el Servidor Apache HTTP ofrece respuestas de error genéricos en
@@ -55,7 +59,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#custom">Personalizando Respuestas de Errores</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#multi-lang">Documentos de error  personalizados 
     Multilengua</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="configuration" id="configuration">Configuración</a></h2>
