@@ -4,24 +4,24 @@ Changes with Apache 2.4.21
 
   *) mod_http2: slave connections have conn_rec->aborted flag set when a stream
      has been reset by the client. [Stefan Eissing]
-     
+
   *) mod_http2: merge of some 2.4.x adaptions re filters on slave connections.
      Small fixes in bucket beams when forwarding file buckets. Output handling
      on master connection uses less FLUSH and passes automatically when more
      than half of H2StreamMaxMemSize bytes have accumulated.
      Workaround for http: when forwarding partial file buckets to keep the
      output filter from closing these too early. [Stefan Eissing]
-     
-  *) mod_http2: elimination of fixed master connectin buffer for TLS 
+
+  *) mod_http2: elimination of fixed master connection buffer for TLS 
      connections. New scratch bucket handling optimized for TLS write sizes. 
      File bucket data read directly into scratch buffers, avoiding one
      copy. Non-TLS connections continue to pass buckets unchanged to the core
      filters to allow sendfile() usage. [Stefan Eissing]
-  
+
   *) mod_http2/mod_proxy_http2: h2_request.c is no longer shared between these
      modules. This simplifies building on platforms such as Windows, as module
      reference used in logging is now clear. [Stefan Eissing]
-     
+
   *) Scoreboard: Fix a regression in 2.4.20 that causes wrong request data
      to be displayed on the status page. PR 59333. [Yann Ylavic, William Rowe]
 
@@ -37,7 +37,7 @@ Changes with Apache 2.4.21
 
   *) mod_http2: new "bucket beam" technology to transport buckets across
      threads without buffer copy. Delaying response start until flush or
-     enough body data has been accumulated. Overall significanlty smaller
+     enough body data has been accumulated. Overall significantly smaller
      memory footprint. [Stefan Eissing]
 
   *) core: New CGIVar directive can configure REQUEST_URI to represent the
@@ -314,10 +314,10 @@ Changes with Apache 2.4.18
      streams with higher cumulative window size. 
      Reducing write frequency unless push promises need to be flushed.
      [Stefan Eissing]
-  
+
   *) mod_http2: required minimum version of libnghttp2 is 1.2.1
      [Stefan Eissing]
-  
+
   *) mod_proxy_fdpass: Fix AH01153 error when using the default configuration.
      In earlier version of httpd, you can explicitelly set the 'flusher' parameter
      to 'flush' as a workaround. (i.e. flusher=flush)
@@ -330,7 +330,7 @@ Changes with Apache 2.4.18
   *) mod_http2: new directive 'H2PushPriority' to allow priority specifications
      on server pushed streams according to their content-type. 
      [Stefan Eissing]
-     
+
   *) mod_http2: fixes crash on connection abort for a busy connection.
      fixes crash on a request that did not produce any response.
      [Stefan Eissing]
@@ -345,22 +345,22 @@ Changes with Apache 2.4.18
   *) mod_http2: new directive 'H2Push' to en-/disable HTTP/2 server
      pushes a server/virtual host. Pushes are initiated by the presence
      of 'Link:' headers with relation 'preload' on a response. [Stefan Eissing]
-     
+
   *) mod_http2: write performance of http2 improved for larger resources,
      especially static files. [Stefan Eissing]
-     
+
   *) core: if the first HTTP/1.1 request on a connection goes to a server that
      prefers different protocols, these protocols are announced in a Upgrade:
      header on the response, mentioning the preferred protocols.
      [Stefan Eissing]
-     
+
   *) mod_http2: new directives 'H2TLSWarmUpSize' and 'H2TLSCoolDownSecs'
      to control TLS record sizes during connection lifetime.
      [Stefan Eissing]
-     
+
   *) mod_http2: new directive 'H2ModernTLSOnly' to enforce security
      requirements of RFC 7540 on TLS connections. [Stefan Eissing]
-     
+
   *) core: add ap_get_protocol_upgrades() to retrieve the list of protocols
      that a client could possibly upgrade to. Use in first request on a 
      connection to announce protocol choices. [Stefan Eissing]
@@ -368,7 +368,7 @@ Changes with Apache 2.4.18
   *) mod_http2: reworked deallocation on connection shutdown and worker
      abort. Separate parent pool for all workers. worker threads are joined
      on planned worker shutdown. [Yann Ylavic, Stefan Eissing]
-     
+
   *) mod_ssl: when receiving requests for other virtual hosts than the handshake
      server, the SSL parameters are checked for equality. With equal 
      configuration, requests are passed for processing. Any change will trigger
@@ -680,7 +680,7 @@ Changes with Apache 2.4.13 (not released)
      'No such file or directory: unable to connect to cgi daemon...' could
      be logged without an actual retry. PR57685. 
      [Edward Lu <Chaosed0 gmail.com>]
-     
+
   *) mod_proxy: Use the original (non absolute) form of the request-line's URI
      for requests embedded in CONNECT payloads used to connect SSL backends via
      a ProxyRemote forward-proxy.  PR 55892.  [Hendrik Harms <hendrik.harms
@@ -777,7 +777,7 @@ Changes with Apache 2.4.12
      (not released).
 
 Changes with Apache 2.4.11 (not released)
-  
+
   *) SECURITY: CVE-2014-3583 (cve.mitre.org)
      mod_proxy_fcgi: Fix a potential crash due to buffer over-read, with 
      response headers' size above 8K.  [Yann Ylavic, Jeff Trawick]
@@ -810,7 +810,7 @@ Changes with Apache 2.4.11 (not released)
   *) mod_proxy_fcgi: Provide some basic alternate options for specifying 
      how PATH_INFO is passed to FastCGI backends by adding significance to
      the value of proxy-fcgi-pathinfo. PR 55329. [Eric Covener]
- 
+
   *) mod_proxy_fcgi: Enable UDS backends configured with SetHandler/RewriteRule
      to opt-in to connection reuse and other Proxy options via explicitly
      declared "proxy workers" (<Proxy unix:... enablereuse=on max=...)
@@ -893,7 +893,7 @@ Changes with Apache 2.4.11 (not released)
 
   *) mod_cache: Avoid a 304 response to an unconditional requst when an AH00752
      CacheLock error occurs during cache revalidation. [Eric Covener]
- 
+
   *) mod_ssl: Move OCSP stapling information from a per-certificate store to
      a per-server hash. PR 54357, PR 56919. [Alex Bligh <alex alex.org.uk>,
      Yann Ylavic, Kaspar Brand]
@@ -915,7 +915,7 @@ Changes with Apache 2.4.11 (not released)
 
   *) mod_substitute: Fix line length limitation in case of regexp plus flatten.
      [Rainer Jung]
-  
+
   *) mod_proxy: Truncated character worker names are no longer fatal
      errors. PR53218. [Jim Jagielski]
 
@@ -1102,7 +1102,7 @@ Changes with Apache 2.4.10
 
   *) mod_alias: Stop setting CONTEXT_PREFIX and CONTEXT_DOCUMENT environment
      variables as a result of AliasMatch. [Eric Covener]
- 
+
   *) mod_cache: Don't add cached/revalidated entity headers to a 304 response.
      PR 55547.  [Yann Ylavic]
 
@@ -1206,7 +1206,7 @@ Changes with Apache 2.4.10
      [Daniel Gruno]
 
   *) mod_lua: Add r:wspeek for peeking at WebSocket frames. [Daniel Gruno]
- 
+
   *) mod_lua: Log an error when the initial parsing of a Lua file fails.
      [Daniel Gruno, Felipe Daragon <filipe syhunt com>]
 
@@ -1302,7 +1302,7 @@ Changes with Apache 2.4.8 (not released)
   *) mod_lua: Update r:setcookie() to accept a table of options and add domain,
      path and httponly to the list of options available to set.
      PR 56128 [Edward Lu <Chaosed0 gmail com>, Daniel Gruno]
-     
+
   *) mod_lua: Fix r:setcookie() to add, rather than replace,
      the Set-Cookie header. PR56105
      [Kevin J Walters <kjw ms com>, Edward Lu <Chaosed0 gmail com>]
@@ -1367,7 +1367,7 @@ Changes with Apache 2.4.7
      configuration.  [Graham Leggett]
 
   *) APR 1.5.0 or later is now required for the event MPM.
-  
+
   *) slotmem_shm: Error detection. [Jim Jagielski]
 
   *) event: Use skiplist data structure. [Jim Jagielski]
@@ -1384,7 +1384,7 @@ Changes with Apache 2.4.7
   *) mod_proxy_fcgi: Remove 64K limit on encoded length of all envvars.
      An individual envvar with an encoded length of more than 16K will be
      omitted.  [Jeff Trawick]
-  
+
   *) mod_proxy_fcgi: Handle reading protocol data that is split between
      packets.  [Jeff Trawick]
 
@@ -1468,7 +1468,7 @@ Changes with Apache 2.4.7
   *) ab: Add a new -l parameter in order not to check the length of the responses.
      This can be usefull with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
-     
+
   *) Suppress formatting of startup messages written to the console when
      ErrorLogFormat is used.  [Jeff Trawick]
 
@@ -1905,7 +1905,7 @@ Changes with Apache 2.4.4
 
   *) mod_proxy_balancer: Improve output of balancer-manager (re: Drn,
      Dis, Ign, Stby). PR 52478 [Danijel <dt-ng rbfh de>]
-  
+
   *) configure: Fix processing of --disable-FEATURE for various features.
      [Jeff Trawick]
 
@@ -1980,7 +1980,7 @@ Changes with Apache 2.4.4
 
   *) mod_header: Allow for exposure of loadavg and server load using new 
      format specifiers %l, %i, %b [Jim Jagielski]
-  
+
   *) core: Make ap_regcomp() return AP_REG_ESPACE if out of memory.  Make
      ap_pregcomp() abort if out of memory. This raises the minimum PCRE
      requirement to version 6.0. [Stefan Fritsch]
@@ -2013,7 +2013,7 @@ Changes with Apache 2.4.4
 
   *) mod_ldap: Fix regression in handling "server unavailable" errors on 
      Windows.  PR 54140.  [Eric Covener]
- 
+
   *) syslog logging: Remove stray ", referer" at the end of some messages.
      [Jeff Trawick]
 
@@ -2579,7 +2579,7 @@ Changes with Apache 2.3.15
 
   *) rotatelogs: Add -c option to force logfile creation in every rotation 
      interval, even if empty.  [Jan Kaluža <jkaluza redhat.com>]
- 
+
   *) core: Limit ap_pregsub() to 64K, add ap_pregsub_ex() for longer strings.
      [Stefan Fritsch]
 
@@ -2594,7 +2594,7 @@ Changes with Apache 2.3.15
 
   *) mod_lua: add r:construct_url as a wrapper for ap_construct_url.
      [Eric Covener]
- 
+
   *) mod_remote_ip: Fix configuration of internal proxies. PR 49272.
      [Jim Riggs <jim riggs me>]
 
