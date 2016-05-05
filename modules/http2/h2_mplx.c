@@ -465,8 +465,10 @@ static int task_print(void *ctx, void *val)
 {
     h2_mplx *m = ctx;
     h2_task *task = val;
-    h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
-    if (task->request) {
+
+    if (task && task->request) {
+        h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
+
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%s): %s %s %s -> %s %d"
                       "[orph=%d/started=%d/done=%d]", 
