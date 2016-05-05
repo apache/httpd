@@ -38,7 +38,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Consideraciones especiales con IPv6</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#protocol">Especificar el Protocolo en el Listen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Como Funciona en los Hosts Virtuales</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuales</a></li><li><a href="dns-caveats.html">Problemas de DNS</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuales</a></li><li><a href="dns-caveats.html">Problemas de DNS</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Visión General</a></h2>
