@@ -27,6 +27,7 @@
 #define __MOD_SSL_H__
 
 #include "httpd.h"
+#include "http_config.h"
 #include "apr_optional.h"
 
 /* Create a set of SSL_DECLARE(type), SSL_DECLARE_NONSTD(type) and
