@@ -61,7 +61,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authentication">Authentification</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#language_country_codes">Codes de langues et de
   pays</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="http_recommendations" id="http_recommendations">Recommandations HTTP</a></h2>
