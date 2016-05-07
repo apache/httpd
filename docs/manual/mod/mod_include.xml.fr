@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1735963:1741841 (outdated) -->
+<!-- English Revision: 1741841 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -970,8 +970,8 @@ include</description>
     éventuellement à des moments différents).</p>
 
     <highlight language="config">
-      SSIStartTag "&lt;%"<br />
-      SSIEndTag   "%&gt;"
+SSIStartTag "&lt;%"
+SSIEndTag   "%&gt;"      
     </highlight>
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive
