@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741625 -->
+<!-- English Revision: 1741842 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1128,15 +1128,15 @@ r:activeconfig() -- Extrait une arborescence de la configuration active
 <highlight language="lua">
 	-- exemples de messages de journalisation
 	r:trace1("Ceci est un message de journalisation de niveau
-	trace") -- les niveaux valides vont de trace1 à trace8 <br />
-        r:debug("Ceci est un message de journalisation de niveau debug")<br />
-        r:info("Ceci est un message de journalisation de niveau info")<br />
-        r:notice("Ceci est un message de journalisation de niveau notice")<br />
-        r:warn("Ceci est un message de journalisation de niveau warn")<br />
-        r:err("Ceci est un message de journalisation de niveau err")<br />
-        r:alert("Ceci est un message de journalisation de niveau alert")<br />
-        r:crit("Ceci est un message de journalisation de niveau crit")<br />
-        r:emerg("Ceci est un message de journalisation de niveau emerg")<br />
+	trace") -- les niveaux valides vont de trace1 à trace8 
+        r:debug("Ceci est un message de journalisation de niveau debug")
+        r:info("Ceci est un message de journalisation de niveau info")
+        r:notice("Ceci est un message de journalisation de niveau notice")
+        r:warn("Ceci est un message de journalisation de niveau warn")
+        r:err("Ceci est un message de journalisation de niveau err")
+        r:alert("Ceci est un message de journalisation de niveau alert")
+        r:crit("Ceci est un message de journalisation de niveau crit")
+        r:emerg("Ceci est un message de journalisation de niveau emerg")
 </highlight>
 
 </section>
