@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1739051 -->
+<!-- English Revision: 1741864 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : VIncent Deffontaines -->
 <!--
@@ -394,7 +394,7 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
     <p><strong>Configuration de la réécriture</strong></p>
     <highlight language="config">
 
-RewriteMap d2u "prg:/www/bin/dash2under.pl"<br />
+RewriteMap d2u "prg:/www/bin/dash2under.pl"
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"
     </highlight>
 

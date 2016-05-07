@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1740719 -->
+<!-- English Revision: 1741864 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -347,8 +347,8 @@ disponibles avec Require</title>
     passe :</p>
 
     <highlight language="config">
-      Require ssl-verify-client<br/>
-      Require valid-user
+Require ssl-verify-client
+Require valid-user      
     </highlight>
 
   </section>
