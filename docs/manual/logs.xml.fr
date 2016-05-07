@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1739104 -->
+<!-- English Revision: 1741842 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -497,8 +497,8 @@ CustomLog "logs/access_log" common env=!dontlog
       utilisateurs dans un autre journal.</p>
 
       <highlight language="config">
-        SetEnvIf Accept-Language "en" english<br />
-        CustomLog "logs/english_log" common env=english<br />
+        SetEnvIf Accept-Language "en" english
+        CustomLog "logs/english_log" common env=english
         CustomLog "logs/non_english_log" common env=!english
       </highlight>
 

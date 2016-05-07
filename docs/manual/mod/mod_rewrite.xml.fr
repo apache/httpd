@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1737774 -->
+<!-- English Revision: 1741842 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,8 +81,8 @@ règles permettant de réécrire les URLs des requêtes
 
     <example><title>Exemple</title>
     <highlight language="config">
-      LogLevel alert rewrite:trace3
-      </highlight>
+LogLevel alert rewrite:trace3
+    </highlight>     
     </example>
 
     <note><title>RewriteLog</title>
@@ -1036,7 +1036,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]
            </p>
 
            <highlight language="config">
-           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
            RewriteRule "^/images" "-" [F]
            </highlight>
         </li>
