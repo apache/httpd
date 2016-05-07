@@ -722,7 +722,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 	    non désiré.
            </p>
 
-           <pre class="prettyprint lang-config">           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           <pre class="prettyprint lang-config">           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
            RewriteRule "^/images" "-" [F]</pre>
 
         </li>

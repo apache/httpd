@@ -70,10 +70,10 @@
     définie à FileInfo.</p>
 
     <pre class="prettyprint lang-config">ErrorDocument 500 "Désolé, notre script s'est
-crashé ; comme c'est dommage !"<br />
-ErrorDocument 500 /cgi-bin/crash-recover<br />
-ErrorDocument 500 http://error.example.com/server_error.html<br />
-ErrorDocument 404 /errors/not_found.html <br />
+crashé ; comme c'est dommage !"
+ErrorDocument 500 /cgi-bin/crash-recover
+ErrorDocument 500 http://error.example.com/server_error.html
+ErrorDocument 404 /errors/not_found.html 
 ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
 
 
@@ -165,8 +165,8 @@ ErrorDocument 401 /subscription/how_to_subscribe.html</pre>
       :</p>
 
       <pre class="prettyprint lang-perl">...
-print  "Content-type: text/html\n"; <br />
-printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
+print  "Content-type: text/html\n"; 
+printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; 
 ...</pre>
 
 
@@ -194,7 +194,7 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
     <p>Dans le fichier de configuration de votre serveur, vous trouverez
     un groupe de lignes du style :</p>
 
-    <pre class="prettyprint lang-config">    # Multi-language error messages<br />
+    <pre class="prettyprint lang-config">    # Multi-language error messages
     #Include conf/extra/httpd-multilang-errordoc.conf</pre>
 
 

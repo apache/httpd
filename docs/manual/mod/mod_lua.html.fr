@@ -1098,16 +1098,15 @@ local line = r:wsread()</pre>
 
 <pre class="prettyprint lang-lua">	-- exemples de messages de journalisation
 	r:trace1("Ceci est un message de journalisation de niveau
-	trace") -- les niveaux valides vont de trace1 à trace8 <br />
-        r:debug("Ceci est un message de journalisation de niveau debug")<br />
-        r:info("Ceci est un message de journalisation de niveau info")<br />
-        r:notice("Ceci est un message de journalisation de niveau notice")<br />
-        r:warn("Ceci est un message de journalisation de niveau warn")<br />
-        r:err("Ceci est un message de journalisation de niveau err")<br />
-        r:alert("Ceci est un message de journalisation de niveau alert")<br />
-        r:crit("Ceci est un message de journalisation de niveau crit")<br />
-        r:emerg("Ceci est un message de journalisation de niveau emerg")<br />
-</pre>
+	trace") -- les niveaux valides vont de trace1 à trace8 
+        r:debug("Ceci est un message de journalisation de niveau debug")
+        r:info("Ceci est un message de journalisation de niveau info")
+        r:notice("Ceci est un message de journalisation de niveau notice")
+        r:warn("Ceci est un message de journalisation de niveau warn")
+        r:err("Ceci est un message de journalisation de niveau err")
+        r:alert("Ceci est un message de journalisation de niveau alert")
+        r:crit("Ceci est un message de journalisation de niveau crit")
+        r:emerg("Ceci est un message de journalisation de niveau emerg")</pre>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
