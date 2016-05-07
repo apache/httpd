@@ -47,7 +47,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#delete">Suppression d'une URL particulière</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#list">Affichage des URLs présentes dans le cache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exit">Valeur renvoyée</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Syntaxe</a></h2>

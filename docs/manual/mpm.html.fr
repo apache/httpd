@@ -42,7 +42,7 @@ que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
 statique</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dynamic">Compiler un module MPM en tant que module
 DSO (Dynamic Shared Object)</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
