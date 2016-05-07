@@ -251,9 +251,9 @@ dans le répertoire
 <code>/bar/</code> sur <code>internal.example.com</code>
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
-<pre class="prettyprint lang-config">ProxyPass "/foo/" "http://internal.example.com/bar/"<br />
-ProxyPassReverse "/foo/" "http://internal.example.com/bar/"<br />
-ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
+<pre class="prettyprint lang-config">ProxyPass "/foo/" "http://internal.example.com/bar/"
+ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
+ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"</pre>
 
 
