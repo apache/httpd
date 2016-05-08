@@ -1099,7 +1099,7 @@ request_rec *ap_read_request(conn_rec *conn)
             apr_brigade_destroy(tmp_bb);
             goto traceout;
         case HTTP_REQUEST_TIME_OUT:
-            ap_update_child_status_from_conn(conn->sbh, SERVER_BUSY_LOG, conn);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, NULL);
             if (!r->connection->keepalives)
                 ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
