@@ -184,14 +184,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Don't globber scoreboard request info if read_request_line() fails with
      a timeout. In that case there's not yet any new useful request info
      available.
-     Noticed via server-status showing request "NULL" after keep-alive
-     connections timed out.
+     Noticed via server-status for prefork showing request "NULL" after
+     keep-alive connections timed out.
      No CHANGES entry needed, because there's already one for PR 59333.
-     Sorry for the two patches. The second is better. Both change the same
-     line, so technically only the second is needed, but merging both keeps
-     mergeinfo more complete.
+     Sorry for the three patches. The first one is overwritten by the second
+     one, so technically only the second and third are needed, but merging all
+     keeps the mergeinfo more complete.
      trunk patch: http://svn.apache.org/r1742791
                   http://svn.apache.org/r1742792
+                  http://svn.apache.org/r1742822
      2.4.x patch: trunk works
      +1: rjung
 
