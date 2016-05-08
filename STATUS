@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1742792
                   http://svn.apache.org/r1742822
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
