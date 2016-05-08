@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> de
@@ -290,13 +288,13 @@ RewriteRule "^" "${deflector:%{HTTP_REFERER}}" [R,L]</pre>
       simplement rediriger les requêtes vers leur Referer, un "-" est
       inscrit dans le fichier de correspondances :</p>
 
-<pre class="prettyprint lang-config">##<br />
-##  deflector.map<br />
-##<br />
-<br />
-http://www.mauvais-gars.example.com/mauvais/index.html    -<br />
-http://www.mauvais-gars.example.com/mauvais/index2.html   -<br />
-http://www.mauvais-gars.example.com/mauvais/index3.html   http://quelque-part.example.com/</pre>
+<pre class="prettyprint lang-config">##
+##  deflector.map
+##
+
+http://badguys.example.com/bad/index.html    -
+http://badguys.example.com/bad/index2.html   -
+http://badguys.example.com/bad/index3.html   http://somewhere.example.com/</pre>
 
 
     </dd>
