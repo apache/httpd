@@ -2,6 +2,7 @@
 <!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- English revision: 1669920 -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed by Sergio Ramos-->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -69,10 +70,10 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NOMBRE</message>
         <message id="hyphenation">Cesura</message>
-        <message id="foundabug">Bugfix checklist</message>
-        <message id="httpdchangelog">httpd changelog</message>
-        <message id="httpdknownissues">Known issues</message>
-        <message id="httpdreportabug">Report a bug</message>
+        <message id="foundabug">Lista de Bugs</message>
+        <message id="httpdchangelog">lista de cambioshttpd</message>
+        <message id="httpdknownissues">Problemas conocidos</message>
+        <message id="httpdreportabug">Reportar un bug</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxis</message>
