@@ -150,7 +150,7 @@
         <message id="langavail">Idiomas disponibles</message>
 
         <!-- not up to date -->
-        <message id="outofdate">Ésta traducción podría estar
+        <message id="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
             recientementes.</message>
@@ -165,7 +165,7 @@
             <p>Esta documentación hace referencia a la versión <strong>2.0</strong> de Apache httpd, que <strong>ya no tiene soporte ni es mantenida</strong>. Actualice,y consulte la versión actual de httpd en su lugar, documentado en:</p>
         </message>
         <message id="retired.current">Versión actual de la documentación de Apache HTTP Server</message>
-        <message id="retired.document">Usted puede seguir <link>éste enlace </link> para ir a la versión actual de este documento.</message>
+        <message id="retired.document">Usted puede seguir <link>este enlace </link> para ir a la versión actual de este documento.</message>
 
     </messages>
 </language>
