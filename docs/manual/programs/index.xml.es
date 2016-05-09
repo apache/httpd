@@ -27,7 +27,7 @@
   <title>El Servidor Apache y Programas de Soporte</title>
 
 <summary>
-    <p>Ésta página contiene toda la documentación sobre los programas
+    <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>
 </summary>
 

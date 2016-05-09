@@ -30,7 +30,7 @@
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-    <p>Ésta página contiene toda la documentación sobre los programas
+    <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
