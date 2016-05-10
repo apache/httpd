@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English revision: 1669920 -->
+<!-- English revision: 1741814 -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Reviewed by Sergio Ramos-->
 <!--
@@ -71,7 +71,7 @@
         <message id="name-section">NOMBRE</message>
         <message id="hyphenation">Cesura</message>
         <message id="foundabug">Lista de Bugs</message>
-        <message id="httpdchangelog">lista de cambioshttpd</message>
+        <message id="httpdchangelog">lista de cambios en httpd</message>
         <message id="httpdknownissues">Problemas conocidos</message>
         <message id="httpdreportabug">Reportar un bug</message>
 
@@ -94,7 +94,7 @@
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">server config</message>
         <message id="virtualhost" letter="v">virtual host</message>
-        <message id="directory" letter="d">directory</message>
+        <message id="directory" letter="d">directorio</message>
         <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
@@ -117,7 +117,7 @@
         <message id="glossarylink">ver glosario</message>
 
         <!-- Used in headers and footers -->
-        <message id="apachetitle">- Servidor HTTP Apache</message>
+        <message id="apachetitle">- Servidor Apache HTTP</message>
         <message id="apachehttpserver">Versión &httpd.major;.&httpd.minor;
             del Servidor HTTP Apache</message>
         <message id="apachedocalt">[DOCUMENTACIÓN DE APACHE]</message>
@@ -149,9 +149,10 @@
             documentación para comprobar si se han producido cambios
             recientemente.</message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</message>
+        <message id="nottranslated">La Documentación para esta directiva 
+        	no ha sido traducida aún. Por favor use la versión en inglés 
+        	mientras tanto.
+            </message>
 
         <!-- retirement -->
         <message id="retired.headline">Por favor Nota</message>
