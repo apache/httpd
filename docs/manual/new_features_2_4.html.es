@@ -29,7 +29,7 @@
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-  <p>Éste documento describe algunos de los principales cambios entre las  versiones
+  <p>Este documento describe algunos de los principales cambios entre las  versiones
      2.2 y 2.4 del Servidor Apache HTTP. Para las nuevas características desde
      versión 2.0, consulte el  documento <a href="new_features_2_2.html"> 2.2 nuevas características.</a></p>
 </div>
@@ -39,7 +39,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#programs">Mejoras para el Programa</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#documentation">Documentación</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Cambios en los Desarrollos de Módulos</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="core" id="core">Mejoras en el Core</a></h2>
@@ -274,7 +274,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
       Las cabeceras que contienen carácteres no válidos (incluyendo guiones bajos)
       son descartadas de forma silenciosa. <a href="env.html">Las variables de entorno en
       Apache</a> tienen algunos consejos en como trabajar con clientes con sistemas heredados rotos que 
-      requieren de éste tipo de cabeceras. (Esto afecta a todos los módulos que 
+      requieren de este tipo de cabeceras. (Esto afecta a todos los módulos que 
       usan éstas variables de entorno.)</dd>
 
       <dt><code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code> Autorización Lógica de Contenedores</dt>
@@ -386,7 +386,7 @@ situación en la que el servidor genera URLs que no son válidos para los clientes
       <dt>Añadido un Analizador de Expresiones</dt>
 
       <dd>Ahora tenemos un analizador de expresiones de propósito general, y su API está
-      expuesta en <var>ap_expr.h</var>.  Éste es una adaptación del que había anteriormente
+      expuesta en <var>ap_expr.h</var>. Esto es una adaptación del que había anteriormente
       implementado en <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
 
       <dt>Autorización Lógica de Contenedores</dt>
