@@ -27,7 +27,7 @@
 <title>Información General sobre las Nuevas Características en Apache HTTP Server 2.4</title>
 
 <summary>
-  <p>Éste documento describe algunos de los principales cambios entre las  versiones
+  <p>Este documento describe algunos de los principales cambios entre las  versiones
      2.2 y 2.4 del Servidor Apache HTTP. Para las nuevas características desde
      versión 2.0, consulte el  documento <a href="new_features_2_2.html"> 2.2 nuevas características.</a></p>
 </summary>
@@ -265,7 +265,7 @@ situación en la que el servidor genera URLs que no son válidos para los client
       Las cabeceras que contienen carácteres no válidos (incluyendo guiones bajos)
       son descartadas de forma silenciosa. <a href="env.html">Las variables de entorno en
       Apache</a> tienen algunos consejos en como trabajar con clientes con sistemas heredados rotos que 
-      requieren de éste tipo de cabeceras. (Esto afecta a todos los módulos que 
+      requieren de este tipo de cabeceras. (Esto afecta a todos los módulos que 
       usan éstas variables de entorno.)</dd>
 
       <dt><module>mod_authz_core</module> Autorización Lógica de Contenedores</dt>
@@ -380,7 +380,7 @@ situación en la que el servidor genera URLs que no son válidos para los client
       <dt>Añadido un Analizador de Expresiones</dt>
 
       <dd>Ahora tenemos un analizador de expresiones de propósito general, y su API está
-      expuesta en <var>ap_expr.h</var>.  Éste es una adaptación del que había anteriormente
+      expuesta en <var>ap_expr.h</var>. Esto es una adaptación del que había anteriormente
       implementado en <module>mod_ssl</module>.</dd>
 
       <dt>Autorización Lógica de Contenedores</dt>
