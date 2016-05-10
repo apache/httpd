@@ -195,6 +195,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1742822
      2.4.x patch: trunk works
      +1: rjung, ylavic
+     +1: agreement with r1742791+1742792 wrowe
+     -1: veto of r1742822 - what are we "W"riteing if we have no request?!?
+         Semantically invalid on event mpm when resuming a connection while
+         this new thread has performed no work on prior request.  That status
+         update should only occur on a successful read.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
