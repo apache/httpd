@@ -32,7 +32,7 @@ Documentación</title>
     <page href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</page>
-    <page href="upgrading.html">Actualizar a la versión 2.4 de la 2.2</page>
+    <page href="upgrading.html">Actualizar a la versión 2.4 desde la 2.2</page>
     <page href="license.html">Licencia Apache </page>
 </category>
 
@@ -64,7 +64,7 @@ Documentación</title>
     <page href="urlmapping.html">Mapeo de URLs al Sistema de Ficheros</page>
     <page href="misc/perf-tuning.html">Optimización del Rendimiento</page>
     <page href="misc/security_tips.html">Consejos de seguridad</page>
-    <page href="server-wide.html">Configuración de Server-Wide</page>
+    <page href="server-wide.html">Configuración básica del Servidor</page>
     <page href="ssl/">Encryptado SSL/TLS</page>
     <page href="suexec.html">Ejecución de Suexec para CGI</page>
     <page href="rewrite/">Reescritura de URL con mod_rewrite</page>
