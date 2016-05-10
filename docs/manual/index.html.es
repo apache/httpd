@@ -43,7 +43,7 @@ Documentación</h1>
 <ul><li><a href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</a></li>
 <li><a href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</a></li>
 <li><a href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</a></li>
-<li><a href="upgrading.html">Actualizar a la versión 2.4 de la 2.2</a></li>
+<li><a href="upgrading.html">Actualizar a la versión 2.4 desde la 2.2</a></li>
 <li><a href="license.html">Licencia Apache </a></li>
 </ul>
 </div><div class="category"><h2><a name="manual" id="manual">Manual de Referencia</a></h2>
@@ -73,7 +73,7 @@ Documentación</h1>
 <li><a href="urlmapping.html">Mapeo de URLs al Sistema de Ficheros</a></li>
 <li><a href="misc/perf-tuning.html">Optimización del Rendimiento</a></li>
 <li><a href="misc/security_tips.html">Consejos de seguridad</a></li>
-<li><a href="server-wide.html">Configuración de Server-Wide</a></li>
+<li><a href="server-wide.html">Configuración básica del Servidor</a></li>
 <li><a href="ssl/">Encryptado SSL/TLS</a></li>
 <li><a href="suexec.html">Ejecución de Suexec para CGI</a></li>
 <li><a href="rewrite/">Reescritura de URL con mod_rewrite</a></li>
