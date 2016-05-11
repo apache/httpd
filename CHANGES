@@ -82,7 +82,11 @@ Changes with Apache 2.4.20
 
   *) mod_http2: Fix build on Windows from dsp files.
      [Stefan Eissing] 
-
+     
+  *) SECURITY: CVE-2016-1546 (cve.mitre.org)     
+     mod_http2: restricting number of concurrent stream workers per connection
+     if client is slow. 
+     
 Changes with Apache 2.4.19
 
   *) mod_include: Add variable DOCUMENT_ARGS, with the arguments to the
