@@ -1,25 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: slave connections have conn_rec->aborted flag set when a stream
-     has been reset by the client.
-     
-  *) mod_http2: merge of some 2.4.x adaptions re filters on slave connections.
-     Small fixes in bucket beams when forwarding file buckets. Output handling
-     on master connection uses less FLUSH and passes automatically when more
-     than half of H2StreamMaxMemSize bytes have accumulated.
-     Workaround for http: when forwarding partial file buckets to keep the
-     output filter from closing these too early.
-     
-  *) mod_http2: elimination of fixed master connectin buffer for TLS 
-     connections. New scratch bucket handling optimized for TLS write sizes. 
-     File bucket data read directly into scratch buffers, avoiding one
-     copy. Non-TLS connections continue to pass buckets unchanged to the core
-     filters to allow sendfile() usage. 
-  
-  *) mod_http2/mod_proxy_http2: h2_request.c is no longer shared between these
-     modules. This simplifies building on platforms such as Windows, as module
-     reference used in logging is now clear.
+  *) mod_http2: setting conn_rec->aborted on all slave connections still active
+     when main connection shuts down. 
+     [Stefan Eissing as proposed by Michael Kaufmann]
      
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]

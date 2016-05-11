@@ -490,6 +490,15 @@ static int task_print(void *ctx, void *val)
     return 1;
 }
 
+static int task_abort_connection(void *ctx, void *val)
+{
+    h2_task *task = val;
+    if (task->c) {
+        task->c->aborted = 1;
+    }
+    return 1;
+}
+
 apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
 {
     apr_status_t status;
@@ -539,6 +548,8 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
          * and workers *should* return in a timely fashion.
          */
         for (i = 0; m->workers_busy > 0; ++i) {
+            h2_ihash_iter(m->tasks, task_abort_connection, m);
+            
             m->join_wait = wait;
             status = apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(wait_secs));
             
