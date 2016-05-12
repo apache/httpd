@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 57895
      trunk patch: http://svn.apache.org/r1723567
      2.2.x patch: trunk works, modulo CHANGES
-     +1: rjung
+     +1: rjung, wrowe
 
   *) mod_proxy_connect: The connect method doesn't work if the client is
      connecting to the apache proxy through an ssl socket. Fixed.
