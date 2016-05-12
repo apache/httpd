@@ -95,6 +95,11 @@ Changes with Apache 2.4.19
   *) mod_authz_host: Add a new "forward-dns" authorization type, not relying on
      reverse DNS lookups.  [Fabien]
 
+  *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
+     urls. Uses backend connections for concurrent requests if frontend 
+     connection is http2 as well.
+     [Stefan Eissing]
+  
   *) mod_ssl: Add hooks to allow other modules to perform processing at
      several stages of initialization and connection handling.  See
      mod_ssl_openssl.h.  [Jeff Trawick]
