@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      connections. 
      Trunk version of patch: <various>
      Backport version for 2.4.x of patch: https://www.eissing.org/proxy_http2_2.4v4.patch
-     +1: icing, ylavic
+     +1: icing, ylavic, jim
      updated patch after review by cjaillet, merged 1735668,1735748 from trunk
      updated patch with APLOGNOs by merging 1735931,1735935 from trunk
      updated patch with APLOGNOs by merging 1735942 from trunk
@@ -179,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      when the read_request hook has not satisfied r->useragent_addr;
      trunk patch: http://svn.apache.org/r1742135
      2.4.x patch: trunk works
-     +1: wrowe, rpluem
+     +1: wrowe, rpluem, jim
 
    * Fix yet another case where we clobber the server-status request info
      when a timeout happens.
