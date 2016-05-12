@@ -124,12 +124,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      updated patch with APLOGNOs by merging 1735931,1735935 from trunk
      updated patch with APLOGNOs by merging 1735942 from trunk
 
-   * Guard against premature invocation of ap_get_useragent_host()
-     when the read_request hook has not satisfied r->useragent_addr;
-     trunk patch: http://svn.apache.org/r1742135
-     2.4.x patch: trunk works
-     +1: wrowe, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
