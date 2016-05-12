@@ -992,7 +992,7 @@ request_rec *ap_read_request(conn_rec *conn)
             goto traceout;
         }
         else if (r->status == HTTP_REQUEST_TIME_OUT) {
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, NULL);
             if (!r->connection->keepalives) {
                 ap_run_log_transaction(r);
             }
