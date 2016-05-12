@@ -114,6 +114,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_http2: add http2 proxy support in new, experimental module. 
+     Includes backport of r1729208 to set ALPN protocols for ssl backend
+     connections. 
+     Trunk version of patch: <various>
+     Backport version for 2.4.x of patch: https://www.eissing.org/proxy_http2_2.4v4.patch
+     +1: icing, ylavic, jim
+     updated patch after review by cjaillet, merged 1735668,1735748 from trunk
+     updated patch with APLOGNOs by merging 1735931,1735935 from trunk
+     updated patch with APLOGNOs by merging 1735942 from trunk
+
+   * Guard against premature invocation of ap_get_useragent_host()
+     when the read_request hook has not satisfied r->useragent_addr;
+     trunk patch: http://svn.apache.org/r1742135
+     2.4.x patch: trunk works
+     +1: wrowe, rpluem, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,16 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-no_crl_for_cert_ok-v2.patch
      +1: ylavic
 
-  *) mod_proxy_http2: add http2 proxy support in new, experimental module. 
-     Includes backport of r1729208 to set ALPN protocols for ssl backend
-     connections. 
-     Trunk version of patch: <various>
-     Backport version for 2.4.x of patch: https://www.eissing.org/proxy_http2_2.4v4.patch
-     +1: icing, ylavic, jim
-     updated patch after review by cjaillet, merged 1735668,1735748 from trunk
-     updated patch with APLOGNOs by merging 1735931,1735935 from trunk
-     updated patch with APLOGNOs by merging 1735942 from trunk
-
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
      Trunk patch: r1645529 (works)
@@ -174,12 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1737451
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-   * Guard against premature invocation of ap_get_useragent_host()
-     when the read_request hook has not satisfied r->useragent_addr;
-     trunk patch: http://svn.apache.org/r1742135
-     2.4.x patch: trunk works
-     +1: wrowe, rpluem, jim
 
    * Fix yet another case where we clobber the server-status request info
      when a timeout happens.
