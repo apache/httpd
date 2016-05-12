@@ -114,6 +114,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Don't globber scoreboard request info if read_request_line() fails with
+     a timeout. In that case there's not yet any new useful request info
+     available.
+     Noticed via server-status for prefork showing request "NULL" after
+     keep-alive connections timed out.
+     No CHANGES entry needed, because there's already one for PR 59333.
+     Sorry for the three patches. The first one is overwritten by the second
+     one, so technically only the second is needed, but merging both keeps
+     the mergeinfo more complete.
+     trunk patch: http://svn.apache.org/r1742791
+                  http://svn.apache.org/r1742792
+     2.4.x patch: trunk works
+     +1: rjung, ylavic, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -181,23 +195,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: wrowe, rpluem
 
-   * Don't globber scoreboard request info if read_request_line() fails with
-     a timeout. In that case there's not yet any new useful request info
-     available.
-     Noticed via server-status for prefork showing request "NULL" after
-     keep-alive connections timed out.
-     No CHANGES entry needed, because there's already one for PR 59333.
-     Sorry for the three patches. The first one is overwritten by the second
-     one, so technically only the second and third are needed, but merging all
-     keeps the mergeinfo more complete.
-     trunk patch: http://svn.apache.org/r1742791
-                  http://svn.apache.org/r1742792
-                  http://svn.apache.org/r1742822
+   * Fix yet another case where we clobber the server-status request info
+     when a timeout happens.
+     trunk patch: http://svn.apache.org/r1742822
      2.4.x patch: trunk works
      +1: rjung, ylavic
-     +1: agreement with r1742791+1742792 wrowe
-     -1: veto of r1742822 - what are we "W"riteing if we have no request?!?
-         Semantically invalid on event mpm when resuming a connection while
+     -1: What are we "W"riteing if we have no request?!?
+         Semantically invalid on event mpm when resuming a connection, while
          this new thread has performed no work on prior request.  That status
          update should only occur on a successful read.
 
