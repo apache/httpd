@@ -191,6 +191,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works, modulo CHANGES
      +1: rjung
 
+  *) mod_proxy_connect: The connect method doesn't work if the client is
+     connecting to the apache proxy through an ssl socket. Fixed.
+     [Brad Boyer, Mark Cave-Ayland, Julian Gilbey, Fabrice Durand,
+     David Gence, Tim Dodge, Per Gunnar Hans, Emmanuel Elango,
+     Kevin Croft, Rudolf Cardinal]
+     PR: 29744
+     Trunk Patch: https://svn.apache.org/r813178
+     2.2.x Patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
+                  plus CHANGES above.
+     +1: wrowe
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
