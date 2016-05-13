@@ -165,15 +165,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-   * Fix yet another case where we clobber the server-status request info
-     when a timeout happens.
-     trunk patch: http://svn.apache.org/r1742822
+  *) Avoid truncating the_request line when there is no request to 'W'rite.
+     trunk patch: http://svn.apache.org/r1743699
      2.4.x patch: trunk works
-     +1: rjung, ylavic
-     -1: What are we "W"riteing if we have no request?!?
-         Semantically invalid on event mpm when resuming a connection, while
-         this new thread has performed no work on prior request.  That status
-         update should only occur on a successful read.
+     +1: wrowe
+    
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 

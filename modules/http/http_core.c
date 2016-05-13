@@ -148,9 +148,9 @@ static int ap_process_http_async_connection(conn_rec *c)
             c->keepalive = AP_CONN_UNKNOWN;
             /* process the request if it was read without error */
 
-            ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
+                ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
                 ap_process_async_request(r);
                 /* After the call to ap_process_request, the
                  * request pool may have been deleted.  We set
@@ -203,10 +203,10 @@ static int ap_process_http_sync_connection(conn_rec *c)
         c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
 
-        ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK) {
             if (cs)
                 cs->state = CONN_STATE_HANDLER;
+            ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
             ap_process_request(r);
             /* After the call to ap_process_request, the
              * request pool will have been deleted.  We set
