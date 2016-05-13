@@ -168,8 +168,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Avoid truncating the_request line when there is no request to 'W'rite.
      trunk patch: http://svn.apache.org/r1743699
      2.4.x patch: trunk works
-     +1: wrowe
-    
+     +1: wrowe, rpluem
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
