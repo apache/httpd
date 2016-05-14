@@ -57,11 +57,11 @@
         Using the <code>n</code> flag forces the pattern to be treated
         as a fixed string.</dd>
         <dt><code>f</code></dt>
-        <dd>The <code>f</code> flag causes mod_substitute to flatten the
+        <dd>The <code>f</code> flag causes <code>mod_substitute</code> to flatten the
         result of a substitution allowing for later substitutions to
         take place on the boundary of this one. This is the default.</dd>
         <dt><code>q</code></dt>
-        <dd>The <code>q</code> flag causes mod_substitute to not
+        <dd>The <code>q</code> flag causes <code>mod_substitute</code> to not
         flatten the buckets after each substitution. This can
         result in much faster response and a decrease in memory
         utilization, but should only be used if there is no possibility
@@ -73,7 +73,7 @@
     <highlight language="config">
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>
@@ -108,7 +108,7 @@
     to the back-end server. These URLs don't work for the end-user,
     since the back-end server is unreachable.</p>
 
-    <p>In this case, <code>mod_substutite</code> can be used to rewrite
+    <p>In this case, <code>mod_substitute</code> can be used to rewrite
     those URLs into something that will work from the front end:</p>
 
     <example><title>Rewriting URLs embedded in proxied content</title>
@@ -123,7 +123,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     <p><directive module="mod_proxy">ProxyPassReverse</directive>
     modifies any <code>Location</code> (redirect) headers that are sent
     by the back-end server, and, in this example,
-    <code>Substitute</code> takes care of the rest of the problem by
+    <directive>Substitute</directive> takes care of the rest of the problem by
     fixing up the HTML response as well.</p>
 
 </usage>
@@ -154,7 +154,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
     SubstituteMaxLineLength 10m
-    Substitute s/foo/bar/ni
+    Substitute "s/foo/bar/ni"
 &lt;/Location&gt;
         </highlight>
     </example>
@@ -170,7 +170,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in httpd 2.5 and later</compatibility>
+<compatibility>Available in httpd 2.4.17 and later</compatibility>
 
 <usage>
     <p>Whether to apply the inherited <directive>Substitute</directive>
