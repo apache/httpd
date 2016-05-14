@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  mod_proxy_http2 backported into 2.4.x. Not sure if it should stay
                  as-is for the moment, or if it should be backported right now.
                  (see http://home.apache.org/~jailletc36/proxy_http2__trunk_vs_2_4.diff)
-
+     icing: -1, no need to vote on experimental module backport. Changes included in r1743817 and r1743815. All should be in sync with trunk now (modulo some diffs for trunk features)
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
