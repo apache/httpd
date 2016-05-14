@@ -336,10 +336,10 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03358)
-                      "h2_proxy_session(%s): recv data chunk for "
-                      "unknown stream %d, ignored", 
-                      session->id, stream_id);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03358)
+                     "h2_proxy_session(%s): recv data chunk for "
+                     "unknown stream %d, ignored", 
+                     session->id, stream_id);
         return 0;
     }
     
@@ -422,9 +422,9 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
     *data_flags = 0;
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03361)
-                      "h2_proxy_stream(%s): data_read, stream %d not found", 
-                      stream->session->id, stream_id);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03361)
+                     "h2_proxy_stream(%s): data_read, stream %d not found", 
+                     stream->session->id, stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
