@@ -21,7 +21,6 @@
 
 
 #include "mod_proxy_http2.h"
-#include "h2_int_queue.h"
 #include "h2_request.h"
 #include "h2_util.h"
 #include "h2_version.h"
@@ -126,12 +125,12 @@ static int proxy_http2_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (strncasecmp(url, "h2c:", 4) == 0) {
+    if (h2_casecmpstrn(url, "h2c:", 4) == 0) {
         url += 4;
         scheme = "h2c";
         http_scheme = "http";
     }
-    else if (strncasecmp(url, "h2:", 3) == 0) {
+    else if (h2_casecmpstrn(url, "h2:", 3) == 0) {
         url += 3;
         scheme = "h2";
         http_scheme = "https";
@@ -260,7 +259,7 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
     apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
                    ctx->p_conn->connection->local_addr->port));
     status = h2_proxy_session_submit(session, url, r);
-    if (status != OK) {
+    if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, r->connection, APLOGNO(03351)
                       "pass request body failed to %pI (%s) from %s (%s)",
                       ctx->p_conn->addr, ctx->p_conn->hostname ? 
@@ -378,7 +377,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = s2;
                 break;
             }
-            if (!ctx->next && h2_ihash_is_empty(ctx->session->streams)) {
+            if (!ctx->next && h2_ihash_empty(ctx->session->streams)) {
                 break;
             }
         }
@@ -605,6 +604,7 @@ cleanup:
         /* Still more to do, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
+            /*only in trunk so far */
             /*proxy_run_detach_backend(r, ctx->p_conn);*/
             ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
             ctx->p_conn = NULL;
@@ -618,7 +618,8 @@ cleanup:
             /* close socket when errors happened or session shut down (EOF) */
             ctx->p_conn->close = 1;
         }
-/*        proxy_run_detach_backend(ctx->rbase, ctx->p_conn);*/
+        /*only in trunk so far */
+        /*proxy_run_detach_backend(ctx->rbase, ctx->p_conn);*/
         ap_proxy_release_connection(ctx->proxy_func, ctx->p_conn, ctx->server);
         ctx->p_conn = NULL;
     }

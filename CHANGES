@@ -2,6 +2,12 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
+     urls. Part of the httpd mod_proxy framework, common settings apply.
+     Requests from the same HTTP/2 frontend connection against the same backend
+     are aggregated on a single connection.
+     [Stefan Eissing]
+  
   *) mod_http2: slave connections have conn_rec->aborted flag set when a stream
      has been reset by the client. [Stefan Eissing]
 

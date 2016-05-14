@@ -23,8 +23,6 @@
 
 #include "mod_http2.h"
 #include "h2.h"
-#include "h2_int_queue.h"
-#include "h2_request.h"
 #include "h2_util.h"
 #include "h2_proxy_session.h"
 
@@ -212,7 +210,7 @@ static void process_proxy_header(request_rec *r, const char *n, const char *v)
     int i;
     
     for (i = 0; transform_hdrs[i].name; ++i) {
-        if (!strcasecmp(transform_hdrs[i].name, n)) {
+        if (!h2_casecmpstr(transform_hdrs[i].name, n)) {
             dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
             apr_table_add(r->headers_out, n,
                           (*transform_hdrs[i].func)(r, dconf, v));
@@ -338,10 +336,10 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03358)
-                      "h2_proxy_session(%s): recv data chunk for "
-                      "unknown stream %d, ignored", 
-                      session->id, stream_id);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03358)
+                     "h2_proxy_session(%s): recv data chunk for "
+                     "unknown stream %d, ignored", 
+                     session->id, stream_id);
         return 0;
     }
     
@@ -355,10 +353,10 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
     b = apr_bucket_transient_create((const char*)data, len, 
                                     stream->r->connection->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(stream->output, b);
-    if (flags & NGHTTP2_DATA_FLAG_EOF) {
-        b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(stream->output, b);
-    }
+    /* always flush after a DATA frame, as we have no other indication
+     * of buffer use */
+    b = apr_bucket_flush_create(stream->r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(stream->output, b);
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03359)
                   "h2_proxy_session(%s): pass response data for "
@@ -424,9 +422,9 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
     *data_flags = 0;
     stream = nghttp2_session_get_stream_user_data(ngh2, stream_id);
     if (!stream) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, stream->r, APLOGNO(03361)
-                      "h2_proxy_stream(%s): data_read, stream %d not found", 
-                      stream->session->id, stream_id);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(03361)
+                     "h2_proxy_stream(%s): data_read, stream %d not found", 
+                     stream->session->id, stream_id);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
@@ -554,9 +552,11 @@ static apr_status_t session_start(h2_proxy_session *session)
     apr_socket_t *s;
     
     s = ap_get_conn_socket(session->c);
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(DOXYGEN)
     if (s) {
         ap_sock_disable_nagle(s);
     }
+#endif
     
     settings[0].settings_id = NGHTTP2_SETTINGS_ENABLE_PUSH;
     settings[0].value = 0;
@@ -581,6 +581,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     h2_proxy_stream *stream;
     apr_uri_t puri;
     const char *authority, *scheme, *path;
+    apr_status_t status;
 
     stream = apr_pcalloc(r->pool, sizeof(*stream));
 
@@ -593,9 +594,12 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->input = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     stream->output = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     
-    stream->req = h2_request_create(1, stream->pool, 0);
+    stream->req = h2_req_create(1, stream->pool, 0);
 
-    apr_uri_parse(stream->pool, url, &puri);
+    status = apr_uri_parse(stream->pool, url, &puri);
+    if (status != APR_SUCCESS)
+        return status;
+
     scheme = (strcmp(puri.scheme, "h2")? "http" : "https");
     authority = puri.hostname;
     if (!ap_strchr_c(authority, ':') && puri.port
@@ -604,8 +608,8 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
         authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
     }
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
-    h2_request_make(stream->req, stream->pool, r->method, scheme,
-                    authority, path, r->headers_in);
+    h2_req_make(stream->req, stream->pool, r->method, scheme,
+                authority, path, r->headers_in);
 
     /* Tuck away all already existing cookies */
     stream->saves = apr_table_make(r->pool, 2);
@@ -646,11 +650,6 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
                       "h2_proxy_session(%s): submit %s%s -> %d", 
                       session->id, stream->req->authority, stream->req->path,
                       rv);
-    }
-    else {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
-                      "h2_proxy_session(%s-%d): submit %s%s", 
-                      session->id, rv, stream->req->authority, stream->req->path);
     }
     
     if (rv > 0) {
@@ -768,7 +767,7 @@ apr_status_t h2_proxy_session_submit(h2_proxy_session *session,
     apr_status_t status;
     
     status = open_stream(session, url, r, &stream);
-    if (status == OK) {
+    if (status == APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03381)
                       "process stream(%d): %s %s%s, original: %s", 
                       stream->id, stream->req->method, 
@@ -884,7 +883,7 @@ static void ev_init(h2_proxy_session *session, int arg, const char *msg)
 {
     switch (session->state) {
         case H2_PROXYS_ST_INIT:
-            if (h2_ihash_is_empty(session->streams)) {
+            if (h2_ihash_empty(session->streams)) {
                 transit(session, "init", H2_PROXYS_ST_IDLE);
             }
             else {
@@ -991,7 +990,7 @@ static void ev_no_io(h2_proxy_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
-            if (h2_ihash_is_empty(session->streams)) {
+            if (h2_ihash_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
@@ -1295,7 +1294,7 @@ static int done_iter(void *udata, void *val)
 void h2_proxy_session_cleanup(h2_proxy_session *session, 
                               h2_proxy_request_done *done)
 {
-    if (session->streams && !h2_ihash_is_empty(session->streams)) {
+    if (session->streams && !h2_ihash_empty(session->streams)) {
         cleanup_iter_ctx ctx;
         ctx.session = session;
         ctx.done = done;
@@ -1334,7 +1333,7 @@ static int win_update_iter(void *udata, void *val)
 void h2_proxy_session_update_window(h2_proxy_session *session, 
                                     conn_rec *c, apr_off_t bytes)
 {
-    if (session->streams && !h2_ihash_is_empty(session->streams)) {
+    if (session->streams && !h2_ihash_empty(session->streams)) {
         win_update_ctx ctx;
         ctx.session = session;
         ctx.c = c;
