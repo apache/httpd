@@ -130,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
          http://home.apache.org/~jim/patches/hcheck-2.4-v3.patch
          <Plus docs>
-     +1: jim
+     +1: jim, druggeri
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
