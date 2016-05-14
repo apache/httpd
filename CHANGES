@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: setting conn_rec->aborted on all slave connections still active
-     when main connection shuts down. 
-     [Stefan Eissing as proposed by Michael Kaufmann]
-     
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 
@@ -32,10 +28,6 @@ Changes with Apache 2.5.0
   *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
      according the number of listeners buckets.  [Yann Ylavic]
 
-  *) mod_proxy_http2: using HTTP/2 flow control for backend streams by 
-     observing data actually send out on the frontend h2 connection. 
-     [Stefan Eissing]
-
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
@@ -46,10 +38,6 @@ Changes with Apache 2.5.0
      to opt-in previous behaviour (2.2) with CRLs verification when checking
      certificate(s) with no corresponding CRL.  [Yann Ylavic]
 
-  *) mod_proxy_http2: rescheduling of requests that have not been processed
-     by the backend when receiving a GOAWAY frame before done.
-     [Stefan Eissing]
-     
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
 
   *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
@@ -62,19 +50,11 @@ Changes with Apache 2.5.0
      to leave the WRITE_COMPLETION phase. Move filter code out of the MPMs.
      [Graham Leggett]
 
-  *) mod_proxy_http2: using single connection for several requests *if*
-     master connection uses HTTP/2 itself. Not yet hardened under load.
-     [Stefan Eissing]
-
   *) core: Added support for HTTP code 451. PR58985.
      [Yehuda Katz <yehuda ymkatz.net>, Jim Jagielski]
 
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
  
-  *) mod_proxy_http2: new experimental http2 proxy module for h2: and h2c: proxy
-     urls. Uses, so far, one connection per request, reuses connections.
-     [Stefan Eissing]
-  
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
 
