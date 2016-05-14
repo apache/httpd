@@ -143,7 +143,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.17 and later</td></tr>
 </table>
-    <p>Whether to apply the inherited <code class="directive">Substitute</code>
+    <p>Whether to apply the inherited <code class="directive"><a href="#substitute">Substitute</a></code>
     patterns first (<code>on</code>), or after the ones of the current
     context (<code>off</code>).
     The latter was the default in versions 2.4 and earlier, but changed
