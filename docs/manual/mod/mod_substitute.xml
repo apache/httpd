@@ -173,7 +173,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
 <compatibility>Available in httpd 2.4.17 and later</compatibility>
 
 <usage>
-    <p>Whether to apply the inherited <directive>Substitute</directive>
+    <p>Whether to apply the inherited <directive module="mod_substitute">Substitute</directive>
     patterns first (<code>on</code>), or after the ones of the current
     context (<code>off</code>).
     The latter was the default in versions 2.4 and earlier, but changed
