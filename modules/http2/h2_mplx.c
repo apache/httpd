@@ -465,8 +465,10 @@ static int task_print(void *ctx, void *val)
 {
     h2_mplx *m = ctx;
     h2_task *task = val;
-    h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
-    if (task->request) {
+
+    if (task && task->request) {
+        h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
+
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%s): %s %s %s -> %s %d"
                       "[orph=%d/started=%d/done=%d]", 
@@ -484,6 +486,15 @@ static int task_print(void *ctx, void *val)
     else {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%ld-NULL): NULL", m->id);
+    }
+    return 1;
+}
+
+static int task_abort_connection(void *ctx, void *val)
+{
+    h2_task *task = val;
+    if (task->c) {
+        task->c->aborted = 1;
     }
     return 1;
 }
@@ -537,6 +548,8 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
          * and workers *should* return in a timely fashion.
          */
         for (i = 0; m->workers_busy > 0; ++i) {
+            h2_ihash_iter(m->tasks, task_abort_connection, m);
+            
             m->join_wait = wait;
             status = apr_thread_cond_timedwait(wait, m->lock, apr_time_from_sec(wait_secs));
             
@@ -762,12 +775,17 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_response *response)
 static apr_status_t out_close(h2_mplx *m, h2_task *task)
 {
     apr_status_t status = APR_SUCCESS;
-    h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
+    h2_stream *stream;
     
-    if (!task || !stream) {
+    if (!task) {
         return APR_ECONNABORTED;
     }
-    
+
+    stream = h2_ihash_get(m->streams, task->stream_id);
+    if (!stream) {
+        return APR_ECONNABORTED;
+    }
+
     if (!task->response && !task->rst_error) {
         /* In case a close comes before a response was created,
          * insert an error one so that our streams can properly
