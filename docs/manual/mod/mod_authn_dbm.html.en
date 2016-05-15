@@ -88,7 +88,7 @@ store passwords</td></tr>
 
     <p>For example, in order to enable the support for Berkeley DB
     (correspondent to the <code>db</code> type) the
-    <code>--with-berkeley-db</code> options nees to be added to httpd's
+    <code>--with-berkeley-db</code> option needs to be added to httpd's
     configure to generate the necessary DSO.</p>
 
     <p>It is crucial that whatever program you use to create your password
@@ -129,7 +129,7 @@ passwords for authentication</td></tr>
     more information.</p>
 
     <p>Important compatibility note: The implementation of
-    <code>dbmopen</code> in the apache modules reads the string length of
+    <code>dbmopen</code> in the Apache modules reads the string length of
     the hashed values from the DBM data structures, rather than relying
     upon the string being NULL-appended. Some applications, such as
     the Netscape web server, rely upon the string being
