@@ -74,11 +74,11 @@
         Using the <code>n</code> flag forces the pattern to be treated
         as a fixed string.</dd>
         <dt><code>f</code></dt>
-        <dd>The <code>f</code> flag causes mod_substitute to flatten the
+        <dd>The <code>f</code> flag causes <code>mod_substitute</code> to flatten the
         result of a substitution allowing for later substitutions to
         take place on the boundary of this one. This is the default.</dd>
         <dt><code>q</code></dt>
-        <dd>The <code>q</code> flag causes mod_substitute to not
+        <dd>The <code>q</code> flag causes <code>mod_substitute</code> to not
         flatten the buckets after each substitution. This can
         result in much faster response and a decrease in memory
         utilization, but should only be used if there is no possibility
@@ -105,7 +105,7 @@
     when regular expressions are used, as illustrated in the following example: </p>
     <div class="example"><h3>Example of using backreferences and captures</h3><pre class="prettyprint lang-config">&lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
-    # "foo=k,bar=k" -&gt; "foo/bar=k" 
+    # "foo=k,bar=k" -&gt; "foo/bar=k"
     Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
 &lt;/Location&gt;</pre>
 </div>
@@ -116,10 +116,10 @@
     to the back-end server. These URLs don't work for the end-user,
     since the back-end server is unreachable.</p>
 
-    <p>In this case, <code>mod_substutite</code> can be used to rewrite
+    <p>In this case, <code>mod_substitute</code> can be used to rewrite
     those URLs into something that will work from the front end:</p>
 
-    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass "/blog/" "http://internal.blog.example.com"
+    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
@@ -128,7 +128,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     <p><code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
     modifies any <code>Location</code> (redirect) headers that are sent
     by the back-end server, and, in this example,
-    <code>Substitute</code> takes care of the rest of the problem by
+    <code class="directive">Substitute</code> takes care of the rest of the problem by
     fixing up the HTML response as well.</p>
 
 
@@ -145,7 +145,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.17 and later</td></tr>
 </table>
-    <p>Whether to apply the inherited <code class="directive">Substitute</code>
+    <p>Whether to apply the inherited <code class="directive"><a href="#substitute">Substitute</a></code>
     patterns first (<code>on</code>), or after the ones of the current
     context (<code>off</code>).
     <code class="directive">SubstituteInheritBefore</code> is itself inherited,
