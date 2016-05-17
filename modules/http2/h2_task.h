@@ -101,7 +101,7 @@ h2_task *h2_task_create(conn_rec *c, const struct h2_request *req,
 
 void h2_task_destroy(h2_task *task);
 
-apr_status_t h2_task_do(h2_task *task);
+apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread);
 
 void h2_task_set_response(h2_task *task, struct h2_response *response);
 

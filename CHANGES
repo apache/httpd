@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: tracking conn_rec->current_thread on slave connections, so
+     that mod_lua finds the correct one. Fixes PR 59542. [Stefan Eissing]
+     
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 

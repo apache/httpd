@@ -625,7 +625,7 @@ void h2_task_set_io_blocking(h2_task *task, int blocking)
     task->blocking = blocking;
 }
 
-apr_status_t h2_task_do(h2_task *task)
+apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread)
 {
     AP_DEBUG_ASSERT(task);
     
@@ -659,6 +659,7 @@ apr_status_t h2_task_do(h2_task *task)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                   "h2_task(%s): process connection", task->id);
+    task->c->current_thread = thread; 
     ap_run_process_connection(task->c);
     
     if (task->frozen) {

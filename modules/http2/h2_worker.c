@@ -43,7 +43,7 @@ static void* APR_THREAD_FUNC execute(apr_thread_t *thread, void *wctx)
         worker->get_next(worker, worker->ctx, &task, &sticky);
         while (task) {
         
-            h2_task_do(task);
+            h2_task_do(task, thread);
             /* report the task done and maybe get another one from the same
              * mplx (= master connection), if we can be sticky. 
              */
