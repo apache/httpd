@@ -73,12 +73,12 @@ struct h2_mplx {
     unsigned int need_registration : 1;
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
+    struct h2_ihash_t *sready;      /* all streams ready for response */
     struct h2_ihash_t *shold;       /* all streams done with task ongoing */
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
     struct h2_iqueue *q;            /* all stream ids that need to be started */
     
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
-    struct h2_ihash_t *ready_tasks; /* all tasks ready for submit */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
     apr_uint32_t max_streams;        /* max # of concurrent streams */

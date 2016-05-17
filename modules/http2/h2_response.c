@@ -171,13 +171,14 @@ h2_response *h2_response_die(int stream_id, apr_status_t type,
 {
     apr_table_t *headers = apr_table_make(pool, 5);
     char *date = NULL;
+    int status = (type >= 200 && type < 600)? type : 500;
     
     date = apr_palloc(pool, APR_RFC822_DATE_LEN);
     ap_recent_rfc822_date(date, req->request_time);
     apr_table_setn(headers, "Date", date);
     apr_table_setn(headers, "Server", ap_get_server_banner());
     
-    return h2_response_create_int(stream_id, 0, 500, headers, NULL, pool);
+    return h2_response_create_int(stream_id, 0, status, headers, NULL, pool);
 }
 
 h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from)
