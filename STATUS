@@ -121,6 +121,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          <Plus docs>
      +1: jim, druggeri, icing
 
+  *) Avoid truncating the_request line when there is no request to 'W'rite.
+     trunk patch: http://svn.apache.org/r1743699
+     2.4.x patch: trunk works
+     +1: wrowe, rpluem, icing
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -163,11 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1737451
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) Avoid truncating the_request line when there is no request to 'W'rite.
-     trunk patch: http://svn.apache.org/r1743699
-     2.4.x patch: trunk works
-     +1: wrowe, rpluem
 
   *) ab: caseless matching for http heaers
      trunk patch: http://svn.apache.org/r1733537
