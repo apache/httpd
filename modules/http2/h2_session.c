@@ -1301,7 +1301,8 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     else {
         ++session->responses_submitted;
     }
-
+    stream->submitted = 1;
+    
     if (nghttp2_is_fatal(rv)) {
         status = APR_EGENERAL;
         dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, rv, nghttp2_strerror(rv));

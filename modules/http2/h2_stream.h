@@ -49,7 +49,8 @@ struct h2_stream {
     apr_pool_t *pool;           /* the memory pool for this stream */
     struct h2_request *request; /* the request made in this stream */
     struct h2_bucket_beam *input;
-
+    int request_headers_added;  /* number of request headers added */
+    
     struct h2_response *response;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
@@ -187,6 +188,11 @@ struct h2_response *h2_stream_get_response(h2_stream *stream);
 apr_status_t h2_stream_set_response(h2_stream *stream, 
                                     struct h2_response *response,
                                     struct h2_bucket_beam *output);
+
+/**
+ * Set the HTTP error status as response.
+ */
+apr_status_t h2_stream_set_error(h2_stream *stream, int http_status);
 
 /**
  * Do a speculative read on the stream output to determine the 
