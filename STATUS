@@ -114,6 +114,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
+     Trunk version of patch: <various>
+     Backport version for 2.4.x of patch:
+         http://home.apache.org/~jim/patches/hcheck-2.4-v3.patch
+         <Plus docs>
+     +1: jim, druggeri, icing
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -124,13 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1740119
      2.4.x: trunk works modulo CHANGES
      +1: icing
-
-  *) mod_proxy_hcheck: Dynamic reverse proxy backend health check module
-     Trunk version of patch: <various>
-     Backport version for 2.4.x of patch:
-         http://home.apache.org/~jim/patches/hcheck-2.4-v3.patch
-         <Plus docs>
-     +1: jim, druggeri
 
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
