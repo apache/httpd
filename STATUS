@@ -170,15 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: wrowe, rpluem
 
-  *) mod_proxy_http2: fix compilation issue
-     2.4.x: http://home.apache.org/~jailletc36/proxy_http2.diff
-     +1: jailletc36
-     jailletc36: There are small differences between trunk and the version of
-                 mod_proxy_http2 backported into 2.4.x. Not sure if it should stay
-                 as-is for the moment, or if it should be backported right now.
-                 (see http://home.apache.org/~jailletc36/proxy_http2__trunk_vs_2_4.diff)
-     icing: -1, no need to vote on experimental module backport. Changes included in r1743817 and r1743815. All should be in sync with trunk now (modulo some diffs for trunk features)
-
   *) ab: caseless matching for http heaers
      trunk patch: http://svn.apache.org/r1733537
      2.4.x: trunk works
