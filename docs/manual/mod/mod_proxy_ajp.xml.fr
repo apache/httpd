@@ -62,7 +62,7 @@ d'environnement</a></seealso>
 
     <example><title>Mandataire inverse simple</title>
     <highlight language="config">
-    ProxyPass "/app ajp://backend.example.com:8009/app"
+    ProxyPass "/app" "ajp://backend.example.com:8009/app"
     </highlight>
     </example>
 
