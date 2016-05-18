@@ -133,7 +133,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
     
     stream = h2_stream_open(stream_id, stream_pool, session, 
                             initiated_on, req);
-    ++session->open_streams;
     ++session->unanswered_streams;
     nghttp2_session_set_stream_user_data(session->ngh2, stream_id, stream);
     h2_ihash_add(session->streams, stream);
@@ -151,6 +150,7 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
             session->remote.emitted_max = stream->id;
         }
     }
+    dispatch_event(session, H2_SESSION_EV_STREAM_OPEN, 0, NULL);
     
     return stream;
 }
@@ -252,7 +252,7 @@ static int on_invalid_frame_recv_cb(nghttp2_session *ngh2,
         
         h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03063)
-                      "h2_session(%ld): recv unknown FRAME[%s], frames=%ld/%ld (r/s)",
+                      "h2_session(%ld): recv invalid FRAME[%s], frames=%ld/%ld (r/s)",
                       session->id, buffer, (long)session->frames_received,
                      (long)session->frames_sent);
     }
@@ -386,7 +386,6 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     h2_stream * stream;
     apr_status_t status;
     
-    (void)ngh2;
     (void)flags;
     if (!is_accepting_streams(session)) {
         /* just ignore */
@@ -397,15 +396,14 @@ static int on_header_cb(nghttp2_session *ngh2, const nghttp2_frame *frame,
     if (!stream) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c,
                       APLOGNO(02920) 
-                      "h2_session:  stream(%ld-%d): on_header for unknown stream",
+                      "h2_session:  stream(%ld-%d): on_header unknown stream",
                       session->id, (int)frame->hd.stream_id);
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     
     status = h2_stream_add_header(stream, (const char *)name, namelen,
                                   (const char *)value, valuelen);
-                                    
-    if (status != APR_SUCCESS) {
+    if (status != APR_SUCCESS && !stream->response) {
         return NGHTTP2_ERR_TEMPORAL_CALLBACK_FAILURE;
     }
     return 0;
@@ -1294,6 +1292,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
                                        stream->id, err);
     }
     
+    stream->submitted = 1;
     --session->unanswered_streams;
     if (stream->request && stream->request->initiated_on) {
         ++session->pushes_submitted;
@@ -1301,7 +1300,7 @@ static apr_status_t submit_response(h2_session *session, h2_stream *stream)
     else {
         ++session->responses_submitted;
     }
-
+    
     if (nghttp2_is_fatal(rv)) {
         status = APR_EGENERAL;
         dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, rv, nghttp2_strerror(rv));
@@ -1472,10 +1471,10 @@ apr_status_t h2_session_stream_done(h2_session *session, h2_stream *stream)
                   "h2_stream(%ld-%d): EOS bucket cleanup -> done", 
                   session->id, stream->id);
     h2_ihash_remove(session->streams, stream->id);
-    --session->open_streams;
     --session->unanswered_streams;
     h2_mplx_stream_done(session->mplx, stream);
     
+    dispatch_event(session, H2_SESSION_EV_STREAM_DONE, 0, NULL);
     return APR_SUCCESS;
 }
 
@@ -1861,6 +1860,9 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                          "h2_session(%ld): NO_IO event, %d streams open", 
+                          session->id, session->open_streams);
             if (!session->open_streams) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
@@ -1872,7 +1874,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     apr_time_t now = apr_time_now();
                     /* When we have no streams, no task event are possible,
                      * switch to blocking reads */
-                    transit(session, "no io", H2_SESSION_ST_IDLE);
+                    transit(session, "no io (keepalive)", H2_SESSION_ST_IDLE);
                     session->idle_until = (session->remote.emitted_count? 
                                            session->s->keep_alive_timeout : 
                                            session->s->timeout) + now;
@@ -1881,6 +1883,9 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
             }
             else if (!has_unsubmitted_streams(session)
                      && !has_suspended_streams(session)) {
+                transit(session, "no io (flow wait)", H2_SESSION_ST_IDLE);
+                session->idle_until = apr_time_now() + session->s->timeout;
+                session->keep_sync_until = session->idle_until;
                 /* none of our streams is waiting for a response or
                  * new output data from task processing, 
                  * switch to blocking reads. We are probably waiting on
@@ -1889,9 +1894,6 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                     dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
                     return;
                 }
-                transit(session, "no io", H2_SESSION_ST_IDLE);
-                session->idle_until = apr_time_now() + session->s->timeout;
-                session->keep_sync_until = session->idle_until;
             }
             else {
                 /* Unable to do blocking reads, as we wait on events from
@@ -1969,6 +1971,39 @@ static void h2_session_ev_pre_close(h2_session *session, int arg, const char *ms
     }
 }
 
+static void h2_session_ev_stream_open(h2_session *session, int arg, const char *msg)
+{
+    ++session->open_streams;
+    switch (session->state) {
+        case H2_SESSION_ST_IDLE:
+            if (session->open_streams == 1) {
+                /* enter tiomeout, since we have a stream again */
+                session->idle_until = (session->s->timeout + apr_time_now());
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+static void h2_session_ev_stream_done(h2_session *session, int arg, const char *msg)
+{
+    --session->open_streams;
+    if (session->open_streams <= 0) {
+    }
+    switch (session->state) {
+        case H2_SESSION_ST_IDLE:
+            if (session->open_streams == 0) {
+                /* enter keepalive timeout, since we no longer have streams */
+                session->idle_until = (session->s->keep_alive_timeout
+                                       + apr_time_now());
+            }
+            break;
+        default:
+            break;
+    }
+}
+
 static void dispatch_event(h2_session *session, h2_session_event_t ev, 
                       int arg, const char *msg)
 {
@@ -2008,6 +2043,12 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
             break;
         case H2_SESSION_EV_PRE_CLOSE:
             h2_session_ev_pre_close(session, arg, msg);
+            break;
+        case H2_SESSION_EV_STREAM_OPEN:
+            h2_session_ev_stream_open(session, arg, msg);
+            break;
+        case H2_SESSION_EV_STREAM_DONE:
+            h2_session_ev_stream_done(session, arg, msg);
             break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
@@ -2073,8 +2114,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 /* make certain, we send everything before we idle */
                 if (!session->keep_sync_until && async && !session->open_streams
                     && !session->r && session->remote.emitted_count) {
-                    ap_log_cerror( APLOG_MARK, APLOG_TRACE1, status, c,
-                                  "h2_session(%ld): async idle, nonblock read", session->id);
+                    ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                  "h2_session(%ld): async idle, nonblock read, "
+                                  "%d streams open", session->id, 
+                                  session->open_streams);
                     /* We do not return to the async mpm immediately, since under
                      * load, mpms show the tendency to throw keep_alive connections
                      * away very rapidly.
@@ -2107,6 +2150,10 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                 }
                 else {
+                    ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                  "h2_session(%ld): sync idle, stutter 1-sec, "
+                                  "%d streams open", session->id,
+                                  session->open_streams);
                     /* We wait in smaller increments, using a 1 second timeout.
                      * That gives us the chance to check for MPMQ_STOPPING often. 
                      */
@@ -2132,7 +2179,15 @@ apr_status_t h2_session_process(h2_session *session, int async)
                             session->keep_sync_until = 0;
                         }
                         if (now > session->idle_until) {
+                            ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                          "h2_session(%ld): keepalive timeout",
+                                          session->id);
                             dispatch_event(session, H2_SESSION_EV_CONN_TIMEOUT, 0, "timeout");
+                        }
+                        else {
+                            ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                          "h2_session(%ld): keepalive, %f sec left",
+                                          session->id, (session->idle_until - now) / 1000000.0f);
                         }
                         /* continue reading handling */
                     }
