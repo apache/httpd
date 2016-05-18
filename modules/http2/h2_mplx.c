@@ -282,11 +282,11 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
 
         m->streams = h2_ihash_create(m->pool, offsetof(h2_stream,id));
+        m->sready = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->shold = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->spurge = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->q = h2_iq_create(m->pool, m->max_streams);
         m->tasks = h2_ihash_create(m->pool, offsetof(h2_task,stream_id));
-        m->ready_tasks = h2_ihash_create(m->pool, offsetof(h2_task,stream_id));
 
         m->stream_timeout = stream_timeout;
         m->workers = workers;
@@ -373,7 +373,6 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
                    && !task->rst_error);
     
     h2_ihash_remove(m->tasks, task->stream_id);
-    h2_ihash_remove(m->ready_tasks, task->stream_id);
     if (m->redo_tasks) {
         h2_ihash_remove(m->redo_tasks, task->stream_id);
     }
@@ -428,7 +427,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
      * stream destruction until the task is done. 
      */
     h2_iq_remove(m->q, stream->id);
-    h2_ihash_remove(m->ready_tasks, stream->id);
+    h2_ihash_remove(m->sready, stream->id);
     h2_ihash_remove(m->streams, stream->id);
     if (stream->input) {
         m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
@@ -657,11 +656,10 @@ apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
     return status;
 }
 
-static int task_iter_first(void *ctx, void *val)
+static int stream_iter_first(void *ctx, void *val)
 {
-    task_iter_ctx *tctx = ctx;
-    h2_task *task = val;
-    tctx->task = task;
+    h2_stream **pstream = ctx;
+    *pstream = val;
     return 0;
 }
 
@@ -673,17 +671,11 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m)
 
     AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        task_iter_ctx ctx;
-        ctx.m = m;
-        ctx.task = NULL;
-        h2_ihash_iter(m->ready_tasks, task_iter_first, &ctx);
-        
-        if (ctx.task && !m->aborted) {
-            h2_task *task = ctx.task;
-            
-            h2_ihash_remove(m->ready_tasks, task->stream_id);
-            stream = h2_ihash_get(m->streams, task->stream_id);
-            if (stream && task) {
+        h2_ihash_iter(m->sready, stream_iter_first, &stream);
+        if (stream) {
+            h2_task *task = h2_ihash_get(m->tasks, stream->id);
+            h2_ihash_remove(m->sready, stream->id);
+            if (task) {
                 task->submitted = 1;
                 if (task->rst_error) {
                     h2_stream_rst(stream, task->rst_error);
@@ -694,24 +686,11 @@ h2_stream *h2_mplx_next_submit(h2_mplx *m)
                                            task->output.beam);
                 }
             }
-            else if (task) {
-                /* We have the io ready, but the stream has gone away, maybe
-                 * reset by the client. Should no longer happen since such
-                 * streams should clear io's from the ready queue.
-                 */
-                ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03347)
-                              "h2_mplx(%s): stream for response closed, "
-                              "resetting io to close request processing",
-                              task->id);
-                h2_task_rst(task, H2_ERR_STREAM_CLOSED);
-                if (!task->worker_started || task->worker_done) {
-                    task_destroy(m, task, 1);
-                }
-                else {
-                    /* hang around until the h2_task is done, but
-                     * shutdown output */
-                    h2_task_shutdown(task, 0);
-                }
+            else {
+                /* We have the stream ready without a task. This happens
+                 * when we fail streams early. A response should already
+                 * be present.  */
+                AP_DEBUG_ASSERT(stream->response || stream->rst_error);
             }
         }
         leave_mutex(m, acquired);
@@ -744,7 +723,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response)
         h2_beam_mutex_set(task->output.beam, beam_enter, task->cond, m);
     }
     
-    h2_ihash_add(m->ready_tasks, task);
+    h2_ihash_add(m->sready, stream);
     if (response && response->http_status < 300) {
         /* we might see some file buckets in the output, see
          * if we have enough handles reserved. */
@@ -788,10 +767,9 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
 
     if (!task->response && !task->rst_error) {
         /* In case a close comes before a response was created,
-         * insert an error one so that our streams can properly
-         * reset.
+         * insert an error one so that our streams can properly reset.
          */
-        h2_response *r = h2_response_die(task->stream_id, APR_EGENERAL, 
+        h2_response *r = h2_response_die(task->stream_id, 500, 
                                          task->request, m->pool);
         status = out_open(m, task->stream_id, r);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c,
@@ -875,6 +853,10 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
+        }
+        else if (stream->response) {
+            /* already have a respone, schedule for submit */
+            h2_ihash_add(m->sready, stream);
         }
         else {
             h2_beam_create(&stream->input, stream->pool, stream->id, 

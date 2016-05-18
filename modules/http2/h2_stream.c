@@ -290,6 +290,40 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *value, size_t vlen)
 {
     AP_DEBUG_ASSERT(stream);
+    if (!stream->response) {
+        if (name[0] == ':') {
+            if ((vlen) > stream->session->s->limit_req_line) {
+                /* pseudo header: approximation of request line size check */
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                              "h2_stream(%ld-%d): pseudo header %s too long", 
+                              stream->session->id, stream->id, name);
+                return h2_stream_set_error(stream, 
+                                           HTTP_REQUEST_URI_TOO_LARGE);
+            }
+        }
+        else if ((nlen + 2 + vlen) > stream->session->s->limit_req_fieldsize) {
+            /* header too long */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                          "h2_stream(%ld-%d): header %s too long", 
+                          stream->session->id, stream->id, name);
+            return h2_stream_set_error(stream, 
+                                       HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+        }
+        
+        if (name[0] != ':') {
+            ++stream->request_headers_added;
+            if (stream->request_headers_added 
+                > stream->session->s->limit_req_fields) {
+                /* too many header lines */
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                              "h2_stream(%ld-%d): too many header lines", 
+                              stream->session->id, stream->id);
+                return h2_stream_set_error(stream, 
+                                           HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+            }
+        }
+    }
+    
     if (h2_stream_is_scheduled(stream)) {
         return h2_request_add_trailer(stream->request, stream->pool,
                                       name, nlen, value, vlen);
@@ -319,6 +353,11 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
     }
     if (eos) {
         close_input(stream);
+    }
+    
+    if (stream->response) {
+        /* already have a resonse, probably a HTTP error code */
+        return h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
     }
     
     /* Seeing the end-of-headers, we have everything we need to 
@@ -508,6 +547,18 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                   stream->session->id, stream->id, 
                   stream->response->http_status);
     return status;
+}
+
+apr_status_t h2_stream_set_error(h2_stream *stream, int http_status)
+{
+    h2_response *response;
+    
+    if (stream->submitted) {
+        return APR_EINVAL;
+    }
+    response = h2_response_die(stream->id, http_status, stream->request, 
+                               stream->pool);
+    return h2_stream_set_response(stream, response, NULL);
 }
 
 static const apr_size_t DATA_CHUNK_SIZE = ((16*1024) - 100 - 9); 
