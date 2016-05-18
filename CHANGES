@@ -1,9 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: Fix async write issue that led to selection of wrong timeout
+     vs. keepalive timeout selection for idle sessions.
+     
   *) mod_http2: checking LimitRequestLine, LimitRequestFields and 
-     LimitRequestFieldSize configurated values for incoming streams.
-     [Stefan Eissing]
+     LimitRequestFieldSize configurated values for incoming streams. Returning
+     HTTP status 431 for too long/many headers fields and 414 for a too long
+     pseudo header. [Stefan Eissing]
      
   *) mod_http2: tracking conn_rec->current_thread on slave connections, so
      that mod_lua finds the correct one. Fixes PR 59542. [Stefan Eissing]
