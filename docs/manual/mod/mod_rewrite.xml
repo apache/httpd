@@ -399,7 +399,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
                suffixed by the relative
                substitution is also valid as a URL path on the server
                (this is rare).</li>
-          <li> In Apache HTTP Server 2.4.11 and later, this directive may be
+          <li> In Apache HTTP Server 2.4.16 and later, this directive may be
                 omitted when the request is mapped via
                 <directive module="mod_alias">Alias</directive>
                 or <module>mod_userdir</module>.</li>
