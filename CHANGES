@@ -73,6 +73,10 @@ Changes with Apache 2.4.21
 
 Changes with Apache 2.4.20
 
+  *) SECURITY: CVE-2016-1546 (cve.mitre.org)     
+     mod_http2: restricting number of concurrent stream workers per connection
+     if client is slow. 
+
   *) core: Do not read .htaccess if AllowOverride and AllowOverrideList
      are "None". PR 58528.
      [Michael Schlenker <msc contact.de, Ruediger Pluem, Daniel Ruggeri]
@@ -99,10 +103,6 @@ Changes with Apache 2.4.20
 
   *) mod_http2: Fix build on Windows from dsp files.
      [Stefan Eissing] 
-     
-  *) SECURITY: CVE-2016-1546 (cve.mitre.org)     
-     mod_http2: restricting number of concurrent stream workers per connection
-     if client is slow. 
      
 Changes with Apache 2.4.19
 
