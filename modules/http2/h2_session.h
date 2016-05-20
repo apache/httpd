@@ -98,12 +98,13 @@ typedef struct h2_session {
     unsigned int reprioritize  : 1; /* scheduled streams priority changed */
     unsigned int eoc_written   : 1; /* h2 eoc bucket written */
     unsigned int flush         : 1; /* flushing output necessary */
+    unsigned int have_read     : 1; /* session has read client data */
+    unsigned int have_written  : 1; /* session did write data to client */
     apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
     
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     int open_streams;               /* number of streams open */
-    int unanswered_streams;         /* number of streams waiting for response */
     int unsent_submits;             /* number of submitted, but not yet written responses. */
     int unsent_promises;            /* number of submitted, but not yet written push promised */
                                          

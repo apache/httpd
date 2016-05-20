@@ -59,6 +59,57 @@ static int input_ser_header(void *ctx, const char *name, const char *value)
     return 1;
 }
 
+static void make_chunk(h2_task *task, apr_bucket_brigade *bb, 
+                       apr_bucket *first, apr_uint64_t chunk_len, 
+                       apr_bucket *tail)
+{
+    /* Surround the buckets [first, tail[ with new buckets carrying the
+     * HTTP/1.1 chunked encoding format. If tail is NULL, the chunk extends
+     * to the end of the brigade. */
+    char buffer[128];
+    apr_bucket *c;
+    int len;
+    
+    len = apr_snprintf(buffer, H2_ALEN(buffer), 
+                       "%"APR_UINT64_T_HEX_FMT"\r\n", chunk_len);
+    c = apr_bucket_heap_create(buffer, len, NULL, bb->bucket_alloc);
+    APR_BUCKET_INSERT_BEFORE(first, c);
+    c = apr_bucket_heap_create("\r\n", 2, NULL, bb->bucket_alloc);
+    if (tail) {
+        APR_BUCKET_INSERT_BEFORE(tail, c);
+    }
+    else {
+        APR_BRIGADE_INSERT_TAIL(bb, c);
+    }
+}
+
+static apr_status_t input_handle_eos(h2_task *task, request_rec *r, 
+                                     apr_bucket *b)
+{
+    apr_status_t status = APR_SUCCESS;
+    apr_bucket_brigade *bb = task->input.bb;
+    apr_table_t *t = task->request->trailers;
+
+    if (task->input.chunked) {
+        task->input.tmp = apr_brigade_split_ex(bb, b, task->input.tmp);
+        if (t && !apr_is_empty_table(t)) {
+            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
+            apr_table_do(input_ser_header, task, t, NULL);
+            status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
+        }
+        else {
+            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
+        }
+        APR_BRIGADE_CONCAT(bb, task->input.tmp);
+    }
+    else if (r && t && !apr_is_empty_table(t)){
+        /* trailers passed in directly. */
+        apr_table_overlap(r->trailers_in, t, APR_OVERLAP_TABLES_SET);
+    }
+    task->input.eos_written = 1;
+    return status;
+}
+
 static apr_status_t input_append_eos(h2_task *task, request_rec *r)
 {
     apr_status_t status = APR_SUCCESS;
@@ -79,8 +130,8 @@ static apr_status_t input_append_eos(h2_task *task, request_rec *r)
         /* trailers passed in directly. */
         apr_table_overlap(r->trailers_in, t, APR_OVERLAP_TABLES_SET);
     }
-    task->input.eos_written = 1;
     APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(bb->bucket_alloc));
+    task->input.eos_written = 1;
     return status;
 }
 
@@ -89,7 +140,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
                                apr_read_type_e block, apr_off_t readbytes)
 {
     apr_status_t status = APR_SUCCESS;
-    apr_bucket *b, *next;
+    apr_bucket *b, *next, *first_data;
     apr_off_t bblen = 0;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
@@ -104,31 +155,28 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         return APR_ECONNABORTED;
     }
     
-    if (task->input.bb) {
-        /* Cleanup brigades from those nasty 0 length non-meta buckets
-         * that apr_brigade_split_line() sometimes produces. */
-        for (b = APR_BRIGADE_FIRST(task->input.bb); 
-             b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
-            next = APR_BUCKET_NEXT(b);
-            if (b->length == 0 && !APR_BUCKET_IS_METADATA(b)) {
-                apr_bucket_delete(b);
-            } 
-        }
-        apr_brigade_length(task->input.bb, 0, &bblen);
-    }
-    
-    if (bblen == 0) {
-        if (task->input.eos_written) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, APR_EOF, f->c,
-                          "h2_task(%s): read no data", task->id); 
-            return APR_EOF;
-        }
-        else if (task->input.eos) {
+    if (!task->input.bb) {
+        if (!task->input.eos_written) {
             input_append_eos(task, f->r);
         }
+        return APR_EOF;
+    }
+    
+    /* Cleanup brigades from those nasty 0 length non-meta buckets
+     * that apr_brigade_split_line() sometimes produces. */
+    for (b = APR_BRIGADE_FIRST(task->input.bb);
+         b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
+        next = APR_BUCKET_NEXT(b);
+        if (b->length == 0 && !APR_BUCKET_IS_METADATA(b)) {
+            apr_bucket_delete(b);
+        } 
     }
     
     while (APR_BRIGADE_EMPTY(task->input.bb)) {
+        if (task->input.eos_written) {
+            return APR_EOF;
+        }
+        
         /* Get more input data for our request. */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task(%s): get more data from mplx, block=%d, "
@@ -161,34 +209,52 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
             return status;
         }
         
-        apr_brigade_length(task->input.bb, 0, &bblen);
-        if (bblen > 0 && task->input.chunked) {
-            /* need to add chunks since request processing expects it */
-            char buffer[128];
-            apr_bucket *b;
-            int len;
-            
-            len = apr_snprintf(buffer, H2_ALEN(buffer), "%lx\r\n", 
-                               (unsigned long)bblen);
-            b = apr_bucket_heap_create(buffer, len, NULL, 
-                                       task->input.bb->bucket_alloc);
-            APR_BRIGADE_INSERT_HEAD(task->input.bb, b);
-            status = apr_brigade_puts(task->input.bb, NULL, NULL, "\r\n");
+        /* Inspect the buckets received, detect EOS and apply
+         * chunked encoding if necessary */
+        h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                       "input.beam recv raw", task->input.bb);
+        first_data = NULL;
+        bblen = 0;
+        for (b = APR_BRIGADE_FIRST(task->input.bb); 
+             b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
+            next = APR_BUCKET_NEXT(b);
+            if (APR_BUCKET_IS_METADATA(b)) {
+                if (first_data && task->input.chunked) {
+                    make_chunk(task, task->input.bb, first_data, bblen, b);
+                    first_data = NULL;
+                    bblen = 0;
+                }
+                if (APR_BUCKET_IS_EOS(b)) {
+                    task->input.eos = 1;
+                    input_handle_eos(task, f->r, b);
+                    h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                                   "input.bb after handle eos", 
+                                   task->input.bb);
+                }
+            }
+            else if (b->length == 0) {
+                apr_bucket_delete(b);
+            } 
+            else {
+                if (!first_data) {
+                    first_data = b;
+                }
+                bblen += b->length;
+            }    
         }
-        
-        if (h2_util_has_eos(task->input.bb, -1)) {
-            task->input.eos = 1;
-        }
-        
-        if (task->input.eos && !task->input.eos_written) {
-            input_append_eos(task, f->r);
-        }
+        if (first_data && task->input.chunked) {
+            make_chunk(task, task->input.bb, first_data, bblen, NULL);
+        }            
         
         if (h2_task_logio_add_bytes_in) {
             h2_task_logio_add_bytes_in(f->c, bblen);
         }
     }
     
+    if (!task->input.eos_written && task->input.eos) {
+        input_append_eos(task, f->r);
+    }
+
     h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
                    "task_input.bb", task->input.bb);
            

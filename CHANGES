@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: improved event handling for suspended streams, responses
+     and window updates. [Stefan Eissing] 
+     
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.  [Yann Ylavic]
 

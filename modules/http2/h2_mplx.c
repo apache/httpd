@@ -96,7 +96,8 @@ static apr_status_t enter_mutex(h2_mplx *m, int *pacquired)
         *pacquired = 0;
         return APR_SUCCESS;
     }
-        
+
+    AP_DEBUG_ASSERT(m->lock);
     status = apr_thread_mutex_lock(m->lock);
     *pacquired = (status == APR_SUCCESS);
     if (*pacquired) {
@@ -282,10 +283,11 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_max_mem = h2_config_geti(conf, H2_CONF_STREAM_MAX_MEM);
 
         m->streams = h2_ihash_create(m->pool, offsetof(h2_stream,id));
-        m->sready = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->shold = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->spurge = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->q = h2_iq_create(m->pool, m->max_streams);
+        m->sready = h2_ihash_create(m->pool, offsetof(h2_stream,id));
+        m->sresume = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->tasks = h2_ihash_create(m->pool, offsetof(h2_task,stream_id));
 
         m->stream_timeout = stream_timeout;
@@ -323,7 +325,7 @@ apr_uint32_t h2_mplx_shutdown(h2_mplx *m)
 
 static void input_consumed_signal(h2_mplx *m, h2_stream *stream)
 {
-    if (stream->input) {
+    if (stream->input && stream->started) {
         h2_beam_send(stream->input, NULL, 0); /* trigger updates */
     }
 }
@@ -331,7 +333,8 @@ static void input_consumed_signal(h2_mplx *m, h2_stream *stream)
 static int output_consumed_signal(h2_mplx *m, h2_task *task)
 {
     if (task->output.beam && task->worker_started && task->assigned) {
-        h2_beam_send(task->output.beam, NULL, 0); /* trigger updates */
+        /* trigger updates */
+        h2_beam_send(task->output.beam, NULL, APR_NONBLOCK_READ);
     }
     return 0;
 }
@@ -428,6 +431,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
      */
     h2_iq_remove(m->q, stream->id);
     h2_ihash_remove(m->sready, stream->id);
+    h2_ihash_remove(m->sresume, stream->id);
     h2_ihash_remove(m->streams, stream->id);
     if (stream->input) {
         m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
@@ -630,74 +634,6 @@ void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx)
     m->input_consumed_ctx = ctx;
 }
 
-static int update_window(void *ctx, void *val)
-{
-    input_consumed_signal(ctx, val);
-    return 1;
-}
-
-apr_status_t h2_mplx_in_update_windows(h2_mplx *m)
-{
-    apr_status_t status;
-    int acquired;
-    
-    AP_DEBUG_ASSERT(m);
-    if (m->aborted) {
-        return APR_ECONNABORTED;
-    }
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_ihash_iter(m->streams, update_window, m);
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
-                      "h2_session(%ld): windows updated", m->id);
-        status = APR_SUCCESS;
-        leave_mutex(m, acquired);
-    }
-    return status;
-}
-
-static int stream_iter_first(void *ctx, void *val)
-{
-    h2_stream **pstream = ctx;
-    *pstream = val;
-    return 0;
-}
-
-h2_stream *h2_mplx_next_submit(h2_mplx *m)
-{
-    apr_status_t status;
-    h2_stream *stream = NULL;
-    int acquired;
-
-    AP_DEBUG_ASSERT(m);
-    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
-        h2_ihash_iter(m->sready, stream_iter_first, &stream);
-        if (stream) {
-            h2_task *task = h2_ihash_get(m->tasks, stream->id);
-            h2_ihash_remove(m->sready, stream->id);
-            if (task) {
-                task->submitted = 1;
-                if (task->rst_error) {
-                    h2_stream_rst(stream, task->rst_error);
-                }
-                else {
-                    AP_DEBUG_ASSERT(task->response);
-                    h2_stream_set_response(stream, task->response, 
-                                           task->output.beam);
-                }
-            }
-            else {
-                /* We have the stream ready without a task. This happens
-                 * when we fail streams early. A response should already
-                 * be present.  */
-                AP_DEBUG_ASSERT(stream->response || stream->rst_error);
-            }
-        }
-        leave_mutex(m, acquired);
-    }
-    return stream;
-}
-
 static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response)
 {
     apr_status_t status = APR_SUCCESS;
@@ -797,6 +733,9 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
+        }
+        else if (!h2_ihash_empty(m->sready) || !h2_ihash_empty(m->sresume)) {
+            status = APR_SUCCESS;
         }
         else {
             m->added_output = iowait;
@@ -916,6 +855,7 @@ static h2_task *pop_task(h2_mplx *m)
             if (new_conn) {
                 h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
             }
+            stream->started = 1;
             task->worker_started = 1;
             task->started_at = apr_time_now();
             if (sid > m->max_stream_started) {
@@ -1018,6 +958,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         task->done_at = apr_time_now();
         if (task->output.beam) {
             h2_beam_on_consumed(task->output.beam, NULL, NULL);
+            h2_beam_on_produced(task->output.beam, NULL, NULL);
             h2_beam_mutex_set(task->output.beam, NULL, NULL, NULL);
         }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
@@ -1045,6 +986,11 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                           "h2_mplx(%s): task_done, stream still open", 
                           task->id);
+            if (h2_stream_is_suspended(stream)) {
+                /* more data will not arrive, resume the stream */
+                h2_ihash_add(m->sresume, stream);
+                have_out_data_for(m, stream->id);
+            }
         }
         else {
             /* stream done, was it placed in hold? */
@@ -1353,4 +1299,146 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
         }
     }
 }
-                                
+
+/*******************************************************************************
+ * mplx master events dispatching
+ ******************************************************************************/
+
+typedef struct {
+    h2_mplx *m;
+    stream_ev_callback *on_resume; 
+    stream_ev_callback *on_response; 
+    void *on_ctx;
+    apr_status_t status;
+} dispatch_ctx;
+
+static int update_window(void *ctx, void *val)
+{
+    input_consumed_signal(ctx, val);
+    return 1;
+}
+
+static int stream_ready_iter(void *data, void *val)
+{
+    dispatch_ctx *ctx = data;
+    h2_stream *stream = val;
+    h2_task *task = h2_ihash_get(ctx->m->tasks, stream->id);
+    
+    if (task) {
+        task->submitted = 1;
+        if (task->rst_error) {
+            h2_stream_rst(stream, task->rst_error);
+        }
+        else {
+            AP_DEBUG_ASSERT(task->response);
+            h2_stream_set_response(stream, task->response, task->output.beam);
+        }
+    }
+    else {
+        /* We have the stream ready without a task. This happens
+         * when we fail streams early. A response should already
+         * be present.  */
+        AP_DEBUG_ASSERT(stream->response || stream->rst_error);
+    }
+    
+    ctx->status = ctx->on_response(ctx->on_ctx, stream->id);
+    return 1;
+}
+
+static int stream_resume_iter(void *data, void *val)
+{
+    dispatch_ctx *ctx = data;
+    h2_stream *stream = val;
+
+    h2_stream_set_suspended(stream, 0);
+    ctx->status = ctx->on_resume(ctx->on_ctx, stream->id);
+    return 1;
+}
+
+apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
+                                            stream_ev_callback *on_resume, 
+                                            stream_ev_callback *on_response, 
+                                            void *on_ctx)
+{
+    apr_status_t status;
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
+        dispatch_ctx ctx;
+        ctx.m = m;
+        ctx.on_resume = on_resume;
+        ctx.on_response = on_response;
+        ctx.on_ctx = on_ctx;
+        ctx.status = APR_SUCCESS;
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
+                      "h2_mplx(%ld): dispatch events", m->id);
+        /* update input windows for streams */
+        h2_ihash_iter(m->streams, update_window, m);
+
+        if (ctx.on_response) {
+            h2_ihash_iter(m->sready, stream_ready_iter, &ctx);
+            h2_ihash_clear(m->sready);
+        }
+
+        if (ctx.on_resume) {
+            h2_ihash_iter(m->sresume, stream_resume_iter, &ctx);
+            h2_ihash_clear(m->sresume);
+        }
+        
+        leave_mutex(m, acquired);
+        return ctx.status;
+    }
+    return status;
+}
+
+static void output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes)
+{
+    h2_mplx *m = ctx;
+    apr_status_t status;
+    h2_stream *stream;
+    h2_task *task;
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
+        stream = h2_ihash_get(m->streams, beam->id);
+        if (stream && h2_stream_is_suspended(stream)) {
+            h2_ihash_add(m->sresume, stream);
+            task = h2_ihash_get(m->tasks, stream->id);
+            if (task && task->output.beam) {
+                h2_beam_on_produced(task->output.beam, NULL, NULL);
+            }
+            have_out_data_for(m, beam->id);
+        }
+        leave_mutex(m, acquired);
+    }
+}
+
+apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id)
+{
+    apr_status_t status;
+    h2_stream *stream;
+    h2_task *task;
+    int acquired;
+    
+    AP_DEBUG_ASSERT(m);
+    if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
+        stream = h2_ihash_get(m->streams, stream_id);
+        if (stream && !h2_stream_is_suspended(stream)) {
+            h2_stream_set_suspended(stream, 1);
+            task = h2_ihash_get(m->tasks, stream->id);
+            if (task && task->output.beam && h2_beam_empty(task->output.beam)) {
+                /* register callback so that we can resume on new output */
+                h2_beam_on_produced(task->output.beam, output_produced, m);
+            }
+            else {
+                /* if the beam got data in the meantime, add this to the to-be
+                 * resumed streams right away. */
+                h2_ihash_add(m->sresume, stream);
+            }
+        }
+        leave_mutex(m, acquired);
+    }
+    return status;
+}
