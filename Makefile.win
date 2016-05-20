@@ -251,12 +251,16 @@ _trynghttp2:
 !IF $(USEMAK) == 1
 	cd modules\http2
 	$(MAKE) $(MAKEOPT) -f mod_http2.mak CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	$(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF $(USESLN) == 1
 	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_http2
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_proxy_http2
 !ELSE
 	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_http2 - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_proxy_http2 - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
@@ -539,7 +543,8 @@ _build:
 	cd ..\..
 !IF EXIST("srclib\nghttp2")
 	cd modules\http2
-	 $(MAKE) $(MAKEOPT) -f mod_http2.mak         CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_http2.mak       CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ENDIF
 	cd modules\loggers
@@ -830,6 +835,7 @@ _copybin:
 	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
 !IF EXIST("srclib\nghttp2")
 	copy modules\http2\$(LONG)\mod_http2.$(src_so) 		"$(inst_so)" <.y
+	copy modules\http2\$(LONG)\mod_proxy_http2.$(src_so) 	"$(inst_so)" <.y
 !IF "$(SHORT)" == "D"
 	copy srclib\nghttp2\lib\MSVC_obj\nghttp2d.$(src_dll)		 	"$(inst_dll)" <.y
 !ELSE
