@@ -682,11 +682,6 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                 /* included */
             }
             else {
-                if (maxlen == 0) {
-                    *pend = b;
-                    return status;
-                }
-                
                 if (b->length == ((apr_size_t)-1)) {
                     const char *ign;
                     apr_size_t ilen;
@@ -694,6 +689,11 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                     if (status != APR_SUCCESS) {
                         return status;
                     }
+                }
+                
+                if (maxlen == 0 && b->length > 0) {
+                    *pend = b;
+                    return status;
                 }
                 
                 if (same_alloc && APR_BUCKET_IS_FILE(b)) {
@@ -826,20 +826,6 @@ int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len)
          b = APR_BUCKET_NEXT(b))
     {
         if (APR_BUCKET_IS_EOS(b)) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int h2_util_bb_has_data(apr_bucket_brigade *bb)
-{
-    apr_bucket *b;
-    for (b = APR_BRIGADE_FIRST(bb);
-         b != APR_BRIGADE_SENTINEL(bb);
-         b = APR_BUCKET_NEXT(b))
-    {
-        if (!AP_BUCKET_IS_EOR(b)) {
             return 1;
         }
     }

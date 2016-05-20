@@ -61,6 +61,7 @@ struct h2_stream {
     unsigned int aborted   : 1; /* was aborted */
     unsigned int suspended : 1; /* DATA sending has been suspended */
     unsigned int scheduled : 1; /* stream has been scheduled */
+    unsigned int started   : 1; /* stream has started processing */
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */

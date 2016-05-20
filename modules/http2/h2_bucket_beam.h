@@ -152,8 +152,8 @@ typedef struct h2_bucket_beam h2_bucket_beam;
 
 typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
 
-typedef void h2_beam_consumed_callback(void *ctx, h2_bucket_beam *beam,
-                                       apr_off_t bytes);
+typedef void h2_beam_io_callback(void *ctx, h2_bucket_beam *beam,
+                                 apr_off_t bytes);
 
 typedef struct h2_beam_proxy h2_beam_proxy;
 typedef struct {
@@ -174,12 +174,14 @@ struct h2_bucket_beam {
     apr_pool_t *red_pool;
     
     apr_size_t max_buf_size;
-    apr_size_t files_beamed;  /* how many file handles have been set aside */
-    apr_file_t *last_beamed;  /* last file beamed */
+    apr_interval_time_t timeout;
+
     apr_off_t sent_bytes;     /* amount of bytes send */
     apr_off_t received_bytes; /* amount of bytes received */
-    apr_off_t reported_bytes; /* amount of bytes reported as consumed */
-    apr_size_t buckets_sent;
+
+    apr_size_t buckets_sent;  /* # of beam buckets sent */
+    apr_size_t files_beamed;  /* how many file handles have been set aside */
+    apr_file_t *last_beamed;  /* last file beamed */
     
     unsigned int aborted : 1;
     unsigned int closed : 1;
@@ -188,10 +190,13 @@ struct h2_bucket_beam {
     void *m_ctx;
     h2_beam_mutex_enter *m_enter;
     struct apr_thread_cond_t *m_cond;
-    apr_interval_time_t timeout;
     
-    h2_beam_consumed_callback *consumed_fn;
+    apr_off_t reported_consumed_bytes; /* amount of bytes reported as consumed */
+    h2_beam_io_callback *consumed_fn;
     void *consumed_ctx;
+    apr_off_t reported_produced_bytes; /* amount of bytes reported as produced */
+    h2_beam_io_callback *produced_fn;
+    void *produced_ctx;
     h2_beam_can_beam_callback *can_beam_fn;
     void *can_beam_ctx;
 };
@@ -319,7 +324,20 @@ apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam);
  * Call from the red side, callbacks invoked on red side.
  */
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
-                         h2_beam_consumed_callback *cb, void *ctx);
+                         h2_beam_io_callback *cb, void *ctx);
+
+/**
+ * Register a callback to be invoked on the red side with the
+ * amount of bytes that have been consumed by the red side, since the
+ * last callback invocation or reset.
+ * @param beam the beam to set the callback on
+ * @param cb   the callback or NULL
+ * @param ctx  the context to use in callback invocation
+ * 
+ * Call from the red side, callbacks invoked on red side.
+ */
+void h2_beam_on_produced(h2_bucket_beam *beam, 
+                         h2_beam_io_callback *cb, void *ctx);
 
 void h2_beam_on_file_beam(h2_bucket_beam *beam, 
                           h2_beam_can_beam_callback *cb, void *ctx);

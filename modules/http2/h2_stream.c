@@ -594,6 +594,11 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
             APR_BRIGADE_INSERT_TAIL(stream->buffer, eos);
             status = APR_SUCCESS;
         }
+        else if (status == APR_EAGAIN) {
+            /* did not receive more, it's ok */
+            status = APR_SUCCESS;
+        }
+        *plen = requested;
         h2_util_bb_avail(stream->buffer, plen, peos);
     }
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_post");

@@ -321,7 +321,6 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
  * @return != 0 iff brigade holds FLUSH or EOS bucket (or both)
  */
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
-int h2_util_bb_has_data(apr_bucket_brigade *bb);
 
 /**
  * Check how many bytes of the desired amount are available and if the
