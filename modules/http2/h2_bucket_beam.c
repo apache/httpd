@@ -706,13 +706,13 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             status = APR_ECONNABORTED;
         }
         else if (red_brigade) {
-            int not_emtpy = APR_BRIGADE_EMPTY(red_brigade); 
+            int force_report = !APR_BRIGADE_EMPTY(red_brigade); 
             while (!APR_BRIGADE_EMPTY(red_brigade)
                    && status == APR_SUCCESS) {
                 bred = APR_BRIGADE_FIRST(red_brigade);
                 status = append_bucket(beam, bred, block, beam->red_pool, &bl);
             }
-            report_production(beam, not_emtpy);
+            report_production(beam, force_report);
             if (beam->m_cond) {
                 apr_thread_cond_broadcast(beam->m_cond);
             }
@@ -771,8 +771,8 @@ transfer:
                         
             if (APR_BUCKET_IS_METADATA(bred)) {
                 if (APR_BUCKET_IS_EOS(bred)) {
-                    beam->close_sent = 1;
                     bgreen = apr_bucket_eos_create(bb->bucket_alloc);
+                    beam->close_sent = 1;
                 }
                 else if (APR_BUCKET_IS_FLUSH(bred)) {
                     bgreen = apr_bucket_flush_create(bb->bucket_alloc);
@@ -850,28 +850,24 @@ transfer:
             }
         }
 
-        if ((!beam->green || APR_BRIGADE_EMPTY(beam->green))
-            && H2_BLIST_EMPTY(&beam->red) 
-            && beam->closed && !beam->close_sent) {
-            apr_bucket *b = apr_bucket_eos_create(bb->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, b);
-            beam->close_sent = 1;
-            ++transferred;
-            status = APR_SUCCESS;
-        }
-        else if (transferred) {
-            status = APR_SUCCESS;
-        }
-        else if (beam->closed) {
+        if (beam->closed 
+            && (!beam->green || APR_BRIGADE_EMPTY(beam->green))
+            && H2_BLIST_EMPTY(&beam->red)) {
+            /* beam is closed and we have nothing more to receive */ 
             if (!beam->close_sent) {
                 apr_bucket *b = apr_bucket_eos_create(bb->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, b);
                 beam->close_sent = 1;
+                ++transferred;
                 status = APR_SUCCESS;
             }
-            else {
-                status = APR_EOF;
-            }
+        }
+        
+        if (transferred) {
+            status = APR_SUCCESS;
+        }
+        else if (beam->closed) {
+            status = APR_EOF;
         }
         else if (block == APR_BLOCK_READ && bl.mutex && beam->m_cond) {
             status = wait_cond(beam, bl.mutex);
