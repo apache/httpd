@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_substitute.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_substitute.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Effectue des opérations de recherche/remplacement sur les
 corps de réponses</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -81,14 +79,14 @@ réponse</td></tr>
 	modèle en tant que chaîne fixe.</dd>
         <dt><code>f</code></dt>
 	
-        <dd>Avec le drapeau <code>f</code>, mod_substitute met à plat le
+        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met à plat le
 	résultat d'une substitution (les conteneurs ou buckets ne sont
 	pas dissociés), ce qui permet à d'éventuelles substitutions
 	ultérieures de s'effectuer sur cette dernière. C'est le
 	comportement par défaut.</dd>
         <dt><code>q</code></dt>
 	
-        <dd>Avec le drapeau <code>q</code>, mod_substitute dissocie les
+        <dd>Avec le drapeau <code>q</code>, <code>mod_substitute</code> dissocie les
 	conteneurs (ou buckets) après chaque substitution. Ceci peut
 	améliorer la rapidité de la réponse et diminuer la quantité de
 	mémoire utilisée, mais ne doit être utilisé que s'il n'existe
@@ -130,11 +128,11 @@ réponse</td></tr>
     d'arrière-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
     final car le serveur d'arrière-plan est hors d'atteinte.</p>
 
-    <p>On peut, dans ce cas, utiliser <code>mod_substutite</code> pour
+    <p>On peut, dans ce cas, utiliser <code>mod_substitute</code> pour
     réécrire ces URLs afin qu'elles soit utilisables dans la partie
     située derrière le mandataire :</p>
 
-    <div class="example"><h3>Réécriture des URLs intégrées à un contenu mandaté</h3><pre class="prettyprint lang-config">ProxyPass "/blog/" "http://internal.blog.example.com"
+    <div class="example"><h3>Réécriture des URLs intégrées à un contenu mandaté</h3><pre class="prettyprint lang-config">ProxyPass        "/blog/" "http://internal.blog.example.com"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"</pre>
@@ -143,7 +141,7 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
     <p>La directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> modifie tout en-tête
     <code>Location</code> (redirection) envoyé par le serveur
     d'arrière-plan et, dans cet exemple, la directive
-    <code>Substitute</code> se charge à son tour de la modification de
+    <code class="directive">Substitute</code> se charge à son tour de la modification de
     la réponse HTML.</p>
 
 
@@ -162,8 +160,8 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 Apache</td></tr>
 </table>
     <p>Cette directive permet de définir si l'on applique les modèles
-<code class="directive">Substitute</code> hérités en premier (valeur
-<code>on</code>), ou après ceux du
+<code class="directive"><a href="#substitute">Substitute</a></code> hérités en premier
+(valeur <code>on</code>), ou après ceux du
 contexte courant (valeur <code>off</code>). Sa valeur est maintenant
 définie par défaut à <code>on</code> ; il est cependant possible de
 restaurer le comportement des versions 2.4 et antérieures du serveur qui
