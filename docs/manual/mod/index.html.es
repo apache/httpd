@@ -35,7 +35,7 @@
 <div class="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
-            recientementes.</div>
+            recientemente.</div>
 
     <p>
       Abajo se muestra una lista con todos los módulos que forman

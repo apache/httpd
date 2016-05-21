@@ -929,7 +929,7 @@ indexing</td></tr>
      clears all inherited options and any incremental settings encountered
      so far. Consider the following example:</p>
 
-     <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+     <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize</pre>
 
 

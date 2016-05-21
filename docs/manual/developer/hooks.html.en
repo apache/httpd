@@ -162,7 +162,7 @@ ret=ap_run_do_something(r, n);</pre>
       <p>Include the appropriate header, and define a static function
       of the correct type:</p>
 
-      <pre class="prettyprint lang-c">static int my_something_doer(request_rec *r, int n)<br />
+      <pre class="prettyprint lang-c">static int my_something_doer(request_rec *r, int n)
 {
     ...
     return OK;

@@ -38,7 +38,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">서버 식별</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">파일 위치</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">자원사용 제한</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="identification" id="identification">서버 식별</a></h2>

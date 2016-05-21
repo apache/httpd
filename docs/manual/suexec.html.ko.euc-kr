@@ -51,7 +51,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#usage">suEXEC 사용하기</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#debug">suEXEC 디버깅하기</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">다시 한번 조심하라: 경고와 예제</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="before" id="before">시작하기 전에</a></h2>

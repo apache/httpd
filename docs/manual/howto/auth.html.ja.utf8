@@ -50,7 +50,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#multprovider">複数のプロバイダを使用する</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">単純な承認のその先</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">追加情報</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連するモジュールとディレクティブ</a></h2>

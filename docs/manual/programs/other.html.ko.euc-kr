@@ -37,7 +37,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#log_server_status">log_server_status</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#split-logfile">split-logfile</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>Âü°í</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="log_server_status" id="log_server_status">log_server_status</a></h2>

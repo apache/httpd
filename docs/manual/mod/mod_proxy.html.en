@@ -867,9 +867,9 @@ response</td></tr>
     response to the same host with the configured <var>Domain</var> appended
     will be generated.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      ProxyRemote  *  http://firewall.example.com:81<br />
-      NoProxy         .example.com 192.168.112.0/21<br />
-      ProxyDomain     .example.com</pre>
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">ProxyRemote  "*"  "http://firewall.example.com:81"
+NoProxy           ".example.com" "192.168.112.0/21"
+ProxyDomain       ".example.com"</pre>
 </div>
 
 </div>

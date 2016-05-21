@@ -49,7 +49,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">動作</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">設定</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#custom">カスタムエラーレスポンスとリダイレクト</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="behavior" id="behavior">動作</a></h2>

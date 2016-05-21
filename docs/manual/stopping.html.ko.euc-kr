@@ -44,7 +44,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">점잖은 재시작</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">당장 재시작</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#race">부록: 시그널과 레이스 컨디션</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">소개</a></h2>
