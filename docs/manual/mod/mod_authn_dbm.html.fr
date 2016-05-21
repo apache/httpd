@@ -84,7 +84,13 @@ stocker les mots de passe</td></tr>
     <p>Cette directive définit le type de fichier de base de
     données utilisé pour stocker les mots de passe. Le type de base de
     données par défaut est défini à la compilation. La liste des autres
-    types de bases de données disponibles dépend aussi de la <a href="../install.html#dbm">configuration de la compilation</a>.</p>
+    types de bases de données disponibles dépend aussi de la configuration de la
+    <a href="../programs/configure.html#options">compilation</a>.</p>
+
+    <p>Par exemple, pour activer le support de Berkeley DB (correspondant au
+    type <code>db</code>), il faut ajouter l'option
+    <code>--with-berkeley-db</code> à la ligne de commande configure de httpd
+    pour générer le DSO approprié.</p>
 
     <p>Il est impératif que le programme que vous utilisez pour créer
     vos fichiers de mots de passe soit configuré pour utiliser le même
