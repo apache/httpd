@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_authn_dbm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant des fichiers
 DBM</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -88,7 +86,13 @@ stocker les mots de passe</td></tr>
     <p>Cette directive permet de définir le type de fichier de base de
     données utilisé pour stocker les mots de passe. Le type de base de
     données par défaut est défini à la compilation. La liste des autres
-    types de bases de données disponibles dépend aussi de la <a href="../install.html#dbm">configuration de la compilation</a>.</p>
+    types de bases de données disponibles dépend aussi de la <a href="../programs/configure.html#options">configuration de la
+    compilation</a>.</p>
+
+    <p>Par exemple, pour activer le support de Berkeley DB (correspondant au
+    type <code>db</code>), il faut ajouter l'option
+    <code>--with-berkeley-db</code> à la ligne de commande configure de httpd
+    pour générer le DSO approprié.</p>
 
     <p>Il est impératif que le programme que vous utilisez pour créer
     vos fichiers de mots de passe soit configuré pour utiliser le même

@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -150,7 +148,7 @@ répertoire</td></tr>
 	  contenant la <code class="directive"><a href="#rewriterule">RewriteRule</a></code>, suffixé par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
-	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
+	  <li>A partir de la version 2.4.16 du serveur HTTP Apache,
 	  cette directive peut être omise lorsque la requête est
 	  transformée via une directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ou le module
 	  <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</li>
@@ -1080,7 +1078,8 @@ pour le moteur de réécriture</td></tr>
       d'URL et du contexte du système de fichiers pour transformer la
       sustitution relative en URL. Par exemple, les modules
       <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
-      utilisent ces informations de contexte étendu..</p>
+      utilisent ces informations de contexte étendu. Disponible à partir de la
+      version 2.4.16 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
