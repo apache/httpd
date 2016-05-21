@@ -205,7 +205,8 @@
       <dd>El paquete de módulos de autenticación y autorización se han renombrado 
           como se muestra en las siguientes líneas:
           <ul>
-          <li><code>mod_auth_*</code>  -> Módulos que implementan un mecanismo de autenticación por HTTP.</li>
+          <li><code>mod_auth_*</code>  -> Módulos que implementan un mecanismo de 
+          autenticación por HTTP.</li>
           <li><code>mod_authn_*</code> -> Módulos que proporcionan un backend
            proveedor de autenticación.</li>
           <li><code>mod_authz_*</code> -> Módulos que implementan autorización 
