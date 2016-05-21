@@ -258,8 +258,8 @@
        <code>ap_filter_protocol</code>.</dd>
 
       <dt>Monitor de hooks añadido</dt>
-      <dd>Monitor hook habilita a los módulos a ejecutar tareas regulares  o programadas
-      	en el proceso padre (raíz).</dd>
+      <dd>Monitor hook habilita a los módulos a ejecutar tareas regulares
+        o programadas en el proceso padre (raíz).</dd>
 
       <dt>Cambio de expresiones regulares en la API</dt>
 
