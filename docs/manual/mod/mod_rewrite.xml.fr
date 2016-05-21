@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741842 -->
+<!-- English Revision: 1744580 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -305,7 +305,8 @@ pour le moteur de réécriture</description>
       d'URL et du contexte du système de fichiers pour transformer la
       sustitution relative en URL. Par exemple, les modules
       <module>mod_userdir</module> et <module>mod_alias</module>
-      utilisent ces informations de contexte étendu.</p>
+      utilisent ces informations de contexte étendu. Disponible à partir de la
+      version 2.4.16 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
@@ -448,7 +449,7 @@ répertoire</description>
 	  contenant la <directive module="mod_rewrite">RewriteRule</directive>, suffixé par
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
-	  <li>A partir de la version 2.4.11 du serveur HTTP Apache,
+	  <li>A partir de la version 2.4.16 du serveur HTTP Apache,
 	  cette directive peut être omise lorsque la requête est mise en
 	  correspondance avec le système de fichiers via la directive
 	  <directive module="mod_alias">Alias</directive> ou le module
