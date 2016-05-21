@@ -139,8 +139,8 @@
     You can, likewise, disable the feature for all but a few users by
     using a configuration like the following:</p>
 
-    <pre class="prettyprint lang-config">      UserDir disabled<br />
-      UserDir enabled rbowen krietz</pre>
+    <pre class="prettyprint lang-config">UserDir disabled
+UserDir enabled rbowen krietz</pre>
 
 
     <p>See <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>

@@ -34,14 +34,14 @@
 <div class="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
-            recientementes.</div>
+            recientemente.</div>
 
     <p>Este documento describe el uso de los Handlers en Apache.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">¿Qué es un Handler?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Ejemplos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programmer">Nota para programadores</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="definition" id="definition">¿Qué es un Handler?</a></h2>

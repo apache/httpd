@@ -44,7 +44,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#main">"주서버" 주소</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#tips">이 문제를 피하기위한 팁</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#appendix">부록: 앞으로는</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="example" id="example">간단한 예제</a></h2>

@@ -37,7 +37,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">소스파일</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">모듈명</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">지원</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Description" id="Description">설명</a></h2>

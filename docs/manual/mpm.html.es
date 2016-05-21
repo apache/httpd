@@ -35,7 +35,7 @@
 <div class="outofdate">Esta traducción podría estar
             obsoleta. Consulte la versión en inglés de la
             documentación para comprobar si se han producido cambios
-            recientementes.</div>
+            recientemente.</div>
 
 <p>Este documento describe que es un Módulo de Multiprocesamiento y
 como los usa Apache.</p>
@@ -43,7 +43,7 @@ como los usa Apache.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#choosing">Cómo Elegir un MPM</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM por defecto</a></li>
-</ul><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introducción</a></h2>
