@@ -61,8 +61,11 @@
 
 <section id="reqfilegroup"><title>Require file-group</title>
 
-    <p>When this directive is specified, the user must be a member of the group
-    assigned to the file being accessed.</p>
+    <p>When this directive is specified, the filesystem permissions on
+    the file being accessed are consulted. The user must be a member of
+    a group with the same name as the group that owns the file.
+    See <module>mod_authz_owner</module> for more
+    details.</p>
 
     <highlight language="config">
       Require file-group
