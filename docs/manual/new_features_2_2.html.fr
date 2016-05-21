@@ -26,6 +26,7 @@
 2.2 du serveur HTTP Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
@@ -300,6 +301,7 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
