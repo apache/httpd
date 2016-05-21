@@ -224,10 +224,14 @@ dynamique inverse de masse</dd>
 à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>Module fournissant le support FTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_hcheck.html">mod_proxy_hcheck</a></dt><dd>Dynamic health check of Balancer members (workers) for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_html.html">mod_proxy_html</a></dt><dd>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
 adressables depuis les réseaux des clients dans un contexte de
 mandataire.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>Module fournissant le support HTTP à
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_http2.html">mod_proxy_http2</a></dt><dd>HTTP/2 support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>Module fournissant le support de la passerelle SCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>

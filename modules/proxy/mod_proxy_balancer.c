@@ -28,8 +28,15 @@ ap_slotmem_provider_t *storage = NULL;
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
+static APR_OPTIONAL_FN_TYPE(set_worker_hc_param) *set_worker_hc_param_f = NULL;
+
 static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
         proxy_worker *worker, server_rec *s) = NULL;
+
+static APR_OPTIONAL_FN_TYPE(hc_show_exprs) *hc_show_exprs_f = NULL;
+static APR_OPTIONAL_FN_TYPE(hc_select_exprs) *hc_select_exprs_f = NULL;
+static APR_OPTIONAL_FN_TYPE(hc_valid_expr) *hc_valid_expr_f = NULL;
+
 
 /*
  * Register our mutex type before the config is read so we
@@ -46,7 +53,10 @@ static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (rv != APR_SUCCESS) {
         return rv;
     }
-
+    set_worker_hc_param_f = APR_RETRIEVE_OPTIONAL_FN(set_worker_hc_param);
+    hc_show_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_show_exprs);
+    hc_select_exprs_f = APR_RETRIEVE_OPTIONAL_FN(hc_select_exprs);
+    hc_valid_expr_f = APR_RETRIEVE_OPTIONAL_FN(hc_valid_expr);
     return OK;
 }
 
@@ -633,7 +643,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (!apr_is_empty_array(balancer->errstatuses)) {
+    if (!apr_is_empty_array(balancer->errstatuses)
+        && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
         int i;
         for (i = 0; i < balancer->errstatuses->nelts; i++) {
             int val = ((int *)balancer->errstatuses->elts)[i];
@@ -652,6 +663,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     }
 
     if (balancer->failontimeout
+        && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)
         && (apr_table_get(r->notes, "proxy_timedout")) != NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02460)
                       "%s: Forcing worker (%s) into error state "
@@ -920,10 +932,10 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static void create_radio(const char *name, unsigned int flag, request_rec *r)
 {
-    ap_rvputs(r, "<td>On <input name='", name, "' id='", name, "' value='1' type=radio", NULL);
+    ap_rvputs(r, "<td><label for='", name, "1'>On</label> <input name='", name, "' id='", name, "1' value='1' type=radio", NULL);
     if (flag)
         ap_rputs(" checked", r);
-    ap_rvputs(r, "> <br/> Off <input name='", name, "' id='", name, "' value='0' type=radio", NULL);
+    ap_rvputs(r, "> <br/> <label for='", name, "0'>Off</label> <input name='", name, "' id='", name, "0' value='0' type=radio", NULL);
     if (!flag)
         ap_rputs(" checked", r);
     ap_rputs("></td>\n", r);
@@ -1093,23 +1105,74 @@ static int balancer_handler(request_rec *r)
             else
                 *wsel->s->redirect = '\0';
         }
+        /*
+         * TODO: Look for all 'w_status_#' keys and then loop thru
+         * on that # character, since the character == the flag
+         */
         if ((val = apr_table_get(params, "w_status_I"))) {
-            ap_proxy_set_wstatus('I', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_N"))) {
-            ap_proxy_set_wstatus('N', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_DRAIN_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
-            ap_proxy_set_wstatus('D', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
-            ap_proxy_set_wstatus('H', atoi(val), wsel);
+            ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, atoi(val), wsel);
+        }
+        if ((val = apr_table_get(params, "w_status_S"))) {
+            ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, atoi(val), wsel);
+        }
+        if ((val = apr_table_get(params, "w_status_C"))) {
+            ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_ls"))) {
             int ival = atoi(val);
             if (ival >= 0 && ival <= 99) {
                 wsel->s->lbset = ival;
              }
+        }
+        if ((val = apr_table_get(params, "w_hi"))) {
+            int ival = atoi(val);
+            if (ival >= HCHECK_WATHCHDOG_INTERVAL) {
+                wsel->s->interval = apr_time_from_sec(ival);
+             }
+        }
+        if ((val = apr_table_get(params, "w_hp"))) {
+            int ival = atoi(val);
+            if (ival >= 1) {
+                wsel->s->passes = ival;
+             }
+        }
+        if ((val = apr_table_get(params, "w_hf"))) {
+            int ival = atoi(val);
+            if (ival >= 1) {
+                wsel->s->fails = ival;
+             }
+        }
+        if ((val = apr_table_get(params, "w_hm"))) {
+            proxy_hcmethods_t *method = proxy_hcmethods;
+            for (; method->name; method++) {
+                if (!strcasecmp(method->name, val) && method->implemented)
+                    wsel->s->method = method->method;
+            }
+        }
+        if ((val = apr_table_get(params, "w_hu"))) {
+            if (strlen(val) && strlen(val) < sizeof(wsel->s->hcuri))
+                strcpy(wsel->s->hcuri, val);
+            else
+                *wsel->s->hcuri = '\0';
+        }
+        if (hc_valid_expr_f && (val = apr_table_get(params, "w_he"))) {
+            if (strlen(val) && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
+                strcpy(wsel->s->hcexpr, val);
+            else
+                *wsel->s->hcexpr = '\0';
+        }
+        /* If the health check method doesn't support an expr, then null it */
+        if (wsel->s->method == NONE || wsel->s->method == TCP) {
+            *wsel->s->hcexpr = '\0';
         }
         /* if enabling, we need to reset all lb params */
         if (bsel && !was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
@@ -1228,7 +1291,7 @@ static int balancer_handler(request_rec *r)
                     /* sync all timestamps */
                     bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
                     /* by default, all new workers are disabled */
-                    ap_proxy_set_wstatus('D', 1, nworker);
+                    ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
                 }
                 if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
@@ -1331,18 +1394,7 @@ static int balancer_handler(request_rec *r)
                 }
                 /* Begin proxy_worker_stat */
                 ap_rputs("          <httpd:status>", r);
-                if (worker->s->status & PROXY_WORKER_DISABLED)
-                    ap_rputs("Disabled", r);
-                else if (worker->s->status & PROXY_WORKER_IN_ERROR)
-                    ap_rputs("Error", r);
-                else if (worker->s->status & PROXY_WORKER_STOPPED)
-                    ap_rputs("Stopped", r);
-                else if (worker->s->status & PROXY_WORKER_HOT_STANDBY)
-                    ap_rputs("Standby", r);
-                else if (PROXY_WORKER_IS_USABLE(worker))
-                    ap_rputs("OK", r);
-                else if (!PROXY_WORKER_IS_INITIALIZED(worker))
-                    ap_rputs("Uninitialized", r);
+                ap_rputs(ap_proxy_parse_wstatus(r->pool, worker), r);
                 ap_rputs("</httpd:status>\n", r);
                 if ((worker->s->error_time > 0) && apr_rfc822_date(date, worker->s->error_time) == APR_SUCCESS) {
                     ap_rvputs(r, "          <httpd:error_time>", date,
@@ -1447,7 +1499,7 @@ static int balancer_handler(request_rec *r)
                  " padding: 2px;\n"
                  " border-style: dotted;\n"
                  " border-color: gray;\n"
-                 " background-color: white;\n"
+                 " background-color: lightgray;\n"
                  " text-align: center;\n"
                  "}\n"
                  "td {\n"
@@ -1477,10 +1529,10 @@ static int balancer_handler(request_rec *r)
         for (i = 0; i < conf->balancers->nelts; i++) {
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
-            ap_rvputs(r, "<a href=\"", ap_escape_uri(r->pool, r->uri), "?b=",
+            ap_rvputs(r, "<a href='", ap_escape_uri(r->pool, r->uri), "?b=",
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
-                      "&nonce=", balancer->s->nonce,
-                      "\">", NULL);
+                      "&amp;nonce=", balancer->s->nonce,
+                      "'>", NULL);
             ap_rvputs(r, balancer->s->name, "</a> [",balancer->s->sname, "]</h3>\n", NULL);
             ap_rputs("\n\n<table><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
@@ -1501,9 +1553,9 @@ static int balancer_handler(request_rec *r)
             else {
                 ap_rputs("<td> (None) ", r);
             }
-            ap_rprintf(r, "<td>%s</td>\n",
+            ap_rprintf(r, "</td><td>%s</td>\n",
                        balancer->s->sticky_force ? "On" : "Off");
-            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
+            ap_rprintf(r, "<td>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->s->timeout));
             ap_rprintf(r, "<td>%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td>%s</td>\n",
@@ -1520,19 +1572,22 @@ static int balancer_handler(request_rec *r)
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
                 "<th>Factor</th><th>Set</th><th>Status</th>"
-                "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>"
-                "</tr>\n", r);
+                "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>", r);
+            if (set_worker_hc_param_f) {
+                ap_rputs("<th>HC Method</th><th>HC Interval</th><th>Passes</th><th>Fails</th><th>HC uri</th><th>HC Expr</th>", r);
+            }
+            ap_rputs("</tr>\n", r);
 
             workers = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
                 char fbuf[50];
                 worker = *workers;
-                ap_rvputs(r, "<tr>\n<td><a href=\"",
+                ap_rvputs(r, "<tr>\n<td><a href='",
                           ap_escape_uri(r->pool, r->uri), "?b=",
-                          balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&w=",
+                          balancer->s->name + sizeof(BALANCER_PREFIX) - 1, "&amp;w=",
                           ap_escape_uri(r->pool, worker->s->name),
-                          "&nonce=", balancer->s->nonce,
-                          "\">", NULL);
+                          "&amp;nonce=", balancer->s->nonce,
+                          "'>", NULL);
                 ap_rvputs(r, (*worker->s->uds_path ? "<i>" : ""), ap_proxy_worker_name(r->pool, worker),
                           (*worker->s->uds_path ? "</i>" : ""), "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -1549,6 +1604,14 @@ static int balancer_handler(request_rec *r)
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td>", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
+                if (set_worker_hc_param_f) {
+                    ap_rprintf(r, "</td><td>%s</td>", ap_proxy_show_hcmethod(worker->s->method));
+                    ap_rprintf(r, "<td>%d</td>", (int)apr_time_sec(worker->s->interval));
+                    ap_rprintf(r, "<td>%d (%d)</td>", worker->s->passes,worker->s->pcount);
+                    ap_rprintf(r, "<td>%d (%d)</td>", worker->s->fails, worker->s->fcount);
+                    ap_rprintf(r, "<td>%s</td>", worker->s->hcuri);
+                    ap_rprintf(r, "<td>%s", worker->s->hcexpr);
+                }
                 ap_rputs("</td></tr>\n", r);
 
                 ++workers;
@@ -1557,35 +1620,72 @@ static int balancer_handler(request_rec *r)
             ++balancer;
         }
         ap_rputs("<hr />\n", r);
+        if (hc_show_exprs_f) {
+            hc_show_exprs_f(r);
+        }
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, (*wsel->s->uds_path?"<i>":""), ap_proxy_worker_name(r->pool, wsel), (*wsel->s->uds_path?"</i>":""), "</h3>\n", NULL);
-            ap_rputs("<form method=\"POST\" enctype=\"application/x-www-form-urlencoded\" action=\"", r);
-            ap_rvputs(r, ap_escape_uri(r->pool, action), "\">\n", NULL);
-            ap_rputs("<dl>\n<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
+            ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
+            ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name='w_wr' id='w_wr' type=text ", r);
-            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->route),
+            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->route),
                       NULL);
-            ap_rputs("\"></td></tr>\n", r);
+            ap_rputs("'></td></tr>\n", r);
             ap_rputs("<tr><td>Route Redirect:</td><td><input name='w_rr' id='w_rr' type=text ", r);
-            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->redirect),
+            ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->redirect),
                       NULL);
-            ap_rputs("\"></td></tr>\n", r);
+            ap_rputs("'></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td>", r);
             ap_rputs("<td><table><tr>"
                      "<th>Ignore Errors</th>"
                      "<th>Draining Mode</th>"
                      "<th>Disabled</th>"
-                     "<th>Hot Standby</th></tr>\n<tr>", r);
-            create_radio("w_status_I", (PROXY_WORKER_IGNORE_ERRORS & wsel->s->status), r);
-            create_radio("w_status_N", (PROXY_WORKER_DRAIN & wsel->s->status), r);
-            create_radio("w_status_D", (PROXY_WORKER_DISABLED & wsel->s->status), r);
-            create_radio("w_status_H", (PROXY_WORKER_HOT_STANDBY & wsel->s->status), r);
-            ap_rputs("</tr></table>\n", r);
-            ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
+                     "<th>Hot Standby</th>", r);
+            if (hc_show_exprs_f) {
+                ap_rputs("<th>HC Fail</th>", r);
+            }
+            ap_rputs("<th>Stopped</th></tr>\n<tr>", r);
+            create_radio("w_status_I", (PROXY_WORKER_IS(wsel, PROXY_WORKER_IGNORE_ERRORS)), r);
+            create_radio("w_status_N", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DRAIN)), r);
+            create_radio("w_status_D", (PROXY_WORKER_IS(wsel, PROXY_WORKER_DISABLED)), r);
+            create_radio("w_status_H", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HOT_STANDBY)), r);
+            if (hc_show_exprs_f) {
+                create_radio("w_status_C", (PROXY_WORKER_IS(wsel, PROXY_WORKER_HC_FAIL)), r);
+            }
+            create_radio("w_status_S", (PROXY_WORKER_IS(wsel, PROXY_WORKER_STOPPED)), r);
+            ap_rputs("</tr></table></td></tr>\n", r);
+            if (hc_select_exprs_f) {
+                proxy_hcmethods_t *method = proxy_hcmethods;
+                ap_rputs("<tr><td colspan='2'>\n<table align='center'><tr><th>Health Check param</th><th>Value</th></tr>\n", r);
+                ap_rputs("<tr><td>Method</td><td><select name='w_hm'>\n", r);
+                for (; method->name; method++) {
+                    if (method->implemented) {
+                        ap_rprintf(r, "<option value='%s' %s >%s</option>\n",
+                                method->name,
+                                (wsel->s->method == method->method) ? "selected" : "",
+                                method->name);
+                    }
+                }
+                ap_rputs("</select>\n</td></tr>\n", r);
+                ap_rputs("<tr><td>Expr</td><td><select name='w_he'>\n", r);
+                hc_select_exprs_f(r, wsel->s->hcexpr);
+                ap_rputs("</select>\n</td></tr>\n", r);
+                ap_rprintf(r, "<tr><td>Interval (secs)</td><td><input name='w_hi' id='w_hi' type='text'"
+                           "value='%d'></td></tr>\n", (int)apr_time_sec(wsel->s->interval));
+                ap_rprintf(r, "<tr><td>Passes trigger</td><td><input name='w_hp' id='w_hp' type='text'"
+                           "value='%d'></td></tr>\n", wsel->s->passes);
+                ap_rprintf(r, "<tr><td>Fails trigger)</td><td><input name='w_hf' id='w_hf' type='text'"
+                           "value='%d'></td></tr>\n", wsel->s->fails);
+                ap_rprintf(r, "<tr><td>HC uri</td><td><input name='w_hu' id='w_hu' type='text'"
+                        "value='%s'</td></tr>\n", ap_escape_html(r->pool, wsel->s->hcuri));
+                ap_rputs("</table>\n</td></tr>\n", r);
+            }
+            ap_rputs("<tr><td colspan='2'><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
             ap_rvputs(r, "value='", ap_escape_uri(r->pool, wsel->s->name), "'>\n", NULL);
             ap_rvputs(r, "<input type=hidden name='b' id='b' ", NULL);
@@ -1603,7 +1703,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, bsel->s->name, "</h3>\n", NULL);
             ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
             ap_rvputs(r, ap_escape_uri(r->pool, action), "'>\n", NULL);
-            ap_rputs("<dl>\n<table>\n", r);
+            ap_rputs("<table>\n", r);
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
                 ap_rputs("<tr><td>LBmethod:</td>", r);

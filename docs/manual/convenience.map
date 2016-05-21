@@ -157,6 +157,7 @@ cachestoreprivate	mod/mod_cache.html#cachestoreprivate
 cgidscripttimeout	mod/mod_cgid.html#cgidscripttimeout
 cgimapextension	mod/core.html#cgimapextension
 cgipassauth	mod/core.html#cgipassauth
+cgivar	mod/core.html#cgivar
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
@@ -242,7 +243,6 @@ gprofdir	mod/core.html#gprofdir
 gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mod_unixd.html#group
 h2direct	mod/mod_http2.html#h2direct
-h2keepalivetimeout	mod/mod_http2.html#h2keepalivetimeout
 h2maxsessionstreams	mod/mod_http2.html#h2maxsessionstreams
 h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
@@ -254,8 +254,6 @@ h2pushpriority	mod/mod_http2.html#h2pushpriority
 h2serializeheaders	mod/mod_http2.html#h2serializeheaders
 h2sessionextrafiles	mod/mod_http2.html#h2sessionextrafiles
 h2streammaxmemsize	mod/mod_http2.html#h2streammaxmemsize
-h2streamtimeout	mod/mod_http2.html#h2streamtimeout
-h2timeout	mod/mod_http2.html#h2timeout
 h2tlscooldownsecs	mod/mod_http2.html#h2tlscooldownsecs
 h2tlswarmupsize	mod/mod_http2.html#h2tlswarmupsize
 h2upgrade	mod/mod_http2.html#h2upgrade
@@ -403,6 +401,9 @@ proxyexpressenable	mod/mod_proxy_express.html#proxyexpressenable
 proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
+proxyhcexpr	mod/mod_proxy_hcheck.html#proxyhcexpr
+proxyhctemplate	mod/mod_proxy_hcheck.html#proxyhctemplate
+proxyhctpsize	mod/mod_proxy_hcheck.html#proxyhctpsize
 proxyhtmlbufsize	mod/mod_proxy_html.html#proxyhtmlbufsize
 proxyhtmlcharsetout	mod/mod_proxy_html.html#proxyhtmlcharsetout
 proxyhtmldoctype	mod/mod_proxy_html.html#proxyhtmldoctype

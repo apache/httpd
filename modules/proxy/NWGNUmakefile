@@ -161,6 +161,7 @@ TARGET_nlm = \
 	$(OBJDIR)/proxyfcgi.nlm \
 	$(OBJDIR)/proxyscgi.nlm \
 	$(OBJDIR)/proxyexpress.nlm \
+	$(OBJDIR)/proxyhcheck.nlm \
 	$(OBJDIR)/proxylbm_busy.nlm \
 	$(OBJDIR)/proxylbm_hb.nlm \
 	$(OBJDIR)/proxylbm_req.nlm \

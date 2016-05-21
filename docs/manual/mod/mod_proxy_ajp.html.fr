@@ -78,7 +78,7 @@ d'environnement</a></li>
     Son utilisation est similaire à celle d'un mandataire inverse HTTP,
     mais s'appuie sur le prefixe <code>ajp://</code> :</p>
 
-    <div class="example"><h3>Mandataire inverse simple</h3><pre class="prettyprint lang-config">ProxyPass "/app ajp://backend.example.com:8009/app"</pre>
+    <div class="example"><h3>Mandataire inverse simple</h3><pre class="prettyprint lang-config">ProxyPass "/app" "ajp://backend.example.com:8009/app"</pre>
 </div>
 
     <p>On peut aussi configurer un répartiteur de charge :</p>
