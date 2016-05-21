@@ -28,7 +28,7 @@
 <status>Extension</status>
 <sourcefile>mod_proxy_hcheck.c</sourcefile>
 <identifier>proxy_hcheck_module</identifier>
-<compatibility>Available in Apache 2.5.0 and later</compatibility>
+<compatibility>Available in Apache 2.4.21 and later</compatibility>
 
 <summary>
     <p>This module provides for dynamic health checking of balancer
