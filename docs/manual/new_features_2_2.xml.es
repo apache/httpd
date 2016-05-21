@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
 <!-- English Revision: 1561569 -->
@@ -249,8 +249,8 @@
        <code>ap_filter_protocol</code>.</dd>
 
       <dt>Monitor de hooks añadido</dt>
-      <dd>Monitor hook habilita a los módulos a ejecutar tareas regulares  o programadas
-      	en el proceso padre (raíz).</dd>
+      <dd>Monitor hook habilita a los módulos a ejecutar tareas regulares
+        o programadas en el proceso padre (raíz).</dd>
 
       <dt>Cambio de expresiones regulares en la API</dt>
 
