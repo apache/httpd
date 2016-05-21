@@ -68,10 +68,6 @@ Changes with Apache 2.5.0
      in the past that also has Cache-Control: max-age or s-maxage.
      PR55156. [Eric Covener]
 
-  *) mod_proxy_hcheck: Provide for dynamic background health
-     checks on reverse proxies associated with BalancerMember
-     workers. [Jim Jagielski]
-
   *) Added many log numbers to log statements that had none.
 
   *) mod_session: Introduce SessionExpiryUpdateInterval which allows to
