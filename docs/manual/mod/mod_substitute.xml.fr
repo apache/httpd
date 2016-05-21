@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1707122:1743885 (outdated) -->
+<!-- English Revision: 1743885 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,8 +25,8 @@
 <modulesynopsis metafile="mod_substitute.xml.meta">
 
 <name>mod_substitute</name>
-<description>Effectue des op&eacute;rations de recherche/remplacement sur les
-corps de r&eacute;ponses</description>
+<description>Effectue des opérations de recherche/remplacement sur les
+corps de réponses</description>
 <status>Extension</status>
 <sourcefile>mod_substitute.c</sourcefile>
 <identifier>substitute_module</identifier>
@@ -34,53 +34,53 @@ corps de r&eacute;ponses</description>
 du serveur HTTP Apache</compatibility>
 
 <summary>
-    <p><module>mod_substitute</module> fournit un m&eacute;canisme permettant
-    d'effectuer des substitutions de cha&icirc;nes fixes ou d'expressions
-    rationnelles sur les corps de r&eacute;ponses.</p>
+    <p><module>mod_substitute</module> fournit un mécanisme permettant
+    d'effectuer des substitutions de chaînes fixes ou d'expressions
+    rationnelles sur les corps de réponses.</p>
 </summary>
 
 <directivesynopsis>
 <name>Substitute</name>
-<description>Mod&egrave;le de substition dans le contenu de la
-r&eacute;ponse</description>
-<syntax>Substitute <var>s/mod&egrave;le/substitution/[infq]</var></syntax>
+<description>Modèle de substition dans le contenu de la
+réponse</description>
+<syntax>Substitute <var>s/modèle/substitution/[infq]</var></syntax>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
     <p>La directive <directive>Substitute</directive> permet de
-    sp&eacute;cifier un mod&egrave;le de recherche/remplacement &agrave; appliquer au corps
-    de la r&eacute;ponse.</p>
+    spécifier un modèle de recherche/remplacement à appliquer au corps
+    de la réponse.</p>
 
-    <p>La signification du mod&egrave;le peut &ecirc;tre modifi&eacute;e via toute
+    <p>La signification du modèle peut être modifiée via toute
     combinaison de ces drapeaux :</p>
 
     <dl>
         <dt><code>i</code></dt>
         <dd>Effectue une comparaison sans tenir compte de la casse.</dd>
         <dt><code>n</code></dt>
-        <dd>Par d&eacute;faut, le mod&egrave;le est trait&eacute; en tant qu'expression
+        <dd>Par défaut, le modèle est traité en tant qu'expression
 	rationnelle. Le drapeau <code>n</code> force le traitement du
-	mod&egrave;le en tant que cha&icirc;ne fixe.</dd>
+	modèle en tant que chaîne fixe.</dd>
         <dt><code>f</code></dt>
-	<!-- Paragraphe suivant &agrave; am&eacute;liorer par un connaisseur de ce
+	<!-- Paragraphe suivant à améliorer par un connaisseur de ce
 	module -->
-        <dd>Avec le drapeau <code>f</code>, mod_substitute met &agrave; plat le
-	r&eacute;sultat d'une substitution (les conteneurs ou buckets ne sont
-	pas dissoci&eacute;s), ce qui permet &agrave; d'&eacute;ventuelles substitutions
-	ult&eacute;rieures de s'effectuer sur cette derni&egrave;re. C'est le
-	comportement par d&eacute;faut.</dd>
+        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met à plat le
+	résultat d'une substitution (les conteneurs ou buckets ne sont
+	pas dissociés), ce qui permet à d'éventuelles substitutions
+	ultérieures de s'effectuer sur cette dernière. C'est le
+	comportement par défaut.</dd>
         <dt><code>q</code></dt>
-	<!-- Paragraphe suivant &agrave; am&eacute;liorer par un connaisseur de ce
+	<!-- Paragraphe suivant à améliorer par un connaisseur de ce
 	module -->
-        <dd>Avec le drapeau <code>q</code>, mod_substitute dissocie les
-	conteneurs (ou buckets) apr&egrave;s chaque substitution. Ceci peut
-	am&eacute;liorer la rapidit&eacute; de la r&eacute;ponse et diminuer la quantit&eacute; de
-	m&eacute;moire utilis&eacute;e, mais ne doit &ecirc;tre utilis&eacute; que s'il n'existe
-	aucune possibilit&eacute; pour que le r&eacute;sultat d'une substitution ne
-	corresponde au mod&egrave;le ou &agrave; l'expression rationnelle d'une
-	substitution ult&eacute;rieure.</dd>
+        <dd>Avec le drapeau <code>q</code>, <code>mod_substitute</code> dissocie les
+	conteneurs (ou buckets) après chaque substitution. Ceci peut
+	améliorer la rapidité de la réponse et diminuer la quantité de
+	mémoire utilisée, mais ne doit être utilisé que s'il n'existe
+	aucune possibilité pour que le résultat d'une substitution ne
+	corresponde au modèle ou à l'expression rationnelle d'une
+	substitution ultérieure.</dd>
     </dl>
 
     <example><title>Exemple</title>
@@ -92,10 +92,10 @@ r&eacute;ponse</description>
         </highlight>
     </example>
 
-    <p>Si le mod&egrave;le ou la cha&icirc;ne de substitution contient un caract&egrave;re
-    slash '/', il faut utiliser un autre d&eacute;limiteur :</p>
+    <p>Si le modèle ou la chaîne de substitution contient un caractère
+    slash '/', il faut utiliser un autre délimiteur :</p>
 
-    <example><title>Exemple d'utilisation d'un d&eacute;limiteur
+    <example><title>Exemple d'utilisation d'un délimiteur
     alternatif</title>
         <highlight language="config">
 &lt;Location "/"&gt;
@@ -105,10 +105,10 @@ r&eacute;ponse</description>
         </highlight>
     </example>
 
-    <p>Lorsqu'on utilise des expressions rationnelles, on peut ins&eacute;rer
-    des r&eacute;f&eacute;rences arri&egrave;res dans les op&eacute;rations de comparaison et de
-    substitution, comme illustr&eacute; dans l'exemple suivant :</p>
-    <example><title>Exemple d'utilisation de r&eacute;f&eacute;rences arri&egrave;res et de captures</title>
+    <p>Lorsqu'on utilise des expressions rationnelles, on peut insérer
+    des références arrières dans les opérations de comparaison et de
+    substitution, comme illustré dans l'exemple suivant :</p>
+    <example><title>Exemple d'utilisation de références arrières et de captures</title>
         <highlight language="config">
 &lt;Location "/"&gt;
     AddOutputFilterByType SUBSTITUTE text/html
@@ -118,20 +118,20 @@ r&eacute;ponse</description>
     </highlight>
     </example>
 
-    <p>Un sc&eacute;nario courant d'utilisation de <code>mod_substitute</code>
-    est la situation o&ugrave; un serveur frontal mandate des requ&ecirc;tes pour un
-    serveur d'arri&egrave;re-plan qui renvoie des documents HTML contenant des
-    URLs int&eacute;gr&eacute;es cod&eacute;es en dur qui font r&eacute;f&eacute;rence &agrave; ce serveur
-    d'arri&egrave;re-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
-    final car le serveur d'arri&egrave;re-plan est hors d'atteinte.</p>
+    <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
+    est la situation où un serveur frontal mandate des requêtes pour un
+    serveur d'arrière-plan qui renvoie des documents HTML contenant des
+    URLs intégrées codées en dur qui font référence à ce serveur
+    d'arrière-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
+    final car le serveur d'arrière-plan est hors d'atteinte.</p>
 
-    <p>On peut, dans ce cas, utiliser <code>mod_substutite</code> pour
-    r&eacute;&eacute;crire ces URLs afin qu'elles soit utilisables dans la partie
-    situ&eacute;e derri&egrave;re le mandataire :</p>
+    <p>On peut, dans ce cas, utiliser <code>mod_substitute</code> pour
+    réécrire ces URLs afin qu'elles soit utilisables dans la partie
+    située derrière le mandataire :</p>
 
-    <example><title>R&eacute;&eacute;criture des URLs int&eacute;gr&eacute;es &agrave; un contenu mandat&eacute;</title>
+    <example><title>Réécriture des URLs intégrées à un contenu mandaté</title>
     <highlight language="config">
-ProxyPass "/blog/" "http://internal.blog.example.com"
+ProxyPass        "/blog/" "http://internal.blog.example.com"
 ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
 
 Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
@@ -139,36 +139,36 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
     </example>
 
     <p>La directive <directive
-    module="mod_proxy">ProxyPassReverse</directive> modifie tout en-t&ecirc;te
-    <code>Location</code> (redirection) envoy&eacute; par le serveur
-    d'arri&egrave;re-plan et, dans cet exemple, la directive
-    <code>Substitute</code> se charge &agrave; son tour de la modification de
-    la r&eacute;ponse HTML.</p>
+    module="mod_proxy">ProxyPassReverse</directive> modifie tout en-tête
+    <code>Location</code> (redirection) envoyé par le serveur
+    d'arrière-plan et, dans cet exemple, la directive
+    <directive>Substitute</directive> se charge à son tour de la modification de
+    la réponse HTML.</p>
 
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SubstituteMaxLineLength</name>
-<description>D&eacute;finit la longueur de ligne maximale</description>
+<description>Définit la longueur de ligne maximale</description>
 <syntax>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</syntax>
 <default>SubstituteMaxLineLength 1m</default>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible &agrave; partir de la version 2.4.11 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.11 du serveur HTTP
 Apache</compatibility>
 
 <usage>
-    <p>La taille de la ligne trait&eacute;e par <module>mod_substitute</module>
-    est limit&eacute;e afin de restreindre l'utilisation des ressources
-    m&eacute;moire. La directive <directive>SubstituteMaxLineLength</directive>
-    permet de d&eacute;finir cette limite. La valeur de la limite peut &ecirc;tre
-    sp&eacute;cifi&eacute;e sous la forme d'un nombre d'octets, et peut &ecirc;tre suffix&eacute;e
+    <p>La taille de la ligne traitée par <module>mod_substitute</module>
+    est limitée afin de restreindre l'utilisation des ressources
+    mémoire. La directive <directive>SubstituteMaxLineLength</directive>
+    permet de définir cette limite. La valeur de la limite peut être
+    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
     par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
     <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
     <code>G</code> pour fournir une valeur respectivement en octets,
-    kiloOctets, m&eacute;gaOctets ou gigaOctets.</p>
+    kiloOctets, mégaOctets ou gigaOctets.</p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -185,28 +185,28 @@ Apache</compatibility>
 
 <directivesynopsis>
 <name>SubstituteInheritBefore</name>
-<description>Modifie l'ordre de fusion des mod&egrave;les h&eacute;rit&eacute;s</description>
+<description>Modifie l'ordre de fusion des modèles hérités</description>
 <syntax>SubstituteInheritBefore on|off</syntax>
 <default>SubstituteInheritBefore on</default>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP
 Apache</compatibility>
 
 <usage>
-    <p>Cette directive permet de d&eacute;finir si l'on applique les mod&egrave;les
-<directive>Substitute</directive> h&eacute;rit&eacute;s en premier (valeur
-<code>on</code>), ou apr&egrave;s ceux du
+    <p>Cette directive permet de définir si l'on applique les modèles
+<directive module="mod_substitute">Substitute</directive> hérités en premier
+(valeur <code>on</code>), ou après ceux du
 contexte courant (valeur <code>off</code>). Sa valeur est maintenant
-d&eacute;finie par d&eacute;faut &agrave; <code>on</code> ; il est cependant possible de
-restaurer le comportement des versions 2.4 et ant&eacute;rieures du serveur qui
-&eacute;tait &eacute;quivalent &agrave; une d&eacute;finition &agrave; <code>off</code> de cette directive.
+définie par défaut à <code>on</code> ; il est cependant possible de
+restaurer le comportement des versions 2.4 et antérieures du serveur qui
+était équivalent à une définition à <code>off</code> de cette directive.
 La valeur de la directive <directive>SubstituteInheritBefore</directive> est
-elle-m&ecirc;me h&eacute;rit&eacute;e, et les contextes qui en h&eacute;ritent (ceux qui ne
-d&eacute;finissent pas explicitement leur propre directive
+elle-même héritée, et les contextes qui en héritent (ceux qui ne
+définissent pas explicitement leur propre directive
 <directive>SubstituteInheritBefore</directive>) appliqueront donc
-l'ordre de fusion d&eacute;fini le plus proche.</p>
+l'ordre de fusion défini le plus proche.</p>
 </usage>
 </directivesynopsis>
 
