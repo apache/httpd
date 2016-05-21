@@ -62,7 +62,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">アップグレード</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="programs/configure.html">ソースツリーの設定</a></li><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="programs/configure.html">ソースツリーの設定</a></li><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>

@@ -135,7 +135,7 @@ URLs on the fly</td></tr>
                suffixed by the relative
                substitution is also valid as a URL path on the server
                (this is rare).</li>
-          <li> In Apache HTTP Server 2.4.11 and later, this directive may be
+          <li> In Apache HTTP Server 2.4.16 and later, this directive may be
                 omitted when the request is mapped via
                 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
                 or <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</li>
@@ -1018,7 +1018,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
          extended URL and filesystem context information to change the
          relative substitution back into a URL. Modules such as
          <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
-         supply this extended context info.  </p>
+         supply this extended context info.  Available in 2.4.16 and later.</p>
       </dd>
 
       </dl>

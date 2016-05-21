@@ -84,8 +84,10 @@
   <modulefile>mod_proxy_fcgi.xml.fr</modulefile>
   <modulefile>mod_proxy_fdpass.xml.fr</modulefile>
   <modulefile>mod_proxy_ftp.xml.fr</modulefile>
+  <modulefile>mod_proxy_hcheck.xml</modulefile>
   <modulefile>mod_proxy_html.xml.fr</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
+  <modulefile>mod_proxy_http2.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml.fr</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml.fr</modulefile>

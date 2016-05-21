@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_proxy_hcheck: Provide for dynamic background health
+     checks on reverse proxies associated with BalancerMember
+     workers. [Jim Jagielski]
+
   *) mod_http2: Fix async write issue that led to selection of wrong timeout
      vs. keepalive timeout selection for idle sessions. [Stefan Eissing]
      

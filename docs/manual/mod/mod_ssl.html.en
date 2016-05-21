@@ -345,8 +345,8 @@ directive.</p>
     <p>The following example grants access if the user is authenticated
        either with a client certificate or by username and password.</p>
 
-    <pre class="prettyprint lang-config">      Require ssl-verify-client<br />
-      Require valid-user</pre>
+    <pre class="prettyprint lang-config">Require ssl-verify-client
+Require valid-user</pre>
 
 
   
