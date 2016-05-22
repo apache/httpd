@@ -1433,7 +1433,7 @@ static authz_status ldapsearch_check_authorization(request_rec *r,
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02633)
-                  "auth_ldap authorize filter: authorization denied for "
+                  "auth_ldap authorize search: authorization denied for "
                   "to %s", r->uri);
 
     return AUTHZ_DENIED;
