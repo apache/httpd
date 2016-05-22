@@ -73,17 +73,8 @@
 <div class="section">
 <h2><a name="using" id="using">Using Digest Authentication</a></h2>
 
-    <p>To use MD5 Digest authentication, simply
-    change the normal <code>AuthType Basic</code> and
-    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
-    to <code>AuthType Digest</code> and
-    <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>,
-    when setting up authentication, then add a
-    <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> directive containing at least the root
-    URI(s) for this protection space.</p>
-
-    <p>Appropriate user (text) files can be created using the
-    <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
+    <p>To use MD5 Digest authentication, configure the location to be
+    protected as shown in the below example:</p>
 
     <div class="example"><h3>Example:</h3><pre class="prettyprint lang-config">&lt;Location "/private/"&gt;
     AuthType Digest
@@ -95,6 +86,14 @@
     Require valid-user
 &lt;/Location&gt;</pre>
 </div>
+
+    <p><code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code>
+    should list the locations that will be protected by this
+    configuration.</p>
+
+    <p>The pasword file referenced in the <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> directive may be
+    created and managed using the <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> tool.</p>
+
 
     <div class="note"><h3>Note</h3>
     <p>Digest authentication was intended to be more secure than basic
