@@ -175,6 +175,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener
 
+  *) core: save a few bytes in conf pool.
+     trunk patch: http://svn.apache.org/r1744980
+     2.4.x patch: trunk works
+     +1: jailletc36, 
+
+  *) mod_proxy_(fcgi|scgi|http): save a few bytes in the request pool when this
+     handler is not able to process the URL.
+     trunk patch: http://svn.apache.org/r1744458
+                  http://svn.apache.org/91744459
+                  http://svn.apache.org/r1744460
+     2.4.x patch: trunk works
+     +1: jailletc36, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
@@ -223,19 +236,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      trunk patch: http://svn.apache.org/r1506474
      2.4.x patch: trunk works
      +1: jorton, 
-
-   * core: save a few bytes in conf pool.
-     trunk patch: http://svn.apache.org/r1744980
-     2.4.x patch: trunk works
-     +1: jailletc36, 
-
-   * mod_proxy_(fcgi|scgi|http): save a few bytes in the request pool when this
-     handler is not able to process the URL.
-     trunk patch: http://svn.apache.org/r1744458
-                  http://svn.apache.org/91744459
-                  http://svn.apache.org/r1744460
-     2.4.x patch: trunk works
-     +1: jailletc36, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
