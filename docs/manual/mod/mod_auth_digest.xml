@@ -49,18 +49,8 @@
 
 <section id="using"><title>Using Digest Authentication</title>
 
-    <p>To use MD5 Digest authentication, simply
-    change the normal <code>AuthType Basic</code> and
-    <directive module="mod_auth_basic">AuthBasicProvider</directive>
-    to <code>AuthType Digest</code> and
-    <directive module="mod_auth_digest">AuthDigestProvider</directive>,
-    when setting up authentication, then add a
-    <directive module="mod_auth_digest"
-    >AuthDigestDomain</directive> directive containing at least the root
-    URI(s) for this protection space.</p>
-
-    <p>Appropriate user (text) files can be created using the
-    <program>htdigest</program> tool.</p>
+    <p>To use MD5 Digest authentication, configure the location to be
+    protected as shown in the below example:</p>
 
     <example><title>Example:</title>
     <highlight language="config">
@@ -75,6 +65,15 @@
 &lt;/Location&gt;
       </highlight>
     </example>
+
+    <p><directive module="mod_auth_digest">AuthDigestDomain</directive>
+    should list the locations that will be protected by this
+    configuration.</p>
+
+    <p>The pasword file referenced in the <directive
+    module="mod_auth_digest">AuthUserFile</directive> directive may be
+    created and managed using the <program>htdigest</program> tool.</p>
+
 
     <note><title>Note</title>
     <p>Digest authentication was intended to be more secure than basic
