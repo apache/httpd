@@ -32,15 +32,11 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>
-      Abajo se muestra una lista con todos los módulos que forman
+      Debajo se muestra una lista con todos los módulos que forman
       parte de la distribución de Apache.  Consulte también la lista
-      alfabética completa de <a href="directives.html">las
+      alfabética completa de <a href="directives.html">
       directivas de Apache</a>.
     </p>
   </div>
@@ -48,11 +44,11 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#core">Funcionalidad Básica y Módulos
             de MultiProcesamiento (MPM)</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Otros Módulos</a></li></ul><h3>Consulte también</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">Módulos de MultiProcesamiento
+<li><a href="../mpm.html">Módulos de Multi-Procesamiento
   (MPMs)</a>
   </li>
-<li><a href="quickreference.html">Guía Rápida de Referencia de
-  Directivas</a>
+<li><a href="quickreference.html">Guía Rápida de Referencia de 
+  	Directivas</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
