@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_http2: improved event handling for suspended streams, responses
+     and window updates. [Stefan Eissing] 
+     
   *) mod_proxy_hcheck: Provide for dynamic background health
      checks on reverse proxies associated with BalancerMember
      workers. [Jim Jagielski]
