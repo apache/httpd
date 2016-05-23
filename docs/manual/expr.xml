@@ -576,6 +576,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 &lt;/If&gt;
 &lt;/Directory&gt;
 
+# Check against the client IP
+&lt;If "-R '192.168.1.0/24'"&gt;
+    Header set matched true
+&lt;/If&gt;
+
 # Function examples in boolean context
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
