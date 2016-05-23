@@ -1,8 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 420990:926432 (outdated) -->
-
+<!-- English Revision: 926432 -->
+<!-- Tranlslated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Review by Sergio Ramos -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,20 +23,19 @@
 -->
 
 <moduleindex metafile="index.xml.meta">
-  <title>&#205;ndice de Módulos</title>
+  <title>Índice de Módulos</title>
   <summary>
     <p>
-      Abajo se muestra una lista con todos los m&#243;dulos que forman
-      parte de la distribuci&#243;n de Apache.  Consulte tambi&#233;n la lista
-      alfab&#233;tica completa de <a href="directives.html">las
+      Debajo se muestra una lista con todos los módulos que forman
+      parte de la distribución de Apache.  Consulte también la lista
+      alfabética completa de <a href="directives.html">
       directivas de Apache</a>.
     </p>
   </summary>
-  <seealso><a href="../mpm.html">M&#243;dulos de MultiProcesamiento
+  <seealso><a href="../mpm.html">Módulos de Multi-Procesamiento
   (MPMs)</a>
   </seealso>
-  <seealso><a href="quickreference.html">Gu&#237;a R&#225;pida de Referencia de
-  Directivas</a>
+  <seealso><a href="quickreference.html">Guía Rápida de Referencia de 
+  	Directivas</a>
   </seealso>
 </moduleindex>
-
