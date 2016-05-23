@@ -34,9 +34,9 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Módulos y Directivas relacionados</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host">Control de Acceso por host</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Access control by arbitrary variables</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Access control with mod_rewrite</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Control de acceso por variables arbitrarias.</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Control de acceso con mod_rewrite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">Más información</a></li>
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -77,26 +77,28 @@ Require ip <var>ip.address</var>
     </pre>
 
 
-    <p>En la primera formaIn the first form, <var>address</var> is a fully qualified
-    domain name (or a partial domain name); you may provide multiple
-    addresses or domain names, if desired.</p>
+    <p>En la primera línea, <var>address</var> es el FQDN de un nombre de 
+    dominio (o un nombre parcial del dominio); puede proporcionar múltiples
+    direcciones o nombres de dominio, si se desea.
+    </p>
 
-    <p>In the second form, <var>ip.address</var> is an IP address, a
-    partial IP address, a network/netmask pair, or a network/nnn CIDR
-    specification. Either IPv4 or IPv6 addresses may be used.</p>
+    <p>En la segunda línea, <var>ip.address</var> es la dirección IP, una
+    dirección IP parcial, una red con su máscara, o una especificación red/nnn 
+    CIDR. Pueden usarse tanto IPV4 como IPV6.</p>
 
-    <p>See <a href="../mod/mod_authz_host.html#requiredirectives">the
-    mod_authz_host documentation</a> for further examples of this
-    syntax.</p>
+    <p>Consulte también <a href="../mod/mod_authz_host.html#requiredirectives">la 
+    documentación de mod_authz_host </a> para otros ejemplos de esta sintaxis.
+    </p>
 
-    <p>You can insert <code>not</code> to negate a particular requirement.
-    Note, that since a <code>not</code> is a negation of a value, it cannot
-    be used by itself to allow or deny a request, as <em>not true</em>
-    does not constitute <em>false</em>. Thus, to deny a visit using a negation,
-    the block must have one element that evaluates as true or false.
-    For example, if you have someone spamming your message
-    board, and you want to keep them out, you could do the
-    following:</p>
+    <p>Puede ser insertado <code>not</code> para negar un requisito en particular.
+    Note que, ya que <code>not</code> es una negación de un valor, no puede ser 
+    usado por si solo para permitir o denegar una petición, como <em>not true</em>
+    que no contituye ser <em>false</em>. En consecuencia, para denegar una 
+    visita usando una negación, el bloque debe tener un elemento que se evalúa como
+    verdadero o falso. Por ejemplo, si tienes a alguien espameandote tu tablón de 
+    mensajes, y tu quieres evitar que entren o dejarlos fuera, puedes realizar
+    lo siguiente:
+    </p>
 
     <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
@@ -104,68 +106,69 @@ Require ip <var>ip.address</var>
 &lt;/RequireAll&gt;</pre>
 
 
-    <p>Visitors coming from that address (<code>10.252.46.165</code>)
-    will not be able to see the content covered by this directive. If,
-    instead, you have a machine name, rather than an IP address, you
-    can use that.</p>
+    <p>Los visitantes que vengan desde la IP que se configura (<code>10.252.46.165</code>)
+    no tendrán acceso al contenido que cubre esta directiva. Si en cambio, lo que se 
+    tiene es el nombre de la máquina, en vez de la IP, podrás usar:</p>
 
     <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
     </pre>
 
 
-    <p>And, if you'd like to block access from an entire domain,
-    you can specify just part of an address or domain name:</p>
+    <p>Y, Si lo que se quiere es bloquear el acceso desde dominio especifico, 
+    	podrás especificar parte de una dirección o nombre de dominio:</p>
 
     <pre class="prettyprint lang-config">Require not ip 192.168.205
 Require not host phishers.example.com moreidiots.example
 Require not host gov</pre>
 
 
-    <p>Use of the <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, and <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> directives may be
-    used to enforce more complex sets of requirements.</p>
+    <p>Uso de las directivas <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, y <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> pueden ser usadas
+    para forzar requisitos más complejos.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Access control by arbitrary variables</a></h2>
+<h2><a name="env" id="env">Control de acceso por variables arbitrarias.</a></h2>
 
-    <p>Using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
-    you can allow or deny access based on arbitrary environment
-    variables or request header values. For example, to deny access
-    based on user-agent (the browser type) you might do the
-    following:</p>
+    <p>Haciendo el uso de <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
+    puedes permitir o denegar el acceso basado en variables de entrono arbitrarias
+    o en los valores de las cabeceras de las peticiones. Por ejemplo para denegar 
+    el acceso basándonos en el "user-agent" (tipo de navegador así como Sistema Operativo)
+    puede que hagamos lo siguiente:
+    </p>
 
     <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
     Require all denied
 &lt;/If&gt;</pre>
 
 
-    <p>Using the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-    <code>expr</code> syntax, this could also be written as:</p>
+    <p>Usando la sintaxis de <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    <code>expr</code> , esto también puede ser escrito de la siguiente forma:
+    </p>
 
 
     <pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
 
 
-    <div class="note"><h3>Warning:</h3>
-    <p>Access control by <code>User-Agent</code> is an unreliable technique,
-    since the <code>User-Agent</code> header can be set to anything at all,
-    at the whim of the end user.</p>
+    <div class="note"><h3>Advertencia:</h3>
+    <p>El control de acceso por <code>User-Agent</code> es una técnica poco fiable,
+    ya que la cabecera de <code>User-Agent</code> puede ser modificada y establecerse 
+    al antojo del usuario.</p>
     </div>
 
-    <p>See <a href="../expr.html">the expressions document</a> for a
-    further discussion of what expression syntaxes and variables are
-    available to you.</p>
+    <p>Vea también la página de  <a href="../expr.html">expresiones</a>
+    para una mayor aclaración de que sintaxis tienen las expresiones y que
+    variables están disponibles.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Access control with mod_rewrite</a></h2>
+<h2><a name="rewrite" id="rewrite">Control de acceso con mod_rewrite</a></h2>
 
-    <p>The <code>[F]</code> <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> flag causes a 403 Forbidden
-    response to be sent. Using this, you can deny access to a resource based
-    on arbitrary criteria.</p>
+    <p>El flag <code>[F]</code> de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> causa una respuesta 403 Forbidden
+    para ser enviada. USando esto, podrá denegar el acceso a recursos basándose
+    en criterio arbitrario.</p>
 
-    <p>For example, if you wish to block access to a resource between 8pm
-    and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p>Por ejemplo, si lo que desea es bloquear un recurso entre las 8pm y las 
+    	7am, podrá hacerlo usando <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
 
     <pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
@@ -173,31 +176,33 @@ RewriteCond "%{TIME_HOUR}" "&lt;07"
 RewriteRule "^/fridge"     "-"       [F]</pre>
 
 
-    <p>This will return a 403 Forbidden response for any request after 8pm
-    or before 7am. This technique can be used for any criteria that you wish
-    to check. You can also redirect, or otherwise rewrite these requests, if
-    that approach is preferred.</p>
+    <p>Esto devolverá una respuesta de error 403 Forbidden para cualquier  petición 
+    después de las 8pm y antes de las 7am. Esta técnica puede ser usada para cualquier 
+    criterio que desee usar. También puede redireccionar, o incluso reescribir estas 
+    peticiones, si se prefiere ese enfoque.
+    </p>
 
-    <p>The <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive,
-    added in 2.4, replaces many things that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has
-    traditionally been used to do, and you should probably look there first
-    before resorting to mod_rewrite.</p>
+    <p>La directiva <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
+     añadida en la 2.4, sustituye muchas cosas que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+     tradicionalmente solía hacer, y deberá comprobar estas antes de recurrir a 
+    </p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">More information</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Más información</a></h2>
 
-    <p>The <a href="../expr.html">expression engine</a> gives you a
-    great deal of power to do a variety of things based on arbitrary
-    server variables, and you should consult that document for more
-    detail.</p>
+    <p>El <a href="../expr.html">motor de expresiones</a> le da una gran
+    capacidad de poder para hacer una gran variedad de cosas basadas en 
+    las variables arbitrarias del servidor, y debe consultar este 
+    documento para más detalles.</p>
 
-    <p>Also, you should read the <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
-    documentation for examples of combining multiple access requirements
-    and specifying how they interact.</p>
+    <p>También, deberá leer la documentación de <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+    para ejemplos de combinaciones de múltiples requisitos de acceso y especificar
+    cómo interactúan.
+    </p>
 
-    <p>See also the <a href="auth.html">Authentication and Authorization</a>
-    howto.</p>
+    <p>Vea también los howtos de <a href="auth.html">Authenticación y Autorización</a>
+    </p>
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
