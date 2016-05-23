@@ -73,10 +73,12 @@ struct h2_mplx {
     unsigned int need_registration : 1;
 
     struct h2_ihash_t *streams;     /* all streams currently processing */
-    struct h2_ihash_t *sready;      /* all streams ready for response */
     struct h2_ihash_t *shold;       /* all streams done with task ongoing */
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
+
     struct h2_iqueue *q;            /* all stream ids that need to be started */
+    struct h2_ihash_t *sready;      /* all streams ready for response */
+    struct h2_ihash_t *sresume;     /* all streams that can be resumed */
     
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
@@ -214,30 +216,24 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
  */
 void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
 
-/*******************************************************************************
- * Input handling of streams.
- ******************************************************************************/
+
+typedef apr_status_t stream_ev_callback(void *ctx, int stream_id);
 
 /**
- * Invoke the consumed callback for all streams that had bytes read since the 
- * last call to this function. If no stream had input data consumed, the 
- * callback is not invoked.
- * The consumed callback may also be invoked at other times whenever
- * the need arises.
+ * Dispatch events for the master connection, such as
+ * - resume: new output data has arrived for a suspended stream
+ * - response: the response for a stream is ready
  */
-apr_status_t h2_mplx_in_update_windows(h2_mplx *m);
+apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
+                                            stream_ev_callback *on_resume, 
+                                            stream_ev_callback *on_response, 
+                                            void *ctx);
+
+apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id);
 
 /*******************************************************************************
  * Output handling of streams.
  ******************************************************************************/
-
-/**
- * Get a stream whose response is ready for submit. Will set response and
- * any out data available in stream. 
- * @param m the mplxer to get a response from
- * @param bb the brigade to place any existing repsonse body data into
- */
-struct h2_stream *h2_mplx_next_submit(h2_mplx *m);
 
 /**
  * Opens the output for the given stream with the specified response.

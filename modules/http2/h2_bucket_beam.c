@@ -356,12 +356,25 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
     }
 }
 
-static void report_consumption(h2_bucket_beam *beam)
+static void report_consumption(h2_bucket_beam *beam, int force)
 {
-    if (beam->consumed_fn && (beam->received_bytes != beam->reported_bytes)) {
-        beam->consumed_fn(beam->consumed_ctx, beam, 
-                          beam->received_bytes - beam->reported_bytes);
-        beam->reported_bytes = beam->received_bytes;
+    if (force || beam->received_bytes != beam->reported_consumed_bytes) {
+        if (beam->consumed_fn) { 
+            beam->consumed_fn(beam->consumed_ctx, beam, beam->received_bytes
+                              - beam->reported_consumed_bytes);
+        }
+        beam->reported_consumed_bytes = beam->received_bytes;
+    }
+}
+
+static void report_production(h2_bucket_beam *beam, int force)
+{
+    if (force || beam->sent_bytes != beam->reported_produced_bytes) {
+        if (beam->produced_fn) { 
+            beam->produced_fn(beam->produced_ctx, beam, beam->sent_bytes
+                              - beam->reported_produced_bytes);
+        }
+        beam->reported_produced_bytes = beam->sent_bytes;
     }
 }
 
@@ -393,7 +406,7 @@ static apr_status_t beam_cleanup(void *data)
     beam_close(beam);
     r_purge_reds(beam);
     h2_blist_cleanup(&beam->red);
-    report_consumption(beam);
+    report_consumption(beam, 0);
     h2_blist_cleanup(&beam->purge);
     h2_blist_cleanup(&beam->hold);
     
@@ -500,7 +513,7 @@ void h2_beam_abort(h2_bucket_beam *beam)
         r_purge_reds(beam);
         h2_blist_cleanup(&beam->red);
         beam->aborted = 1;
-        report_consumption(beam);
+        report_consumption(beam, 0);
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
         }
@@ -515,7 +528,7 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_reds(beam);
         beam_close(beam);
-        report_consumption(beam);
+        report_consumption(beam, 0);
         leave_yellow(beam, &bl);
     }
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
@@ -530,7 +543,7 @@ apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block)
         r_purge_reds(beam);
         h2_blist_cleanup(&beam->red);
         beam_close(beam);
-        report_consumption(beam);
+        report_consumption(beam, 0);
         
         while (status == APR_SUCCESS 
                && (!H2_BPROXY_LIST_EMPTY(&beam->proxies)
@@ -693,16 +706,18 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             status = APR_ECONNABORTED;
         }
         else if (red_brigade) {
+            int force_report = !APR_BRIGADE_EMPTY(red_brigade); 
             while (!APR_BRIGADE_EMPTY(red_brigade)
                    && status == APR_SUCCESS) {
                 bred = APR_BRIGADE_FIRST(red_brigade);
                 status = append_bucket(beam, bred, block, beam->red_pool, &bl);
             }
+            report_production(beam, force_report);
             if (beam->m_cond) {
                 apr_thread_cond_broadcast(beam->m_cond);
             }
         }
-        report_consumption(beam);
+        report_consumption(beam, 0);
         leave_yellow(beam, &bl);
     }
     return status;
@@ -756,8 +771,8 @@ transfer:
                         
             if (APR_BUCKET_IS_METADATA(bred)) {
                 if (APR_BUCKET_IS_EOS(bred)) {
-                    beam->close_sent = 1;
                     bgreen = apr_bucket_eos_create(bb->bucket_alloc);
+                    beam->close_sent = 1;
                 }
                 else if (APR_BUCKET_IS_FLUSH(bred)) {
                     bgreen = apr_bucket_flush_create(bb->bucket_alloc);
@@ -834,20 +849,25 @@ transfer:
                  }
             }
         }
-                
-        if (transferred) {
-            status = APR_SUCCESS;
-        }
-        else if (beam->closed) {
+
+        if (beam->closed 
+            && (!beam->green || APR_BRIGADE_EMPTY(beam->green))
+            && H2_BLIST_EMPTY(&beam->red)) {
+            /* beam is closed and we have nothing more to receive */ 
             if (!beam->close_sent) {
                 apr_bucket *b = apr_bucket_eos_create(bb->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, b);
                 beam->close_sent = 1;
+                ++transferred;
                 status = APR_SUCCESS;
             }
-            else {
-                status = APR_EOF;
-            }
+        }
+        
+        if (transferred) {
+            status = APR_SUCCESS;
+        }
+        else if (beam->closed) {
+            status = APR_EOF;
         }
         else if (block == APR_BLOCK_READ && bl.mutex && beam->m_cond) {
             status = wait_cond(beam, bl.mutex);
@@ -866,13 +886,25 @@ leave:
 }
 
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
-                         h2_beam_consumed_callback *cb, void *ctx)
+                         h2_beam_io_callback *cb, void *ctx)
 {
     h2_beam_lock bl;
     
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         beam->consumed_fn = cb;
         beam->consumed_ctx = ctx;
+        leave_yellow(beam, &bl);
+    }
+}
+
+void h2_beam_on_produced(h2_bucket_beam *beam, 
+                         h2_beam_io_callback *cb, void *ctx)
+{
+    h2_beam_lock bl;
+    
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        beam->produced_fn = cb;
+        beam->produced_ctx = ctx;
         leave_yellow(beam, &bl);
     }
 }

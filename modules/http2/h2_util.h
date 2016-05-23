@@ -64,7 +64,11 @@ int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
 
 void h2_ihash_add(h2_ihash_t *ih, void *val);
 void h2_ihash_remove(h2_ihash_t *ih, int id);
+void h2_ihash_remove_val(h2_ihash_t *ih, void *val);
 void h2_ihash_clear(h2_ihash_t *ih);
+
+size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max);
+size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max);
 
 /*******************************************************************************
  * ilist - sorted list for structs with int identifier as first member
@@ -321,7 +325,6 @@ apr_status_t h2_brigade_copy_length(apr_bucket_brigade *dest,
  * @return != 0 iff brigade holds FLUSH or EOS bucket (or both)
  */
 int h2_util_has_eos(apr_bucket_brigade *bb, apr_off_t len);
-int h2_util_bb_has_data(apr_bucket_brigade *bb);
 
 /**
  * Check how many bytes of the desired amount are available and if the
