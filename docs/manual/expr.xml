@@ -581,12 +581,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Header set matched true
 &lt;/If&gt;
 
-# Function examples in boolean context
+# Function example in boolean context
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
   Header set checksum-matched true
-&lt;/If&gt;
-&lt;If "md5('foo') == replace('md5:XXXd18db4cc2f85cedef654fccc4a4d8', 'md5:XXX', 'acb')"&gt;
-  Header set checksum-matched-2 true
 &lt;/If&gt;
 
 # Function example in string context
