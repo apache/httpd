@@ -72,7 +72,8 @@
 
     <p>El uso de estas directivas es:</p>
 
-    <pre class="prettyprint lang-config">Require host <var>address</var>
+ 
+    <pre class="prettyprint lang-config">Require host <var>address</var> <br />
 Require ip <var>ip.address</var>
     </pre>
 

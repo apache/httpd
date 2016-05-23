@@ -68,8 +68,9 @@
 
     <p>El uso de estas directivas es:</p>
 
+ 
     <highlight language="config">
-Require host <var>address</var>
+Require host <var>address</var> <br/>
 Require ip <var>ip.address</var>
     </highlight>
 
