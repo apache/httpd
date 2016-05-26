@@ -188,6 +188,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, 
 
+  *) core: ASCII string comparison functions optimized speed.
+     This proposal includes and renames ap_casecmpstr[n] functions available
+     in trunk.
+     The proposed names are the ones used in APR for the same kind of functions.
+     In order to avoid some new ap_ functions (which are just copies of what is
+     available in APR 1.6.0+), I propose to use exactly the same names and only
+     declare and define the functions in httpd if not available in APR.
+     The same approach has already been used for apr_time_from_msec() for example.
+     Also note that the implementation in APR and in httpd are slighly different.
+     If/when aggreed on this backport and function names in httpd, then trunk should
+     be upgraded accordingly. Uses of the functions could then be backported.
+     trunk patch: ?
+     2.4.x patch: http://home.apache.org/~jailletc36/apr_cstr_casecmp.diff
+     +1: jailletc36, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
