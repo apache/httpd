@@ -65,8 +65,8 @@
 
     <example><title>Single application instance</title>
     <highlight language="config">
-      ProxyPass "/myapp/" "fcgi://localhost:4000/"
-      </highlight>
+ProxyPass "/myapp/" "fcgi://localhost:4000/"
+    </highlight>
     </example>
 
     <p> <module>mod_proxy_fcgi</module> disables connection reuse by
@@ -78,17 +78,17 @@
 
     <example><title>Single application instance, connection reuse (2.4.11 and later)</title>
     <highlight language="config">
-      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
-      </highlight>
+ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
+    </highlight>
     </example>
 
-    <p> The following example passes the request URI as a filesystem 
-    path for the PHP-FPM daemon to run. The request URL is implicitly added 
+    <p> The following example passes the request URI as a filesystem
+    path for the PHP-FPM daemon to run. The request URL is implicitly added
     to the 2nd parameter. The hostname and port following fcgi:// are where
     PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
     </highlight>
     </example>
 
@@ -98,8 +98,8 @@
     the hostname and optional port following fcgi:// are ignored.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
-      # UDS does not currently support connection reuse
-      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/" 
+# UDS does not currently support connection reuse
+ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>
 
@@ -125,9 +125,9 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
         specified FastCGI server using reverse proxy.
         This feature is available in Apache HTTP Server 2.4.10 and later. For performance
        reasons, you will want to define a <a href="mod_proxy.html#workers">worker</a>
-       representing the same fcgi:// backend. The benefit of this form is that it 
-       allows the normal mapping of URI to filename to occur in the server, and the 
-       local filesystem result is passed to the backend.  When FastCGI is 
+       representing the same fcgi:// backend. The benefit of this form is that it
+       allows the normal mapping of URI to filename to occur in the server, and the
+       local filesystem result is passed to the backend.  When FastCGI is
        configured this way, the server can calculate the most accurate
        PATH_INFO.
       </p>
@@ -137,12 +137,13 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
-   # Define a matching worker.
-   # The part that is matched to the SetHandler is the part that 
-   # follows the pipe. If you need to distinguish, "localhost; can
-   # be anything unique.
-   &lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
-   &lt;/Proxy&gt;
+
+# Define a matching worker.
+# The part that is matched to the SetHandler is the part that
+# follows the pipe. If you need to distinguish, "localhost; can
+# be anything unique.
+&lt;Proxy "fcgi://localhost/" enablereuse=on max=10&gt;
+&lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
     SetHandler  "proxy:fcgi://localhost:9000"
@@ -175,19 +176,19 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
         is chosen (In 2.4.11 and later only):
         <dl>
           <dt>first-dot</dt>
-          <dd>PATH_INFO is split from the slash following the 
+          <dd>PATH_INFO is split from the slash following the
               <em>first</em> "." in the URL.</dd>
           <dt>last-dot</dt>
-          <dd>PATH_INFO is split from the slash following the 
+          <dd>PATH_INFO is split from the slash following the
               <em>last</em> "." in the URL.</dd>
-          <dt>full</dt> 
-          <dd>PATH_INFO is calculated by an attempt to map the URL to the 
+          <dt>full</dt>
+          <dd>PATH_INFO is calculated by an attempt to map the URL to the
               local filesystem.</dd>
           <dt>unescape</dt>
-          <dd>PATH_INFO is the path component of the URL, unescaped / 
+          <dd>PATH_INFO is the path component of the URL, unescaped /
               decoded.</dd>
           <dt>any other value</dt>
-          <dd>PATH_INFO is the same as the path component of the URL.  
+          <dd>PATH_INFO is the same as the path component of the URL.
               Originally, this was the only proxy-fcgi-pathinfo option.</dd>
          </dl>
         </dd>
