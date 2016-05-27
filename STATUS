@@ -203,6 +203,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jailletc36/apr_cstr_casecmp.diff
      +1: jailletc36, 
 
+  *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
+     OPENSSL_Applink error. PR59630
+     trunk patch: http://svn.apache.org/r1745767
+     2.4.x: trunk works
+     +1 gsmith,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
