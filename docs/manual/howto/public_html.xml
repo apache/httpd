@@ -35,14 +35,15 @@
     module="mod_userdir">UserDir</directive> directive.</p>
 <p>Note that, by default, access to these directories is <strong>not</strong>
     enabled. You can enable access when using <directive module="mod_userdir"
-    >UserDir</directive> by uncommenting the line</p>
-    <example>
+    >UserDir</directive> by uncommenting the line:</p>
+    <highlight language="config">
       #Include conf/extra/httpd-userdir.conf
-    </example>
+    </highlight>
     <p>in the default config file <code>conf/httpd.conf</code>, and adapting the <code
     >httpd-userdir.conf</code>
     file as necessary, or by including the appropriate directives in a
-    <code>Directory</code> block within the main config file.</p>
+    <directive module="core" type="section">Directory</directive> block
+    within the main config file.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
