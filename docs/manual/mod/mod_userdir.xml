@@ -78,7 +78,7 @@ host</context></contextlist>
 
     <p>If neither the <code>enabled</code> nor the
     <code>disabled</code> keywords appear in the
-    <code>Userdir</code> directive, the argument is treated as a
+    <directive>Userdir</directive> directive, the argument is treated as a
     filename pattern, and is used to turn the name into a directory
     specification. A request for
     <code>http://www.example.com/~bob/one/two.html</code> will be
@@ -156,7 +156,7 @@ UserDir enabled user1 user2 user3
 
     <p>User directory substitution is not active by default in versions
     2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
-    was assumed if no <directive module="mod_userdir">UserDir</directive>
+    was assumed if no <directive>UserDir</directive>
     directive was present.</p>
 
     <note><title>Merging details</title>
