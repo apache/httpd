@@ -93,7 +93,7 @@ tutorial</a></li>
 
     <p>If neither the <code>enabled</code> nor the
     <code>disabled</code> keywords appear in the
-    <code>Userdir</code> directive, the argument is treated as a
+    <code class="directive">Userdir</code> directive, the argument is treated as a
     filename pattern, and is used to turn the name into a directory
     specification. A request for
     <code>http://www.example.com/~bob/one/two.html</code> will be
@@ -150,7 +150,7 @@ UserDir enabled user1 user2 user3</pre>
     <p>It is also possible to specify alternative user directories.
     If you use a command like:</p>
 
-    <pre class="prettyprint lang-config">UserDir public_html /usr/web http://www.example.com/</pre>
+    <pre class="prettyprint lang-config">UserDir "public_html" "/usr/web" "http://www.example.com/"</pre>
 
 
     <p>With a request for
@@ -166,7 +166,7 @@ UserDir enabled user1 user2 user3</pre>
 
     <p>User directory substitution is not active by default in versions
     2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
-    was assumed if no <code class="directive"><a href="#userdir">UserDir</a></code>
+    was assumed if no <code class="directive">UserDir</code>
     directive was present.</p>
 
     <div class="note"><h3>Merging details</h3>
