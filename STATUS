@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
      OPENSSL_Applink error. PR59630
      trunk patch: http://svn.apache.org/r1745767
-     2.4.x: trunk works
+     2.4.x: trunk works (modulo CHANGES)
      +1 gsmith,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
