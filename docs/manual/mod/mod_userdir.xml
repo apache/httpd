@@ -140,7 +140,7 @@ UserDir enabled user1 user2 user3
     If you use a command like:</p>
 
     <highlight language="config">
-      UserDir public_html /usr/web http://www.example.com/
+      UserDir "public_html" "/usr/web" "http://www.example.com/"
     </highlight>
 
     <p>With a request for
