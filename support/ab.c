@@ -170,6 +170,10 @@
 #define SK_VALUE(x,y) sk_X509_value(x,y)
 typedef STACK_OF(X509) X509_STACK_TYPE;
 
+#if defined(_MSC_VER) && _MSC_VER >= 1900
+#include <openssl/applink.c>
+#endif
+
 #endif
 
 #if defined(USE_SSL)
