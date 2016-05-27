@@ -65,7 +65,7 @@
 
     <example><title>Single application instance</title>
     <highlight language="config">
-      ProxyPass "/myapp/" "fcgi://localhost:4000/"
+ProxyPass "/myapp/" "fcgi://localhost:4000/"
     </highlight>
     </example>
 
@@ -76,10 +76,10 @@
     from httpd, you can opt-in to connection reuse as shown in the following
     example:</p>
 
-    <example><title>Single application instance, connection reuse</title>
+    <example><title>Single application instance, connection reuse (2.4.11 and later)</title>
     <highlight language="config">
-      ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
-      </highlight>
+ProxyPass "/myapp/" "fcgi://localhost:4000/" enablereuse=on
+    </highlight>
     </example>
 
     <p> The following example passes the request URI as a filesystem
@@ -88,7 +88,7 @@
     PHP-FPM is listening.  Connection pooling is enabled.</p>
     <example><title>PHP-FPM</title>
     <highlight language="config">
-      ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
+ProxyPassMatch "^/myapp/.*\.php(/.*)?$" "fcgi://localhost:9000/var/www/" enablereuse=on
     </highlight>
     </example>
 
@@ -98,8 +98,8 @@
     the hostname and optional port following fcgi:// are ignored.</p>
     <example><title>PHP-FPM with UDS</title>
     <highlight language="config">
-      # UDS does not currently support connection reuse
-      ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
+# UDS does not currently support connection reuse
+ProxyPassMatch "^/(.*\.php(/.*)?)$" "unix:/var/run/php5-fpm.sock|fcgi://localhost/var/www/"
     </highlight>
     </example>
 
@@ -112,9 +112,9 @@
     <example><title>Balanced gateway to multiple application instances</title>
     <highlight language="config">
 ProxyPass "/myapp/" "balancer://myappcluster/"
-&lt;Proxy balancer://myappcluster/&gt;
-    BalancerMember fcgi://localhost:4000
-    BalancerMember fcgi://localhost:4001
+&lt;Proxy "balancer://myappcluster/"&gt;
+    BalancerMember "fcgi://localhost:4000"
+    BalancerMember "fcgi://localhost:4001"
 &lt;/Proxy&gt;
     </highlight>
     </example>
@@ -137,12 +137,13 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     # Note: The only part that varies is /path/to/app.sock
     SetHandler  "proxy:unix:/path/to/app.sock|fcgi://localhost/"
 &lt;/FilesMatch&gt;
-   # Define a matching worker.
-   # The part that is matched to the SetHandler is the part that
-   # follows the pipe. If you need to distinguish, "localhost; can
-   # be anything unique.
-   &lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
-   &lt;/Proxy&gt;
+
+# Define a matching worker.
+# The part that is matched to the SetHandler is the part that
+# follows the pipe. If you need to distinguish, "localhost; can
+# be anything unique.
+&lt;Proxy fcgi://localhost/ enablereuse=on max=10&gt;
+&lt;/Proxy&gt;
 
 &lt;FilesMatch ...&gt;
     SetHandler  "proxy:fcgi://localhost:9000"
@@ -172,7 +173,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
         a "best guess" for <var>PATH_INFO</var>, set this env-var.
         This is a workaround for a bug in some FCGI implementations.  This
         variable can be set to multiple values to tweak at how the best guess
-        is chosen:
+        is chosen (In 2.4.11 and later only):
         <dl>
           <dt>first-dot</dt>
           <dd>PATH_INFO is split from the slash following the
