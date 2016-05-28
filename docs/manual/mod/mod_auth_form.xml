@@ -75,14 +75,18 @@
 
       <example><title>Basic example</title>
       <highlight language="config">
-AuthFormProvider file
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret
+<Location "/admin">
+    AuthFormProvider file
+    AuthUserFile "conf/passwd"
+    AuthType form
+    AuthName "/admin"
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    Session On
+    SessionCookieName session path=/
+    SessionCryptoPassphrase secret
+
+    Require valid-user
+</Location>
         </highlight>
       </example>
 
