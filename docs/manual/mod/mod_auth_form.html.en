@@ -172,7 +172,7 @@
       <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/success.html"
+    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
@@ -233,7 +233,7 @@
 ErrorDocument 401 "/login.shtml"
 AuthUserFile "conf/passwd"
 AuthType form
-AuthName realm
+AuthName /admin
 AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/</pre>
