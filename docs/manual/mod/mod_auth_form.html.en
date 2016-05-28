@@ -172,14 +172,13 @@
       <div class="example"><h3>Form login handler example</h3><pre class="prettyprint lang-config">&lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/success.html"
+    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
-    AuthName realm
+    AuthName /admin
     Session On
     SessionCookieName session path=/
-    SessionCryptoPassphrase secret
 &lt;/Location&gt;</pre>
 </div>
 
@@ -237,8 +236,7 @@ AuthType form
 AuthName realm
 AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
       <p>The error document page should contain a login form with an empty action property,
@@ -324,8 +322,7 @@ SessionCryptoPassphrase secret</pre>
 AuthName realm
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
       <p>Note that logging a user out does not delete the session; it merely removes
@@ -340,8 +337,7 @@ SessionCryptoPassphrase secret</pre>
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
