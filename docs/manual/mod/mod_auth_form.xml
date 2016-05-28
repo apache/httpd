@@ -144,14 +144,13 @@
 &lt;Location "/dologin.html"&gt;
     SetHandler form-login-handler
     AuthFormLoginRequiredLocation "http://example.com/login.html"
-    AuthFormLoginSuccessLocation "http://example.com/success.html"
+    AuthFormLoginSuccessLocation "http://example.com/admin/index.html"
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
-    AuthName realm
+    AuthName /admin
     Session On
     SessionCookieName session path=/
-    SessionCryptoPassphrase secret
 &lt;/Location&gt;
         </highlight>
       </example>
@@ -216,7 +215,6 @@ AuthName realm
 AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
@@ -315,7 +313,6 @@ AuthName realm
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
@@ -334,7 +331,6 @@ AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
 SessionCookieName session path=/
-SessionCryptoPassphrase secret
         </highlight>
       </example>
 
