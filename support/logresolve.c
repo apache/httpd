@@ -299,7 +299,7 @@ int main(int argc, const char * const argv[])
             }
         }
 
-        /* Outout the resolved name */
+        /* Output the resolved name */
         apr_file_printf(outfile, "%s %s", hostname, space + 1);
 
         /* Store it in the cache */
