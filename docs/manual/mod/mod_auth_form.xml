@@ -75,14 +75,18 @@
 
       <example><title>Basic example</title>
       <highlight language="config">
-AuthFormProvider file
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret
+&lt;Location "/admin"&gt;
+    AuthFormProvider file
+    AuthUserFile "conf/passwd"
+    AuthType form
+    AuthName "/admin"
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+
+    Session On
+    SessionCookieName session path=/
+
+    Require valid-user
+&lt;/Location&gt;
         </highlight>
       </example>
 
@@ -92,12 +96,16 @@ SessionCryptoPassphrase secret
       <directive module="mod_authn_file">AuthUserFile</directive> specify that usernames
       and passwords should be checked against the chosen file.</p>
 
-      <p>The directives <directive module="mod_session">Session</directive>,
-      <directive module="mod_session_cookie">SessionCookieName</directive> and
-      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> create an
-      encrypted session stored within an HTTP cookie on the browser. For more information
+      <p>The directives <directive module="mod_session">Session</directive> and
+      <directive module="mod_session_cookie">SessionCookieName</directive> 
+      session stored within an HTTP cookie on the browser. For more information
       on the different options for configuring a session, read the documentation for
       <module>mod_session</module>.</p>
+
+      <p>You can optionally add a 
+      <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> to 
+      create an encrypted session cookie. This required the additional
+      module <module>mod_session_crypto</module> be loaded.</p>
 
       <p>In the simple example above, a URL has been protected by
       <module>mod_auth_form</module>, but the user has yet to be given an opportunity to
