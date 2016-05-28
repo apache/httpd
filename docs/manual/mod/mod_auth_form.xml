@@ -75,7 +75,7 @@
 
       <example><title>Basic example</title>
       <highlight language="config">
-<Location "/admin">
+&lt;Location "/admin"&gt;
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
@@ -86,7 +86,7 @@
     SessionCookieName session path=/
 
     Require valid-user
-</Location>
+&lt;/Location&gt;
         </highlight>
       </example>
 

@@ -109,14 +109,18 @@
       a file using <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. If authentication is unsuccessful,
       the user will be redirected to the form login page.</p>
 
-      <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">AuthFormProvider file
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+      <div class="example"><h3>Basic example</h3><pre class="prettyprint lang-config">&lt;Location "/admin"&gt;
+    AuthFormProvider file
+    AuthUserFile "conf/passwd"
+    AuthType form
+    AuthName "/admin"
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+
+    Session On
+    SessionCookieName session path=/
+
+    Require valid-user
+&lt;/Location&gt;</pre>
 </div>
 
       <p>The directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> will enable
@@ -125,12 +129,16 @@ SessionCryptoPassphrase secret</pre>
       <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> specify that usernames
       and passwords should be checked against the chosen file.</p>
 
-      <p>The directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code>,
-      <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> and
-      <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> create an
-      encrypted session stored within an HTTP cookie on the browser. For more information
+      <p>The directives <code class="directive"><a href="../mod/mod_session.html#session">Session</a></code> and
+      <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookiename">SessionCookieName</a></code> 
+      session stored within an HTTP cookie on the browser. For more information
       on the different options for configuring a session, read the documentation for
       <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
+
+      <p>You can optionally add a 
+      <code class="directive"><a href="../mod/mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> to 
+      create an encrypted session cookie. This required the additional
+      module <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code> be loaded.</p>
 
       <p>In the simple example above, a URL has been protected by
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, but the user has yet to be given an opportunity to
@@ -168,10 +176,9 @@ SessionCryptoPassphrase secret</pre>
     AuthFormProvider file
     AuthUserFile "conf/passwd"
     AuthType form
-    AuthName realm
+    AuthName /admin
     Session On
     SessionCookieName session path=/
-    SessionCryptoPassphrase secret
 &lt;/Location&gt;</pre>
 </div>
 
@@ -229,8 +236,7 @@ AuthType form
 AuthName realm
 AuthFormLoginRequiredLocation "http://example.com/login.html"
 Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
       <p>The error document page should contain a login form with an empty action property,
@@ -316,8 +322,7 @@ SessionCryptoPassphrase secret</pre>
 AuthName realm
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
       <p>Note that logging a user out does not delete the session; it merely removes
@@ -332,8 +337,7 @@ SessionCryptoPassphrase secret</pre>
 AuthFormLogoutLocation "http://example.com/loggedout.html"
 Session On
 SessionMaxAge 1
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+SessionCookieName session path=/</pre>
 </div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
