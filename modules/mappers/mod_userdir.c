@@ -89,7 +89,7 @@ module AP_MODULE_DECLARE_DATA userdir_module;
 
 typedef struct {
     int globally_disabled;
-    char *userdir;
+    const char *userdir;
     apr_table_t *enabled_users;
     apr_table_t *disabled_users;
 } userdir_config;
@@ -137,7 +137,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
                                                  &userdir_module);
     char *username;
     const char *usernames = arg;
-    char *kw = ap_getword_conf(cmd->pool, &usernames);
+    char *kw = ap_getword_conf(cmd->temp_pool, &usernames);
     apr_table_t *usertable;
 
     /* Since we are a raw argument, it is possible for us to be called with
@@ -173,7 +173,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
          * If the first (only?) value isn't one of our keywords, just copy
          * the string to the userdir string.
          */
-        s_cfg->userdir = apr_pstrdup(cmd->pool, arg);
+        s_cfg->userdir = arg;
         return NULL;
     }
     /*
@@ -182,7 +182,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
      */
     while (*usernames) {
         username = ap_getword_conf(cmd->pool, &usernames);
-        apr_table_setn(usertable, username, kw);
+        apr_table_setn(usertable, username, "1");
     }
     return NULL;
 }
