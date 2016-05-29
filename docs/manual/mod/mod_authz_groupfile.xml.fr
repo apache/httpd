@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587031:1744985 (outdated) -->
+<!-- English Revision: 1744985 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,19 +25,19 @@
 <modulesynopsis metafile="mod_authz_groupfile.xml.meta">
 
 <name>mod_authz_groupfile</name>
-<description>Autorisation bas&eacute;e sur les groupes &agrave; l'aide de fichiers
+<description>Autorisation basée sur les groupes à l'aide de fichiers
 textes</description>
 <status>Base</status>
 <sourcefile>mod_authz_groupfile.c</sourcefile>
 <identifier>authz_groupfile_module</identifier>
-<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+<compatibility>Disponible depuis les versions 2.1 et supérieures
 d'Apache</compatibility>
 
 <summary>
-    <p>Ce module permet d'autoriser ou d'interdire l'acc&egrave;s &agrave;
-certaines zones du site web aux utilisateurs authentifi&eacute;s en
-fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le module
-<module>mod_authz_dbm</module> fournit une fonctionnalit&eacute; similaire.</p>
+    <p>Ce module permet d'autoriser ou d'interdire l'accès à
+certaines zones du site web aux utilisateurs authentifiés en
+fonction de leur appartenance à un groupe spécifié. Le module
+<module>mod_authz_dbm</module> fournit une fonctionnalité similaire.</p>
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
@@ -47,7 +47,7 @@ fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le modu
     <p>Les directives <directive
     module="mod_authz_core">Require</directive> d'Apache permettent,
     au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
-    est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une ressource. mod_authz_groupfile ajoute
+    est bien autorisé à accéder à une ressource. mod_authz_groupfile ajoute
     les types d'autorisation <code>group</code> et <code>file-group</code>.
     </p>
 
@@ -56,8 +56,8 @@ fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le modu
 
 <section id="reqgroup"><title>Require group</title>
 
-    <p>Cette directive permet de sp&eacute;cifier &agrave; quel groupe un utilisateur
-    doit appartenir pour obtenir l'autorisation d'acc&egrave;s.</p>
+    <p>Cette directive permet de spécifier à quel groupe un utilisateur
+    doit appartenir pour obtenir l'autorisation d'accès.</p>
 
     <highlight language="config">
       Require group admin
@@ -67,8 +67,10 @@ fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le modu
 
 <section id="reqfilegroup"><title>Require file-group</title>
 
-    <p>Lorsque cette directive est d&eacute;finie, l'utilisateur doit
-    appartenir au groupe du fichier pour pouvoir y acc&eacute;der.</p>
+    <p>Lorsque cette directive est définie, Les permissions système du fichier
+    auquel on veut accéder sont vérifiées. L'utilisateur doit être un membre d'un
+    groupe de même nom que le groupe qui possède le fichier. Voir
+    <module>mod_authz_owner</module> pour plus de détails.</p>
 
     <highlight language="config">
       Require file-group
@@ -80,8 +82,8 @@ fonction de leur appartenance &agrave; un groupe sp&eacute;cifi&eacute;. Le modu
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
-<description>D&eacute;finit le nom d'un fichier texte contenant la liste des
-groupes d'utilisateurs permettant de d&eacute;finir les autorisations des
+<description>Définit le nom d'un fichier texte contenant la liste des
+groupes d'utilisateurs permettant de définir les autorisations des
 utilisateurs</description>
 <syntax>AuthGroupFile <var>chemin-fichier</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -89,32 +91,32 @@ utilisateurs</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>La directive <directive>AuthGroupFile</directive> permet de d&eacute;finir
+    <p>La directive <directive>AuthGroupFile</directive> permet de définir
 le nom d'un fichier texte contenant la liste des groupes d'utilisateurs.
-L'appartenance d'un utilisateur &agrave; tel ou tel groupe pourra d&egrave;s lors &ecirc;tre utilis&eacute;e
-pour d&eacute;finir les permissions d'acc&egrave;s de l'utilisateur.
+L'appartenance d'un utilisateur à tel ou tel groupe pourra dès lors être utilisée
+pour définir les permissions d'accès de l'utilisateur.
 <var>chemin-fichier</var> est le chemin du fichier de groupes. S'il n'est
-pas absolu, ce chemin est consid&eacute;r&eacute; comme relatif au r&eacute;pertoire d&eacute;fini par
+pas absolu, ce chemin est considéré comme relatif au répertoire défini par
 la directive <directive module="core">ServerRoot</directive>.</p>
 
     <p>Chaque ligne du fichier de groupes contient un nom de groupe
-suivi du caract&egrave;re ':' et des noms des utilisateurs membres du groupe
-s&eacute;par&eacute;s par des espaces.</p>
+suivi du caractère ':' et des noms des utilisateurs membres du groupe
+séparés par des espaces.</p>
 
     <example><title>Exemple :</title>
       mon-groupe : bob joe anne
     </example>
 
     <p>Notez que la recherche dans de grands fichiers textes est
-<em>tr&egrave;s</em> inefficace ; la directive <directive module="mod_authz_dbm"
+<em>très</em> inefficace ; la directive <directive module="mod_authz_dbm"
     >AuthDBMGroupFile</directive> fournit de bien meilleures
     performances.</p>
 
-    <note type="warning"><title>S&eacute;curit&eacute;</title>
+    <note type="warning"><title>Sécurité</title>
       <p>Le fichier <directive>AuthGroupFile</directive> ne doit pas
-&ecirc;tre stock&eacute; dans l'arborescence des documents du site web ; ne le placez
-<em>surtout pas</em> dans le r&eacute;pertoire qu'il prot&egrave;ge, faute de quoi les
-clients pourraient le t&eacute;l&eacute;charger.</p>
+être stocké dans l'arborescence des documents du site web ; ne le placez
+<em>surtout pas</em> dans le répertoire qu'il protège, faute de quoi les
+clients pourraient le télécharger.</p>
     </note>
 </usage>
 </directivesynopsis>

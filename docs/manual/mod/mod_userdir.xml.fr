@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1334026:1745806 (outdated) -->
+<!-- English Revision: 1745806 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -82,7 +82,7 @@ utilisateur</description>
     </ul>
 
     <p>Si aucun mot-clé <code>enabled</code> ou <code>disabled</code>
-    n'apparait dans la directive <code>Userdir</code>, l'argument est
+    n'apparait dans la directive <directive>Userdir</directive>, l'argument est
     traité en tant que modèle de fichier, et utilisé pour traduire le
     nom d'utilisateur en une spécification de répertoire. Une requête
     pour <code>http://www.example.com/~bob/un/deux.html</code> sera
@@ -148,7 +148,7 @@ UserDir enabled user1 user2 user3
     alternatifs. Si vous utilisez une commande comme :</p>
 
     <highlight language="config">
-      UserDir public_html /usr/web http://www.example.com/
+      UserDir "public_html" "/usr/web" "http://www.example.com/"
     </highlight>
 
     <p>Avec une requête pour
@@ -167,7 +167,7 @@ UserDir enabled user1 user2 user3
     <p>La substitution de répertoire utilisateur n'est pas activée par
     défaut depuis la version 2.1.4. Dans les versions précédentes,
     <code>UserDir public_html</code> était sous-entendu si aucune
-    directive <directive module="mod_userdir">UserDir</directive>
+    directive <directive>UserDir</directive>
     n'était présente.</p>
 
     <note><title>Détails à propos de la fusion</title>

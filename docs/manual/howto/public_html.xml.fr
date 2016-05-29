@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741841:1745806 (outdated) -->
+<!-- English Revision: 1745806 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -38,15 +38,16 @@ la directive <directive module="mod_userdir">UserDir</directive>.</p>
 <p>Notez que par défaut, l'accès à ces répertoires n'est
 <strong>pas</strong> permis. Vous pouvez en permettre l'accès à l'aide
 de la directive <directive module="mod_userdir">UserDir</directive> en
-décommentant la ligne</p>
-    <example>
+décommentant la ligne :</p>
+    <highlight language="config">
       #Include conf/extra/httpd-userdir.conf
-    </example>
+    </highlight>
     <p>dans le fichier de configuration par défaut
     <code>conf/httpd.conf</code>, et en adaptant le
     fichier <code>httpd-userdir.conf</code> selon vos besoins, ou en
     incluant les directives appropriées dans une section
-    <code>Directory</code> du fichier de configuration principal.</p>
+    <directive module="core" type="section">Directory</directive> du fichier de
+    configuration principal.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">Mise en correspondance des URLs
