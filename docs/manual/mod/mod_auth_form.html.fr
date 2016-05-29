@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_form_module</td></tr>
@@ -121,14 +119,18 @@ l'authentification</a></li>
       l'utilisateur dera redirigé vers la page du formulaire de
       connexion.</p>
 
-      <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">AuthFormProvider file
-AuthUserFile "conf/passwd"
-AuthType form
-AuthName realm
-AuthFormLoginRequiredLocation "http://example.com/login.html"
-Session On
-SessionCookieName session path=/
-SessionCryptoPassphrase secret</pre>
+      <div class="example"><h3>Exemple simple</h3><pre class="prettyprint lang-config">&lt;Location "/admin"&gt;
+    AuthFormProvider file
+    AuthUserFile "conf/passwd"
+    AuthType form
+    AuthName "/admin"
+    AuthFormLoginRequiredLocation "http://example.com/login.html"
+    Session On
+    SessionCookieName session path=/
+    SessionCryptoPassphrase secret
+
+    Require valid-user
+&lt;/Location&gt;</pre>
 </div>
 
       <p>L'authentification <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> est activée

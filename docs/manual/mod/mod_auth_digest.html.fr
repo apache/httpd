@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
 MD5</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -80,14 +78,8 @@ l'authentification</a></li>
 <h2><a name="using" id="using">Utilisation de l'authentification à base de
 condensés</a></h2>
 
-    <p>Pour utiliser l'authentification à base de condensés MD5, vous
-    devez simplement remplacer <code>AuthType Basic</code> et <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> respectivement
-    par <code>AuthType Digest</code> et <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code> lorsque vous
-    configurez l'authentification, puis ajouter une directive <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> contenant au
-    moins la(les) URI(s) racine(s) de la zone à protéger.</p>
-
-    <p>On peut créer les fichiers utilisateur appropriés (au format
-    texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
+    <p>Pour utiliser l'authentification à base de condensés MD5, configurez la
+    protection de la section Location comme dans l'exemple ci-dessous :</p>
 
     <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">&lt;Location "/private/"&gt;
     AuthType Digest
@@ -99,6 +91,12 @@ condensés</a></h2>
     Require valid-user
 &lt;/Location&gt;</pre>
 </div>
+
+    <p>La directive <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> permet de fournir la
+    liste des URIs protégés par cette configuration.</p>
+
+    <p>Le fichier de mots de passe référencé par la directive <code class="directive"><a href="#authuserfile">AuthUserFile</a></code> peut être créé et maintenu
+    via l'utilitaire <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
 
     <div class="note"><h3>Note</h3>
     <p>L'authentification à base de condensé a été conçue pour améliorer
