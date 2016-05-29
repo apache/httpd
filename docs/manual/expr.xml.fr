@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1736445:1745206 (outdated) -->
+<!-- English Revision: 1745206 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -642,6 +642,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
       SetOutputFilter INFLATE
 &lt;/If&gt;
 &lt;/Directory&gt;
+
+# Vérifie l'adresse IP du client
+&lt;If "-R '192.168.1.0/24'"&gt;
+    Header set matched true
+&lt;/If&gt;
 
 # Exemples de fonctions dans un contexte booléen
 &lt;If "md5('foo') == 'acbd18db4cc2f85cedef654fccc4a4d8'"&gt;
