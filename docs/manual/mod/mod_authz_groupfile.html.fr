@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur les groupes à l'aide de fichiers
 textes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -83,8 +81,10 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
 <h3><a name="reqfilegroup" id="reqfilegroup">Require file-group</a></h3>
 
-    <p>Lorsque cette directive est définie, l'utilisateur doit
-    appartenir au groupe du fichier pour pouvoir y accéder.</p>
+    <p>Lorsque cette directive est définie, Les permissions système du fichier
+    auquel on veut accéder sont vérifiées. L'utilisateur doit être un membre d'un
+    groupe de même nom que le groupe qui possède le fichier. Voir
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> pour plus de détails.</p>
 
     <pre class="prettyprint lang-config">Require file-group</pre>
 

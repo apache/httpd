@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Répertoires propres à un utilisateur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>userdir_module</td></tr>
@@ -97,7 +95,7 @@ utilisateur</td></tr>
     </ul>
 
     <p>Si aucun mot-clé <code>enabled</code> ou <code>disabled</code>
-    n'apparait dans la directive <code>Userdir</code>, l'argument est
+    n'apparait dans la directive <code class="directive">Userdir</code>, l'argument est
     traité en tant que modèle de fichier, et utilisé pour traduire le
     nom d'utilisateur en une spécification de répertoire. Une requête
     pour <code>http://www.example.com/~bob/un/deux.html</code> sera
@@ -158,7 +156,7 @@ UserDir enabled user1 user2 user3</pre>
     <p>Il est aussi possible de spécifier des répertoires utilisateurs
     alternatifs. Si vous utilisez une commande comme :</p>
 
-    <pre class="prettyprint lang-config">UserDir public_html /usr/web http://www.example.com/</pre>
+    <pre class="prettyprint lang-config">UserDir "public_html" "/usr/web" "http://www.example.com/"</pre>
 
 
     <p>Avec une requête pour
@@ -177,7 +175,7 @@ UserDir enabled user1 user2 user3</pre>
     <p>La substitution de répertoire utilisateur n'est pas activée par
     défaut depuis la version 2.1.4. Dans les versions précédentes,
     <code>UserDir public_html</code> était sous-entendu si aucune
-    directive <code class="directive"><a href="#userdir">UserDir</a></code>
+    directive <code class="directive">UserDir</code>
     n'était présente.</p>
 
     <div class="note"><h3>Détails à propos de la fusion</h3>
