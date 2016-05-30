@@ -103,7 +103,7 @@ void h2_stream_cleanup(h2_stream *stream);
  * destruction to take the pool with it.
  *
  * @param stream the stream to detach the pool from
- * @param the detached memmory pool or NULL if stream no longer has one
+ * @result the detached memory pool or NULL if stream no longer has one
  */
 apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
 
@@ -153,7 +153,7 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
  * @param stream the stream to reset
  * @param error_code the HTTP/2 error code
  */
-void h2_stream_rst(h2_stream *streamm, int error_code);
+void h2_stream_rst(h2_stream *stream, int error_code);
 
 /**
  * Schedule the stream for execution. All header information must be
@@ -182,7 +182,7 @@ struct h2_response *h2_stream_get_response(h2_stream *stream);
  * the stream response has been collected.
  * 
  * @param stream the stream to set the response for
- * @param resonse the response data for the stream
+ * @param response the response data for the stream
  * @param bb bucket brigade with output data for the stream. Optional,
  *        may be incomplete.
  */
