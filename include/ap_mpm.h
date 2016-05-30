@@ -211,7 +211,6 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
  * Register a callback on the readability or writability on a group of
  * sockets/pipes.
  * @param pfds Array of apr_pollfd_t
- * @param p pool for use between registration and callback
  * @param cbfn The callback function
  * @param baton userdata for the callback function
  * @return APR_SUCCESS if all sockets/pipes could be added to a pollset,
@@ -220,14 +219,13 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(
  * from the pollset and only 1 callback is issued.
  */
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pds,
+AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton);
 
 /**
  * Register a callback on the readability or writability on a group of sockets/pipes,
  * with a timeout.
  * @param pfds Array of apr_pollfd_t
- * @param p pool for use between registration and callback
  * @param cbfn The callback function
  * @param tofn The callback function if the timeout expires
  * @param baton userdata for the callback function
@@ -247,7 +245,6 @@ AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
 /**
 * Unregister a previously registered callback.
 * @param pfds Array of apr_pollfd_t
-* @param p pool for use between registration and callback
 * @return APR_SUCCESS if all sockets/pipes could be removed from the pollset,
 * APR_ENOTIMPL if no asynch support, or an apr_pollset_remove error.
 * @remark This function triggers the cleanup registered on the pool p during

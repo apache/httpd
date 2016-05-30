@@ -568,24 +568,24 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
     return ap_run_mpm_register_timed_callback(t, cbfn, baton);
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pds,
+AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback(apr_array_header_t *pfds,
         ap_mpm_callback_fn_t *cbfn, void *baton)
 {
-    return ap_run_mpm_register_poll_callback(pds, cbfn, baton);
+    return ap_run_mpm_register_poll_callback(pfds, cbfn, baton);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_poll_callback_timeout(
-        apr_array_header_t *pds, ap_mpm_callback_fn_t *cbfn,
+        apr_array_header_t *pfds, ap_mpm_callback_fn_t *cbfn,
         ap_mpm_callback_fn_t *tofn, void *baton, apr_time_t timeout)
 {
-    return ap_run_mpm_register_poll_callback_timeout(pds, cbfn, tofn, baton,
+    return ap_run_mpm_register_poll_callback_timeout(pfds, cbfn, tofn, baton,
             timeout);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_unregister_poll_callback(
-        apr_array_header_t *pds)
+        apr_array_header_t *pfds)
 {
-    return ap_run_mpm_unregister_poll_callback(pds);
+    return ap_run_mpm_unregister_poll_callback(pfds);
 }
 
 AP_DECLARE(const char *)ap_show_mpm(void)
