@@ -117,7 +117,7 @@ AP_DECLARE_NONSTD(void) ap_close_listeners(void);
 
 /**
  * Loop through the given ap_listen_rec list and close each of the sockets.
- * @param listener The listener to close.
+ * @param listeners The listener to close.
  */
 AP_DECLARE_NONSTD(void) ap_close_listeners_ex(ap_listen_rec *listeners);
 
