@@ -173,7 +173,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1745033
                   http://svn.apache.org/r1745034
      2.4.x patch: trunk works
-     +1 covener, jailletc36
+     +1 covener
+     jailletc36: r1745033 does not apply. 'ldapsearch_check_authorization' is
+                 not part of 2.4.x.
+                 +1 for r1745034
 
   *) core: save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1744980
