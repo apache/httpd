@@ -167,7 +167,7 @@ apr_uint32_t h2_mplx_shutdown(h2_mplx *m);
  * Notifies mplx that a stream has finished processing.
  * 
  * @param m the mplx itself
- * @param stream_id the id of the stream being done
+ * @param stream the id of the stream being done
  * @param rst_error if != 0, the stream was reset with the error given
  *
  */
@@ -188,7 +188,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
  * Process a stream request.
  * 
  * @param m the multiplexer
- * @param stream_id the identifier of the stream
+ * @param stream the identifier of the stream
  * @param r the request to be processed
  * @param cmp the stream priority compare function
  * @param ctx context data for the compare function

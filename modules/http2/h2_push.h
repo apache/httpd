@@ -63,7 +63,7 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p,
 /**
  * Create a new push diary for the given maximum number of entries.
  * 
- * @oaram p the pool to use
+ * @param p the pool to use
  * @param N the max number of entries, rounded up to 2^x
  * @return the created diary, might be NULL of max_entries is 0
  */
