@@ -58,7 +58,7 @@ void *h2_ihash_get(h2_ihash_t *ih, int id);
  * @param ih the hash to iterate over
  * @param fn the function to invoke on each member
  * @param ctx user supplied data passed into each iteration call
- * @param 0 if one iteration returned 0, otherwise != 0
+ * @return 0 if one iteration returned 0, otherwise != 0
  */
 int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx);
 
@@ -141,14 +141,14 @@ int h2_iq_empty(h2_iqueue *q);
 int h2_iq_count(h2_iqueue *q);
 
 /**
- * Add a stream idto the queue. 
+ * Add a stream id to the queue. 
  *
  * @param q the queue to append the task to
  * @param sid the stream id to add
  * @param cmp the comparator for sorting
  * @param ctx user data for comparator 
  */
-void h2_iq_add(h2_iqueue *q, int i, h2_iq_cmp *cmp, void *ctx);
+void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
 
 /**
  * Remove the stream id from the queue. Return != 0 iff task
@@ -157,7 +157,7 @@ void h2_iq_add(h2_iqueue *q, int i, h2_iq_cmp *cmp, void *ctx);
  * @param sid the stream id to remove
  * @return != 0 iff task was found in queue
  */
-int h2_iq_remove(h2_iqueue *q, int i);
+int h2_iq_remove(h2_iqueue *q, int sid);
 
 /**
  * Remove all entries in the queue.
@@ -374,12 +374,12 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
  * Logs the bucket brigade (which bucket types with what length)
  * to the log at the given level.
  * @param c the connection to log for
- * @param stream_id the stream identifier this brigade belongs to
+ * @param sid the stream identifier this brigade belongs to
  * @param level the log level (as in APLOG_*)
  * @param tag a short message text about the context
  * @param bb the brigade to log
  */
-#define h2_util_bb_log(c, i, level, tag, bb) \
+#define h2_util_bb_log(c, sid, level, tag, bb) \
 do { \
     char buffer[4 * 1024]; \
     const char *line = "(null)"; \
