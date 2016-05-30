@@ -562,7 +562,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
  * filters, or can be used within an output filter by being called via
  * ap_filter_setaside_brigade().
  * @param f The current filter
- * @param pool The pool that was used to create the brigade. In a request
+ * @param p The pool that was used to create the brigade. In a request
  * filter this will be the request pool, in a connection filter this will
  * be the connection pool.
  * @returns OK if a brigade was created, DECLINED otherwise.
