@@ -386,7 +386,7 @@ do { \
     apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
     len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
     ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld-%d): %s", \
-        (c)->id, (int)(i), (len? buffer : line)); \
+        (c)->id, (int)(sid), (len? buffer : line)); \
 } while(0)
 
 
