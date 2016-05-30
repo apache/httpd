@@ -130,6 +130,8 @@ typedef struct dav_error {
 
     struct dav_error *prev;     /* previous error (in stack) */
 
+    const char *childtags;      /* error-tag may have children */
+
 } dav_error;
 
 /*

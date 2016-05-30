@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Add support for childtags to dav_error.
+     [Jari Urpalainen <jari.urpalainen nokia.com>]
+
   *) abs: include OpenSSL_Applink when compiling on Visual Studio 2015 
           and up. PR59630 [Jan Ehrhardt <phpdev ehrhardt.nl>]
 
