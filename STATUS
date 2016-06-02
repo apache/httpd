@@ -212,7 +212,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      OPENSSL_Applink error. PR59630
      trunk patch: http://svn.apache.org/r1745767
      2.4.x: trunk works (modulo CHANGES)
-     +1 gsmith,
+     +1: gsmith,
+     +0: wrowe [I did not observe such issues, and will review the patch/issue]
+
+  *) Correct the behavior and interaction between SSLProxyCheckPeer[CN|Name], 
+     such that disabling either disables both, and that enabling either will
+     trigger the more comprehensive SSLProxyCheckPeerName behavior.
+     Only a single configuration remains to enable the legacy behavior, which is
+     to explicitly disable SSLProxyCheckPeerName and enable SSLProxyCheckPeerCN.
+     2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
