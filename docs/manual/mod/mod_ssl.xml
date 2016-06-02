@@ -1936,17 +1936,32 @@ SSLProxyCheckPeerExpire on
 <p>
 This directive sets whether the remote server certificate's CN field is
 compared against the hostname of the request URL. If both are not equal
-a 502 status code (Bad Gateway) is sent.
+a 502 status code (Bad Gateway) is sent. <code>SSLProxyCheckPeerCN</code> is
+superseded by <directive module="mod_ssl">SSLProxyCheckPeerName</directive>
+in release 2.4.5 and later. 
 </p>
 <p>
-In 2.4.5 and later, SSLProxyCheckPeerCN has been superseded by
-<directive module="mod_ssl">SSLProxyCheckPeerName</directive>, and its
-setting is only taken into account when
-<code>SSLProxyCheckPeerName off</code> is specified at the same time.
+In all releases 2.4.5 through 2.4.20, setting
+<code>SSLProxyCheckPeerName off</code> was sufficient to enable this behavior
+(as the <code>SSLProxyCheckPeerCN</code> default was <code>on</code>.) In 
+these releases, both directives must be set to <code>off</code> to completely
+avoid remote server certificate name validation. Many users reported this
+to be very confusing.
+</p>
+<p>
+As of release 2.4.21, all configurations which enable either one of the
+<code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
+will use the new <directive module="mod_ssl">SSLProxyCheckPeerName</directive>
+behavior, and all configurations which disable either one of the 
+<code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
+will supress all remote server certificate name validation. Only the following
+configuration will trigger the legacy certificate CN comparison in 2.4.21 and
+later releases;
 </p>
 <example><title>Example</title>
 <highlight language="config">
 SSLProxyCheckPeerCN on
+SSLProxyCheckPeerName off
 </highlight>
 </example>
 </usage>
@@ -1965,21 +1980,30 @@ SSLProxyCheckPeerCN on
 
 <usage>
 <p>
-This directive configures host name checking for server certificates
-when mod_ssl is acting as an SSL client. The check will
-succeed if the host name from the request URI is found in
-either the subjectAltName extension or (one of) the CN attribute(s)
-in the certificate's subject. If the check fails, the SSL request
-is aborted and a 502 status code (Bad Gateway) is returned.
-The directive supersedes <directive module="mod_ssl">SSLProxyCheckPeerCN</directive>,
-which only checks for the expected host name in the first CN attribute.
+This directive configures host name checking for server certificates when 
+mod_ssl is acting as an SSL client. The check will succeed if the host name 
+from the request URI matches one of the CN attribute(s) of the certificate's 
+subject, or matches the subjectAltName extension. If the check fails, the SSL 
+request is aborted and a 502 status code (Bad Gateway) is returned.
 </p>
 <p>
-Wildcard matching is supported in one specific flavor: subjectAltName entries
-of type dNSName or CN attributes starting with <code>*.</code> will match
-for any DNS name with the same number of labels and the same suffix
-(i.e., <code>*.example.org</code> matches for <code>foo.example.org</code>,
-but not for <code>foo.bar.example.org</code>).
+Wildcard matching is supported for specific cases: an subjectAltName entry
+of type dNSName, or CN attributes starting with <code>*.</code> will match
+with any host name of the same number of name elements and the same suffix.
+E.g. <code>*.example.org</code> will match <code>foo.example.org</code>,
+but will not match <code>foo.bar.example.org</code>, because the number of
+elements in the respective host names differs.
+</p>
+<p>
+This feature was introduced in 2.4.5 and superseded the behavior of the 
+<directive module="mod_ssl">SSLProxyCheckPeerCN</directive> directive, which 
+only tested the exact value in the first CN attribute against the host name.
+However, many users were confused by the behavior of using these directives
+individually, so the mutual behavior of <code>SSLProxyCheckPeerName</code> 
+and <code>SSLProxyCheckPeerCN</code> directives were improved in release 
+2.4.21. See the <directive module="mod_ssl">SSLProxyCheckPeerCN</directive> 
+directive description for the original behavior and details of these 
+improvements.
 </p>
 </usage>
 </directivesynopsis>

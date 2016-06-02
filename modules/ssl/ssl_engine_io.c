@@ -1282,6 +1282,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             }
         }
         if ((dc->proxy->ssl_check_peer_name != FALSE) &&
+            ((dc->proxy->ssl_check_peer_cn != FALSE) ||
+             (dc->proxy->ssl_check_peer_name == TRUE)) &&
             hostname_note) {
             apr_table_unset(c->notes, "proxy-request-hostname");
             if (!cert
@@ -1293,7 +1295,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                               "for hostname %s", hostname_note);
             }
         }
-        else if ((dc->proxy->ssl_check_peer_cn != FALSE) &&
+        else if ((dc->proxy->ssl_check_peer_cn == TRUE) &&
             hostname_note) {
             const char *hostname;
             int match = 0;
