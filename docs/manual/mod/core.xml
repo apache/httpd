@@ -4087,7 +4087,8 @@ to name-virtual hosts</description>
     >ServerAlias</directive> is used, with no different precedence for wildcards
     (nor for ServerName vs. ServerAlias).  </p>
 
-    <p>The complete list of names in the <directive>VirtualHost</directive>
+    <p>The complete list of names in the <directive type="section" module="core"
+    >VirtualHost</directive>
     directive are treated just like a (non wildcard)
     <directive>ServerAlias</directive>.</p>
 
@@ -4110,13 +4111,13 @@ itself</description>
     </p>
 
     <p><directive>ServerName</directive> is used (possibly
-    in conjunction with <directive>ServerAlias</directive>) to uniquely
+    in conjunction with <directive module="core">ServerAlias</directive>) to uniquely
     identify a virtual host, when using <a
     href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
     <p>Additionally, this is used when
     creating self-referential redirection URLs when 
-    <directive>UseCanonicalName</directive> is set to a non-default
+    <directive module="core">UseCanonicalName</directive> is set to a non-default
     value.</p>
 
     <p>For example, if the name of the
