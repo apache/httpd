@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741251 -->
+<!-- English Revision: 1746754 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4431,8 +4431,9 @@ serveurs virtuels à base de nom</description>
     (que ce soit pour ServerName ou ServerAlias).</p>
 
     <p>Tous les noms spécifiés au sein d'une section
-    <directive>VirtualHost</directive> sont traités comme un
-    <directive>ServerAlias</directive> (sans caractères génériques).</p>
+    <directive type="section" module="core">VirtualHost</directive> sont traités comme un
+    <directive type="section" module="core">ServerAlias</directive>
+    (sans caractères génériques).</p>
 
 </usage>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
@@ -4457,14 +4458,14 @@ host</context>
 
     <p>La directive <directive>ServerName</directive> permet
     (éventuellement en conjonction avec la directive
-    <directive>ServerAlias</directive>) d'identifier de manière unique
+    <directive module="core">ServerAlias</directive>) d'identifier de manière unique
     un serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a
     href="../vhosts/name-based.html">serveurs virtuels à base de
     noms</a>.</p>
 
     <p>Cette directive est aussi utilisée lors de la création d'URLs de
     redirection relatives quand la directive
-    <directive>UseCanonicalName</directive> est définie à une valeur autre que
+    <directive module="core">UseCanonicalName</directive> est définie à une valeur autre que
     la valeur par défaut.</p>
     
     <p>Par exemple, si le nom de la

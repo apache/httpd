@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945 -->
+<!-- English Revision: 1746754 -->
 <!-- French translation by Vincent Deffontaines, Alain B.  -->
 <!-- reviewed by Lucien Gentis -->
 
@@ -81,8 +81,8 @@ Listen 80
     de configuration, il a la plus grande priorité et peut être vu 
     comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
     ce qui signifie que toute requête reçue ne correspondant à aucune 
-    des directives <code>ServerName</code> sera servie par ce premier 
-    <code>VirtualHost</code>.</p>
+    des directives <directive module="core">ServerName</directive> sera servie par ce premier 
+    <directive type="section" module="core">VirtualHost</directive>.</p>
 
     <p>La configuration ci-dessus correspond à ce que l'on souhaite pour
     la plupart des serveurs virtuels à base de nom. Il faudra cependant
@@ -167,7 +167,7 @@ DocumentRoot "/www/mainserver"
 
     <p>Le serveur peut être configuré pour répondre de la même manière 
     aux requêtes internes et externes, au moyen d'une seule section 
-    <code>VirtualHost</code>.</p>
+    <directive type="section" module="core">VirtualHost</directive>.</p>
 
     <highlight language="config">
 &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
@@ -178,7 +178,8 @@ DocumentRoot "/www/mainserver"
     </highlight>
 
     <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
-    seront servies par le même <code>VirtualHost</code>.</p>
+    seront servies par le même <directive type="section"
+    module="core">VirtualHost</directive>.</p>
 
     <note>
           <title>Note&nbsp;:</title><p>Sur le réseau interne, il est possible 
