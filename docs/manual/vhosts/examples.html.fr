@@ -107,8 +107,8 @@ Listen 80
     de configuration, il a la plus grande priorité et peut être vu 
     comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
     ce qui signifie que toute requête reçue ne correspondant à aucune 
-    des directives <code>ServerName</code> sera servie par ce premier 
-    <code>VirtualHost</code>.</p>
+    des directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> sera servie par ce premier 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <p>La configuration ci-dessus correspond à ce que l'on souhaite pour
     la plupart des serveurs virtuels à base de nom. Il faudra cependant
@@ -192,7 +192,7 @@ DocumentRoot "/www/mainserver"
 
     <p>Le serveur peut être configuré pour répondre de la même manière 
     aux requêtes internes et externes, au moyen d'une seule section 
-    <code>VirtualHost</code>.</p>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot "/www/server1"
@@ -202,7 +202,7 @@ DocumentRoot "/www/mainserver"
 
 
     <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
-    seront servies par le même <code>VirtualHost</code>.</p>
+    seront servies par le même <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <div class="note">
           <h3>Note&nbsp;:</h3><p>Sur le réseau interne, il est possible 
