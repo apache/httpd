@@ -38,10 +38,9 @@
   <section id="purename"><title>Running several name-based web
     sites on a single IP address.</title>
 
-    <p>Your server has a single IP address, and multiple aliases (CNAMES)
-    point to this machine in DNS. You want to run a web server for
-    <code>www.example.com</code> and <code>www.example.org</code> on this
-    machine.</p>
+    <p>Your server has multiple hostnames that resolve to a single address,
+    and you want to respond differently for <code>www.example.com</code>
+    and <code>www.example.org</code>.</p>
 
     <note><title>Note</title><p>Creating virtual
           host configurations on your Apache server does not magically
@@ -59,7 +58,7 @@ Listen 80
 &lt;VirtualHost *:80&gt;
     DocumentRoot "/www/example1"
     ServerName www.example.com
-  
+
     # Other directives here
 &lt;/VirtualHost&gt;
 
@@ -77,15 +76,21 @@ Listen 80
     in the configuration file, it has the highest priority and can be seen
     as the <cite>default</cite> or <cite>primary</cite> server. That means
     that if a request is received that does not match one of the specified
-    <code>ServerName</code> directives, it will be served by this first
-    <code>VirtualHost</code>.</p>
+    <directive module="core">ServerName</directive> directives, it will be served by this first
+    <directive type="section" module="core">VirtualHost</directive>.</p>
+
+    <p>The above configuration is what you will want to use in almost
+    all name-based virtual hosting situations. The only thing that this
+    configuration will not work for, in fact, is when you are serving
+    different content based on differing IP addresses or ports.</p>
 
     <note>
             <title>Note</title>
 
-           <p>You can, if you wish, replace <code>*</code> with the actual
-           IP address of the system, when you don't care to discriminate based
-           on the IP address or port.</p>
+           <p>You may replace <code>*</code> with a specific IP address
+           on the system.  Such virtual hosts will only be used for
+           HTTP requests received on connection to the specified IP
+           address.</p>
 
            <p>However, it is additionally useful to use <code>*</code>
            on systems where the IP address is not predictable - for
@@ -95,12 +100,6 @@ Listen 80
            would work without changes whenever your IP address
            changes.</p>
     </note>
-
-    <p>The above configuration is what you will want to use in almost
-    all name-based virtual hosting situations. The only thing that this
-    configuration will not work for, in fact, is when you are serving
-    different content based on differing IP addresses or ports.</p>
-
   </section>
 
   <section id="twoips"><title>Name-based hosts on more than one
@@ -126,14 +125,14 @@ DocumentRoot "/www/mainserver"
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot "/www/example1"
     ServerName www.example.com
-    
+
     # Other directives here ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.50&gt;
     DocumentRoot "/www/example2"
     ServerName www.example.org
-    
+
     # Other directives here ...
 &lt;/VirtualHost&gt;
     </highlight>
@@ -158,8 +157,8 @@ DocumentRoot "/www/mainserver"
     (<code>192.168.1.1</code>).</p>
 
     <p>The server can be made to respond to internal and external requests
-    with the same content, with just one <code>VirtualHost</code>
-    section.</p>
+    with the same content, with just one <directive type="section" module="core"
+    >VirtualHost</directive> section.</p>
 
     <highlight language="config">
 &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
@@ -170,7 +169,7 @@ DocumentRoot "/www/mainserver"
     </highlight>
 
     <p>Now requests from both networks will be served from the same
-    <code>VirtualHost</code>.</p>
+    <directive type="section" module="core">VirtualHost</directive>.</p>
 
     <note>
           <title>Note:</title><p>On the internal
@@ -338,7 +337,7 @@ Listen 80
     <highlight language="config">
 &lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass "/" "http://192.168.111.2/"
+    ProxyPass        "/" "http://192.168.111.2/"
     ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName hostname.example.com
 &lt;/VirtualHost&gt;
@@ -408,7 +407,7 @@ Listen 80
 
     <highlight language="config">
 &lt;VirtualHost _default_:80&gt;
-DocumentRoot "/www/default"
+    DocumentRoot "/www/default"
 ...
 &lt;/VirtualHost&gt;
     </highlight>
@@ -486,7 +485,7 @@ DocumentRoot "/www/example1"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-DocumentRoot "/www/subdomain/sub1"
+    DocumentRoot "/www/subdomain/sub1"
     ServerName www.sub1.domain.tld
     ServerPath "/sub1/"
     RewriteEngine On
