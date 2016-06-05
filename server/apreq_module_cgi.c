@@ -261,7 +261,8 @@ static const char *cgi_header_in(apreq_handle_t *handle,
     apr_pool_t *p = handle->pool;
     char *key = apr_pstrcat(p, "HTTP_", name, NULL);
     char *k, *value = NULL;
-    for (k = key; *k; ++k) {
+
+    for (k = key+5; *k; ++k) {
         if (*k == '-')
             *k = '_';
         else
@@ -269,17 +270,15 @@ static const char *cgi_header_in(apreq_handle_t *handle,
     }
 
     if (!strcmp(key, "HTTP_CONTENT_TYPE")
-        || !strcmp(key, "HTTP_CONTENT_LENGTH"))
-        {
-            key += 5; /* strlen("HTTP_") */
-        }
+        || !strcmp(key, "HTTP_CONTENT_LENGTH")) {
+
+        key += 5; /* strlen("HTTP_") */
+    }
 
     apr_env_get(&value, key, p);
 
     return value;
 }
-
-
 
 
 static void cgi_log_error(const char *file, int line, int level,
