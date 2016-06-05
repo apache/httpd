@@ -588,7 +588,7 @@ TransferLog logs/access_log
 <directivesynopsis>
 <name>GlobalLog</name>
 <description>Sets filename and format of log file</description>
-<syntax>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<syntax>GlobalLog<var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</syntax>
