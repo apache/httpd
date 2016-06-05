@@ -223,6 +223,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
      +1: wrowe
 
+  *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
+     "UserDir" directive
+     trunk patch: http://svn.apache.org/r1745835
+     2.4.x: trunk works
+     +1: jailletc36
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
