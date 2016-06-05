@@ -400,7 +400,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                      */
                     if (do_alloc) {
                         tmp = NULL;
-                    } else {
+                    }
+                    else {
                         /* We're null terminated. */
                         tmp = last_char;
                     }
@@ -605,7 +606,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
              * happen if it exceeds the configured limit for a request-line.
              */
             if (APR_STATUS_IS_ENOSPC(rv)) {
-                r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+                r->status = HTTP_REQUEST_URI_TOO_LARGE;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
@@ -656,7 +657,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         r->assbackwards = 0;
         pro = ll;
         len = strlen(ll);
-    } else {
+    }
+    else {
         r->assbackwards = 1;
         pro = "HTTP/0.9";
         len = 8;
@@ -1423,11 +1425,7 @@ AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r)
 
 AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
-    const char *auth_line = apr_table_get(r->headers_in,
-                                          (PROXYREQ_PROXY == r->proxyreq)
-                                              ? "Proxy-Authorization"
-                                              : "Authorization");
-    const char *t;
+    const char *t, *auth_line;
 
     if (!(t = ap_auth_type(r)) || ap_casecmpstr(t, "Basic"))
         return DECLINED;
@@ -1437,6 +1435,10 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
                       "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    auth_line = apr_table_get(r->headers_in,
+                              (PROXYREQ_PROXY == r->proxyreq)
+                                  ? "Proxy-Authorization" : "Authorization");
 
     if (!auth_line) {
         ap_note_auth_failure(r);
@@ -1909,12 +1911,14 @@ typedef struct hdr_ptr {
     ap_filter_t *f;
     apr_bucket_brigade *bb;
 } hdr_ptr;
+
 static int send_header(void *data, const char *key, const char *val)
 {
     ap_fputstrs(((hdr_ptr*)data)->f, ((hdr_ptr*)data)->bb,
                 key, ": ", val, CRLF, NULL);
     return 1;
 }
+
 AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
     hdr_ptr x;
@@ -1947,7 +1951,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         rr->expecting_100 = 0;
     }
 
-    status_line = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", r->status_line, CRLF, NULL);
+    status_line = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL " ", r->status_line, CRLF, NULL);
     ap_xlate_proto_to_ascii(status_line, strlen(status_line));
 
     x.f = r->connection->output_filters;
