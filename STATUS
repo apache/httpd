@@ -181,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core: save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1744980
      2.4.x patch: trunk works
-     +1: jailletc36, 
+     +1: jailletc36, icing
 
   *) mod_proxy_(fcgi|scgi|http): save a few bytes in the request pool when this
      handler is not able to process the URL.
@@ -190,6 +190,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1744460
      2.4.x patch: trunk works
      +1: jailletc36, 
+     icing: r1744460 gives me a merge conflict. The change itself looks very
+       much ok.
 
   *) core: ASCII string comparison functions optimized speed.
      This proposal includes and renames ap_casecmpstr[n] functions available
