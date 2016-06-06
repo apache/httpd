@@ -114,6 +114,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ *) mod_include: add the <!--#comment ...> syntax in order to include comments
+     in a SSI file.
+     Trunk patch: http://svn.apache.org/r1737476
+     2.4.x patch: trunk patch works (compatibility note to be adjusted)
+     +1: jailletc36, gsmith, covener
+
+ *) core: save a few bytes in conf pool.
+     trunk patch: http://svn.apache.org/r1744980
+     2.4.x patch: trunk works
+     +1: jailletc36, icing, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,13 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
 
-  *) mod_include: add the <!--#comment ...> syntax in order to include comments
-     in a SSI file.
-     Trunk patch: http://svn.apache.org/r1737476
-     2.4.x patch: trunk patch works (compatibility note to be adjusted)
-     +1: jailletc36, gsmith, covener
-
-  *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
+    *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
      according the number of listeners buckets.
      trunk patch: http://svn.apache.org/r1737447
                   http://svn.apache.org/r1737449
@@ -169,11 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1745034
      2.4.x patch: trunk works
      +1: covener, jailletc36
-
-  *) core: save a few bytes in conf pool.
-     trunk patch: http://svn.apache.org/r1744980
-     2.4.x patch: trunk works
-     +1: jailletc36, icing, covener
 
   *) mod_proxy_(fcgi|scgi|http): save a few bytes in the request pool when this
      handler is not able to process the URL.
