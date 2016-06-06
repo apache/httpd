@@ -115,11 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
- *) core: save a few bytes in conf pool.
-     trunk patch: http://svn.apache.org/r1744980
-     2.4.x patch: trunk works
-     +1: jailletc36, icing, covener
-
  *) mod_rewrite: support new h2:// and h2c:// proxy url schemes in detection
      of absolute urls:
      trunk patch: http://svn.apache.org/r1744206
