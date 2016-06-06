@@ -1115,7 +1115,11 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     args = ap_resolve_env(temp_pool, l);
 #endif
 
-    cmd_name = ap_getword_conf(p, &args);
+    /* The first word is the name of a directive.  We can safely use the
+     * 'temp_pool' for it.  If it matches the name of a known directive, we
+     * can reference the string within the module if needed.  Otherwise, we
+     * can still make a copy in the 'p' pool. */
+    cmd_name = ap_getword_conf(temp_pool, &args);
     if (*cmd_name == '\0') {
         /* Note: this branch should not occur. An empty line should have
          * triggered the exit further above.
@@ -1136,10 +1140,11 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     newdir = apr_pcalloc(p, sizeof(ap_directive_t));
     newdir->filename = parms->config_file->name;
     newdir->line_num = parms->config_file->line_number;
-    newdir->directive = cmd_name;
     newdir->args = apr_pstrdup(p, args);
 
     if ((cmd = ap_find_command_in_modules(cmd_name, &mod)) != NULL) {
+        newdir->directive = cmd->name;
+        
         if (cmd->req_override & EXEC_ON_READ) {
             ap_directive_t *sub_tree = NULL;
 
@@ -1173,6 +1178,11 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
             return retval;
         }
     }
+    else {
+        /* No known directive found?  Make a copy of what we have parsed. */
+        newdir->directive = apr_pstrdup(p, cmd_name);
+    }
+
 
     if (cmd_name[0] == '<') {
         if (cmd_name[1] != '/') {
