@@ -1559,7 +1559,9 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
             conf->ap_document_root = arg;
         }
         else {
-            return "DocumentRoot must be a directory";
+            return apr_psprintf(cmd->pool, 
+                                "DocumentRoot '%s' is not a directory, or is not readable",
+                                arg);
         }
     }
     return NULL;
