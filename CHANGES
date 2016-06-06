@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_ssl: Correct the interaction between SSLProxyCheckPeerCN and newer
+     SSLProxyCheckPeerName directives since release 2.4.5, such that disabling
+     either disables both, and that enabling either triggers the new, more
+     comprehensive SSLProxyCheckPeerName behavior. Only a single configuration
+     remains to enable the legacy behavior, which is to explicitly disable
+     SSLProxyCheckPeerName, and enable SSLProxyCheckPeerCN. [William Rowe]
+
   *) mod_include: add the <!--#comment ...> syntax in order to include comments
      in a SSI file. [Christophe Jaillet based on a suggestion from Rob]
 
