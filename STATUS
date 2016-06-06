@@ -203,7 +203,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jailletc36/apr_cstr_casecmp_v2.diff
      jailletc36: v2: update as per discussion on dev@. Do not mix ap_ and apr_
                  namespaces + tweak DOXYGEN comments.
-     +1: jailletc36, icing 
+     +1: jailletc36, icing
+     -0: wrowe [Prefer that we pre-@deprecate this API and encourage users
+                to adopt the apr_ convention, reversing the #defines, being
+                ready for the httpd 2.next minor release.]
+     -1: wrowe [Notes this patch creates binary incompatible versions of httpd
+                with this change; there must be #else stubs in util.c sources
+                compiled against APR 1.6+ for binary compatibility, even if
+                these are simply;
+                AP_DECLARE(int) ap_cstr_casecmpn(const char *s1,
+                                                 const char *s2, apr_size_t n)
+                {
+                    return apr_cstr_casecmpn(s1, s2, n);
+                }
+               ]
 
   *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
      OPENSSL_Applink error. PR59630
