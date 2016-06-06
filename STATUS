@@ -114,11 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- *) mod_include: add the <!--#comment ...> syntax in order to include comments
-     in a SSI file.
-     Trunk patch: http://svn.apache.org/r1737476
-     2.4.x patch: trunk patch works (compatibility note to be adjusted)
-     +1: jailletc36, gsmith, covener
 
  *) core: save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1744980

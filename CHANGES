@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_include: add the <!--#comment ...> syntax in order to include comments
+     in a SSI file. [Christophe Jaillet based on a suggestion from Rob]
+
   *) mod_http2: improved event handling for suspended streams, responses
      and window updates. [Stefan Eissing] 
      
