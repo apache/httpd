@@ -231,7 +231,7 @@ LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 # mod_ldap and mod_authnz_ldap be loaded. Change the
 # "yourdomain.example.com" to match your domain.
 
-LDAPTrustedGlobalCert CA_DER "/certs/certfile.der:
+LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 
 &lt;Location "/ldap-status"&gt;
     SetHandler ldap-status
@@ -754,7 +754,7 @@ connection client certificates.</description>
     connection pool.  The default value of -1, and any other negative value,
     allows connections of any age to be reused.</p>
 
-    <p>For performance reasons, the reference time used by this directive is 
+    <p>For performance reasons, the reference time used by this directive is
     based on when the LDAP connection is returned to the pool, not the time
     of the last successful I/O with the LDAP server.  </p>
 
@@ -763,7 +763,7 @@ connection client certificates.</description>
     time is not updated if no backend LDAP conncetions were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
-    
+
     <note><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), minutes (min), and hours (h).
     </p></note>
