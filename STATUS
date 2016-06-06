@@ -201,9 +201,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      be upgraded accordingly. Uses of the functions could then be backported.
      trunk patch: ?
      2.4.x patch: http://home.apache.org/~jailletc36/apr_cstr_casecmp_v2.diff
-     +1: jailletc36, 
      jailletc36: v2: update as per discussion on dev@. Do not mix ap_ and apr_
                  namespaces + tweak DOXYGEN comments.
+     +1: jailletc36, icing 
 
   *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
      OPENSSL_Applink error. PR59630

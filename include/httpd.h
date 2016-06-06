@@ -55,6 +55,7 @@
 #include "apr_buckets.h"
 #include "apr_poll.h"
 #include "apr_thread_proc.h"
+#include "apr_version.h"
 
 #include "os.h"
 
@@ -2339,6 +2340,38 @@ AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array,
  */
 AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
                                       const char *s);
+
+
+/* Copy of 2 functions only available in APR 1.6.0+ */
+#if !APR_VERSION_AT_LEAST(1,6,0) || defined(DOXYGEN)
+
+/**
+ * Known-fast version of strcasecmp(): ASCII case-folding, POSIX compliant.
+ * @note If the APR library is 1.6.0 or earlier, apr_cstr_casecmp is used instead.
+ * @param s1 The 1st string to compare
+ * @param s2 The 2nd string to compare
+ * @return 0 if s1 is lexicographically equal to s2 ignoring case;
+ *         non-0 otherwise.
+ */
+AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2);
+
+/**
+ * Known-fast version of strncasecmp(): ASCII case-folding, POSIX compliant.
+ * @note If the APR library is 1.6.0 or earlier, apr_cstr_casecmpn is used instead.
+ * @param s1 The 1st string to compare
+ * @param s2 The 2nd string to compare
+ * @param n  Maximum number of characters in the strings to compare
+ * @return 0 if s1 is lexicographically equal to s2 ignoring case;
+ *         non-0 otherwise.
+ */
+AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n);
+
+#else
+
+#define ap_cstr_casecmp apr_cstr_casecmp
+#define ap_cstr_casecmpn apr_cstr_casecmpn
+
+#endif /* !APR_VERSION_AT_LEAST(1,6,0) */
 
 #ifdef __cplusplus
 }

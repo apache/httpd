@@ -475,6 +475,7 @@
  * 20120211.59 (2.4.21-dev) Add ap_getword_conf2[_nc](),
  *                          ap_proxy_is_socket_connected() and
  *                          extended proxy_worker_shared.
+ * 20120211.60 (2.4.21-dev) Add ap_cstr_casecmp() and ap_cstr_casecmpn()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -482,7 +483,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 59                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 60                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
