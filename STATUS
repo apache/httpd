@@ -148,7 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in a SSI file.
      Trunk patch: http://svn.apache.org/r1737476
      2.4.x patch: trunk patch works (compatibility note to be adjusted)
-     +1: jailletc36, gsmith
+     +1: jailletc36, gsmith, covener
 
   *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
      according the number of listeners buckets.
@@ -162,21 +162,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      of absolute urls:
      trunk patch: http://svn.apache.org/r1744206
      2.4.x patch: trunk works
-     +1: icing, jim
+     +1: icing, jim, covener
    
-  *) authz_host,authz_ldap: pair of log messages fixes
-     trunk patch: http://svn.apache.org/r1745033
+  *) authz_host,authz_ldap: log messages fix
+     trunk patch: 
                   http://svn.apache.org/r1745034
      2.4.x patch: trunk works
-     +1 covener
-     jailletc36: r1745033 does not apply. 'ldapsearch_check_authorization' is
-                 not part of 2.4.x.
-                 +1 for r1745034
+     +1: covener, jailletc36
 
   *) core: save a few bytes in conf pool.
      trunk patch: http://svn.apache.org/r1744980
      2.4.x patch: trunk works
-     +1: jailletc36, icing
+     +1: jailletc36, icing, covener
 
   *) mod_proxy_(fcgi|scgi|http): save a few bytes in the request pool when this
      handler is not able to process the URL.
