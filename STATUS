@@ -218,7 +218,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Only a single configuration remains to enable the legacy behavior, which is
      to explicitly disable SSLProxyCheckPeerName and enable SSLProxyCheckPeerCN.
      2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
-     +1: wrowe
+     icing: raw patch version https://raw.githubusercontent.com/wrowe/patches/master/fix_proxy_check_peer-2.4.x.patch
+     +1: wrowe, icing
 
   *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
      "UserDir" directive
