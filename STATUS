@@ -115,16 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) Correct the behavior and interaction between SSLProxyCheckPeer[CN|Name], 
-     such that disabling either disables both, and that enabling either will
-     trigger the more comprehensive SSLProxyCheckPeerName behavior.
-     Only a single configuration remains to enable the legacy behavior, which is
-     to explicitly disable SSLProxyCheckPeerName and enable SSLProxyCheckPeerCN.
-     2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
-     icing: raw patch version https://raw.githubusercontent.com/wrowe/patches/master/fix_proxy_check_peer-2.4.x.patch
-     +1: wrowe, icing, rpluem
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
