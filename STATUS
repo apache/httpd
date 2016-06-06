@@ -124,11 +124,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      icing: raw patch version https://raw.githubusercontent.com/wrowe/patches/master/fix_proxy_check_peer-2.4.x.patch
      +1: wrowe, icing, rpluem
 
-  *) core: improve error message when docroot is unreadable.
-     trunk patch: http://svn.apache.org/r1506474
-     2.4.x patch: trunk works
-     +1: jorton, covener, rpluem
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
