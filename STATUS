@@ -130,7 +130,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1744206
      2.4.x patch: trunk works
      +1: icing, jim, covener
-   
+
+  *) Correct the behavior and interaction between SSLProxyCheckPeer[CN|Name], 
+     such that disabling either disables both, and that enabling either will
+     trigger the more comprehensive SSLProxyCheckPeerName behavior.
+     Only a single configuration remains to enable the legacy behavior, which is
+     to explicitly disable SSLProxyCheckPeerName and enable SSLProxyCheckPeerCN.
+     2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
+     icing: raw patch version https://raw.githubusercontent.com/wrowe/patches/master/fix_proxy_check_peer-2.4.x.patch
+     +1: wrowe, icing, rpluem
+
+  *) core: improve error message when docroot is unreadable.
+     trunk patch: http://svn.apache.org/r1506474
+     2.4.x patch: trunk works
+     +1: jorton, covener, rpluem
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -222,25 +236,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: gsmith,
      +0: wrowe [I did not observe such issues, and will review the patch/issue]
 
-  *) Correct the behavior and interaction between SSLProxyCheckPeer[CN|Name], 
-     such that disabling either disables both, and that enabling either will
-     trigger the more comprehensive SSLProxyCheckPeerName behavior.
-     Only a single configuration remains to enable the legacy behavior, which is
-     to explicitly disable SSLProxyCheckPeerName and enable SSLProxyCheckPeerCN.
-     2.4.x patch: https://github.com/wrowe/patches/blob/master/fix_proxy_check_peer-2.4.x.patch
-     icing: raw patch version https://raw.githubusercontent.com/wrowe/patches/master/fix_proxy_check_peer-2.4.x.patch
-     +1: wrowe, icing
-
   *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
      "UserDir" directive
      trunk patch: http://svn.apache.org/r1745835
      2.4.x: trunk works
      +1: jailletc36
-
-  *) core: improve error message when docroot is unreadable.
-     trunk patch: http://svn.apache.org/r1506474
-     2.4.x patch: trunk works
-     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
