@@ -114,11 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ab: caseless matching for http heaers
-     trunk patch: http://svn.apache.org/r1733537
-     2.4.x: trunk works
-     +1 covener, jim, icing
-     
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
