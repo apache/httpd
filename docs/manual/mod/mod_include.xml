@@ -140,7 +140,7 @@ Options +Includes
       <p>This command doesn't output anything. Its only use is to
       add comments within a file. These comments are not printed.</p>
 
-      <p>This syntax is available in version 2.5 and later.</p>
+      <p>This syntax is available in version 2.4.21 and later.</p>
 
       <example>
       &lt;!--#comment Blah Blah Blah --&gt;
@@ -153,8 +153,7 @@ Options +Includes
 
       <dl>
       <dt><code>echomsg</code> (<em>Apache 2.1 and later</em>)</dt>
-      <dd>
-      <p>The value is a message that is sent back to the
+      <dd><p>The value is a message that is sent back to the
       client if the <code><a href="#element.echo">echo</a></code> element
       attempts to echo an undefined variable. This overrides any <directive
       module="mod_include">SSIUndefinedEcho</directive> directives.</p>
@@ -169,7 +168,7 @@ Options +Includes
       client if an error occurs while parsing the
       document. This overrides any <directive
       module="mod_include">SSIErrorMsg</directive> directives.</p>
-      
+
       <example>
        &lt;!--#config errmsg="[Oops, something broke.]" --&gt;
       </example>
@@ -185,19 +184,19 @@ Options +Includes
       <example>
       &lt;!--#config sizefmt="abbrev" --&gt;
       </example>
+
       </dd>
 
       <dt><code>timefmt</code></dt>
       <dd><p>The value is a string to be used by the
       <code>strftime(3)</code> library routine when printing
       dates.</p>
-      
+
       <example>
       &lt;!--#config timefmt=""%R, %B %d, %Y"" --&gt;
       </example>
 
       </dd>
-      
       </dl>
     </section> <!-- /config -->
 
@@ -353,7 +352,7 @@ Options +Includes
     </example>
 
     The value of <code>file</code> cannot start with a slash
-    (<code>/</code>), nor can it contain <code>../</code> so as to 
+    (<code>/</code>), nor can it contain <code>../</code> so as to
     refer to a file above the current directory or outside of the
     document root. Attempting to so will result in the error message:
     <code>The given path was above the root path</code>.
@@ -1101,4 +1100,3 @@ set</description>
 </directivesynopsis>
 
 </modulesynopsis>
-
