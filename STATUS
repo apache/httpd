@@ -115,12 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
- *) mod_rewrite: support new h2:// and h2c:// proxy url schemes in detection
-     of absolute urls:
-     trunk patch: http://svn.apache.org/r1744206
-     2.4.x patch: trunk works
-     +1: icing, jim, covener
-
   *) Correct the behavior and interaction between SSLProxyCheckPeer[CN|Name], 
      such that disabling either disables both, and that enabling either will
      trigger the more comprehensive SSLProxyCheckPeerName behavior.
