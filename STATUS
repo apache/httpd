@@ -237,6 +237,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: jailletc36
 
+  *) core: improve error message when docroot is unreadable.
+     trunk patch: http://svn.apache.org/r1506474
+     2.4.x patch: trunk works
+     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
@@ -281,11 +285,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
-
-   * core: improve error message when docroot is unreadable.
-     trunk patch: http://svn.apache.org/r1506474
-     2.4.x patch: trunk works
-     +1: jorton, 
 
 PATCHES/ISSUES THAT ARE STALLED
 
