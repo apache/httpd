@@ -156,18 +156,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1737449
                   http://svn.apache.org/r1737451
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) ab: caseless matching for http heaers
      trunk patch: http://svn.apache.org/r1733537
      2.4.x: trunk works
-     +1 covener
+     +1 covener, jim
      
   *) mod_rewrite: support new h2:// and h2c:// proxy url schemes in detection
      of absolute urls:
      trunk patch: http://svn.apache.org/r1744206
      2.4.x patch: trunk works
-     +1: icing
+     +1: icing, jim
    
   *) authz_host,authz_ldap: pair of log messages fixes
      trunk patch: http://svn.apache.org/r1745033
