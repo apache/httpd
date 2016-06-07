@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixed a write after free when streams/connections
+     were aborted before tasks returned. [Stefan Eissing] 
+  
   *) mod_dav: Add support for childtags to dav_error.
      [Jari Urpalainen <jari.urpalainen nokia.com>]
 
