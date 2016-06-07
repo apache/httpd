@@ -52,6 +52,7 @@ ejecución</page>
 </category>    
 
 <category id="usersguide"><title>Guía del Usuario</title>
+    <page href="getting-started.html">Empezando</page>
     <page href="bind.html">Enlazando Direcciones y Puertos</page>
     <page href="configuring.html">Ficheros de Configuración</page>
     <page href="sections.html">Secciones de Configuración</page>
@@ -79,6 +80,7 @@ ejecución</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
     <page href="howto/public_html.html">Directorios web para cada
     usuario (public_html)</page>
+    <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
 </category>
 
 <category id="platform"><title>Notas específicas sobre plataformas</title>
