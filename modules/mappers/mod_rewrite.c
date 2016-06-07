@@ -560,11 +560,11 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
             *sqs = 1;
             return 8;
         }
-        else if (!ap_casecmpstrn(uri, "2://", 4)) {    /* h2://     */
+        else if (!strncasecmp(uri, "2://", 4)) {    /* h2://     */
             *sqs = 1;
             return 5;
         }
-        else if (!ap_casecmpstrn(uri, "2c://", 5)) {   /* h2c://    */
+        else if (!strncasecmp(uri, "2c://", 5)) {   /* h2c://    */
             *sqs = 1;
             return 6;
         }
