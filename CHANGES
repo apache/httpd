@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_http2: fixed a write after free when streams/connections
+     were aborted before tasks returned. [Stefan Eissing] 
+  
   *) mod_ssl: Correct the interaction between SSLProxyCheckPeerCN and newer
      SSLProxyCheckPeerName directives since release 2.4.5, such that disabling
      either disables both, and that enabling either triggers the new, more

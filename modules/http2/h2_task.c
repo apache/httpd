@@ -88,7 +88,7 @@ static apr_status_t input_handle_eos(h2_task *task, request_rec *r,
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request->trailers;
+    apr_table_t *t = task->request? task->request->trailers : NULL;
 
     if (task->input.chunked) {
         task->input.tmp = apr_brigade_split_ex(bb, b, task->input.tmp);
@@ -114,7 +114,7 @@ static apr_status_t input_append_eos(h2_task *task, request_rec *r)
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request->trailers;
+    apr_table_t *t = task->request? task->request->trailers : NULL;
 
     if (task->input.chunked) {
         if (t && !apr_is_empty_table(t)) {
@@ -151,13 +151,14 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
     }
     
-    if (f->c->aborted) {
+    if (f->c->aborted || !task->request) {
         return APR_ECONNABORTED;
     }
     
     if (!task->input.bb) {
         if (!task->input.eos_written) {
             input_append_eos(task, f->r);
+            return APR_SUCCESS;
         }
         return APR_EOF;
     }
@@ -172,11 +173,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         } 
     }
     
-    while (APR_BRIGADE_EMPTY(task->input.bb)) {
-        if (task->input.eos_written) {
-            return APR_EOF;
-        }
-        
+    while (APR_BRIGADE_EMPTY(task->input.bb) && !task->input.eos) {
         /* Get more input data for our request. */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
                       "h2_task(%s): get more data from mplx, block=%d, "
@@ -193,7 +190,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
             status = APR_EOF;
         }
         
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
                       "h2_task(%s): read returned", task->id);
         if (APR_STATUS_IS_EAGAIN(status) 
             && (mode == AP_MODE_GETLINE || block == APR_BLOCK_READ)) {
@@ -202,7 +199,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
              * upload 100k test on test-ser.example.org hangs */
             status = APR_SUCCESS;
         }
-        else if (APR_STATUS_IS_EOF(status) && !task->input.eos_written) {
+        else if (APR_STATUS_IS_EOF(status)) {
             task->input.eos = 1;
         }
         else if (status != APR_SUCCESS) {
@@ -251,8 +248,13 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         }
     }
     
-    if (!task->input.eos_written && task->input.eos) {
-        input_append_eos(task, f->r);
+    if (task->input.eos) {
+        if (!task->input.eos_written) {
+            input_append_eos(task, f->r);
+        }
+        if (APR_BRIGADE_EMPTY(task->input.bb)) {
+            return APR_EOF;
+        }
     }
 
     h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
@@ -554,23 +556,6 @@ void h2_task_rst(h2_task *task, int error)
     if (task->c) {
         task->c->aborted = 1;
     }
-}
-
-apr_status_t h2_task_shutdown(h2_task *task, int block)
-{
-    if (task->output.beam) {
-        apr_status_t status;
-        status = h2_beam_shutdown(task->output.beam, APR_NONBLOCK_READ);
-        if (block && status == APR_EAGAIN) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c,
-                          "h2_task(%s): output shutdown waiting", task->id);
-            status = h2_beam_shutdown(task->output.beam, APR_BLOCK_READ);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, task->c,
-                          "h2_task(%s): output shutdown done", task->id);
-        }
-        return status;
-    }
-    return APR_SUCCESS;
 }
 
 /*******************************************************************************

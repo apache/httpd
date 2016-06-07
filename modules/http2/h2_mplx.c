@@ -200,7 +200,7 @@ static int purge_stream(void *ctx, void *val)
     h2_ihash_remove(m->spurge, stream->id);
     h2_stream_destroy(stream);
     if (task) {
-        task_destroy(m, task, 1);
+        task_destroy(m, task, 0);
     }
     return 0;
 }
@@ -349,10 +349,12 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
                   "h2_task(%s): destroy", task->id);
     /* cleanup any buffered input */
-    status = h2_task_shutdown(task, 0);
-    if (status != APR_SUCCESS){
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO(03385) 
-                      "h2_task(%s): shutdown", task->id);
+    if (task->input.beam) {
+        status = h2_beam_shutdown(task->input.beam, APR_NONBLOCK_READ);
+        if (status != APR_SUCCESS){
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO(03385) 
+                          "h2_task(%s): input shutdown", task->id);
+        }
     }
     
     if (called_from_master) {
@@ -446,10 +448,8 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
             if (rst_error) {
                 h2_task_rst(task, rst_error);
             }
-            /* FIXME: this should work, but does not 
             h2_ihash_add(m->shold, stream);
-            return;*/
-            task->input.beam = NULL;
+            return;
         }
         else {
             /* already finished */
@@ -499,6 +499,12 @@ static int task_abort_connection(void *ctx, void *val)
     h2_task *task = val;
     if (task->c) {
         task->c->aborted = 1;
+    }
+    if (task->input.beam) {
+        h2_beam_abort(task->input.beam);
+    }
+    if (task->output.beam) {
+        h2_beam_abort(task->output.beam);
     }
     return 1;
 }
@@ -603,7 +609,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         AP_DEBUG_ASSERT(h2_ihash_empty(m->shold));
         if (!h2_ihash_empty(m->spurge)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
-                          "h2_mplx(%ld): release_join %d streams to purge", 
+                          "h2_mplx(%ld): 3. release_join %d streams to purge", 
                           m->id, (int)h2_ihash_count(m->spurge));
             purge_streams(m);
         }
@@ -1028,6 +1034,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                  * parent pool / allocator) */
                 h2_ihash_remove(m->shold, stream->id);
                 h2_ihash_add(m->spurge, stream);
+                task_destroy(m, task, 0);
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
