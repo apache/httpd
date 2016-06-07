@@ -240,7 +240,7 @@ void h2_stream_destroy(h2_stream *stream)
 void h2_stream_eos_destroy(h2_stream *stream)
 {
     h2_session_stream_done(stream->session, stream);
-    /* stream is gone */
+    /* stream possibly destroyed */
 }
 
 apr_pool_t *h2_stream_detach_pool(h2_stream *stream)
