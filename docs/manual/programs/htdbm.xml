@@ -121,7 +121,7 @@
 
     <p><code><strong>htdbm</strong> -<strong>l</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
-    </code></p>
+    <var>filename</var></code></p>
 </section>
 
 <section id="options"><title>Options</title>
