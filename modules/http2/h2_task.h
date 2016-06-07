@@ -114,11 +114,6 @@ int h2_task_can_redo(h2_task *task);
  */
 void h2_task_rst(h2_task *task, int error);
 
-/**
- * Shuts all input/output down. Clears any buckets buffered and closes.
- */
-apr_status_t h2_task_shutdown(h2_task *task, int block);
-
 void h2_task_register_hooks(void);
 /*
  * One time, post config intialization.
