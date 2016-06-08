@@ -1,8 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1040494:1746754 (outdated) -->
-
+<?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
+<!-- English Revision: 1741251:1746754 (outdated) -->
+<!-- Translated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed by Sergio Ramos-->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -23,7 +24,7 @@
 <modulesynopsis metafile="core.xml.meta">
 
 <name>core</name>
-<description>Funcionalides b&#225;sicas del Servidor HTTP Apache que siempre est&#225;n presentes.</description>
+<description>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</description>
 <status>Core</status>
 
 <directivesynopsis>
@@ -31,103 +32,104 @@
 <description>Configura mejoras para un Protocolo de Escucha de Sockets</description>
 <syntax>AcceptFilter <var>protocol</var> <var>accept_filter</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Disponible en Apache httpd 2.1.5 y posteriores.
-En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
+
 
 <usage>
-    <p>Esta directiva hace posible mejoras espec&#237;ficas a nivel de sistema operativo
-       y a trav&#233;s del tipo de Protocolo para un socket que escucha.
-       La premisa b&#225;sica es que el kernel no env&#237;e un socket al servidor
+    <p>Esta directiva hace posible mejoras específicas a nivel de sistema operativo
+       y a través del tipo de Protocolo para un socket que escucha.
+       La premisa básica es que el kernel no envíe un socket al servidor
        hasta que o bien los datos se hayan recibido o bien se haya almacenado
        en el buffer una Respuesta HTTP completa.  
-       Actualmente s&#243;lo est&#225;n soportados
+       Actualmente sólo están soportados
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        Accept Filters</a> sobre FreeBSD, <code>TCP_DEFER_ACCEPT</code> sobre Linux, 
        y AcceptEx() sobre Windows.</p>
 
     <p>El uso de <code>none</code> para un argumento desactiva cualquier filtro 
-       aceptado para ese protocolo. Esto es &#250;til para protocolos que requieren que un
-       servidor env&#237;e datos primeros, tales como <code>ftp:</code> o <code>nntp</code>:</p>
-    <example>AcceptFilter nntp none</example>
+       aceptado para ese protocolo. Esto es útil para protocolos que requieren que un
+       servidor envíe datos primeros, tales como <code>ftp:</code> o <code>nntp</code>:</p>
+    <highlight language="config">
+AcceptFilter nntp none
+    </highlight>
 
     <p>Los nombres de protocolo por defecto son <code>https</code> para el puerto 443
-       y <code>http</code> para todos los dem&#225;s puertos. Para especificar que se est&#225;
-       utilizando otro protocolo con un puerto escuchando, a&#241;ade el argumento <var>protocol</var>
+       y <code>http</code> para todos los demás puertos. Para especificar que se está
+       utilizando otro protocolo con un puerto a la escucha, añade el argumento <var>protocol</var>
        a la directiva <directive module="mpm_common">Listen</directive>.</p>
 
-    <p>Sobre FreeBDS los valores por defecto:</p>
-    <example>
-        AcceptFilter http httpready <br/>
-        AcceptFilter https dataready
-    </example>
+    <p>Los valores por defecto de FreeBDS son:</p>
+    <highlight language="config">
+AcceptFilter http httpready
+AcceptFilter https dataready
+    </highlight>
     
     <p>El filtro <code>httpready</code> almacena en el buffer peticiones HTTP completas
-       a nivel de kernel.  Una vez que la petici&#243;n es recibida, el kernel la env&#237;a al servidor. 
-       Consulta la p&#225;gina man de
+       a nivel de kernel.  Una vez que la petición es recibida, el kernel la envía al servidor. 
+       Consulta la página man de
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
-       accf_http(9)</a> para m&#225;s detalles.  Puesto que las peticiones HTTPS
-       est&#225;n encriptadas, s&#243;lo se utiliza el filtro
+       accf_http(9)</a> para más detalles.  Puesto que las peticiones HTTPS
+       están encriptadas, sólo se utiliza el filtro
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>.</p>
 
-    <p>Sobre Linux los valores por defecto son:</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
+    <p>Los valores por defecto en Linux son:</p>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>En Linux, <code>TCP_DEFER_ACCEPT</code> no soporta el buffering en peticiones http.
-       Cualquier valor adem&#225;s de <code>none</code> habilitar&#225; 
-       <code>TCP_DEFER_ACCEPT</code> en ese socket. Para m&#225;s detalles 
-       ver la p&#225;gina man de Linux 
-       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+       Cualquier valor además de <code>none</code> habilitará 
+       <code>TCP_DEFER_ACCEPT</code> en ese socket. Para más detalles 
+       ver la página man de Linux 
+       <a href="http://linux.die.net/man/7/tcp">
        tcp(7)</a>.</p>
 
-    <p>Sobre Windows los valores por defecto son:</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
+    <p>Los valores por defecto en Windows son:</p>
+    <highlight language="config">
+AcceptFilter http data
+AcceptFilter https data
+    </highlight>
 
     <p>Sobre Windows mpm_winnt interpreta el argumento AcceptFilter para conmutar la API
        AcceptEx(), y no soporta el buffering sobre el protocolo http.  Hay dos valores
        que utilizan la API Windows AcceptEx() y que recuperan sockets de red
-       entre conexciones.  <code>data</code> espera hasta que los datos han sido
+       entre conexiones.  <code>data</code> espera hasta que los datos han sido
        transmitidos como se comentaba anteriormente, y el buffer inicial de datos y las
-       direcciones de red son recuperadas a partir de una &#250;nica llamada AcceptEx().
-       <code>connect</code> utiliza la API AcceptEx() API, y recupera tambi&#233;n
+       direcciones de red son recuperadas a partir de una única llamada AcceptEx().
+       <code>connect</code> utiliza la API AcceptEx() API, y recupera también
        las direcciones de red, pero a diferencia de <code>none</code> 
-       la opci&#243;n <code>connect</code> no espera a la transmisi&#243;n inicial de los datos.</p>
+       la opción <code>connect</code> no espera a la transmisión inicial de los datos.</p>
 
-    <p>Sobre Windows, <code>none</code> prefiere accept() antes que AcceptEx()
-       y no recuperar&#225; sockets entre las conexiones.  Lo que es &#250;til para los adaptadores de
-       red con un soporte precario de drivers, as&#237; como para algunos proveedores de red
+    <p>Sobre Windows, <code>none</code> usa accept() antes que AcceptEx()
+       y no recuperará sockets entre las conexiones. Lo que es útil para los adaptadores de
+       red con un soporte precario de drivers, así como para algunos proveedores de red
        tales como drivers vpn, o filtros de spam, de virus o de spyware.</p>  
 
 </usage>
-<seealso><directive>Protocol</directive></seealso>
+<seealso><directive module="core">Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AcceptPathInfo</name>
-<description>Los recursos aceptan informaci&#243;n sobre su ruta</description>
+<description>Los recursos aceptan información sobre su ruta</description>
 <syntax>AcceptPathInfo On|Off|Default</syntax>
 <default>AcceptPathInfo Default</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible en Apache httpd 2.0.30 y posteriores</compatibility>
+
 
 <usage>
 
-    <p>Esta directiva controla si las peticiones que contienen informaci&#243;n sobre la ruta
+    <p>Esta directiva controla si las peticiones que contienen información sobre la ruta
     que sigue un fichero que existe (o un fichero que no existe pero en un directorio que
-    s&#237; existe) ser&#225;n aceptadas o denegadas.  La informaci&#243;n de ruta puede estar disponible
+    sí existe) serán aceptadas o denegadas. La información de ruta puede estar disponible
     para los scripts en la variable de entorno <code>PATH_INFO</code>.</p>
 
-    <p>Por ejemplo, asumamos que la ubicaci&#243;n <code>/test/</code> apunta a
-    un directorio que contiene &#250;nicamente el fichero
-    <code>here.html</code>.  Entonces, las peticiones tanto para
+    <p>Por ejemplo, asumamos que la ubicación <code>/test/</code> apunta a
+    un directorio que contiene únicamente el fichero
+    <code>here.html</code>. Entonces, las peticiones tanto para
     <code>/test/here.html/more</code> como para
     <code>/test/nothere.html/more</code> recogen
     <code>/more</code> como <code>PATH_INFO</code>.</p>
@@ -135,20 +137,20 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     <p>Los tres posibles argumentos para la directiva
     <directive>AcceptPathInfo</directive> son los siguientes:</p>
     <dl>
-    <dt><code>Off</code></dt><dd>Una petici&#243;n s&#243;lo ser&#225; aceptada si
-    se corresponde con una ruta literal que existe.  Por lo tanto, una petici&#243;n
-    con una informaci&#243;n de ruta despu&#233;s del nombre de fichero tal como
-    <code>/test/here.html/more</code> en el ejemplo anterior devolver&#225;
+    <dt><code>Off</code></dt><dd>Una petición sólo será aceptada si
+    se corresponde con una ruta literal que existe. Por lo tanto, una petición
+    con una información de ruta después del nombre de fichero tal como
+    <code>/test/here.html/more</code> en el ejemplo anterior devolverá
     un error 404 NOT FOUND.</dd>
 
-    <dt><code>On</code></dt><dd>Una petici&#243;n ser&#225; aceptada si una
+    <dt><code>On</code></dt><dd>Una petición será aceptada si una
     ruta principal de acceso se corresponde con un fichero que existe. El ejemplo
-    anterior <code>/test/here.html/more</code> ser&#225; aceptado si
-    <code>/test/here.html</code> corresponde a un fichero v&#225;lido.</dd>
+    anterior <code>/test/here.html/more</code> será aceptado si
+    <code>/test/here.html</code> corresponde a un fichero válido.</dd>
 
-    <dt><code>Default</code></dt><dd>La gesti&#243;n de las peticiones
-    con informaci&#243;n de ruta est&#225; determinada por el <a
-    href="../handler.html">controlador</a> responsable de la petici&#243;n.
+    <dt><code>Default</code></dt><dd>La gestión de las peticiones
+    con información de ruta está determinada por el <a
+    href="../handler.html">controlador</a> responsable de la petición.
     El controlador principal para para ficheros normales rechaza por defecto
     peticiones <code>PATH_INFO</code>. Los controladores que sirven scripts, tales como <a
     href="mod_cgi.html">cgi-script</a> e <a
@@ -157,69 +159,67 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     </dl>
 
     <p>El objetivo principal de la directiva <code>AcceptPathInfo</code>
-    es permitirte sobreescribir la opci&#243;n del controlador
-    de aceptar or rechazar <code>PATH_INFO</code>. Este tipo de sobreescritura se necesita,
+    es permitirnos sobrescribir la opción del controlador
+    de aceptar o rechazar <code>PATH_INFO</code>. Este tipo de reescritura se necesita,
     por ejemplo, cuando utilizas un <a href="../filter.html">filtro</a>, tal como
     <a href="mod_include.html">INCLUDES</a>, para generar contenido
-    basado en <code>PATH_INFO</code>. El controlador principal normalmente rechazar&#237;a
-    la petici&#243;n, de modo que puedes utilizar la siguiente configuraci&#243;n para habilitarla
+    basado en <code>PATH_INFO</code>. El controlador principal normalmente rechazaría
+    la petición, de modo que puedes utilizar la siguiente configuración para habilitarla
     como script:</p>
 
-    <example>
-      &lt;Files "mypaths.shtml"&gt;<br />
-      <indent>
-        Options +Includes<br />
-        SetOutputFilter INCLUDES<br />
-        AcceptPathInfo On<br />
-      </indent>
-      &lt;/Files&gt;
-    </example>
+    <highlight language="config">
+&lt;Files "mypaths.shtml"&gt;
+  Options +Includes
+  SetOutputFilter INCLUDES
+  AcceptPathInfo On
+&lt;/Files&gt;
+    </highlight>
 
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AccessFileName</name>
-<description>Nombre del fichero distribuido de configuraci&#243;n</description>
+<description>Nombre del fichero distribuido de configuración</description>
 <syntax>AccessFileName <var>filename</var> [<var>filename</var>] ...</syntax>
 <default>AccessFileName .htaccess</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Mientras que procesa una petici&#243;n el servidor busca
-    el primer fichero de configuraci&#243;n existente dentro de un listado de nombres en
+    <p>Mientras que procesa una petición el servidor busca
+    el primer fichero de configuración existente dentro de un listado de nombres en
     cada directorio de la ruta del documento, si los ficheros distribuidos
-    de configuraci&#243;n est&#225;n <a href="#allowoverride">habilitados para ese
+    de configuración están <a href="#allowoverride">habilitados para ese
     directorio</a>. Por ejemplo:</p>
 
-    <example>
-      AccessFileName .acl
-    </example>
+     <highlight language="config">
+AccessFileName .acl
+    </highlight>
 
-    <p>antes de servir el documento
-    <code>/usr/local/web/index.html</code>, el servidor leer&#225;
+    <p>Antes de servir el documento
+    <code>/usr/local/web/index.html</code>, el servidor leerá
     <code>/.acl</code>, <code>/usr/.acl</code>,
-    <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    para las directivas, salvo que estén deshabilitadas with</p>
+    <code>/usr/local/.acl</code> y <code>/usr/local/web/.acl</code>
+    para las directivas, salvo que estén deshabilitadas con:</p>
 
-    <example>
-      &lt;Directory /&gt;<br />
-      <indent>
-        AllowOverride None<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
+     <highlight language="config">
+&lt;Directory "/"&gt;
+    AllowOverride None
+&lt;/Directory&gt;
+    </highlight>
+
+    
 </usage>
 <seealso><directive module="core">AllowOverride</directive></seealso>
-<seealso><a href="../configuring.html">Configuration Files</a></seealso>
-<seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
+<seealso><a href="../configuring.html">Ficheros de configuración</a></seealso>
+<seealso><a href="../howto/htaccess.html">Fichero .htaccess</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddDefaultCharset</name>
-<description>Default charset parameter to be added when a response
-content-type is <code>text/plain</code> or <code>text/html</code></description>
+<description>Juego de casrácteres que se le añade por defecto a una respuesta del tipo
+	contenido "content-type" es <code>text/plain</code> o <code>text/html</code></description>
 <syntax>AddDefaultCharset On|Off|<var>charset</var></syntax>
 <default>AddDefaultCharset Off</default>
 <contextlist><context>server config</context>
@@ -228,41 +228,44 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 <override>FileInfo</override>
 
 <usage>
-    <p>This directive specifies a default value for the media type
-    charset parameter (the name of a character encoding) to be added
-    to a response if and only if the response's content-type is either
-    <code>text/plain</code> or <code>text/html</code>.  This should override
-    any charset specified in the body of the response via a <code>META</code>
-    element, though the exact behavior is often dependent on the user's client
-    configuration. A setting of <code>AddDefaultCharset Off</code>
-    disables this functionality. <code>AddDefaultCharset On</code> enables
-    a default charset of <code>iso-8859-1</code>. Any other value is assumed
-    to be the <var>charset</var> to be used, which should be one of the
-    <a href="http://www.iana.org/assignments/character-sets">IANA registered
-    charset values</a> for use in Internet media types (MIME types).
-    For example:</p>
+    <p>Esta directiva especifica un valor por defecto para el tipo de soporte que 
+    	se usa como parámetro del juego de carácteres (el nombre de una 
+    	codificación de carácteres) para ser añadido a una respuesta si y solo si
+    	el contenido de "content-type" es o <code>text/plain</code> o 
+    	<code>text/html</code>. Esto debería sobreescribir cualquier juego de 
+    	caracteres que se le especifique en el cuerpo de la respuesta mediante un  
+    	elemento <code>META</code>, aunque el comportamiento exacto depende a menudo
+    	de la confuguracion del usuario cliente. Una configuración de 
+    	<code>AddDefaultCharset Off</code> deshabilita esta funcionalidad.
+    	<code>AddDefaultCharset On</code> habilita un conjunto de caracteres por defecto
+    	de <code>iso-8859-1</code>. Cualquier otro valor se asume que sea el <var>charset</var>
+    	que va a ser usado, que debe ser uno de los juegos de carácteres  
+    	<a href="http://www.iana.org/assignments/character-sets">registradas por el IANA
+    </a> para su uso en los tipos de medios de Internet (MIME types).
+    Por ejemplo:</p>
+  	  
+    <highlight language="config">
+AddDefaultCharset utf-8
+    </highlight>
 
-    <example>
-      AddDefaultCharset utf-8
-    </example>
-
-    <p><directive>AddDefaultCharset</directive> should only be used when all
-    of the text resources to which it applies are known to be in that
-    character encoding and it is too inconvenient to label their charset
-    individually. One such example is to add the charset parameter
-    to resources containing generated content, such as legacy CGI
-    scripts, that might be vulnerable to cross-site scripting attacks
-    due to user-provided data being included in the output.  Note, however,
-    that a better solution is to just fix (or delete) those scripts, since
-    setting a default charset does not protect users that have enabled
-    the "auto-detect character encoding" feature on their browser.</p>
+    <p><directive>AddDefaultCharset</directive> debería ser utilizada sólo cuando
+    se sepa que todo el texto del recurso al que se le aplica se sabe que va a 
+    estar en ese juego de caracteres y es inconveniente etiquetar los 
+    documentos individualmente. Un ejemplo de ello es añadir el juego de caracteres 
+    a recursos con contenido autogenerado, tales como scripts legados de CGI, 
+    que pueden ser vulnerables a ataques de tipo XSS (Cross-Site Scripting),
+    debido a datos que incluye el usuario en la salida. Notese, sin embargo
+    una mejor solución es arreglar (o eliminar) dichos scripts, ya que
+    dejar por defecto un juego de carácteres no protege a los usuarios
+    que han habilitado la funcionalidad "auto-detect character encoding" en sus 
+    navegadores.
+    </p>
 </usage>
 <seealso><directive module="mod_mime">AddCharset</directive></seealso>
-</directivesynopsis>
-
+</directivesynopsis> 
 <directivesynopsis>
 <name>AllowEncodedSlashes</name>
-<description>Determines whether encoded path separators in URLs are allowed to
+<description>Determina si Determines whether encoded path separators in URLs are allowed to
 be passed through</description>
 <syntax>AllowEncodedSlashes On|Off</syntax>
 <default>AllowEncodedSlashes Off</default>
