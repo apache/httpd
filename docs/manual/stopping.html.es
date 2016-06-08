@@ -31,10 +31,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Este documento explica como iniciar y parar el servidor Apache
      en sistemas tipo Unix. Los usuarios de Windows NT, 2000 y XP
@@ -44,27 +40,31 @@
      sobre como controlar Apache en esas plataformas.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#term">Parar Apache</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#graceful">Reinicio Graceful</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#term">Parar Ahora Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#graceful">Reinicio "Graceful" o elegante</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Reiniciar Apache</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">Apéndice: señales y race conditions</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#race">Apándice: señales y race conditions</a></li>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html" />Iniciar Apache</li><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introducción</a></h2>
 
     <p>Para parar y reiniciar Apache, hay que enviar la señal
-    apropiada al proceso padre <code>httpd</code> que se esté
+    apropiada al proceso padre <code>httpd</code> que se está
     ejecutando.  Hay dos maneras de enviar estas señales.  En
     primer lugar, puede usar el comando de Unix <code>kill</code> que
     envía señales directamente a los procesos. Puede que
-    tenga varios procesos <code>httpd</code> ejecutandose en su
+    tenga varios procesos <code>httpd</code> ejecutándose en su
     sistema, pero las señales deben enviarse solamente al proceso
-    padre, cuyo pid está especificado en la directiva <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. Esto quiere decir que no
+    padre, cuyo PID está especificado en la directiva <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. Esto quiere decir que no
     debe necesitar enviar señales a ningún proceso excepto
     al proceso padre. Hay tres señales que puede enviar al
-    proceso padre: <code><a href="#term">TERM</a></code>, <code><a href="#hup">HUP</a></code>, y <code><a href="#graceful">USR1</a></code>, que van a ser descritas a
-    continuación.</p>
+    proceso padre: 
+    <code><a href="#term">TERM</a></code>, 
+    <code><a href="#graceful">USR1</a></code>
+    <code><a href="#hup">HUP</a></code>, y
+    <code><a href="#gracefulstop">WINCH</a></code>,
+    que van a ser descritas a continuación.</p>
 
     <p>Para enviar una señal al proceso padre debe escribir un
     comando como el que se muestra en el ejemplo:</p>
@@ -74,10 +74,11 @@
     <p>La segunda manera de enviar señales a los procesos
     <code>httpd</code> es usando las opciones de línea de
     comandos <code>-k</code>: <code>stop</code>, <code>restart</code>,
-    y <code>graceful</code>, como se muestra más abajo.  Estas
-    opciones se le pueden pasar al binario <a href="programs/httpd.html">httpd</a>, pero se recomienda que se
-    pasen al script de control <a href="programs/apachectl.html">apachectl</a>, que a su vez los
-    pasará a <code>httpd</code>.</p>
+    y <code>graceful</code> y <code>graceful-stop</code>, como se 
+    muestra más abajo. Estas opciones se le pueden pasar al binario 
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>, pero se recomienda que se pasen al 
+    script de control <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, que a su vez los
+    pasará a <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</p>
 
     <p>Después de haber enviado las señales que desee a
     <code>httpd</code>, puede ver como progresa el proceso
@@ -91,7 +92,7 @@
     configuración.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="term" id="term">Parar Apache</a></h2>
+<h2><a name="term" id="term">Parar Ahora Apache</a></h2>
 
 <dl><dt>Señal: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
@@ -99,14 +100,14 @@
 
     <p>Enviar las señales <code>TERM</code> o <code>stop</code>
     al proceso padre hace que se intenten eliminar todos los procesos
-    hijo inmediatamente. Esto puede tardar algunos minutos. Una vez
-    que hayan terminado todos los procesos hijo, terminará el
-    proceso padre. Cualquier petición en proceso terminará
-    inmediatanmente, y ninguna petición posterior será
+    hijos inmediatamente. Esto puede tardar algunos segundos. Una vez que hayan 
+    terminado todos los procesos hijos, terminará el proceso padre. 
+    Cualquier petición en proceso terminará inmediatamente, y 
+    ninguna petición posterior será
     atendida.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">Reinicio Graceful</a></h2>
+<h2><a name="graceful" id="graceful">Reinicio "Graceful" o elegante</a></h2>
 
 <dl><dt>Señal: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -114,30 +115,30 @@
 
     <p>Las señales <code>USR1</code> o <code>graceful</code>
     hacen que el proceso padre <em>indique</em> a sus hijos que
-    terminen después de servir la petición que estén
+    terminen después de servir la petición que están
     atendiendo en ese momento (o de inmediato si no están
     sirviendo ninguna petición). El proceso padre lee de nuevo
     sus ficheros de configuración y vuelve a abrir sus ficheros
     log. Conforme cada hijo va terminando, el proceso padre lo va
     sustituyendo con un hijo de una nueva <em>generación</em> con
-    la nueva configuración, que empeciezan a servir peticiones
+    la nueva configuración, que empiezan a servir peticiones
     inmediatamente.</p>
 
     <div class="note">En algunas plataformas que no permiten usar
     <code>USR1</code> para reinicios graceful, puede usarse una
-    señal alternativa (como <code>WINCH</code>). Tambien puede
+    señal alternativa (como <code>WINCH</code>). También puede
     usar <code>apachectl graceful</code> y el script de control
     enviará la señal adecuada para su plataforma.</div>
 
     <p>Apache está diseñado para respetar en todo momento la
     directiva de control de procesos de los MPM, así como para
-    que el número de procesos y hebras disponibles para servir a
+    que el número de procesos e hilos disponibles para servir a
     los clientes se mantenga en los valores adecuados durante el
     proceso de reinicio.  Aún más, está diseñado
     para respetar la directiva <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> de la siguiente
     manera: si después de al menos un segundo el nuevo hijo de la
     directiva <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code>
-    no ha sido creado, entonces crea los suficientes para se atienda
+    no ha sido creado, entonces crea los suficientes para que se atienda
     el trabajo que queda por hacer. Así, se intenta mantener
     tanto el número de hijos adecuado para el trabajo que el
     servidor tenga en ese momento, como respetar la configuración
@@ -166,20 +167,21 @@
     adecuado después de enviar la señal <code>USR1</code>
     antes de hacer nada con el log antiguo. Por ejemplo, si la mayor
     parte las visitas que recibe de usuarios que tienen conexiones de
-    baja velocidad tardan menos de 10 minutos en completarse, entoces
+    baja velocidad tardan menos de 10 minutos en completarse, entonces
     espere 15 minutos antes de hacer nada con el log antiguo.</p>
 
     <div class="note">Si su fichero de configuración tiene errores cuando
-    haga el reinicio, entonces el proceso padre no se reinciciará
+    haga el reinicio, entonces el proceso padre no se reiniciará
     y terminará con un error. En caso de un reinicio graceful,
-    también dejará a los procesos hijo ejecutandose mientras
+    también dejará a los procesos hijo ejecutándose mientras
     existan.  (Estos son los hijos de los que se está saliendo de
     forma graceful y que están sirviendo sus últimas
     peticiones.) Esto provocará problemas si intenta reiniciar el
-    servidor -- no será posible conectarse a la lista de puertos
+    servidor no será posible conectarse a la lista de puertos
     de escucha. Antes de reiniciar, puede comprobar que la sintaxis de
-    sus ficheros de configuracion es correcta con la opción de
-    línea de comandos <code>-t</code> (consulte <a href="programs/httpd.html">httpd</a>). No obstante, esto no
+    sus ficheros de configuración es correcta con la opción de
+    línea de comandos <code>-t</code> (consulte <code class="program"><a href="./programs/httpd.html">httpd</a></code>). 
+    No obstante, esto no
     garantiza que el servidor se reinicie correctamente. Para
     comprobar que no hay errores en los ficheros de
     configuración, puede intentar iniciar <code>httpd</code> con
@@ -201,7 +203,7 @@
 
     <p>El envío de las señales <code>HUP</code> o
     <code>restart</code> al proceso padre hace que los procesos hijo
-    terminen como si le enviá ramos la señal
+    terminen como si le enviáramos la señal
     <code>TERM</code>, para eliminar el proceso padre. La diferencia
     está en que estas señales vuelven a leer los archivos de
     configuración y vuelven a abrir los ficheros log. Se genera
@@ -218,7 +220,7 @@ reiniciará, sino que terminará con un error. Consulte
 más arriba cómo puede solucionar este problema.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">Apéndice: señales y race conditions</a></h2>
+<h2><a name="race" id="race">Apándice: señales y race conditions</a></h2>
 
     <p>Con anterioridad a la versión de Apache 1.2b9 había
     varias <em>race conditions</em> implicadas en las señales
@@ -234,8 +236,8 @@ más arriba cómo puede solucionar este problema.</div>
     <p>En las arquitecturas que usan un <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> en disco, existe la
     posibilidad de que se corrompan los scoreboards. Esto puede hacer
     que se produzca el error "bind: Address already in use"
-    (después de usar<code>HUP</code>) o el error "long lost child
-    came home!"  (después de usar <code>USR1</code>). En el
+    (despuás de usar<code>HUP</code>) o el error "long lost child
+    came home!"  (despuás de usar <code>USR1</code>). En el
     primer caso se trata de un error irrecuperable, mientras que en el
     segundo, solo ocurre que el servidor pierde un slot del
     scoreboard. Por lo tanto, sería aconsejable usar reinicios
@@ -251,9 +253,9 @@ más arriba cómo puede solucionar este problema.</div>
     peticiones en una conexión HTTP persistente
     (KeepAlive). Puede ser que el servidor termine después de
     leer la línea de petición pero antes de leer cualquiera
-    de las cebeceras de petición. Hay una solución que fue
+    de las cabeceras de petición. Hay una solución que fue
     descubierta demasiado tarde para la incluirla en versión
-    1.2. En teoria esto no debe suponer ningún problema porque el
+    1.2. En teoría esto no debe suponer ningún problema porque el
     cliente KeepAlive ha de esperar que estas cosas pasen debido a los
     retardos de red y a los timeouts que a veces dan los
     servidores. En la practica, parece que no afecta a nada más
