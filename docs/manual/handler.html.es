@@ -31,10 +31,6 @@
 <a href="./tr/handler.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Este documento describe el uso de los Handlers en Apache.</p>
   </div>
@@ -57,20 +53,20 @@
     por el servidor, pero algunos tipos de ficheros se tratan de forma
     diferente.</p>
 
-    <p>Apache 1.1 añade la posibilidad de usar handlers
-    explicitamente.  Basándose en la extension del fichero o en
-    la ubicación en la que este, se pueden especificar handlers
-    sin tener en cuenta el tipo de fichero de que se trate. Esto es
+    <p>Handlers pueden ser usados de manera explicita,
+     basándose en la extensión del fichero o en
+    la ubicación en la que esté, se pueden especificar handlers
+    sin tener en cuenta el tipo de fichero que se trate. Esto es
     una ventaja por dos razones. Primero, es una solución
     más elegante. Segundo, porque a un fichero se le pueden
     asignar tanto un tipo <strong>como</strong> un handler. (Consulte
     también la sección <a href="mod/mod_mime.html#multipleext">Ficheros y extensiones
     múltiples</a>.)</p>
 
-    <p>Los Handlers pueden ser tanto ser compilados con el servidor
-    como incluidos en un módulo, como añadidos con la
+    <p>Los Handlers pueden tanto ser compilados con el servidor
+    como incluidos en un módulo, o añadidos con la
     directiva <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code>. Los
-    handlers compilados con el servidor de la distribución
+    handlers que vienen incluidos en el core con el servidor de la distribución
     estándar de Apache son:</p>
 
     <ul>
@@ -92,16 +88,19 @@
       configuración del
       servidor. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
 
-      <li><strong>server-status</strong>: Extrae el informe de estado
+      <li><strong>server-status</strong>: Extrae el informe del estado
       del servidor. (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
 
       <li><strong>type-map</strong>: Trata el fichero como una
       correspondencia de tipos para la negociación de contenidos.
-      (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li> </ul> </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+      (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li> 
+    </ul> 
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Ejemplos</a></h2> 
+      
 
-    <h3><a name="example1" id="example1">Modificar contenido estático usando un script
+      <h3><a name="example1" id="example1">Modificar contenido estático usando un script
       CGI</a></h3>
       
 
@@ -121,7 +120,7 @@
       modificación o añadido deseado.</p>
 
     
-    <h3><a name="example2" id="example2">Archivos con cabaceras HTTP</a></h3>
+    <h3><a name="example2" id="example2">Archivos con cabeceras HTTP</a></h3>
       
 
       <p>Las siguientes directivas activan el handler
@@ -131,11 +130,10 @@
       handler <code>send-as-is</code>, sin tener en cuenta su
       extension.</p>
 
-      <div class="example"><p><code>
-        &lt;Directory /web/htdocs/asis&gt;<br />
-        SetHandler send-as-is<br />
-        &lt;/Directory&gt;
-      </code></p></div>
+      <pre class="prettyprint lang-config">&lt;Directory "/web/htdocs/asis"&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;</pre>
+
 
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -149,9 +147,8 @@
     específicos, se ha añadido un nuevo registro a la
     estructura <code>request_rec</code>:</p>
 
-    <div class="example"><p><code>
-      char *handler
-    </code></p></div>
+    <pre class="prettyprint lang-c">char *handler</pre>
+
 
     <p>Si quiere que su módulo llame a un handler , solo tiene
     que añadir <code>r-&gt;handler</code> al nombre del handler
