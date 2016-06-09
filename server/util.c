@@ -3316,7 +3316,7 @@ static const short ucharmap[] = {
 };
 #endif
 
-AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2)
+AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2)
 {
     const unsigned char *str1 = (const unsigned char *)s1;
     const unsigned char *str2 = (const unsigned char *)s2;
@@ -3333,7 +3333,7 @@ AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2)
     }
 }
 
-AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2, apr_size_t n)
+AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
 {
     const unsigned char *str1 = (const unsigned char *)s1;
     const unsigned char *str2 = (const unsigned char *)s2;
