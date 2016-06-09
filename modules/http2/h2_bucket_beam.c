@@ -407,6 +407,12 @@ static apr_status_t beam_cleanup(void *data)
     r_purge_reds(beam);
     h2_blist_cleanup(&beam->red);
     report_consumption(beam, 0);
+    while (!H2_BPROXY_LIST_EMPTY(&beam->proxies)) {
+        h2_beam_proxy *proxy = H2_BPROXY_LIST_FIRST(&beam->proxies);
+        H2_BPROXY_REMOVE(proxy);
+        proxy->beam = NULL;
+        proxy->bred = NULL;
+    }
     h2_blist_cleanup(&beam->purge);
     h2_blist_cleanup(&beam->hold);
     
@@ -534,16 +540,18 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
 }
 
-apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block)
+apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block,
+                              int clear_buffers)
 {
     apr_status_t status;
     h2_beam_lock bl;
     
     if ((status = enter_yellow(beam, &bl)) == APR_SUCCESS) {
-        r_purge_reds(beam);
-        h2_blist_cleanup(&beam->red);
+        if (clear_buffers) {
+            r_purge_reds(beam);
+            h2_blist_cleanup(&beam->red);
+        }
         beam_close(beam);
-        report_consumption(beam, 0);
         
         while (status == APR_SUCCESS 
                && (!H2_BPROXY_LIST_EMPTY(&beam->proxies)
