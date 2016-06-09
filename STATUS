@@ -219,6 +219,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: jailletc36
 
+  *) mod_cache: Fix (max-stale with no '=') and enforce (check integers after '=')
+     Cache-Control header parsing.
+     trunk patch: http://svn.apache.org/r1715886
+     2.4.x: trunk works
+     +1: jailletc36
+
+  *) http: Add 451 status code
+     trunk patch: http://svn.apache.org/r1730723
+     2.4.x: trunk works
+     +1: jailletc36
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
