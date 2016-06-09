@@ -295,8 +295,8 @@ static void pinternalSubset(void* ctxt, const xmlChar *name,
     }
     ap_fputstrs(ctx->f->next, ctx->bb, "<!DOCTYPE ", (const char *)name, NULL);
     if (externalID) {
-        if (!ap_casecmpstr((const char*)name, "html") &&
-            !ap_casecmpstrn((const char *)externalID, "-//W3C//DTD XHTML ", 18)) {
+        if (!ap_cstr_casecmp((const char*)name, "html") &&
+            !ap_cstr_casecmpn((const char *)externalID, "-//W3C//DTD XHTML ", 18)) {
             ctx->etag = xhtml_etag;
         }
         else {
@@ -690,7 +690,7 @@ static meta *metafix(request_rec *r, const char *buf)
         while (!apr_isalpha(*++p));
         for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
         header = apr_pstrndup(r->pool, p, q-p);
-        if (ap_casecmpstrn(header, "Content-", 8)) {
+        if (ap_cstr_casecmpn(header, "Content-", 8)) {
             /* find content=... string */
             p = apr_strmatch(seek_content, buf+offs+pmatch[0].rm_so,
                               pmatch[0].rm_eo - pmatch[0].rm_so);
@@ -718,7 +718,7 @@ static meta *metafix(request_rec *r, const char *buf)
                 }
             }
         }
-        else if (!ap_casecmpstrn(header, "Content-Type", 12)) {
+        else if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
             ret = apr_palloc(r->pool, sizeof(meta));
             ret->start = offs+pmatch[0].rm_so;
             ret->end = offs+pmatch[0].rm_eo;
@@ -842,8 +842,8 @@ static saxctxt *check_filter_init (ap_filter_t *f)
             else if (!f->r->content_type) {
                 errmsg = "No content-type; bailing out of proxy-html filter";
             }
-            else if (ap_casecmpstrn(f->r->content_type, "text/html", 9) &&
-                     ap_casecmpstrn(f->r->content_type,
+            else if (ap_cstr_casecmpn(f->r->content_type, "text/html", 9) &&
+                     ap_cstr_casecmpn(f->r->content_type,
                                  "application/xhtml+xml", 21)) {
                 errmsg = "Non-HTML content; not inserting proxy-html filter";
             }

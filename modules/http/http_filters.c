@@ -317,7 +317,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
 
         if (tenc) {
-            if (ap_casecmpstr(tenc, "chunked") == 0 /* fast path */
+            if (ap_cstr_casecmp(tenc, "chunked") == 0 /* fast path */
                     || ap_find_last_token(f->r->pool, tenc, "chunked")) {
                 ctx->state = BODY_CHUNK;
             }
@@ -764,7 +764,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
          */
         for (i = 0, strpp = (char **) values->elts; i < values->nelts;
              ++i, ++strpp) {
-            if (*strpp && ap_casecmpstr(*strpp, start) == 0) {
+            if (*strpp && ap_cstr_casecmp(*strpp, start) == 0) {
                 break;
             }
         }
@@ -1306,7 +1306,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
             for (i = 0; i < r->content_languages->nelts; ++i) {
-                if (!ap_casecmpstr(token, languages[i]))
+                if (!ap_cstr_casecmp(token, languages[i]))
                     break;
             }
             if (i == r->content_languages->nelts) {
@@ -1543,7 +1543,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     r->remaining = 0;
 
     if (tenc) {
-        if (ap_casecmpstr(tenc, "chunked")) {
+        if (ap_cstr_casecmp(tenc, "chunked")) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01592)
                           "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;

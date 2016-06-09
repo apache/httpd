@@ -935,7 +935,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 
     if (finfo.filetype != APR_REG &&
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
-        ap_casecmpstr(apr_filepath_name_get(name), "nul") != 0) {
+        ap_cstr_casecmp(apr_filepath_name_get(name), "nul") != 0) {
 #else
         strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
@@ -1663,7 +1663,7 @@ AP_DECLARE(int) ap_find_token(apr_pool_t *p, const char *line, const char *tok)
         while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
             ++s;
         }
-        if (!ap_casecmpstrn((const char *)start_token, (const char *)tok,
+        if (!ap_cstr_casecmpn((const char *)start_token, (const char *)tok,
                          s - start_token)) {
             return 1;
         }
@@ -1690,7 +1690,7 @@ AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line,
         (lidx > 0 && !(apr_isspace(line[lidx - 1]) || line[lidx - 1] == ',')))
         return 0;
 
-    return (ap_casecmpstrn(&line[lidx], tok, tlen) == 0);
+    return (ap_cstr_casecmpn(&line[lidx], tok, tlen) == 0);
 }
 
 AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
@@ -2657,7 +2657,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
 
     /* sanity check - we only support forms for now */
     ct = apr_table_get(r->headers_in, "Content-Type");
-    if (!ct || ap_casecmpstrn("application/x-www-form-urlencoded", ct, 33)) {
+    if (!ct || ap_cstr_casecmpn("application/x-www-form-urlencoded", ct, 33)) {
         return ap_discard_request_body(r);
     }
 
@@ -3316,7 +3316,7 @@ static const short ucharmap[] = {
 };
 #endif
 
-AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2)
+AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2)
 {
     const unsigned char *str1 = (const unsigned char *)s1;
     const unsigned char *str2 = (const unsigned char *)s2;
@@ -3333,7 +3333,7 @@ AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2)
     }
 }
 
-AP_DECLARE(int) ap_casecmpstrn(const char *s1, const char *s2, apr_size_t n)
+AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n)
 {
     const unsigned char *str1 = (const unsigned char *)s1;
     const unsigned char *str2 = (const unsigned char *)s2;

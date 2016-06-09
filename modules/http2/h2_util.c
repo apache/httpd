@@ -1579,7 +1579,7 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
 }
 
 /*******************************************************************************
- * ap_casecmpstr, when will it be backported?
+ * ap_cstr_casecmp, when will it be backported?
  ******************************************************************************/
 #if !APR_CHARSET_EBCDIC
 /*

@@ -527,7 +527,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     if (status == APR_SUCCESS) {
         /* if it has a scheme we may need to do absoluteURI vhost stuff */
         if (r->parsed_uri.scheme
-            && !ap_casecmpstr(r->parsed_uri.scheme, ap_http_scheme(r))) {
+            && !ap_cstr_casecmp(r->parsed_uri.scheme, ap_http_scheme(r))) {
             r->hostname = r->parsed_uri.hostname;
         }
         else if (r->method_number == M_CONNECT) {
@@ -696,7 +696,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             }
         }
         if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
-            && (ap_casecmpstr("http", http) == 0)
+            && (ap_cstr_casecmp("http", http) == 0)
             && (minor < HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
             r->proto_num = HTTP_VERSION(major, minor);
         }
@@ -1146,7 +1146,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * the final encoding ...; the server MUST respond with the 400
              * (Bad Request) status code and then close the connection".
              */
-            if (!(ap_casecmpstr(tenc, "chunked") == 0 /* fast path */
+            if (!(ap_cstr_casecmp(tenc, "chunked") == 0 /* fast path */
                     || ap_find_last_token(r->pool, tenc, "chunked"))) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02539)
                               "client sent unknown Transfer-Encoding "
@@ -1251,7 +1251,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * unfortunately, to signal a poor man's mandatory extension that
          * the server must understand or return 417 Expectation Failed.
          */
-        if (ap_casecmpstr(expect, "100-continue") == 0) {
+        if (ap_cstr_casecmp(expect, "100-continue") == 0) {
             r->expecting_100 = 1;
         }
         else {
@@ -1427,7 +1427,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *t, *auth_line;
 
-    if (!(t = ap_auth_type(r)) || ap_casecmpstr(t, "Basic"))
+    if (!(t = ap_auth_type(r)) || ap_cstr_casecmp(t, "Basic"))
         return DECLINED;
 
     if (!ap_auth_name(r)) {
@@ -1445,7 +1445,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return HTTP_UNAUTHORIZED;
     }
 
-    if (ap_casecmpstr(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
+    if (ap_cstr_casecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00573)
                       "client used wrong authentication scheme: %s", r->uri);

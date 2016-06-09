@@ -231,12 +231,12 @@ static int proxy_wstunnel_canon(request_rec *r, char *url)
     apr_port_t port, def_port;
 
     /* ap_port_of_scheme() */
-    if (ap_casecmpstrn(url, "ws:", 3) == 0) {
+    if (ap_cstr_casecmpn(url, "ws:", 3) == 0) {
         url += 3;
         scheme = "ws:";
         def_port = apr_uri_port_of_scheme("http");
     }
-    else if (ap_casecmpstrn(url, "wss:", 4) == 0) {
+    else if (ap_cstr_casecmpn(url, "wss:", 4) == 0) {
         url += 4;
         scheme = "wss:";
         def_port = apr_uri_port_of_scheme("https");
@@ -452,11 +452,11 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     apr_uri_t *uri;
     int is_ssl = 0;
 
-    if (ap_casecmpstrn(url, "wss:", 4) == 0) {
+    if (ap_cstr_casecmpn(url, "wss:", 4) == 0) {
         scheme = "WSS";
         is_ssl = 1;
     }
-    else if (ap_casecmpstrn(url, "ws:", 3) == 0) {
+    else if (ap_cstr_casecmpn(url, "ws:", 3) == 0) {
         scheme = "WS";
     }
     else {
@@ -465,7 +465,7 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     }
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (!upgrade || ap_casecmpstr(upgrade, "WebSocket") != 0) {
+    if (!upgrade || ap_cstr_casecmp(upgrade, "WebSocket") != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
                       "declining URL %s  (not WebSocket)", url);
         return DECLINED;
