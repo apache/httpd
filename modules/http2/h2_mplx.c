@@ -200,7 +200,7 @@ static int purge_stream(void *ctx, void *val)
     h2_ihash_remove(m->spurge, stream->id);
     h2_stream_destroy(stream);
     if (task) {
-        task_destroy(m, task, 0);
+        task_destroy(m, task, 1);
     }
     return 0;
 }
@@ -348,15 +348,6 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
                   "h2_task(%s): destroy", task->id);
-    /* cleanup any buffered input */
-    if (task->input.beam) {
-        status = h2_beam_shutdown(task->input.beam, APR_NONBLOCK_READ);
-        if (status != APR_SUCCESS){
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, APLOGNO(03385) 
-                          "h2_task(%s): input shutdown", task->id);
-        }
-    }
-    
     if (called_from_master) {
         /* Process outstanding events before destruction */
         h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
@@ -372,6 +363,12 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
         m->tx_handles_reserved += 
         h2_beam_get_files_beamed(task->output.beam);
         h2_beam_on_produced(task->output.beam, NULL, NULL);
+        status = h2_beam_shutdown(task->output.beam, APR_NONBLOCK_READ, 1);
+        if (status != APR_SUCCESS){
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, 
+                          APLOGNO(03385) "h2_task(%s): output shutdown "
+                          "incomplete", task->id);
+        }
     }
     
     slave = task->c;
@@ -438,6 +435,8 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
     h2_ihash_remove(m->streams, stream->id);
     if (stream->input) {
         m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
+        h2_beam_on_consumed(stream->input, NULL, NULL);
+        h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
     }
     h2_stream_cleanup(stream);
 
@@ -651,6 +650,7 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, h2_stream *stream)
                       "h2_mplx(%ld-%d): marking stream as done.", 
                       m->id, stream->id);
         stream_done(m, stream, stream->rst_error);
+        purge_streams(m);
         leave_mutex(m, acquired);
     }
     return status;
@@ -766,6 +766,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
             status = APR_SUCCESS;
         }
         else {
+            purge_streams(m);
             m->added_output = iowait;
             status = apr_thread_cond_timedwait(m->added_output, m->lock, timeout);
             if (APLOGctrace2(m->c)) {
@@ -1021,20 +1022,18 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             }
         }
         else {
-            /* stream done, was it placed in hold? */
+            /* stream no longer active, was it placed in hold? */
             stream = h2_ihash_get(m->shold, task->stream_id);
             if (stream) {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                               "h2_mplx(%s): task_done, stream in hold", 
                               task->id);
-                stream->response = NULL; /* ref from task memory */
                 /* We cannot destroy the stream here since this is 
                  * called from a worker thread and freeing memory pools
                  * is only safe in the only thread using it (and its
                  * parent pool / allocator) */
                 h2_ihash_remove(m->shold, stream->id);
                 h2_ihash_add(m->spurge, stream);
-                task_destroy(m, task, 0);
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
