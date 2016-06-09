@@ -40,7 +40,6 @@ struct apr_thread_cond_t;
 struct h2_bucket_beam;
 struct h2_config;
 struct h2_ihash_t;
-struct h2_ilist_t;
 struct h2_response;
 struct h2_task;
 struct h2_stream;
