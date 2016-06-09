@@ -413,8 +413,4 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
  */
 apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb);
 
-/* when will ap_cstr_casecmp() be backported finally? */
-int h2_casecmpstr(const char *s1, const char *s2);
-int h2_casecmpstrn(const char *s1, const char *s2, apr_size_t n);
-
 #endif /* defined(__mod_h2__h2_util__) */

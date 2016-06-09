@@ -355,7 +355,6 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL) (HTTP2)$(DL) > $@
 	@echo $(DL) http2_module,$(DL) >> $@
-	@echo $(DL) h2_casecmpstrn,$(DL) >> $@
 	@echo $(DL) h2_ihash_add,$(DL) >> $@
 	@echo $(DL) h2_ihash_clear,$(DL) >> $@
 	@echo $(DL) h2_ihash_count,$(DL) >> $@
