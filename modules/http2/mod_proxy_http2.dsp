@@ -105,7 +105,7 @@ SOURCE=./h2_proxy_session.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_util.c
+SOURCE=./h2_proxy_util.c
 # End Source File
 # Begin Source File
 

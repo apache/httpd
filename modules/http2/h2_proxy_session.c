@@ -23,7 +23,7 @@
 
 #include "mod_http2.h"
 #include "h2.h"
-#include "h2_util.h"
+#include "h2_proxy_util.h"
 #include "h2_proxy_session.h"
 
 APLOG_USE_MODULE(proxy_http2);
