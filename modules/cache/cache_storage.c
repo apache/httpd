@@ -115,7 +115,7 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
 
 static int filter_header_do(void *v, const char *key, const char *val)
 {
-    if ((*key == 'W' || *key == 'w') && !ap_casecmpstr(key, "Warning")
+    if ((*key == 'W' || *key == 'w') && !ap_cstr_casecmp(key, "Warning")
             && *val == '1') {
         /* any stored Warning headers with warn-code 1xx (see section
          * 14.46) MUST be deleted from the cache entry and the forwarded
@@ -129,7 +129,7 @@ static int filter_header_do(void *v, const char *key, const char *val)
 }
 static int remove_header_do(void *v, const char *key, const char *val)
 {
-    if ((*key == 'W' || *key == 'w') && !ap_casecmpstr(key, "Warning")) {
+    if ((*key == 'W' || *key == 'w') && !ap_cstr_casecmp(key, "Warning")) {
         /* any stored Warning headers with warn-code 2xx MUST be retained
          * in the cache entry and the forwarded response.
          */

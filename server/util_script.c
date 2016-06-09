@@ -180,10 +180,10 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
          * for no particular reason.
          */
 
-        if (!ap_casecmpstr(hdrs[i].key, "Content-type")) {
+        if (!ap_cstr_casecmp(hdrs[i].key, "Content-type")) {
             apr_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
         }
-        else if (!ap_casecmpstr(hdrs[i].key, "Content-length")) {
+        else if (!ap_cstr_casecmp(hdrs[i].key, "Content-length")) {
             apr_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
         }
         /*
@@ -192,8 +192,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
          * in the environment with "ps -e".  But, if you must...
          */
 #ifndef SECURITY_HOLE_PASS_AUTHORIZATION
-        else if (!ap_casecmpstr(hdrs[i].key, "Authorization")
-                 || !ap_casecmpstr(hdrs[i].key, "Proxy-Authorization")) {
+        else if (!ap_cstr_casecmp(hdrs[i].key, "Authorization")
+                 || !ap_cstr_casecmp(hdrs[i].key, "Proxy-Authorization")) {
             if (conf->cgi_pass_auth == AP_CGI_PASS_AUTH_ON) {
                 add_unless_null(e, http2env(r, hdrs[i].key), hdrs[i].val);
             }
@@ -613,7 +613,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
             ++l;
         }
 
-        if (!ap_casecmpstr(w, "Content-type")) {
+        if (!ap_cstr_casecmp(w, "Content-type")) {
             char *tmp;
 
             /* Nuke trailing whitespace */
@@ -631,7 +631,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
          * If the script returned a specific status, that's what
          * we'll use - otherwise we assume 200 OK.
          */
-        else if (!ap_casecmpstr(w, "Status")) {
+        else if (!ap_cstr_casecmp(w, "Status")) {
             r->status = cgi_status = atoi(l);
             if (!ap_is_HTTP_VALID_RESPONSE(cgi_status))
                 /* Intentional no APLOGNO */
@@ -645,30 +645,30 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                                  apr_filepath_name_get(r->filename), l);
             r->status_line = apr_pstrdup(r->pool, l);
         }
-        else if (!ap_casecmpstr(w, "Location")) {
+        else if (!ap_cstr_casecmp(w, "Location")) {
             apr_table_set(r->headers_out, w, l);
         }
-        else if (!ap_casecmpstr(w, "Content-Length")) {
+        else if (!ap_cstr_casecmp(w, "Content-Length")) {
             apr_table_set(r->headers_out, w, l);
         }
-        else if (!ap_casecmpstr(w, "Content-Range")) {
+        else if (!ap_cstr_casecmp(w, "Content-Range")) {
             apr_table_set(r->headers_out, w, l);
         }
-        else if (!ap_casecmpstr(w, "Transfer-Encoding")) {
+        else if (!ap_cstr_casecmp(w, "Transfer-Encoding")) {
             apr_table_set(r->headers_out, w, l);
         }
-        else if (!ap_casecmpstr(w, "ETag")) {
+        else if (!ap_cstr_casecmp(w, "ETag")) {
             apr_table_set(r->headers_out, w, l);
         }
         /*
          * If the script gave us a Last-Modified header, we can't just
          * pass it on blindly because of restrictions on future values.
          */
-        else if (!ap_casecmpstr(w, "Last-Modified")) {
+        else if (!ap_cstr_casecmp(w, "Last-Modified")) {
             ap_update_mtime(r, apr_date_parse_http(l));
             ap_set_last_modified(r);
         }
-        else if (!ap_casecmpstr(w, "Set-Cookie")) {
+        else if (!ap_cstr_casecmp(w, "Set-Cookie")) {
             apr_table_add(cookie_table, w, l);
         }
         else {

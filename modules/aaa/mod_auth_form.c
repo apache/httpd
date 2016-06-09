@@ -420,7 +420,7 @@ static void note_cookie_auth_failure(request_rec * r)
 static int hook_note_cookie_auth_failure(request_rec * r,
                                          const char *auth_type)
 {
-    if (ap_casecmpstr(auth_type, "form"))
+    if (ap_cstr_casecmp(auth_type, "form"))
         return DECLINED;
 
     note_cookie_auth_failure(r);
@@ -892,7 +892,7 @@ static int authenticate_form_authn(request_rec * r)
 
     /* Are we configured to be Form auth? */
     current_auth = ap_auth_type(r);
-    if (!current_auth || ap_casecmpstr(current_auth, "form")) {
+    if (!current_auth || ap_cstr_casecmp(current_auth, "form")) {
         return DECLINED;
     }
 

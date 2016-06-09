@@ -210,7 +210,7 @@ static void process_proxy_header(request_rec *r, const char *n, const char *v)
     int i;
     
     for (i = 0; transform_hdrs[i].name; ++i) {
-        if (!ap_casecmpstr(transform_hdrs[i].name, n)) {
+        if (!ap_cstr_casecmp(transform_hdrs[i].name, n)) {
             dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
             apr_table_add(r->headers_out, n,
                           (*transform_hdrs[i].func)(r, dconf, v));

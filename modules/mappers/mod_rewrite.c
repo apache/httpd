@@ -526,7 +526,7 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
     switch (*uri++) {
     case 'a':
     case 'A':
-        if (!ap_casecmpstrn(uri, "jp://", 5)) {        /* ajp://    */
+        if (!ap_cstr_casecmpn(uri, "jp://", 5)) {        /* ajp://    */
           *sqs = 1;
           return 6;
         }
@@ -534,7 +534,7 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'b':
     case 'B':
-        if (!ap_casecmpstrn(uri, "alancer://", 10)) {   /* balancer:// */
+        if (!ap_cstr_casecmpn(uri, "alancer://", 10)) {   /* balancer:// */
           *sqs = 1;
           return 11;
         }
@@ -542,10 +542,10 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'f':
     case 'F':
-        if (!ap_casecmpstrn(uri, "tp://", 5)) {        /* ftp://    */
+        if (!ap_cstr_casecmpn(uri, "tp://", 5)) {        /* ftp://    */
             return 6;
         }
-        if (!ap_casecmpstrn(uri, "cgi://", 6)) {       /* fcgi://   */
+        if (!ap_cstr_casecmpn(uri, "cgi://", 6)) {       /* fcgi://   */
             *sqs = 1;
             return 7;
         }
@@ -553,26 +553,26 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'g':
     case 'G':
-        if (!ap_casecmpstrn(uri, "opher://", 8)) {     /* gopher:// */
+        if (!ap_cstr_casecmpn(uri, "opher://", 8)) {     /* gopher:// */
             return 9;
         }
         break;
 
     case 'h':
     case 'H':
-        if (!ap_casecmpstrn(uri, "ttp://", 6)) {       /* http://   */
+        if (!ap_cstr_casecmpn(uri, "ttp://", 6)) {       /* http://   */
             *sqs = 1;
             return 7;
         }
-        else if (!ap_casecmpstrn(uri, "ttps://", 7)) { /* https://  */
+        else if (!ap_cstr_casecmpn(uri, "ttps://", 7)) { /* https://  */
             *sqs = 1;
             return 8;
         }
-        else if (!ap_casecmpstrn(uri, "2://", 4)) {    /* h2://     */
+        else if (!ap_cstr_casecmpn(uri, "2://", 4)) {    /* h2://     */
             *sqs = 1;
             return 5;
         }
-        else if (!ap_casecmpstrn(uri, "2c://", 5)) {   /* h2c://    */
+        else if (!ap_cstr_casecmpn(uri, "2c://", 5)) {   /* h2c://    */
             *sqs = 1;
             return 6;
         }
@@ -580,14 +580,14 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'l':
     case 'L':
-        if (!ap_casecmpstrn(uri, "dap://", 6)) {       /* ldap://   */
+        if (!ap_cstr_casecmpn(uri, "dap://", 6)) {       /* ldap://   */
             return 7;
         }
         break;
 
     case 'm':
     case 'M':
-        if (!ap_casecmpstrn(uri, "ailto:", 6)) {       /* mailto:   */
+        if (!ap_cstr_casecmpn(uri, "ailto:", 6)) {       /* mailto:   */
             *sqs = 1;
             return 7;
         }
@@ -595,17 +595,17 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'n':
     case 'N':
-        if (!ap_casecmpstrn(uri, "ews:", 4)) {         /* news:     */
+        if (!ap_cstr_casecmpn(uri, "ews:", 4)) {         /* news:     */
             return 5;
         }
-        else if (!ap_casecmpstrn(uri, "ntp://", 6)) {  /* nntp://   */
+        else if (!ap_cstr_casecmpn(uri, "ntp://", 6)) {  /* nntp://   */
             return 7;
         }
         break;
 
     case 's':
     case 'S':
-        if (!ap_casecmpstrn(uri, "cgi://", 6)) {       /* scgi://   */
+        if (!ap_cstr_casecmpn(uri, "cgi://", 6)) {       /* scgi://   */
             *sqs = 1;
             return 7;
         }
@@ -613,11 +613,11 @@ static unsigned is_absolute_uri(char *uri, int *supportsqs)
 
     case 'w':
     case 'W':
-        if (!ap_casecmpstrn(uri, "s://", 4)) {        /* ws://     */
+        if (!ap_cstr_casecmpn(uri, "s://", 4)) {        /* ws://     */
             *sqs = 1;
             return 5;
         }
-        else if (!ap_casecmpstrn(uri, "ss://", 5)) {  /* wss://    */
+        else if (!ap_cstr_casecmpn(uri, "ss://", 5)) {  /* wss://    */
             *sqs = 1;
             return 6;
         }
@@ -725,7 +725,7 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
          *               [dn ["?" [attributes] ["?" [scope]
          *               ["?" [filter] ["?" extensions]]]]]]
          */
-        if (!ap_casecmpstrn(uri, "ldap", 4)) {
+        if (!ap_cstr_casecmpn(uri, "ldap", 4)) {
             char *token[5];
             int c = 0;
 
@@ -827,7 +827,7 @@ static void reduce_uri(request_rec *r)
     cp = (char *)ap_http_scheme(r);
     l  = strlen(cp);
     if (   strlen(r->filename) > l+3
-        && ap_casecmpstrn(r->filename, cp, l) == 0
+        && ap_cstr_casecmpn(r->filename, cp, l) == 0
         && r->filename[l]   == ':'
         && r->filename[l+1] == '/'
         && r->filename[l+2] == '/' ) {
@@ -2590,14 +2590,14 @@ static void add_cookie(request_rec *r, char *s)
                                  : NULL,
                                  expires ? (exp_time ? exp_time : "")
                                  : NULL,
-                                 (secure && (!ap_casecmpstr(secure, "true")
+                                 (secure && (!ap_cstr_casecmp(secure, "true")
                                              || !strcmp(secure, "1")
-                                             || !ap_casecmpstr(secure,
+                                             || !ap_cstr_casecmp(secure,
                                                             "secure"))) ?
                                   "; secure" : NULL,
-                                 (httponly && (!ap_casecmpstr(httponly, "true")
+                                 (httponly && (!ap_cstr_casecmp(httponly, "true")
                                                || !strcmp(httponly, "1")
-                                               || !ap_casecmpstr(httponly,
+                                               || !ap_cstr_casecmp(httponly,
                                                               "HttpOnly"))) ?
                                   "; HttpOnly" : NULL,
                                  NULL);

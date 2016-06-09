@@ -113,7 +113,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         hc_template_t *template;
         template = (hc_template_t *)ctx->templates->elts;
         for (ival = 0; ival < ctx->templates->nelts; ival++, template++) {
-            if (!ap_casecmpstr(template->name, val)) {
+            if (!ap_cstr_casecmp(template->name, val)) {
                 if (worker) {
                     worker->s->method = template->method;
                     worker->s->interval = template->interval;
@@ -137,7 +137,7 @@ static const char *set_worker_hc_param(apr_pool_t *p,
     else if (!strcasecmp(key, "hcmethod")) {
         proxy_hcmethods_t *method = proxy_hcmethods;
         for (; method->name; method++) {
-            if (!ap_casecmpstr(val, method->name)) {
+            if (!ap_cstr_casecmp(val, method->name)) {
                 if (!method->implemented) {
                     return apr_psprintf(p, "Health check method %s not (yet) implemented",
                                         val);
@@ -1095,7 +1095,7 @@ static const char *hc_expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
 
-    if (var && *var && ctx->r && ap_casecmpstr(var, "BODY") == 0) {
+    if (var && *var && ctx->r && ap_cstr_casecmp(var, "BODY") == 0) {
         return hc_get_body(ctx->r);
     }
     return NULL;
@@ -1106,7 +1106,7 @@ static const char *hc_expr_func_fn(ap_expr_eval_ctx_t *ctx, const void *data,
 {
     char *var = (char *)arg;
 
-    if (var && *var && ctx->r && ap_casecmpstr(var, "BODY") == 0) {
+    if (var && *var && ctx->r && ap_cstr_casecmp(var, "BODY") == 0) {
         return hc_get_body(ctx->r);
     }
     return NULL;

@@ -347,7 +347,7 @@ static const char *authn_ap_auth_type(request_rec *r)
             return NULL;
         }
 
-        return ap_casecmpstr(type, "None") ? type : NULL;
+        return ap_cstr_casecmp(type, "None") ? type : NULL;
     }
 
     return NULL;

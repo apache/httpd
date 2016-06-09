@@ -101,7 +101,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
 
     range = apr_table_get(r->headers_in, "Range");
-    if (!range || ap_casecmpstrn(range, "bytes=", 6) || r->status != HTTP_OK) {
+    if (!range || ap_cstr_casecmpn(range, "bytes=", 6) || r->status != HTTP_OK) {
         return 0;
     }
 
@@ -112,7 +112,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     /* is content already a multiple range? */
     if ((ct = apr_table_get(r->headers_out, "Content-Type"))
-        && ap_casecmpstrn(ct, "multipart/byteranges", 20) == 0) {
+        && ap_cstr_casecmpn(ct, "multipart/byteranges", 20) == 0) {
             return 0;
     }
 
