@@ -200,6 +200,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1722194
                     http://svn.apache.org/r1747468
                     http://svn.apache.org/r1747478
+                    http://svn.apache.org/r1747483
+                    http://svn.apache.org/r1747484
      2.4.x rollup patch: Above applies, modulo ap_mmn.h/CHANGES, captured here;
          http://raw.githubusercontent.com/wrowe/patches/master/backport-2.4-ap_cstr_casecmp-fns.patch
      +1: wrowe
