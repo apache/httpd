@@ -2493,7 +2493,7 @@ AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2);
  * according to whether @a str1 is considered greater than, equal to,
  * or less than @a str2.
  *
- * @note Same code as apr_cstr_casecmp, which arrives in APR 1.6
+ * @note Same code as apr_cstr_casecmpn, which arrives in APR 1.6
  */
 AP_DECLARE(int) ap_cstr_casecmpn(const char *s1, const char *s2, apr_size_t n);
 
