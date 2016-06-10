@@ -118,13 +118,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) Suppress 'h2' announcements in Upgrade: header as such Upgrade: requests
-     are not honored by mod_http2. 
-     trunk patches: http://svn.apache.org/r1740075
-                    http://svn.apache.org/r1740119
-     2.4.x: trunk works modulo CHANGES
-     +1: icing
-
   *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
      to opt-in previous behaviour (2.2) with CRLs verification when checking
      certificate(s) with no corresponding CRL.
