@@ -448,6 +448,8 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -M                 : a synonym for -t -D DUMP_MODULES");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -t -D DUMP_INCLUDES: show all included configuration files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t                 : run syntax check for config files");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -T                 : start without DocumentRoot(s) check");
@@ -545,6 +547,9 @@ int main(int argc, const char * const argv[])
                 ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             /* Setting -D DUMP_MODULES is equivalent to setting -M */
             else if (strcmp(opt_arg, "DUMP_MODULES") == 0)
+                ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
+            /* Setting -D DUMP_INCLUDES is a type of configuration dump */
+            else if (strcmp(opt_arg, "DUMP_INCLUDES") == 0)
                 ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             break;
 
