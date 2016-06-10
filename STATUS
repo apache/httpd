@@ -114,12 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) authz_host,authz_ldap: log messages fix
-     trunk patch: 
-                  http://svn.apache.org/r1745034
-     2.4.x patch: trunk works
-     +1: covener, jailletc36, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
