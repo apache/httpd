@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add -DDUMP_INCLUDES configtest option to show the tree
+     of Included configuration files.  [Jacob Champion <champion.pxi gmail.com>]
+
   *) mod_proxy_http2: properly care for HTTP2 flow control of the frontend
      connection is HTTP/1.1. [Patch supplied by Evgeny Kotkov]
      
