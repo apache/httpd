@@ -281,7 +281,6 @@ LogLevel alert rewrite:trace3
 <name>RewriteMap</name>
 <description>Defines a mapping function for key-lookup</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -328,11 +327,6 @@ RewriteMap examplemap "txt:/path/to/file/map.txt"
       <highlight language="config">
 RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       </highlight>
-
-      <p>The meaning of the <em>MapTypeOptions</em> argument depends on
-      particular <em>MapType</em>. See the
-      <a href="../rewrite/rewritemap.html">Using RewriteMap</a> for
-      more information.</p>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
