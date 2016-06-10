@@ -204,6 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     http://svn.apache.org/r1747484
      2.4.x rollup patch: Above applies, modulo ap_mmn.h/CHANGES, captured here;
          http://raw.githubusercontent.com/wrowe/patches/master/backport-2.4-ap_cstr_casecmp-fns.patch
+         [corrected SVN credits to brane, who added the thing]
      +1: wrowe
 
   *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
