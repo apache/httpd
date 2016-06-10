@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Avoid passing a filename of proxy:fcgi:// as
+     SCRIPT_FILENAME to a FastCGI server. PR59618.
+     [Jacob Champion <champion.pxi gmail.com>]
+
   *) core: Add -DDUMP_INCLUDES configtest option to show the tree
      of Included configuration files.  [Jacob Champion <champion.pxi gmail.com>]
 
