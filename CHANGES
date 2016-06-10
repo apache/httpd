@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_http2: properly care for HTTP2 flow control of the frontend
+     connection is HTTP/1.1. [Patch supplied by Evgeny Kotkov]
+     
   *) mod_dav: Add support for childtags to dav_error.
      [Jari Urpalainen <jari.urpalainen nokia.com>]
 
