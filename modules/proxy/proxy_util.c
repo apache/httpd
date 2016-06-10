@@ -3500,7 +3500,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
 
     proxy_run_fixups(r);
     if (ap_proxy_clear_connection(r, r->headers_in) < 0) {
-    	return HTTP_BAD_REQUEST;
+        return HTTP_BAD_REQUEST;
     }
 
     /* send request headers */
