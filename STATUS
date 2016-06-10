@@ -149,14 +149,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: 
                   http://svn.apache.org/r1745034
      2.4.x patch: trunk works
-     +1: covener, jailletc36
+     +1: covener, jailletc36, jim
 
   *) mod_proxy_(fcgi|scgi): save a few bytes in the request pool when this
      handler is not able to process the URL.
      trunk patch: http://svn.apache.org/r1744458
                   http://svn.apache.org/91744459
      2.4.x patch: trunk works
-     +1: jailletc36, 
+     +1: jailletc36, jim
 
   *) core: ASCII string comparison functions optimized speed.
      This proposal includes and renames ap_casecmpstr[n] functions available
@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x rollup patch: Above applies, modulo ap_mmn.h/CHANGES, captured here;
          http://raw.githubusercontent.com/wrowe/patches/master/backport-2.4-ap_cstr_casecmp-fns.patch
          [corrected SVN credits to brane, who added the thing]
-     +1: wrowe
+     +1: wrowe, jim
 
   *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
      OPENSSL_Applink error. PR59630
@@ -211,18 +211,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      "UserDir" directive
      trunk patch: http://svn.apache.org/r1745835
      2.4.x: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) mod_cache: Fix (max-stale with no '=') and enforce (check integers after '=')
      Cache-Control header parsing.
      trunk patch: http://svn.apache.org/r1715886
      2.4.x: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
   *) http: Add 451 status code
      trunk patch: http://svn.apache.org/r1730723
      2.4.x: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
