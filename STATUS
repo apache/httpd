@@ -218,6 +218,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: jailletc36, jim
 
+  *) core: Add -DDUMP_INCLUDES configtest to show the Include tree.
+
+     Example:
+
+        Included configuration files:
+          (*) .../conf/httpd.conf
+            (517) .../conf/extra/proxy-html.conf
+              (91) /dev/null
+
+     trunk patch: http://svn.apache.org/r1747808.
+     2.4.x: trunk works
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
