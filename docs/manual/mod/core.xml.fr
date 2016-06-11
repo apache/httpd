@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741250:1746871 (outdated) -->
+<!-- English Revision: 1746871 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4332,8 +4332,8 @@ serveurs virtuels à base de nom</description>
     priorité particulière si le nom contient des caractères génériques
     (que ce soit pour ServerName ou ServerAlias).</p>
 
-    <p>Tous les noms spécifiés au sein d'une section
-    <directive>VirtualHost</directive> sont traités comme un
+    <p>Tous les noms spécifiés au sein d'une section <directive type="section"
+    module="core">VirtualHost</directive> sont traités comme un
     <directive>ServerAlias</directive> (sans caractères génériques).</p>
 
 </usage>
@@ -4357,17 +4357,16 @@ host</context>
     les protocole, nom d'hôte et port d'une requête que le serveur
     utilise pour s'authentifier lui-même.</p>
 
-    <p>La directive <directive>ServerName</directive> permet
-    (éventuellement en conjonction avec la directive
-    <directive>ServerAlias</directive>) d'identifier de manière unique
-    un serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a
-    href="../vhosts/name-based.html">serveurs virtuels à base de
-    noms</a>.</p>
+    <p>La directive <directive>ServerName</directive> permet (éventuellement en
+    conjonction avec la directive <directive
+    module="core">ServerAlias</directive>) d'identifier de manière unique un
+    serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a
+    href="../vhosts/name-based.html">serveurs virtuels à base de noms</a>.</p>
 
     <p>Cette directive est aussi utilisée lors de la création d'URLs de
-    redirection relatives quand la directive
-    <directive>UseCanonicalName</directive> est définie à une valeur autre que
-    la valeur par défaut.</p>
+    redirection relatives quand la directive <directive
+    module="core">UseCanonicalName</directive> est définie à une valeur autre
+    que la valeur par défaut.</p>
     
     <p>Par exemple, si le nom de la
     machine hébergeant le serveur web est

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1744581 -->
+<!-- English Revision: 1747804 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -318,7 +318,6 @@ pour le moteur de réécriture</description>
 <description>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
 </syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -370,11 +369,6 @@ recherche de mots-clés</description>
       <highlight language="config">
       RewriteRule "^/ex/(.*)" "${map-exemple:$1}"
       </highlight>
-
-      <p>La signification de l'argument <em>MapTypeOptions</em> dépend du
-      <em>MapType</em>. Voir le document <a
-      href="../rewrite/rewritemap.html">Utiliser RewriteMap</a> pour plus de
-      détails.</p>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
       et <em>source de la correspondance</em>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1746646 -->
+<!-- English Revision: 1747069 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2176,20 +2176,35 @@ du serveur distant
 
 <usage>
 <p>
-Cette directive permet de définir si le champ CN du certificat
-du serveur distant doit être comparé au nom de serveur de l'URL de la
-requête. S'ils ne correspondent pas, un
-code d'état 502 (Bad Gateway) est envoyé.
+Cette directive permet de définir si le champ CN du certificat du serveur
+distant doit être comparé au nom de serveur de l'URL de la requête. S'ils ne
+correspondent pas, un code d'état 502 (Bad Gateway) est envoyé. A partir de la
+version 2.4.5, SSLProxyCheckPeerCN a été remplacé par <directive
+module="mod_ssl">SSLProxyCheckPeerName</directive>.
 </p>
 <p>
-A partir de la version 2.4.5, SSLProxyCheckPeerCN a été remplacé par <directive
-module="mod_ssl">SSLProxyCheckPeerName</directive>, et sa définition
-n'est prise en compte que si <code>SSLProxyCheckPeerName off</code> a
-été spécifié.
+De la version 2.4.5 à la version 2.4.20, spécifier <code>SSLProxyCheckPeerName
+off</code> était suffisant pour obtenir ce comportement (car la valeur par
+défaut de <code>SSLProxyCheckPeerCN</code> était <code>on</code>). Avec ces
+versions, les deux directives doivent être définies à <code>off</code> pour
+éviter toute validation du nom de certificat du serveur distant, et de
+nombreux utilisateurs ont signalé ce comportement comme très perturbant.
+</p>
+<p>
+A partir de la version 2.4.21, toutes les configurations qui activent au moins
+une des deux directives <code>SSLProxyCheckPeerName</code> ou
+<code>SSLProxyCheckPeerCN</code> adopteront le nouveau comportement de la
+directive <directive module="mod_ssl">SSLProxyCheckPeerName</directive>, et
+toutes les configurations qui désactivent une des deux directives
+<code>SSLProxyCheckPeerName</code> ou <code>SSLProxyCheckPeerCN</code>
+éviteront toute validation du nom de certificat du serveur distant. Seule la
+configuration suivante permettra de retrouver la comparaison de CN
+traditionnelle pour les versions 2.4.21 et supérieures :
 </p>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLProxyCheckPeerCN on
+SSLProxyCheckPeerName off
 </highlight>
 </example>
 </usage>
@@ -2208,24 +2223,31 @@ certificats serveur distants
 Apache</compatibility>
 <usage>
 <p>
-Cette directive permet de configurer la vérification du nom d'hôte dans
-les certificats de serveur lorsque mod_ssl agit en tant que client SSL.
-La vérification est concluante si le nom d'hôte de l'URI de la requête
-correspond soit à l'extension subjectAltName, soit à l'un des attributs
-CN dans le sujet du certificat. Si la vérification échoue, la requête
-SSL est annulée et un code d'erreur 502 (Bad Gateway) est renvoyé. Cette
-directive remplace la directive <directive
-module="mod_ssl">SSLProxyCheckPeerCN</directive> qui ne prenait en
-compte que le premier attribut CN pour la vérification du nom d'hôte.
+Cette directive permet de configurer la vérification du nom d'hôte pour
+les certificats serveur lorsque mod_ssl agit en tant que client SSL. La
+vérification réussit si le nom d'hôte de l'URI de la requête correspond à un
+des attributs CN du sujet du certificat, ou à l'extension subjectAltName. Si la
+vérification échoue, la requête SSL
+avorte, et un code d'erreur 502 (Bad Gateway) est renvoyé.
 </p>
 <p>
-La vérification du nom d'hôte avec caractères générique est supportée de
-la manière suivante : les entrées subjectAltName de type dNSName ou les
-attributs CN commençant par <code>*.</code> correspondront à tout nom
-DNS comportant le même nombre d'éléments et le même suffixe (par
-exemple, <code>*.example.org</code> correspondra à
-<code>foo.example.org</code>, mais pas à
-<code>foo.bar.example.org</code>).
+Les caractères génériques sont supportés dans certains cas bien spécifiques :
+une entrée subjectAltName de type dNSName ou les attributs CN
+commençant par <code>*.</code> correspondront à tout nom d'hôte comportant
+le même nombre de champs et le même suffixe ; par exemple,
+<code>*.example.org</code> correspondra à <code>foo.example.org</code>,
+mais pas à <code>foo.bar.example.org</code> car le nombre d'éléments dans les
+nom est différent.
+</p>
+<p>
+Cette fonctionnalité a été introduite avec la version 2.4.5 et l'emporte sur la
+directive <directive module="mod_ssl">SSLProxyCheckPeerCN</directive> qui ne
+comparait que la valeur exacte du premier attribut CN avec le nom d'hôte.
+Cependant, de nombreux utilisateurs étaient déconcertés par le comportement
+induit par l'utilisation de ces deux directives individuellement, si bien que ce
+comportement a été amélioré avec la version 2.4.21. Voir la description de la
+directive <directive module="mod_ssl">SSLProxyCheckPeerCN</directive> pour le
+comportement original et des détails à propos de ces améliorations.
 </p>
 </usage>
 </directivesynopsis>
