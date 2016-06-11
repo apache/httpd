@@ -141,6 +141,8 @@ AddOutputFilter INCLUDES .shtml</pre>
 
     <table class="bordered">
     <tr><th>Elément</th><th>Description</th></tr>
+    <tr><td><code><a href="#element.comment">comment</a></code></td>
+        <td>commentaire SSI</td></tr>
     <tr><td><code><a href="#element.config">config</a></code></td>
         <td>configure les formats de sortie</td></tr>
     <tr><td><code><a href="#element.echo">echo</a></code></td>
@@ -164,6 +166,19 @@ AddOutputFilter INCLUDES .shtml</pre>
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, et ne sera disponible que si ce module est
     chargé.</p>
 
+    <h3><a name="element.comment" id="element.comment">L'élément comment</a></h3>
+      <p>Cette commande n'affiche aucune information. Elle n'a pour but que
+      l'ajout de commentaires dans un fichier et ces commentaires ne sont pas
+      affichés.</p>
+
+      <p>Cette syntaxe est disponible à partir de la version 2.4.21 du serveur
+      HTTP Apache.</p>
+
+      <div class="example"><p><code>
+      &lt;!--#comment Blah Blah Blah --&gt;
+      </code></p></div>
+     
+    
     <h3><a name="element.config" id="element.config">L'élément config</a></h3>
       <p>Cette commande contrôle divers aspects de l'interprétation. Les
       attributs valides sont :</p>
@@ -179,6 +194,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <div class="example"><p><code>
         &lt;!--#config echomsg="[Valeur non définie]" --&gt;
       </code></p></div>
+
       </dd>
 
       <dt><code>errmsg</code></dt>
@@ -189,6 +205,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       <div class="example"><p><code>
        &lt;!--#config errmsg="[Zut, quelque chose s'est mal passé.]" --&gt;
       </code></p></div>
+
       </dd>
 
       <dt><code>sizefmt</code></dt>
@@ -214,6 +231,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </code></p></div>
 
       </dd>
+      
       </dl>
      
 

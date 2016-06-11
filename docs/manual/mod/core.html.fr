@@ -4291,8 +4291,7 @@ serveurs virtuels à base de nom</td></tr>
     priorité particulière si le nom contient des caractères génériques
     (que ce soit pour ServerName ou ServerAlias).</p>
 
-    <p>Tous les noms spécifiés au sein d'une section
-    <code class="directive">VirtualHost</code> sont traités comme un
+    <p>Tous les noms spécifiés au sein d'une section <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code> sont traités comme un
     <code class="directive">ServerAlias</code> (sans caractères génériques).</p>
 
 
@@ -4318,16 +4317,13 @@ s'authentifier lui-même</td></tr>
     les protocole, nom d'hôte et port d'une requête que le serveur
     utilise pour s'authentifier lui-même.</p>
 
-    <p>La directive <code class="directive">ServerName</code> permet
-    (éventuellement en conjonction avec la directive
-    <code class="directive">ServerAlias</code>) d'identifier de manière unique
-    un serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a href="../vhosts/name-based.html">serveurs virtuels à base de
-    noms</a>.</p>
+    <p>La directive <code class="directive">ServerName</code> permet (éventuellement en
+    conjonction avec la directive <code class="directive"><a href="#serveralias">ServerAlias</a></code>) d'identifier de manière unique un
+    serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a href="../vhosts/name-based.html">serveurs virtuels à base de noms</a>.</p>
 
     <p>Cette directive est aussi utilisée lors de la création d'URLs de
-    redirection relatives quand la directive
-    <code class="directive">UseCanonicalName</code> est définie à une valeur autre que
-    la valeur par défaut.</p>
+    redirection relatives quand la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> est définie à une valeur autre
+    que la valeur par défaut.</p>
     
     <p>Par exemple, si le nom de la
     machine hébergeant le serveur web est

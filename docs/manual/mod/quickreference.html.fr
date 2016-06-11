@@ -572,7 +572,7 @@ n'est pas trouvé</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>type médium</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Force le type de médium spécifié dans le champ d'en-tête
 HTTP Content-Type pour les fichiers correspondants</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>nom-fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le nom de fichier du journal légal</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit le nom et le format du fichier journal</td></tr>
@@ -1068,7 +1068,6 @@ la réécriture soit effectuée
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
 </a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure certaines options spéciales
