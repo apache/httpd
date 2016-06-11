@@ -229,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      trunk patch: http://svn.apache.org/r1747808.
      2.4.x: trunk works
-     +1: covener
+     +1: covener, gsmith
 
   *) mod_proxy_fcgi: strip proxy:fcgi:// in REQUEST_FILENAME just like
      proxy:balancer://.  PR59618
