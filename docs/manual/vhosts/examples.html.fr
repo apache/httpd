@@ -67,10 +67,9 @@
 <h2><a name="purename" id="purename">Fonctionnement de plusieurs serveurs 
   virtuels par nom sur une seule adresse IP.</a></h2>
 
-    <p>Votre serveur ne dispose que d'une seule adresse IP, et de 
-    nombreux alias (CNAMES) pointent vers cette adresse dans le DNS. 
-    Pour l'exemple, <code>www.example.com</code> et 
-    <code>www.example.org</code> doivent tourner sur cette machine.</p>
+    <p>Votre serveur possède plusieurs noms d'hôte qui correspondent à une seule
+    adresse IP, et vous souhaitez des réponses différentes si on demande
+    <code>www.example.com</code> ou <code>www.example.org</code>.</p>
 
     <div class="note"><h3>Note&nbsp;:</h3><p>La configuration de serveurs virtuels 
     sous Apache ne provoque pas leur apparition magique dans la 
@@ -107,16 +106,21 @@ Listen 80
     de configuration, il a la plus grande priorité et peut être vu 
     comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
     ce qui signifie que toute requête reçue ne correspondant à aucune 
-    des directives <code>ServerName</code> sera servie par ce premier 
-    <code>VirtualHost</code>.</p>
+    des directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> sera servie par ce premier 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
+
+    <p>La configuration ci-dessus correspond à ce que l'on souhaite pour
+    la plupart des serveurs virtuels à base de nom. Il faudra cependant
+    utiliser une configuration différente si vous souhaitez servir un
+    contenu différent en fonction de l'adresse IP ou du port.</p>
 
     <div class="note">
             <h3>Note&nbsp;:</h3>
 
             <p>Vous pouvez remplacer <code>*</code> 
-            par l'adresse IP du système si vous ne souhaitez pas faire
-	    opérer la sélection du serveur virtuel en fonction de la
-	    paire adresse IP/port.</p>
+            par une adresse IP du système. Le serveur virtuel concerné
+	    ne sera alors sélectionné que pour les requêtes HTTP vers
+	    cette adresse IP.</p>
 
            <p>En général, il est commode d'utiliser <code>*</code> sur 
            les systèmes dont l'adresse IP n'est pas constante - par 
@@ -127,12 +131,6 @@ Listen 80
            fonctionne sans devoir être modifiée quand l'adresse IP du 
            système est modifiée.</p>
     </div>
-
-    <p>La configuration ci-dessus est en pratique utilisée dans la 
-    plupart des cas pour les serveurs virtuels par nom. En fait, le 
-    seul cas où cette configuration ne fonctionne pas est lorsque 
-    différents contenus doivent être servis en fonction de l'adresse IP 
-    et du port contactés par le client.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -193,7 +191,7 @@ DocumentRoot "/www/mainserver"
 
     <p>Le serveur peut être configuré pour répondre de la même manière 
     aux requêtes internes et externes, au moyen d'une seule section 
-    <code>VirtualHost</code>.</p>
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot "/www/server1"
@@ -203,7 +201,7 @@ DocumentRoot "/www/mainserver"
 
 
     <p>Ainsi, les requêtes en provenance de chacun des deux réseaux 
-    seront servies par le même <code>VirtualHost</code>.</p>
+    seront servies par le même <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 
     <div class="note">
           <h3>Note&nbsp;:</h3><p>Sur le réseau interne, il est possible 
@@ -368,7 +366,7 @@ Listen 172.20.30.50:8080
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass "/" "http://192.168.111.2/"
+    ProxyPass        "/" "http://192.168.111.2/"
     ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName hostname.example.com
 &lt;/VirtualHost&gt;</pre>
@@ -442,7 +440,7 @@ Listen 172.20.30.50:8080
     pour le port 80.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
-DocumentRoot "/www/default"
+    DocumentRoot "/www/default"
 ...
 &lt;/VirtualHost&gt;</pre>
 
@@ -519,7 +517,7 @@ DocumentRoot "/www/example1"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-DocumentRoot "/www/subdomain/sub1"
+    DocumentRoot "/www/subdomain/sub1"
     ServerName www.sub1.domain.tld
     ServerPath "/sub1/"
     RewriteEngine On

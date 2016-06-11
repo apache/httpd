@@ -514,7 +514,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 <div class="directive-section"><h2><a name="globallog" id="globallog">Directive</a> <a name="GlobalLog" id="GlobalLog">GlobalLog</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom et le format du fichier journal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog<var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
