@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1741841 -->
+<!-- English Revision: 1747085 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -118,6 +118,8 @@ AddOutputFilter INCLUDES .shtml
 
     <table border="1">
     <tr><th>Elément</th><th>Description</th></tr>
+    <tr><td><code><a href="#element.comment">comment</a></code></td>
+        <td>commentaire SSI</td></tr>
     <tr><td><code><a href="#element.config">config</a></code></td>
         <td>configure les formats de sortie</td></tr>
     <tr><td><code><a href="#element.echo">echo</a></code></td>
@@ -142,6 +144,19 @@ AddOutputFilter INCLUDES .shtml
     <module>mod_cgi</module>, et ne sera disponible que si ce module est
     chargé.</p>
 
+    <section id="element.comment"><title>L'élément comment</title>
+      <p>Cette commande n'affiche aucune information. Elle n'a pour but que
+      l'ajout de commentaires dans un fichier et ces commentaires ne sont pas
+      affichés.</p>
+
+      <p>Cette syntaxe est disponible à partir de la version 2.4.21 du serveur
+      HTTP Apache.</p>
+
+      <example>
+      &lt;!--#comment Blah Blah Blah --&gt;
+      </example>
+    </section> <!-- /comment -->
+    
     <section id="element.config"><title>L'élément config</title>
       <p>Cette commande contrôle divers aspects de l'interprétation. Les
       attributs valides sont :</p>
@@ -158,6 +173,7 @@ AddOutputFilter INCLUDES .shtml
       <example>
         &lt;!--#config echomsg="[Valeur non définie]" --&gt;
       </example>
+
       </dd>
 
       <dt><code>errmsg</code></dt>
@@ -169,6 +185,7 @@ AddOutputFilter INCLUDES .shtml
       <example>
        &lt;!--#config errmsg="[Zut, quelque chose s'est mal passé.]" --&gt;
       </example>
+
       </dd>
 
       <dt><code>sizefmt</code></dt>
@@ -194,6 +211,7 @@ AddOutputFilter INCLUDES .shtml
       </example>
 
       </dd>
+      
       </dl>
     </section> <!-- /config -->
 
@@ -1183,4 +1201,3 @@ d'exécution est positionné</description>
 </directivesynopsis>
 
 </modulesynopsis>
-
