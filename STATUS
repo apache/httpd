@@ -242,6 +242,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works module CHANGES/MMN
      +1: minfrin
 
+  *) mod_dav: Add dav_get_provider_name() function to obtain the name
+     of the provider from mod_dav.
+     trunk patch: http://svn.apache.org/r1747946
+     2.4.x: trunk works module CHANGES/MMN
+     +1: minfrin
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
