@@ -526,6 +526,10 @@
  * 20160315.3 (2.5.0-dev)  Add childtags to dav_error.
  * 20160608.1 (2.5.0-dev)  Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n]()
  * 20160608.2 (2.5.0-dev)  Add dav_get_provider_name.
+ * 20160608.3 (2.5.0-dev)  Add dav_begin_multistatus, dav_send_one_response,
+ *                         dav_finish_multistatus, dav_send_multistatus,
+ *                         dav_handle_err, dav_failed_proppatch,
+ *                         dav_success_proppatch.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -533,7 +537,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20160608
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
