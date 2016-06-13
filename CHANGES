@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.21
 
+  *) Add ap_cstr_casecmp[n]() - placeholder of apr_cstr_casecmp[n] functions
+     for case-insensitive C/POSIX-locale token comparison.
+     [Jim Jagielski, William Rowe, Yann Ylavic, Branko Čibej]
+
   *) mod_userdir: Constify and save a few bytes in the conf pool when
      parsing the "UserDir" directive. [Christophe Jaillet]
 
