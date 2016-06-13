@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_cache: Fix (max-stale with no '=') and enforce (check
+     integers after '=') Cache-Control header parsing.
+     [Christophe Jaillet]
+
   *) core: Add -DDUMP_INCLUDES configtest option to show the tree
      of Included configuration files.
      [Jacob Champion <champion.pxi gmail.com>]
