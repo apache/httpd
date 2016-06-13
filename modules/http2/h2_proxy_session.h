@@ -89,7 +89,7 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          h2_proxy_request_done *done);
 
 apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
-                                     request_rec *r);
+                                     request_rec *r, int standalone);
                        
 /** 
  * Perform a step in processing the proxy session. Will return aftert
