@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_dav: Allow other modules to become providers and add ACLs
+     to the DAV response.
+     [Jari Urpalainen <jari.urpalainen nokia.com>, Graham Leggett]
+
   *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
      dav_finish_multistatus, dav_send_multistatus, dav_handle_err,
      dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
