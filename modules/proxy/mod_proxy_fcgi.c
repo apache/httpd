@@ -262,11 +262,21 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
        }
     }
 
-    /* Strip balancer prefix */
-    if (r->filename && !strncmp(r->filename, "proxy:balancer://", 17)) { 
-        char *newfname = apr_pstrdup(r->pool, r->filename+17);
-        newfname = ap_strchr(newfname, '/');
-        r->filename = newfname;
+    /* Strip proxy: prefixes */
+    if (r->filename) {
+        char *newfname = NULL;
+
+        if (!strncmp(r->filename, "proxy:balancer://", 17)) {
+            newfname = apr_pstrdup(r->pool, r->filename+17);
+        }
+        else if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
+            newfname = apr_pstrdup(r->pool, r->filename+13);
+        }
+
+        if (newfname) {
+            newfname = ap_strchr(newfname, '/');
+            r->filename = newfname;
+        }
     }
 
     ap_add_common_vars(r);
