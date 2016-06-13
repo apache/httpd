@@ -114,18 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
-     to opt-in previous behaviour (2.2) with CRLs verification when checking
-     certificate(s) with no corresponding CRL.
-     trunk patch: http://svn.apache.org/r1734561
-                  http://svn.apache.org/r1734807
-                  http://svn.apache.org/r1735159
-                  http://svn.apache.org/r1735337
-                  http://svn.apache.org/r1737265
-     2.4.x patch: trunk works (modulo CHANGES) or
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-no_crl_for_cert_ok-v2.patch
-     +1: ylavic, icing, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

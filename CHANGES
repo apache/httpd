@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_ssl: Add "no_crl_for_cert_ok" flag to SSLCARevocationCheck directive
+     to opt-in previous behaviour (2.2) with CRLs verification when checking
+     certificate(s) with no corresponding CRL.  [Yann Ylavic]
+
   *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
      according the number of listeners buckets.  [Yann Ylavic]
 
