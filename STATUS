@@ -114,6 +114,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
+     "UserDir" directive
+     trunk patch: http://svn.apache.org/r1745835
+     2.4.x: trunk works
+     +1: jailletc36, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -194,12 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works (modulo CHANGES)
      +1: gsmith,
      +0: wrowe [I did not observe such issues, and will review the patch/issue]
-
-  *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
-     "UserDir" directive
-     trunk patch: http://svn.apache.org/r1745835
-     2.4.x: trunk works
-     +1: jailletc36, jim
 
   *) mod_dav: Add support for childtags to dav_error.
      trunk patch: http://svn.apache.org/r1747810
