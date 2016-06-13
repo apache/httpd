@@ -201,6 +201,12 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     return newconf;
 }
 
+DAV_DECLARE(const char *) dav_get_provider_name(request_rec *r)
+{
+    dav_dir_conf *conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    return conf ? conf->provider_name : NULL;
+}
+
 static const dav_provider *dav_get_provider(request_rec *r)
 {
     dav_dir_conf *conf;
