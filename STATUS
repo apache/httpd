@@ -235,18 +235,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      proxy:balancer://.  PR59618
      trunk patch: http://svn.apache.org/r1747810
      2.4.x: trunk works
-     +1: covener
+     +1: covener, jim
 
   *) mod_dav: Add support for childtags to dav_error.
      trunk patch: http://svn.apache.org/r1747810
      2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin
+     +1: minfrin, jim
 
   *) mod_dav: Add dav_get_provider_name() function to obtain the name
      of the provider from mod_dav.
      trunk patch: http://svn.apache.org/r1747946
      2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin
+     +1: minfrin, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
