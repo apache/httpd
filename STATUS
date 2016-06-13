@@ -114,6 +114,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_(fcgi|scgi): save a few bytes in the request pool when this
+     handler is not able to process the URL.
+     trunk patch: http://svn.apache.org/r1744458
+                  http://svn.apache.org/r1744459
+     2.4.x patch: trunk works
+     +1: jailletc36, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,13 +150,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1737451
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic, jim
-
-  *) mod_proxy_(fcgi|scgi): save a few bytes in the request pool when this
-     handler is not able to process the URL.
-     trunk patch: http://svn.apache.org/r1744458
-                  http://svn.apache.org/91744459
-     2.4.x patch: trunk works
-     +1: jailletc36, jim
 
   *) core: ASCII string comparison functions optimized speed.
      This proposal includes and renames ap_casecmpstr[n] functions available
