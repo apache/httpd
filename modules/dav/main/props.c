@@ -578,6 +578,9 @@ DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
     int found_contenttype = 0;
     int found_contentlang = 0;
     dav_prop_insert unused_inserted;
+#ifdef APR_XML_X2T_PARSED
+    apr_text *text;
+#endif
 
     /* if not just getting supported live properties,
      * scan all properties in the dead prop database
@@ -622,6 +625,17 @@ DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
                     }
                 }
 
+#ifdef APR_XML_X2T_PARSED
+                /* check for possible special acl restrictions not provided by read privilege */
+                if (propdb->resource->acls &&
+                    propdb->resource->acls->acl_check_prop &&
+                    propdb->resource->acls->
+                        acl_check_prop(propdb->r, propdb->resource,
+                                       &name, what)) {
+                    goto next_key;
+                }
+#endif
+
                 if (what == DAV_PROP_INSERT_VALUE) {
                     int found;
 
@@ -653,6 +667,9 @@ DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
         /* add namespaces for all the liveprop providers */
         dav_add_all_liveprop_xmlns(propdb->p, &hdr_ns);
     }
+#ifdef APR_XML_X2T_PARSED
+    text = hdr.last;
+#endif
 
     /* ask the liveprop providers to insert their properties */
     dav_run_insert_all_liveprops(propdb->r, propdb->resource, what, &hdr);
@@ -682,6 +699,62 @@ DAV_DECLARE(dav_get_props_result) dav_get_allprops(dav_propdb *propdb,
                                   what, &hdr, &unused_inserted);
     }
 
+#ifdef APR_XML_X2T_PARSED
+    if (propdb->resource->acls &&
+        propdb->resource->acls->acl_check_prop) {
+
+        /* unfortunately liveprops cannot be checked beforehand */
+        apr_xml_doc *doc = NULL;
+        apr_text *t;
+        apr_xml_elem *elem;
+        apr_pool_t *pool;
+        apr_xml_parser *parser;
+
+        apr_pool_create (&pool, propdb->p);
+        parser = apr_xml_parser_create (pool);
+
+        apr_xml_parser_feed(parser, "<r xmlns:D=\"DAV:\" ", 18);
+        for (t = hdr_ns.first; t; t = t->next) {
+            if (t->text)
+                apr_xml_parser_feed(parser, t->text, strlen(t->text));
+        }
+        apr_xml_parser_feed(parser, ">", 1);
+
+        hdr.last = text ? text : hdr.first;
+
+        for (text = text ? text->next : hdr.first; text; text = text->next) {
+            if (text->text)
+                apr_xml_parser_feed(parser, text->text, strlen(text->text));
+        }
+        apr_xml_parser_feed(parser, "</r>", 4);
+
+        apr_xml_parser_done(parser, &doc);
+ 
+        for (elem = doc ? doc->root->first_child : NULL; elem;
+             elem = elem->next) {
+             dav_prop_name name[1];
+
+             name->ns = elem->ns == APR_XML_NS_NONE ? "" :
+                 APR_XML_GET_URI_ITEM(doc->namespaces, elem->ns);
+             name->name = elem->name;
+
+            if (propdb->resource->acls->
+                    acl_check_prop(propdb->r, propdb->resource,
+                                   name, what) == NULL) {
+                const char *buf;
+
+                /* APR_XML_X2T_FULL_NS_LANG mangles original namespace prefixes */
+                apr_xml_to_text(pool, elem, APR_XML_X2T_PARSED,
+                                NULL, NULL, &buf, NULL);
+
+                buf = apr_pstrcat (pool, buf, DEBUG_CR, NULL);
+                apr_text_append(propdb->p, &hdr, buf);
+            }
+        }
+        apr_pool_destroy(pool);
+    }
+#endif
+
     /* if not just reporting on supported live props,
      * terminate the result */
     if (what != DAV_PROP_INSERT_SUPPORTED) {
@@ -703,6 +776,9 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
     apr_xml_elem *elem = dav_find_child(doc->root, "prop");
     apr_text_header hdr_good = { 0 };
     apr_text_header hdr_bad = { 0 };
+#ifdef APR_XML_X2T_PARSED
+    apr_text_header hdr_not_auth = { 0 };
+#endif
     apr_text_header hdr_ns = { 0 };
     int have_good = 0;
     dav_get_props_result result = { 0 };
@@ -744,10 +820,39 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
         priv = elem->priv;
 
         /* cache the propid; dav_get_props() could be called many times */
-        if (priv->propid == 0)
+        if (priv->propid == 0) {
             dav_find_liveprop(propdb, elem);
+        }
 
         if (priv->propid != DAV_PROPID_CORE_UNKNOWN) {
+
+#ifdef APR_XML_X2T_PARSED
+            /* check for possible special acl restrictions not provided by read privilege
+             * ask for each live prop separately (e.g. read-acl privilege) */
+            if (propdb->resource->acls &&
+                propdb->resource->acls->acl_check_prop) {
+                name.ns = elem->ns == APR_XML_NS_NONE ? "" :
+                          APR_XML_GET_URI_ITEM(propdb->ns_xlate, elem->ns);
+                name.name = elem->name;
+
+                if (propdb->resource->acls->
+                        acl_check_prop(propdb->r, propdb->resource,
+                                       &name, DAV_PROP_INSERT_VALUE)) {
+
+                    if (hdr_not_auth.first == NULL) {
+                        apr_text_append(propdb->p, &hdr_not_auth,
+                                        "<D:propstat>" DEBUG_CR
+                                        "<D:prop>" DEBUG_CR);
+                    }
+
+                    if (!name.ns) {
+                        name.ns = "";
+                    }
+                    dav_output_prop_name(propdb->p, &name, xi, &hdr_not_auth);
+                    continue;
+                }
+            }
+#endif
 
             /* insert the property. returns 1 if an insertion was done. */
             if ((err = dav_insert_liveprop(propdb, elem, DAV_PROP_INSERT_VALUE,
@@ -877,6 +982,25 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
             hdr_good.last->next = hdr_bad.first;
         }
     }
+
+#ifdef APR_XML_X2T_PARSED
+    if (hdr_not_auth.first != NULL) {
+        apr_text_append(propdb->p, &hdr_not_auth,
+                        "</D:prop>" DEBUG_CR
+                        "<D:status>HTTP/1.1 403 Forbidden</D:status>" DEBUG_CR
+                        "</D:propstat>" DEBUG_CR);
+
+        if (!have_good && !hdr_bad.first) {
+            result.propstats = hdr_not_auth.first;
+        }
+        else if (hdr_bad.first != NULL) {
+            hdr_bad.last->next = hdr_not_auth.first;
+        }
+        else {
+            hdr_good.last->next = hdr_not_auth.first;
+        }
+    }
+#endif
 
     /* add in all the various namespaces, and return them */
     dav_xmlns_generate(xi, &hdr_ns);

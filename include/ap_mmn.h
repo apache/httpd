@@ -530,6 +530,8 @@
  *                         dav_finish_multistatus, dav_send_multistatus,
  *                         dav_handle_err, dav_failed_proppatch,
  *                         dav_success_proppatch.
+ * 20160608.4 (2.5.0-dev)  Add dav_acl_provider, dav_acl_provider_register
+ *                         dav_get_acl_providers.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -537,7 +539,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20160608
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

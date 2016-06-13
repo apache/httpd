@@ -770,6 +770,14 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
      * add it now */
     dav_add_vary_header(r, r, *res_p);
 
+#ifdef APR_XML_X2T_PARSED
+    /* if acls checking -> check if allowed method excluding propfind */
+    if (((*res_p)->acls = dav_get_acl_providers()) &&
+        (err = (*res_p)->acls->acl_check_method(r, *res_p))) {
+        return err;
+    }
+#endif
+
     return NULL;
 }
 
@@ -926,6 +934,7 @@ static int dav_method_put(request_rec *r)
     int has_range;
     apr_off_t range_start;
     apr_off_t range_end;
+    int rc;
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -1151,7 +1160,16 @@ static int dav_method_put(request_rec *r)
     /* NOTE: WebDAV spec, S8.7.1 states properties should be unaffected */
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, NULL, "Resource", resource_state == DAV_RESOURCE_EXISTS);
+    rc = dav_created(r, NULL, "Resource", resource_state == DAV_RESOURCE_EXISTS);
+
+#ifdef APR_XML_X2T_PARSED
+    if (resource->acls) {
+        resource->acls->acl_post_processing(r, resource,
+                                                 r->status == HTTP_CREATED);
+    }
+#endif
+
+    return rc;
 }
 
 
@@ -1299,6 +1317,12 @@ static int dav_method_delete(request_rec *r)
                              err2);
         dav_log_err(r, err, APLOG_WARNING);
     }
+
+#ifdef APR_XML_X2T_PARSED
+    if (resource->acls) {
+        resource->acls->acl_post_processing(r, resource, FALSE);
+    }
+#endif
 
     /* ### HTTP_NO_CONTENT if no body, HTTP_OK if there is a body (some day) */
 
@@ -1982,6 +2006,18 @@ static dav_error * dav_propfind_walker(dav_walk_resource *wres, int calltype)
     dav_error *err;
     dav_propdb *propdb;
     dav_get_props_result propstats = { 0 };
+#ifdef APR_XML_X2T_PARSED
+    dav_resource *resource = (dav_resource *)wres->resource;
+
+    /* propfind skipped if no read privilege to a resource
+    ** setting acls from parent resource
+    */
+    resource->acls = ctx->w.root->acls;
+    if (resource->acls &&
+         (err = resource->acls->acl_check_read(ctx->r, resource))) {
+        return NULL;
+    }
+#endif
 
     /*
     ** Note: ctx->doc can only be NULL for DAV_PROPFIND_IS_ALLPROP. Since
@@ -2461,6 +2497,12 @@ static int dav_method_proppatch(request_rec *r)
 
     dav_send_multistatus(r, HTTP_MULTI_STATUS, &resp, doc->namespaces);
 
+#ifdef APR_XML_X2T_PARSED
+    if (resource->acls) {
+        resource->acls->acl_post_processing(r, resource, FALSE);
+    }
+#endif
+
     /* the response has been sent. */
     return DONE;
 }
@@ -2531,6 +2573,7 @@ static int dav_method_mkcol(request_rec *r)
     dav_error *err;
     dav_error *err2;
     int result;
+    int rc;
     dav_response *multi_status;
 
     /* handle the request body */
@@ -2634,7 +2677,15 @@ static int dav_method_mkcol(request_rec *r)
     }
 
     /* return an appropriate response (HTTP_CREATED) */
-    return dav_created(r, NULL, "Collection", 0);
+    rc = dav_created(r, NULL, "Collection", 0);
+
+#ifdef APR_XML_X2T_PARSED
+    if (resource->acls) {
+        resource->acls->acl_post_processing(r, resource, r->status == 201);
+    }
+#endif
+
+    return rc;
 }
 
 /* handle the COPY and MOVE methods */
@@ -2658,6 +2709,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     dav_lockdb *lockdb;
     int replace_dest;
     int resnew_state;
+    int rc;
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, !is_move /* label_allowed */,
@@ -3039,8 +3091,19 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, lookup.rnew->unparsed_uri, "Destination",
-                       resnew_state == DAV_RESOURCE_EXISTS);
+    rc = dav_created(r, lookup.rnew->uri, "Destination",
+                         resnew_state == DAV_RESOURCE_EXISTS);
+
+#ifdef APR_XML_X2T_PARSED
+    if (resource->acls) {
+        resource->acls->acl_post_processing(r, resource, FALSE);
+
+        resource->acls->acl_post_processing(r, resnew,
+                                                 r->status == HTTP_CREATED);
+    }
+#endif
+
+    return rc;
 }
 
 /* dav_method_lock:  Handler to implement the DAV LOCK method

@@ -32,6 +32,19 @@ DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name)
     return ap_lookup_provider(DAV_PROVIDER_GROUP, name, "0");
 }
 
+#ifdef APR_XML_X2T_PARSED
+DAV_DECLARE(void) dav_acl_provider_register(apr_pool_t *p,
+                                            const dav_acl_provider *provider)
+{
+    ap_register_provider(p, DAV_PROVIDER_GROUP, "acl", "0", provider);
+}
+
+DAV_DECLARE(const dav_acl_provider *) dav_get_acl_providers()
+{
+    return ap_lookup_provider(DAV_PROVIDER_GROUP, "acl", "0");
+}
+#endif
+
 DAV_DECLARE(void) dav_options_provider_register(apr_pool_t *p,
                         const char *name,
                         const dav_options_provider *provider)
