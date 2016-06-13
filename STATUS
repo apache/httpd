@@ -114,28 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) util: Backport apr_cstr_casecmp[n] - without consideration of APR's
-     release for the time being...
-     trunk patches: http://svn.apache.org/r1715401
-                    http://svn.apache.org/r1715404
-                    http://svn.apache.org/r1715524
-                    http://svn.apache.org/r1715526
-                    http://svn.apache.org/r1715527
-                    http://svn.apache.org/r1715546
-                    http://svn.apache.org/r1715632
-                    http://svn.apache.org/r1715736
-                    http://svn.apache.org/r1715859
-                    http://svn.apache.org/r1722194
-                    http://svn.apache.org/r1747468
-                    http://svn.apache.org/r1747478
-                    http://svn.apache.org/r1747483
-                    http://svn.apache.org/r1747484
-     2.4.x rollup patch: Above applies, modulo ap_mmn.h/CHANGES, captured here;
-         http://raw.githubusercontent.com/wrowe/patches/master/backport-2.4-ap_cstr_casecmp-fns.patch
-         [corrected SVN credits to brane, who added the thing]
-     +1: wrowe, jim, minfrin
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
