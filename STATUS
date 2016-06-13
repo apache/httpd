@@ -114,13 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_event, mpm_worker: Fix computation of MinSpareThreads' lower bound
-     according the number of listeners buckets.
-     trunk patch: http://svn.apache.org/r1737447
-                  http://svn.apache.org/r1737449
-                  http://svn.apache.org/r1737451
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
