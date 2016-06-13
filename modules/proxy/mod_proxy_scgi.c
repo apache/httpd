@@ -509,7 +509,7 @@ static int scgi_request_status(int *status, request_rec *r)
                     *status = HTTP_INTERNAL_SERVER_ERROR;
                     return *status;
                 }
-            } while(0);
+            } while (0);
 
             return OK;
             /* break; */
@@ -530,7 +530,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     int status;
     proxy_conn_rec *backend = NULL;
     apr_pool_t *p = r->pool;
-    apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
+    apr_uri_t *uri;
     char dummy;
 
     if (strncasecmp(url, SCHEME "://", sizeof(SCHEME) + 2)) {
@@ -548,6 +548,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     backend->is_ssl = 0;
 
     /* Step One: Determine Who To Connect To */
+    uri = apr_palloc(p, sizeof(*uri));
     status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                            uri, &url, proxyname, proxyport,
                                            &dummy, 1);
