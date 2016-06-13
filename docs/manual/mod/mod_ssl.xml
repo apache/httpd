@@ -1210,10 +1210,12 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Enable CRL-based revocation checking</description>
-<syntax>SSLCARevocationCheck chain|leaf|none</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Optional <em>flag</em>s available in httpd 2.5-dev or
+later</compatibility>
 
 <usage>
 <p>
@@ -1224,23 +1226,36 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-<note>
-<title>When set to <code>chain</code> or <code>leaf</code>,
-CRLs <em>must</em> be available for successful validation</title>
-<p>
-Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
-no CRL(s) were found in any of the locations configured with
-<directive module="mod_ssl">SSLCARevocationFile</directive>
-or <directive module="mod_ssl">SSLCARevocationPath</directive>.
-With the introduction of this directive, the behavior has been changed:
-when checking is enabled, CRLs <em>must</em> be present for the validation
-to succeed - otherwise it will fail with an
-<code>"unable to get certificate CRL"</code> error.
-</p>
-</note>
+<p>The available <em>flag</em>s are:</p>
+<ul>
+<li><code>no_crl_for_cert_ok</code>
+    <p>
+    Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+    no CRL(s) for the checked certificate(s) were found in any of the locations
+    configured with <directive module="mod_ssl">SSLCARevocationFile</directive>
+    or <directive module="mod_ssl">SSLCARevocationPath</directive>.
+    </p>
+    <p>
+    With the introduction of <directive>SSLCARevocationFile</directive>,
+    the behavior has been changed: by default with <code>chain</code> or
+    <code>leaf</code>, CRLs <strong>must</strong> be present for the
+    validation to succeed - otherwise it will fail with an
+    <code>"unable to get certificate CRL"</code> error.
+    </p>
+    <p>
+    The <em>flag</em> <code>no_crl_for_cert_ok</code> allows to restore
+    previous behaviour.
+    </p>
+</li>
+</ul>
 <example><title>Example</title>
 <highlight language="config">
 SSLCARevocationCheck chain
+</highlight>
+</example>
+<example><title>Compatibility with versions 2.2</title>
+<highlight language="config">
+SSLCARevocationCheck chain no_crl_for_cert_ok
 </highlight>
 </example>
 </usage>

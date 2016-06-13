@@ -1553,11 +1553,13 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLDirConfigRec *dc = r ? myDirConfig(r) : NULL;
     SSLConnRec *sslconn = myConnConfig(conn);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
+    int crl_check_mode  = mctx->crl_check_mask & ~SSL_CRLCHECK_FLAGS;
 
     /* Get verify ingredients */
     int errnum   = X509_STORE_CTX_get_error(ctx);
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
     int depth, verify;
+
 
     /*
      * Log verification information
@@ -1565,10 +1567,10 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, conn,
                     X509_STORE_CTX_get_current_cert(ctx), APLOGNO(02275)
                     "Certificate Verification, depth %d, "
-                    "CRL checking mode: %s", errdepth,
-                    mctx->crl_check_mode == SSL_CRLCHECK_CHAIN ?
-                    "chain" : (mctx->crl_check_mode == SSL_CRLCHECK_LEAF ?
-                               "leaf" : "none"));
+                    "CRL checking mode: %s (%x)", errdepth,
+                    crl_check_mode == SSL_CRLCHECK_CHAIN ? "chain" :
+                    crl_check_mode == SSL_CRLCHECK_LEAF  ? "leaf"  : "none",
+                    mctx->crl_check_mask);
 
     /*
      * Check for optionally acceptable non-verifiable issuer situation
@@ -1615,6 +1617,17 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      */
     if (!ok && errnum == X509_V_ERR_CRL_HAS_EXPIRED) {
         X509_STORE_CTX_set_error(ctx, -1);
+    }
+
+    if (!ok && errnum == X509_V_ERR_UNABLE_TO_GET_CRL
+            && (mctx->crl_check_mask & SSL_CRLCHECK_NO_CRL_FOR_CERT_OK)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, conn,
+                      "Certificate Verification: Temporary error (%d): %s: "
+                      "optional therefore we're accepting the certificate",
+                      errnum, X509_verify_cert_error_string(errnum));
+        X509_STORE_CTX_set_error(ctx, X509_V_OK);
+        errnum = X509_V_OK;
+        ok = TRUE;
     }
 
 #ifndef OPENSSL_NO_OCSP
