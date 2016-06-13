@@ -665,6 +665,7 @@ DAV_DECLARE(const dav_hooks_search *) dav_get_search_hooks(request_rec *r);
 DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
 DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name);
+DAV_DECLARE(const char *) dav_get_provider_name(request_rec *r);
 
 
 /* ### deprecated */
