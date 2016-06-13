@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_userdir: Constify and save a few bytes in the conf pool when
+     parsing the "UserDir" directive. [Christophe Jaillet]
+
   *) mod_cache: Fix (max-stale with no '=') and enforce (check
      integers after '=') Cache-Control header parsing.
      [Christophe Jaillet]

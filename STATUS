@@ -114,11 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_userdir: Constify and save a few bytes in the conf pool when parsing
-     "UserDir" directive
-     trunk patch: http://svn.apache.org/r1745835
-     2.4.x: trunk works
-     +1: jailletc36, jim, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
