@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.21
 
+  *) mod_proxy_http2: properly care for HTTP2 flow control of the frontend
+     connection is HTTP/1.1. [Patch supplied by Evgeny Kotkov]
+     
   *) mod_http2: improved cleanup of connection/streams/tasks to always
      have deterministic order regardless of event initiating it. Addresses
      reported crashes due to memory read after free issues. 

@@ -36,6 +36,7 @@ typedef struct h2_proxy_stream {
     const char *url;
     request_rec *r;
     h2_request *req;
+    int standalone;
 
     h2_stream_state_t state;
     unsigned int suspended : 1;
@@ -370,6 +371,12 @@ static int on_data_chunk_recv(nghttp2_session *ngh2, uint8_t flags,
                                   stream_id, NGHTTP2_STREAM_CLOSED);
         return NGHTTP2_ERR_STREAM_CLOSING;
     }
+    if (stream->standalone) {
+        nghttp2_session_consume(ngh2, stream_id, len);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r,
+                      "h2_proxy_session(%s): stream %d, win_update %d bytes",
+                      session->id, stream_id, (int)len);
+    }
     return 0;
 }
 
@@ -576,7 +583,8 @@ static apr_status_t session_start(h2_proxy_session *session)
 }
 
 static apr_status_t open_stream(h2_proxy_session *session, const char *url,
-                                request_rec *r, h2_proxy_stream **pstream)
+                                request_rec *r, int standalone,
+                                h2_proxy_stream **pstream)
 {
     h2_proxy_stream *stream;
     apr_uri_t puri;
@@ -588,6 +596,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->pool = r->pool;
     stream->url = url;
     stream->r = r;
+    stream->standalone = standalone;
     stream->session = session;
     stream->state = H2_STREAM_ST_IDLE;
     
@@ -761,12 +770,13 @@ static apr_status_t h2_proxy_session_read(h2_proxy_session *session, int block,
 }
 
 apr_status_t h2_proxy_session_submit(h2_proxy_session *session, 
-                                     const char *url, request_rec *r)
+                                     const char *url, request_rec *r,
+                                     int standalone)
 {
     h2_proxy_stream *stream;
     apr_status_t status;
     
-    status = open_stream(session, url, r, &stream);
+    status = open_stream(session, url, r, standalone, &stream);
     if (status == APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03381)
                       "process stream(%d): %s %s%s, original: %s", 

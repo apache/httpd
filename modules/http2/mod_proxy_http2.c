@@ -258,7 +258,7 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
     url = apr_table_get(r->notes, H2_PROXY_REQ_URL_NOTE);
     apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
                    ctx->p_conn->connection->local_addr->port));
-    status = h2_proxy_session_submit(session, url, r);
+    status = h2_proxy_session_submit(session, url, r, ctx->standalone);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, status, r->connection, APLOGNO(03351)
                       "pass request body failed to %pI (%s) from %s (%s)",
