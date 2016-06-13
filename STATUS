@@ -121,6 +121,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, jim, trawick
 
+  *) http: Add 451 status code
+     trunk patch: http://svn.apache.org/r1730723
+     2.4.x: trunk works
+     +1: jailletc36, jim, trawick
+
+  *) mod_dav: Add dav_get_provider_name() function to obtain the name
+     of the provider from mod_dav.
+     trunk patch: http://svn.apache.org/r1747946
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin, jim, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -212,11 +223,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works
      +1: jailletc36, jim
 
-  *) http: Add 451 status code
-     trunk patch: http://svn.apache.org/r1730723
-     2.4.x: trunk works
-     +1: jailletc36, jim
-
   *) core: Add -DDUMP_INCLUDES configtest to show the Include tree.
 
      Example:
@@ -238,12 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_dav: Add support for childtags to dav_error.
      trunk patch: http://svn.apache.org/r1747810
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim
-
-  *) mod_dav: Add dav_get_provider_name() function to obtain the name
-     of the provider from mod_dav.
-     trunk patch: http://svn.apache.org/r1747946
      2.4.x: trunk works modulo CHANGES/MMN
      +1: minfrin, jim
 
