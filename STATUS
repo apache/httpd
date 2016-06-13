@@ -114,12 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_fcgi: strip proxy:fcgi:// in REQUEST_FILENAME just like
-     proxy:balancer://.  PR59618
-     trunk patch: http://svn.apache.org/r1747810
-     2.4.x: trunk works
-     +1: covener, jim, minfrin
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
