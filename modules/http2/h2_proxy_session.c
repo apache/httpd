@@ -23,7 +23,7 @@
 
 #include "mod_http2.h"
 #include "h2.h"
-#include "h2_util.h"
+#include "h2_proxy_util.h"
 #include "h2_proxy_session.h"
 
 APLOG_USE_MODULE(proxy_http2);
@@ -211,7 +211,7 @@ static void process_proxy_header(request_rec *r, const char *n, const char *v)
     int i;
     
     for (i = 0; transform_hdrs[i].name; ++i) {
-        if (!h2_casecmpstr(transform_hdrs[i].name, n)) {
+        if (!ap_cstr_casecmp(transform_hdrs[i].name, n)) {
             dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
             apr_table_add(r->headers_out, n,
                           (*transform_hdrs[i].func)(r, dconf, v));

@@ -71,33 +71,6 @@ size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max);
 size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max);
 
 /*******************************************************************************
- * ilist - sorted list for structs with int identifier as first member
- ******************************************************************************/
-typedef struct h2_ilist_t h2_ilist_t;
-typedef int h2_ilist_iter_t(void *ctx, void *val);
-
-h2_ilist_t *h2_ilist_create(apr_pool_t *pool);
-
-apr_status_t h2_ilist_add(h2_ilist_t *list, void *val);
-void *h2_ilist_get(h2_ilist_t *list, int id);
-void *h2_ilist_shift(h2_ilist_t *list);
-void *h2_ilist_remove(h2_ilist_t *list, int id);
-
-int h2_ilist_empty(h2_ilist_t *list);
-apr_size_t h2_ilist_count(h2_ilist_t *list);
-
-/* Iterator over all h2_io* in the set or until a
- * callback returns 0. It is not safe to add or remove
- * set members during iteration.
- *
- * @param set the set of h2_io to iterate over
- * @param iter the function to call for each io
- * @param ctx user data for the callback
- * @return 1 iff iteration completed for all members
- */
-int h2_ilist_iter(h2_ilist_t *lis, h2_ilist_iter_t *iter, void *ctx);
-
-/*******************************************************************************
  * iqueue - sorted list of int with user defined ordering
  ******************************************************************************/
 typedef struct h2_iqueue {
@@ -412,9 +385,5 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
  * - the bucket struct itself is counted
  */
 apr_off_t h2_brigade_mem_size(apr_bucket_brigade *bb);
-
-/* when will ap_casecmpstr() be backported finally? */
-int h2_casecmpstr(const char *s1, const char *s2);
-int h2_casecmpstrn(const char *s1, const char *s2, apr_size_t n);
 
 #endif /* defined(__mod_h2__h2_util__) */
