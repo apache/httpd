@@ -144,6 +144,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES/MMN
      +1: minfrin
 
+   *) mod_ssl: Don't enable CRL checks/flags by default.
+               (follow up/fix to r1748338 committed in 2.4.21)
+     trunk patch: http://svn.apache.org/r1748368
+     2.4.x: trunk works
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
