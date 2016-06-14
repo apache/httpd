@@ -194,6 +194,12 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              make it nonblocking (by default)?
         jim: Non-blocking seems the best way to handle...
 
+   * mod_dav: Allow other modules to become providers and add ACLs
+     to the DAV response. Requires a release of apr-util v1.6.
+     trunk patch: http://svn.apache.org/r1748322
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
