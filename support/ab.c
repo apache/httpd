@@ -178,6 +178,8 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #include <openssl/applink.c>
 #endif
 
+#endif
+
 #if defined(USE_SSL)
 #if (OPENSSL_VERSION_NUMBER >= 0x00909000)
 #define AB_SSL_METHOD_CONST const
