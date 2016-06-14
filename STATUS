@@ -137,6 +137,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES/MMN
      +1: minfrin, jim
 
+  *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
+     dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
+     dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
+     trunk patch: http://svn.apache.org/1748047
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
