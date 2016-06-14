@@ -787,7 +787,12 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
     unsigned long crlflags = 0;
     char *cfgp = mctx->pkp ? "SSLProxy" : "SSL";
-    int crl_check_mode = mctx->crl_check_mask & ~SSL_CRLCHECK_FLAGS;
+    int crl_check_mode;
+
+    if (mctx->crl_check_mask == UNSET) {
+        mctx->crl_check_mask = SSL_CRLCHECK_NONE;
+    }
+    crl_check_mode = mctx->crl_check_mask & ~SSL_CRLCHECK_FLAGS;
 
     /*
      * Configure Certificate Revocation List (CRL) Details

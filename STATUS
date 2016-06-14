@@ -114,11 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ssl: Don't enable CRL checks/flags by default.
-               (follow up/fix to r1748338 committed in 2.4.21)
-     trunk patch: http://svn.apache.org/r1748368
-     2.4.x: trunk works
-     +1: ylavic, icing, minfrin
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
