@@ -187,6 +187,10 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      trunk patch: http://svn.apache.org/r1748322
      2.4.x: trunk works modulo CHANGES/MMN
      +1: minfrin
+     rpluem asks: Will this compile with apr-util < v1.6 and keep
+     mod_dav working (without the new features of the patch of course)?
+     I doubt that we will require apr-util 1.6 for the lifetime of 2.4.x
+     (see the discussion around ap_cstr_casecmp[n] an apr 1.6)
 
 
 PATCHES/ISSUES THAT ARE STALLED
