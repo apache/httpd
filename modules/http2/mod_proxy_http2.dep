@@ -73,11 +73,11 @@
 	"..\..\srclib\nghttp2\lib\includes\nghttp2\nghttp2ver.h"\
 	".\h2.h"\
 	".\h2_proxy_session.h"\
-	".\h2_util.h"\
+	".\h2_proxy_util.h"\
 	".\mod_http2.h"\
 	
 
-./h2_util.c : \
+./h2_proxy_util.c : \
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_config_layout.h"\
 	"..\..\include\ap_expr.h"\
@@ -123,7 +123,7 @@
 	"..\..\srclib\nghttp2\lib\includes\nghttp2\nghttp2.h"\
 	"..\..\srclib\nghttp2\lib\includes\nghttp2\nghttp2ver.h"\
 	".\h2.h"\
-	".\h2_util.h"\
+	".\h2_proxy_util.h"\
 	
 
 ..\..\build\win32\httpd.rc : \
@@ -201,7 +201,7 @@
 	".\h2.h"\
 	".\h2_proxy_session.h"\
 	".\h2_request.h"\
-	".\h2_util.h"\
+	".\h2_proxy_util.h"\
 	".\h2_version.h"\
 	".\mod_http2.h"\
 	".\mod_proxy_http2.h"\
