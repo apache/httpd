@@ -436,7 +436,7 @@ SET(mod_proxy_http2_extra_defines          ssize_t=long)
 SET(mod_proxy_http2_extra_includes         ${NGHTTP2_INCLUDE_DIR})
 SET(mod_proxy_http2_extra_libs             ${NGHTTP2_LIBRARIES} mod_proxy)
 SET(mod_proxy_http2_extra_sources
-  modules/http2/h2_proxy_session.c   modules/http2/h2_util.c
+  modules/http2/h2_proxy_session.c   modules/http2/h2_proxy_util.c
 )
 SET(mod_ratelimit_extra_defines      AP_RL_DECLARE_EXPORT)
 SET(mod_sed_extra_sources
