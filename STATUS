@@ -126,13 +126,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
 
-  *) abs: Add OPENSSL_Applink in Visual Studio >= 2015 or abs fails with a no
-     OPENSSL_Applink error. PR59630
-     trunk patch: http://svn.apache.org/r1745767
-     2.4.x: trunk works (modulo CHANGES)
-     +1: gsmith,
-     +0: wrowe [I did not observe such issues, and will review the patch/issue]
-
   *) mod_dav: Add support for childtags to dav_error.
      trunk patch: http://svn.apache.org/r1747810
      2.4.x: trunk works modulo CHANGES/MMN
