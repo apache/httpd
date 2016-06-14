@@ -220,13 +220,17 @@ _trylua:
 _trynghttp2:
 !IF $(USEMAK) == 1
 	cd modules\http2
-	$(MAKE) $(MAKEOPT) -f mod_http2.mak CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	$(MAKE) $(MAKEOPT) -f mod_http2.mak       CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	$(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF $(USESLN) == 1
 	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_http2
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_proxy_http2
 !ELSE
 	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_http2 - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_proxy_http2 - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
@@ -506,11 +510,6 @@ _build:
 	cd modules\http
 	 $(MAKE) $(MAKEOPT) -f mod_mime.mak        CFG="mod_mime - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-!IF EXIST("srclib\nghttp2")
-	cd modules\http2
-	 $(MAKE) $(MAKEOPT) -f mod_http2.mak         CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-!ENDIF
 	cd modules\loggers
 	 $(MAKE) $(MAKEOPT) -f mod_log_config.mak  CFG="mod_log_config - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_log_debug.mak  CFG="mod_log_debug - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -564,6 +563,13 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_bytraffic.mak  CFG="mod_lbmethod_bytraffic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_heartbeat.mak  CFG="mod_lbmethod_heartbeat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
+# mod_proxy_http2 must be built after mod_proxy and mod_http2
+!IF EXIST("srclib\nghttp2")
+	cd modules\http2
+	 $(MAKE) $(MAKEOPT) -f mod_http2.mak         CFG="mod_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy_http2.mak   CFG="mod_proxy_http2 - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd modules\session
 	 $(MAKE) $(MAKEOPT) -f mod_session.mak        CFG="mod_session - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_session_cookie.mak CFG="mod_session_cookie - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -780,6 +786,7 @@ _copybin:
 	copy modules\http\$(LONG)\mod_mime.$(src_so) 		"$(inst_so)" <.y
 !IF EXIST("srclib\nghttp2")
 	copy modules\http2\$(LONG)\mod_http2.$(src_so) 		"$(inst_so)" <.y
+	copy modules\http2\$(LONG)\mod_proxy_http2.$(src_so) 		"$(inst_so)" <.y
 !IF "$(SHORT)" == "D"
 	copy srclib\nghttp2\lib\MSVC_obj\nghttp2d.$(src_dll)		 	"$(inst_dll)" <.y
 !ELSE

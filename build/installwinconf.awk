@@ -168,6 +168,7 @@ BEGIN {
           print "#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so" > dstfl;
           print "#LoadModule proxy_html_module modules/mod_proxy_html.so" > dstfl;
           print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
+          print "#LoadModule proxy_http2_module modules/mod_proxy_http2.so" > dstfl;
           print "#LoadModule proxy_scgi_module modules/mod_proxy_scgi.so" > dstfl;
           print "#LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so" > dstfl;
           print "#LoadModule ratelimit_module modules/mod_ratelimit.so" > dstfl;
