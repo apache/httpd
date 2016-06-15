@@ -191,6 +191,9 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      mod_dav working (without the new features of the patch of course)?
      I doubt that we will require apr-util 1.6 for the lifetime of 2.4.x
      (see the discussion around ap_cstr_casecmp[n] an apr 1.6)
+     minfrin: Yes, as you can see in the patch everything applies only
+     if APR_XML_X2T_PARSED is defined, and the patch was tested with
+     both apr-util v1.6 and apr-util v1.5.
 
 
 PATCHES/ISSUES THAT ARE STALLED
