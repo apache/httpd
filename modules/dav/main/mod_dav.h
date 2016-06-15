@@ -2515,7 +2515,7 @@ typedef struct {
 */
 #ifdef APR_XML_X2T_PARSED
 
-typedef struct dav_acl_provider
+struct dav_acl_provider
 {
     dav_error * (*acl_check_method)(request_rec *r,
                                     const dav_resource *resource);
@@ -2532,7 +2532,7 @@ typedef struct dav_acl_provider
                                 const dav_resource *resource,
                                 int new_resource_created);
     void *ctx;
-} dav_acl_provider;
+};
 
 DAV_DECLARE(void) dav_acl_provider_register(apr_pool_t *p,
                                             const dav_acl_provider *acl);
