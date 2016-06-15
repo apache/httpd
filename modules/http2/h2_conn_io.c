@@ -394,7 +394,7 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
             }
             else {
                 /* bucket fits in remain, copy to scratch */
-                read_to_scratch(io, b);
+                status = read_to_scratch(io, b);
                 apr_bucket_delete(b);
                 continue;
             }
