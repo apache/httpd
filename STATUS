@@ -127,10 +127,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: there may be missing bits, see thread for commit r1736510.
 
   *) mod_dav: Add support for childtags to dav_error.
-     trunk patch: http://svn.apache.org/r1747810
+     trunk patch: http://svn.apache.org/r1746207
      2.4.x: trunk works modulo CHANGES/MMN
      +1: minfrin, jim
-     jailletc36: should this be r1746207?
 
   *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
      dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
