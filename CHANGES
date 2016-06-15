@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: more rigid error handling in DATA frame assembly, leading
-     to deterministic connection errors if assembly fails.
-     [Stefan Eissing, Pal Nilsen <https://github.com/maedox>]
-     
   *) core: Drop an invalid Last-Modified header value coming
      from a FCGI/CGI script instead of replacing it with Unix epoch.
      [Luca Toscano]
