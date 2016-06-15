@@ -142,6 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      from a FCGI/CGI script instead of replacing it with Unix epoch.
      trunk patch: http://svn.apache.org/r1748379
      2.4.x: trunk patch works
+     +1: elukey
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
