@@ -2023,12 +2023,7 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
                                       sizeof(char *));
             for (i = 0; i < conf->protocols->nelts; i++) {
                 const char *p = APR_ARRAY_IDX(conf->protocols, i, char *);
-                /* special quirk for HTTP/2 which does not allow 'h2' to
-                 * be part of an Upgrade: header */
-                if (!strcmp("h2", p)) {
-                    continue;
-                }
-                else if (strcmp(existing, p)) {
+                if (strcmp(existing, p)) {
                     /* not the one we have and possible, add in this order */
                     APR_ARRAY_PUSH(upgrades, const char*) = p;
                 }
