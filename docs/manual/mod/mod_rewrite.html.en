@@ -791,7 +791,6 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -836,11 +835,6 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
       <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
 
-
-      <p>The meaning of the <em>MapTypeOptions</em> argument depends on
-      particular <em>MapType</em>. See the
-      <a href="../rewrite/rewritemap.html">Using RewriteMap</a> for
-      more information.</p>
 
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>

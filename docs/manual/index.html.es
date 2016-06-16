@@ -61,7 +61,8 @@ ejecución</a></li>
 <li><a href="glossary.html">Glosario</a></li>
 </ul>
 </div></td><td><div class="category"><h2><a name="usersguide" id="usersguide">Guía del Usuario</a></h2>
-<ul><li><a href="bind.html">Enlazando Direcciones y Puertos</a></li>
+<ul><li><a href="getting-started.html">Empezando</a></li>
+<li><a href="bind.html">Enlazando Direcciones y Puertos</a></li>
 <li><a href="configuring.html">Ficheros de Configuración</a></li>
 <li><a href="sections.html">Secciones de Configuración</a></li>
 <li><a href="caching.html">Almacenamiento de Contenido en Caché</a></li>
@@ -87,6 +88,7 @@ ejecución</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
 <li><a href="howto/public_html.html">Directorios web para cada
     usuario (public_html)</a></li>
+<li><a href="howto/reverse_proxy.html">Reverse proxy setup guide</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notas específicas sobre plataformas</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>

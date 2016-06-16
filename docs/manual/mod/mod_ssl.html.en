@@ -464,11 +464,13 @@ this directory contains the appropriate symbolic links.</p>
 <div class="directive-section"><h2><a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <em>flag</em>s available in httpd 2.5-dev or
+later</td></tr>
 </table>
 <p>
 Enables certificate revocation list (CRL) checking. At least one of
@@ -478,21 +480,31 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-<div class="note">
-<h3>When set to <code>chain</code> or <code>leaf</code>,
-CRLs <em>must</em> be available for successful validation</h3>
-<p>
-Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
-no CRL(s) were found in any of the locations configured with
-<code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
-or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
-With the introduction of this directive, the behavior has been changed:
-when checking is enabled, CRLs <em>must</em> be present for the validation
-to succeed - otherwise it will fail with an
-<code>"unable to get certificate CRL"</code> error.
-</p>
-</div>
+<p>The available <em>flag</em>s are:</p>
+<ul>
+<li><code>no_crl_for_cert_ok</code>
+    <p>
+    Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+    no CRL(s) for the checked certificate(s) were found in any of the locations
+    configured with <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
+    or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
+    </p>
+    <p>
+    With the introduction of <code class="directive">SSLCARevocationFile</code>,
+    the behavior has been changed: by default with <code>chain</code> or
+    <code>leaf</code>, CRLs <strong>must</strong> be present for the
+    validation to succeed - otherwise it will fail with an
+    <code>"unable to get certificate CRL"</code> error.
+    </p>
+    <p>
+    The <em>flag</em> <code>no_crl_for_cert_ok</code> allows to restore
+    previous behaviour.
+    </p>
+</li>
+</ul>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain</pre>
+</div>
+<div class="example"><h3>Compatibility with versions 2.2</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain no_crl_for_cert_ok</pre>
 </div>
 
 </div>
@@ -1593,15 +1605,30 @@ contains the appropriate symbolic links.</p>
 <p>
 This directive sets whether the remote server certificate's CN field is
 compared against the hostname of the request URL. If both are not equal
-a 502 status code (Bad Gateway) is sent.
+a 502 status code (Bad Gateway) is sent. <code>SSLProxyCheckPeerCN</code> is
+superseded by <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>
+in release 2.4.5 and later. 
 </p>
 <p>
-In 2.4.5 and later, SSLProxyCheckPeerCN has been superseded by
-<code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>, and its
-setting is only taken into account when
-<code>SSLProxyCheckPeerName off</code> is specified at the same time.
+In all releases 2.4.5 through 2.4.20, setting
+<code>SSLProxyCheckPeerName off</code> was sufficient to enable this behavior
+(as the <code>SSLProxyCheckPeerCN</code> default was <code>on</code>.) In 
+these releases, both directives must be set to <code>off</code> to completely
+avoid remote server certificate name validation. Many users reported this
+to be very confusing.
 </p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCheckPeerCN on</pre>
+<p>
+As of release 2.4.21, all configurations which enable either one of the
+<code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
+will use the new <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>
+behavior, and all configurations which disable either one of the 
+<code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
+will supress all remote server certificate name validation. Only the following
+configuration will trigger the legacy certificate CN comparison in 2.4.21 and
+later releases;
+</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCheckPeerCN on
+SSLProxyCheckPeerName off</pre>
 </div>
 
 </div>
@@ -1638,21 +1665,30 @@ sent.
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.5 and later</td></tr>
 </table>
 <p>
-This directive configures host name checking for server certificates
-when mod_ssl is acting as an SSL client. The check will
-succeed if the host name from the request URI is found in
-either the subjectAltName extension or (one of) the CN attribute(s)
-in the certificate's subject. If the check fails, the SSL request
-is aborted and a 502 status code (Bad Gateway) is returned.
-The directive supersedes <code class="directive"><a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></code>,
-which only checks for the expected host name in the first CN attribute.
+This directive configures host name checking for server certificates when 
+mod_ssl is acting as an SSL client. The check will succeed if the host name 
+from the request URI matches one of the CN attribute(s) of the certificate's 
+subject, or matches the subjectAltName extension. If the check fails, the SSL 
+request is aborted and a 502 status code (Bad Gateway) is returned.
 </p>
 <p>
-Wildcard matching is supported in one specific flavor: subjectAltName entries
-of type dNSName or CN attributes starting with <code>*.</code> will match
-for any DNS name with the same number of labels and the same suffix
-(i.e., <code>*.example.org</code> matches for <code>foo.example.org</code>,
-but not for <code>foo.bar.example.org</code>).
+Wildcard matching is supported for specific cases: an subjectAltName entry
+of type dNSName, or CN attributes starting with <code>*.</code> will match
+with any host name of the same number of name elements and the same suffix.
+E.g. <code>*.example.org</code> will match <code>foo.example.org</code>,
+but will not match <code>foo.bar.example.org</code>, because the number of
+elements in the respective host names differs.
+</p>
+<p>
+This feature was introduced in 2.4.5 and superseded the behavior of the 
+<code class="directive"><a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></code> directive, which 
+only tested the exact value in the first CN attribute against the host name.
+However, many users were confused by the behavior of using these directives
+individually, so the mutual behavior of <code>SSLProxyCheckPeerName</code> 
+and <code>SSLProxyCheckPeerCN</code> directives were improved in release 
+2.4.21. See the <code class="directive"><a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></code> 
+directive description for the original behavior and details of these 
+improvements.
 </p>
 
 </div>

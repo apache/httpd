@@ -463,7 +463,7 @@ found</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
@@ -847,7 +847,6 @@ must succeed for the enclosing directive to not fail.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-    <em>MapTypeOptions</em>
 </a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
@@ -956,7 +955,7 @@ Client Auth</td></tr>
 for defining acceptable CA names</td></tr>
 <tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none <em>flag</em>s</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
 Client Auth</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
