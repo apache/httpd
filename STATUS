@@ -132,14 +132,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1697323
       Backport version for 2.2.x of patch:
          http://people.apache.org/~rpluem/patches/proxy_race_retry_2.2.x_v2.diff
-      +1: rpluem,
+      +1: rpluem, wrowe
 
   *) mod_proxy: save DNS lookups
       trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1462269
                    https://svn.apache.org/viewvc?view=revision&revision=1463455
       2.4.x patch: http://svn.apache.org/viewvc?view=revision&revision=1511313
       2.2.x patch: http://people.apache.org/~rpluem/patches/proxy-dns-patch_2.2.x.diff
-      +1: rpluem
+      +1: rpluem, wrowe
 
   *) mod_proxy: Give ap_proxy_post_request as chance to act correctly on the status code
      by setting r->status temporarily to access_status. r->status might be different than
@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/r1597352
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/proxy_post_request_status_code.diff
-     +1: rpluem,
+     +1: rpluem, wrowe
 
   *) mod_mem_cache: Don't cache incomplete responses when the client aborts the connection.
      Not applicable to trunk, mod_mem_cache doesn't exist there.
@@ -165,6 +165,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              error buckets instead? ISTM that EOS with no error bucket *is*
              a complete response that could be cached even if the current
              client won't receive it completely.
+     wrowe asks: Refreshed patch yet?  Will give this a week before moving to
+                 the 'stalled' section below.
 
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
@@ -176,6 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: ylavic, rpluem
      ylavic: while at it, I also included r1678763 which is only an
              optimization, but allows to keep code in sync with 2.4/trunk.
+     wrowe notes this patch is missing 
 
   *) mod_ssl: Free dhparams and ecparams reading certificates at startup.
      This fixes issue when SSLCryptoDevice does not get unregistered because
