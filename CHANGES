@@ -40,10 +40,6 @@ Changes with Apache 2.4.21
      of the provider from mod_dav.
      [Jari Urpalainen <jari.urpalainen nokia.com>]
 
-  *) mod_proxy_fcgi: Avoid passing a filename of proxy:fcgi:// as
-     SCRIPT_FILENAME to a FastCGI server. PR59618.
-     [Jacob Champion <champion.pxi gmail.com>]
-
   *) mod_proxy_http2: properly care for HTTP2 flow control of the frontend
      connection is HTTP/1.1. [Patch supplied by Evgeny Kotkov]
      
