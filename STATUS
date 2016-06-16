@@ -134,9 +134,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
      dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
      dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
-     trunk patch: http://svn.apache.org/1748047
+     trunk patch: http://svn.apache.org/r1748047
      2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin
+     +1: minfrin, jim
 
   *) core: Drop an invalid Last-Modified header value coming
      from a FCGI/CGI script instead of replacing it with Unix epoch.
@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_sed: Fix a potential buffer overflow.
      trunk patch: http://svn.apache.org/r1748653
      2.4.x: trunk patch works
-     +1: jailletc36, rpluem
+     +1: jailletc36, rpluem, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
