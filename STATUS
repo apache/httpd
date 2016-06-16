@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_sed: Fix a potential buffer overflow.
      trunk patch: http://svn.apache.org/r1748653
      2.4.x: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
