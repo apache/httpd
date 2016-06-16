@@ -114,6 +114,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_sed: Fix a potential buffer overflow.
+     trunk patch: http://svn.apache.org/r1748653
+     2.4.x: trunk patch works
+     +1: jailletc36, rpluem, jim
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -143,12 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1748379
      2.4.x: trunk patch works
      +1: elukey
-
-  *) mod_sed: Fix a potential buffer overflow.
-     trunk patch: http://svn.apache.org/r1748653
-     2.4.x: trunk patch works
-     +1: jailletc36, rpluem, jim
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
