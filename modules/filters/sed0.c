@@ -588,7 +588,7 @@ jtcommon:
                     command_errf(commands, SEDERR_SMMES, commands->linebuf);
                     return -1;
                 }
-                if (text(commands, fnamebuf, &fnamebuf[APR_PATH_MAX]) == NULL) {
+                if (text(commands, fnamebuf, &fnamebuf[APR_PATH_MAX-1]) == NULL) {
                     command_errf(commands, SEDERR_FNTL, commands->linebuf);
                     return -1;
                 }
@@ -617,7 +617,7 @@ jtcommon:
                 command_errf(commands, SEDERR_SMMES, commands->linebuf);
                 return -1;
             }
-            if (text(commands, fnamebuf, &fnamebuf[APR_PATH_MAX]) == NULL) {
+            if (text(commands, fnamebuf, &fnamebuf[APR_PATH_MAX-1]) == NULL) {
                 command_errf(commands, SEDERR_FNTL, commands->linebuf);
                 return -1;
             }
