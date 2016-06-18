@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -546,11 +544,13 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 <div class="directive-section"><h2><a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a> <a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la vérification des révocations basée sur les CRL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le drapeau optionnel <em>flag</em>s est disponible à partir de la
+version 2.5-dev du serveur HTTP Apache</td></tr>
 </table>
 <p>
 Active la vérification des révocations basée sur les Listes de
@@ -560,21 +560,26 @@ recommandée), les vérifications CRL sont effectuées sur tous les
 certificats de la chaîne, alors que la valeur <code>leaf</code> limite
 la vérification au certificat hors chaîne (la feuille).
 </p>
-<div class="note">
-<h3>Lorsque la directive est définie à <code>chain</code> ou
-<code>leaf</code>, les CRLs doivent être disponibles pour que la
-validation réussisse</h3>
+<p><em>flag</em>s peut prendre comme valeurs </p>
+<ul>
+<li><code>no_crl_for_cert_ok</code>
 <p>
 Avant la version 2.3.15, les vérifications CRL dans mod_ssl
 réussissaient même si aucune CRL n'était trouvée dans les chemins
-définis par les directives <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code> ou <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>. Le comportement a
-changé avec l'introduction de cette directive : lorsque la vérification
-est activée, les CRLs <em>doivent</em> être présentes pour que la
+définis par les directives <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code> ou <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.</p>
+<p>Le comportement a
+changé avec l'introduction de la  directive
+<code class="directive">SSLCARevocationFile</code> : par défaut avec
+<code>chain</code> ou <code>leaf</code>, les CRLs <em>doivent</em> être présentes pour que la
 validation réussisse ; dans le cas contraire, elle échouera avec une
-erreur <code>"CRL introuvable"</code>.
-</p>
-</div>
+erreur <code>"unable to get certificate CRL"</code>.</p>
+<p>La valeur <code>no_crl_for_cert_ok</code> du drapeau <em>flag</em> permet de
+retrouver le comportement précédent.</p>
+</li>
+</ul>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain</pre>
+</div>
+<div class="example"><h3>Compatibilité avec la branche 2.2</h3><pre class="prettyprint lang-config">SSLCARevocationCheck chain no_crl_for_cert_ok</pre>
 </div>
 
 </div>

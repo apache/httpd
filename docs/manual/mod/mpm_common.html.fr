@@ -302,13 +302,20 @@ plateformes de type BSD.</td></tr>
     <p>Vous pouvez utiliser la directive
     <code class="directive">ListenCoresBucketsRatio</code> pour spécifier un
     <var>ratio</var> entre le nombre de coeurs de CPU activés et le
-    nombre de segments d'écoute (listeners' buckets) souhaités ;  le
+    nombre de segments d'écoute (listeners' buckets) souhaités ; le
     serveur HTTP Apache va alors créer<code>num_cpu_cores / ratio</code>
     segments d'écoute, chacun contenant son propre socket d'écoute
     <code class="directive">Listen</code> sur le ou les mêmes ports ; chaque
     processus enfant sera associé à un seul segment d'écoute (avec une
     distribution de type round-robin des segments à la création des
     processus enfants).</p>
+
+    <div class="note"><h3>Définition du terme coeur de CPU activé ("online")</h3>
+    <p>Sous Linux et BSD, un coeur de CPU peut être activé ou désactivé si <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a>
+    a été configuré ; la directive
+    <code class="directive">ListenCoresBucketsRatio</code> doit donc tenir compte de ce
+    paramètre pour calculer le nombre de segments d'écoute à créer.</p>
+    </div>
 
     <p>La directive <code class="directive">ListenCoresBucketsRatio</code> peut
     améliorer le support de la montée en charge lorsque l'arrivée de
@@ -321,7 +328,10 @@ plateformes de type BSD.</td></tr>
     de CPU doit être égal au moins au double du <var>ratio</var>
     spécifié. Si vous spécifiez la valeur recommandée pour
     <var>ratio</var>, à savoir <code>8</code>, le nombre minimum de
-    coeurs de processeurs disponibles sera alors de <code>16</code>.</p>
+    coeurs de processeurs disponibles sera alors de <code>16</code>. La valeur
+    optimale de <var>ratio</var> permettant d'obtenir des performances maximales
+    doit être calculée pour chaque système cible, en testant plusieurs valeurs
+    et en observant les résultats.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
