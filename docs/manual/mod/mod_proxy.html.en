@@ -342,13 +342,14 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       <code class="directive"><a href="#balancermember">BalancerMember</a></code>.</p>
 
       <div class="note"><h3>DNS resolution for origin domains</h3>
-      <p>The DNS domain resolution happens when the socket to
-        the origin server is created for the first time.
-        When connection pooling is used, the DNS resolution is performed
-        again only when the <code>ttl</code> of the connection expires
-        (please check <code class="directive"><a href="#proxypass">ProxyPass</a></code>
-        parameters).
-        This means that httpd does not perform any DNS resolution caching.
+      <p>DNS resolution happens when the socket to
+        the origin domain is created for the first time.
+        When connection pooling is used, each backend domain is resolved 
+        only once per child process, and reused for all further connections 
+        until the child is recycled. This information should to be considered 
+        while planning DNS maintenance tasks involving backend domains. 
+        Please also check <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+        parameters for more details about connection reuse.
         </p>
       </div>
 
