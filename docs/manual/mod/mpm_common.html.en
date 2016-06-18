@@ -279,6 +279,13 @@ in *BSDs.</td></tr>
     then make each child handle a single bucket (with round-robin distribution
     of the buckets at children creation time).</p>
 
+    <div class="note"><h3>Meaning of "online" CPU core</h3>
+    <p>On Linux (and also BSD) a CPU core can be turned on/off if 
+    <a href="https://www.kernel.org/doc/Documentation/cpu-hotplug.txt">Hotplug</a> 
+    is configured, therefore <code class="directive">ListenCoresBucketsRatio</code> needs to
+    take this parameter into account while calculating the number of buckets to create.</p>
+    </div>
+
     <p><code class="directive">ListenCoresBucketsRatio</code> can improve the
     scalability when accepting new connections is/becomes the bottleneck.
     On systems with a large number of CPU cores, enabling this feature has
@@ -288,7 +295,10 @@ in *BSDs.</td></tr>
     <p>There must be at least twice the number of CPU cores than the
     configured <var>ratio</var> for this to be active. The recommended
     <var>ratio</var> is <code>8</code>, hence at least <code>16</code>
-    cores should be available at runtime when this value is used.</p>
+    cores should be available at runtime when this value is used.
+    The right <var>ratio</var> to obtain maximum performance needs to be calculated
+    for each target system, testing multiple values and observing the variations in your 
+    key performance metrics.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
