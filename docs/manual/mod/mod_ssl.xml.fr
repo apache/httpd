@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1747069:1748338 (outdated) -->
+<!-- English Revision: 1748338 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1401,10 +1401,12 @@ SSLCARevocationFile
 <directivesynopsis>
 <name>SSLCARevocationCheck</name>
 <description>Active la vérification des révocations basée sur les CRL</description>
-<syntax>SSLCARevocationCheck chain|leaf|none</syntax>
+<syntax>SSLCARevocationCheck chain|leaf|none <em>flag</em>s</syntax>
 <default>SSLCARevocationCheck none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Le drapeau optionnel <em>flag</em>s est disponible à partir de la
+version 2.5-dev du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>
@@ -1417,25 +1419,33 @@ recommandée), les vérifications CRL sont effectuées sur tous les
 certificats de la chaîne, alors que la valeur <code>leaf</code> limite
 la vérification au certificat hors chaîne (la feuille).
 </p>
-<note>
-<title>Lorsque la directive est définie à <code>chain</code> ou
-<code>leaf</code>, les CRLs doivent être disponibles pour que la
-validation réussisse</title>
+<p><em>flag</em>s peut prendre comme valeurs </p>
+<ul>
+<li><code>no_crl_for_cert_ok</code>
 <p>
 Avant la version 2.3.15, les vérifications CRL dans mod_ssl
 réussissaient même si aucune CRL n'était trouvée dans les chemins
 définis par les directives <directive
 module="mod_ssl">SSLCARevocationFile</directive> ou <directive
-module="mod_ssl">SSLCARevocationPath</directive>. Le comportement a
-changé avec l'introduction de cette directive : lorsque la vérification
-est activée, les CRLs <em>doivent</em> être présentes pour que la
+module="mod_ssl">SSLCARevocationPath</directive>.</p>
+<p>Le comportement a
+changé avec l'introduction de la  directive
+<directive>SSLCARevocationFile</directive> : par défaut avec
+<code>chain</code> ou <code>leaf</code>, les CRLs <em>doivent</em> être présentes pour que la
 validation réussisse ; dans le cas contraire, elle échouera avec une
-erreur <code>"CRL introuvable"</code>.
-</p>
-</note>
+erreur <code>"unable to get certificate CRL"</code>.</p>
+<p>La valeur <code>no_crl_for_cert_ok</code> du drapeau <em>flag</em> permet de
+retrouver le comportement précédent.</p>
+</li>
+</ul>
 <example><title>Exemple</title>
 <highlight language="config">
 SSLCARevocationCheck chain
+</highlight>
+</example>
+<example><title>Compatibilité avec la branche 2.2</title>
+<highlight language="config">
+SSLCARevocationCheck chain no_crl_for_cert_ok
 </highlight>
 </example>
 </usage>
