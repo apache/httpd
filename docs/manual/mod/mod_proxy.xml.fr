@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1745169 -->
+<!-- English Revision: 1748948 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -344,13 +344,16 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       membres au répartiteur.</p>
 
       <note><title>Résolution DNS pour les domaines originaux</title>
-      <p>La résolution DNS du domaine s'effectue lorsque le socket vers le
-      serveur original est créé pour la première fois. Lorsque le pooling de
-      connexions est utilisé, la résolution DNS n'est effectuée à nouveau que
-      lorsque le <code>ttl</code> de la connexion est écoulé (veuillez vérifier
-      les paramètres de la directive <directive
-      module="mod_proxy">ProxyPass</directive>). Cela signifie que httpd
-      n'effectue aucune mise en cache des résolutions DNS.
+      <p>La résolution DNS s'effectue lorsque le socket vers le
+      domaine original est créé pour la première fois. Lorsque le pooling de
+      connexions est utilisé, chaque domaine d'arrière-plan n'est résolu qu'une
+      seule fois pour chaque processus enfant, et cette résolution est réutilisée
+      pour toutes les connexions ultérieures jusqu'à ce que le processus enfant
+      soit recyclé. Ce comportement doit être pris en considération lorsqu'on
+      planifie des tâches de maintenance du DNS impactant les domaines
+      d'arrière-plan. Veuillez aussi vous reporter aux paramètres de la
+      directive <directive module="mod_proxy">ProxyPass</directive> pour plus de
+      détails à propos de la réutilisation des connexions.
         </p>
       </note>
 
