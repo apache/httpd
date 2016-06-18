@@ -374,12 +374,16 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       membres au répartiteur.</p>
 
       <div class="note"><h3>Résolution DNS pour les domaines originaux</h3>
-      <p>La résolution DNS du domaine s'effectue lorsque le socket vers le
-      serveur original est créé pour la première fois. Lorsque le pooling de
-      connexions est utilisé, la résolution DNS n'est effectuée à nouveau que
-      lorsque le <code>ttl</code> de la connexion est écoulé (veuillez vérifier
-      les paramètres de la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>). Cela signifie que httpd
-      n'effectue aucune mise en cache des résolutions DNS.
+      <p>La résolution DNS s'effectue lorsque le socket vers le
+      domaine original est créé pour la première fois. Lorsque le pooling de
+      connexions est utilisé, chaque domaine d'arrière-plan n'est résolu qu'une
+      seule fois pour chaque processus enfant, et cette résolution est réutilisée
+      pour toutes les connexions ultérieures jusqu'à ce que le processus enfant
+      soit recyclé. Ce comportement doit être pris en considération lorsqu'on
+      planifie des tâches de maintenance du DNS impactant les domaines
+      d'arrière-plan. Veuillez aussi vous reporter aux paramètres de la
+      directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> pour plus de
+      détails à propos de la réutilisation des connexions.
         </p>
       </div>
 
