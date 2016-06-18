@@ -1205,7 +1205,7 @@ l'authentification des clients</td></tr>
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
 <tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Répertoire contenant des fichiers de certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRL</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none <em>flag</em>s</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la vérification des révocations basée sur les CRL</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>chemin-fichier</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concaténation des CRLs des CA codés en
 PEM pour l'authentification des clients</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>chemin-répertoire</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Répertoire des CRLs de CA codés en PEM pour
