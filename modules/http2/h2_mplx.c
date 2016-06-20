@@ -436,6 +436,9 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
     if (stream->input) {
         m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
         h2_beam_on_consumed(stream->input, NULL, NULL);
+        /* Let anyone blocked reading know that there is no more to come */
+        h2_beam_abort(stream->input);
+        /* Remove mutex after, so that abort still finds cond to signal */
         h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
     }
     h2_stream_cleanup(stream);
