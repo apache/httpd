@@ -146,11 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
-  *) mod_http2: fix for request abort when connections drops, introduced in 1.5.8
-     trunk patch: http://svn.apache.org/r1749151
-     2.4.x: trunk patch works
-     +1: jim
-
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
