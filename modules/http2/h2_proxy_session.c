@@ -40,7 +40,9 @@ typedef struct h2_proxy_stream {
 
     h2_stream_state_t state;
     unsigned int suspended : 1;
+    unsigned int data_sent : 1;
     unsigned int data_received : 1;
+    uint32_t error_code;
 
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
@@ -384,10 +386,15 @@ static int on_stream_close(nghttp2_session *ngh2, int32_t stream_id,
                            uint32_t error_code, void *user_data) 
 {
     h2_proxy_session *session = user_data;
+    h2_proxy_stream *stream;
     if (!session->aborted) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03360)
                       "h2_proxy_session(%s): stream=%d, closed, err=%d", 
                       session->id, stream_id, error_code);
+        stream = h2_ihash_get(session->streams, stream_id);
+        if (stream) {
+            stream->error_code = error_code;
+        }
         dispatch_event(session, H2_PROXYS_EV_STREAM_DONE, stream_id, NULL);
     }
     return 0;
@@ -480,6 +487,7 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, status, stream->r, 
                       "h2_proxy_stream(%d): request body read %ld bytes, flags=%d", 
                       stream->id, (long)readlen, (int)*data_flags);
+        stream->data_sent = 1;
         return readlen;
     }
     else if (APR_STATUS_IS_EAGAIN(status)) {
@@ -1069,7 +1077,10 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         h2_ihash_remove(session->streams, stream_id);
         h2_iq_remove(session->suspended, stream_id);
         if (session->done) {
-            session->done(session, stream->r, 1, 1);
+            int touched = (stream->data_sent || 
+                           stream_id <= session->last_stream_id);
+            int complete = (stream->error_code == 0);
+            session->done(session, stream->r, complete, touched);
         }
     }
     
