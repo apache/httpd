@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) build: Fix issues around mod_proxy_hcheck inclusion.
      trunk patch: http://svn.apache.org/r1748888
      2.4.x: trunk patch works
-     +1: jim
+     +1: jim, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
