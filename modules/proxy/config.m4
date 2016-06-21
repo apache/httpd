@@ -13,6 +13,10 @@ fi
 if test "$proxy_mods_enable" = "no"; then
   enable_proxy_hcheck=no
 fi
+dnl If enable_proxy_hcheck is unset handle it like other proxy modules
+if test -z "$enable_proxy_hcheck" ; then
+  enable_proxy_hcheck="$proxy_mods_enable"
+fi
 
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
