@@ -116,8 +116,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
+  *) build: Fix issues around mod_proxy_hcheck inclusion.
+     trunk patch: http://svn.apache.org/r1748888
+     2.4.x: trunk patch works
+     +1: jim, rpluem, icing
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -146,11 +148,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1748379
      2.4.x: trunk patch works
      +1: elukey
-
-  *) build: Fix issues around mod_proxy_hcheck inclusion.
-     trunk patch: http://svn.apache.org/r1748888
-     2.4.x: trunk patch works
-     +1: jim, rpluem
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
