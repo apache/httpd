@@ -486,7 +486,7 @@ static int task_print(void *ctx, void *val)
                       task->worker_done);
     }
     else if (task) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(), /* NO APLOGNO */
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03392) /* NO APLOGNO */
                       "->03198: h2_stream(%ld-%d): NULL", m->id, task->stream_id);
     }
     else {
@@ -739,7 +739,7 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
         h2_response *r = h2_response_die(task->stream_id, 500, 
                                          task->request, m->pool);
         status = out_open(m, task->stream_id, r);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c, APLOGNO(),
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, m->c, APLOGNO(03393)
                       "h2_mplx(%s): close, no response, no rst", task->id);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
