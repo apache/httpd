@@ -303,6 +303,18 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       Members are added to a balancer using
       <directive module="mod_proxy">BalancerMember</directive>.</p>
 
+      <note><title>DNS resolution for origin domains</title>
+      <p>DNS resolution happens when the socket to
+        the origin domain is created for the first time.
+        When connection pooling is used, each backend domain is resolved 
+        only once per child process, and reused for all further connections 
+        until the child is recycled. This information should to be considered 
+        while planning DNS maintenance tasks involving backend domains. 
+        Please also check <directive module="mod_proxy">ProxyPass</directive>
+        parameters for more details about connection reuse.
+        </p>
+      </note>
+
     </section> <!-- /workers -->
 
     <section id="access"><title>Controlling Access to Your Proxy</title>
