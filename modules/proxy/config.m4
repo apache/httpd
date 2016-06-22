@@ -10,14 +10,6 @@ else
   proxy_mods_enable=most
 fi
 
-if test "$proxy_mods_enable" = "no"; then
-  enable_proxy_hcheck=no
-fi
-dnl If enable_proxy_hcheck is unset handle it like other proxy modules
-if test -z "$enable_proxy_hcheck" ; then
-  enable_proxy_hcheck="$proxy_mods_enable"
-fi
-
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
 
@@ -67,7 +59,14 @@ APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable,, proxy)
 
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_hcheck, reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog., , , $enable_proxy_hcheck,, watchdog)
+APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , ,[
+  $proxy_mods_enable
+  dnl Verify that both proxy_mods_enable above and watchdog below are enabled
+  dnl when --enable-proxy-hcheck isn't explicitly elected
+  if test "$enable_watchdog" = "no"; then
+    enable_proxy_hcheck="";
+  fi
+], , [proxy,watchdog])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
