@@ -171,7 +171,7 @@ static void append_scratch(h2_conn_io *io)
                                                io->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(io->output, b);
 #if LOG_SCRATCH
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c, APLOGNO(),
                       "h2_conn_io(%ld): append_scratch(%ld)", 
                       io->c->id, (long)io->slen);
 #endif
@@ -223,7 +223,7 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
         }
         status = apr_file_read(fd, io->scratch + io->slen, &len);
 #if LOG_SCRATCH
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, status, io->c,
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, status, io->c, APLOGNO(),
                       "h2_conn_io(%ld): FILE_to_scratch(%ld)", 
                       io->c->id, (long)len); 
 #endif
@@ -236,7 +236,7 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
         status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (status == APR_SUCCESS) {
 #if LOG_SCRATCH
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c, APLOGNO(),
                           "h2_conn_io(%ld): read_to_scratch(%ld)", 
                           io->c->id, (long)b->length); 
 #endif
@@ -333,7 +333,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
             remain = assure_scratch_space(io);
             if (remain >= length) {
 #if LOG_SCRATCH
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c, APLOGNO(),
                               "h2_conn_io(%ld): write_to_scratch(%ld)", 
                               io->c->id, (long)length); 
 #endif
@@ -343,7 +343,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
             }
             else {
 #if LOG_SCRATCH
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c, APLOGNO(),
                               "h2_conn_io(%ld): write_to_scratch(%ld)", 
                               io->c->id, (long)remain); 
 #endif
@@ -385,7 +385,7 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
                     APR_BUCKET_REMOVE(b);
                     APR_BRIGADE_INSERT_TAIL(io->output, b);
 #if LOG_SCRATCH
-                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c,
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, io->c, APLOGNO(),
                                   "h2_conn_io(%ld): pass bucket(%ld)", 
                                   io->c->id, (long)b->length);
 #endif
