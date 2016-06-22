@@ -139,7 +139,7 @@ h2_ngn_shed *h2_ngn_shed_get_shed(h2_req_engine *ngn)
 
 void h2_ngn_shed_abort(h2_ngn_shed *shed)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, shed->c, APLOGNO(03394)
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c, APLOGNO(03394)
                   "h2_ngn_shed(%ld): abort", shed->c->id);
     shed->aborted = 1;
 }
@@ -251,7 +251,7 @@ apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed,
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
                   shed->c->id, ngn->id, want_shutdown);
     if (shed->aborted) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, shed->c, APLOGNO(03397)
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c, APLOGNO(03397)
                       "h2_ngn_shed(%ld): abort while pulling requests %s", 
                       shed->c->id, ngn->id);
         ngn->shutdown = 1;
