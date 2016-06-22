@@ -486,11 +486,11 @@ static int task_print(void *ctx, void *val)
                       task->worker_done);
     }
     else if (task) {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(03392) /* NO APLOGNO */
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%ld-%d): NULL", m->id, task->stream_id);
     }
     else {
-        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, APLOGNO(), /* NO APLOGNO */
+        ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%ld-NULL): NULL", m->id);
     }
     return 1;
