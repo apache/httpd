@@ -116,6 +116,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) acinclude.m4: Support multiple module dependencies for the final prereq
+     argument to the APACHE_MODULE macro, as a comma separated list
+     trunk patch: http://svn.apache.org/r1749658
+     2.4.x: trunk patch works
+            http://apaste.info/iyv
+     +1: wrowe, jim, rpluem
+
+  *) configure: Simplify, and correct dependency handling of mod_proxy_hcheck
+     trunk patch: http://svn.apache.org/r1749659
+                  http://svn.apache.org/r1749678
+     2.4.x: trunk patch works
+            http://apaste.info/iyv
+     +1: wrowe, jim, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -144,20 +158,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
-  *) acinclude.m4: Support multiple module dependencies for the final prereq
-     argument to the APACHE_MODULE macro, as a comma separated list
-     trunk patch: http://svn.apache.org/r1749658
-     2.4.x: trunk patch works
-            http://apaste.info/iyv
-     +1: wrowe, jim
-     
-  *) configure: Simplify, and correct dependency handling of mod_proxy_hcheck
-     trunk patch: http://svn.apache.org/r1749659
-                  http://svn.apache.org/r1749678
-     2.4.x: trunk patch works
-            http://apaste.info/iyv 
-     +1: wrowe, jim
-     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
