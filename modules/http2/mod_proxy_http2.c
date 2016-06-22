@@ -324,8 +324,9 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
                                  APR_BLOCK_READ: APR_NONBLOCK_READ, 
                                  ctx->capacity, &ctx->next);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, ctx->owner, 
-                      "h2_proxy_engine(%s): pulled request %s", 
+                      "h2_proxy_engine(%s): pulled request (%s) %s", 
                       ctx->engine_id, 
+                      before_leave? "before leave" : "regular", 
                       (ctx->next? ctx->next->the_request : "NULL"));
         return APR_STATUS_IS_EAGAIN(status)? APR_SUCCESS : status;
     }
@@ -384,8 +385,8 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
         else {
             /* end of processing, maybe error */
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, 
-                          APLOGNO(03375) "eng(%s): end of session run", 
-                          ctx->engine_id);
+                          APLOGNO(03375) "eng(%s): end of session %s", 
+                          ctx->engine_id, ctx->session->id);
             /*
              * Any open stream of that session needs to
              * a) be reopened on the new session iff safe to do so

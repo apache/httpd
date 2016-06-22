@@ -160,14 +160,6 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
              * that it has started processing. */
             session->last_stream_id = frame->goaway.last_stream_id;
             dispatch_event(session, H2_PROXYS_EV_REMOTE_GOAWAY, 0, NULL);
-            if (APLOGcinfo(session->c)) {
-                char buffer[256];
-                
-                h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03342)
-                              "h2_proxy_session(%s): recv FRAME[%s]",
-                              session->id, buffer);
-            }
             break;
         default:
             break;
@@ -1055,11 +1047,15 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
     
     stream = nghttp2_session_get_stream_user_data(session->ngh2, stream_id);
     if (stream) {
+        int touched = (stream->data_sent || 
+                       stream_id <= session->last_stream_id);
+        int complete = (stream->error_code == 0);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
-                      "h2_proxy_sesssion(%s): stream(%d) closed", 
-                      session->id, stream_id);
+                      "h2_proxy_sesssion(%s): stream(%d) closed "
+                      "(complete=%d, touched=%d)", 
+                      session->id, stream_id, complete, touched);
         
-        if (!stream->data_received) {
+        if (complete && !stream->data_received) {
             apr_bucket *b;
             /* if the response had no body, this is the time to flush
              * an empty brigade which will also "write" the resonse
@@ -1077,9 +1073,6 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         h2_ihash_remove(session->streams, stream_id);
         h2_iq_remove(session->suspended, stream_id);
         if (session->done) {
-            int touched = (stream->data_sent || 
-                           stream_id <= session->last_stream_id);
-            int complete = (stream->error_code == 0);
             session->done(session, stream->r, complete, touched);
         }
     }
