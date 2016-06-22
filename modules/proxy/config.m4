@@ -73,7 +73,7 @@ APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enabl
   dnl Verify that both proxy_mods_enable above and watchdog below are enabled
   dnl when --enable-proxy-hcheck isn't explicitly elected
   if test "$enable_watchdog" = "no"; then
-    enable_proxy_hcheck=no;
+    enable_proxy_hcheck="";
   fi
 ], , [proxy,watchdog])
 
