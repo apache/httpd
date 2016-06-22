@@ -139,6 +139,8 @@ h2_ngn_shed *h2_ngn_shed_get_shed(h2_req_engine *ngn)
 
 void h2_ngn_shed_abort(h2_ngn_shed *shed)
 {
+    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, shed->c,
+                  "h2_ngn_shed(%ld): abort", shed->c->id);
     shed->aborted = 1;
 }
 
@@ -249,7 +251,7 @@ apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed,
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
                   shed->c->id, ngn->id, want_shutdown);
     if (shed->aborted) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, shed->c,
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, shed->c,
                       "h2_ngn_shed(%ld): abort while pulling requests %s", 
                       shed->c->id, ngn->id);
         ngn->shutdown = 1;
@@ -279,6 +281,12 @@ apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed,
          * See PR 59542. */
         if (entry->task->c && ngn->c) {
             entry->task->c->current_thread = ngn->c->current_thread;
+        }
+        if (entry->task->engine == ngn) {
+            /* If an engine pushes its own base task, and then pulls
+             * it back to itself again, it needs to be thawed.
+             */
+            h2_task_thaw(entry->task);
         }
         return APR_SUCCESS;
     }
