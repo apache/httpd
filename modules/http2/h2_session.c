@@ -1785,7 +1785,7 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(),
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03401)
                           "h2_session(%ld): conn error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -1802,7 +1802,7 @@ static void h2_session_ev_proto_error(h2_session *session, int arg, const char *
             break;
         
         default:
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(),
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03402)
                           "h2_session(%ld): proto error -> shutdown", session->id);
             h2_session_shutdown(session, arg, msg, 0);
             break;
@@ -2122,7 +2122,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                     }
                     else {
                         ap_log_cerror( APLOG_MARK, APLOG_DEBUG, status, c,
-				      APLOGNO(),
+				      APLOGNO(03403)
                                       "h2_session(%ld): idle, no data, error", 
                                       session->id);
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "timeout");
@@ -2289,7 +2289,7 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else {
                     ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, c,
-				  APLOGNO(),
+				  APLOGNO(03404)
                                   "h2_session(%ld): waiting on conditional",
                                   session->id);
                     h2_session_shutdown(session, H2_ERR_INTERNAL_ERROR, 
