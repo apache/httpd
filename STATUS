@@ -148,12 +148,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      argument to the APACHE_MODULE macro, as a comma separated list
      trunk patch: http://svn.apache.org/r1749658
      2.4.x: trunk patch works
+            http://apaste.info/iyv
      +1: wrowe, jim
      
   *) configure: Simplify, and correct dependency handling of mod_proxy_hcheck
      trunk patch: http://svn.apache.org/r1749659
                   http://svn.apache.org/r1749678
      2.4.x: trunk patch works
+            http://apaste.info/iyv 
      +1: wrowe, jim
      
 PATCHES/ISSUES THAT ARE BEING WORKED
