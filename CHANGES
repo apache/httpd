@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_proxy_http2: improved retry behaviour when encountering timed out
-     or shut down connections. [Stefan Eissing] 
-
   *) mod_sed: Fix 'x' command processing. [Christophe Jaillet]
 
   *) core: Drop an invalid Last-Modified header value coming
