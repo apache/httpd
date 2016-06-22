@@ -116,12 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) configure: Simplify, and correct dependency handling of mod_proxy_hcheck
-     trunk patch: http://svn.apache.org/r1749659
-                  http://svn.apache.org/r1749678
-     2.4.x: trunk patch works
-            http://apaste.info/iyv
-     +1: wrowe, jim, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
