@@ -442,7 +442,7 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
     
     /* If the passed brigade is not empty, save it before return */
     if (!APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(),
                       "h2_task(%s): could not write all, saving brigade", 
                       task->id);
         if (!task->output.bb) {
@@ -806,7 +806,7 @@ apr_status_t h2_task_freeze(h2_task *task)
 {   
     if (!task->frozen) {
         task->frozen = 1;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(), 
                       "h2_task(%s), frozen", task->id);
     }
     return APR_SUCCESS;
@@ -816,7 +816,7 @@ apr_status_t h2_task_thaw(h2_task *task)
 {
     if (task->frozen) {
         task->frozen = 0;
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(), 
                       "h2_task(%s), thawed", task->id);
     }
     task->detached = 1;
