@@ -158,6 +158,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
+  *) mod_sed: Fix 'x' command processing
+     trunk patch: http://svn.apache.org/r1749401
+                  http://svn.apache.org/r1749404 (CHANGES entry)
+     2.4.x: trunk patch works
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
