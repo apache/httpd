@@ -360,13 +360,14 @@ AC_DEFUN([APACHE_MODULE],[
     dnl that may disable it because of missing dependencies.
     ifelse([$6$7],,:,
            [AC_MSG_RESULT([checking dependencies])
-            ifelse([$7],,:,[if test "$enable_$7" = "no" ; then
+            ifelse([$7],,:,[m4_foreach([prereq],[$7],
+                           [if test "$enable_[]prereq" = "no" ; then
                               enable_$1=no
-                              AC_MSG_WARN("mod_$7 is disabled but required for mod_$1")
-                            elif test "$enable_$1" = "static" && test "$enable_$7" != "static" ; then
+                              AC_MSG_WARN("mod_[]prereq is disabled but required for mod_$1")
+                            elif test "$enable_$1" = "static" && test "$enable_[]prereq" != "static" ; then
                               enable_$1=no
-                              AC_MSG_WARN("cannot build mod_$1 statically if mod_$7 is built shared")
-                            else])
+                              AC_MSG_WARN("cannot build mod_$1 statically if mod_[]prereq is built shared")
+                            el])se])
             ifelse([$6],,:,[  $6])
             ifelse([$7],,:,[fi])
             AC_MSG_CHECKING(whether to enable mod_$1)
