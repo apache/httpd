@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.23
 
+  *) configure: Fix rare potential configure failure around
+     dependencies and mod_proxy_hcheck. [William Rowe]
 
 Changes with Apache 2.4.22
 
