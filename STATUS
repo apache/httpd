@@ -155,7 +155,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      of only 'few' or 'none' as fatal, but continue the ./configure
      Submitted by: trawick [Add to CHANGES credit]
      trunk patch: http://svn.apache.org/r1396440 [only the acinclude.m4 edit]
-     +1 wrowe
+     2.4.x: trunk patch to acinclude.m4 works (modules/arch/unix patch is N/A)
+     +1: wrowe
+
+  *) mod_watchdog: Enable at --enable-modules=most for mod_proxy_hcheck
+     trunk patch: http://svn.apache.org/viewvc?rev=1749924&view=rev
+     2.4.x: trunk patch works
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
