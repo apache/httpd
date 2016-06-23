@@ -151,6 +151,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: jailletc36
 
+  *) configure: Do not treat dependency exceptions with --enable-modules
+     of only 'few' or 'none' as fatal, but continue the ./configure
+     Submitted by: trawick [Add to CHANGES credit]
+     trunk patch: http://svn.apache.org/r1396440 [only the acinclude.m4 edit]
+     +1 wrowe
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
