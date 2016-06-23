@@ -68,14 +68,7 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
 ])
 
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , ,[
-  $proxy_mods_enable
-  dnl Verify that both proxy_mods_enable above and watchdog below are enabled
-  dnl when --enable-proxy-hcheck isn't explicitly elected
-  if test "$enable_watchdog" = "no"; then
-    enable_proxy_hcheck="";
-  fi
-], , [proxy,watchdog])
+APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , $proxy_mods_enable,, [proxy,watchdog])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
