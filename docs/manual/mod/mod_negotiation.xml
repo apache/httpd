@@ -296,7 +296,7 @@ ForceLanguagePriority Fallback
 
 <directivesynopsis>
 <name>LanguagePriority</name>
-<description>The precendence of language variants for cases where
+<description>The precedence of language variants for cases where
 the client does not express a preference</description>
 <syntax>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
 ...</syntax>
