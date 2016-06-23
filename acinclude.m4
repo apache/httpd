@@ -365,8 +365,8 @@ AC_DEFUN([APACHE_MODULE],[
                               enable_$1=no
                               AC_MSG_WARN("mod_[]prereq is disabled but required for mod_$1")
                             elif test "$enable_$1" = "static" && test "$enable_[]prereq" != "static" ; then
-                              enable_$1=no
-                              AC_MSG_WARN("cannot build mod_$1 statically if mod_[]prereq is built shared")
+                              enable_$1=shared
+                              AC_MSG_WARN("building mod_$1 shared because mod_[]prereq is built shared")
                             el])se])
             ifelse([$6],,:,[  $6])
             ifelse([$7],,:,[fi])
