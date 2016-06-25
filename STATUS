@@ -116,6 +116,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) configure: Do not treat dependency exceptions with --enable-modules
+     of only 'few' or 'none' as fatal, but continue the ./configure
+     Submitted by: trawick [Add to CHANGES credit]
+     trunk patch: http://svn.apache.org/r1396440 [only the acinclude.m4 edit]
+     2.4.x: trunk patch to acinclude.m4 works (modules/arch/unix patch is N/A)
+     +1: wrowe, rpluem, ylavic
+
+  *) mod_watchdog: Enable at --enable-modules=most for mod_proxy_hcheck
+     trunk patch: http://svn.apache.org/viewvc?rev=1749924&view=rev
+     2.4.x: trunk patch works
+     +1: wrowe, rpluem, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -150,18 +162,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1749404 (CHANGES entry)
      2.4.x: trunk patch works
      +1: jailletc36
-
-  *) configure: Do not treat dependency exceptions with --enable-modules
-     of only 'few' or 'none' as fatal, but continue the ./configure
-     Submitted by: trawick [Add to CHANGES credit]
-     trunk patch: http://svn.apache.org/r1396440 [only the acinclude.m4 edit]
-     2.4.x: trunk patch to acinclude.m4 works (modules/arch/unix patch is N/A)
-     +1: wrowe, rpluem
-
-  *) mod_watchdog: Enable at --enable-modules=most for mod_proxy_hcheck
-     trunk patch: http://svn.apache.org/viewvc?rev=1749924&view=rev
-     2.4.x: trunk patch works
-     +1: wrowe, rpluem
 
   *) mpm_event/worker: fix MaxSpareThreads lower bound (follow up to /
      consistent with MinSpareThreads' change in r1748336 from 2.4.21)
