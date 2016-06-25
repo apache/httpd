@@ -207,6 +207,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x Patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
                   plus CHANGES above.
      +1: wrowe
+     ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
+             original commit (2009), we should probably include these changes.
 
 
 PATCHES/ISSUES THAT ARE STALLED
