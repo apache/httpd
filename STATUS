@@ -209,6 +209,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: wrowe
      ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
              original commit (2009), we should probably include these changes.
+             I'm thinking of r1642857 and r1670324 from 2.4.x, which should
+             result in:
+               http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
+             or from the patch from attachment id 30144 above:
+               http://home.apache.org/~ylavic/patches/mod_proxy_connect-id30144_vs_r1670324.diff
 
 
 PATCHES/ISSUES THAT ARE STALLED
