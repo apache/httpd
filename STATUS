@@ -163,6 +163,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: wrowe, rpluem
 
+  *) mpm_event/worker: fix MaxSpareThreads lower bound (follow up to /
+     consistent with MinSpareThreads' change in r1748336 from 2.4.21)
+     trunk patch: http://svn.apache.org/r1750218
+     2.4.x: trunk works
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
