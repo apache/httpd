@@ -3145,10 +3145,16 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         ap_daemons_limit = num_buckets;
     if (ap_daemons_to_start < num_buckets)
         ap_daemons_to_start = num_buckets;
+    /* We want to create as much children at a time as the number of buckets,
+     * so to optimally accept connections (evenly distributed accross buckets).
+     * Thus min_spare_threads should at least maintain num_buckets children,
+     * and max_spare_threads allow num_buckets more children w/o triggering
+     * immediately (e.g. num_buckets idle threads margin, one per bucket).
+     */
     if (min_spare_threads < threads_per_child * (num_buckets - 1) + num_buckets)
         min_spare_threads = threads_per_child * (num_buckets - 1) + num_buckets;
-    if (max_spare_threads < min_spare_threads + threads_per_child * num_buckets)
-        max_spare_threads = min_spare_threads + threads_per_child * num_buckets;
+    if (max_spare_threads < min_spare_threads + (threads_per_child + 1) * num_buckets)
+        max_spare_threads = min_spare_threads + (threads_per_child + 1) * num_buckets;
 
     /* If we're doing a graceful_restart then we're going to see a lot
      * of children exiting immediately when we get into the main loop
