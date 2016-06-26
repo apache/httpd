@@ -3,7 +3,7 @@
 Changes with Apache 2.4.23
 
   *) configure: Fix ./configure edge-case failures around dependencies
-     of mod_proxy_hcheck. [William Rowe, Ruediger Pluem]
+     of mod_proxy_hcheck. [William Rowe, Ruediger Pluem, Jeff Trawick]
 
 Changes with Apache 2.4.22
 
