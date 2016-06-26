@@ -116,11 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_watchdog: Enable at --enable-modules=most for mod_proxy_hcheck
-     trunk patch: http://svn.apache.org/viewvc?rev=1749924&view=rev
-     2.4.x: trunk patch works
-     +1: wrowe, rpluem, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
