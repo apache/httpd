@@ -351,7 +351,7 @@ AC_DEFUN([APACHE_MODULE],[
       ;;
   esac
   if test "$enable_$1" = "static" -o "$enable_$1" = "shared"; then
-    ;
+    :
   elif test "$enable_$1" = "yes"; then
     enable_$1=$module_default
   elif test "$enable_$1" = "few"; then
