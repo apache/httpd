@@ -1399,6 +1399,7 @@ static apr_status_t connection_cleanup(void *theconn)
     return APR_SUCCESS;
 }
 
+/* DEPRECATED */
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
                                                             request_rec *r)
 {
