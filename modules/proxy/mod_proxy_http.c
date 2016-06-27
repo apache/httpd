@@ -1994,12 +1994,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                               worker, r->server)) != OK)
         goto cleanup;
 
-
     backend->is_ssl = is_ssl;
-
-    if (is_ssl) {
-        ap_proxy_ssl_connection_cleanup(backend, r);
-    }
 
     /*
      * In the case that we are handling a reverse proxy connection and this
