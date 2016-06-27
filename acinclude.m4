@@ -375,6 +375,8 @@ AC_DEFUN([APACHE_MODULE],[
             "$force_$1" != "no" ; then
       enable_$1=$module_default
       _apmod_extra_msg=" ($module_selection)"
+  else
+     enable_$1=no
   fi
   if test "$enable_$1" != "no"; then
     dnl If we plan to enable it, allow the module to run some autoconf magic
