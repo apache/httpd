@@ -2768,7 +2768,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                              proxy_function);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03408)
                              "%s: reusable backend connection is not empty: "
                              "forcibly closed", proxy_function);
                 connected = 0;
