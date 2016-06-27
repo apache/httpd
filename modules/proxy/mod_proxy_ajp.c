@@ -783,6 +783,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             break;
 
         /* Step Two: Make the Connection */
+        ap_proxy_check_backend(scheme, backend, r->server, 1);
         if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00896)
                           "failed to make connection to backend: %s",

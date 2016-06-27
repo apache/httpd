@@ -935,6 +935,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
      */  
     backend->close = 1;
     if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+        ap_proxy_check_backend(FCGI_SCHEME, backend, r->server, 1);
         backend->close = 0;
     }
 
