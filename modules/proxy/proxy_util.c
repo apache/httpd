@@ -2525,8 +2525,7 @@ static int get_socket_connected(apr_socket_t *socket)
 
 }
 #else
-static int is_socket_connnected(apr_socket_t *socket)
-
+static int get_socket_connnected(apr_socket_t *socket)
 {
     apr_size_t buffer_len = 1;
     char test_buffer[1];
