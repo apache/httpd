@@ -350,20 +350,29 @@ AC_DEFUN([APACHE_MODULE],[
       _apmod_required="no"
       ;;
   esac
-  if test "$enable_$1" = "static"; then
-    enable_$1=static
+  if test "$enable_$1" = "static" -o "$enable_$1" = "shared"; then
+    ;
   elif test "$enable_$1" = "yes"; then
     enable_$1=$module_default
+  elif test "$enable_$1" = "few"; then
+    if test "$module_selection" = "few" -o "$module_selection" = "most" -o \
+            "$module_selection" = "all" -o "$module_selection" = "reallyall"
+    then
+      enable_$1=$module_default
+    else
+      enable_$1=no
+    fi
+    _apmod_extra_msg=" ($module_selection)"
   elif test "$enable_$1" = "most"; then
     if test "$module_selection" = "most" -o "$module_selection" = "all" -o \
             "$module_selection" = "reallyall"
     then
       enable_$1=$module_default
-    elif test "$module_selection" = "few" -o "$module_selection" = "none"; then
+    else
       enable_$1=no
     fi
     _apmod_extra_msg=" ($module_selection)"
-  elif test "$enable_$1" = "maybe-all"; then
+  elif test "$enable_$1" = "all" -o "$enable_$1" = "maybe-all"; then
     if test "$module_selection" = "all" -o "$module_selection" = "reallyall"
     then
       enable_$1=$module_default
@@ -371,12 +380,15 @@ AC_DEFUN([APACHE_MODULE],[
     else
       enable_$1=no
     fi
-  elif test "$enable_$1" = "no" -a "$module_selection" = "reallyall" -a \
-            "$force_$1" != "no" ; then
+  elif test "$enable_$1" = "reallyall" -o "$enable_$1" = "no" ; then
+    if test "$module_selection" = "reallyall" -a "$force_$1" != "no" ; then
       enable_$1=$module_default
       _apmod_extra_msg=" ($module_selection)"
+    else
+      enable_$1=no
+    fi
   else
-     enable_$1=no
+    enable_$1=no
   fi
   if test "$enable_$1" != "no"; then
     dnl If we plan to enable it, allow the module to run some autoconf magic
