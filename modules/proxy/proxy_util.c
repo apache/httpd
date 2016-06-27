@@ -2487,7 +2487,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 #endif
 
 #if USE_ALTERNATE_IS_CONNECTED && defined(APR_MSG_PEEK)
-PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
+static int get_socket_connected(apr_socket_t *socket)
 {
     apr_pollfd_t pfds[1];
     apr_status_t status;
@@ -2514,7 +2514,7 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
         status = apr_socket_recvfrom(&unused, socket, APR_MSG_PEEK,
                                      &buf[0], &len);
         if (status == APR_SUCCESS && len)
-            return 1;
+            return 2;
         else
             return 0;
     }
@@ -2525,7 +2525,7 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
 
 }
 #else
-PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
+static int is_socket_connnected(apr_socket_t *socket)
 
 {
     apr_size_t buffer_len = 1;
@@ -2544,12 +2544,19 @@ PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
         || APR_STATUS_IS_ECONNRESET(socket_status)) {
         return 0;
     }
+    else if (status == APR_SUCCESS && buffer_len) {
+        return 2;
+    }
     else {
         return 1;
     }
 }
 #endif /* USE_ALTERNATE_IS_CONNECTED */
 
+PROXY_DECLARE(int) ap_proxy_is_socket_connected(apr_socket_t *socket)
+{
+    return get_socket_connected(socket) != 0;
+}
 
 /*
  * Send a HTTP CONNECT request to a forward proxy.
@@ -2716,7 +2723,35 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
-        if (!(connected = ap_proxy_is_socket_connected(conn->sock))) {
+        conn_rec *c = conn->connection;
+        if (!c) {
+            connected = get_socket_connected(conn->sock);
+        }
+        else {
+            if (conn->tmp_bb == NULL) {
+                conn->tmp_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+            }
+            rv = ap_get_brigade(c->input_filters, conn->tmp_bb,
+                                AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
+            if (rv == APR_SUCCESS) {
+                apr_off_t len = 0;
+                apr_brigade_length(conn->tmp_bb, 0, &len);
+                if (len) {
+                    connected = 2;
+                }
+                else {
+                    connected = 1;
+                }
+            }
+            else if (APR_STATUS_IS_EAGAIN(rv)) {
+                connected = 1;
+            }
+            else {
+                connected = 0;
+            }
+            apr_brigade_cleanup(conn->tmp_bb);
+        }
+        if (connected != 1) {
             /* This clears conn->scpool (and associated data), so backup and
              * restore any ssl_hostname for this connection set earlier by
              * ap_proxy_determine_connection().
@@ -2728,9 +2763,17 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             }
 
             socket_cleanup(conn);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
-                         "%s: backend socket is disconnected.",
-                         proxy_function);
+            if (!connected) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
+                             "%s: backend socket is disconnected.",
+                             proxy_function);
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                             "%s: reusable backend connection is not empty: "
+                             "forcibly closed", proxy_function);
+                connected = 0;
+            }
 
             if (ssl_hostname[0]) {
                 conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
