@@ -168,13 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: https://raw.githubusercontent.com/wrowe/patches/master/proxy-noforce-2.4.x.patch
      +1: wrowe
 
-  *) mod_proxy: don't reuse backend connections with data available before the
-     request is sent.  PR 57832.
-     trunk patch: http://svn.apache.org/r1750301
-                  http://svn.apache.org/r1750305
-                  http://svn.apache.org/r1750311
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_proxy-reuse_empty_only.patch
-
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
