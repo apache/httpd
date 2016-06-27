@@ -2,8 +2,6 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(proxy)
 
-set | grep -E "^enable_" 1>&2
-
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , most)
 
