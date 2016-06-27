@@ -271,6 +271,7 @@ typedef struct {
     unsigned int inreslist:1;  /* connection in apr_reslist? */
     const char   *uds_path;    /* Unix domain socket path */
     const char   *ssl_hostname;/* Hostname (SNI) in use by SSL connection */
+    apr_bucket_brigade *tmp_bb;
 } proxy_conn_rec;
 
 typedef struct {
@@ -972,6 +973,20 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s);
+/**
+ * Check a connection to the backend
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param s       current server record
+ * @param expect_empty whether to check for empty (no data available) or not
+ * @return        APR_SUCCESS or error status (APR_ENOTEMPTY if expect_empty
+ *                is set but the connection is not empty)
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
+                                                   proxy_conn_rec *conn,
+                                                   server_rec *s,
+                                                   int expect_empty);
+
 /**
  * Make a connection to the backend
  * @param proxy_function calling proxy scheme (http, ajp, ...)

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
+     available before the request is sent.  PR 57832.  [Yann Ylavic]
+
   *) mod_sed: Fix 'x' command processing. [Christophe Jaillet]
 
   *) core: Drop an invalid Last-Modified header value coming

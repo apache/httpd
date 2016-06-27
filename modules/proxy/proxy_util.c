@@ -2699,13 +2699,81 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
 #endif
 }
 
+PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
+                                                   proxy_conn_rec *conn,
+                                                   server_rec *s,
+                                                   int expect_empty)
+{
+    apr_status_t rv;
+    
+    if (!conn->sock) {
+        return APR_ENOTSOCK;
+    }
+
+    if (conn->connection) {
+        conn_rec *c = conn->connection;
+        if (conn->tmp_bb == NULL) {
+            conn->tmp_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+        }
+        rv = ap_get_brigade(c->input_filters, conn->tmp_bb,
+                            AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
+        if (rv == APR_SUCCESS && expect_empty) {
+            apr_off_t len = 0;
+            apr_brigade_length(conn->tmp_bb, 0, &len);
+            if (len) {
+                rv = APR_ENOTEMPTY;
+            }
+        }
+        else if (APR_STATUS_IS_EAGAIN(rv)) {
+            rv = APR_SUCCESS;
+        }
+        apr_brigade_cleanup(conn->tmp_bb);
+    }
+    else if (ap_proxy_is_socket_connected(conn->sock)) {
+        rv = APR_SUCCESS;
+    }
+    else {
+        rv = APR_EPIPE;
+    }
+
+    if (rv != APR_SUCCESS) {
+        /* This clears conn->scpool (and associated data), so backup and
+         * restore any ssl_hostname for this connection set earlier by
+         * ap_proxy_determine_connection().
+         */
+        char ssl_hostname[PROXY_WORKER_RFC1035_NAME_SIZE];
+        if (!conn->ssl_hostname || PROXY_STRNCPY(ssl_hostname,
+                                                 conn->ssl_hostname)) {
+            ssl_hostname[0] = '\0';
+        }
+
+        socket_cleanup(conn);
+        if (rv != APR_ENOTEMPTY) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
+                         "%s: backend socket is disconnected.",
+                         proxy_function);
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03408)
+                         "%s: reusable backend connection is not empty: "
+                         "forcibly closed", proxy_function);
+        }
+
+        if (ssl_hostname[0]) {
+            conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
+        }
+    }
+
+    return rv;
+}
+
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,
                                             server_rec *s)
 {
     apr_status_t rv;
-    int connected = 0;
+    int connected;
     int loglevel;
     apr_sockaddr_t *backend_addr = conn->addr;
     /* the local address to use for the outgoing connection */
@@ -2715,28 +2783,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     proxy_server_conf *conf =
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
-    if (conn->sock) {
-        if (!(connected = ap_proxy_is_socket_connected(conn->sock))) {
-            /* This clears conn->scpool (and associated data), so backup and
-             * restore any ssl_hostname for this connection set earlier by
-             * ap_proxy_determine_connection().
-             */
-            char ssl_hostname[PROXY_WORKER_RFC1035_NAME_SIZE];
-            if (!conn->ssl_hostname || PROXY_STRNCPY(ssl_hostname,
-                                                     conn->ssl_hostname)) {
-                ssl_hostname[0] = '\0';
-            }
-
-            socket_cleanup(conn);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
-                         "%s: backend socket is disconnected.",
-                         proxy_function);
-
-            if (ssl_hostname[0]) {
-                conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
-            }
-        }
-    }
+    connected = (ap_proxy_check_backend(proxy_function, conn,
+                                        s, 0) == APR_SUCCESS);
     while ((backend_addr || conn->uds_path) && !connected) {
 #if APR_HAVE_SYS_UN_H
         if (conn->uds_path)
