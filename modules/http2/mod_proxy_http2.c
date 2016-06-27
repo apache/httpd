@@ -520,11 +520,6 @@ run_connect:
     }
 
     ctx->p_conn->is_ssl = ctx->is_ssl;
-    if (ctx->is_ssl) {
-        /* If there is still some data on an existing ssl connection, now
-         * would be a good timne to get rid of it. */
-        ap_proxy_ssl_connection_cleanup(ctx->p_conn, ctx->rbase);
-    }
 
     /* Step One: Determine the URL to connect to (might be a proxy),
      * initialize the backend accordingly and determine the server 
