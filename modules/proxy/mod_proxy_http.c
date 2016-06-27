@@ -1253,7 +1253,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     const char *buf;
     char keepchar;
     apr_bucket *e;
-    apr_bucket_brigade *bb, *tmp_bb;
+    apr_bucket_brigade *bb;
     apr_bucket_brigade *pass_bb;
     int len, backasswards;
     int interim_response = 0; /* non-zero whilst interim 1xx responses
@@ -1306,16 +1306,17 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     backend->r->proxyreq = PROXYREQ_RESPONSE;
     apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
                    origin->local_addr->port));
-    tmp_bb = apr_brigade_create(p, c->bucket_alloc);
     do {
         apr_status_t rc;
 
         apr_brigade_cleanup(bb);
 
-        rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), backend->r, 0, &len);
+        rc = ap_proxygetline(backend->tmp_bb, buffer, sizeof(buffer),
+                             backend->r, 0, &len);
         if (len == 0) {
             /* handle one potential stray CRLF */
-            rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), backend->r, 0, &len);
+            rc = ap_proxygetline(backend->tmp_bb, buffer, sizeof(buffer),
+                                 backend->r, 0, &len);
         }
         if (len <= 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(01102)
