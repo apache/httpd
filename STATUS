@@ -168,6 +168,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: https://raw.githubusercontent.com/wrowe/patches/master/proxy-noforce-2.4.x.patch
      +1: wrowe
 
+  *) Account for explicit enable- cases of 'shared', 'few', 'all', 'reallyall',
+     ensure all unrecognized --enable-foo=values mean *no*.
+     Backport: r1750335, r1750407, r1750420
+     Trunk patch: http://svn.apache.org/r1750335
+                  http://svn.apache.org/r1750407
+                  http://svn.apache.org/r1750420
+     2.4.x patch: Trunk applies
+     +1: wrowe 
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
