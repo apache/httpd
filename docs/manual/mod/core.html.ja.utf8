@@ -2758,7 +2758,7 @@ or specified mutexes</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the REDIRECT_URL environment variable is 
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>

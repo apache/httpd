@@ -236,8 +236,8 @@ más arriba cómo puede solucionar este problema.</div>
     <p>En las arquitecturas que usan un <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> en disco, existe la
     posibilidad de que se corrompan los scoreboards. Esto puede hacer
     que se produzca el error "bind: Address already in use"
-    (despuás de usar<code>HUP</code>) o el error "long lost child
-    came home!"  (despuás de usar <code>USR1</code>). En el
+    (después de usar<code>HUP</code>) o el error "long lost child
+    came home!"  (después de usar <code>USR1</code>). En el
     primer caso se trata de un error irrecuperable, mientras que en el
     segundo, solo ocurre que el servidor pierde un slot del
     scoreboard. Por lo tanto, sería aconsejable usar reinicios
@@ -259,7 +259,7 @@ más arriba cómo puede solucionar este problema.</div>
     cliente KeepAlive ha de esperar que estas cosas pasen debido a los
     retardos de red y a los timeouts que a veces dan los
     servidores. En la practica, parece que no afecta a nada más
-    -- en una sesión de pruebas, un servidor se reinició
+    en una sesión de pruebas, un servidor se reinició
     veinte veces por segundo y los clientes pudieron navegar sin
     problemas por el sitio web sin encontrar problemas ni para
     descargar una sola imagen ni encontrar un solo enlace roto. </p>

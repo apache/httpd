@@ -787,7 +787,7 @@ header</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketasync">ProxyWebsocketAsync ON|OFF</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to try to create an asynchronous tunnel</td></tr>
 <tr><td><a href="mod_proxy_wstunnel.html#proxywebsocketasyncdelay">ProxyWebsocketAsyncDelay <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the amount of time the tunnel waits synchronously for data</td></tr>
 <tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketidletimeout">ProxyWebsocketIdleTimeout <var>num</var>[ms]</a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the maximum amount of time to wait for data on the websockets tunnel</td></tr>
-<tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL ON|OFF</a></td><td> OFF </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls whether the REDIRECT_URL environment variable is 
+<tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL ON|OFF</a></td><td> OFF </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">インデックス一覧の最後に挿入されるファイルの名前</td></tr>
 <tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP 受信バッファサイズ</td></tr>
