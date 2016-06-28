@@ -117,15 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) Account for explicit enable- cases of 'shared', 'few', 'all', 'reallyall',
-     ensure all unrecognized --enable-foo=values mean *no*.
-     Backport: r1750335, r1750407, r1750420
-     Trunk patch: http://svn.apache.org/r1750335
-                  http://svn.apache.org/r1750407
-                  http://svn.apache.org/r1750420
-     2.4.x patch: Trunk applies
-     +1: wrowe, rpluem, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
