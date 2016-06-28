@@ -2782,7 +2782,7 @@ On Windows, from Apache 2.3.3 and later.</td></tr>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a>-<a name="qualifyredirecturl" id="qualifyredirecturl">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Controls whether the REDIRECT_URL environment variable is
-fully qualified</td></tr>
+             fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
