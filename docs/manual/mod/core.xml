@@ -3669,7 +3669,7 @@ directory</description>
     <p>Normally, if multiple <directive>Options</directive> could
     apply to a directory, then the most specific one is used and
     others are ignored; the options are not merged. (See <a
-    href="../sections.html#mergin">how sections are merged</a>.)
+    href="../sections.html#merging">how sections are merged</a>.)
     However if <em>all</em> the options on the
     <directive>Options</directive> directive are preceded by a
     <code>+</code> or <code>-</code> symbol, the options are
