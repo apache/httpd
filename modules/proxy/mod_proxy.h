@@ -271,7 +271,10 @@ typedef struct {
     unsigned int inreslist:1;  /* connection in apr_reslist? */
     const char   *uds_path;    /* Unix domain socket path */
     const char   *ssl_hostname;/* Hostname (SNI) in use by SSL connection */
-    apr_bucket_brigade *tmp_bb;
+    apr_bucket_brigade *tmp_bb;/* Temporary brigade created with the connection
+                                * and its scpool/bucket_alloc (NULL before),
+                                * must be left cleaned when used (locally).
+                                */
 } proxy_conn_rec;
 
 typedef struct {
