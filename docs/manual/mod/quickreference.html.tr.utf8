@@ -552,7 +552,7 @@ extensions</td></tr>
 istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
 </td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
-...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The precendence of language variants for cases where
+...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The precedence of language variants for cases where
 the client does not express a preference</td></tr>
 <tr><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of entries in the primary LDAP cache</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
