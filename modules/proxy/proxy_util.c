@@ -2738,7 +2738,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
         rv = APR_EPIPE;
     }
 
-    if (rv != APR_SUCCESS && rv != APR_ENOTSOCK) {
+    if (rv != APR_SUCCESS && conn->sock) {
         /* This clears conn->scpool (and associated data), so backup and
          * restore any ssl_hostname for this connection set earlier by
          * ap_proxy_determine_connection().
@@ -2764,36 +2764,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
 
         if (ssl_hostname[0]) {
             conn->ssl_hostname = apr_pstrdup(conn->scpool, ssl_hostname);
-        }
-    }
-
-    if (rv != APR_NOTFOUND) {
-        /*
-         * Put the entire worker to error state if
-         * the PROXY_WORKER_IGNORE_ERRORS flag is not set.
-         * Although some connections may be alive
-         * no further connections to the worker could be made
-         */
-        if (rv != APR_SUCCESS && rv != APR_ENOTEMPTY) {
-            if (!(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
-                worker->s->error_time = apr_time_now();
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00959)
-                    "ap_proxy_connect_backend disabling worker for (%s) for %"
-                    APR_TIME_T_FMT "s",
-                    worker->s->hostname, apr_time_sec(worker->s->retry));
-            }
-        }
-        else {
-            if (worker->s->retries) {
-                /*
-                 * A worker came back. So here is where we need to
-                 * either reset all params to initial conditions or
-                 * apply some sort of aging
-                 */
-            }
-            worker->s->error_time = 0;
-            worker->s->retries = 0;
         }
     }
 
@@ -2992,6 +2962,47 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 }
             }
         }
+    }
+
+    if (PROXY_WORKER_IS_USABLE(worker)) {
+        /*
+         * Put the entire worker to error state if
+         * the PROXY_WORKER_IGNORE_ERRORS flag is not set.
+         * Although some connections may be alive
+         * no further connections to the worker could be made
+         */
+        if (rv != APR_SUCCESS) {
+            if (!(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
+                worker->s->error_time = apr_time_now();
+                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00959)
+                    "ap_proxy_connect_backend disabling worker for (%s) for %"
+                    APR_TIME_T_FMT "s",
+                    worker->s->hostname, apr_time_sec(worker->s->retry));
+            }
+        }
+        else {
+            if (worker->s->retries) {
+                /*
+                 * A worker came back. So here is where we need to
+                 * either reset all params to initial conditions or
+                 * apply some sort of aging
+                 */
+            }
+            worker->s->error_time = 0;
+            worker->s->retries = 0;
+        }
+    }
+    else {
+        /*
+         * The worker is in error likely done by a different thread / process
+         * e.g. for a timeout or bad status. We should respect this and should
+         * not continue with a connection via this worker even if we got one.
+         */
+        if (rv == APR_SUCCESS) {
+            socket_cleanup(conn);
+        }
+        rv = APR_NOTFOUND;
     }
 
     return rv == APR_SUCCESS ? OK : DECLINED;
