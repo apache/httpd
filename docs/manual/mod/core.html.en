@@ -423,7 +423,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     </div>
 
     <p>When this directive is set to <code>None</code> and <code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> is set to
-    <code>None</code> <a href="#accessfilename">.htaccess</a>, files are
+    <code>None</code>, <a href="#accessfilename">.htaccess</a> files are
     completely ignored. In this case, the server will not even attempt
     to read <code>.htaccess</code> files in the filesystem.</p>
 
@@ -508,8 +508,8 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       Allow use of the directives controlling specific directory
       features (<code class="directive"><a href="#options">Options</a></code> and
       <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).
-      An equal sign may be given followed by a comma-separated list, without spaces,
-      of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.
+      An equal sign may be given followed by a comma-separated list, without
+      spaces, of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.
 
       <div class="note"><h3>Implicit disabling of Options</h3>
       <p>Even though the list of options that may be used in .htaccess files
@@ -843,7 +843,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that apply only to the
 named file-system directory, sub-directories, and their contents.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Directory "<var>directory-path</var>"&gt;
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1015,7 +1015,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
@@ -1616,7 +1616,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ re
 
     <p>This would result in error messages such as:</p>
 
-	<div class="example"><p><code>
+    <div class="example"><p><code>
     [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </code></p></div>
 
@@ -1750,7 +1750,7 @@ earlier.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply to matched
 filenames</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Files "<var>filename</var>"&gt; ... &lt;/Files&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1823,7 +1823,7 @@ filenames</td></tr>
     does. However, it accepts a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>. For example:</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;</pre>
 
@@ -1841,7 +1841,7 @@ filenames</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
@@ -2651,7 +2651,7 @@ from the client</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applies the enclosed directives only to matching
 URLs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Location
-    "<var>URL-path</var>|<var>URL</var>"&gt; ... &lt;/Location&gt;</code></td></tr>
+    <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2818,7 +2818,7 @@ matching URLs</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
@@ -3027,9 +3027,9 @@ LogLevel info ssl_module:warn</pre>
 
     <div class="note">
         Per directory loglevel configuration only affects messages that are
-	logged after the request has been parsed and that are associated with
-	the request. Log messages which are associated with the connection or
-	the server are not affected.
+        logged after the request has been parsed and that are associated with
+        the request. Log messages which are associated with the connection or
+        the server are not affected.
     </div>
 
 <h3>See also</h3>
@@ -3177,8 +3177,8 @@ resource </td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.11 and later</td></tr>
 </table>
     <p>This directive controls whether HTTP trailers are copied into the
-    internal representation of HTTP headers. This merging occurs when the 
-    request body has been completely consumed, long after most header 
+    internal representation of HTTP headers. This merging occurs when the
+    request body has been completely consumed, long after most header
     processing would have a chance to examine or modify request headers.</p>
     <p>This option is provided for compatibility with releases prior to 2.4.11,
     where trailers were always merged.</p>
@@ -3534,7 +3534,7 @@ directory</td></tr>
 
     <p>Normally, if multiple <code class="directive">Options</code> could
     apply to a directory, then the most specific one is used and
-    others are ignored; the options are not merged. (See <a href="../sections.html#mergin">how sections are merged</a>.)
+    others are ignored; the options are not merged. (See <a href="../sections.html#merging">how sections are merged</a>.)
     However if <em>all</em> the options on the
     <code class="directive">Options</code> directive are preceded by a
     <code>+</code> or <code>-</code> symbol, the options are
@@ -3608,7 +3608,8 @@ On Windows, from Apache 2.3.3 and later.</td></tr>
        otherwise, <code>http</code> is assumed for port 80 and <code>https</code>
        for port 443.</p>
 
-    <p>For example, if you are running <code>https</code> on a non-standard port, specify the protocol explicitly:</p>
+    <p>For example, if you are running <code>https</code> on a non-standard port,
+       specify the protocol explicitly:</p>
 
     <pre class="prettyprint lang-config">Protocol https</pre>
 
@@ -3698,7 +3699,7 @@ On Windows, from Apache 2.3.3 and later.</td></tr>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is
-fully qualified</td></tr>
+             fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
@@ -3987,7 +3988,7 @@ to name-virtual hosts</td></tr>
     (nor for ServerName vs. ServerAlias).  </p>
 
     <p>The complete list of names in the <code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code>
-    directive are treated just like a (non wildcard) 
+    directive are treated just like a (non wildcard)
     <code class="directive">ServerAlias</code>.</p>
 
 
@@ -4038,7 +4039,7 @@ itself</td></tr>
     server attempts to deduce the client visible hostname by first asking 
     the operating system for the system hostname, and if that fails, 
     performing a reverse lookup on an IP address present on the system.</p>
-    
+
     <p>If no port is specified in the
     <code class="directive">ServerName</code>, then the server will use the
     port from the incoming request. For optimal reliability and
