@@ -117,17 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) mod_proxy: Replace the logic for selecting proxy sub-modules, retaining
-     the 2.4.x legacy behavior, by elevating the module selection to 'most'
-     through all proxy_* sub-module configuration tests, and apply the same
-     static or shared linkage of mod_proxy to each sub-module not otherwise
-     explicitly marked static or shared. By dropping the default 'yes' toggle,
-     this patch ensures we will no longer abort the configuration when failing
-     to enable a module for missing dependencies.
-     trunk patch: http://svn.apache.org/r1750043
-     2.4.x: https://raw.githubusercontent.com/wrowe/patches/master/proxy-noforce-2.4.x.patch
-     +1: wrowe, rpluem, ylavic
-
   *) Account for explicit enable- cases of 'shared', 'few', 'all', 'reallyall',
      ensure all unrecognized --enable-foo=values mean *no*.
      Backport: r1750335, r1750407, r1750420
