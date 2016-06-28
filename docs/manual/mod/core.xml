@@ -860,7 +860,7 @@ named file-system directory, sub-directories, and their contents.</description>
 &lt;Directory ~ "^/www/[0-9]{3}"&gt;
 
 &lt;/Directory&gt;
-</highlight>
+    </highlight>
 
     <p>would match directories in <code>/www/</code> that consisted of
     three numbers.</p>
@@ -966,7 +966,7 @@ the contents of file-system directories matching a regular expression.</descript
 &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;
-</highlight>
+    </highlight>
 
     <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
     that consist of three numbers.</p>
@@ -992,11 +992,11 @@ the contents of file-system directories matching a regular expression.</descript
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
-</highlight>
+    </highlight>
 </usage>
 <seealso><directive type="section" module="core">Directory</directive> for
 a description of how regular expressions are mixed in with normal
@@ -1012,7 +1012,7 @@ sections are combined when a request is received</seealso>
 <description>Directory that forms the main document tree visible
 from the web</description>
 <syntax>DocumentRoot <var>directory-path</var></syntax>
-<default>DocumentRoot /usr/local/apache/htdocs</default>
+<default>DocumentRoot "/usr/local/apache/htdocs"</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -1643,7 +1643,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
 
     <p>This would result in error messages such as:</p>
 
-	<example>
+    <example>
     [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </example>
 
@@ -1814,7 +1814,7 @@ filenames</description>
 &lt;Files "?at.*"&gt;
     # This would apply to cat.html, bat.html, hat.php and so on.
 &lt;/Files&gt;
-</highlight>
+    </highlight>
     <p><glossary ref="regex">Regular expressions</glossary>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
@@ -1823,7 +1823,7 @@ filenames</description>
 &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
     #...
 &lt;/Files&gt;
-</highlight>
+    </highlight>
 
     <p>would match most common Internet graphics formats. <directive
     module="core" type="section">FilesMatch</directive> is preferred,
@@ -1859,11 +1859,11 @@ filenames</description>
     does. However, it accepts a <glossary ref="regex">regular
     expression</glossary>. For example:</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;
-</highlight>
+    </highlight>
 
     <p>would match most common Internet graphics formats.</p>
 
@@ -1878,11 +1878,11 @@ filenames</description>
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;
-</highlight>
+    </highlight>
 </usage>
 
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
@@ -2812,7 +2812,7 @@ URLs</description>
 &lt;Location ~ "/(extra|special)/data"&gt;
     #...
 &lt;/Location&gt;
-</highlight>
+    </highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>. The directive <directive
@@ -2883,7 +2883,7 @@ matching URLs</description>
 &lt;LocationMatch "/(extra|special)/data"&gt;
     # ...
 &lt;/LocationMatch&gt;
-</highlight>
+    </highlight>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>.</p>
@@ -2894,7 +2894,7 @@ matching URLs</description>
     regular expression with a <code>^</code> to require this.</p>
 
     <highlight language="config">
-    &lt;LocationMatch "^/(extra|special)/data"&gt;
+&lt;LocationMatch "^/(extra|special)/data"&gt;
     </highlight>
     </note>
 
@@ -2905,11 +2905,11 @@ matching URLs</description>
     <module>mod_rewrite</module>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
-</highlight>
+    </highlight>
 </usage>
 
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
@@ -3779,7 +3779,7 @@ Protocol https
             specify:</p>
         
         <highlight language="config">
-            Protocols h2 http/1.1
+Protocols h2 http/1.1
         </highlight>
 
         <p>Valid protocols are <code>http/1.1</code> for http and https connections,
@@ -3950,11 +3950,15 @@ scripts</description>
     by the shebang line (first line, starting with <code>#!</code>) in the
     script. On Win32 systems this line usually looks like:</p>
 
-    <highlight language="perl">#!C:/Perl/bin/perl.exe</highlight>
+    <highlight language="perl">
+#!C:/Perl/bin/perl.exe
+    </highlight>
 
     <p>or, if <code>perl</code> is in the <code>PATH</code>, simply:</p>
 
-    <highlight language="perl">#!perl</highlight>
+    <highlight language="perl">
+#!perl
+    </highlight>
 
     <p>Setting <code>ScriptInterpreterSource Registry</code> will
     cause the Windows Registry tree <code>HKEY_CLASSES_ROOT</code> to be
@@ -4852,7 +4856,7 @@ for external processing, e.g. to a CGI script.</p>
 
 <directivesynopsis>
 <name>QualifyRedirectURL</name>
-<description>Controls whether the REDIRECT_URL environment variable is 
+<description>Controls whether the REDIRECT_URL environment variable is
              fully qualified</description>
 <syntax>QualifyRedirectURL ON|OFF</syntax>
 <default>QualifyRedirectURL OFF</default>
