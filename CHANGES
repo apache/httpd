@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.23
 
+  *) mod_sed: Fix 'x' command processing. [Christophe Jaillet]
+
   *) configure: Fix ./configure edge-case failures around dependencies
      of mod_proxy_hcheck. [William Rowe, Ruediger Pluem, Jeff Trawick]
 
