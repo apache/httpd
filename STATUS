@@ -151,6 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1750507
      2.4.x: trunk patch works
      +1: wrowe
+         wrowe asks if lbmethod_heartbeat requires heartmonitor?
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
