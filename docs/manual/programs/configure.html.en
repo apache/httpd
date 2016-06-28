@@ -293,10 +293,10 @@
 
     <h4><a name="choosemodules" id="choosemodules">Choosing modules to compile</a></h4>
       <p>Most modules are compiled by default and have to be disabled
-        explicitly or by using the keywords <code>few</code> or
-        <code>none</code> (see <code>--enable-modules</code>,
-        <code>--enable-mods-shared</code> and <code>--enable-mods-static</code>
-        below for further explanation) to be removed.</p>
+        explicitly or by using the keyword <code>few</code> 
+        (see <code>--enable-modules</code>, <code>--enable-mods-shared</code>
+        and <code>--enable-mods-static</code> below for further explanation)
+        or <code>--enable-modules=none</code> to be removed as a group.</p>
 
         <p>Other modules are not compiled by default and have to be enabled
         explicitly or by using the keywords <code>all</code> or
@@ -406,7 +406,7 @@
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
           <p>Additionally you can use the special keywords <code>reallyall</code>,
-            <code>all</code>, <code>most</code>, <code>few</code> and <code>none</code>.
+            <code>all</code>, <code>most</code> and <code>few</code>.
             For example,</p>
           <div class="example"><p><code>
             --enable-mods-shared=most
