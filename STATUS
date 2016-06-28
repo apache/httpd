@@ -116,11 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_sed: Fix 'x' command processing
-     trunk patch: http://svn.apache.org/r1749401
-                  http://svn.apache.org/r1749404 (CHANGES entry)
-     2.4.x: trunk patch works
-     +1: jailletc36, rpluem, ylavic
 
   *) mod_proxy: Replace the logic for selecting proxy sub-modules, retaining
      the 2.4.x legacy behavior, by elevating the module selection to 'most'
