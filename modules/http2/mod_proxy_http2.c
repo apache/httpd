@@ -520,11 +520,20 @@ run_connect:
     }
 
     ctx->p_conn->is_ssl = ctx->is_ssl;
-    if (ctx->is_ssl) {
-        /* If there is still some data on an existing ssl connection, now
-         * would be a good timne to get rid of it. */
-        ap_proxy_ssl_connection_cleanup(ctx->p_conn, ctx->rbase);
-    }
+    if (ctx->is_ssl && ctx->p_conn->connection) {
+        /* If there are some metadata on the connection (e.g. TLS alert),
+         * let mod_ssl detect them, and create a new connection below.
+         */ 
+        apr_bucket_brigade *tmp_bb;
+        tmp_bb = apr_brigade_create(ctx->rbase->pool, 
+                                    ctx->rbase->connection->bucket_alloc);
+        status = ap_get_brigade(ctx->p_conn->connection->input_filters, tmp_bb,
+                                AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
+        if (status != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(status)) {
+            ctx->p_conn->close = 1;
+        }
+        apr_brigade_cleanup(tmp_bb);
+    }   
 
     /* Step One: Determine the URL to connect to (might be a proxy),
      * initialize the backend accordingly and determine the server 
