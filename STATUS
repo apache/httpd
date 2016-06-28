@@ -146,6 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
+  *) lbmethod(s): Fix proxy balancer lbmethod --enable defaults
+     to follow proxy_balancer
+     trunk patch: http://svn.apache.org/r1750507
+     2.4.x: trunk patch works
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
@@ -202,7 +208,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      minfrin: Yes, as you can see in the patch everything applies only
      if APR_XML_X2T_PARSED is defined, and the patch was tested with
      both apr-util v1.6 and apr-util v1.5.
-
 
 PATCHES/ISSUES THAT ARE STALLED
 
