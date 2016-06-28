@@ -146,9 +146,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
+  *) configure: Promote any static module to yes|shared if a required
+     dependency is not static
+     [Note, this isn't critical for 2.4.23, but is nice-to-have
+     to assist users who mis-combine flags in an unusual way.]
+     trunk patch: http://svn.apache.org/r1749925
+     2.4.x: trunk patch works
+     +1: wrowe
+
   *) lbmethod(s): Fix proxy balancer lbmethod --enable defaults
      to follow proxy_balancer
      trunk patch: http://svn.apache.org/r1750507
+                  http://svn.apache.org/r1750553
      2.4.x: trunk patch works
      +1: wrowe
 
