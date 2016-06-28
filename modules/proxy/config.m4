@@ -2,16 +2,22 @@ dnl modules enabled in this directory by default
 
 APACHE_MODPATH_INIT(proxy)
 
-if test "$enable_proxy" = "shared"; then
-  proxy_mods_enable=shared
-elif test "$enable_proxy" = "yes"; then
-  proxy_mods_enable=yes
-else
-  proxy_mods_enable=most
-fi
-
 proxy_objs="mod_proxy.lo proxy_util.lo"
-APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , most)
+
+dnl set aside module selections and default, and set the module default to the
+dnl same scope (shared|static) as selected for mod proxy, along with setting
+dnl the default selection to "most" for remaining proxy modules, mirroring the
+dnl behavior of 2.4.1 and later, but failing ./configure only if an explicitly
+dnl enabled module is missing its prereqs
+save_module_selection=$module_selection
+save_module_default=$module_default
+if test "$enable_proxy" != "no"; then
+    module_selection=most
+    if test "$enable_proxy" = "shared" -o "$enable_proxy" = "static"; then
+        module_default=$enable_proxy
+    fi
+fi
 
 proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
@@ -39,11 +45,11 @@ case "$host" in
     ;;
 esac
 
-APACHE_MODULE(proxy_connect, Apache proxy CONNECT module.  Requires and is enabled by --enable-proxy., $proxy_connect_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires and is enabled by --enable-proxy., $proxy_ftp_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires and is enabled by --enable-proxy., $proxy_http_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy., $proxy_fcgi_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires and is enabled by --enable-proxy., $proxy_scgi_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_connect, Apache proxy CONNECT module.  Requires --enable-proxy., $proxy_connect_objs, , most, , proxy)
+APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires --enable-proxy., $proxy_ftp_objs, , most, , proxy)
+APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires --enable-proxy., $proxy_http_objs, , most, , proxy)
+APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires --enable-proxy., $proxy_fcgi_objs, , most, , proxy)
+APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires --enable-proxy., $proxy_scgi_objs, , most, , proxy)
 APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , , [
   AC_CHECK_DECL(CMSG_DATA,,, [
     #include <sys/types.h>
@@ -54,21 +60,17 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires
     enable_proxy_fdpass=no
   fi
 ],proxy)
-APACHE_MODULE(proxy_wstunnel, Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy., $proxy_wstunnel_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --enable-proxy., $proxy_ajp_objs, , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable,, proxy)
+APACHE_MODULE(proxy_wstunnel, Apache proxy Websocket Tunnel module.  Requires --enable-proxy., $proxy_wstunnel_objs, , most, , proxy)
+APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires --enable-proxy., $proxy_ajp_objs, , most, , proxy)
+APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires --enable-proxy., $proxy_balancer_objs, , most, , proxy)
 
-APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable,, proxy)
-APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , ,[
-  $proxy_mods_enable
-  dnl Verify that both proxy_mods_enable above and watchdog below are enabled
-  dnl when --enable-proxy-hcheck isn't explicitly elected
-  if test "$enable_watchdog" = "no"; then
-    enable_proxy_hcheck="";
-  fi
-], , [proxy,watchdog])
+APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most, , proxy)
+APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , most, , [proxy,watchdog])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
+module_selection=$save_module_selection
+module_default=$save_module_default
 
 APACHE_MODPATH_FINISH
 
