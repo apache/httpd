@@ -149,13 +149,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1749401
                   http://svn.apache.org/r1749404 (CHANGES entry)
      2.4.x: trunk patch works
-     +1: jailletc36
+     +1: jailletc36, rpluem
 
   *) mpm_event/worker: fix MaxSpareThreads lower bound (follow up to /
      consistent with MinSpareThreads' change in r1748336 from 2.4.21)
      trunk patch: http://svn.apache.org/r1750218
      2.4.x: trunk works
-     +1: ylavic
+     +1: ylavic, rpluem
 
   *) mod_proxy: Replace the logic for selecting proxy sub-modules, retaining
      the 2.4.x legacy behavior, by elevating the module selection to 'most'
@@ -166,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to enable a module for missing dependencies.
      trunk patch: http://svn.apache.org/r1750043
      2.4.x: https://raw.githubusercontent.com/wrowe/patches/master/proxy-noforce-2.4.x.patch
-     +1: wrowe
+     +1: wrowe, rpluem
 
   *) Account for explicit enable- cases of 'shared', 'few', 'all', 'reallyall',
      ensure all unrecognized --enable-foo=values mean *no*.
@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1750407
                   http://svn.apache.org/r1750420
      2.4.x patch: Trunk applies
-     +1: wrowe 
+     +1: wrowe, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
