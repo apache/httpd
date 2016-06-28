@@ -1049,7 +1049,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     Require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;</pre>
 
@@ -1070,7 +1070,7 @@ sections are combined when a request is received</li>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory that forms the main document tree visible
 from the web</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DocumentRoot <var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DocumentRoot /usr/local/apache/htdocs</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DocumentRoot "/usr/local/apache/htdocs"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1650,7 +1650,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ re
 
     <p>This would result in error messages such as:</p>
 
-	<div class="example"><p><code>
+    <div class="example"><p><code>
     [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </code></p></div>
 
@@ -1857,7 +1857,7 @@ filenames</td></tr>
     does. However, it accepts a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>. For example:</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch ".+\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;</pre>
 
@@ -1875,7 +1875,7 @@ filenames</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "^(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/FilesMatch&gt;</pre>
 
@@ -2860,7 +2860,7 @@ matching URLs</td></tr>
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. In order to prevent confusion, numbered
     (unnamed) backreferences are ignored. Use named groups instead.</p>
 
-<pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
+    <pre class="prettyprint lang-config">&lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;</pre>
 
@@ -3632,7 +3632,7 @@ directory</td></tr>
 
     <p>Normally, if multiple <code class="directive">Options</code> could
     apply to a directory, then the most specific one is used and
-    others are ignored; the options are not merged. (See <a href="../sections.html#mergin">how sections are merged</a>.)
+    others are ignored; the options are not merged. (See <a href="../sections.html#merging">how sections are merged</a>.)
     However if <em>all</em> the options on the
     <code class="directive">Options</code> directive are preceded by a
     <code>+</code> or <code>-</code> symbol, the options are
@@ -3795,7 +3795,7 @@ directory</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>QualifyRedirectURL ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>QualifyRedirectURL OFF</code></td></tr>
