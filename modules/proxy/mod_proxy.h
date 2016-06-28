@@ -980,8 +980,11 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
  * @param conn    acquired connection
  * @param s       current server record
  * @param expect_empty whether to check for empty (no data available) or not
- * @return        APR_SUCCESS or error status (APR_ENOTEMPTY if expect_empty
- *                is set but the connection is not empty)
+ * @return        APR_SUCCESS or,
+ *                APR_ENOTSOCK: not connected,
+ *                APR_NOTFOUND: worker in error state (unusable),
+ *                APR_ENOTEMPTY: expect_empty set but the connection has data,
+ *                other: connection closed/aborted (remotely)
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
                                                    proxy_conn_rec *conn,
