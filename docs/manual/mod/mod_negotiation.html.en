@@ -308,7 +308,7 @@ ForceLanguagePriority Fallback</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precendence of language variants for cases where
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precedence of language variants for cases where
 the client does not express a preference</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
 ...</code></td></tr>
