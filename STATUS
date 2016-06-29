@@ -116,13 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) configure: Promote any static module to yes|shared if a required
-     dependency is not static
-     [Note, this isn't critical for 2.4.23, but is nice-to-have
-     to assist users who mis-combine flags in an unusual way.]
-     trunk patch: http://svn.apache.org/r1749925
-     2.4.x: trunk patch works
-     +1: wrowe, rpluem, jim
 
   *) lbmethod(s): Fix proxy balancer lbmethod --enable defaults
      to follow proxy_balancer
