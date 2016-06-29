@@ -138,9 +138,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works, modulo CHANGES
      +1: rjung, wrowe, ylavic
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+  *) mod_proxy: don't recyle backend announced "Connection: close" connections
+     to avoid reusing it should the close be effective after some new request
+     is ready to be sent.
+     trunk patch: http://svn.apache.org/r1678763
+                  http://svn.apache.org/r1703807
+                  http://svn.apache.org/r1703813
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy-connection_close.patch
+     +1: ylavic, rpluem, wrowe
+     ylavic: while at it, I also included r1678763 which is only an
+             optimization, but allows to keep code in sync with 2.4/trunk.
 
   *) mod_substitute: Configure patterns merge order. PR 57641
      trunk patch: http://svn.apache.org/r1684900
@@ -153,16 +160,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1697013
                   http://svn.apache.org/r1697015
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-SubstituteInheritBefore-v5.patch
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, wrowe
      rpluem: Doesn't that change the previous behaviour if SubstituteInheritBefore is not set?
      ylavic: yes thanks, updated to v5 including r1697013 and r1697015,
              the diff to v4 is:
              http://home.apache.org/~ylavic/patches/httpd-2.2.x-SubstituteInheritBefore-v4_vs_v5.diff
 
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
   *) mod_mem_cache: Don't cache incomplete responses when the client aborts the connection.
      Not applicable to trunk, mod_mem_cache doesn't exist there.
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mem_cache_client_abort-v2.patch
-     +1: ylavic
+     +1: ylavic, wrowe
      ylavic: don't we know from the very beginning of store_body() if
              r->connection->aborted, so to fail there?
      rpluem: Agreed. I guess we can move this up to line 733 before the loop.
@@ -172,20 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              error buckets instead? ISTM that EOS with no error bucket *is*
              a complete response that could be cached even if the current
              client won't receive it completely.
-     wrowe asks: Refreshed patch yet?  Will give this a week before moving to
-                 the 'stalled' section below.
-     ylavic: Above proposal in v2.
-
-  *) mod_proxy: don't recyle backend announced "Connection: close" connections
-     to avoid reusing it should the close be effective after some new request
-     is ready to be sent.
-     trunk patch: http://svn.apache.org/r1678763
-                  http://svn.apache.org/r1703807
-                  http://svn.apache.org/r1703813
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy-connection_close.patch
-     +1: ylavic, rpluem
-     ylavic: while at it, I also included r1678763 which is only an
-             optimization, but allows to keep code in sync with 2.4/trunk.
+     wrowe:  Patch looks like an improvement, would be good if you both assert
+             that this is what we will ship.
 
   *) mod_ssl: Free dhparams and ecparams reading certificates at startup.
      This fixes issue when SSLCryptoDevice does not get unregistered because
@@ -209,12 +208,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: wrowe
      ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
              original commit (2009), we should probably include these changes.
-             I'm thinking of r1642857 and r1670324 from 2.4.x, which should
-             result in:
-               http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
-             or from the patch from attachment id 30144 above:
+             I'm thinking of r1642857 and r1670324 from 2.4.x, with this delta
+             to the bz attachment 30144 patch; 
                http://home.apache.org/~ylavic/patches/mod_proxy_connect-id30144_vs_r1670324.diff
-
+     Trunk Patch: https://svn.apache.org/r1642857
+                  https://svn.apache.org/r1670324
+                  [plus patch and changes noted above]
+     2.2.x Patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
