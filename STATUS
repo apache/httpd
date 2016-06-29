@@ -170,9 +170,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_mem_cache: Don't cache incomplete responses when the client aborts the connection.
+  *) mod_mem_cache: Don't cache incomplete responses when the client aborts
+                    the connection, unless they are complete.  PR 45049.
      Not applicable to trunk, mod_mem_cache doesn't exist there.
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mem_cache_client_abort-v2.patch
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr45049.patch
      +1: ylavic, wrowe
      ylavic: don't we know from the very beginning of store_body() if
              r->connection->aborted, so to fail there?
@@ -185,6 +186,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              client won't receive it completely.
      wrowe:  Patch looks like an improvement, would be good if you both assert
              that this is what we will ship.
+     ylavic: This is a bugfix (added CHANGES entry), the improvement is upon
+             Ed's original patch (don't cache the response if the client
+             aborted the connection) where we now still cache it in any case
+             if it is complete (for immediate availability for next clients).
 
   *) mod_ssl: Free dhparams and ecparams reading certificates at startup.
      This fixes issue when SSLCryptoDevice does not get unregistered because
@@ -205,7 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk Patch: https://svn.apache.org/r813178
      2.2.x Patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
                   plus CHANGES above.
-     +1: wrowe
      ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
              original commit (2009), we should probably include these changes.
              I'm thinking of r1642857 and r1670324 from 2.4.x, with this delta
@@ -215,7 +219,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1670324
                   [plus patch and changes noted above]
      2.2.x Patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
-     +1: wrowe
+     +1: wrowe, ylavic
+
+  *) mod_mem_cache: Fix concurrent removal of stale entries which could lead
+                    to a crash. PR 43724.
+     trunk patch: not applicable (2.2.x only)
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr43724.patch
+     +1: ylavic
 
 PATCHES/ISSUES THAT ARE STALLED
 
