@@ -396,7 +396,6 @@ AC_DEFUN([APACHE_MODULE],[
       fi
       shared="";;
     *)
-      enable_$1=`echo $enable_$1|sed 's/shared,*//'`
       sharedobjs=yes
       shared=yes
       DSO_MODULES="$DSO_MODULES $1"

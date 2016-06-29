@@ -117,13 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-  *) lbmethod(s): Fix proxy balancer lbmethod --enable defaults
-     to follow proxy_balancer
-     trunk patch: http://svn.apache.org/r1750507
-                  http://svn.apache.org/r1750553
-     2.4.x: trunk patch works
-     +1: wrowe, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
