@@ -12,6 +12,9 @@ Changes with Apache 2.2.32
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.  [Yann Ylavic]
 
+  *) mod_mem_cache: Fix concurrent removal of stale entries which could lead
+     to a crash.  PR 43724.  [Yann Ylavic]
+
   *) mime.types: add common extension "m4a" for MPEG 4 Audio.
      PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
 
