@@ -116,11 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: reset client-verify state of connection when renegotiation is
-     aborted.
-     trunk patch: http://svn.apache.org/r1750779
-     2.4.x: trunk patch works
-     +1: icing, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

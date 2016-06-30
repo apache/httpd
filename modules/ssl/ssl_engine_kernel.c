@@ -727,6 +727,7 @@ int ssl_hook_Access(request_rec *r)
                      * on this connection.
                      */
                     apr_table_setn(r->notes, "ssl-renegotiate-forbidden", "verify-client");
+                    SSL_set_verify(ssl, verify_old, ssl_callback_SSLVerify);
                     return HTTP_FORBIDDEN;
                 }
                 /* optimization */

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.23
 
+  *) mod_ssl: reset client-verify state of ssl when aborting renegotiations.
+     [Erki Aring <erki@example.ee>, Stefan Eissing]
+
   *) mod_sed: Fix 'x' command processing. [Christophe Jaillet]
 
   *) configure: Fix ./configure edge-case failures around dependencies
