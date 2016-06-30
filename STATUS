@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      aborted.
      trunk patch: http://svn.apache.org/r1750779
      2.4.x: trunk patch works
-     +1: icing
+     +1: icing, jim
      
 PATCHES/ISSUES THAT ARE BEING WORKED
 
