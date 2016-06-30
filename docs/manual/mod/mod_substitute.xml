@@ -93,4 +93,25 @@
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SubstituteInheritBefore</name>
+<description>Change the merge order of inherited patterns</description>
+<syntax>SubstituteInheritBefore on|off</syntax>
+<default>SubstituteInheritBefore off</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in httpd 2.2.32 and later</compatibility>
+
+<usage>
+    <p>Whether to apply the inherited <directive>Substitute</directive>
+    patterns first (<code>on</code>), or after the ones of the current
+    context (<code>off</code>).
+    <directive>SubstituteInheritBefore</directive> is itself inherited,
+    hence contexts that inherit it (those that don't specify their own
+    <directive>SubstituteInheritBefore</directive> value) will apply the
+    closest defined merge order.
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

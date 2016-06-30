@@ -46,6 +46,7 @@ typedef struct subst_pattern_t {
 
 typedef struct {
     apr_array_header_t *patterns;
+    int inherit_before;
 } subst_dir_conf;
 
 typedef struct {
@@ -59,21 +60,37 @@ typedef struct {
 static void *create_substitute_dcfg(apr_pool_t *p, char *d)
 {
     subst_dir_conf *dcfg =
-    (subst_dir_conf *) apr_pcalloc(p, sizeof(subst_dir_conf));
+        (subst_dir_conf *) apr_palloc(p, sizeof(subst_dir_conf));
 
     dcfg->patterns = apr_array_make(p, 10, sizeof(subst_pattern_t));
+    dcfg->inherit_before = -1;
     return dcfg;
 }
 
 static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 {
     subst_dir_conf *a =
-    (subst_dir_conf *) apr_pcalloc(p, sizeof(subst_dir_conf));
+        (subst_dir_conf *) apr_palloc(p, sizeof(subst_dir_conf));
     subst_dir_conf *base = (subst_dir_conf *) basev;
     subst_dir_conf *over = (subst_dir_conf *) overv;
 
-    a->patterns = apr_array_append(p, over->patterns,
-                                                  base->patterns);
+    a->inherit_before = (over->inherit_before != -1)
+                            ? over->inherit_before
+                            : base->inherit_before;
+    /* SubstituteInheritBefore wasn't the default behavior until 2.5.x,
+     * and may be re-disabled as desired; the original default behavior
+     * was to apply inherited subst patterns after locally scoped patterns.
+     * In later 2.2 and 2.4 versions, SubstituteInheritBefore may be toggled
+     * 'on' to follow the corrected/expected behavior, without violating POLS.
+     */
+    if (a->inherit_before == 1) {
+        a->patterns = apr_array_append(p, base->patterns,
+                                          over->patterns);
+    }
+    else {
+        a->patterns = apr_array_append(p, over->patterns,
+                                          base->patterns);
+    }
     return a;
 }
 
@@ -584,6 +601,9 @@ static void register_hooks(apr_pool_t *pool)
 static const command_rec substitute_cmds[] = {
     AP_INIT_TAKE1("Substitute", set_pattern, NULL, OR_ALL,
                   "Pattern to filter the response content (s/foo/bar/[inf])"),
+    AP_INIT_FLAG("SubstituteInheritBefore", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(subst_dir_conf, inherit_before), OR_FILEINFO,
+                 "Apply inherited patterns before those of the current context"),
     {NULL}
 };
 

@@ -149,23 +149,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic: while at it, I also included r1678763 which is only an
              optimization, but allows to keep code in sync with 2.4/trunk.
 
-  *) mod_substitute: Configure patterns merge order. PR 57641
-     trunk patch: http://svn.apache.org/r1684900
-                  http://svn.apache.org/r1687539 
-                  http://svn.apache.org/r1687680
-                  http://svn.apache.org/r1688331
-                  http://svn.apache.org/r1688339
-                  http://svn.apache.org/r1688340
-                  http://svn.apache.org/r1688343
-                  http://svn.apache.org/r1697013
-                  http://svn.apache.org/r1697015
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-SubstituteInheritBefore-v5.patch
-     +1: ylavic, rpluem, wrowe
-     rpluem: Doesn't that change the previous behaviour if SubstituteInheritBefore is not set?
-     ylavic: yes thanks, updated to v5 including r1697013 and r1697015,
-             the diff to v4 is:
-             http://home.apache.org/~ylavic/patches/httpd-2.2.x-SubstituteInheritBefore-v4_vs_v5.diff
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
