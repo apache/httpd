@@ -146,7 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
-
+  *) mod_ssl: reset client-verify state of connection when renegotiation is
+     aborted.
+     trunk patch: http://svn.apache.org/r1750779
+     2.4.x: trunk patch works
+     +1: icing
+     
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
