@@ -194,6 +194,9 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #ifdef SSL_OP_NO_TLSv1_2
 #define HAVE_TLSV1_X
 #endif
+#if !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name)
+#define HAVE_TLSEXT
+#endif
 #endif
 
 #include <math.h>
@@ -288,7 +291,8 @@ int keepalive = 0;      /* try and do keepalive connections */
 int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
-const char *host_field;       /* value of "Host:" header field */
+const char *host_field; /* value of "Host:" header field */
+const char *serverhost; /* hostname, or host_field if any and !isproxy */
 const char *path;             /* path name */
 char *postdata;         /* *buffer containing data from postfile */
 apr_size_t postlen = 0; /* length of data to be POSTed */
@@ -344,6 +348,9 @@ char *ssl_cipher = NULL;
 char *ssl_info = NULL;
 char *ssl_tmp_key = NULL;
 BIO *bio_out,*bio_err;
+#ifdef HAVE_TLSEXT
+int tls_sni = 0;
+#endif
 #endif
 
 apr_time_t start, lasttime, stoptime;
@@ -1373,6 +1380,11 @@ static void start_connect(struct connection * c)
             BIO_set_callback(bio, ssl_print_cb);
             BIO_set_callback_arg(bio, (void *)bio_err);
         }
+#ifdef HAVE_TLSEXT
+        if (tls_sni && serverhost) {
+            SSL_set_tlsext_host_name(c->ssl, serverhost);
+        }
+#endif
     } else {
         c->ssl = NULL;
     }
@@ -1739,6 +1751,9 @@ static void test(void)
 #ifdef NOT_ASCII
     apr_size_t inbytes_left, outbytes_left;
 #endif
+#ifdef HAVE_TLSEXT
+    apr_ipsubnet_t *ip;
+#endif
 
     if (isproxy) {
         connecthost = apr_pstrdup(cntxt, proxyhost);
@@ -1779,6 +1794,18 @@ static void test(void)
     else {
         /* Header overridden, no need to add, as it is already in hdrs */
     }
+
+    if (!opt_host || isproxy) {
+        /* try to use it as SNI if the option is set */
+        serverhost = host_field;
+    }
+#ifdef HAVE_TLSEXT
+    if (tls_sni && serverhost &&
+            /* IP not allowed in TLS SNI extension */
+            apr_ipsubnet_create(&ip, serverhost, NULL, cntxt) == APR_SUCCESS) {
+        tls_sni = 0;
+    }
+#endif
 
     if (!opt_useragent) {
         /* User-Agent: header not overridden, add default value to hdrs */
@@ -2084,6 +2111,9 @@ static void usage(const char *progname)
 #define TLS1_X_HELP_MSG ""
 #endif
 
+#ifdef HAVE_TLSEXT
+    fprintf(stderr, "    -I              Use TLS Server Name Indication (SNI) extension\n");
+#endif
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n");
     fprintf(stderr, "                    (" SSL2_HELP_MSG SSL3_HELP_MSG "TLS1" TLS1_X_HELP_MSG " or ALL)\n");
@@ -2255,7 +2285,7 @@ int main(int argc, const char * const argv[])
     myhost = NULL; /* 0.0.0.0 or :: */
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwix:y:z:C:H:P:A:g:X:de:SqB:m:"
+    while ((status = apr_getopt(opt, "n:c:t:s:b:T:p:u:v:lrkVhwixI:y:z:C:H:P:A:g:X:de:SqB:m:"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2374,6 +2404,16 @@ int main(int argc, const char * const argv[])
                  * allow override of some of the common headers that ab adds
                  */
                 if (strncasecmp(opt_arg, "Host:", 5) == 0) {
+                    char *host;
+                    apr_size_t len;
+                    opt_arg += 5;
+                    while (apr_isspace(*opt_arg))
+                        opt_arg++;
+                    len = strlen(opt_arg);
+                    host = strdup(opt_arg);
+                    while (len && apr_isspace(host[len-1]))
+                        host[--len] = '\0';
+                    serverhost = host;
                     opt_host = 1;
                 } else if (strncasecmp(opt_arg, "Accept:", 7) == 0) {
                     opt_accept = 1;
@@ -2479,6 +2519,11 @@ int main(int argc, const char * const argv[])
                 }
 #endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */
                 break;
+#ifdef HAVE_TLSEXT
+            case 'I':
+                tls_sni = 1;
+                break;
+#endif
 #endif
         }
     }
