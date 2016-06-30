@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: reset client-verify state of ssl when aborting renegotiations.
+     [Erki Aring <erki@example.ee>, Stefan Eissing]
+
   *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
      available before the request is sent.  PR 57832.  [Yann Ylavic]
 
