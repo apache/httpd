@@ -103,14 +103,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Fix a race condition that caused a failed worker to be retried
-     before the retry period is over
-      Trunk version of patch:
-         http://svn.apache.org/r1664709
-         http://svn.apache.org/r1697323
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~rpluem/patches/proxy_race_retry_2.2.x_v2.diff
-      +1: rpluem, wrowe, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
