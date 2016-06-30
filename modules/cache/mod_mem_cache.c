@@ -537,7 +537,7 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
     }
 
     obj = h->cache_obj;
-    if (obj) {
+    if (obj && cache_find(sconf->cache_cache, obj->key) == obj) {
         cache_remove(sconf->cache_cache, obj);
         /* For performance, cleanup cache object after releasing the lock */
         cleanup = !apr_atomic_dec32(&obj->refcount);
