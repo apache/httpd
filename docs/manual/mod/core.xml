@@ -4443,16 +4443,18 @@ certain events before failing a request</description>
     <p>Finally, for testing and diagnostic purposes only, request
     bodies may be allowed using the non-compliant <code>TraceEnable
     extended</code> directive.  The core (as an origin server) will
-    restrict the request body to 64k (plus 8k for chunk headers if
+    restrict the request body to 64Kb (plus 8Kb for chunk headers if
     <code>Transfer-Encoding: chunked</code> is used).  The core will
     reflect the full headers and all chunk headers with the response
-    body.  As a proxy server, the request body is not restricted to 64k.</p>
+    body.  As a proxy server, the request body is not restricted to 64Kb.</p>
 
     <note><title>Note</title>
-    <p>Despite claims to the contrary, <code>TRACE</code> is not
-    a security vulnerability, and there is no viable reason for
-    it to be disabled. Doing so necessarily makes your server
-    noncompliant.</p>
+
+    <p>Despite claims to the contrary, enabling the <code>TRACE</code>
+    method does not expose any security vulnerability in Apache httpd.
+    The <code>TRACE</code> method is defined by the HTTP/1.1
+    specification and implementations are expected to support it.</p>
+    
     </note>
 </usage>
 </directivesynopsis>
