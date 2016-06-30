@@ -138,17 +138,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works, modulo CHANGES
      +1: rjung, wrowe, ylavic
 
-  *) mod_proxy: don't recyle backend announced "Connection: close" connections
-     to avoid reusing it should the close be effective after some new request
-     is ready to be sent.
-     trunk patch: http://svn.apache.org/r1678763
-                  http://svn.apache.org/r1703807
-                  http://svn.apache.org/r1703813
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy-connection_close.patch
-     +1: ylavic, rpluem, wrowe
-     ylavic: while at it, I also included r1678763 which is only an
-             optimization, but allows to keep code in sync with 2.4/trunk.
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

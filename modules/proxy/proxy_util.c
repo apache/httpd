@@ -1399,6 +1399,14 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
 }
 
 #if APR_HAS_THREADS
+static void socket_cleanup(proxy_conn_rec *conn)
+{
+    conn->sock = NULL;
+    conn->connection = NULL;
+    conn->ssl_hostname = NULL;
+    apr_pool_clear(conn->scpool);
+}
+
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
     proxy_worker *worker = (proxy_worker *)theworker;
@@ -1681,7 +1689,8 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     /* determine if the connection need to be closed */
-    if (!ap_proxy_connection_reusable(conn)) {
+    if (!worker->is_address_reusable || worker->disablereuse
+            || conn->close_on_recycle) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
@@ -1689,6 +1698,12 @@ static apr_status_t connection_cleanup(void *theconn)
         conn->worker = worker;
         apr_pool_create(&(conn->scpool), p);
         apr_pool_tag(conn->scpool, "proxy_conn_scpool");
+    }
+    else if (conn->close
+                || (conn->connection
+                    && conn->connection->keepalive == AP_CONN_CLOSE)) {
+        socket_cleanup(conn);
+        conn->close = 0;
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
@@ -1703,14 +1718,6 @@ static apr_status_t connection_cleanup(void *theconn)
 
     /* Always return the SUCCESS */
     return APR_SUCCESS;
-}
-
-static void socket_cleanup(proxy_conn_rec *conn)
-{
-    conn->sock = NULL;
-    conn->connection = NULL;
-    conn->ssl_hostname = NULL;
-    apr_pool_clear(conn->scpool);
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
