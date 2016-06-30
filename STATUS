@@ -103,6 +103,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_mem_cache: Fix concurrent removal of stale entries which could lead
+                    to a crash. PR 43724.
+     trunk patch: not applicable (2.2.x only)
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr43724.patch
+     +1: ylavic, covener, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -161,11 +166,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x Patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
      +1: wrowe, ylavic
 
-  *) mod_mem_cache: Fix concurrent removal of stale entries which could lead
-                    to a crash. PR 43724.
-     trunk patch: not applicable (2.2.x only)
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr43724.patch
-     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
