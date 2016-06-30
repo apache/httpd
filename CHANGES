@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
+  *) mod_substitute: Allow to configure the patterns merge order with the new
+     SubstituteInheritBefore on|off directive.  PR 57641
+     [Marc.Stern <Marc.Stern approach.be>, Yann Ylavic, William Rowe]
+
   *) abs: Include OPENSSL_Applink when compiling on Windows, to resolve
      failures under Visual Studio 2015 and other mismatched MSVCRT flavors.
      PR59630 [Jan Ehrhardt <phpdev ehrhardt.nl>]
