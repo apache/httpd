@@ -130,14 +130,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/proxy_post_request_status_code.diff
      +1: rpluem, wrowe, ylavic
 
-  *) mime.types: Add common extension "m4a" for MPEG 4 Audio.
-     As a reference see Wikipedia:
-     https://en.wikipedia.org/wiki/MPEG-4_Part_14#.MP4_versus_.M4A
-     PR: 57895
-     trunk patch: http://svn.apache.org/r1723567
-     2.2.x patch: trunk works, modulo CHANGES
-     +1: rjung, wrowe, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

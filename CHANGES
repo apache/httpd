@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
+  *) mime.types: add common extension "m4a" for MPEG 4 Audio.
+     PR 57895 [Dylan Millikin <dylan.millikin gmail.com>]
+
   *) mod_proxy: don't recyle backend announced "Connection: close" connections
      to avoid reusing it should the close be effective after some new request
      is ready to be sent.  [Yann Ylavic]
