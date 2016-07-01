@@ -291,7 +291,7 @@ int keepalive = 0;      /* try and do keepalive connections */
 int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
-const char *host_field; /* value of "Host:" header field */
+const char *host_field;       /* value of "Host:" header field */
 const char *path;             /* path name */
 char *postdata;         /* *buffer containing data from postfile */
 apr_size_t postlen = 0; /* length of data to be POSTed */
@@ -348,8 +348,8 @@ char *ssl_info = NULL;
 char *ssl_tmp_key = NULL;
 BIO *bio_out,*bio_err;
 #ifdef HAVE_TLSEXT
-int tls_noSNI = 0;
-const char *tls_host = NULL; /* opt_host if any, otherwise hostname */
+int tls_use_sni = 1;         /* used by default, -I disables it */
+const char *tls_host = NULL; /* 'opt_host' if any, 'hostname' otherwise */
 #endif
 #endif
 
@@ -1756,9 +1756,6 @@ static void test(void)
 #ifdef NOT_ASCII
     apr_size_t inbytes_left, outbytes_left;
 #endif
-#ifdef HAVE_TLSEXT
-    apr_ipsubnet_t *ip;
-#endif
 
     if (isproxy) {
         connecthost = apr_pstrdup(cntxt, proxyhost);
@@ -1801,7 +1798,8 @@ static void test(void)
     }
 
 #ifdef HAVE_TLSEXT
-    if (is_ssl && !tls_noSNI) {
+    apr_ipsubnet_t *ip;
+    if (is_ssl && tls_use_sni) {
         if (((tls_host = opt_host) || (tls_host = hostname)) &&
             (!*tls_host || apr_ipsubnet_create(&ip, tls_host, NULL,
                                                cntxt) == APR_SUCCESS)) {
@@ -2483,14 +2481,14 @@ int main(int argc, const char * const argv[])
                 } else if (strncasecmp(opt_arg, "SSL2", 4) == 0) {
                     meth = SSLv2_client_method();
 #ifdef HAVE_TLSEXT
-                    tls_noSNI = 1;
+                    tls_use_sni = 0;
 #endif
 #endif
 #ifndef OPENSSL_NO_SSL3
                 } else if (strncasecmp(opt_arg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
 #ifdef HAVE_TLSEXT
-                    tls_noSNI = 1;
+                    tls_use_sni = 0;
 #endif
 #endif
 #ifdef HAVE_TLSV1_X
@@ -2530,7 +2528,7 @@ int main(int argc, const char * const argv[])
                 break;
 #ifdef HAVE_TLSEXT
             case 'I':
-                tls_noSNI = 1;
+                tls_use_sni = 0;
                 break;
 #endif
 #endif
