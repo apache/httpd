@@ -151,6 +151,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk patch works
      +1: elukey
 
+  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
+     connections (unless -I is specified), according to the Host header (if
+     any) or the requested URL's hostname otherwise.
+     trunk patch: http://svn.apache.org/r1750854
+                  http://svn.apache.org/r1750855
+                  http://svn.apache.org/r1750947
+                  http://svn.apache.org/r1750955
+                  http://svn.apache.org/r1750960
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
+                  (needed to adapt CHANGES entry since r1750854)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
