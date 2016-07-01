@@ -679,7 +679,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
                         apr_rfc822_date(last_modified_datestr, last_modified_date);
                         ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
                                       "The Last-Modified header value '%s' "
-                                      "(parsed as RFC882/RFC1123 datetime, "
+                                      "(parsed as RFC822/RFC1123 datetime, "
                                       "that assumes the GMT timezone) "
                                       "has been replaced with: '%s'. "
                                       "An origin server with a clock must not send "
