@@ -143,7 +143,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) core: Drop an invalid Last-Modified header value coming
      from a FCGI/CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements.
      trunk patch: http://svn.apache.org/r1748379
+                  http://svn.apache.org/r1750747
+                  http://svn.apache.org/r1750749
      2.4.x: trunk patch works
      +1: elukey
 
