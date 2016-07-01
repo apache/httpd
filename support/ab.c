@@ -349,7 +349,7 @@ char *ssl_tmp_key = NULL;
 BIO *bio_out,*bio_err;
 #ifdef HAVE_TLSEXT
 int tls_use_sni = 1;         /* used by default, -I disables it */
-const char *tls_host = NULL; /* 'opt_host' if any, 'hostname' otherwise */
+const char *tls_sni = NULL; /* 'opt_host' if any, 'hostname' otherwise */
 #endif
 #endif
 
@@ -913,8 +913,8 @@ static void output_results(int sig)
         printf("Server Temp Key:        %s\n", ssl_tmp_key);
     }
 #ifdef HAVE_TLSEXT
-    if (is_ssl && tls_host) {
-        printf("TLS Server Name:        %s\n", tls_host);
+    if (is_ssl && tls_sni) {
+        printf("TLS Server Name:        %s\n", tls_sni);
     }
 #endif
 #endif
@@ -1386,8 +1386,8 @@ static void start_connect(struct connection * c)
             BIO_set_callback_arg(bio, (void *)bio_err);
         }
 #ifdef HAVE_TLSEXT
-        if (tls_host) {
-            SSL_set_tlsext_host_name(c->ssl, tls_host);
+        if (tls_sni) {
+            SSL_set_tlsext_host_name(c->ssl, tls_sni);
         }
 #endif
     } else {
@@ -1798,13 +1798,13 @@ static void test(void)
     }
 
 #ifdef HAVE_TLSEXT
-    apr_ipsubnet_t *ip;
     if (is_ssl && tls_use_sni) {
-        if (((tls_host = opt_host) || (tls_host = hostname)) &&
-            (!*tls_host || apr_ipsubnet_create(&ip, tls_host, NULL,
+        apr_ipsubnet_t *ip;
+        if (((tls_sni = opt_host) || (tls_sni = hostname)) &&
+            (!*tls_sni || apr_ipsubnet_create(&ip, tls_sni, NULL,
                                                cntxt) == APR_SUCCESS)) {
             /* IP not allowed in TLS SNI extension */
-            tls_host = NULL;
+            tls_sni = NULL;
         }
     }
 #endif
