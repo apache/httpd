@@ -292,7 +292,6 @@ int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
 const char *host_field; /* value of "Host:" header field */
-const char *serverhost; /* hostname, or host_field if any and !isproxy */
 const char *path;             /* path name */
 char *postdata;         /* *buffer containing data from postfile */
 apr_size_t postlen = 0; /* length of data to be POSTed */
@@ -314,7 +313,7 @@ int isproxy = 0;
 apr_interval_time_t aprtimeout = apr_time_from_sec(30); /* timeout value */
 
 /* overrides for ab-generated common headers */
-int opt_host = 0;       /* was an optional "Host:" header specified? */
+const char *opt_host;   /* which optional "Host:" header specified, if any */
 int opt_useragent = 0;  /* was an optional "User-Agent:" header specified? */
 int opt_accept = 0;     /* was an optional "Accept:" header specified? */
  /*
@@ -349,7 +348,8 @@ char *ssl_info = NULL;
 char *ssl_tmp_key = NULL;
 BIO *bio_out,*bio_err;
 #ifdef HAVE_TLSEXT
-int tls_sni = 0;
+int tls_noSNI = 0;
+const char *tls_host = NULL; /* opt_host if any, otherwise hostname */
 #endif
 #endif
 
@@ -912,6 +912,11 @@ static void output_results(int sig)
     if (is_ssl && ssl_tmp_key) {
         printf("Server Temp Key:        %s\n", ssl_tmp_key);
     }
+#ifdef HAVE_TLSEXT
+    if (is_ssl && tls_host) {
+        printf("TLS Server Name:        %s\n", tls_host);
+    }
+#endif
 #endif
     printf("\n");
     printf("Document Path:          %s\n", path);
@@ -1381,8 +1386,8 @@ static void start_connect(struct connection * c)
             BIO_set_callback_arg(bio, (void *)bio_err);
         }
 #ifdef HAVE_TLSEXT
-        if (tls_sni && serverhost) {
-            SSL_set_tlsext_host_name(c->ssl, serverhost);
+        if (tls_host) {
+            SSL_set_tlsext_host_name(c->ssl, tls_host);
         }
 #endif
     } else {
@@ -1795,15 +1800,14 @@ static void test(void)
         /* Header overridden, no need to add, as it is already in hdrs */
     }
 
-    if (!opt_host || isproxy) {
-        /* try to use it as SNI if the option is set */
-        serverhost = host_field;
-    }
 #ifdef HAVE_TLSEXT
-    if (tls_sni && serverhost &&
+    if (is_ssl && !tls_noSNI) {
+        if (((tls_host = opt_host) || (tls_host = hostname)) &&
+            (!*tls_host || apr_ipsubnet_create(&ip, tls_host, NULL,
+                                               cntxt) == APR_SUCCESS)) {
             /* IP not allowed in TLS SNI extension */
-            apr_ipsubnet_create(&ip, serverhost, NULL, cntxt) == APR_SUCCESS) {
-        tls_sni = 0;
+            tls_host = NULL;
+        }
     }
 #endif
 
@@ -2112,7 +2116,7 @@ static void usage(const char *progname)
 #endif
 
 #ifdef HAVE_TLSEXT
-    fprintf(stderr, "    -I              Use TLS Server Name Indication (SNI) extension\n");
+    fprintf(stderr, "    -I              Disable TLS Server Name Indication (SNI) extension\n");
 #endif
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n");
@@ -2413,8 +2417,7 @@ int main(int argc, const char * const argv[])
                     host = strdup(opt_arg);
                     while (len && apr_isspace(host[len-1]))
                         host[--len] = '\0';
-                    serverhost = host;
-                    opt_host = 1;
+                    opt_host = host;
                 } else if (strncasecmp(opt_arg, "Accept:", 7) == 0) {
                     opt_accept = 1;
                 } else if (strncasecmp(opt_arg, "User-Agent:", 11) == 0) {
@@ -2479,10 +2482,16 @@ int main(int argc, const char * const argv[])
 #ifndef OPENSSL_NO_SSL2
                 } else if (strncasecmp(opt_arg, "SSL2", 4) == 0) {
                     meth = SSLv2_client_method();
+#ifdef HAVE_TLSEXT
+                    tls_noSNI = 1;
+#endif
 #endif
 #ifndef OPENSSL_NO_SSL3
                 } else if (strncasecmp(opt_arg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
+#ifdef HAVE_TLSEXT
+                    tls_noSNI = 1;
+#endif
 #endif
 #ifdef HAVE_TLSV1_X
                 } else if (strncasecmp(opt_arg, "TLS1.1", 6) == 0) {
@@ -2521,7 +2530,7 @@ int main(int argc, const char * const argv[])
                 break;
 #ifdef HAVE_TLSEXT
             case 'I':
-                tls_sni = 1;
+                tls_noSNI = 1;
                 break;
 #endif
 #endif
