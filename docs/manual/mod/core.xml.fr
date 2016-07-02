@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1746871:1750752 (outdated) -->
+<!-- English Revision: 1750752 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -847,7 +847,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 <description>Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</description>
-<syntax>&lt;Directory "<var>chemin répertoire</var>"&gt;
+<syntax>&lt;Directory <var>chemin répertoire</var>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
@@ -1899,7 +1899,7 @@ dans les versions 2.3.14 et antérieures.</compatibility>
 <name>Files</name>
 <description>Contient des directives qui s'appliquent aux fichiers
 précisés</description>
-<syntax>&lt;Files "<var>nom fichier</var>"&gt; ... &lt;/Files&gt;</syntax>
+<syntax>&lt;Files <var>nom fichier</var>&gt; ... &lt;/Files&gt;</syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
@@ -2904,7 +2904,7 @@ host</context>
 <description>N'applique les directives contenues qu'aux URLs
 spécifiées</description>
 <syntax>&lt;Location
-    "<var>chemin URL</var>|<var>URL</var>"&gt; ... &lt;/Location&gt;</syntax>
+    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
@@ -3870,7 +3870,7 @@ host</context>
     <directive>Options</directive> peuvent s'appliquer à un répertoire,
     c'est la plus spécifique qui est utilisée et les autres sont
     ignorées ; les options ne sont pas fusionnées (voir <a
-    href="../sections.html#mergin">comment les sections sont
+    href="../sections.html#merging">comment les sections sont
     fusionnées</a>). Elles le sont cependant si <em>toutes</em> les
     options de la directive <directive>Options</directive> sont
     précédées d'un symbole <code>+</code> ou <code>-</code>. Toute
@@ -4807,18 +4807,18 @@ host</context></contextlist>
     peut autoriser l'ajout d'un corps de requête à l'aide de la
     définition non standard <code>TraceEnable extended</code>. Le noyau
     du serveur (dans le cas d'un serveur d'origine) va limiter la taille
-    du corps de requête à 64k (plus 8k pour les en-têtes de
+    du corps de requête à 64Kb (plus 8Kb pour les en-têtes de
     fractionnement si <code>Transfer-Encoding: chunked</code> est
     utilisé). Le noyau du serveur va reproduire l'ensemble des en-têtes,
     y compris les en-têtes de fractionnement avec le corps de la
     réponse. Dans le cas d'un serveur mandataire, la taille du corps de
-    requête n'est pas limitée à 64k.</p>
+    requête n'est pas limitée à 64Kb.</p>
 
     <note><title>Note</title>
-    <p>Bien que certains prétendent le contraire, <code>TRACE</code> ne
-    constitue pas une vulnérabilité en matière de sécurité, et il n'y a
-    aucune raison suffisante pour le désactiver, ce qui rendrait
-    votre serveur non conforme.</p>
+    <p>Bien que certains prétendent le contraire, activer la méthode
+    <code>TRACE</code> ne constitue pas un problème de sécurité dans Apache
+    httpd. La méthode <code>TRACE</code> est définie par la spécification
+    HTTP/1.1 et les différentes implémentations sont censées la supporter.</p>
     </note>
 </usage>
 </directivesynopsis>

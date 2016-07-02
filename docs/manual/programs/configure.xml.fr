@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1562488:1750571 (outdated) -->
+<!-- English Revision: 1750571 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -319,11 +319,11 @@
 
     <section id="choosemodules"><title>Choix des modules à compiler</title>
       <p>La plupart des modules sont compilés par défaut et ils doivent être
-      désactivés de manière explicite ou via les mots-clés
-      <code>few</code> ou <code>none</code> (voir ci-dessous
-      <code>--enable-modules</code>, <code>--enable-mods-shared</code>
-      et <code>--enable-mods-static</code> pour une explication plus
-      détaillée).</p>
+      désactivés de manière explicite ou via le mots-clé <code>few</code> (voir
+      ci-dessous <code>--enable-modules</code>,
+      <code>--enable-mods-shared</code> et <code>--enable-mods-static</code>
+      pour une explication plus détaillée), ou
+      <code>--enable-modules=none</code> pour les désactiver tous.</p>
 
       <p>Par défaut, les autres modules ne sont pas compilés et doivent
       être activés explicitement, ou en utilisant les mots-clés
@@ -452,8 +452,8 @@
             --enable-mods-shared='headers rewrite dav'
           </example>
           <p>Vous pouvez aussi utiliser les mots-clés <code>reallyall</code>,
-	  <code>all</code>, <code>most</code>, <code>few</code> et
-	  <code>none</code>. Par exemple,</p>
+	  <code>all</code>, <code>most</code> et <code>few</code>. Par
+	  exemple,</p>
           <example>
             --enable-mods-shared=most
           </example>
