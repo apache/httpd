@@ -28,8 +28,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Le script <code>configure</code> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
@@ -323,11 +321,11 @@
 
     <h4><a name="choosemodules" id="choosemodules">Choix des modules à compiler</a></h4>
       <p>La plupart des modules sont compilés par défaut et ils doivent être
-      désactivés de manière explicite ou via les mots-clés
-      <code>few</code> ou <code>none</code> (voir ci-dessous
-      <code>--enable-modules</code>, <code>--enable-mods-shared</code>
-      et <code>--enable-mods-static</code> pour une explication plus
-      détaillée).</p>
+      désactivés de manière explicite ou via le mots-clé <code>few</code> (voir
+      ci-dessous <code>--enable-modules</code>,
+      <code>--enable-mods-shared</code> et <code>--enable-mods-static</code>
+      pour une explication plus détaillée), ou
+      <code>--enable-modules=none</code> pour les désactiver tous.</p>
 
       <p>Par défaut, les autres modules ne sont pas compilés et doivent
       être activés explicitement, ou en utilisant les mots-clés
@@ -453,8 +451,8 @@
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
           <p>Vous pouvez aussi utiliser les mots-clés <code>reallyall</code>,
-	  <code>all</code>, <code>most</code>, <code>few</code> et
-	  <code>none</code>. Par exemple,</p>
+	  <code>all</code>, <code>most</code> et <code>few</code>. Par
+	  exemple,</p>
           <div class="example"><p><code>
             --enable-mods-shared=most
           </code></p></div>

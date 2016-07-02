@@ -491,7 +491,7 @@ compression</td></tr>
 d'environnement</var>
 [<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit quels hôtes ne sont pas autorisés à accéder au
 serveur</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory "<var>chemin répertoire</var>"&gt;
+<tr><td><a href="core.html#directory">&lt;Directory <var>chemin répertoire</var>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</td></tr>
@@ -554,7 +554,7 @@ requête</td></tr>
 aucun fichier</td></tr>
 <tr class="odd"><td><a href="core.html#fileetag">FileETag <var>composant</var> ...</a></td><td> MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Caractéristiques de fichier utilisées lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
-<tr><td><a href="core.html#files">&lt;Files "<var>nom fichier</var>"&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui s'appliquent aux fichiers
+<tr><td><a href="core.html#files">&lt;Files <var>nom fichier</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui s'appliquent aux fichiers
 précisés</td></tr>
 <tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>expression rationnelle</var>&gt; ...
 &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui s'appliquent à des fichiers
@@ -752,7 +752,7 @@ spécifié</td></tr>
 bibliothèque spécifié, et ajout de ce dernier à la liste des modules
 actifs</td></tr>
 <tr class="odd"><td><a href="core.html#location">&lt;Location
-    "<var>chemin URL</var>|<var>URL</var>"&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
+    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
 spécifiées</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">N'applique les directives contenues qu'aux URLs
