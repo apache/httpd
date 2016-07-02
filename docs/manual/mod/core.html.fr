@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -886,7 +884,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui ne s'appliquent
 qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Directory "<var>chemin répertoire</var>"&gt;
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Directory <var>chemin répertoire</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -1869,7 +1867,7 @@ dans les versions 2.3.14 et antérieures.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent aux fichiers
 précisés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Files "<var>nom fichier</var>"&gt; ... &lt;/Files&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Files <var>nom fichier</var>&gt; ... &lt;/Files&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -2834,7 +2832,7 @@ XML</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 spécifiées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Location
-    "<var>chemin URL</var>|<var>URL</var>"&gt; ... &lt;/Location&gt;</code></td></tr>
+    <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -3794,7 +3792,7 @@ particulier</td></tr>
     <p>Normalement, si plusieurs directives
     <code class="directive">Options</code> peuvent s'appliquer à un répertoire,
     c'est la plus spécifique qui est utilisée et les autres sont
-    ignorées ; les options ne sont pas fusionnées (voir <a href="../sections.html#mergin">comment les sections sont
+    ignorées ; les options ne sont pas fusionnées (voir <a href="../sections.html#merging">comment les sections sont
     fusionnées</a>). Elles le sont cependant si <em>toutes</em> les
     options de la directive <code class="directive">Options</code> sont
     précédées d'un symbole <code>+</code> ou <code>-</code>. Toute
@@ -4767,18 +4765,18 @@ du serveur</td></tr>
     peut autoriser l'ajout d'un corps de requête à l'aide de la
     définition non standard <code>TraceEnable extended</code>. Le noyau
     du serveur (dans le cas d'un serveur d'origine) va limiter la taille
-    du corps de requête à 64k (plus 8k pour les en-têtes de
+    du corps de requête à 64Kb (plus 8Kb pour les en-têtes de
     fractionnement si <code>Transfer-Encoding: chunked</code> est
     utilisé). Le noyau du serveur va reproduire l'ensemble des en-têtes,
     y compris les en-têtes de fractionnement avec le corps de la
     réponse. Dans le cas d'un serveur mandataire, la taille du corps de
-    requête n'est pas limitée à 64k.</p>
+    requête n'est pas limitée à 64Kb.</p>
 
     <div class="note"><h3>Note</h3>
-    <p>Bien que certains prétendent le contraire, <code>TRACE</code> ne
-    constitue pas une vulnérabilité en matière de sécurité, et il n'y a
-    aucune raison suffisante pour le désactiver, ce qui rendrait
-    votre serveur non conforme.</p>
+    <p>Bien que certains prétendent le contraire, activer la méthode
+    <code>TRACE</code> ne constitue pas un problème de sécurité dans Apache
+    httpd. La méthode <code>TRACE</code> est définie par la spécification
+    HTTP/1.1 et les différentes implémentations sont censées la supporter.</p>
     </div>
 
 </div>

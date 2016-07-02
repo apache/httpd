@@ -156,17 +156,14 @@ Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"<
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de définir si l'on applique les modèles
 <code class="directive"><a href="#substitute">Substitute</a></code> hérités en premier
 (valeur <code>on</code>), ou après ceux du
-contexte courant (valeur <code>off</code>). Sa valeur est maintenant
-définie par défaut à <code>on</code> ; il est cependant possible de
-restaurer le comportement des versions 2.4 et antérieures du serveur qui
-était équivalent à une définition à <code>off</code> de cette directive.
-La valeur de la directive <code class="directive">SubstituteInheritBefore</code> est
+contexte courant (valeur <code>off</code>). La valeur de la directive
+<code class="directive">SubstituteInheritBefore</code> est
 elle-même héritée, et les contextes qui en héritent (ceux qui ne
 définissent pas explicitement leur propre directive
 <code class="directive">SubstituteInheritBefore</code>) appliqueront donc
