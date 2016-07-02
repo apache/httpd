@@ -191,18 +191,15 @@ Apache</compatibility>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Disponible à partir de la version 2.5 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.17 du serveur HTTP
 Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de définir si l'on applique les modèles
 <directive module="mod_substitute">Substitute</directive> hérités en premier
 (valeur <code>on</code>), ou après ceux du
-contexte courant (valeur <code>off</code>). Sa valeur est maintenant
-définie par défaut à <code>on</code> ; il est cependant possible de
-restaurer le comportement des versions 2.4 et antérieures du serveur qui
-était équivalent à une définition à <code>off</code> de cette directive.
-La valeur de la directive <directive>SubstituteInheritBefore</directive> est
+contexte courant (valeur <code>off</code>). La valeur de la directive
+<directive>SubstituteInheritBefore</directive> est
 elle-même héritée, et les contextes qui en héritent (ceux qui ne
 définissent pas explicitement leur propre directive
 <directive>SubstituteInheritBefore</directive>) appliqueront donc
