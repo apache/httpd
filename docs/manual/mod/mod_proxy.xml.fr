@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1746084:1749650 (outdated) -->
+<!-- English Revision: 1749650 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -343,6 +343,20 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
       répartition. La directive <directive
       module="mod_proxy">BalancerMember</directive> permet d'ajouter des
       membres au répartiteur.</p>
+
+      <note><title>Résolution DNS pour les domaines originaux</title>
+      <p>La résolution DNS s'effectue lorsque le socket vers le
+      domaine original est créé pour la première fois. Lorsque le pooling de
+      connexions est utilisé, chaque domaine d'arrière-plan n'est résolu qu'une
+      seule fois pour chaque processus enfant, et cette résolution est réutilisée
+      pour toutes les connexions ultérieures jusqu'à ce que le processus enfant
+      soit recyclé. Ce comportement doit être pris en considération lorsqu'on
+      planifie des tâches de maintenance du DNS impactant les domaines
+      d'arrière-plan. Veuillez aussi vous reporter aux paramètres de la
+      directive <directive module="mod_proxy">ProxyPass</directive> pour plus de
+      détails à propos de la réutilisation des connexions.
+        </p>
+      </note>
 
     </section> <!-- /workers -->
 
