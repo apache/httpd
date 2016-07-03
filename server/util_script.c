@@ -665,28 +665,25 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
          * pass it on blindly because of restrictions on future or invalid values.
          */
         else if (!ap_cstr_casecmp(w, "Last-Modified")) {
-            apr_time_t last_modified_date = apr_date_parse_http(l);
-            if (last_modified_date != APR_DATE_BAD) {
+            apr_time_t parsed_date = apr_date_parse_rfc(l);
+            if (parsed_date != APR_DATE_BAD) {
+                apr_time_t last_modified_date = parsed_date;
+                apr_time_t now = apr_time_now();
+                if (parsed_date > now) {
+                    last_modified_date = now;
+                }
                 ap_update_mtime(r, last_modified_date);
                 ap_set_last_modified(r);
-                if (APLOGrtrace1(r)) {
-                    const char* datestr = apr_table_get(r->headers_out,
-                                                        "Last-Modified");
-                    apr_time_t timestamp = apr_date_parse_http(datestr);
-                    if (timestamp < last_modified_date) {
-                        char *last_modified_datestr = apr_palloc(r->pool,
-                                                                 APR_RFC822_DATE_LEN);
-                        apr_rfc822_date(last_modified_datestr, last_modified_date);
-                        ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
-                                      "The Last-Modified header value '%s' "
-                                      "(parsed as RFC822/RFC1123 datetime, "
-                                      "that assumes the GMT timezone) "
-                                      "has been replaced with: '%s'. "
-                                      "An origin server with a clock must not send "
-                                      "a Last-Modified date that is later than the "
-                                      "server's time of message origination.",
-                                      last_modified_datestr, datestr);
-                    }
+                if (APLOGrtrace1(r) &&
+                        (parsed_date > now ||
+                         parsed_date != apr_date_parse_http(l))) {
+                    ap_log_rerror(SCRIPT_LOG_MARK, APLOG_TRACE1, 0, r,
+                                  "The Last-Modified header value '%s' (%s) "
+                                  "has been replaced with '%s'", l,
+                                  parsed_date > now ? "in the future"
+                                                    : "non GMT",
+                                  apr_table_get(r->headers_out,
+                                                "Last-Modified"));
                 }
             }
             else {
