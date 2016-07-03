@@ -148,7 +148,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1750747
                   http://svn.apache.org/r1750749
                   http://svn.apache.org/r1750953
-     2.4.x: trunk patch works
+                  http://svn.apache.org/r1751138
+     2.4.x: trunk patch works. The last revision has been discussed
+     in dev@ and submitted by Yann. Tested the code with a simple PHP
+     script returning different Last-Modified headers (GMT now, 
+     GMT now Europe/Paris, GMT tomorrow).
      +1: elukey
 
   *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
