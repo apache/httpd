@@ -15,6 +15,8 @@ Changes with Apache 2.5.0
 
   *) core: Drop an invalid Last-Modified header value coming
      from a FCGI/CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements and 
+     improved handling of non-GMT datestr.
      [Yann Ylavic, Luca Toscano]
 
   *) mod_dav: Allow other modules to become providers and add ACLs
