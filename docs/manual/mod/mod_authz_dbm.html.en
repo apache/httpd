@@ -156,8 +156,7 @@ AuthDBMUserFile "/www/userbase"</pre>
     password as before. This is followed by a colon and the comma
     separated list of groups. Other data may optionally be left in the
     DBM file after another colon; it is ignored by the authorization
-    module. This is what www.telescope.org uses for its combined
-    password and group database.</p>
+    module.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
