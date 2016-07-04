@@ -272,6 +272,20 @@
 
     <p>Encrypts the password from the command line (<code>Pwd4Steve</code>)
     using the MD5 algorithm, and stores it in the specified file.</p>
+
+    <p>To convert an existing text file <code>htpasswd</code>-generated
+    password file to a <code>dbm</code> file, use <code>awk</code> to
+    feed each line of that file into <code>htdbm</code>:</p>
+
+    <example>
+      htdbm -cbp passwords.dbm bogus bogus
+      awk ‘BEGIN { FS=”:” }; {system (“htdbm -bp passwords.dbm ” $1 ” ” $2)}’ passwords
+      htdbm -x bogus
+    </example>
+
+    <p>The first line creates a new password database with a temporary
+    placeholder entry, and the thrid line removes that placeholder.</p>
+
 </section>
 
 <section id="security"><title>Security Considerations</title>
