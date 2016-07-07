@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
+  *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
+     [Jan Kaluza, Yann Ylavic]
+
   *) mod_proxy: Fix a regression with 2.2.31 that caused inherited workers to
      use a different scoreboard slot then the original one.  PR 58267.
      [Ruediger Pluem]

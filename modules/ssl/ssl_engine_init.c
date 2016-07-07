@@ -900,7 +900,7 @@ static void ssl_init_server_certs(server_rec *s,
     const char *rsa_id, *dsa_id;
 #ifndef OPENSSL_NO_EC
     const char *ecc_id;
-    EC_GROUP *ecparams;
+    EC_GROUP *ecparams = NULL;
     int nid;
     EC_KEY *eckey = NULL;
 #endif
@@ -973,6 +973,7 @@ static void ssl_init_server_certs(server_rec *s,
                      "Custom DH parameters (%d bits) for %s loaded from %s",
                      BN_num_bits(dhparams->p), vhost_id,
                      mctx->pks->cert_files[0]);
+        DH_free(dhparams);
     }
 
 #ifndef OPENSSL_NO_EC
@@ -1001,6 +1002,7 @@ static void ssl_init_server_certs(server_rec *s,
 #endif
     }
     EC_KEY_free(eckey);
+    EC_GROUP_free(ecparams);
 #endif
 }
 
