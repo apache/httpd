@@ -129,16 +129,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              aborted the connection) where we now still cache it in any case
              if it is complete (for immediate availability for next clients).
 
-  *) mod_ssl: Free dhparams and ecparams reading certificates at startup.
-     This fixes issue when SSLCryptoDevice does not get unregistered because
-     of non-zero refcount during the mod_ssl unload happening on httpd startup.
-     trunk patch: http://svn.apache.org/r1720129
-     trunk patch: http://svn.apache.org/r1723295
-     trunk patch: http://svn.apache.org/r1733088 [CHANGES]
-     trunk patch: http://svn.apache.org/r1733089 [CHANGES]
-     2.2.x patch: https://raw.githubusercontent.com/wrowe/patches/master/backport-free-dh-ec-params-2.2.x.patch 
-     +1: wrowe, ylavic, jorton
-
   *) mod_proxy_connect: The connect method doesn't work if the client is
      connecting to the apache proxy through an ssl socket. Fixed.
      [Brad Boyer, Mark Cave-Ayland, Julian Gilbey, Fabrice Durand,
