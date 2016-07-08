@@ -168,6 +168,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (needed to adapt CHANGES entry since r1750854)
      +1: ylavic
 
+  *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
+     string showing up in SCRIPT_FILENAME. PR59815
+     trunk patch:  http://svn.apache.org/r1751970
+     2.4.x patch: trunk works + CHANGES
+     +1 covener
+    
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
