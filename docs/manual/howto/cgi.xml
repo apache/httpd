@@ -32,6 +32,7 @@
       <modulelist>
         <module>mod_alias</module>
         <module>mod_cgi</module>
+        <module>mod_cgid</module>
       </modulelist>
 
       <directivelist>
@@ -65,8 +66,17 @@
     may look like this:
 
     <highlight language="config">
+      LoadModule cgid_module modules/mod_cgid.so
+    </highlight>
+
+
+     On Windows, or using a non-threaded MPM like prefork,  A correctly 
+     configured directive may look like this:
+
+    <highlight language="config">
       LoadModule cgi_module modules/mod_cgi.so
     </highlight></note>
+
 
     <section id="scriptalias">
       <title>ScriptAlias</title>
