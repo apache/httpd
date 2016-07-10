@@ -123,6 +123,7 @@ CERN</dd>
 CGI externe</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Spécifie dans quel jeu de caractère doivent s'effectuer les
 traductions ou les réencodages</dd>
+<dt><a href="mod_crypto.html">mod_crypto</a></dt><dd>Support for symmetrical encryption and decryption</dd>
 <dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convertit un corps de réponse en URL de type données RFC2397</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>Fonctionnalité de création et gestion de versions de
 documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>

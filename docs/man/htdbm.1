@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2016-06-07" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2016-07-10" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -156,6 +156,20 @@ Creates a new file and stores a record in it for user jane\&. The user is prompt
  
 .PP
 Encrypts the password from the command line (Pwd4Steve) using the MD5 algorithm, and stores it in the specified file\&.
+ 
+.PP
+To convert an existing text file htpasswd-generated password file to a dbm file, use awk to feed each line of that file into htdbm:
+ 
+.nf
+
+      htdbm -cbp passwords\&.dbm bogus bogus
+      awk &#8216;BEGIN { FS=&#8221;:&#8221; }; {system (&#8220;htdbm -bp passwords\&.dbm &#8221; $1 &#8221; &#8221; $2)}&#8217; passwords
+      htdbm -x bogus
+    
+.fi
+ 
+.PP
+The first line creates a new password database with a temporary placeholder entry, and the thrid line removes that placeholder\&.
  
 .SH "SECURITY CONSIDERATIONS"
  
