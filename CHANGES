@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixes connection flush when answering SETTINGS without any
+     stream open. [Moto Ishizawa <@summerwind>, Stefan Eissing]
+     
   *) ab: Add option -I to use the Server Name Indication (SNI) extension on
      outgoing TLS connections, according to the Host header (if any) or the
      requested URL's hostname otherwise.  [Yann Ylavic]
