@@ -227,6 +227,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_cgi.html">Módulo Apache mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Módulo Apache mod_cgid</a></li>
 <li><a href="mod/mod_charset_lite.html">Módulo Apache mod_charset_lite</a></li>
+<li><a href="mod/mod_crypto.html">Módulo Apache mod_crypto</a></li>
 <li><a href="mod/mod_data.html">Módulo Apache mod_data</a></li>
 <li><a href="mod/mod_dav.html">Módulo Apache mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Módulo Apache mod_dav_fs</a></li>
