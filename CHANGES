@@ -2,7 +2,9 @@
 
 Changes with Apache 2.4.24
 
-
+  *) mod_http2: fixes connection flush when answering SETTINGS without any
+     stream open. [Moto Ishizawa <@summerwind>, Stefan Eissing]
+     
 Changes with Apache 2.4.23
 
   *) mod_ssl: reset client-verify state of ssl when aborting renegotiations.
