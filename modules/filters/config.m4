@@ -5,6 +5,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(buffer, Filter Buffering, , , most)
+APACHE_MODULE(crypto, Symmetrical encryption / decryption, , , no)
 APACHE_MODULE(data, RFC2397 data encoder, , , )
 APACHE_MODULE(ratelimit, Output Bandwidth Limiting, , , most)
 APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , yes)

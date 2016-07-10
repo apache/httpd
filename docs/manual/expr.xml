@@ -55,6 +55,8 @@
 <seealso><directive module="mod_headers">Header</directive></seealso>
 <seealso><directive module="mod_headers">RequestHeader</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
+<seealso><directive module="mod_crypto">CryptoKey</directive></seealso>
+<seealso><directive module="mod_crypto">CryptoIV</directive></seealso>
 <seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#requser">Require ldap-user</a></seealso>
 <seealso><a href="mod/mod_authnz_ldap.html#reqgroup">Require ldap-group</a></seealso>

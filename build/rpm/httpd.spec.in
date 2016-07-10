@@ -158,7 +158,7 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-socache-dc --enable-bucketeer \
         --enable-case-filter --enable-case-filter-in \
-        --enable-policy \
+        --enable-policy --enable-crypto \
         --disable-imagemap
 
 make %{?_smp_mflags}
@@ -343,6 +343,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_case_filter_in.so
 %{_libdir}/httpd/modules/mod_cgid.so
 %{_libdir}/httpd/modules/mod_charset_lite.so
+%{_libdir}/httpd/modules/mod_crypto.so
 %{_libdir}/httpd/modules/mod_data.so
 %{_libdir}/httpd/modules/mod_dav_fs.so
 %{_libdir}/httpd/modules/mod_dav_lock.so
