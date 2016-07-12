@@ -173,6 +173,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch:  http://svn.apache.org/r1751970
      2.4.x patch: trunk works + CHANGES
      +1 covener
+
+  *) CMake: fix various issues for Windows/Visual Studio build environments.
+     PR59685.
+     trunk patch: http://svn.apache.org/r1752331
+                  http://svn.apache.org/r1752332
+                  http://svn.apache.org/r1752333
+     +1: jchampion
     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
