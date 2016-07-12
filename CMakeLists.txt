@@ -125,7 +125,8 @@ GET_MOD_ENABLE_RANK("ENABLE_MODULES setting" ${ENABLE_MODULES} enable_modules_ra
 # not defined to either 1 or 0)
 
 MACRO(CHECK_APR_FEATURE which_define)
-  CHECK_SYMBOL_EXISTS(${which_define} "${APR_INCLUDE_DIR}/apr.h;${APR_INCLUDE_DIR}/apu.h" tmp_${which_define})
+  SET(CMAKE_REQUIRED_INCLUDES "${APR_INCLUDE_DIR}")
+  CHECK_SYMBOL_EXISTS(${which_define} "apr.h;apu.h" tmp_${which_define})
   IF(${tmp_${which_define}})
     CHECK_C_SOURCE_COMPILES("#include \"${APR_INCLUDE_DIR}/apr.h\"
       #include \"${APR_INCLUDE_DIR}/apu.h\"
