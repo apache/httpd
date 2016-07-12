@@ -926,22 +926,22 @@ ENDIF()
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/error ${CMAKE_INSTALL_PREFIX}/error ifdestmissing)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/error\" \"${CMAKE_INSTALL_PREFIX}/error\" ifdestmissing)")
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot ${CMAKE_INSTALL_PREFIX}/htdocs ifdestmissing)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot\" \"${CMAKE_INSTALL_PREFIX}/htdocs\" ifdestmissing)")
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_CURRENT_SOURCE_DIR}/docs/icons ${CMAKE_INSTALL_PREFIX}/icons ifdestmissing)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/icons\" \"${CMAKE_INSTALL_PREFIX}/icons\" ifdestmissing)")
 
 # Copy generated .conf files from the build directory to the install,
 # without overwriting stuff already there.
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl ${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl ${CMAKE_BINARY_DIR}/conf ${CMAKE_INSTALL_PREFIX}/conf)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_BINARY_DIR}/conf\" \"${CMAKE_INSTALL_PREFIX}/conf\")")
 # But conf/original is supposed to be overwritten.
 # Note: FILE(TO_NATIVE_PATH ...) leaves the backslashes unescaped, which
 #       generates warnings.  Just do it manually since this build only supports
 #       Windows anyway.
 STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
 STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy ${native_src} ${native_dest} /Q /S /Y)")
+INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy \"${native_src}\" \"${native_dest}\" /Q /S /Y)")
 
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" buildtype)
 MESSAGE(STATUS "")
