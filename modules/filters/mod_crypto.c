@@ -1059,10 +1059,9 @@ static void *create_crypto_dir_config(apr_pool_t * p, char *dummy)
     crypto_dir_conf *new =
         (crypto_dir_conf *) apr_pcalloc(p, sizeof(crypto_dir_conf));
 
-    new->size_set = 0;          /* unset */
     new->size = DEFAULT_BUFFER_SIZE;    /* default size */
     new->cipher = DEFAULT_CIPHER;
-    new->cipher = DEFAULT_MODE;
+    new->mode = DEFAULT_MODE;
 
     return (void *) new;
 }
