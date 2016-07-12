@@ -658,18 +658,24 @@ recv_again:
                                 rv = ap_pass_brigade(r->output_filters, ob);
                                 if (rv != APR_SUCCESS) {
                                     *err = "passing headers brigade to output filters";
+                                    break;
                                 }
                                 else if (status == HTTP_NOT_MODIFIED) {
                                     /* The 304 response MUST NOT contain
-                                     * a message-body, ignore it. */
+                                     * a message-body, ignore it.
+                                     * The break is not added since there might
+                                     * be more bytes to read from the FCGI
+                                     * connection. Even if the message-body is
+                                     * ignored we want to avoid subsequent
+                                     * bogus reads. */
                                     ignore_body = 1;
                                 }
                                 else {
                                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
                                                     "Error parsing script headers");
                                     rv = APR_EINVAL;
+                                    break;
                                 }
-                                break;
                             }
 
                             if (conf->error_override &&
