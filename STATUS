@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jchampion
 
   *) mod_proxy_fcgi: read the whole FCGI response even when the content has
-     not been modified (HTTP 304) to avoid subsequent bougus reads and
+     not been modified (HTTP 304) to avoid subsequent bogus reads and
      confusing error messages logged.
      trunk patch: http://svn.apache.org/r1752347
      2.4.x patch: trunk works
