@@ -188,6 +188,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 elukey
     
+  *) mod_include: PR59844 mod_include returns stack-allocated ap_expr_info_t.
+     trunk patch: http://svn.apache.org/r1752415
+     2.4.x patch: trunk works
+     +1 covener
+     
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
