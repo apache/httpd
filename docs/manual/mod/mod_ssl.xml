@@ -2025,11 +2025,12 @@ type="section">VirtualHost</directive> section to enable SSL/TLS for proxy
 usage in a particular virtual host. By default the SSL/TLS Protocol Engine is
 disabled for proxy both for the main server and all configured virtual hosts.</p>
 
-<p>Note that the SSLProxyEngine directive should not, in
+<p>Note that the <directive>SSLProxyEngine</directive> directive should not, in
 general, be included in a virtual host that will be acting as a
-forward proxy (using &lt;Proxy&gt; or &lt;ProxyRequest&gt; directives.
-SSLProxyEngine is not required to enable a forward proxy server to
-proxy SSL/TLS requests.</p>
+forward proxy (using <directive module="mod_proxy" type="section">Proxy</directive>
+or <directive module="mod_proxy">ProxyRequests</directive> directives).
+<directive>SSLProxyEngine</directive> is not required to enable a forward proxy
+server to proxy SSL/TLS requests.</p>
 
 <example><title>Example</title>
 <highlight language="config">
@@ -2074,7 +2075,8 @@ proxy handshake</description>
 <override>Not applicable</override>
 
 <usage>
-<p>Equivalent to <code>SSLCipherSuite</code>, but for the proxy connection.
+<p>Equivalent to <directive module="mod_ssl">SSLCipherSuite</directive>, but
+for the proxy connection.
 Please refer to <directive module="mod_ssl">SSLCipherSuite</directive>
 for additional information.</p>
 </usage>
