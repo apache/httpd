@@ -262,7 +262,7 @@ listeners' buckets</description>
 </modulelist>
 <compatibility>Available in Apache HTTP Server 2.4.17, with a kernel supporting
 the socket option <code>SO_REUSEPORT</code> and distributing new connections
-evenly accross listening processes' (or threads') sockets using it (eg. Linux
+evenly across listening processes' (or threads') sockets using it (eg. Linux
 3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
 in *BSDs.</compatibility>
 
@@ -294,6 +294,12 @@ in *BSDs.</compatibility>
     The right <var>ratio</var> to obtain maximum performance needs to be calculated
     for each target system, testing multiple values and observing the variations in your 
     key performance metrics.</p>
+
+    <p>This directive influences the calculation of the 
+    <directive module="mpm_common">MinSpareThreads</directive> and 
+    <directive module="mpm_common">MaxSpareThreads</directive> lower bound values.
+    The number of children processes needs to be a multiple of the number 
+    of buckets to optimally accept connections.</p>
 </usage>
 </directivesynopsis>
 
@@ -433,7 +439,9 @@ will handle during its life</description>
     <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
     on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
-    threads is less than this number.</p>
+    threads is less than this number. Additional processes/threads
+    might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
+    is enabled.</p>
 
     <p>For <module>mpm_netware</module> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
@@ -482,7 +490,7 @@ spikes</description>
     <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
     basis. If there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
-    than <var>number</var>. Please also note that additional processes/threads
+    than <var>number</var>. Additional processes/threads
     might be created if <directive module="mpm_common">ListenCoresBucketsRatio</directive> 
     is enabled.</p>
 
