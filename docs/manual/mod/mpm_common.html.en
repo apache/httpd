@@ -297,6 +297,12 @@ in *BSDs.</td></tr>
     for each target system, testing multiple values and observing the variations in your 
     key performance metrics.</p>
 
+    <p>This directive influences the calculation of the 
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> and 
+    <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code> lowerbound values.
+    The number of children processes needs to be a multiple of the number 
+    of buckets to optimally accept connections.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">Directive</a></h2>
@@ -395,7 +401,9 @@ simultaneously</td></tr>
     <code>MaxSpareThreads 250</code>. These MPMs deal with idle threads
     on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
-    threads is less than this number.</p>
+    threads is less than this number. Additional processes/threads
+    might be created if <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
+    is enabled.</p>
 
     <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
@@ -445,7 +453,7 @@ spikes</td></tr>
     <code>MinSpareThreads 75</code> and deal with idle threads on a server-wide
     basis. If there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
-    than <var>number</var>. Please also note that additional processes/threads
+    than <var>number</var>. Additional processes/threads
     might be created if <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
     is enabled.</p>
 
