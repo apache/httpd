@@ -1902,10 +1902,8 @@ lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
-<p>Cette directive est équivalente à la directive
-<code>SSLCipherSuite</code>, mais s'applique à une connexion de
-mandataire. Veuillez vous reporter à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> pour plus
-d'informations.</p>
+<p>Cette directive est équivalente à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code>, mais s'applique à une connexion de
+mandataire. Veuillez vous reporter à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> pour plus d'informations.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1928,11 +1926,11 @@ défaut, le moteur de protocole SSL/TLS est désactivé pour la fonction de
 mandataire du serveur principal et de tous les serveurs virtuels
 configurés.</p>
 
-<p>Notez que la directive SSLProxyEngine ne doit généralement pas être
-utilisée dans le cadre d'un serveur virtuel qui agit en tant que
-mandataire direct (via les directives &lt;Proxy&gt; ou
-&lt;ProxyRequest&gt;). SSLProxyEngine n'est pas nécessaire pour activer
-un serveur mandataire direct pour les requêtes SSL/TLS.</p>
+<p>Notez que la directive <code class="directive">SSLProxyEngine</code> ne doit
+généralement pas être utilisée dans le cadre d'un serveur virtuel qui agit en
+tant que mandataire direct (via les directives <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code>).
+<code class="directive">SSLProxyEngine</code> n'est pas nécessaire pour activer un
+serveur mandataire direct pour les requêtes SSL/TLS.</p>
 
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;VirtualHost _default_:443&gt;
