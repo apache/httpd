@@ -116,6 +116,7 @@ application/exi					exi
 application/font-tdpfr				pfr
 application/font-woff				woff
 # application/framework-attributes+xml
+# application/geo+json
 application/gml+xml				gml
 application/gpx+xml				gpx
 application/gxf					gxf
@@ -157,6 +158,7 @@ application/jsonml+json				jsonml
 # application/kpml-request+xml
 # application/kpml-response+xml
 # application/ld+json
+# application/lgr+xml
 # application/link-format
 # application/load-control+xml
 application/lost+xml				lostxml
@@ -386,6 +388,7 @@ application/vnd.ahead.space			ahead
 application/vnd.airzip.filesecure.azf		azf
 application/vnd.airzip.filesecure.azs		azs
 application/vnd.amazon.ebook			azw
+# application/vnd.amazon.mobi8-ebook
 application/vnd.americandynamics.acc		acc
 application/vnd.amiga.ami			ami
 # application/vnd.amundsen.maze+xml
@@ -422,6 +425,7 @@ application/vnd.businessobjects			rep
 # application/vnd.cendio.thinlinc.clientconf
 # application/vnd.century-systems.tcp_stream
 application/vnd.chemdraw+xml			cdxml
+# application/vnd.chess-pgn
 application/vnd.chipnuts.karaoke-mmd		mmd
 application/vnd.cinderella			cdy
 # application/vnd.cirpack.isdn-ext
@@ -435,6 +439,7 @@ application/vnd.cluetrust.cartomobile-config-pkg	c11amz
 # application/vnd.collection+json
 # application/vnd.collection.doc+json
 # application/vnd.collection.next+json
+# application/vnd.comicbook+zip
 # application/vnd.commerce-battelle
 application/vnd.commonspace			csp
 application/vnd.contact.cmsg			cdbcmsg
@@ -890,6 +895,8 @@ application/vnd.olpc-sugar			xo
 application/vnd.oma.dd2+xml			dd2
 # application/vnd.oma.drm.risd+xml
 # application/vnd.oma.group-usage-list+xml
+# application/vnd.oma.lwm2m+json
+# application/vnd.oma.lwm2m+tlv
 # application/vnd.oma.pal+xml
 # application/vnd.oma.poc.detailed-progress-report+xml
 # application/vnd.oma.poc.final-report+xml
@@ -1018,6 +1025,7 @@ application/vnd.pvi.ptid1			ptid
 # application/vnd.pwg-multiplexed
 # application/vnd.pwg-xhtml-print+xml
 # application/vnd.qualcomm.brew-app-res
+# application/vnd.quarantainenet
 application/vnd.quark.quarkxpress		qxd qxt qwd qwt qxl qxb
 # application/vnd.quobject-quoxdocument
 # application/vnd.radisys.moml+xml
@@ -1037,6 +1045,7 @@ application/vnd.quark.quarkxpress		qxd qxt qwd qwt qxl qxb
 # application/vnd.radisys.msml-dialog-transform+xml
 # application/vnd.rainstor.data
 # application/vnd.rapid
+# application/vnd.rar
 application/vnd.realvnc.bed			bed
 application/vnd.recordare.musicxml		mxl
 application/vnd.recordare.musicxml+xml		musicxml
@@ -1527,11 +1536,14 @@ chemical/x-csml					csml
 chemical/x-xyz					xyz
 image/bmp					bmp
 image/cgm					cgm
+# image/dicom-rle
+# image/emf
 # image/example
 # image/fits
 image/g3fax					g3
 image/gif					gif
 image/ief					ief
+# image/jls
 # image/jp2
 image/jpeg					jpeg jpg jpe
 # image/jpm
@@ -1578,6 +1590,7 @@ image/vnd.wap.wbmp				wbmp
 image/vnd.xiff					xif
 # image/vnd.zbrush.pcx
 image/webp					webp
+# image/wmf
 image/x-3ds					3ds
 image/x-cmu-raster				ras
 image/x-cmx					cmx
@@ -1617,6 +1630,7 @@ message/rfc822					eml mime
 # message/vnd.si.simp
 # message/vnd.wfa.wsc
 # model/example
+# model/gltf+json
 model/iges					igs iges
 model/mesh					msh mesh silo
 model/vnd.collada+xml				dae
