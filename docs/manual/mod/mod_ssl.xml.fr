@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1748338:1752749 (outdated) -->
+<!-- English Revision: 1752749 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2282,11 +2282,13 @@ défaut, le moteur de protocole SSL/TLS est désactivé pour la fonction de
 mandataire du serveur principal et de tous les serveurs virtuels
 configurés.</p>
 
-<p>Notez que la directive SSLProxyEngine ne doit généralement pas être
-utilisée dans le cadre d'un serveur virtuel qui agit en tant que
-mandataire direct (via les directives &lt;Proxy&gt; ou
-&lt;ProxyRequest&gt;). SSLProxyEngine n'est pas nécessaire pour activer
-un serveur mandataire direct pour les requêtes SSL/TLS.</p>
+<p>Notez que la directive <directive>SSLProxyEngine</directive> ne doit
+généralement pas être utilisée dans le cadre d'un serveur virtuel qui agit en
+tant que mandataire direct (via les directives <directive module="mod_proxy"
+type="section">Proxy</directive> ou <directive
+module="mod_proxy">ProxyRequests</directive>).
+<directive>SSLProxyEngine</directive> n'est pas nécessaire pour activer un
+serveur mandataire direct pour les requêtes SSL/TLS.</p>
 
 
 <example><title>Exemple</title>
@@ -2335,11 +2337,10 @@ lors de l'initialisation d'une connexion SSL de mandataire</description>
 <context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 <usage>
-<p>Cette directive est équivalente à la directive
-<code>SSLCipherSuite</code>, mais s'applique à une connexion de
+<p>Cette directive est équivalente à la directive <directive
+module="mod_ssl">SSLCipherSuite</directive>, mais s'applique à une connexion de
 mandataire. Veuillez vous reporter à la directive <directive
-module="mod_ssl">SSLCipherSuite</directive> pour plus
-d'informations.</p>
+module="mod_ssl">SSLCipherSuite</directive> pour plus d'informations.</p>
 </usage>
 
 </directivesynopsis>
