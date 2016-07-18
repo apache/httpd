@@ -612,9 +612,15 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define M_MKACTIVITY            23
 #define M_BASELINE_CONTROL      24
 #define M_MERGE                 25
-#define M_INVALID               26      /** no valid method */
-#define M_BREW                  27      /** RFC 2324: HTCPCP/1.0 */
-#define M_WHEN                  28      /** RFC 2324: HTCPCP/1.0 */
+/* Additional methods must be registered by the implementor, we have only
+ * room for 64 bit-wise methods available, so do not squander them (more of
+ * the above methods should probably move here)
+ */
+/* #define M_BREW                  nn */     /** RFC 2324: HTCPCP/1.0 */
+/* #define M_WHEN                  nn */     /** RFC 2324: HTCPCP/1.0 */
+#define M_INVALID               26      /** invalid method value terminates the
+                                         *  listed ap_method_registry_init()
+                                         */
 
 /**
  * METHODS needs to be equal to the number of bits
