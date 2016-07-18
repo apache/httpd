@@ -190,7 +190,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
          * proxies, don't let clients set/override it.  But, if you must...
          */
 #ifndef SECURITY_HOLE_PASS_PROXY
-        else if (!strcasecmp(hdrs[i].key, "Proxy")) {
+        else if (!ap_cstr_casecmp(hdrs[i].key, "Proxy")) {
             ;
         }
 #endif
