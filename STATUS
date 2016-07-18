@@ -194,6 +194,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 elukey
 
+  *) mod_proxy_fdpass: enable at build level 'most', restores compatibility
+     with common httpd 2.4 rpm.spec descriptors.
+     trunk patch: http://svn.apache.org/r1753224
+     2.4.x patch: trunk works
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
