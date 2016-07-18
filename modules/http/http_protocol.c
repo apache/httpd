@@ -688,8 +688,11 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
                               apr_pool_cleanup_null);
 
     /* put all the standard methods into the registry hash to ease the
-       mapping operations between name and number */
+     * mapping operations between name and number
+     * HEAD is a special-instance of the GET method and shares the same ID
+     */
     register_one_method(p, "GET", M_GET);
+    register_one_method(p, "HEAD", M_GET);
     register_one_method(p, "PUT", M_PUT);
     register_one_method(p, "POST", M_POST);
     register_one_method(p, "DELETE", M_DELETE);
