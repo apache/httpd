@@ -200,6 +200,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: wrowe
 
+  *) autoconf: minor cleanup and removal of some dead code.
+     trunk patch: http://svn.apache.org/r1753315
+                  http://svn.apache.org/r1753316
+     +1: jchampion
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
