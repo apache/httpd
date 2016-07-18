@@ -678,8 +678,8 @@ recv_again:
                                 }
                             }
 
-                            if (conf->error_override &&
-                                ap_is_HTTP_ERROR(r->status)) {
+                            if (conf->error_override
+                                && ap_is_HTTP_ERROR(r->status) && ap_is_initial_req(r)) {
                                 /*
                                  * set script_error_status to discard
                                  * everything after the headers
