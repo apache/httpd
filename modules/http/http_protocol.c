@@ -718,8 +718,6 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
     register_one_method(p, "MKACTIVITY", M_MKACTIVITY);
     register_one_method(p, "BASELINE-CONTROL", M_BASELINE_CONTROL);
     register_one_method(p, "MERGE", M_MERGE);
-    register_one_method(p, "BREW", M_BREW);
-    register_one_method(p, "WHEN", M_WHEN);
 }
 
 AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
