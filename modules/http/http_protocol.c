@@ -723,10 +723,6 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
 {
     int *methnum;
 
-    if (methods_registry == NULL) {
-        ap_method_registry_init(p);
-    }
-
     if (methname == NULL) {
         return M_INVALID;
     }
