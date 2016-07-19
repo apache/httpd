@@ -205,6 +205,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1753316
      +1: jchampion
 
+  *) mod_proxy_fcgi: avoid loops serving proxied error documents.
+     trunk patch: http://svn.apache.org/r1753167
+     2.4.x patch: trunk works
+     +1: elukey
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
