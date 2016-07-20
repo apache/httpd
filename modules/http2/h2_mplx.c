@@ -686,7 +686,9 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response)
         h2_beam_timeout_set(task->output.beam, m->stream_timeout);
         h2_beam_on_consumed(task->output.beam, stream_output_consumed, task);
         m->tx_handles_reserved -= h2_beam_get_files_beamed(task->output.beam);
-        h2_beam_on_file_beam(task->output.beam, can_beam_file, m);
+        if (!task->output.copy_files) {
+            h2_beam_on_file_beam(task->output.beam, can_beam_file, m);
+        }
         h2_beam_mutex_set(task->output.beam, beam_enter, task->cond, m);
     }
     

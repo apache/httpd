@@ -897,4 +897,41 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2CopyFiles</name>
+        <description>Determine file handling in responses</description>
+        <syntax>H2CopyFiles on|off</syntax>
+        <default>H2CopyFiles off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.24 and later.</compatibility>
+        
+        <usage>
+            <p>
+                This directive influences how file content is handled in
+                responses. When off, which is the default, file handles are 
+                passed from the requestion processing down to the main
+                connection, using the usual Apache setaside handling for
+                manaaging the lifetime of the file.
+            </p>
+            <p>
+                When set to <code>on</code>, file content is copied while the
+                request is still being processed and the buffered data is passed
+                on to the main connection. This is better if a third party
+                module is injecting files with different lifetimes into the response. 
+            </p>
+            <p>
+                An example for such a module is <code>mod_wsgi</code> that may place
+                Python file handles into the response. Those files get close down when
+                Python thinks processing has finished. That may be well before
+                <code>mod_http2</code> is done with them.
+            </p>
+        </usage>
+    </directivesynopsis>
+    
+    
 </modulesynopsis>

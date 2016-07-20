@@ -40,6 +40,7 @@ typedef enum {
     H2_CONF_TLS_COOLDOWN_SECS,
     H2_CONF_PUSH,
     H2_CONF_PUSH_DIARY_SIZE,
+    H2_CONF_COPY_FILES,
 } h2_config_var_t;
 
 struct apr_hash_t;
@@ -68,6 +69,7 @@ typedef struct h2_config {
     struct apr_hash_t *priorities;/* map of content-type to h2_priority records */
     
     int push_diary_size;          /* # of entries in push diary */
+    int copy_files;               /* if files shall be copied vs setaside on output */
 } h2_config;
 
 

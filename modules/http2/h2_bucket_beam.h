@@ -163,6 +163,12 @@ typedef struct {
 typedef int h2_beam_can_beam_callback(void *ctx, h2_bucket_beam *beam,
                                       apr_file_t *file);
 
+/**
+ * Will deny all transfer of apr_file_t across the beam and force
+ * a data copy instead.
+ */
+int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file);
+
 struct h2_bucket_beam {
     int id;
     const char *tag;
