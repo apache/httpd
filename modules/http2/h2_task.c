@@ -406,7 +406,12 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
     
     if (!task->output.beam) {
         h2_beam_create(&task->output.beam, task->pool, 
-                       task->stream_id, "output", 0); 
+                       task->stream_id, "output", 0);
+        if (task->output.copy_files) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                          "h2_task(%s): copy_files on", task->id);
+            h2_beam_on_file_beam(task->output.beam, h2_beam_no_files, NULL);
+        }
     }
     
     /* Attempt to write saved brigade first */

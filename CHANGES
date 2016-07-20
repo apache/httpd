@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: new H2CopyFiles directive that changes treatment of file
+     handles in responses. Necessary in order to fix broken lifetime handling
+     in modules such as mod_wsgi.
+  
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
