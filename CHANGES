@@ -4,7 +4,7 @@ Changes with Apache 2.5.0
   *) mod_http2: new H2CopyFiles directive that changes treatment of file
      handles in responses. Necessary in order to fix broken lifetime handling
      in modules such as mod_wsgi.
-  
+
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
@@ -15,7 +15,7 @@ Changes with Apache 2.5.0
   *) mod_http2: removing timeouts on master connection while requests are
      being processed. Requests may timeout, but the master only times out when
      no more requests are active. [Stefan Eissing]
-     
+
   *) mod_crypto: Add the all purpose crypto filters with support for HLS.
      [Graham Leggett]
 
@@ -57,7 +57,7 @@ Changes with Apache 2.5.0
 
   *) core: explicitly exclude 'h2' from protocols announced via an Upgrade: 
      header as commanded by http-wg. [Stefan Eissing]
-     
+
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  [Yann Ylavic]
 
@@ -102,7 +102,7 @@ Changes with Apache 2.5.0
      [Yehuda Katz <yehuda ymkatz.net>, Jim Jagielski]
 
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
- 
+
   *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
      PR58856 [Micha Lenk <micha lenk.info>]
 
