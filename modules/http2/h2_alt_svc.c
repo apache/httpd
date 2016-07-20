@@ -86,7 +86,7 @@ static int h2_alt_svc_handler(request_rec *r)
         return DECLINED;
     }
     
-    cfg = h2_config_rget(r);
+    cfg = h2_config_sget(r->server);
     if (r->hostname && cfg && cfg->alt_svcs && cfg->alt_svcs->nelts > 0) {
         const char *alt_svc_used = apr_table_get(r->headers_in, "Alt-Svc-Used");
         if (!alt_svc_used) {
