@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_balancer: Prevent redirect loops between workers within a
+     balancer by limiting the number of redirects to the number balancer
+     members. PR 59864 [Ruediger Pluem]
+
   *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869 [Ruediger Pluem]
 
