@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mo_proxy: Correctly consider error response codes by the backend when
+  *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869 [Ruediger Pluem]
 
   *) mod_http2: new H2CopyFiles directive that changes treatment of file
