@@ -66,6 +66,26 @@
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
 
+    <section id="examples"><title>Basic Examples</title>
+
+    <p>The examples below demonstrate how to configure HTTP/2 for
+    backend connections for a reverse proxy. </p>
+
+    <example><title>HTTP/2 (TLS)</title>
+    <highlight language="config">
+ProxyPass "/app" "h2://app.example.com"
+ProxyPassReverse "/app" "h2://app.example.com"
+    </highlight>
+    </example>
+
+    <example><title>HTTP/2 (cleartext)</title>
+    <highlight language="config">
+ProxyPass "/app" "h2c://app.example.com"
+ProxyPassReverse "/app" "h2c://app.example.com"
+    </highlight>
+    </example>
+    </section> <!-- /examples -->
+
 <section id="notes"><title>Request notes</title>
     <p><module>mod_proxy_http</module> creates the following request notes for
         logging using the <code>%{VARNAME}n</code> format in
