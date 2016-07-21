@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The last revision has been discussed in dev@ and submitted by Yann.
      Tested the code with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday).
-     +1: elukey
+     +1: elukey, jchampion
 
   *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
      connections (unless -I is specified), according to the Host header (if
