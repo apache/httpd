@@ -210,6 +210,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: elukey
 
+  *) mod_proxy_hcheck: fix thread_fn entry point for win32 32-bit
+     trunk patch: http://svn.apache.org/r1753777
+     2.4.x patch: trunk works
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
