@@ -1588,17 +1588,17 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 /* same as above, but use common ap_expr syntax / API */
 static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 {
-    ap_expr_info_t expr_info;
+    ap_expr_info_t *expr_info = apr_pcalloc(ctx->pool, sizeof (*expr_info));
     const char *err;
     int ret;
     backref_t *re = ctx->intern->re;
     ap_expr_eval_ctx_t *eval_ctx = ctx->intern->expr_eval_ctx;
 
-    expr_info.filename = ctx->r->filename;
-    expr_info.line_number = 0;
-    expr_info.module_index = APLOG_MODULE_INDEX;
-    expr_info.flags = AP_EXPR_FLAG_RESTRICTED;
-    err = ap_expr_parse(ctx->r->pool, ctx->r->pool, &expr_info, expr,
+    expr_info->filename = ctx->r->filename;
+    expr_info->line_number = 0;
+    expr_info->module_index = APLOG_MODULE_INDEX;
+    expr_info->flags = AP_EXPR_FLAG_RESTRICTED;
+    err = ap_expr_parse(ctx->r->pool, ctx->r->pool, expr_info, expr,
                         include_expr_lookup);
     if (err) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(01337)
@@ -1634,7 +1634,7 @@ static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         eval_ctx->re_source = &re->source;
     }
 
-    eval_ctx->info = &expr_info;
+    eval_ctx->info = expr_info;
     ret = ap_expr_exec_ctx(eval_ctx);
     if (ret < 0) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(01338)
