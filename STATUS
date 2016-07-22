@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1750960
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
                   (needed to adapt CHANGES entry since r1750854)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
      string showing up in SCRIPT_FILENAME. PR59815
@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      with common httpd 2.4 rpm.spec descriptors.
      trunk patch: http://svn.apache.org/r1753224
      2.4.x patch: trunk works
-     +1: wrowe
+     +1: wrowe, covener
 
   *) autoconf: minor cleanup and removal of some dead code.
      trunk patch: http://svn.apache.org/r1753315
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_proxy_hcheck: fix thread_fn entry point for win32 32-bit
      trunk patch: http://svn.apache.org/r1753777
      2.4.x patch: trunk works
-     +1: wrowe
+     +1: wrowe, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
