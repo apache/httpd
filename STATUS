@@ -117,11 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_include: PR59844 mod_include returns stack-allocated ap_expr_info_t.
-     trunk patch: http://svn.apache.org/r1752415
-     2.4.x patch: trunk works
-     +1 covener, rpluem, jchampion
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
