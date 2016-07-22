@@ -775,7 +775,7 @@ static apr_status_t hc_check_http(sctx_t *ctx, apr_pool_t *ptemp, proxy_worker *
     return backend_cleanup("HCOH", backend, ctx->s, status);
 }
 
-static void *hc_check(apr_thread_t *thread, void *b)
+static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
 {
     baton_t *baton = (baton_t *)b;
     sctx_t *ctx = baton->ctx;
