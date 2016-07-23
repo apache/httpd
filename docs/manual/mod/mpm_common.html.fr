@@ -333,6 +333,11 @@ plateformes de type BSD.</td></tr>
     doit être calculée pour chaque système cible, en testant plusieurs valeurs
     et en observant les résultats.</p>
 
+    <p>Cette directive influence le calcul des valeurs limites inférieures de
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> et <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>. En effet, pour accepter les
+    connexions de manière optimale, le nombre de processus enfants doit être un
+    multiple du nombre de segments d'écoute.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="maxconnectionsperchild" id="maxconnectionsperchild">Directive</a> <a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a></h2>
@@ -443,7 +448,10 @@ simultanément</td></tr>
     <code>MaxSpareThreads 250</code>. Ce MPM gère les threads inactifs
     au niveau du serveur. Si le serveur possède trop de threads
     inactifs, des processus enfants seront arrêtés jusqu'à ce que le
-    nombre de threads inactifs repasse en dessous de cette limite.</p>
+    nombre de threads inactifs repasse en dessous de cette limite. Des
+    processus/threads supplémentaires sont susceptibles d'être créés si
+    <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> est
+    activée.</p>
 
     <p>Pour <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
     <code>MaxSpareThreads 100</code>. Comme ce MPM n'exécute qu'un seul
@@ -494,7 +502,8 @@ pour pouvoir traiter les pics de requêtes</td></tr>
     est surveillé au niveau du serveur. Si le serveur ne possède pas
     assez de threads inactifs, des processus enfants sont créés jusqu'à
     ce que le nombre de threads inactifs repasse au dessus de
-    <var>nombre</var>.</p>
+    <var>nombre</var>. Des processus/threads supplémentaires peuvent
+    être créés si <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> est activée.</p>
 
     <p>Avec <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, la définition par défaut est
     <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
