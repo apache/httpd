@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1748951 -->
+<!-- English Revision: 1753074 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -334,6 +334,12 @@ plateformes de type BSD.</compatibility>
     optimale de <var>ratio</var> permettant d'obtenir des performances maximales
     doit être calculée pour chaque système cible, en testant plusieurs valeurs
     et en observant les résultats.</p>
+
+    <p>Cette directive influence le calcul des valeurs limites inférieures de
+    <directive module="mpm_common">MinSpareThreads</directive> et <directive
+    module="mpm_common">MaxSpareThreads</directive>. En effet, pour accepter les
+    connexions de manière optimale, le nombre de processus enfants doit être un
+    multiple du nombre de segments d'écoute.</p>
 </usage>
 </directivesynopsis>
 
@@ -487,7 +493,10 @@ supporté.</compatibility>
     <code>MaxSpareThreads 250</code>. Ce MPM gère les threads inactifs
     au niveau du serveur. Si le serveur possède trop de threads
     inactifs, des processus enfants seront arrêtés jusqu'à ce que le
-    nombre de threads inactifs repasse en dessous de cette limite.</p>
+    nombre de threads inactifs repasse en dessous de cette limite. Des
+    processus/threads supplémentaires sont susceptibles d'être créés si
+    <directive module="mpm_common">ListenCoresBucketsRatio</directive> est
+    activée.</p>
 
     <p>Pour <module>mpm_netware</module>, la définition par défaut est
     <code>MaxSpareThreads 100</code>. Comme ce MPM n'exécute qu'un seul
@@ -541,7 +550,9 @@ pour pouvoir traiter les pics de requêtes</description>
     est surveillé au niveau du serveur. Si le serveur ne possède pas
     assez de threads inactifs, des processus enfants sont créés jusqu'à
     ce que le nombre de threads inactifs repasse au dessus de
-    <var>nombre</var>.</p>
+    <var>nombre</var>. Des processus/threads supplémentaires peuvent
+    être créés si <directive
+    module="mpm_common">ListenCoresBucketsRatio</directive> est activée.</p>
 
     <p>Avec <module>mpm_netware</module>, la définition par défaut est
     <code>MinSpareThreads 10</code> et, comme ce MPM n'exécute qu'un
