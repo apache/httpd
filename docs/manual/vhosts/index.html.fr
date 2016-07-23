@@ -89,10 +89,16 @@
 
     <p>Pour vérifier et analyser la configuration de vos serveurs 
     virtuels, vous pouvez utiliser l'argument <code>-S</code> sur 
-    la ligne de commande lançant le programme Apache comme ceci&nbsp;:</p>
+    la ligne de commande.</p>
 
-    <div class="example"><p><code>
-    /usr/local/apache2/bin/httpd -S
+    <div class="example"><h3>Exemple Unix</h3><p><code>
+    
+    apachectl -S
+    </code></p></div>
+
+    <div class="example"><h3>Exemple Windows</h3><p><code>
+    
+    httpd.exe -S
     </code></p></div>
 
     <p>Cette commande affichera dans le détail comment Apache a 
