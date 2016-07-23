@@ -88,12 +88,19 @@ hosts</a></seealso>
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you
-    may find the Apache <code>-S</code> command line switch
-    useful. That is, type the following command:</p>
+    may find the <code>-S</code> command line switch
+    useful.</p>
 
     <example>
-    /usr/local/apache2/bin/httpd -S
+    <title>Unix example</title>
+    apachectl -S
     </example>
+
+    <example>
+    <title>Windows example</title>
+    httpd.exe -S
+    </example>
+
 
     <p>This command will dump out a description of how Apache parsed
     the configuration file. Careful examination of the IP addresses and
