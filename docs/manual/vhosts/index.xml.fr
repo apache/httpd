@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1053231 -->
+<!-- English Revision: 1753872 -->
 <!-- french translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -91,10 +91,16 @@
 
     <p>Pour vérifier et analyser la configuration de vos serveurs 
     virtuels, vous pouvez utiliser l'argument <code>-S</code> sur 
-    la ligne de commande lançant le programme Apache comme ceci&nbsp;:</p>
+    la ligne de commande.</p>
 
     <example>
-    /usr/local/apache2/bin/httpd -S
+    <title>Exemple Unix</title>
+    apachectl -S
+    </example>
+
+    <example>
+    <title>Exemple Windows</title>
+    httpd.exe -S
     </example>
 
     <p>Cette commande affichera dans le détail comment Apache a 
