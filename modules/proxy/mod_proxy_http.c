@@ -2115,7 +2115,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                             flushall)) != OK) {
             proxy_run_detach_backend(r, backend);
             if ((status == HTTP_SERVICE_UNAVAILABLE) &&
-                    worker->s->ping_timeout_set) {
+                    PROXY_DO_100_CONTINUE(worker, r)) {
                 backend->close = 1;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r, APLOGNO(01115)
                               "HTTP: 100-Continue failed to %pI (%s)",
