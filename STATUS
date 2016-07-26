@@ -210,6 +210,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: wrowe, covener
 
+  *) mod_proxy: Correctly consider error response codes by the backend when
+     processing failonstatus. PR 59869
+      Trunk version of patch:
+         http://svn.apache.org/r1753592
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works (modulo CHANGES)
+      +1: rpluem,
+
+  *) mod_proxy_balancer: Prevent redirect loops between workers within a
+     balancer by limiting the number of redirects to the number balancer
+     members. PR 59864
+      Trunk version of patch:
+         http://svn.apache.org/r1753594
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works (modulo CHANGES)
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
