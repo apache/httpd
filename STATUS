@@ -104,21 +104,16 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?rev=1753228&view=rev
       Backport version for 2.4.x of patch:
          Trunk version of patch works (modulo CHANGES)
-      +1: wrowe
+      +1: wrowe, rplue,m
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
 
   *) mod_mem_cache: Don't cache incomplete responses when the client aborts
                     the connection, unless they are complete.  PR 45049.
      Not applicable to trunk, mod_mem_cache doesn't exist there.
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr45049.patch
-     +1: ylavic, wrowe
+     +1: ylavic, wrowe, rpluem
      ylavic: don't we know from the very beginning of store_body() if
              r->connection->aborted, so to fail there?
      rpluem: Agreed. I guess we can move this up to line 733 before the loop.
@@ -134,6 +129,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              Ed's original patch (don't cache the response if the client
              aborted the connection) where we now still cache it in any case
              if it is complete (for immediate availability for next clients).
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) mod_proxy_connect: The connect method doesn't work if the client is
      connecting to the apache proxy through an ssl socket. Fixed.
