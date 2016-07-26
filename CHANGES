@@ -8,20 +8,12 @@ Changes with Apache 2.5.0
   *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869 [Ruediger Pluem]
 
-  *) mod_http2: new H2CopyFiles directive that changes treatment of file
-     handles in responses. Necessary in order to fix broken lifetime handling
-     in modules such as mod_wsgi.
-
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
   *) mod_proxy_fcgi: read the whole FCGI response even when the content has
      not been modified (HTTP 304) to avoid subsequent bogus reads and
      confusing error messages logged. [Luca Toscano]
-
-  *) mod_http2: removing timeouts on master connection while requests are
-     being processed. Requests may timeout, but the master only times out when
-     no more requests are active. [Stefan Eissing]
 
   *) mod_crypto: Add the all purpose crypto filters with support for HLS.
      [Graham Leggett]
