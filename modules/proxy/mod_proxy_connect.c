@@ -381,10 +381,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01023) "error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-#ifdef DEBUGGING
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01024)
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(01024)
                       "woke from poll(), i=%d", pollcnt);
-#endif
 
         for (pi = 0; pi < pollcnt; pi++) {
             const apr_pollfd_t *cur = &signalled[pi];
@@ -392,20 +391,18 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-#ifdef DEBUGGING
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01025)
-                                  "sock was readable");
-#endif
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(01025)
+                                  "backend was readable");
                     done |= ap_proxy_transfer_between_connections(r, backconn,
                                                                   c, bb_back,
                                                                   bb_front,
-                                                                  "sock", NULL,
+                                                                  "backend", NULL,
                                                                   CONN_BLKSZ, 1)
                                                                  != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(01026)
-                                  "err on backconn");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01026)
+                                  "err on backend connection");
                     backconn->aborted = 1;
                     done = 1;
                 }
@@ -413,10 +410,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-#ifdef DEBUGGING
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01027)
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(01027)
                                   "client was readable");
-#endif
                     done |= ap_proxy_transfer_between_connections(r, c,
                                                                   backconn,
                                                                   bb_front,
@@ -427,8 +422,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                                                                  != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02827)
-                                  "err on client");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02827)
+                                  "err on client connection");
                     c->aborted = 1;
                     done = 1;
                 }

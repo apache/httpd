@@ -76,7 +76,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
             }
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02445)
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(02445)
                 "woke from poll(), i=%d", pollcnt);
 
         for (pi = 0; pi < pollcnt; pi++) {
@@ -85,23 +85,23 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
             if (cur->desc.s == sock) {
                 pollevent = cur->rtnevents;
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02446)
-                            "sock was readable");
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(02446)
+                            "backend was readable");
                     done |= ap_proxy_transfer_between_connections(r, backconn,
                                                                   c, bb_i, bb_o,
-                                                                  "sock", NULL,
+                                                                  "backend", NULL,
                                                                   AP_IOBUFSIZE,
                                                                   0)
                                                                  != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02447)
-                            "error on backconn");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02447)
+                            "error on backend connection");
                     backconn->aborted = 1;
                     done = 1;
                 }
                 else { 
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02605)
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02605)
                             "unknown event on backconn %d", pollevent);
                     done = 1;
                 }
@@ -109,7 +109,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
                 if (pollevent & (APR_POLLIN | APR_POLLHUP)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02448)
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(02448)
                             "client was readable");
                     done |= ap_proxy_transfer_between_connections(r, c, backconn,
                                                                   bb_o, bb_i,
@@ -120,13 +120,13 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                                                                  != APR_SUCCESS;
                 }
                 else if (pollevent & APR_POLLERR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(02607)
-                            "error on client conn");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02607)
+                            "error on client connection");
                     c->aborted = 1;
                     done = 1;
                 }
                 else { 
-                    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r, APLOGNO(02606)
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02606)
                             "unknown event on client conn %d", pollevent);
                     done = 1;
                 }
