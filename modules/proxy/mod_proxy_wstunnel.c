@@ -89,7 +89,8 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                             "backend was readable");
                     done |= ap_proxy_transfer_between_connections(r, backconn,
                                                                   c, bb_i, bb_o,
-                                                                  "backend", NULL,
+                                                                  "backend",
+                                                                  &replied,
                                                                   AP_IOBUFSIZE,
                                                                   0)
                                                                  != APR_SUCCESS;
@@ -113,8 +114,7 @@ static int proxy_wstunnel_pump(ws_baton_t *baton, apr_time_t timeout, int try_po
                             "client was readable");
                     done |= ap_proxy_transfer_between_connections(r, c, backconn,
                                                                   bb_o, bb_i,
-                                                                  "client",
-                                                                  &replied,
+                                                                  "client", NULL,
                                                                   AP_IOBUFSIZE,
                                                                   0)
                                                                  != APR_SUCCESS;
