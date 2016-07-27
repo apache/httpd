@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      string showing up in SCRIPT_FILENAME. PR59815
      trunk patch:  http://svn.apache.org/r1751970
      2.4.x patch: trunk works + CHANGES
-     +1 covener
+     +1 covener, elukey
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
