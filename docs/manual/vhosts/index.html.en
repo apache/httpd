@@ -87,12 +87,19 @@ hosts</a></li><li><a href="ip-based.html">IP-based virtual hosts</a></li><li><a 
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you
-    may find the Apache <code>-S</code> command line switch
-    useful. That is, type the following command:</p>
+    may find the <code>-S</code> command line switch
+    useful.</p>
 
-    <div class="example"><p><code>
-    /usr/local/apache2/bin/httpd -S
+    <div class="example"><h3>Unix example</h3><p><code>
+    
+    apachectl -S
     </code></p></div>
+
+    <div class="example"><h3>Windows example</h3><p><code>
+    
+    httpd.exe -S
+    </code></p></div>
+
 
     <p>This command will dump out a description of how Apache parsed
     the configuration file. Careful examination of the IP addresses and

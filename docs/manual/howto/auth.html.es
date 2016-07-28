@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Authentication and Authorization - Apache HTTP Server Version 2.5</title>
+<title>Autenticación y Autorización - Servidor HTTP Apache Versión 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,31 +16,31 @@
 
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
-<p class="apache">Apache HTTP Server Version 2.5</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Authentication and Authorization</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Autenticación y Autorización</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/howto/auth.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/auth.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Authentication is any process by which you verify that
-    someone is who they claim they are. Authorization is any
-    process by which someone is allowed to be where they want to
-    go, or to have information that they want to have.</p>
+    <p>Autenticación es cualquier proceso por el cuál se verifica que uno es 
+    quien dice ser. Autorización es cualquier proceso en el cuál cualquiera
+    está permitido a estar donde se quiera, o tener información la cuál se
+    quiera tener.
+    </p>
 
-    <p>For general access control, see the <a href="access.html">Access
-    Control How-To</a>.</p>
+    <p>Para información de control de acceso de forma genérica visite<a href="access.html">How to de Control de Acceso</a>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Módulos y Directivas Relacionados</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducción</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">The Prerequisites</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Getting it working</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Letting more than one
@@ -51,26 +51,25 @@ person in</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">Beyond just authorization</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#socache">Authentication Caching</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Related Modules and Directives</a></h2>
+<h2><a name="related" id="related">Módulos y Directivas Relacionados</a></h2>
 
-<p>There are three types of modules involved in the authentication and
-authorization process.  You will usually need to choose at least one
-module from each group.</p>
+<p>Hay tres tipos de módulos involucrados en los procesos de la autenticación 
+	y autorización. Normalmente deberás escoger al menos un módulo de cada grupo.</p>
 
 <ul>
-  <li>Authentication type (see the
-      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive)
+  <li>Modos de Autenticación (consulte la directiva
+      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> )
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
     </ul>
   </li>
-  <li>Authentication provider (see the
-  <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> and
-  <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> directives)
+  <li>Proveedor de Autenticación (consulte la directiva
+  <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> y
+  <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>)
 
     <ul>
       <li><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code></li>
@@ -81,8 +80,8 @@ module from each group.</p>
       <li><code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code></li>
     </ul>
   </li>
-  <li>Authorization (see the
-      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive)
+  <li>Autorización (consulte la directiva
+      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code></li>
@@ -95,25 +94,24 @@ module from each group.</p>
   </li>
 </ul>
 
-  <p>In addition to these modules, there are also
-  <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and
-  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>.  These modules implement core
-  directives that are core to all auth modules.</p>
+  <p>A parte de éstos módulos, también están
+  <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> y
+  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>. Éstos módulos implementan las directivas 
+  esenciales que son el centro de todos los módulos de autenticación.</p>
 
-  <p>The module <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> is both an
-  authentication and authorization provider.  The module
-  <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> provides authorization
-  and access control based on hostname, IP address or characteristics
-  of the request, but is not part of the authentication provider
-  system. For backwards compatibility with the mod_access, there is
-  a new module <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.</p>
+  <p>El módulo <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> es tanto un proveedor de 
+  autenticación como de autorización. El módulo
+  <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> proporciona autorización y control de acceso
+  basado en el nombre del Host, la dirección IP o características de la propia
+  petición, pero no es parte del sistema proveedor de 
+  autenticación. Para tener compatibilidad inversa con el mod_access, 
+  hay un nuevo modulo llamado <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.</p>
 
-  <p>You probably also want to take a look at the <a href="access.html">Access Control</a> howto, which discusses the
-  various ways to control access to your server.</p>
+  <p>También puedes mirar al howto de <a href="access.html">Control de Acceso </a>, donde se plantean varias formas del control de acceso al servidor.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introducción</a></h2>
     <p>If you have information on your web site that is sensitive
     or intended for only a small group of people, the techniques in
     this article will help you make sure that the people that see
@@ -613,13 +611,13 @@ Require group GroupName</pre>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/howto/auth.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/auth.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
 var comments_shortname = 'httpd';
 var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/auth.html';
@@ -637,8 +635,8 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/auth.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
