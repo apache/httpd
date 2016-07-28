@@ -432,7 +432,7 @@ static int reqtimeout_before_body(request_rec *r)
         /* disabled for a CONNECT request */
         ccfg->new_timeout     = 0;
     }
-    if (cfg->body_timeout != UNSET) {
+    else if (cfg->body_timeout != UNSET) {
         ccfg->new_timeout     = cfg->body_timeout;
         ccfg->new_max_timeout = cfg->body_max_timeout;
         ccfg->min_rate        = cfg->body_min_rate;
