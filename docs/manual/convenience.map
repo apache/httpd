@@ -408,6 +408,7 @@ sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
 substitute	mod/mod_substitute.html#substitute
+substituteinheritbefore	mod/mod_substitute.html#substituteinheritbefore
 suexec	mod/core.html#suexec
 suexecusergroup	mod/mod_suexec.html#suexecusergroup
 threadlimit	mod/mpm_common.html#threadlimit
