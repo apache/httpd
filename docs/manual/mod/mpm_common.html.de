@@ -238,7 +238,7 @@ listeners' buckets</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache HTTP Server 2.4.17, with a kernel supporting
 the socket option <code>SO_REUSEPORT</code> and distributing new connections
-evenly accross listening processes' (or threads') sockets using it (eg. Linux
+evenly across listening processes' (or threads') sockets using it (eg. Linux
 3.9 and later, but not the current implementations of <code>SO_REUSEPORT</code>
 in *BSDs.</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
