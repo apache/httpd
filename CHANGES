@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
+     triggering mod_proxy_connect's AH01018 once the tunnel is established.
+     [Yann Ylavic]
+
   *) mod_proxy_balancer: Prevent redirect loops between workers within a
      balancer by limiting the number of redirects to the number balancer
      members. PR 59864 [Ruediger Pluem]
