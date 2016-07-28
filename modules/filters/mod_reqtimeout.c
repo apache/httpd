@@ -417,8 +417,8 @@ static int reqtimeout_before_body(request_rec *r)
     reqtimeout_con_cfg *ccfg =
         ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
 
-    if (ccfg == NULL || r->method_number == M_CONNECT) {
-        /* either disabled for this connection or a CONNECT request */
+    if (ccfg == NULL) {
+        /* not configured for this connection */
         return OK;
     }
     cfg = ap_get_module_config(r->connection->base_server->module_config,
@@ -428,6 +428,10 @@ static int reqtimeout_before_body(request_rec *r)
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
     ccfg->type = "body";
+    if (r->method_number == M_CONNECT) {
+        /* disabled for a CONNECT request */
+        ccfg->new_timeout     = 0;
+    }
     if (cfg->body_timeout != UNSET) {
         ccfg->new_timeout     = cfg->body_timeout;
         ccfg->new_max_timeout = cfg->body_max_timeout;
