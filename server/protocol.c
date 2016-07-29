@@ -900,71 +900,106 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     return;
                 }
 
-                if (!(value = strchr(last_field, ':'))) { /* Find ':' or    */
-                    r->status = HTTP_BAD_REQUEST;      /* abort bad request */
-                    apr_table_setn(r->notes, "error-notes",
-                                   apr_psprintf(r->pool,
-                                               "Request header field is "
-                                               "missing ':' separator.<br />\n"
-                                               "<pre>\n%.*s</pre>\n", 
-                                               (int)LOG_NAME_MAX_LEN,
-                                               ap_escape_html(r->pool,
-                                                              last_field)));
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
-                                  "Request header field is missing ':' "
-                                  "separator: %.*s", (int)LOG_NAME_MAX_LEN,
-                                  last_field);
-                    return;
-                }
+                if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)) {
+                {
+                    /* Not Strict, using the legacy parser */
 
-                tmp_field = value - 1; /* last character of field-name */
-
-                *value++ = '\0'; /* NUL-terminate at colon */
-
-                while (*value == ' ' || *value == '\t') {
-                    ++value;            /* Skip to start of value   */
-                }
-
-                /* Strip LWS after field-name: */
-                while (tmp_field > last_field
-                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
-                }
-
-                /* Strip LWS after field-value: */
-                tmp_field = last_field + last_len - 1;
-                while (tmp_field > value
-                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
-                }
-
-                if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
-                    int err = 0;
-
-                    if (*last_field == '\0') {
-                        err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02425)
-                                      "Empty request header field name not allowed");
-                    }
-                    else if (ap_has_cntrl(last_field)) {
-                        err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
-                                      "[HTTP strict] Request header field name contains "
-                                      "control character: %.*s",
-                                      (int)LOG_NAME_MAX_LEN, last_field);
-                    }
-                    else if (ap_has_cntrl(value)) {
-                        err = HTTP_BAD_REQUEST;
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
-                                      "Request header field '%.*s' contains "
-                                      "control character", (int)LOG_NAME_MAX_LEN,
+                    if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
+                        r->status = HTTP_BAD_REQUEST;   /* abort bad request */
+                        apr_table_setn(r->notes, "error-notes",
+                            apr_psprintf(r->pool,
+                                         "Request header field is "
+                                         "missing ':' separator.<br />\n"
+                                         "<pre>\n%.*s</pre>\n", 
+                                         (int)LOG_NAME_MAX_LEN,
+                                         ap_escape_html(r->pool,
+                                                        last_field)));
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
+                                      "Request header field is missing ':' "
+                                      "separator: %.*s", (int)LOG_NAME_MAX_LEN,
                                       last_field);
+                        return;
                     }
-                    if (err && !(conf->http_conformance & AP_HTTP_CONFORMANCE_LOGONLY)) {
-                        r->status = err;
+
+                    tmp_field = value - 1; /* last character of field-name */
+
+                    *value++ = '\0'; /* NUL-terminate at colon */
+
+                    while (*value == ' ' || *value == '\t') {
+                         ++value;            /* Skip to start of value   */
+                    }
+
+                    /* Strip LWS after field-name: */
+                    while (tmp_field > last_field
+                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                        *tmp_field-- = '\0';
+                    }
+
+                    /* Strip LWS after field-value: */
+                    tmp_field = last_field + last_len - 1;
+                    while (tmp_field > value
+                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                        *tmp_field-- = '\0';
+                    }
+                }
+                else /* Using strict RFC7230 parsing */
+                {
+                    /* Ensure valid token chars before ':' per RFC 7230 3.2.4 */
+                    if (!(value = (char *)ap_scan_http_token(last_field))
+                            || *value != ':') {
+                        r->status = HTTP_BAD_REQUEST;
+                        apr_table_setn(r->notes, "error-notes",
+                            apr_psprintf(r->pool,
+                                         "Request header field name "
+                                         "is malformed.<br />\n"
+                                         "<pre>\n%.*s</pre>\n", 
+                                         (int)LOG_NAME_MAX_LEN,
+                                         ap_escape_html(r->pool, last_field)));
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
+                                      "Request header field name is malformed: "
+                                      "%.*s", (int)LOG_NAME_MAX_LEN, last_field);
+                        return;
+                    }
+
+                    *value++ = '\0'; /* NUL-terminate last_field name at ':' */
+
+                    while (*value == ' ' || *value == '\t') {
+                        ++value;     /* Skip LWS of value */
+                    }
+
+                    /* Find invalid, non-HT ctrl char, or the trailing NULL */
+                    tmp_field = (char *)ap_scan_http_field_content(value);
+                
+                    /* Strip LWS after field-value, if string not empty */
+                    if (*value && (*tmp_field == '\0')) {
+                        tmp_field--;
+                        while (*tmp_field == ' ' || *tmp_field == '\t') {
+                            *tmp_field-- = '\0';
+                        }
+                        ++tmp_field;
+                    }
+
+                    /* Reject value for all garbage input (CTRLs excluding HT)
+                     * e.g. only VCHAR / SP / HT / obs-text are allowed per
+                     * RFC7230 3.2.6 - leave all more explicit rule enforcement
+                     * for specific header handler logic later in the cycle
+                     */
+                    if (*tmp_field != '\0') {
+                        r->status = HTTP_BAD_REQUEST;
+                        apr_table_setn(r->notes, "error-notes",
+                            apr_psprintf(r->pool,
+                                         "Request header value "
+                                         "is malformed.<br />\n"
+                                         "<pre>\n%.*s</pre>\n", 
+                                         (int)LOG_NAME_MAX_LEN,
+                                         ap_escape_html(r->pool, value)));
+                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
+                                      "Request header value is malformed: "
+                                      "%.*s", (int)LOG_NAME_MAX_LEN, value);
                         return;
                     }
                 }
+
                 apr_table_addn(r->headers_in, last_field, value);
 
                 /* reset the alloc_len so that we'll allocate a new
