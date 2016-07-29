@@ -115,8 +115,13 @@ int main(int argc, char *argv[])
             flags |= T_ESCAPE_URLENCODED;
         }
 
-        /* these are the "tspecials" (RFC2068) or "separators" (RFC2616) */
-        if (c && (apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))) {
+        /* Stop for any non-'token' character, including ctrls, obs-text,
+         * and "tspecials" (RFC2068) a.k.a. "separators" (RFC2616)
+         * XXX: With luck, isascii behaves sensibly on EBCDIC platforms
+         *      and insists on chars that correspond to ASCII equivilants
+         */
+        if (apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))
+                           || !apr_isascii(c)) {
             flags |= T_HTTP_TOKEN_STOP;
         }
 
