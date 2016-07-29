@@ -65,7 +65,10 @@ struct h2_stream {
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
-    apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
+    apr_off_t out_data_frames;  /* # of DATA frames sent */
+    apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
+    apr_off_t in_data_frames;   /* # of DATA frames received */
+    apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
 };
 
 
@@ -276,5 +279,11 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream);
  * Get priority information set for this stream.
  */
 const struct h2_priority *h2_stream_get_priority(h2_stream *stream);
+
+/**
+ * Return a textual representation of the stream state as in RFC 7540
+ * nomenclator, all caps, underscores.
+ */
+const char *h2_stream_state_str(h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_stream__) */

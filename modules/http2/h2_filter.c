@@ -15,6 +15,7 @@
 
 #include <assert.h>
 
+#include <apr_strings.h>
 #include <httpd.h>
 #include <http_core.h>
 #include <http_log.h>
@@ -32,6 +33,7 @@
 #include "h2_stream.h"
 #include "h2_request.h"
 #include "h2_response.h"
+#include "h2_stream.h"
 #include "h2_session.h"
 #include "h2_util.h"
 #include "h2_version.h"
@@ -223,13 +225,68 @@ static void add_settings(apr_bucket_brigade *bb, h2_session *s, int last)
     bbout(bb, "  }%s\n", last? "" : ",");
 }
 
+static void add_peer_settings(apr_bucket_brigade *bb, h2_session *s, int last) 
+{
+    bbout(bb, "  \"peerSettings\": {\n");
+    bbout(bb, "    \"SETTINGS_MAX_CONCURRENT_STREAMS\": %d,\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_MAX_CONCURRENT_STREAMS)); 
+    bbout(bb, "    \"SETTINGS_MAX_FRAME_SIZE\": %d,\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_MAX_FRAME_SIZE)); 
+    bbout(bb, "    \"SETTINGS_INITIAL_WINDOW_SIZE\": %d,\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_INITIAL_WINDOW_SIZE)); 
+    bbout(bb, "    \"SETTINGS_ENABLE_PUSH\": %d,\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_ENABLE_PUSH)); 
+    bbout(bb, "    \"SETTINGS_HEADER_TABLE_SIZE\": %d,\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_HEADER_TABLE_SIZE)); 
+    bbout(bb, "    \"SETTINGS_MAX_HEADER_LIST_SIZE\": %d\n", 
+        nghttp2_session_get_remote_settings(s->ngh2, NGHTTP2_SETTINGS_MAX_HEADER_LIST_SIZE)); 
+    bbout(bb, "  }%s\n", last? "" : ",");
+}
+
+typedef struct {
+    apr_bucket_brigade *bb;
+    h2_session *s;
+    int idx;
+} stream_ctx_t;
+
+static int add_stream(h2_stream *stream, void *ctx)
+{
+    stream_ctx_t *x = ctx;
+    int32_t flowIn, flowOut;
+    
+    flowIn = nghttp2_session_get_stream_effective_local_window_size(x->s->ngh2, stream->id); 
+    flowOut = nghttp2_session_get_stream_remote_window_size(x->s->ngh2, stream->id);
+    bbout(x->bb, "%s\n    \"%d\": {\n", (x->idx? "," : ""), stream->id);
+    bbout(x->bb, "    \"state\": \"%s\",\n", h2_stream_state_str(stream));
+    bbout(x->bb, "    \"flowIn\": %d,\n", flowIn);
+    bbout(x->bb, "    \"flowOut\": %d,\n", flowOut);
+    bbout(x->bb, "    \"dataIn\": %"APR_UINT64_T_FMT",\n", stream->in_data_octets);  
+    bbout(x->bb, "    \"dataOut\": %"APR_UINT64_T_FMT"\n", stream->out_data_octets);  
+    bbout(x->bb, "    }");
+    
+    ++x->idx;
+    return 1;
+} 
+
+static void add_streams(apr_bucket_brigade *bb, h2_session *s, int last) 
+{
+    stream_ctx_t x;
+    
+    x.bb = bb;
+    x.s = s;
+    x.idx = 0;
+    bbout(bb, "  \"streams\": {");
+    h2_mplx_stream_do(s->mplx, add_stream, &x);
+    bbout(bb, "\n  }%s\n", last? "" : ",");
+}
+
 static void add_push(apr_bucket_brigade *bb, h2_session *s, 
                      h2_stream *stream, int last) 
 {
     h2_push_diary *diary;
     apr_status_t status;
     
-    bbout(bb, "  \"push\": {\n");
+    bbout(bb, "    \"push\": {\n");
     diary = s->push_diary;
     if (diary) {
         const char *data;
@@ -241,51 +298,50 @@ static void add_push(apr_bucket_brigade *bb, h2_session *s,
                                           &data, &len);
         if (status == APR_SUCCESS) {
             base64_digest = h2_util_base64url_encode(data, len, bb->p);
-            bbout(bb, "    \"cacheDigest\": \"%s\",\n", base64_digest);
+            bbout(bb, "      \"cacheDigest\": \"%s\",\n", base64_digest);
         }
     }
-    bbout(bb, "    \"promises\": %d,\n", s->pushes_promised);
-    bbout(bb, "    \"submits\": %d,\n", s->pushes_submitted);
-    bbout(bb, "    \"resets\": %d\n", s->pushes_reset);
-    bbout(bb, "  }%s\n", last? "" : ",");
+    bbout(bb, "      \"promises\": %d,\n", s->pushes_promised);
+    bbout(bb, "      \"submits\": %d,\n", s->pushes_submitted);
+    bbout(bb, "      \"resets\": %d\n", s->pushes_reset);
+    bbout(bb, "    }%s\n", last? "" : ",");
 }
 
 static void add_in(apr_bucket_brigade *bb, h2_session *s, int last) 
 {
-    bbout(bb, "  \"in\": {\n");
-    bbout(bb, "    \"requests\": %d,\n", s->remote.emitted_count);
-    bbout(bb, "    \"resets\": %d, \n", s->streams_reset);
-    bbout(bb, "    \"frames\": %ld,\n", (long)s->frames_received);
-    bbout(bb, "    \"octets\": %"APR_UINT64_T_FMT"\n", s->io.bytes_read);
-    bbout(bb, "  }%s\n", last? "" : ",");
+    bbout(bb, "    \"in\": {\n");
+    bbout(bb, "      \"requests\": %d,\n", s->remote.emitted_count);
+    bbout(bb, "      \"resets\": %d, \n", s->streams_reset);
+    bbout(bb, "      \"frames\": %ld,\n", (long)s->frames_received);
+    bbout(bb, "      \"octets\": %"APR_UINT64_T_FMT"\n", s->io.bytes_read);
+    bbout(bb, "    }%s\n", last? "" : ",");
 }
 
 static void add_out(apr_bucket_brigade *bb, h2_session *s, int last) 
 {
-    bbout(bb, "  \"out\": {\n");
-    bbout(bb, "    \"responses\": %d,\n", s->responses_submitted);
-    bbout(bb, "    \"frames\": %ld,\n", (long)s->frames_sent);
-    bbout(bb, "    \"octets\": %"APR_UINT64_T_FMT"\n", s->io.bytes_written);
+    bbout(bb, "    \"out\": {\n");
+    bbout(bb, "      \"responses\": %d,\n", s->responses_submitted);
+    bbout(bb, "      \"frames\": %ld,\n", (long)s->frames_sent);
+    bbout(bb, "      \"octets\": %"APR_UINT64_T_FMT"\n", s->io.bytes_written);
+    bbout(bb, "    }%s\n", last? "" : ",");
+}
+
+static void add_stats(apr_bucket_brigade *bb, h2_session *s, 
+                     h2_stream *stream, int last) 
+{
+    bbout(bb, "  \"stats\": {\n");
+    add_in(bb, s, 0);
+    add_out(bb, s, 0);
+    add_push(bb, s, stream, 1);
     bbout(bb, "  }%s\n", last? "" : ",");
 }
 
-/*
-int32_t nghttp2_session_get_effective_local_window_size(session);
-int32_t
-nghttp2_session_get_stream_effective_local_window_size(nghttp2_session *session,
-                                                       int32_t stream_id);
-                                                       int32_t
-nghttp2_session_get_stream_remote_window_size(nghttp2_session *session,
-                                              int32_t stream_id);
-int32_t
-nghttp2_session_get_remote_window_size(nghttp2_session *session);
-
-*/
 static apr_status_t h2_status_stream_filter(h2_stream *stream)
 {
     h2_session *s = stream->session;
     conn_rec *c = s->c;
     apr_bucket_brigade *bb;
+    int32_t connFlowIn, connFlowOut;
     
     if (!stream->response) {
         return APR_EINVAL;
@@ -299,20 +355,25 @@ static apr_status_t h2_status_stream_filter(h2_stream *stream)
     apr_table_unset(stream->response->headers, "Content-Length");
     stream->response->content_length = -1;
     
+    connFlowIn = nghttp2_session_get_effective_local_window_size(s->ngh2); 
+    connFlowOut = nghttp2_session_get_remote_window_size(s->ngh2);
+    apr_table_setn(stream->response->headers, "conn-flow-in", 
+                   apr_itoa(stream->pool, connFlowIn));
+    apr_table_setn(stream->response->headers, "conn-flow-out", 
+                   apr_itoa(stream->pool, connFlowOut));
+     
     bbout(bb, "{\n");
     add_settings(bb, s, 0);
-    bbout(bb, "  \"connFlowIn\": %d,\n", 
-          nghttp2_session_get_effective_local_window_size(s->ngh2));
-    bbout(bb, "  \"connFlowOut\": %d,\n", 
-          nghttp2_session_get_remote_window_size(s->ngh2));
+    add_peer_settings(bb, s, 0);
+    bbout(bb, "  \"connFlowIn\": %d,\n", connFlowIn);
+    bbout(bb, "  \"connFlowOut\": %d,\n", connFlowOut);
     bbout(bb, "  \"sentGoAway\": %d,\n", 
           (s->state == H2_SESSION_ST_LOCAL_SHUTDOWN
            || s->state == H2_SESSION_ST_DONE));
 
-    add_in(bb, s, 0);
-    add_out(bb, s, 0);
-
-    add_push(bb, s, stream, 1);
+    add_streams(bb, s, 0);
+    
+    add_stats(bb, s, stream, 1);
     bbout(bb, "}\n");
     
     return APR_SUCCESS;

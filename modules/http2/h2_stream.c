@@ -462,6 +462,9 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     
     status = h2_beam_send(stream->input, stream->tmp, APR_BLOCK_READ);
     apr_brigade_cleanup(stream->tmp);
+    stream->in_data_frames++;
+    stream->in_data_octets += len;
+    
     return status;
 }
 
@@ -693,5 +696,28 @@ const h2_priority *h2_stream_get_priority(h2_stream *stream)
         }
     }
     return NULL;
+}
+
+const char *h2_stream_state_str(h2_stream *stream)
+{
+    switch (stream->state) {
+        case H2_STREAM_ST_IDLE:
+            return "IDLE";
+        case H2_STREAM_ST_OPEN:
+            return "OPEN";
+        case H2_STREAM_ST_RESV_LOCAL:
+            return "RESERVED_LOCAL";
+        case H2_STREAM_ST_RESV_REMOTE:
+            return "RESERVED_REMOTE";
+        case H2_STREAM_ST_CLOSED_INPUT:
+            return "HALF_CLOSED_REMOTE";
+        case H2_STREAM_ST_CLOSED_OUTPUT:
+            return "HALF_CLOSED_LOCAL";
+        case H2_STREAM_ST_CLOSED:
+            return "CLOSED";
+        default:
+            return "UNKNOWN";
+            
+    }
 }
 
