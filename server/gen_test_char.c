@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
          * ASCII equivilants here
          */
         if (!c || apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c)) {
+            flags |= T_HTTP_TOKEN_STOP;
         }
 
         /* Catch CTRLs other than VCHAR, HT and SP, and obs-text (RFC7230 3.2)
