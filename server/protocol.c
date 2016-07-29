@@ -1090,7 +1090,7 @@ request_rec *ap_read_request(conn_rec *conn)
             }
             else if (r->method == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00566)
-                              "request failed: invalid characters in URI");
+                              "request failed: malformed request line");
             }
             access_status = r->status;
             r->status = HTTP_OK;
