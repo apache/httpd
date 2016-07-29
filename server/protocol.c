@@ -879,6 +879,10 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     last_field = fold_buf;
                 }
                 memcpy(last_field + last_len, field, len +1); /* +1 for nul */
+                /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
+                if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+                    last_field[last_len] = ' ';
+                }
                 last_len += len;
                 folded = 1;
             }
