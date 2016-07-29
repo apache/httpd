@@ -900,7 +900,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     return;
                 }
 
-                if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)) {
+                if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT))
                 {
                     /* Not Strict, using the legacy parser */
 
