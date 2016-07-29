@@ -628,7 +628,8 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         
     apr_brigade_cleanup(session->bbtmp);
     if (status == APR_SUCCESS) {
-        stream->data_frames_sent++;
+        stream->out_data_frames++;
+        stream->out_data_octets += length;
         return 0;
     }
     else {
