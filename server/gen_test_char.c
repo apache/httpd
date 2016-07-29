@@ -120,19 +120,18 @@ int main(int argc, char *argv[])
 
         /* Stop for any non-'token' character, including ctrls, obs-text,
          * and "tspecials" (RFC2068) a.k.a. "separators" (RFC2616)
-         * XXX: With luck, isascii behaves sensibly on EBCDIC platforms
-         *      and insists on chars that correspond to ASCII equivilants
+         * XXX: We need to build a specific table for EBCDIC values with
+         * ASCII equivilants here
          */
-        if (!c || apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))
-                                 || !apr_isascii(c)) {
-            flags |= T_HTTP_TOKEN_STOP;
+        if (!c || apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c)) {
         }
 
         /* Catch CTRLs other than VCHAR, HT and SP, and obs-text (RFC7230 3.2)
          * This includes only the C0 plane, not C1 (which is obs-text itself.)
-         * XXX: Need to confirm this behavior on EBCDIC architecture
+         * XXX: Need to constrain iscntrl to C0 equivilants in ASCII,
+         * even on EBCDIC architecture
          */
-        if (!c || (apr_iscntrl(c) && c != '\t' && apr_isascii(c))) {
+        if (!c || (apr_iscntrl(c) && c != '\t')) {
             flags |= T_HTTP_CTRLS;
         }
 
