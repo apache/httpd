@@ -1526,7 +1526,7 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
     while (!string_end) {
         const unsigned char c = (unsigned char)*cur;
 
-        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP) && c != '\0') {
+        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP)) {
             /* Non-separator character; we are finished with leading
              * whitespace. We must never have encountered any trailing
              * whitespace before the delimiter (comma) */
