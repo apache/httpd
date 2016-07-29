@@ -52,6 +52,7 @@
 #define T_ESCAPE_LOGITEM      (0x10)
 #define T_ESCAPE_FORENSIC     (0x20)
 #define T_ESCAPE_URLENCODED   (0x40)
+#define T_HTTP_CTRLS          (0x80)
 
 int main(int argc, char *argv[])
 {
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
            "#define T_ESCAPE_LOGITEM       (%u)\n"
            "#define T_ESCAPE_FORENSIC      (%u)\n"
            "#define T_ESCAPE_URLENCODED    (%u)\n"
+           "#define T_HTTP_CTRLS           (%u)\n"
            "\n"
            "static const unsigned char test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
@@ -75,7 +77,8 @@ int main(int argc, char *argv[])
            T_HTTP_TOKEN_STOP,
            T_ESCAPE_LOGITEM,
            T_ESCAPE_FORENSIC,
-           T_ESCAPE_URLENCODED);
+           T_ESCAPE_URLENCODED,
+           T_HTTP_CTRLS);
 
     for (c = 0; c < 256; ++c) {
         flags = 0;
@@ -123,6 +126,14 @@ int main(int argc, char *argv[])
         if (!c || apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))
                                  || !apr_isascii(c)) {
             flags |= T_HTTP_TOKEN_STOP;
+        }
+
+        /* Catch CTRLs other than VCHAR, HT and SP, and obs-text (RFC7230 3.2)
+         * This includes only the C0 plane, not C1 (which is obs-text itself.)
+         * XXX: Need to confirm this behavior on EBCDIC architecture
+         */
+        if (!c || (apr_iscntrl(c) && c != '\t' && apr_isascii(c))) {
+            flags |= T_HTTP_CTRLS;
         }
 
         /* For logging, escape all control characters,
