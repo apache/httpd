@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     for (c = 0; c < 256; ++c) {
         flags = 0;
-        if (c % 20 == 0)
+        if (c % 8 == 0)
             printf("\n    ");
 
         /* escape_shell_cmd */
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
             flags |= T_ESCAPE_FORENSIC;
         }
 
-        printf("%u%c", flags, (c < 255) ? ',' : ' ');
+        printf("0x%02x%c", flags, (c < 255) ? ',' : ' ');
     }
 
     printf("\n};\n");
