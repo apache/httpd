@@ -945,8 +945,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 else /* Using strict RFC7230 parsing */
                 {
                     /* Ensure valid token chars before ':' per RFC 7230 3.2.4 */
-                    if (!(value = (char *)ap_scan_http_token(last_field))
-                            || *value != ':') {
+                    value = (char *)ap_scan_http_token(last_field);
+                    if ((value > last_field) || *value != ':') {
                         r->status = HTTP_BAD_REQUEST;
                         apr_table_setn(r->notes, "error-notes",
                             apr_psprintf(r->pool,
