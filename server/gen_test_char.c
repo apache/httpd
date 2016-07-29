@@ -120,8 +120,8 @@ int main(int argc, char *argv[])
          * XXX: With luck, isascii behaves sensibly on EBCDIC platforms
          *      and insists on chars that correspond to ASCII equivilants
          */
-        if (apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))
-                           || !apr_isascii(c)) {
+        if (!c || apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))
+                                 || !apr_isascii(c)) {
             flags |= T_HTTP_TOKEN_STOP;
         }
 
