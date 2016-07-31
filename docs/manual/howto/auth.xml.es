@@ -89,93 +89,95 @@
   autenticación. Para tener compatibilidad inversa con el mod_access, 
   hay un nuevo modulo llamado <module>mod_access_compat</module>.</p>
 
-  <p>También puedes mirar al howto de <a
+  <p>También puedes mirar el how-to de <a
   href="access.html">Control de Acceso </a>, donde se plantean varias formas del control de acceso al servidor.</p>
 
 </section>
 
 <section id="introduction"><title>Introducción</title>
-    <p>If you have information on your web site that is sensitive
-    or intended for only a small group of people, the techniques in
-    this article will help you make sure that the people that see
-    those pages are the people that you wanted to see them.</p>
+    <p>Si se tiene información en nuestra página web que sea información 
+    	sensible o pensada para un grupo reducido de usuarios/personas,
+    	las técnicas que se describen en este manual, le servirán  
+    	de ayuda para asegurarse de que las personas que ven esas páginas sean 
+    	las personas que uno quiere.</p>
 
-    <p>This article covers the "standard" way of protecting parts
-    of your web site that most of you are going to use.</p>
+    <p>Este artículo cubre la parte "estándar" de cómo proteger partes de un 
+    	sitio web que muchos usarán.</p>
 
-    <note><title>Note:</title>
-    <p>If your data really needs to be secure, consider using
-    <module>mod_ssl</module> in addition to any authentication.</p>
+    <note><title>Nota:</title>
+    <p>Si de verdad es necesario que tus datos estén en un sitio seguro, 
+    	considera usar <module>mod_ssl</module>  como método de autenticación adicional a cualquier forma de autenticación.</p>
     </note>
 </section>
 
-<section id="theprerequisites"><title>The Prerequisites</title>
-    <p>The directives discussed in this article will need to go
-    either in your main server configuration file (typically in a
-    <directive module="core" type="section">Directory</directive> section), or
-    in per-directory configuration files (<code>.htaccess</code> files).</p>
+<section id="theprerequisites"><title>Los Prerequisitos</title>
+    <p>Las directivas que se usan en este artículo necesitaran ponerse ya sea 
+    	en el fichero de configuración principal del servidor ( típicamente en 
+    	la sección 
+    <directive module="core" type="section">Directory</directive> de httpd.conf ), o
+    en cada uno de los ficheros de configuraciones del propio directorio
+    (los archivos <code>.htaccess</code>).</p>
 
-    <p>If you plan to use <code>.htaccess</code> files, you will
-    need to have a server configuration that permits putting
-    authentication directives in these files. This is done with the
-    <directive module="core">AllowOverride</directive> directive, which
-    specifies which directives, if any, may be put in per-directory
-    configuration files.</p>
+    <p>Si planea usar los ficheros <code>.htaccess</code> , necesitarás
+    tener en la configuración global del servidor, una configuración que permita
+    poner directivas de autenticación en estos ficheros. Esto se hace con la
+    directiva <directive module="core">AllowOverride</directive>, la cual especifica
+    que directivas, en su caso, pueden ser puestas en cada fichero de configuración
+    por directorio.</p>
 
-    <p>Since we're talking here about authentication, you will need
-    an <directive module="core">AllowOverride</directive> directive like the
-    following:</p>
+    <p>Ya que estamos hablando aquí de autenticación, necesitarás una directiva 
+    	<directive module="core">AllowOverride</directive> como la siguiente:
+    	</p>
 
     <highlight language="config">
 AllowOverride AuthConfig
     </highlight>
 
-    <p>Or, if you are just going to put the directives directly in
-    your main server configuration file, you will of course need to
-    have write permission to that file.</p>
+    <p>O, si solo se van a poner las directivas directamente en la configuración
+    	principal del servidor, deberás tener, claro está, permisos de escritura
+    	en el archivo. </p>
 
-    <p>And you'll need to know a little bit about the directory
-    structure of your server, in order to know where some files are
-    kept. This should not be terribly difficult, and I'll try to
-    make this clear when we come to that point.</p>
+    <p>Y necesitarás saber un poco de como está estructurado el árbol de 
+    	directorios de tu servidor, para poder saber donde se encuentran algunos 
+    	archivos. Esto no debería ser una tarea difícil, aún así intentaremos 
+    	dejarlo claro llegado el momento de comentar dicho aspecto.</p>
 
-    <p>You will also need to make sure that the modules
-    <module>mod_authn_core</module> and <module>mod_authz_core</module>
-    have either been built into the httpd binary or loaded by the
-    httpd.conf configuration file. Both of these modules provide core
-    directives and functionality that are critical to the configuration
-    and use of authentication and authorization in the web server.</p>
+    <p>También deberás de asegurarte de que los módulos 
+    <module>mod_authn_core</module> y <module>mod_authz_core</module>
+    han sido incorporados, o añadidos a la hora de compilar en tu binario httpd o
+    cargados mediante el archivo de configuración <code>httpd.conf</code>. Estos 
+    dos módulos proporcionan directivas básicas y funcionalidades que son críticas
+    para la configuración y uso de autenticación y autorización en el servidor web.</p>
 </section>
 
-<section id="gettingitworking"><title>Getting it working</title>
-    <p>Here's the basics of password protecting a directory on your
-    server.</p>
+<section id="gettingitworking"><title>Conseguir que funcione</title>
+    <p>Aquí está lo básico de cómo proteger con contraseña un directorio en tu
+     servidor.</p>
 
-    <p>First, you need to create a password file. Exactly how you do
-    this will vary depending on what authentication provider you have
-    chosen. More on that later. To start with, we'll use a text password
-    file.</p>
+    <p>Primero, necesitarás crear un fichero de contraseña. Dependiendo de que 
+    	proveedor de autenticación se haya elegido, se hará de una forma u otra. Para empezar, 
+    	usaremos un fichero de contraseña de tipo texto.</p>
 
-    <p>This file should be
-    placed somewhere not accessible from the web. This is so that
-    folks cannot download the password file. For example, if your
-    documents are served out of <code>/usr/local/apache/htdocs</code>, you
-    might want to put the password file(s) in
-    <code>/usr/local/apache/passwd</code>.</p>
+    <p>Este fichero deberá estar en un sitio que no se pueda tener acceso desde
+     la web. Esto también implica que nadie pueda descargarse el fichero de 
+     contraseñas. Por ejemplo, si tus documentos están guardados fuera de
+     <code>/usr/local/apache/htdocs</code>, querrás poner tu archivo de contraseñas en 
+     <code>/usr/local/apache/passwd</code>.</p>
 
-    <p>To create the file, use the <program>htpasswd</program> utility that
-    came with Apache. This will be located in the <code>bin</code> directory
-    of wherever you installed Apache. If you have installed Apache from
-    a third-party package, it may be in your execution path.</p>
+    <p>Para crear el fichero de contraseñas, usa la utilidad 
+    	<program>htpasswd</program> que viene con Apache. Esta herramienta se 
+    	encuentra en el directorio <code>bin</code> en donde sea que se ha 
+    	instalado el Apache. Si ha instalado Apache desde un paquete de terceros, 
+    	puede ser que se encuentre en su ruta de ejecución.</p>
 
-    <p>To create the file, type:</p>
+    <p>Para crear el fichero, escribiremos:</p>
 
     <example>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </example>
 
-    <p><program>htpasswd</program> will ask you for the password, and
-    then ask you to type it again to confirm it:</p>
+    <p><program>htpasswd</program> te preguntará por una contraseña, y después 
+    te pedirá que la vuelvas a escribir para confirmarla:</p>
 
     <example>
       # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
