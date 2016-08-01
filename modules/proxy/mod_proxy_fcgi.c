@@ -305,7 +305,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         for (i = 0; i < envarr->nelts; ++i) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, APLOGNO(01062)
                           "sending env var '%s' value '%s'",
-                          elts[i].key, elts[i].valq);
+                          elts[i].key, elts[i].val);
         }
     }
 
