@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="public_html.xml.meta">
+<manualpage metafile="reverse_proxy.xml.meta">
 <parentdocument href="./">How-To / Tutorials</parentdocument>
 
   <title>Reverse Proxy Guide</title>
