@@ -663,16 +663,15 @@ recv_again:
                                 else if (status == HTTP_NOT_MODIFIED) {
                                     /* A 304 response MUST NOT contain
                                      * a message-body, so we must ignore it but
-                                     * some extra steps needs to be taken to
+                                     * some extra steps need to be taken to
                                      * avoid inconsistencies.
                                      * The break is not added with connection
                                      * reuse set since there might be more bytes
-                                     * to read from the FCGI connection,
-                                     * like the message-body, that would trigger
-                                     * subsequent bogus reads (for example
+                                     * to read like the message-body, that would 
+                                     * trigger subsequent bogus reads (for example
                                      * the start of the message-body
-                                     * interpreted as FCGI header).
-                                     * With connecton reuse disabled (default)
+                                     * interpreted as a FCGI header).
+                                     * With connection reuse disabled (default)
                                      * we can safely break and force the end
                                      * of the FCGI processing phase since the
                                      * connection will be cleaned up later on. */
