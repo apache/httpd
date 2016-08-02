@@ -1552,7 +1552,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         } else {
             /* an http/0.9 response */
             backasswards = 1;
-            r->status = 200;
+            r->status = proxy_status = 200;
             r->status_line = "200 OK";
             backend->close = 1;
         }
@@ -1601,6 +1601,7 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                               "undefined proxy interim response policy");
             }
         }
+
         /* Moved the fixups of Date headers and those affected by
          * ProxyPassReverse/etc from here to ap_proxy_read_headers
          */
@@ -1617,31 +1618,6 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             }
         }
 
-        r->sent_bodyct = 1;
-        /*
-         * Is it an HTTP/0.9 response or did we maybe preread the 1st line of
-         * the response? If so, load the extra data. These are 2 mutually
-         * exclusive possibilities, that just happen to require very
-         * similar behavior.
-         */
-        if (backasswards || pread_len) {
-            apr_ssize_t cntr = (apr_ssize_t)pread_len;
-            if (backasswards) {
-                /*@@@FIXME:
-                 * At this point in response processing of a 0.9 response,
-                 * we don't know yet whether data is binary or not.
-                 * mod_charset_lite will get control later on, so it cannot
-                 * decide on the conversion of this buffer full of data.
-                 * However, chances are that we are not really talking to an
-                 * HTTP/0.9 server, but to some different protocol, therefore
-                 * the best guess IMHO is to always treat the buffer as "text/x":
-                 */
-                ap_xlate_proto_to_ascii(buffer, len);
-                cntr = (apr_ssize_t)len;
-            }
-            e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, e);
-        }
         /* PR 41646: get HEAD right with ProxyErrorOverride */
         if (ap_is_HTTP_ERROR(r->status) && dconf->error_override) {
             /* clear r->status for override error, otherwise ErrorDocument
@@ -1674,6 +1650,32 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             apr_table_setn(r->notes, "proxy-error-override", "1");
             return proxy_status;
+        }
+
+        r->sent_bodyct = 1;
+        /*
+         * Is it an HTTP/0.9 response or did we maybe preread the 1st line of
+         * the response? If so, load the extra data. These are 2 mutually
+         * exclusive possibilities, that just happen to require very
+         * similar behavior.
+         */
+        if (backasswards || pread_len) {
+            apr_ssize_t cntr = (apr_ssize_t)pread_len;
+            if (backasswards) {
+                /*@@@FIXME:
+                 * At this point in response processing of a 0.9 response,
+                 * we don't know yet whether data is binary or not.
+                 * mod_charset_lite will get control later on, so it cannot
+                 * decide on the conversion of this buffer full of data.
+                 * However, chances are that we are not really talking to an
+                 * HTTP/0.9 server, but to some different protocol, therefore
+                 * the best guess IMHO is to always treat the buffer as "text/x":
+                 */
+                ap_xlate_proto_to_ascii(buffer, len);
+                cntr = (apr_ssize_t)len;
+            }
+            e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
         }
 
         /* send body - but only if a body is expected */
