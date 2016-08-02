@@ -1616,20 +1616,20 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
          * ProxyPassReverse/etc from here to ap_proxy_read_headers
          */
 
-        if ((proxy_status == 401) && (dconf->error_override)) {
-            const char *buf;
-            const char *wa = "WWW-Authenticate";
-            if ((buf = apr_table_get(r->headers_out, wa))) {
-                apr_table_set(r->err_headers_out, wa, buf);
-            } else {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01109)
-                              "origin server sent 401 without "
-                              "WWW-Authenticate header");
-            }
-        }
-
         /* PR 41646: get HEAD right with ProxyErrorOverride */
-        if (ap_is_HTTP_ERROR(r->status) && dconf->error_override) {
+        if (ap_is_HTTP_ERROR(proxy_status) && dconf->error_override) {
+            if (proxy_status == HTTP_UNAUTHORIZED) {
+                const char *buf;
+                const char *wa = "WWW-Authenticate";
+                if ((buf = apr_table_get(r->headers_out, wa))) {
+                    apr_table_set(r->err_headers_out, wa, buf);
+                } else {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01109)
+                                  "origin server sent 401 without "
+                                  "WWW-Authenticate header");
+                }
+            }
+
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page
