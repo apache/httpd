@@ -661,25 +661,14 @@ recv_again:
                                     break;
                                 }
                                 else if (status == HTTP_NOT_MODIFIED) {
-                                    /* A 304 response MUST NOT contain
-                                     * a message-body, so we must ignore it but
-                                     * some extra steps need to be taken to
-                                     * avoid inconsistencies.
-                                     * The break is not added with connection
-                                     * reuse set since there might be more bytes
-                                     * to read like the message-body, that would 
-                                     * trigger subsequent bogus reads (for example
-                                     * the start of the message-body
-                                     * interpreted as a FCGI header).
-                                     * With connection reuse disabled (default)
-                                     * we can safely break and force the end
-                                     * of the FCGI processing phase since the
-                                     * connection will be cleaned up later on. */
+                                    /* The 304 response MUST NOT contain
+                                     * a message-body, ignore it.
+                                     * The break is not added since there might
+                                     * be more bytes to read from the FCGI
+                                     * connection. Even if the message-body is
+                                     * ignored we want to avoid subsequent
+                                     * bogus reads. */
                                     ignore_body = 1;
-                                    if (conn->close) {
-                                        done = 1;
-                                        break;
-                                    }
                                 }
                                 else {
                                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
