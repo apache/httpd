@@ -1619,16 +1619,13 @@ int ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                   "WWW-Authenticate header");
                 }
             }
-
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page
              */
             r->status = HTTP_OK;
-            /* Discard body, if one is expected */
-            if (!r->header_only && /* not HEAD request */
-                (proxy_status != HTTP_NO_CONTENT) && /* not 204 */
-                (proxy_status != HTTP_NOT_MODIFIED)) { /* not 304 */
+            /* Discard body, if one is expected (not HEAD request) */
+            if (!r->header_only) {
                 const char *tmp;
                 /* Add minimal headers needed to allow http_in filter
                  * detecting end of body without waiting for a timeout. */
