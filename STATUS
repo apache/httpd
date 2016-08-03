@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      string showing up in SCRIPT_FILENAME. PR59815
      trunk patch:  http://svn.apache.org/r1751970
      2.4.x patch: trunk works + CHANGES
-     +1 covener, elukey
+     +1 covener, elukey, jim
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      with common httpd 2.4 rpm.spec descriptors.
      trunk patch: http://svn.apache.org/r1753224
      2.4.x patch: trunk works
-     +1: wrowe, covener
+     +1: wrowe, covener, jim
 
   *) autoconf: minor cleanup and removal of some dead code.
      trunk patch: http://svn.apache.org/r1753315
@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1753592
       Backport version for 2.4.x of patch:
          Trunk version of patch works (modulo CHANGES)
-      +1: rpluem,
+      +1: rpluem, jim
 
   *) mod_proxy_balancer: Prevent redirect loops between workers within a
      balancer by limiting the number of redirects to the number balancer
@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1753594
       Backport version for 2.4.x of patch:
          Trunk version of patch works (modulo CHANGES)
-      +1: rpluem,
+      +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
