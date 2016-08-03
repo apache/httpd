@@ -836,6 +836,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         }
 
         if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
@@ -844,179 +845,173 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 return;
             }
 
-                /* This line is a continuation of the preceding line(s),
-                 * so append it to the line that we've set aside.
-                 * Note: this uses a power-of-two allocator to avoid
-                 * doing O(n) allocs and using O(n^2) space for
-                 * continuations that span many many lines.
+            /* This line is a continuation of the preceding line(s),
+             * so append it to the line that we've set aside.
+             * Note: this uses a power-of-two allocator to avoid
+             * doing O(n) allocs and using O(n^2) space for
+             * continuations that span many many lines.
+             */
+            apr_size_t fold_len = last_len + len + 1; /* trailing null */
+
+            if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
+                const char *field_escaped;
+
+                r->status = HTTP_BAD_REQUEST;
+                /* report what we have accumulated so far before the
+                 * overflow (last_field) as the field with the problem
                  */
-                apr_size_t fold_len = last_len + len + 1; /* trailing null */
+                field_escaped = ap_escape_html(r->pool, last_field);
+                apr_table_setn(r->notes, "error-notes",
+                    apr_psprintf(r->pool,
+                                 "Size of a request header field after folding"
+                                 " exceeds server limit.<br />\n"
+                                 "<pre>\n%.*s\n</pre>\n", 
+                                 field_name_len(field_escaped), 
+                                 field_escaped));
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00562)
+                              "Request header exceeds LimitRequestFieldSize "
+                              "after folding: %.*s",
+                              field_name_len(last_field), last_field);
+                return;
+            }
 
-                if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
-                    const char *field_escaped;
-
-                    r->status = HTTP_BAD_REQUEST;
-                    /* report what we have accumulated so far before the
-                     * overflow (last_field) as the field with the problem
-                     */
-                    field_escaped = ap_escape_html(r->pool, last_field);
-                    apr_table_setn(r->notes, "error-notes",
-                                   apr_psprintf(r->pool,
-                                               "Size of a request header field "
-                                               "after folding "
-                                               "exceeds server limit.<br />\n"
-                                               "<pre>\n%.*s\n</pre>\n", 
-                                               field_name_len(field_escaped), 
-                                               field_escaped));
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00562)
-                                  "Request header exceeds LimitRequestFieldSize "
-                                  "after folding: %.*s",
-                                  field_name_len(last_field), last_field);
-                    return;
-                }
-
+            if (fold_len > alloc_len) {
+                char *fold_buf;
+                alloc_len += alloc_len;
                 if (fold_len > alloc_len) {
-                    char *fold_buf;
-                    alloc_len += alloc_len;
-                    if (fold_len > alloc_len) {
-                        alloc_len = fold_len;
-                    }
-                    fold_buf = (char *)apr_palloc(r->pool, alloc_len);
-                    memcpy(fold_buf, last_field, last_len);
-                    last_field = fold_buf;
+                    alloc_len = fold_len;
                 }
-                memcpy(last_field + last_len, field, len +1); /* +1 for nul */
-                /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
-                if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
-                    last_field[last_len] = ' ';
-                }
-                last_len += len;
-                folded = 1;
-                continue;
+                fold_buf = (char *)apr_palloc(r->pool, alloc_len);
+                memcpy(fold_buf, last_field, last_len);
+                last_field = fold_buf;
+            }
+            memcpy(last_field + last_len, field, len +1); /* +1 for nul */
+            /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
+            if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+                last_field[last_len] = ' ';
+            }
+            last_len += len;
+            folded = 1;
+            continue;
         }
 
-                /* not a continuation line */
+        /* not a continuation line */
 
-                if (r->server->limit_req_fields
-                    && (++fields_read > r->server->limit_req_fields)) {
-                    r->status = HTTP_BAD_REQUEST;
-                    apr_table_setn(r->notes, "error-notes",
-                                   "The number of request header fields "
-                                   "exceeds this server's limit.");
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00563)
-                                  "Number of request headers exceeds "
-                                  "LimitRequestFields");
-                    return;
-                }
+        if (r->server->limit_req_fields
+                && (++fields_read > r->server->limit_req_fields)) {
+            r->status = HTTP_BAD_REQUEST;
+            apr_table_setn(r->notes, "error-notes",
+                           "The number of request header fields "
+                           "exceeds this server's limit.");
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00563)
+                          "Number of request headers exceeds "
+                          "LimitRequestFields");
+            return;
+        }
 
-                if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT))
-                {
-                    /* Not Strict, using the legacy parser */
+        if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT))
+        {
+            /* Not Strict, using the legacy parser */
 
-                    if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
-                        r->status = HTTP_BAD_REQUEST;   /* abort bad request */
-                        apr_table_setn(r->notes, "error-notes",
-                            apr_psprintf(r->pool,
-                                         "Request header field is "
-                                         "missing ':' separator.<br />\n"
-                                         "<pre>\n%.*s</pre>\n", 
-                                         (int)LOG_NAME_MAX_LEN,
-                                         ap_escape_html(r->pool,
-                                                        last_field)));
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
-                                      "Request header field is missing ':' "
-                                      "separator: %.*s", (int)LOG_NAME_MAX_LEN,
-                                      last_field);
-                        return;
-                    }
+            if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
+                r->status = HTTP_BAD_REQUEST;   /* abort bad request */
+                apr_table_setn(r->notes, "error-notes",
+                    apr_psprintf(r->pool,
+                                 "Request header field is "
+                                 "missing ':' separator.<br />\n"
+                                 "<pre>\n%.*s</pre>\n", (int)LOG_NAME_MAX_LEN,
+                                 ap_escape_html(r->pool, last_field)));
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
+                              "Request header field is missing ':' "
+                              "separator: %.*s", (int)LOG_NAME_MAX_LEN,
+                              last_field);
+                return;
+            }
 
-                    tmp_field = value - 1; /* last character of field-name */
+            tmp_field = value - 1; /* last character of field-name */
 
-                    *value++ = '\0'; /* NUL-terminate at colon */
+            *value++ = '\0'; /* NUL-terminate at colon */
 
-                    while (*value == ' ' || *value == '\t') {
-                         ++value;            /* Skip to start of value   */
-                    }
+            while (*value == ' ' || *value == '\t') {
+                ++value;            /* Skip to start of value   */
+            }
 
-                    /* Strip LWS after field-name: */
-                    while (tmp_field > last_field
-                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                        *tmp_field-- = '\0';
-                    }
+            /* Strip LWS after field-name: */
+            while (tmp_field > last_field
+                   && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                *tmp_field-- = '\0';
+            }
 
-                    /* Strip LWS after field-value: */
-                    tmp_field = last_field + last_len - 1;
-                    while (tmp_field > value
-                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                        *tmp_field-- = '\0';
-                    }
-                }
-                else /* Using strict RFC7230 parsing */
-                {
-                    /* Ensure valid token chars before ':' per RFC 7230 3.2.4 */
-                    value = (char *)ap_scan_http_token(last_field);
-                    if ((value == last_field) || *value != ':') {
-                        r->status = HTTP_BAD_REQUEST;
-                        apr_table_setn(r->notes, "error-notes",
-                            apr_psprintf(r->pool,
-                                         "Request header field name "
-                                         "is malformed.<br />\n"
-                                         "<pre>\n%.*s</pre>\n", 
-                                         (int)LOG_NAME_MAX_LEN,
-                                         ap_escape_html(r->pool, last_field)));
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
-                                      "Request header field name is malformed: "
-                                      "%.*s", (int)LOG_NAME_MAX_LEN, last_field);
-                        return;
-                    }
+            /* Strip LWS after field-value: */
+            tmp_field = last_field + last_len - 1;
+            while (tmp_field > value
+                   && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                *tmp_field-- = '\0';
+            }
+        }
+        else /* Using strict RFC7230 parsing */
+        {
+            /* Ensure valid token chars before ':' per RFC 7230 3.2.4 */
+            value = (char *)ap_scan_http_token(last_field);
+            if ((value == last_field) || *value != ':') {
+                r->status = HTTP_BAD_REQUEST;
+                apr_table_setn(r->notes, "error-notes",
+                    apr_psprintf(r->pool,
+                                 "Request header field name"
+                                 " is malformed.<br />\n"
+                                 "<pre>\n%.*s</pre>\n", (int)LOG_NAME_MAX_LEN,
+                                 ap_escape_html(r->pool, last_field)));
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
+                              "Request header field name is malformed: "
+                              "%.*s", (int)LOG_NAME_MAX_LEN, last_field);
+                return;
+            }
 
-                    *value++ = '\0'; /* NUL-terminate last_field name at ':' */
+            *value++ = '\0'; /* NUL-terminate last_field name at ':' */
 
-                    while (*value == ' ' || *value == '\t') {
-                        ++value;     /* Skip LWS of value */
-                    }
+            while (*value == ' ' || *value == '\t') {
+                ++value;     /* Skip LWS of value */
+            }
 
-                    /* Find invalid, non-HT ctrl char, or the trailing NULL */
-                    tmp_field = (char *)ap_scan_http_field_content(value);
+            /* Find invalid, non-HT ctrl char, or the trailing NULL */
+            tmp_field = (char *)ap_scan_http_field_content(value);
                 
-                    /* Strip LWS after field-value, if string not empty */
-                    if (*value && (*tmp_field == '\0')) {
-                        tmp_field--;
-                        while (*tmp_field == ' ' || *tmp_field == '\t') {
-                            *tmp_field-- = '\0';
-                        }
-                        ++tmp_field;
-                    }
-
-                    /* Reject value for all garbage input (CTRLs excluding HT)
-                     * e.g. only VCHAR / SP / HT / obs-text are allowed per
-                     * RFC7230 3.2.6 - leave all more explicit rule enforcement
-                     * for specific header handler logic later in the cycle
-                     */
-                    if (*tmp_field != '\0') {
-                        r->status = HTTP_BAD_REQUEST;
-                        apr_table_setn(r->notes, "error-notes",
-                            apr_psprintf(r->pool,
-                                         "Request header value "
-                                         "is malformed.<br />\n"
-                                         "<pre>\n%.*s</pre>\n", 
-                                         (int)LOG_NAME_MAX_LEN,
-                                         ap_escape_html(r->pool, value)));
-                        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
-                                      "Request header value is malformed: "
-                                      "%.*s", (int)LOG_NAME_MAX_LEN, value);
-                        return;
-                    }
+            /* Strip LWS after field-value, if string not empty */
+            if (*value && (*tmp_field == '\0')) {
+                tmp_field--;
+                while (*tmp_field == ' ' || *tmp_field == '\t') {
+                    *tmp_field-- = '\0';
                 }
+                ++tmp_field;
+            }
 
-                apr_table_addn(r->headers_in, last_field, value);
+            /* Reject value for all garbage input (CTRLs excluding HT)
+             * e.g. only VCHAR / SP / HT / obs-text are allowed per
+             * RFC7230 3.2.6 - leave all more explicit rule enforcement
+             * for specific header handler logic later in the cycle
+             */
+            if (*tmp_field != '\0') {
+                r->status = HTTP_BAD_REQUEST;
+                apr_table_setn(r->notes, "error-notes",
+                    apr_psprintf(r->pool,
+                                 "Request header value is malformed.<br />\n"
+                                 "<pre>\n%.*s</pre>\n", (int)LOG_NAME_MAX_LEN,
+                                 ap_escape_html(r->pool, value)));
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
+                              "Request header value is malformed: "
+                              "%.*s", (int)LOG_NAME_MAX_LEN, value);
+                return;
+            }
+        }
 
-                /* reset the alloc_len so that we'll allocate a new
-                 * buffer if we have to do any more folding: we can't
-                 * use the previous buffer because its contents are
-                 * now part of r->headers_in
-                 */
-                alloc_len = 0;
+        apr_table_addn(r->headers_in, last_field, value);
+
+        /* reset the alloc_len so that we'll allocate a new
+         * buffer if we have to do any more folding: we can't
+         * use the previous buffer because its contents are
+         * now part of r->headers_in
+         */
+        alloc_len = 0;
 
         /* end of logic where current line was not a continuation line */
 
