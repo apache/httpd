@@ -253,7 +253,6 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_status_t rv;
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
-    char *proxyfilename = r->filename;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
 
     if (rconf) { 
@@ -272,6 +271,13 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         else if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
             newfname = apr_pstrdup(r->pool, r->filename+13);
         }
+        /* Query string in environment only */
+        if (newfname && r->args && *r->args) { 
+            char *qs = strrchr(newfname, '?');
+            if (qs && !strcmp(qs+1, r->args)) { 
+                *qs = '\0';
+            }
+        }
 
         if (newfname) {
             newfname = ap_strchr(newfname, '/');
@@ -282,8 +288,6 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
  
-    r->filename = proxyfilename;
-
     /* XXX are there any FastCGI specific env vars we need to send? */
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
