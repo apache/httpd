@@ -124,10 +124,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck: fix thread_fn entry point for win32 32-bit
-     trunk patch: http://svn.apache.org/r1753777
-     2.4.x patch: trunk works
-     +1: wrowe, covener, jchampion
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
