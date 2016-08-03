@@ -835,8 +835,15 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if (last_field != NULL) {
-            if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+        if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+            if (last_field == NULL) {
+                r->status = HTTP_BAD_REQUEST;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
+                              "Line folding encounterd before first"
+                              " header line");
+                return;
+            }
+
                 /* This line is a continuation of the preceding line(s),
                  * so append it to the line that we've set aside.
                  * Note: this uses a power-of-two allocator to avoid
@@ -885,8 +892,10 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 }
                 last_len += len;
                 folded = 1;
-            }
-            else /* not a continuation line */ {
+                continue;
+        }
+
+                /* not a continuation line */
 
                 if (r->server->limit_req_fields
                     && (++fields_read > r->server->limit_req_fields)) {
@@ -1009,8 +1018,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  */
                 alloc_len = 0;
 
-            } /* end if current line is not a continuation starting with tab */
-        }
+        /* end of logic where current line was not a continuation line */
 
         /* Found a blank line, stop. */
         if (len == 0) {
