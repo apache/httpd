@@ -790,7 +790,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
      */
     while(1) {
         apr_status_t rv;
-        int folded = 0;
 
         field = NULL;
         rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
@@ -835,7 +834,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+        /* Process an obs-fold immediately by appending it to last_field */
+        if ((*field == '\t') || *field == ' ') {
 
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
@@ -891,7 +891,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 last_field[last_len] = ' ';
             }
             last_len += len;
-            folded = 1;
             continue;
         }
 
@@ -1024,10 +1023,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
          * the next loop iteration.  (In the folded case, last_field
          * has been updated already.)
          */
-        if (!folded) {
-            last_field = field;
-            last_len = len;
-        }
+        last_field = field;
+        last_len = len;
     }
 
     /* Combine multiple message-header fields with the same
