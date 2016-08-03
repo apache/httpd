@@ -896,6 +896,10 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 last_field[last_len] = ' ';
             }
             last_len += len;
+
+            /* We've appended this obs-fold line to last_len, proceed to
+             * read the next input line
+             */
             continue;
         }
         else if (last_field != NULL) {
