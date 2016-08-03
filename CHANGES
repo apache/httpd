@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
+     string showing up in SCRIPT_FILENAME. PR59815
+
   *) mod_include: Fix a potential memory misuse while evaluating expressions.
      PR59844. [Eric Covener]
 
