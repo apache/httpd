@@ -835,15 +835,25 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if (last_field != NULL) {
-            if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+        if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+
+            apr_size_t fold_len;
+
+            if (last_field == NULL) {
+                r->status = HTTP_BAD_REQUEST;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
+                              "Line folding encounterd before first"
+                              " header line");
+                return;
+            }
+
                 /* This line is a continuation of the preceding line(s),
                  * so append it to the line that we've set aside.
                  * Note: this uses a power-of-two allocator to avoid
                  * doing O(n) allocs and using O(n^2) space for
                  * continuations that span many many lines.
                  */
-                apr_size_t fold_len = last_len + len + 1; /* trailing null */
+                fold_len = last_len + len + 1; /* trailing null */
 
                 if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
                     const char *field_escaped;
@@ -885,8 +895,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 }
                 last_len += len;
                 folded = 1;
-            }
-            else /* not a continuation line */ {
+                continue;
+        }
+        else if (last_field != NULL) {
+
+                /* not a continuation line */
 
                 if (r->server->limit_req_fields
                     && (++fields_read > r->server->limit_req_fields)) {
@@ -1008,8 +1021,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  * now part of r->headers_in
                  */
                 alloc_len = 0;
-
-            } /* end if current line is not a continuation starting with tab */
+                /* end of logic where current line was not a continuation line */
         }
 
         /* Found a blank line, stop. */
