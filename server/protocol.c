@@ -837,6 +837,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         /* Process an obs-fold immediately by appending it to last_field */
         if ((*field == '\t') || *field == ' ') {
 
+            apr_size_t fold_len;
+
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
@@ -851,7 +853,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
              * doing O(n) allocs and using O(n^2) space for
              * continuations that span many many lines.
              */
-            apr_size_t fold_len = last_len + len + 1; /* trailing null */
+            fold_len = last_len + len + 1; /* trailing null */
 
             if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
                 const char *field_escaped;
