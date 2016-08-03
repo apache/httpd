@@ -840,7 +840,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
-                              "Line folding encounterd before first"
+                              "Line folding encountered before first"
                               " header line");
                 return;
             }
@@ -891,10 +891,14 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 last_field[last_len] = ' ';
             }
             last_len += len;
+
+            /* The obs-fold continuation line is merged to the last_field
+             * so continue to the next input line
+             */
             continue;
         }
 
-        /* not a continuation line */
+        /* Not a continuation line, so process the last_field fully composed */
 
         if (r->server->limit_req_fields
                 && (++fields_read > r->server->limit_req_fields)) {
@@ -1005,24 +1009,18 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
         apr_table_addn(r->headers_in, last_field, value);
 
-        /* reset the alloc_len so that we'll allocate a new
-         * buffer if we have to do any more folding: we can't
-         * use the previous buffer because its contents are
-         * now part of r->headers_in
+        /* After recording the last_field header line, we end our read loop
+         * here upon encountering the trailing line terminating headers
          */
-        alloc_len = 0;
-
-        /* end of logic where current line was not a continuation line */
-
-        /* Found a blank line, stop. */
         if (len == 0) {
             break;
         }
 
-        /* Keep track of this line so that we can parse it on
-         * the next loop iteration.  (In the folded case, last_field
-         * has been updated already.)
+        /* Keep track of this new header line (not an obs-fold). We will merge
+         * subsequent obs_fold lines on the next loop iterations. The zero
+         * alloc_len signals we have not allocated an obs-folding buffer yet
          */
+        alloc_len = 0;
         last_field = field;
         last_len = len;
     }
