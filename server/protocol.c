@@ -790,7 +790,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
      */
     while(1) {
         apr_status_t rv;
-        int folded = 0;
 
         field = NULL;
         rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
@@ -835,8 +834,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if ((len > 0) && ((*field == '\t') || *field == ' ')) {
+        if ((*field == '\t') || *field == ' ') {
 
+            /* Append any newly-read obs-fold line onto the preceding
+             * last_field line we are processing
+             */
             apr_size_t fold_len;
 
             if (last_field == NULL) {
@@ -894,12 +896,14 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 last_field[last_len] = ' ';
             }
             last_len += len;
-            folded = 1;
             continue;
         }
         else if (last_field != NULL) {
 
-            /* not a continuation line */
+            /* Process the previous last_field header line with all obs-folded
+             * segments already concatinated (this is not operating on the
+             * most recently read input line).
+             */
 
             if (r->server->limit_req_fields
                     && (++fields_read > r->server->limit_req_fields)) {
@@ -1014,28 +1018,24 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
             apr_table_addn(r->headers_in, last_field, value);
 
-            /* reset the alloc_len so that we'll allocate a new
-             * buffer if we have to do any more folding: we can't
-             * use the previous buffer because its contents are
-             * now part of r->headers_in
+            /* This last_field header is now stored in headers_in,
+             * resume processing of the current input line.
              */
-            alloc_len = 0;
-            /* end of logic where current line was not a continuation line */
         }
 
-        /* Found a blank line, stop. */
+        /* Found the terminating empty end-of-headers line, stop. */
         if (len == 0) {
             break;
         }
 
-        /* Keep track of this line so that we can parse it on
-         * the next loop iteration.  (In the folded case, last_field
-         * has been updated already.)
+        /* Keep track of this new header line so that we can extend it across
+         * any obs-fold or parse it on the next loop iteration. We referenced
+         * our previously allocated buffer in r->headers_in,
+         * so allocate a fresh buffer if required.
          */
-        if (!folded) {
-            last_field = field;
-            last_len = len;
-        }
+        alloc_len = 0;
+        last_field = field;
+        last_len = len;
     }
 
     /* Combine multiple message-header fields with the same
