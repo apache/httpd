@@ -858,6 +858,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 return;
             }
 
+            /* An empty obs-fold line can simply be ignored... */
+            if (field[1] == '\0') {
+                continue;
+            }
+
             /* This line is a continuation of the preceding line(s),
              * so append it to the line that we've set aside.
              * Note: this uses a power-of-two allocator to avoid
