@@ -858,15 +858,12 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 return;
             }
 
-            /* An empty obs-fold line can simply be ignored... */
-            if (field[1] == '\0') {
-                continue;
-            }
-
-            /* ...and leading whitespace on an obs-fold line can be
-             * similarly discarded */
-            while (field[1] == '\t' || field[1] == ' ') {
-                ++field; --len;
+            if (field[1] != '\0') {
+                /* ...and leading whitespace on an obs-fold line can be
+                 * similarly discarded */
+                while (field[1] == '\t' || field[1] == ' ') {
+                    ++field; --len;
+                }
             }
 
             /* This line is a continuation of the preceding line(s),
