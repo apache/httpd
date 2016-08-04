@@ -217,6 +217,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works (modulo CHANGES)
       +1: rpluem, jim
 
+  *) mod_http: Add the HEAD method to the lookup hash for completeness.
+      Trunk version of patch:
+         http://svn.apache.org/r1753257
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works (modulo CHANGES)
+      +1: wrowe
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
