@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
          http://svn.apache.org/r1753257
       Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
+         Trunk version of patch works
       +1: wrowe
 
 
