@@ -834,7 +834,16 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if ((*field == '\t') || *field == ' ') {
+        /* For all header values, and all obs-fold lines, the presence of
+         * additional whitespace is a no-op, so collapse trailing whitespace
+         * to save buffer allocation and optimize copy operations.
+         * Do not remove the last single whitespace under any condition.
+         */
+        while (len > 1 && (field[len-1] == '\t' || field[len-1] == ' ')) {
+            field[--len] = '\0';
+        } 
+
+        if (*field == '\t' || *field == ' ') {
 
             /* Append any newly-read obs-fold line onto the preceding
              * last_field line we are processing
@@ -954,13 +963,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                            && (*tmp_field == ' ' || *tmp_field == '\t')) {
                     *tmp_field-- = '\0';
                 }
-
-                /* Strip LWS after field-value: */
-                tmp_field = last_field + last_len - 1;
-                while (tmp_field > value
-                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
-                }
             }
             else /* Using strict RFC7230 parsing */
             {
@@ -989,15 +991,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 /* Find invalid, non-HT ctrl char, or the trailing NULL */
                 tmp_field = (char *)ap_scan_http_field_content(value);
-
-                /* Strip LWS after field-value, if string not empty */
-                if (*value && (*tmp_field == '\0')) {
-                    tmp_field--;
-                    while (*tmp_field == ' ' || *tmp_field == '\t') {
-                        *tmp_field-- = '\0';
-                    }
-                    ++tmp_field;
-                }
 
                 /* Reject value for all garbage input (CTRLs excluding HT)
                  * e.g. only VCHAR / SP / HT / obs-text are allowed per
