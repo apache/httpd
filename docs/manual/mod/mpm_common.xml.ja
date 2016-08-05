@@ -156,7 +156,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
+<modulelist>
 <module>prefork</module><module>threadpool</module>
 <module>worker</module></modulelist>
 <compatibility>2.0.49 以降</compatibility>
@@ -201,8 +201,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<modulelist><module>beos</module>
+<module>mpmt_os2</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 <compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。</compatibility>
 
@@ -260,9 +260,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
+<module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -302,9 +302,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <description>サーバが listen するIP アドレスとポート番号</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module>
+<module>mpmt_os2</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 <module>event</module>
 </modulelist>
@@ -390,9 +390,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>mpmt_os2</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -417,7 +417,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
+<modulelist>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
@@ -457,7 +457,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>MaxClients <var>number</var></syntax>
 <default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
@@ -501,7 +501,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>prefork</module>
 <module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
 
@@ -519,9 +519,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
+<modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
+<module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -556,22 +556,16 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
     <p>アイドルなスレッドの最大数です。異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をされます。</p>
 
-    <p><module>perchild</module> では、
-    デフォルトは <code>MaxSpareThreads 10</code> です。
-    この MPM はアイドルスレッド数を、それぞれの子プロセスごとに監視します。
-    子プロセスにアイドルスレッドが多すぎる場合は、
-    サーバはその子プロセスに含まれるスレッドを終了し始めます。</p>
-
-    <p><module>worker</module>, <module>leader</module>,
+    <p><module>worker</module>, 
     <module>threadpool</module> では、
     デフォルトは <code>MaxSpareThreads 250</code> です。
     この MPM はアイドルスレッド数をサーバ全体で監視します。
@@ -593,16 +587,11 @@ accept しようとしているときに、Apache がそれらの子プロセス
       <p><directive>MaxSpareThreads</directive> の取る値には制限があります。
       Apache は次の規則に従って自動的に補正します。</p>
       <ul>
-        <li><module>perchild</module> では、
-        <directive>MaxSpareThreads</directive> が
-        <directive module="mpm_common">ThreadLimit</directive>
-        と等しいかそれ以下である必要があります。</li>
-
         <li><module>mpm_netware</module> は
         <directive module="mpm_common">MinSpareThreads</directive>
         よりも大きい必要があります。</li>
 
-        <li><module>leader</module>, <module>threadpool</module>, 
+        <li><module>threadpool</module>, 
         <module>worker</module> では、
         <directive module="mpm_common">MinSpareThreads</directive> と
         <directive module="mpm_common">ThreadsPerChild</directive>
@@ -621,9 +610,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>詳細は使用方法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -631,17 +620,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をします。</p>
 
-    <p><module>perchild</module> では、
-    デフォルトは <code>MinSpareThreads 5</code> で、
-    アイドルスレッド数を子プロセス毎に監視します。
-    もし子プロセスに十分な数のスレッドがなければ、
-    サーバはその子プロセスに新しいスレッドを作り始めます。
-    ですから、<directive module="perchild">NumServers</directive>
-    を <code>10</code> に、<directive>MinSpareThreads</directive> を
-    <code>5</code> にした場合は、最小でも 50 のアイドルスレッドが
-    システム上にあることになります。</p>
-
-    <p><module>worker</module>, <module>leader</module>,
+    <p><module>worker</module>,
     <module>threadpool</module> では、
     デフォルトは <code>MinSpareThreads 75</code> で、
     アイドルスレッド数をサーバ全体で監視します。
@@ -670,8 +649,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -723,9 +702,9 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>mpmt_os2</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -744,7 +723,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ServerLimit <var>number</var></syntax>
 <default>詳細は使用法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
+<modulelist>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
@@ -780,7 +759,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     希望の <directive module="mpm_common">MaxClients</directive>
     数とくらべて、必要以上に大きな値を指定することは避けてください。</p>
 
-    <p><module>worker</module>, <module>leader</module>, 
+    <p><module>worker</module>,
     <module>threadpool</module> MPM では、
     <directive module="mpm_common">MaxClients</directive> と
     <directive module="mpm_common">ThreadsPerChild</directive>
@@ -790,10 +769,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
     <directive module="mpm_common">ThreadsPerChild</directive>
     とくらべて、必要となるサーバプロセス数以上に大きな値を
     設定することは避けてください。</p>
-
-    <p><module>perchild</module> MPM では、
-    <directive module="perchild">NumServers</directive> を 8 (デフォルト)
-    よろいも大きな値に設定する必要があるときにのみ使用してください。</p>
 
     <note><title>注意</title>
       <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています
@@ -811,7 +786,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>StartServers <var>number</var></syntax>
 <default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpmt_os2</module>
+<modulelist><module>mpmt_os2</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
@@ -822,7 +797,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     通常はこの値を調整する理由はあまりないでしょう。</p>
 
     <p>デフォルト値は MPM ごとに異なります。
-    <module>leader</module>, <module>threadpool</module>, 
+    <module>threadpool</module>, 
     <module>worker</module> は <code>StartServers 3</code> です。
     <module>prefork</module> は <code>5</code> で、
     <module>mpmt_os2</module> は <code>2</code> です。</p>
@@ -836,16 +811,12 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>mpm_netware</module>
-<module>perchild</module></modulelist>
+</modulelist>
 
 <usage>
     <p>起動時に生成されるスレッドの数です。
     スレッド数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
-
-    <p><module>perchild</module> でのデフォルトは
-    <code>StartThreads 5</code> で、このディレクティブは起動時に
-    プロセス毎のスレッド数を追跡します。</p>
 
     <p><module>mpm_netware</module> でのデフォルトは
     <code>StartThreads 50</code> で、
@@ -865,8 +836,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ThreadLimit <var>number</var></syntax>
 <default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_winnt</module>
+<module>threadpool</module><module>worker</module>
 </modulelist>
 <compatibility>Apache 2.0.41 とそれ以降の <module>mpm_winnt</module> 
 で利用可能</compatibility>
@@ -915,7 +886,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ThreadsPerChild <var>number</var></syntax>
 <default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
+<modulelist><module>mpm_winnt</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
@@ -943,8 +914,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>ThreadStackSize <var>size</var></syntax>
 <default>NetWare では 65536。他の OS では違った値</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>perchild</module>
+<modulelist><module>mpm_netware</module>
+<module>mpm_winnt</module>
 <module>threadpool</module><module>worker</module>
 </modulelist>
 <compatibility>2.1 以降</compatibility>
@@ -988,7 +959,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
+<modulelist>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 <compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。
@@ -1031,14 +1002,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
       module="mpm_common">Group</directive>) を <code>root</code> に
       設定しないでください。</p>
     </note>
-
-    <p><module>perchild</module> MPM では、異なるユーザ ID
-    で複数のバーチャルホストを動かすことを目的としていますが、
-    <directive>User</directive> は、主サーバのユーザ ID 
-    と、<directive module="perchild">AssignUserID</directive>
-    ディレクティブを持たない <directive type="section"
-    module="core">VirtualHost</directive> セクションへの
-    フォールバックとを定義することになります。</p>
 
     <p>特記事項: このディレクティブを
     <directive module="core" type="section">VirtualHost</directive>

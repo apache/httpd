@@ -59,9 +59,9 @@
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>個々の Apache モジュールをロードするための DSO サポートは
-    <code class="module"><a href="./mod/mod_so.c.html">mod_so.c</a></code> というモジュールの機能に基づいています。
+    <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> というモジュールの機能に基づいています。
     このモジュール は Apache のコアに静的に組み込まれている必要があります。
-    それは <code class="module"><a href="./mod/core.c.html">core.c</a></code> 以外では DSO にできない唯一の
+    それは <code class="module"><a href="./mod/core.html">core</a></code> 以外では DSO にできない唯一の
     モジュールです。事実上、他のすべての Apache のモジュールは、
     <a href="install.html">インストールの文書</a>で説明されているように、
     <code class="program"><a href="./programs/configure.html">configure</a></code> の

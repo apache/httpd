@@ -52,9 +52,9 @@
 </related>
 
     <p>個々の Apache モジュールをロードするための DSO サポートは
-    <module>mod_so.c</module> というモジュールの機能に基づいています。
+    <module>mod_so</module> というモジュールの機能に基づいています。
     このモジュール は Apache のコアに静的に組み込まれている必要があります。
-    それは <module>core.c</module> 以外では DSO にできない唯一の
+    それは <module>core</module> 以外では DSO にできない唯一の
     モジュールです。事実上、他のすべての Apache のモジュールは、
     <a href="install.html">インストールの文書</a>で説明されているように、
     <program>configure</program> の

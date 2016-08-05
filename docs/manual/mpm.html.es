@@ -87,10 +87,8 @@ como los usa Apache.</p>
       <code class="module"><a href="./mod/worker.html">worker</a></code>, mientras que los sitios web que
       requieran por encima de otras cosas estabilidad o compatibilidad
       con software antiguo pueden usar
-      <code class="module"><a href="./mod/prefork.html">prefork</a></code>. Además, se pueden configurar
-      funcionalidades especiales como servir diferentes hosts con
-      diferentes identificadores de usuario
-      (<code class="module"><a href="./mod/perchild.html">perchild</a></code>).</li>
+      <code class="module"><a href="./mod/prefork.html">prefork</a></code>.
+      </li>
     </ul>
 
     <p>A nivel de usuario, los MPMs son como cualquier otro

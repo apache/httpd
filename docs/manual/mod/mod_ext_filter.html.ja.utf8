@@ -124,7 +124,7 @@
           # run on output<br />
           SetOutputFilter gzip<br />
           <br />
-          # mod_header directive to add<br />
+          # mod_headers directive to add<br />
           # "Content-Encoding: gzip" header field<br />
           Header set Content-Encoding gzip<br />
         </span>
