@@ -99,7 +99,7 @@
         If instead you need <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> to generate
         a "best guess" for <var>PATH_INFO</var>, set this env-var.  The
         variable must be set before <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>
-        is effective.  <code class="directive"><a href="../mod/mod_setenv.html#setenvif">SetEnvIf</a></code> can be
+        is effective.  <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> can be
         used instead: <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
         </dd>
     </dl>
