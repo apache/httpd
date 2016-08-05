@@ -534,7 +534,7 @@
  *                         dav_get_acl_providers.
  * 20160608.5 (2.5.0-dev)  Add ap_proxy_check_backend(), and tmp_bb to struct
  *                         proxy_conn_rec.
- * 20160508.6 (2.5.0-dev)  Add ap_scan_http_field_content, ap_scan_http_token
+ * 20160608.6 (2.5.0-dev)  Add ap_scan_http_field_content, ap_scan_http_token
  *                         and ap_get_http_token
  */
 
