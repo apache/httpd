@@ -808,23 +808,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
              * exceeds the configured limit for a field size.
              */
             if (rv == APR_ENOSPC) {
-                const char *field_escaped;
-                if (field && len) {
-                    /* ensure ap_escape_html will terminate correctly */
-                    field[len - 1] = '\0';
-                    field_escaped = ap_escape_html(r->pool, field);
-                }
-                else {
-                    field_escaped = field = "";
-                }
-
                 apr_table_setn(r->notes, "error-notes",
-                               apr_psprintf(r->pool,
-                                           "Size of a request header field "
-                                           "exceeds server limit.<br />\n"
-                                           "<pre>\n%.*s\n</pre>\n", 
-                                           field_name_len(field_escaped),
-                                           field_escaped));
+                               "Size of a request header field "
+                               "exceeds server limit.");
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00561)
                               "Request header exceeds LimitRequestFieldSize%s"
                               "%.*s",
@@ -880,21 +866,13 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             fold_len = last_len + len + 1; /* trailing null */
 
             if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
-                const char *field_escaped;
-
                 r->status = HTTP_BAD_REQUEST;
                 /* report what we have accumulated so far before the
                  * overflow (last_field) as the field with the problem
                  */
-                field_escaped = ap_escape_html(r->pool, last_field);
                 apr_table_setn(r->notes, "error-notes",
-                               apr_psprintf(r->pool,
-                                            "Size of a request header field "
-                                            "after folding "
-                                            "exceeds server limit.<br />\n"
-                                            "<pre>\n%.*s\n</pre>\n", 
-                                            field_name_len(field_escaped), 
-                                            field_escaped));
+                               "Size of a request header field "
+                               "exceeds server limit.");
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00562)
                               "Request header exceeds LimitRequestFieldSize "
                               "after folding: %.*s",
@@ -949,13 +927,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
                     r->status = HTTP_BAD_REQUEST;   /* abort bad request */
-                    apr_table_setn(r->notes, "error-notes",
-                        apr_psprintf(r->pool,
-                                     "Request header field is "
-                                     "missing ':' separator.<br />\n"
-                                     "<pre>\n%.*s</pre>\n", 
-                                     (int)LOG_NAME_MAX_LEN,
-                                     ap_escape_html(r->pool, last_field)));
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
                                   "Request header field is missing ':' "
                                   "separator: %.*s", (int)LOG_NAME_MAX_LEN,
@@ -983,13 +954,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 value = (char *)ap_scan_http_token(last_field);
                 if ((value == last_field) || *value != ':') {
                     r->status = HTTP_BAD_REQUEST;
-                    apr_table_setn(r->notes, "error-notes",
-                        apr_psprintf(r->pool,
-                                     "Request header field name "
-                                     "is malformed.<br />\n"
-                                     "<pre>\n%.*s</pre>\n", 
-                                     (int)LOG_NAME_MAX_LEN,
-                                     ap_escape_html(r->pool, last_field)));
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
                                   "Request header field name is malformed: "
                                   "%.*s", (int)LOG_NAME_MAX_LEN, last_field);
@@ -1012,13 +976,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  */
                 if (*tmp_field != '\0') {
                     r->status = HTTP_BAD_REQUEST;
-                    apr_table_setn(r->notes, "error-notes",
-                        apr_psprintf(r->pool,
-                                     "Request header value "
-                                     "is malformed.<br />\n"
-                                     "<pre>\n%.*s</pre>\n", 
-                                     (int)LOG_NAME_MAX_LEN,
-                                     ap_escape_html(r->pool, value)));
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
                                   "Request header value is malformed: "
                                   "%.*s", (int)LOG_NAME_MAX_LEN, value);
