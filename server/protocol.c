@@ -814,8 +814,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00561)
                               "Request header exceeds LimitRequestFieldSize%s"
                               "%.*s",
-                              *field ? ": " : "",
-                              field_name_len(field), field);
+                              (field && *field) ? ": " : "",
+                              (field) ? field_name_len(field) : 0,
+                              (field) ? field : "");
             }
             return;
         }
