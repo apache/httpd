@@ -103,7 +103,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.49 以降</td></tr>
 </table>
     <p>安全上の理由から、<code>--enable-exception-hook</code> configure
@@ -143,7 +143,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 から必須ディレクティブ。<var>protocol</var>
 引数は 2.1.5 で追加。</td></tr>
 </table>
@@ -228,7 +228,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ListenBacklog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>保留状態のコネクションのキューの最大長です。
     一般的には調整する必要はありませんし、調整は望ましくありません。
@@ -286,7 +286,7 @@ will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxMemFree 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
     <p><code class="directive">MaxMemFree</code> ディレクティブは
     <code>free()</code> が呼ばれない限り、
@@ -315,18 +315,12 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用法をご覧下さい。</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>アイドルなスレッドの最大数です。異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をされます。</p>
 
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> では、
-    デフォルトは <code>MaxSpareThreads 10</code> です。
-    この MPM はアイドルスレッド数を、それぞれの子プロセスごとに監視します。
-    子プロセスにアイドルスレッドが多すぎる場合は、
-    サーバはその子プロセスに含まれるスレッドを終了し始めます。</p>
-
-    <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code>, 
     <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> では、
     デフォルトは <code>MaxSpareThreads 250</code> です。
     この MPM はアイドルスレッド数をサーバ全体で監視します。
@@ -348,16 +342,11 @@ simultaneously</td></tr>
       <p><code class="directive">MaxSpareThreads</code> の取る値には制限があります。
       Apache は次の規則に従って自動的に補正します。</p>
       <ul>
-        <li><code class="module"><a href="../mod/perchild.html">perchild</a></code> では、
-        <code class="directive">MaxSpareThreads</code> が
-        <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>
-        と等しいかそれ以下である必要があります。</li>
-
         <li><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> は
         <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>
         よりも大きい必要があります。</li>
 
-        <li><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, 
+        <li><code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, 
         <code class="module"><a href="../mod/worker.html">worker</a></code> では、
         <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code> と
         <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
@@ -380,23 +369,13 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用方法をご覧下さい。</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>リクエストに応答するスレッド数の最小値です。
     異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をします。</p>
 
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> では、
-    デフォルトは <code>MinSpareThreads 5</code> で、
-    アイドルスレッド数を子プロセス毎に監視します。
-    もし子プロセスに十分な数のスレッドがなければ、
-    サーバはその子プロセスに新しいスレッドを作り始めます。
-    ですから、<code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code>
-    を <code>10</code> に、<code class="directive">MinSpareThreads</code> を
-    <code>5</code> にした場合は、最小でも 50 のアイドルスレッドが
-    システム上にあることになります。</p>
-
-    <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code>,
     <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> では、
     デフォルトは <code>MinSpareThreads 75</code> で、
     アイドルスレッド数をサーバ全体で監視します。
@@ -429,7 +408,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>PidFile logs/httpd.pid</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p><code class="directive">PidFile</code> ディレクティブで、
     デーモンのプロセス ID をサーバが記録するファイルを設定します。
@@ -485,7 +464,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Apache は親プロセスと子プロセス間の通信にスコアボードを用います。
     この通信機能にファイルを必要とするアーキテクチャもあります。
@@ -521,7 +500,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SendBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>サーバは TCP 送信バッファサイズを指定されたバイト数に設定します。
     高速で高レイテンシな環境で
@@ -539,7 +518,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用法を参照</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p><code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM の場合は、このディレクティブは
     Apache プロセス稼働中における
@@ -572,7 +551,7 @@ simultaneously</td></tr>
     希望の <code class="directive"><a href="#maxclients">MaxClients</a></code>
     数とくらべて、必要以上に大きな値を指定することは避けてください。</p>
 
-    <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, 
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code>,
     <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> MPM では、
     <code class="directive"><a href="#maxclients">MaxClients</a></code> と
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
@@ -582,10 +561,6 @@ simultaneously</td></tr>
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     とくらべて、必要となるサーバプロセス数以上に大きな値を
     設定することは避けてください。</p>
-
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM では、
-    <code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code> を 8 (デフォルト)
-    よろいも大きな値に設定する必要があるときにのみ使用してください。</p>
 
     <div class="note"><h3>注意</h3>
       <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています
@@ -607,7 +582,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用方法を参照</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p><code class="directive">StartServers</code> ディレクティブは、
     起動時に生成される子サーバプロセスの数を設定します。
@@ -615,7 +590,7 @@ simultaneously</td></tr>
     通常はこの値を調整する理由はあまりないでしょう。</p>
 
     <p>デフォルト値は MPM ごとに異なります。
-    <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, 
+    <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, 
     <code class="module"><a href="../mod/worker.html">worker</a></code> は <code>StartServers 3</code> です。
     <code class="module"><a href="../mod/prefork.html">prefork</a></code> は <code>5</code> で、
     <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> は <code>2</code> です。</p>
@@ -629,15 +604,11 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用方法を参照</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 </table>
     <p>起動時に生成されるスレッドの数です。
     スレッド数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
-
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> でのデフォルトは
-    <code>StartThreads 5</code> で、このディレクティブは起動時に
-    プロセス毎のスレッド数を追跡します。</p>
 
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> でのデフォルトは
     <code>StartThreads 50</code> で、
@@ -658,7 +629,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用方法を参照</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.41 とそれ以降の <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> 
 で利用可能</td></tr>
 </table>
@@ -705,7 +676,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>詳細は使用方法を参照</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>このディレクティブは、それぞれの子プロセスで生成される
     スレッド数を設定します。
@@ -732,7 +703,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>NetWare では 65536。他の OS では違った値</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.1 以降</td></tr>
 </table>
     <p>クライアントコネクションを受け持ち、コネクション処理に必要なモジュールの

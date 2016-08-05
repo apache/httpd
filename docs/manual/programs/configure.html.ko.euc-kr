@@ -333,7 +333,7 @@
 
         <dt><code>--disable-cgid</code></dt>
         <dd>쓰레드 MPM인 <code class="module"><a href="../mod/worker.html">worker</a></code>나
-          <code class="module"><a href="../mod/perchild.html">perchild</a></code>를 사용하는 경우 기본적으로
+          를 사용하는 경우 기본적으로
           <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>가 CGI 스크립트를 지원한다.
           이 옵션을 사용하면 CGI를 지원하지 않는다.</dd>
 
@@ -642,8 +642,8 @@
         <dd>서버의 동작방식을 선택한다. 정확히 한가지 <a href="../mpm.html">다중처리모듈</a>만을 선택해야 한다.
           선택하지 않으면 사용하는 운영체제의 <a href="../mpm.html#defaults">기본 MPM</a>을 사용한다.
           사용할 수 있는 MPM에는 <code class="module"><a href="../mod/beos.html">beos</a></code>,
-          <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>,
-          <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>,
+          <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>,
+          <code class="module"><a href="../mod/prefork.html">prefork</a></code>,
           <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>가
           있다.</dd>
       </dl>

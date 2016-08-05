@@ -327,7 +327,7 @@
 
         <dt><code>--disable-cgid</code></dt>
         <dd>쓰레드 MPM인 <module>worker</module>나
-          <module>perchild</module>를 사용하는 경우 기본적으로
+          를 사용하는 경우 기본적으로
           <module>mod_cgid</module>가 CGI 스크립트를 지원한다.
           이 옵션을 사용하면 CGI를 지원하지 않는다.</dd>
 
@@ -639,8 +639,8 @@
           선택하지 않으면 사용하는 운영체제의 <a
           href="../mpm.html#defaults">기본 MPM</a>을 사용한다.
           사용할 수 있는 MPM에는 <module>beos</module>,
-          <module>leader</module>, <module>mpmt_os2</module>,
-          <module>perchild</module>, <module>prefork</module>,
+          <module>mpmt_os2</module>,
+          <module>prefork</module>,
           <module>threadpool</module>, <module>worker</module>가
           있다.</dd>
       </dl>

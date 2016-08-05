@@ -184,7 +184,7 @@
   [<var>protokol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module>
+<module>mpmt_os2</module>
 <module>prefork</module><module>worker</module><module>event</module>
 </modulelist>
 <compatibility>Apache HTTP Sunucusu 2.0’dan beri gerekli yönergelerden

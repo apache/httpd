@@ -62,7 +62,7 @@
 
     <p>もし <code><a href="#indexoptions.fancyindexing"
     >FancyIndexing</a></code>オプションが
-    <directive module="autoindex">IndexOptions</directive>
+    <directive module="mod_autoindex">IndexOptions</directive>
     ディレクティブに与えられているならば、
     列の先頭は表示の順番を制御するリンクになります。
     先頭のリンクを選択すると、一覧は再生成されて
