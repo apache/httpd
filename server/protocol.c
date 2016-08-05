@@ -853,17 +853,22 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
-                              "Line folding encounterd before first"
+                              "Line folding encountered before first"
                               " header line");
                 return;
             }
 
-            if (field[1] != '\0') {
-                /* ...and leading whitespace on an obs-fold line can be
-                 * similarly discarded */
-                while (field[1] == '\t' || field[1] == ' ') {
-                    ++field; --len;
-                }
+            if (field[1] == '\0') {
+                r->status = HTTP_BAD_REQUEST;
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03443)
+                              "Empty folded line encountered");
+                return;
+            }
+
+            /* Leading whitespace on an obs-fold line can be
+             * similarly discarded */
+            while (field[1] == '\t' || field[1] == ' ') {
+                ++field; --len;
             }
 
             /* This line is a continuation of the preceding line(s),
