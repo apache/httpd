@@ -35,7 +35,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>AcceptMutex Default|<var>method</var></syntax>
 <default>AcceptMutex Default</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
+<modulelist>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
@@ -127,8 +127,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>デフォルトの設定は説明文を読んでください</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
