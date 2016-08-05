@@ -70,6 +70,7 @@ struct h2_task {
     struct {
         struct h2_bucket_beam *beam;
         struct h2_from_h1 *from_h1;
+        unsigned int opened : 1;
         unsigned int response_open : 1;
         unsigned int copy_files : 1;
         apr_off_t written;
@@ -85,7 +86,7 @@ struct h2_task {
     unsigned int frozen         : 1;
     unsigned int blocking       : 1;
     unsigned int detached       : 1;
-    unsigned int submitted      : 1; /* response has been submitted to client */
+    unsigned int response_sent  : 1; /* a response has been sent to client */
     unsigned int worker_started : 1; /* h2_worker started processing for this io */
     unsigned int worker_done    : 1; /* h2_worker finished for this io */
     
@@ -105,7 +106,7 @@ void h2_task_destroy(h2_task *task);
 
 apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread);
 
-void h2_task_set_response(h2_task *task, struct h2_response *response);
+apr_status_t h2_task_add_response(h2_task *task, struct h2_response *response);
 
 void h2_task_redo(h2_task *task);
 int h2_task_can_redo(h2_task *task);
