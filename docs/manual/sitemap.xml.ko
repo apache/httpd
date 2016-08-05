@@ -74,13 +74,6 @@
 <page href="dns-caveats.html">DNS와 아파치와 관련된 사항</page>
 </category>
 
-<category id="faq">
-<title>아파치 서버에 대해 자주 물어보는 질문</title>
-<page href="faq/">개요</page>
-<page href="faq/support.html">지원</page>
-<page href="faq/error.html">오류문</page>
-</category>
-
 <category id="ssl">
 <title>아파치 SSL/TLS 암호화</title>
 <page separate="yes" href="ssl/">소개</page>
