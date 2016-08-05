@@ -1419,17 +1419,27 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
     if (!stream) {
         return APR_NOTFOUND;
     }
-    
-    response = h2_stream_get_response(stream);
-    AP_DEBUG_ASSERT(response || stream->rst_error);
-    
-    if (stream->submitted) {
-        rv = NGHTTP2_PROTOCOL_ERROR;
+    else if (!stream->response) {
+        int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
+        
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03074)
+                      "h2_stream(%ld-%d): RST_STREAM, err=%d",
+                      session->id, stream->id, err);
+
+        rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                       stream->id, err);
+        goto leave;
     }
-    else if (response && response->headers) {
+    
+    while ((response = h2_stream_get_unsent_response(stream)) != NULL) {
         nghttp2_data_provider provider, *pprovider = NULL;
         h2_ngheader *ngh;
         const h2_priority *prio;
+        
+        if (stream->submitted) {
+            rv = NGHTTP2_PROTOCOL_ERROR;
+            goto leave;
+        }
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03073)
                       "h2_stream(%ld-%d): submit response %d, REMOTE_WINDOW_SIZE=%u",
@@ -1458,7 +1468,9 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
          *    as the client, having this resource in its cache, might
          *    also have the pushed ones as well.
          */
-        if (stream->request && !stream->request->initiated_on
+        if (stream->request 
+            && !stream->request->initiated_on
+            && h2_response_is_final(response)
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
             
@@ -1468,35 +1480,24 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
         prio = h2_stream_get_priority(stream);
         if (prio) {
             h2_session_set_prio(session, stream, prio);
-            /* no showstopper if that fails for some reason */
         }
         
         ngh = h2_util_ngheader_make_res(stream->pool, response->http_status, 
                                         response->headers);
         rv = nghttp2_submit_response(session->ngh2, response->stream_id,
                                      ngh->nv, ngh->nvlen, pprovider);
-    }
-    else {
-        int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
+        stream->submitted = h2_response_is_final(response);
+        session->have_written = 1;
         
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03074)
-                      "h2_stream(%ld-%d): RST_STREAM, err=%d",
-                      session->id, stream->id, err);
-
-        rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
-                                       stream->id, err);
+        if (stream->request && stream->request->initiated_on) {
+            ++session->pushes_submitted;
+        }
+        else {
+            ++session->responses_submitted;
+        }
     }
     
-    stream->submitted = 1;
-    session->have_written = 1;
-    
-    if (stream->request && stream->request->initiated_on) {
-        ++session->pushes_submitted;
-    }
-    else {
-        ++session->responses_submitted;
-    }
-    
+leave:
     if (nghttp2_is_fatal(rv)) {
         status = APR_EGENERAL;
         dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, rv, nghttp2_strerror(rv));
@@ -1699,7 +1700,12 @@ static void update_child_status(h2_session *session, int status, const char *msg
 static void transit(h2_session *session, const char *action, h2_session_state nstate)
 {
     if (session->state != nstate) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03078)
+        int loglvl = APLOG_DEBUG;
+        if ((session->state == H2_SESSION_ST_BUSY && nstate == H2_SESSION_ST_WAIT)
+            || (session->state == H2_SESSION_ST_WAIT && nstate == H2_SESSION_ST_BUSY)){
+            loglvl = APLOG_TRACE1;
+        }
+        ap_log_cerror(APLOG_MARK, loglvl, 0, session->c, APLOGNO(03078)
                       "h2_session(%ld): transit [%s] -- %s --> [%s]", session->id,
                       state_name(session->state), action, state_name(nstate));
         session->state = nstate;

@@ -265,6 +265,16 @@ struct h2_response *h2_stream_get_response(h2_stream *stream)
     return stream->response;
 }
 
+struct h2_response *h2_stream_get_unsent_response(h2_stream *stream)
+{
+    h2_response *unsent = (stream->last_sent? 
+                           stream->last_sent->next : stream->response);
+    if (unsent) {
+        stream->last_sent = unsent;
+    }
+    return unsent;
+}
+
 apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
 {
     apr_status_t status;
@@ -524,11 +534,12 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
     return status;
 }
 
-apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
+apr_status_t h2_stream_add_response(h2_stream *stream, h2_response *response,
                                     h2_bucket_beam *output)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = stream->session->c;
+    h2_response **pr = &stream->response;
     
     if (!output_open(stream)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
@@ -536,15 +547,29 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                       stream->session->id, stream->id);
         return APR_ECONNRESET;
     }
-    
-    stream->response = response;
-    stream->output = output;
-    stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
-    
-    h2_stream_filter(stream);
-    if (stream->output) {
-        status = fill_buffer(stream, 0);
+    if (stream->submitted) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_stream(%ld-%d): already submitted final response", 
+                      stream->session->id, stream->id);
+        return APR_ECONNRESET;
     }
+    
+    /* append */
+    while (*pr) {
+        pr = &((*pr)->next);
+    }
+    *pr = response;
+    
+    if (h2_response_is_final(response)) {
+        stream->output = output;
+        stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+        
+        h2_stream_filter(stream);
+        if (stream->output) {
+            status = fill_buffer(stream, 0);
+        }
+    }
+    
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_stream(%ld-%d): set_response(%d)", 
                   stream->session->id, stream->id, 
@@ -561,7 +586,7 @@ apr_status_t h2_stream_set_error(h2_stream *stream, int http_status)
     }
     response = h2_response_die(stream->id, http_status, stream->request, 
                                stream->pool);
-    return h2_stream_set_response(stream, response, NULL);
+    return h2_stream_add_response(stream, response, NULL);
 }
 
 static const apr_size_t DATA_CHUNK_SIZE = ((16*1024) - 100 - 9); 
@@ -579,6 +604,10 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
         return APR_ECONNRESET;
     }
 
+    if (!stream->buffer) {
+        return APR_EAGAIN;
+    }
+    
     if (*plen > 0) {
         requested = H2MIN(*plen, DATA_CHUNK_SIZE);
     }
@@ -662,7 +691,7 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
     int i;
     
     pushes = h2_push_collect_update(stream, stream->request, 
-                                    h2_stream_get_response(stream));
+                                    stream->response);
     if (pushes && !apr_is_empty_array(pushes)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): found %d push candidates",
@@ -686,10 +715,8 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
-    h2_response *response = h2_stream_get_response(stream);
-    
-    if (response && stream->request && stream->request->initiated_on) {
-        const char *ctype = apr_table_get(response->headers, "content-type");
+    if (stream->response && stream->request && stream->request->initiated_on) {
+        const char *ctype = apr_table_get(stream->response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */
             return h2_config_get_priority(stream->session->config, ctype);

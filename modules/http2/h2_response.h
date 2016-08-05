@@ -40,7 +40,7 @@ h2_response *h2_response_create(int stream_id,
  * @param header the headers of the response
  * @param pool the memory pool to use
  */
-h2_response *h2_response_rcreate(int stream_id, request_rec *r,
+h2_response *h2_response_rcreate(int stream_id, request_rec *r, int status, 
                                  apr_table_t *header, apr_pool_t *pool);
 
 /**
@@ -69,5 +69,8 @@ h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from);
  * @param trailers the trailers to set
  */
 void h2_response_set_trailers(h2_response *response, apr_table_t *trailers);
+
+int h2_response_is_final(h2_response *response);
+h2_response *h2_response_get_final(h2_response *response);
 
 #endif /* defined(__mod_h2__h2_response__) */

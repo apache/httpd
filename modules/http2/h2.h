@@ -146,6 +146,8 @@ struct h2_response {
     apr_off_t   content_length;
     apr_table_t *headers;
     apr_table_t *trailers;
+    struct h2_response *next;
+    
     const char  *sos_filter;
 };
 

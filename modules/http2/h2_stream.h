@@ -52,6 +52,7 @@ struct h2_stream {
     int request_headers_added;  /* number of request headers added */
     
     struct h2_response *response;
+    struct h2_response *last_sent;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
     apr_bucket_brigade *tmp;
@@ -179,6 +180,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
 int h2_stream_is_scheduled(const h2_stream *stream);
 
 struct h2_response *h2_stream_get_response(h2_stream *stream);
+struct h2_response *h2_stream_get_unsent_response(h2_stream *stream);
 
 /**
  * Set the response for this stream. Invoked when all meta data for
@@ -189,7 +191,7 @@ struct h2_response *h2_stream_get_response(h2_stream *stream);
  * @param bb bucket brigade with output data for the stream. Optional,
  *        may be incomplete.
  */
-apr_status_t h2_stream_set_response(h2_stream *stream, 
+apr_status_t h2_stream_add_response(h2_stream *stream, 
                                     struct h2_response *response,
                                     struct h2_bucket_beam *output);
 
