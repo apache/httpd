@@ -1081,8 +1081,9 @@ a user's directory, then you cannot use the rewrite engine. This
 restriction is required for security reasons.</li>
 
 <li>When using the rewrite engine in <code>.htaccess</code> files the
-per-directory prefix (which always is the same for a specific
-directory) is automatically <em>removed</em> for the RewriteRule pattern matching
+per-directory prefix (that is, the URI path that lead to the directory
+containing this <code>.htaccess</code> file)
+is automatically <em>removed</em> for the RewriteRule pattern matching
 and automatically <em>added</em> after any relative (not starting with a
 slash or protocol name) substitution encounters the end of a rule set.
 See the <code class="directive"><a href="#rewritebase">RewriteBase</a></code>
