@@ -76,14 +76,6 @@
 <page href="dns-caveats.html">DNS と Apache とに関係する問題</page>
 </category>
 
-<category id="faq">
-<title>Apache サーバのよくある質問</title>
-<page href="faq/">概略</page>
-<page href="faq/background.html">背景の説明</page>
-<page href="faq/support.html">サポート</page>
-<page href="faq/error.html">エラーメッセージ</page>
-</category>
-
 <category id="ssl">
 <title>Apache の SSL/TLS 暗号化</title>
 <page separate="yes" href="ssl/">概略</page>
