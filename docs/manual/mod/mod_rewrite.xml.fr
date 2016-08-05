@@ -1313,7 +1313,7 @@ substitution !
 
       </dl>
 
-      <p>En plus du texte, la chaîne <em>Substition</em> peut
+      <p>En plus du texte, la chaîne <em>Substitution</em> peut
       comporter :</p>
 
       <ol>
