@@ -486,7 +486,7 @@
 
     <p>그리고 물론 CGI 프로그램 동작에 대한 모든 내용을 설명한
     CGI 규약을 읽어야 할지도 모른다. <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a>에
-    원본 문서가 있고, 수정한 초안은 <a href="http://web.golux.com/coar/cgi/">Common Gateway Interface
+    원본 문서가 있고, 수정한 초안은 <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway Interface
     RFC 프로젝트</a>에 있다.</p>
 
     <p>메일링리스트나 뉴스그룹에 현재 격고 있는 CGI 문제에 대해

@@ -540,7 +540,7 @@ foreach $key (keys %ENV) {
     CGI の仕様を読むべきです。オリジナルバージョンを
     <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a>
     で、アップデートされたドラフトを
-    <a href="http://web.golux.com/coar/cgi/">Common Gateway Interface RFC
+    <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway Interface RFC
     プロジェクト</a>で参照することができます。</p>
 
     <p>CGI の問題について、加わっているメーリングリストまたはニュース
