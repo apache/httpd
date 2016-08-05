@@ -45,7 +45,6 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#release">발표문</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">아파치 웹서버 사용하기</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vhosts">아파치 가상호스트 문서</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#faq">아파치 서버에 대해 자주 물어보는 질문</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ssl">아파치 SSL/TLS 암호화</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#howto">지침서, 투토리얼, HowTo</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#platform">플래폼별 설명</a></li>
@@ -96,12 +95,6 @@
 <li><a href="vhosts/details.html">가상호스트 찾기에 대한 자세한 설명</a></li>
 <li><a href="vhosts/fd-limits.html">파일기술자(file descriptor) 한계</a></li>
 <li><a href="dns-caveats.html">DNS와 아파치와 관련된 사항</a></li>
-</ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="faq" id="faq">아파치 서버에 대해 자주 물어보는 질문</a></h2>
-<ul><li><a href="faq/">개요</a></li>
-<li><a href="faq/support.html">지원</a></li>
-<li><a href="faq/error.html">오류문</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">아파치 SSL/TLS 암호화</a></h2>
