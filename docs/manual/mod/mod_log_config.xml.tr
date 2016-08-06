@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1722704:1746928 (outdated) -->
+<!-- English Revision: 1746928 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -536,7 +536,7 @@ CustomLog "referer.log" referer env=!localreferer
       adın yüzde imi (<code>%</code>) içeremeyeceğine de dikkat ediniz.</p>
 
     <highlight language="config">
-      LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
+LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
     </highlight>
 </usage>
 </directivesynopsis>

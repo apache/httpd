@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1745806 (outdated) -->
+<!-- English Revision: 1745806 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -43,14 +43,15 @@
     kullanırken <code>conf/httpd.conf</code> öntanımlı yapılandırma
     dosyasındaki</p>
 
-    <example>
-      #Include conf/extra/httpd-userdir.conf
-    </example>
+    <highlight language="config">
+#Include conf/extra/httpd-userdir.conf
+    </highlight>
 
   <p>satırını etkin hale getirip, gerekiyorsa <code>httpd-userdir.conf</code>
     dosyasını da düzenleyerek veya ana yapılandırma dosyasında bir
-    <code>Directory</code> bloğu içine uygun yönergeleri yerleştirerek bu
-    dizinlere erişimi etkin hale getirebilirsiniz.</p>
+    <directive module="core" type="section">Directory</directive> bloğu içine 
+    uygun yönergeleri yerleştirerek bu dizinlere erişimi etkin hale 
+    getirebilirsiniz.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemi ile
@@ -81,7 +82,9 @@
      kullanıcının ev dizinine göreli bir dizin belirtildiği varsayılır.
      Yapılandırmada şöyle bir satır varsa:</p>
 
-    <highlight language="config">UserDir public_html</highlight>
+    <highlight language="config">
+UserDir public_html
+    </highlight>
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
@@ -92,7 +95,9 @@
       dizinlerde bulunacağı varsayılır. Yapılandırmada şöyle bir satır
       varsa:</p>
 
-    <highlight language="config">UserDir /var/html</highlight>
+    <highlight language="config">
+UserDir /var/html
+    </highlight>
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
@@ -102,7 +107,9 @@
       yerine kullanıcı ismi yerleştirilerek elde edilen dosya yolu
       kullanılır. Yapılandırmada şöyle bir satır varsa:</p>
 
-    <highlight language="config">UserDir /var/html/*/sayfam</highlight>
+    <highlight language="config">
+UserDir /var/html/*/sayfam
+     </highlight>
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
       gelen dosya yolu <code>/var/html/orhan/sayfam/dosya.html</code>
@@ -110,7 +117,9 @@
 
     <p>Çok sayıda dizin veya dizin yolu belirtmek de mümkündür.</p>
 
-    <highlight language="config">UserDir public_html /var/html</highlight>
+    <highlight language="config">
+UserDir public_html /var/html
+    </highlight>
 
     <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
       <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
@@ -125,7 +134,9 @@
       kullanıcı dizini isteklerini harici adreslere yönlendirmek için de
       kullanılabilir.</p>
 
-    <highlight language="config">UserDir http://example.org/users/*/</highlight>
+    <highlight language="config">
+UserDir http://example.org/users/*/
+    </highlight>
 
     <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
     için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
@@ -139,7 +150,9 @@
       açıklamasında belirtilen sözdizimini kullanarak bu işlevselliği bazı
       kullanıcılara yasaklayabilirsiniz:</p>
 
-    <highlight language="config">UserDir disabled root ahmet veli</highlight>
+    <highlight language="config">
+UserDir disabled root ahmet veli
+    </highlight>
 
     <p>Bu yapılandırma ile <code>disabled</code> deyiminin bulunduğu
       satırdaki kullanıcılar dışında kalan bütün kullanıcılar için bu özellik
@@ -148,8 +161,8 @@
       sağlayabilirsiniz:</p>
 
     <highlight language="config">
-      UserDir disabled<br />
-      UserDir enabled orhan yasar
+UserDir disabled
+UserDir enabled orhan yasar
     </highlight>
 
     <p>Daha fazla örnek için <directive module="mod_userdir"

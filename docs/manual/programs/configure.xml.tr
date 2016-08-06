@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1562488:1750571 (outdated) -->
+<!-- English Revision: 1750571 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -306,10 +306,11 @@
 
     <section id="choosemodules"><title>Derlenecek modüllerin seçimi</title>
       <p>Modüllerin çoğu öntanımlı olarak derlenir ve ya açıkça iptal edilmek
-        ya da <code>few</code> veya <code>none</code> anahtar sözcükleri
+        ya da <code>few</code> anahtar sözcüğü
         kullanılarak kaldırılmak zorunda kalınır (ayrıntılar için
         <code>--enable-modules</code>, <code>--enable-mods-shared</code> ve
-        <code>--enable-mods-static</code> seçeneklerine bakın).</p>
+        <code>--enable-mods-static</code> seçeneklerine bakın). Bir grubu 
+        tamamen kaldırmak için <code>--enable-modules=none</code> gerekir.</p>
 
         <p>Öntanımlı olarak derlenmeyenler ise ya açıkça etkin kılınmak ya da
           <code>all</code> veya <code>reallyall</code> anahtar sözcükleriyle
@@ -435,9 +436,8 @@
           </example>
 
           <p><code><var>modül-listesi</var></code> yerine
-            <code>reallyall</code>, <code>all</code>, <code>most</code>,
-            <code>few</code> ve <code>none</code> anahtar sözcükleri de
-            belirtilebilir. Örneğin,</p>
+            <code>reallyall</code>, <code>all</code>, <code>most</code> ve 
+            <code>few</code> anahtar sözcükleri de belirtilebilir. Örneğin,</p>
 
           <example>
             --enable-mods-shared=most
