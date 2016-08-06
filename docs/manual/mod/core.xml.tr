@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1733954:1750752 (outdated) -->
+<!-- English Revision: 1750752  -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -205,7 +205,9 @@ AcceptFilter https data
       işlerken önce bu dizinlerde bu yönergede belirtilmiş yapılandırma
       dosyasını arar. Örnek:</p>
 
-    <highlight language="config">AccessFileName .acl</highlight>
+    <highlight language="config">
+AccessFileName .acl
+    </highlight>
 
     <p>Sunucu, <code>/usr/local/web/index.html</code> belgesini döndürmeden
       önce,</p>
@@ -253,7 +255,9 @@ AcceptFilter https data
       href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
-    <highlight language="config">AddDefaultCharset utf-8</highlight>
+    <highlight language="config">
+AddDefaultCharset utf-8
+    </highlight>
 
     <p><directive>AddDefaultCharset</directive> yönergesi sadece, metin
       kaynaklarının hepsinin aynı karakter kümesine sahip olduğu bilindiği
@@ -481,7 +485,9 @@ AcceptFilter https data
 
     <p>Örnek:</p>
 
-    <highlight language="config">AllowOverride AuthConfig Indexes</highlight>
+    <highlight language="config">
+AllowOverride AuthConfig Indexes
+    </highlight>
 
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
       yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
@@ -615,6 +621,30 @@ olarak aktarılmasını etkin kılar</description>
 </usage>
 </directivesynopsis>
 
+ <directivesynopsis>
+<name>CGIVar</name>
+<description>Bazı CGI değişkenlerinin nasıl atanacağını belirler</description>
+<syntax>CGIVar <var>değişken</var> <var>kural</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Apache HTTP Server 2.4.21 ve sonrasında kullanılabilir</compatibility>
+
+<usage>
+  <p>Bu yönerge bazı CGI değişkenlerinin nasıl atanacağını belirler.</p>
+
+  <p><strong>REQUEST_URI</strong> kuralları:</p>
+  <dl>
+    <dt><code>original-uri</code> (default)</dt>
+    <dd>Değer özgün istek satırından alınır ve dahili yöneldirmeler veya 
+    istenen özkaynakları değiştiren alt istekler dikkate alınmaz.</dd>
+    <dt><code>current-uri</code></dt>
+    <dd>Değer özgün istek satırından farklı olabilecek dahili yönlendirmeleri 
+    veya istenen özkaynakları değiştiren alt istekleri de yansıtır.</dd>
+  </dl>
+</usage>
+</directivesynopsis>
+
 <directivesynopsis>
 <name>ContentDigest</name>
 <description><code>Content-MD5</code> HTTP yanıt başlıklarının üretimini
@@ -712,7 +742,9 @@ için iptal edilmiştir.</compatibility>
     uyumluluğunu sağlamak için, öntanımlı bir ortam türünün olmadığını
     belirten <code>none</code> değeriyle belirtilebilir. Örnek:</p>
 
-    <highlight language="config">DefaultType None</highlight>
+    <highlight language="config">
+DefaultType None
+    </highlight>
 
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
       mevcuttur.</p>
@@ -766,7 +798,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 <description>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</description>
-<syntax>&lt;Directory "<var>dizin-yolu</var>"&gt;
+<syntax>&lt;Directory <var>dizin-yolu</var>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -916,7 +948,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
 &lt;/DirectoryMatch&gt;
-</highlight>
+    </highlight>
 
     <p>yönergesi <code>/www/</code> içindeki (veya alt dizinlerindeki) üç
       rakamdan oluşan dizinlerle eşleşecektir.</p>
@@ -943,11 +975,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<highlight language="config">
+      <highlight language="config">
 &lt;DirectoryMatch "^/var/www/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/DirectoryMatch&gt;
-</highlight>
+      </highlight>
 </usage>
 <seealso>Normal <directive type="section">Directory</directive>
   bölümlerindeki yönergelerle düzenli ifadelerin nasıl karıştırıldığının bir
@@ -973,7 +1005,9 @@ DocumentRoot "/var/www/${servername}/htdocs"
       benzeri bir yönerge ile eşleşmedikçe, sunucu istenen URL’deki yolu,
       belge yolu haline getirmek için belge kök dizinine ekler. Örnek:</p>
 
-    <highlight language="config">DocumentRoot "/usr/web"</highlight>
+    <highlight language="config">
+DocumentRoot "/usr/web"
+    </highlight>
 
     <p>yapılandırması ile <code>http://my.example.com/index.html</code>
       isteği <code>/usr/web/index.html</code> ile eşleştirilir.
@@ -1112,7 +1146,9 @@ DocumentRoot "/var/www/${servername}/htdocs"
       yapılandırmalarında dosya teslimatında bellek eşlemlerinin kullanımını
       şu şekilde iptal etmeniz gerekir:</p>
 
-    <highlight language="config">EnableMMAP Off</highlight>
+    <highlight language="config">
+EnableMMAP Off
+    </highlight>
 
     <p>Bu özellik, sadece NFS dosya sistemi üzerinde sunulan dosyaları
       kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
@@ -1170,7 +1206,9 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p>Bu sorunlardan muzdarip sunucu yapılandırmaları için bu özelliği şöyle
       etkin kılabilirsiniz:</p>
 
-    <highlight language="config">EnableSendfile On</highlight>
+    <highlight language="config">
+EnableSendfile On
+    </highlight>
 
     <p>Bu özellik, sadece bir ağ dosya sistemi üzerinde sunulan
       dosyaları kapsamak üzere şu şekilde kolayca kapatılabilir:</p>
@@ -1268,11 +1306,11 @@ DocumentRoot "/var/www/${servername}/htdocs"
       bir ileti de belirtilebilir. Örnekler:</p>
 
     <highlight language="config">
-ErrorDocument 500 http://foo.example.com/cgi-bin/tester
-ErrorDocument 404 /cgi-bin/bad_urls.pl
+ErrorDocument 500 http://example.com/cgi-bin/server-error.cgi
+ErrorDocument 404 /errors/bad_urls.php
 ErrorDocument 401 /subscription_info.html
 ErrorDocument 403 "Kusura bakmayın, bugün hizmet veremiyoruz."
-ErrorDocument 403 /cgi-bin/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
+ErrorDocument 403 /errors/forbidden.pl?referrer=%{escape:%{HTTP_REFERER}}
     </highlight>
 
     <p>Bunlardan başka, Apache httpd’nin kendi hata iletilerinin kullanılacağı
@@ -1349,13 +1387,17 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
       dizininin <directive  module="core">ServerRoot</directive> ile
       belirtilen sunucu kök dizinine göre belirtildiği varsayılır.</p>
 
-    <highlight language="config">ErrorLog "/var/log/httpd/error_log"</highlight>
+    <highlight language="config">
+ErrorLog "/var/log/httpd/error_log"
+    </highlight>
 
     <p><var>dosya-yolu</var> bir boru imi "<code>|</code>" ile başlatıldığı
       takdirde hata iletilerinin hata günlüğünü işleme sokacak komuta
       borulanacağı varsayılır.</p>
 
-    <highlight language="config">ErrorLog "|/usr/local/bin/httpd_errors"</highlight>
+    <highlight language="config">
+ErrorLog "|/usr/local/bin/httpd_errors"
+    </highlight>
 
     <p>Daha fazla bilgi için <a href="../logs.html#piped">borulu
        günlüklere</a> bakınız.</p>
@@ -1370,7 +1412,9 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
       değiştirilmişse, belirtilen en son oluşum tüm sunucuyu
       etkileyecektir.</p>
 
-    <highlight language="config">ErrorLog syslog:user</highlight>
+    <highlight language="config">
+ErrorLog syslog:user
+    </highlight>
 
     <p>Buna ek olarak, modüller kendi günlük kaydı oluşturucusunu sağlayabilir.
       Sözdizimi yukarıdaki örnekte kullanılan <code>syslog</code> sözdiziminin
@@ -1670,7 +1714,9 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
      <dd>Dosyanın bayt cinsinden uzunluğu dahil edilir.</dd>
      <dt><strong>All</strong></dt>
      <dd>Olası tüm alanlar kullanılır. Bu şuna eşdeğerdir:
-         <highlight language="config">FileETag INode MTime Size</highlight></dd>
+         <highlight language="config">
+FileETag INode MTime Size
+         </highlight></dd>
      <dt><strong>None</strong></dt>
      <dd>Bir belge dosyasıyla sunulsa bile yanıta hiçbir <code>ETag</code>
       alanı dahil edilmez.</dd>
@@ -1711,7 +1757,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 <name>Files</name>
 <description>Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</description>
-<syntax>&lt;Files "<var>dosya-adı</var>"&gt; ... &lt;/Files&gt;</syntax>
+<syntax>&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1749,7 +1795,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 &lt;Files "?at.*"&gt;
     # Buradakiler hat.html, kat.html, tat.html ve benzerlerine uygulanır.
 &lt;/Files&gt;
-</highlight>
+    </highlight>
 
     <p><code>~</code> imine ek olarak <glossary
       ref="regex">düzenli ifadeler</glossary> de kullanılabilir. Örneğin</p>
@@ -1758,7 +1804,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
 &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
     #...
 &lt;/Files&gt;
-</highlight>
+    </highlight>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir. Bunun
       yerine <directive module="core" type="section">FilesMatch</directive>
@@ -1795,11 +1841,11 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
       isimlerine göre sınırlandırır. Ancak, argüman olarak bir <glossary
       ref="regex">düzenli ifade</glossary> kabul eder. Örneğin</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
     # ...
 &lt;/FilesMatch&gt;
-</highlight>
+    </highlight>
 
     <p>satırı en bilinen resim dosyası biçimleriyle eşleşecektir.</p>
 
@@ -1850,7 +1896,9 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
       kullanabilirsiniz:</p>
 
-    <highlight language="config">ForceType image/gif</highlight>
+    <highlight language="config">
+ForceType image/gif
+    </highlight>
 
     <p>Bu yönerge, <directive module="mod_mime">AddType</directive> yönergesi
       üzerinden ve <code>mime.types</code> dosyasında örtük olarak
@@ -1974,7 +2022,9 @@ takdirde uygulanacak yönergeleri barındırır.</description>
       anında değerlendirir ve ifadenin sonucu doğru olduğu takdirde içerdiği
       yönergeleri uygular. Örnek:</p>
 
-    <highlight language="config">&lt;If "-z req('Host')"&gt;</highlight>
+    <highlight language="config">
+&lt;If "-z req('Host')"&gt;
+    </highlight>
 
     <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
       eşleşir. İfadeler, dizge karşılaştırması (<code>==</code>,
@@ -1983,7 +2033,9 @@ takdirde uygulanacak yönergeleri barındırır.</description>
       <code>-z</code>, <code>-f</code>, ...) için kabuktakilere benzer çeşitli
       işleçler içerebilir. Ayrıca, düzenli ifadeleri,</p>
 
-    <highlight language="config">&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;</highlight>
+    <highlight language="config">
+&lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
+    </highlight>
 
     <p>kabuk tarzı kalıp eşleştirme ve birçok başka işlemi kullanmak da
       mümkündür. Bu işlemler istek başlıklarında (<code>req</code>), ortam
@@ -2186,12 +2238,16 @@ Include conf/vhosts/*.conf
        <code>*.conf</code> içeren hiçbir alt dizin yoksa bu örnek başarısız
        olacaktır:</p>
 
-    <highlight language="config">Include conf/vhosts/*/*.conf</highlight>
+    <highlight language="config">
+Include conf/vhosts/*/*.conf
+    </highlight>
 
     <p>Bunun yerine, dizin ve dosyaların eksikliği durumunda aşağıdaki komut
       sadece yoksayılır:</p>
 
-    <highlight language="config">IncludeOptional conf/vhosts/*/*.conf</highlight>
+    <highlight language="config">
+IncludeOptional conf/vhosts/*/*.conf
+    </highlight>
 
 </usage>
 <seealso><directive module="core">IncludeOptional</directive></seealso>
@@ -2426,7 +2482,9 @@ belirler.</description>
       <var>sayı</var> belirtilirse iki sınırlama için de aynı değer
       kullanılır.</p>
 
-    <highlight language="config">LimitInternalRecursion 5</highlight>
+    <highlight language="config">
+LimitInternalRecursion 5
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -2467,7 +2525,9 @@ uzunluğunu sınırlar.</description>
       yüklenebilecek dosya boyutunu 100 kB ile sınırlamak isterseniz yönergeyi
       şöyle kullanabilirsiniz:</p>
 
-    <highlight language="config">LimitRequestBody 102400</highlight>
+    <highlight language="config">
+LimitRequestBody 102400
+    </highlight>
 
     <note><p>Bu yönergenin vekil istekleri tarafından nasıl yorumlandığı
       <module>mod_proxy</module> belgesinde ayrıntılı olarak
@@ -2509,7 +2569,9 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LimitRequestFields 50</highlight>
+    <highlight language="config">
+LimitRequestFields 50      
+    </highlight>
 
      <note type="warning"><title>Uyarı</title>
      <p>İsme dayalı sanal konaklar kullanıldığında, bu yönergenin değeri,
@@ -2546,7 +2608,9 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LimitRequestFieldSize 4094</highlight>
+    <highlight language="config">
+LimitRequestFieldSize 4094
+    </highlight>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir. Ayrıca,
       kaynak kodu değiştirip yeniden derlemeden bu değeri 8190'dan büyük
@@ -2587,7 +2651,9 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LimitRequestLine 4094</highlight>
+    <highlight language="config">
+LimitRequestLine 4094
+    </highlight>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
 
@@ -2615,7 +2681,9 @@ sınırlar.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LimitXMLRequestBody 0</highlight>
+    <highlight language="config">
+LimitXMLRequestBody 0
+    </highlight>
 
 </usage>
 </directivesynopsis>
@@ -2624,7 +2692,7 @@ sınırlar.</description>
 <name>Location</name>
 <description>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </description>
-<syntax>&lt;Location "<var>URL-yolu</var>|<var>URL</var>"&gt; ...
+<syntax>&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
 &lt;/Location&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -2719,7 +2787,7 @@ sınırlar.</description>
 &lt;Location ~ "/(ek|hususi)/veri"&gt;
     #...
 &lt;/Location&gt;
-</highlight>
+    </highlight>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir. <directive type="section"
@@ -2789,7 +2857,7 @@ uygulanır.</description>
 &lt;LocationMatch "/(ek|hususi)/veri"&gt;
     # ...
 &lt;/LocationMatch&gt;
-</highlight>
+    </highlight>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir.</p>
@@ -2799,7 +2867,7 @@ uygulanır.</description>
         <code>^</code> getirmek gerekir.</p>
 
     <highlight language="config">
-    &lt;LocationMatch "^/(ek|hususi)/veri"&gt;
+&lt;LocationMatch "^/(ek|hususi)/veri"&gt;
     </highlight>
     </note>
 
@@ -2812,11 +2880,11 @@ uygulanır.</description>
       başvurular yoksayılmaktadır. Bunların yerine isimli geriye başvurular
       kullanılmalıdır.</p>
 
-<highlight language="config">
+    <highlight language="config">
 &lt;LocationMatch "^/combined/(?&lt;sitename&gt;[^/]+)"&gt;
     require ldap-group cn=%{env:MATCH_SITENAME},ou=combined,o=Example
 &lt;/LocationMatch&gt;
-</highlight>
+    </highlight>
 </usage>
 
 <seealso>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir
@@ -2970,7 +3038,9 @@ uygulanır.</description>
 
     <p>Örnek:</p>
 
-    <highlight language="config">LogLevel notice</highlight>
+    <highlight language="config">
+LogLevel notice
+    </highlight>
 
 
     <note><title>Ek Bilgi</title>
@@ -3029,7 +3099,9 @@ LogLevel info
 
     <p>Örnek:</p>
 
-    <highlight language="config">MaxKeepAliveRequests 500</highlight>
+    <highlight language="config">
+MaxKeepAliveRequests 500
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -3373,9 +3445,14 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>2.3.11 öncesinde, <directive>NameVirtualHost</directive> yönergesi, isme dayalı sanal konaklar için belli bir IP adresi ve port çiftini sunucuya tanıtmak için gerekliydi. 2.3.11 ve sonrasında, bir IP adresi ve port çifti  her zaman çok sayıda sanal konakta kullanılabilmekte, isme dayalı sanal barındırma bu adres için özdevinimli olarak etkin kılınmaktadır.</p>
+    <p>2.3.11 öncesinde, <directive>NameVirtualHost</directive> yönergesi, 
+      isme dayalı sanal konaklar için belli bir IP adresi ve port çiftini 
+      sunucuya tanıtmak için gerekliydi. 2.3.11 ve sonrasında, bir IP adresi 
+      ve port çifti  her zaman çok sayıda sanal konakta kullanılabilmekte, 
+      isme dayalı sanal barındırma bu adres için özdevinimli olarak etkin 
+      kılınmaktadır.</p>
 
-<p>Bu yönerge şu an etkisizdir.</p>
+    <p>Bu yönerge şu an etkisizdir.</p>
 </usage>
 <seealso><a href="../vhosts/">Apache Sanal Konak Belgeleri</a></seealso>
 </directivesynopsis>
@@ -3471,7 +3548,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 
     <p>Normalde, bir dizine çok sayıda <directive>Options</directive>
       uygulanabilirse de, dizine en uygun olanı uygulanıp diğerleri yok
-      sayılır; seçenekler katıştırılmaz (bkz, <a href="../sections.html#mergin"
+      sayılır; seçenekler katıştırılmaz (bkz, <a href="../sections.html#merging"
       >Bölümler Nasıl Katıştırılır?</a>). Bununla birlikte, önüne bir
       <code>+</code> veya <code>-</code> simgesi konmuş seçenekler varsa, o
       seçenekler katıştırılır. Önüne <code>+</code> konmuş seçenekler
@@ -3550,7 +3627,9 @@ Mutex fcntl:/var/httpd/locks mpm-accept
     <p>Örneğin, <code>https</code>'i standartdışı bir portta çalıştırmak
       isterseniz protokolü şöyle belirtebilirsiniz:</p>
 
-    <highlight language="config">Protocol https</highlight>
+    <highlight language="config">
+Protocol https
+    </highlight>
 
     <p>Protokolü <directive module="mpm_common">Listen</directive>
        yönergesini kullanarak da belirtebilirsiniz.</p>
@@ -3583,7 +3662,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       şöyle sağlayabilirsiniz:</p>
 
     <highlight language="config">
-        Protocols h2 http/1.1
+Protocols h2 http/1.1
     </highlight>
 
     <p>Geçerli protokoller, http ve https bağlantıları için
@@ -3754,12 +3833,16 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       kullanacağını belirtir. Win32 sistemlerinde bu satır genellikle
       şöyledir:</p>
 
-    <highlight language="perl">#!C:/Perl/bin/perl.exe</highlight>
+    <highlight language="perl">
+#!C:/Perl/bin/perl.exe
+    </highlight>
 
     <p><code>perl</code> yorumlayıcının yeri <code>PATH</code> değişkeninde
       kayıtlı ise şöyle de olabilir:</p>
 
-    <highlight language="perl">#!perl</highlight>
+    <highlight language="perl">
+#!perl
+    </highlight>
 
     <p><code>ScriptInterpreterSource Registry</code> değeri ise betik dosyası
       uzantısının (<code>.pl</code> gibi) Windows Sicili içindeki
@@ -3854,7 +3937,9 @@ Mutex fcntl:/var/httpd/locks mpm-accept
       burada belirtilecek adresin sırf bu işe adanmış bir adres olması daha
       iyidir. Örnek:</p>
 
-    <highlight language="config">ServerAdmin www-admin@foo.example.com</highlight>
+    <highlight language="config">
+ServerAdmin www-admin@foo.example.com
+    </highlight>
 </usage>
 </directivesynopsis>
 
@@ -3890,8 +3975,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       >ServerAlias</directive> yönergesi eşleşen ilk sanal konak
       kullanılır.</p>
 
-    <p><directive>VirtualHost</directive> bölümü içindeki isimlerin sırası
-      (jokersiz) <directive>ServerAlias</directive> yönergesindeki gibi ele
+    <p><directive type="section" module="core">VirtualHost</directive>
+      bölümü içindeki isimlerin sırası (jokersiz) 
+      <directive>ServerAlias</directive> yönergesindeki gibi ele
       alınır.</p>
 
 </usage>
@@ -3915,11 +4001,11 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
     <p><a href="../vhosts/name-based.html">isme dayalı sanal
       konaklar</a> kullanılırken bir sanal konağı eşsiz bir şekilde betimlemek
       için <directive>ServerName</directive> kullanılır (muhtemelen
-      <directive>ServerAlias</directive> ile birlikte).</p>
+      <directive module="core">ServerAlias</directive> ile birlikte).</p>
 
-    <p>Ek olarak, <directive>UseCanonicalName</directive> yönergesine 
-      öntanımlı olmayan bir değer atanarak özüne yönlendiren URL'ler 
-      oluştururken de bu yönerge kullanılır.</p>
+    <p>Ek olarak, <directive module="core">UseCanonicalName</directive> 
+      yönergesine öntanımlı olmayan bir değer atanarak özüne yönlendiren 
+      URL'ler oluştururken de bu yönerge kullanılır.</p>
       
     <p>Örneğin, HTTP
       sunucusunun barındırıldığı makinenin ismi <code>mail.example.com</code>
@@ -3927,7 +4013,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       DNS rumuzu varsa ve HTTP sunucunuzun bu rumuzla kendini
       özdeşleştirmesini isterseniz bunu şöyle belirtebilirsiniz:</p>
 
-    <highlight language="config">ServerName www.example.com</highlight>
+    <highlight language="config">
+ServerName www.example.com
+    </highlight>
 
     <p><directive>ServerName</directive> yönergesi sunucu tanımının içinde
       herhangi bir yerde görünebilirse de her göründüğü yerde bir öncekini
@@ -4018,7 +4106,9 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       module="mod_so">LoadModule</directive> gibi diğer yapılandırma
       yönergelerindeki göreli yollar bu dizine göre ele alınır.</p>
 
-    <highlight language="config">ServerRoot "/home/httpd"</highlight>
+    <highlight language="config">
+ServerRoot "/home/httpd"
+    </highlight>
 
     <p><directive>ServerRoot</directive> için öntanımlı yer <a
       href="../programs/configure.html"><code>configure</code></a> betiğinin
@@ -4146,7 +4236,9 @@ sebep olur.</description>
       içindeki bir <code>.htaccess</code> dosyasına şöyle bir satır
       koyabilirsiniz:</p>
 
-    <highlight language="config">SetHandler imap-file</highlight>
+    <highlight language="config">
+SetHandler imap-file
+    </highlight>
 
     <p>Başka bir örnek: <code>http://localhost/status</code> gibi bir istek
       yapıldığında sunucunun bir durum bilgisi göstermesi için
@@ -4306,15 +4398,15 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 
     <p><code>TraceEnable extended</code> ile sadece sınama ve tanı koyma
       amaçlarına yönelik olarak istek gövdelerine izin verilir. Asıl sunucu
-      istek gövdesini 64k ile sınırlar (<code>Transfer-Encoding: chunked</code>
-      kullanılmışsa bölüm başlıkları için 8k daha). Asıl sunucu yanıt
+      istek gövdesini 64kB ile sınırlar (<code>Transfer-Encoding: chunked</code>
+      kullanılmışsa bölüm başlıkları için 8kB daha). Asıl sunucu yanıt
       gövdesinde tüm başlıkları ve bölüm başlıklarının tamamını yansıtacaktır.
-      Vekil sunucuda ise istek gövdesi için 64k’lık sınır yoktur.</p>
+      Vekil sunucuda ise istek gövdesi için 64kB’lık sınır yoktur.</p>
 
     <note><title>Bilgi</title>
-    <p>Aksine iddialara rağmen, <code>TRACE</code> bir güvenlik açığı değildir
-      ve iptal etmek için geçerli hiçbir sebep yoktur. Böyle yapmak sunucunuzu
-      uyumsuz yapmaktan başka işe yaramaz.</p>
+    <p>Aksine iddialara rağmen, <code>TRACE</code> yöntemini etkinleştirmek 
+      Apache httpd'de bir güvenlik açığı değildir. <code>TRACE</code> yöntemi 
+      HTTP/1.1 belirtiminde tanımlanmış olup desteklenmesi umulmuştur.</p>
     </note>
 
 </usage>

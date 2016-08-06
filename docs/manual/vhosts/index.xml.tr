@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1053231:1753873 (outdated) -->
+<!-- English Revision: 1753873 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -90,13 +90,17 @@
     </ul>
 
     <p>Sanal konak yapılandırmanız üzerinde hata ayıklamaya çalışıyorsanız
-      Apache’nin <code>-S</code> komut satırı seçeneği şu şekilde çok işinize
+      <code>-S</code> komut satırı seçeneği şu şekilde çok işinize
       yarayabilir:</p>
 
-    <example>
-    /usr/local/apache2/bin/httpd -S
+    <example><title>Unix örneği</title>
+    apachectl -S
     </example>
 
+    <example><title>Windows örneği</title>
+    httpd.exe -S
+    </example>
+    
     <p>Bu komut, yapılandırma dosyasının Apache yorumunu dökümler. IP
       adreslerinin ve sunucu isimlerinin dikkatli bir incelemesi, yapılandırma
       yanlışlarınızı keşfetmenize yardımcı olabilir. (Diğer komut satırı

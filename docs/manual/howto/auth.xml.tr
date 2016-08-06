@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1738542 (outdated) -->
+<!-- English Revision: 1738542 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
@@ -575,6 +575,21 @@ Require group Grupismi
       yapılandırmalarla uyumluluğu sağlamak için bu yönergeler
       <module>mod_access_compat</module> modülüne taşınmıştır.</p>
 
+      <note type="warning"><title>Note</title>
+        <p><module>mod_access_compat</module> ile sağlanan yönergelerin 
+        kullanımı artık önerilmemekte, <module>mod_authz_host</module> 
+        modülündeki yönergeler önerilmektedir. <directive 
+        module="mod_access_compat">Order</directive>, <directive
+        module="mod_access_compat">Allow</directive> veya <directive
+        module="mod_access_compat">Deny</directive> ile
+        <directive module="mod_authz_core">Require</directive> gibi daha yeni 
+        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de 
+        önerilmemektedir. <module>mod_access_compat</module> modülü, 2.4 
+        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren 
+        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı 
+        bilgi için <a href="../upgrading.html">yükseltme</a> belgesine bakınız.
+        </p>
+      </note>
     </section>
 
   </section>

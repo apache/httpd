@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563:1746871 (outdated) -->
+<!-- English Revision: 1746871 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by:  Orhan Berent <berent belgeler.gen.tr>
@@ -42,11 +42,11 @@
   <section id="purename">
     <title>Tek bir IP ile çok sayıda isme dayalı site</title>
 
-    <p>Bu örnekte, makinenizin tek bir IP adresine sahip olduğunu ve bu
-      makineye <code>example.com</code> ve <code>example.org</code> şeklinde
-      (DNS A kayıtları sayesinde) farklı isimlerle erişilebildiğini
-      varsayalım.</p>
-
+    <p>Bu örnekte, makinenizin tek bir IP adresine çözümlenen çok sayıda konak 
+      adına sahip olduğunu, <code>example.com</code> ve 
+      <code>example.org</code> gibi farklı isimlere farklı yanıtlar vermek 
+      istediğinizi varsayalım.</p>
+    
     <note><title>Bilginize</title><p>Apache sunucusu üzerinde sanal konakları
       yapılandırmakla bu konak isimleri için sihirli bir şekilde DNS
       kayıtlarının da oluşturulmasını sağlamış olmazsınız. Bu isimler için
@@ -83,13 +83,20 @@ Listen 80
       dosyasındaki <code>ServerName example.com</code> yönergeli konak, ilk
       sanal konak olduğundan en yüksek önceliğe sahiptir ve
       <cite>öntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
-      Yani, hiçbir <code>ServerName</code> yönergesi ile eşleşmeyen bir istek
-      alındığında bu istek ilk <code>VirtualHost</code> yapılandırması ile
+      Yani, hiçbir <directive module="core">ServerName</directive> yönergesi 
+      ile eşleşmeyen bir istek alındığında bu istek ilk <directive 
+      type="section" module="core">VirtualHost</directive> yapılandırması ile
       karşılanır.</p>
+    
+    <p>Yukarıdaki yapılandırmayı hemen hemen tüm isme dayalı sanal konaklar
+      için kullanabilirsiniz. Bu yapılandırmanın çalışmayacağı tek durum,
+      farklı içerikleri farklı IP adres veya portlardan sunma gereğiyle
+      karşılaşmaktır.</p>
 
     <note><title>Bilginize</title>
-      <p>IP adresi ve porta dayalı ayrımı umursamıyorsanız, <code>*</code>
-        yerine kendi IP adresinizi yazabilirsiniz.</p>
+      <p><code>*</code> yerine sisteminizdeki belli bir IP adresini 
+        yazabilirsiniz. Böyle sanal konaklar sadece, HTTP isteklerinin sadece 
+        belirtilen IP adreslerinden alınması için kullanilabilir.</p>
 
       <highlight language="config">
 NameVirtualHost 192.168.1.22
@@ -107,11 +114,6 @@ NameVirtualHost 192.168.1.22
         adresiniz değişse bile bu yapılandırmayı değiştirmeden
         kullanabilirsiniz.</p>
     </note>
-
-    <p>Yukarıdaki yapılandırmayı hemen hemen tüm isme dayalı sanal konaklar
-      için kullanabilirsiniz. Bu yapılandırmanın çalışmayacağı tek durum,
-      farklı içerikleri farklı IP adreslerinden sunma gereğiyle
-      karşılaşmaktır.</p>
 
   </section>
 
@@ -166,8 +168,8 @@ DocumentRoot "/siteler/anasunucu"
       bakan IP’ye, iç ağda ise iç ağa bakan IP’ye çözümleniyor olsun.</p>
 
     <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
-      dolayısıyla aynı <code>VirtualHost</code> bölümü ile hizmet
-      verebilir.</p>
+      dolayısıyla aynı <directive type="section" module="core"
+      >VirtualHost</directive> bölümü ile hizmet verebilir.</p>
 
     <highlight language="config">
 &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
@@ -178,7 +180,8 @@ DocumentRoot "/siteler/anasunucu"
     </highlight>
 
     <p>Artık, hem iç hem de dış ağdan gelen isteklere aynı
-      <code>VirtualHost</code> bölümünden hizmet sunulacaktır.</p>
+      <directive type="section" module="core">VirtualHost</directive> 
+      bölümünden hizmet sunulacaktır.</p>
 
     <note><title>Bilginize:</title>
       <p>İç ağdan istek yapan biri, tam nitelenmiş konak ismi
@@ -343,7 +346,7 @@ Listen 80
     <highlight language="config">
 &lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass "/" "http://192.168.111.2/"
+    ProxyPass        "/" "http://192.168.111.2/"
     ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName konak.example.com
 &lt;/VirtualHost&gt;
@@ -455,7 +458,7 @@ DocumentRoot "/siteler/ecom"
 &lt;VirtualHost 192.168.1.20&gt;
     DocumentRoot "/siteler/enet"
     ServerName example.enet
-    ServerAlias *.example.enet
+    ServerAlias *.example.net
     # ...
 &lt;/VirtualHost&gt;
     </highlight>
@@ -488,7 +491,7 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-DocumentRoot /siteler/baska/bir
+    DocumentRoot /siteler/baska/bir
     ServerName "bir.baska.tld"
     ServerPath "/bir/"
     RewriteEngine On
