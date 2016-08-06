@@ -29,7 +29,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
@@ -59,11 +58,11 @@
 <h2><a name="purename" id="purename">Tek bir IP ile çok sayıda isme dayalı site</a></h2>
     
 
-    <p>Bu örnekte, makinenizin tek bir IP adresine sahip olduğunu ve bu
-      makineye <code>example.com</code> ve <code>example.org</code> şeklinde
-      (DNS A kayıtları sayesinde) farklı isimlerle erişilebildiğini
-      varsayalım.</p>
-
+    <p>Bu örnekte, makinenizin tek bir IP adresine çözümlenen çok sayıda konak 
+      adına sahip olduğunu, <code>example.com</code> ve 
+      <code>example.org</code> gibi farklı isimlere farklı yanıtlar vermek 
+      istediğinizi varsayalım.</p>
+    
     <div class="note"><h3>Bilginize</h3><p>Apache sunucusu üzerinde sanal konakları
       yapılandırmakla bu konak isimleri için sihirli bir şekilde DNS
       kayıtlarının da oluşturulmasını sağlamış olmazsınız. Bu isimler için
@@ -99,13 +98,19 @@ Listen 80
       dosyasındaki <code>ServerName example.com</code> yönergeli konak, ilk
       sanal konak olduğundan en yüksek önceliğe sahiptir ve
       <cite>öntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
-      Yani, hiçbir <code>ServerName</code> yönergesi ile eşleşmeyen bir istek
-      alındığında bu istek ilk <code>VirtualHost</code> yapılandırması ile
+      Yani, hiçbir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesi 
+      ile eşleşmeyen bir istek alındığında bu istek ilk <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yapılandırması ile
       karşılanır.</p>
+    
+    <p>Yukarıdaki yapılandırmayı hemen hemen tüm isme dayalı sanal konaklar
+      için kullanabilirsiniz. Bu yapılandırmanın çalışmayacağı tek durum,
+      farklı içerikleri farklı IP adres veya portlardan sunma gereğiyle
+      karşılaşmaktır.</p>
 
     <div class="note"><h3>Bilginize</h3>
-      <p>IP adresi ve porta dayalı ayrımı umursamıyorsanız, <code>*</code>
-        yerine kendi IP adresinizi yazabilirsiniz.</p>
+      <p><code>*</code> yerine sisteminizdeki belli bir IP adresini 
+        yazabilirsiniz. Böyle sanal konaklar sadece, HTTP isteklerinin sadece 
+        belirtilen IP adreslerinden alınması için kullanilabilir.</p>
 
       <pre class="prettyprint lang-config">NameVirtualHost 192.168.1.22
 
@@ -122,11 +127,6 @@ Listen 80
         adresiniz değişse bile bu yapılandırmayı değiştirmeden
         kullanabilirsiniz.</p>
     </div>
-
-    <p>Yukarıdaki yapılandırmayı hemen hemen tüm isme dayalı sanal konaklar
-      için kullanabilirsiniz. Bu yapılandırmanın çalışmayacağı tek durum,
-      farklı içerikleri farklı IP adreslerinden sunma gereğiyle
-      karşılaşmaktır.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -180,8 +180,7 @@ DocumentRoot "/siteler/anasunucu"
       bakan IP’ye, iç ağda ise iç ağa bakan IP’ye çözümleniyor olsun.</p>
 
     <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
-      dolayısıyla aynı <code>VirtualHost</code> bölümü ile hizmet
-      verebilir.</p>
+      dolayısıyla aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü ile hizmet verebilir.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot "/siteler/sunucu"
@@ -191,7 +190,8 @@ DocumentRoot "/siteler/anasunucu"
 
 
     <p>Artık, hem iç hem de dış ağdan gelen isteklere aynı
-      <code>VirtualHost</code> bölümünden hizmet sunulacaktır.</p>
+      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+      bölümünden hizmet sunulacaktır.</p>
 
     <div class="note"><h3>Bilginize:</h3>
       <p>İç ağdan istek yapan biri, tam nitelenmiş konak ismi
@@ -350,7 +350,7 @@ Listen 172.20.30.50:8080
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
-    ProxyPass "/" "http://192.168.111.2/"
+    ProxyPass        "/" "http://192.168.111.2/"
     ProxyPassReverse "/" "http://192.168.111.2/"
     ServerName konak.example.com
 &lt;/VirtualHost&gt;</pre>
@@ -458,7 +458,7 @@ DocumentRoot "/siteler/ecom"
 &lt;VirtualHost 192.168.1.20&gt;
     DocumentRoot "/siteler/enet"
     ServerName example.enet
-    ServerAlias *.example.enet
+    ServerAlias *.example.net
     # ...
 &lt;/VirtualHost&gt;</pre>
 
@@ -490,7 +490,7 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 172.20.30.40&gt;
-DocumentRoot /siteler/baska/bir
+    DocumentRoot /siteler/baska/bir
     ServerName "bir.baska.tld"
     ServerPath "/bir/"
     RewriteEngine On

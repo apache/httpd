@@ -29,7 +29,6 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
@@ -42,14 +41,14 @@
     kullanırken <code>conf/httpd.conf</code> öntanımlı yapılandırma
     dosyasındaki</p>
 
-    <div class="example"><p><code>
-      #Include conf/extra/httpd-userdir.conf
-    </code></p></div>
+    <pre class="prettyprint lang-config">#Include conf/extra/httpd-userdir.conf</pre>
+
 
   <p>satırını etkin hale getirip, gerekiyorsa <code>httpd-userdir.conf</code>
     dosyasını da düzenleyerek veya ana yapılandırma dosyasında bir
-    <code>Directory</code> bloğu içine uygun yönergeleri yerleştirerek bu
-    dizinlere erişimi etkin hale getirebilirsiniz.</p>
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bloğu içine 
+    uygun yönergeleri yerleştirerek bu dizinlere erişimi etkin hale 
+    getirebilirsiniz.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Kullanıcı sayfaları dizinleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir"><code>UserDir</code> ile dosya yolunun belirtilmesi</a></li>
@@ -149,8 +148,8 @@
       işlevselliğin belli kullanıcılar dışında kullanılmamasını da
       sağlayabilirsiniz:</p>
 
-    <pre class="prettyprint lang-config">      UserDir disabled<br />
-      UserDir enabled orhan yasar</pre>
+    <pre class="prettyprint lang-config">UserDir disabled
+UserDir enabled orhan yasar</pre>
 
 
     <p>Daha fazla örnek için <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinin açıklamasına bakabilirsiniz.</p>
