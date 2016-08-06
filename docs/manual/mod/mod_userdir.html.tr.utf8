@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_userdir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Kullanıcılara özel dizinler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>userdir_module</td></tr>
@@ -90,7 +89,7 @@
         listede yer alan dizinlere dönüşüm uygulanır.</li>
     </ul>
 
-    <p><code>Userdir</code> yönergesinde ne <code>enabled</code> ne de
+    <p><code class="directive">Userdir</code> yönergesinde ne <code>enabled</code> ne de
       <code>disabled</code> varsa, argüman bir dosya ismi kalıbı olarak ele
       alınır ve kullanıcı belge kök dizininin yolunu oluşturmakta kullanılır.
       <code>http://example.com/~ali/bir/iki.html</code> şöyle dönüştürülür:</p>
@@ -146,7 +145,7 @@ UserDir enabled birey1 birey2 birey3</pre>
 
     <p>Birden fazla dizin belirtmek de mümkündür:</p>
 
-    <pre class="prettyprint lang-config">Userdir public_html /usr/siteler http://example.com/</pre>
+    <pre class="prettyprint lang-config">Userdir "public_html" "/usr/siteler" "http://example.com/"</pre>
 
 
     <p>Bu örneğe göre, <code>http://example.com/~ali/bir/iki.html</code>
@@ -163,7 +162,8 @@ UserDir enabled birey1 birey2 birey3</pre>
       sonra bir yönlendirme daha bulunması daha iyi olacaktır.</p>
 
     <p>Kullanıcı dizini dönüşümü Apache 2.1.4 sürümü ve sonrasında öntanımlı
-      olarak etkin değildir. Daha önceki sürümlerde bir <code class="directive"><a href="#userdir">UserDir</a></code> yönergesinin yokluğunda
+      olarak etkin değildir. Daha önceki sürümlerde bir 
+      <code class="directive">UserDir</code> yönergesinin yokluğunda
       <code>UserDir public_html</code> öntanımlıydı.</p>
 
     <div class="note"><h3>Ayrıntıların birleştirilmesi</h3>

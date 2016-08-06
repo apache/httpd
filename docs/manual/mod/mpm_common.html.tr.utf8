@@ -32,7 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -294,6 +293,12 @@ açıklaması</a></li>
       her çocuk süreç tek bir buketle çalışır (çocukların oluşturulması
       sırasında buketler döner dağılımla eşleştirilir).</p>
 
+    <div class="note"><h3>"çevrimiçi" İşlemci çekirdek sayısının anlamı</h3>
+    <p>Linux için (ve ayrıca BSD) bir işlemci çekirdeği <a href="https://www.kernel.org/doc/Documentation/cpu-       hotplug.txt">Hotplug</a> yapılandırılarak açılıp kapatıalbilir. 
+      Dolayısıyla, <code class="directive">ListenCoresBucketsRatio</code> yönergesi 
+      oluşturulacak buket sayısını hesaplarken bu yapılandırmayı esas alır.</p>
+    </div>
+
     <p><code class="directive">ListenCoresBucketsRatio</code> yeni bağlantılar kabul
       edilirken/darboğazlar oluşurken ölçeklenebilirliği arttırabilir. Çok
       sayıda işlemci çekirdekli sistemlerde bu özelliğin etkinleştirilmesinin
@@ -303,7 +308,10 @@ açıklaması</a></li>
     <p>Bu <var>oran</var>ın etkin olabilmesi için işlemci çekirdeği çift sayıda
       olmalıdır. <var>oran</var> için önerilen değer <code>8</code> olup bu
       durumda çalışma anında en azından <code>16</code> çekirdek
-      kullanılabiliyor olmalıdır.</p>
+      kullanılabiliyor olmalıdır. En iyi başarımı elde etmek gereken 
+      <var>oran</var> her sistem için hesaplanmalı, çok sayıda değer denenmeli 
+      ve başlıca başarım ölçütlerinizin çeşitli sonuçları iyi gözlemlenmelidir. 
+      </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -402,7 +410,9 @@ açıklaması</a></li>
       <code>MaxSpareThreads 250</code> öntanımlıdır. Bu MPM'ler boştaki
       evreleri sunucu genelinde izler. Eğer sunucuda çok fazla boşta evre
       varsa, sunucu boştaki evrelerin sayısı bu sınırın altına inene kadar
-      çocuk süreçleri öldürür.</p>
+      çocuk süreçleri öldürür. 
+      <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
+      yönergesi etkinse ek süreçler/evreler oluşabilir.</p>
 
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> için <code>MaxSpareThreads 100</code>
       öntanımlıdır. Bu MPM tek bir süreç olarak çalıştığından boştaki evre
@@ -452,7 +462,9 @@ açıklaması</a></li>
       <code>MinSpareThreads 75</code> öntanımlıdır ve bu modül boştaki evreleri
       sunucu genelinde izler. Eğer sunucuda boştaki evre sayısı yetersizse,
       sunucu, boştaki evrelerin sayısı bu sınırın üstüne çıkana kadar çocuk
-      süreç oluşturur.</p>
+      süreç oluşturur.
+      <code class="directive"><a href="#listencoresbucketsratio">ListenCoresBucketsRatio</a></code> 
+      yönergesi etkinse ek süreçler/evreler oluşabilir.</p>
 
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> için <code>MinSpareThreads 10</code>
       öntanımlıdır ve tek süreç kendisi olduğundan izleme sunucu genelinde

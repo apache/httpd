@@ -28,7 +28,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -307,10 +306,11 @@
 
     <h4><a name="choosemodules" id="choosemodules">Derlenecek modüllerin seçimi</a></h4>
       <p>Modüllerin çoğu öntanımlı olarak derlenir ve ya açıkça iptal edilmek
-        ya da <code>few</code> veya <code>none</code> anahtar sözcükleri
+        ya da <code>few</code> anahtar sözcüğü
         kullanılarak kaldırılmak zorunda kalınır (ayrıntılar için
         <code>--enable-modules</code>, <code>--enable-mods-shared</code> ve
-        <code>--enable-mods-static</code> seçeneklerine bakın).</p>
+        <code>--enable-mods-static</code> seçeneklerine bakın). Bir grubu 
+        tamamen kaldırmak için <code>--enable-modules=none</code> gerekir.</p>
 
         <p>Öntanımlı olarak derlenmeyenler ise ya açıkça etkin kılınmak ya da
           <code>all</code> veya <code>reallyall</code> anahtar sözcükleriyle
@@ -433,9 +433,8 @@
           </code></p></div>
 
           <p><code><var>modül-listesi</var></code> yerine
-            <code>reallyall</code>, <code>all</code>, <code>most</code>,
-            <code>few</code> ve <code>none</code> anahtar sözcükleri de
-            belirtilebilir. Örneğin,</p>
+            <code>reallyall</code>, <code>all</code>, <code>most</code> ve 
+            <code>few</code> anahtar sözcükleri de belirtilebilir. Örneğin,</p>
 
           <div class="example"><p><code>
             --enable-mods-shared=most

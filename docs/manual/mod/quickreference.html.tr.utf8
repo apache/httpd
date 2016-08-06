@@ -335,7 +335,7 @@ CGI program</td></tr>
 </td></tr>
 <tr><td><a href="core.html#cgipassauth">CGIPassAuth On|Off</a></td><td> Off </td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">HTTP yetkilendirme başlıklarının betiklere CGI değişkenleri
 olarak aktarılmasını etkin kılar</td></tr>
-<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>variable</var> <var>rule</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Controls how some CGI variables are set</td></tr>
+<tr class="odd"><td><a href="core.html#cgivar">CGIVar <var>değişken</var> <var>kural</var></a></td><td></td><td>dh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bazı CGI değişkenlerinin nasıl atanacağını belirler</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> ImplicitAdd </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Source charset of files</td></tr>
@@ -397,7 +397,7 @@ türünü belirlerdi.</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory "<var>dizin-yolu</var>"&gt;
+<tr><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların içeriğinde uygulanacak bir yönerge grubunu
   sarmalar.</td></tr>
@@ -445,7 +445,7 @@ by MIME type</td></tr>
 <tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </td></tr>
 <tr class="odd"><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> MTime Size </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Duruk dosyalar için <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
-<tr><td><a href="core.html#files">&lt;Files "<var>dosya-adı</var>"&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
+<tr><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>
 <tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>düzifd</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Düzenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak yönergeleri içerir.</td></tr>
@@ -604,7 +604,7 @@ sınırlar.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
-<tr><td><a href="core.html#location">&lt;Location "<var>URL-yolu</var>|<var>URL</var>"&gt; ...
+<tr><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
 &lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch

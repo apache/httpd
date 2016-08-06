@@ -29,7 +29,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
       Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -566,6 +565,18 @@ Require group Grupismi</pre>
       yapılandırmalarla uyumluluğu sağlamak için bu yönergeler
       <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> modülüne taşınmıştır.</p>
 
+      <div class="warning"><h3>Note</h3>
+        <p><code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> ile sağlanan yönergelerin 
+        kullanımı artık önerilmemekte, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> 
+        modülündeki yönergeler önerilmektedir. <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> veya <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> ile
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> gibi daha yeni 
+        olanlarının yenilerle karışık kullanımı teknik olarak mümkünse de 
+        önerilmemektedir. <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> modülü, 2.4 
+        yükseltmesini kolaylaştırmak için sadece eski yönergeleri içeren 
+        yapılandırmaları desteklemek üzere oluşturulmuştur.  Daha ayrıntılı 
+        bilgi için <a href="../upgrading.html">yükseltme</a> belgesine bakınız.
+        </p>
+      </div>
     
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

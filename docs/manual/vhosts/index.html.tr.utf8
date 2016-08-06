@@ -31,7 +31,6 @@
 <a href="../tr/vhosts/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/vhosts/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
@@ -88,13 +87,17 @@
     </ul>
 
     <p>Sanal konak yapılandırmanız üzerinde hata ayıklamaya çalışıyorsanız
-      Apache’nin <code>-S</code> komut satırı seçeneği şu şekilde çok işinize
+      <code>-S</code> komut satırı seçeneği şu şekilde çok işinize
       yarayabilir:</p>
 
-    <div class="example"><p><code>
-    /usr/local/apache2/bin/httpd -S
+    <div class="example"><h3>Unix örneği</h3><p><code>
+    apachectl -S
     </code></p></div>
 
+    <div class="example"><h3>Windows örneği</h3><p><code>
+    httpd.exe -S
+    </code></p></div>
+    
     <p>Bu komut, yapılandırma dosyasının Apache yorumunu dökümler. IP
       adreslerinin ve sunucu isimlerinin dikkatli bir incelemesi, yapılandırma
       yanlışlarınızı keşfetmenize yardımcı olabilir. (Diğer komut satırı
