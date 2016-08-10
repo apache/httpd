@@ -432,7 +432,7 @@ int ssl_hook_Access(request_rec *r)
     X509 *cert;
     X509 *peercert;
     X509_STORE *cert_store = NULL;
-    X509_STORE_CTX cert_store_ctx;
+    X509_STORE_CTX *cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
     const SSL_CIPHER *cipher = NULL;
     int depth, verify_old, verify, n, is_slave = 0;
@@ -914,25 +914,27 @@ int ssl_hook_Access(request_rec *r)
                 cert = sk_X509_value(cert_stack, 0);
             }
 
-            X509_STORE_CTX_init(&cert_store_ctx, cert_store, cert, cert_stack);
+            cert_store_ctx = X509_STORE_CTX_new();
+            X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack);
             depth = SSL_get_verify_depth(ssl);
 
             if (depth >= 0) {
-                X509_STORE_CTX_set_depth(&cert_store_ctx, depth);
+                X509_STORE_CTX_set_depth(cert_store_ctx, depth);
             }
 
-            X509_STORE_CTX_set_ex_data(&cert_store_ctx,
+            X509_STORE_CTX_set_ex_data(cert_store_ctx,
                                        SSL_get_ex_data_X509_STORE_CTX_idx(),
                                        (char *)ssl);
 
-            if (!X509_verify_cert(&cert_store_ctx)) {
+            if (!X509_verify_cert(cert_store_ctx)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02224)
                               "Re-negotiation verification step failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
             }
 
-            SSL_set_verify_result(ssl, cert_store_ctx.error);
-            X509_STORE_CTX_cleanup(&cert_store_ctx);
+            SSL_set_verify_result(ssl, X509_STORE_CTX_get_error(cert_store_ctx));
+            X509_STORE_CTX_cleanup(cert_store_ctx);
+            X509_STORE_CTX_free(cert_store_ctx);
 
             if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
                 /* we created this ourselves, so free it */

@@ -219,6 +219,16 @@ void init_bio_methods(void);
 void free_bio_methods(void);
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10002000L
+#define X509_STORE_CTX_get0_store(x) (x->ctx)
+#endif
+
+#if OPENSSL_VERSION_NUMBER < 0x10000000L
+#ifndef X509_STORE_CTX_get0_current_issuer
+#define X509_STORE_CTX_get0_current_issuer(x) (x->current_issuer)
+#endif
+#endif
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
