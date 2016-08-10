@@ -32,6 +32,9 @@
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "scoreboard.h"
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#include "apr_time.h"
+#endif
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 #ifdef HAVE_TLSEXT
@@ -41,6 +44,11 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s);
 #define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
 #define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
 #define CONNECTION_HEADER "Connection: Upgrade"
+
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#define SSL_HANDSHAKE_POLL_MS 10
+#define SSL_HANDSHAKE_MAX_POLLS 500
+#endif
 
 /* Perform an upgrade-to-TLS for the given request, per RFC 2817. */
 static apr_status_t upgrade_connection(request_rec *r)
@@ -1011,16 +1019,49 @@ int ssl_hook_Access(request_rec *r)
              * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
-            /* XXX: OpenSSL 1.1.0: SSL_set_state() no longer available.
-             * Would SSL_renegotiate(ssl) work? */
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
+
 #ifdef OPENSSL_NO_SSL_INTERN
             SSL_set_state(ssl, SSL_ST_ACCEPT);
 #else
             ssl->state = SSL_ST_ACCEPT;
-#endif
-#endif
             SSL_do_handshake(ssl);
+#endif
+
+#else /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
+
+            /* XXX: OpenSSL 1.1.0: SSL_set_state() no longer available.
+             * Need to trigger renegotiation handshake by reading,
+             * until handshake has finished.
+             * The code works for some ciphers with 1.1.0pre2 plus the patch
+             * https://github.com/openssl/openssl/commit/311f27852a18fb9c10f0c1283b639f12eea06de2
+             * It does not work for EC and DH. For details see:
+             * See: http://marc.info/?t=145493359200002&r=1&w=2
+             */
+            /* XXX: Polling is bad, alternatives? */
+            /* XXX: What about renegotiations which do not need to
+             *      send client certs, e.g. if only the cipher needs
+             *      to switch? We need a better success criterion here
+             *      or the loop will poll until SSL_HANDSHAKE_MAX_POLLS
+             *      is reached.
+             */
+            for (i = 0; i < SSL_HANDSHAKE_MAX_POLLS; i++) {
+                has_buffered_data(r);
+                cert = SSL_get_peer_certificate(ssl);
+                if (cert != NULL) {
+                    break;
+                }
+                apr_sleep(SSL_HANDSHAKE_POLL_MS);
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO()
+                          "Renegotiation loop %d iterations, "
+                          "in_init=%d, init_finished=%d, "
+                          "state=%s, peer_certs=%s",
+                          i, SSL_in_init(ssl), SSL_is_init_finished(ssl),
+                          SSL_state_string_long(ssl),
+                          cert != NULL ? "yes" : "no");
+
+#endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
             sslconn->reneg_state = RENEG_REJECT;
 
