@@ -460,11 +460,6 @@ typedef struct {
                          * renegotiation should be rejected */
         RENEG_ALLOW,    /* A server-initiated renegotiation is taking
                          * place (as dictated by configuration) */
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-        RENEG_STARTED,  /* A renegotiation has started after RENEG_ALLOW */
-        RENEG_DONE,     /* A renegotiation has finished after RENEG_STARTED */
-        RENEG_ALERT,    /* A renegotiation has finished with an SSL Alert */
-#endif
         RENEG_ABORT     /* Renegotiation initiated by client, abort the
                          * connection */
     } reneg_state;
