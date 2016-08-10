@@ -1039,16 +1039,9 @@ int ssl_hook_Access(request_rec *r)
              * See: http://marc.info/?t=145493359200002&r=1&w=2
              */
             /* XXX: Polling is bad, alternatives? */
-            /* XXX: What about renegotiations which do not need to
-             *      send client certs, e.g. if only the cipher needs
-             *      to switch? We need a better success criterion here
-             *      or the loop will poll until SSL_HANDSHAKE_MAX_POLLS
-             *      is reached.
-             */
             for (i = 0; i < SSL_HANDSHAKE_MAX_POLLS; i++) {
                 has_buffered_data(r);
-                cert = SSL_get_peer_certificate(ssl);
-                if (cert != NULL) {
+                if (sslconn->ssl == NULL || SSL_is_init_finished(ssl)) {
                     break;
                 }
                 apr_sleep(SSL_HANDSHAKE_POLL_MS);
@@ -1056,10 +1049,11 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO()
                           "Renegotiation loop %d iterations, "
                           "in_init=%d, init_finished=%d, "
-                          "state=%s, peer_certs=%s",
+                          "state=%s, sslconn->ssl=%s, peer_certs=%s",
                           i, SSL_in_init(ssl), SSL_is_init_finished(ssl),
                           SSL_state_string_long(ssl),
-                          cert != NULL ? "yes" : "no");
+                          sslconn->ssl != NULL ? "yes" : "no",
+                          SSL_get_peer_certificate(ssl) != NULL ? "yes" : "no");
 
 #endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
