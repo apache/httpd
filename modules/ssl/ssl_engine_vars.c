@@ -614,6 +614,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                                                    xsname->entries);
                  j++) {
                 xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
+                                                xsname->entries, j);
 #else
             for (j = 0; j < X509_NAME_entry_count(xsname); j++) {
                 xsne = X509_NAME_get_entry(xsname, j);
