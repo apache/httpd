@@ -2150,7 +2150,7 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         }
 #endif
     }
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     else if ((where & SSL_CB_HANDSHAKE_START) && scr->reneg_state == RENEG_ALLOW) {
         scr->reneg_state = RENEG_STARTED;
     }
