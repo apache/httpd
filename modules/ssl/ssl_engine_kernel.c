@@ -1043,7 +1043,7 @@ int ssl_hook_Access(request_rec *r)
                 has_buffered_data(r);
                 if (sslconn->ssl == NULL ||
                     sslconn->reneg_state == RENEG_DONE ||
-                    sslconn->reneg_state == RENEG_ALLOW) {
+                    sslconn->reneg_state == RENEG_ALERT) {
                     break;
                 }
                 apr_sleep(SSL_HANDSHAKE_POLL_MS);
