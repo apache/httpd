@@ -135,6 +135,13 @@
 #define HAVE_SSL_CONF_CMD
 #endif
 
+/* session id constness */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define IDCONST
+#else
+#define IDCONST const
+#endif
+
 /**
   * The following features all depend on TLS extension support.
   * Within this block, check again for features (not version numbers).
@@ -165,13 +172,6 @@
 #endif
 #endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 #endif /* if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb) */
-
-/* session id constness */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-#define IDCONST
-#else
-#define IDCONST const
-#endif
 
 /* TLS session tickets */
 #if defined(SSL_CTX_set_tlsext_ticket_key_cb)
