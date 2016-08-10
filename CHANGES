@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
+ 
   *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
      string showing up in SCRIPT_FILENAME. PR59815
 

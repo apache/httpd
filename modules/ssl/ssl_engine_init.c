@@ -858,11 +858,7 @@ static int use_certificate_chain(
     unsigned long err;
     int n;
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
-#else
     if ((bio = BIO_new(BIO_s_file())) == NULL)
-#endif
         return -1;
     if (BIO_read_filename(bio, file) <= 0) {
         BIO_free(bio);

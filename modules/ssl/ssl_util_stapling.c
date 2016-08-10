@@ -402,13 +402,9 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
 
             if (bio) {
                 int n;
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-                if ((i2a_ASN1_INTEGER(bio, cinf->cid->serialNumber) != -1) &&
-#else
                 ASN1_INTEGER *pserial;
                 OCSP_id_get0_info(NULL, NULL, NULL, &pserial, cinf->cid);
                 if ((i2a_ASN1_INTEGER(bio, pserial) != -1) &&
-#endif
                     ((n = BIO_read(bio, snum, sizeof snum - 1)) > 0))
                     snum[n] = '\0';
                 BIO_free(bio);

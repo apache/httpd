@@ -80,11 +80,7 @@ static apr_status_t upgrade_connection(request_rec *r)
     SSL_set_accept_state(ssl);
     SSL_do_handshake(ssl);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    if (SSL_get_state(ssl) != SSL_ST_OK) {
-#else
-    if (SSL_get_state(ssl) != TLS_ST_OK) {
-#endif
+    if (!SSL_is_init_finished(ssl)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02030)
                       "TLS upgrade handshake failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -460,11 +456,7 @@ int ssl_hook_Access(request_rec *r)
          * forbidden in the latter case, let ap_die() handle
          * this recursive (same) error.
          */
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-        if (SSL_get_state(ssl) != SSL_ST_OK) {
-#else
-        if (SSL_get_state(ssl) != TLS_ST_OK) {
-#endif
+        if (!SSL_is_init_finished(ssl)) {
             return HTTP_FORBIDDEN;
         }
         ctx = SSL_get_SSL_CTX(ssl);
@@ -949,7 +941,6 @@ int ssl_hook_Access(request_rec *r)
         }
         else {
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
-            int rc;
             char peekbuf[1];
 #endif
             const char *reneg_support;
@@ -995,11 +986,7 @@ int ssl_hook_Access(request_rec *r)
             SSL_renegotiate(ssl);
             SSL_do_handshake(ssl);
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-            if (SSL_get_state(ssl) != SSL_ST_OK) {
-#else
-            if (SSL_get_state(ssl) != TLS_ST_OK) {
-#endif
+            if (!SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02225)
                               "Re-negotiation request failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -1034,27 +1021,13 @@ int ssl_hook_Access(request_rec *r)
              * It is expected to work without changes with the forthcoming 1.1.0pre3.
              * See: http://marc.info/?t=145493359200002&r=1&w=2
              */
-            rc = SSL_peek(ssl, peekbuf, 0);
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO()
-                          "Renegotiation peek result=%d, "
-                          "reneg_state=%d, "
-                          "in_init=%d, init_finished=%d, "
-                          "state=%s, sslconn->ssl=%s, peer_certs=%s",
-                          rc, sslconn->reneg_state,
-                          SSL_in_init(ssl), SSL_is_init_finished(ssl),
-                          SSL_state_string_long(ssl),
-                          sslconn->ssl != NULL ? "yes" : "no",
-                          SSL_get_peer_certificate(ssl) != NULL ? "yes" : "no");
+            SSL_peek(ssl, peekbuf, 0);
 
 #endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
 
             sslconn->reneg_state = RENEG_REJECT;
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-            if (SSL_get_state(ssl) != SSL_ST_OK) {
-#else
-            if (SSL_get_state(ssl) != TLS_ST_OK) {
-#endif
+            if (!SSL_is_init_finished(ssl)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02261)
                               "Re-negotiation handshake failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
