@@ -353,6 +353,9 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     modssl_init_app_data2_idx(); /* for modssl_get_app_data2() at request time */
 
     init_dh_params();
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    init_bio_methods();
+#endif
 
     return OK;
 }
@@ -1966,6 +1969,9 @@ apr_status_t ssl_init_ModuleKill(void *data)
         ssl_init_ctx_cleanup(sc->server);
     }
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    free_bio_methods();
+#endif
     free_dh_params();
 
     return APR_SUCCESS;

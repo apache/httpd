@@ -199,6 +199,17 @@
 
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define BIO_set_init(x,v)     (x->init=v)
+#define BIO_get_data(x)       (x->ptr)
+#define BIO_set_data(x,v)     (x->ptr=v)
+#define BIO_get_shutdown(x)   (x->shutdown)
+#define BIO_set_shutdown(x,v) (x->shutdown=v)
+#else
+void init_bio_methods(void);
+void free_bio_methods(void);
+#endif
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
