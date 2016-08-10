@@ -1041,16 +1041,20 @@ int ssl_hook_Access(request_rec *r)
             /* XXX: Polling is bad, alternatives? */
             for (i = 0; i < SSL_HANDSHAKE_MAX_POLLS; i++) {
                 has_buffered_data(r);
-                if (sslconn->ssl == NULL || SSL_is_init_finished(ssl)) {
+                if (sslconn->ssl == NULL ||
+                    sslconn->reneg_state == RENEG_DONE ||
+                    sslconn->reneg_state == RENEG_ALLOW) {
                     break;
                 }
                 apr_sleep(SSL_HANDSHAKE_POLL_MS);
             }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO()
                           "Renegotiation loop %d iterations, "
+                          "reneg_state=%d, "
                           "in_init=%d, init_finished=%d, "
                           "state=%s, sslconn->ssl=%s, peer_certs=%s",
-                          i, SSL_in_init(ssl), SSL_is_init_finished(ssl),
+                          i, sslconn->reneg_state,
+                          SSL_in_init(ssl), SSL_is_init_finished(ssl),
                           SSL_state_string_long(ssl),
                           sslconn->ssl != NULL ? "yes" : "no",
                           SSL_get_peer_certificate(ssl) != NULL ? "yes" : "no");
@@ -2144,6 +2148,18 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
         }
 #endif
     }
+#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+    else if ((where & SSL_CB_HANDSHAKE_START) && scr->reneg_state == RENEG_ALLOW) {
+        scr->reneg_state = RENEG_STARTED;
+    }
+    else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_STARTED) {
+        scr->reneg_state = RENEG_DONE;
+    }
+    else if ((where & SSL_CB_ALERT) &&
+             (scr->reneg_state == RENEG_ALLOW || scr->reneg_state == RENEG_STARTED)) {
+        scr->reneg_state = RENEG_ALERT;
+    }
+#endif
     /* If the first handshake is complete, change state to reject any
      * subsequent client-initiated renegotiation. */
     else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_INIT) {
