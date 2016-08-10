@@ -190,6 +190,7 @@ static int ssl_auth_compatible(modssl_auth_ctx_t *a1,
     return 1;
 }
 
+#ifdef HAVE_TLSEXT
 static int ssl_ctx_compatible(modssl_ctx_t *ctx1, 
                               modssl_ctx_t *ctx2) 
 {
@@ -215,6 +216,7 @@ static int ssl_server_compatible(server_rec *s1, server_rec *s2)
     
     return 1;
 }
+#endif
 
 /*
  *  Post Read Request Handler
