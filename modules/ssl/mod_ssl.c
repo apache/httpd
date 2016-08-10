@@ -342,7 +342,11 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
      */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     CRYPTO_malloc_init();
+#else
+    OPENSSL_malloc_init();
+#endif
     ERR_load_crypto_strings();
     SSL_load_error_strings();
     SSL_library_init();
