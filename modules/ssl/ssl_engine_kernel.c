@@ -1015,10 +1015,6 @@ int ssl_hook_Access(request_rec *r)
 
             /* Need to trigger renegotiation handshake by reading.
              * Peeking 0 bytes actually works.
-             * The code needs the following patches on top of OpenSSL 1.1.0pre2:
-             * https://github.com/openssl/openssl/commit/311f27852a18fb9c10f0c1283b639f12eea06de2
-             * https://github.com/openssl/openssl/commit/5b326dc529e19194feaef9a65fa37efbe11eaa7e
-             * It is expected to work without changes with the forthcoming 1.1.0pre3.
              * See: http://marc.info/?t=145493359200002&r=1&w=2
              */
             SSL_peek(ssl, peekbuf, 0);
@@ -1532,7 +1528,11 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
     SSL_set_current_cert(ssl, SSL_CERT_SET_SERVER);
 #endif
     pkey = SSL_get_privatekey(ssl);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     type = pkey ? EVP_PKEY_type(pkey->type) : EVP_PKEY_NONE;
+#else
+    type = pkey ? EVP_PKEY_base_id(pkey) : EVP_PKEY_NONE;
+#endif
 
     /*
      * OpenSSL will call us with either keylen == 512 or keylen == 1024
