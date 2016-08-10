@@ -200,12 +200,20 @@
 #endif /* !defined(OPENSSL_NO_TLSEXT) && defined(SSL_set_tlsext_host_name) */
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
-#define BIO_set_init(x,v)     (x->init=v)
-#define BIO_get_data(x)       (x->ptr)
-#define BIO_set_data(x,v)     (x->ptr=v)
-#define BIO_get_shutdown(x)   (x->shutdown)
-#define BIO_set_shutdown(x,v) (x->shutdown=v)
-#define DH_bits(x)            (BN_num_bits(x->p))
+#define BN_get_rfc2409_prime_768   get_rfc2409_prime_768
+#define BN_get_rfc2409_prime_1024  get_rfc2409_prime_1024
+#define BN_get_rfc3526_prime_1536  get_rfc3526_prime_1536
+#define BN_get_rfc3526_prime_2048  get_rfc3526_prime_2048
+#define BN_get_rfc3526_prime_3072  get_rfc3526_prime_3072
+#define BN_get_rfc3526_prime_4096  get_rfc3526_prime_4096
+#define BN_get_rfc3526_prime_6144  get_rfc3526_prime_6144
+#define BN_get_rfc3526_prime_8192  get_rfc3526_prime_8192
+#define BIO_set_init(x,v)          (x->init=v)
+#define BIO_get_data(x)            (x->ptr)
+#define BIO_set_data(x,v)          (x->ptr=v)
+#define BIO_get_shutdown(x)        (x->shutdown)
+#define BIO_set_shutdown(x,v)      (x->shutdown=v)
+#define DH_bits(x)                 (BN_num_bits(x->p))
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
