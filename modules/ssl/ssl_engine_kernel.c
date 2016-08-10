@@ -114,6 +114,7 @@ static int has_buffered_data(request_rec *r)
     return result;
 }
 
+#ifdef HAVE_TLSEXT
 static int ap_array_same_str_set(apr_array_header_t *s1, apr_array_header_t *s2)
 {
     int i;
@@ -190,7 +191,6 @@ static int ssl_auth_compatible(modssl_auth_ctx_t *a1,
     return 1;
 }
 
-#ifdef HAVE_TLSEXT
 static int ssl_ctx_compatible(modssl_ctx_t *ctx1, 
                               modssl_ctx_t *ctx2) 
 {
