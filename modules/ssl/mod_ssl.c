@@ -313,11 +313,7 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     ENGINE_cleanup();
 #endif
 #if OPENSSL_VERSION_NUMBER >= 0x1000000fL
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
     ERR_remove_thread_state(NULL);
-#else
-    ERR_remove_thread_state();
-#endif
 #else
     ERR_remove_state(0);
 #endif
