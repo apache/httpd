@@ -364,7 +364,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
         char buf[MODSSL_SESSION_ID_STRING_LEN];
         SSL_SESSION *pSession = SSL_get_session(ssl);
         if (pSession) {
-            unsigned char *id;
+            IDCONST unsigned char *id;
             unsigned int idlen;
 
 #ifdef OPENSSL_NO_SSL_INTERN

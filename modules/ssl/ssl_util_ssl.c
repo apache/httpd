@@ -488,7 +488,7 @@ EC_GROUP *ssl_ec_GetParamFromFile(const char *file)
 **  _________________________________________________________________
 */
 
-char *modssl_SSL_SESSION_id2sz(unsigned char *id, int idlen,
+char *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *id, int idlen,
                                char *str, int strsize)
 {
     if (idlen > SSL_MAX_SSL_SESSION_ID_LENGTH)

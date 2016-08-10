@@ -1835,7 +1835,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 
 static void ssl_session_log(server_rec *s,
                             const char *request,
-                            unsigned char *id,
+                            IDCONST unsigned char *id,
                             unsigned int idlen,
                             const char *status,
                             const char *result,
@@ -1875,7 +1875,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     long timeout        = sc->session_cache_timeout;
     BOOL rc;
-    unsigned char *id;
+    IDCONST unsigned char *id;
     unsigned int idlen;
 
     /*
@@ -1919,7 +1919,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
  *  of our other Apache pre-forked server processes.
  */
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
-                                               unsigned char *id,
+                                               IDCONST unsigned char *id,
                                                int idlen, int *do_copy)
 {
     /* Get Apache context back through OpenSSL context */
@@ -1958,7 +1958,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
 {
     server_rec *s;
     SSLSrvConfigRec *sc;
-    unsigned char *id;
+    IDCONST unsigned char *id;
     unsigned int idlen;
 
     /*
