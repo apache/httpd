@@ -47,21 +47,50 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, init_server,
 #define KEYTYPES "RSA or DSA"
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+/* OpenSSL Pre-1.1.0 compatibility */
+/* Taken from OpenSSL 1.1.0 snapshot 20160410 */
+int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+{
+    /* q is optional */
+    if (p == NULL || g == NULL)
+        return 0;
+    BN_free(dh->p);
+    BN_free(dh->q);
+    BN_free(dh->g);
+    dh->p = p;
+    dh->q = q;
+    dh->g = g;
+
+    if (q != NULL) {
+        dh->length = BN_num_bits(q);
+    }
+
+    return 1;
+}
+#endif
+
 /*
  * Grab well-defined DH parameters from OpenSSL, see the get_rfc*
  * functions in <openssl/bn.h> for all available primes.
  */
-static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *), const char *gen)
+static DH *make_dh_params(BIGNUM *(*prime)(BIGNUM *))
 {
     DH *dh = DH_new();
+    BIGNUM *p, *g;
 
     if (!dh) {
         return NULL;
     }
-    dh->p = prime(NULL);
-    BN_dec2bn(&dh->g, gen);
-    if (!dh->p || !dh->g) {
+    p = prime(NULL);
+    g = BN_new();
+    if (g != NULL) {
+        BN_set_word(g, 2);
+    }
+    if (!p || !g || !DH_set0_pqg(dh, p, NULL, g)) {
         DH_free(dh);
+        BN_free(p);
+        BN_free(g);
         return NULL;
     }
     return dh;
@@ -86,7 +115,7 @@ static void init_dh_params(void)
     unsigned n;
 
     for (n = 0; n < sizeof(dhparams)/sizeof(dhparams[0]); n++)
-        dhparams[n].dh = make_dh_params(dhparams[n].prime, "2");
+        dhparams[n].dh = make_dh_params(dhparams[n].prime);
 }
 
 static void free_dh_params(void)
@@ -1252,7 +1281,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
         SSL_CTX_set_tmp_dh(mctx->ssl_ctx, dhparams);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02540)
                      "Custom DH parameters (%d bits) for %s loaded from %s",
-                     BN_num_bits(dhparams->p), vhost_id, certfile);
+                     DH_bits(dhparams), vhost_id, certfile);
         DH_free(dhparams);
     }
 
