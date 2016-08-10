@@ -323,10 +323,12 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_cleanup();
 #endif
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #if OPENSSL_VERSION_NUMBER >= 0x1000000fL
     ERR_remove_thread_state(NULL);
 #else
     ERR_remove_state(0);
+#endif
 #endif
 
     /* Don't call ERR_free_strings in earlier versions, ERR_load_*_strings only
