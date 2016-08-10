@@ -172,10 +172,6 @@ int ssl_stapling_init_cert(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
                               apr_pool_cleanup_null);
     if (aia) {
        /* allocate uri from the pconf pool */
-       /* XXX: OpenSSL 1.1.0: Compiler warning: passing argument 1 of 'sk_value'
-        * from incompatible pointer type expected 'const struct _STACK *'
-        * but argument is of type 'struct stack_st_OPENSSL_STRING *'
-        */
        cinf->uri = apr_pstrdup(p, sk_OPENSSL_STRING_value(aia, 0));
        X509_email_free(aia);
     }

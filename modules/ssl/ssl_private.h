@@ -151,6 +151,7 @@
 /* OCSP stapling */
 #if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb)
 #define HAVE_OCSP_STAPLING
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 /* backward compatibility with OpenSSL < 1.0 */
 #ifndef sk_OPENSSL_STRING_num
 #define sk_OPENSSL_STRING_num sk_num
@@ -161,7 +162,8 @@
 #ifndef sk_OPENSSL_STRING_pop
 #define sk_OPENSSL_STRING_pop sk_pop
 #endif
-#endif
+#endif /* if OPENSSL_VERSION_NUMBER < 0x10100000L */
+#endif /* if !defined(OPENSSL_NO_OCSP) && defined(SSL_CTX_set_tlsext_status_cb) */
 
 /* TLS session tickets */
 #if defined(SSL_CTX_set_tlsext_ticket_key_cb)
