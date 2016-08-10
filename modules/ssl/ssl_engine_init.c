@@ -592,7 +592,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     } else {
         SSL_CTX_free(ctx);
         mctx->ssl_ctx = NULL;
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(03378)
                 "No SSL protocols available [hint: SSLProtocol]");
         return ssl_die(s);
     }
