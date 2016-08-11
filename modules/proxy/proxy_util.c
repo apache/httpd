@@ -2699,10 +2699,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
 #endif
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
-                                                   proxy_conn_rec *conn,
-                                                   server_rec *s,
-                                                   int expect_empty)
+PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
+                                                      proxy_conn_rec *conn,
+                                                      server_rec *server,
+                                                      unsigned max_blank_lines,
+                                                      int flags)
 {
     apr_status_t rv = APR_SUCCESS;
     proxy_worker *worker = conn->worker;
@@ -2713,24 +2714,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
          * e.g. for a timeout or bad status. We should respect this and should
          * not continue with a connection via this worker even if we got one.
          */
-        rv = APR_NOTFOUND;
+        rv = APR_EINVAL;
     }
     else if (!conn->sock) {
-        rv = APR_ENOTSOCK;
+        rv = APR_ENOSOCKET;
     }
     else if (conn->connection) {
-        conn_rec *c = conn->connection;
-        rv = ap_get_brigade(c->input_filters, conn->tmp_bb,
-                            AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
-        if (APR_STATUS_IS_EAGAIN(rv)) {
+        rv = ap_check_pipeline(conn->connection, conn->tmp_bb,
+                               max_blank_lines);
+        if (rv == APR_ENOTEMPTY && !(flags & PROXY_CHECK_CONN_EMPTY)) {
             rv = APR_SUCCESS;
-        }
-        else if (rv == APR_SUCCESS && expect_empty) {
-            apr_off_t len = 0;
-            apr_brigade_length(conn->tmp_bb, 0, &len);
-            if (len) {
-                rv = APR_ENOTEMPTY;
-            }
         }
         apr_brigade_cleanup(conn->tmp_bb);
     }
@@ -2744,7 +2737,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
          * ap_proxy_determine_connection().
          */
         char ssl_hostname[PROXY_WORKER_RFC1035_NAME_SIZE];
-        if (rv == APR_NOTFOUND
+        if (rv == APR_EINVAL
                 || !conn->ssl_hostname
                 || PROXY_STRNCPY(ssl_hostname, conn->ssl_hostname)) {
             ssl_hostname[0] = '\0';
@@ -2752,14 +2745,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
 
         socket_cleanup(conn);
         if (rv != APR_ENOTEMPTY) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00951)
-                         "%s: backend socket is disconnected.",
-                         proxy_function);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, server, APLOGNO(00951)
+                         "%s: backend socket is disconnected.", scheme);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03408)
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, server, APLOGNO(03408)
                          "%s: reusable backend connection is not empty: "
-                         "forcibly closed", proxy_function);
+                         "forcibly closed", scheme);
         }
 
         if (ssl_hostname[0]) {
@@ -2785,8 +2777,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     proxy_server_conf *conf =
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
-    rv = ap_proxy_check_backend(proxy_function, conn, s, 0);
-    if (rv == APR_NOTFOUND) {
+    rv = ap_proxy_check_connection(proxy_function, conn, s, 0, 0);
+    if (rv == APR_EINVAL) {
         return DECLINED;
     }
 
@@ -3002,7 +2994,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (rv == APR_SUCCESS) {
             socket_cleanup(conn);
         }
-        rv = APR_NOTFOUND;
+        rv = APR_EINVAL;
     }
 
     return rv == APR_SUCCESS ? OK : DECLINED;
