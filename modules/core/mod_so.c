@@ -193,7 +193,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     const char *error;
 
     /* we need to setup this value for dummy to make sure that we don't try
-     * to add a non-existant tree into the build when we return to
+     * to add a non-existent tree into the build when we return to
      * execute_now.
      */
     *(ap_directive_t **)dummy = NULL;
@@ -321,7 +321,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
 /*
  * This implements the LoadFile directive and loads an arbitrary
- * shared object file into the adress space of the server process.
+ * shared object file into the address space of the server process.
  */
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)

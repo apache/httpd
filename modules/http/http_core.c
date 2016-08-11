@@ -66,7 +66,7 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
      * set for the main server, because if no http_module directive is used
      * for a vhost, it will inherit the http_srv_cfg from the main server.
      * However keep_alive_timeout_set helps determine whether the vhost should
-     * use its own configured timeout or the one from the vhost delared first
+     * use its own configured timeout or the one from the vhost declared first
      * on the same IP:port (ie. c->base_server, and the legacy behaviour).
      */
     if (cmd->server->is_virtual) {

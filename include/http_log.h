@@ -141,7 +141,7 @@ extern "C" {
  * Constant to store module_index for the current file.
  * Objects with static storage duration are set to NULL if not
  * initialized explicitly. This means that if aplog_module_index
- * is not initalized using the ::APLOG_USE_MODULE or the
+ * is not initialized using the ::APLOG_USE_MODULE or the
  * ::AP_DECLARE_MODULE macro, we can safely fall back to
  * use ::APLOG_NO_MODULE. This variable will usually be optimized away.
  */

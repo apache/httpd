@@ -31,7 +31,7 @@
  * New incoming HEADER frames are converted into a h2_stream+h2_task instance
  * that both represent a HTTP/2 stream, but may have separate lifetimes. This
  * allows h2_task to be scheduled in other threads without semaphores
- * all over the place. It allows task memory to be freed independant of
+ * all over the place. It allows task memory to be freed independent of
  * session lifetime and sessions may close down while tasks are still running.
  *
  *
@@ -100,7 +100,7 @@ typedef struct h2_session {
     unsigned int flush         : 1; /* flushing output necessary */
     unsigned int have_read     : 1; /* session has read client data */
     unsigned int have_written  : 1; /* session did write data to client */
-    apr_interval_time_t  wait_us;   /* timout during BUSY_WAIT state, micro secs */
+    apr_interval_time_t  wait_us;   /* timeout during BUSY_WAIT state, micro secs */
     
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
@@ -156,7 +156,7 @@ h2_session *h2_session_rcreate(request_rec *r, struct h2_ctx *ctx,
 
 /**
  * Process the given HTTP/2 session until it is ended or a fatal
- * error occured.
+ * error occurred.
  *
  * @param session the sessionm to process
  */
@@ -175,7 +175,7 @@ apr_status_t h2_session_pre_close(h2_session *session, int async);
 void h2_session_eoc_callback(h2_session *session);
 
 /**
- * Called when a serious error occured and the session needs to terminate
+ * Called when a serious error occurred and the session needs to terminate
  * without further connection io.
  * @param session the session to abort
  * @param reason  the apache status that caused the abort
