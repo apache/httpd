@@ -581,16 +581,16 @@ E.</p>
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory "/a/emphasis role="bold""&gt;
-    B
-&lt;/Directory&gt;
+    &lt;Directory "/a/"&gt;
+        B
+    &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
 
 &lt;DirectoryMatch "^.*b$"&gt;
     C
 &lt;/DirectoryMatch&gt;
 
-&lt;Directory "/a/b&gt;
+&lt;Directory "/a/b"&gt;
     A
 &lt;/Directory&gt;
 
