@@ -69,6 +69,16 @@ performance</description>
     is <code>On</code>.  In version 2.3.6, loading mod_status will
     toggle <directive module="core">ExtendedStatus</directive> On
     by default.</p>
+
+    <note>
+      <strong>It should be noted that if <module>mod_status</module> is
+      loaded into the server, its handler capability is available
+      in <em>all</em> configuration files, including
+      <em>per</em>-directory files (<em>e.g.</em>,
+      <code>.htaccess</code>). This may have security-related
+      ramifications for your site.</strong>
+    </note>
+
 </summary>
 
 <section id="enable">
@@ -108,15 +118,6 @@ performance</description>
     is useful when automatically run, see the Perl program
     <code>log_server_status</code>, which you will find in the
     <code>/support</code> directory of your Apache HTTP Server installation.</p>
-
-    <note>
-      <strong>It should be noted that if <module>mod_status</module> is
-      loaded into the server, its handler capability is available
-      in <em>all</em> configuration files, including
-      <em>per</em>-directory files (<em>e.g.</em>,
-      <code>.htaccess</code>). This may have security-related
-      ramifications for your site.</strong>
-    </note>
 
 </section>
 
