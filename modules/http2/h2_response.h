@@ -62,7 +62,7 @@ h2_response *h2_response_die(int stream_id, apr_status_t type,
 h2_response *h2_response_clone(apr_pool_t *pool, h2_response *from);
 
 /**
- * Set the trailers in the reponse. Will replace any existing trailers. Will
+ * Set the trailers in the response. Will replace any existing trailers. Will
  * *not* clone the table.
  *
  * @param response the repsone to set the trailers for

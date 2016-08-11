@@ -60,7 +60,7 @@ TLS CONFIGURATION
 
 If you want to use HTTP/2 with a browser, most modern browsers will support
 it without further configuration. However, browsers so far only support
-HTTP/2 over TLS and are expecially picky about the certificate and
+HTTP/2 over TLS and are especially picky about the certificate and
 encryption ciphers used.
 
 Server admins may look for up-to-date information about "modern" TLS

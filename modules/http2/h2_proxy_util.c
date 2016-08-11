@@ -279,7 +279,7 @@ void h2_iq_clear(h2_iqueue *q)
 void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
 {
     /* Assume that changes in ordering are minimal. This needs,
-     * best case, q->nelts - 1 comparisions to check that nothing
+     * best case, q->nelts - 1 comparisons to check that nothing
      * changed.
      */
     if (q->nelts > 0) {

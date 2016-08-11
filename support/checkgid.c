@@ -15,7 +15,7 @@
  */
 
 /*
- * Given one or more group identifers on the command line (e.g.,
+ * Given one or more group identifiers on the command line (e.g.,
  * "httpd" or "#-1"), figure out whether they'll be valid for
  * the server to use at run-time.
  *

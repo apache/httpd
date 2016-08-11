@@ -136,7 +136,7 @@ typedef struct HSE_SEND_HEADER_EX_INFO {
 #define HSE_IO_NODELAY 4096
 
 /* The Completion function prototype.  This callback may be fixed with
- * the HSE_REQ_IO_COMPLETION ServerSupportFunction call, or overriden
+ * the HSE_REQ_IO_COMPLETION ServerSupportFunction call, or overridden
  * for the HSE_REQ_TRANSMIT_FILE call.
  */
 typedef void (APR_THREAD_FUNC *PFN_HSE_IO_COMPLETION)

@@ -1021,7 +1021,7 @@ int ssl_hook_Access(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            /* Full renegotiation successfull, we now have handshaken with
+            /* Full renegotiation successful, we now have handshaken with
              * this server's parameters.
              */
             sslconn->server = r->server;
@@ -1163,7 +1163,7 @@ int ssl_hook_Access(request_rec *r)
  *  Fake a Basic authentication from the X509 client certificate.
  *
  *  This must be run fairly early on to prevent a real authentication from
- *  occuring, in particular it must be run before anything else that
+ *  occurring, in particular it must be run before anything else that
  *  authenticates a user.  This means that the Module statement for this
  *  module should be LAST in the Configuration file.
  */

@@ -561,7 +561,7 @@ static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype,
         
         diary->NMax        = ceil_power_of_2(N);
         diary->N           = diary->NMax;
-        /* the mask we use in value comparision depends on where we got
+        /* the mask we use in value comparison depends on where we got
          * the values from. If we calculate them ourselves, we can use
          * the full 64 bits.
          * If we set the diary via a compressed golomb set, we have less

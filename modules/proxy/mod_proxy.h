@@ -385,7 +385,7 @@ typedef struct {
     unsigned int fnv;
 } proxy_hashes ;
 
-/* Runtime worker status informations. Shared in scoreboard */
+/* Runtime worker status information. Shared in scoreboard */
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
     char      scheme[PROXY_WORKER_MAX_SCHEME_SIZE];   /* scheme to use ajp|http|https */
@@ -620,7 +620,7 @@ PROXY_DECLARE_OPTIONAL_HOOK(proxy, PROXY, int, detach_backend,
 /**
  * pre request hook.
  * It will return the most suitable worker at the moment
- * and coresponding balancer.
+ * and corresponding balancer.
  * The url is rewritten from balancer://cluster/uri to scheme://host:port/uri
  * and then the scheme_handler is called.
  *
@@ -824,7 +824,7 @@ PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
  * @param url    url containing balancer name
  * @param alias  alias/fake-path to this balancer
  * @param do_malloc true if shared struct should be malloced
- * @return       error message or NULL if successfull
+ * @return       error message or NULL if successful
  */
 PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,

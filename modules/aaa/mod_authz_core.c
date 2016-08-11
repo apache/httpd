@@ -976,7 +976,7 @@ static const char *all_parse_config(cmd_parms *cmd, const char *require_line,
     /*
      * If the argument to the 'all' provider is 'granted' then just let
      * everybody in. This would be equivalent to the previous syntax of
-     * 'allow from all'. If the argument is 'denied' we reject everbody,
+     * 'allow from all'. If the argument is 'denied' we reject everybody,
      * which is equivalent to 'deny from all'.
      */
     if (strcasecmp(require_line, "granted") == 0) {

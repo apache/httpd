@@ -365,7 +365,7 @@ do { \
 
 /**
  * Transfer buckets from one brigade to another with a limit on the 
- * maximum amount of bytes transfered. Does no setaside magic, lifetime
+ * maximum amount of bytes transferred. Does no setaside magic, lifetime
  * of brigades must fit. 
  * @param to   brigade to transfer buckets to
  * @param from brigades to remove buckets from
