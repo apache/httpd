@@ -671,7 +671,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);
-/* DEPRECATED (will be replaced with ap_proxy_check_connection */
+/* DEPRECATED (will be replaced with ap_proxy_check_backend */
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
                                                             request_rec *r);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
@@ -977,27 +977,22 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s);
-
-#define PROXY_CHECK_CONN_EMPTY (1 << 0)
 /**
  * Check a connection to the backend
- * @param scheme calling proxy scheme (http, ajp, ...)
- * @param conn   acquired connection
- * @param server current server record
- * @param max_blank_lines how many blank lines to consume,
- *                        or zero for none (considered data)
- * @param flags  PROXY_CHECK_* bitmask
- * @return APR_SUCCESS: connection ready and empty,
- *         APR_ENOTEMPTY: connection ready and has data,
- *         APR_ENOSOCKET: not connected,
- *         APR_EINVAL: worker in error state (unusable),
- *         other: connection closed/aborted (remotely)
+ * @param proxy_function calling proxy scheme (http, ajp, ...)
+ * @param conn    acquired connection
+ * @param s       current server record
+ * @param expect_empty whether to check for empty (no data available) or not
+ * @return        APR_SUCCESS or,
+ *                APR_ENOTSOCK: not connected,
+ *                APR_NOTFOUND: worker in error state (unusable),
+ *                APR_ENOTEMPTY: expect_empty set but the connection has data,
+ *                other: connection closed/aborted (remotely)
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
-                                                      proxy_conn_rec *conn,
-                                                      server_rec *server,
-                                                      unsigned max_blank_lines,
-                                                      int flags);
+PROXY_DECLARE(apr_status_t) ap_proxy_check_backend(const char *proxy_function,
+                                                   proxy_conn_rec *conn,
+                                                   server_rec *s,
+                                                   int expect_empty);
 
 /**
  * Make a connection to the backend
