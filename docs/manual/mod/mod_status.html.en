@@ -77,6 +77,16 @@ performance</td></tr>
     is <code>On</code>.  In version 2.3.6, loading mod_status will
     toggle <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> On
     by default.</p>
+
+    <div class="note">
+      <strong>It should be noted that if <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> is
+      loaded into the server, its handler capability is available
+      in <em>all</em> configuration files, including
+      <em>per</em>-directory files (<em>e.g.</em>,
+      <code>.htaccess</code>). This may have security-related
+      ramifications for your site.</strong>
+    </div>
+
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -128,15 +138,6 @@ performance</td></tr>
     is useful when automatically run, see the Perl program
     <code>log_server_status</code>, which you will find in the
     <code>/support</code> directory of your Apache HTTP Server installation.</p>
-
-    <div class="note">
-      <strong>It should be noted that if <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> is
-      loaded into the server, its handler capability is available
-      in <em>all</em> configuration files, including
-      <em>per</em>-directory files (<em>e.g.</em>,
-      <code>.htaccess</code>). This may have security-related
-      ramifications for your site.</strong>
-    </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
