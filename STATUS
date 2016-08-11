@@ -224,6 +224,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: wrowe
 
+  *) Typo fixes in comments and text files. PR 59990.
+      Trunk version of patch:
+         http://svn.apache.org/r1756038
+      Backport version for 2.4.x of patch:
+         http://home.apache.org/~rjung/patches/httpd-2.4.x-typo-PR59990.patch
+         (trunk version of patch merge plus CHANGES plus STATUS
+          plus one hunk in modules/aaa/mod_auth_digest.c)
+      +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
