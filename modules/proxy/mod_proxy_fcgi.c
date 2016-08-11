@@ -445,7 +445,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              int *bad_request, int *has_responded)
 {
     apr_bucket_brigade *ib, *ob;
-    int seen_end_of_headers = 0, done = 0, ignore_body = 0;
+    int seen_end_of_headers = 0, ignore_body = 0;
     apr_status_t rv = APR_SUCCESS;
     int script_error_status = HTTP_OK;
     conn_rec *c = r->connection;
@@ -472,7 +472,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     ib = apr_brigade_create(r->pool, c->bucket_alloc);
     ob = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    while (! done) {
+    while (1) {
         apr_interval_time_t timeout;
         apr_size_t len;
         int n;
@@ -772,7 +772,7 @@ recv_again:
                 break;
 
             case AP_FCGI_END_REQUEST:
-                done = 1;
+                /* we are done below */
                 break;
 
             default:
@@ -780,8 +780,8 @@ recv_again:
                               "Got bogus record %d", type);
                 break;
             }
-            /* Leave on above switch's inner error. */
-            if (rv != APR_SUCCESS) {
+            /* Leave on above switch's inner end/error. */
+            if (rv != APR_SUCCESS || type == AP_FCGI_END_REQUEST) {
                 break;
             }
 

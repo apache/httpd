@@ -475,7 +475,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
     apr_status_t rv = APR_SUCCESS;
     const char *fn = "handle_response";
     int header_state = HDR_STATE_READING_HEADERS;
-    int seen_end_of_headers = 0, done = 0;
+    int seen_end_of_headers = 0;
 
     if (rspbuflen) {
         orspbuflen = *rspbuflen;
@@ -484,10 +484,10 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
 
     ob = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    while (!done && rv == APR_SUCCESS) { /* Keep reading FastCGI records until
-                                          * we get AP_FCGI_END_REQUEST (done)
-                                          * or an error occurs.
-                                          */
+    while (1) { /* Keep reading FastCGI records until
+                 * we get AP_FCGI_END_REQUEST,
+                 * or an error occurs.
+                 */
         apr_size_t readbuflen;
         apr_uint16_t clen;
         apr_uint16_t rid;
@@ -632,7 +632,7 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
             break;
 
         case AP_FCGI_END_REQUEST:
-            done = 1;
+            /* we are done below */
             break;
 
         default:
@@ -641,8 +641,8 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                           "%d", fn, type);
             break;
         }
-        /* Leave on above switch's inner error. */
-        if (rv != APR_SUCCESS) {
+        /* Leave on above switch's inner end/error. */
+        if (rv != APR_SUCCESS || type == AP_FCGI_END_REQUEST) {
             break;
         }
 
