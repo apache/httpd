@@ -928,16 +928,6 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
     backend->is_ssl = 0;
 
-    /* Step One: Determine Who To Connect To */
-    uri = apr_palloc(p, sizeof(*uri));
-    status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                           uri, &url, proxyname, proxyport,
-                                           server_portstr,
-                                           sizeof(server_portstr));
-    if (status != OK) {
-        goto cleanup;
-    }
-
     /* This scheme handler does not reuse connections by default, to
      * avoid tying up a fastcgi that isn't expecting to work on 
      * parallel requests.  But if the user went out of their way to
@@ -948,11 +938,21 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         backend->close = 0;
     }
 
+    /* Step One: Determine Who To Connect To */
+    uri = apr_palloc(p, sizeof(*uri));
+    status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+                                           uri, &url, proxyname, proxyport,
+                                           server_portstr,
+                                           sizeof(server_portstr));
+    if (status != OK) {
+        goto cleanup;
+    }
+
     /* Step Two: Make the Connection */
-    if ((backend->close || ap_proxy_check_backend(FCGI_SCHEME, backend,
-                                                  r->server, 1)) &&
-            ap_proxy_connect_backend(FCGI_SCHEME, backend, worker,
-                                     r->server)) {
+    if (ap_proxy_check_connection(FCGI_SCHEME, backend, r->server, 0,
+                                  PROXY_CHECK_CONN_EMPTY)
+            && ap_proxy_connect_backend(FCGI_SCHEME, backend, worker,
+                                        r->server)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01079)
                       "failed to make connection to backend: %s",
                       backend->hostname);
