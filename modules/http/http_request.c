@@ -313,6 +313,7 @@ AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
         else {
             if (buf[0] == APR_ASCII_LF) {
                 /* consume this LF */
+                mode = AP_MODE_READBYTES;
                 num_blank_lines++;
             }
             else if (buf[0] == APR_ASCII_CR) {
