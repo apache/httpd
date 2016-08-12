@@ -166,7 +166,7 @@ AllowOverride AuthConfig
 
     <p>Para crear el fichero de contraseñas, usa la utilidad 
     	<program>htpasswd</program> que viene con Apache. Esta herramienta se 
-    	encuentra en el directorio <code>bin</code> en donde sea que se ha 
+    	encuentra en el directorio <code>/bin</code> en donde sea que se ha 
     	instalado el Apache. Si ha instalado Apache desde un paquete de terceros, 
     	puede ser que se encuentre en su ruta de ejecución.</p>
 
@@ -180,35 +180,39 @@ AllowOverride AuthConfig
     te pedirá que la vuelvas a escribir para confirmarla:</p>
 
     <example>
-      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
+      $ htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
       New password: mypassword<br />
       Re-type new password: mypassword<br />
       Adding password for user rbowen
     </example>
 
-    <p>If <program>htpasswd</program> is not in your path, of course
-    you'll have to type the full path to the file to get it to run.
-    With a default installation, it's located at
+    <p>Si <program>htpasswd</program> no está en tu variable de entorno "path" del 
+    sistema, por supuesto deberás escribir la ruta absoluta del ejecutable para 
+    poder hacer que se ejecute. En una instalación por defecto, está en:
     <code>/usr/local/apache2/bin/htpasswd</code></p>
 
-    <p>Next, you'll need to configure the server to request a
-    password and tell the server which users are allowed access.
-    You can do this either by editing the <code>httpd.conf</code>
-    file or using an <code>.htaccess</code> file. For example, if
-    you wish to protect the directory
-    <code>/usr/local/apache/htdocs/secret</code>, you can use the
+    <p>Lo próximo que necesitas, será configurar el servidor para que pida una 
+    	contraseña y así decirle al servidor que usuarios están autorizados a acceder.
+    	Puedes hacer esto ya sea editando el fichero <code>httpd.conf</code>
+    de configuración  o usando in fichero <code>.htaccess</code>. Por ejemplo, 
+    si quieres proteger el directorio
+    <code>/usr/local/apache/htdocs/secret</code>, puedes usar las siguientes 
+    directivas, ya sea en el fichero <code>.htaccess</code> localizado en
     following directives, either placed in the file
-    <code>/usr/local/apache/htdocs/secret/.htaccess</code>, or
-    placed in <code>httpd.conf</code> inside a &lt;Directory
-    "/usr/local/apache/htdocs/secret"&gt; section.</p>
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code>, o
+    en la configuración global del servidor <code>httpd.conf</code> dentro de la
+    sección &lt;Directory  
+    "/usr/local/apache/htdocs/secret"&gt; section. como se muesta a continuacion:</p>
 
     <highlight language="config">
+&lt;Directory "/usr/local/apache/htdocs/secret"&gt;
 AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen
+&lt;/Directory&gt;
     </highlight>
 
     <p>Let's examine each of those directives individually. The <directive
