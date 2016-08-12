@@ -75,7 +75,7 @@ Documentation</title>
     <page href="howto/cgi.html">CGI: Dynamic Content</page>
     <page href="howto/htaccess.html">.htaccess files</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">Per-user Web Directories(public_html)</page>
+    <page href="howto/public_html.html">Per-user Web Directories (public_html)</page>
     <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
 </category>
 
