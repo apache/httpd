@@ -29,8 +29,6 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requête pour déterminer le noeud du système de fichier à partir duquel le
@@ -253,7 +251,7 @@ dans le répertoire
 <code>/bar/</code> sur <code>internal.example.com</code>
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
-<pre class="prettyprint lang-config">ProxyPass "/foo/" "http://internal.example.com/bar/"
+<pre class="prettyprint lang-config">ProxyPass        "/foo/" "http://internal.example.com/bar/"
 ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
 ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"</pre>
