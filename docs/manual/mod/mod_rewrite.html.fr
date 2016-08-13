@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1160,15 +1158,14 @@ moteur de réécriture. Cette restriction a été instaurée à des fins de
 sécurité.</li>
 
 <li>Lorsqu'on utilise le moteur de réécriture dans un fichier
-<code>.htaccess</code>, le chemin de base du répertoire courant (qui est
-toujours le même pour ce même répertoire) est automatiquement
-<em>supprimé</em> au cours de la comparaison avec le modèle de la règle
-de réécriture, et automatiquement <em>ajouté</em> lorsqu'une
-substitution relative (ne débutant pas par un slash ou un nom de
-protocole) arrive à la fin d'un jeu de règles. Voir la directive
-<code class="directive"><a href="#rewritebase">RewriteBase</a></code> pour plus de
-détails à propos de l'ajout du préfixe après les substitutions
-relatives.</li>
+<code>.htaccess</code>, le chemin de base du répertoire courant (autrement dit
+le chemin URI qui représente le répertoire contenant ce fichier
+<code>.htaccess</code>) est automatiquement <em>supprimé</em> au cours de la
+comparaison avec le modèle de la règle de réécriture, et automatiquement
+<em>ajouté</em> lorsqu'une substitution relative (ne débutant pas par un slash
+ou un nom de protocole) arrive à la fin d'un jeu de règles. Voir la directive
+<code class="directive"><a href="#rewritebase">RewriteBase</a></code> pour plus de détails à
+propos de l'ajout du préfixe après les substitutions relatives.</li>
 
 <li>Si vous souhaitez effectuer une comparaison en prenant en compte
 l'intégralité du

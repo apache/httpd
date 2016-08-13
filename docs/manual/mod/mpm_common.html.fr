@@ -146,7 +146,7 @@ gestionnaires d'exception après un crash</td></tr>
 
     <p>Deux modules, <code>mod_whatkilledus</code> et
     <code>mod_backtrace</code> utilisent ce hook. Veuillez vous
-    référer à la <a href="http://people.apache.org/~trawick/exception_hook.html">page EnableExceptionHook</a> de Jeff Trawick pour plus
+    référer à la <a href="https://emptyhammock.com/projects/httpd/diag/">page EnableExceptionHook</a> de Jeff Trawick pour plus
     d'informations à leur sujet.</p>
 
 </div>
