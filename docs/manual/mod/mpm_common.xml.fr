@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1753074 -->
+<!-- English Revision: 1755987 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -114,7 +114,7 @@ gestionnaires d'exception après un crash</description>
     <p>Deux modules, <code>mod_whatkilledus</code> et
     <code>mod_backtrace</code> utilisent ce hook. Veuillez vous
     référer à la <a
-    href="http://people.apache.org/~trawick/exception_hook.html"
+    href="https://emptyhammock.com/projects/httpd/diag/"
     >page EnableExceptionHook</a> de Jeff Trawick pour plus
     d'informations à leur sujet.</p>
 </usage>
