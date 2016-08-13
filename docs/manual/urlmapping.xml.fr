@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1741874:1755981 (outdated) -->
+<!-- English Revision: 1755981 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -280,7 +280,7 @@ dans le répertoire
 et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
 <highlight language="config">
-ProxyPass "/foo/" "http://internal.example.com/bar/"
+ProxyPass        "/foo/" "http://internal.example.com/bar/"
 ProxyPassReverse "/foo/" "http://internal.example.com/bar/"
 ProxyPassReverseCookieDomain internal.example.com public.example.com
 ProxyPassReverseCookiePath "/foo/" "/bar/"

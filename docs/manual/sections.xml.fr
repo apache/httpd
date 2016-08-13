@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1731192:1755977 (outdated) -->
+<!-- English Revision: 1755977 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -665,9 +665,9 @@ E.</p>
 &lt;/Files&gt;
 
 &lt;VirtualHost *&gt;
-&lt;Directory "/a/emphasis role="bold""&gt;
-    B
-&lt;/Directory&gt;
+   &lt;Directory "/a/"&gt;
+        B
+   &lt;/Directory&gt;
 &lt;/VirtualHost&gt;
 
 &lt;DirectoryMatch "^.*b$"&gt;
