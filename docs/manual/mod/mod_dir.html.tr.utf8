@@ -98,7 +98,7 @@
     <p>2.4 öncesi sürümlerde, bir URL için başka bir eylemcinin yapılandılmış
     olması durumunda bu modül herhangi bir eylemde bulunmaz ve sonuç olarak,
     tüm dizin için bir <code class="directive">SetHandler</code> belirtildiği durumda
-    index dosyalarının sunulmasının yanında  <code class="directive">mod_rewrite</code>
+    index dosyalarının sunulmasının yanında  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     gibi modüller de ayrıca bazı çelişkili sonuçlar oluşturabilir.</p>
 
 </div>
