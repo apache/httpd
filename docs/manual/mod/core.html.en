@@ -61,6 +61,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enforcehttpprotocol">EnforceHTTPProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
@@ -1297,6 +1298,54 @@ version 2.3.9.</td></tr>
        Only global definition of <code class="directive">EnableSendfile</code>
        is taken into account by the module.
     </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="EnforceHTTPProtocol" id="EnforceHTTPProtocol">EnforceHTTPProtocol</a> <a name="enforcehttpprotocol" id="enforcehttpprotocol">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnforceHTTPProtocol [Strict|Unsafe] [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnforceHTTPProtocol Strict Allow0.9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
+</table>
+    <p>This directive changes the rules applied to the HTTP Request Line
+    (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
+    (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
+    the <code>Strict</code> option. Due to legacy modules, applications or
+    custom user-agents which must be deperecated, an <code>Unsafe</code>
+    option has been added to revert to the legacy behavior. These rules are
+    applied prior to request processing, so must be configured at the global
+    or default (first) matching virtual host section, by interface and not
+    by name, to be honored.</p>
+
+    <p>Prior to the introduction of this directive, the Apache HTTP Server
+    request message parsers were tolerant of a number of forms of input
+    which did not conform to the protocol.
+    <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4 Request Splitting</a> and
+    <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response Smuggling</a> call out only two of the potential
+    risks of accepting non-conformant request messages. As of the introduction
+    of this directive, all grammer rules of the specification are enforced in
+    the <code>Strict</code> operating mode.</p>
+
+    <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
+    mode of operation for these reasons, most especially on outward-facing,
+    publicly accessible server deployments. Reviewing the messages within the
+    <code class="directive">ErrorLog</code> in the <code>info</code>
+    <code class="directive">LogLevel</code> or below can help identify such faulty
+    requests, along with their origin. Users should pay particular attention
+    to any 400 responses in the access log for indiciations that these requests 
+    are being correctly rejected.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
+    encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
+    superceeds this with "The expectation to support HTTP/0.9 requests has
+    been removed" and offers additional comments in 
+    <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
+    the user to remove support of the <code>Allow0.9</code> default option's
+    behavior.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
