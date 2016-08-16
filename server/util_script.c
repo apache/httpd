@@ -186,6 +186,14 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         else if (!strcasecmp(hdrs[i].key, "Content-length")) {
             apr_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
         }
+        /* HTTP_PROXY collides with a popular envvar used to configure
+         * proxies, don't let clients set/override it.  But, if you must...
+         */
+#ifndef SECURITY_HOLE_PASS_PROXY
+        else if (!ap_cstr_casecmp(hdrs[i].key, "Proxy")) {
+            ;
+        }
+#endif
         /*
          * You really don't want to disable this check, since it leaves you
          * wide open to CGIs stealing passwords and people viewing them

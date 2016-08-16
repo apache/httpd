@@ -117,14 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=1753228&view=rev
-         http://svn.apache.org/viewvc?rev=1753229&view=rev
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: wrowe, jim, ylavic
-
   *) mod_dav: Add support for childtags to dav_error.
      trunk patch: http://svn.apache.org/r1746207
      2.4.x: trunk works modulo CHANGES/MMN

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
+     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
+
   *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
      string showing up in SCRIPT_FILENAME. PR59815
 
