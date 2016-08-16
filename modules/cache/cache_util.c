@@ -31,8 +31,9 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
  * in "filter". All but the path comparisons are case-insensitive.
  */
 static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
-                                const apr_uri_t *url)
+                                request_rec *r)
 {
+    const apr_uri_t *url = &r->parsed_uri;
 
     /* Scheme, hostname port and local part. The filter URI and the
      * URI we test may have the following shapes:
@@ -113,7 +114,7 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     /* For HTTP caching purposes, an empty (NULL) path is equivalent to
      * a single "/" path. RFCs 3986/2396
      */
-    if (!url->path) {
+    if (!r->uri) {
         if (*filter->path == '/' && pathlen == 1) {
             return 1;
         }
@@ -125,7 +126,7 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     /* Url has met all of the filter conditions so far, determine
      * if the paths match.
      */
-    return !strncmp(filter->path, url->path, pathlen);
+    return !strncmp(filter->path, r->uri, pathlen);
 }
 
 static cache_provider_list *get_provider(request_rec *r, struct cache_enable *ent,
@@ -167,8 +168,7 @@ static cache_provider_list *get_provider(request_rec *r, struct cache_enable *en
 }
 
 cache_provider_list *cache_get_providers(request_rec *r,
-        cache_server_conf *conf,
-        apr_uri_t uri)
+                                         cache_server_conf *conf)
 {
     cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_module);
     cache_provider_list *providers = NULL;
@@ -183,7 +183,7 @@ cache_provider_list *cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
-        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, &uri)) {
+        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, r)) {
             /* Stop searching now. */
             return NULL;
         }
@@ -200,7 +200,7 @@ cache_provider_list *cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent =
                                 (struct cache_enable *)conf->cacheenable->elts;
-        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, &uri)) {
+        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, r)) {
             providers = get_provider(r, &ent[i], providers);
         }
     }

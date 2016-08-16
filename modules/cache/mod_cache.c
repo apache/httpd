@@ -103,7 +103,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     /*
      * Which cache module (if any) should handle this request?
      */
-    if (!(providers = cache_get_providers(r, conf, r->parsed_uri))) {
+    if (!(providers = cache_get_providers(r, conf))) {
         return DECLINED;
     }
 
@@ -413,7 +413,7 @@ static int cache_handler(request_rec *r)
     /*
      * Which cache module (if any) should handle this request?
      */
-    if (!(providers = cache_get_providers(r, conf, r->parsed_uri))) {
+    if (!(providers = cache_get_providers(r, conf))) {
         return DECLINED;
     }
 
