@@ -477,6 +477,7 @@
  *                          extended proxy_worker_shared.
  * 20120211.60 (2.4.21-dev) Add dav_get_provider_name.
  * 20120211.61 (2.4.21-dev) Add ap_cstr_casecmp[n]() - placeholder of apr_ fns
+ * 20120211.62 (2.4.24-dev) Add childtags to dav_error.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -484,7 +485,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 61                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 62                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
