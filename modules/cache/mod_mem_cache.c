@@ -677,12 +677,12 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
     char *cur;
-    int eos = 0;
 
     if (mobj->type == CACHE_TYPE_FILE) {
         apr_file_t *file = NULL;
         int fd = 0;
         int other = 0;
+        int eos = 0;
 
         /* We can cache an open file descriptor if:
          * - the brigade contains one and only one file_bucket &&
@@ -845,6 +845,15 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
          * cause we just stomped all over the heap.
          */
         AP_DEBUG_ASSERT(obj->count <= mobj->m_len);
+    }
+    if (r->connection->aborted && !obj->complete) {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                     "mem_cache: Discarding body for URL %s "
+                     "because client connection was aborted.",
+                     obj->key);
+        /* No need to cleanup - obj->complete unset, so
+         * decrement_refcount will discard the object */
+        return APR_EGENERAL;
     }
     return APR_SUCCESS;
 }
