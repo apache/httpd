@@ -539,6 +539,9 @@
  * 20160608.7 (2.5.0-dev)  Add ap_check_pipeline().
  * 20160608.8 (2.5.0-dev)  Rename ap_proxy_check_backend() to
  *                         ap_proxy_check_connection().
+ * 20160608.9 (2.5.0-dev)  Renamed AP_HTTP_CONFORMANCE_LIBERAL to 
+ *                         AP_HTTP_CONFORMANCE_UNSAFE, and
+ *                         eliminated AP_HTTP_CONFORMANCE_LOGONLY
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -546,7 +549,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20160608
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 8                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 9                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
