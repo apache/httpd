@@ -64,6 +64,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enforcehttpprotocol">EnforceHTTPProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
@@ -1093,6 +1094,19 @@ Dateien an den Client auszuliefern</td></tr>
     </p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="EnforceHTTPProtocol" id="EnforceHTTPProtocol">EnforceHTTPProtocol</a>-<a name="enforcehttpprotocol" id="enforcehttpprotocol">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnforceHTTPProtocol [Strict|Unsafe] [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>EnforceHTTPProtocol Strict Allow0.9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Error" id="Error">Error</a>-<a name="error" id="error">Direktive</a></h2>
 <table class="directive">
