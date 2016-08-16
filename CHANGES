@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
+     in the client certificate chain.  PR 55786.  [Yann Ylavic]
+
   *) mod_http2: adding support for intermediate responses.
      [Stefan Eissing]
 
