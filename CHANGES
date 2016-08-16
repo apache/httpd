@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cache: Use the actual URI path and query-string for identifying the
+     cached entity (key), such that rewrites are taken into account when
+     running afterwards (CacheQuickHandler off).  PR 21935.  [Yann Ylavic]
+
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.  [Yann Ylavic]
 
