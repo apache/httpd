@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
-     dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
-     dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
-     trunk patch: http://svn.apache.org/r1748047
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim, ylavic
-
   *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869
       Trunk version of patch:

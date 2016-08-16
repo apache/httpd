@@ -185,6 +185,23 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, int error_id,
 */
 DAV_DECLARE(dav_error*) dav_join_error(dav_error* dest, dav_error* src);
 
+typedef struct dav_response dav_response;
+
+/*
+** dav_handle_err()
+**
+** Handle the standard error processing. <err> must be non-NULL.
+**
+** <response> is set by the following:
+**   - dav_validate_request()
+**   - dav_add_lock()
+**   - repos_hooks->remove_resource
+**   - repos_hooks->move_resource
+**   - repos_hooks->copy_resource
+**   - vsn_hooks->update
+*/
+DAV_DECLARE(int) dav_handle_err(request_rec *r, dav_error *err,
+                                dav_response *response);
 
 /* error ID values... */
 
@@ -516,6 +533,41 @@ typedef enum {
 #define DAV_STYLE_ISO8601       1
 #define DAV_STYLE_RFC822        2
 #define DAV_TIMEBUF_SIZE        30
+
+/* Write a complete RESPONSE object out as a <DAV:response> xml
+ * element.  Data is sent into brigade BB, which is auto-flushed into
+ * OUTPUT filter stack.  Use POOL for any temporary allocations.
+ *
+ * [Presumably the <multistatus> tag has already been written;  this
+ * routine is shared by dav_send_multistatus and dav_stream_response.]
+ */
+DAV_DECLARE(void) dav_send_one_response(dav_response *response,
+                                        apr_bucket_brigade *bb,
+                                        ap_filter_t *output,
+                                        apr_pool_t *pool);
+
+/* Factorized helper function: prep request_rec R for a multistatus
+ * response and write <multistatus> tag into BB, destined for
+ * R->output_filters.  Use xml NAMESPACES in initial tag, if
+ * non-NULL.
+ */
+DAV_DECLARE(void) dav_begin_multistatus(apr_bucket_brigade *bb,
+                                        request_rec *r, int status,
+                                        apr_array_header_t *namespaces);
+
+/* Finish a multistatus response started by dav_begin_multistatus: */
+DAV_DECLARE(apr_status_t) dav_finish_multistatus(request_rec *r,
+                                                 apr_bucket_brigade *bb);
+
+/* Send a multistatus response */
+DAV_DECLARE(void) dav_send_multistatus(request_rec *r, int status,
+                                       dav_response *first,
+                                       apr_array_header_t *namespaces);
+
+DAV_DECLARE(apr_text *) dav_failed_proppatch(apr_pool_t *p,
+                                             apr_array_header_t *prop_ctx);
+DAV_DECLARE(apr_text *) dav_success_proppatch(apr_pool_t *p,
+                                              apr_array_header_t *prop_ctx);
 
 DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth);
 
