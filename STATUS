@@ -124,6 +124,35 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_dav: Add support for childtags to dav_error.
+     trunk patch: http://svn.apache.org/r1746207
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin, jim, ylavic
+
+  *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
+     dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
+     dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
+     trunk patch: http://svn.apache.org/r1748047
+     2.4.x: trunk works modulo CHANGES/MMN
+     +1: minfrin, jim, ylavic
+
+  *) mod_proxy: Correctly consider error response codes by the backend when
+     processing failonstatus. PR 59869
+      Trunk version of patch:
+         http://svn.apache.org/r1753592
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works (modulo CHANGES)
+      +1: rpluem, jim, ylavic
+
+  *) mod_proxy_balancer: Prevent redirect loops between workers within a
+     balancer by limiting the number of redirects to the number balancer
+     members. PR 59864
+      Trunk version of patch:
+         http://svn.apache.org/r1753594
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works (modulo CHANGES)
+      +1: rpluem, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -134,18 +163,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
-
-  *) mod_dav: Add support for childtags to dav_error.
-     trunk patch: http://svn.apache.org/r1746207
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim
-
-  *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
-     dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
-     dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
-     trunk patch: http://svn.apache.org/r1748047
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim
 
   *) core: Drop an invalid Last-Modified header value coming
      from a FCGI/CGI script instead of replacing it with Unix epoch.
@@ -187,42 +204,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      not been modified (HTTP 304) to avoid subsequent bogus reads and
      confusing error messages logged.
      trunk patch: http://svn.apache.org/r1752347
-     2.4.x patch: trunk works
-     +1 elukey
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey, ylavic
 
   *) autoconf: minor cleanup and removal of some dead code.
      trunk patch: http://svn.apache.org/r1753315
                   http://svn.apache.org/r1753316
      +1: jchampion
+     ylavic: some conflicts with r1753315 in 2.4.x's configure.in.
 
   *) mod_proxy_fcgi: avoid loops serving proxied error documents.
      trunk patch: http://svn.apache.org/r1753167
-     2.4.x patch: trunk works
-     +1: elukey
-
-  *) mod_proxy: Correctly consider error response codes by the backend when
-     processing failonstatus. PR 59869
-      Trunk version of patch:
-         http://svn.apache.org/r1753592
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: rpluem, jim
-
-  *) mod_proxy_balancer: Prevent redirect loops between workers within a
-     balancer by limiting the number of redirects to the number balancer
-     members. PR 59864
-      Trunk version of patch:
-         http://svn.apache.org/r1753594
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: rpluem, jim
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey, ylavic
 
   *) mod_http: Add the HEAD method to the lookup hash for completeness.
       Trunk version of patch:
          http://svn.apache.org/r1753257
       Backport version for 2.4.x of patch:
          Trunk version of patch works
-      +1: wrowe
+      +1: wrowe, ylavic
 
   *) Typo fixes in comments and text files. PR 59990.
       Trunk version of patch:
@@ -231,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://home.apache.org/~rjung/patches/httpd-2.4.x-typo-PR59990.patch
          (trunk version of patch merge plus CHANGES plus STATUS
           plus one hunk in modules/aaa/mod_auth_digest.c)
-      +1: rjung
+      +1: rjung, ylavic
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
