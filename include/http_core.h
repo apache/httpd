@@ -735,9 +735,8 @@ typedef struct {
     char http09_enable;
 
 #define AP_HTTP_CONFORMANCE_UNSET     0
-#define AP_HTTP_CONFORMANCE_LIBERAL   1
+#define AP_HTTP_CONFORMANCE_UNSAFE    1
 #define AP_HTTP_CONFORMANCE_STRICT    2
-#define AP_HTTP_CONFORMANCE_LOGONLY   4
     char http_conformance;
 
 #define AP_HTTP_CL_HEAD_ZERO_UNSET    0
