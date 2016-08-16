@@ -570,8 +570,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     apr_size_t len;
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
-    int strict = conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT;
-    int enforce_strict = !(conf->http_conformance & AP_HTTP_CONFORMANCE_LOGONLY);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -687,13 +686,11 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         if (strict) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
                           "Invalid protocol '%s'", r->protocol);
-            if (enforce_strict) {
-                r->proto_num = HTTP_VERSION(1,0);
-                r->protocol  = "HTTP/1.0";
-                r->connection->keepalive = AP_CONN_CLOSE;
-                r->status = HTTP_BAD_REQUEST;
-                return 0;
-            }
+            r->proto_num = HTTP_VERSION(1,0);
+            r->protocol  = "HTTP/1.0";
+            r->connection->keepalive = AP_CONN_CLOSE;
+            r->status = HTTP_BAD_REQUEST;
+            return 0;
         }
         if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
             && (ap_cstr_casecmp("http", http) == 0)
@@ -706,36 +703,35 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     if (strict) {
-        int err = 0;
         if (ap_has_cntrl(r->the_request)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02420)
                           "Request line must not contain control characters");
-            err = HTTP_BAD_REQUEST;
+            r->status = HTTP_BAD_REQUEST;
+            return 0;
         }
         if (r->parsed_uri.fragment) {
             /* RFC3986 3.5: no fragment */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02421)
                           "URI must not contain a fragment");
-            err = HTTP_BAD_REQUEST;
+            r->status = HTTP_BAD_REQUEST;
+            return 0;
         }
         else if (r->parsed_uri.user || r->parsed_uri.password) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02422)
                           "URI must not contain a username/password");
-            err = HTTP_BAD_REQUEST;
+            r->status = HTTP_BAD_REQUEST;
+            return 0;
         }
         else if (r->method_number == M_INVALID) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02423)
                           "Invalid HTTP method string: %s", r->method);
-            err = HTTP_NOT_IMPLEMENTED;
+            r->status = HTTP_NOT_IMPLEMENTED;
+            return 0;
         }
         else if (r->assbackwards == 0 && r->proto_num < HTTP_VERSION(1, 0)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02424)
                           "HTTP/0.x does not take a protocol");
-            err = HTTP_BAD_REQUEST;
-        }
-
-        if (err && enforce_strict) {
-            r->status = err;
+            r->status = HTTP_BAD_REQUEST;
             return 0;
         }
     }
@@ -780,6 +776,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     int fields_read = 0;
     char *tmp_field;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -890,7 +887,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             }
             memcpy(last_field + last_len, field, len +1); /* +1 for nul */
             /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
-            if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+            if (strict) {
                 last_field[last_len] = ' ';
             }
             last_len += len;
@@ -919,9 +916,8 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 return;
             }
 
-            if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT))
-            {
-                /* Not Strict, using the legacy parser */
+            if (!strict) {
+                /* Not Strict ('Unsafe' mode), using the legacy parser */
 
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
                     r->status = HTTP_BAD_REQUEST;   /* abort bad request */

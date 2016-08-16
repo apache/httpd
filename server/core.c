@@ -4011,37 +4011,39 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
-                                     const char *arg)
+static const char *set_enforce_http_protocol(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
 {
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
 
-    if (strncmp(arg, "min=", 4) == 0) {
-        arg += 4;
-        if (strcmp(arg, "0.9") == 0)
-            conf->http09_enable = AP_HTTP09_ENABLE;
-        else if (strcmp(arg, "1.0") == 0)
-            conf->http09_enable = AP_HTTP09_DISABLE;
-        else
-            return "HttpProtocol 'min' must be one of '0.9' and '1.0'";
-        return NULL;
+    if (strcasecmp(arg, "allow0.9") == 0) {
+        conf->http09_enable |= AP_HTTP09_ENABLE;
+    }
+    else if (strcasecmp(arg, "require1.0") == 0) {
+        conf->http09_enable |= AP_HTTP09_DISABLE;
+    }
+    else if (strcasecmp(arg, "strict") == 0) {
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_STRICT;
+    }
+    else if (strcasecmp(arg, "unsafe") == 0) {
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
+    }
+    else {
+        return "EnforceHttpProtocol accepts 'Allow0.9' (default), 'Require1.0',"
+               " 'Unsafe', or 'Strict' (default)";
     }
 
-    if (strcmp(arg, "strict") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT;
-    else if (strcmp(arg, "strict,log-only") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT|
-                                 AP_HTTP_CONFORMANCE_LOGONLY;
-    else if (strcmp(arg, "liberal") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_LIBERAL;
-    else
-        return "HttpProtocol accepts 'min=0.9', 'min=1.0', 'liberal', "
-               "'strict', 'strict,log-only'";
+    if ((conf->http09_enable & AP_HTTP09_ENABLE) &&
+        (conf->http09_enable & AP_HTTP09_DISABLE)) {
+        return "EnforceHttpProtocol 'Allow0.9' and 'Require1.0'"
+               " are mutually exclusive";
+    }
 
     if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) &&
-        (conf->http_conformance & AP_HTTP_CONFORMANCE_LIBERAL)) {
-        return "HttpProtocol 'strict' and 'liberal' are mutually exclusive";
+        (conf->http_conformance & AP_HTTP_CONFORMANCE_UNSAFE)) {
+        return "EnforceHttpProtocol 'Strict' and 'Unsafe'"
+               " are mutually exclusive";
     }
 
     return NULL;
@@ -4682,9 +4684,9 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
 AP_INIT_FLAG("MergeTrailers", set_merge_trailers, NULL, RSRC_CONF,
               "merge request trailers into request headers or not"),
-AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
-              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9; "
-              "'liberal', 'strict', 'strict,log-only'"),
+AP_INIT_ITERATE("EnforceHttpProtocol", set_enforce_http_protocol, NULL, RSRC_CONF,
+              "'Allow0.9' or 'Require1.0' (default) to allow or deny HTTP/0.9; "
+              "'Unsafe' or 'Strict' (default) to process incorrect requests"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
 AP_INIT_FLAG("HttpContentLengthHeadZero", set_cl_head_zero, NULL, OR_OPTIONS,
