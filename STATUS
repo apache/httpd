@@ -103,27 +103,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_mem_cache: Don't cache incomplete responses when the client aborts
-                    the connection, unless they are complete.  PR 45049.
-     Not applicable to trunk, mod_mem_cache doesn't exist there.
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_mem_cache-pr45049.patch
-     +1: ylavic, wrowe, rpluem
-     ylavic: don't we know from the very beginning of store_body() if
-             r->connection->aborted, so to fail there?
-     rpluem: Agreed. I guess we can move this up to line 733 before the loop.
-     ylavic: Or even at the beginning if we want to avoid file caching too.
-             But finally I wonder why we would not cache the response provided
-             it is complete. Shouldn't incomplete response be detected with
-             error buckets instead? ISTM that EOS with no error bucket *is*
-             a complete response that could be cached even if the current
-             client won't receive it completely.
-     wrowe:  Patch looks like an improvement, would be good if you both assert
-             that this is what we will ship.
-     ylavic: This is a bugfix (added CHANGES entry), the improvement is upon
-             Ed's original patch (don't cache the response if the client
-             aborted the connection) where we now still cache it in any case
-             if it is complete (for immediate availability for next clients).
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
