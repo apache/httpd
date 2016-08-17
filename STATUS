@@ -117,6 +117,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Typo fixes in comments and text files. PR 59990.
+      Trunk version of patch:
+         http://svn.apache.org/r1756038
+      Backport version for 2.4.x of patch:
+         http://home.apache.org/~rjung/patches/httpd-2.4.x-typo-PR59990.patch
+         (trunk version of patch merge plus CHANGES plus STATUS
+          plus one hunk in modules/aaa/mod_auth_digest.c)
+      +1: rjung, ylavic, jchampion
+      jchampion: IMO, spell-checking STATUS is probably unnecessary.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,15 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          Trunk version of patch works
       +1: wrowe, ylavic
-
-  *) Typo fixes in comments and text files. PR 59990.
-      Trunk version of patch:
-         http://svn.apache.org/r1756038
-      Backport version for 2.4.x of patch:
-         http://home.apache.org/~rjung/patches/httpd-2.4.x-typo-PR59990.patch
-         (trunk version of patch merge plus CHANGES plus STATUS
-          plus one hunk in modules/aaa/mod_auth_digest.c)
-      +1: rjung, ylavic
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
