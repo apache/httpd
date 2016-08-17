@@ -208,6 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      cached entity (key), such that rewrites are taken into account when
      running afterwards (CacheQuickHandler off).  PR 21935.
      trunk patch: http://svn.apache.org/r1756553
+                  http://svn.apache.org/r1756631
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
