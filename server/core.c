@@ -4011,7 +4011,7 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_enforce_http_protocol(cmd_parms *cmd, void *dummy,
+static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
                                              const char *arg)
 {
     core_server_config *conf =
@@ -4030,19 +4030,19 @@ static const char *set_enforce_http_protocol(cmd_parms *cmd, void *dummy,
         conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
     }
     else {
-        return "EnforceHttpProtocol accepts 'Allow0.9' (default), 'Require1.0',"
+        return "HttpProtocolOptions accepts 'Allow0.9' (default), 'Require1.0',"
                " 'Unsafe', or 'Strict' (default)";
     }
 
     if ((conf->http09_enable & AP_HTTP09_ENABLE) &&
         (conf->http09_enable & AP_HTTP09_DISABLE)) {
-        return "EnforceHttpProtocol 'Allow0.9' and 'Require1.0'"
+        return "HttpProtocolOptions 'Allow0.9' and 'Require1.0'"
                " are mutually exclusive";
     }
 
     if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) &&
         (conf->http_conformance & AP_HTTP_CONFORMANCE_UNSAFE)) {
-        return "EnforceHttpProtocol 'Strict' and 'Unsafe'"
+        return "HttpProtocolOptions 'Strict' and 'Unsafe'"
                " are mutually exclusive";
     }
 
@@ -4684,7 +4684,7 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
 AP_INIT_FLAG("MergeTrailers", set_merge_trailers, NULL, RSRC_CONF,
               "merge request trailers into request headers or not"),
-AP_INIT_ITERATE("EnforceHttpProtocol", set_enforce_http_protocol, NULL, RSRC_CONF,
+AP_INIT_ITERATE("HttpProtocolOptions", set_http_protocol_options, NULL, RSRC_CONF,
               "'Allow0.9' or 'Require1.0' (default) to allow or deny HTTP/0.9; "
               "'Unsafe' or 'Strict' (default) to process incorrect requests"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,

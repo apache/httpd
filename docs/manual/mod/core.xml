@@ -1250,10 +1250,10 @@ EnableSendfile On
 </directivesynopsis>
 
 <directivesynopsis>
-<name>EnforceHTTPProtocol</name>
+<name>HTTPProtocolOptions</name>
 <description>Modify restrictions on HTTP Request Messages</description>
-<syntax>EnforceHTTPProtocol [Strict|Unsafe] [Allow0.9|Require1.0]</syntax>
-<default>EnforceHTTPProtocol Strict Allow0.9</default>
+<syntax>HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0]</syntax>
+<default>HTTPProtocolOptions Strict Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>2.2.32 or 2.4.24 and later</compatibility>
@@ -1280,16 +1280,16 @@ EnableSendfile On
       >&sect;9.5 Response Smuggling</a> call out only two of the potential
     risks of accepting non-conformant request messages. As of the introduction
     of this directive, all grammer rules of the specification are enforced in
-    the <code>Strict</code> operating mode.</p>
+    the default <code>Strict</code> operating mode.</p>
 
     <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
     mode of operation for these reasons, most especially on outward-facing,
     publicly accessible server deployments. Reviewing the messages within the
-    <directive>ErrorLog</directive> in the <code>info</code>
-    <directive>LogLevel</directive> or below can help identify such faulty
-    requests, along with their origin. Users should pay particular attention
-    to any 400 responses in the access log for indiciations that these requests 
-    are being correctly rejected.</p>
+    <directive>ErrorLog</directive>, configured with
+    <directive>LogLevel</directive> <code>info</code> level or below,
+    can help identify such faulty requests along with their origin.
+    Users should pay particular attention to any 400 responses in the access
+    log for indiciations that valid requests are unexpectedly rejected.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6"
          >RFC 2616 &sect;19.6</a> "Compatibility With Previous Versions" had
@@ -1298,7 +1298,7 @@ EnableSendfile On
     been removed" and offers additional comments in 
     <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
       >RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
-    the user to remove support of the <code>Allow0.9</code> default option's
+    the user to remove support of the default <code>Allow0.9</code> option's
     behavior.</p>
 </usage>
 </directivesynopsis>
