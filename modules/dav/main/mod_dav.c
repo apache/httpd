@@ -375,7 +375,7 @@ static int dav_error_response_tag(request_rec *r,
         else {
             ap_rprintf(r,
                     ">" DEBUG_CR
-                    "<D:%s>%s<D:%s>" DEBUG_CR,
+                    "<D:%s>%s</D:%s>" DEBUG_CR,
                     err->tagname, err->childtags, err->tagname);
         }
     }
