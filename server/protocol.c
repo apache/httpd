@@ -577,8 +577,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     } deferred_error = rrl_none;
     char *ll;
     char *uri;
-    unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    char http[5];
     apr_size_t len;
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
