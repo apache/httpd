@@ -119,7 +119,7 @@ static int allowed_port(connect_conf *conf, int port)
     int i;
     port_range *list = (port_range *) conf->allowed_connect_ports->elts;
 
-    if (apr_is_empty_array(conf->allowed_connect_ports)){
+    if (apr_is_empty_array(conf->allowed_connect_ports)) {
         return port == APR_URI_HTTPS_DEFAULT_PORT
                || port == APR_URI_SNEWS_DEFAULT_PORT;
     }
@@ -227,9 +227,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                   connectname, connectport);
 
     /* Check if it is an allowed port */
-    if(!allowed_port(c_conf, uri.port)) {
-              return ap_proxyerror(r, HTTP_FORBIDDEN,
-                                   "Connect to remote machine blocked");
+    if (!allowed_port(c_conf, uri.port)) {
+        return ap_proxyerror(r, HTTP_FORBIDDEN,
+                             "Connect to remote machine blocked");
     }
 
     /*
