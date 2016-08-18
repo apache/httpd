@@ -680,8 +680,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         goto rrl_done;
     }
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (strchr(badwhitespace, *r->protocol) && deferred_error == rrl_none
-                && deferred_error == rrl_none)
+        if (strchr(badwhitespace, *r->protocol) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
     if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
