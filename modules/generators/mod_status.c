@@ -538,7 +538,7 @@ static int status_handler(request_rec *r)
         if (!short_report)
             ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
                      "<tr><th rowspan=\"2\">Slot</th>"
-		         "<th rowspan=\"2\">PID</th>"
+                         "<th rowspan=\"2\">PID</th>"
                          "<th colspan=\"2\">Connections</th>\n"
                          "<th colspan=\"2\">Threads</th>"
                          "<th colspan=\"4\">Async connections</th></tr>\n"
