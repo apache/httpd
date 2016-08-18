@@ -280,7 +280,6 @@
 <li><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
-<li><a href="core.html#enforcehttpprotocol">EnforceHTTPProtocol</a></li>
 <li><a href="core.html#error">Error</a></li>
 <li><a href="core.html#errordocument">ErrorDocument</a></li>
 <li><a href="core.html#errorlog">ErrorLog</a></li>
@@ -339,6 +338,7 @@
 <li><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage</a></li>
 <li><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
+<li><a href="core.html#httpprotocoloptions">HTTPProtocolOptions</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
 <li><a href="mod_systemd.html#idleshutdown">IdleShutdown</a></li>

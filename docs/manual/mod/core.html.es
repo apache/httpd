@@ -64,7 +64,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enforcehttpprotocol">EnforceHTTPProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
@@ -76,6 +75,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HTTPProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
@@ -1096,19 +1096,6 @@ version 2.3.9.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnforceHTTPProtocol" id="EnforceHTTPProtocol">EnforceHTTPProtocol</a> <a name="enforcehttpprotocol" id="enforcehttpprotocol">Directiva</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>EnforceHTTPProtocol [Strict|Unsafe] [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>EnforceHTTPProtocol Strict Allow0.9</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
-</table><p>The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Directiva</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
@@ -1748,6 +1735,21 @@ media type in the HTTP Content-Type header field</td></tr>
     offline.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="HTTPProtocolOptions" id="HTTPProtocolOptions">HTTPProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
+[StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HTTPProtocolOptions Strict Allow0.9 LenientWhitespace 
+LenientMethods</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Directiva</a></h2>
 <table class="directive">
