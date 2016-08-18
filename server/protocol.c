@@ -668,7 +668,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         deferred_error = rrl_excesswhitespace; 
     }
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (strchr(badwhitespace, *uri) && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *uri) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
     if (!*uri && deferred_error == rrl_none)
@@ -680,7 +680,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         goto rrl_done;
     }
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (strchr(badwhitespace, *r->protocol) && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *r->protocol) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
     if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
@@ -691,7 +691,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (strictspaces && *ll)
         deferred_error = rrl_excesswhitespace; 
     for ( ; apr_isspace(*ll); ++ll)
-        if (strchr(badwhitespace, *ll) && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *ll) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     if (*ll && deferred_error == rrl_none)
         deferred_error = rrl_trailingtext;
