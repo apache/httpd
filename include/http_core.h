@@ -739,6 +739,16 @@ typedef struct {
 #define AP_HTTP_CONFORMANCE_STRICT    2
     char http_conformance;
 
+#define AP_HTTP_WHITESPACE_UNSET      0
+#define AP_HTTP_WHITESPACE_LENIENT    1
+#define AP_HTTP_WHITESPACE_STRICT     2
+    char http_whitespace;
+
+#define AP_HTTP_METHODS_UNSET         0
+#define AP_HTTP_METHODS_LENIENT       1
+#define AP_HTTP_METHODS_REGISTERED    2
+    char http_methods;
+
 #define AP_HTTP_CL_HEAD_ZERO_UNSET    0
 #define AP_HTTP_CL_HEAD_ZERO_ENABLE   1
 #define AP_HTTP_CL_HEAD_ZERO_DISABLE  2

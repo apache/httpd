@@ -542,14 +542,16 @@
  * 20160608.9 (2.5.0-dev)  Renamed AP_HTTP_CONFORMANCE_LIBERAL to 
  *                         AP_HTTP_CONFORMANCE_UNSAFE, and
  *                         eliminated AP_HTTP_CONFORMANCE_LOGONLY
+ * 20160617.1 (2.5.0-dev)  Added http_whitespace and http_methods to
+ *                         core_server_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20160608
+#define MODULE_MAGIC_NUMBER_MAJOR 20160617
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 9                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
