@@ -158,7 +158,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     conn_rec *backconn;
     int done = 0;
 
-    apr_bucket_brigade *bb_front = apr_brigade_create(p, c->bucket_alloc);
+    apr_bucket_brigade *bb_front;
     apr_bucket_brigade *bb_back;
     apr_status_t rv;
     apr_size_t nbytes;
@@ -315,6 +315,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                    backconn->local_addr->port));
 
 
+    bb_front = apr_brigade_create(p, c->bucket_alloc);
     bb_back = apr_brigade_create(p, backconn->bucket_alloc);
 
     /* If we are connecting through a remote proxy, we need to pass
