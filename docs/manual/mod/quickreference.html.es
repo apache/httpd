@@ -457,89 +457,90 @@ satisfied</td></tr>
 after a crash</td></tr>
 <tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
 <tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
-<tr class="odd"><td><a href="core.html#enforcehttpprotocol">EnforceHTTPProtocol [Strict|Unsafe] [Allow0.9|Require1.0]</a></td><td> Strict Allow0.9 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Modify restrictions on HTTP Request Messages</td></tr>
-<tr><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
-<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">What the server will return to the client
+<tr class="odd"><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
+<tr><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">What the server will return to the client
 in case of an error</td></tr>
-<tr><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Location where the server will log errors</td></tr>
-<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLog [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Format specification for error log entries</td></tr>
-<tr><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
+<tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Location where the server will log errors</td></tr>
+<tr><td><a href="core.html#errorlogformat"> ErrorLog [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Format specification for error log entries</td></tr>
+<tr class="odd"><td><a href="mod_example_hooks.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
+<tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables generation of <code>Expires</code>
 headers</td></tr>
-<tr><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
+<tr class="odd"><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
 by MIME type</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
-<tr><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Keep track of extended status information for each 
+<tr><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
+<tr class="odd"><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Keep track of extended status information for each 
 request</td></tr>
-<tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an external filter</td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>local-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
-<tr><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> INode MTime Size </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">File attributes used to create the ETag
+<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an external filter</td></tr>
+<tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> NoLogStderr </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
+<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource disabled | <var>local-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
+<tr class="odd"><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> INode MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">File attributes used to create the ETag
 HTTP response header for static files</td></tr>
-<tr class="odd"><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to matched
+<tr><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to matched
 filenames</td></tr>
-<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
+<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
 filenames</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
-    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
- <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
+<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure the filter chain</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
+ <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each connection</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each connection</td></tr>
-<tr><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the back of mod_proxy</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic sent out from the back of mod_proxy</td></tr>
-<tr><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each request</td></tr>
-<tr class="odd"><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each request</td></tr>
-<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not
+<tr class="odd"><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic coming into the server on each connection</td></tr>
+<tr><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic going out of the server on each connection</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic coming into the back of mod_proxy</td></tr>
+<tr><td><a href="mod_firehose.html#firehoseproxyconnectionoutput">FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic sent out from the back of mod_proxy</td></tr>
+<tr class="odd"><td><a href="mod_firehose.html#firehoserequestinput">FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic coming into the server on each request</td></tr>
+<tr><td><a href="mod_firehose.html#firehoserequestoutput">FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic going out of the server on each request</td></tr>
+<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action to take if a single acceptable document is not
 found</td></tr>
-<tr class="odd"><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be served with the specified
+<tr><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
-<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
+<tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
-expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
-<tr><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
-<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>seconds</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
+expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
+<tr class="odd"><td><a href="core.html#gprofdir">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
+<tr><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout <var>seconds</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
-<tr><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Group under which the server will answer
+<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine file handling in responses</td></tr>
-<tr><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
-<tr><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
-<tr><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
-<tr><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
-<tr><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
-<tr><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
-<tr><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
+<tr><td><a href="mod_http2.html#h2copyfiles" id="H" name="H">H2CopyFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine file handling in responses</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2direct">H2Direct on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Direct Protocol Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams <em>n</em></a></td><td> 100 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of active streams per HTTP/2 session.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds <em>n</em></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of seconds h2 workers remain idle until shut down.</td></tr>
+<tr><td><a href="mod_http2.html#h2maxworkers">H2MaxWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of worker threads to use per child process.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2minworkers">H2MinWorkers <em>n</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimal number of worker threads to use per child process.</td></tr>
+<tr><td><a href="mod_http2.html#h2moderntlsonly">H2ModernTLSOnly on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Require HTTP/2 connections to be "modern TLS" only</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
+<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
+<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
+<tr class="odd"><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
 [early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
-</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
+</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
+<tr><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
-<tr><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Multicast address for heartbeat packets</td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen<var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">multicast address to listen for incoming heartbeat requests </td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>number-of-servers</var></a></td><td> 10 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Specifies the maximum number of servers that will be sending
+<tr class="odd"><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Multicast address for heartbeat packets</td></tr>
+<tr><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen<var>addr:port</var></a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">multicast address to listen for incoming heartbeat requests </td></tr>
+<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>number-of-servers</var></a></td><td> 10 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the maximum number of servers that will be sending
 heartbeat requests to this server</td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
-<tr><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
-<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
+<tr><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
+<tr class="odd"><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
+<tr><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
+<tr class="odd"><td><a href="core.html#httpprotocoloptions">HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
+[StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</a></td><td> Strict Allow0.9 Len +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Modify restrictions on HTTP Request Messages</td></tr>
 <tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
