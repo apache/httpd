@@ -2537,7 +2537,7 @@ struct dav_acl_provider
 DAV_DECLARE(void) dav_acl_provider_register(apr_pool_t *p,
                                             const dav_acl_provider *acl);
 
-DAV_DECLARE(const dav_acl_provider *) dav_get_acl_providers();
+DAV_DECLARE(const dav_acl_provider *) dav_get_acl_providers(void);
 
 #endif
 
