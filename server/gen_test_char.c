@@ -16,6 +16,7 @@
 
 #ifdef CROSS_COMPILE
 
+#include <ctype.h>
 #define apr_isalnum(c) (isalnum(((unsigned char)(c))))
 #define apr_isalpha(c) (isalpha(((unsigned char)(c))))
 #define apr_iscntrl(c) (iscntrl(((unsigned char)(c))))
@@ -25,7 +26,6 @@
 #else
 #define apr_isascii(c) (((c) & ~0x7f)==0)
 #endif
-#include <ctype.h>
 #define APR_HAVE_STDIO_H 1
 #define APR_HAVE_STRING_H 1
 
