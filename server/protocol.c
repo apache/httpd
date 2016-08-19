@@ -573,7 +573,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 {
     enum {
         rrl_none, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
-        rrl_missinguri, rrl_badprotocol, rrl_trailingtext
+        rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext
     } deferred_error = rrl_none;
     char *ll;
     char *uri;
@@ -583,6 +583,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
     const char *badwhitespace = strict ? "\t\n\v\f\r" : "\n\v\f\r";
     int strictspaces = (conf->http_whitespace == AP_HTTP_WHITESPACE_STRICT);
+    int stricturi = (conf->http_stricturi != AP_HTTP_URI_UNSAFE);
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -674,10 +675,20 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (!*uri && deferred_error == rrl_none)
         deferred_error = rrl_missinguri;
 
-    if (!(ll = strpbrk(uri, " \t\n\v\f\r"))) {
-        r->protocol = "";
-        len = 0;
-        goto rrl_done;
+    if (stricturi) {
+        ll = (char*) ap_scan_http_uri_safe(uri);
+        if (ll == uri || (*ll && !apr_isspace(*ll))) {
+            deferred_error = rrl_baduri;
+            ll = strpbrk(ll, "\t\n\v\f\r ");
+        }
+    }
+    else {
+        ll = strpbrk(uri, "\t\n\v\f\r ");
+    }
+    if (!ll) {
+            r->protocol = "";
+            len = 0;
+            goto rrl_done;
     }
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
         if (ap_strchr_c(badwhitespace, *r->protocol) && deferred_error == rrl_none)
@@ -784,6 +795,10 @@ rrl_done:
         else if (deferred_error == rrl_missinguri)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03446)
                           "HTTP Request Line; Missing URI");
+        else if (deferred_error == rrl_baduri)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03454)
+                          "HTTP Request Line; URI incorrectly encoded: '%.*s'",
+                          field_name_len(r->method), r->method);
         else if (deferred_error == rrl_badwhitespace)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03447)
                           "HTTP Request Line; Invalid whitespace");
@@ -824,7 +839,8 @@ rrl_done:
     }
 
     if (strict) {
-        if (ap_has_cntrl(r->the_request)) {
+        /* No sense re-testing here for what was evaulated above */
+        if (!stricturi && ap_has_cntrl(r->the_request)) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02420)
                           "HTTP Request Line; URI must not contain control"
                           " characters");
