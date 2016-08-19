@@ -533,6 +533,9 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
         conf->http_conformance = virt->http_conformance;
 
+    if (virt->http_stricturi != AP_HTTP_URI_UNSET)
+        conf->http_stricturi = virt->http_stricturi;
+
     if (virt->http_whitespace != AP_HTTP_WHITESPACE_UNSET)
         conf->http_whitespace = virt->http_whitespace;
 
@@ -4031,6 +4034,10 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
         conf->http_conformance |= AP_HTTP_CONFORMANCE_STRICT;
     else if (strcasecmp(arg, "unsafe") == 0)
         conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
+    else if (strcasecmp(arg, "stricturi") == 0)
+        conf->http_stricturi |= AP_HTTP_URI_STRICT;
+    else if (strcasecmp(arg, "unsafeuri") == 0)
+        conf->http_stricturi |= AP_HTTP_URI_UNSAFE;
     else if (strcasecmp(arg, "strictwhitespace") == 0)
         conf->http_whitespace |= AP_HTTP_WHITESPACE_STRICT;
     else if (strcasecmp(arg, "lenientwhitespace") == 0)
@@ -4040,14 +4047,21 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
     else if (strcasecmp(arg, "lenientmethods") == 0)
         conf->http_methods |= AP_HTTP_METHODS_LENIENT;
     else
-        return "HttpProtocolOptions accepts 'Allow0.9' (default) or "
-               "'Require1.0', 'Unsafe' or 'Strict' (default), "
+        return "HttpProtocolOptions accepts " 
+               "'Unsafe' or 'Strict' (default), "
+               "'UnsafeURI' or 'StrictURI' (default), "
+               "'Require1.0' or 'Allow0.9' (default), "
                "'StrictWhitespace' or 'LenientWhitespace (default), and "
                "'RegisteredMethods' or 'LenientMethods (default)";
 
     if ((conf->http09_enable & AP_HTTP09_ENABLE)
             && (conf->http09_enable & AP_HTTP09_DISABLE))
         return "HttpProtocolOptions 'Allow0.9' and 'Require1.0'"
+               " are mutually exclusive";
+
+    if ((conf->http_stricturi & AP_HTTP_URI_STRICT)
+            && (conf->http_stricturi & AP_HTTP_URI_UNSAFE))
+        return "HttpProtocolOptions 'StrictURI' and 'UnsafeURI'"
                " are mutually exclusive";
 
     if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)
