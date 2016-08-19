@@ -39,7 +39,7 @@ DAV_DECLARE(void) dav_acl_provider_register(apr_pool_t *p,
     ap_register_provider(p, DAV_PROVIDER_GROUP, "acl", "0", provider);
 }
 
-DAV_DECLARE(const dav_acl_provider *) dav_get_acl_providers()
+DAV_DECLARE(const dav_acl_provider *) dav_get_acl_providers(void)
 {
     return ap_lookup_provider(DAV_PROVIDER_GROUP, "acl", "0");
 }
