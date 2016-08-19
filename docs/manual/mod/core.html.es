@@ -75,7 +75,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HTTPProtocolOptions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
@@ -1736,12 +1736,12 @@ media type in the HTTP Content-Type header field</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HTTPProtocolOptions" id="HTTPProtocolOptions">HTTPProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directiva</a></h2>
+<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directiva</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
 [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HTTPProtocolOptions Strict Allow0.9 LenientWhitespace 
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HttpProtocolOptions Strict Allow0.9 LenientWhitespace 
 LenientMethods</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
