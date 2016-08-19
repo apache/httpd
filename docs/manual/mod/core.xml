@@ -1250,11 +1250,11 @@ EnableSendfile On
 </directivesynopsis>
 
 <directivesynopsis>
-<name>HTTPProtocolOptions</name>
+<name>HttpProtocolOptions</name>
 <description>Modify restrictions on HTTP Request Messages</description>
-<syntax>HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
+<syntax>HttpProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
 [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</syntax>
-<default>HTTPProtocolOptions Strict Allow0.9 LenientWhitespace 
+<default>HttpProtocolOptions Strict Allow0.9 LenientWhitespace 
 LenientMethods</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
