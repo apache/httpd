@@ -1072,7 +1072,7 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    ssl_verify_t mode;
+    ssl_verify_t mode = SSL_CVERIFY_NONE;
     const char *err;
 
     if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
@@ -1453,7 +1453,7 @@ const char *ssl_cmd_SSLProxyVerify(cmd_parms *cmd,
                                    const char *arg)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
-    ssl_verify_t mode;
+    ssl_verify_t mode = SSL_CVERIFY_NONE;
     const char *err;
 
     if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
