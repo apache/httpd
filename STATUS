@@ -127,6 +127,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rjung, ylavic, jchampion
       jchampion: IMO, spell-checking STATUS is probably unnecessary.
 
+  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
+     not been modified (HTTP 304) to avoid subsequent bogus reads and
+     confusing error messages logged.
+     trunk patch: http://svn.apache.org/r1752347
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey, ylavic, sf
+
+  *) mod_proxy_fcgi: avoid loops serving proxied error documents.
+     trunk patch: http://svn.apache.org/r1753167
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: elukey, ylavic, sf
+
+  *) mod_http: Add the HEAD method to the lookup hash for completeness.
+      Trunk version of patch:
+         http://svn.apache.org/r1753257
+      Backport version for 2.4.x of patch:
+         Trunk version of patch works
+      +1: wrowe, ylavic, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -173,13 +192,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1752333
      +1: jchampion
 
-  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
-     not been modified (HTTP 304) to avoid subsequent bogus reads and
-     confusing error messages logged.
-     trunk patch: http://svn.apache.org/r1752347
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey, ylavic
-
   *) autoconf: minor cleanup and removal of some dead code.
      trunk patch: http://svn.apache.org/r1753315
                   http://svn.apache.org/r1753316
@@ -189,18 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jchampion
      ylavic: some conflicts with r1753315 in 2.4.x's configure.in.
      jchampion: added a 2.4.x backport patch.
-
-  *) mod_proxy_fcgi: avoid loops serving proxied error documents.
-     trunk patch: http://svn.apache.org/r1753167
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey, ylavic
-
-  *) mod_http: Add the HEAD method to the lookup hash for completeness.
-      Trunk version of patch:
-         http://svn.apache.org/r1753257
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works
-      +1: wrowe, ylavic
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1756611
                   http://svn.apache.org/r1748155
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, sf
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
