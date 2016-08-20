@@ -2813,22 +2813,15 @@ static void startup_children(int number_to_start)
 static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
 {
     int i, j;
-    int idle_thread_count;
+    int idle_thread_count = 0;
     worker_score *ws;
     process_score *ps;
-    int free_length;
+    int free_length = 0;
     int totally_free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
-    int last_non_dead;
-    int total_non_dead;
+    int last_non_dead = -1;
+    int total_non_dead = 0;
     int active_thread_count = 0;
-
-    /* initialize the free_list */
-    free_length = 0;
-
-    idle_thread_count = 0;
-    last_non_dead = -1;
-    total_non_dead = 0;
 
     for (i = 0; i < ap_daemons_limit; ++i) {
         /* Initialization to satisfy the compiler. It doesn't know
@@ -2947,7 +2940,7 @@ static void perform_idle_server_maintenance(int child_bucket, int num_buckets)
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
-            if (active_thread_count >= ap_daemons_limit * threads_per_child) {
+            if (active_thread_count >= max_workers) {
                 if (!retained->maxclients_reported) {
                     /* only report this condition once */
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00484)
