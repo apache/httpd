@@ -913,10 +913,10 @@ H2TLSCoolDownSecs 0
         <usage>
             <p>
                 This directive influences how file content is handled in
-                responses. When off, which is the default, file handles are 
-                passed from the requestion processing down to the main
+                responses. When <code>off</code>, which is the default, file handles
+                are passed from the requestion processing down to the main
                 connection, using the usual Apache setaside handling for
-                manaaging the lifetime of the file.
+                managing the lifetime of the file.
             </p>
             <p>
                 When set to <code>on</code>, file content is copied while the
@@ -928,7 +928,7 @@ H2TLSCoolDownSecs 0
                 An example for such a module is <code>mod_wsgi</code> that may place
                 Python file handles into the response. Those files get close down when
                 Python thinks processing has finished. That may be well before
-                <code>mod_http2</code> is done with them.
+                <module>mod_http2</module> is done with them.
             </p>
         </usage>
     </directivesynopsis>
