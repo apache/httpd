@@ -1092,10 +1092,9 @@ a user's directory, then you cannot use the rewrite engine. This
 restriction is required for security reasons.</li>
 
 <li>When using the rewrite engine in <code>.htaccess</code> files the
-per-directory prefix (that is, the URI path that leads to the directory
-containing this <code>.htaccess</code> file)
-is <em>removed</em> for the RewriteRule pattern matching
-and <em>added</em> after any relative (not starting with a
+per-directory prefix (which always is the same for a specific
+directory) is automatically <em>removed</em> for the RewriteRule pattern matching
+and automatically <em>added</em> after any relative (not starting with a
 slash or protocol name) substitution encounters the end of a rule set.
 See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
