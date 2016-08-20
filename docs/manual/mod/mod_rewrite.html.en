@@ -26,7 +26,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_rewrite</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../edited/mod/mod_rewrite.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides a rule-based rewriting engine to rewrite requested
@@ -123,7 +124,7 @@ URLs on the fly</td></tr>
       <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in per-directory (htaccess) context unless either
+      in a substitution in per-directory (htaccess) context unless any 
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
@@ -1043,22 +1044,23 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule, it is matched against
-      the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>
-      of the request, or, in per-directory context (see below), the URL
-      path relative to that per-directory context. Subsequent patterns
-      are matched against the output of the last matching RewriteRule.</p>
+      expression</a>.  What this pattern is compared against varies depending
+      on where the <code class="directive">RewriteRule</code> directive is defined. </p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>
       <p>In <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> context,
       The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
+      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").
+      This is the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>.</p>
 
       <p>In <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and htaccess context,
-      the <em>Pattern</em> will initially be matched against the
-      <em>filesystem</em> path, after removing the prefix that led the server
-      to the current <code class="directive">RewriteRule</code> (e.g. "app1/index.html"
-      or "index.html" depending on where the directives are defined).</p>
+      the <em>Pattern</em> is matched against the trailing portion of the currently
+      mapped filesystem path with the rules own directory path removed from the beginning
+      (up to and including a trailing slash).  Directives such as <code class="directive">DocumentRoot</code> and <code class="directive">Alias</code>, or even the 
+      result of previous <code class="directive">RewriteRule</code> substitutions, determine
+      the currently mapped filesystem path.  The net result of this per-directory
+      prefix stripping is that rules in this context only match against the portion
+      of the currently mapped path "below" where they are defined.</p>
 
       <p>If you wish to match against the hostname, port, or query string, use a
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
@@ -1086,13 +1088,7 @@ administrator has disabled override of <code>FollowSymLinks</code> for
 a user's directory, then you cannot use the rewrite engine. This
 restriction is required for security reasons.</li>
 
-<li>When using the rewrite engine in <code>.htaccess</code> files the
-per-directory prefix (that is, the URI path that leads to the directory
-containing this <code>.htaccess</code> file)
-is <em>removed</em> for the RewriteRule pattern matching
-and <em>added</em> after any relative (not starting with a
-slash or protocol name) substitution encounters the end of a rule set.
-See the <code class="directive"><a href="#rewritebase">RewriteBase</a></code>
+<li>See the <code class="directive"><a href="#rewritebase">RewriteBase</a></code>
 directive for more information regarding what prefix will be added back to
 relative substitutions.</li>
 
@@ -1520,7 +1516,8 @@ redirection</td>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="../edited/mod/mod_rewrite.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
+<a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
