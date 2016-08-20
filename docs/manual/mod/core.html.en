@@ -2030,10 +2030,11 @@ media type in the HTTP Content-Type header field</td></tr>
 <div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
-[StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict Allow0.9 LenientWhitespace 
-LenientMethods</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
+ [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientWhitespace 
+LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2043,11 +2044,11 @@ LenientMethods</code></td></tr>
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
-    custom user-agents which must be deperecated, an <code>Unsafe</code>
-    option has been added to revert to the legacy behavior. These rules are
-    applied prior to request processing, so must be configured at the global
-    or default (first) matching virtual host section, by interface and not
-    by name, to be honored.</p>
+    custom user-agents which must be deperecated, <code>Unsafe</code>
+    and <code>UnsafeURL</code> options have been added to revert to the legacy
+    behaviors. These rules are applied prior to request processing, so must be
+    configured at the global or default (first) matching virtual host section,
+    by IP/port interface and not by name, to be honored.</p>
 
     <p>Prior to the introduction of this directive, the Apache HTTP Server
     request message parsers were tolerant of a number of forms of input
@@ -2058,22 +2059,25 @@ LenientMethods</code></td></tr>
     of this directive, all grammer rules of the specification are enforced in
     the default <code>Strict</code> operating mode.</p>
 
+    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 7230 §2.2 and 2.3</a> define "Reserved Characters" and
+    "Unreserved Characters". All other character octets are required to
+    be %XX encoded under this spec, and RFC7230 defers to these requirements.
+    By default the <code>StrictURI</code> option will reject all requests 
+    containing invalid characters. This rule can be relaxed with the
+    <code>UnsafeURI</code> option to support badly written user-agents.</p>
+    
     <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
-    mode of operation for these reasons, most especially on outward-facing,
-    publicly accessible server deployments. Reviewing the messages within the
-    <code class="directive">ErrorLog</code>, configured with
-    <code class="directive">LogLevel</code> <code>info</code> level or below,
+    and <code>UnsafeURI</code> modes of operation, most especially on 
+    outward-facing, publicly accessible server deployments. If an interface
+    is required of faulty monitoring or other custom software running only
+    on an intranet, users should consider toggling these only for a specific
+    virtual host configured on their private subnet.</p>
+
+    <p>Reviewing the messages logged to the <code class="directive">ErrorLog</code>,
+    configured with <code class="directive">LogLevel</code> <code>info</code> level,
     can help identify such faulty requests along with their origin.
     Users should pay particular attention to any 400 responses in the access
     log for indiciations that valid requests are unexpectedly rejected.</p>
-
-    <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
-    encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
-    superceeds this with "The expectation to support HTTP/0.9 requests has
-    been removed" and offers additional comments in 
-    <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
-    the user to remove support of the default <code>Allow0.9</code> option's
-    behavior.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" permits, and
     identifies potential risks of parsing messages containing non-space
@@ -2091,12 +2095,20 @@ LenientMethods</code></td></tr>
     origin servers shall respond with an error when an unsupported method
     is encountered in the request line. This already happens when the
     <code>LenientMethods</code> option is used, but administrators may wish
-    to toggle the <code>RegisteredMethods</code> option and register all
-    permitted method tokens using the <code class="directive">RegisterHttpMethod</code>
+    to toggle the <code>RegisteredMethods</code> option and register any
+    non-standard methods using the <code class="directive">RegisterHttpMethod</code>
     directive, particularly if the <code>Unsafe</code> option has been toggled.
     The <code>RegisteredMethods</code> option should <strong>not</strong>
     be toggled for forward proxy hosts, as the methods supported by the
     origin servers are unknown to the proxy server.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
+    encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
+    superceeds this with "The expectation to support HTTP/0.9 requests has
+    been removed" and offers additional comments in 
+    <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
+    the user to remove support of the default <code>Allow0.9</code> option's
+    behavior.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
