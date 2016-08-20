@@ -1047,7 +1047,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
       expression</a>.  What this pattern is compared against varies depending
-      on where the <directive>RewriteRule</directive> directive is defined. 
+      on where the <directive>RewriteRule</directive> directive is defined. </p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
       <p>In <directive module="core">VirtualHost</directive> context,
