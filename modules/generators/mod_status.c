@@ -541,10 +541,10 @@ static int status_handler(request_rec *r)
                          "<th rowspan=\"2\">PID</th>"
                          "<th colspan=\"2\">Connections</th>\n"
                          "<th colspan=\"2\">Threads</th>"
-                         "<th colspan=\"4\">Async connections</th></tr>\n"
+                         "<th colspan=\"3\">Async connections</th></tr>\n"
                      "<tr><th>total</th><th>accepting</th>"
-                         "<th>busy</th><th>idle</th><th>writing</th>"
-                         "<th>keep-alive</th><th>closing</th></tr>\n", r);
+                         "<th>busy</th><th>idle</th>"
+                         "<th>writing</th><th>keep-alive</th><th>closing</th></tr>\n", r);
         for (i = 0; i < server_limit; ++i) {
             ps_record = ap_get_scoreboard_process(i);
             if (ps_record->pid) {
@@ -556,25 +556,29 @@ static int status_handler(request_rec *r)
                 idle_workers     += thread_idle_buffer[i];
                 if (!short_report)
                     ap_rprintf(r, "<tr><td>%u</td><td>%" APR_PID_T_FMT "</td>"
-                                      "<td>%u</td><td>%s</td><td>%u</td>"
+                                      "<td>%u</td><td>%s</td>"
+                                      "<td>%u</td><td>%u</td>"
                                       "<td>%u</td><td>%u</td><td>%u</td>"
-                                      "<td>%u</td>"
                                       "</tr>\n",
-                               i, ps_record->pid, ps_record->connections,
+                               i, ps_record->pid,
+                               ps_record->connections,
                                ps_record->not_accepting ? "no" : "yes",
-                               thread_busy_buffer[i], thread_idle_buffer[i],
+                               thread_busy_buffer[i],
+                               thread_idle_buffer[i],
                                ps_record->write_completion,
                                ps_record->keep_alive,
                                ps_record->lingering_close);
             }
         }
         if (!short_report) {
-            ap_rprintf(r, "<tr><td>Sum</td><td>%d</td><td>&nbsp;</td><td>%d</td>"
-                          "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
+            ap_rprintf(r, "<tr><td>&nbsp;</td><td>Sum</td>"
+                          "<td>%d</td><td>&nbsp;</td>"
+                          "<td>%d</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td>"
                           "</tr>\n</table>\n",
-                          connections, busy_workers, idle_workers,
+                          connections,
+                          busy_workers, idle_workers,
                           write_completion, keep_alive, lingering_close);
-
         }
         else {
             ap_rprintf(r, "ConnsTotal: %d\n"
