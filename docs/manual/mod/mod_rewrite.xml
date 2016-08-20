@@ -387,7 +387,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       <directive module="mod_rewrite">RewriteRule</directive> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in per-directory (htaccess) context unless either
+      in a substitution in per-directory (htaccess) context unless any 
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
@@ -1046,7 +1046,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule, it is matched against
+      expression</a>. 
       the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>
       of the request, or, in per-directory context (see below), the URL
       path relative to that per-directory context. Subsequent patterns
@@ -1055,13 +1055,15 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
       <p>In <directive module="core">VirtualHost</directive> context,
       The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
+      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").
+      This is the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a></p>
 
       <p>In <directive module="core">Directory</directive> and htaccess context,
       the <em>Pattern</em> will initially be matched against the
-      <em>filesystem</em> path, after removing the prefix that led the server
-      to the current <directive>RewriteRule</directive> (e.g. "app1/index.html"
-      or "index.html" depending on where the directives are defined).</p>
+      <em>filesystem</em> path, after removing the leading directory path where the 
+      <directive>RewriteRule</directive> was defined. In this context,
+      some example strings matched against are "index.html and "app1/index.html
+      (but never anything beginning with a slash).  </p>
 
       <p>If you wish to match against the hostname, port, or query string, use a
       <directive module="mod_rewrite">RewriteCond</directive> with the
