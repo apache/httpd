@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Core</td></tr></table>
@@ -2174,7 +2172,7 @@ clients</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="httpprotocoloptions" id="httpprotocoloptions">Directive</a> <a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie les contraintes sur les messages des requêtes HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
  [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</code></td></tr>
@@ -2183,10 +2181,94 @@ LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir des versions 2.2.32 et 2.4.24 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Cette directive permet de modifier les règles qui s'appliquent à la ligne
+    de requête HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230
+    §3.1.1</a>) et aux champs des en-têtes des requêtes HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230
+    §3.2</a>), qui s'appliquent maintenant par défaut ou en utilisant
+    l'option <code>Strict</code>. Les options <code>Unsafe</code> et
+    <code>UnsafeURL</code> ont été ajoutées pour pouvoir restaurer les anciens
+    comportements nécessaires aux anciens modules et applications et aux agents
+    utilisateurs personnalisés considérés comme obsolètes. Ces règles
+    s'appliquant avant le traitement de la requête, elles doivent, pour être prises en
+    compte, être définies
+    au niveau global ou dans la première section par défaut du serveur virtuel
+    qui correspond à la requête considérée, par interface IP/port et non par
+    nom.</p>
+
+    <p>Avant l'introduction de cette directive, les interpréteurs de requêtes du
+    serveur HTTP Apache toléraient un grand nombre de formats en entrée qui
+    n'étaient pas forcément conformes au protocole. <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4
+    Request Splitting</a> et <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response
+    Smuggling</a> ne rappellent que deux des risques potentiels induits par des
+    requêtes non conformes. Avec l'introduction de cette directive, toutes les
+    règles de grammaire de la spécification doivent être respectées dans le mode
+    d'opérations par défaut <code>Strict</code>.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 7230
+    §2.2 and 2.3</a> définit les "Caractères réservés" ainsi que les
+    "Caractères non réservés". Tous les autres caractères doivent être encodés
+    sous la forme %XX selon la spécification, et la RFC7230 se conforme à ces
+    instructions. Par défaut, l'option <code>StrictURI</code> rejète toutes les
+    requêtes contenant des caractères non valides. Cette règle peut être
+    contournée en utilisant l'option <code>UnsafeURI</code> qui permet de
+    supporter les agents utilisateur mal conçus.</p>
+    
+    <p>Il est fortement déconseillé aux utilisateurs d'utiliser les modes
+    d'opérations <code>Unsafe</code> et <code>UnsafeURI</code>, en particulier
+    pour les déploiements de serveurs ouverts sur l'extérieur et/ou accessibles
+    au public. Si un moniteur défectueux ou autre logiciel spécialisé ne
+    s'exécutant que sur un intranet nécessite une interface, les utilisateurs
+    ne doivent les utilisés qu'au sein d'un serveur virtuel bien spécifique et
+    sur un réseau privé.</p>
+
+    <p>La consultation des messages enregistrés dans le journal
+    <code class="directive">ErrorLog</code>, configuré via la directive
+    <code class="directive">LogLevel</code> avec un niveau <code>info</code>, pourra
+    vous aider à identifier de telles requêtes non conformes ainsi que leur
+    provenance. Les utilisateurs devront accorder une attention particulière aux
+    messages d'erreur de type 400 dans le journal access pour détecter les
+    requêtes apparemment valides mais rejetées.</p>
+
+    <p>La section de la <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+    §3.5</a> "Message Parsing Robustness" décrit les risques potentiels
+    induits par l'interprétation de messages contenant des blancs représentés
+    par un caractère autre que l'espace. Alors que les spécifications indiquent
+    qu'un et un seul espace sépare l'URI de la méthode et le protocole de l'URI,
+    le serveur HTTP Apache a toujours toléré des blancs constitués d'un ou
+    plusieurs espaces ou tabulations horizontales. L'option par défaut
+    <code>LenientWhitespace</code> continue d'accepter de telles requêtes en
+    provenance d'agents utilisateurs non conformes, mais l'administrateur est
+    encouragé à utiliser plutôt l'option <code>StrictWhitespace</code> pour
+    imposer la présence d'exactement deux espaces dans la ligne de requête.
+    D'autres types de blancs comme les tabulations verticales, form feed
+    ou retour chariot seront alors rejetés et ne seront plus supportés.</p>
+
+    <p>La section de la <a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
+    §4.1</a> "Request Methods" "Overview" indique que les serveurs doivent
+    renvoyer un message d'erreur lorsque la ligne de requête comporte une
+    méthode non supportée. C'est déjà le cas lorsque l'option
+    <code>LenientMethods</code> est utilisée, mais les administrateurs ont la
+    possibilité de limiter les méthodes utilisées via l'option
+    <code>RegisteredMethods</code> en enregistrant toute méthode non standard
+    via la directive <code class="directive">RegisterHttpMethod</code>, en particulier
+    si l'option <code>Unsafe</code> est utilisée. L'option
+    <code>RegisteredMethods</code> <strong>ne doit pas</strong> être utilisée
+    pour les serveurs mandataires car ces derniers ne connaissent pas les
+    méthodes supportées par les serveurs originaux.</p>
+
+    <p>La section de la <a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
+    §19.6</a> "Compatibility With Previous Versions" encouragait les
+    serveurs HTTP à supporter les anciennes requêtes HTTP/0.9. La RFC 7230 va
+    cependant à son encontre via sa préconisation "Le souhait de supporter les
+    requêtes HTTP/0.9 a été supprimé" et y adjoint des commentaires dans <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 2616 Appendix
+    A</a>. A ce titre, l'option <code>Require1.0</code> permet à l'utilisateur
+    d'inhiber le comportement induit par l'option par défaut
+    <code>Allow0.9</code>.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="if" id="if">Directive</a> <a name="If" id="If">&lt;If&gt;</a></h2>
 <table class="directive">
