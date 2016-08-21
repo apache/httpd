@@ -297,18 +297,18 @@ en faisant intervenir les expressions rationnelles</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>état</var>] [<var>chemin URL</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>état</var>] [<var>URL-path</var>]
 <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>La directive Redirect permet de faire correspondre une ancienne
-    URL à une nouvelle en demandant au client d'aller chercher la ressource à
-    une autre localisation.</p>
+    <p>La directive <code class="directive">Redirect</code> permet de faire correspondre
+    une ancienne URL à une nouvelle en demandant au client d'aller chercher la
+    ressource à une autre localisation.</p>
 
-    <p>L'ancien <em>chemin URL</em> est un chemin sensible à la casse
+    <p>L'ancien <em>URL-path</em> est un chemin sensible à la casse
     (décodé à l'aide de caractères %) commençant par un slash. Les
     chemins relatifs ne sont pas autorisés.</p>
 
@@ -318,10 +318,10 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     slash, auquel cas le protocole et le nom d'hôte du serveur local
     seront ajoutés.</p>
 
-    <p>Ensuite, toute requête commençant par <em>chemin URL</em> va
+    <p>Ensuite, toute requête commençant par <em>URL-path</em> va
     renvoyer une redirection au client vers l'<em>URL</em> cible. Tout
-    élément de chemin supplémentaire situé en aval du <em>chemin
-    URL</em> sera ajouté à l'URL cible.</p>
+    élément de chemin supplémentaire situé en aval du <em>URL-path</em> sera
+    ajouté à l'URL cible.</p>
 
     <pre class="prettyprint lang-config"># Redirige vers une URL sur un serveur différent
 Redirect "/service" "http://foo2.example.com/service"
@@ -344,17 +344,18 @@ Redirect "/one" "/two"</pre>
     précédent ne s'appliquera pas à l'URL
     <code>http://example.com/servicefoo.txt</code>. Pour des mises en
     correspondance plus complexes utilisant la <a href="../expr.html">syntaxe des expressions</a>, ne spécifiez pas
-    d'argument <var>chemin URL</var> comme décrit ci-dessous. En outre,
+    d'argument <var>URL-path</var> comme décrit ci-dessous. En outre,
     pour une mise en correspondance en utilisant les expressions
     rationnelles, veuillez vous reporter à la directive <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.</p>
 
 
     <div class="note"><h3>Note</h3>
-    <p>Les directives de redirection ont priorité sur les directives
-    Alias et ScriptAlias, quel que soit leur ordre d'apparition dans le
-    fichier de configuration. Les directives Redirect définies au sein
-    d'une section Location l'emportent sur les directives Redirect et
-    Alias comportant un argument <var>chemin URL</var>.</p></div>
+    <p>Les directives <code class="directive">Redirect</code> ont priorité sur les
+    directives <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, quel que soit leur ordre
+    d'apparition dans le fichier de configuration. Les directives
+    <code class="directive">Redirect</code> définies au sein d'une section Location
+    l'emportent sur les directives <code class="directive">Redirect</code> et <code class="directive"><a href="#alias">Alias</a></code> comportant un argument
+    <var>URL-path</var>.</p></div>
 
     <p>Si aucun argument <var>état</var> n'est spécifié, la
     redirection sera temporaire (code HTTP 302). Le client est alors
@@ -400,8 +401,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 
     <p>Si une directive <code class="directive">Redirect</code> est définie au
-    sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>chemin
-    URL</var> est omis, l'argument <var>URL</var> sera interprété en
+    sein d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> et si l'argument <var>URL-path</var> est omis, l'argument <var>URL</var> sera interprété en
     utilisant la <a href="../expr.html">syntaxe des expressions</a>.<br />
     Cette syntaxe est disponible à partir de la version 2.4.19 du
     serveur HTTP Apache.</p>
