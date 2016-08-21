@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1755361:1756567 (outdated) -->
+<!-- English Revision: 1756567 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1198,8 +1198,8 @@ sécurité.</li>
 <li>Lorsqu'on utilise le moteur de réécriture dans un fichier
 <code>.htaccess</code>, le chemin de base du répertoire courant (autrement dit
 le chemin URI qui représente le répertoire contenant ce fichier
-<code>.htaccess</code>) est automatiquement <em>supprimé</em> au cours de la
-comparaison avec le modèle de la règle de réécriture, et automatiquement
+<code>.htaccess</code>) est <em>supprimé</em> au cours de la
+comparaison avec le modèle de la règle de réécriture, et
 <em>ajouté</em> lorsqu'une substitution relative (ne débutant pas par un slash
 ou un nom de protocole) arrive à la fin d'un jeu de règles. Voir la directive
 <directive module="mod_rewrite">RewriteBase</directive> pour plus de détails à
