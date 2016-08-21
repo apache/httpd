@@ -573,7 +573,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 {
     enum {
         rrl_none, rrl_badmethod, rrl_badwhitespace, rrl_excesswhitespace,
-        rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext
+        rrl_missinguri, rrl_baduri, rrl_badprotocol, rrl_trailingtext,
+        rrl_badmethod09, rrl_reject09
     } deferred_error = rrl_none;
     char *ll;
     char *uri;
@@ -766,31 +767,22 @@ rrl_done:
 
     ap_parse_uri(r, uri);
 
-    if (r->proto_num == HTTP_VERSION(0, 9)) {
-        if (conf->http09_enable == AP_HTTP09_DISABLE
-                && deferred_error == rrl_none) {
-            /* If we deny 0.9, send error message with 1.x behavior */
-            r->assbackwards = 0;
-            r->connection->keepalive = AP_CONN_CLOSE;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02401)
-                          "HTTP Request Line; Rejected HTTP/0.9 request");
-            r->status = HTTP_VERSION_NOT_SUPPORTED;
-            return 0;
-        }
-        if (strict && strcmp(r->method, "GET") && deferred_error == rrl_none) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03444)
-                          "HTTP Request Line; Invalid method token: '%.*s'"
-                          " (only GET is allowed for HTTP/0.9 requests)",
-                          field_name_len(r->method), r->method);
-            r->status = HTTP_BAD_REQUEST;
-            return 0;
-        }
+    if (r->proto_num == HTTP_VERSION(0, 9) && deferred_error == rrl_none) {
+        if (conf->http09_enable == AP_HTTP09_DISABLE)
+            deferred_error = rrl_reject09;
+        else if (strict && strcmp(r->method, "GET"))
+            deferred_error = rrl_badmethod09;
     }
 
     if (deferred_error != rrl_none) {
         if (deferred_error == rrl_badmethod)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03445)
                           "HTTP Request Line; Invalid method token: '%.*s'",
+                          field_name_len(r->method), r->method);
+        else if (deferred_error == rrl_badmethod09)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03444)
+                          "HTTP Request Line; Invalid method token: '%.*s'"
+                          " (only GET is allowed for HTTP/0.9 requests)",
                           field_name_len(r->method), r->method);
         else if (deferred_error == rrl_missinguri)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03446)
@@ -811,11 +803,25 @@ rrl_done:
                           "HTTP Request Line; Extraneous text found '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(ll), ll);
-        else if (deferred_error == rrl_badprotocol) {
+        else if (deferred_error == rrl_reject09)
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02401)
+                          "HTTP Request Line; Rejected HTTP/0.9 request");
+        else if (deferred_error == rrl_badprotocol)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02418)
                           "HTTP Request Line; Unrecognized protocol '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(r->protocol), r->protocol);
+        if (r->proto_num == HTTP_VERSION(0, 9)) {
+            /* Send all parsing and protocol error response with 1.x behavior
+             * and reserve 505 errors for actual HTTP protocols presented.
+             * As called out in RFC7230 3.5, any errors parsing the protocol
+             * from the request line are nearly always misencoded HTTP/1.x
+             * requests. Only a valid 0.9 request with no parsing errors
+             * at all should be treated as a simple request, when allowed.
+             */
+            r->assbackwards = 0;
+            r->connection->keepalive = AP_CONN_CLOSE;
+            r->proto_num = HTTP_VERSION(1, 0);
             r->protocol  = "HTTP/1.0";
         }
         r->status = HTTP_BAD_REQUEST;
