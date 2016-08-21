@@ -173,6 +173,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     return 0;
 }
 
+/* XXX The terminate argument is ignored. Implement or remove? */
 AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
                                             ap_reclaim_callback_fn_t *mpm_callback)
 {
