@@ -938,6 +938,16 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         goto cleanup;
     }
 
+    /* This scheme handler does not reuse connections by default, to
+     * avoid tying up a fastcgi that isn't expecting to work on 
+     * parallel requests.  But if the user went out of their way to
+     * type the default value of disablereuse=off, we'll allow it.
+     */  
+    backend->close = 1;
+    if (worker->s->disablereuse_set && !worker->s->disablereuse) { 
+        backend->close = 0;
+    }
+
     /* Step Two: Make the Connection */
     if (ap_proxy_check_connection(FCGI_SCHEME, backend, r->server, 0,
                                   PROXY_CHECK_CONN_EMPTY)
