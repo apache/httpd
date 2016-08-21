@@ -143,7 +143,8 @@ int main(int argc, char *argv[])
          * and unreserved (2.3) that are possible somewhere within a URI.
          * Spec requires all others to be %XX encoded, including obs-text.
          */
-        if (c && (strchr(":/?#[]@"                        /* gen-delims */ 
+        if (c && (strchr("%"                              /* pct-encode */
+                         ":/?#[]@"                        /* gen-delims */ 
                          "!$&'()*+,;="                    /* sub-delims */
                          "-._~", c) || apr_isalnum(c))) { /* unreserved */
             flags |= T_URI_RFC3986;
