@@ -157,6 +157,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 	 http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
       +1: ylavic
 
+  *) core: Reject requests containing (invalid) NULL characters in request line
+     or request headers. (Including embedded %00 in URL).
+     (Use APR_STATUS_IS_... in some more cases.)
+     Trunk version of patch
+         http://svn.apache.org/r892678
+         http://svn.apache.org/r1100511
+         http://svn.apache.org/r1102124
+     Submitted by niq, status legibility fixes by covener, sf
+     PR: 43039
+     +1 wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
