@@ -52,35 +52,92 @@ Listen 443
 </section>
 
 <section id="ciphersuites">
-<title>Cipher Suites and Enforcing Strong Security</title>
+<title>Cipher Suites and Enforcing Strong Encryption</title>
+
+<note type="warning">
+<p>"Strong encryption" is, and has always been, a moving target. Furthermore,
+the definition of "strong" depends on your desired use cases, your threat
+models, and your acceptable levels of risk. The Apache HTTP Server team cannot
+determine these things for you.</p>
+<p>For the purposes of this document, which was last updated in mid-2016,
+"strong encryption" refers to a TLS implementation which provides all of the
+following, in addition to the basic confidentiality, integrity, and authenticity
+protection that most users already expect:</p>
+<ul>
+<li>Perfect Forward Secrecy, which ensures that a compromise to a server's
+private key in the present does not compromise the confidentiality of past TLS
+communication.</li>
+<li>Protection from known attacks on older SSL and TLS implementations, such
+as <a href="https://en.wikipedia.org/wiki/POODLE">POODLE</a> and
+<a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack">BEAST</a>.</li>
+<li>Support for the strongest ciphers available to modern (and up-to-date) web
+browsers and other HTTP clients.</li>
+<li><strong>Rejection</strong> of clients that cannot meet these requirements.
+In other words, "strong encryption" requires that out-of-date clients be
+completely unable to connect to the server, to prevent them from endangering
+their users. Whether or not this is appropriate for your situation is a decision
+that only you can make.</li>
+</ul>
+<p>Please note that strong <em>encryption</em> does not, by itself, ensure
+strong <em>security</em>. (As an example, HTTP compression oracle attacks such
+as <a href="https://en.wikipedia.org/wiki/BREACH_(security_exploit)">BREACH</a>
+may require further steps to mitigate.)</p>
+</note>
+
 <ul>
 <li><a href="#onlystrong">How can I create an SSL server which accepts strong encryption only?</a></li>
-<li><a href="#strongurl">How can I create an SSL server which accepts all types of ciphers in general, but
+<li><a href="#strongurl">How can I create an SSL server which accepts many types of ciphers in general, but
 requires a strong cipher for access to a particular URL?</a></li>
 </ul>
 
 <section id="onlystrong">
 <title>How can I create an SSL server which accepts strong encryption
 only?</title>
-    <p>The following enables only the strongest ciphers:</p>
-    <highlight language="config">
-      SSLCipherSuite HIGH:!aNULL:!MD5
-    </highlight>
-
-    <p>While with the following configuration you specify a preference
-    for specific speed-optimized ciphers (which will be selected by
-    mod_ssl, provided that they are supported by the client):</p>
+    <p>The following configuration enables "strong encryption", as defined
+    above, and is derived from the Mozilla Foundation's
+    <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Server Side
+    TLS</a> requirements:</p>
 
     <highlight language="config">
-SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
+# "Modern" configuration, defined by the Mozilla Foundation's SSL Configuration
+# Generator as of August 2016. This tool is available at
+# https://mozilla.github.io/server-side-tls/ssl-config-generator/
+SSLProtocol         all -SSLv3 -TLSv1 -TLSv1.1
+# Many ciphers defined here require a modern version (1.0.1+) of OpenSSL. Some
+# require OpenSSL 1.1.0, which as of this writing was in pre-release.
+SSLCipherSuite      ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 SSLHonorCipherOrder on
+SSLCompression      off
+SSLSessionTickets   off
     </highlight>
+
+    <ul>
+    <li>SSL 3.0 and TLS 1.0 are susceptible to known attacks on the protocol;
+    they are disabled entirely.</li>
+    <li>Disabling TLS 1.1 is (as of August 2016) mostly optional; TLS 1.2
+    provides stronger encryption options, but 1.1 is not yet known to be broken.
+    Disabling 1.1 may mitigate attacks against some broken TLS
+    implementations.</li>
+    <li>Enabling <directive module="mod_ssl">SSLHonorCipherOrder</directive>
+    ensures that the server's cipher preferences are followed instead of the
+    client's.</li>
+    <li>Disabling <directive module="mod_ssl">SSLCompression</directive>
+    prevents TLS compression oracle attacks (e.g.
+    <a href="https://en.wikipedia.org/wiki/CRIME">CRIME</a>).</li>
+    <li>Disabling <directive module="mod_ssl">SSLSessionTickets</directive>
+    ensures Perfect Forward Secrecy is not compromised if the server is not
+    restarted regularly.</li>
+    </ul>
+
+    <p>The exact ciphersuites supported in the
+    <directive module="mod_ssl">SSLCipherSuite</directive> line are determined
+    by your OpenSSL installation, not the server. You may need to upgrade to a
+    modern version of OpenSSL in order to use them.</p>
 </section>
 
 <section id="strongurl">
-<title>How can I create an SSL server which accepts all types of ciphers
-in general, but requires a strong ciphers for access to a particular
-URL?</title>
+<title>How can I create an SSL server which accepts many types of ciphers
+in general, but requires a strong cipher for access to a particular URL?</title>
     <p>Obviously, a server-wide <directive
     module="mod_ssl">SSLCipherSuite</directive> which restricts
     ciphers to the strong variants, isn't the answer here. However,
@@ -89,13 +146,13 @@ URL?</title>
     a renegotiation of the SSL parameters to meet the new configuration.
     This can be done as follows:</p>
     <highlight language="config">
-# be liberal in general
-SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
+# be liberal in general -- use Mozilla's "Intermediate" ciphersuites (weaker
+# ciphersuites may also be used, but will not be documented here)
+SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
 
 &lt;Location "/strong/area"&gt;
-# but https://hostname/strong/area/ and below
-# requires strong ciphers
-SSLCipherSuite HIGH:!aNULL:!MD5
+# but https://hostname/strong/area/ and below requires strong ciphersuites
+SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 &lt;/Location&gt;
     </highlight>
 </section>
