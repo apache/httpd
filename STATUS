@@ -166,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1102124
      Submitted by niq, status legibility fixes by covener, sf
      PR: 43039
-     +1 wrowe
+     +1 wrowe, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
