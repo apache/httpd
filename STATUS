@@ -164,9 +164,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r892678
          http://svn.apache.org/r1100511
          http://svn.apache.org/r1102124
+     Backport: (trunk works as well)
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r892678.patch
      Submitted by niq, status legibility fixes by covener, sf
      PR: 43039
-     +1 wrowe, covener
+     +1: wrowe, covener
+
+  *) core: Ensure LimitRequestFieldSize is always logged.
+     Trunk version of patch
+         http://svn.apache.org/r1352911
+     Backport:
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1352911.patch
+     Submitted by: sf
+     +1: wrowe
+
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
