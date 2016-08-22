@@ -2306,7 +2306,9 @@ int ssl_callback_SessionTicket(SSL *ssl,
         }
 
         memcpy(keyname, ticket_key->key_name, 16);
-        RAND_bytes(iv, EVP_MAX_IV_LENGTH);
+        if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) != 1) {
+            return -1;
+        }
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket_key->aes_key, iv);
         HMAC_Init_ex(hctx, ticket_key->hmac_secret, 16, tlsext_tick_md(), NULL);
