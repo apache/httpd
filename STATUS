@@ -170,6 +170,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 43039
      +1: wrowe, covener
 
+  *) Enforce LimitRequestFieldSize after multiple headers with the same
+     name have been merged, Ensure LimitRequestFieldSize is always logged.
+     Downgrade some more log messages indicating client errors from level error
+     to info. Add log messages for various reasons to return HTTP_BAD_REQUEST.
+     Correctly return a 400 (Bad request) in case of a HTTP/0.9 request like
+     "GET @example.org/foo".
+     Add some trace logging to core (using AP_DEBUG_THE_REQUEST macro, because
+     the TRACE5 facilities aren't in 2.2.x branch).
+     Improve error message (PR 54384).
+     Submitted by: sf, rpluem, jailletc36
+     [Note: everything in this patch is modifying logging and brings in the
+     LimitRequestFieldSize logic used for the lifespan of 2.4.x]
+     Trunk version of patch
+         http://svn.apache.org/r951900 (server/protocol.c alone)
+         http://svn.apache.org/r1178566
+         http://svn.apache.org/r1185385
+         http://svn.apache.org/r1188745
+         http://svn.apache.org/r1352911
+         http://svn.apache.org/r1433613
+     Backport: (Adjustments dodging 2.4'isms such as APLOGNO's)
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r951900-r1178566-r1185385-r1188745-r1352911-r1433613.patch 
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
