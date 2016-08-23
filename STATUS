@@ -170,15 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 43039
      +1: wrowe, covener
 
-  *) core: Ensure LimitRequestFieldSize is always logged.
-     Trunk version of patch
-         http://svn.apache.org/r1352911
-     Backport:
-         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1352911.patch
-     Submitted by: sf
-     +1: wrowe
-
-
 
 PATCHES/ISSUES THAT ARE STALLED
 
