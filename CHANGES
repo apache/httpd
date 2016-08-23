@@ -4,6 +4,18 @@ Changes with Apache 2.2.32
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
+  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
+
+  *) core: ErrorDocument now works for requests without a Host header.
+     PR 48357.  [Jeff Trawick]
+
+  *) core: Enforce LimitRequestFieldSize after multiple headers with the same
+     name have been merged. [Stefan Fritsch]
+
+  *) core: reject NULLs in request line or request headers.
+     PR 43039 [Nick Kew]
+
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
@@ -3370,4 +3382,10 @@ Changes with Apache 2.1.1
 Changes with Apache 2.0.x and later:
 
   *) http://svn.apache.org/viewvc/httpd/httpd/branches/2.0.x/CHANGES?view=markup
+
+  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
+
+  *) core: ErrorDocument now works for requests without a Host header.
+     PR 48357.  [Jeff Trawick]
 
