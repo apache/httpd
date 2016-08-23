@@ -193,6 +193,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r951900-r1178566-r1185385-r1188745-r1352911-r1433613.patch 
      +1: wrowe
 
+  *) core: ErrorDocument now works for requests without a Host header.
+     Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR: 48357, 57167
+     Submitted by: trawick,  [Edward Lu <Chaosed0 gmail.com>]
+         http://svn.apache.org/r1392347
+         http://svn.apache.org/r1635762
+     Backport:
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1392347-r1635762.patch 
+     +1: wrowe
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
