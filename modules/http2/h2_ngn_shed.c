@@ -168,6 +168,12 @@ apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type,
         return APR_EOF;
     }
     
+    if (task->assigned) {
+        --task->assigned->no_assigned;
+        --task->assigned->no_live;
+        task->assigned = NULL;
+    }
+    
     ngn = apr_hash_get(shed->ngns, ngn_type, APR_HASH_KEY_STRING);
     if (ngn && !ngn->shutdown) {
         /* this task will be processed in another thread,
@@ -178,7 +184,6 @@ apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type,
         if (!h2_task_is_detached(task)) {
             h2_task_freeze(task);
         }
-        /* FIXME: sometimes ngn is garbage, probly alread freed */
         ngn_add_task(ngn, task);
         ngn->no_assigned++;
         return APR_SUCCESS;

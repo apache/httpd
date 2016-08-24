@@ -95,8 +95,6 @@ typedef enum {
     H2_SESSION_ST_IDLE,             /* nothing to write, expecting data inc */
     H2_SESSION_ST_BUSY,             /* read/write without stop */
     H2_SESSION_ST_WAIT,             /* waiting for tasks reporting back */
-    H2_SESSION_ST_LOCAL_SHUTDOWN,   /* we announced GOAWAY */
-    H2_SESSION_ST_REMOTE_SHUTDOWN,  /* client announced GOAWAY */
 } h2_session_state;
 
 typedef struct h2_session_props {
@@ -106,6 +104,7 @@ typedef struct h2_session_props {
     apr_uint32_t emitted_max;       /* the highest local stream id sent */
     apr_uint32_t error;             /* the last session error encountered */
     unsigned int accepting : 1;     /* if the session is accepting new streams */
+    unsigned int shutdown : 1;      /* if the final GOAWAY has been sent */
 } h2_session_props;
 
 
@@ -146,6 +145,8 @@ struct h2_response {
     apr_off_t   content_length;
     apr_table_t *headers;
     apr_table_t *trailers;
+    struct h2_response *next;
+    
     const char  *sos_filter;
 };
 

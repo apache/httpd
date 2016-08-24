@@ -1160,7 +1160,7 @@ typedef struct {
 #define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
 
 static literal IgnoredRequestHeaders[] = {
-    H2_DEF_LITERAL("expect"),
+/*H2_DEF_LITERAL("expect"),*/
     H2_DEF_LITERAL("upgrade"),
     H2_DEF_LITERAL("connection"),
     H2_DEF_LITERAL("keep-alive"),

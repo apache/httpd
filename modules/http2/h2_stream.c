@@ -181,6 +181,7 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
     
     stream->id        = id;
+    stream->created   = apr_time_now();
     stream->state     = H2_STREAM_ST_IDLE;
     stream->pool      = pool;
     stream->session   = session;
@@ -263,6 +264,16 @@ void h2_stream_rst(h2_stream *stream, int error_code)
 struct h2_response *h2_stream_get_response(h2_stream *stream)
 {
     return stream->response;
+}
+
+struct h2_response *h2_stream_get_unsent_response(h2_stream *stream)
+{
+    h2_response *unsent = (stream->last_sent? 
+                           stream->last_sent->next : stream->response);
+    if (unsent) {
+        stream->last_sent = unsent;
+    }
+    return unsent;
 }
 
 apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
@@ -462,6 +473,9 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     
     status = h2_beam_send(stream->input, stream->tmp, APR_BLOCK_READ);
     apr_brigade_cleanup(stream->tmp);
+    stream->in_data_frames++;
+    stream->in_data_octets += len;
+    
     return status;
 }
 
@@ -521,11 +535,12 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
     return status;
 }
 
-apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
+apr_status_t h2_stream_add_response(h2_stream *stream, h2_response *response,
                                     h2_bucket_beam *output)
 {
     apr_status_t status = APR_SUCCESS;
     conn_rec *c = stream->session->c;
+    h2_response **pr = &stream->response;
     
     if (!output_open(stream)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
@@ -533,15 +548,29 @@ apr_status_t h2_stream_set_response(h2_stream *stream, h2_response *response,
                       stream->session->id, stream->id);
         return APR_ECONNRESET;
     }
-    
-    stream->response = response;
-    stream->output = output;
-    stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
-    
-    h2_stream_filter(stream);
-    if (stream->output) {
-        status = fill_buffer(stream, 0);
+    if (stream->submitted) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                      "h2_stream(%ld-%d): already submitted final response", 
+                      stream->session->id, stream->id);
+        return APR_ECONNRESET;
     }
+    
+    /* append */
+    while (*pr) {
+        pr = &((*pr)->next);
+    }
+    *pr = response;
+    
+    if (h2_response_is_final(response)) {
+        stream->output = output;
+        stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+        
+        h2_stream_filter(stream);
+        if (stream->output) {
+            status = fill_buffer(stream, 0);
+        }
+    }
+    
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, c,
                   "h2_stream(%ld-%d): set_response(%d)", 
                   stream->session->id, stream->id, 
@@ -558,7 +587,7 @@ apr_status_t h2_stream_set_error(h2_stream *stream, int http_status)
     }
     response = h2_response_die(stream->id, http_status, stream->request, 
                                stream->pool);
-    return h2_stream_set_response(stream, response, NULL);
+    return h2_stream_add_response(stream, response, NULL);
 }
 
 static const apr_size_t DATA_CHUNK_SIZE = ((16*1024) - 100 - 9); 
@@ -576,6 +605,10 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream,
         return APR_ECONNRESET;
     }
 
+    if (!stream->buffer) {
+        return APR_EAGAIN;
+    }
+    
     if (*plen > 0) {
         requested = H2MIN(*plen, DATA_CHUNK_SIZE);
     }
@@ -659,7 +692,7 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream)
     int i;
     
     pushes = h2_push_collect_update(stream, stream->request, 
-                                    h2_stream_get_response(stream));
+                                    stream->response);
     if (pushes && !apr_is_empty_array(pushes)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                       "h2_stream(%ld-%d): found %d push candidates",
@@ -683,15 +716,36 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
-    h2_response *response = h2_stream_get_response(stream);
-    
-    if (response && stream->request && stream->request->initiated_on) {
-        const char *ctype = apr_table_get(response->headers, "content-type");
+    if (stream->response && stream->request && stream->request->initiated_on) {
+        const char *ctype = apr_table_get(stream->response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */
             return h2_config_get_priority(stream->session->config, ctype);
         }
     }
     return NULL;
+}
+
+const char *h2_stream_state_str(h2_stream *stream)
+{
+    switch (stream->state) {
+        case H2_STREAM_ST_IDLE:
+            return "IDLE";
+        case H2_STREAM_ST_OPEN:
+            return "OPEN";
+        case H2_STREAM_ST_RESV_LOCAL:
+            return "RESERVED_LOCAL";
+        case H2_STREAM_ST_RESV_REMOTE:
+            return "RESERVED_REMOTE";
+        case H2_STREAM_ST_CLOSED_INPUT:
+            return "HALF_CLOSED_REMOTE";
+        case H2_STREAM_ST_CLOSED_OUTPUT:
+            return "HALF_CLOSED_LOCAL";
+        case H2_STREAM_ST_CLOSED:
+            return "CLOSED";
+        default:
+            return "UNKNOWN";
+            
+    }
 }
 
