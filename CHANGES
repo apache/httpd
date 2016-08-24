@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: h2 status resource follows latest draft, see
+     http://www.ietf.org/id/draft-benfield-http2-debug-state-01.txt
+     [Stefan Eissing]
+     
+  *) mod_http2: handling graceful shutdown gracefully, e.g. handling existing
+     streams to the end. [Stefan Eissing]
+  
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 

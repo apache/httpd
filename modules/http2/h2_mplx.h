@@ -230,6 +230,11 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
 
 apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id);
 
+
+typedef int h2_mplx_stream_cb(struct h2_stream *s, void *ctx);
+
+apr_status_t h2_mplx_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
+
 /*******************************************************************************
  * Output handling of streams.
  ******************************************************************************/

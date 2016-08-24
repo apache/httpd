@@ -133,7 +133,7 @@ h2_response *h2_response_create(int stream_id,
                                   parse_headers(hlines, pool), notes, pool);
 }
 
-h2_response *h2_response_rcreate(int stream_id, request_rec *r,
+h2_response *h2_response_rcreate(int stream_id, request_rec *r, int status,
                                  apr_table_t *header, apr_pool_t *pool)
 {
     h2_response *response = apr_pcalloc(pool, sizeof(h2_response));
@@ -142,9 +142,9 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r,
     }
     
     response->stream_id      = stream_id;
-    response->http_status    = r->status;
+    response->http_status    = status;
     response->content_length = -1;
-    response->headers        = header;
+    response->headers        = header? header : apr_table_make(pool, 5);
     response->sos_filter     = get_sos_filter(r->notes);
 
     check_clen(response, r, pool);
@@ -203,3 +203,17 @@ void h2_response_set_trailers(h2_response *response, apr_table_t *trailers)
     response->trailers = trailers;
 }
 
+int h2_response_is_final(h2_response *response)
+{
+    return response->http_status >= 200;
+}
+
+h2_response *h2_response_get_final(h2_response *response)
+{
+    for (/**/; response; response = response->next) {
+        if (h2_response_is_final(response)) {
+            return response;
+        }
+    }
+    return NULL;
+}

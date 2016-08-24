@@ -43,6 +43,7 @@ typedef struct h2_stream h2_stream;
 
 struct h2_stream {
     int id;                     /* http2 stream id */
+    apr_time_t created;         /* when stream was created */
     h2_stream_state_t state;    /* http/2 state of this stream */
     struct h2_session *session; /* the session this stream belongs to */
     
@@ -52,6 +53,7 @@ struct h2_stream {
     int request_headers_added;  /* number of request headers added */
     
     struct h2_response *response;
+    struct h2_response *last_sent;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
     apr_bucket_brigade *tmp;
@@ -65,7 +67,10 @@ struct h2_stream {
     unsigned int submitted : 1; /* response HEADER has been sent */
     
     apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
-    apr_off_t data_frames_sent; /* # of DATA frames sent out for this stream */
+    apr_off_t out_data_frames;  /* # of DATA frames sent */
+    apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
+    apr_off_t in_data_frames;   /* # of DATA frames received */
+    apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
 };
 
 
@@ -176,6 +181,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
 int h2_stream_is_scheduled(const h2_stream *stream);
 
 struct h2_response *h2_stream_get_response(h2_stream *stream);
+struct h2_response *h2_stream_get_unsent_response(h2_stream *stream);
 
 /**
  * Set the response for this stream. Invoked when all meta data for
@@ -186,7 +192,7 @@ struct h2_response *h2_stream_get_response(h2_stream *stream);
  * @param bb bucket brigade with output data for the stream. Optional,
  *        may be incomplete.
  */
-apr_status_t h2_stream_set_response(h2_stream *stream, 
+apr_status_t h2_stream_add_response(h2_stream *stream, 
                                     struct h2_response *response,
                                     struct h2_bucket_beam *output);
 
@@ -276,5 +282,11 @@ apr_status_t h2_stream_submit_pushes(h2_stream *stream);
  * Get priority information set for this stream.
  */
 const struct h2_priority *h2_stream_get_priority(h2_stream *stream);
+
+/**
+ * Return a textual representation of the stream state as in RFC 7540
+ * nomenclator, all caps, underscores.
+ */
+const char *h2_stream_state_str(h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_stream__) */
