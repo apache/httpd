@@ -144,7 +144,7 @@ h2_response *h2_response_rcreate(int stream_id, request_rec *r, int status,
     response->stream_id      = stream_id;
     response->http_status    = status;
     response->content_length = -1;
-    response->headers        = header;
+    response->headers        = header? header : apr_table_make(pool, 5);
     response->sos_filter     = get_sos_filter(r->notes);
 
     check_clen(response, r, pool);
