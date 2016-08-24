@@ -367,9 +367,7 @@ static apr_status_t h2_status_stream_filter(h2_stream *stream)
     add_peer_settings(bb, s, 0);
     bbout(bb, "  \"connFlowIn\": %d,\n", connFlowIn);
     bbout(bb, "  \"connFlowOut\": %d,\n", connFlowOut);
-    bbout(bb, "  \"sentGoAway\": %d,\n", 
-          (s->state == H2_SESSION_ST_LOCAL_SHUTDOWN
-           || s->state == H2_SESSION_ST_DONE));
+    bbout(bb, "  \"sentGoAway\": %d,\n", s->local.shutdown);
 
     add_streams(bb, s, 0);
     

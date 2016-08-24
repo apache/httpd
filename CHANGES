@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: handling graceful shutdown gracefully, e.g. handling existing
+     streams to the end. [Stefan Eissing]
+  
   *) mod_cache: Use the actual URI path and query-string for identifying the
      cached entity (key), such that rewrites are taken into account when
      running afterwards (CacheQuickHandler off).  PR 21935.  [Yann Ylavic]
