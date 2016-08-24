@@ -520,11 +520,11 @@ static apr_status_t h2_filter_continue(ap_filter_t* f,
     apr_status_t status;
     
     AP_DEBUG_ASSERT(task);
-    if (f->r->expecting_100) {
+    if (f->r->expecting_100 && ap_is_HTTP_SUCCESS(f->r->status)) {
         h2_response *response;
 
         response = h2_response_rcreate(task->stream_id, f->r, HTTP_CONTINUE, 
-                                       f->r->headers_out, f->r->pool);
+                                       NULL, f->r->pool);
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r,
                       "h2_task(%s): send 100 Continue", task->id);
         status = open_response(task, response);
