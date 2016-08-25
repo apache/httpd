@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
+     and the error documents are proxied. PR 55415. [Luca Toscano]
+
   *) mod_proxy_fcgi: read the whole FCGI response even when the content has
      not been modified (HTTP 304) to avoid subsequent bougus reads and
      confusing error messages logged. [Luca Toscano]

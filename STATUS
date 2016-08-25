@@ -117,11 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_fcgi: avoid loops serving proxied error documents.
-     trunk patch: http://svn.apache.org/r1753167
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: elukey, ylavic, sf
-
   *) mod_http: Add the HEAD method to the lookup hash for completeness.
       Trunk version of patch:
          http://svn.apache.org/r1753257
