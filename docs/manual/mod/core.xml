@@ -1337,7 +1337,7 @@ LenientMethods Allow0.9</default>
     superceeds this with "The expectation to support HTTP/0.9 requests has
     been removed" and offers additional comments in 
     <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
-      >RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
+      >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
     the user to remove support of the default <code>Allow0.9</code> option's
     behavior.</p>
 </usage>
