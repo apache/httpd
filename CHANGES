@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
+     connections (unless -I is specified), according to the Host header (if
+     any) or the requested URL's hostname otherwise.  [Yann Ylavic]
+
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
