@@ -778,7 +778,7 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     for (sl = ap_seclisteners; sl != NULL; sl = sl->next) {
         /* If we find a pre-existing listen socket and it has already been
-           created, then no neeed to go any further, just reuse it. */
+           created, then no need to go any further, just reuse it. */
         if (((sl->fd = find_secure_listener(sl)) >= 0) && (sl->used)) {
             continue;
         }

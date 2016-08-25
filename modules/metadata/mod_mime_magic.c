@@ -161,7 +161,7 @@ struct magic {
         unsigned char hl[4];   /* 2 bytes of a fixed-endian "long" */
     } value;                   /* either number or string */
     unsigned long mask;        /* mask before comparison with value */
-    char nospflag;             /* supress space character */
+    char nospflag;             /* suppress space character */
 
     /* NOTE: this string is suspected of overrunning - find it! */
     char desc[MAXDESC];        /* description */

@@ -25,7 +25,7 @@ Within the POSIX subsystem, the same character set was chosen as in
 "native BS2000", namely EBCDIC.
 
 EBCDIC Table. (Yes, in EBCDIC, the letters 'a'..'z' are not contiguous!)
-This apr_table_t is bijective, i.e. there are no ambigous or duplicate characters
+This apr_table_t is bijective, i.e. there are no ambiguous or duplicate characters
 00    00 01 02 03 85 09 86 7f  87 8d 8e 0b 0c 0d 0e 0f  *................*
 10    10 11 12 13 8f 0a 08 97  18 19 9c 9d 1c 1d 1e 1f  *................*
 20    80 81 82 83 84 92 17 1b  88 89 8a 8b 8c 05 06 07  *................*

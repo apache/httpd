@@ -117,16 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Typo fixes in comments and text files. PR 59990.
-      Trunk version of patch:
-         http://svn.apache.org/r1756038
-      Backport version for 2.4.x of patch:
-         http://home.apache.org/~rjung/patches/httpd-2.4.x-typo-PR59990.patch
-         (trunk version of patch merge plus CHANGES plus STATUS
-          plus one hunk in modules/aaa/mod_auth_digest.c)
-      +1: rjung, ylavic, jchampion
-      jchampion: IMO, spell-checking STATUS is probably unnecessary.
-
   *) mod_proxy_fcgi: read the whole FCGI response even when the content has
      not been modified (HTTP 304) to avoid subsequent bogus reads and
      confusing error messages logged.
@@ -331,7 +321,7 @@ PATCHES/ISSUES THAT ARE STALLED
      +1: jkaluza
      +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
                  needs 2 args which is not valid in ErrorLog manual)
-     trawick: nit: fix "writing" in "/* NULL if we are writting to syslog */"
+     trawick: nit: fix "writing" in "/* NULL if we are writing to syslog */"
               (sorry, haven't finished reviewing completely)
      jim: What is the status of this??
 
@@ -392,7 +382,7 @@ PATCHES/ISSUES THAT ARE STALLED
      +1: jkaluza
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
-    504 Gateway Timout as opposed to 502 Bad Gateway
+    504 Gateway Timeout as opposed to 502 Bad Gateway
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
     2.4.x patch: trunk patch works modulo CHANGES
     +1:
@@ -439,7 +429,7 @@ PATCHES/ISSUES THAT ARE STALLED
           of described indirectly in a sample?
           Why are these new samples added to the install without three
           votes?  (I didn't veto it; put your name next to the two
-          existing ones and I'll be satisified that enough people
+          existing ones and I'll be satisfied that enough people
           considered this addition as an appropriate solution for a
           real httpd usability problem.)
      wrowe: I'd agree with trawick, and suggest that these scripts can begin

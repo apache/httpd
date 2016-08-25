@@ -31,7 +31,7 @@ apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
 /**
  * Run the HTTP/2 connection in synchronous fashion. 
  * Return when the HTTP/2 session is done
- * and the connection will close or a fatal error occured.
+ * and the connection will close or a fatal error occurred.
  *
  * @param ctx the http2 context to run
  * @return APR_SUCCESS when session is done.

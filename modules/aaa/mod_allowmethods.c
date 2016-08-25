@@ -26,7 +26,7 @@
  * This module makes it easy to restrict what HTTP methods can be ran against
  * a server.
  *
- * It provides one comand:
+ * It provides one command:
  *    AllowMethods
  * This command takes a list of HTTP methods to allow.
  *
