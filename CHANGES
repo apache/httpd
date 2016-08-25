@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
+     not been modified (HTTP 304) to avoid subsequent bougus reads and
+     confusing error messages logged. [Luca Toscano]
+
   *) mod_http2: h2 status resource follows latest draft, see
      http://www.ietf.org/id/draft-benfield-http2-debug-state-01.txt
      [Stefan Eissing]
