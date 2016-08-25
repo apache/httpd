@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1710095
          http://svn.apache.org/r1727544
      Backport:
-         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1710095-1727544.patch 
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1710095-r1727544.patch
      +1: wrowe, covener
 
 
