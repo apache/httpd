@@ -707,6 +707,12 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         goto rrl_done;
     }
 
+    /* Verify uri terminated with a single SP, otherwise mark in error */
+    if (strictspaces && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
+            && deferred_error == rrl_none) {
+        deferred_error = rrl_excesswhitespace; 
+    }
+
     /* Advance protocol pointer over leading whitespace,
      * then NUL terminate the uri string
      */
