@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
+     triggering mod_proxy_connect's AH01018 once the tunnel is established.
+     [Yann Ylavic]
+
   *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
      connections (unless -I is specified), according to the Host header (if
      any) or the requested URL's hostname otherwise.  [Yann Ylavic]
