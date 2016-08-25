@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http: Add the HEAD method to the lookup hash for completeness.
-      Trunk version of patch:
-         http://svn.apache.org/r1753257
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works
-      +1: wrowe, ylavic, sf
-
   *) mod_dav: fix typo (missing '/') in closing tag (follow up to r1756560
      which backported r1746207 in 2.4.24). Plus r1748155 to fix compiling with
      clang.
