@@ -204,7 +204,7 @@ Changes with Apache 2.4.20
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      [Petr <pgajdos suse.cz>]
 
-  *) core/util_script: relax alphanumeric filter of enviroment variable names
+  *) core/util_script: relax alphanumeric filter of environment variable names
      on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
      unadulterated in 64 bit versions of Windows. PR 46751.
      [John <john leineweb de>]
@@ -481,7 +481,7 @@ Changes with Apache 2.4.18
      fixes crash on a request that did not produce any response.
      [Stefan Eissing]
 
-  *) mod_http2: trailers are sent after reponse body if set in request_rec
+  *) mod_http2: trailers are sent after response body if set in request_rec
      trailers_out before the end-of-request bucket is sent through the 
      output filters. [Stefan Eissing]
 
@@ -837,7 +837,7 @@ Changes with Apache 2.4.13 (not released)
      [Yann Ylavic]
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't lose errors occuring while forwarding on the first
+     at the same time, don't lose errors occurring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
@@ -990,7 +990,7 @@ Changes with Apache 2.4.11 (not released)
      the URL parameter interpolates to an empty string. PR 56603.
      [<ajprout hotmail.com>]
 
-  *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
+  *) core: Fix -D[efined] or <Define>[d] variables lifetime across restarts. 
      PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 
   *) mod_proxy: Preserve original request headers even if they differ
@@ -1599,7 +1599,7 @@ Changes with Apache 2.4.7
      instead of an explicit cn=* filter. [David Hawes <dhawes vt.edu>]
 
   *) ab: Add wait time, fix processing time, and output write errors only if
-     they occured. [Christophe Jaillet]
+     they occurred. [Christophe Jaillet]
 
   *) worker MPM: Don't forcibly kill worker threads if the child process is
      exiting gracefully.  [Oracle Corporation]
@@ -1612,7 +1612,7 @@ Changes with Apache 2.4.7
      [Chris Darroch]
 
   *) ab: Add a new -l parameter in order not to check the length of the responses.
-     This can be usefull with dynamic pages.
+     This can be useful with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
 
   *) Suppress formatting of startup messages written to the console when
@@ -1993,7 +1993,7 @@ Changes with Apache 2.4.5
      request information to the request_rec structure. [Daniel Gruno]
 
   *) mod_lua: Add a server scope for Lua states, which creates a pool of
-     states with managable minimum and maximum size. [Daniel Gruno]
+     states with manageable minimum and maximum size. [Daniel Gruno]
 
   *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping
      URIs to Lua scripts and functions using regular expressions.
@@ -2046,7 +2046,7 @@ Changes with Apache 2.4.4
   *) mod_slotmem_shm: Fix mistaken reset of num_free for restored shm.
      [Jim Jagielski]
 
-  *) mod_proxy: non-existance of byrequests is not an immediate error.
+  *) mod_proxy: non-existence of byrequests is not an immediate error.
      [Jim Jagielski]
 
   *) mod_proxy_balancer: Improve output of balancer-manager (re: Drn,
@@ -2988,7 +2988,7 @@ Changes with Apache 2.3.14
      binary needs PCRE. [Rainer Jung]
 
   *) configure: tolerate dependency checking failures for modules if
-     they have been enabled implicitely. [Rainer Jung]
+     they have been enabled implicitly. [Rainer Jung]
 
   *) configure: Allow to specify module specific custom linker flags via
      the MOD_XXX_LDADD variables. [Rainer Jung]
@@ -3094,7 +3094,7 @@ Changes with Apache 2.3.13
      state after a timeout when discarding a request body. PR 51103.
      [Stefan Fritsch]
 
-  *) core: Add various file existance test operators to ap_expr.
+  *) core: Add various file existence test operators to ap_expr.
      [Stefan Fritsch]
 
   *) mod_proxy_express: New mass reverse-proxy switch extension for
@@ -4370,7 +4370,7 @@ Changes with Apache 2.3.2
 
   *) mod_mime_magic: Fix detection of compressed content. [Rainer Jung]
 
-  *) mod_negotiation: Escape pathes of filenames in 406 responses to avoid
+  *) mod_negotiation: Escape paths of filenames in 406 responses to avoid
      HTML injections and HTTP response splitting.  PR 46837.
      [Geoff Keating <geoffk apple.com>]
 

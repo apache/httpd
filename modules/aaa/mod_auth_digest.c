@@ -1404,7 +1404,7 @@ static authn_status get_hash(request_rec *r, const char *user,
 
         apr_table_unset(r->notes, AUTHN_PROVIDER_NAME_NOTE);
 
-        /* Something occured.  Stop checking. */
+        /* Something occurred.  Stop checking. */
         if (auth_result != AUTH_USER_NOT_FOUND) {
             break;
         }
@@ -1746,7 +1746,7 @@ static int authenticate_digest_user(request_rec *r)
              * works out ok, since we can hash the header and get the same
              * result.  however, the uri from the request line won't match
              * the uri Authorization component since the header lacks the
-             * query string, leaving us incompatable with a (broken) MSIE.
+             * query string, leaving us incompatible with a (broken) MSIE.
              *
              * the workaround is to fake a query string match if in the proper
              * environment - BrowserMatch MSIE, for example.  the cool thing

@@ -1798,13 +1798,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
                 worker->s->smax = worker->s->hmax;
             }
-            /* Set min to be lower then smax */
+            /* Set min to be lower than smax */
             if (worker->s->min > worker->s->smax) {
                 worker->s->min = worker->s->smax;
             }
         }
         else {
-            /* This will supress the apr_reslist creation */
+            /* This will suppress the apr_reslist creation */
             worker->s->min = worker->s->smax = worker->s->hmax = 0;
         }
     }
@@ -2328,7 +2328,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                 }
 
                 /*
-                 * Worker can have the single constant backend adress.
+                 * Worker can have the single constant backend address.
                  * The single DNS lookup is used once per worker.
                  * If dynamic change is needed then set the addr to NULL
                  * inside dynamic config to force the lookup.
@@ -3469,7 +3469,7 @@ PROXY_DECLARE(int) ap_proxy_create_hdrbrgd(apr_pool_t *p,
      *
      * The HTTP/1.1 Via: header is designed for passing client
      * information through proxies to a server, and should be used in
-     * a forward proxy configuation instead of X-Forwarded-*. See the
+     * a forward proxy configuration instead of X-Forwarded-*. See the
      * ProxyVia option for details.
      */
     if (dconf->add_forwarded_headers) {

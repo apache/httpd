@@ -309,7 +309,7 @@ extern "C" {
 
 /**
  * APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into
- * mutiple buckets, no greater than MAX(apr_size_t), and more granular
+ * multiple buckets, no greater than MAX(apr_size_t), and more granular
  * than that in case the brigade code/filters attempt to read it directly.
  * ### 16mb is an invention, no idea if it is reasonable.
  */
@@ -354,7 +354,7 @@ extern "C" {
  * use by modules.  The difference between #AP_DECLARE and
  * #AP_DECLARE_NONSTD is that the latter is required for any functions
  * which use varargs or are used via indirect function call.  This
- * is to accomodate the two calling conventions in windows dlls.
+ * is to accommodate the two calling conventions in windows dlls.
  */
 # define AP_DECLARE_NONSTD(type)    type
 #endif

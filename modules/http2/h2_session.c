@@ -1582,7 +1582,7 @@ static apr_status_t h2_session_read(h2_session *session, int block)
                 /* successful read, reset our idle timers */
                 rstatus = APR_SUCCESS;
                 if (block) {
-                    /* successfull blocked read, try unblocked to
+                    /* successful blocked read, try unblocked to
                      * get more. */
                     block = 0;
                 }

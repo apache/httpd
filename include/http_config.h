@@ -50,7 +50,7 @@ enum cmd_how {
     RAW_ARGS,           /**< cmd_func parses command line itself */
     TAKE1,              /**< one argument only */
     TAKE2,              /**< two arguments only */
-    ITERATE,            /**< one argument, occuring multiple times
+    ITERATE,            /**< one argument, occurring multiple times
                          * (e.g., IndexIgnore)
                          */
     ITERATE2,           /**< two arguments, 2nd occurs multiple times
@@ -812,7 +812,7 @@ AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp);
 /**
  * Detach from open ap_configfile_t, calling the close handler
  * @param cfp The file to close
- * @return 1 on sucess, 0 on failure
+ * @return 1 on success, 0 on failure
  */
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
 

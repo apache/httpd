@@ -1277,7 +1277,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* It's safe to cache the response.
      *
-     * There are two possiblities at this point:
+     * There are two possibilities at this point:
      * - cache->handle == NULL. In this case there is no previously
      * cached entity anywhere on the system. We must create a brand
      * new entity and store the response in it.

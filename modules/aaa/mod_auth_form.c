@@ -798,7 +798,7 @@ static int check_authn(request_rec * r, const char *sent_user, const char *sent_
 
         apr_table_unset(r->notes, AUTHN_PROVIDER_NAME_NOTE);
 
-        /* Something occured. Stop checking. */
+        /* Something occurred. Stop checking. */
         if (auth_result != AUTH_USER_NOT_FOUND) {
             break;
         }
