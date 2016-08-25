@@ -246,6 +246,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (module CHANGES)
      +1: ylavic, rpluem
 
+  *) mod_proxy_hcheck: Add missing copy of hcuri and hcexpr ftom the worker to
+     the health check worker.
+     Trunk version of patch:
+      http://svn.apache.org/r1757662
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+      CHANGES in http://svn.apache.org/r1757663
+     +1: rpluem,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
