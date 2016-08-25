@@ -486,7 +486,7 @@ typedef struct
 } dav_get_props_result;
 
 /* holds the contents of a <response> element */
-struct dav_response
+typedef struct dav_response
 {
     const char *href;           /* always */
     const char *desc;           /* optional description at <response> level */
@@ -497,7 +497,7 @@ struct dav_response
     int status;
 
     struct dav_response *next;
-};
+} dav_response;
 
 typedef struct
 {

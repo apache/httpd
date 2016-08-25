@@ -146,14 +146,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: wrowe, ylavic, sf
 
-  *) mod_dav: fix typo (missing '/') in closing tag (follow up to r1756560
-     which backported r1746207 in 2.4.24). Plus r1748155 to fix compiling with
-     clang.
-     trunk patch: http://svn.apache.org/r1756611
-                  http://svn.apache.org/r1748155
-     2.4.x patch: trunk works
-     +1: ylavic, sf, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -239,12 +231,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1750392.patch
      +1: ylavic
 
+  *) mod_dav: fix typo (missing '/') in closing tag (follow up to r1756560
+     which backported r1746207 in 2.4.24). Plus r1748155 to fix compiling with
+     clang.
+     trunk patch: http://svn.apache.org/r1756611
+                  http://svn.apache.org/r1748155
+     2.4.x patch: trunk works
+     +1: ylavic, sf
+
   *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
      triggering mod_proxy_connect's AH01018 once the tunnel is established.
      trunk patch: http://svn.apache.org/r1754391
                   http://svn.apache.org/r1754399
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rpluem
+     +1: ylavic
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
