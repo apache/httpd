@@ -1557,9 +1557,9 @@ angegebenen MIME-Content-Type</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
+ [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientWhitespace 
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>HttpProtocolOptions Strict StrictURL StrictWhitespace 
 LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>

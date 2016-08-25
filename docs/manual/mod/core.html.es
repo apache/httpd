@@ -1740,9 +1740,9 @@ media type in the HTTP Content-Type header field</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
+ [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientWhitespace 
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>HttpProtocolOptions Strict StrictURL StrictWhitespace 
 LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
