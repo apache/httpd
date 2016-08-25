@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1433613
      Backport: (Adjustments dodging 2.4'isms such as APLOGNO's)
          https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r951900-r1178566-r1185385-r1188745-r1352911-r1433613.patch 
-     +1: wrowe
+     +1: wrowe, covener
 
   *) core: ErrorDocument now works for requests without a Host header.
      Support custom ErrorDocuments for HTTP 501 and 414 status codes.
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1635762
      Backport:
          https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1392347-r1635762.patch 
-     +1: wrowe
+     +1: wrowe, covener
 
   *) core: Limit to ten the number of tolerated empty lines between request.
      Before this commit, the maximum number of empty lines was the same as
@@ -219,7 +219,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/r1727544
      Backport:
          https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1710095-1727544.patch 
-     +1: wrowe
+     +1: wrowe, covener
 
 
 PATCHES/ISSUES THAT ARE STALLED
