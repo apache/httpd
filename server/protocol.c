@@ -582,9 +582,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    const char *badwhitespace = strict ? "\t\n\v\f\r" : "\n\v\f\r";
-    int strictspaces = (conf->http_whitespace == AP_HTTP_WHITESPACE_STRICT);
     int stricturi = (conf->http_stricturi != AP_HTTP_URI_UNSAFE);
+    int strictspaces = (conf->http_whitespace != AP_HTTP_WHITESPACE_UNSAFE);
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -642,11 +641,17 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     r->request_time = apr_time_now();
 
     r->method = r->the_request;
-    if (apr_isspace(*r->method))
-        deferred_error = rrl_excesswhitespace; 
-    for ( ; apr_isspace(*r->method); ++r->method)
-        ; 
 
+    /* If there is whitespace before a method, skip it and mark in error */
+    if (apr_isspace(*r->method)) {
+        deferred_error = rrl_excesswhitespace; 
+        for ( ; apr_isspace(*r->method); ++r->method)
+            ; 
+    }
+
+    /* Scan the method up to the next whitespace, ensure it contains only
+     * valid http-token characters, otherwise mark in error
+     */
     if (strict) {
         ll = (char*) ap_scan_http_token(r->method);
         if ((ll == r->method) || (*ll && !apr_isspace(*ll))) {
@@ -665,17 +670,27 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         goto rrl_done;
     }
 
+    /* Verify method terminated with a single SP, otherwise mark in error */
     if (strictspaces && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
+
+    /* Advance uri pointer over leading whitespace,
+     * then NUL terminate the method string
+     */
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (ap_strchr_c(badwhitespace, *uri) && deferred_error == rrl_none)
+        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *uri)
+                && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
+
     if (!*uri && deferred_error == rrl_none)
         deferred_error = rrl_missinguri;
 
+    /* Scan the URI up to the next whitespace, ensure it contains only
+     * valid RFC3986 characters, otherwise mark in error
+     */
     if (stricturi) {
         ll = (char*) ap_scan_http_uri_safe(uri);
         if (ll == uri || (*ll && !apr_isspace(*ll))) {
@@ -687,23 +702,38 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         ll = strpbrk(uri, "\t\n\v\f\r ");
     }
     if (!ll) {
-            r->protocol = "";
-            len = 0;
-            goto rrl_done;
+        r->protocol = "";
+        len = 0;
+        goto rrl_done;
     }
+
+    /* Advance protocol pointer over leading whitespace,
+     * then NUL terminate the uri string
+     */
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (ap_strchr_c(badwhitespace, *r->protocol) && deferred_error == rrl_none)
+        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *r->protocol)
+                && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
+
+    /* Scan the protocol up to the next whitespace, validation happens
+     * further below
+     */
     if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
         len = strlen(r->protocol);
         goto rrl_done;
     }
     len = ll - r->protocol;
+
+    /* Advance over trailing whitespace, if found mark in error,
+     * determine if trailing text is found, unconditionally mark in error,
+     * finally NUL terminate the protocol string
+     */
     if (strictspaces && *ll)
         deferred_error = rrl_excesswhitespace; 
     for ( ; apr_isspace(*ll); ++ll)
-        if (ap_strchr_c(badwhitespace, *ll) && deferred_error == rrl_none)
+        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *ll)
+                && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     if (*ll && deferred_error == rrl_none)
         deferred_error = rrl_trailingtext;
@@ -711,10 +741,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     *ll = '\0';
 
 rrl_done:
-    /* For internal integrety, reconstruct the_request
-     * using only single SP characters, per spec.
-     * Once the method, uri and protocol are processed,
-     * we can then resume deferred error reporting
+    /* For internal integrety and palloc efficiency, reconstruct the_request
+     * in one palloc, using only single SP characters, per spec.
      */
     r->the_request = apr_pstrcat(r->pool, r->method, *uri ? " " : NULL, uri,
                                  *r->protocol ? " " : NULL, r->protocol, NULL);
@@ -758,7 +786,7 @@ rrl_done:
         r->proto_num = HTTP_VERSION(0, 9);
     }
 
-    /* Satisfy the method_number and uri fields prior to invoking error
+    /* Determine the method_number and parse the uri prior to invoking error
      * handling, such that these fields are available for subsitution
      */
     r->method_number = ap_method_number_of(r->method);
@@ -767,13 +795,17 @@ rrl_done:
 
     ap_parse_uri(r, uri);
 
+    /* With the request understood, we can consider HTTP/0.9 specific errors */
     if (r->proto_num == HTTP_VERSION(0, 9) && deferred_error == rrl_none) {
         if (conf->http09_enable == AP_HTTP09_DISABLE)
             deferred_error = rrl_reject09;
-        else if (strict && strcmp(r->method, "GET"))
+        else if (strict && (r->method_number != M_GET || r->header_only))
             deferred_error = rrl_badmethod09;
     }
 
+    /* Now that the method, uri and protocol are all processed,
+     * we can safely resume any deferred error reporting
+     */
     if (deferred_error != rrl_none) {
         if (deferred_error == rrl_badmethod)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03445)
@@ -811,21 +843,8 @@ rrl_done:
                           "HTTP Request Line; Unrecognized protocol '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(r->protocol), r->protocol);
-        if (r->proto_num == HTTP_VERSION(0, 9)) {
-            /* Send all parsing and protocol error response with 1.x behavior
-             * and reserve 505 errors for actual HTTP protocols presented.
-             * As called out in RFC7230 3.5, any errors parsing the protocol
-             * from the request line are nearly always misencoded HTTP/1.x
-             * requests. Only a valid 0.9 request with no parsing errors
-             * at all should be treated as a simple request, when allowed.
-             */
-            r->assbackwards = 0;
-            r->connection->keepalive = AP_CONN_CLOSE;
-            r->proto_num = HTTP_VERSION(1, 0);
-            r->protocol  = "HTTP/1.0";
-        }
         r->status = HTTP_BAD_REQUEST;
-        return 0;
+        goto rrl_failed;
     }
 
     if (conf->http_methods == AP_HTTP_METHODS_REGISTERED
@@ -835,13 +854,14 @@ rrl_done:
                       "(disallowed by RegisteredMethods)",
                       field_name_len(r->method), r->method);
         r->status = HTTP_NOT_IMPLEMENTED;
+        /* This can't happen in an HTTP/0.9 request, we verified GET above */
         return 0;
     }
 
     if (r->status != HTTP_OK) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03450)
                       "HTTP Request Line; URI parsing failed");
-        return 0;
+        goto rrl_failed;
     }
 
     if (strict) {
@@ -851,25 +871,41 @@ rrl_done:
                           "HTTP Request Line; URI must not contain control"
                           " characters");
             r->status = HTTP_BAD_REQUEST;
-            return 0;
+            goto rrl_failed;
         }
         if (r->parsed_uri.fragment) {
             /* RFC3986 3.5: no fragment */
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02421)
                           "HTTP Request Line; URI must not contain a fragment");
             r->status = HTTP_BAD_REQUEST;
-            return 0;
+            goto rrl_failed;
         }
         if (r->parsed_uri.user || r->parsed_uri.password) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02422)
                           "HTTP Request Line; URI must not contain a "
                           "username/password");
             r->status = HTTP_BAD_REQUEST;
-            return 0;
+            goto rrl_failed;
         }
     }
 
     return 1;
+
+rrl_failed:
+    if (r->proto_num == HTTP_VERSION(0, 9)) {
+        /* Send all parsing and protocol error response with 1.x behavior,
+         * and reserve 505 errors for actual HTTP protocols presented.
+         * As called out in RFC7230 3.5, any errors parsing the protocol
+         * from the request line are nearly always misencoded HTTP/1.x
+         * requests. Only a valid 0.9 request with no parsing errors
+         * at all may be treated as a simple request, if allowed.
+         */
+        r->assbackwards = 0;
+        r->connection->keepalive = AP_CONN_CLOSE;
+        r->proto_num = HTTP_VERSION(1, 0);
+        r->protocol  = "HTTP/1.0";
+    }
+    return 0;
 }
 
 static int table_do_fn_check_lengths(void *r_, const char *key,
@@ -900,7 +936,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     char *tmp_field;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    int strictspaces = (conf->http_whitespace == AP_HTTP_WHITESPACE_STRICT);
+    int strictspaces = (conf->http_whitespace != AP_HTTP_WHITESPACE_UNSAFE);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -937,6 +973,23 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                               (field) ? field : "");
             }
             return;
+        }
+
+        if (strictspaces && strpbrk(field, "\n\v\f\r")) {
+            r->status = HTTP_BAD_REQUEST;
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03451)
+                          "Request header line presented bad whitespace "
+                          "(disallowed by StrictWhitespace)");
+            return;
+        }
+        else {
+            /* Ensure no unusual whitespace is present in the resulting
+             * header field input line, even in unsafe mode, by replacing
+             * bad whitespace with SP before collapsing whitespace
+             */
+            char *ll = field;
+            while ((ll = strpbrk(ll, "\n\v\f\r")))
+                *(ll++) = ' ';
         }
 
         /* For all header values, and all obs-fold lines, the presence of
@@ -1011,9 +1064,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             }
             memcpy(last_field + last_len, field, len +1); /* +1 for nul */
             /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
-            if (strict || strictspaces) {
-                last_field[last_len] = ' ';
-            }
+            last_field[last_len] = ' ';
             last_len += len;
 
             /* We've appended this obs-fold line to last_len, proceed to
@@ -1043,19 +1094,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             if (!strict)
             {
                 /* Not Strict ('Unsafe' mode), using the legacy parser */
-
-                if (strictspaces && strpbrk(last_field, "\n\v\f\r")) {
-                    r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03451)
-                                  "Request header presented bad whitespace "
-                                  "(disallowed by StrictWhitespace)");
-                    return;
-                }
-                else {
-                    char *ll = last_field;
-                    while ((ll = strpbrk(ll, "\n\v\f\r")))
-                        *(ll++) = ' ';
-                }
 
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
                     r->status = HTTP_BAD_REQUEST;   /* abort bad request */
