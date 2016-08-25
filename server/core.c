@@ -4040,19 +4040,19 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
         conf->http_stricturi |= AP_HTTP_URI_UNSAFE;
     else if (strcasecmp(arg, "strictwhitespace") == 0)
         conf->http_whitespace |= AP_HTTP_WHITESPACE_STRICT;
-    else if (strcasecmp(arg, "lenientwhitespace") == 0)
-        conf->http_whitespace |= AP_HTTP_WHITESPACE_LENIENT;
+    else if (strcasecmp(arg, "unsafewhitespace") == 0)
+        conf->http_whitespace |= AP_HTTP_WHITESPACE_UNSAFE;
     else if (strcasecmp(arg, "registeredmethods") == 0)
         conf->http_methods |= AP_HTTP_METHODS_REGISTERED;
     else if (strcasecmp(arg, "lenientmethods") == 0)
         conf->http_methods |= AP_HTTP_METHODS_LENIENT;
     else
-        return "HttpProtocolOptions accepts " 
+        return "HttpProtocolOptions accepts "
                "'Unsafe' or 'Strict' (default), "
                "'UnsafeURI' or 'StrictURI' (default), "
-               "'Require1.0' or 'Allow0.9' (default), "
-               "'StrictWhitespace' or 'LenientWhitespace (default), and "
-               "'RegisteredMethods' or 'LenientMethods (default)";
+               "'UnsafeWhitespace' or 'StrictWhitespace' (default), "
+               "'RegisteredMethods' or 'LenientMethods' (default), and "
+               "'Require1.0' or 'Allow0.9' (default)";
 
     if ((conf->http09_enable & AP_HTTP09_ENABLE)
             && (conf->http09_enable & AP_HTTP09_DISABLE))
@@ -4070,8 +4070,8 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
                " are mutually exclusive";
 
     if ((conf->http_whitespace & AP_HTTP_WHITESPACE_STRICT)
-            && (conf->http_whitespace & AP_HTTP_WHITESPACE_LENIENT))
-        return "HttpProtocolOptions 'StrictWhitespace' and 'LenientWhitespace'"
+            && (conf->http_whitespace & AP_HTTP_WHITESPACE_UNSAFE))
+        return "HttpProtocolOptions 'StrictWhitespace' and 'UnsafeWhitespace'"
                " are mutually exclusive";
 
     if ((conf->http_methods & AP_HTTP_METHODS_REGISTERED)

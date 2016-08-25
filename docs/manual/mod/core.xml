@@ -1253,9 +1253,9 @@ EnableSendfile On
 <name>HttpProtocolOptions</name>
 <description>Modify restrictions on HTTP Request Messages</description>
 <syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
+ [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</syntax>
-<default>HttpProtocolOptions Strict StrictURL LenientWhitespace 
+<default>HttpProtocolOptions Strict StrictURL StrictWhitespace 
 LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -1286,38 +1286,38 @@ LenientMethods Allow0.9</default>
     the default <code>Strict</code> operating mode.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2"
-         >RFC 7230 &sect;2.2 and 2.3</a> define "Reserved Characters" and
+         >RFC 3986 &sect;2.2 and 2.3</a> define "Reserved Characters" and
     "Unreserved Characters". All other character octets are required to
     be %XX encoded under this spec, and RFC7230 defers to these requirements.
     By default the <code>StrictURI</code> option will reject all requests 
     containing invalid characters. This rule can be relaxed with the
     <code>UnsafeURI</code> option to support badly written user-agents.</p>
     
-    <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
-    and <code>UnsafeURI</code> modes of operation, most especially on 
-    outward-facing, publicly accessible server deployments. If an interface
-    is required of faulty monitoring or other custom software running only
-    on an intranet, users should consider toggling these only for a specific
-    virtual host configured on their private subnet.</p>
+    <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5"
+         >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" permits, and
+    identifies potential risks of parsing messages containing non-space
+    character whitespace. While the spec defines that exactly one space
+    seperates the URI from the method, and the protocol from the URI, and
+    only space and horizontal tab characters are allowed in request header
+    field contents, the Apache HTTP Server was traditionally lenient in
+    accepting other whitespace. The default <code>StrictWhitespace</code>
+    option will now reject non-conforming requests. The administrator may
+    toggle the <code>UnsafeWhitespace</code> option to continue to honor
+    non-conforming requests, with considerable risk of proxy interactions.</p>
+
+    <p>Users are strongly cautioned against toggling the <code>Unsafe</code>,
+    <code>UnsafeURI</code> or <code>UnsafeWhitespace</code> modes of operation
+    particularly on outward-facing, publicly accessible server deployments.
+    If an interface is required for faulty monitoring or other custom service
+    consumers running on an intranet, users should toggle only those Unsafe
+    options which are necessary, and only on a specific virtual host configured
+    to service only their internal private network.</p>
 
     <p>Reviewing the messages logged to the <directive>ErrorLog</directive>,
     configured with <directive>LogLevel</directive> <code>info</code> level,
     can help identify such faulty requests along with their origin.
     Users should pay particular attention to any 400 responses in the access
     log for indiciations that valid requests are unexpectedly rejected.</p>
-
-    <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5"
-         >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" permits, and
-    identifies potential risks of parsing messages containing non-space
-    character whitespace. While the spec defines that exactly one space
-    seperates the URI from the method, and the protocol from the URI, the
-    Apache HTTP Server has traditionally been lenient in accepting other
-    whitespace including one or more horizontal-tab or space characters.
-    The default <code>LenientWhitespace</code> continues to accept such
-    requests from non-conforming user-agents, but the administrator may toggle
-    the <code>StrictWhitespace</code> option to insist on precisely two spaces
-    in the request line. Other whitespace including vertical-tab, form-feed,
-    and carriage-return characters are rejected and cannot be supported.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1"
          >RFC 7231 &sect;4.1</a> "Request Methods" "Overview" requires that
