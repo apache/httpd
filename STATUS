@@ -191,14 +191,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1750960
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
                   (needed to adapt CHANGES entry since r1750854)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
      trunk patch: http://svn.apache.org/r1752331
                   http://svn.apache.org/r1752332
                   http://svn.apache.org/r1752333
-     +1: jchampion
+     +1: jchampion, jim (by inspection)
 
   *) autoconf: minor cleanup and removal of some dead code.
      trunk patch: http://svn.apache.org/r1753315
@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1756553
                   http://svn.apache.org/r1756631
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
      available before the request is sent.  PR 57832.
@@ -244,7 +244,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1754391
                   http://svn.apache.org/r1754399
      2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rpluem
+     +1: ylavic, rpluem, jim
 
   *) mod_proxy_hcheck: Add missing copy of hcuri and hcexpr ftom the worker to
      the health check worker.
@@ -253,7 +253,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
       Trunk version of patch works
       CHANGES in http://svn.apache.org/r1757663
-     +1: rpluem,
+     +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
