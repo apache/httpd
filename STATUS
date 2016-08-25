@@ -154,6 +154,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, sf, rpluem
 
+  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
+     connections (unless -I is specified), according to the Host header (if
+     any) or the requested URL's hostname otherwise.
+     trunk patch: http://svn.apache.org/r1750854
+                  http://svn.apache.org/r1750855
+                  http://svn.apache.org/r1750947
+                  http://svn.apache.org/r1750955
+                  http://svn.apache.org/r1750960
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
+                  (needed to adapt CHANGES entry since r1750854)
+     +1: ylavic, covener, jim
+
+  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
+     triggering mod_proxy_connect's AH01018 once the tunnel is established.
+     trunk patch: http://svn.apache.org/r1754391
+                  http://svn.apache.org/r1754399
+     2.4.x patch: trunk works (module CHANGES)
+     +1: ylavic, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -180,18 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Tested the code with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday).
      +1: elukey, jchampion
-
-  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
-     connections (unless -I is specified), according to the Host header (if
-     any) or the requested URL's hostname otherwise.
-     trunk patch: http://svn.apache.org/r1750854
-                  http://svn.apache.org/r1750855
-                  http://svn.apache.org/r1750947
-                  http://svn.apache.org/r1750955
-                  http://svn.apache.org/r1750960
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
-                  (needed to adapt CHANGES entry since r1750854)
-     +1: ylavic, covener, jim
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
@@ -238,13 +245,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES/MMN), or:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1750392.patch
      +1: ylavic
-
-  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
-     triggering mod_proxy_connect's AH01018 once the tunnel is established.
-     trunk patch: http://svn.apache.org/r1754391
-                  http://svn.apache.org/r1754399
-     2.4.x patch: trunk works (module CHANGES)
-     +1: ylavic, rpluem, jim
 
   *) mod_proxy_hcheck: Add missing copy of hcuri and hcexpr ftom the worker to
      the health check worker.
