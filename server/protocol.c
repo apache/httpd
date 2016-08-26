@@ -828,7 +828,7 @@ rrl_done:
         else if (deferred_error == rrl_baduri)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
                           "HTTP Request Line; URI incorrectly encoded: '%.*s'",
-                          field_name_len(r->method), r->method);
+                          field_name_len(r->uri), r->uri);
         else if (deferred_error == rrl_badwhitespace)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
                           "HTTP Request Line; Invalid whitespace");
@@ -865,8 +865,9 @@ rrl_done:
     }
 
     if (r->status != HTTP_OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03450)
-                      "HTTP Request Line; URI parsing failed");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
+                      "HTTP Request Line; Unable to parse URI: '%.*s'",
+                      field_name_len(r->uri), r->uri);
         goto rrl_failed;
     }
 
@@ -1376,25 +1377,6 @@ request_rec *ap_read_request(conn_rec *conn)
              * MUST remove the received Content-Length field".
              */
             apr_table_unset(r->headers_in, "Content-Length");
-        }
-    }
-    else {
-        if (r->header_only) {
-            /*
-             * Client asked for headers only with HTTP/0.9, which doesn't send
-             * headers! Have to dink things just to make sure the error message
-             * comes through...
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00568)
-                          "client sent invalid HTTP/0.9 request: HEAD %s",
-                          r->uri);
-            r->header_only = 0;
-            r->status = HTTP_BAD_REQUEST;
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            goto traceout;
         }
     }
 
