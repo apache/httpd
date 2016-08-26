@@ -814,38 +814,38 @@ rrl_done:
      */
     if (deferred_error != rrl_none) {
         if (deferred_error == rrl_badmethod)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03445)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03445)
                           "HTTP Request Line; Invalid method token: '%.*s'",
                           field_name_len(r->method), r->method);
         else if (deferred_error == rrl_badmethod09)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03444)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03444)
                           "HTTP Request Line; Invalid method token: '%.*s'"
                           " (only GET is allowed for HTTP/0.9 requests)",
                           field_name_len(r->method), r->method);
         else if (deferred_error == rrl_missinguri)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03446)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03446)
                           "HTTP Request Line; Missing URI");
         else if (deferred_error == rrl_baduri)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03454)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03454)
                           "HTTP Request Line; URI incorrectly encoded: '%.*s'",
                           field_name_len(r->method), r->method);
         else if (deferred_error == rrl_badwhitespace)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03447)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03447)
                           "HTTP Request Line; Invalid whitespace");
         else if (deferred_error == rrl_excesswhitespace)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03448)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03448)
                           "HTTP Request Line; Inappropriate whitespace "
                           "(disallowed by StrictWhitespace");
         else if (deferred_error == rrl_trailingtext)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03449)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03449)
                           "HTTP Request Line; Extraneous text found '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(ll), ll);
         else if (deferred_error == rrl_reject09)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02401)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02401)
                           "HTTP Request Line; Rejected HTTP/0.9 request");
         else if (deferred_error == rrl_badprotocol)
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02418)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
                           "HTTP Request Line; Unrecognized protocol '%.*s' "
                           "(perhaps whitespace was injected?)",
                           field_name_len(r->protocol), r->protocol);
@@ -855,7 +855,7 @@ rrl_done:
 
     if (conf->http_methods == AP_HTTP_METHODS_REGISTERED
             && r->method_number == M_INVALID) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02423)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02423)
                       "HTTP Request Line; Unrecognized HTTP method: '%.*s' "
                       "(disallowed by RegisteredMethods)",
                       field_name_len(r->method), r->method);
@@ -865,7 +865,7 @@ rrl_done:
     }
 
     if (r->status != HTTP_OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03450)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03450)
                       "HTTP Request Line; URI parsing failed");
         goto rrl_failed;
     }
@@ -873,7 +873,7 @@ rrl_done:
     if (strict) {
         /* No sense re-testing here for what was evaulated above */
         if (!stricturi && ap_has_cntrl(r->the_request)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02420)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02420)
                           "HTTP Request Line; URI must not contain control"
                           " characters");
             r->status = HTTP_BAD_REQUEST;
@@ -881,13 +881,13 @@ rrl_done:
         }
         if (r->parsed_uri.fragment) {
             /* RFC3986 3.5: no fragment */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02421)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02421)
                           "HTTP Request Line; URI must not contain a fragment");
             r->status = HTTP_BAD_REQUEST;
             goto rrl_failed;
         }
         if (r->parsed_uri.user || r->parsed_uri.password) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02422)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02422)
                           "HTTP Request Line; URI must not contain a "
                           "username/password");
             r->status = HTTP_BAD_REQUEST;
@@ -983,7 +983,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
         if (strictspaces && strpbrk(field, "\n\v\f\r")) {
             r->status = HTTP_BAD_REQUEST;
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03451)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03451)
                           "Request header line presented bad whitespace "
                           "(disallowed by StrictWhitespace)");
             return;
@@ -1016,7 +1016,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
             if (last_field == NULL) {
                 r->status = HTTP_BAD_REQUEST;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03442)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03442)
                               "Line folding encountered before first"
                               " header line");
                 return;
@@ -1024,7 +1024,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
             if (field[1] == '\0') {
                 r->status = HTTP_BAD_REQUEST;
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03443)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03443)
                               "Empty folded line encountered");
                 return;
             }
@@ -1103,7 +1103,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
                     r->status = HTTP_BAD_REQUEST;   /* abort bad request */
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00564)
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00564)
                                   "Request header field is missing ':' "
                                   "separator: %.*s", (int)LOG_NAME_MAX_LEN,
                                   last_field);
@@ -1117,7 +1117,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 if (strictspaces && strpbrk(last_field, " \t")) {
                     r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03452)
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03452)
                                   "Request header field name with whitespace "
                                   "(disallowed by StrictWhitespace)");
                     return;
@@ -1135,7 +1135,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 if (tmp_field == last_field) {
                     r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03453)
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03453)
                                   "Request header field name was empty");
                     return;
                 }
@@ -1146,7 +1146,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 value = (char *)ap_scan_http_token(last_field);
                 if ((value == last_field) || *value != ':') {
                     r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02426)
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02426)
                                   "Request header field name is malformed: "
                                   "%.*s", (int)LOG_NAME_MAX_LEN, last_field);
                     return;
@@ -1168,7 +1168,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                  */
                 if (*tmp_field != '\0') {
                     r->status = HTTP_BAD_REQUEST;
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02427)
                                   "Request header value is malformed: "
                                   "%.*s", (int)LOG_NAME_MAX_LEN, value);
                     return;
@@ -1298,7 +1298,7 @@ request_rec *ap_read_request(conn_rec *conn)
                               r->server->limit_req_line);
             }
             else if (r->method == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00566)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00566)
                               "request failed: malformed request line");
             }
             access_status = r->status;
@@ -1338,7 +1338,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
         ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00567)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00567)
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -1357,7 +1357,7 @@ request_rec *ap_read_request(conn_rec *conn)
              */
             if (!(ap_cstr_casecmp(tenc, "chunked") == 0 /* fast path */
                     || ap_find_last_token(r->pool, tenc, "chunked"))) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02539)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02539)
                               "client sent unknown Transfer-Encoding "
                               "(%s): %s", tenc, r->uri);
                 r->status = HTTP_BAD_REQUEST;
@@ -1428,7 +1428,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
         access_status = HTTP_BAD_REQUEST;
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00569)
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00569)
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
