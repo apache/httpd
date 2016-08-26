@@ -163,7 +163,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a condition under which rewriting will take place
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></code></td></tr>
+      <em>TestString</em> <em>CondPattern</em> [<em>flags</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -686,14 +686,14 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 RewriteRule "^/images" "-" [F]</pre>
 
         </li>
+     </ol>
 
-        <li>You can also set special flags for
-      <em>CondPattern</em> by appending
+     <p>You can also set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteCond</code>
       directive, where <em>flags</em> is a comma-separated list of any of the
-      following flags:
-
+      following flags:</p>
+      
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
         (<strong>n</strong>o <strong>c</strong>ase)<br />
@@ -730,8 +730,6 @@ RewriteRule ...some special stuff for any of these hosts...</pre>
         is well understood.
         </li>
       </ul>
-      </li>
-     </ol>
 
       <p><strong>Example:</strong></p>
 

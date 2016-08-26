@@ -2086,10 +2086,10 @@ LenientMethods Allow0.9</code></td></tr>
     to service only their internal private network.</p>
 
     <p>Reviewing the messages logged to the <code class="directive">ErrorLog</code>,
-    configured with <code class="directive">LogLevel</code> <code>info</code> level,
+    configured with <code class="directive">LogLevel</code> <code>debug</code> level,
     can help identify such faulty requests along with their origin.
-    Users should pay particular attention to any 400 responses in the access
-    log for indiciations that valid requests are unexpectedly rejected.</p>
+    Users should pay particular attention to the 400 responses in the access
+    log for invalid requests which were unexpectedly rejected.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231 §4.1</a> "Request Methods" "Overview" requires that
     origin servers shall respond with an error when an unsupported method
