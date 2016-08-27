@@ -92,7 +92,7 @@ static apr_status_t input_handle_eos(h2_task *task, request_rec *r,
     apr_table_t *t = task->request? task->request->trailers : NULL;
 
     if (task->input.chunked) {
-        task->input.tmp = apr_brigade_split_ex(bb, b, task->input.tmp);
+        apr_bucket_brigade *tmp = apr_brigade_split_ex(bb, b, NULL);
         if (t && !apr_is_empty_table(t)) {
             status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
             apr_table_do(input_ser_header, task, t, NULL);
@@ -101,7 +101,8 @@ static apr_status_t input_handle_eos(h2_task *task, request_rec *r,
         else {
             status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
         }
-        APR_BRIGADE_CONCAT(bb, task->input.tmp);
+        APR_BRIGADE_CONCAT(bb, tmp);
+        apr_brigade_destroy(tmp);
     }
     else if (r && t && !apr_is_empty_table(t)){
         /* trailers passed in directly. */

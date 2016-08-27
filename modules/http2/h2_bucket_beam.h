@@ -273,6 +273,13 @@ int h2_beam_closed(h2_bucket_beam *beam);
 int h2_beam_empty(h2_bucket_beam *beam);
 
 /**
+ * Determine if beam has handed out proxy buckets that are not destroyed. 
+ * 
+ * Call from red or green side.
+ */
+int h2_beam_holds_proxies(h2_bucket_beam *beam);
+
+/**
  * Abort the beam. Will cleanup any buffered buckets and answer all send
  * and receives with APR_ECONNABORTED.
  * 

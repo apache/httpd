@@ -56,7 +56,6 @@ struct h2_stream {
     struct h2_response *last_sent;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
-    apr_bucket_brigade *tmp;
     apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
