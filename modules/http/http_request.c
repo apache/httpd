@@ -255,6 +255,10 @@ static void check_pipeline_flush(request_rec *r)
         }
     }
 
+    /* The flush below became unconditional way back in r105919. Later
+     * branches have very different handling in this area anyway (EOR bucket).
+     */
+
         e = apr_bucket_flush_create(c->bucket_alloc);
 
         /* We just send directly to the connection based filters.  At
