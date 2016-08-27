@@ -429,6 +429,7 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
 {
     conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
+    apr_bucket_brigade *tmp;
     
     AP_DEBUG_ASSERT(stream);
     if (!stream->input) {
@@ -461,18 +462,15 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
         }
     }
     
-    if (!stream->tmp) {
-        stream->tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
-    }
-    apr_brigade_write(stream->tmp, NULL, NULL, data, len);
+    tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
+    apr_brigade_write(tmp, NULL, NULL, data, len);
     if (eos) {
-        APR_BRIGADE_INSERT_TAIL(stream->tmp, 
-                                apr_bucket_eos_create(c->bucket_alloc)); 
+        APR_BRIGADE_INSERT_TAIL(tmp, apr_bucket_eos_create(c->bucket_alloc)); 
         close_input(stream);
     }
+    status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
+    apr_brigade_destroy(tmp);
     
-    status = h2_beam_send(stream->input, stream->tmp, APR_BLOCK_READ);
-    apr_brigade_cleanup(stream->tmp);
     stream->in_data_frames++;
     stream->in_data_octets += len;
     

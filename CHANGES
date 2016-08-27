@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixed handling of stream buffers during shutdown.
+     [Stefan Eissing]
+     
   *) mod_proxy_hcheck: Set health check URI and expression correctly for health
      check worker. PR 60038 [zdeno <zdeno@scnet.sk>]
 

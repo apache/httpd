@@ -604,6 +604,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c,
                       "h2_stream(%ld-%d): send_data_cb, reading stream",
                       session->id, (int)stream_id);
+        apr_brigade_cleanup(session->bbtmp);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     else if (len != length) {
@@ -611,6 +612,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
                       "h2_stream(%ld-%d): send_data_cb, wanted %ld bytes, "
                       "got %ld from stream",
                       session->id, (int)stream_id, (long)length, (long)len);
+        apr_brigade_cleanup(session->bbtmp);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
@@ -621,8 +623,8 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     }
     
     status = h2_conn_io_pass(&session->io, session->bbtmp);
-        
     apr_brigade_cleanup(session->bbtmp);
+    
     if (status == APR_SUCCESS) {
         stream->out_data_frames++;
         stream->out_data_octets += length;
@@ -775,6 +777,7 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
     dispatch_event(session, H2_SESSION_EV_LOCAL_GOAWAY, error, msg);
     
     if (force_close) {
+        apr_brigade_cleanup(session->bbtmp);
         h2_mplx_abort(session->mplx);
     }
     
@@ -1987,6 +1990,7 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
     }
     
     if (session->state == H2_SESSION_ST_DONE) {
+        apr_brigade_cleanup(session->bbtmp);
         h2_mplx_abort(session->mplx);
     }
 }
