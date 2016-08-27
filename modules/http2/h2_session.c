@@ -657,6 +657,27 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
     return 0;
 }
 
+#ifdef H2_NG2_INVALID_HEADER_CB
+static int on_invalid_header_cb(nghttp2_session *ngh2, 
+                                const nghttp2_frame *frame, 
+                                const uint8_t *name, size_t namelen, 
+                                const uint8_t *value, size_t valuelen, 
+                                uint8_t flags, void *user_data)
+{
+    h2_session *session = user_data;
+    if (APLOGcdebug(session->c)) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03456)
+                      "h2_session(%ld-%d): denying stream with invalid header "
+                      "'%s: %s'", session->id, (int)frame->hd.stream_id,
+                      apr_pstrndup(session->pool, (const char *)name, namelen),
+                      apr_pstrndup(session->pool, (const char *)value, valuelen));
+    }
+    return nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                     frame->hd.stream_id, 
+                                     NGHTTP2_PROTOCOL_ERROR);
+}
+#endif
+
 #define NGH2_SET_CALLBACK(callbacks, name, fn)\
 nghttp2_session_callbacks_set_##name##_callback(callbacks, fn)
 
@@ -679,7 +700,9 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     NGH2_SET_CALLBACK(*pcb, on_header, on_header_cb);
     NGH2_SET_CALLBACK(*pcb, send_data, on_send_data_cb);
     NGH2_SET_CALLBACK(*pcb, on_frame_send, on_frame_send_cb);
-
+#ifdef H2_NG2_INVALID_HEADER_CB
+    NGH2_SET_CALLBACK(*pcb, on_invalid_header, on_invalid_header_cb);
+#endif
     return APR_SUCCESS;
 }
 
@@ -728,7 +751,7 @@ static apr_status_t h2_session_shutdown_notice(h2_session *session)
     if (status == APR_SUCCESS) {
         status = h2_conn_io_flush(&session->io);
     }
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03457)
                   "session(%ld): sent shutdown notice", session->id);
     return status;
 }
