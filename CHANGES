@@ -2,6 +2,14 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: if configured with nghttp2 1.14.0 and onward, invalid request
+     headers will immediately reset the stream with a PROTOCOL error. Feature
+     logged by module on startup as 'INVHD' in info message.
+     [Stefan Eissing]
+     
+  *) mod_http2: fixed handling of stream buffers during shutdown.
+     [Stefan Eissing]
+     
   *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
      triggering mod_proxy_connect's AH01018 once the tunnel is established.
      [Yann Ylavic]

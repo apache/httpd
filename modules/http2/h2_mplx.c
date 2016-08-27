@@ -197,15 +197,19 @@ static int purge_stream(void *ctx, void *val)
     h2_mplx *m = ctx;
     h2_stream *stream = val;
     int stream_id = stream->id;
-    h2_task *task = h2_ihash_get(m->tasks, stream_id);
+    h2_task *task;
+
+    /* stream_cleanup clears all buffers and destroys any buckets
+     * that might hold references into task space. Needs to be done
+     * before task destruction, otherwise it will complain. */
+    h2_stream_cleanup(stream);
     
-    h2_ihash_remove(m->spurge, stream_id);
-    h2_stream_destroy(stream);
+    task = h2_ihash_get(m->tasks, stream_id);    
     if (task) {
         task_destroy(m, task, 1);
     }
-    /* FIXME: task_destroy() might in some twisted way place the
-     * stream in the spurge hash again. Remove it last. */
+    
+    h2_stream_destroy(stream);
     h2_ihash_remove(m->spurge, stream_id);
     return 0;
 }
@@ -373,7 +377,10 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
         if (status != APR_SUCCESS){
             ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, 
                           APLOGNO(03385) "h2_task(%s): output shutdown "
-                          "incomplete", task->id);
+                          "incomplete, beam empty=%d, holds proxies=%d", 
+                          task->id,
+                          h2_beam_empty(task->output.beam),
+                          h2_beam_holds_proxies(task->output.beam));
         }
     }
     
