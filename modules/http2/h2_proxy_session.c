@@ -94,7 +94,7 @@ static int proxy_pass_brigade(apr_bucket_alloc_t *bucket_alloc,
      * issues in case of error returned below. */
     apr_brigade_cleanup(bb);
     if (status != APR_SUCCESS) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, status, origin, APLOGNO(03357)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, origin, APLOGNO(03357)
                       "pass output failed to %pI (%s)",
                       p_conn->addr, p_conn->hostname);
     }
