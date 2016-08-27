@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_cgid: Resolve a case where a short CGI response causes a subsequent
+     CGI to be killed prematurely, resulting in a truncated subsequent
+     response. [Eric Covener]
+
   *) mod_proxy_hcheck: Set health check URI and expression correctly for health
      check worker. PR 60038 [zdeno <zdeno@scnet.sk>]
 
