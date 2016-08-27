@@ -129,9 +129,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: there may be missing bits, see thread for commit r1736510.
 
   *) core: Drop an invalid Last-Modified header value coming
-     from a FCGI/CGI script instead of replacing it with Unix epoch.
-     Warn the users about Last-Modified header value replacements and
-     improved handling of non-GMT datestr.
+     from a (F)CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements
+     and violations of the RFC.
      trunk patch: http://svn.apache.org/r1748379
                   http://svn.apache.org/r1750747
                   http://svn.apache.org/r1750749
@@ -139,11 +139,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1751138
                   http://svn.apache.org/r1751139
                   http://svn.apache.org/r1751147
-     2.4.x: trunk patches works (final view http://apaste.info/9v3)
-     The last revision has been discussed in dev@ and submitted by Yann.
+                  http://svn.apache.org/r1757818
+     2.4.x: trunk patches works (final view http://apaste.info/FCs)
+     The last revision has been discussed extensively in dev@ and this seems to be
+     a good compromise for the moment.
      Tested the code with a simple PHP script returning different Last-Modified
-     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday).
-     +1: elukey, jchampion
+     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
+     +1: elukey
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
