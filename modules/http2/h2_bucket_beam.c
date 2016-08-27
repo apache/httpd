@@ -550,6 +550,11 @@ apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block,
         if (clear_buffers) {
             r_purge_reds(beam);
             h2_blist_cleanup(&beam->red);
+            if (!bl.mutex && beam->green) {
+                /* not protected, may process green in red call */
+                apr_brigade_destroy(beam->green);
+                beam->green = NULL;
+            }
         }
         beam_close(beam);
         
@@ -982,6 +987,18 @@ int h2_beam_empty(h2_bucket_beam *beam)
         leave_yellow(beam, &bl);
     }
     return empty;
+}
+
+int h2_beam_holds_proxies(h2_bucket_beam *beam)
+{
+    int has_proxies = 1;
+    h2_beam_lock bl;
+    
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        has_proxies = !H2_BPROXY_LIST_EMPTY(&beam->proxies);
+        leave_yellow(beam, &bl);
+    }
+    return has_proxies;
 }
 
 int h2_beam_closed(h2_bucket_beam *beam)

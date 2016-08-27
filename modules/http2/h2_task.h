@@ -61,7 +61,6 @@ struct h2_task {
     struct {
         struct h2_bucket_beam *beam;
         apr_bucket_brigade *bb;
-        apr_bucket_brigade *tmp;
         apr_read_type_e block;
         unsigned int chunked : 1;
         unsigned int eos : 1;

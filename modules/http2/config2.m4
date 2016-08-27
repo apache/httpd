@@ -154,6 +154,9 @@ dnl # nghttp2 >= 1.3.0: access to stream weights
 dnl # nghttp2 >= 1.5.0: changing stream priorities
       AC_CHECK_FUNCS([nghttp2_session_change_stream_priority], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_CHANGE_PRIO"])], [])
+dnl # nghttp2 >= 1.14.0: invalid header callback
+      AC_CHECK_FUNCS([nghttp2_session_callbacks_set_on_invalid_header_callback], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_INVALID_HEADER_CB"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi
