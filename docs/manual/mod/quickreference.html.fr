@@ -1063,7 +1063,7 @@ pas.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive l'exécution du
