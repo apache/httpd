@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1756959:1757920 (outdated) -->
+<!-- English Revision: 1757920 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1358,9 +1358,9 @@ host</context>
 <name>HttpProtocolOptions</name>
 <description>Modifie les contraintes sur les messages des requêtes HTTP</description>
 <syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]
+ [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</syntax>
-<default>HttpProtocolOptions Strict StrictURL LenientWhitespace 
+ <default>HttpProtocolOptions Strict StrictURL StrictWhitespace
 LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -1395,7 +1395,7 @@ Apache</compatibility>
     règles de grammaire de la spécification doivent être respectées dans le mode
     d'opérations par défaut <code>Strict</code>.</p>
 
-    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 7230
+    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 3986
     &sect;2.2 and 2.3</a> définit les "Caractères réservés" ainsi que les
     "Caractères non réservés". Tous les autres caractères doivent être encodés
     sous la forme %XX selon la spécification, et la RFC7230 se conforme à ces
@@ -1404,13 +1404,31 @@ Apache</compatibility>
     contournée en utilisant l'option <code>UnsafeURI</code> qui permet de
     supporter les agents utilisateur mal conçus.</p>
     
+    
+
+    <p>La section de la <a
+    href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+    &sect;3.5</a> "Message Parsing Robustness" décrit les risques potentiels
+    induits par l'interprétation de messages contenant des blancs représentés
+    par un caractère autre que l'espace. Alors que les spécifications indiquent
+    qu'un et un seul espace sépare l'URI de la méthode et le protocole de l'URI,
+    et que seuls les espaces et les tabulations horizontales sont autorisés
+    dans le contenu des en-têtes de requêtes,
+    le serveur HTTP Apache a toujours toléré des blancs constitués d'un ou
+    plusieurs espaces ou tabulations horizontales. L'option par défaut
+    <code>StrictWhitespace</code> permet maintenant de rejeter toute requête non
+    conforme. L'administrateur peut cependant utiliser l'option
+    <code>UnsafeWhitespace</code> pour continuer à accepter les requêtes non
+    conformes, avec un risque important d'interactions avec le mandataire.</p>
+
     <p>Il est fortement déconseillé aux utilisateurs d'utiliser les modes
-    d'opérations <code>Unsafe</code> et <code>UnsafeURI</code>, en particulier
-    pour les déploiements de serveurs ouverts sur l'extérieur et/ou accessibles
-    au public. Si un moniteur défectueux ou autre logiciel spécialisé ne
-    s'exécutant que sur un intranet nécessite une interface, les utilisateurs
-    ne doivent les utilisés qu'au sein d'un serveur virtuel bien spécifique et
-    sur un réseau privé.</p>
+    d'opérations <code>Unsafe</code> et <code>UnsafeURI</code>, ou
+    <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
+    serveurs ouverts sur l'extérieur et/ou accessibles au public. Si un moniteur
+    défectueux ou autre logiciel spécialisé ne s'exécutant que sur un intranet
+    nécessite une interface, les utilisateurs ne doivent utiliser les options de
+    type UnSafe qu'en cas de nécessité et uniquement au sein d'un serveur
+    virtuel bien spécifique et sur un réseau privé.</p>
 
     <p>La consultation des messages enregistrés dans le journal
     <directive>ErrorLog</directive>, configuré via la directive
@@ -1419,21 +1437,6 @@ Apache</compatibility>
     provenance. Les utilisateurs devront accorder une attention particulière aux
     messages d'erreur de type 400 dans le journal access pour détecter les
     requêtes apparemment valides mais rejetées.</p>
-
-    <p>La section de la <a
-    href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
-    &sect;3.5</a> "Message Parsing Robustness" décrit les risques potentiels
-    induits par l'interprétation de messages contenant des blancs représentés
-    par un caractère autre que l'espace. Alors que les spécifications indiquent
-    qu'un et un seul espace sépare l'URI de la méthode et le protocole de l'URI,
-    le serveur HTTP Apache a toujours toléré des blancs constitués d'un ou
-    plusieurs espaces ou tabulations horizontales. L'option par défaut
-    <code>LenientWhitespace</code> continue d'accepter de telles requêtes en
-    provenance d'agents utilisateurs non conformes, mais l'administrateur est
-    encouragé à utiliser plutôt l'option <code>StrictWhitespace</code> pour
-    imposer la présence d'exactement deux espaces dans la ligne de requête.
-    D'autres types de blancs comme les tabulations verticales, form feed
-    ou retour chariot seront alors rejetés et ne seront plus supportés.</p>
 
     <p>La section de la <a
     href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
@@ -1455,7 +1458,7 @@ Apache</compatibility>
     serveurs HTTP à supporter les anciennes requêtes HTTP/0.9. La RFC 7230 va
     cependant à son encontre via sa préconisation "Le souhait de supporter les
     requêtes HTTP/0.9 a été supprimé" et y adjoint des commentaires dans <a
-    href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 2616 Appendix
+    href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix
     A</a>. A ce titre, l'option <code>Require1.0</code> permet à l'utilisateur
     d'inhiber le comportement induit par l'option par défaut
     <code>Allow0.9</code>.</p>
