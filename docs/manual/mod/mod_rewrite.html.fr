@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -183,7 +181,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 la réécriture soit effectuée
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></code></td></tr>
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -728,13 +726,14 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
            RewriteRule "^/images" "-" [F]</pre>
 
         </li>
+    </ol>
 
-	<li>Vous pouvez aussi définir certains drapeaux pour
+	<p>Vous pouvez aussi définir certains drapeaux pour
 	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
 	<code>RewriteCond</code>, où <em>drapeaux</em> est un
-	sous-ensemble séparé par des virgules des drapeaux suivants :
+	sous-ensemble séparé par des virgules des drapeaux suivants :</p>
 
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
@@ -775,8 +774,7 @@ RewriteRule ...règles concernant tous ces hôtes...</pre>
 	fonctionnement de l'en-tête Vary.
         </li>
       </ul>
-      </li>
-     </ol>
+      
 
       <p><strong>Exemple :</strong></p>
 
@@ -1116,44 +1114,44 @@ pour le moteur de réécriture</td></tr>
 
       <p><a id="patterns" name="patterns"><em>Modèle</em></a> est une
       <a id="regexp" name="regexp">expression rationnelle</a>
-      compatible perl. Dans la première règle de réécriture,
-      l'expression est comparée au (%-decoded)
-      <a href="directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requête, ou, dans un contexte de répertoire (voir
-      ci-dessous), au chemin de l'URL relativement à ce contexte de
-      répertoire. Les expressions suivantes sont comparées à la sortie de
-      la dernière règle de réécriture qui
-      correspondait.</p>
+      compatible perl. Ce avec quoi ce modèle est comparé dépend de l'endroit où
+      la directive <code class="directive">RewriteRule</code> est définie.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est comparé ?</a></h3>
 
-      <p>Dans un contexte de serveur virtuel <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>, le <em>modèle</em> est tout
+<ul>
+      <li><p>Dans un contexte de serveur virtuel <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>, le <em>modèle</em> est tout
       d'abord comparé à la portion de l'URL située entre le nom d'hôte
       éventuellement accompagné du port, et la chaîne de paramètres (par
-      exemple "/app1/index.html").</p>
+      exemple "/app1/index.html"). Il s'agit du <a href="directive-dict.html#Syntax">URL-path</a> décodé de sa valeur "%xx".</p></li>
 
-      <p>Dans les contextes de répertoire <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et htaccess, le
-      <em>modèle</em> est tout d'abord comparé au chemin du <em>système
-      de fichiers</em>, après suppression du préfixe ou chemin de base
-      ayant conduit le serveur vers la règle <code class="directive">RewriteRule</code> (par
-      exemple "app1/index.html" ou
-      "index.html" selon l'endroit où les directives sont définies).</p>
+      <li><p>Dans un contexte de répertoire (sections <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et fichiers .htaccess), le
+      <em>Modèle</em> est comparé avec une partie de chemin ; par exemple une
+      requête pour "/app1/index.html" entraînera une comparaison avec
+      "app1/index.html" ou "index.html" selon l'endroit où la directive
+      <code class="directive">RewriteRule</code> est définie.</p>
 
-      <p>Si vous souhaitez faire une comparaison sur le nom
+      <p>Le chemin où la règle est défini est supprimé du chemin correspondant
+      du système de fichiers avant comparaison (jusqu'au slash final compris).
+      En conséquence de cette suppression, les règles définies dans
+      ce contexte n'effectuent des comparaisons qu'avec la portion du chemin
+      du système de fichiers "en dessous" de l'endroit où la règle est définie.</p>
+
+      <p>Le chemin correspondant actuel du système de fichiers est déterminé par
+      des directives telles que <code class="directive">DocumentRoot</code> et
+      <code class="directive">Alias</code>, ou même le résultat de substitutions dans
+      des règles <code class="directive">RewriteRule</code> précédentes.  
+      </p>
+      </li>
+
+      <li><p>Si vous souhaitez faire une comparaison sur le nom
       d'hôte, le port, ou la chaîne de requête, utilisez une
       directive <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
       comportant respectivement les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
-      <code>%{QUERY_STRING}</code>.</p>
-
-      <p>Dans tous les cas, il faut garder à l'esprit que les expressions
-      rationnelles permettent de rechercher des correspondances de sous-chaînes.
-      En d'autres termes, l'expression rationnelle n'a pas besoin de correspondre à
-      l'ensemble de la chaîne, mais seulement à la partie que vous souhaitez
-      voir correspondre. Ainsi, l'utilisation de l'expression <code>.</code> est
-      souvent suffisante et préférable à <code>.*</code>, et l'expression
-      <code>abc</code> <strong>n'est pas</strong> identique à l'expression
-      <code>^abc$</code>.</p>
+      <code>%{QUERY_STRING}</code>.</p></li>
+</ul>
+      
 </div>
 
 <div class="note"><h3>Réécritures dans un contexte de répertoire</h3>
@@ -1171,13 +1169,7 @@ niveau du répertoire d'un utilisateur, vous ne pouvez pas utiliser le
 moteur de réécriture. Cette restriction a été instaurée à des fins de
 sécurité.</li>
 
-<li>Lorsqu'on utilise le moteur de réécriture dans un fichier
-<code>.htaccess</code>, le chemin de base du répertoire courant (autrement dit
-le chemin URI qui représente le répertoire contenant ce fichier
-<code>.htaccess</code>) est <em>supprimé</em> au cours de la
-comparaison avec le modèle de la règle de réécriture, et
-<em>ajouté</em> lorsqu'une substitution relative (ne débutant pas par un slash
-ou un nom de protocole) arrive à la fin d'un jeu de règles. Voir la directive
+<li>Voir la directive
 <code class="directive"><a href="#rewritebase">RewriteBase</a></code> pour plus de détails à
 propos de l'ajout du préfixe après les substitutions relatives.</li>
 
