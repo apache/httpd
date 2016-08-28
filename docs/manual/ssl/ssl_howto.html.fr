@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document doit vous permettre de démarrer et de faire fonctionner
@@ -37,8 +35,7 @@ de la documentation SSL afin d'en comprendre le fonctionnement de
 manière plus approfondie.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
-de haut niveau</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites d'algorithmes de chiffrement et mise en oeuvre du chiffrement fort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ocspstapling">Agrafage OCSP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Authentification du client et contrôle d'accès</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
@@ -62,13 +59,44 @@ suivantes :</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ciphersuites" id="ciphersuites">Suites de chiffrement et mise en application de la sécurité
-de haut niveau</a></h2>
+<h2><a name="ciphersuites" id="ciphersuites">Suites d'algorithmes de chiffrement et mise en oeuvre du chiffrement fort</a></h2>
+
+
+<div class="warning">
+<p>Le "chiffrement fort est et a toujours été une cible mouvante. En outre, la
+définition du terme "fort" dépend de l'utilisation que vous allez faire de votre
+chiffrement, de vos modèles de menaces, et du niveau de risque que vous
+considérez comme acceptable. L'équipe du serveur HTTP Apache ne peut donc pas
+définir ce chiffrement fort à votre place.</p>
+<p>Dans ce document dont la dernière mise à jour remonte à la mi-2016, une
+"chiffrement fort" fait référence à une implémentation TLS qui fournit, en plus
+d'une protection basique de la confidentialité, de l'intégrité et de
+l'authenticité que tout utilisateur s'attend à trouver, toutes les
+fonctionnalités suivantes :</p>
+<ul>
+<li>Une confidentialité persistante (Forward Secrecy) parfaite qui garantie que
+la découverte de la clé privée d'un serveur ne compromettra pas la
+condidentialité des communications TLS passées.</li>
+<li>Une protection contre les types d'attaque connus contre les anciennes
+implémentations SSL et TLS comme <a href="https://en.wikipedia.org/wiki/POODLE">POODLE</a> et <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#BEAST_attack">BEAST</a>.</li>
+<li>Le support des algorithmes de chiffrement les plus efficaces disponibles sur
+les navigateurs web modernes (et à jour), ainsi que sur les autres clients HTTP.</li>
+<li>Le <strong>Rejet</strong> des clients qui ne sont pas en mesure de respecter
+ces prérequis. En d'autres termes, un "chiffrement fort" implique que les
+clients obsolètes ne doivent pas avoir la possibilité de se connecter au serveur
+afin de les empêcher de mettre en danger leurs utilisateurs. Vous seul(e) êtes
+alors à même de décider si ce comportement est approprié à votre situation.</li>
+</ul>
+<p>Notez cependant qu'un <em>chiffrement fort</em> ne suffit pas à lui seul pour
+assurer un niveau de <em>securité</em> fort (A titre d'exemple, les attaques
+oracle sur la compression HTTP comme <a href="https://en.wikipedia.org/wiki/BREACH_(security_exploit)">BREACH</a>
+peuvent nécessiter des actions supplémentaires pour être éradiquées).</p>
+</div>
 
 <ul>
 <li><a href="#onlystrong">Comment créer un serveur SSL
 qui n'accepte que le chiffrement fort ?</a></li>
-<li><a href="#strongurl">Comment créer un serveur qui accepte tous les types de
+<li><a href="#strongurl">Comment créer un serveur qui accepte de nombreux types de
 chiffrement en général, mais exige un chiffrement fort pour pouvoir
 accéder à une URL particulière ?</a></li>
 </ul>
@@ -77,22 +105,49 @@ accéder à une URL particulière ?</a></li>
 <h3><a name="onlystrong" id="onlystrong">Comment créer un serveur SSL qui n'accepte
 que le chiffrement fort ?</a></h3>
 
-    <p>Les directives suivantes ne permettent que les
-    chiffrements de plus haut niveau :</p>
-    <pre class="prettyprint lang-config">SSLCipherSuite HIGH:!aNULL:!MD5</pre>
+    <p>La configuration suivante active le "chiffrement fort" telle qu'il est
+    défini ci-dessus, et s'inspire du document de la Fondation Mozilla sur les
+    prérequis de <a href="https://wiki.mozilla.org/Security/Server_Side_TLS">Server Side
+    TLS</a> :</p>
+
+    <pre class="prettyprint lang-config"># Configuration "moderne" définie en août 2016 par le générateur de
+# configuration SSL de la Fondation Mozilla. Ce dernier est disponible à
+# https://mozilla.github.io/server-side-tls/ssl-config-generator/
+SSLProtocol         all -SSLv3 -TLSv1 -TLSv1.1
+# De nombreux algorithmes de chiffrement définis ici nécessitent une version
+# récente (1.0.1 ou plus) d'OpenSSL. Certains nécessitent même OpenSSL 1.1.0
+# qui, à l'heure où ces lignes sont écrites, était encore en pre-release.
+SSLCipherSuite      ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
+SSLHonorCipherOrder on
+SSLCompression      off
+SSLSessionTickets   off</pre>
 
 
- <p>Avec la configuration qui suit, vous indiquez une préférence pour
- des algorityhmes de chiffrement spécifiques optimisés en matière de
- rapidité (le choix final sera opéré par mod_ssl, dans la mesure ou le
- client les supporte) :</p>
+    <ul>
+    <li>SSL 3.0 et TLS 1.0 étant vulnérables à certaines attaques connues contre
+    le protocole, ils ont été entièrement retirés.</li>
+    <li>Actuellement (en août 2016), la désactivation de TLS 1.1 est facultative
+    ; TLS 1.2 fournit des options de chiffrement plus évoluées, mais la version
+    1.1 n'est pas encore considérée comme obsolète. La désactivation de TLS 1.1
+    peut cependant juguler des attaques contre certaines implémentations
+    dépassées de TLS.</li>
+    <li>La directive <code class="directive"><a href="../mod/mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></code>
+    permet de s'assurer que ce sont les préférences de chiffrement du serveur
+    qui seront suivies, et non celles du client.</li>
+    <li>La désactivation de <code class="directive"><a href="../mod/mod_ssl.html#sslcompression">SSLCompression</a></code> permet de prévenir les attaques
+    oracle sur la compression TLS (en autres <a href="https://en.wikipedia.org/wiki/CRIME">CRIME</a>).</li>
+    <li>La désactivation de <code class="directive"><a href="../mod/mod_ssl.html#sslsessiontickets">SSLSessionTickets</a></code> permet de s'assurer que la
+    qualité de la confidentialité persistante (Forward Secrecy) ne sera pas
+    compromise, même si le serveur n'est pas redémarré régulièrement.</li>
+    </ul>
 
-    <pre class="prettyprint lang-config">SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5
-SSLHonorCipherOrder on</pre>
+    <p>C'est votre version d'OpenSSL installée qui détermine la liste des
+    algorithmes de chiffrement supportés par la directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>, et non le serveur. Pour pouvoir
+    utiliser certains d'entre eux, vous devrez peut-être mettre à jour votre
+    version d'OpenSSL.</p>
 
 
-
-<h3><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
+<h3><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte de nombreux types de
 chiffrement en général, mais exige un chiffrement fort pour pouvoir
 accéder à une URL particulière ?</a></h3>
 
@@ -104,13 +159,15 @@ accéder à une URL particulière ?</a></h3>
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut alors forcer automatiquement une
     renégociation des paramètres SSL pour parvenir au but recherché.
     Cette configuration peut se présenter comme suit :</p>
-    <pre class="prettyprint lang-config"># soyons très tolérant a priori
-SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP:+eNULL
+    <pre class="prettyprint lang-config"># soyons très tolérant a priori -- utilisons la suite d'algorithmes de
+# chiffrement "intermédiaire" de Mozilla (des suites plus légères peuvent aussi
+# être utilisées mais ne seront pas documentées ici)
+SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
 
 &lt;Location "/strong/area"&gt;
-# sauf pour https://hostname/strong/area/ et ses sous-répertoires
-# qui exigent des chiffrements forts
-SSLCipherSuite HIGH:!aNULL:!MD5
+# sauf pour https://hostname/strong/area/ et ses sous-répertoires qui exigent
+# des chiffrements forts
+SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
 &lt;/Location&gt;</pre>
 
 
