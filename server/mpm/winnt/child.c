@@ -323,8 +323,13 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                      "no known accept filter. Using 'none' instead",
                      lr->protocol);
     }
-    else if (strcmp(accf_name, "data") == 0)
-        accf = 2;
+    else if (strcmp(accf_name, "data") == 0) {
+        accf = 1;
+        accf_name = "connect";
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
+                     "longer supported. Using 'connect' instead");
+    }
     else if (strcmp(accf_name, "connect") == 0)
         accf = 1;
     else if (strcmp(accf_name, "none") == 0)
@@ -350,7 +355,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
    }
 #endif
 
-    if (accf > 0) /* 'data' or 'connect' */
+    if (accf > 0) /* 'connect' */
     {
         if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
                      &GuidAcceptEx, sizeof GuidAcceptEx, 
@@ -376,7 +381,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     }
     else /* accf == 0, 'none' */
     {
-reinit: /* target of data or connect upon too many AcceptEx failures */
+reinit: /* target of connect upon too many AcceptEx failures */
 
         /* last, low priority event is a not yet accepted connection */
         events[0] = exit_event;
@@ -421,9 +426,8 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             }
         }
 
-        if (accf > 0) /* Either 'connect' or 'data' */
+        if (accf > 0) /* 'connect' */
         {
-            DWORD len;
             char *buf;
 
             /* Create and initialize the accept socket */
@@ -453,20 +457,12 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 continue;
             }
 
-            if (accf == 2) { /* 'data' */
-                len = APR_BUCKET_BUFF_SIZE;
-                buf = apr_bucket_alloc(len, context->ba);
-                len -= PADDED_ADDR_SIZE * 2;
-            }
-            else /* (accf == 1) 'connect' */ {
-                len = 0;
-                buf = context->buff;
-            }
+            buf = context->buff;
 
             /* AcceptEx on the completion context. The completion context will be
              * signaled when a connection is accepted.
              */
-            if (!lpfnAcceptEx(nlsd, context->accept_socket, buf, len,
+            if (!lpfnAcceptEx(nlsd, context->accept_socket, buf, 0,
                               PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead,
                               &context->overlapped)) {
                 rv = apr_get_netos_error();
@@ -476,8 +472,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                      * 1) the client disconnects early
                      * 2) handshake was incomplete
                      */
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     continue;
@@ -492,8 +486,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                      * 3) the dynamic address / adapter has changed
                      * Give five chances, then fall back on AcceptFilter 'none'
                      */
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     ++err_count;
@@ -513,8 +505,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 }
                 else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
                          (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     ++err_count;
@@ -555,14 +545,10 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     /* exit_event triggered or event handle was closed */
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     break;
                 }
 
                 if (context->accept_socket == INVALID_SOCKET) {
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     continue;
                 }
             }
@@ -585,28 +571,11 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             /* Get the local & remote address
              * TODO; error check
              */
-            lpfnGetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+            lpfnGetAcceptExSockaddrs(buf, 0, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                                      &context->sa_server, &context->sa_server_len,
                                      &context->sa_client, &context->sa_client_len);
 
-            /* For 'data', craft a bucket for our data result
-             * and pass to worker_main as context->overlapped.Pointer
-             */
-            if (accf == 2 && BytesRead)
-            {
-                apr_bucket *b;
-                b = apr_bucket_heap_create(buf, APR_BUCKET_BUFF_SIZE,
-                                           apr_bucket_free, context->ba);
-                /* Adjust the bucket to refer to the actual bytes read */
-                b->length = BytesRead;
-                context->overlapped.Pointer = b;
-            }
-            else {
-                if (accf == 2) {
-                    apr_bucket_free(buf);
-                }
-                context->overlapped.Pointer = NULL;
-            }
+            context->overlapped.Pointer = NULL;
         }
         else /* (accf = 0)  e.g. 'none' */
         {
