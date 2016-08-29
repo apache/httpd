@@ -643,7 +643,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
     /* If there is whitespace before a method, skip it and mark in error */
     if (apr_isspace(*r->method)) {
-        deferred_error = rrl_excesswhitespace; 
+        deferred_error = rrl_badwhitespace; 
         for ( ; apr_isspace(*r->method); ++r->method)
             ; 
     }
@@ -653,7 +653,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      */
     if (strict) {
         ll = (char*) ap_scan_http_token(r->method);
-        if ((ll == r->method) || (*ll && !apr_isspace(*ll))) {
+        if (((ll == r->method) || (*ll && !apr_isspace(*ll)))
+                && deferred_error == rrl_none) {
             deferred_error = rrl_badmethod;
             ll = strpbrk(ll, "\t\n\v\f\r ");
         }
@@ -661,6 +662,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     else {
         ll = strpbrk(r->method, "\t\n\v\f\r ");
     }
+
+    /* Verify method terminated with a single SP, or mark as specific error */
     if (!ll) {
         if (deferred_error == rrl_none)
             deferred_error = rrl_missinguri;
@@ -668,18 +671,16 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         len = 0;
         goto rrl_done;
     }
-
-    /* Verify method terminated with a single SP, otherwise mark in error */
-    if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
-            && deferred_error == rrl_none) {
+    else if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
+                 && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
 
-    /* Advance uri pointer over leading whitespace,
-     * then NUL terminate the method string
+    /* Advance uri pointer over leading whitespace, NUL terminate the method
+     * If non-SP whitespace is encountered, mark as specific error
      */
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (strict && ap_strchr_c("\t\n\v\f\r", *uri)
+        if (ap_strchr_c("\t\n\v\f\r", *uri)
                 && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
@@ -700,30 +701,28 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     else {
         ll = strpbrk(uri, "\t\n\v\f\r ");
     }
+
+    /* Verify method terminated with a single SP, or mark as specific error */
     if (!ll) {
         r->protocol = "";
         len = 0;
         goto rrl_done;
     }
-
-    /* Verify uri terminated with a single SP, otherwise mark in error */
-    if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
+    else if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
 
-    /* Advance protocol pointer over leading whitespace,
-     * then NUL terminate the uri string
+    /* Advance protocol pointer over leading whitespace, NUL terminate the uri
+     * If non-SP whitespace is encountered, mark as specific error
      */
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (strict && ap_strchr_c("\t\n\v\f\r", *r->protocol)
+        if (ap_strchr_c("\t\n\v\f\r", *r->protocol)
                 && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
 
-    /* Scan the protocol up to the next whitespace, validation happens
-     * further below
-     */
+    /* Scan the protocol up to the next whitespace, validation comes later */
     if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
         len = strlen(r->protocol);
         goto rrl_done;
@@ -734,16 +733,18 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * determine if trailing text is found, unconditionally mark in error,
      * finally NUL terminate the protocol string
      */
-    if (strict && *ll)
-        deferred_error = rrl_excesswhitespace; 
-    for ( ; apr_isspace(*ll); ++ll)
-        if (strict && ap_strchr_c("\t\n\v\f\r", *ll)
-                && deferred_error == rrl_none)
-            deferred_error = rrl_badwhitespace; 
-    if (*ll && deferred_error == rrl_none)
-        deferred_error = rrl_trailingtext;
-    ll = (char *)r->protocol + len;
-    *ll = '\0';
+    if (strict && *ll) {
+        deferred_error = rrl_excesswhitespace;
+    }
+    else {
+        for ( ; apr_isspace(*ll); ++ll)
+            if (ap_strchr_c("\t\n\v\f\r", *ll)
+                    && deferred_error == rrl_none)
+                deferred_error = rrl_badwhitespace; 
+        if (*ll && deferred_error == rrl_none)
+            deferred_error = rrl_trailingtext;
+    }
+    *((char *)r->protocol + len) = '\0';
 
 rrl_done:
     /* For internal integrety and palloc efficiency, reconstruct the_request
@@ -833,8 +834,8 @@ rrl_done:
                           "HTTP Request Line; Invalid whitespace");
         else if (deferred_error == rrl_excesswhitespace)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03448)
-                          "HTTP Request Line; Inappropriate whitespace "
-                          "(disallowed by StrictWhitespace");
+                          "HTTP Request Line; Excess whitespace "
+                          "(disallowed by HttpProtocolOptions Strict");
         else if (deferred_error == rrl_trailingtext)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03449)
                           "HTTP Request Line; Extraneous text found '%.*s' "
@@ -980,23 +981,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if (strict && strpbrk(field, "\n\v\f\r")) {
-            r->status = HTTP_BAD_REQUEST;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03451)
-                          "Request header line presented bad whitespace "
-                          "(disallowed by StrictWhitespace)");
-            return;
-        }
-        else {
-            /* Ensure no unusual whitespace is present in the resulting
-             * header field input line, even in unsafe mode, by replacing
-             * bad whitespace with SP before collapsing whitespace
-             */
-            char *ll = field;
-            while ((ll = strpbrk(ll, "\n\v\f\r")))
-                *(ll++) = ' ';
-        }
-
         /* For all header values, and all obs-fold lines, the presence of
          * additional whitespace is a no-op, so collapse trailing whitespace
          * to save buffer allocation and optimize copy operations.
@@ -1114,11 +1098,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 *value++ = '\0'; /* NUL-terminate at colon */
 
-                if (strict && strpbrk(last_field, " \t")) {
+                if (strpbrk(last_field, "\t\n\v\f\r ")) {
                     r->status = HTTP_BAD_REQUEST;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03452)
-                                  "Request header field name with whitespace "
-                                  "(disallowed by StrictWhitespace)");
+                                  "Request header field name presented"
+                                  " invalid whitespace");
                     return;
                 }
 
@@ -1126,10 +1110,12 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                      ++value;            /* Skip to start of value   */
                 }
 
-                /* Strip LWS after field-name: */
-                while (tmp_field > last_field
-                           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *(tmp_field--) = '\0';
+                if (strpbrk(value, "\n\v\f\r")) {
+                    r->status = HTTP_BAD_REQUEST;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03451)
+                                  "Request header field value presented"
+                                  " bad whitespace");
+                    return;
                 }
 
                 if (tmp_field == last_field) {
