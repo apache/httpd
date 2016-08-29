@@ -764,7 +764,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
     winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
-    int rc;
     conn_rec *c;
     apr_int32_t disconnected;
 
@@ -805,19 +804,7 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         apr_os_thread_put(&thd, &osthd, context->ptrans);
         c->current_thread = thd;
 
-        /* follow ap_process_connection(c, context->sock) logic
-         * as it left us no chance to reinject our first data bucket.
-         */
-        ap_update_vhost_given_ip(c);
-
-        rc = ap_run_pre_connection(c, context->sock);
-        if (rc != OK && rc != DONE) {
-            c->aborted = 1;
-        }
-
-        if (!c->aborted) {
-            ap_run_process_connection(c);
-        }
+        ap_process_connection(c, context->sock);
 
         apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
 
