@@ -574,8 +574,6 @@ reinit: /* target of connect upon too many AcceptEx failures */
             lpfnGetAcceptExSockaddrs(buf, 0, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                                      &context->sa_server, &context->sa_server_len,
                                      &context->sa_client, &context->sa_client_len);
-
-            context->overlapped.Pointer = NULL;
         }
         else /* (accf = 0)  e.g. 'none' */
         {
@@ -649,7 +647,6 @@ reinit: /* target of connect upon too many AcceptEx failures */
              * os_sock_make and os_sock_put that it does not query).
              */
             WSAEventSelect(context->accept_socket, 0, 0);
-            context->overlapped.Pointer = NULL;
             err_count = 0;
 
             context->sa_server_len = sizeof(context->buff) / 2;
@@ -754,24 +751,6 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
     return context;
 }
 
-apr_status_t winnt_insert_network_bucket(conn_rec *c,
-                                         apr_bucket_brigade *bb,
-                                         apr_socket_t *socket)
-{
-    apr_bucket *e;
-    winnt_conn_ctx_t *context = ap_get_module_config(c->conn_config,
-                                                     &mpm_winnt_module);
-    if (context == NULL || (e = context->overlapped.Pointer) == NULL)
-        return AP_DECLINED;
-
-    /* seed the brigade with AcceptEx read heap bucket */
-    APR_BRIGADE_INSERT_HEAD(bb, e);
-    /* also seed the brigade with the client socket. */
-    e = apr_bucket_socket_create(socket, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    return APR_SUCCESS;
-}
-
 /*
  * worker_main()
  * Main entry point for the worker threads. Worker threads block in
@@ -785,7 +764,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
     winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
-    apr_bucket *e;
     int rc;
     conn_rec *c;
     apr_int32_t disconnected;
@@ -812,8 +790,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             }
         }
 
-        e = context->overlapped.Pointer;
-
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf,
                                      context->sock, thread_num, sbh,
@@ -822,9 +798,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         if (!c) {
             /* ap_run_create_connection closes the socket on failure */
             context->accept_socket = INVALID_SOCKET;
-            if (e) { 
-                apr_bucket_free(e);
-            }
             continue;
         }
 
@@ -840,13 +813,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         rc = ap_run_pre_connection(c, context->sock);
         if (rc != OK && rc != DONE) {
             c->aborted = 1;
-        }
-
-        if (e && c->aborted) {
-            apr_bucket_free(e);
-        }
-        else {
-            ap_set_module_config(c->conn_config, &mpm_winnt_module, context);
         }
 
         if (!c->aborted) {
