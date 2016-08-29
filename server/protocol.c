@@ -583,7 +583,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
     int stricturi = (conf->http_stricturi != AP_HTTP_URI_UNSAFE);
-    int strictspaces = (conf->http_whitespace != AP_HTTP_WHITESPACE_UNSAFE);
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -671,7 +670,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     /* Verify method terminated with a single SP, otherwise mark in error */
-    if (strictspaces && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
+    if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
@@ -680,7 +679,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * then NUL terminate the method string
      */
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *uri)
+        if (strict && ap_strchr_c("\t\n\v\f\r", *uri)
                 && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
@@ -708,7 +707,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
 
     /* Verify uri terminated with a single SP, otherwise mark in error */
-    if (strictspaces && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
+    if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
@@ -717,7 +716,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * then NUL terminate the uri string
      */
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *r->protocol)
+        if (strict && ap_strchr_c("\t\n\v\f\r", *r->protocol)
                 && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
@@ -735,10 +734,10 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * determine if trailing text is found, unconditionally mark in error,
      * finally NUL terminate the protocol string
      */
-    if (strictspaces && *ll)
+    if (strict && *ll)
         deferred_error = rrl_excesswhitespace; 
     for ( ; apr_isspace(*ll); ++ll)
-        if (strictspaces && ap_strchr_c("\t\n\v\f\r", *ll)
+        if (strict && ap_strchr_c("\t\n\v\f\r", *ll)
                 && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     if (*ll && deferred_error == rrl_none)
@@ -943,7 +942,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     char *tmp_field;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    int strictspaces = (conf->http_whitespace != AP_HTTP_WHITESPACE_UNSAFE);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -982,7 +980,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
-        if (strictspaces && strpbrk(field, "\n\v\f\r")) {
+        if (strict && strpbrk(field, "\n\v\f\r")) {
             r->status = HTTP_BAD_REQUEST;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03451)
                           "Request header line presented bad whitespace "
@@ -1116,7 +1114,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
                 *value++ = '\0'; /* NUL-terminate at colon */
 
-                if (strictspaces && strpbrk(last_field, " \t")) {
+                if (strict && strpbrk(last_field, " \t")) {
                     r->status = HTTP_BAD_REQUEST;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03452)
                                   "Request header field name with whitespace "
