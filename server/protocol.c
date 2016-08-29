@@ -215,13 +215,15 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
 AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                                           apr_size_t *read, request_rec *r,
-                                          int fold, apr_bucket_brigade *bb)
+                                          int flags, apr_bucket_brigade *bb)
 {
     apr_status_t rv;
     apr_bucket *e;
     apr_size_t bytes_handled = 0, current_alloc = 0;
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
+    int fold = flags & AP_GETLINE_FOLD;
+    int crlf = flags & AP_GETLINE_CRLF;
 
     /*
      * Initialize last_char as otherwise a random value will be compared
@@ -325,6 +327,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         if (last_char && (*last_char == APR_ASCII_LF)) {
             break;
         }
+    }
+
+    if (last_char <= *s || last_char[-1] != APR_ASCII_CR) {
+        *last_char = '\0';
+        bytes_handled = last_char - *s;
+        *read = bytes_handled;
+        return APR_EINVAL;
     }
 
     /* Now NUL-terminate the string at the end of the line;
@@ -471,7 +480,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 }
 #endif
 
-AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
+AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int flags)
 {
     char *tmp_s = s;
     apr_status_t rv;
@@ -479,7 +488,7 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     apr_bucket_brigade *tmp_bb;
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    rv = ap_rgetline(&tmp_s, n, &len, r, fold, tmp_bb);
+    rv = ap_rgetline(&tmp_s, n, &len, r, flags, tmp_bb);
     apr_brigade_destroy(tmp_bb);
 
     /* Map the out-of-space condition to the old API. */
@@ -607,7 +616,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
          */
         r->the_request = NULL;
         rv = ap_rgetline(&(r->the_request), (apr_size_t)(r->server->limit_req_line + 2),
-                         &len, r, 0, bb);
+                         &len, r, strict ? AP_GETLINE_CRLF : 0, bb);
 
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
@@ -953,7 +962,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
 
         field = NULL;
         rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
-                         &len, r, 0, bb);
+                         &len, r, strict ? AP_GETLINE_CRLF : 0, bb);
 
         if (rv != APR_SUCCESS) {
             if (APR_STATUS_IS_TIMEUP(rv)) {
