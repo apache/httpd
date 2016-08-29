@@ -544,12 +544,13 @@
  *                         eliminated AP_HTTP_CONFORMANCE_LOGONLY
  * 20160617.1 (2.5.0-dev)  Added http_whitespace and http_methods to
  *                         core_server_config
+ * 20160629.1 (2.5.0-dev)  Dropped http_whitespace from core_server_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20160617
+#define MODULE_MAGIC_NUMBER_MAJOR 20160629
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
 
