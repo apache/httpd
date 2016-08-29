@@ -329,7 +329,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         }
     }
 
-    if (last_char <= *s || last_char[-1] != APR_ASCII_CR) {
+    if (crlf && (last_char <= *s || last_char[-1] != APR_ASCII_CR)) {
         *last_char = '\0';
         bytes_handled = last_char - *s;
         *read = bytes_handled;
