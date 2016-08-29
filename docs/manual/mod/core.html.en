@@ -2031,10 +2031,8 @@ media type in the HTTP Content-Type header field</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict StrictURL StrictWhitespace 
-LenientMethods Allow0.9</code></td></tr>
+ [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2055,9 +2053,13 @@ LenientMethods Allow0.9</code></td></tr>
     which did not conform to the protocol.
     <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4 Request Splitting</a> and
     <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response Smuggling</a> call out only two of the potential
-    risks of accepting non-conformant request messages. As of the introduction
-    of this directive, all grammer rules of the specification are enforced in
-    the default <code>Strict</code> operating mode.</p>
+    risks of accepting non-conformant request messages, while
+    <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" identify the
+    risks of accepting obscure whitespace and request message formatting. 
+    As of the introduction of this directive, all grammer rules of the
+    specification are enforced in the default <code>Strict</code> operating
+    mode, and the strict whitespace suggested by section 3.5 is enforced
+    and cannot be relaxed.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 3986 §2.2 and 2.3</a> define "Reserved Characters" and
     "Unreserved Characters". All other character octets are required to
@@ -2066,20 +2068,9 @@ LenientMethods Allow0.9</code></td></tr>
     containing invalid characters. This rule can be relaxed with the
     <code>UnsafeURI</code> option to support badly written user-agents.</p>
     
-    <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" permits, and
-    identifies potential risks of parsing messages containing non-space
-    character whitespace. While the spec defines that exactly one space
-    seperates the URI from the method, and the protocol from the URI, and
-    only space and horizontal tab characters are allowed in request header
-    field contents, the Apache HTTP Server was traditionally lenient in
-    accepting other whitespace. The default <code>StrictWhitespace</code>
-    option will now reject non-conforming requests. The administrator may
-    toggle the <code>UnsafeWhitespace</code> option to continue to honor
-    non-conforming requests, with considerable risk of proxy interactions.</p>
-
-    <p>Users are strongly cautioned against toggling the <code>Unsafe</code>,
-    <code>UnsafeURI</code> or <code>UnsafeWhitespace</code> modes of operation
-    particularly on outward-facing, publicly accessible server deployments.
+    <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
+    or <code>UnsafeURI</code> modes of operation, particularly on
+    outward-facing, publicly accessible server deployments.
     If an interface is required for faulty monitoring or other custom service
     consumers running on an intranet, users should toggle only those Unsafe
     options which are necessary, and only on a specific virtual host configured
