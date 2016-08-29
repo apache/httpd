@@ -1280,7 +1280,7 @@ EnableSendfile On
     <a href="https://tools.ietf.org/html/rfc7230#section-9.5"
       >&sect;9.5 Response Smuggling</a> call out only two of the potential
     risks of accepting non-conformant request messages, while
-    <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5"
+    <a href="https://tools.ietf.org/html/rfc7230#section-3.5"
          >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" identify the
     risks of accepting obscure whitespace and request message formatting. 
     As of the introduction of this directive, all grammer rules of the
