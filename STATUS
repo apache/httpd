@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      delaying the pool cleanup.  Likely fixes PR57771 too.
      trunk patch: http://svn.apache.org/r1758083
      2.4.x: trunk works modulo CHANGES
-     +1 covener
+     +1 covener, jim
 
    * mpm_winnt: disable the 'data' accept filter entirely to prevent denial of
      service. PR 59970.
