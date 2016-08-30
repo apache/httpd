@@ -214,6 +214,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jchampion, wrowe
 
+   * mod_status: Delay some memory allocation
+                 Fix <p> tag closing syntax
+     trunk patch: http://svn.apache.org/r1757010
+                  http://svn.apache.org/r1757011
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+   * mod_proxy_connect: Delay some memory allocation
+                        Fix some style (space only)
+     trunk patch: http://svn.apache.org/r1756852
+                  http://svn.apache.org/r1756853
+     2.4.x patch: trunk works
+     +1: jailletc36
+
+   * mod_authn_dbd: Remove an unused structure
+     trunk patch: http://svn.apache.org/r1756846
+     2.4.x patch: trunk works
+     +1: jailletc36
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
