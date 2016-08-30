@@ -208,6 +208,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: trunk works modulo CHANGES
      +1 covener
 
+   * mpm_winnt: disable the 'data' accept filter entirely to prevent denial of
+     service. PR 59970.
+     trunk patch: http://svn.apache.org/r1758307
+                  http://svn.apache.org/r1758308
+                  http://svn.apache.org/r1758309
+                  http://svn.apache.org/r1758311
+     2.4.x patch: trunk works (modulo CHANGES and APLOGNO's next-number)
+     +1: jchampion
+
+   * mpm_winnt: always zero out OVERLAPPED structs when recycling them.
+     trunk patch: http://svn.apache.org/r1758310
+     2.4.x patch: trunk works
+     +1: jchampion
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
