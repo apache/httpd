@@ -204,7 +204,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * APR_ENOSPC is returned if there is not enough buffer space.
  * Other errors may be returned on other errors.
  *
- * The LF is *not* returned in the buffer.  Therefore, a *read of 0
+ * The [CR]LF are *not* returned in the buffer.  Therefore, a *read of 0
  * indicates that an empty line was read.
  *
  * Notes: Because the buffer uses 1 char for NUL, the most we can return is
