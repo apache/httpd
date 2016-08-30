@@ -117,14 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_hcheck: Add missing copy of hcuri and hcexpr ftom the worker to
-     the health check worker.
-     Trunk version of patch:
-      http://svn.apache.org/r1757662
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-      CHANGES in http://svn.apache.org/r1757663
-     +1: rpluem, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
