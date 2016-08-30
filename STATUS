@@ -219,19 +219,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1757010
                   http://svn.apache.org/r1757011
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jchampion
+     jchampion: nitpick: r1757010 introduces trailing whitespace
 
    * mod_proxy_connect: Delay some memory allocation
                         Fix some style (space only)
      trunk patch: http://svn.apache.org/r1756852
                   http://svn.apache.org/r1756853
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jchampion
 
    * mod_authn_dbd: Remove an unused structure
      trunk patch: http://svn.apache.org/r1756846
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jchampion
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
