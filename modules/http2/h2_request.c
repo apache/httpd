@@ -50,7 +50,7 @@ apr_status_t h2_request_rwrite(h2_request *req, apr_pool_t *pool,
     
     scheme = apr_pstrdup(pool, r->parsed_uri.scheme? r->parsed_uri.scheme
               : ap_http_scheme(r));
-    authority = apr_pstrdup(pool, r->hostname);
+    authority = (r->hostname ? apr_pstrdup(pool, r->hostname) : "");
     if (!ap_strchr_c(authority, ':') && r->server && r->server->port) {
         apr_port_t defport = apr_uri_port_of_scheme(scheme);
         if (defport != r->server->port) {
@@ -250,6 +250,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
     apr_pool_t *p;
     int access_status = HTTP_OK;    
     const char *expect;
+    const char *rpath;
 
     apr_pool_create(&p, conn->pool);
     apr_pool_tag(p, "request");
@@ -310,12 +311,13 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *conn)
         r->header_only = 1;
     }
 
-    ap_parse_uri(r, req->path);
+    rpath = (req->path ? req->path : "");
+    ap_parse_uri(r, rpath);
     r->protocol = "HTTP/2.0";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 
-                                  r->method, req->path, r->protocol);
+                                  r->method, rpath, r->protocol);
     
     /* update what we think the virtual host is based on the headers we've
      * now read. may update status.
