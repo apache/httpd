@@ -215,12 +215,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1758309
                   http://svn.apache.org/r1758311
      2.4.x patch: trunk works (modulo CHANGES and APLOGNO's next-number)
-     +1: jchampion
+     +1: jchampion, wrowe
 
    * mpm_winnt: always zero out OVERLAPPED structs when recycling them.
      trunk patch: http://svn.apache.org/r1758310
      2.4.x patch: trunk works
-     +1: jchampion
+     +1: jchampion, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
