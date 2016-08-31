@@ -182,6 +182,7 @@ TARGET_lib = \
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_proxy_http2.o \
 	$(OBJDIR)/h2_proxy_session.o \
+	$(OBJDIR)/h2_proxy_util.o \
 	$(EOLIST)
 
 #
