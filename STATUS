@@ -103,23 +103,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Limit to ten the number of tolerated empty lines between request.
-     Before this commit, the maximum number of empty lines was the same as
-     configured LimitRequestFields, defaulting to 100, which was way too much.
-     We now use a fixed/hard limit of 10 (DEFAULT_LIMIT_BLANK_LINES).
-     Exit early on ap_parse_uri failure, and ensure that proto_num and protocol
-     is set; this can happen with invalid CONNECT requests.
-     Submitted by: ylavic, rpluem
-     Note: http_request.c changes from this patch and follow-ups 
-           r1710105, r1711902 are not applicable to the 2.2.x pipeline.
-           CHANGES is unnecessary, the regression was never released in 2.2.x.
-     Trunk version of patch
-         http://svn.apache.org/r1710095
-         http://svn.apache.org/r1727544
-     Backport:
-         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1710095-r1727544.patch
-     +1: wrowe, covener, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
