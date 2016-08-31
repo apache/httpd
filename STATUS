@@ -103,19 +103,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: Reject requests containing (invalid) NULL characters in request line
-     or request headers. (Including embedded %00 in URL).
-     (Use APR_STATUS_IS_... in some more cases.)
-     Trunk version of patch
-         http://svn.apache.org/r892678
-         http://svn.apache.org/r1100511
-         http://svn.apache.org/r1102124
-     Backport: (trunk works as well)
-         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r892678.patch
-     Submitted by niq, status legibility fixes by covener, sf
-     PR: 43039
-     +1: wrowe, covener, ylavic
-
   *) core: Limit to ten the number of tolerated empty lines between request.
      Before this commit, the maximum number of empty lines was the same as
      configured LimitRequestFields, defaulting to 100, which was way too much.
