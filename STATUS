@@ -103,6 +103,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: Reject requests containing (invalid) NULL characters in request line
+     or request headers. (Including embedded %00 in URL).
+     (Use APR_STATUS_IS_... in some more cases.)
+     Trunk version of patch
+         http://svn.apache.org/r892678
+         http://svn.apache.org/r1100511
+         http://svn.apache.org/r1102124
+     Backport: (trunk works as well)
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r892678.patch
+     Submitted by niq, status legibility fixes by covener, sf
+     PR: 43039
+     +1: wrowe, covener, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -154,21 +167,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.4.x of patch:
          http://svn.apache.org/r1756562
       Backport version for 2.2.x of patch:
-	 http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
+         http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
       +1: ylavic
-
-  *) core: Reject requests containing (invalid) NULL characters in request line
-     or request headers. (Including embedded %00 in URL).
-     (Use APR_STATUS_IS_... in some more cases.)
-     Trunk version of patch
-         http://svn.apache.org/r892678
-         http://svn.apache.org/r1100511
-         http://svn.apache.org/r1102124
-     Backport: (trunk works as well)
-         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r892678.patch
-     Submitted by niq, status legibility fixes by covener, sf
-     PR: 43039
-     +1: wrowe, covener
 
   *) Enforce LimitRequestFieldSize after multiple headers with the same
      name have been merged, Ensure LimitRequestFieldSize is always logged.
@@ -192,6 +192,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport: (Adjustments dodging 2.4'isms such as APLOGNO's)
          https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r951900-r1178566-r1185385-r1188745-r1352911-r1433613.patch 
      +1: wrowe, covener
+     ylavic: the patch does not apply cleanly? (I tried both w/ and w/o
+             backport-2.2.x-r892678.patch first, conflicts in protocol.c)
 
   *) core: ErrorDocument now works for requests without a Host header.
      Support custom ErrorDocuments for HTTP 501 and 414 status codes.
