@@ -4,6 +4,9 @@ Changes with Apache 2.2.32
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
+  *) core: Limit to ten the number of tolerated empty lines between request.
+     [Yann Ylavic]
+
   *) Core: reject NULLs in request line or request headers.
      PR 43039 [Nick Kew]
 
