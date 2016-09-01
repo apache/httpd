@@ -117,6 +117,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cgid: Wrong CGI process killed when a small CGI response is followed
+     by another CGI request, because of min bytes to write in core output filter
+     delaying the pool cleanup.  Likely fixes PR57771 too.
+     trunk patch: http://svn.apache.org/r1758083
+     2.4.x: trunk works modulo CHANGES
+     +1 covener, jim, icing
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,13 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES/MMN), or:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1750392.patch
      +1: ylavic
-
-   * mod_cgid: Wrong CGI process killed when a small CGI response is followed
-     by another CGI request, because of min bytes to write in core output filter
-     delaying the pool cleanup.  Likely fixes PR57771 too.
-     trunk patch: http://svn.apache.org/r1758083
-     2.4.x: trunk works modulo CHANGES
-     +1 covener, jim
 
    * mpm_winnt: disable the 'data' accept filter entirely to prevent denial of
      service. PR 59970.
