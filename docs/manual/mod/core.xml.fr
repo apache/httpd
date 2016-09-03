@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1757920:1758307 (outdated) -->
+<!-- English Revision: 1758307 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -95,18 +95,13 @@ AcceptFilter https data
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
     <highlight language="config">
-AcceptFilter http data
-AcceptFilter https data
+AcceptFilter http connect
+AcceptFilter https connect
     </highlight>
 
     <p>Le module MPM pour Windows mpm_winnt utilise la directive
     AcceptFilter comme commutateur de l'API AcceptEx(), et ne supporte
-    pas la mise en tampon du protocole http. Deux valeurs utilisent
-    l'API Windows AcceptEx() et vont recycler les sockets réseau entre
-    les connexions. <code>data</code> attend jusqu'à ce que les données
-    aient été transmises comme décrit plus haut, et le tampon de données
-    initiales ainsi que les adresses réseau finales sont tous extraits
-    grâce à une seule invocation d'AcceptEx(). <code>connect</code>
+    pas la mise en tampon du protocole http. <code>connect</code>
     utilise l'API AcceptEx(), extrait aussi les adresses réseau finales,
     mais à l'instar de <code>none</code>, la valeur <code>connect</code>
     n'attend pas la transmission des données initiales.</p>
@@ -117,6 +112,23 @@ AcceptFilter https data
     défectueux, ainsi que pour certains fournisseurs de réseau comme les
     pilotes vpn, ou les filtres anti-spam, anti-virus ou
     anti-spyware.</p>
+
+    <note type="warning">
+      <title>L'AcceptFilter <code>data</code> (Windows)</title>
+
+      <p>Jusqu'à la version 2.4.23, le filtre d'acceptation <code>data</code>
+      attendait que des données aient été transmises et que le tampon de données
+      initial et l'adresse réseau finale aient été déterminés par l'invocation
+      AcceptEx(). Cette implémentation étant vulnérable à une attaque de type
+      denial of service, elle a été désactivée.</p>
+
+      <p>La version actuelle de httpd prend par défaut le filtre
+      <code>connect</code> sous Windows, et reprendra la valeur
+      <code>data</code> si <code>data</code> est spécifié. Il est fortement
+      conseillé aux utilisateurs des versions plus anciennes de définir
+      explicitement le filtre <code>connect</code> pour leurs AcceptFilter
+      comme indiqué plus haut.</p>
+    </note>
 
 </usage>
 <seealso><directive module="core">Protocol</directive></seealso>
@@ -1358,10 +1370,8 @@ host</context>
 <name>HttpProtocolOptions</name>
 <description>Modifie les contraintes sur les messages des requêtes HTTP</description>
 <syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</syntax>
- <default>HttpProtocolOptions Strict StrictURL StrictWhitespace
-LenientMethods Allow0.9</default>
+ [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible à partir des versions 2.2.32 et 2.4.24 du serveur HTTP
@@ -1391,9 +1401,12 @@ Apache</compatibility>
     Request Splitting</a> et <a
     href="https://tools.ietf.org/html/rfc7230#section-9.5">&sect;9.5 Response
     Smuggling</a> ne rappellent que deux des risques potentiels induits par des
-    requêtes non conformes. Avec l'introduction de cette directive, toutes les
-    règles de grammaire de la spécification doivent être respectées dans le mode
-    d'opérations par défaut <code>Strict</code>.</p>
+    requêtes non conformes, alors que <a
+    href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+    &sect;3.5</a> signale les risques encourus par l'acceptation de blancs non
+    conformes dans les lignes de requête. Avec l'introduction de cette
+    directive, toutes les règles de grammaire de la spécification doivent être
+    respectées dans le mode d'opérations par défaut <code>Strict</code>.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 3986
     &sect;2.2 and 2.3</a> définit les "Caractères réservés" ainsi que les
@@ -1404,23 +1417,6 @@ Apache</compatibility>
     contournée en utilisant l'option <code>UnsafeURI</code> qui permet de
     supporter les agents utilisateur mal conçus.</p>
     
-    
-
-    <p>La section de la <a
-    href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
-    &sect;3.5</a> "Message Parsing Robustness" décrit les risques potentiels
-    induits par l'interprétation de messages contenant des blancs représentés
-    par un caractère autre que l'espace. Alors que les spécifications indiquent
-    qu'un et un seul espace sépare l'URI de la méthode et le protocole de l'URI,
-    et que seuls les espaces et les tabulations horizontales sont autorisés
-    dans le contenu des en-têtes de requêtes,
-    le serveur HTTP Apache a toujours toléré des blancs constitués d'un ou
-    plusieurs espaces ou tabulations horizontales. L'option par défaut
-    <code>StrictWhitespace</code> permet maintenant de rejeter toute requête non
-    conforme. L'administrateur peut cependant utiliser l'option
-    <code>UnsafeWhitespace</code> pour continuer à accepter les requêtes non
-    conformes, avec un risque important d'interactions avec le mandataire.</p>
-
     <p>Il est fortement déconseillé aux utilisateurs d'utiliser les modes
     d'opérations <code>Unsafe</code> et <code>UnsafeURI</code>, ou
     <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
