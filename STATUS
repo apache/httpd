@@ -138,12 +138,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jailletc36, jchampion, covener
 
-   * mod_authn_dbd: Remove an unused structure
-     trunk patch: http://svn.apache.org/r1756846
-     2.4.x patch: trunk works
-     +1: jailletc36, jchampion, covener
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
