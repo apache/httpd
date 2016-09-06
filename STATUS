@@ -117,6 +117,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_status: Delay some memory allocation
+                 Fix <p> tag closing syntax
+     trunk patch: http://svn.apache.org/r1757010
+                  http://svn.apache.org/r1757011
+     2.4.x patch: trunk works
+     +1: jailletc36, jchampion, jim (will fix in 2.4)
+     jchampion: nitpick: r1757010 introduces trailing whitespace
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,14 +199,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES/MMN), or:
                   http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1750392.patch
      +1: ylavic
-
-   * mod_status: Delay some memory allocation
-                 Fix <p> tag closing syntax
-     trunk patch: http://svn.apache.org/r1757010
-                  http://svn.apache.org/r1757011
-     2.4.x patch: trunk works
-     +1: jailletc36, jchampion, jim (will fix in 2.4)
-     jchampion: nitpick: r1757010 introduces trailing whitespace
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
