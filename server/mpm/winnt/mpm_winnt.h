@@ -91,9 +91,6 @@ void hold_console_open_on_error(void);
 
 /* From child.c: */
 void child_main(apr_pool_t *pconf, DWORD parent_pid);
-apr_status_t winnt_insert_network_bucket(conn_rec *c,
-                                         apr_bucket_brigade *bb,
-                                         apr_socket_t *socket);
 
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */
