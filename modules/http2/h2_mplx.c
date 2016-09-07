@@ -512,7 +512,7 @@ static int task_print(void *ctx, void *val)
     h2_mplx *m = ctx;
     h2_task *task = val;
 
-    if (task && task->request) {
+    if (task) {
         h2_stream *stream = h2_ihash_get(m->streams, task->stream_id);
 
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c, /* NO APLOGNO */

@@ -1276,9 +1276,9 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2 request handling
  ******************************************************************************/
 
-h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                           const char *scheme, const char *authority, 
-                           const char *path, apr_table_t *header, int serialize)
+h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                          const char *scheme, const char *authority, 
+                          const char *path, apr_table_t *header, int serialize)
 {
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
@@ -1292,49 +1292,6 @@ h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method,
     req->serialize      = serialize;
     
     return req;
-}
-
-h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize)
-{
-    return h2_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
-}
-
-typedef struct {
-    apr_table_t *headers;
-    apr_pool_t *pool;
-} h1_ctx;
-
-static int set_h1_header(void *ctx, const char *key, const char *value)
-{
-    h1_ctx *x = ctx;
-    size_t klen = strlen(key);
-    if (!h2_req_ignore_header(key, klen)) {
-        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
-    }
-    return 1;
-}
-
-apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers)
-{
-    h1_ctx x;
-
-    req->method    = method;
-    req->scheme    = scheme;
-    req->authority = authority;
-    req->path      = path;
-
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
-
-    x.pool = pool;
-    x.headers = req->headers;
-    apr_table_do(set_h1_header, &x, headers, NULL);
-    return APR_SUCCESS;
 }
 
 /*******************************************************************************

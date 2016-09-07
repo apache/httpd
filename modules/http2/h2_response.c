@@ -174,7 +174,7 @@ h2_response *h2_response_die(int stream_id, apr_status_t type,
     int status = (type >= 200 && type < 600)? type : 500;
     
     date = apr_palloc(pool, APR_RFC822_DATE_LEN);
-    ap_recent_rfc822_date(date, req->request_time);
+    ap_recent_rfc822_date(date, req? req->request_time : apr_time_now());
     apr_table_setn(headers, "Date", date);
     apr_table_setn(headers, "Server", ap_get_server_banner());
     

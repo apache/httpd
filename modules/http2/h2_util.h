@@ -261,16 +261,10 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2_request helpers
  ******************************************************************************/
 
-struct h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                                  const char *scheme, const char *authority, 
-                                  const char *path, apr_table_t *header,
-                                  int serialize);
-struct h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize);
-
-apr_status_t h2_req_make(struct h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers);
+struct h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                                 const char *scheme, const char *authority, 
+                                 const char *path, apr_table_t *header,
+                                 int serialize);
 
 /*******************************************************************************
  * apr brigade helpers

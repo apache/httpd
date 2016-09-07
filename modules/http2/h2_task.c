@@ -89,7 +89,7 @@ static apr_status_t input_handle_eos(h2_task *task, request_rec *r,
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request? task->request->trailers : NULL;
+    apr_table_t *t = task->request->trailers;
 
     if (task->input.chunked) {
         apr_bucket_brigade *tmp = apr_brigade_split_ex(bb, b, NULL);
@@ -116,7 +116,7 @@ static apr_status_t input_append_eos(h2_task *task, request_rec *r)
 {
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request? task->request->trailers : NULL;
+    apr_table_t *t = task->request->trailers;
 
     if (task->input.chunked) {
         if (t && !apr_is_empty_table(t)) {
@@ -153,7 +153,7 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
     }
     
-    if (f->c->aborted || !task->request) {
+    if (f->c->aborted) {
         return APR_ECONNABORTED;
     }
     
@@ -578,8 +578,7 @@ apr_status_t h2_task_add_response(h2_task *task, h2_response *response)
 
 int h2_task_can_redo(h2_task *task) {
     if (task->response_sent
-        || (task->input.beam && h2_beam_was_received(task->input.beam)) 
-        || !task->request) {
+        || (task->input.beam && h2_beam_was_received(task->input.beam))) {
         /* cannot repeat that. */
         return 0;
     }
@@ -683,6 +682,10 @@ h2_task *h2_task_create(conn_rec *c, const h2_request *req,
     apr_pool_t *pool;
     h2_task *task;
     
+    ap_assert(mplx);
+    ap_assert(c);
+    ap_assert(req);
+
     apr_pool_create(&pool, c->pool);
     task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
@@ -691,7 +694,6 @@ h2_task *h2_task_create(conn_rec *c, const h2_request *req,
                       c->id, req->id);
         return NULL;
     }
-    
     task->id          = apr_psprintf(pool, "%ld-%d", c->id, req->id);
     task->stream_id   = req->id;
     task->c           = c;
