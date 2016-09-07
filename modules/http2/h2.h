@@ -130,7 +130,6 @@ struct h2_request {
     apr_off_t content_length;
     
     unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
-    unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
     unsigned int body    : 1; /* iff this request has a body */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
     unsigned int push_policy; /* which push policy to use for this request */

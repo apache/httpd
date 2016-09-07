@@ -143,9 +143,13 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
     apr_pool_tag(stream_pool, "h2_stream");
     
     stream = h2_stream_open(stream_id, stream_pool, session, 
-                            initiated_on, req);
+                            initiated_on);
     nghttp2_session_set_stream_user_data(session->ngh2, stream_id, stream);
     h2_ihash_add(session->streams, stream);
+    
+    if (req) {
+        h2_stream_set_request(stream, req);
+    }
     
     if (H2_STREAM_CLIENT_INITIATED(stream_id)) {
         if (stream_id > session->remote.emitted_max) {
@@ -500,7 +504,7 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
                           session->id, (int)frame->hd.stream_id,
                           (int)frame->rst_stream.error_code);
             stream = get_stream(session, frame->hd.stream_id);
-            if (stream && stream->request && stream->request->initiated_on) {
+            if (stream && stream->initiated_on) {
                 ++session->pushes_reset;
             }
             else {
@@ -1078,7 +1082,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
             return status;
         }
         
-        status = h2_stream_set_request(stream, session->r);
+        status = h2_stream_set_request_rec(stream, session->r);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -1508,8 +1512,7 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
          *    as the client, having this resource in its cache, might
          *    also have the pushed ones as well.
          */
-        if (stream->request 
-            && !stream->request->initiated_on
+        if (!stream->initiated_on
             && h2_response_is_final(response)
             && H2_HTTP_2XX(response->http_status)
             && h2_session_push_enabled(session)) {
@@ -1529,7 +1532,7 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
         stream->submitted = h2_response_is_final(response);
         session->have_written = 1;
         
-        if (stream->request && stream->request->initiated_on) {
+        if (stream->initiated_on) {
             ++session->pushes_submitted;
         }
         else {

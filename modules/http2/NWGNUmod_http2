@@ -370,7 +370,6 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) h2_headers_add_h1,$(DL) >> $@
 	@echo $(DL) h2_req_create,$(DL) >> $@
 	@echo $(DL) h2_req_createn,$(DL) >> $@
-	@echo $(DL) h2_req_make,$(DL) >> $@
 	@echo $(DL) h2_util_camel_case_header,$(DL) >> $@
 	@echo $(DL) h2_util_frame_print,$(DL) >> $@
 	@echo $(DL) h2_util_ngheader_make_req,$(DL) >> $@

@@ -30,6 +30,7 @@
 #include <scoreboard.h>
 
 #include "h2_private.h"
+#include "h2_config.h"
 #include "h2_push.h"
 #include "h2_request.h"
 #include "h2_util.h"
@@ -42,15 +43,39 @@ static apr_status_t inspect_clen(h2_request *req, const char *s)
     return (s == end)? APR_EINVAL : APR_SUCCESS;
 }
 
-apr_status_t h2_request_rwrite(h2_request *req, apr_pool_t *pool, 
-                               request_rec *r)
+typedef struct {
+    apr_table_t *headers;
+    apr_pool_t *pool;
+} h1_ctx;
+
+static int set_h1_header(void *ctx, const char *key, const char *value)
 {
-    apr_status_t status;
-    const char *scheme, *authority;
+    h1_ctx *x = ctx;
+    size_t klen = strlen(key);
+    if (!h2_req_ignore_header(key, klen)) {
+        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
+    }
+    return 1;
+}
+
+apr_status_t h2_request_rcreate(h2_request **preq, apr_pool_t *pool, 
+                                int stream_id, int initiated_on,
+                                request_rec *r)
+{
+    h2_request *req;
+    const char *scheme, *authority, *path;
+    h1_ctx x;
     
+    *preq = NULL;
     scheme = apr_pstrdup(pool, r->parsed_uri.scheme? r->parsed_uri.scheme
               : ap_http_scheme(r));
-    authority = (r->hostname ? apr_pstrdup(pool, r->hostname) : "");
+    authority = apr_pstrdup(pool, r->hostname);
+    path = apr_uri_unparse(pool, &r->parsed_uri, APR_URI_UNP_OMITSITEPART);
+    
+    if (!r->method || !scheme || !r->hostname || !path) {
+        return APR_EINVAL;
+    }
+
     if (!ap_strchr_c(authority, ':') && r->server && r->server->port) {
         apr_port_t defport = apr_uri_port_of_scheme(scheme);
         if (defport != r->server->port) {
@@ -60,11 +85,25 @@ apr_status_t h2_request_rwrite(h2_request *req, apr_pool_t *pool,
         }
     }
     
-    status = h2_req_make(req, pool, apr_pstrdup(pool, r->method), scheme, 
-                         authority, apr_uri_unparse(pool, &r->parsed_uri, 
-                                                    APR_URI_UNP_OMITSITEPART),
-                         r->headers_in);
-    return status;
+    req = apr_pcalloc(pool, sizeof(*req));
+    req->id = stream_id;
+    req->initiated_on = initiated_on;
+    req->method    = apr_pstrdup(pool, r->method);
+    req->scheme    = scheme;
+    req->authority = authority;
+    req->path      = path;
+    req->headers   = apr_table_make(pool, 10);
+    if (r->server) {
+        req->serialize = h2_config_geti(h2_config_sget(r->server), 
+                                        H2_CONF_SER_HEADERS);
+    }
+
+    x.pool = pool;
+    x.headers = req->headers;
+    apr_table_do(set_h1_header, &x, r->headers_in, NULL);
+    
+    *preq = req;
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_request_add_header(h2_request *req, apr_pool_t *pool, 
@@ -126,11 +165,6 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
 {
     const char *s;
     
-    if (req->eoh) {
-        /* already done */
-        return APR_SUCCESS;
-    }
-
     /* rfc7540, ch. 8.1.2.3:
      * - if we have :authority, it overrides any Host header 
      * - :authority MUST be ommited when converting h1->h2, so we
@@ -155,11 +189,13 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
                           req->id, s);
             return APR_EINVAL;
         }
+        req->body = 1;
     }
     else {
         /* no content-length given */
         req->content_length = -1;
-        if (!eos) {
+        req->body = !eos;
+        if (req->body) {
             /* We have not seen a content-length and have no eos,
              * simulate a chunked encoding for our HTTP/1.1 infrastructure,
              * in case we have "H2SerializeHeaders on" here
@@ -175,7 +211,6 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool,
         }
     }
 
-    req->eoh = 1;
     h2_push_policy_determine(req, pool, push);
     
     /* In the presence of trailers, force behaviour of chunked encoding */

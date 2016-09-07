@@ -175,30 +175,18 @@ static apr_status_t stream_pool_cleanup(void *ctx)
 }
 
 h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
-                          int initiated_on, const h2_request *creq)
+                          int initiated_on)
 {
-    h2_request *req;
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
     
-    stream->id        = id;
-    stream->created   = apr_time_now();
-    stream->state     = H2_STREAM_ST_IDLE;
-    stream->pool      = pool;
-    stream->session   = session;
+    stream->id           = id;
+    stream->initiated_on = initiated_on;
+    stream->created      = apr_time_now();
+    stream->state        = H2_STREAM_ST_IDLE;
+    stream->pool         = pool;
+    stream->session      = session;
+    
     set_state(stream, H2_STREAM_ST_OPEN);
-    
-    if (creq) {
-        /* take it into out pool and assure correct id's */
-        req = h2_request_clone(pool, creq);
-        req->id = id;
-        req->initiated_on = initiated_on;
-    }
-    else {
-        req = h2_req_create(id, pool, 
-                h2_config_geti(session->config, H2_CONF_SER_HEADERS));
-    }
-    stream->request = req; 
-    
     apr_pool_cleanup_register(pool, stream, stream_pool_cleanup, 
                               apr_pool_cleanup_null);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
@@ -276,24 +264,32 @@ struct h2_response *h2_stream_get_unsent_response(h2_stream *stream)
     return unsent;
 }
 
-apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r)
+apr_status_t h2_stream_set_request_rec(h2_stream *stream, request_rec *r)
 {
+    h2_request *req;
     apr_status_t status;
-    AP_DEBUG_ASSERT(stream);
+
+    ap_assert(stream->request == NULL);
+    ap_assert(stream->rtmp == NULL);
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
-    set_state(stream, H2_STREAM_ST_OPEN);
-    status = h2_request_rwrite(stream->request, stream->pool, r);
-    stream->request->serialize = h2_config_geti(h2_config_sget(r->server), 
-                                                H2_CONF_SER_HEADERS);
+    status = h2_request_rcreate(&req, stream->pool, stream->id,
+                                stream->initiated_on, r);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(03058)
-                  "h2_request(%d): rwrite %s host=%s://%s%s",
-                  stream->request->id, stream->request->method, 
-                  stream->request->scheme, stream->request->authority, 
-                  stream->request->path);
-
+                  "h2_request(%d): set_request_rec %s host=%s://%s%s",
+                  stream->id, req->method, req->scheme, req->authority, 
+                  req->path);
+    stream->rtmp = req;
     return status;
+}
+
+apr_status_t h2_stream_set_request(h2_stream *stream, const h2_request *r)
+{
+    ap_assert(stream->request == NULL);
+    ap_assert(stream->rtmp == NULL);
+    stream->rtmp = h2_request_clone(stream->pool, r);
+    return APR_SUCCESS;
 }
 
 apr_status_t h2_stream_add_header(h2_stream *stream,
@@ -301,6 +297,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *value, size_t vlen)
 {
     AP_DEBUG_ASSERT(stream);
+    
     if (!stream->response) {
         if (name[0] == ':') {
             if ((vlen) > stream->session->s->limit_req_line) {
@@ -336,14 +333,20 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     }
     
     if (h2_stream_is_scheduled(stream)) {
-        return h2_request_add_trailer(stream->request, stream->pool,
+        /* FIXME: this is not clean. we modify a struct that is being processed
+         * by another thread potentially. */
+        return h2_request_add_trailer((h2_request*)stream->request, stream->pool,
                                       name, nlen, value, vlen);
     }
     else {
-        if (!input_open(stream)) {
+        if (!stream->rtmp) {
+            stream->rtmp = h2_req_create(stream->id, stream->pool, 
+                                         NULL, NULL, NULL, NULL, NULL, 0);
+        }
+        if (stream->state != H2_STREAM_ST_OPEN) {
             return APR_ECONNRESET;
         }
-        return h2_request_add_header(stream->request, stream->pool,
+        return h2_request_add_header(stream->rtmp, stream->pool,
                                      name, nlen, value, vlen);
     }
 }
@@ -351,52 +354,59 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
 apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled, 
                                 h2_stream_pri_cmp *cmp, void *ctx)
 {
-    apr_status_t status;
+    apr_status_t status = APR_EINVAL;
     AP_DEBUG_ASSERT(stream);
     AP_DEBUG_ASSERT(stream->session);
     AP_DEBUG_ASSERT(stream->session->mplx);
     
-    if (!output_open(stream)) {
-        return APR_ECONNRESET;
-    }
-    if (stream->scheduled) {
-        return APR_EINVAL;
-    }
-    if (eos) {
-        close_input(stream);
-    }
-    
-    if (stream->response) {
-        /* already have a resonse, probably a HTTP error code */
-        return h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
-    }
-    
-    /* Seeing the end-of-headers, we have everything we need to 
-     * start processing it.
-     */
-    status = h2_request_end_headers(stream->request, stream->pool, 
-                                    eos, push_enabled);
-    if (status == APR_SUCCESS) {
-        stream->request->body = !eos;
-        stream->scheduled = 1;
-        stream->input_remaining = stream->request->content_length;
+    if (!stream->scheduled) {
+        if (eos) {
+            close_input(stream);
+        }
         
-        status = h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                      "h2_stream(%ld-%d): scheduled %s %s://%s%s",
-                      stream->session->id, stream->id,
-                      stream->request->method, stream->request->scheme,
-                      stream->request->authority, stream->request->path);
-    }
-    else {
-        h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
-                      "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
-                      stream->session->id, stream->id,
-                      stream->request->method, stream->request->scheme,
-                      stream->request->authority, stream->request->path);
+        if (stream->response) {
+            /* already have a resonse, probably a HTTP error code */
+            return h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
+        }
+        else if (!stream->request && stream->rtmp) {
+            /* This is the common case: a h2_request was being assembled, now
+             * it gets finalized and checked for completness */
+            status = h2_request_end_headers(stream->rtmp, stream->pool, 
+                                            eos, push_enabled);
+            if (status == APR_SUCCESS) {
+                stream->rtmp->id = stream->id;
+                stream->rtmp->initiated_on = stream->initiated_on;
+                stream->rtmp->serialize = h2_config_geti(stream->session->config,
+                                                         H2_CONF_SER_HEADERS); 
+
+                stream->request = stream->rtmp;
+                stream->rtmp = NULL;
+                stream->scheduled = 1;
+                stream->input_remaining = stream->request->content_length;
+                
+                status = h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                              "h2_stream(%ld-%d): scheduled %s %s://%s%s "
+                              "clen=%ld, body=%d, chunked=%d",
+                              stream->session->id, stream->id,
+                              stream->request->method, stream->request->scheme,
+                              stream->request->authority, stream->request->path,
+                              (long)stream->request->content_length,
+                              stream->request->body, stream->request->chunked);
+                return status;
+            }
+        }
+        else {
+            status = APR_ECONNRESET;
+        }
     }
     
+    h2_stream_rst(stream, H2_ERR_INTERNAL_ERROR);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, stream->session->c,
+                  "h2_stream(%ld-%d): RST=2 (internal err) %s %s://%s%s",
+                  stream->session->id, stream->id,
+                  stream->request->method, stream->request->scheme,
+                  stream->request->authority, stream->request->path);
     return status;
 }
 
@@ -435,11 +445,11 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     if (!stream->input) {
         return APR_EOF;
     }
-    if (input_closed(stream) || !stream->request->eoh) {
+    if (input_closed(stream) || !stream->request) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_stream(%ld-%d): writing denied, closed=%d, eoh=%d", 
                       stream->session->id, stream->id, input_closed(stream),
-                      stream->request->eoh);
+                      stream->request != NULL);
         return APR_EINVAL;
     }
 
@@ -583,8 +593,12 @@ apr_status_t h2_stream_set_error(h2_stream *stream, int http_status)
     if (stream->submitted) {
         return APR_EINVAL;
     }
-    response = h2_response_die(stream->id, http_status, stream->request, 
-                               stream->pool);
+    if (stream->rtmp) {
+        stream->request = stream->rtmp;
+        stream->rtmp = NULL;
+    }
+    response = h2_response_die(stream->id, http_status, 
+                               stream->request, stream->pool);
     return h2_stream_add_response(stream, response, NULL);
 }
 
@@ -714,7 +728,7 @@ apr_table_t *h2_stream_get_trailers(h2_stream *stream)
 
 const h2_priority *h2_stream_get_priority(h2_stream *stream)
 {
-    if (stream->response && stream->request && stream->request->initiated_on) {
+    if (stream->response && stream->initiated_on) {
         const char *ctype = apr_table_get(stream->response->headers, "content-type");
         if (ctype) {
             /* FIXME: Not good enough, config needs to come from request->server */

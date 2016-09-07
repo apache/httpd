@@ -43,12 +43,14 @@ typedef struct h2_stream h2_stream;
 
 struct h2_stream {
     int id;                     /* http2 stream id */
+    int initiated_on;           /* initiating stream id (PUSH) or 0 */
     apr_time_t created;         /* when stream was created */
     h2_stream_state_t state;    /* http/2 state of this stream */
     struct h2_session *session; /* the session this stream belongs to */
     
     apr_pool_t *pool;           /* the memory pool for this stream */
-    struct h2_request *request; /* the request made in this stream */
+    const struct h2_request *request; /* the request made in this stream */
+    struct h2_request *rtmp;    /* request being assembled */
     struct h2_bucket_beam *input;
     int request_headers_added;  /* number of request headers added */
     
@@ -83,7 +85,7 @@ struct h2_stream {
  * @return the newly opened stream
  */
 h2_stream *h2_stream_open(int id, apr_pool_t *pool, struct h2_session *session,
-                          int initiated_on, const struct h2_request *req);
+                          int initiated_on);
 
 /**
  * Cleanup any resources still held by the stream, called by last bucket.
@@ -111,6 +113,13 @@ void h2_stream_cleanup(h2_stream *stream);
  */
 apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
 
+/**
+ * Initialize stream->request with the given h2_request.
+ * 
+ * @param stream stream to write request to
+ * @param r the request with all the meta data
+ */
+apr_status_t h2_stream_set_request(h2_stream *stream, const h2_request *r);
 
 /**
  * Initialize stream->request with the given request_rec.
@@ -118,7 +127,7 @@ apr_pool_t *h2_stream_detach_pool(h2_stream *stream);
  * @param stream stream to write request to
  * @param r the request with all the meta data
  */
-apr_status_t h2_stream_set_request(h2_stream *stream, request_rec *r);
+apr_status_t h2_stream_set_request_rec(h2_stream *stream, request_rec *r);
 
 /*
  * Add a HTTP/2 header (including pseudo headers) or trailer 
