@@ -249,6 +249,16 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      if APR_XML_X2T_PARSED is defined, and the patch was tested with
      both apr-util v1.6 and apr-util v1.5.
 
+  * mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
+    once-per-restart msg (I guess the concern was that the RNG
+    could block after this message)
+
+      AH01757: generating secret for digest authentication ...
+
+    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
+    2.4.x patch: Just change the loglevel to DEBUG.
+    +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * core: Add ap_errorlog_provider to make ErrorLog logging modular. This
