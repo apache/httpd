@@ -661,7 +661,7 @@ recv_again:
                                     break;
                                 }
                                 else if (status == HTTP_NOT_MODIFIED
-                                         || HTTP_PRECONDITION_FAILED) {
+                                         || status == HTTP_PRECONDITION_FAILED) {
                                     /* Special 'status' cases handled:
                                      * 1) HTTP 304 response MUST NOT contain
                                      *    a message-body, ignore it.
