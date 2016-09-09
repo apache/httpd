@@ -160,9 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jchampion/patches/2.4.x-autoconf-cleanup.patch
                   (combines both patches and corrects for differences in the
                   AC_CONFIG_FILES list)
-     +1: jchampion
-     ylavic: some conflicts with r1753315 in 2.4.x's configure.in.
-     jchampion: added a 2.4.x backport patch.
+     +1: jchampion, ylavic
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
