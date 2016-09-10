@@ -49,6 +49,7 @@
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#connecting">Connecting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">SECURITY WARNING</a></li>
@@ -80,6 +81,28 @@
     described in <a href="http://www.apachetutor.org/dev/reslist">this
     article at ApacheTutor</a>.  Note that <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
     supersedes the modules presented in that article.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="connecting" id="connecting">Connecting</a></h2>
+
+    <p>To connect to your database, you'll need to specify
+    a driver, and connection parameters. These vary from
+    one database engine to another. For example, to connect
+    to mysql, do the following:</p>
+
+<pre class="prettyprint lang-config">DBDriver mysql
+DBDParams host=localhost,dbname=pony,user=shetland,pass=appaloosa</pre>
+
+
+    <p>You can then use this connection in a variety of other
+    modules, including <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+    <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>, and <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>.
+    Further usage examples appear in each of those modules'
+    documentation.</p>
+
+    <p>See <code class="directive">DBDParams</code> for connection string
+    information for each of the supported database drivers.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="API" id="API">Apache DBD API</a></h2>

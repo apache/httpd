@@ -131,7 +131,7 @@ after a crash</td></tr>
 
     <p>There are already two modules, <code>mod_whatkilledus</code> and
     <code>mod_backtrace</code> that make use of this hook. Please have a
-    look at Jeff Trawick's <a href="http://people.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a> for more information about these.</p>
+    look at Jeff Trawick's <a href="https://emptyhammock.com/projects/httpd/diag/">EnableExceptionHook site</a> for more information about these.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
