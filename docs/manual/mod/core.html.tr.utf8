@@ -1972,10 +1972,8 @@ için iptal edilmiştir.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [StrictWhitespace|UnsafeWhitespace] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>HttpProtocolOptions Strict StrictURL StrictWhitespace 
-LenientMethods Allow0.9</code></td></tr>
+ [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
