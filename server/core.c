@@ -3480,7 +3480,8 @@ enum server_token_type {
     SrvTk_MINIMAL,       /* eg: Apache/2.0.41 */
     SrvTk_OS,            /* eg: Apache/2.0.41 (UNIX) */
     SrvTk_FULL,          /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
-    SrvTk_PRODUCT_ONLY   /* eg: Apache */
+    SrvTk_PRODUCT_ONLY,  /* eg: Apache */
+    SrvTk_OFF            /* eg: Nothing at all */
 };
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
@@ -3544,7 +3545,10 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 static void set_banner(apr_pool_t *pconf)
 {
-    if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
+    if (ap_server_tokens == SrvTk_OFF) {
+        ap_add_version_component(pconf, "");
+    }
+    else if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
     }
     else if (ap_server_tokens == SrvTk_MINIMAL) {
@@ -3593,6 +3597,9 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
     }
     else if (!ap_cstr_casecmp(arg, "Prod") || !ap_cstr_casecmp(arg, "ProductOnly")) {
         ap_server_tokens = SrvTk_PRODUCT_ONLY;
+    }
+    else if (!ap_cstr_casecmp(arg, "Off")) {
+        ap_server_tokens = SrvTk_OFF;
     }
     else if (!ap_cstr_casecmp(arg, "Full")) {
         ap_server_tokens = SrvTk_FULL;

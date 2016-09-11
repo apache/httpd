@@ -3029,7 +3029,7 @@ Dokumenten</description>
 <name>ServerTokens</name>
 <description>Konfiguriert den HTTP-Response-Header
 <code>Server</code></description>
-<syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
+<syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -3069,6 +3069,10 @@ Dokumenten</description>
 
       <dd>Der Server sendet (<em>z.B.</em>): <code>Server: Apache/2.0.41
       (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+
+      <dt><code>ServerTokens Off</code></dt>
+
+      <dd>Der Server sendet keinen <code>Server</code>-Header</dd>
     </dl>
 
     <p>Diese Einstellung gilt f&uuml;r den gesamten Server und kann nicht

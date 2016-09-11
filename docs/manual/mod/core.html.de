@@ -3263,7 +3263,7 @@ Dokumenten</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Konfiguriert den HTTP-Response-Header
 <code>Server</code></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -3304,6 +3304,10 @@ Dokumenten</td></tr>
 
       <dd>Der Server sendet (<em>z.B.</em>): <code>Server: Apache/2.0.41
       (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+
+      <dt><code>ServerTokens Off</code></dt>
+
+      <dd>Der Server sendet keinen <code>Server</code>-Header</dd>
     </dl>
 
     <p>Diese Einstellung gilt für den gesamten Server und kann nicht

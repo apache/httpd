@@ -49,7 +49,7 @@ AccessFileName .htaccess
 # This directive configures what you return as the Server HTTP response
 # Header. The default is 'Full' which sends information about the OS-Type
 # and compiled in modules.
-# Set to one of:  Full | OS | Minor | Minimal | Major | Prod
+# Set to one of:  Full | OS | Minor | Minimal | Major | Prod | Off
 # where Full conveys the most information, and Prod the least.
 #
 ServerTokens Full
