@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
             flags |= T_ESCAPE_PATH_SEGMENT;
         }
 
-        if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
+        if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:;@&=/~", c)) {
             flags |= T_OS_ESCAPE_PATH;
         }
 

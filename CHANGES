@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Permit unencoded ';' characters to appear in proxy requests and
+     Location: response headers. Corresponds to modern browser behavior.
+     [William Rowe]
+
   *) mpm_winnt: Prevent a denial of service when the 'data' AcceptFilter is in
      use by replacing it with the 'connect' filter. PR 59970. [Jacob Champion]
 
