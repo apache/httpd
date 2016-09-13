@@ -265,7 +265,7 @@ LogLevel alert rewrite:trace3
 
       <p>When a relative substitution is made
          in directory (htaccess) context and <directive module="mod_rewrite"
-         >RewriteBase</directive> has not been set, this module uses some
+         >RewriteBase</directive> has not been set, this option uses some
          extended URL and filesystem context information to change the
          relative substitution back into a URL. Modules such as
          <module>mod_userdir</module> and <module>mod_alias</module>
