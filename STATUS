@@ -117,6 +117,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) autoconf: minor cleanup and removal of some dead code.
+     trunk patch: http://svn.apache.org/r1753315
+                  http://svn.apache.org/r1753316
+     2.4.x patch: http://home.apache.org/~jchampion/patches/2.4.x-autoconf-cleanup.patch
+                  (combines both patches and corrects for differences in the
+                  AC_CONFIG_FILES list)
+     +1: jchampion, ylavic, jorton
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -153,14 +161,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1752332
                   http://svn.apache.org/r1752333
      +1: jchampion, jim (by inspection)
-
-  *) autoconf: minor cleanup and removal of some dead code.
-     trunk patch: http://svn.apache.org/r1753315
-                  http://svn.apache.org/r1753316
-     2.4.x patch: http://home.apache.org/~jchampion/patches/2.4.x-autoconf-cleanup.patch
-                  (combines both patches and corrects for differences in the
-                  AC_CONFIG_FILES list)
-     +1: jchampion, ylavic
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1702948
                   http://svn.apache.org/r1759415
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1702948_and_co.patch
-     +1: ylavic
+     +1: ylavic, jorton, 
 
   *) mod_proxy_fcgi: read the whole FCGI response even for HTTP Precondition
      failed (412) responses to avoid subsequent bogus reads and
@@ -273,6 +273,10 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      minfrin: Yes, as you can see in the patch everything applies only
      if APR_XML_X2T_PARSED is defined, and the patch was tested with
      both apr-util v1.6 and apr-util v1.5.
+     -1: jorton, breaks binary backwards compat per dev@ discuss
+         msgid <20160902120654.GA12674@redhat.com>
+         (& also, making the structure change with apr-util version
+         means it breaks binary compat across an apr-util upgrade?)
 
   * mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
     once-per-restart msg (I guess the concern was that the RNG
