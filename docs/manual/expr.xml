@@ -475,7 +475,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Get HTTP response header</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
         <td>Lookup request environment variable (as a shortcut,
-        <code>v</code> can also be used to access variables). 
+        <code>v</code> can also be used to access variables).</td>
         <td>ordering</td></tr>
     <tr><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td><td></td></tr>
