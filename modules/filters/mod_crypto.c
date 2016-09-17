@@ -118,13 +118,14 @@ static const char *parse_pass_conf_binary(cmd_parms *cmd,
     char ps = *arg;
 
     if ('f' == ps && !strncmp(arg, "file:", 5)) {
-        arg += 5;
+        const char *name;
 
+        arg += 5;
         if (!*arg) {
             return apr_pstrcat(cmd->pool, "No filename specified", NULL);
         }
 
-        const char *name = ap_server_root_relative(cmd->temp_pool, arg);
+        name = ap_server_root_relative(cmd->temp_pool, arg);
         if (name) {
             apr_file_t *file;
 
