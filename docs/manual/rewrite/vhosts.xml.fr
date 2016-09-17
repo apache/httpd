@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1760976 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,50 +25,50 @@
 <manualpage metafile="vhosts.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>H&eacute;bergement virtuel de masse avec mod_rewrite</title>
+<title>Hébergement virtuel de masse avec mod_rewrite</title>
 
 <summary>
 
-<p>Ce document est un compl&eacute;ment &agrave; la <a
-href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
-<module>mod_rewrite</module>. Il d&eacute;crit comment cr&eacute;er des serveurs
-virtuels dynamiquement configur&eacute;s en utilisant
+<p>Ce document est un complément à la <a
+href="../mod/mod_rewrite.html">documentation de référence</a> du module
+<module>mod_rewrite</module>. Il décrit comment créer des serveurs
+virtuels dynamiquement configurés en utilisant
 <module>mod_rewrite</module>.</p>
 
 <note type="warning">L'utilisation de mod_rewrite n'est pas la meilleure
-m&eacute;thode pour configurer des serveurs virtuels. Vous devez dans un
-premier temps tenter de r&eacute;soudre votre probl&egrave;me via ces  <a
-href="../vhosts/mass.html">d'autres m&eacute;thodes</a> avant d'avoir
-recours &agrave; mod_rewrite. Voir aussi le document <a
-href="avoid.html#vhosts">Comment &eacute;viter l'utilisation de
+méthode pour configurer des serveurs virtuels. Vous devez dans un
+premier temps tenter de résoudre votre problème via ces  <a
+href="../vhosts/mass.html">d'autres méthodes</a> avant d'avoir
+recours à mod_rewrite. Voir aussi le document <a
+href="avoid.html#vhosts">Comment éviter l'utilisation de
 mod_rewrite</a>.</note>
 
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
-<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
-<seealso><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="access.html">Contrôle d'accès</a></seealso>
 <!--<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>-->
 <seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="per-hostname">
 
-  <title>Serveurs virtuels pour des noms d'h&ocirc;tes arbitraires</title>
+  <title>Serveurs virtuels pour des noms d'hôtes arbitraires</title>
 
   <dl>
     <dt>Description :</dt>
 
     <dd>
-    <p>Nous voulons cr&eacute;er automatiquement un serveur virtuel pour tout
-    nom d'h&ocirc;te qui peut &ecirc;tre r&eacute;solu dans notre domaine, sans avoir &agrave;
-    cr&eacute;er de nouvelle section VirtualHost.</p>
+    <p>Nous voulons créer automatiquement un serveur virtuel pour tout
+    nom d'hôte qui peut être résolu dans notre domaine, sans avoir à
+    créer de nouvelle section VirtualHost.</p>
 
-    <p>Dans cet exemple, nous supposons que nous utilisons le nom d'h&ocirc;te
+    <p>Dans cet exemple, nous supposons que nous utilisons le nom d'hôte
     <code>www.<strong>SITE</strong>.example.com</code> pour chaque
     utilisateur, et que nous servons leur contenu depuis
     <code>/home/<strong>SITE</strong>/www</code>.</p>
@@ -90,31 +90,31 @@ RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"
 <dt>Discussion</dt>
     <dd>
 
-    <note type="warning">Vous devez v&eacute;rifier le bon fonctionnement de la
-    r&eacute;solution DNS - Apache ne g&egrave;re pas la r&eacute;solution de nom. Vous
-    devrez cr&eacute;er soit des enregistrements CNAME pour chaque nom d'h&ocirc;te,
-    soit un enregistrement DNS avec caract&egrave;res g&eacute;n&eacute;riques. La cr&eacute;ation
+    <note type="warning">Vous devez vérifier le bon fonctionnement de la
+    résolution DNS - Apache ne gère pas la résolution de nom. Vous
+    devrez créer soit des enregistrements CNAME pour chaque nom d'hôte,
+    soit un enregistrement DNS avec caractères génériques. La création
     des enregistrements DNS est en dehors du sujet de ce document.</note>
 
 <p>La directive RewriteMap interne <code>tolower</code> permet de
-s'assurer que les noms d'h&ocirc;tes utilis&eacute;s seront tous en minuscules, de
-fa&ccedil;on &agrave; &eacute;viter toute ambiguit&eacute; dans la structure des r&eacute;pertoires qui
-doit &ecirc;tre cr&eacute;&eacute;e.</p>
+s'assurer que les noms d'hôtes utilisés seront tous en minuscules, de
+façon à éviter toute ambiguité dans la structure des répertoires qui
+doit être créée.</p>
 
-<p>Les contenus des parenth&egrave;ses utilis&eacute;es dans une directive <directive
-module="mod_rewrite">RewriteCond</directive> sont enregistr&eacute;s dans les
-r&eacute;f&eacute;rences arri&egrave;res <code>%1</code>, <code>%2</code>, etc..., alors que
-les contenus des parenth&egrave;ses utilis&eacute;es dans une directive <directive
+<p>Les contenus des parenthèses utilisées dans une directive <directive
+module="mod_rewrite">RewriteCond</directive> sont enregistrés dans les
+références arrières <code>%1</code>, <code>%2</code>, etc..., alors que
+les contenus des parenthèses utilisées dans une directive <directive
 module="mod_rewrite">RewriteRule</directive> le sont dans les
-r&eacute;f&eacute;rences arri&egrave;res <code>$1</code>, <code>$2</code>, etc...</p>
+références arrières <code>$1</code>, <code>$2</code>, etc...</p>
 
 <p>
-Comme c'est le cas pour de nombreuses techniques discut&eacute;es dans ce
-document, mod_rewrite n'est vraiment pas la meilleure m&eacute;thode pour
-accomplir cette t&acirc;che. Vous devez plut&ocirc;t vous tourner vers
-<module>mod_vhost_alias</module>, car ce dernier sera bien plus &agrave; m&ecirc;me
-de g&eacute;rer tout ce qui est au del&agrave; du domaine des fichiers statiques,
-comme les contenus dynamiques et la r&eacute;solution des alias.
+Comme c'est le cas pour de nombreuses techniques discutées dans ce
+document, mod_rewrite n'est vraiment pas la meilleure méthode pour
+accomplir cette tâche. Vous devez plutôt vous tourner vers
+<module>mod_vhost_alias</module>, car ce dernier sera bien plus à même
+de gérer tout ce qui est au delà du domaine des fichiers statiques,
+comme les contenus dynamiques et la résolution des alias.
 </p>
     </dd>
   </dl>
@@ -125,24 +125,24 @@ comme les contenus dynamiques et la r&eacute;solution des alias.
 virtuels via <module>mod_rewrite</module></title>
 
     <p>Cet extrait du fichier <code>httpd.conf</code> permet d'obtenir
-    le m&ecirc;me r&eacute;sultat que <a href="#per-hostname">le premier exemple</a>.
-    La premi&egrave;re moiti&eacute; est tr&egrave;s similaire &agrave; la partie correspondante
-    ci-dessus, except&eacute; quelques modifications requises &agrave; des fins de
-    compatibilit&eacute; ascendante et pour faire en sorte que la partie
-    <code>mod_rewrite</code> fonctionne correctement ; la seconde moiti&eacute;
+    le même résultat que <a href="#per-hostname">le premier exemple</a>.
+    La première moitié est très similaire à la partie correspondante
+    ci-dessus, excepté quelques modifications requises à des fins de
+    compatibilité ascendante et pour faire en sorte que la partie
+    <code>mod_rewrite</code> fonctionne correctement ; la seconde moitié
     configure <code>mod_rewrite</code> pour effectuer le travail
     proprement dit.</p>
 
-    <p>Comme <code>mod_rewrite</code> s'ex&eacute;cute avant tout autre module
+    <p>Comme <code>mod_rewrite</code> s'exécute avant tout autre module
     de traduction d'URI (comme <code>mod_alias</code>), il faut lui
-    ordonner explicitement d'ignorer toute URL susceptible d'&ecirc;tre
-    trait&eacute;e par ces autres modules. Et comme ces r&egrave;gles auraient sinon
-    court-circuit&eacute; toute directive <code>ScriptAlias</code>, nous devons
-    faire en sorte que <code>mod_rewrite</code> d&eacute;clare explicitement
+    ordonner explicitement d'ignorer toute URL susceptible d'être
+    traitée par ces autres modules. Et comme ces règles auraient sinon
+    court-circuité toute directive <code>ScriptAlias</code>, nous devons
+    faire en sorte que <code>mod_rewrite</code> déclare explicitement
     ces correspondances.</p>
 
 <highlight language="config">
-# extrait le nom de serveur de l'en-t&ecirc;te Host:
+# extrait le nom de serveur de l'en-tête Host:
 UseCanonicalName Off
 
 # journaux dissociables
@@ -150,18 +150,18 @@ LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog "logs/access_log" vcommon
 
 &lt;Directory "/www/hosts"&gt;
-    # ExecCGI est n&eacute;cessaire ici car on ne peut pas forcer l'ex&eacute;cution
-    # des CGI &agrave; la mani&egrave;re de ScriptAlias
+    # ExecCGI est nécessaire ici car on ne peut pas forcer l'exécution
+    # des CGI à la manière de ScriptAlias
     Options FollowSymLinks ExecCGI
 &lt;/Directory&gt;
 
 RewriteEngine On
 
-# un nom de serveur extrait d'un en-t&ecirc;te Host: peut &ecirc;tre dans n'importe
+# un nom de serveur extrait d'un en-tête Host: peut être dans n'importe
 # quelle casse
 
 ## on s'occupe tout d'abord des documents normaux :<br />
-# permet &agrave; Alias "/icons/" de fonctionner - r&eacute;p&eacute;ter pour les autres
+# permet à Alias "/icons/" de fonctionner - répéter pour les autres
 RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # permet aux CGIs de fonctionner
 RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
@@ -177,15 +177,15 @@ RewriteRule  "^/(.*)$" "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=c
 </section>
 
 <section id="xtra-conf"><title>Utilisation d'un fichier de configuration
-du serveur virtuel s&eacute;par&eacute;</title>
+du serveur virtuel séparé</title>
 
-    <p>Cette construction utilise des fonctionnalit&eacute;s plus avanc&eacute;es de
+    <p>Cette construction utilise des fonctionnalités plus avancées de
     <module>mod_rewrite</module> pour effectuer la traduction depuis le
-    serveur virtuel vers la racine des documents, &agrave; partir d'un fichier
-    de configuration s&eacute;par&eacute;. Elle est plus souple mais n&eacute;cessite une
-    configuration plus compliqu&eacute;e.</p>
+    serveur virtuel vers la racine des documents, à partir d'un fichier
+    de configuration séparé. Elle est plus souple mais nécessite une
+    configuration plus compliquée.</p>
 
-    <p>Le fichier <code>vhost.map</code> devrait ressembler &agrave; ceci :</p>
+    <p>Le fichier <code>vhost.map</code> devrait ressembler à ceci :</p>
 
 <example>
 www.client-1.example.com  /www/clients/1<br />
@@ -194,28 +194,28 @@ www.client-2.example.com  /www/clients/2<br />
 www.client-N.example.com  /www/clients/N<br />
 </example>
 
-    <p>On doit ajouter &agrave; <code>httpd.conf</code> :</p>
+    <p>On doit ajouter à <code>httpd.conf</code> :</p>
 
 <highlight language="config">
 RewriteEngine on
 
 RewriteMap   lowercase  int:tolower
 
-# d&eacute;finit le fichier de correspondances
+# définit le fichier de correspondances
 RewriteMap   vhost      "txt:/www/conf/vhost.map"
 
 # on s'occupe des alias comme ci-dessus
 RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
 RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
 RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
-# on effectue ici la remise en correspondance &agrave; base de fichier
+# on effectue ici la remise en correspondance à base de fichier
 RewriteCond  "${vhost:%1}"                  "^(/.*)$"
 RewriteRule  "^/(.*)$"                      "%1/docs/$1"
 
 RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
 RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
 RewriteCond  "${vhost:%1}"                  "^(/.*)$"
-RewriteRule  "^/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
+RewriteRule  "^/cgi-bin/(.*)$"              "%1/cgi-bin/$1" [H=cgi-script]
 </highlight>
 
 </section>
