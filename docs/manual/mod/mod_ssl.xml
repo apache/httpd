@@ -1292,13 +1292,9 @@ The following levels are available for <em>level</em>:</p>
      the client <em>has to</em> present a valid Certificate</li>
 <li><strong>optional_no_ca</strong>:
      the client may present a valid Certificate<br />
-     but it need not to be (successfully) verifiable.</li>
+     but it need not to be (successfully) verifiable. This option
+     cannot be relied upon for client authentication.  </li>
 </ul>
-<p>In practice only levels <strong>none</strong> and
-<strong>require</strong> are really interesting, because level
-<strong>optional</strong> doesn't work with all browsers and level
-<strong>optional_no_ca</strong> is actually against the idea of
-authentication (but can be used to establish SSL test pages, etc.)</p>
 <example><title>Example</title>
 <highlight language="config">
 SSLVerifyClient require
