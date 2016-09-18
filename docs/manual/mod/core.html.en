@@ -854,7 +854,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
        Support for the
        the other configuration sections was erroneously permitted by the initial
        implementation of this directive and is only preserved (with unintuitive 
-       results to maintain backward compatibility.</p>
+       results) to maintain backward compatibility.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
