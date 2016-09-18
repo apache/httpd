@@ -793,7 +793,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
        Support for the
        the other configuration sections was erroneously permitted by the initial
        implementation of this directive and is only preserved (with unintuitive 
-       results to maintain backward compatibility.</p>
+       results) to maintain backward compatibility.</p>
 </usage>
 </directivesynopsis>
 
