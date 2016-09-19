@@ -158,6 +158,8 @@ void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask)
  */
 apr_uint32_t h2_mplx_shutdown(h2_mplx *m);
 
+int h2_mplx_is_busy(h2_mplx *m);
+
 /*******************************************************************************
  * IO lifetime of streams.
  ******************************************************************************/

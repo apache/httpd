@@ -503,6 +503,9 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
     }
     status = h2_beam_receive(stream->output, stream->buffer, 
                              APR_NONBLOCK_READ, amount);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c,
+                  "h2_stream(%ld-%d): beam_received",
+                  stream->session->id, stream->id);
     /* The buckets we reveive are using the stream->buffer pool as
      * lifetime which is exactly what we want since this is stream->pool.
      *
