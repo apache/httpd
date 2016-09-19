@@ -223,6 +223,28 @@ static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
     }
 }
 
+static void report_consumption(h2_bucket_beam *beam, int force)
+{
+    if (force || beam->received_bytes != beam->reported_consumed_bytes) {
+        if (beam->consumed_fn) { 
+            beam->consumed_fn(beam->consumed_ctx, beam, beam->received_bytes
+                              - beam->reported_consumed_bytes);
+        }
+        beam->reported_consumed_bytes = beam->received_bytes;
+    }
+}
+
+static void report_production(h2_bucket_beam *beam, int force)
+{
+    if (force || beam->sent_bytes != beam->reported_produced_bytes) {
+        if (beam->produced_fn) { 
+            beam->produced_fn(beam->produced_ctx, beam, beam->sent_bytes
+                              - beam->reported_produced_bytes);
+        }
+        beam->reported_produced_bytes = beam->sent_bytes;
+    }
+}
+
 static apr_off_t calc_buffered(h2_bucket_beam *beam)
 {
     apr_off_t len = 0;
@@ -279,7 +301,9 @@ static apr_status_t r_wait_space(h2_bucket_beam *beam, apr_read_type_e block,
     *premain = calc_space_left(beam);
     while (!beam->aborted && *premain <= 0 
            && (block == APR_BLOCK_READ) && pbl->mutex) {
-        apr_status_t status = wait_cond(beam, pbl->mutex);
+        apr_status_t status;
+        report_production(beam, 1);
+        status = wait_cond(beam, pbl->mutex);
         if (APR_STATUS_IS_TIMEUP(status)) {
             return status;
         }
@@ -353,28 +377,6 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
             apr_thread_cond_broadcast(beam->m_cond);
         }
         leave_yellow(beam, &bl);
-    }
-}
-
-static void report_consumption(h2_bucket_beam *beam, int force)
-{
-    if (force || beam->received_bytes != beam->reported_consumed_bytes) {
-        if (beam->consumed_fn) { 
-            beam->consumed_fn(beam->consumed_ctx, beam, beam->received_bytes
-                              - beam->reported_consumed_bytes);
-        }
-        beam->reported_consumed_bytes = beam->received_bytes;
-    }
-}
-
-static void report_production(h2_bucket_beam *beam, int force)
-{
-    if (force || beam->sent_bytes != beam->reported_produced_bytes) {
-        if (beam->produced_fn) { 
-            beam->produced_fn(beam->produced_ctx, beam, beam->sent_bytes
-                              - beam->reported_produced_bytes);
-        }
-        beam->reported_produced_bytes = beam->sent_bytes;
     }
 }
 
@@ -877,6 +879,9 @@ transfer:
         }
         
         if (transferred) {
+            if (beam->m_cond) {
+                apr_thread_cond_broadcast(beam->m_cond);
+            }
             status = APR_SUCCESS;
         }
         else if (beam->closed) {
@@ -890,6 +895,9 @@ transfer:
             goto transfer;
         }
         else {
+            if (beam->m_cond) {
+                apr_thread_cond_broadcast(beam->m_cond);
+            }
             status = APR_EAGAIN;
         }
 leave:        

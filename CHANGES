@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: fix suspended handling for streams. Output could become
+     blocked in rare cases.
+
   *) mpm_winnt: Prevent a denial of service when the 'data' AcceptFilter is in
      use by replacing it with the 'connect' filter. PR 59970. [Jacob Champion]
 

@@ -1168,8 +1168,6 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
-    AP_DEBUG_ASSERT(!h2_stream_is_suspended(stream));
-    
     status = h2_stream_out_prepare(stream, &nread, &eos);
     if (nread) {
         *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
@@ -1179,9 +1177,10 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         case APR_SUCCESS:
             break;
             
+        case APR_ECONNABORTED:
         case APR_ECONNRESET:
             return nghttp2_submit_rst_stream(ng2s, NGHTTP2_FLAG_NONE,
-                stream->id, stream->rst_error);
+                stream->id, H2_STREAM_RST(stream, H2_ERR_INTERNAL_ERROR));
             
         case APR_EAGAIN:
             /* If there is no data available, our session will automatically
@@ -1431,7 +1430,17 @@ static apr_status_t on_stream_resume(void *ctx, int stream_id)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_stream(%ld-%d): on_resume", session->id, stream_id);
     if (stream) {
-        int rv = nghttp2_session_resume_data(session->ngh2, stream_id);
+        int rv;
+        if (stream->rst_error) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+                          "h2_stream(%ld-%d): RST_STREAM, err=%d",
+                          session->id, stream->id, stream->rst_error);
+            rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                           stream->id, stream->rst_error);
+        }
+        else {
+            rv = nghttp2_session_resume_data(session->ngh2, stream_id);
+        }
         session->have_written = 1;
         ap_log_cerror(APLOG_MARK, nghttp2_is_fatal(rv)?
                       APLOG_ERR : APLOG_DEBUG, 0, session->c,
@@ -1459,7 +1468,7 @@ static apr_status_t on_stream_response(void *ctx, int stream_id)
     if (!stream) {
         return APR_NOTFOUND;
     }
-    else if (!stream->response) {
+    else if (stream->rst_error || !stream->response) {
         int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03074)
@@ -1652,40 +1661,6 @@ static apr_status_t h2_session_read(h2_session *session, int block)
     return rstatus;
 }
 
-static int unsubmitted_iter(void *ctx, void *val)
-{
-    h2_stream *stream = val;
-    if (h2_stream_needs_submit(stream)) {
-        *((int *)ctx) = 1;
-        return 0;
-    }
-    return 1;
-}
-
-static int has_unsubmitted_streams(h2_session *session)
-{
-    int has_unsubmitted = 0;
-    h2_ihash_iter(session->streams, unsubmitted_iter, &has_unsubmitted);
-    return has_unsubmitted;
-}
-
-static int suspended_iter(void *ctx, void *val)
-{
-    h2_stream *stream = val;
-    if (h2_stream_is_suspended(stream)) {
-        *((int *)ctx) = 1;
-        return 0;
-    }
-    return 1;
-}
-
-static int has_suspended_streams(h2_session *session)
-{
-    int has_suspended = 0;
-    h2_ihash_iter(session->streams, suspended_iter, &has_suspended);
-    return has_suspended;
-}
-
 static const char *StateNames[] = {
     "INIT",      /* H2_SESSION_ST_INIT */
     "DONE",      /* H2_SESSION_ST_DONE */
@@ -1830,8 +1805,7 @@ static void h2_session_ev_no_io(h2_session *session, int arg, const char *msg)
                           session->id, session->open_streams);
             h2_conn_io_flush(&session->io);
             if (session->open_streams > 0) {
-                if (has_unsubmitted_streams(session) 
-                    || has_suspended_streams(session)) {
+                if (h2_mplx_is_busy(session->mplx)) {
                     /* waiting for at least one stream to produce data */
                     transit(session, "no io", H2_SESSION_ST_WAIT);
                 }
