@@ -383,6 +383,11 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
             h2_task_logio_add_bytes_out(task->c, written);
         }
     }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c,
+                      "h2_task(%s): send_out (%ld bytes)", 
+                      task->id, (long)written);
+    }
     return status;
 }
 
@@ -542,8 +547,14 @@ static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
                                             apr_bucket_brigade* brigade)
 {
     h2_task *task = h2_ctx_cget_task(filter->c);
-    AP_DEBUG_ASSERT(task);
-    return output_write(task, filter, brigade);
+    apr_status_t status;
+    
+    ap_assert(task);
+    status = output_write(task, filter, brigade);
+    if (status != APR_SUCCESS) {
+        h2_task_rst(task, H2_ERR_INTERNAL_ERROR);
+    }
+    return status;
 }
 
 static apr_status_t h2_filter_read_response(ap_filter_t* filter,
