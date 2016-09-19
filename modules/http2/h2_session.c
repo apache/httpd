@@ -1172,8 +1172,6 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
-    AP_DEBUG_ASSERT(!h2_stream_is_suspended(stream));
-    
     status = h2_stream_out_prepare(stream, &nread, &eos);
     if (nread) {
         *data_flags |=  NGHTTP2_DATA_FLAG_NO_COPY;
