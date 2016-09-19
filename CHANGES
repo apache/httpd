@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: fix suspended handling for streams. Output could become
-     blocked in rare cases.
-
   *) core: Permit unencoded ';' characters to appear in proxy requests and
      Location: response headers. Corresponds to modern browser behavior.
      [William Rowe]
