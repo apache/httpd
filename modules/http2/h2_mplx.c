@@ -545,7 +545,7 @@ static int task_abort_connection(void *ctx, void *val)
     if (task->input.beam) {
         h2_beam_abort(task->input.beam);
     }
-    if (task->output.beam) {
+    if (task->worker_started && !task->worker_done && task->output.beam) {
         h2_beam_abort(task->output.beam);
     }
     return 1;
