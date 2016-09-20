@@ -45,7 +45,7 @@
 #include "h2_util.h"
 
 
-static void h2_beam_log(h2_bucket_beam *beam, int id, const char *msg, 
+static void h2_beam_log(h2_bucket_beam *beam, apr_uint32_t id, const char *msg, 
                         conn_rec *c, int level)
 {
     if (beam && APLOG_C_IS_LEVEL(c,level)) {
@@ -749,11 +749,18 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_response *response)
     }
     
     if (task->output.beam && !task->output.opened) {
+        apr_uint32_t beamed_count;
         h2_beam_buffer_size_set(task->output.beam, m->stream_max_mem);
         h2_beam_timeout_set(task->output.beam, m->stream_timeout);
         h2_beam_on_consumed(task->output.beam, stream_output_consumed, task);
         h2_beam_on_produced(task->output.beam, output_produced, m);
-        m->tx_handles_reserved -= h2_beam_get_files_beamed(task->output.beam);
+        beamed_count = h2_beam_get_files_beamed(task->output.beam);
+        if (m->tx_handles_reserved >= beamed_count) {
+            m->tx_handles_reserved -= beamed_count;
+        }
+        else {
+            m->tx_handles_reserved = 0;
+        }
         if (!task->output.copy_files) {
             h2_beam_on_file_beam(task->output.beam, can_beam_file, m);
         }

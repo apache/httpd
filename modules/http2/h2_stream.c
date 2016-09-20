@@ -174,7 +174,7 @@ static apr_status_t stream_pool_cleanup(void *ctx)
     return APR_SUCCESS;
 }
 
-h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
+h2_stream *h2_stream_open(apr_uint32_t id, apr_pool_t *pool, h2_session *session,
                           int initiated_on)
 {
     h2_stream *stream = apr_pcalloc(pool, sizeof(h2_stream));
@@ -244,6 +244,9 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     stream->rst_error = error_code;
     close_input(stream);
     close_output(stream);
+    if (stream->buffer) {
+        apr_brigade_cleanup(stream->buffer);
+    }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): reset, error=%d", 
                   stream->session->id, stream->id, error_code);

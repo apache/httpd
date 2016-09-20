@@ -105,8 +105,8 @@ struct h2_mplx {
     apr_array_header_t *spare_slaves; /* spare slave connections */
     
     struct h2_workers *workers;
-    int tx_handles_reserved;
-    apr_size_t tx_chunk_size;
+    apr_uint32_t tx_handles_reserved;
+    apr_uint32_t tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;

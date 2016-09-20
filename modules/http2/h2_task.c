@@ -144,6 +144,8 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b, *next, *first_data;
     apr_off_t bblen = 0;
+    apr_size_t rmax = ((readbytes <= APR_SIZE_MAX)? 
+                       (apr_size_t)readbytes : APR_SIZE_MAX);
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task(%s): read, mode=%d, block=%d, readbytes=%ld", 
@@ -288,10 +290,10 @@ static apr_status_t input_read(h2_task *task, ap_filter_t* f,
         APR_BRIGADE_CONCAT(bb, task->input.bb);
     }
     else if (mode == AP_MODE_READBYTES) {
-        status = h2_brigade_concat_length(bb, task->input.bb, readbytes);
+        status = h2_brigade_concat_length(bb, task->input.bb, rmax);
     }
     else if (mode == AP_MODE_SPECULATIVE) {
-        status = h2_brigade_copy_length(bb, task->input.bb, readbytes);
+        status = h2_brigade_copy_length(bb, task->input.bb, rmax);
     }
     else if (mode == AP_MODE_GETLINE) {
         /* we are reading a single LF line, e.g. the HTTP headers. 

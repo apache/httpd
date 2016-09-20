@@ -1303,7 +1303,8 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
     s_parent = nghttp2_stream_get_parent(s);
     if (s_parent) {
         nghttp2_priority_spec ps;
-        int id_parent, id_grandpa, w_parent, w, rv = 0;
+        apr_uint32_t id_parent, id_grandpa, w_parent, w;
+        int rv = 0;
         char *ptype = "AFTER";
         h2_dependency dep = prio->dependency;
         
@@ -1433,7 +1434,17 @@ static apr_status_t on_stream_resume(void *ctx, int stream_id)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_stream(%ld-%d): on_resume", session->id, stream_id);
     if (stream) {
-        int rv = nghttp2_session_resume_data(session->ngh2, stream_id);
+        int rv;
+        if (stream->rst_error) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+                          "h2_stream(%ld-%d): RST_STREAM, err=%d",
+                          session->id, stream->id, stream->rst_error);
+            rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                           stream->id, stream->rst_error);
+        }
+        else {
+            rv = nghttp2_session_resume_data(session->ngh2, stream_id);
+        }
         session->have_written = 1;
         ap_log_cerror(APLOG_MARK, nghttp2_is_fatal(rv)?
                       APLOG_ERR : APLOG_DEBUG, 0, session->c,
