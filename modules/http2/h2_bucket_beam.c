@@ -245,9 +245,9 @@ static void report_production(h2_bucket_beam *beam, int force)
     }
 }
 
-static apr_off_t calc_buffered(h2_bucket_beam *beam)
+static apr_size_t calc_buffered(h2_bucket_beam *beam)
 {
-    apr_off_t len = 0;
+    apr_size_t len = 0;
     apr_bucket *b;
     for (b = H2_BLIST_FIRST(&beam->red); 
          b != H2_BLIST_SENTINEL(&beam->red);
@@ -296,7 +296,7 @@ static apr_status_t wait_cond(h2_bucket_beam *beam, apr_thread_mutex_t *lock)
 }
 
 static apr_status_t r_wait_space(h2_bucket_beam *beam, apr_read_type_e block,
-                                 h2_beam_lock *pbl, apr_off_t *premain) 
+                                 h2_beam_lock *pbl, apr_size_t *premain) 
 {
     *premain = calc_space_left(beam);
     while (!beam->aborted && *premain <= 0 
@@ -428,7 +428,7 @@ apr_status_t h2_beam_destroy(h2_bucket_beam *beam)
 }
 
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *red_pool, 
-                            int id, const char *tag, 
+                            apr_uint32_t id, const char *tag, 
                             apr_size_t max_buf_size)
 {
     h2_bucket_beam *beam;
@@ -585,7 +585,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
 {
     const char *data;
     apr_size_t len;
-    apr_off_t space_left = 0;
+    apr_size_t space_left = 0;
     apr_status_t status;
     
     if (APR_BUCKET_IS_METADATA(bred)) {

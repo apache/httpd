@@ -38,8 +38,8 @@ typedef void h2_push_digest_calc(h2_push_diary *diary, apr_uint64_t *phash, h2_p
 
 struct h2_push_diary {
     apr_array_header_t  *entries;
-    apr_size_t           NMax; /* Maximum for N, should size change be necessary */
-    apr_size_t           N;    /* Current maximum number of entries, power of 2 */
+    apr_uint32_t         NMax; /* Maximum for N, should size change be necessary */
+    apr_uint32_t         N;    /* Current maximum number of entries, power of 2 */
     apr_uint64_t         mask; /* mask for relevant bits */
     unsigned int         mask_bits; /* number of relevant bits */
     const char          *authority;

@@ -51,7 +51,7 @@ typedef struct h2_task h2_task;
 
 struct h2_task {
     const char *id;
-    int stream_id;
+    apr_uint32_t stream_id;
     conn_rec *c;
     apr_pool_t *pool;
     

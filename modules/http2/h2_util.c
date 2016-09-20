@@ -653,8 +653,8 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                      * unless we do not move the file buckets */
                     --files_allowed;
                 }
-                else if (maxlen < b->length) {
-                    apr_bucket_split(b, maxlen);
+                else if (maxlen < (apr_off_t)b->length) {
+                    apr_bucket_split(b, (apr_size_t)maxlen);
                     maxlen = 0;
                 }
                 else {
@@ -852,7 +852,7 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
             
             if (data_len > avail) {
                 apr_bucket_split(b, avail);
-                data_len = avail;
+                data_len = (apr_size_t)avail;
             }
             
             if (consume) {
@@ -1004,7 +1004,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                 if (remain <= 0) {
                     return APR_SUCCESS;
                 }
-                apr_bucket_split(e, remain);
+                apr_bucket_split(e, (apr_size_t)remain);
             }
         }
         
@@ -1202,7 +1202,7 @@ static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
 {
     const literal *lit;
-    int i;
+    size_t i;
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
