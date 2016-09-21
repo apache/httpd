@@ -192,13 +192,13 @@ AC_DEFUN([APACHE_CHECK_BROTLI],[
         ac_brotli_found="yes"
         pkglookup="`$PKGCONFIG --cflags-only-I libbrotlienc`"
         APR_ADDTO(CPPFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_CFLAGS, [$pkglookup])
+        APR_ADDTO(ac_brotli_mod_cflags, [$pkglookup])
         pkglookup="`$PKGCONFIG --libs-only-L libbrotlienc`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        APR_ADDTO(ac_brotli_mod_ldflags, [$pkglookup])
         pkglookup="`$PKGCONFIG --libs-only-other libbrotlienc`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(MOD_LDFLAGS, [$pkglookup])
+        APR_ADDTO(ac_brotli_mod_ldflags, [$pkglookup])
       fi
       PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
     fi
@@ -206,18 +206,14 @@ AC_DEFUN([APACHE_CHECK_BROTLI],[
     dnl fall back to the user-supplied directory if not found via pkg-config
     if test "x$ac_brotli_base" != "x" -a "x$ac_brotli_found" = "x"; then
       APR_ADDTO(CPPFLAGS, [-I$ac_brotli_base/include])
-      APR_ADDTO(MOD_CFLAGS, [-I$ac_brotli_base/include])
+      APR_ADDTO(ac_brotli_mod_cflags, [-I$ac_brotli_base/include])
       APR_ADDTO(LDFLAGS, [-L$ac_brotli_base/lib])
-      APR_ADDTO(MOD_LDFLAGS, [-L$ac_brotli_base/lib])
+      APR_ADDTO(ac_brotli_mod_ldflags, [-L$ac_brotli_base/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
         APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ac_brotli_base/lib])
-        APR_ADDTO(MOD_LDFLAGS, [$ap_platform_runtime_link_flag$ac_brotli_base/lib])
+        APR_ADDTO(ac_brotli_mod_ldflags, [$ap_platform_runtime_link_flag$ac_brotli_base/lib])
       fi
     fi
-
-    ac_brotli_libs="${ac_brotli_libs:--lbrotlienc `$apr_config --libs`} "
-    APR_ADDTO(MOD_LDFLAGS, [$ac_brotli_libs])
-    APR_ADDTO(LIBS, [$ac_brotli_libs])
 
     dnl Run library and function checks
     liberrors=""
@@ -228,23 +224,23 @@ const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);]
       [AC_MSG_RESULT(OK)
        ac_cv_brotli="yes"],
       [AC_MSG_RESULT(FAILED)])
+    if test "x$ac_cv_brotli" = "xyes"; then
+      ac_brotli_libs="${ac_brotli_libs:--lbrotlienc} `$apr_config --libs`"
+      APR_ADDTO(ac_brotli_mod_ldflags, [$ac_brotli_libs])
+    fi
 
     dnl restore
     CPPFLAGS="$saved_CPPFLAGS"
     LIBS="$saved_LIBS"
     LDFLAGS="$saved_LDFLAGS"
-
-    dnl cache MOD_LDFLAGS, MOD_CFLAGS
-    ac_brotli_mod_cflags=$MOD_CFLAGS
-    ac_brotli_mod_ldflags=$MOD_LDFLAGS
   ])
   if test "x$ac_cv_brotli" = "xyes"; then
-    APR_ADDTO(MOD_LDFLAGS, [$ac_brotli_mod_ldflags])
+    APR_ADDTO(MOD_BROTLI_LDADD, [$ac_brotli_mod_ldflags])
 
     dnl Ouch!  libbrotlienc.1.so doesn't link against libm.so (-lm),
-    dnl although it should.  Workaround that in our LDFLAGS:
+    dnl although it should.  Workaround that here:
 
-    APR_ADDTO(MOD_LDFLAGS, ["-lm"])
+    APR_ADDTO(MOD_BROTLI_LDADD, ["-lm"])
     APR_ADDTO(MOD_CFLAGS, [$ac_brotli_mod_cflags])
   fi
 ])
