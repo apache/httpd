@@ -23,8 +23,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Expressions in Apache HTTP Server</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./edited/expr.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
-<a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
@@ -257,12 +256,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>TIME_YEAR</code></td>
         <td>The current year (e.g. <code>2010</code>)</td></tr>
 <tr class="odd"><td><code>TIME_MON</code></td>
-        <td>The current month (<code>1</code>, ..., <code>12</code>)</td></tr>
+        <td>The current month (<code>01</code>, ..., <code>12</code>)</td></tr>
 <tr><td><code>TIME_DAY</code></td>
-        <td>The current day of the month</td></tr>
+        <td>The current day of the month (<code>01</code>, ...)</td></tr>
 <tr class="odd"><td><code>TIME_HOUR</code></td>
         <td>The hour part of the current time
-            (<code>0</code>, ..., <code>23</code>)</td></tr>
+            (<code>00</code>, ..., <code>23</code>)</td></tr>
 <tr><td><code>TIME_MIN</code></td>
         <td>The minute part of the current time </td></tr>
 <tr class="odd"><td><code>TIME_SEC</code></td>
@@ -514,12 +513,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Example expressions</a></h2>
+
     
-	
     <p>The following examples show how expressions might be used to
     evaluate requests:</p>
-	
-	<pre class="prettyprint lang-config"># Compare the host name to example.com and redirect to www.example.com if it matches
+
+    
+    <pre class="prettyprint lang-config"># Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
     Redirect permanent "/" "http://www.example.com/"
 &lt;/If&gt;
@@ -532,7 +532,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 # Only allow access to this content during business hours
 &lt;Directory "/foo/bar/business"&gt;
     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
-&lt;/Directory&gt;	
+&lt;/Directory&gt;
 
 # Check a HTTP header for a list of values
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
@@ -566,7 +566,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 Header set foo-checksum "expr=%{md5:foo}"
 
 # This delays the evaluation of the condition clause compared to &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"</pre>
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -613,8 +613,7 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
     is available for versions 2.4.4 and later.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./edited/expr.html" hreflang="edited" rel="alternate" title="">&nbsp;edited&nbsp;</a> |
-<a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/expr.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed again by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Freenode, or sent to our <a href="http://httpd.apache.org/lists.html">mailing lists</a>.</div>
 <script type="text/javascript"><!--//--><![CDATA[//><!--
