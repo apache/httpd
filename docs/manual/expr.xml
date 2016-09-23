@@ -594,12 +594,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
 <section id="examples">
 
-	<title>Example expressions</title>
+    <title>Example expressions</title>
     <p>The following examples show how expressions might be used to
     evaluate requests:</p>
 
-	<!-- This section should probably be extended with more, useful examples -->
-	<highlight language="config">
+    <!-- This section should probably be extended with more, useful examples -->
+    <highlight language="config">
 # Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
     Redirect permanent "/" "http://www.example.com/"
@@ -650,9 +650,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 Header set foo-checksum "expr=%{md5:foo}"
 
 # This delays the evaluation of the condition clause compared to &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"
 
-	</highlight>
+    </highlight>
 </section>
 
 <section id="other">
