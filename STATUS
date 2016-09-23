@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) autoconf: minor cleanup and removal of some dead code.
-     trunk patch: http://svn.apache.org/r1753315
-                  http://svn.apache.org/r1753316
-     2.4.x patch: http://home.apache.org/~jchampion/patches/2.4.x-autoconf-cleanup.patch
-                  (combines both patches and corrects for differences in the
-                  AC_CONFIG_FILES list)
-     +1: jchampion, ylavic, jorton
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
