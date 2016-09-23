@@ -308,12 +308,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>TIME_YEAR</code></td>
         <td>The current year (e.g. <code>2010</code>)</td></tr>
     <tr><td><code>TIME_MON</code></td>
-        <td>The current month (<code>1</code>, ..., <code>12</code>)</td></tr>
+        <td>The current month (<code>01</code>, ..., <code>12</code>)</td></tr>
     <tr><td><code>TIME_DAY</code></td>
-        <td>The current day of the month</td></tr>
+        <td>The current day of the month (<code>01</code>, ...)</td></tr>
     <tr><td><code>TIME_HOUR</code></td>
         <td>The hour part of the current time
-            (<code>0</code>, ..., <code>23</code>)</td></tr>
+            (<code>00</code>, ..., <code>23</code>)</td></tr>
     <tr><td><code>TIME_MIN</code></td>
         <td>The minute part of the current time </td></tr>
     <tr><td><code>TIME_SEC</code></td>
