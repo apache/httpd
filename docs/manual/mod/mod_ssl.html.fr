@@ -2942,14 +2942,9 @@ Les valeurs de <em>niveau</em> disponibles sont les suivantes :</p>
      le client <em>doit</em> présenter un certificat valide</li>
 <li><strong>optional_no_ca</strong>:
      le client peut présenter un certificat valide, mais il n'est pas
-     nécessaire que ce dernier soit vérifiable (avec succès).</li>
+     nécessaire que ce dernier soit vérifiable (avec succès). Cette option ne
+     peut pas être utilisée lors de l'authentification du client.</li>
 </ul>
-<p>En pratique, seuls les niveaux <strong>none</strong> et
-<strong>require</strong> sont vraiment intéressants, car le niveau
-<strong>optional</strong> ne fonctionne pas avec tous les navigateurs,
-et le niveau <strong>optional_no_ca</strong> va vraiment à l'encontre de
-l'idée que l'on peut se faire de l'authentification (mais peut tout de
-même être utilisé pour établir des pages de test SSL, etc...)</p>
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLVerifyClient require</pre>
 </div>
 

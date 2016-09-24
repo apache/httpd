@@ -889,6 +889,13 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
     <p>Le caractère ":" est interdit dans les noms de variables afin
     d'éviter les conflits avec la syntaxe de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
+    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ultérieure, au delà de tout bloc VirtualHost. Le support des autres sections
+    de configuration a été permis par erreur par l'implémentation initiale de
+    cette directive, et n'est conservé (avec des effets imprévisibles) que dans un
+    but de compatibilité ascendante.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="directory" id="directory">Directive</a> <a name="Directory" id="Directory">&lt;Directory&gt;</a></h2>
