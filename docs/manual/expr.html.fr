@@ -266,11 +266,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 <tr><td><code>TIME_YEAR</code></td>
         <td>L'année courante (par exemple <code>2010</code>)</td></tr>
 <tr class="odd"><td><code>TIME_MON</code></td>
-        <td>Le mois courant (<code>1</code>, ..., <code>12</code>)</td></tr>
+        <td>Le mois courant (<code>01</code>, ..., <code>12</code>)</td></tr>
 <tr><td><code>TIME_DAY</code></td>
-        <td>Le jour courant dans le mois</td></tr>
+        <td>Le jour courant dans le mois (<code>01</code>, ...)</td></tr>
 <tr class="odd"><td><code>TIME_HOUR</code></td>
-        <td>Les heures de la date courante (<code>0</code>, ...,
+        <td>Les heures de la date courante (<code>00</code>, ...,
 	<code>23</code>)</td></tr>
 <tr><td><code>TIME_MIN</code></td>
         <td>Les minutes de la date courante</td></tr>
@@ -372,7 +372,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
     sensible à la casse. Les modules peuvent fournir des opérateurs
     unaires supplémentaires.</p>
 
-    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Restreint</th></tr>
+    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Remarques particulières</th></tr>
 <tr><td><code>-d</code></td>
         <td>L'argument est traité comme un nom de fichier. 
 	Vrai si le fichier existe et correspond à un
@@ -449,15 +449,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Lit l'en-tête de réponse HTTP</td><td /></tr>
 <tr class="odd"><td><code>reqenv</code></td>
         <td>Recherche une variable d'environnement de requête (on
-	peut aussi utiliser le raccourci <code>v</code>).</td><td /></tr>
+	peut aussi utiliser le raccourci <code>v</code>).</td><td>ordonnancement</td></tr>
 <tr><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du système
 	d'exploitation</td><td /></tr>
 <tr class="odd"><td><code>note</code></td>
-        <td>Recherche une note de requête</td><td /></tr>
+        <td>Recherche une note de requête</td><td>ordonnancement</td></tr>
 <tr><td><code>env</code></td>
         <td>Renvoie le premier résultat positif de <code>note</code>,
-	<code>reqenv</code>, <code>osenv</code></td><td /></tr>
+	<code>reqenv</code>, <code>osenv</code></td><td>ordonnancement</td></tr>
 <tr class="odd"><td><code>tolower</code></td>
         <td>Convertit une chaîne en minuscules</td><td /></tr>
 <tr><td><code>toupper</code></td>
@@ -481,14 +481,40 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
 	le hash obtenu en hexadécimal</td><td /></tr>
 <tr class="odd"><td><code>file</code></td>
         <td>Lit le contenu d'un fichier(fins de lignes incluses, si
-	elles existent)</td><td>oui</td></tr>
-<tr><td><code>filesize</code></td>
+	elles existent)</td><td>limité</td></tr>
+<tr><td><code>filemod</code></td>
+        <td>Renvoie la date de dernière modification d'un fichier (ou 0 si le
+	fichier n'existe pas ou n'est pas un fichier régulier)</td><td>limité</td></tr>
+<tr class="odd"><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
-	pas ou ne correspond pas à un fichier régulier)</td><td>oui</td></tr>
+	pas ou ne correspond pas à un fichier régulier)</td><td>limité</td></tr>
 </table>
 
-    <p>Les fonctions marquées comme "restreints" ne sont pas disponibles
-    avec certains modules comme <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
+    <p>Les fonctions marquées comme "limité" dans la dernière colonne ne sont
+    pas disponibles avec certains modules comme
+    <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
+
+    <p>Les fonctions marquées comme "ordonnancement" dans la dernière colonne
+    nécessitent une attention particulière pour l'ordonnancement des différents
+    composants du serveur, spécialement lorsque la fonction est utilisée au sein
+    d'une directive &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; qui est
+    évaluée relativement tôt.</p>
+    <div class="note">
+    <h3>Ordonnancement des variables d'environnement</h3>
+    Lorsque des variables d'environnement sont évaluées au sein d'une directive
+    &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;, il est important de tenir
+    compte du moment où cette évaluation intervient dans le traitement de la
+    requête. Par exemple, toute directive définie en dehors d'un contexte de
+    serveur virtuel (directory, location, htaccess) aura peu de chance d'être
+    déjà exécutée. Ainsi la directive <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> est une directive qui s'exécute
+    avant cette évaluation.
+    <br />
+    <br />
+    Lorsque <code>reqenv</code> est utilisé en dehors de la directive
+    &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;, l'évaluation survient en
+    général plus tard, mais le moment exact dépend de la directive dans laquelle
+    l'expression a été utilisée.
+    </div>
 
     <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
     utilisées, le nom d'en-tête sera automatiquement ajouté à l'en-tête
@@ -573,7 +599,8 @@ Header set foo-checksum "expr=%{md5:foo}"
 
 # L'exemple suivant retarde l'évaluation de la clause de condition par rapport à
 # &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"</pre>
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~
+m#^/special_path\.php$#"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
