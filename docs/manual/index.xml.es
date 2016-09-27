@@ -28,7 +28,7 @@
 <title>Apache HTTP Server Versión &httpd.major;.&httpd.minor;
 Documentación</title>
 
-<category id="release"><title>Release Notes</title>
+<category id="release"><title>Notas de la versión</title>
     <page href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</page>

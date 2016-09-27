@@ -39,7 +39,7 @@ Documentación</h1>
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Buscar en Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="es" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Versión 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
-<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Release Notes</a></h2>
+<table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Notas de la versión</a></h2>
 <ul><li><a href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</a></li>
 <li><a href="new_features_2_2.html">Nuevas funcionalidades en Apache 2.1/2.2</a></li>
 <li><a href="new_features_2_0.html">Nuevas funcionalidades en Apache 2.0</a></li>
