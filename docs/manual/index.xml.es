@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1729668:1756216 (outdated) -->
+<!-- English Revision: 1756216 -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -79,6 +79,7 @@ Documentación</title>
     <page href="howto/ssi.html">Inclusiones del Lado del Servidor (SSI)</page>
     <page href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</page>
+    <page href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</page>
 </category>
 
 <category id="platform"><title>Notas Sobre Plataformas Específicas</title>
@@ -90,8 +91,8 @@ Documentación</title>
 <category id="other"><title>Otros Temas</title>
     <page href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</page>
     <page href="sitemap.html">Mapa del Sitio</page>
-    <page href="developer/">Documentación para Desarolladores</page>
-    <page href="http://httpd.apache.org/docs-project/">Contribuir en la Documentacion</page>
+    <page href="developer/">Documentación para Desarrolladores</page>
+    <page href="http://httpd.apache.org/docs-project/">Contribuir en la Documentación</page>
     <page href="misc/">Otras Notas</page>
     <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
