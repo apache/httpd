@@ -211,6 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 elukey
 
+  *) mod_proxy: add log trace points to help users diagnose problems with
+     ProxyPass[Match].
+     trunk patch: http://svn.apache.org/r1762517
+     2.4.x patch: trunk works (modulo aplog numbers)
+     +1: jchampion
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
