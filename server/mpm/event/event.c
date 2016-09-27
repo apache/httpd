@@ -1212,7 +1212,8 @@ read_request:
 }
 
 /* Put a SUSPENDED connection back into a queue. */
-static apr_status_t event_resume_suspended (conn_rec *c) {
+static apr_status_t event_resume_suspended (conn_rec *c)
+{
     event_conn_state_t* cs = (event_conn_state_t*) c->suspended_baton;
     if (cs == NULL) {
         ap_log_cerror (APLOG_MARK, LOG_WARNING, 0, c, APLOGNO(02615)
@@ -1226,6 +1227,7 @@ static apr_status_t event_resume_suspended (conn_rec *c) {
     apr_atomic_dec32(&suspended_count);
     c->suspended_baton = NULL;
 
+    cs->queue_timestamp = apr_time_now();
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(cs->sc->wc_q, cs);
     cs->pfd.reqevents = (
