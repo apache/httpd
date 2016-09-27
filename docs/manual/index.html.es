@@ -38,10 +38,6 @@ Documentación</h1>
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Buscar en Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="es" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Versión 2.5" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Release Notes</a></h2>
 <ul><li><a href="new_features_2_4.html">Nuevas funcionalidades en Apache 2.3/2.4</a></li>
@@ -91,6 +87,7 @@ Documentación</h1>
 <li><a href="howto/ssi.html">Inclusiones del Lado del Servidor (SSI)</a></li>
 <li><a href="howto/public_html.html">Directorios Web por Usuario
     (public_html)</a></li>
+<li><a href="howto/reverse_proxy.html">Guía de configuración de Proxy Inverso</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notas Sobre Plataformas Específicas</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
@@ -100,8 +97,8 @@ Documentación</h1>
 </div><div class="category"><h2><a name="other" id="other">Otros Temas</a></h2>
 <ul><li><a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a></li>
 <li><a href="sitemap.html">Mapa del Sitio</a></li>
-<li><a href="developer/">Documentación para Desarolladores</a></li>
-<li><a href="http://httpd.apache.org/docs-project/">Contribuir en la Documentacion</a></li>
+<li><a href="developer/">Documentación para Desarrolladores</a></li>
+<li><a href="http://httpd.apache.org/docs-project/">Contribuir en la Documentación</a></li>
 <li><a href="misc/">Otras Notas</a></li>
 <li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>
