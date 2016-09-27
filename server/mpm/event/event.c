@@ -233,9 +233,10 @@ APR_RING_HEAD(timeout_head_t, event_conn_state_t);
 
 struct timeout_queue {
     struct timeout_head_t head;
-    int count, *total;
     apr_interval_time_t timeout;
-    struct timeout_queue *next;
+    apr_uint32_t count;         /* for this queue */
+    apr_uint32_t *total;        /* for all chained/related queues */
+    struct timeout_queue *next; /* chaining */
 };
 /*
  * Several timeout queues that use different timeouts, so that we always can
@@ -256,33 +257,35 @@ static apr_pollfd_t *listener_pollfd;
  * Macros for accessing struct timeout_queue.
  * For TO_QUEUE_APPEND and TO_QUEUE_REMOVE, timeout_mutex must be held.
  */
-#define TO_QUEUE_APPEND(q, el)                                                \
-    do {                                                                      \
-        APR_RING_INSERT_TAIL(&(q)->head, el, event_conn_state_t,              \
-                             timeout_list);                                   \
-        ++*(q)->total;                                                        \
-        ++(q)->count;                                                         \
-    } while (0)
+static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
+{
+    APR_RING_INSERT_TAIL(&q->head, el, event_conn_state_t, timeout_list);
+    apr_atomic_inc32(q->total);
+    ++q->count;
+}
 
-#define TO_QUEUE_REMOVE(q, el)                                                \
-    do {                                                                      \
-        APR_RING_REMOVE(el, timeout_list);                                    \
-        --*(q)->total;                                                        \
-        --(q)->count;                                                         \
-    } while (0)
+static void TO_QUEUE_REMOVE(struct timeout_queue *q, event_conn_state_t *el)
+{
+    APR_RING_REMOVE(el, timeout_list);
+    apr_atomic_dec32(q->total);
+    --q->count;
+}
 
-#define TO_QUEUE_INIT(q, p, t, v)                                             \
-    do {                                                                      \
-        struct timeout_queue *b = (v);                                        \
-        (q) = apr_palloc((p), sizeof *(q));                                   \
-        APR_RING_INIT(&(q)->head, event_conn_state_t, timeout_list);          \
-        (q)->total = (b) ? (b)->total : apr_pcalloc((p), sizeof *(q)->total); \
-        (q)->count = 0;                                                       \
-        (q)->timeout = (t);                                                   \
-        (q)->next = NULL;                                                     \
-    } while (0)
+static struct timeout_queue *TO_QUEUE_MAKE(apr_pool_t *p, apr_time_t t,
+                                           struct timeout_queue *ref)
+{
+    struct timeout_queue *q;
+                                           
+    q = apr_pcalloc(p, sizeof *q);
+    APR_RING_INIT(&q->head, event_conn_state_t, timeout_list);
+    q->total = (ref) ? ref->total : apr_pcalloc(p, sizeof *q->total);
+    q->timeout = t;
 
-#define TO_QUEUE_ELEM_INIT(el) APR_RING_ELEM_INIT(el, timeout_list)
+    return q;
+}
+
+#define TO_QUEUE_ELEM_INIT(el) \
+    APR_RING_ELEM_INIT((el), timeout_list)
 
 /*
  * The pollset for sockets that are in any of the timeout queues. Currently
@@ -1645,13 +1648,13 @@ static void process_timeout_queue(struct timeout_queue *q,
                                   apr_time_t timeout_time,
                                   int (*func)(event_conn_state_t *))
 {
-    int total = 0, count;
+    apr_uint32_t total = 0, count;
     event_conn_state_t *first, *cs, *last;
     struct timeout_head_t trash;
     struct timeout_queue *qp;
     apr_status_t rv;
 
-    if (!*q->total) {
+    if (!apr_atomic_read32(q->total)) {
         return;
     }
 
@@ -1689,14 +1692,14 @@ static void process_timeout_queue(struct timeout_queue *q,
         APR_RING_UNSPLICE(first, last, timeout_list);
         APR_RING_SPLICE_TAIL(&trash, first, last, event_conn_state_t,
                              timeout_list);
+        AP_DEBUG_ASSERT(apr_atomic_read32(q->total) >= count);
+        apr_atomic_sub32(q->total, count);
         qp->count -= count;
         total += count;
     }
     if (!total)
         return;
 
-    AP_DEBUG_ASSERT(*q->total >= total);
-    *q->total -= total;
     apr_thread_mutex_unlock(timeout_mutex);
     first = APR_RING_FIRST(&trash);
     do {
@@ -1713,6 +1716,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_status_t rc;
     proc_info *ti = dummy;
     int process_slot = ti->pslot;
+    struct process_score *ps = ap_get_scoreboard_process(process_slot);
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     apr_time_t timeout_time = 0, last_log;
     int closed = 0, listeners_disabled = 0;
@@ -1753,6 +1757,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         apr_interval_time_t timeout_interval;
         apr_time_t now;
         int workers_were_busy = 0;
+        int keepalives;
+
         if (listener_may_exit) {
             close_listeners(process_slot, &closed);
             if (terminate_mode == ST_UNGRACEFUL
@@ -1774,8 +1780,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              "keep-alive: %d lingering: %d suspended: %u)",
                              apr_atomic_read32(&connection_count),
                              apr_atomic_read32(&clogged_count),
-                             *write_completion_q->total,
-                             *keepalive_q->total,
+                             apr_atomic_read32(write_completion_q->total),
+                             apr_atomic_read32(keepalive_q->total),
                              apr_atomic_read32(&lingering_count),
                              apr_atomic_read32(&suspended_count));
                 if (dying) {
@@ -2064,7 +2070,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
          * will exceed now + TIMEOUT_FUDGE_FACTOR, can't happen otherwise).
          */
         if (now > timeout_time || now + TIMEOUT_FUDGE_FACTOR < timeout_time ) {
-            struct process_score *ps;
             timeout_time = now + TIMEOUT_FUDGE_FACTOR;
 
             /* handle timed out sockets */
@@ -2074,12 +2079,15 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             /* If all workers are busy, we kill older keep-alive connections so that they
              * may connect to another process.
              */
-            if ((workers_were_busy || dying) && *keepalive_q->total) {
-                if (!dying)
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                                 "All workers are busy, will close %d keep-alive "
-                                 "connections",
-                                 *keepalive_q->total);
+            if ((workers_were_busy || dying)
+                     && (keepalives = apr_atomic_read32(keepalive_q->total))) {
+                /* If all workers are busy, we kill older keep-alive connections so
+                 * that they may connect to another process.
+                 */
+                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                             "All workers are %s, will close %d keep-alive "
+                             "connections", dying ? "dying" : "busy",
+                             keepalives);
                 process_timeout_queue(keepalive_q, 0,
                                       start_lingering_close_nonblocking);
             }
@@ -2091,15 +2099,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             process_timeout_queue(write_completion_q, timeout_time,
                                   start_lingering_close_nonblocking);
             /* Step 3: (normal) lingering close completion timeouts */
-            process_timeout_queue(linger_q, timeout_time, stop_lingering_close);
+            process_timeout_queue(linger_q, timeout_time,
+                                  stop_lingering_close);
             /* Step 4: (short) lingering close completion timeouts */
-            process_timeout_queue(short_linger_q, timeout_time, stop_lingering_close);
+            process_timeout_queue(short_linger_q, timeout_time,
+                                  stop_lingering_close);
 
-            ps = ap_get_scoreboard_process(process_slot);
-            ps->write_completion = *write_completion_q->total;
-            ps->keep_alive = *keepalive_q->total;
             apr_thread_mutex_unlock(timeout_mutex);
 
+            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
+            ps->write_completion = apr_atomic_read32(write_completion_q->total);
             ps->connections = apr_atomic_read32(&connection_count);
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
@@ -3494,10 +3503,10 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     wc.hash = apr_hash_make(ptemp);
     ka.hash = apr_hash_make(ptemp);
 
-    TO_QUEUE_INIT(linger_q, pconf,
-                  apr_time_from_sec(MAX_SECS_TO_LINGER), NULL);
-    TO_QUEUE_INIT(short_linger_q, pconf,
-                  apr_time_from_sec(SECONDS_TO_LINGER), NULL);
+    linger_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(MAX_SECS_TO_LINGER),
+                             NULL);
+    short_linger_q = TO_QUEUE_MAKE(pconf, apr_time_from_sec(SECONDS_TO_LINGER),
+                                   NULL);
 
     for (; s; s = s->next) {
         event_srv_cfg *sc = apr_pcalloc(pconf, sizeof *sc);
@@ -3505,11 +3514,11 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_set_module_config(s->module_config, &mpm_event_module, sc);
         if (!wc.tail) {
             /* The main server uses the global queues */
-            TO_QUEUE_INIT(wc.q, pconf, s->timeout, NULL);
+            wc.q = TO_QUEUE_MAKE(pconf, s->timeout, NULL);
             apr_hash_set(wc.hash, &s->timeout, sizeof s->timeout, wc.q);
             wc.tail = write_completion_q = wc.q;
 
-            TO_QUEUE_INIT(ka.q, pconf, s->keep_alive_timeout, NULL);
+            ka.q = TO_QUEUE_MAKE(pconf, s->keep_alive_timeout, NULL);
             apr_hash_set(ka.hash, &s->keep_alive_timeout,
                          sizeof s->keep_alive_timeout, ka.q);
             ka.tail = keepalive_q = ka.q;
@@ -3519,7 +3528,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
              * or their own queue(s) if there isn't */
             wc.q = apr_hash_get(wc.hash, &s->timeout, sizeof s->timeout);
             if (!wc.q) {
-                TO_QUEUE_INIT(wc.q, pconf, s->timeout, wc.tail);
+                wc.q = TO_QUEUE_MAKE(pconf, s->timeout, wc.tail);
                 apr_hash_set(wc.hash, &s->timeout, sizeof s->timeout, wc.q);
                 wc.tail = wc.tail->next = wc.q;
             }
@@ -3527,7 +3536,7 @@ static int event_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             ka.q = apr_hash_get(ka.hash, &s->keep_alive_timeout,
                                 sizeof s->keep_alive_timeout);
             if (!ka.q) {
-                TO_QUEUE_INIT(ka.q, pconf, s->keep_alive_timeout, ka.tail);
+                ka.q = TO_QUEUE_MAKE(pconf, s->keep_alive_timeout, ka.tail);
                 apr_hash_set(ka.hash, &s->keep_alive_timeout,
                              sizeof s->keep_alive_timeout, ka.q);
                 ka.tail = ka.tail->next = ka.q;
