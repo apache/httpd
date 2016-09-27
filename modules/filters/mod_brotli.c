@@ -34,6 +34,9 @@ typedef struct brotli_server_config_t {
     int lgwin;
     int lgblock;
     etag_mode_e etag_mode;
+    const char *note_ratio_name;
+    const char *note_input_name;
+    const char *note_output_name;
 } brotli_server_config_t;
 
 static void *create_server_config(apr_pool_t *p, server_rec *s)
@@ -54,6 +57,34 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     conf->etag_mode = ETAG_MODE_ADDSUFFIX;
 
     return conf;
+}
+
+static const char *set_filter_note(cmd_parms *cmd, void *dummy,
+                                   const char *arg1, const char *arg2)
+{
+    brotli_server_config_t *conf =
+        ap_get_module_config(cmd->server->module_config, &brotli_module);
+
+    if (!arg2) {
+        conf->note_ratio_name = arg1;
+        return NULL;
+    }
+
+    if (ap_cstr_casecmp(arg1, "Ratio") == 0) {
+        conf->note_ratio_name = arg2;
+    }
+    else if (ap_cstr_casecmp(arg1, "Input") == 0) {
+        conf->note_input_name = arg2;
+    }
+    else if (ap_cstr_casecmp(arg1, "Output") == 0) {
+        conf->note_output_name = arg2;
+    }
+    else {
+        return apr_psprintf(cmd->pool, "Unknown BrotliFilterNote type '%s'",
+                            arg1);
+    }
+
+    return NULL;
 }
 
 static const char *set_compression_quality(cmd_parms *cmd, void *dummy,
@@ -126,6 +157,8 @@ static const char *set_etag_mode(cmd_parms *cmd, void *dummy,
 typedef struct brotli_ctx_t {
     BrotliEncoderState *state;
     apr_bucket_brigade *bb;
+    apr_off_t total_in;
+    apr_off_t total_out;
 } brotli_ctx_t;
 
 static void *alloc_func(void *opaque, size_t size)
@@ -164,6 +197,8 @@ static brotli_ctx_t *create_ctx(int quality,
     apr_pool_cleanup_register(pool, ctx, cleanup_ctx, apr_pool_cleanup_null);
 
     ctx->bb = apr_brigade_create(pool, alloc);
+    ctx->total_in = 0;
+    ctx->total_out = 0;
 
     return ctx;
 }
@@ -203,6 +238,8 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
              * ap_pass_brigade() call.
              */
             output = BrotliEncoderTakeOutput(ctx->state, &output_len);
+            ctx->total_out += output_len;
+
             b = apr_bucket_transient_create(output, output_len,
                                             ctx->bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
@@ -215,6 +252,7 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
         }
     }
 
+    ctx->total_in += len;
     return APR_SUCCESS;
 }
 
@@ -249,6 +287,8 @@ static apr_status_t flush(brotli_ctx_t *ctx,
          */
         output_len = 0;
         output = BrotliEncoderTakeOutput(ctx->state, &output_len);
+        ctx->total_out += output_len;
+
         b = apr_bucket_heap_create(output, output_len, NULL,
                                    ctx->bb->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
@@ -440,6 +480,27 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 return rv;
             }
 
+            /* Leave notes for logging. */
+            if (conf->note_input_name) {
+                apr_table_setn(r->notes, conf->note_input_name,
+                               apr_off_t_toa(r->pool, ctx->total_in));
+            }
+            if (conf->note_output_name) {
+                apr_table_setn(r->notes, conf->note_output_name,
+                               apr_off_t_toa(r->pool, ctx->total_out));
+            }
+            if (conf->note_ratio_name) {
+                if (ctx->total_in > 0) {
+                    int ratio = (int) (ctx->total_out * 100 / ctx->total_in);
+
+                    apr_table_setn(r->notes, conf->note_ratio_name,
+                                   apr_itoa(r->pool, ratio));
+                }
+                else {
+                    apr_table_setn(r->notes, conf->note_ratio_name, "-");
+                }
+            }
+
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
@@ -492,6 +553,9 @@ static void register_hooks(apr_pool_t *p)
 }
 
 static const command_rec cmds[] = {
+    AP_INIT_TAKE12("BrotliFilterNote", set_filter_note,
+                   NULL, RSRC_CONF,
+                   "Set a note to report on compression ratio"),
     AP_INIT_TAKE1("BrotliCompressionQuality", set_compression_quality,
                   NULL, RSRC_CONF,
                   "Compression quality between 0 and 11 (higher quality means "
