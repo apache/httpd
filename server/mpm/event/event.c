@@ -873,14 +873,14 @@ static int start_lingering_close_common(event_conn_state_t *cs, int in_worker)
     else {
         cs->c->sbh = NULL;
     }
-    apr_thread_mutex_lock(timeout_mutex);
-    TO_QUEUE_APPEND(q, cs);
     cs->pfd.reqevents = (
             cs->pub.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT :
                     APR_POLLIN) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
-    rv = apr_pollset_add(event_pollset, &cs->pfd);
+    apr_thread_mutex_lock(timeout_mutex);
+    TO_QUEUE_APPEND(q, cs);
     apr_thread_mutex_unlock(timeout_mutex);
+    rv = apr_pollset_add(event_pollset, &cs->pfd);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(03092)
                      "start_lingering_close: apr_pollset_add failure");
@@ -1154,14 +1154,24 @@ read_request:
              */
             cs->queue_timestamp = apr_time_now();
             notify_suspend(cs);
-            apr_thread_mutex_lock(timeout_mutex);
-            TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             cs->pfd.reqevents = (
                     cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
                             APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
             cs->pub.sense = CONN_SENSE_DEFAULT;
-            rc = apr_pollset_add(event_pollset, &cs->pfd);
+            apr_thread_mutex_lock(timeout_mutex);
+            TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             apr_thread_mutex_unlock(timeout_mutex);
+            rc = apr_pollset_add(event_pollset, &cs->pfd);
+            if (rc != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO()
+                             "process_socket: apr_pollset_add failure for "
+                             "write completion");
+                apr_thread_mutex_lock(timeout_mutex);
+                TO_QUEUE_REMOVE(cs->sc->wc_q, cs);
+                apr_thread_mutex_unlock(timeout_mutex);
+                apr_socket_close(cs->pfd.desc.s);
+                ap_push_pool(worker_queue_info, cs->p);
+            }
             return;
         }
         else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
@@ -1193,18 +1203,24 @@ read_request:
          */
         cs->queue_timestamp = apr_time_now();
         notify_suspend(cs);
-        apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->ka_q, cs);
 
         /* Add work to pollset. */
         cs->pfd.reqevents = APR_POLLIN;
-        rc = apr_pollset_add(event_pollset, &cs->pfd);
+        apr_thread_mutex_lock(timeout_mutex);
+        TO_QUEUE_APPEND(cs->sc->ka_q, cs);
         apr_thread_mutex_unlock(timeout_mutex);
 
+        rc = apr_pollset_add(event_pollset, &cs->pfd);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO(03093)
-                         "process_socket: apr_pollset_add failure");
-            AP_DEBUG_ASSERT(rc == APR_SUCCESS);
+                         "process_socket: apr_pollset_add failure for "
+                         "keep alive");
+            apr_thread_mutex_lock(timeout_mutex);
+            TO_QUEUE_REMOVE(cs->sc->ka_q, cs);
+            apr_thread_mutex_unlock(timeout_mutex);
+            apr_socket_close(cs->pfd.desc.s);
+            ap_push_pool(worker_queue_info, cs->p);
+            return;
         }
     }
     else if (cs->pub.state == CONN_STATE_SUSPENDED) {
@@ -1231,14 +1247,14 @@ static apr_status_t event_resume_suspended (conn_rec *c)
     c->suspended_baton = NULL;
 
     cs->queue_timestamp = apr_time_now();
-    apr_thread_mutex_lock(timeout_mutex);
-    TO_QUEUE_APPEND(cs->sc->wc_q, cs);
     cs->pfd.reqevents = (
             cs->pub.sense == CONN_SENSE_WANT_READ ? APR_POLLIN :
                     APR_POLLOUT) | APR_POLLHUP | APR_POLLERR;
     cs->pub.sense = CONN_SENSE_DEFAULT;
-    apr_pollset_add(event_pollset, &cs->pfd);
+    apr_thread_mutex_lock(timeout_mutex);
+    TO_QUEUE_APPEND(cs->sc->wc_q, cs);
     apr_thread_mutex_unlock(timeout_mutex);
+    apr_pollset_add(event_pollset, &cs->pfd);
 
     return OK;
 }
@@ -1624,13 +1640,13 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
         return;
     }
 
-    apr_thread_mutex_lock(timeout_mutex);
     rv = apr_pollset_remove(event_pollset, pfd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
     rv = apr_socket_close(csd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
+    apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_REMOVE(q, cs);
     apr_thread_mutex_unlock(timeout_mutex);
     TO_QUEUE_ELEM_INIT(cs);
@@ -1881,7 +1897,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                &workers_were_busy);
                     apr_thread_mutex_lock(timeout_mutex);
                     TO_QUEUE_REMOVE(remove_from_q, cs);
-                    rc = apr_pollset_remove(event_pollset, &cs->pfd);
                     apr_thread_mutex_unlock(timeout_mutex);
 
                     /*
@@ -1890,6 +1905,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                      * therefore, we can accept _SUCCESS or _NOTFOUND,
                      * and we still want to keep going
                      */
+                    rc = apr_pollset_remove(event_pollset, &cs->pfd);
                     if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
                                      APLOGNO(03094) "pollset remove failed");
