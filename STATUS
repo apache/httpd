@@ -117,7 +117,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x Patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
                   plus CHANGES above.
      +1: wrowe
-     -1: ylavic (+1 with bugfixes above...)
+     -1: ylavic (+1 with bugfixes below...)
      ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
              original commit (2009), we should probably include these changes.
              I'm thinking of r1642857 and r1670324 from 2.4.x, with this delta
