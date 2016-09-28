@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) event: Avoid listener periodic wake ups by using the pollset wake-ability
+     when available.  PR 57399.  [Yann Ylavic, Luca Toscano]
+
   *) mod_brotli: Add a new module for dynamic Brotli (RFC 7932) compression.
      [Evgeny Kotkov]
 
