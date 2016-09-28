@@ -1163,7 +1163,7 @@ read_request:
             apr_thread_mutex_unlock(timeout_mutex);
             rc = apr_pollset_add(event_pollset, &cs->pfd);
             if (rc != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf, APLOGNO(03465)
                              "process_socket: apr_pollset_add failure for "
                              "write completion");
                 apr_thread_mutex_lock(timeout_mutex);
