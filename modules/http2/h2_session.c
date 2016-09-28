@@ -1436,7 +1436,7 @@ static apr_status_t on_stream_resume(void *ctx, int stream_id)
     if (stream) {
         int rv;
         if (stream->rst_error) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO()
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03466)
                           "h2_stream(%ld-%d): RST_STREAM, err=%d",
                           session->id, stream->id, stream->rst_error);
             rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
