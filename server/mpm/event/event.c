@@ -1495,6 +1495,8 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
                                              apr_array_header_t *remove)
 {
     timer_event_t *te;
+    apr_time_t now = (t < 0) ? 0 : apr_time_now();
+
     /* oh yeah, and make locking smarter/fine grained. */
 
     apr_thread_mutex_lock(g_timer_skiplist_mtx);
@@ -1511,7 +1513,7 @@ static timer_event_t * event_get_timer_event(apr_time_t t,
     te->cbfunc = cbfn;
     te->baton = baton;
     te->canceled = 0;
-    te->when = t;
+    te->when = now + t;
     te->remove = remove;
 
     if (insert) { 
@@ -1528,7 +1530,7 @@ static apr_status_t event_register_timed_callback_ex(apr_time_t t,
                                                   void *baton, 
                                                   apr_array_header_t *remove)
 {
-    event_get_timer_event(t + apr_time_now(), cbfn, baton, 1, remove);
+    event_get_timer_event(t, cbfn, baton, 1, remove);
     return APR_SUCCESS;
 }
 
@@ -1588,7 +1590,7 @@ static apr_status_t event_register_poll_callback_ex(apr_array_header_t *pfds,
 
     if (timeout > 0) { 
         /* XXX:  This cancel timer event count fire before the pollset is updated */
-        scb->cancel_event = event_get_timer_event(timeout + apr_time_now(), tofn, baton, 1, pfds);
+        scb->cancel_event = event_get_timer_event(timeout, tofn, baton, 1, pfds);
     }
     for (i = 0; i < pfds->nelts; i++) {
         apr_pollfd_t *pfd = (apr_pollfd_t *)pfds->elts + i;
