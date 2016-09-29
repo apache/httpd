@@ -1798,19 +1798,17 @@ static void process_timeout_queue(struct timeout_queue *q,
 
 static void process_keepalive_queue(apr_time_t timeout_time)
 {
-    apr_uint32_t total = apr_atomic_read32(keepalive_q->total);
-    if (total) {
-        /* If all workers are busy, we kill older keep-alive connections so
-         * that they may connect to another process.
-         */
-        if (!timeout_time) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                         "All workers are busy or dying, will close "
-                         "%d keep-alive connections", (int)total);
-        }
-        process_timeout_queue(keepalive_q, timeout_time,
-                              start_lingering_close_nonblocking);
+    /* If all workers are busy, we kill older keep-alive connections so
+     * that they may connect to another process.
+     */
+    if (!timeout_time) {
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                     "All workers are busy or dying, will close %u "
+                     "keep-alive connections",
+                     apr_atomic_read32(keepalive_q->total));
     }
+    process_timeout_queue(keepalive_q, timeout_time,
+                          start_lingering_close_nonblocking);
 }
 
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
@@ -2225,7 +2223,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             ps->suspended = apr_atomic_read32(&suspended_count);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
         }
-        else if (workers_were_busy || dying) {
+        else if ((workers_were_busy || dying)
+                 && apr_atomic_read32(keepalive_q->total)) {
             apr_thread_mutex_lock(timeout_mutex);
             process_keepalive_queue(0); /* kill'em all \m/ */
             apr_thread_mutex_unlock(timeout_mutex);
