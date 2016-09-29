@@ -114,19 +114,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Kevin Croft, Rudolf Cardinal]
      PR: 29744
      Trunk Patch: https://svn.apache.org/r813178
-     2.2.x Patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
-                  plus CHANGES above.
-     +1: wrowe
-     -1: ylavic (+1 with bugfixes below...)
-     ylavic: this code has evolved in trunk/2.4.x (including fixes) since this
-             original commit (2009), we should probably include these changes.
-             I'm thinking of r1642857 and r1670324 from 2.4.x, with this delta
-             to the bz attachment 30144 patch; 
-               http://home.apache.org/~ylavic/patches/mod_proxy_connect-id30144_vs_r1670324.diff
-     Trunk Patch: https://svn.apache.org/r1642857
+                  https://svn.apache.org/r1642857
                   https://svn.apache.org/r1670324
                   [plus patch and changes noted above]
-     2.2.x Patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
+     This code has evolved in trunk/2.4.x (including fixes) since the original
+     commit (r813178 in 2009), specifically r1642857 and r1670324 from 2.4.x.
+     2.2.x old r813178 patch: https://bz.apache.org/bugzilla/attachment.cgi?id=30144
+     Delta to proposed patch: http://home.apache.org/~ylavic/patches/mod_proxy_connect-id30144_vs_r1670324.diff
+     2.2.x Proposed Patch:    http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy_connect-transfer.patch
      +1: wrowe, ylavic
 
   *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
