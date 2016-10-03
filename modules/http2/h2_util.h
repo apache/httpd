@@ -198,11 +198,12 @@ int h2_proxy_res_ignore_header(const char *name, size_t len);
  * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
  * for details.
  * 
- * @param req the request to determine the policy for
+ * @param headers the http headers to inspect
  * @param p the pool to use
  * @param push_enabled if HTTP/2 server push is generally enabled for this request
+ * @return the push policy desired
  */
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
+int h2_push_policy_determine(apr_table_t *headers, apr_pool_t *p, int push_enabled);
 
 /*******************************************************************************
  * base64 url encoding, different table from normal base64
@@ -261,16 +262,10 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2_request helpers
  ******************************************************************************/
 
-struct h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                                  const char *scheme, const char *authority, 
-                                  const char *path, apr_table_t *header,
-                                  int serialize);
-struct h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize);
-
-apr_status_t h2_req_make(struct h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers);
+struct h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                                 const char *scheme, const char *authority, 
+                                 const char *path, apr_table_t *header,
+                                 int serialize);
 
 /*******************************************************************************
  * apr brigade helpers
@@ -358,11 +353,12 @@ do { \
     const char *line = "(null)"; \
     apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
     len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
-    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld-%d): %s", \
-        (c)->id, (int)(sid), (len? buffer : line)); \
+    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%s): %s", \
+        (c)->log_id, (len? buffer : line)); \
 } while(0)
 
 
+typedef int h2_bucket_gate(apr_bucket *b);
 /**
  * Transfer buckets from one brigade to another with a limit on the 
  * maximum amount of bytes transferred. Does no setaside magic, lifetime
@@ -375,7 +371,8 @@ do { \
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                apr_bucket_brigade *from, 
                                apr_off_t *plen,
-                               int *peos);
+                               int *peos,
+                               h2_bucket_gate *should_append);
 
 /**
  * Get an approximnation of the memory footprint of the given

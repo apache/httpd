@@ -387,7 +387,7 @@ SET(mod_http2_extra_sources
   modules/http2/h2_from_h1.c         modules/http2/h2_h2.c
   modules/http2/h2_bucket_beam.c
   modules/http2/h2_mplx.c            modules/http2/h2_push.c
-  modules/http2/h2_request.c         modules/http2/h2_response.c
+  modules/http2/h2_request.c         modules/http2/h2_headers.c
   modules/http2/h2_session.c         modules/http2/h2_stream.c 
   modules/http2/h2_switch.c          modules/http2/h2_ngn_shed.c 
   modules/http2/h2_task.c            modules/http2/h2_util.c

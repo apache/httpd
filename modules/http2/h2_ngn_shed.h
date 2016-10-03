@@ -58,13 +58,13 @@ h2_ngn_shed *h2_ngn_shed_get_shed(struct h2_req_engine *ngn);
 
 void h2_ngn_shed_abort(h2_ngn_shed *shed);
 
-apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type, 
-                                  struct h2_task *task, 
-                                  h2_shed_ngn_init *init_cb);
+apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type, 
+                                      request_rec *r, 
+                                      h2_shed_ngn_init *init_cb);
 
-apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed, h2_req_engine *pub_ngn, 
-                                   apr_uint32_t capacity, 
-                                   int want_shutdown, struct h2_task **ptask);
+apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed, h2_req_engine *pub_ngn, 
+                                      apr_uint32_t capacity, 
+                                      int want_shutdown, request_rec **pr);
 
 apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed, 
                                    struct h2_req_engine *ngn, 

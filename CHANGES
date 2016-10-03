@@ -2,8 +2,16 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: rewrite of how responses and trailers are transferred between
+     master and slave connection. Reduction of internal states for tasks
+     and streams, stability. Heuristic id generation for slave connections
+     to better keep promise of connection ids unique at given point int time.
+     Fix for mod_cgid interop in high load situtations. 
+     Fix for handling of incoming trailers when no request body is sent.
+     [Stefan Eissing]
+  
   *) mod_http2: fix suspended handling for streams. Output could become
-     blocked in rare cases.
+     blocked in rare cases. [Stefan Eissing]
 
   *) mpm_winnt: Prevent a denial of service when the 'data' AcceptFilter is in
      use by replacing it with the 'connect' filter. PR 59970. [Jacob Champion]

@@ -47,6 +47,9 @@ extern const char *H2_MAGIC_TOKEN;
 #define H2_HEADER_PATH_LEN   5
 #define H2_CRLF             "\r\n"
 
+/* Max data size to write so it fits inside a TLS record */
+#define H2_DATA_CHUNK_SIZE          ((16*1024) - 100 - 9) 
+
 /* Maximum number of padding bytes in a frame, rfc7540 */
 #define H2_MAX_PADLEN               256
 /* Initial default window size, RFC 7540 ch. 6.5.2 */
@@ -115,39 +118,25 @@ typedef struct h2_session_props {
 typedef struct h2_request h2_request;
 
 struct h2_request {
-    int id;             /* stream id */
-    int initiated_on;   /* initiating stream id (PUSH) or 0 */
-    
     const char *method; /* pseudo header values, see ch. 8.1.2.3 */
     const char *scheme;
     const char *authority;
     const char *path;
     
     apr_table_t *headers;
-    apr_table_t *trailers;
 
     apr_time_t request_time;
-    apr_off_t content_length;
     
-    unsigned int chunked : 1; /* iff requst body needs to be forwarded as chunked */
-    unsigned int eoh     : 1; /* iff end-of-headers has been seen and request is complete */
-    unsigned int body    : 1; /* iff this request has a body */
+    unsigned int chunked : 1;   /* iff requst body needs to be forwarded as chunked */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
-    unsigned int push_policy; /* which push policy to use for this request */
 };
 
-typedef struct h2_response h2_response;
+typedef struct h2_headers h2_headers;
 
-struct h2_response {
-    int         stream_id;
-    int         rst_error;
-    int         http_status;
-    apr_off_t   content_length;
+struct h2_headers {
+    int         status;
     apr_table_t *headers;
-    apr_table_t *trailers;
-    struct h2_response *next;
-    
-    const char  *sos_filter;
+    apr_table_t *notes;
 };
 
 typedef apr_status_t h2_io_data_cb(void *ctx, const char *data, apr_off_t len);
@@ -156,7 +145,7 @@ typedef int h2_stream_pri_cmp(int stream_id1, int stream_id2, void *ctx);
 
 /* Note key to attach connection task id to conn_rec/request_rec instances */
 
-#define H2_TASK_ID_NOTE     "http2-task-id"
-
+#define H2_TASK_ID_NOTE         "http2-task-id"
+#define H2_FILTER_DEBUG_NOTE    "http2-debug"
 
 #endif /* defined(__mod_h2__h2__) */
