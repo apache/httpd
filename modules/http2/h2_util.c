@@ -653,8 +653,8 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                      * unless we do not move the file buckets */
                     --files_allowed;
                 }
-                else if (maxlen < b->length) {
-                    apr_bucket_split(b, maxlen);
+                else if (maxlen < (apr_off_t)b->length) {
+                    apr_bucket_split(b, (apr_size_t)maxlen);
                     maxlen = 0;
                 }
                 else {
@@ -852,7 +852,7 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
             
             if (data_len > avail) {
                 apr_bucket_split(b, avail);
-                data_len = avail;
+                data_len = (apr_size_t)avail;
             }
             
             if (consume) {
@@ -903,11 +903,11 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
             off += apr_snprintf(buffer+off, bmax-off, "eor");
         }
         else {
-            off += apr_snprintf(buffer+off, bmax-off, "meta(unknown)");
+            off += apr_snprintf(buffer+off, bmax-off, "%s", b->type->name);
         }
     }
     else {
-        const char *btype = "data";
+        const char *btype = b->type->name;
         if (APR_BUCKET_IS_FILE(b)) {
             btype = "file";
         }
@@ -972,7 +972,8 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                apr_bucket_brigade *from, 
                                apr_off_t *plen,
-                               int *peos)
+                               int *peos,
+                               h2_bucket_gate *should_append)
 {
     apr_bucket *e;
     apr_off_t len = 0, remain = *plen;
@@ -983,7 +984,10 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
     while (!APR_BRIGADE_EMPTY(from)) {
         e = APR_BRIGADE_FIRST(from);
         
-        if (APR_BUCKET_IS_METADATA(e)) {
+        if (!should_append(e)) {
+            goto leave;
+        }
+        else if (APR_BUCKET_IS_METADATA(e)) {
             if (APR_BUCKET_IS_EOS(e)) {
                 *peos = 1;
                 apr_bucket_delete(e);
@@ -1002,9 +1006,9 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
             
             if (remain < e->length) {
                 if (remain <= 0) {
-                    return APR_SUCCESS;
+                    goto leave;
                 }
-                apr_bucket_split(e, remain);
+                apr_bucket_split(e, (apr_size_t)remain);
             }
         }
         
@@ -1013,7 +1017,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
         len += e->length;
         remain -= e->length;
     }
-    
+leave:
     *plen = len;
     return APR_SUCCESS;
 }
@@ -1202,7 +1206,7 @@ static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
 {
     const literal *lit;
-    int i;
+    size_t i;
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
@@ -1276,13 +1280,12 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2 request handling
  ******************************************************************************/
 
-h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                           const char *scheme, const char *authority, 
-                           const char *path, apr_table_t *header, int serialize)
+h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                          const char *scheme, const char *authority, 
+                          const char *path, apr_table_t *header, int serialize)
 {
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
-    req->id             = id;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
@@ -1292,49 +1295,6 @@ h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method,
     req->serialize      = serialize;
     
     return req;
-}
-
-h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize)
-{
-    return h2_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
-}
-
-typedef struct {
-    apr_table_t *headers;
-    apr_pool_t *pool;
-} h1_ctx;
-
-static int set_h1_header(void *ctx, const char *key, const char *value)
-{
-    h1_ctx *x = ctx;
-    size_t klen = strlen(key);
-    if (!h2_req_ignore_header(key, klen)) {
-        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
-    }
-    return 1;
-}
-
-apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers)
-{
-    h1_ctx x;
-
-    req->method    = method;
-    req->scheme    = scheme;
-    req->authority = authority;
-    req->path      = path;
-
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
-
-    x.pool = pool;
-    x.headers = req->headers;
-    apr_table_do(set_h1_header, &x, headers, NULL);
-    return APR_SUCCESS;
 }
 
 /*******************************************************************************
@@ -1423,11 +1383,11 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 /*******************************************************************************
  * push policy
  ******************************************************************************/
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
+int h2_push_policy_determine(apr_table_t *headers, apr_pool_t *p, int push_enabled)
 {
     h2_push_policy policy = H2_PUSH_NONE;
     if (push_enabled) {
-        const char *val = apr_table_get(req->headers, "accept-push-policy");
+        const char *val = apr_table_get(headers, "accept-push-policy");
         if (val) {
             if (ap_find_token(p, val, "fast-load")) {
                 policy = H2_PUSH_FAST_LOAD;
@@ -1450,6 +1410,6 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
             policy = H2_PUSH_DEFAULT;
         }
     }
-    req->push_policy = policy;
+    return policy;
 }
 

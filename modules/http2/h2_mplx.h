@@ -40,7 +40,6 @@ struct apr_thread_cond_t;
 struct h2_bucket_beam;
 struct h2_config;
 struct h2_ihash_t;
-struct h2_response;
 struct h2_task;
 struct h2_stream;
 struct h2_request;
@@ -76,9 +75,8 @@ struct h2_mplx {
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
 
     struct h2_iqueue *q;            /* all stream ids that need to be started */
-    struct h2_ihash_t *sready;      /* all streams ready for response */
-    struct h2_ihash_t *sresume;     /* all streams that can be resumed */
-    
+    struct h2_ihash_t *sready;      /* all streams ready for output */
+        
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
@@ -105,8 +103,8 @@ struct h2_mplx {
     apr_array_header_t *spare_slaves; /* spare slave connections */
     
     struct h2_workers *workers;
-    int tx_handles_reserved;
-    apr_size_t tx_chunk_size;
+    apr_uint32_t tx_handles_reserved;
+    apr_uint32_t tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
@@ -164,6 +162,8 @@ int h2_mplx_is_busy(h2_mplx *m);
  * IO lifetime of streams.
  ******************************************************************************/
 
+struct h2_stream *h2_mplx_stream_get(h2_mplx *m, apr_uint32_t id);
+
 /**
  * Notifies mplx that a stream has finished processing.
  * 
@@ -180,6 +180,8 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, struct h2_stream *stream);
  */
 apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
                                  struct apr_thread_cond_t *iowait);
+
+apr_status_t h2_mplx_keep_active(h2_mplx *m, apr_uint32_t stream_id);
 
 /*******************************************************************************
  * Stream processing.
@@ -222,16 +224,15 @@ typedef apr_status_t stream_ev_callback(void *ctx, int stream_id);
 
 /**
  * Dispatch events for the master connection, such as
- * - resume: new output data has arrived for a suspended stream
- * - response: the response for a stream is ready
+ ± @param m the multiplexer
+ * @param on_resume new output data has arrived for a suspended stream 
+ * @param ctx user supplied argument to invocation.
  */
 apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
                                             stream_ev_callback *on_resume, 
-                                            stream_ev_callback *on_response, 
                                             void *ctx);
 
-apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id);
-
+int h2_mplx_awaits_data(h2_mplx *m);
 
 typedef int h2_mplx_stream_cb(struct h2_stream *s, void *ctx);
 
@@ -245,7 +246,7 @@ apr_status_t h2_mplx_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
  * Opens the output for the given stream with the specified response.
  */
 apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
-                              struct h2_response *response);
+                              struct h2_bucket_beam *beam);
 
 /*******************************************************************************
  * h2_mplx list Manipulation.

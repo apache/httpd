@@ -34,7 +34,7 @@
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_response.h"
+#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 
@@ -58,6 +58,7 @@ static const char *policy_str(h2_push_policy policy)
 
 typedef struct {
     const h2_request *req;
+    int push_policy;
     apr_pool_t *pool;
     apr_array_header_t *pushes;
     const char *s;
@@ -336,7 +337,7 @@ static int add_push(link_ctx *ctx)
                  */
                 path = apr_uri_unparse(ctx->pool, &uri, APR_URI_UNP_OMITSITEPART);
                 push = apr_pcalloc(ctx->pool, sizeof(*push));
-                switch (ctx->req->push_policy) {
+                switch (ctx->push_policy) {
                     case H2_PUSH_HEAD:
                         method = "HEAD";
                         break;
@@ -346,11 +347,11 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_req_createn(0, ctx->pool, method, ctx->req->scheme,
-                                     ctx->req->authority, path, headers,
-                                     ctx->req->serialize);
+                req = h2_req_create(0, ctx->pool, method, ctx->req->scheme,
+                                    ctx->req->authority, path, headers,
+                                    ctx->req->serialize);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1, 0);
+                h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
                 
                 if (!ctx->pushes) {
@@ -427,10 +428,10 @@ static int head_iter(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req, 
-                                    const h2_response *res)
+apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
+                                    int push_policy, const h2_headers *res)
 {
-    if (req && req->push_policy != H2_PUSH_NONE) {
+    if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
          * 
          * One source for pushes are "rel=preload" link headers
@@ -444,11 +445,13 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
             
             memset(&ctx, 0, sizeof(ctx));
             ctx.req = req;
+            ctx.push_policy = push_policy;
             ctx.pool = p;
             
             apr_table_do(head_iter, &ctx, res->headers, NULL);
             if (ctx.pushes) {
-                apr_table_setn(res->headers, "push-policy", policy_str(req->push_policy));
+                apr_table_setn(res->headers, "push-policy", 
+                               policy_str(push_policy));
             }
             return ctx.pushes;
         }
@@ -681,7 +684,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     
 apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
                                            const struct h2_request *req, 
-                                           const struct h2_response *res)
+                                           const struct h2_headers *res)
 {
     h2_session *session = stream->session;
     const char *cache_digest = apr_table_get(req->headers, "Cache-Digest");
@@ -698,7 +701,7 @@ apr_array_header_t *h2_push_collect_update(h2_stream *stream,
                           session->id, cache_digest);
         }
     }
-    pushes = h2_push_collect(stream->pool, req, res);
+    pushes = h2_push_collect(stream->pool, req, stream->push_policy, res);
     return h2_push_diary_update(stream->session, pushes);
 }
 
