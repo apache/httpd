@@ -199,7 +199,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_ngn_shed.o \
 	$(OBJDIR)/h2_push.o \
 	$(OBJDIR)/h2_request.o \
-	$(OBJDIR)/h2_response.o \
+	$(OBJDIR)/h2_headers.o \
 	$(OBJDIR)/h2_session.o \
 	$(OBJDIR)/h2_stream.o \
 	$(OBJDIR)/h2_switch.o \

@@ -120,8 +120,8 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
         line = *buffer? buffer : "(empty)";
     }
     /* Intentional no APLOGNO */
-    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%ld-%d)-%s: %s", 
-                  c->id, stream_id, tag, line);
+    ap_log_cerror(APLOG_MARK, level, 0, c, "bb_dump(%s)-%s: %s", 
+                  c->log_id, tag, line);
 
 }
 

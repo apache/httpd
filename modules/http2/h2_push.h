@@ -18,7 +18,7 @@
 #include "h2.h"
 
 struct h2_request;
-struct h2_response;
+struct h2_headers;
 struct h2_ngheader;
 struct h2_session;
 struct h2_stream;
@@ -58,7 +58,8 @@ struct h2_push_diary {
  */
 apr_array_header_t *h2_push_collect(apr_pool_t *p, 
                                     const struct h2_request *req, 
-                                    const struct h2_response *res);
+                                    int push_policy, 
+                                    const struct h2_headers *res);
 
 /**
  * Create a new push diary for the given maximum number of entries.
@@ -81,7 +82,7 @@ apr_array_header_t *h2_push_diary_update(struct h2_session *session, apr_array_h
  */
 apr_array_header_t *h2_push_collect_update(struct h2_stream *stream, 
                                            const struct h2_request *req, 
-                                           const struct h2_response *res);
+                                           const struct h2_headers *res);
 /**
  * Get a cache digest as described in 
  * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/

@@ -21,6 +21,7 @@
 #include <apr_thread_cond.h>
 
 #include <httpd.h>
+#include <http_protocol.h>
 #include <http_log.h>
 
 #include "h2_private.h"
@@ -170,6 +171,14 @@ const apr_bucket_type_t h2_bucket_type_beam = {
  * h2_blist, a brigade without allocations
  ******************************************************************************/
  
+APR_HOOK_STRUCT(
+            APR_HOOK_LINK(beam_bucket)
+)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_bucket *, beam_bucket,
+                            (h2_bucket_beam *beam, apr_bucket_brigade *dest,
+                             const apr_bucket *src),
+                            (beam, dest, src), NULL)
+
 apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
                             const char *tag, const char *sep, 
                             h2_blist *bl)
@@ -518,10 +527,12 @@ void h2_beam_abort(h2_bucket_beam *beam)
     h2_beam_lock bl;
     
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        r_purge_reds(beam);
-        h2_blist_cleanup(&beam->red);
-        beam->aborted = 1;
-        report_consumption(beam, 0);
+        if (!beam->aborted) {
+            beam->aborted = 1;
+            r_purge_reds(beam);
+            h2_blist_cleanup(&beam->red);
+            report_consumption(beam, 0);
+        }
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
         }
@@ -792,8 +803,10 @@ transfer:
                 else if (APR_BUCKET_IS_FLUSH(bred)) {
                     bgreen = apr_bucket_flush_create(bb->bucket_alloc);
                 }
-                else {
-                    /* put red into hold, no green sent out */
+                else if (AP_BUCKET_IS_ERROR(bred)) {
+                    ap_bucket_error *eb = (ap_bucket_error *)bred;
+                    bgreen = ap_bucket_error_create(eb->status, eb->data,
+                                                    bb->p, bb->bucket_alloc);
                 }
             }
             else if (APR_BUCKET_IS_FILE(bred)) {
@@ -845,6 +858,14 @@ transfer:
                 APR_BRIGADE_INSERT_TAIL(bb, bgreen);
                 remain -= bgreen->length;
                 ++transferred;
+            }
+            else {
+                bgreen = ap_run_beam_bucket(beam, bb, bred);
+                while (bgreen && bgreen != APR_BRIGADE_SENTINEL(bb)) {
+                    ++transferred;
+                    remain -= bgreen->length;
+                    bgreen = APR_BUCKET_NEXT(bgreen);
+                }
             }
         }
 

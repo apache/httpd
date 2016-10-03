@@ -32,12 +32,15 @@
 #include "mod_http2.h"
 #include "h2_private.h"
 
+#include "h2_bucket_beam.h"
 #include "h2_stream.h"
 #include "h2_task.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
 #include "h2_conn.h"
+#include "h2_filter.h"
 #include "h2_request.h"
+#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_util.h"
 #include "h2_h2.h"
@@ -569,6 +572,10 @@ void h2_h2_register_hooks(void)
      */
     ap_hook_post_read_request(h2_h2_post_read_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(h2_h2_late_fixups, NULL, NULL, APR_HOOK_LAST);
+
+    /* special bucket type transfer through a h2_bucket_beam */
+    ap_hook_beam_bucket(h2_bucket_observer_beam, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_beam_bucket(h2_bucket_headers_beam, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 int h2_h2_process_conn(conn_rec* c)
@@ -684,30 +691,23 @@ static int h2_h2_post_read_req(request_rec *r)
          * that we manipulate filters only once. */
         if (task && !task->filters_set) {
             ap_filter_t *f;
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "adding request filters");
 
-            /* setup the correct output filters to process the response
-             * on the proper mod_http2 way. */
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "adding task output filter");
-            if (task->ser_headers) {
-                ap_add_output_filter("H1_TO_H2_RESP", task, r, r->connection);
-            }
-            else {
-                /* replace the core http filter that formats response headers
-                 * in HTTP/1 with our own that collects status and headers */
-                ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
-                ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
-            }
+            /* setup the correct filters to process the request for h2 */
+            ap_add_input_filter("H2_REQUEST", task, r, r->connection);
             
-            /* trailers processing. Incoming trailers are added to this
-             * request via our h2 input filter, outgoing trailers
-             * in a special h2 out filter. */
+            /* replace the core http filter that formats response headers
+             * in HTTP/1 with our own that collects status and headers */
+            ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
+            ap_add_output_filter("H2_RESPONSE", task, r, r->connection);
+            
             for (f = r->input_filters; f; f = f->next) {
-                if (!strcmp("H2_TO_H1", f->frec->name)) {
+                if (!strcmp("H2_SLAVE_IN", f->frec->name)) {
                     f->r = r;
                     break;
                 }
             }
-            ap_add_output_filter("H2_TRAILERS", task, r, r->connection);
+            ap_add_output_filter("H2_TRAILERS_OUT", task, r, r->connection);
             task->filters_set = 1;
         }
     }

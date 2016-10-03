@@ -35,7 +35,6 @@
 #include "h2_ctx.h"
 #include "h2_h2.h"
 #include "h2_mplx.h"
-#include "h2_response.h"
 #include "h2_request.h"
 #include "h2_task.h"
 #include "h2_util.h"
@@ -46,6 +45,7 @@ typedef struct h2_ngn_entry h2_ngn_entry;
 struct h2_ngn_entry {
     APR_RING_ENTRY(h2_ngn_entry) link;
     h2_task *task;
+    request_rec *r;
 };
 
 #define H2_NGN_ENTRY_NEXT(e)	APR_RING_NEXT((e), link)
@@ -144,26 +144,28 @@ void h2_ngn_shed_abort(h2_ngn_shed *shed)
     shed->aborted = 1;
 }
 
-static void ngn_add_task(h2_req_engine *ngn, h2_task *task)
+static void ngn_add_task(h2_req_engine *ngn, h2_task *task, request_rec *r)
 {
     h2_ngn_entry *entry = apr_pcalloc(task->pool, sizeof(*entry));
     APR_RING_ELEM_INIT(entry, link);
     entry->task = task;
+    entry->r = r;
     H2_REQ_ENTRIES_INSERT_TAIL(&ngn->entries, entry);
 }
 
 
-apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type, 
-                                   h2_task *task, http2_req_engine_init *einit) 
+apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type, 
+                                      request_rec *r, 
+                                      http2_req_engine_init *einit) 
 {
     h2_req_engine *ngn;
+    h2_task *task = h2_ctx_rget_task(r);
 
-    AP_DEBUG_ASSERT(shed);
-    
+    ap_assert(task);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, shed->c,
                   "h2_ngn_shed(%ld): PUSHing request (task=%s)", shed->c->id, 
                   task->id);
-    if (task->ser_headers) {
+    if (task->request->serialize) {
         /* Max compatibility, deny processing of this */
         return APR_EOF;
     }
@@ -184,7 +186,7 @@ apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type,
         if (!h2_task_is_detached(task)) {
             h2_task_freeze(task);
         }
-        ngn_add_task(ngn, task);
+        ngn_add_task(ngn, task, r);
         ngn->no_assigned++;
         return APR_SUCCESS;
     }
@@ -207,7 +209,7 @@ apr_status_t h2_ngn_shed_push_task(h2_ngn_shed *shed, const char *ngn_type,
         APR_RING_INIT(&newngn->entries, h2_ngn_entry, link);
         
         status = einit(newngn, newngn->id, newngn->type, newngn->pool,
-                       shed->req_buffer_size, task->r, 
+                       shed->req_buffer_size, r,
                        &newngn->out_consumed, &newngn->out_consumed_ctx);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03395)
                       "h2_ngn_shed(%ld): create engine %s (%s)", 
@@ -242,16 +244,16 @@ static h2_ngn_entry *pop_detached(h2_req_engine *ngn)
     return NULL;
 }
 
-apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed, 
-                                   h2_req_engine *ngn, 
-                                   apr_uint32_t capacity, 
-                                   int want_shutdown,
-                                   h2_task **ptask)
+apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed, 
+                                      h2_req_engine *ngn, 
+                                      apr_uint32_t capacity, 
+                                      int want_shutdown,
+                                      request_rec **pr)
 {   
     h2_ngn_entry *entry;
     
     AP_DEBUG_ASSERT(ngn);
-    *ptask = NULL;
+    *pr = NULL;
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c, APLOGNO(03396)
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
                   shed->c->id, ngn->id, want_shutdown);
@@ -279,7 +281,7 @@ apr_status_t h2_ngn_shed_pull_task(h2_ngn_shed *shed,
                       "h2_ngn_shed(%ld): pulled request %s for engine %s", 
                       shed->c->id, entry->task->id, ngn->id);
         ngn->no_live++;
-        *ptask = entry->task;
+        *pr = entry->r;
         entry->task->assigned = ngn;
         /* task will now run in ngn's own thread. Modules like lua
          * seem to require the correct thread set in the conn_rec.

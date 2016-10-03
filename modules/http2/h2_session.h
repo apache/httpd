@@ -49,7 +49,6 @@ struct h2_mplx;
 struct h2_priority;
 struct h2_push;
 struct h2_push_diary;
-struct h2_response;
 struct h2_session;
 struct h2_stream;
 struct h2_task;
@@ -186,11 +185,6 @@ void h2_session_abort(h2_session *session, apr_status_t reason);
  * Close and deallocate the given session.
  */
 void h2_session_close(h2_session *session);
-
-/* Start submitting the response to a stream request. This is possible
- * once we have all the response headers. */
-apr_status_t h2_session_handle_response(h2_session *session,
-                                        struct h2_stream *stream);
 
 /**
  * Create and register a new stream under the given id.
