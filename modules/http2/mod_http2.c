@@ -233,8 +233,11 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
     if (ctx) {
         if (r) {
             h2_task *task = h2_ctx_get_task(ctx);
-            if (task && task->request->push_policy != H2_PUSH_NONE) {
-                return "on";
+            if (task) {
+                h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+                if (stream && stream->push_policy != H2_PUSH_NONE) {
+                    return "on";
+                }
             }
         }
         else if (c && h2_session_push_enabled(ctx->session)) {
@@ -268,7 +271,10 @@ static const char *val_H2_PUSHED_ON(apr_pool_t *p, server_rec *s,
     if (ctx) {
         h2_task *task = h2_ctx_get_task(ctx);
         if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
-            return apr_itoa(p, task->request->initiated_on);
+            h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+            if (stream) {
+                return apr_itoa(p, stream->initiated_on);
+            }
         }
     }
     return "";

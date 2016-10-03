@@ -30,44 +30,18 @@
  * we need to have all handlers and filters involved in request/response
  * processing, so this seems to be the way for now.
  */
+struct h2_headers;
+struct h2_task;
 
-typedef enum {
-    H2_RESP_ST_STATUS_LINE, /* parsing http/1 status line */
-    H2_RESP_ST_HEADERS,     /* parsing http/1 response headers */
-    H2_RESP_ST_BODY,        /* transferring response body */
-    H2_RESP_ST_DONE         /* complete response converted */
-} h2_from_h1_state_t;
+apr_status_t h2_headers_output_filter(ap_filter_t *f, apr_bucket_brigade *bb);
 
-struct h2_response;
+apr_status_t h2_filter_request_in(ap_filter_t* f,
+                                  apr_bucket_brigade* brigade,
+                                  ap_input_mode_t mode,
+                                  apr_read_type_e block,
+                                  apr_off_t readbytes);
 
-typedef struct h2_from_h1 h2_from_h1;
-
-struct h2_from_h1 {
-    int stream_id;
-    h2_from_h1_state_t state;
-    apr_pool_t *pool;
-    apr_bucket_brigade *bb;
-    
-    apr_off_t content_length;
-    int chunked;
-    
-    int http_status;
-    apr_array_header_t *hlines;
-    
-    struct h2_response *response;
-};
-
-
-h2_from_h1 *h2_from_h1_create(int stream_id, apr_pool_t *pool);
-
-apr_status_t h2_from_h1_read_response(h2_from_h1 *from_h1,
-                                      ap_filter_t* f, apr_bucket_brigade* bb);
-
-struct h2_response *h2_from_h1_get_response(h2_from_h1 *from_h1);
-
-apr_status_t h2_response_output_filter(ap_filter_t *f, apr_bucket_brigade *bb);
-
-apr_status_t h2_response_trailers_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+apr_status_t h2_filter_trailers_out(ap_filter_t *f, apr_bucket_brigade *bb);
 
 void h2_from_h1_set_basic_http_header(apr_table_t *headers, request_rec *r,
                                       apr_pool_t *pool);

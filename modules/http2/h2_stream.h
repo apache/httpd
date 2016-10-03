@@ -25,16 +25,16 @@
  * connection to the client. The h2_session writes to the h2_stream,
  * adding HEADERS and DATA and finally an EOS. When headers are done,
  * h2_stream is scheduled for handling, which is expected to produce
- * a h2_response.
+ * a h2_headers.
  * 
- * The h2_response gives the HEADER frames to sent to the client, followed
+ * The h2_headers gives the HEADER frames to sent to the client, followed
  * by DATA frames read from the h2_stream until EOS is reached.
  */
 
 struct h2_mplx;
 struct h2_priority;
 struct h2_request;
-struct h2_response;
+struct h2_headers;
 struct h2_session;
 struct h2_sos;
 struct h2_bucket_beam;
@@ -51,27 +51,27 @@ struct h2_stream {
     apr_pool_t *pool;           /* the memory pool for this stream */
     const struct h2_request *request; /* the request made in this stream */
     struct h2_request *rtmp;    /* request being assembled */
+    apr_table_t *trailers;      /* optional incoming trailers */
     struct h2_bucket_beam *input;
     int request_headers_added;  /* number of request headers added */
+    unsigned int push_policy;   /* which push policy to use for this request */
     
-    struct h2_response *response;
-    struct h2_response *last_sent;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *buffer;
     apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
-    unsigned int suspended : 1; /* DATA sending has been suspended */
     unsigned int scheduled : 1; /* stream has been scheduled */
     unsigned int started   : 1; /* stream has started processing */
-    unsigned int submitted : 1; /* response HEADER has been sent */
+    unsigned int has_response : 1; /* response headers are known */
     
-    apr_off_t input_remaining;  /* remaining bytes on input as advertised via content-length */
     apr_off_t out_data_frames;  /* # of DATA frames sent */
     apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
     apr_off_t in_data_frames;   /* # of DATA frames received */
     apr_off_t in_data_octets;   /* # of DATA octets (payload) received */
+    
+    const char  *sos_filter;
 };
 
 
@@ -188,22 +188,6 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
  */
 int h2_stream_is_scheduled(const h2_stream *stream);
 
-struct h2_response *h2_stream_get_response(h2_stream *stream);
-struct h2_response *h2_stream_get_unsent_response(h2_stream *stream);
-
-/**
- * Set the response for this stream. Invoked when all meta data for
- * the stream response has been collected.
- * 
- * @param stream the stream to set the response for
- * @param response the response data for the stream
- * @param bb bucket brigade with output data for the stream. Optional,
- *        may be incomplete.
- */
-apr_status_t h2_stream_add_response(h2_stream *stream, 
-                                    struct h2_response *response,
-                                    struct h2_bucket_beam *output);
-
 /**
  * Set the HTTP error status as response.
  */
@@ -218,12 +202,13 @@ apr_status_t h2_stream_set_error(h2_stream *stream, int http_status);
  *        may be read without blocking
  * @param peos (out) != 0 iff end of stream will be reached when reading plen
  *        bytes (out value).
+ * @param presponse (out) the response of one became available
  * @return APR_SUCCESS if out information was computed successfully.
  *         APR_EAGAIN if not data is available and end of stream has not been
  *         reached yet.
  */
-apr_status_t h2_stream_out_prepare(h2_stream *stream, 
-                                   apr_off_t *plen, int *peos);
+apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen, 
+                                   int *peos, h2_headers **presponse);
 
 /**
  * Read a maximum number of bytes into the bucket brigade.
@@ -251,20 +236,6 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
 apr_table_t *h2_stream_get_trailers(h2_stream *stream);
 
 /**
- * Set the suspended state of the stream.
- * @param stream the stream to change state on
- * @param suspended boolean value if stream is suspended
- */
-void h2_stream_set_suspended(h2_stream *stream, int suspended);
-
-/**
- * Check if the stream has been suspended.
- * @param stream the stream to check
- * @return != 0 iff stream is suspended.
- */
-int h2_stream_is_suspended(const h2_stream *stream);
-
-/**
  * Check if the stream has open input.
  * @param stream the stream to check
  * @return != 0 iff stream has open input.
@@ -272,29 +243,29 @@ int h2_stream_is_suspended(const h2_stream *stream);
 int h2_stream_input_is_open(const h2_stream *stream);
 
 /**
- * Check if the stream has not submitted a response or RST yet.
- * @param stream the stream to check
- * @return != 0 iff stream has not submitted a response or RST.
- */
-int h2_stream_needs_submit(const h2_stream *stream);
-
-/**
  * Submit any server push promises on this stream and schedule
  * the tasks connection with these.
  *
  * @param stream the stream for which to submit
  */
-apr_status_t h2_stream_submit_pushes(h2_stream *stream);
+apr_status_t h2_stream_submit_pushes(h2_stream *stream, h2_headers *response);
 
 /**
  * Get priority information set for this stream.
  */
-const struct h2_priority *h2_stream_get_priority(h2_stream *stream);
+const struct h2_priority *h2_stream_get_priority(h2_stream *stream, 
+                                                 h2_headers *response);
 
 /**
  * Return a textual representation of the stream state as in RFC 7540
  * nomenclator, all caps, underscores.
  */
 const char *h2_stream_state_str(h2_stream *stream);
+
+/**
+ * Determine if stream is ready for submitting a response or a RST
+ * @param stream the stream to check
+ */
+int h2_stream_is_ready(h2_stream *stream);
 
 #endif /* defined(__mod_h2__h2_stream__) */
