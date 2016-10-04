@@ -373,8 +373,10 @@ int h2_beam_was_received(h2_bucket_beam *beam);
 
 apr_size_t h2_beam_get_files_beamed(h2_bucket_beam *beam);
 
-AP_DECLARE_HOOK(apr_bucket *, beam_bucket,
-                (h2_bucket_beam *beam, apr_bucket_brigade *dest,
-                 const apr_bucket *src))
+typedef apr_bucket *h2_bucket_beamer(h2_bucket_beam *beam, 
+                                     apr_bucket_brigade *dest,
+                                     const apr_bucket *src);
+
+void h2_register_bucket_beamer(h2_bucket_beamer *beamer);
 
 #endif /* h2_bucket_beam_h */

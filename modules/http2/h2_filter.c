@@ -238,7 +238,7 @@ apr_status_t h2_bucket_observer_fire(apr_bucket *b, h2_bucket_event event)
 }
 
 const apr_bucket_type_t h2_bucket_type_observer = {
-    "H2LAZY", 5, APR_BUCKET_METADATA,
+    "H2OBS", 5, APR_BUCKET_METADATA,
     bucket_destroy,
     bucket_read,
     apr_bucket_setaside_noop,
