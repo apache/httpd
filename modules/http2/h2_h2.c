@@ -574,8 +574,8 @@ void h2_h2_register_hooks(void)
     ap_hook_fixups(h2_h2_late_fixups, NULL, NULL, APR_HOOK_LAST);
 
     /* special bucket type transfer through a h2_bucket_beam */
-    ap_hook_beam_bucket(h2_bucket_observer_beam, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_beam_bucket(h2_bucket_headers_beam, NULL, NULL, APR_HOOK_MIDDLE);
+    h2_register_bucket_beamer(h2_bucket_headers_beam);
+    h2_register_bucket_beamer(h2_bucket_observer_beam);
 }
 
 int h2_h2_process_conn(conn_rec* c)

@@ -290,8 +290,8 @@ conn_rec *h2_slave_create(conn_rec *master, apr_uint32_t slave_id,
      * many streams. 
      */
     l = master->id;
-    if (sizeof(long) >= 8 && l < APR_UINT32_MAX) {
-        c->id = l|(((unsigned long)slave_id) << 32);
+    if (sizeof(unsigned long) >= 8 && l < APR_UINT32_MAX) {
+        c->id = l|((unsigned long)slave_id << 32);
     }
     else {
         c->id = l^(~slave_id);

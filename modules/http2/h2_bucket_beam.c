@@ -170,14 +170,35 @@ const apr_bucket_type_t h2_bucket_type_beam = {
 /*******************************************************************************
  * h2_blist, a brigade without allocations
  ******************************************************************************/
+
+static apr_array_header_t *beamers;
  
-APR_HOOK_STRUCT(
-            APR_HOOK_LINK(beam_bucket)
-)
-AP_IMPLEMENT_HOOK_RUN_FIRST(apr_bucket *, beam_bucket,
-                            (h2_bucket_beam *beam, apr_bucket_brigade *dest,
-                             const apr_bucket *src),
-                            (beam, dest, src), NULL)
+void h2_register_bucket_beamer(h2_bucket_beamer *beamer)
+{
+    if (!beamers) {
+        beamers = apr_array_make(apr_hook_global_pool, 10, 
+                                 sizeof(h2_bucket_beamer*));
+    }
+    APR_ARRAY_PUSH(beamers, h2_bucket_beamer*) = beamer;
+}
+
+static apr_bucket *h2_beam_bucket(h2_bucket_beam *beam, 
+                                  apr_bucket_brigade *dest,
+                                  const apr_bucket *src)
+{
+    apr_bucket *b = NULL;
+    int i;
+    if (beamers) {
+        for (i = 0; i < beamers->nelts && b == NULL; ++i) {
+            h2_bucket_beamer *beamer;
+            
+            beamer = APR_ARRAY_IDX(beamers, i, h2_bucket_beamer*);
+            b = beamer(beam, dest, src);
+        }
+    }
+    return b;
+}
+
 
 apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax, 
                             const char *tag, const char *sep, 
@@ -860,7 +881,7 @@ transfer:
                 ++transferred;
             }
             else {
-                bgreen = ap_run_beam_bucket(beam, bb, bred);
+                bgreen = h2_beam_bucket(beam, bb, bred);
                 while (bgreen && bgreen != APR_BRIGADE_SENTINEL(bb)) {
                     ++transferred;
                     remain -= bgreen->length;
