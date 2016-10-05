@@ -190,6 +190,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: same here (hunk + access_status = HTTP_BAD_REQUEST;)
              depends on the previous one?
 
+  *) core: potential rejection of valid MaxMemFree and ThreadStackSize directives
+     trunk patch: https://svn.apache.org/r1542338
+     2.4.x patch: https://svn.apache.org/r1542549
+     2.2.x patch: trunk patch works
+     +1: mrumph
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
