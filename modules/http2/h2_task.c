@@ -492,7 +492,7 @@ void h2_task_register_hooks(void)
                              NULL, AP_FTYPE_PROTOCOL);
     ap_register_input_filter("H2_REQUEST", h2_filter_request_in,
                              NULL, AP_FTYPE_PROTOCOL);
-    ap_register_output_filter("H2_RESPONSE", h2_headers_output_filter,
+    ap_register_output_filter("H2_RESPONSE", h2_filter_headers_out,
                               NULL, AP_FTYPE_PROTOCOL);
     ap_register_output_filter("H2_TRAILERS_OUT", h2_filter_trailers_out,
                               NULL, AP_FTYPE_PROTOCOL);
@@ -705,11 +705,11 @@ apr_status_t h2_task_thaw(h2_task *task)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03407) 
                       "h2_task(%s), thawed", task->id);
     }
-    task->detached = 1;
+    task->thawed = 1;
     return APR_SUCCESS;
 }
 
-int h2_task_is_detached(h2_task *task)
+int h2_task_has_thawed(h2_task *task)
 {
-    return task->detached;
+    return task->thawed;
 }
