@@ -77,9 +77,9 @@ struct h2_task {
     
     unsigned int filters_set    : 1;
     unsigned int frozen         : 1;
-    unsigned int detached       : 1;
-    unsigned int worker_started : 1; /* h2_worker started processing for this io */
-    unsigned int worker_done    : 1; /* h2_worker finished for this io */
+    unsigned int thawed         : 1;
+    unsigned int worker_started : 1; /* h2_worker started processing */
+    unsigned int worker_done    : 1; /* h2_worker finished */
     
     apr_time_t started_at;           /* when processing started */
     apr_time_t done_at;              /* when processing was done */
@@ -116,6 +116,6 @@ extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_task_logio_add_bytes_out
 
 apr_status_t h2_task_freeze(h2_task *task);
 apr_status_t h2_task_thaw(h2_task *task);
-int h2_task_is_detached(h2_task *task);
+int h2_task_has_thawed(h2_task *task);
 
 #endif /* defined(__mod_h2__h2_task__) */

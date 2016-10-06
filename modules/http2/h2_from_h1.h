@@ -33,7 +33,7 @@
 struct h2_headers;
 struct h2_task;
 
-apr_status_t h2_headers_output_filter(ap_filter_t *f, apr_bucket_brigade *bb);
+apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb);
 
 apr_status_t h2_filter_request_in(ap_filter_t* f,
                                   apr_bucket_brigade* brigade,
@@ -42,8 +42,5 @@ apr_status_t h2_filter_request_in(ap_filter_t* f,
                                   apr_off_t readbytes);
 
 apr_status_t h2_filter_trailers_out(ap_filter_t *f, apr_bucket_brigade *bb);
-
-void h2_from_h1_set_basic_http_header(apr_table_t *headers, request_rec *r,
-                                      apr_pool_t *pool);
 
 #endif /* defined(__mod_h2__h2_from_h1__) */
