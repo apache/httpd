@@ -113,8 +113,8 @@ static void fix_vary(request_rec *r)
     }
 }
 
-void h2_from_h1_set_basic_http_header(apr_table_t *headers, request_rec *r,
-                                      apr_pool_t *pool)
+static void set_basic_http_header(apr_table_t *headers, request_rec *r,
+                                  apr_pool_t *pool)
 {
     char *date = NULL;
     const char *proxy_date = NULL;
@@ -272,7 +272,7 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
     
     headers = apr_table_make(r->pool, 10);
     
-    h2_from_h1_set_basic_http_header(headers, r, r->pool);
+    set_basic_http_header(headers, r, r->pool);
     if (r->status == HTTP_NOT_MODIFIED) {
         apr_table_do((int (*)(void *, const char *, const char *)) copy_header,
                      (void *) headers, r->headers_out,
@@ -296,7 +296,7 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
     return h2_headers_rcreate(r, r->status, headers, r->pool);
 }
 
-apr_status_t h2_headers_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     h2_task *task = f->ctx;
     request_rec *r = f->r;

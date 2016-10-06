@@ -183,7 +183,7 @@ apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                       "h2_ngn_shed(%ld): pushing request %s to %s", 
                       shed->c->id, task->id, ngn->id);
-        if (!h2_task_is_detached(task)) {
+        if (!h2_task_has_thawed(task)) {
             h2_task_freeze(task);
         }
         ngn_add_task(ngn, task, r);
@@ -232,7 +232,7 @@ static h2_ngn_entry *pop_detached(h2_req_engine *ngn)
     for (entry = H2_REQ_ENTRIES_FIRST(&ngn->entries);
          entry != H2_REQ_ENTRIES_SENTINEL(&ngn->entries);
          entry = H2_NGN_ENTRY_NEXT(entry)) {
-        if (h2_task_is_detached(entry->task) 
+        if (h2_task_has_thawed(entry->task) 
             || (entry->task->engine == ngn)) {
             /* The task hosting this engine can always be pulled by it.
              * For other task, they need to become detached, e.g. no longer
