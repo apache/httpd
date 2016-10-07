@@ -179,7 +179,7 @@ AcceptFilter https data</pre>
        requests.  Any value besides <code>none</code> will enable
        <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
        see the Linux
-       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+       <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">
        tcp(7)</a> man page.</p>
 
     <p>The default values on Windows are:</p>
