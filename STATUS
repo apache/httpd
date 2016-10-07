@@ -141,10 +141,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1751139
                   http://svn.apache.org/r1751147
                   http://svn.apache.org/r1757818
-     2.4.x: trunk patches works (final view http://apaste.info/FCs)
-     The last revision has been discussed extensively in dev@ and this seems to be
-     a good compromise for the moment.
-     Tested the code with a simple PHP script returning different Last-Modified
+     2.4.x: trunk patches work, final view:
+            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+     The problem has been discussed in dev@ extensively but we did not reach a common
+     agreement about how to proceed in the long term. While we wait, I would really like
+     to introduce useful logs for the users (the starting point of this change was a users@
+     email thread). If this is not the right way to go I will move the patch to other
+     sections of STATUS (stalled or being worked).
+     The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
      +1: elukey
 
