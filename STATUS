@@ -117,6 +117,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_fcgi: read the whole FCGI response even for HTTP Precondition
+     failed (412) responses to avoid subsequent bogus reads and
+     confusing error messages logged.
+     trunk patch: http://svn.apache.org/r1759984
+                  http://svn.apache.org/r1760018
+     2.4.x patch: trunk works
+     +1 elukey, jim, ylavic
+
+  *) mod_proxy: add log trace points to help users diagnose problems with
+     ProxyPass[Match].
+     trunk patch: http://svn.apache.org/r1762517
+     2.4.x patch: trunk works (modulo aplog numbers)
+     +1: jchampion, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -210,24 +223,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
 
-  *) mod_proxy_fcgi: read the whole FCGI response even for HTTP Precondition
-     failed (412) responses to avoid subsequent bogus reads and
-     confusing error messages logged.
-     trunk patch: http://svn.apache.org/r1759984
-                  http://svn.apache.org/r1760018
-     2.4.x patch: trunk works
-     +1 elukey, jim
-
-  *) mod_proxy: add log trace points to help users diagnose problems with
-     ProxyPass[Match].
-     trunk patch: http://svn.apache.org/r1762517
-     2.4.x patch: trunk works (modulo aplog numbers)
-     +1: jchampion, jim
-
   *) event: Don't assume sizeof.
      trunk patch: http://svn.apache.org/r1732228
      2.4.x patch: trunk works
-     +1: jim
+     +1: jim, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
