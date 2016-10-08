@@ -131,6 +131,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo aplog numbers)
      +1: jchampion, jim, ylavic
 
+  *) event: Don't assume sizeof.
+     trunk patch: http://svn.apache.org/r1732228
+     2.4.x patch: trunk works
+     +1: jim, ylavic, elukey
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -222,11 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jchampion: r1702948 doesn't quite work as advertised. -Werror is never
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
-
-  *) event: Don't assume sizeof.
-     trunk patch: http://svn.apache.org/r1732228
-     2.4.x patch: trunk works
-     +1: jim, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
