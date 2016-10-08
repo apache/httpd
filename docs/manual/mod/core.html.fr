@@ -184,7 +184,7 @@ AcceptFilter https data</pre>
     la mise en tampon des requêtes http. Toute valeur autre que
     <code>none</code> active le filtre <code>TCP_DEFER_ACCEPT</code>
     pour ce protocole. Pour plus de détails, voir la page de
-    manuel Linux de <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/     tcp.7.html">tcp(7)</a>.</p>
+    manuel Linux de <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
     <pre class="prettyprint lang-config">AcceptFilter http connect
