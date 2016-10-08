@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1758307 -->
+<!-- English Revision: 1763749 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,8 +90,7 @@ AcceptFilter https data
     <code>none</code> active le filtre <code>TCP_DEFER_ACCEPT</code>
     pour ce protocole. Pour plus de détails, voir la page de
     manuel Linux de <a
-    href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/
-    tcp.7.html">tcp(7)</a>.</p>
+    href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
     <highlight language="config">
