@@ -458,7 +458,7 @@ apr_status_t h2_beam_destroy(h2_bucket_beam *beam)
 }
 
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *red_pool, 
-                            apr_uint32_t id, const char *tag, 
+                            int id, const char *tag, 
                             apr_size_t max_buf_size)
 {
     h2_bucket_beam *beam;
