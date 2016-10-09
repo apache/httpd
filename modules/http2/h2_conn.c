@@ -241,7 +241,7 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
     return status;
 }
 
-conn_rec *h2_slave_create(conn_rec *master, apr_uint32_t slave_id, 
+conn_rec *h2_slave_create(conn_rec *master, int slave_id, 
                           apr_pool_t *parent, apr_allocator_t *allocator)
 {
     apr_pool_t *pool;

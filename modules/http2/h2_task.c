@@ -526,7 +526,7 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     return OK;
 }
 
-h2_task *h2_task_create(conn_rec *c, apr_uint32_t stream_id,
+h2_task *h2_task_create(conn_rec *c, int stream_id,
                         const h2_request *req, h2_bucket_beam *input, 
                         h2_mplx *mplx)
 {

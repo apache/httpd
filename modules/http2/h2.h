@@ -101,11 +101,11 @@ typedef enum {
 } h2_session_state;
 
 typedef struct h2_session_props {
-    apr_uint32_t accepted_max;      /* the highest remote stream id was/will be handled */
-    apr_uint32_t completed_max;     /* the highest remote stream completed */
-    apr_uint32_t emitted_count;     /* the number of local streams sent */
-    apr_uint32_t emitted_max;       /* the highest local stream id sent */
-    apr_uint32_t error;             /* the last session error encountered */
+    int accepted_max;      /* the highest remote stream id was/will be handled */
+    int completed_max;     /* the highest remote stream completed */
+    int emitted_count;     /* the number of local streams sent */
+    int emitted_max;       /* the highest local stream id sent */
+    int error;             /* the last session error encountered */
     unsigned int accepting : 1;     /* if the session is accepting new streams */
     unsigned int shutdown : 1;      /* if the final GOAWAY has been sent */
 } h2_session_props;

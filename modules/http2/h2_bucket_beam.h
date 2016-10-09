@@ -170,7 +170,7 @@ typedef int h2_beam_can_beam_callback(void *ctx, h2_bucket_beam *beam,
 int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file);
 
 struct h2_bucket_beam {
-    apr_uint32_t id;
+    int id;
     const char *tag;
     h2_blist red;
     h2_blist hold;
@@ -223,7 +223,7 @@ struct h2_bucket_beam {
  */
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam,
                             apr_pool_t *red_pool, 
-                            apr_uint32_t id, const char *tag, 
+                            int id, const char *tag, 
                             apr_size_t buffer_size);
 
 /**

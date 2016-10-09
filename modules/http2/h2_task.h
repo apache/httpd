@@ -50,7 +50,7 @@ typedef struct h2_task h2_task;
 
 struct h2_task {
     const char *id;
-    apr_uint32_t stream_id;
+    int stream_id;
     conn_rec *c;
     apr_pool_t *pool;
     
@@ -89,7 +89,7 @@ struct h2_task {
     struct h2_req_engine *assigned; /* engine that task has been assigned to */
 };
 
-h2_task *h2_task_create(conn_rec *c, apr_uint32_t stream_id, 
+h2_task *h2_task_create(conn_rec *c, int stream_id, 
                         const struct h2_request *req, 
                         struct h2_bucket_beam *input, struct h2_mplx *mplx);
 
