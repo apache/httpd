@@ -28,8 +28,8 @@ struct h2_ngn_shed {
     
     unsigned int aborted : 1;
     
-    apr_uint32_t default_capacity;
-    apr_uint32_t req_buffer_size; /* preferred buffer size for responses */
+    int default_capacity;
+    apr_size_t req_buffer_size; /* preferred buffer size for responses */
 };
 
 const char *h2_req_engine_get_id(h2_req_engine *engine);
@@ -42,14 +42,14 @@ typedef apr_status_t h2_shed_ngn_init(h2_req_engine *engine,
                                       const char *id, 
                                       const char *type,
                                       apr_pool_t *pool, 
-                                      apr_uint32_t req_buffer_size,
+                                      apr_size_t req_buffer_size,
                                       request_rec *r,
                                       h2_output_consumed **pconsumed,
                                       void **pbaton);
 
 h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
-                                apr_uint32_t default_capactiy, 
-                                apr_uint32_t req_buffer_size); 
+                                int default_capactiy, 
+                                apr_size_t req_buffer_size); 
 
 void h2_ngn_shed_set_ctx(h2_ngn_shed *shed, void *user_ctx);
 void *h2_ngn_shed_get_ctx(h2_ngn_shed *shed);
@@ -63,7 +63,7 @@ apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type,
                                       h2_shed_ngn_init *init_cb);
 
 apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed, h2_req_engine *pub_ngn, 
-                                      apr_uint32_t capacity, 
+                                      int capacity, 
                                       int want_shutdown, request_rec **pr);
 
 apr_status_t h2_ngn_shed_done_task(h2_ngn_shed *shed, 

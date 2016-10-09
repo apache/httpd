@@ -66,7 +66,7 @@ typedef enum {
 h2_mpm_type_t h2_conn_mpm_type(void);
 
 
-conn_rec *h2_slave_create(conn_rec *master, apr_uint32_t slave_id, 
+conn_rec *h2_slave_create(conn_rec *master, int slave_id, 
                           apr_pool_t *parent, apr_allocator_t *allocator);
 void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator);
 

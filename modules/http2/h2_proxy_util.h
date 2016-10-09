@@ -149,7 +149,7 @@ int h2_iq_shift(h2_iqueue *q);
  * common helpers
  ******************************************************************************/
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(apr_uint32_t n);
+unsigned char h2_log2(int n);
 
 /*******************************************************************************
  * HTTP/2 header helpers

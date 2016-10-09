@@ -714,9 +714,9 @@ static apr_int32_t h2_log2inv(unsigned char log2)
 typedef struct {
     h2_push_diary *diary;
     unsigned char log2p;
-    apr_uint32_t mask_bits;
-    apr_uint32_t delta_bits;
-    apr_uint32_t fixed_bits;
+    int mask_bits;
+    int delta_bits;
+    int fixed_bits;
     apr_uint64_t fixed_mask;
     apr_pool_t *pool;
     unsigned char *data;
@@ -815,7 +815,7 @@ static apr_status_t gset_encode_next(gset_encoder *encoder, apr_uint64_t pval)
  * @param plen on successful return, the length of the binary data
  */
 apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool, 
-                                      apr_uint32_t maxP, const char *authority, 
+                                      int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
     apr_size_t nelts, N, i;
