@@ -42,8 +42,8 @@ struct h2_bucket_beam;
 typedef struct h2_stream h2_stream;
 
 struct h2_stream {
-    apr_uint32_t id;            /* http2 stream id */
-    apr_uint32_t initiated_on;  /* initiating stream id (PUSH) or 0 */
+    int id;            /* http2 stream id */
+    int initiated_on;  /* initiating stream id (PUSH) or 0 */
     apr_time_t created;         /* when stream was created */
     h2_stream_state_t state;    /* http/2 state of this stream */
     struct h2_session *session; /* the session this stream belongs to */
@@ -84,7 +84,7 @@ struct h2_stream {
  * @param session the session this stream belongs to
  * @return the newly opened stream
  */
-h2_stream *h2_stream_open(apr_uint32_t id, apr_pool_t *pool, struct h2_session *session,
+h2_stream *h2_stream_open(int id, apr_pool_t *pool, struct h2_session *session,
                           int initiated_on);
 
 /**

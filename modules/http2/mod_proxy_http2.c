@@ -44,7 +44,7 @@ static apr_status_t (*req_engine_push)(const char *name, request_rec *r,
                                        http2_req_engine_init *einit);
 static apr_status_t (*req_engine_pull)(h2_req_engine *engine, 
                                        apr_read_type_e block, 
-                                       apr_uint32_t capacity, 
+                                       int capacity, 
                                        request_rec **pr);
 static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn);
                                        
@@ -63,7 +63,7 @@ typedef struct h2_proxy_ctx {
     const char *engine_id;
     const char *engine_type;
     apr_pool_t *engine_pool;    
-    apr_uint32_t req_buffer_size;
+    apr_size_t req_buffer_size;
     request_rec *next;
     apr_size_t capacity;
     
@@ -210,7 +210,7 @@ static apr_status_t proxy_engine_init(h2_req_engine *engine,
                                         const char *id, 
                                         const char *type,
                                         apr_pool_t *pool, 
-                                        apr_uint32_t req_buffer_size,
+                                        apr_size_t req_buffer_size,
                                         request_rec *r,
                                         http2_output_consumed **pconsumed,
                                         void **pctx)

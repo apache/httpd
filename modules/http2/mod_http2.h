@@ -49,7 +49,7 @@ typedef apr_status_t http2_req_engine_init(h2_req_engine *engine,
                                            const char *id, 
                                            const char *type,
                                            apr_pool_t *pool, 
-                                           apr_uint32_t req_buffer_size,
+                                           apr_size_t req_buffer_size,
                                            request_rec *r,
                                            http2_output_consumed **pconsumed,
                                            void **pbaton);
@@ -75,8 +75,9 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 /**
  * Get a new request for processing in this engine.
  * @param engine      the engine which is done processing the slave
- * @param timeout     wait a maximum amount of time for a new slave, 0 will not wait
- * @param pslave      the slave connection that needs processing or NULL
+ * @param block       if call should block waiting for request to come
+ * @param capacity    how many parallel requests are acceptable
+ * @param pr          the request that needs processing or NULL
  * @return APR_SUCCESS if new request was assigned
  *         APR_EAGAIN  if no new request is available
  *         APR_EOF          if engine may shut down, as no more request will be scheduled
@@ -85,7 +86,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         http2_req_engine_pull, (h2_req_engine *engine, 
                                                 apr_read_type_e block,
-                                                apr_uint32_t capacity,
+                                                int capacity,
                                                 request_rec **pr));
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 
