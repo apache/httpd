@@ -660,13 +660,17 @@ recv_again:
                                     *err = "passing headers brigade to output filters";
                                     break;
                                 }
-                                else if (status == HTTP_NOT_MODIFIED) {
-                                    /* The 304 response MUST NOT contain
-                                     * a message-body, ignore it.
+                                else if (status == HTTP_NOT_MODIFIED
+                                         || status == HTTP_PRECONDITION_FAILED) {
+                                    /* Special 'status' cases handled:
+                                     * 1) HTTP 304 response MUST NOT contain
+                                     *    a message-body, ignore it.
+                                     * 2) HTTP 412 response.
                                      * The break is not added since there might
                                      * be more bytes to read from the FCGI
                                      * connection. Even if the message-body is
-                                     * ignored we want to avoid subsequent
+                                     * ignored (and the EOS bucket has already
+                                     * been sent) we want to avoid subsequent
                                      * bogus reads. */
                                     ignore_body = 1;
                                 }
