@@ -227,6 +227,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
 
+  *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
+     behavior in a routine that sends <DAV:response>'s to the output filters.
+     trunk patch: http://svn.apache.org/r1764040
+     2.4.x patch: trunk works (modulo CHANGES)
+     Note: this patch changes the signature of the existing mod_dav's public
+     API, dav_send_one_response(), because this API is not yet a part of any
+     2.4.x release (it was backported to 2.4.x in r1756561).  So, the change
+     should either go to the upcoming 2.4.24, or should be reworked in case
+     2.4.24 is released without it.  See the thread at
+     https://mail-archives.apache.org/mod_mbox/httpd-dev/201608.mbox/%3C20160822151917.GA22369%40redhat.com%3E
+     for additional details.
+     +1: kotkov
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
