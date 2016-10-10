@@ -238,7 +238,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.24 is released without it.  See the thread at
      https://mail-archives.apache.org/mod_mbox/httpd-dev/201608.mbox/%3C20160822151917.GA22369%40redhat.com%3E
      for additional details.
-     +1: kotkov
+     +1: kotkov, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
