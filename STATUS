@@ -117,12 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: add log trace points to help users diagnose problems with
-     ProxyPass[Match].
-     trunk patch: http://svn.apache.org/r1762517
-     2.4.x patch: trunk works (modulo aplog numbers)
-     +1: jchampion, jim, ylavic
-
   *) event: Don't assume sizeof.
      trunk patch: http://svn.apache.org/r1732228
      2.4.x patch: trunk works
