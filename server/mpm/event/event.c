@@ -2065,7 +2065,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     }
 
     /* Create the main pollset */
-    for (i = 0; i < sizeof(good_methods) / sizeof(void*); i++) {
+    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
         rv = apr_pollset_create_ex(&event_pollset,
                             threads_per_child*2, /* XXX don't we need more, to handle
                                                 * connections in K-A or lingering
