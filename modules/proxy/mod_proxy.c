@@ -649,9 +649,18 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         fake = ent->fake;
         real = ent->real;
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, APLOGNO(03461)
+                  "attempting to match URI path '%s' against %s '%s' for "
+                  "proxying", r->uri, (ent->regex ? "pattern" : "prefix"),
+                  fake);
+
     if (ent->regex) {
         if (!ap_regexec(ent->regex, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
             if ((real[0] == '!') && (real[1] == '\0')) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03462)
+                              "proxying is explicitly disabled for URI path "
+                              "'%s'; declining", r->uri);
                 return DECLINED;
             }
             /* test that we haven't reduced the URI */
@@ -695,6 +704,9 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
 
         if (len != 0) {
             if ((real[0] == '!') && (real[1] == '\0')) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03463)
+                              "proxying is explicitly disabled for URI path "
+                              "'%s'; declining", r->uri);
                 return DECLINED;
             }
             if (nocanon && len != alias_match(r->unparsed_uri, ent->fake)) {
@@ -723,6 +735,11 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
         if (ent->flags & PROXYPASS_NOQUERY) {
             apr_table_setn(r->notes, "proxy-noquery", "1");
         }
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, APLOGNO(03464)
+                      "URI path '%s' matches proxy handler '%s'", r->uri,
+                      found);
+
         return OK;
     }
 
