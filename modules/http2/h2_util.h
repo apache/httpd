@@ -191,7 +191,6 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
 int h2_req_ignore_header(const char *name, size_t len);
 int h2_req_ignore_trailer(const char *name, size_t len);
 int h2_res_ignore_trailer(const char *name, size_t len);
-int h2_proxy_res_ignore_header(const char *name, size_t len);
 
 /**
  * Set the push policy for the given request. Takes request headers into 

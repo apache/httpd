@@ -418,8 +418,8 @@ static int add_table_header(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-h2_proxy_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
-                                       const struct h2_proxy_request *req)
+h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p, 
+                                               const h2_proxy_request *req)
 {
     
     h2_proxy_ngheader *ngh;

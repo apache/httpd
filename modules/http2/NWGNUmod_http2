@@ -366,7 +366,6 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) h2_iq_create,$(DL) >> $@
 	@echo $(DL) h2_iq_remove,$(DL) >> $@
 	@echo $(DL) h2_log2,$(DL) >> $@
-	@echo $(DL) h2_proxy_res_ignore_header,$(DL) >> $@
 	@echo $(DL) h2_headers_add_h1,$(DL) >> $@
 	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
 	@echo $(DL) nghttp2_option_del,$(DL) >> $@
