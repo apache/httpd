@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_proxy_http2: fixed duplicate symbols with mod_http2.
+     [Stefan Eissing]
+  
   *) mod_http2: rewrite of how responses and trailers are transferred between
      master and slave connection. Reduction of internal states for tasks
      and streams, stability. Heuristic id generation for slave connections

@@ -270,7 +270,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 
     rpath = (req->path ? req->path : "");
     ap_parse_uri(r, rpath);
-    r->protocol = "HTTP/2.0";
+    r->protocol = (char*)"HTTP/2.0";
     r->proto_num = HTTP_VERSION(2, 0);
 
     r->the_request = apr_psprintf(r->pool, "%s %s %s", 

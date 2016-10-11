@@ -49,7 +49,8 @@
 #include "h2_worker.h"
 #include "h2_util.h"
 
-static void H2_TASK_OUT_LOG(int lvl, h2_task *task, apr_bucket_brigade *bb, char *tag)
+static void H2_TASK_OUT_LOG(int lvl, h2_task *task, apr_bucket_brigade *bb, 
+                            const char *tag)
 {
     if (APLOG_C_IS_LEVEL(task->c, lvl)) {
         conn_rec *c = task->c;

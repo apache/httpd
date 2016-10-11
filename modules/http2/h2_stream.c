@@ -54,7 +54,7 @@ static int state_transition[][7] = {
 /*CL*/{  1, 1, 0, 0, 1, 1, 1 },
 };
 
-static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, char *tag)
+static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 {
     if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
         conn_rec *c = s->session->c;

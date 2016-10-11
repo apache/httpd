@@ -163,10 +163,10 @@ static char *mk_str(link_ctx *ctx, size_t end)
     if (ctx->i < end) {
         return apr_pstrndup(ctx->pool, ctx->s + ctx->i, end - ctx->i);
     }
-    return "";
+    return (char*)"";
 }
 
-static int read_qstring(link_ctx *ctx, char **ps)
+static int read_qstring(link_ctx *ctx, const char **ps)
 {
     if (skip_ws(ctx) && read_chr(ctx, '\"')) {
         size_t end;
@@ -179,7 +179,7 @@ static int read_qstring(link_ctx *ctx, char **ps)
     return 0;
 }
 
-static int read_ptoken(link_ctx *ctx, char **ps)
+static int read_ptoken(link_ctx *ctx, const char **ps)
 {
     if (skip_ws(ctx)) {
         size_t i;
@@ -209,7 +209,7 @@ static int read_link(link_ctx *ctx)
     return 0;
 }
 
-static int read_pname(link_ctx *ctx, char **pname)
+static int read_pname(link_ctx *ctx, const char **pname)
 {
     if (skip_ws(ctx)) {
         size_t i;
@@ -225,7 +225,7 @@ static int read_pname(link_ctx *ctx, char **pname)
     return 0;
 }
 
-static int read_pvalue(link_ctx *ctx, char **pvalue)
+static int read_pvalue(link_ctx *ctx, const char **pvalue)
 {
     if (skip_ws(ctx) && read_chr(ctx, '=')) {
         if (read_qstring(ctx, pvalue) || read_ptoken(ctx, pvalue)) {
@@ -238,7 +238,7 @@ static int read_pvalue(link_ctx *ctx, char **pvalue)
 static int read_param(link_ctx *ctx)
 {
     if (skip_ws(ctx) && read_chr(ctx, ';')) {
-        char *name, *value = "";
+        const char *name, *value = "";
         if (read_pname(ctx, &name)) {
             read_pvalue(ctx, &value); /* value is optional */
             apr_table_setn(ctx->params, name, value);
@@ -530,9 +530,9 @@ static unsigned int val_apr_hash(const char *str)
 static void calc_apr_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
     apr_uint64_t val;
-#if APR_UINT64MAX > APR_UINT_MAX
-    val = (val_apr_hash(push->req->scheme) << 32);
-    val ^= (val_apr_hash(push->req->authority) << 16);
+#if APR_UINT64_MAX > UINT_MAX
+    val = ((apr_uint64_t)(val_apr_hash(push->req->scheme)) << 32);
+    val ^= ((apr_uint64_t)(val_apr_hash(push->req->authority)) << 16);
     val ^= val_apr_hash(push->req->path);
 #else
     val = val_apr_hash(push->req->scheme);
@@ -555,7 +555,7 @@ static apr_int32_t ceil_power_of_2(apr_int32_t n)
 }
 
 static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype, 
-                                   apr_size_t N)
+                                   int N)
 {
     h2_push_diary *diary = NULL;
     
@@ -590,7 +590,7 @@ static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype,
     return diary;
 }
 
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t N)
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, int N)
 {
     return diary_create(p, H2_PUSH_DIGEST_SHA256, N);
 }
@@ -818,7 +818,7 @@ apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool,
                                       int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
-    apr_size_t nelts, N, i;
+    int nelts, N, i;
     unsigned char log2n, log2pmax;
     gset_encoder encoder;
     apr_uint64_t *hashes;
@@ -968,7 +968,7 @@ apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authorit
 {
     gset_decoder decoder;
     unsigned char log2n, log2p;
-    apr_size_t N, i;
+    int N, i;
     apr_pool_t *pool = diary->entries->pool;
     h2_push_diary_entry e;
     apr_status_t status = APR_SUCCESS;

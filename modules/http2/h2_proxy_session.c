@@ -35,7 +35,7 @@ typedef struct h2_proxy_stream {
 
     const char *url;
     request_rec *r;
-    h2_request *req;
+    h2_proxy_request *req;
     int standalone;
 
     h2_stream_state_t state;
@@ -64,7 +64,7 @@ static apr_status_t proxy_session_pre_close(void *theconn)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c, 
                       "proxy_session(%s): pool cleanup, state=%d, streams=%d",
                       session->id, session->state, 
-                      (int)h2_ihash_count(session->streams));
+                      (int)h2_proxy_ihash_count(session->streams));
         session->aborted = 1;
         dispatch_event(session, H2_PROXYS_EV_PRE_CLOSE, 0, NULL);
         nghttp2_session_del(session->ngh2);
@@ -136,7 +136,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
         
-        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_proxy_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03341)
                       "h2_proxy_session(%s): recv FRAME[%s]",
                       session->id, buffer);
@@ -174,7 +174,7 @@ static int before_frame_send(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
 
-        h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_proxy_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03343)
                       "h2_proxy_session(%s): sent FRAME[%s]",
                       session->id, buffer);
@@ -240,7 +240,7 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
         char *hname, *hvalue;
     
         hname = apr_pstrndup(stream->pool, n, nlen);
-        h2_util_camel_case_header(hname, nlen);
+        h2_proxy_util_camel_case_header(hname, nlen);
         hvalue = apr_pstrndup(stream->pool, v, vlen);
         
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
@@ -383,7 +383,7 @@ static int on_stream_close(nghttp2_session *ngh2, int32_t stream_id,
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03360)
                       "h2_proxy_session(%s): stream=%d, closed, err=%d", 
                       session->id, stream_id, error_code);
-        stream = h2_ihash_get(session->streams, stream_id);
+        stream = h2_proxy_ihash_get(session->streams, stream_id);
         if (stream) {
             stream->error_code = error_code;
         }
@@ -488,7 +488,7 @@ static ssize_t stream_data_read(nghttp2_session *ngh2, int32_t stream_id,
                       "h2_proxy_stream(%s-%d): suspending", 
                       stream->session->id, stream_id);
         stream->suspended = 1;
-        h2_iq_add(stream->session->suspended, stream->id, NULL, NULL);
+        h2_proxy_iq_add(stream->session->suspended, stream->id, NULL, NULL);
         return NGHTTP2_ERR_DEFERRED;
     }
     else {
@@ -522,8 +522,8 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         session->state = H2_PROXYS_ST_INIT;
         session->window_bits_stream = window_bits_stream;
         session->window_bits_connection = window_bits_connection;
-        session->streams = h2_ihash_create(pool, offsetof(h2_proxy_stream, id));
-        session->suspended = h2_iq_create(pool, 5);
+        session->streams = h2_proxy_ihash_create(pool, offsetof(h2_proxy_stream, id));
+        session->suspended = h2_proxy_iq_create(pool, 5);
         session->done = done;
     
         session->input = apr_brigade_create(session->pool, session->c->bucket_alloc);
@@ -603,7 +603,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     stream->input = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     stream->output = apr_brigade_create(stream->pool, session->c->bucket_alloc);
     
-    stream->req = h2_req_create(1, stream->pool, 0);
+    stream->req = h2_proxy_req_create(1, stream->pool, 0);
 
     status = apr_uri_parse(stream->pool, url, &puri);
     if (status != APR_SUCCESS)
@@ -617,7 +617,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
         authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
     }
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
-    h2_req_make(stream->req, stream->pool, r->method, scheme,
+    h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
                 authority, path, r->headers_in);
 
     /* Tuck away all already existing cookies */
@@ -631,7 +631,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
 
 static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *stream)
 {
-    h2_ngheader *hd;
+    h2_proxy_ngheader *hd;
     nghttp2_data_provider *pp = NULL;
     nghttp2_data_provider provider;
     int rv;
@@ -664,7 +664,7 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
     if (rv > 0) {
         stream->id = rv;
         stream->state = H2_STREAM_ST_OPEN;
-        h2_ihash_add(session->streams, stream);
+        h2_proxy_ihash_add(session->streams, stream);
         dispatch_event(session, H2_PROXYS_EV_STREAM_SUBMITTED, rv, NULL);
         
         return APR_SUCCESS;
@@ -806,7 +806,7 @@ static apr_status_t check_suspended(h2_proxy_session *session)
                               "h2_proxy_stream(%s-%d): resuming", 
                               session->id, stream_id);
                 stream->suspended = 0;
-                h2_iq_remove(session->suspended, stream_id);
+                h2_proxy_iq_remove(session->suspended, stream_id);
                 nghttp2_session_resume_data(session->ngh2, stream_id);
                 dispatch_event(session, H2_PROXYS_EV_STREAM_RESUMED, 0, NULL);
                 check_suspended(session);
@@ -816,7 +816,7 @@ static apr_status_t check_suspended(h2_proxy_session *session)
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, session->c, 
                               APLOGNO(03382) "h2_proxy_stream(%s-%d): check input", 
                               session->id, stream_id);
-                h2_iq_remove(session->suspended, stream_id);
+                h2_proxy_iq_remove(session->suspended, stream_id);
                 dispatch_event(session, H2_PROXYS_EV_STREAM_RESUMED, 0, NULL);
                 check_suspended(session);
                 return APR_SUCCESS;
@@ -824,7 +824,7 @@ static apr_status_t check_suspended(h2_proxy_session *session)
         }
         else {
             /* gone? */
-            h2_iq_remove(session->suspended, stream_id);
+            h2_proxy_iq_remove(session->suspended, stream_id);
             check_suspended(session);
             return APR_SUCCESS;
         }
@@ -893,7 +893,7 @@ static void ev_init(h2_proxy_session *session, int arg, const char *msg)
 {
     switch (session->state) {
         case H2_PROXYS_ST_INIT:
-            if (h2_ihash_empty(session->streams)) {
+            if (h2_proxy_ihash_empty(session->streams)) {
                 transit(session, "init", H2_PROXYS_ST_IDLE);
             }
             else {
@@ -1000,7 +1000,7 @@ static void ev_no_io(h2_proxy_session *session, int arg, const char *msg)
              * CPU cycles. Ideally, we'd like to do a blocking read, but that
              * is not possible if we have scheduled tasks and wait
              * for them to produce something. */
-            if (h2_ihash_empty(session->streams)) {
+            if (h2_proxy_ihash_empty(session->streams)) {
                 if (!is_accepting_streams(session)) {
                     /* We are no longer accepting new streams and have
                      * finished processing existing ones. Time to leave. */
@@ -1070,8 +1070,8 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         }
         
         stream->state = H2_STREAM_ST_CLOSED;
-        h2_ihash_remove(session->streams, stream_id);
-        h2_iq_remove(session->suspended, stream_id);
+        h2_proxy_ihash_remove(session->streams, stream_id);
+        h2_proxy_iq_remove(session->suspended, stream_id);
         if (session->done) {
             session->done(session, stream->r, complete, touched);
         }
@@ -1308,15 +1308,15 @@ static int done_iter(void *udata, void *val)
 void h2_proxy_session_cleanup(h2_proxy_session *session, 
                               h2_proxy_request_done *done)
 {
-    if (session->streams && !h2_ihash_empty(session->streams)) {
+    if (session->streams && !h2_proxy_ihash_empty(session->streams)) {
         cleanup_iter_ctx ctx;
         ctx.session = session;
         ctx.done = done;
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03366)
                       "h2_proxy_session(%s): terminated, %d streams unfinished",
-                      session->id, (int)h2_ihash_count(session->streams));
-        h2_ihash_iter(session->streams, done_iter, &ctx);
-        h2_ihash_clear(session->streams);
+                      session->id, (int)h2_proxy_ihash_count(session->streams));
+        h2_proxy_ihash_iter(session->streams, done_iter, &ctx);
+        h2_proxy_ihash_clear(session->streams);
     }
 }
 
@@ -1347,13 +1347,13 @@ static int win_update_iter(void *udata, void *val)
 void h2_proxy_session_update_window(h2_proxy_session *session, 
                                     conn_rec *c, apr_off_t bytes)
 {
-    if (session->streams && !h2_ihash_empty(session->streams)) {
+    if (session->streams && !h2_proxy_ihash_empty(session->streams)) {
         win_update_ctx ctx;
         ctx.session = session;
         ctx.c = c;
         ctx.bytes = bytes;
         ctx.updated = 0;
-        h2_ihash_iter(session->streams, win_update_iter, &ctx);
+        h2_proxy_ihash_iter(session->streams, win_update_iter, &ctx);
         
         if (!ctx.updated) {
             /* could not find the stream any more, possibly closed, update

@@ -1195,7 +1195,7 @@ static apr_status_t unschedule_slow_tasks(h2_mplx *m)
     /* Try to get rid of streams that occupy workers. Look for safe requests
      * that are repeatable. If none found, fail the connection.
      */
-    n = (m->workers_busy - m->workers_limit - h2_ihash_count(m->redo_tasks));
+    n = (m->workers_busy - m->workers_limit - (int)h2_ihash_count(m->redo_tasks));
     while (n > 0 && (task = get_latest_repeatable_unsubmitted_task(m))) {
         h2_task_rst(task, H2_ERR_CANCEL);
         h2_ihash_add(m->redo_tasks, task);
