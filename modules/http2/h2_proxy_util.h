@@ -164,8 +164,8 @@ typedef struct h2_proxy_ngheader {
     nghttp2_nv *nv;
     apr_size_t nvlen;
 } h2_proxy_ngheader;
-h2_proxy_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
-                                             const struct h2_proxy_request *req);
+h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p, 
+                                               const struct h2_proxy_request *req);
 
 /*******************************************************************************
  * h2_proxy_request helpers
