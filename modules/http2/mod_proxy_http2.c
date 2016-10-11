@@ -342,7 +342,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine_id);
     ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
-                                          30, h2_log2(ctx->req_buffer_size), 
+                                          30, h2_proxy_log2(ctx->req_buffer_size), 
                                           request_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
@@ -378,7 +378,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = s2;
                 break;
             }
-            if (!ctx->next && h2_ihash_empty(ctx->session->streams)) {
+            if (!ctx->next && h2_proxy_ihash_empty(ctx->session->streams)) {
                 break;
             }
         }
