@@ -1,8 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_proxy_http2: fixed duplicate symbols with mod_http2.
-  
   *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
      behavior in a routine that sends <DAV:response>'s to the output filters.
      [Evgeny Kotkov]
