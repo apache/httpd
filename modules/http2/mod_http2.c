@@ -343,7 +343,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
             return (char *)vdef->lookup(p, s, c, r, ctx);
         }
     }
-    return "";
+    return (char*)"";
 }
 
 static int h2_h2_fixups(request_rec *r)

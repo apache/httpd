@@ -68,7 +68,7 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p,
  * @param N the max number of entries, rounded up to 2^x
  * @return the created diary, might be NULL of max_entries is 0
  */
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t N);
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, int N);
 
 /**
  * Filters the given pushes against the diary and returns only those pushes

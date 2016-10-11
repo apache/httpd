@@ -1290,7 +1290,7 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
         nghttp2_priority_spec ps;
         int id_parent, id_grandpa, w_parent, w;
         int rv = 0;
-        char *ptype = "AFTER";
+        const char *ptype = "AFTER";
         h2_dependency dep = prio->dependency;
         
         id_parent = nghttp2_stream_get_stream_id(s_parent);
@@ -1598,7 +1598,7 @@ static apr_status_t h2_session_receive(void *ctx, const char *data,
         n = nghttp2_session_mem_recv(session->ngh2, (const uint8_t *)data, len);
         if (n < 0) {
             if (nghttp2_is_fatal((int)n)) {
-                dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, (int)n, nghttp2_strerror(n));
+                dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, (int)n, nghttp2_strerror((int)n));
                 return APR_EGENERAL;
             }
         }

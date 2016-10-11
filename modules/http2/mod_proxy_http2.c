@@ -65,7 +65,7 @@ typedef struct h2_proxy_ctx {
     apr_pool_t *engine_pool;    
     apr_size_t req_buffer_size;
     request_rec *next;
-    apr_size_t capacity;
+    int capacity;
     
     unsigned standalone : 1;
     unsigned is_ssl : 1;
@@ -168,7 +168,7 @@ static int proxy_http2_canon(request_rec *r, char *url)
             path = url;   /* this is the raw path */
         }
         else {
-            path = ap_proxy_canonenc(r->pool, url, strlen(url),
+            path = ap_proxy_canonenc(r->pool, url, (int)strlen(url),
                                      enc_path, 0, r->proxyreq);
             search = r->args;
         }
@@ -342,7 +342,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine_id);
     ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
-                                          30, h2_log2(ctx->req_buffer_size), 
+                                          30, h2_proxy_log2(ctx->req_buffer_size), 
                                           request_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
@@ -367,7 +367,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
             /* ongoing processing, call again */
             if (ctx->session->remote_max_concurrent > 0
                 && ctx->session->remote_max_concurrent != ctx->capacity) {
-                ctx->capacity = ctx->session->remote_max_concurrent;
+                ctx->capacity = (int)ctx->session->remote_max_concurrent;
             }
             s2 = next_request(ctx, 0);
             if (s2 == APR_ECONNABORTED) {
@@ -378,7 +378,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 status = s2;
                 break;
             }
-            if (!ctx->next && h2_ihash_empty(ctx->session->streams)) {
+            if (!ctx->next && h2_proxy_ihash_empty(ctx->session->streams)) {
                 break;
             }
         }
