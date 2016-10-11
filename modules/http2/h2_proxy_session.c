@@ -637,7 +637,7 @@ static apr_status_t submit_stream(h2_proxy_session *session, h2_proxy_stream *st
     int rv;
     apr_status_t status;
 
-    hd = h2_util_ngheader_make_req(stream->pool, stream->req);
+    hd = h2_proxy_util_nghd_make_req(stream->pool, stream->req);
     
     status = ap_get_brigade(stream->r->input_filters, stream->input,
                             AP_MODE_READBYTES, APR_NONBLOCK_READ,
