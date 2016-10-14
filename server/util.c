@@ -1634,12 +1634,12 @@ AP_DECLARE(char *) ap_get_http_token(apr_pool_t *p, const char **ptr)
     return tok;
 }
 
-/* Scan a string for valid URI characters per RFC3986, and 
- * return a pointer to the first non-URI character encountered.
+/* Scan a string for visible ASCII (0x21-0x7E) or obstext (0x80+)
+ * and return a pointer to the first ctrl/space character encountered.
  */
-AP_DECLARE(const char *) ap_scan_http_uri_safe(const char *ptr)
+AP_DECLARE(const char *) ap_scan_vchar_obstext(const char *ptr)
 {
-    for ( ; TEST_CHAR(*ptr, T_URI_RFC3986); ++ptr) ;
+    for ( ; TEST_CHAR(*ptr, T_VCHAR_OBSTEXT); ++ptr) ;
 
     return ptr;
 }
@@ -2242,16 +2242,6 @@ AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
         *dest++ = c2x_table[in[i] & 0xf];
     }
     *dest = '\0';
-}
-
-AP_DECLARE(int) ap_has_cntrl(const char *str)
-{
-    while (*str) {
-        if (apr_iscntrl(*str))
-            return 1;
-        str++;
-    }
-    return 0;
 }
 
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *path)
