@@ -222,6 +222,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
 
+  *) core: avoid adding multiple subrequest filters when there are nested 
+     subrequests.  PR58292
+     trunk patch: http://svn.apache.org/r1698239
+     2.4.x patch: trunk works
+     +1: covener
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
