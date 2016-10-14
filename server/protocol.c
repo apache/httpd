@@ -591,7 +591,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    int stricturi = (conf->http_stricturi != AP_HTTP_URI_UNSAFE);
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -662,14 +661,15 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      */
     if (strict) {
         ll = (char*) ap_scan_http_token(r->method);
-        if (((ll == r->method) || (*ll && !apr_isspace(*ll)))
-                && deferred_error == rrl_none) {
-            deferred_error = rrl_badmethod;
-            ll = strpbrk(ll, "\t\n\v\f\r ");
-        }
     }
     else {
-        ll = strpbrk(r->method, "\t\n\v\f\r ");
+        ll = (char*) ap_scan_vchar_obstext(r->method);
+    }
+
+    if (((ll == r->method) || (*ll && !apr_isspace(*ll)))
+            && deferred_error == rrl_none) {
+        deferred_error = rrl_badmethod;
+        ll = strpbrk(ll, "\t\n\v\f\r ");
     }
 
     /* Verify method terminated with a single SP, or mark as specific error */
@@ -697,18 +697,13 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (!*uri && deferred_error == rrl_none)
         deferred_error = rrl_missinguri;
 
-    /* Scan the URI up to the next whitespace, ensure it contains only
-     * valid RFC3986 characters, otherwise mark in error
+    /* Scan the URI up to the next whitespace, ensure it contains no raw
+     * control characters, otherwise mark in error
      */
-    if (stricturi) {
-        ll = (char*) ap_scan_http_uri_safe(uri);
-        if (ll == uri || (*ll && !apr_isspace(*ll))) {
-            deferred_error = rrl_baduri;
-            ll = strpbrk(ll, "\t\n\v\f\r ");
-        }
-    }
-    else {
-        ll = strpbrk(uri, "\t\n\v\f\r ");
+    ll = (char*) ap_scan_vchar_obstext(uri);
+    if (ll == uri || (*ll && !apr_isspace(*ll))) {
+        deferred_error = rrl_baduri;
+        ll = strpbrk(ll, "\t\n\v\f\r ");
     }
 
     /* Verify method terminated with a single SP, or mark as specific error */
@@ -732,7 +727,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     *ll = '\0';
 
     /* Scan the protocol up to the next whitespace, validation comes later */
-    if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
+    if (!(ll = (char*) ap_scan_vchar_obstext(r->protocol))) {
         len = strlen(r->protocol);
         goto rrl_done;
     }
@@ -742,7 +737,10 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * determine if trailing text is found, unconditionally mark in error,
      * finally NUL terminate the protocol string
      */
-    if (strict && *ll) {
+    if (*ll && !apr_isspace(*ll)) {
+        deferred_error = rrl_badprotocol;
+    }
+    else if (strict && *ll) {
         deferred_error = rrl_excesswhitespace;
     }
     else {
@@ -881,14 +879,6 @@ rrl_done:
     }
 
     if (strict) {
-        /* No sense re-testing here for what was evaulated above */
-        if (!stricturi && ap_has_cntrl(r->the_request)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02420)
-                          "HTTP Request Line; URI must not contain control"
-                          " characters");
-            r->status = HTTP_BAD_REQUEST;
-            goto rrl_failed;
-        }
         if (r->parsed_uri.fragment) {
             /* RFC3986 3.5: no fragment */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02421)
