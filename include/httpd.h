@@ -2444,14 +2444,6 @@ AP_DECLARE(void) ap_bin2hex(const void *src, apr_size_t srclen, char *dest)
                  AP_FN_ATTR_NONNULL_ALL;
 
 /**
- * Check if string contains a control character
- * @param str the string to check
- * @return 1 if yes, 0 if no control characters
- */
-AP_DECLARE(int) ap_has_cntrl(const char *str)
-                AP_FN_ATTR_NONNULL_ALL;
-
-/**
  * Wrapper for @a apr_password_validate() to cache expensive calculations
  * @param r the current request
  * @param username username of the user
