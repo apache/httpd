@@ -1647,12 +1647,10 @@ AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr);
  */
 AP_DECLARE(const char *) ap_scan_http_token(const char *ptr);
 
-/* Scan a string for valid URI characters per RFC3986, and 
- * return a pointer to the first non-URI character encountered.
- * @param ptr The string to scan
- * @return A pointer to the first non-token character.
+/* Scan a string for visible ASCII (0x21-0x7E) or obstext (0x80+)
+ * and return a pointer to the first ctrl/space character encountered.
  */
-AP_DECLARE(const char *) ap_scan_http_uri_safe(const char *ptr);
+AP_DECLARE(const char *) ap_scan_vchar_obstext(const char *ptr)
 
 /* Retrieve a token, advancing the pointer to the first non-token character
  * and returning a copy of the token string.
