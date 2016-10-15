@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1763749 -->
+<!-- English Revision: 1764961 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1368,9 +1368,9 @@ host</context>
 <directivesynopsis>
 <name>HttpProtocolOptions</name>
 <description>Modifie les contraintes sur les messages des requêtes HTTP</description>
-<syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</syntax>
-<default>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</default>
+<syntax>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible à partir des versions 2.2.32 et 2.4.24 du serveur HTTP
@@ -1383,8 +1383,8 @@ Apache</compatibility>
     &sect;3.1.1</a>) et aux champs des en-têtes des requêtes HTTP (<a
     href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230
     &sect;3.2</a>), qui s'appliquent maintenant par défaut ou en utilisant
-    l'option <code>Strict</code>. Les options <code>Unsafe</code> et
-    <code>UnsafeURL</code> ont été ajoutées pour pouvoir restaurer les anciens
+    l'option <code>Strict</code>. L'option <code>Unsafe</code>
+    a été ajoutée pour pouvoir restaurer les anciens
     comportements nécessaires aux anciens modules et applications et aux agents
     utilisateurs personnalisés considérés comme obsolètes. Ces règles
     s'appliquant avant le traitement de la requête, elles doivent, pour être prises en
@@ -1407,17 +1407,8 @@ Apache</compatibility>
     directive, toutes les règles de grammaire de la spécification doivent être
     respectées dans le mode d'opérations par défaut <code>Strict</code>.</p>
 
-    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 3986
-    &sect;2.2 and 2.3</a> définit les "Caractères réservés" ainsi que les
-    "Caractères non réservés". Tous les autres caractères doivent être encodés
-    sous la forme %XX selon la spécification, et la RFC7230 se conforme à ces
-    instructions. Par défaut, l'option <code>StrictURI</code> rejète toutes les
-    requêtes contenant des caractères non valides. Cette règle peut être
-    contournée en utilisant l'option <code>UnsafeURI</code> qui permet de
-    supporter les agents utilisateur mal conçus.</p>
-    
-    <p>Il est fortement déconseillé aux utilisateurs d'utiliser les modes
-    d'opérations <code>Unsafe</code> et <code>UnsafeURI</code>, ou
+    <p>Il est fortement déconseillé aux utilisateurs d'utiliser le mode
+    d'opération <code>Unsafe</code>, ou
     <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
     serveurs ouverts sur l'extérieur et/ou accessibles au public. Si un moniteur
     défectueux ou autre logiciel spécialisé ne s'exécutant que sur un intranet
