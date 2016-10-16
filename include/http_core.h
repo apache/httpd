@@ -744,11 +744,6 @@ typedef struct {
 #define AP_HTTP_METHODS_REGISTERED    2
     char http_methods;
 
-#define AP_HTTP_URI_UNSET             0
-#define AP_HTTP_URI_UNSAFE            1
-#define AP_HTTP_URI_STRICT            2
-    char http_stricturi;
-
 #define AP_HTTP_CL_HEAD_ZERO_UNSET    0
 #define AP_HTTP_CL_HEAD_ZERO_ENABLE   1
 #define AP_HTTP_CL_HEAD_ZERO_DISABLE  2
@@ -758,7 +753,6 @@ typedef struct {
 #define AP_HTTP_EXPECT_STRICT_ENABLE   1
 #define AP_HTTP_EXPECT_STRICT_DISABLE  2
     int http_expect_strict;
-
 
     apr_array_header_t *protocols;
     int protocols_honor_order;
