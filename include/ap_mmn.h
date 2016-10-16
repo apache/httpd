@@ -546,6 +546,9 @@
  *                         core_server_config
  * 20160629.1 (2.5.0-dev)  Dropped http_whitespace from core_server_config
  * 20160629.2 (2.5.0-dev)  Replaced fold w/multiple flags for ap_[r]getline()
+ * 20160629.3 (2.5.0-dev)  Dropped ap_has_cntrls(), ap_scan_http_uri_safe()
+ *                         and http_stricturi member/directive.
+ *                         Added ap_scan_vchar_obstext()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
