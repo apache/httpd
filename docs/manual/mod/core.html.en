@@ -2041,9 +2041,9 @@ media type in the HTTP Content-Type header field</td></tr>
 <div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>HttpProtocolOptions Strict LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2053,11 +2053,11 @@ media type in the HTTP Content-Type header field</td></tr>
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
-    custom user-agents which must be deperecated, <code>Unsafe</code>
-    and <code>UnsafeURL</code> options have been added to revert to the legacy
-    behaviors. These rules are applied prior to request processing, so must be
-    configured at the global or default (first) matching virtual host section,
-    by IP/port interface and not by name, to be honored.</p>
+    custom user-agents which must be deperecated the <code>Unsafe</code>
+    option has been added to revert to the legacy behaviors. These rules
+    are applied prior to request processing, so must be configured at the
+    global or default (first) matching virtual host section, by IP/port
+    interface (and not by name) to be honored.</p>
 
     <p>Prior to the introduction of this directive, the Apache HTTP Server
     request message parsers were tolerant of a number of forms of input
@@ -2072,20 +2072,12 @@ media type in the HTTP Content-Type header field</td></tr>
     mode, and the strict whitespace suggested by section 3.5 is enforced
     and cannot be relaxed.</p>
 
-    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2">RFC 3986 §2.2 and 2.3</a> define "Reserved Characters" and
-    "Unreserved Characters". All other character octets are required to
-    be %XX encoded under this spec, and RFC7230 defers to these requirements.
-    By default the <code>StrictURI</code> option will reject all requests 
-    containing invalid characters. This rule can be relaxed with the
-    <code>UnsafeURI</code> option to support badly written user-agents.</p>
-    
     <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
-    or <code>UnsafeURI</code> modes of operation, particularly on
-    outward-facing, publicly accessible server deployments.
-    If an interface is required for faulty monitoring or other custom service
-    consumers running on an intranet, users should toggle only those Unsafe
-    options which are necessary, and only on a specific virtual host configured
-    to service only their internal private network.</p>
+    mode of operation, particularly on outward-facing, publicly accessible
+    server deployments.  If an interface is required for faulty monitoring
+    or other custom service consumers running on an intranet, users should
+    toggle the Unsafe option only on a specific virtual host configured
+    to service their internal private network.</p>
 
     <p>Reviewing the messages logged to the <code class="directive">ErrorLog</code>,
     configured with <code class="directive">LogLevel</code> <code>debug</code> level,
