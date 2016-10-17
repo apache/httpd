@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2/mod_proxy_http2: 100-continue handling now properly implemented
+     up to the backend. Reused HTTP/2 proxy connections with more than a second
+     not used will block request bodies until a PING answer is received.
+     Requests headers are not delayed by this, since they are repeatable in
+     case of failure. This greatly increases robustness, especially with
+     busy server and/or low keepalive connections. [Stefan Eissing]
+     
   *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
      behavior in a routine that sends <DAV:response>'s to the output filters.
      [Evgeny Kotkov]

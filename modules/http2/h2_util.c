@@ -618,7 +618,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int files_allowed = pfile_buckets_allowed? *pfile_buckets_allowed : 0;
+    int files_allowed = pfile_buckets_allowed? (int)*pfile_buckets_allowed : 0;
     
     if (maxlen >= 0) {
         /* Find the bucket, up to which we reach maxlen/mem bytes */
