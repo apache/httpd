@@ -1420,18 +1420,13 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
     ap_assert(session);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_stream(%ld-%d): on_headers", session->id, stream->id);
-    if (!headers) {
-        int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03466)
-                      "h2_stream(%ld-%d): RST_STREAM, err=%d",
-                      session->id, stream->id, err);
+    if (headers->status < 100) {
+        int err = H2_STREAM_RST(stream, headers->status);
         rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
                                        stream->id, err);
-        goto leave;
-    }
-    else if (headers->status < 100) {
-        rv = nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
-                                       stream->id, headers->status);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, 
+                  "h2_stream(%ld-%d): unpexected header status %d, stream rst", 
+                  session->id, stream->id, headers->status);
         goto leave;
     }
     else if (stream->has_response) {
@@ -1555,25 +1550,35 @@ static apr_status_t on_stream_resume(void *ctx, h2_stream *stream)
     int rv;
     apr_off_t len = 0;
     int eos = 0;
-    h2_headers *headers = NULL;
+    h2_headers *headers;
     
     ap_assert(stream);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
                   "h2_stream(%ld-%d): on_resume", session->id, stream->id);
         
 send_headers:
+    headers = NULL;
     status = h2_stream_out_prepare(stream, &len, &eos, &headers);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, session->c, 
                   "h2_stream(%ld-%d): prepared len=%ld, eos=%d", 
                   session->id, stream->id, (long)len, eos);
     if (headers) {
         status = on_stream_headers(session, stream, headers, len, eos);
-        if (status != APR_SUCCESS) {
+        if (status != APR_SUCCESS || stream->rst_error) {
             return status;
         }
         goto send_headers;
     }
     else if (status != APR_EAGAIN) {
+        if (!stream->has_response) {
+            int err = H2_STREAM_RST(stream, H2_ERR_PROTOCOL_ERROR);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03466)
+                          "h2_stream(%ld-%d): no response, RST_STREAM, err=%d",
+                          session->id, stream->id, err);
+            nghttp2_submit_rst_stream(session->ngh2, NGHTTP2_FLAG_NONE,
+                                      stream->id, err);
+            return APR_SUCCESS;
+        } 
         rv = nghttp2_session_resume_data(session->ngh2, stream->id);
         session->have_written = 1;
         ap_log_cerror(APLOG_MARK, nghttp2_is_fatal(rv)?
@@ -2147,12 +2152,18 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         }
                         /* continue reading handling */
                     }
+                    else if (APR_STATUS_IS_ECONNABORTED(status)
+                             || APR_STATUS_IS_ECONNRESET(status)
+                             || APR_STATUS_IS_EOF(status)
+                             || APR_STATUS_IS_EBADF(status)) {
+                        ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                      "h2_session(%ld): input gone", session->id);
+                        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
+                    }
                     else {
-                        if (trace) {
-                            ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
-                                          "h2_session(%ld): idle(1 sec timeout) "
-                                          "read failed", session->id);
-                        }
+                        ap_log_cerror( APLOG_MARK, APLOG_TRACE3, status, c,
+                                      "h2_session(%ld): idle(1 sec timeout) "
+                                      "read failed", session->id);
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "error");
                     }
                 }

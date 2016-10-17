@@ -187,6 +187,16 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
         }
     }
 
+    s = apr_table_get(req->headers, "Expect");
+    if (s && s[0]) {
+        if (ap_cstr_casecmp(s, "100-continue") == 0) {
+            req->expect_100 = 1;
+        }
+        else {
+            req->expect_failed = 1;
+        }
+    }
+
     return APR_SUCCESS;
 }
 
@@ -204,7 +214,6 @@ h2_request *h2_request_clone(apr_pool_t *p, const h2_request *src)
 request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
 {
     int access_status = HTTP_OK;    
-    const char *expect;
     const char *rpath;
     apr_pool_t *p;
     request_rec *r;
@@ -287,18 +296,14 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
     
-    if (r && ((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
-        && (expect[0] != '\0')) {
-        if (ap_cstr_casecmp(expect, "100-continue") == 0) {
-            r->expecting_100 = 1;
-            ap_add_input_filter("H2_CONTINUE", NULL, r, c);
-        }
-        else {
-            r->status = HTTP_EXPECTATION_FAILED;
-            ap_send_error_response(r, 0);
-        }
+    if (req->expect_100) {
+        r->expecting_100 = 1;
     }
-    
+    else if (req->expect_failed) {
+        r->status = HTTP_EXPECTATION_FAILED;
+        ap_send_error_response(r, 0);
+    }
+
     /*
      * Add the HTTP_IN filter here to ensure that ap_discard_request_body
      * called by ap_die and by ap_send_error_response works correctly on
