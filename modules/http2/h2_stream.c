@@ -645,7 +645,8 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     b = APR_BRIGADE_FIRST(stream->buffer);
     while (b != APR_BRIGADE_SENTINEL(stream->buffer)) {
         e = APR_BUCKET_NEXT(b);
-        if (APR_BUCKET_IS_FLUSH(b)) {
+        if (APR_BUCKET_IS_FLUSH(b)
+            || (!APR_BUCKET_IS_METADATA(b) && b->length == 0)) {
             APR_BUCKET_REMOVE(b);
             apr_bucket_destroy(b);
         }

@@ -274,42 +274,49 @@ static void request_done(h2_proxy_session *session, request_rec *r,
 {   
     h2_proxy_ctx *ctx = session->user_data;
     const char *task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
-    
-    if (!complete && !touched) {
-        /* untouched request, need rescheduling */
-        if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
-            if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
-                /* push to engine */
-                ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
-                              APLOGNO(03369)
-                              "h2_proxy_session(%s): rescheduled request %s",
-                              ctx->engine_id, task_id);
-                return;
+
+    if (!complete) {
+        if (!touched) {
+            /* untouched request, need rescheduling */
+            if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
+                if (req_engine_push(ctx->engine_type, r, NULL) == APR_SUCCESS) {
+                    /* push to engine */
+                    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                                  APLOGNO(03369)
+                                  "h2_proxy_session(%s): rescheduled request %s",
+                                  ctx->engine_id, task_id);
+                    return;
+                }
             }
+        }
+        else {
+            const char *uri;
+            uri = apr_uri_unparse(r->pool, &r->parsed_uri, 0);
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+                          APLOGNO(03471) "h2_proxy_session(%s): request %s -> %s "
+                          "not complete, was touched",
+                          ctx->engine_id, task_id, uri);
         }
     }
     
-    if (r == ctx->rbase && complete) {
-        ctx->r_status = APR_SUCCESS;
+    if (r == ctx->rbase) {
+        ctx->r_status = complete? APR_SUCCESS : HTTP_GATEWAY_TIME_OUT;
     }
     
-    if (complete) {
-        if (req_engine_done && ctx->engine) {
+    if (req_engine_done && ctx->engine) {
+        if (complete) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
                           APLOGNO(03370)
                           "h2_proxy_session(%s): finished request %s",
                           ctx->engine_id, task_id);
-            req_engine_done(ctx->engine, r->connection);
         }
-    }
-    else {
-        if (req_engine_done && ctx->engine) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, r->connection, 
                           APLOGNO(03371)
                           "h2_proxy_session(%s): failed request %s",
                           ctx->engine_id, task_id);
-            req_engine_done(ctx->engine, r->connection);
         }
+        req_engine_done(ctx->engine, r->connection);
     }
 }    
 
@@ -323,7 +330,7 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
         status = req_engine_pull(ctx->engine, before_leave? 
                                  APR_BLOCK_READ: APR_NONBLOCK_READ, 
                                  ctx->capacity, &ctx->next);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, ctx->owner, 
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, ctx->owner, 
                       "h2_proxy_engine(%s): pulled request (%s) %s", 
                       ctx->engine_id, 
                       before_leave? "before leave" : "regular", 
@@ -342,7 +349,7 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine_id);
     ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
-                                          30, h2_proxy_log2(ctx->req_buffer_size), 
+                                          30, h2_proxy_log2((int)ctx->req_buffer_size), 
                                           request_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
@@ -561,7 +568,7 @@ run_connect:
      * backend->hostname. */
     if (ap_proxy_connect_backend(ctx->proxy_func, ctx->p_conn, ctx->worker, 
                                  ctx->server)) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, ctx->owner, APLOGNO(03352)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, APLOGNO(03352)
                       "H2: failed to make connection to backend: %s",
                       ctx->p_conn->hostname);
         goto cleanup;
@@ -569,29 +576,27 @@ run_connect:
     
     /* Step Three: Create conn_rec for the socket we have open now. */
     if (!ctx->p_conn->connection) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
-                      "setup new connection: is_ssl=%d %s %s %s", 
-                      ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
-                      locurl, ctx->p_conn->hostname);
         if ((status = ap_proxy_connection_create(ctx->proxy_func, ctx->p_conn,
                                                  ctx->owner, 
                                                  ctx->server)) != OK) {
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->owner, APLOGNO(03353)
+                          "setup new connection: is_ssl=%d %s %s %s", 
+                          ctx->p_conn->is_ssl, ctx->p_conn->ssl_hostname, 
+                          locurl, ctx->p_conn->hostname);
             goto cleanup;
         }
         
-        /*
-         * On SSL connections set a note on the connection what CN is
-         * requested, such that mod_ssl can check if it is requested to do
-         * so.
-         */
-        if (ctx->p_conn->ssl_hostname) {
-            apr_table_setn(ctx->p_conn->connection->notes,
-                           "proxy-request-hostname", ctx->p_conn->ssl_hostname);
-        }
-        
-        if (ctx->is_ssl) {
-            apr_table_setn(ctx->p_conn->connection->notes,
-                           "proxy-request-alpn-protos", "h2");
+        if (!ctx->p_conn->data) {
+            /* New conection: set a note on the connection what CN is
+             * requested and what protocol we want */
+            if (ctx->p_conn->ssl_hostname) {
+                apr_table_setn(ctx->p_conn->connection->notes,
+                               "proxy-request-hostname", ctx->p_conn->ssl_hostname);
+            }
+            if (ctx->is_ssl) {
+                apr_table_setn(ctx->p_conn->connection->notes,
+                               "proxy-request-alpn-protos", "h2");
+            }
         }
     }
 
