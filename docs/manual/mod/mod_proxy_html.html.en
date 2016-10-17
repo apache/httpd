@@ -340,6 +340,15 @@ module for earlier 2.x versions.</td></tr>
     them to real HTTP headers, in keeping with the original purpose
     of this form of the HTML &lt;meta&gt; element.</p>
 
+    <div class="warning"><h3>Warning</h3>
+      Because ProxyHTMLMeta promotes <strong>all</strong>
+      <code>http-equiv</code> elements to HTTP headers, it is important that you
+      only enable it in cases where you trust the HTML content as much as you
+      trust the upstream server. If the HTML is controlled by bad actors, it
+      will be possible for them to inject arbitrary, possibly malicious, HTTP
+      headers into your server's responses.
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a></h2>
