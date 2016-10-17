@@ -54,7 +54,7 @@ static int state_transition[][7] = {
 /*CL*/{  1, 1, 0, 0, 1, 1, 1 },
 };
 
-static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, char *tag)
+static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
 {
     if (APLOG_C_IS_LEVEL(s->session->c, lvl)) {
         conn_rec *c = s->session->c;
@@ -645,7 +645,8 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     b = APR_BRIGADE_FIRST(stream->buffer);
     while (b != APR_BRIGADE_SENTINEL(stream->buffer)) {
         e = APR_BUCKET_NEXT(b);
-        if (APR_BUCKET_IS_FLUSH(b)) {
+        if (APR_BUCKET_IS_FLUSH(b)
+            || (!APR_BUCKET_IS_METADATA(b) && b->length == 0)) {
             APR_BUCKET_REMOVE(b);
             apr_bucket_destroy(b);
         }

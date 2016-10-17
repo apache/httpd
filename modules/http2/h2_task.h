@@ -44,6 +44,7 @@ struct h2_mplx;
 struct h2_task;
 struct h2_req_engine;
 struct h2_request;
+struct h2_response_parser;
 struct h2_worker;
 
 typedef struct h2_task h2_task;
@@ -63,12 +64,15 @@ struct h2_task {
         unsigned int eos : 1;
         apr_bucket_brigade *bb;
         apr_bucket_brigade *bbchunk;
+        apr_off_t chunked_total;
     } input;
     struct {
         struct h2_bucket_beam *beam;
         unsigned int opened : 1;
         unsigned int sent_response : 1;
         unsigned int copy_files : 1;
+        unsigned int parse_response : 1;
+        struct h2_response_parser *rparser;
         apr_bucket_brigade *bb;
     } output;
     

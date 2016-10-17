@@ -254,7 +254,7 @@ apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed,
     
     AP_DEBUG_ASSERT(ngn);
     *pr = NULL;
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, shed->c, APLOGNO(03396)
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, shed->c, APLOGNO(03396)
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
                   shed->c->id, ngn->id, want_shutdown);
     if (shed->aborted) {

@@ -43,7 +43,7 @@ apr_bucket *h2_bucket_headers_beam(struct h2_bucket_beam *beam,
  * @param pool the memory pool to use
  */
 h2_headers *h2_headers_create(int status, apr_table_t *header, 
-                                apr_table_t *notes, apr_pool_t *pool);
+                              apr_table_t *notes, apr_pool_t *pool);
 
 /**
  * Create the headers from the given request_rec.
