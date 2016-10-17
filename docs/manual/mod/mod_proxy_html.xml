@@ -88,6 +88,15 @@ module for earlier 2.x versions.</compatibility>
     <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
     them to real HTTP headers, in keeping with the original purpose
     of this form of the HTML &lt;meta&gt; element.</p>
+
+    <note type="warning"><title>Warning</title>
+      Because ProxyHTMLMeta promotes <strong>all</strong>
+      <code>http-equiv</code> elements to HTTP headers, it is important that you
+      only enable it in cases where you trust the HTML content as much as you
+      trust the upstream server. If the HTML is controlled by bad actors, it
+      will be possible for them to inject arbitrary, possibly malicious, HTTP
+      headers into your server's responses.
+    </note>
 </usage>
 </directivesynopsis>
 
