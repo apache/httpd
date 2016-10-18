@@ -1615,25 +1615,6 @@ AP_DECLARE(const char *) ap_scan_http_token(const char *ptr)
     return ptr;
 }
 
-/* Retrieve a token, advancing the pointer to the first non-token character
- * and returning a copy of the token string.
- * The caller must handle whitespace and determine the meaning of the
- * terminating character. Returns NULL if the character at **ptr is not
- * a valid token character.
- */
-AP_DECLARE(char *) ap_get_http_token(apr_pool_t *p, const char **ptr)
-{
-    const char *tok_end = ap_scan_http_token(*ptr);
-    char *tok;
-
-    if (tok_end == *ptr)
-        return NULL;
-
-    tok = apr_pstrmemdup(p, *ptr, tok_end - *ptr);
-    *ptr = tok_end;
-    return tok;
-}
-
 /* Scan a string for visible ASCII (0x21-0x7E) or obstext (0x80+)
  * and return a pointer to the first ctrl/space character encountered.
  */
