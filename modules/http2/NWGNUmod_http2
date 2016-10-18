@@ -393,6 +393,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) nghttp2_session_want_write,$(DL) >> $@
 	@echo $(DL) nghttp2_strerror,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_goaway,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_ping,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_request,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_rst_stream,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_settings,$(DL) >> $@
