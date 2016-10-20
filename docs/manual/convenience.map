@@ -293,6 +293,7 @@ heartbeatmaxservers	mod/mod_heartmonitor.html#heartbeatmaxservers
 heartbeatstorage	mod/mod_lbmethod_heartbeat.html#heartbeatstorage
 heartbeatstorage	mod/mod_heartmonitor.html#heartbeatstorage
 hostnamelookups	mod/core.html#hostnamelookups
+httpprotocoloptions	mod/core.html#httpprotocoloptions
 identitycheck	mod/mod_ident.html#identitycheck
 identitychecktimeout	mod/mod_ident.html#identitychecktimeout
 idleshutdown	mod/mod_systemd.html#idleshutdown
