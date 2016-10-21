@@ -154,6 +154,25 @@ ProtocolsHonorOrder Off
     how to manage multiple hosts with the same certificate</a>.</p>
   </section>
 
+  <section id="mpm-config">
+    <title>MPM Configuration</title>
+    
+    <p>HTTP/2 is supported in all multi-processing modules that come with httpd. However, if
+    you use the <code>prefork</code> mpm, there will be severe restrictions.</p>
+    <p>In <code>prefork</code> <code>mod_http2</code> will only process one request at at time
+    per connection. But clients, such as browsers, will send many requests at the same time.
+    If one of these takes long to process (or is a long polling one), the other requests will
+    stall.</p>
+    <p><code>mod_http2</code> will not work around this limit by default. The reason is that
+    <code>prefork</code> is today only chosen, if you run processing engines that re not
+    prepared for multi-threading, e.g. will crash with more than one request.</p>
+    <p>If your setup can handle it, configuring <code>event</code> mpm is nowadays
+    the best one (if supported on your platform).</p>
+    <p>If you are really stuck with <code>prefork</code> and want multiple requests,
+    you can tweak the <directive module="mod_http2">H2MinWorkers</directive> to make
+    that possible. If it breaks, however, you own both parts.</p>
+  </section>
+  
   <section id="clients">
     <title>Clients</title>
     <p>Almost all modern browsers support HTTP/2, but only over SSL connections: Firefox (v43),
