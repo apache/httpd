@@ -218,13 +218,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      subrequests.  PR58292
      trunk patch: http://svn.apache.org/r1698239
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
 
   *) mod_remoteip: Pick up where we left off during a subrequest rather
      than running with the modified XFF but original TCP address. PR49839/PR60251
      trunk patch: http://svn.apache.org/r1688399  
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
 
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
