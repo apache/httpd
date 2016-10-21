@@ -569,11 +569,13 @@ CacheDirLength 1
     <section id="memcache">
       <title>Caching to memcached</title>
 
-      <p>The <module>mod_cache_socache</module> and <module>mod_socache_memcache</module>
-      modules are used to specify that the backend storage mechanism to be used
-      to store and return cached data in the <code>memcached</code> server.</p>
+      <p>Using the <module>mod_cache_socache</module> module, <module>mod_cache</module>
+      can cache data from a variety of implementations (aka: "providers"). Using the
+      <module>mod_socache_memcache</module> module, for example, one can specify that
+      <a href="http://memcached.org">memcached</a> is to be used as the
+      the backend storage mechanism.</p>
 
-      <p>Typically the module will be configured as so;</p>
+      <p>Typically the module will be configured as so:</p>
 
       <highlight language="config">
 CacheEnable socache /
@@ -582,7 +584,12 @@ CacheSocache memcache:memcd.example.com:11211
 
       <p>Additional <code>memcached</code> servers can be specified by
       appending them to the end of the <code>CacheSocache memcache:</code>
-      line seperated by commas.</p>
+      line separated by commas:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212
+      </highlight>
 
       <p>This format is also used with the other various <module>mod_cache_socache</module>
       providers. For example:</p>
