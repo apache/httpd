@@ -449,7 +449,7 @@ int h2_stream_is_scheduled(const h2_stream *stream)
 apr_status_t h2_stream_close_input(h2_stream *stream)
 {
     conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS;
+    apr_status_t status = APR_SUCCESS, rv;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): closing input",
@@ -477,7 +477,8 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     }
     
     close_input(stream);
-    return h2_beam_close(stream->input);
+    rv = h2_beam_close(stream->input);
+    return status ? status : rv;
 }
 
 apr_status_t h2_stream_write_data(h2_stream *stream,
