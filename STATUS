@@ -228,6 +228,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
+        try to use the key of a possible open but stale cache entry (PR 50317)
+            http://svn.apache.org/r1597533
+        socache_mc_store: Pass through expiration time.
+            http://svn.apache.org/r1649491
+        Preserve the Content-Type in case of 304 response
+            http://svn.apache.org/r1665216
         Use the actual URI path and query-string (PR 21935)
             http://svn.apache.org/r1756553
             http://svn.apache.org/r1756631
@@ -238,7 +244,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n](), update with APR doxygen
             http://svn.apache.org/r1747469 
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
-     +1: jim
+     +1: jim, ylavic
+     ylavic: r1756553 and r1649491 have a CHANGES entry.
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
