@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mpm_unix: Apache fails to start if previously crashed then restarted with
+     the same PID (e.g. in container).  PR 60261.
+     [Val <valentin.bremond gmail.com>, Yann Ylavic]
+
   *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
      behavior in a routine that sends <DAV:response>'s to the output filters.
      [Evgeny Kotkov]
