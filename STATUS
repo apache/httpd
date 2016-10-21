@@ -177,14 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
-  *) mod_cache: Use the actual URI path and query-string for identifying the
-     cached entity (key), such that rewrites are taken into account when
-     running afterwards (CacheQuickHandler off).  PR 21935.
-     trunk patch: http://svn.apache.org/r1756553
-                  http://svn.apache.org/r1756631
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
-
   *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
      available before the request is sent.  PR 57832.
      This also backports deprecation of ap_proxy_ssl_connection_cleanup() and
@@ -233,6 +225,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1688399  
      2.4.x patch: trunk works
      +1: covener
+
+  *) mod_cache: Bring up-to-date w/ trunk.
+     trunk patch:
+        Use the actual URI path and query-string (PR 21935)
+            http://svn.apache.org/r1756553
+            http://svn.apache.org/r1756631
+        better s-maxage support
+            http://svn.apache.org/r1726675
+            http://svn.apache.org/r1718496
+            http://svn.apache.org/r1718476
+        Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n](), update with APR doxygen
+            http://svn.apache.org/r1747469 
+     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
+     +1: jim
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
