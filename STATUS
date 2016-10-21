@@ -247,6 +247,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic
      ylavic: r1756553 and r1649491 have a CHANGES entry.
 
+  *) mpm_unix: Apache fails to start if previously crashed then restarted with
+     the same PID (e.g. in container).  PR 60261.
+     trunk patch: http://svn.apache.org/r1766160
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
