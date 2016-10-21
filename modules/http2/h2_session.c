@@ -1431,7 +1431,6 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
     }
     else if (stream->has_response) {
         h2_ngheader *nh;
-        int rv;
         
         nh = h2_util_ngheader_make(stream->pool, headers->headers);
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03072)
