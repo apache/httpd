@@ -425,6 +425,28 @@ Vary: negotiate,accept-language,accept-charset
       to decide on which of many variants to return to the client.</p>
     </section>
 
+  </section>
+
+  <section id="examples">
+
+    <title>Cache Setup Examples</title>
+
+    <related>
+      <modulelist>
+        <module>mod_cache</module>
+        <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
+        <module>mod_socache_memcache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache">CacheEnable</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_socache">CacheSocache</directive>
+      </directivelist>
+    </related>
+
     <section id="disk">
       <title>Caching to Disk</title>
 
@@ -544,11 +566,44 @@ CacheDirLength 1
       leave enough "grow room" following a clean.</p>
     </section>
 
+    <section id="memcache">
+      <title>Caching to memcached</title>
+
+      <p>The <module>mod_cache_socache</module> and <module>mod_socache_memcache</module>
+      modules are used to specify that the backend storage mechanism to be used
+      to store and return cached data in the <code>memcached</code> server.</p>
+
+      <p>Typically the module will be configured as so;</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:memcd.example.com:11211
+      </highlight>
+
+      <p>Additional <code>memcached</code> servers can be specified by
+      appending them to the end of the <code>CacheSocache memcache:</code>
+      line seperated by commas.</p>
+
+      <p>This format is also used with the other various <module>mod_cache_socache</module>
+      providers. For example:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache shmcb:/path/to/datafile(512000)
+      </highlight>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache dbm:/path/to/datafile
+      </highlight>
+
+    </section>
+
   </section>
 
   <section id="socache-caching">
 
-    <title>Two-state Key/Value Shared Object Caching</title>
+    <title>General Two-state Key/Value Shared Object Caching</title>
 
     <related>
       <modulelist>
