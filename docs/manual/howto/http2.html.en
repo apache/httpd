@@ -39,6 +39,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#implementation">HTTP/2 in Apache httpd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#building">Build httpd with HTTP/2 support</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basic-config">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mpm-config">MPM Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#clients">Clients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#tools">Useful tools to debug HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#push">Server Push</a></li>
@@ -157,6 +158,25 @@
     <p>For more advanced tips on configuration, see the <a href="../mod/mod_http2.html#dimensioning">
     modules section about dimensioning</a> and <a href="../mod/mod_http2.html#misdirected">
     how to manage multiple hosts with the same certificate</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mpm-config" id="mpm-config">MPM Configuration</a></h2>
+    
+    
+    <p>HTTP/2 is supported in all multi-processing modules that come with httpd. However, if
+    you use the <code>prefork</code> mpm, there will be severe restrictions.</p>
+    <p>In <code>prefork</code> <code>mod_http2</code> will only process one request at at time
+    per connection. But clients, such as browsers, will send many requests at the same time.
+    If one of these takes long to process (or is a long polling one), the other requests will
+    stall.</p>
+    <p><code>mod_http2</code> will not work around this limit by default. The reason is that
+    <code>prefork</code> is today only chosen, if you run processing engines that re not
+    prepared for multi-threading, e.g. will crash with more than one request.</p>
+    <p>If your setup can handle it, configuring <code>event</code> mpm is nowadays
+    the best one (if supported on your platform).</p>
+    <p>If you are really stuck with <code>prefork</code> and want multiple requests,
+    you can tweak the <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code> to make
+    that possible. If it breaks, however, you own both parts.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="clients" id="clients">Clients</a></h2>
