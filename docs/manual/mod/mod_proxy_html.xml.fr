@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1760479:1765368 (outdated) -->
+<!-- English Revision: 1765368 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -102,6 +102,16 @@ précédentes.</compatibility>
     <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
     en-têtes HTTP, afin de conserver le but original de cette forme
     de métaélément HTML.</p>
+
+    <note type="warning"><title>Avertissement</title> Compte tenu du fait que la
+    directive ProxyHTMLMeta promeut <strong>tous</strong> les éléments
+    <code>http-equiv</code> au rang d'en-têtes HTTP, il est conseillé de ne
+    l'activer que si vous faites autant confiance au contenu HTML qu'à votre
+    serveur mandataire. Avec cette directive en effet, si ce contenu est géré
+    par des gens malintentionnés, ces derniers seront en mesure d'injecter des
+    en-têtes HTTP arbitraires et peut-être malveillants dans les réponses de
+    votre serveur.  
+    </note>
 </usage>
 </directivesynopsis>
 
