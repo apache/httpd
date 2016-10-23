@@ -172,6 +172,7 @@ int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file);
 struct h2_bucket_beam {
     int id;
     const char *tag;
+    apr_pool_t *pool;
     h2_blist red;
     h2_blist hold;
     h2_blist purge;

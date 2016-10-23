@@ -139,25 +139,6 @@ static apr_bucket *h2_beam_bucket_create(h2_bucket_beam *beam,
     return h2_beam_bucket_make(b, beam, bred, n);
 }
 
-/*static apr_status_t beam_bucket_setaside(apr_bucket *b, apr_pool_t *pool)
-{
-    apr_status_t status = APR_SUCCESS;
-    h2_beam_proxy *d = b->data;
-    if (d->bred) {
-        const char *data;
-        apr_size_t len;
-        
-        status = apr_bucket_read(d->bred, &data, &len, APR_BLOCK_READ);
-        if (status == APR_SUCCESS) {
-            b = apr_bucket_heap_make(b, (char *)data + b->start, b->length, NULL);
-            if (b == NULL) {
-                return APR_ENOMEM;
-            }
-        }
-    }
-    return status;
-}*/
-
 const apr_bucket_type_t h2_bucket_type_beam = {
     "BEAM", 5, APR_BUCKET_DATA,
     beam_bucket_destroy,
@@ -431,11 +412,12 @@ static apr_status_t beam_close(h2_bucket_beam *beam)
     return APR_SUCCESS;
 }
 
-static apr_status_t beam_cleanup(void *data)
+static void beam_set_red_pool(h2_bucket_beam *beam, apr_pool_t *pool);
+
+static apr_status_t beam_red_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
     
-    beam_close(beam);
     r_purge_reds(beam);
     h2_blist_cleanup(&beam->red);
     report_consumption(beam, 0);
@@ -447,38 +429,64 @@ static apr_status_t beam_cleanup(void *data)
     }
     h2_blist_cleanup(&beam->purge);
     h2_blist_cleanup(&beam->hold);
+    beam_set_red_pool(beam, NULL); 
     
+    return APR_SUCCESS;
+}
+
+static void beam_set_red_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
+{
+    if (beam->red_pool != pool) {
+        if (beam->red_pool) {
+            apr_pool_cleanup_kill(beam->red_pool, beam, beam_red_cleanup);
+        }
+        beam->red_pool = pool;
+        if (beam->red_pool) {
+            apr_pool_pre_cleanup_register(beam->red_pool, beam, beam_red_cleanup);
+        }
+    }
+}
+
+static apr_status_t beam_cleanup(void *data)
+{
+    h2_bucket_beam *beam = data;
+    apr_status_t status;
+    
+    beam_close(beam);
+    if (beam->red_pool) {
+        status = beam_red_cleanup(beam);
+    }
     return APR_SUCCESS;
 }
 
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam)
 {
-    apr_pool_cleanup_kill(beam->red_pool, beam, beam_cleanup);
+    apr_pool_cleanup_kill(beam->pool, beam, beam_cleanup);
     return beam_cleanup(beam);
 }
 
-apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *red_pool, 
+apr_status_t h2_beam_create(h2_bucket_beam **pbeam, apr_pool_t *pool, 
                             int id, const char *tag, 
                             apr_size_t max_buf_size)
 {
     h2_bucket_beam *beam;
     apr_status_t status = APR_SUCCESS;
     
-    beam = apr_pcalloc(red_pool, sizeof(*beam));
+    beam = apr_pcalloc(pool, sizeof(*beam));
     if (!beam) {
         return APR_ENOMEM;
     }
 
     beam->id = id;
     beam->tag = tag;
+    beam->pool = pool;
     H2_BLIST_INIT(&beam->red);
     H2_BLIST_INIT(&beam->hold);
     H2_BLIST_INIT(&beam->purge);
     H2_BPROXY_LIST_INIT(&beam->proxies);
-    beam->red_pool = red_pool;
     beam->max_buf_size = max_buf_size;
+    apr_pool_pre_cleanup_register(pool, beam, beam_cleanup);
 
-    apr_pool_pre_cleanup_register(red_pool, beam, beam_cleanup);
     *pbeam = beam;
     
     return status;
@@ -609,10 +617,20 @@ apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block,
     return status;
 }
 
+static void move_to_hold(h2_bucket_beam *beam, 
+                         apr_bucket_brigade *red_brigade)
+{
+    apr_bucket *b;
+    while (red_brigade && !APR_BRIGADE_EMPTY(red_brigade)) {
+        b = APR_BRIGADE_FIRST(red_brigade);
+        APR_BUCKET_REMOVE(b);
+        H2_BLIST_INSERT_TAIL(&beam->red, b);
+    }
+}
+
 static apr_status_t append_bucket(h2_bucket_beam *beam, 
                                   apr_bucket *bred,
                                   apr_read_type_e block,
-                                  apr_pool_t *pool,
                                   h2_beam_lock *pbl)
 {
     const char *data;
@@ -659,14 +677,11 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
      * its pool/bucket_alloc from a foreign thread and that will
      * corrupt. */
     status = APR_ENOTIMPL;
-    if (beam->closed && bred->length > 0) {
-        status = APR_EOF;
-    }
-    else if (APR_BUCKET_IS_TRANSIENT(bred)) {
+    if (APR_BUCKET_IS_TRANSIENT(bred)) {
         /* this takes care of transient buckets and converts them
          * into heap ones. Other bucket types might or might not be
          * affected by this. */
-        status = apr_bucket_setaside(bred, pool);
+        status = apr_bucket_setaside(bred, beam->red_pool);
     }
     else if (APR_BUCKET_IS_HEAP(bred)) {
         /* For heap buckets read from a green thread is fine. The
@@ -702,7 +717,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         }
         if (can_beam) {
             beam->last_beamed = fd;
-            status = apr_bucket_setaside(bred, pool);
+            status = apr_bucket_setaside(bred, beam->red_pool);
         }
         /* else: enter ENOTIMPL case below */
     }
@@ -722,7 +737,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         }
         status = apr_bucket_read(bred, &data, &len, APR_BLOCK_READ);
         if (status == APR_SUCCESS) {
-            status = apr_bucket_setaside(bred, pool);
+            status = apr_bucket_setaside(bred, beam->red_pool);
         }
     }
     
@@ -750,6 +765,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
         r_purge_reds(beam);
         
         if (beam->aborted) {
+            move_to_hold(beam, red_brigade);
             status = APR_ECONNABORTED;
         }
         else if (red_brigade) {
@@ -757,7 +773,8 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
             while (!APR_BRIGADE_EMPTY(red_brigade)
                    && status == APR_SUCCESS) {
                 bred = APR_BRIGADE_FIRST(red_brigade);
-                status = append_bucket(beam, bred, block, beam->red_pool, &bl);
+                beam_set_red_pool(beam, red_brigade->p);
+                status = append_bucket(beam, bred, block, &bl);
             }
             report_production(beam, force_report);
             if (beam->m_cond) {
