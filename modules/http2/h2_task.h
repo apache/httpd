@@ -95,11 +95,13 @@ struct h2_task {
 
 h2_task *h2_task_create(conn_rec *c, int stream_id, 
                         const struct h2_request *req, 
-                        struct h2_bucket_beam *input, struct h2_mplx *mplx);
+                        struct h2_bucket_beam *input, 
+                        struct h2_bucket_beam *output, 
+                        struct h2_mplx *mplx);
 
 void h2_task_destroy(h2_task *task);
 
-apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread);
+apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id);
 
 void h2_task_redo(h2_task *task);
 int h2_task_can_redo(h2_task *task);

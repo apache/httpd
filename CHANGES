@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixed potential crash of 1.7.x changes in beam memory handling.
+     [Stefan Eissing]
+
   *) mpm_unix: Apache fails to start if previously crashed then restarted with
      the same PID (e.g. in container).  PR 60261.
      [Val <valentin.bremond gmail.com>, Yann Ylavic]
