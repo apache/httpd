@@ -212,7 +212,7 @@ Require user rbowen
 
     <p>Let's examine each of those directives individually. The <directive
     module="mod_authn_core">AuthType</directive> directive selects
-    that method that is used to authenticate the user. The most
+    the method that is used to authenticate the user. The most
     common method is <code>Basic</code>, and this is the method
     implemented by <module>mod_auth_basic</module>. It is important to be aware,
     however, that Basic authentication sends the password from the client to

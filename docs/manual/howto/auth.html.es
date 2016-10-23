@@ -43,12 +43,13 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducción</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Los Prerequisitos</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Conseguir que funcione</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Letting more than one
-person in</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Possible problems</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Alternate password storage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Using multiple providers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#beyond">Beyond just authorization</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Dejar que más de una persona 
+	entre</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Posibles Problemas</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Método alternativo de almacenamiento de las 
+	contraseñas</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Uso de múltiples proveedores</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#beyond">Más allá de la Autorización</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#socache">Authentication Caching</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
@@ -218,7 +219,7 @@ person in</a></li>
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, o
     en la configuración global del servidor <code>httpd.conf</code> dentro de la
     sección &lt;Directory  
-    "/usr/local/apache/htdocs/secret"&gt; section. como se muesta a continuacion:</p>
+    "/usr/local/apache/htdocs/secret"&gt; , como se muestra a continuación:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache/htdocs/secret"&gt;
 AuthType Basic
@@ -230,93 +231,99 @@ Require user rbowen
 &lt;/Directory&gt;</pre>
 
 
-    <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive selects
-    that method that is used to authenticate the user. The most
-    common method is <code>Basic</code>, and this is the method
-    implemented by <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. It is important to be aware,
-    however, that Basic authentication sends the password from the client to
-    the server unencrypted. This method should therefore not be used for
-    highly sensitive data, unless accompanied by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
-    Apache supports one other authentication method:
-    <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and was intended to be more secure. This is no
-    longer the case and the connection should be encrypted with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> instead.</p>
+    <p>Vamos a explicar cada una de las directivas individualmente.
+    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> selecciona el método
+    que se usa para autenticar al usuario. El método más común es 
+    <code>Basic</code>, y éste es el método que implementa 
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. Es muy importante ser consciente,
+    de que la autenticación básica, envía las contraseñas desde el cliente 
+    al servidor sin cifrar.
+    Este método por tanto, no debe ser utilizado para proteger datos muy sensibles,
+    a no ser que, este método de autenticación básica, sea acompañado del módulo
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.
+    Apache soporta otro método más de autenticación  que es del tipo 
+    <code>AuthType Digest</code>. Este método, es implementado por el módulo <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> y con el se pretendía crear una autenticación más
+    segura. Este ya no es el caso, ya que la conexión deberá realizarse con  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> en su lugar.
+    </p>
 
-    <p>The <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> directive sets
-    the <dfn>Realm</dfn> to be used in the authentication. The realm serves
-    two major functions. First, the client often presents this information to
-    the user as part of the password dialog box. Second, it is used by the
-    client to determine what password to send for a given authenticated
-    area.</p>
+    <p>La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> 
+    establece el <dfn>Realm</dfn> para ser usado en la autenticación. El 
+    <dfn>Realm</dfn> tiene dos funciones principales.
+    La primera, el cliente presenta a menudo esta información al usuario como 
+    parte del cuadro de diálogo de contraseña. La segunda, que es utilizado por 
+    el cliente para determinar qué contraseña enviar a para una determinada zona 
+    de autenticación.</p>
 
-    <p>So, for example, once a client has authenticated in the
-    <code>"Restricted Files"</code> area, it will automatically
-    retry the same password for any area on the same server that is
-    marked with the <code>"Restricted Files"</code> Realm.
-    Therefore, you can prevent a user from being prompted more than
-    once for a password by letting multiple restricted areas share
-    the same realm. Of course, for security reasons, the client
-    will always need to ask again for the password whenever the
-    hostname of the server changes.</p>
+    <p>Así que, por ejemple, una vez que el cliente se ha autenticado en el área de
+    los <code>"Ficheros Restringidos"</code>, entonces re-intentará automáticamente
+    la misma contraseña para cualquier área en el mismo servidor que es marcado 
+    con el Realm de <code>"Ficheros Restringidos"</code>
+    Por lo tanto, puedes prevenir que a un usuario se le pida mas de una vez por su
+    contraseña, compartiendo así varias áreas restringidas el mismo Realm
+    Por supuesto, por razones de seguridad, el cliente pedirá siempre por una contraseña, 
+    siempre y cuando el nombre del servidor cambie.
+    </p>
 
-    <p>The <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> is,
-    in this case, optional, since <code>file</code> is the default value
-    for this directive. You'll need to use this directive if you are
-    choosing a different source for authentication, such as
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> or <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+    <p>La directiva <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> es,
+    en este caso, opcional, ya que <code>file</code> es el valor por defecto
+    para esta directiva. Deberás usar esta directiva si estas usando otro medio
+    diferente para la autenticación, como por ejemplo
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> o <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
 
-    <p>The <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    directive sets the path to the password file that we just
-    created with <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. If you have a large number
-    of users, it can be quite slow to search through a plain text
-    file to authenticate the user on each request. Apache also has
-    the ability to store user information in fast database files.
-    The <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> module provides the <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code> directive. These
-    files can be created and manipulated with the <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> and <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> programs. Many
-    other types of authentication options are available from third
-    party modules in the <a href="http://modules.apache.org/">Apache Modules
-    Database</a>.</p>
+    <p>La directiva <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
+    establece el path al fichero de contraseñas que acabamos de crear con el 
+    comando <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>. Si tiene un número muy grande de usuarios, 
+    puede ser realmente lento el buscar el usuario en ese fichero de texto plano 
+    para autenticar a los usuarios en cada petición.
+    Apache también tiene la habilidad de almacenar información de usuarios en 
+    unos ficheros de rápido acceso a modo de base de datos.
+    El módulo <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> proporciona la directiva <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>. Estos ficheros pueden ser creados y
+    manipulados con el programa <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> y <code class="program"><a href="../programs/htdbm.html">htdbm</a></code>. 
+    Muchos otros métodos de autenticación así como otras opciones, están disponibles en 
+    módulos de terceros 
+    <a href="http://modules.apache.org/">Base de datos de Módulos disponibles</a>.</p>
 
-    <p>Finally, the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-    directive provides the authorization part of the process by
-    setting the user that is allowed to access this region of the
-    server. In the next section, we discuss various ways to use the
-    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.</p>
+    <p>Finalmente, la directiva <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    proporciona la parte del proceso de autorización estableciendo el o los
+    usuarios que se les está permitido acceder a una región del servidor.
+    En la próxima sección, discutiremos las diferentes vías de utilizar la 
+    directiva <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Letting more than one
-person in</a></h2>
-    <p>The directives above only let one person (specifically
-    someone with a username of <code>rbowen</code>) into the
-    directory. In most cases, you'll want to let more than one
-    person in. This is where the <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> comes in.</p>
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que más de una persona 
+	entre</a></h2>
+    <p>Las directivas mencionadas arriba sólo permiten a una persona 
+    (especialmente con un usuario que en ej ejemplo es <code>rbowen</code>) 
+    en el directorio. En la mayoría de los casos, se querrá permitir el acceso
+    a más de una persona. Aquí es donde la directiva 
+    <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> entra en juego.</p>
 
-    <p>If you want to let more than one person in, you'll need to
-    create a group file that associates group names with a list of
-    users in that group. The format of this file is pretty simple,
-    and you can create it with your favorite editor. The contents
-    of the file will look like this:</p>
+    <p>Si lo que se desea es permitir a más de una persona el acceso, necesitarás
+     crear un archivo de grupo que asocie los nombres de grupos con el de personas
+     para permitirles el acceso. El formato de este fichero es bastante sencillo, 
+     y puedes crearlo con tu editor de texto favorito. El contenido del fichero 
+     se parecerá a:</p>
 
    <div class="example"><p><code>
      GroupName: rbowen dpitts sungo rshersey
    </code></p></div>
 
-    <p>That's just a list of the members of the group in a long
-    line separated by spaces.</p>
+    <p>Básicamente eso es la lista de miembros los cuales están en un mismo fichero
+     de grupo en una sola linea separados por espacios.</p>
 
-    <p>To add a user to your already existing password file,
-    type:</p>
+    <p>Para añadir un usuario a tu fichero de contraseñas existente teclee:</p>
 
     <div class="example"><p><code>
       htpasswd /usr/local/apache/passwd/passwords dpitts
     </code></p></div>
 
-    <p>You'll get the same response as before, but it will be
-    appended to the existing file, rather than creating a new file.
-    (It's the <code>-c</code> that makes it create a new password
-    file).</p>
+    <p>Te responderá lo mismo que anteriormente, pero se añadirá al fichero 
+    	existente en vez de crear uno nuevo. (Es decir el flag <code>-c</code> será 
+    	el que haga que se genere un nuevo 
+    fichero de contraseñas).</p>
 
-    <p>Now, you need to modify your <code>.htaccess</code> file to
-    look like the following:</p>
+    <p>Ahora, tendrá que modificar su fichero <code>.htaccess</code> para que sea 
+    parecido a lo siguiente:</p>
 
     <pre class="prettyprint lang-config">AuthType Basic
 AuthName "By Invitation Only"
@@ -327,60 +334,62 @@ AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName</pre>
 
 
-    <p>Now, anyone that is listed in the group <code>GroupName</code>,
-    and has an entry in the <code>password</code> file, will be let in, if
-    they type the correct password.</p>
+    <p>Ahora, cualquiera que esté listado en el grupo <code>GroupName</code>,
+    y tiene una entrada en el fichero de <code>contraseñas</code>, se les 
+    permitirá el acceso, si introducen su contraseña correctamente.</p>
 
-    <p>There's another way to let multiple users in that is less
-    specific. Rather than creating a group file, you can just use
-    the following directive:</p>
+    <p>Hay otra manera de dejar entrar a varios usuarios, que es menos específica.
+    En lugar de crear un archivo de grupo, sólo puede utilizar la siguiente 
+    directiva:</p>
 
     <pre class="prettyprint lang-config">Require valid-user</pre>
 
 
-    <p>Using that rather than the <code>Require user rbowen</code>
-    line will allow anyone in that is listed in the password file,
-    and who correctly enters their password. You can even emulate
-    the group behavior here, by just keeping a separate password
-    file for each group. The advantage of this approach is that
-    Apache only has to check one file, rather than two. The
-    disadvantage is that you have to maintain a bunch of password
-    files, and remember to reference the right one in the
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> directive.</p>
+    <p>Usando ésto en vez de la línea <code>Require user rbowen</code>
+     permitirá a cualquier persona acceder, la cuál aparece en el archivo de 
+     contraseñas, y que introduzca correctamente su contraseña. Incluso puede 
+     emular el comportamiento del grupo aquí, sólo manteniendo un fichero de 
+     contraseñas independiente para cada grupo. La ventaja de este enfoque es 
+     que Apache sólo tiene que comprobar un archivo, en lugar de dos. La desventaja 
+     es que se tiene que mantener un montón de ficheros de contraseña de grupo, y 
+     recuerde hacer referencia al fichero correcto en la directiva
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Possible problems</a></h2>
-    <p>Because of the way that Basic authentication is specified,
-    your username and password must be verified every time you
-    request a document from the server. This is even if you're
-    reloading the same page, and for every image on the page (if
-    they come from a protected directory). As you can imagine, this
-    slows things down a little. The amount that it slows things
-    down is proportional to the size of the password file, because
-    it has to open up that file, and go down the list of users
-    until it gets to your name. And it has to do this every time a
-    page is loaded.</p>
+<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a></h2>
+    <p>Debido a la forma en que se especifica la autenticación básica,
+    su nombre de usuario y la contraseña deben ser verificados cada vez 
+    que se solicita un documento desde el servidor. Esto es, incluso si&nbsp;
+    se&nbsp; vuelve a cargar la misma página, y para cada imagen de la página (si
+&nbsp;&nbsp;&nbsp;&nbsp;provienen de un directorio protegido). Como se puede imaginar, esto
+&nbsp;&nbsp;&nbsp;&nbsp;ralentiza las cosas un poco. La cantidad que ralentiza las cosas es 
+    proporcional al tamaño del archivo de contraseñas, porque tiene que 
+    abrir ese archivo, recorrer&nbsp;lista de usuarios hasta que llega a su nombre.
+    Y tiene que hacer esto cada vez que se carga una página.</p>
 
-    <p>A consequence of this is that there's a practical limit to
-    how many users you can put in one password file. This limit
-    will vary depending on the performance of your particular
-    server machine, but you can expect to see slowdowns once you
-    get above a few hundred entries, and may wish to consider a
-    different authentication method at that time.</p>
+    <p>Una consecuencia de esto, es que hay un limite práctico de cuantos 
+    usuarios puedes introducir en el fichero de contraseñas. Este límite
+    variará dependiendo de la máquina en la que tengas el servidor,
+    pero puedes notar ralentizaciones en cuanto se metan cientos de entradas,
+    y por lo tanto consideraremos entonces otro método de autenticación
+    en ese momento.
+	</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Alternate password storage</a></h2>
+<h2><a name="dbmdbd" id="dbmdbd">Método alternativo de almacenamiento de las 
+	contraseñas</a></h2>
 
-    <p>Because storing passwords in plain text files has the above
-    problems, you may wish to store your passwords somewhere else, such
-    as in a database.</p>
+    <p>Debido a que el almacenamiento de las contraseñas en texto plano tiene 
+    	el problema mencionado anteriormente, puede que se prefiera guardar 
+    	las contraseñas en otro lugar como por ejemplo una base de datos.
+    	</p>
 
-    <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> are two
-    modules which make this possible. Rather than selecting <code><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> file</code>, instead
-    you can choose <code>dbm</code> or <code>dbd</code> as your storage
-    format.</p>
+    <p>Los módulos <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> y <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> son
+    dos módulos que hacen esto posible. En vez de seleccionar la directiva de fichero
+    <code><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> </code>, en su lugar
+    se puede elegir <code>dbm</code> o <code>dbd</code> como formato de almacenamiento.</p>
 
-    <p>To select a dbm file rather than a text file, for example:</p>
+    <p>Para seleccionar los ficheros de tipo dbm en vez de texto plano, podremos hacer algo parecido a lo siguiente:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
@@ -391,18 +400,20 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>Other options are available. Consult the
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> documentation for more details.</p>
+    <p>Hay otras opciones disponibles. Consulta la documentación de
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para más detalles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Using multiple providers</a></h2>
+<h2><a name="multprovider" id="multprovider">Uso de múltiples proveedores</a></h2>
 
-    <p>With the introduction of the new provider based authentication and
-    authorization architecture, you are no longer locked into a single
-    authentication or authorization method. In fact any number of the
-    providers can be mixed and matched to provide you with exactly the
-    scheme that meets your needs. In the following example, both the
-    file and LDAP based authentication providers are being used.</p>
+    <p>Con la introducción de la nueva autenticación basada en un proveedor y
+     una arquitectura de autorización, ya no estaremos restringidos a un único
+     método de autenticación o autorización. De hecho, cualquier número de 
+     los proveedores pueden ser mezclados y emparejados para ofrecerle 
+     exactamente el esquema que se adapte a sus necesidades. 
+     En el siguiente ejemplo, veremos como ambos proveedores tanto el fichero 
+     como el LDAP son usados en la autenticación:
+     </p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
@@ -414,18 +425,22 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>In this example the file provider will attempt to authenticate
-    the user first. If it is unable to authenticate the user, the LDAP
-    provider will be called. This allows the scope of authentication
-    to be broadened if your organization implements more than
-    one type of authentication store. Other authentication and authorization
-    scenarios may include mixing one type of authentication with a
-    different type of authorization. For example, authenticating against
-    a password file yet authorizing against an LDAP directory.</p>
+    <p>En este ejemplo el fichero, que actúa como proveedor, intentará autenticar 
+    	primero al usuario. Si no puede autenticar al usuario, el proveedor del LDAP
+    	será llamado para que realice la autenticación.
+    	Esto permite al ámbito de autenticación ser amplio, si su organización 
+    	implementa más de un tipo de almacén de autenticación. 
+    	Otros escenarios de autenticación y autorización pueden incluir la 
+    	mezcla de un tipo de autenticación con un tipo diferente de autorización.
+    	Por ejemplo, autenticar contra un fichero de contraseñas pero autorizando
+    	dicho acceso mediante el directorio del LDAP.</p>
 
-    <p>Just as multiple authentication providers can be implemented, multiple
-    authorization methods can also be used. In this example both file group
-    authorization as well as LDAP group authorization is being used.</p>
+    <p>Así como múltiples métodos y proveedores de autenticación pueden 
+    	ser implementados, también pueden usarse múltiples formas de 
+    	autorización.
+    	En este ejemplo ambos ficheros de autorización de grupo así como 
+    	autorización de grupo mediante LDAP va a ser usado:
+    </p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
     AuthName "Private"
@@ -439,27 +454,31 @@ Require group GroupName</pre>
 &lt;/Directory&gt;</pre>
 
 
-    <p>To take authorization a little further, authorization container
-    directives such as
+    <p>Para llevar la autorización un poco más lejos, las directivas 
+    	de autorización de contenedores tales como
     <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
     and
     <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
-    allow logic to be applied so that the order in which authorization
-    is handled can be completely controlled through the configuration.
-    See <a href="../mod/mod_authz_core.html#logic">Authorization
-    Containers</a> for an example of how they may be applied.</p>
+    nos permiten aplicar una lógica de en qué orden se manejará la autorización dependiendo
+    de la configuración y controlada a través de ella.
+    Mire también <a href="../mod/mod_authz_core.html#logic">Contenedores de
+    Autorización</a> para ejemplos de cómo pueden ser aplicados.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Beyond just authorization</a></h2>
+<h2><a name="beyond" id="beyond">Más allá de la Autorización</a></h2>
 
-    <p>The way that authorization can be applied is now much more flexible
-    than just a single check against a single data store. Ordering, logic
-    and choosing how authorization will be done is now possible.</p>
+    <p>El modo en que la autorización puede ser aplicada es ahora mucho más flexible
+    	que us solo chequeo contra un almacén de datos (contraseñas). Ordenando la 
+    	lógica y escoger la forma en que la autorización es realizada, ahora es posible 
+    </p>
 
-    <h3><a name="authandororder" id="authandororder">Applying logic and ordering</a></h3>
-        <p>Controlling how and in what order authorization will be applied
-        has been a bit of a mystery in the past. In Apache 2.2 a provider-based
+    <h3><a name="authandororder" id="authandororder">Aplicando la lógica y ordenación</a></h3>
+        <p>Controlar el cómo y en qué orden se va a aplicar la autorización ha 
+        	sido un misterio en el pasado. En Apache 2.2 un proveedior de autenticación
+        	C
+
+        	 In Apache 2.2 a provider-based
         authentication mechanism was introduced to decouple the actual
         authentication process from authorization and supporting functionality.
         One of the side benefits was that authentication providers could be
