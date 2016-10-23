@@ -752,24 +752,21 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
                   "h2_mplx(%s): out open", task->id);
                       
-    if (!stream->output) {
-        h2_beam_buffer_size_set(beam, m->stream_max_mem);
-        h2_beam_timeout_set(beam, m->stream_timeout);
-        h2_beam_on_consumed(beam, stream_output_consumed, task);
-        h2_beam_on_produced(beam, output_produced, m);
-        beamed_count = h2_beam_get_files_beamed(beam);
-        if (m->tx_handles_reserved >= beamed_count) {
-            m->tx_handles_reserved -= beamed_count;
-        }
-        else {
-            m->tx_handles_reserved = 0;
-        }
-        if (!task->output.copy_files) {
-            h2_beam_on_file_beam(beam, can_beam_file, m);
-        }
-        h2_beam_mutex_set(beam, beam_enter, task->cond, m);
-        stream->output = beam;
+    h2_beam_on_consumed(stream->output, stream_output_consumed, task);
+    h2_beam_on_produced(stream->output, output_produced, m);
+    beamed_count = h2_beam_get_files_beamed(stream->output);
+    if (m->tx_handles_reserved >= beamed_count) {
+        m->tx_handles_reserved -= beamed_count;
     }
+    else {
+        m->tx_handles_reserved = 0;
+    }
+    if (!task->output.copy_files) {
+        h2_beam_on_file_beam(stream->output, can_beam_file, m);
+    }
+    
+    /* time to protect the beam against multi-threaded use */
+    h2_beam_mutex_set(stream->output, beam_enter, task->cond, m);
     
     /* we might see some file buckets in the output, see
      * if we have enough handles reserved. */
@@ -946,7 +943,8 @@ static h2_task *next_stream_task(h2_mplx *m)
             
             slave->sbh = m->c->sbh;
             slave->aborted = 0;
-            task = h2_task_create(slave, stream->id, stream->request, stream->input, m);
+            task = h2_task_create(slave, stream->id, stream->request, 
+                                  stream->input, stream->output, m);
             h2_ihash_add(m->tasks, task);
             
             m->c->keepalives++;
@@ -967,7 +965,10 @@ static h2_task *next_stream_task(h2_mplx *m)
                 h2_beam_on_file_beam(stream->input, can_beam_file, m);
                 h2_beam_mutex_set(stream->input, beam_enter, task->cond, m);
             }
-
+            if (stream->output) {
+                h2_beam_buffer_size_set(stream->output, m->stream_max_mem);
+                h2_beam_timeout_set(stream->output, m->stream_timeout);
+            }
             ++m->workers_busy;
         }
     }
@@ -1014,7 +1015,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                       "h2_mplx(%ld): task(%s) done", m->id, task->id);
         out_close(m, task);
-        stream = h2_ihash_get(m->streams, task->stream_id);
         
         if (ngn) {
             apr_off_t bytes = 0;
@@ -1041,6 +1041,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
             h2_ngn_shed_done_ngn(m->ngn_shed, task->engine);
         }
         
+        stream = h2_ihash_get(m->streams, task->stream_id);
         if (!m->aborted && stream && m->redo_tasks
             && h2_ihash_get(m->redo_tasks, task->stream_id)) {
             /* reset and schedule again */
@@ -1052,10 +1053,6 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         
         task->worker_done = 1;
         task->done_at = apr_time_now();
-        if (task->output.beam) {
-            h2_beam_on_consumed(task->output.beam, NULL, NULL);
-            h2_beam_mutex_set(task->output.beam, NULL, NULL, NULL);
-        }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                       "h2_mplx(%s): request done, %f ms elapsed", task->id, 
                       (task->done_at - task->started_at) / 1000.0);
@@ -1083,6 +1080,8 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                           task->id);
             /* more data will not arrive, resume the stream */
             have_out_data_for(m, stream, 0);
+            h2_beam_on_consumed(stream->output, NULL, NULL);
+            h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
         }
         else {
             /* stream no longer active, was it placed in hold? */

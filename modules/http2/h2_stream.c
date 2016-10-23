@@ -62,7 +62,7 @@ static void H2_STREAM_OUT_LOG(int lvl, h2_stream *s, const char *tag)
         const char *line = "(null)";
         apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
         
-        len = h2_util_bb_print(buffer, bmax, tag, "", s->buffer);
+        len = h2_util_bb_print(buffer, bmax, tag, "", s->out_buffer);
         ap_log_cerror(APLOG_MARK, lvl, 0, c, "bb_dump(%s): %s", 
                       c->log_id, len? buffer : line);
     }
@@ -153,8 +153,8 @@ static int output_open(h2_stream *stream)
 
 static void prep_output(h2_stream *stream) {
     conn_rec *c = stream->session->c;
-    if (!stream->buffer) {
-        stream->buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
+    if (!stream->out_buffer) {
+        stream->out_buffer = apr_brigade_create(stream->pool, c->bucket_alloc);
     }
 }
 
@@ -165,7 +165,7 @@ static void prepend_response(h2_stream *stream, h2_headers *response)
     
     prep_output(stream);
     b = h2_bucket_headers_create(c->bucket_alloc, response);
-    APR_BRIGADE_INSERT_HEAD(stream->buffer, b);
+    APR_BRIGADE_INSERT_HEAD(stream->out_buffer, b);
 }
 
 static apr_status_t stream_pool_cleanup(void *ctx)
@@ -173,10 +173,6 @@ static apr_status_t stream_pool_cleanup(void *ctx)
     h2_stream *stream = ctx;
     apr_status_t status;
     
-    if (stream->input) {
-        h2_beam_destroy(stream->input);
-        stream->input = NULL;
-    }
     if (stream->files) {
         apr_file_t *file;
         int i;
@@ -203,6 +199,9 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
     stream->state        = H2_STREAM_ST_IDLE;
     stream->pool         = pool;
     stream->session      = session;
+
+    h2_beam_create(&stream->input, pool, id, "input", 0);
+    h2_beam_create(&stream->output, pool, id, "output", 0);
     
     set_state(stream, H2_STREAM_ST_OPEN);
     apr_pool_cleanup_register(pool, stream, stream_pool_cleanup, 
@@ -215,8 +214,8 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
 void h2_stream_cleanup(h2_stream *stream)
 {
     AP_DEBUG_ASSERT(stream);
-    if (stream->buffer) {
-        apr_brigade_cleanup(stream->buffer);
+    if (stream->out_buffer) {
+        apr_brigade_cleanup(stream->out_buffer);
     }
     if (stream->input) {
         apr_status_t status;
@@ -262,8 +261,8 @@ void h2_stream_rst(h2_stream *stream, int error_code)
     stream->rst_error = error_code;
     close_input(stream);
     close_output(stream);
-    if (stream->buffer) {
-        apr_brigade_cleanup(stream->buffer);
+    if (stream->out_buffer) {
+        apr_brigade_cleanup(stream->out_buffer);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): reset, error=%d", 
@@ -393,10 +392,6 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
             close_input(stream);
         }
 
-        if (!stream->input) {
-            h2_beam_create(&stream->input, stream->pool, stream->id, "input", 0);
-        }
-        
         if (h2_stream_is_ready(stream)) {
             /* already have a resonse, probably a HTTP error code */
             return h2_mplx_process(stream->session->mplx, stream, cmp, ctx);
@@ -528,12 +523,12 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
     if (!stream->output) {
         return APR_EOF;
     }
-    status = h2_beam_receive(stream->output, stream->buffer, 
+    status = h2_beam_receive(stream->output, stream->out_buffer, 
                              APR_NONBLOCK_READ, amount);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c,
                   "h2_stream(%ld-%d): beam_received",
                   stream->session->id, stream->id);
-    /* The buckets we reveive are using the stream->buffer pool as
+    /* The buckets we reveive are using the stream->out_buffer pool as
      * lifetime which is exactly what we want since this is stream->pool.
      *
      * However: when we send these buckets down the core output filters, the
@@ -544,8 +539,8 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
      * file. Any split off buckets we sent afterwards will result in a 
      * APR_EBADF.
      */
-    for (b = APR_BRIGADE_FIRST(stream->buffer);
-         b != APR_BRIGADE_SENTINEL(stream->buffer);
+    for (b = APR_BRIGADE_FIRST(stream->out_buffer);
+         b != APR_BRIGADE_SENTINEL(stream->out_buffer);
          b = APR_BUCKET_NEXT(b)) {
         if (APR_BUCKET_IS_FILE(b)) {
             apr_bucket_file *f = (apr_bucket_file *)b->data;
@@ -576,6 +571,7 @@ apr_status_t h2_stream_set_error(h2_stream *stream, int http_status)
     }
     response = h2_headers_die(http_status, stream->request, stream->pool);
     prepend_response(stream, response);
+    h2_beam_close(stream->output);
     return APR_SUCCESS;
 }
 
@@ -625,13 +621,13 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     *plen = requested;
     
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
-    h2_util_bb_avail(stream->buffer, plen, peos);
+    h2_util_bb_avail(stream->out_buffer, plen, peos);
     if (!*peos && *plen < requested) {
         /* try to get more data */
         status = fill_buffer(stream, (requested - *plen) + H2_DATA_CHUNK_SIZE);
         if (APR_STATUS_IS_EOF(status)) {
             apr_bucket *eos = apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(stream->buffer, eos);
+            APR_BRIGADE_INSERT_TAIL(stream->out_buffer, eos);
             status = APR_SUCCESS;
         }
         else if (status == APR_EAGAIN) {
@@ -639,12 +635,12 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
             status = APR_SUCCESS;
         }
         *plen = requested;
-        h2_util_bb_avail(stream->buffer, plen, peos);
+        h2_util_bb_avail(stream->out_buffer, plen, peos);
     }
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_post");
     
-    b = APR_BRIGADE_FIRST(stream->buffer);
-    while (b != APR_BRIGADE_SENTINEL(stream->buffer)) {
+    b = APR_BRIGADE_FIRST(stream->out_buffer);
+    while (b != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
         e = APR_BUCKET_NEXT(b);
         if (APR_BUCKET_IS_FLUSH(b)
             || (!APR_BUCKET_IS_METADATA(b) && b->length == 0)) {
@@ -657,12 +653,12 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         b = e;
     }
     
-    b = get_first_headers_bucket(stream->buffer);
+    b = get_first_headers_bucket(stream->out_buffer);
     if (b) {
         /* there are HEADERS to submit */
         *peos = 0;
         *plen = 0;
-        if (b == APR_BRIGADE_FIRST(stream->buffer)) {
+        if (b == APR_BRIGADE_FIRST(stream->out_buffer)) {
             if (presponse) {
                 *presponse = h2_bucket_headers_get(b);
                 APR_BUCKET_REMOVE(b);
@@ -676,8 +672,8 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
             }
         }
         else {
-            apr_bucket *e = APR_BRIGADE_FIRST(stream->buffer);
-            while (e != APR_BRIGADE_SENTINEL(stream->buffer)) {
+            apr_bucket *e = APR_BRIGADE_FIRST(stream->out_buffer);
+            while (e != APR_BRIGADE_SENTINEL(stream->out_buffer)) {
                 if (e == b) {
                     break;
                 }
@@ -713,7 +709,7 @@ apr_status_t h2_stream_read_to(h2_stream *stream, apr_bucket_brigade *bb,
     if (stream->rst_error) {
         return APR_ECONNRESET;
     }
-    status = h2_append_brigade(bb, stream->buffer, plen, peos, is_not_headers);
+    status = h2_append_brigade(bb, stream->out_buffer, plen, peos, is_not_headers);
     if (status == APR_SUCCESS && !*peos && !*plen) {
         status = APR_EAGAIN;
     }
@@ -798,7 +794,7 @@ int h2_stream_is_ready(h2_stream *stream)
     if (stream->has_response) {
         return 1;
     }
-    else if (stream->buffer && get_first_headers_bucket(stream->buffer)) {
+    else if (stream->out_buffer && get_first_headers_bucket(stream->out_buffer)) {
         return 1;
     }
     return 0;

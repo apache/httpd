@@ -52,12 +52,11 @@ struct h2_stream {
     const struct h2_request *request; /* the request made in this stream */
     struct h2_request *rtmp;    /* request being assembled */
     apr_table_t *trailers;      /* optional incoming trailers */
-    struct h2_bucket_beam *input;
     int request_headers_added;  /* number of request headers added */
-    unsigned int push_policy;   /* which push policy to use for this request */
     
+    struct h2_bucket_beam *input;
     struct h2_bucket_beam *output;
-    apr_bucket_brigade *buffer;
+    apr_bucket_brigade *out_buffer;
     apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
@@ -65,6 +64,7 @@ struct h2_stream {
     unsigned int scheduled : 1; /* stream has been scheduled */
     unsigned int started   : 1; /* stream has started processing */
     unsigned int has_response : 1; /* response headers are known */
+    unsigned int push_policy;   /* which push policy to use for this request */
     
     apr_off_t out_data_frames;  /* # of DATA frames sent */
     apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
