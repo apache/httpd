@@ -130,22 +130,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      for additional details.
      +1: kotkov, jorton, jim
 
-  *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
-     available before the request is sent.  PR 57832.
-     This also backports deprecation of ap_proxy_ssl_connection_cleanup() and
-     newly introduced proxy_conn->tmp_bb's usage in proxy code (both almost
-     related and immediate/simple follow ups, merge simplified by doing so).
-     trunk patch: http://svn.apache.org/r1750392
-                  http://svn.apache.org/r1750412
-                  http://svn.apache.org/r1750416
-                  http://svn.apache.org/r1750474
-                  http://svn.apache.org/r1750494
-                  http://svn.apache.org/r1750508
-     2.4.x patch: trunk works (modulo CHANGES/MMN), or:
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1750392.patch
-     +1: ylavic, jim, icing
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
