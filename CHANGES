@@ -66,6 +66,9 @@ Changes with Apache 2.4.24
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
+  *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
+     available before the request is sent.  PR 57832.  [Yann Ylavic]
+
   *) mod_proxy_balancer: Prevent redirect loops between workers within a
      balancer by limiting the number of redirects to the number balancer
      members. PR 59864 [Ruediger Pluem]
