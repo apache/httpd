@@ -197,6 +197,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jchampion: r1702948 doesn't quite work as advertised. -Werror is never
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
+     ylavic: Maybe to -Werror case could be handled later, for now this series
+             avoids a lot of "warning: ‘aplog_module_index’ defined but not
+             used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
 
   *) core: avoid adding multiple subrequest filters when there are nested 
      subrequests.  PR58292
