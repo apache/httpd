@@ -337,6 +337,21 @@ void ap_process_async_request(request_rec *r);
  */
 AP_DECLARE(void) ap_die(int type, request_rec *r);
 
+/**
+ * Check whether a connection is still established and has data available,
+ * optionnaly consuming blank lines ([CR]LF).
+ * @param c The current connection
+ * @param bb The brigade to filter
+ * @param max_blank_lines Max number of blank lines to consume, or zero
+ *                        to consider them as data (single read).
+ * @return APR_SUCCESS: connection established with data available,
+ *         APR_EAGAIN: connection established and empty,
+ *         APR_NOTFOUND: too much blank lines,
+ *         APR_E*: connection/general error.
+ */
+AP_DECLARE(apr_status_t) ap_check_pipeline(conn_rec *c, apr_bucket_brigade *bb,
+                                           unsigned int max_blank_lines);
+
 /* Hooks */
 
 /**
