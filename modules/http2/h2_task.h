@@ -60,7 +60,6 @@ struct h2_task {
     
     struct {
         struct h2_bucket_beam *beam;
-        unsigned int chunked : 1;
         unsigned int eos : 1;
         apr_bucket_brigade *bb;
         apr_bucket_brigade *bbchunk;

@@ -90,14 +90,14 @@ static apr_status_t enter_mutex(h2_mplx *m, int *pacquired)
      * This allow recursive entering of the mutex from the saem thread,
      * which is what we need in certain situations involving callbacks
      */
-    AP_DEBUG_ASSERT(m);
+    ap_assert(m);
     apr_threadkey_private_get(&mutex, thread_lock);
     if (mutex == m->lock) {
         *pacquired = 0;
         return APR_SUCCESS;
     }
 
-    AP_DEBUG_ASSERT(m->lock);
+    ap_assert(m->lock);
     status = apr_thread_mutex_lock(m->lock);
     *pacquired = (status == APR_SUCCESS);
     if (*pacquired) {
@@ -221,13 +221,13 @@ static void purge_streams(h2_mplx *m)
             /* repeat until empty */
         }
         h2_ihash_clear(m->spurge);
-        AP_DEBUG_ASSERT(h2_ihash_empty(m->spurge));
+        ap_assert(h2_ihash_empty(m->spurge));
     }
 }
 
 static void h2_mplx_destroy(h2_mplx *m)
 {
-    AP_DEBUG_ASSERT(m);
+    ap_assert(m);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): destroy, tasks=%d", 
                   m->id, (int)h2_ihash_count(m->tasks));
@@ -256,7 +256,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
     apr_status_t status = APR_SUCCESS;
     apr_allocator_t *allocator = NULL;
     h2_mplx *m;
-    AP_DEBUG_ASSERT(conf);
+    ap_assert(conf);
     
     status = apr_allocator_create(&allocator);
     if (status != APR_SUCCESS) {
@@ -353,7 +353,6 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
 {
     conn_rec *slave = NULL;
     int reuse_slave = 0;
-    apr_status_t status;
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
                   "h2_task(%s): destroy", task->id);
@@ -365,22 +364,14 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
         }
     }
     
-    /* The pool is cleared/destroyed which also closes all
-     * allocated file handles. Give this count back to our
-     * file handle pool. */
     if (task->output.beam) {
-        m->tx_handles_reserved += 
-        h2_beam_get_files_beamed(task->output.beam);
         h2_beam_on_produced(task->output.beam, NULL, NULL);
-        status = h2_beam_shutdown(task->output.beam, APR_NONBLOCK_READ, 1);
-        if (status != APR_SUCCESS){
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, status, m->c, 
-                          APLOGNO(03385) "h2_task(%s): output shutdown "
-                          "incomplete, beam empty=%d, holds proxies=%d", 
-                          task->id,
-                          h2_beam_empty(task->output.beam),
-                          h2_beam_holds_proxies(task->output.beam));
-        }
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, 
+                      APLOGNO(03385) "h2_task(%s): destroy "
+                      "output beam empty=%d, holds proxies=%d", 
+                      task->id,
+                      h2_beam_empty(task->output.beam),
+                      h2_beam_holds_proxies(task->output.beam));
     }
     
     slave = task->c;
@@ -451,6 +442,9 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
         h2_beam_abort(stream->input);
         /* Remove mutex after, so that abort still finds cond to signal */
         h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
+    }
+    if (stream->output) {
+        m->tx_handles_reserved += h2_beam_get_files_beamed(stream->output);
     }
     h2_stream_cleanup(stream);
 
@@ -597,7 +591,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         while (!h2_ihash_iter(m->streams, stream_done_iter, m)) {
             /* iterate until all streams have been removed */
         }
-        AP_DEBUG_ASSERT(h2_ihash_empty(m->streams));
+        ap_assert(h2_ihash_empty(m->streams));
     
         if (!h2_ihash_empty(m->shold)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
@@ -652,7 +646,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                           m->id, (int)h2_ihash_count(m->tasks));
             h2_ihash_iter(m->tasks, task_print, m);
         }
-        AP_DEBUG_ASSERT(h2_ihash_empty(m->shold));
+        ap_assert(h2_ihash_empty(m->shold));
         if (!h2_ihash_empty(m->spurge)) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c,
                           "h2_mplx(%ld): 3. release_join %d streams to purge", 
@@ -677,7 +671,6 @@ void h2_mplx_abort(h2_mplx *m)
 {
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if (!m->aborted && enter_mutex(m, &acquired) == APR_SUCCESS) {
         m->aborted = 1;
         h2_ngn_shed_abort(m->ngn_shed);
@@ -690,7 +683,6 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, h2_stream *stream)
     apr_status_t status = APR_SUCCESS;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c, 
                       "h2_mplx(%ld-%d): marking stream as done.", 
@@ -707,7 +699,6 @@ h2_stream *h2_mplx_stream_get(h2_mplx *m, int id)
     h2_stream *s = NULL;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((enter_mutex(m, &acquired)) == APR_SUCCESS) {
         s = h2_ihash_get(m->streams, id);
         leave_mutex(m, acquired);
@@ -728,7 +719,6 @@ static void output_produced(void *ctx, h2_bucket_beam *beam, apr_off_t bytes)
     h2_stream *stream;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         stream = h2_ihash_get(m->streams, beam->id);
         if (stream) {
@@ -780,7 +770,6 @@ apr_status_t h2_mplx_out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
     apr_status_t status;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
@@ -825,7 +814,6 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
     apr_status_t status;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
@@ -866,7 +854,6 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
     apr_status_t status;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
@@ -888,7 +875,6 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
     int do_registration = 0;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             status = APR_ECONNABORTED;
@@ -981,7 +967,6 @@ h2_task *h2_mplx_pop_task(h2_mplx *m, int *has_more)
     apr_status_t status;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (m->aborted) {
             *has_more = 0;
@@ -1411,7 +1396,6 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
     h2_stream *stream;
     size_t i, n;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
                       "h2_mplx(%ld): dispatch events", m->id);
@@ -1442,7 +1426,6 @@ apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id)
     apr_status_t status;
     int acquired;
     
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_stream *s = h2_ihash_get(m->streams, stream_id);
         if (s) {
@@ -1458,7 +1441,6 @@ int h2_mplx_awaits_data(h2_mplx *m)
     apr_status_t status;
     int acquired, waiting = 1;
      
-    AP_DEBUG_ASSERT(m);
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         if (h2_ihash_empty(m->streams)) {
             waiting = 0;

@@ -727,7 +727,7 @@ apr_status_t h2_filter_request_in(ap_filter_t* f,
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
                   "h2_task(%s): request filter, exp=%d", task->id, r->expecting_100);
-    if (!task->input.chunked) {
+    if (!task->request->chunked) {
         status = ap_get_brigade(f->next, bb, mode, block, readbytes);
         /* pipe data through, just take care of trailers */
         for (b = APR_BRIGADE_FIRST(bb); 

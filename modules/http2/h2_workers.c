@@ -243,8 +243,8 @@ h2_workers *h2_workers_create(server_rec *s, apr_pool_t *server_pool,
     h2_workers *workers;
     apr_pool_t *pool;
 
-    AP_DEBUG_ASSERT(s);
-    AP_DEBUG_ASSERT(server_pool);
+    ap_assert(s);
+    ap_assert(server_pool);
 
     /* let's have our own pool that will be parent to all h2_worker
      * instances we create. This happens in various threads, but always

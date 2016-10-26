@@ -711,7 +711,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
 
 static void h2_session_destroy(h2_session *session)
 {
-    AP_DEBUG_ASSERT(session);    
+    ap_assert(session);    
 
     h2_ihash_clear(session->streams);
     if (session->mplx) {
@@ -743,7 +743,7 @@ static apr_status_t h2_session_shutdown_notice(h2_session *session)
 {
     apr_status_t status;
     
-    AP_DEBUG_ASSERT(session);
+    ap_assert(session);
     if (!session->local.accepting) {
         return APR_SUCCESS;
     }
@@ -764,7 +764,7 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
 {
     apr_status_t status = APR_SUCCESS;
     
-    AP_DEBUG_ASSERT(session);
+    ap_assert(session);
     if (session->local.shutdown) {
         return APR_SUCCESS;
     }
@@ -1034,7 +1034,7 @@ static apr_status_t h2_session_start(h2_session *session, int *rv)
     size_t slen;
     int win_size;
     
-    AP_DEBUG_ASSERT(session);
+    ap_assert(session);
     /* Start the conversation by submitting our SETTINGS frame */
     *rv = 0;
     if (session->r) {
@@ -1154,7 +1154,7 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
     int eos = 0;
     apr_status_t status;
     h2_stream *stream;
-    AP_DEBUG_ASSERT(session);
+    ap_assert(session);
     
     /* The session wants to send more DATA for the stream. We need
      * to find out how much of the requested length we can send without

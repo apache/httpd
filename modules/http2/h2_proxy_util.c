@@ -425,11 +425,11 @@ h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p,
     h2_proxy_ngheader *ngh;
     size_t n;
     
-    AP_DEBUG_ASSERT(req);
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     n = 4;
     apr_table_do(count_header, &n, req->headers, NULL);
@@ -608,10 +608,10 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
     req->authority = authority;
     req->path      = path;
 
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     x.pool = pool;
     x.headers = req->headers;

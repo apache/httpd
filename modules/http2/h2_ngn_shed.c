@@ -215,7 +215,7 @@ apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type,
                       "h2_ngn_shed(%ld): create engine %s (%s)", 
                       shed->c->id, newngn->id, newngn->type);
         if (status == APR_SUCCESS) {
-            AP_DEBUG_ASSERT(task->engine == NULL);
+            ap_assert(task->engine == NULL);
             newngn->task = task;
             task->engine = newngn;
             task->assigned = newngn;
@@ -252,7 +252,7 @@ apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed,
 {   
     h2_ngn_entry *entry;
     
-    AP_DEBUG_ASSERT(ngn);
+    ap_assert(ngn);
     *pr = NULL;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, shed->c, APLOGNO(03396)
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
