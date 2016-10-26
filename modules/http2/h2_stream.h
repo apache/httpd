@@ -65,6 +65,7 @@ struct h2_stream {
     unsigned int started   : 1; /* stream has started processing */
     unsigned int has_response : 1; /* response headers are known */
     unsigned int push_policy;   /* which push policy to use for this request */
+    unsigned int can_be_cleaned : 1; /* stream pool can be cleaned */
     
     apr_off_t out_data_frames;  /* # of DATA frames sent */
     apr_off_t out_data_octets;  /* # of DATA octets (payload) sent */
@@ -98,7 +99,7 @@ void h2_stream_eos_destroy(h2_stream *stream);
 void h2_stream_destroy(h2_stream *stream);
 
 /**
- * Removes stream from h2_session and destroys it.
+ * Cleanup references into requst processing.
  *
  * @param stream the stream to cleanup
  */
