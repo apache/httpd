@@ -536,14 +536,15 @@ typedef enum {
 
 /* Write a complete RESPONSE object out as a <DAV:response> xml
  * element.  Data is sent into brigade BB, which is auto-flushed into
- * OUTPUT filter stack.  Use POOL for any temporary allocations.
+ * the output filter stack for request R.  Use POOL for any temporary
+ * allocations.
  *
  * [Presumably the <multistatus> tag has already been written;  this
  * routine is shared by dav_send_multistatus and dav_stream_response.]
  */
 DAV_DECLARE(void) dav_send_one_response(dav_response *response,
                                         apr_bucket_brigade *bb,
-                                        ap_filter_t *output,
+                                        request_rec *r,
                                         apr_pool_t *pool);
 
 /* Factorized helper function: prep request_rec R for a multistatus
