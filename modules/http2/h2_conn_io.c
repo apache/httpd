@@ -206,7 +206,7 @@ static apr_status_t read_to_scratch(h2_conn_io *io, apr_bucket *b)
         return APR_SUCCESS;
     }
     
-    AP_DEBUG_ASSERT(b->length <= (io->ssize - io->slen));
+    ap_assert(b->length <= (io->ssize - io->slen));
     if (APR_BUCKET_IS_FILE(b)) {
         apr_bucket_file *f = (apr_bucket_file *)b->data;
         apr_file_t *fd = f->fd;

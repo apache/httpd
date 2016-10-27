@@ -248,7 +248,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id,
     conn_rec *c;
     void *cfg;
     
-    AP_DEBUG_ASSERT(master);
+    ap_assert(master);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, master,
                   "h2_conn(%ld): create slave", master->id);
     

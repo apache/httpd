@@ -1130,11 +1130,11 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
     h2_ngheader *ngh;
     size_t n;
     
-    AP_DEBUG_ASSERT(req);
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     n = 4;
     apr_table_do(count_header, &n, req->headers, NULL);

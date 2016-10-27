@@ -88,7 +88,7 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  * Care needs to be taken when terminating the beam. The beam registers at
  * the pool it was created with and will cleanup after itself. However, if
  * received buckets do still exist, already freed memory might be accessed.
- * The beam does a AP_DEBUG_ASSERT on this condition.
+ * The beam does a assertion on this condition.
  * 
  * The proper way of shutting down a beam is to first make sure there are no
  * more green buckets out there, then cleanup the beam to purge eventually
@@ -179,6 +179,7 @@ struct h2_bucket_beam {
     apr_bucket_brigade *green;
     h2_bproxy_list proxies;
     apr_pool_t *red_pool;
+    apr_pool_t *green_pool;
     
     apr_size_t max_buf_size;
     apr_interval_time_t timeout;
@@ -260,13 +261,6 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
                              apr_off_t readbytes);
 
 /**
- * Determine if beam is closed. May still contain buffered data. 
- * 
- * Call from red or green side.
- */
-int h2_beam_closed(h2_bucket_beam *beam);
-
-/**
  * Determine if beam is empty. 
  * 
  * Call from red or green side.
@@ -305,8 +299,7 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam);
  *
  * Call from the red side only.
  */
-apr_status_t h2_beam_shutdown(h2_bucket_beam *beam, apr_read_type_e block,
-                              int clear_buffers);
+apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block);
 
 void h2_beam_mutex_set(h2_bucket_beam *beam, 
                        h2_beam_mutex_enter m_enter,

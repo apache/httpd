@@ -173,6 +173,7 @@ static apr_status_t stream_pool_cleanup(void *ctx)
     h2_stream *stream = ctx;
     apr_status_t status;
     
+    ap_assert(stream->can_be_cleaned);
     if (stream->files) {
         apr_file_t *file;
         int i;
@@ -213,31 +214,35 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
 
 void h2_stream_cleanup(h2_stream *stream)
 {
-    AP_DEBUG_ASSERT(stream);
+    apr_status_t status;
+    
+    ap_assert(stream);
     if (stream->out_buffer) {
+        /* remove any left over output buckets that may still have
+         * references into request pools */
         apr_brigade_cleanup(stream->out_buffer);
     }
-    if (stream->input) {
-        apr_status_t status;
-        status = h2_beam_shutdown(stream->input, APR_NONBLOCK_READ, 1);
-        if (status == APR_EAGAIN) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
-                          "h2_stream(%ld-%d): wait on input shutdown", 
-                          stream->session->id, stream->id);
-            status = h2_beam_shutdown(stream->input, APR_BLOCK_READ, 1);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c, 
-                          "h2_stream(%ld-%d): input shutdown returned", 
-                          stream->session->id, stream->id);
-        }
+    h2_beam_abort(stream->input);
+    status = h2_beam_wait_empty(stream->input, APR_NONBLOCK_READ);
+    if (status == APR_EAGAIN) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
+                      "h2_stream(%ld-%d): wait on input drain", 
+                      stream->session->id, stream->id);
+        status = h2_beam_wait_empty(stream->input, APR_BLOCK_READ);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c, 
+                      "h2_stream(%ld-%d): input drain returned", 
+                      stream->session->id, stream->id);
     }
 }
 
 void h2_stream_destroy(h2_stream *stream)
 {
-    AP_DEBUG_ASSERT(stream);
+    ap_assert(stream);
+    ap_assert(!h2_mplx_stream_get(stream->session->mplx, stream->id));
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
                   "h2_stream(%ld-%d): destroy", 
                   stream->session->id, stream->id);
+    stream->can_be_cleaned = 1;
     if (stream->pool) {
         apr_pool_destroy(stream->pool);
     }
@@ -327,7 +332,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen)
 {
-    AP_DEBUG_ASSERT(stream);
+    ap_assert(stream);
     
     if (!stream->has_response) {
         if (name[0] == ':') {
@@ -383,9 +388,9 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                                 h2_stream_pri_cmp *cmp, void *ctx)
 {
     apr_status_t status = APR_EINVAL;
-    AP_DEBUG_ASSERT(stream);
-    AP_DEBUG_ASSERT(stream->session);
-    AP_DEBUG_ASSERT(stream->session->mplx);
+    ap_assert(stream);
+    ap_assert(stream->session);
+    ap_assert(stream->session->mplx);
     
     if (!stream->scheduled) {
         if (eos) {
@@ -444,7 +449,9 @@ int h2_stream_is_scheduled(const h2_stream *stream)
 apr_status_t h2_stream_close_input(h2_stream *stream)
 {
     conn_rec *c = stream->session->c;
-    apr_status_t status = APR_SUCCESS, rv;
+    apr_status_t status;
+    apr_bucket_brigade *tmp;
+    apr_bucket *b;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
                   "h2_stream(%ld-%d): closing input",
@@ -453,27 +460,20 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
         return APR_ECONNRESET;
     }
     
-    if (!stream->input) {
-        h2_beam_create(&stream->input, stream->pool, stream->id, "input", 0);
-    }
-    
+    tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
     if (stream->trailers && !apr_is_empty_table(stream->trailers)) {
         h2_headers *r = h2_headers_create(HTTP_OK, stream->trailers, 
                                           NULL, stream->pool);
-        apr_bucket *b = h2_bucket_headers_create(c->bucket_alloc, r);
-        apr_bucket_brigade *tmp;
-        
-        tmp = apr_brigade_create(stream->pool, c->bucket_alloc);
+        b = h2_bucket_headers_create(c->bucket_alloc, r);
         APR_BRIGADE_INSERT_TAIL(tmp, b);
-        status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
-        apr_brigade_destroy(tmp);
-        
         stream->trailers = NULL;
     }
     
-    close_input(stream);
-    rv = h2_beam_close(stream->input);
-    return status ? status : rv;
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(tmp, b);
+    status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
+    apr_brigade_destroy(tmp);
+    return status;
 }
 
 apr_status_t h2_stream_write_data(h2_stream *stream,
@@ -483,7 +483,7 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
     apr_status_t status = APR_SUCCESS;
     apr_bucket_brigade *tmp;
     
-    AP_DEBUG_ASSERT(stream);
+    ap_assert(stream);
     if (!stream->input) {
         return APR_EOF;
     }
