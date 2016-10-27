@@ -215,7 +215,7 @@ apr_status_t h2_ngn_shed_push_request(h2_ngn_shed *shed, const char *ngn_type,
                       "h2_ngn_shed(%ld): create engine %s (%s)", 
                       shed->c->id, newngn->id, newngn->type);
         if (status == APR_SUCCESS) {
-            AP_DEBUG_ASSERT(task->engine == NULL);
+            ap_assert(task->engine == NULL);
             newngn->task = task;
             task->engine = newngn;
             task->assigned = newngn;
@@ -252,7 +252,7 @@ apr_status_t h2_ngn_shed_pull_request(h2_ngn_shed *shed,
 {   
     h2_ngn_entry *entry;
     
-    AP_DEBUG_ASSERT(ngn);
+    ap_assert(ngn);
     *pr = NULL;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, shed->c, APLOGNO(03396)
                   "h2_ngn_shed(%ld): pull task for engine %s, shutdown=%d", 
@@ -352,6 +352,7 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
                           "frozen=%d, aborting",
                           shed->c->id, ngn->id, task->id, task->frozen);
             ngn_done_task(shed, ngn, task, 0, 1);
+            task->engine = task->assigned = NULL;
         }
     }
     if (!shed->aborted && (ngn->no_assigned > 1 || ngn->no_live > 1)) {
@@ -371,3 +372,9 @@ void h2_ngn_shed_done_ngn(h2_ngn_shed *shed, struct h2_req_engine *ngn)
     apr_hash_set(shed->ngns, ngn->type, APR_HASH_KEY_STRING, NULL);
     ngn->done = 1;
 }
+
+void h2_ngn_shed_destroy(h2_ngn_shed *shed)
+{
+    ap_assert(apr_hash_count(shed->ngns) == 0);
+}
+

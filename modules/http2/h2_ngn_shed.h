@@ -51,6 +51,8 @@ h2_ngn_shed *h2_ngn_shed_create(apr_pool_t *pool, conn_rec *c,
                                 int default_capactiy, 
                                 apr_size_t req_buffer_size); 
 
+void h2_ngn_shed_destroy(h2_ngn_shed *shed);
+
 void h2_ngn_shed_set_ctx(h2_ngn_shed *shed, void *user_ctx);
 void *h2_ngn_shed_get_ctx(h2_ngn_shed *shed);
 

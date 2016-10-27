@@ -926,7 +926,7 @@ static apr_status_t session_shutdown(h2_proxy_session *session, int reason,
     apr_status_t status = APR_SUCCESS;
     const char *err = msg;
     
-    AP_DEBUG_ASSERT(session);
+    ap_assert(session);
     if (!err && reason) {
         err = nghttp2_strerror(reason);
     }

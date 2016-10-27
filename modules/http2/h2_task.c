@@ -546,7 +546,7 @@ void h2_task_destroy(h2_task *task)
 
 apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
 {
-    AP_DEBUG_ASSERT(task);
+    ap_assert(task);
 
     if (task->c->master) {
         /* Each conn_rec->id is supposed to be unique at a point in time. Since
@@ -580,7 +580,6 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
         task->c->id = (task->c->master->id << free_bits)^slave_id;
     }
     
-    task->input.chunked = task->request->chunked;
     task->input.bb = apr_brigade_create(task->pool, task->c->bucket_alloc);
     if (task->request->serialize) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
