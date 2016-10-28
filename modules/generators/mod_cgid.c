@@ -1534,11 +1534,6 @@ static int cgid_handler(request_rec *r)
                             APR_BLOCK_READ, HUGE_STRING_LEN);
 
         if (rv != APR_SUCCESS) {
-            if (APR_STATUS_IS_TIMEUP(rv)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01269)
-                              "Timeout during reading request entity data");
-                return HTTP_REQUEST_TIME_OUT;
-            }
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01270)
                           "Error reading request entity data");
             return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
