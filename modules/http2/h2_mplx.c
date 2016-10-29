@@ -226,11 +226,17 @@ static void purge_streams(h2_mplx *m)
 
 static void h2_mplx_destroy(h2_mplx *m)
 {
+    conn_rec **pslave;
     ap_assert(m);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): destroy, tasks=%d", 
                   m->id, (int)h2_ihash_count(m->tasks));
     check_tx_free(m);
+    
+    while (m->spare_slaves->nelts > 0) {
+        pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
+        h2_slave_destroy(*pslave);
+    }
     if (m->pool) {
         apr_pool_destroy(m->pool);
     }
@@ -297,6 +303,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->q = h2_iq_create(m->pool, m->max_streams);
         m->sready = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->tasks = h2_ihash_create(m->pool, offsetof(h2_task,stream_id));
+        m->redo_tasks = h2_ihash_create(m->pool, offsetof(h2_task, stream_id));
 
         m->stream_timeout = stream_timeout;
         m->workers = workers;
@@ -363,24 +370,20 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
         }
     }
     
-    if (task->output.beam) {
-        h2_beam_on_produced(task->output.beam, NULL, NULL);
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, 
-                      APLOGNO(03385) "h2_task(%s): destroy "
-                      "output beam empty=%d, holds proxies=%d", 
-                      task->id,
-                      h2_beam_empty(task->output.beam),
-                      h2_beam_holds_proxies(task->output.beam));
-    }
+    h2_beam_on_produced(task->output.beam, NULL, NULL);
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, 
+                  APLOGNO(03385) "h2_task(%s): destroy "
+                  "output beam empty=%d, holds proxies=%d", 
+                  task->id,
+                  h2_beam_empty(task->output.beam),
+                  h2_beam_holds_proxies(task->output.beam));
     
     slave = task->c;
     reuse_slave = ((m->spare_slaves->nelts < m->spare_slaves->nalloc)
                    && !task->rst_error);
     
     h2_ihash_remove(m->tasks, task->stream_id);
-    if (m->redo_tasks) {
-        h2_ihash_remove(m->redo_tasks, task->stream_id);
-    }
+    h2_ihash_remove(m->redo_tasks, task->stream_id);
     h2_task_destroy(task);
 
     if (slave) {
@@ -389,7 +392,7 @@ static void task_destroy(h2_mplx *m, h2_task *task, int called_from_master)
         }
         else {
             slave->sbh = NULL;
-            h2_slave_destroy(slave, NULL);
+            h2_slave_destroy(slave);
         }
     }
     
@@ -434,18 +437,15 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
     h2_iq_remove(m->q, stream->id);
     h2_ihash_remove(m->sready, stream->id);
     h2_ihash_remove(m->streams, stream->id);
-    if (stream->input) {
-        m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
-        h2_beam_on_consumed(stream->input, NULL, NULL);
-        /* Let anyone blocked reading know that there is no more to come */
-        h2_beam_abort(stream->input);
-        /* Remove mutex after, so that abort still finds cond to signal */
-        h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
-    }
-    if (stream->output) {
-        m->tx_handles_reserved += h2_beam_get_files_beamed(stream->output);
-    }
+    
     h2_stream_cleanup(stream);
+    m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
+    h2_beam_on_consumed(stream->input, NULL, NULL);
+    /* Let anyone blocked reading know that there is no more to come */
+    h2_beam_abort(stream->input);
+    /* Remove mutex after, so that abort still finds cond to signal */
+    h2_beam_mutex_set(stream->input, NULL, NULL, NULL);
+    m->tx_handles_reserved += h2_beam_get_files_beamed(stream->output);
 
     task = h2_ihash_get(m->tasks, stream->id);
     if (task) {
@@ -459,7 +459,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
         }
         else {
             /* already finished */
-            task_destroy(m, task, 0);
+            task_destroy(m, task, 1);
         }
     }
     h2_stream_destroy(stream);
@@ -532,12 +532,8 @@ static int task_abort_connection(void *ctx, void *val)
         if (task->c) {
             task->c->aborted = 1;
         }
-        if (task->input.beam) {
-            h2_beam_abort(task->input.beam);
-        }
-        if (task->output.beam) {
-            h2_beam_abort(task->output.beam);
-        }
+        h2_beam_abort(task->input.beam);
+        h2_beam_abort(task->output.beam);
     }
     return 1;
 }
@@ -772,11 +768,9 @@ static apr_status_t out_close(h2_mplx *m, h2_task *task)
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, m->c,
                   "h2_mplx(%s): close", task->id);
-    if (task->output.beam) {
-        status = h2_beam_close(task->output.beam);
-        h2_beam_log(task->output.beam, task->stream_id, "out_close", m->c, 
-                    APLOG_TRACE2);
-    }
+    status = h2_beam_close(task->output.beam);
+    h2_beam_log(task->output.beam, task->stream_id, "out_close", m->c, 
+                APLOG_TRACE2);
     output_consumed_signal(m, task);
     have_out_data_for(m, stream, 0);
     return status;
@@ -897,7 +891,7 @@ static h2_task *next_stream_task(h2_mplx *m)
                 slave = *pslave;
             }
             else {
-                slave = h2_slave_create(m->c, stream->id, m->pool, NULL);
+                slave = h2_slave_create(m->c, stream->id, m->pool);
                 new_conn = 1;
             }
             
@@ -919,16 +913,13 @@ static h2_task *next_stream_task(h2_mplx *m)
                 m->max_stream_started = sid;
             }
 
-            if (stream->input) {
-                h2_beam_timeout_set(stream->input, m->stream_timeout);
-                h2_beam_on_consumed(stream->input, stream_input_consumed, m);
-                h2_beam_on_file_beam(stream->input, can_beam_file, m);
-                h2_beam_mutex_set(stream->input, beam_enter, task->cond, m);
-            }
-            if (stream->output) {
-                h2_beam_buffer_size_set(stream->output, m->stream_max_mem);
-                h2_beam_timeout_set(stream->output, m->stream_timeout);
-            }
+            h2_beam_timeout_set(stream->input, m->stream_timeout);
+            h2_beam_on_consumed(stream->input, stream_input_consumed, m);
+            h2_beam_on_file_beam(stream->input, can_beam_file, m);
+            h2_beam_mutex_set(stream->input, beam_enter, task->cond, m);
+            
+            h2_beam_buffer_size_set(stream->output, m->stream_max_mem);
+            h2_beam_timeout_set(stream->output, m->stream_timeout);
             ++m->workers_busy;
         }
     }
@@ -977,10 +968,8 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         
         if (ngn) {
             apr_off_t bytes = 0;
-            if (task->output.beam) {
-                h2_beam_send(task->output.beam, NULL, APR_NONBLOCK_READ);
-                bytes += h2_beam_get_buffered(task->output.beam);
-            }
+            h2_beam_send(task->output.beam, NULL, APR_NONBLOCK_READ);
+            bytes += h2_beam_get_buffered(task->output.beam);
             if (bytes > 0) {
                 /* we need to report consumed and current buffered output
                  * to the engine. The request will be streamed out or cancelled,
@@ -1001,7 +990,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         }
         
         stream = h2_ihash_get(m->streams, task->stream_id);
-        if (!m->aborted && stream && m->redo_tasks
+        if (!m->aborted && stream 
             && h2_ihash_get(m->redo_tasks, task->stream_id)) {
             /* reset and schedule again */
             h2_task_redo(task);
@@ -1152,9 +1141,6 @@ static apr_status_t unschedule_slow_tasks(h2_mplx *m)
     h2_task *task;
     int n;
     
-    if (!m->redo_tasks) {
-        m->redo_tasks = h2_ihash_create(m->pool, offsetof(h2_task, stream_id));
-    }
     /* Try to get rid of streams that occupy workers. Look for safe requests
      * that are repeatable. If none found, fail the connection.
      */

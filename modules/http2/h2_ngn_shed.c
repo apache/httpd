@@ -72,7 +72,7 @@ struct h2_req_engine {
     const char *type;      /* name of the engine type */
     apr_pool_t *pool;      /* pool for engine specific allocations */
     conn_rec *c;           /* connection this engine is assigned to */
-    h2_task *task;         /* the task this engine is base on, running in */
+    h2_task *task;         /* the task this engine is based on, running in */
     h2_ngn_shed *shed;
 
     unsigned int shutdown : 1; /* engine is being shut down */

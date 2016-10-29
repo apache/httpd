@@ -82,7 +82,6 @@ apr_status_t h2_session_stream_done(h2_session *session, h2_stream *stream)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
                   "h2_stream(%ld-%d): EOS bucket cleanup -> done", 
                   session->id, stream->id);
-    h2_ihash_remove(session->streams, stream->id);
     h2_mplx_stream_done(session->mplx, stream);
     
     dispatch_event(session, H2_SESSION_EV_STREAM_DONE, 0, NULL);
@@ -94,10 +93,9 @@ typedef struct stream_sel_ctx {
     h2_stream *candidate;
 } stream_sel_ctx;
 
-static int find_cleanup_stream(void *udata, void *sdata)
+static int find_cleanup_stream(h2_stream *stream, void *ictx)
 {
-    stream_sel_ctx *ctx = udata;
-    h2_stream *stream = sdata;
+    stream_sel_ctx *ctx = ictx;
     if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
         if (!ctx->session->local.accepting
             && stream->id > ctx->session->local.accepted_max) {
@@ -121,7 +119,7 @@ static void cleanup_streams(h2_session *session)
     ctx.session = session;
     ctx.candidate = NULL;
     while (1) {
-        h2_ihash_iter(session->streams, find_cleanup_stream, &ctx);
+        h2_mplx_stream_do(session->mplx, find_cleanup_stream, &ctx);
         if (ctx.candidate) {
             h2_session_stream_done(session, ctx.candidate);
             ctx.candidate = NULL;
@@ -144,7 +142,6 @@ h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
     stream = h2_stream_open(stream_id, stream_pool, session, 
                             initiated_on);
     nghttp2_session_set_stream_user_data(session->ngh2, stream_id, stream);
-    h2_ihash_add(session->streams, stream);
     
     if (req) {
         h2_stream_set_request(stream, req);
@@ -713,7 +710,6 @@ static void h2_session_destroy(h2_session *session)
 {
     ap_assert(session);    
 
-    h2_ihash_clear(session->streams);
     if (session->mplx) {
         h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
         h2_mplx_release_and_join(session->mplx, session->iowait);
@@ -927,8 +923,6 @@ static h2_session *h2_session_create_int(conn_rec *c,
             return NULL;
         }
         
-        session->streams = h2_ihash_create(session->pool,
-                                           offsetof(h2_stream, id));
         session->mplx = h2_mplx_create(c, session->pool, session->config, 
                                        session->s->timeout, workers);
         

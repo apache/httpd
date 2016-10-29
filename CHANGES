@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: allocators from slave connections is released earlier, resulting
+     in less overall memory use on busy, long lived connections.
+     [Stefan Eissing]
+     
   *) mpm_unix: Apache fails to start if previously crashed then restarted with
      the same PID (e.g. in container).  PR 60261.
      [Val <valentin.bremond gmail.com>, Yann Ylavic]

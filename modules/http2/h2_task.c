@@ -403,7 +403,7 @@ static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
  ******************************************************************************/
  
 int h2_task_can_redo(h2_task *task) {
-    if (task->input.beam && h2_beam_was_received(task->input.beam)) {
+    if (h2_beam_was_received(task->input.beam)) {
         /* cannot repeat that. */
         return 0;
     }
@@ -420,10 +420,8 @@ void h2_task_redo(h2_task *task)
 void h2_task_rst(h2_task *task, int error)
 {
     task->rst_error = error;
-    if (task->input.beam) {
-        h2_beam_abort(task->input.beam);
-    }
-    if (!task->worker_done && task->output.beam) {
+    h2_beam_abort(task->input.beam);
+    if (!task->worker_done) {
         h2_beam_abort(task->output.beam);
     }
     if (task->c) {
