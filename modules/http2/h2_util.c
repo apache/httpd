@@ -531,7 +531,8 @@ int h2_iq_shift(h2_iqueue *q)
 
 size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max)
 {
-    for (int i = 0; i < max; ++i) {
+    int i;
+    for (i = 0; i < max; ++i) {
         pint[i] = h2_iq_shift(q);
         if (pint[i] == 0) {
             break;
