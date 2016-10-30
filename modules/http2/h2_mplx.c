@@ -301,7 +301,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->shold = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->spurge = h2_ihash_create(m->pool, offsetof(h2_stream,id));
         m->q = h2_iq_create(m->pool, m->max_streams);
-        m->sready = h2_ihash_create(m->pool, offsetof(h2_stream,id));
+        m->readyq = h2_iq_create(m->pool, m->max_streams);
         m->tasks = h2_ihash_create(m->pool, offsetof(h2_task,stream_id));
         m->redo_tasks = h2_ihash_create(m->pool, offsetof(h2_task, stream_id));
 
@@ -435,7 +435,6 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
      * stream destruction until the task is done. 
      */
     h2_iq_remove(m->q, stream->id);
-    h2_ihash_remove(m->sready, stream->id);
     h2_ihash_remove(m->streams, stream->id);
     
     h2_stream_cleanup(stream);
@@ -786,7 +785,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
         if (m->aborted) {
             status = APR_ECONNABORTED;
         }
-        else if (!h2_ihash_empty(m->sready)) {
+        else if (!h2_iq_empty(m->readyq)) {
             status = APR_SUCCESS;
         }
         else {
@@ -809,11 +808,9 @@ static void have_out_data_for(h2_mplx *m, h2_stream *stream, int response)
 {
     ap_assert(m);
     ap_assert(stream);
-    if (!h2_ihash_get(m->sready, stream->id)) {
-        h2_ihash_add(m->sready, stream);
-        if (m->added_output) {
-            apr_thread_cond_signal(m->added_output);
-        }
+    h2_iq_append(m->readyq, stream->id);
+    if (m->added_output) {
+        apr_thread_cond_signal(m->added_output);
     }
 }
 
@@ -850,7 +847,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
         else {
             h2_ihash_add(m->streams, stream);
             if (h2_stream_is_ready(stream)) {
-                h2_ihash_add(m->sready, stream);
+                h2_iq_append(m->readyq, stream->id);
             }
             else {
                 if (!m->need_registration) {
@@ -1357,7 +1354,7 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
 {
     apr_status_t status;
     int acquired;
-    int streams[32];
+    int ids[100];
     h2_stream *stream;
     size_t i, n;
     
@@ -1367,17 +1364,16 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
                       
         /* update input windows for streams */
         h2_ihash_iter(m->streams, update_window, m);
-        if (on_resume && !h2_ihash_empty(m->sready)) {
-            n = h2_ihash_ishift(m->sready, streams, H2_ALEN(streams));
+        if (on_resume && !h2_iq_empty(m->readyq)) {
+            n = h2_iq_mshift(m->readyq, ids, H2_ALEN(ids));
             for (i = 0; i < n; ++i) {
-                stream = h2_ihash_get(m->streams, streams[i]);
-                if (!stream) {
-                    continue;
+                stream = h2_ihash_get(m->streams, ids[i]);
+                if (stream) {
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
+                                  "h2_mplx(%ld-%d): on_resume", 
+                                  m->id, stream->id);
+                    on_resume(on_ctx, stream);
                 }
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
-                              "h2_mplx(%ld-%d): on_resume", 
-                              m->id, stream->id);
-                on_resume(on_ctx, stream);
             }
         }
         
@@ -1394,7 +1390,7 @@ apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id)
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         h2_stream *s = h2_ihash_get(m->streams, stream_id);
         if (s) {
-            h2_ihash_add(m->sready, s);
+            h2_iq_append(m->readyq, stream_id);
         }
         leave_mutex(m, acquired);
     }

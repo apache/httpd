@@ -75,7 +75,7 @@ struct h2_mplx {
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
 
     struct h2_iqueue *q;            /* all stream ids that need to be started */
-    struct h2_ihash_t *sready;      /* all streams ready for output */
+    struct h2_iqueue *readyq;       /* all stream ids ready for output */
         
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
