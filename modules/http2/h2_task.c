@@ -90,7 +90,7 @@ static apr_status_t open_output(h2_task *task)
     return h2_mplx_out_open(task->mplx, task->stream_id, task->output.beam);
 }
 
-static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
+static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
 {
     apr_off_t written, left;
     apr_status_t status;
@@ -99,8 +99,7 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
     H2_TASK_OUT_LOG(APLOG_TRACE2, task, bb, "h2_task send_out");
     /* engines send unblocking */
     status = h2_beam_send(task->output.beam, bb, 
-                          task->assigned? APR_NONBLOCK_READ
-                          : APR_BLOCK_READ);
+                          block? APR_BLOCK_READ : APR_NONBLOCK_READ);
     if (APR_STATUS_IS_EAGAIN(status)) {
         apr_brigade_length(bb, 0, &left);
         written -= left;
@@ -130,13 +129,7 @@ static apr_status_t slave_out(h2_task *task, ap_filter_t* f,
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int flush = 0;
-    
-    if (APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_slave_out(%s): empty write", task->id);
-        return APR_SUCCESS;
-    }
+    int flush = 0, blocking;
     
     if (task->frozen) {
         h2_util_bb_log(task->c, task->stream_id, APLOG_TRACE2,
@@ -153,57 +146,46 @@ static apr_status_t slave_out(h2_task *task, ap_filter_t* f,
         }
         return APR_SUCCESS;
     }
-    
-    /* Attempt to write saved brigade first */
-    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
-        status = send_out(task, task->output.bb); 
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-    }
-    
-    /* If there is nothing saved (anymore), try to write the brigade passed */
-    if ((!task->output.bb || APR_BRIGADE_EMPTY(task->output.bb)) 
-        && !APR_BRIGADE_EMPTY(bb)) {
-        /* check if we have a flush before the end-of-request */
-        if (!task->output.opened) {
-            for (b = APR_BRIGADE_FIRST(bb);
-                 b != APR_BRIGADE_SENTINEL(bb);
-                 b = APR_BUCKET_NEXT(b)) {
-                if (AP_BUCKET_IS_EOR(b)) {
-                    break;
-                }
-                else if (APR_BUCKET_IS_FLUSH(b)) {
-                    flush = 1;
-                }
+
+    /* we send block once we opened the output, so someone is there
+     * reading it *and* the task is not assigned to a h2_req_engine */
+    blocking = (!task->assigned && task->output.opened);
+    if (!task->output.opened) {
+        for (b = APR_BRIGADE_FIRST(bb);
+             b != APR_BRIGADE_SENTINEL(bb);
+             b = APR_BUCKET_NEXT(b)) {
+            if (APR_BUCKET_IS_FLUSH(b)) {
+                flush = 1;
+                break;
             }
         }
-
-        status = send_out(task, bb); 
-        if (status != APR_SUCCESS) {
-            return status;
+    }
+    
+    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
+        /* still have data buffered from previous attempt.
+         * setaside and append new data and try to pass the complete data */
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+        }
+        if (status == APR_SUCCESS) {
+            status = send_out(task, task->output.bb, blocking);
+        } 
+    }
+    else {
+        /* no data buffered here, try to pass the brigade directly */
+        status = send_out(task, bb, blocking); 
+        if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
+            /* could not write all, buffer the rest */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
+                          "h2_slave_out(%s): saving brigade", 
+                          task->id);
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+            flush = 1;
         }
     }
     
-    /* If the passed brigade is not empty, save it before return */
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
-                      "h2_slave_out(%s): could not write all, saving brigade", 
-                      task->id);
-        if (!task->output.bb) {
-            task->output.bb = apr_brigade_create(task->pool, 
-                                          task->c->bucket_alloc);
-        }
-        status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-    }
-    
-    if (!task->output.opened 
-        && (flush || h2_beam_get_mem_used(task->output.beam) > (32*1024))) {
-        /* if we have enough buffered or we got a flush bucket, open
-        * the response now. */
+    if (status == APR_SUCCESS && !task->output.opened && flush) {
+        /* got a flush or could not write all, time to tell someone to read */
         status = open_output(task);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, task->c, 

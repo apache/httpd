@@ -440,10 +440,12 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
 {
     int i;
     
+    if (h2_iq_contains(q, sid)) {
+        return;
+    }
     if (q->nelts >= q->nalloc) {
         iq_grow(q, q->nalloc * 2);
     }
-    
     i = (q->head + q->nelts) % q->nalloc;
     q->elts[i] = sid;
     ++q->nelts;
@@ -452,6 +454,11 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
         /* bubble it to the front of the queue */
         iq_bubble_up(q, i, q->head, cmp, ctx);
     }
+}
+
+void h2_iq_append(h2_iqueue *q, int sid)
+{
+    h2_iq_add(q, sid, NULL, NULL);
 }
 
 int h2_iq_remove(h2_iqueue *q, int sid)
@@ -522,6 +529,17 @@ int h2_iq_shift(h2_iqueue *q)
     return sid;
 }
 
+size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max)
+{
+    for (int i = 0; i < max; ++i) {
+        pint[i] = h2_iq_shift(q);
+        if (pint[i] == 0) {
+            break;
+        }
+    }
+    return i;
+}
+
 static void iq_grow(h2_iqueue *q, int nlen)
 {
     if (nlen > q->nalloc) {
@@ -571,6 +589,17 @@ static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
         i = next;
     }
     return i;
+}
+
+int h2_iq_contains(h2_iqueue *q, int sid)
+{
+    int i;
+    for (i = 0; i < q->nelts; ++i) {
+        if (sid == q->elts[(q->head + i) % q->nalloc]) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /*******************************************************************************
