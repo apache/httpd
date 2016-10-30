@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1685411:1760549 (outdated) -->
+<!-- English Revision: 1760549-->
 <!-- Spanish Translation by: Luis Gil de Bernabé --> 
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -33,7 +33,7 @@
     href="platform/windows.html">Usando Apache HTTP Server con Microsoft
     Windows</a> y <a
     href="platform/win_compiling.html">Compilando Apache para Microsoft Windows</a>.
-    Para otras plataformas visite la documentacion sobre <a
+    Para otras plataformas visite la documentación sobre <a
     href="platform/">plataformas</a>.</p>
 
     <p>Apache httpd usa <code>libtool</code> y <code>autoconf</code>
@@ -56,12 +56,14 @@
       <tr>
         <td><a href="#download">Descarga</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td>Descarga la última versión 
+          desde <a href="http://httpd.apache.org/download.cgi#apache24">
+          http://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
       <tr>
-        <td><a href="#extract">Extrae</a></td>
+        <td><a href="#extract">Extraer</a></td>
 
         <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
          $ tar xvf httpd-<em>NN</em>.tar<br />
@@ -101,7 +103,7 @@
       </tr>
     </table>
 
-    <p><em>NN</em> hay que reemplazarlo por el número de la versión menor, and <em>PREFIX</em> hay que reemplazarlo por la ruta en la que se va a instalar Apache. Si no especifica ningún valor en <em>PREFIX</em>, el valor por defecto que se toma es /usr/local/apache2.</p>
+    <p><em>NN</em> hay que reemplazarlo por el número de la versión menor, y <em>PREFIX</em> hay que reemplazarlo por la ruta en la que se va a instalar Apache. Si no especifica ningún valor en <em>PREFIX</em>, el valor por defecto que se toma es /usr/local/apache2.</p>
 
     <p>Cada parte del proceso de configuración e instalación se describe detalladamente más abajo, empezando por los requisitos para compilar e instalar Apache.</p>
 </section>
@@ -112,20 +114,20 @@
 
     <dl>
       <dt>APR y APR-Util</dt>
-      <dd>Asegurate de que tiene instalado ya en su sistema APR y APR-Util. Si no es así, o no quiere utilizar la versión que le proporciona el sistema, puede descargar la última versión de ambos APR y APR-Util de
+      <dd>Asegúrate de que tiene instalado ya en su sistema APR y APR-Util. Si no es así, o no quiere utilizar la versión que le proporciona el sistema, puede descargar la última versión de ambos APR y APR-Util de
       <a href="http://apr.apache.org/">Apache APR</a>, descomprimelo en
        <code>/httpd_source_tree_root/srclib/apr</code> y /httpd_source_tree_root<code>/srclib/apr-util</code>
-      (cerciorate de que no existen directorios con números de versiones; por ejemplo,
+      (cerciórate de que no existen directorios con números de versiones; por ejemplo,
       la distribución de APR debe estar en /httpd_source_tree_root/srclib/apr/) y usa el comando
       <code>./configure</code> <code>--con-las-opciones-incluidas-en-apr</code>.
       En algunas plataformas deberás instalar la parte correspondiente a los paquetes 
       <code>-dev</code> para permitir que httpd se genere contra la instalación de la copia de APR y APR-Util.</dd>
 
-      <dt>Libreria Compatible de expresiones regulares de Perl (PCRE)</dt>
-      <dd>Esta libreria es requerida, pero ya no incluido con httpd.
+      <dt>Librería Compatible de expresiones regulares de Perl (PCRE)</dt>
+      <dd>Esta librería es requerida, pero ya no incluido con httpd.
       Descarga el código fuente de <a href="http://www.pcre.org/">http://www.pcre.org</a>,
       o instala un Port o un  Paquete. Si la distrubución de su sistema no puede encontrar el escript pcre-config instalado por PCRE, seleccione utilizando el parámetro<code>--with-pcre</code>.En algunas plataformas,
-      deberás instalar la corespondiente versión <code>-dev</code>
+      deberás instalar la correspondiente versión <code>-dev</code>
       del paquete para permitir a httpd que se genere contra la instalación de la copia del PCRE que se ha instalado.</dd>
 
       <dt>Espacio en disco</dt> 
@@ -137,10 +139,10 @@
       configuración que elija y de los módulos externos que
       use, y como no del tamaño de la página web</dd>
 
-      <dt>ANSI-C Compiler and Build System</dt>
+      <dt>Systema de compilación ANSI-C</dt>
       <dd>Compruebe que tiene instalado un compilador de ANSI-C. Se recomienda el <a href="http://gcc.gnu.org/">Compilador GNU C
       (GCC)</a> de la <a href="http://www.gnu.org/">Free Software
-      Foundation (FSF)</a> es el recomendado. Si no tiene instaldo el GCC, entonces compruebe que
+      Foundation (FSF)</a> es el recomendado. Si no tiene instalado el GCC, entonces compruebe que
       el compilador que va a utilizar cumple con los estándares
       ANSI. Además, su <code>PATH</code> debe contener la
       ubicación donde de encuentran las herramientas básicas
@@ -153,7 +155,7 @@
       utilidad para sincronizar la hora de su sistema. Para esto,
       normalmente, se usan los programas <code>ntpdate</code> o
       <code>xntpd</code>, que están basados en el protocolo
-      Network Time Protocol (NTP). Consulte el<a href="http://www.ntp.org">sitio web de NTP
+      "Network Time Protocol" (NTP). Consulte el<a href="http://www.ntp.org">sitio web de NTP
       </a> para obtener más información sobre NTP y los
       servidores públicos de tiempo.</dd>
 
@@ -163,7 +165,7 @@
       escritos en Perl) es necesario el intérprete de Perl 5 (las
       versiones 5.003 o posteriores son suficientes). Si el escript
       <program>configure</program> no se encuentra, no podrá usar los
-	  escripts correspondientes que lo necesiten. Pero porsupuesto
+	  escripts correspondientes que lo necesiten. Pero por supuesto
 	  podrás compilar y usar Apache httpd.</dd>
     </dl>
 </section>
@@ -178,8 +180,8 @@
     código fuente. El proceso de compilación (descrito
     más abajo) es fácil, y permite adaptar el servidor
     Apache a sus necesidades. Además, las versiones de
-    disponibles en archivos binarios no están siempre actulizadas
-    con las últimas modificaciones en el codigo fuente. Si se
+    disponibles en archivos binarios no están siempre actualizadas
+    con las últimas modificaciones en el código fuente. Si se
     descarga un binario, siga las instrucciones contenidas en el
     archivo <code>INSTALL.bindist</code> incluido en la
     distribución</p>
@@ -202,8 +204,8 @@
       de descargar es muy fácil. Ejecute los siguientes comandos:</p>
 
 <example>
-      $ gzip -d httpd-<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-<em>NN</em>.tar
+$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-<em>NN</em>.tar
 </example>
 
     <p>Estos comandos crearán un nuevo directorio dentro del
@@ -219,7 +221,7 @@ directorios</title>
     <p>El siguiente paso es configurar la estructura de directorios
     para su plataforma y sus necesidades personales. Esto se hace
     usando el script <program>configure</program> incluido en el directorio
-    raiz de la distribución que acaba de descargar. (Los
+    raíz de la distribución que acaba de descargar. (Los
     desarrolladores que se descarguen la versión del CVS de la
     estructura de directorios necesitarán tener instalados
     <code>autoconf</code> y <code>libtool</code>, y necesitarán
@@ -265,11 +267,11 @@ directorios</title>
 
     <p>Además, a veces es necesario pasarle al script
     <program>configure</program> información adicional sobre donde esta
-    su compilador, librerias o ficheros de cabecera.  Esto se puede
+    su compilador, librerías o ficheros de cabecera.  Esto se puede
     hacer, tanto pasando variables de entorno, como pasandole opciones
     a <program>configure</program>.  Para más información, consulte el manual de
     <program>configure</program>. O use <program>configure</program> con la 
-    opción <code>--help</code> option.</p>
+    opción <code>--help</code>.</p>
 
      <p>Para que se haga una idea sobre las posibilidades que tiene,
     aquí tiene un ejemplo típico que configura Apache para
@@ -290,7 +292,7 @@ directorios</title>
     su sistema y se crean los Makefiles que serán usados a continuación
     para compilar el servidor. Esto tardará algunos minutos.</p>
 
-    <p>Los detalles de todas las opciones de <program>configure</program> estan disponibles
+    <p>Los detalles de todas las opciones de <program>configure</program> están disponibles
     en el manual de <program>configure</program> .</p>
   </section>
 <section id="compile"><title>Build</title>
@@ -314,7 +316,7 @@ directorios</title>
 
 <example>$ make install</example>
 
-    <p>Este paso requiere de forma tipica privilegios de root, ya que 
+    <p>Este paso requiere de forma típica privilegios de root, ya que 
       el directorio de <em>PREFIX</em> es normalmente un directorio con 
       restricciones de permisos escritura.</p>
 
