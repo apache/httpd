@@ -116,12 +116,20 @@ int h2_iq_count(h2_iqueue *q);
 /**
  * Add a stream id to the queue. 
  *
- * @param q the queue to append the task to
+ * @param q the queue to append the id to
  * @param sid the stream id to add
  * @param cmp the comparator for sorting
  * @param ctx user data for comparator 
  */
 void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
+
+/**
+ * Append the id to the queue if not already present. 
+ *
+ * @param q the queue to append the id to
+ * @param sid the id to append
+ */
+void h2_iq_append(h2_iqueue *q, int sid);
 
 /**
  * Remove the stream id from the queue. Return != 0 iff task
@@ -148,13 +156,32 @@ void h2_iq_clear(h2_iqueue *q);
 void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx);
 
 /**
- * Get the first stream id from the queue or NULL if the queue is empty. 
- * The task will be removed.
+ * Get the first id from the queue or 0 if the queue is empty. 
+ * The id is being removed.
  *
- * @param q the queue to get the first task from
- * @return the first stream id of the queue, 0 if empty
+ * @param q the queue to get the first id from
+ * @return the first id of the queue, 0 if empty
  */
 int h2_iq_shift(h2_iqueue *q);
+
+/**
+ * Get the first max ids from the queue. All these ids will be removed.
+ *
+ * @param q the queue to get the first task from
+ * @param pint the int array to receive the values
+ * @param max the maximum number of ids to shift
+ * @return the actual number of ids shifted
+ */
+size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max);
+
+/**
+ * Determine if int is in the queue already
+ *
+ * @parm q the queue
+ * @param sid the integer id to check for
+ * @return != 0 iff sid is already in the queue
+ */
+int h2_iq_contains(h2_iqueue *q, int sid);
 
 /*******************************************************************************
  * common helpers

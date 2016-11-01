@@ -166,9 +166,10 @@ static apr_status_t http2_req_engine_pull(h2_req_engine *ngn,
     return h2_mplx_req_engine_pull(ngn, block, capacity, pr);
 }
 
-static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
+static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
+                                  apr_status_t status)
 {
-    h2_mplx_req_engine_done(ngn, r_conn);
+    h2_mplx_req_engine_done(ngn, r_conn, status);
 }
 
 /* Runs once per created child process. Perform any process 

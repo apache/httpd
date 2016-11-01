@@ -355,18 +355,6 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL) (HTTP2)$(DL) > $@
 	@echo $(DL) http2_module,$(DL) >> $@
-	@echo $(DL) h2_ihash_add,$(DL) >> $@
-	@echo $(DL) h2_ihash_clear,$(DL) >> $@
-	@echo $(DL) h2_ihash_count,$(DL) >> $@
-	@echo $(DL) h2_ihash_create,$(DL) >> $@
-	@echo $(DL) h2_ihash_empty,$(DL) >> $@
-	@echo $(DL) h2_ihash_iter,$(DL) >> $@
-	@echo $(DL) h2_ihash_remove,$(DL) >> $@
-	@echo $(DL) h2_iq_add,$(DL) >> $@
-	@echo $(DL) h2_iq_create,$(DL) >> $@
-	@echo $(DL) h2_iq_remove,$(DL) >> $@
-	@echo $(DL) h2_log2,$(DL) >> $@
-	@echo $(DL) h2_headers_add_h1,$(DL) >> $@
 	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
 	@echo $(DL) nghttp2_option_del,$(DL) >> $@
 	@echo $(DL) nghttp2_option_new,$(DL) >> $@

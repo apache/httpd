@@ -187,16 +187,6 @@ apr_status_t h2_request_end_headers(h2_request *req, apr_pool_t *pool, int eos)
         }
     }
 
-    s = apr_table_get(req->headers, "Expect");
-    if (s && s[0]) {
-        if (ap_cstr_casecmp(s, "100-continue") == 0) {
-            req->expect_100 = 1;
-        }
-        else {
-            req->expect_failed = 1;
-        }
-    }
-
     return APR_SUCCESS;
 }
 
@@ -217,6 +207,7 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     const char *rpath;
     apr_pool_t *p;
     request_rec *r;
+    const char *s;
 
     apr_pool_create(&p, c->pool);
     apr_pool_tag(p, "request");
@@ -296,12 +287,15 @@ request_rec *h2_request_create_rec(const h2_request *req, conn_rec *c)
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
     
-    if (req->expect_100) {
-        r->expecting_100 = 1;
-    }
-    else if (req->expect_failed) {
-        r->status = HTTP_EXPECTATION_FAILED;
-        ap_send_error_response(r, 0);
+    s = apr_table_get(r->headers_in, "Expect");
+    if (s && s[0]) {
+        if (ap_cstr_casecmp(s, "100-continue") == 0) {
+            r->expecting_100 = 1;
+        }
+        else {
+            r->status = HTTP_EXPECTATION_FAILED;
+            ap_send_error_response(r, 0);
+        }
     }
 
     /*

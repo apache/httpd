@@ -2,6 +2,18 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: unannounced and multiple interim responses (status code < 200)
+     are parsed and forwarded to client until a final response arrives.
+     [Stefan Eissing]
+  
+  *) mod_proxy_http2: improved robustness when main connection is closed early
+     by resetting all ongoing streams against the backend.
+     [Stefan Eissing]
+  
+  *) mod_http2: allocators from slave connections are released earlier, resulting
+     in less overall memory use on busy, long lived connections.
+     [Stefan Eissing]
+     
   *) mod_remoteip: Pick up where we left off during a subrequest rather
      than running with the modified XFF but original TCP address.
      PR 49839/PR 60251

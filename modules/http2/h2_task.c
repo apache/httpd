@@ -90,7 +90,7 @@ static apr_status_t open_output(h2_task *task)
     return h2_mplx_out_open(task->mplx, task->stream_id, task->output.beam);
 }
 
-static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
+static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
 {
     apr_off_t written, left;
     apr_status_t status;
@@ -99,8 +99,7 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
     H2_TASK_OUT_LOG(APLOG_TRACE2, task, bb, "h2_task send_out");
     /* engines send unblocking */
     status = h2_beam_send(task->output.beam, bb, 
-                          task->assigned? APR_NONBLOCK_READ
-                          : APR_BLOCK_READ);
+                          block? APR_BLOCK_READ : APR_NONBLOCK_READ);
     if (APR_STATUS_IS_EAGAIN(status)) {
         apr_brigade_length(bb, 0, &left);
         written -= left;
@@ -130,13 +129,7 @@ static apr_status_t slave_out(h2_task *task, ap_filter_t* f,
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int flush = 0;
-    
-    if (APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_slave_out(%s): empty write", task->id);
-        return APR_SUCCESS;
-    }
+    int flush = 0, blocking;
     
     if (task->frozen) {
         h2_util_bb_log(task->c, task->stream_id, APLOG_TRACE2,
@@ -153,57 +146,46 @@ static apr_status_t slave_out(h2_task *task, ap_filter_t* f,
         }
         return APR_SUCCESS;
     }
-    
-    /* Attempt to write saved brigade first */
-    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
-        status = send_out(task, task->output.bb); 
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-    }
-    
-    /* If there is nothing saved (anymore), try to write the brigade passed */
-    if ((!task->output.bb || APR_BRIGADE_EMPTY(task->output.bb)) 
-        && !APR_BRIGADE_EMPTY(bb)) {
-        /* check if we have a flush before the end-of-request */
-        if (!task->output.opened) {
-            for (b = APR_BRIGADE_FIRST(bb);
-                 b != APR_BRIGADE_SENTINEL(bb);
-                 b = APR_BUCKET_NEXT(b)) {
-                if (AP_BUCKET_IS_EOR(b)) {
-                    break;
-                }
-                else if (APR_BUCKET_IS_FLUSH(b)) {
-                    flush = 1;
-                }
+
+    /* we send block once we opened the output, so someone is there
+     * reading it *and* the task is not assigned to a h2_req_engine */
+    blocking = (!task->assigned && task->output.opened);
+    if (!task->output.opened) {
+        for (b = APR_BRIGADE_FIRST(bb);
+             b != APR_BRIGADE_SENTINEL(bb);
+             b = APR_BUCKET_NEXT(b)) {
+            if (APR_BUCKET_IS_FLUSH(b)) {
+                flush = 1;
+                break;
             }
         }
-
-        status = send_out(task, bb); 
-        if (status != APR_SUCCESS) {
-            return status;
+    }
+    
+    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
+        /* still have data buffered from previous attempt.
+         * setaside and append new data and try to pass the complete data */
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+        }
+        if (status == APR_SUCCESS) {
+            status = send_out(task, task->output.bb, blocking);
+        } 
+    }
+    else {
+        /* no data buffered here, try to pass the brigade directly */
+        status = send_out(task, bb, blocking); 
+        if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
+            /* could not write all, buffer the rest */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
+                          "h2_slave_out(%s): saving brigade", 
+                          task->id);
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+            flush = 1;
         }
     }
     
-    /* If the passed brigade is not empty, save it before return */
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
-                      "h2_slave_out(%s): could not write all, saving brigade", 
-                      task->id);
-        if (!task->output.bb) {
-            task->output.bb = apr_brigade_create(task->pool, 
-                                          task->c->bucket_alloc);
-        }
-        status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-    }
-    
-    if (!task->output.opened 
-        && (flush || h2_beam_get_mem_used(task->output.beam) > (32*1024))) {
-        /* if we have enough buffered or we got a flush bucket, open
-        * the response now. */
+    if (status == APR_SUCCESS && !task->output.opened && flush) {
+        /* got a flush or could not write all, time to tell someone to read */
         status = open_output(task);
     }
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, task->c, 
@@ -349,7 +331,7 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
          * to support it. Seems to work. */
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
-                      APLOGNO(02942) 
+                      APLOGNO(03472) 
                       "h2_slave_in(%s), unsupported READ mode %d", 
                       task->id, mode);
         status = APR_ENOTIMPL;
@@ -386,7 +368,7 @@ static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
     /* There are cases where we need to parse a serialized http/1.1 
      * response. One example is a 100-continue answer in serialized mode
      * or via a mod_proxy setup */
-    while (task->output.parse_response) {
+    while (!task->output.sent_response) {
         status = h2_from_h1_parse_response(task, f, bb);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
                       "h2_task(%s): parsed response", task->id);
@@ -403,7 +385,7 @@ static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
  ******************************************************************************/
  
 int h2_task_can_redo(h2_task *task) {
-    if (task->input.beam && h2_beam_was_received(task->input.beam)) {
+    if (h2_beam_was_received(task->input.beam)) {
         /* cannot repeat that. */
         return 0;
     }
@@ -420,10 +402,8 @@ void h2_task_redo(h2_task *task)
 void h2_task_rst(h2_task *task, int error)
 {
     task->rst_error = error;
-    if (task->input.beam) {
-        h2_beam_abort(task->input.beam);
-    }
-    if (!task->worker_done && task->output.beam) {
+    h2_beam_abort(task->input.beam);
+    if (!task->worker_done) {
         h2_beam_abort(task->output.beam);
     }
     if (task->c) {
@@ -583,23 +563,13 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     task->input.bb = apr_brigade_create(task->pool, task->c->bucket_alloc);
     if (task->request->serialize) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_task(%s): serialize request %s %s, expect-100=%d", 
-                      task->id, task->request->method, task->request->path,
-                      task->request->expect_100);
+                      "h2_task(%s): serialize request %s %s", 
+                      task->id, task->request->method, task->request->path);
         apr_brigade_printf(task->input.bb, NULL, 
                            NULL, "%s %s HTTP/1.1\r\n", 
                            task->request->method, task->request->path);
         apr_table_do(input_ser_header, task, task->request->headers, NULL);
         apr_brigade_puts(task->input.bb, NULL, NULL, "\r\n");
-        if (task->request->expect_100) {
-            /* we are unable to suppress the serialization of the 
-             * intermediate response and need to parse it */
-            task->output.parse_response = 1;
-        }
-    }
-    
-    if (task->request->expect_100) {
-        task->output.parse_response = 1;
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,

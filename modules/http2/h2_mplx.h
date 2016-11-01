@@ -75,7 +75,7 @@ struct h2_mplx {
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
 
     struct h2_iqueue *q;            /* all stream ids that need to be started */
-    struct h2_ihash_t *sready;      /* all streams ready for output */
+    struct h2_iqueue *readyq;       /* all stream ids ready for output */
         
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
@@ -84,7 +84,6 @@ struct h2_mplx {
     int max_stream_started; /* highest stream id that started processing */
     int workers_busy;       /* # of workers processing on this mplx */
     int workers_limit;      /* current # of workers limit, dynamic */
-    int workers_def_limit;  /* default # of workers limit */
     int workers_max;        /* max, hard limit # of workers in a process */
     apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
                                       * streams were ready */
@@ -351,6 +350,7 @@ apr_status_t h2_mplx_req_engine_pull(struct h2_req_engine *ngn,
                                      apr_read_type_e block, 
                                      int capacity, 
                                      request_rec **pr);
-void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn);
+void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn,
+                             apr_status_t status);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

@@ -1137,13 +1137,13 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
     if (stream) {
         int touched = (stream->data_sent || 
                        stream_id <= session->last_stream_id);
-        int complete = (stream->error_code == 0);
+        apr_status_t status = (stream->error_code == 0)? APR_SUCCESS : APR_EINVAL;
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03364)
                       "h2_proxy_sesssion(%s): stream(%d) closed "
                       "(touched=%d, error=%d)", 
                       session->id, stream_id, touched, stream->error_code);
         
-        if (!complete) {
+        if (status != APR_SUCCESS) {
             stream->r->status = 500;
         }
         else if (!stream->data_received) {
@@ -1164,7 +1164,7 @@ static void ev_stream_done(h2_proxy_session *session, int stream_id,
         h2_proxy_ihash_remove(session->streams, stream_id);
         h2_proxy_iq_remove(session->suspended, stream_id);
         if (session->done) {
-            session->done(session, stream->r, complete, touched);
+            session->done(session, stream->r, status, touched);
         }
     }
     
@@ -1276,6 +1276,21 @@ static void dispatch_event(h2_proxy_session *session, h2_proxys_event_t ev,
     }
 }
 
+static int send_loop(h2_proxy_session *session)
+{
+    while (nghttp2_session_want_write(session->ngh2)) {
+        int rv = nghttp2_session_send(session->ngh2);
+        if (rv < 0 && nghttp2_is_fatal(rv)) {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
+                          "h2_proxy_session(%s): write, rv=%d", session->id, rv);
+            dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, rv, NULL);
+            break;
+        }
+        return 1;
+    }
+    return 0;
+}
+
 apr_status_t h2_proxy_session_process(h2_proxy_session *session)
 {
     apr_status_t status;
@@ -1300,16 +1315,7 @@ run_loop:
         case H2_PROXYS_ST_BUSY:
         case H2_PROXYS_ST_LOCAL_SHUTDOWN:
         case H2_PROXYS_ST_REMOTE_SHUTDOWN:
-            while (nghttp2_session_want_write(session->ngh2)) {
-                int rv = nghttp2_session_send(session->ngh2);
-                if (rv < 0 && nghttp2_is_fatal(rv)) {
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c, 
-                                  "h2_proxy_session(%s): write, rv=%d", session->id, rv);
-                    dispatch_event(session, H2_PROXYS_EV_CONN_ERROR, rv, NULL);
-                    break;
-                }
-                have_written = 1;
-            }
+            have_written = send_loop(session);
             
             if (nghttp2_session_want_read(session->ngh2)) {
                 status = h2_proxy_session_read(session, 0, 0);
@@ -1386,13 +1392,36 @@ typedef struct {
     h2_proxy_request_done *done;
 } cleanup_iter_ctx;
 
+static int cancel_iter(void *udata, void *val)
+{
+    cleanup_iter_ctx *ctx = udata;
+    h2_proxy_stream *stream = val;
+    nghttp2_submit_rst_stream(ctx->session->ngh2, NGHTTP2_FLAG_NONE,
+                              stream->id, 0);
+    return 1;
+}
+
+void h2_proxy_session_cancel_all(h2_proxy_session *session)
+{
+    if (!h2_proxy_ihash_empty(session->streams)) {
+        cleanup_iter_ctx ctx;
+        ctx.session = session;
+        ctx.done = session->done;
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03366)
+                      "h2_proxy_session(%s): cancel  %d streams",
+                      session->id, (int)h2_proxy_ihash_count(session->streams));
+        h2_proxy_ihash_iter(session->streams, cancel_iter, &ctx);
+        session_shutdown(session, 0, NULL);
+    }
+}
+
 static int done_iter(void *udata, void *val)
 {
     cleanup_iter_ctx *ctx = udata;
     h2_proxy_stream *stream = val;
     int touched = (stream->data_sent || 
                    stream->id <= ctx->session->last_stream_id);
-    ctx->done(ctx->session, stream->r, 0, touched);
+    ctx->done(ctx->session, stream->r, APR_ECONNABORTED, touched);
     return 1;
 }
 
