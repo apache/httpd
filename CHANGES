@@ -2,8 +2,12 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_remoteip: Pick up where we left off during a subrequest rather
+     than running with the modified XFF but original TCP address.
+     PR 49839/PR 60251
+
   *) core: avoid adding multiple subrequest filters when there are nested
-     subrequests.  PR58292
+     subrequests. PR 58292
 
   *) mod_http2: connection shutdown revisited: corrected edge cases on
      shutting down ongoing streams, changed log warnings to be less noisy
