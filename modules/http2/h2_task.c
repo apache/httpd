@@ -331,7 +331,7 @@ static apr_status_t h2_filter_slave_in(ap_filter_t* f,
         /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
          * to support it. Seems to work. */
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
-                      APLOGNO(02942) 
+                      APLOGNO(03472) 
                       "h2_slave_in(%s), unsupported READ mode %d", 
                       task->id, mode);
         status = APR_ENOTIMPL;
@@ -368,7 +368,7 @@ static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
     /* There are cases where we need to parse a serialized http/1.1 
      * response. One example is a 100-continue answer in serialized mode
      * or via a mod_proxy setup */
-    while (task->output.parse_response) {
+    while (!task->output.sent_response) {
         status = h2_from_h1_parse_response(task, f, bb);
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
                       "h2_task(%s): parsed response", task->id);
@@ -563,23 +563,13 @@ apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
     task->input.bb = apr_brigade_create(task->pool, task->c->bucket_alloc);
     if (task->request->serialize) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_task(%s): serialize request %s %s, expect-100=%d", 
-                      task->id, task->request->method, task->request->path,
-                      task->request->expect_100);
+                      "h2_task(%s): serialize request %s %s", 
+                      task->id, task->request->method, task->request->path);
         apr_brigade_printf(task->input.bb, NULL, 
                            NULL, "%s %s HTTP/1.1\r\n", 
                            task->request->method, task->request->path);
         apr_table_do(input_ser_header, task, task->request->headers, NULL);
         apr_brigade_puts(task->input.bb, NULL, NULL, "\r\n");
-        if (task->request->expect_100) {
-            /* we are unable to suppress the serialization of the 
-             * intermediate response and need to parse it */
-            task->output.parse_response = 1;
-        }
-    }
-    
-    if (task->request->expect_100) {
-        task->output.parse_response = 1;
     }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
