@@ -193,13 +193,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      subrequests.  PR58292
      trunk patch: http://svn.apache.org/r1698239
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) mod_remoteip: Pick up where we left off during a subrequest rather
      than running with the modified XFF but original TCP address. PR49839/PR60251
      trunk patch: http://svn.apache.org/r1688399  
      2.4.x patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
 
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the same PID (e.g. in container).  PR 60261.
      trunk patch: http://svn.apache.org/r1766160
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  PR 60313.
