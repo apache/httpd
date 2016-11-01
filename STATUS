@@ -117,6 +117,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: avoid adding multiple subrequest filters when there are nested 
+     subrequests.  PR58292
+     trunk patch: http://svn.apache.org/r1698239
+     2.4.x patch: trunk works
+     +1: covener, ylavic, jim
+
+  *) mod_remoteip: Pick up where we left off during a subrequest rather
+     than running with the modified XFF but original TCP address. PR49839/PR60251
+     trunk patch: http://svn.apache.org/r1688399  
+     2.4.x patch: trunk works
+     +1: covener, ylavic, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -188,18 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: Maybe the -Werror case could be handled later, for now this series
              avoids a lot of "warning: 'aplog_module_index' defined but not
              used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
-
-  *) core: avoid adding multiple subrequest filters when there are nested 
-     subrequests.  PR58292
-     trunk patch: http://svn.apache.org/r1698239
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
-
-  *) mod_remoteip: Pick up where we left off during a subrequest rather
-     than running with the modified XFF but original TCP address. PR49839/PR60251
-     trunk patch: http://svn.apache.org/r1688399  
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
 
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
