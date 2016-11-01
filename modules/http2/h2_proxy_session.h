@@ -52,7 +52,7 @@ typedef enum {
 
 typedef struct h2_proxy_session h2_proxy_session;
 typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
-                                   int complete, int touched);
+                                   apr_status_t status, int touched);
 
 struct h2_proxy_session {
     const char *id;
@@ -102,6 +102,8 @@ apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
  *         APR_EOF     when the session has been terminated
  */
 apr_status_t h2_proxy_session_process(h2_proxy_session *s);
+
+void h2_proxy_session_cancel_all(h2_proxy_session *s);
 
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 

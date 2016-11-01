@@ -241,9 +241,9 @@ apr_status_t h2_conn_pre_close(struct h2_ctx *ctx, conn_rec *c)
     return status;
 }
 
-conn_rec *h2_slave_create(conn_rec *master, int slave_id, 
-                          apr_pool_t *parent, apr_allocator_t *allocator)
+conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent)
 {
+    apr_allocator_t *allocator;
     apr_pool_t *pool;
     conn_rec *c;
     void *cfg;
@@ -257,9 +257,7 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id,
      * independant of its parent pool in the sense that it can work in
      * another thread.
      */
-    if (!allocator) {
-        apr_allocator_create(&allocator);
-    }
+    apr_allocator_create(&allocator);
     apr_pool_create_ex(&pool, parent, NULL, allocator);
     apr_pool_tag(pool, "h2_slave_conn");
     apr_allocator_owner_set(allocator, pool);
@@ -311,21 +309,11 @@ conn_rec *h2_slave_create(conn_rec *master, int slave_id,
     return c;
 }
 
-void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator)
+void h2_slave_destroy(conn_rec *slave)
 {
-    apr_pool_t *parent;
-    apr_allocator_t *allocator = apr_pool_allocator_get(slave->pool);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, slave,
                   "h2_slave_conn(%ld): destroy (task=%s)", slave->id,
                   apr_table_get(slave->notes, H2_TASK_ID_NOTE));
-    /* Attache the allocator to the parent pool and return it for
-     * reuse, otherwise the own is still the slave pool and it will
-     * get destroyed with it. */
-    parent = apr_pool_parent_get(slave->pool);
-    if (pallocator && parent) {
-        apr_allocator_owner_set(allocator, parent);
-        *pallocator = allocator;
-    }
     apr_pool_destroy(slave->pool);
 }
 

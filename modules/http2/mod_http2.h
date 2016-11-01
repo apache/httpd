@@ -90,5 +90,6 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,
                                                 request_rec **pr));
 APR_DECLARE_OPTIONAL_FN(void, 
                         http2_req_engine_done, (h2_req_engine *engine, 
-                                                conn_rec *rconn));
+                                                conn_rec *rconn,
+                                                apr_status_t status));
 #endif

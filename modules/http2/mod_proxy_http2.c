@@ -46,7 +46,8 @@ static apr_status_t (*req_engine_pull)(h2_req_engine *engine,
                                        apr_read_type_e block, 
                                        int capacity, 
                                        request_rec **pr);
-static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn);
+static void (*req_engine_done)(h2_req_engine *engine, conn_rec *r_conn,
+                               apr_status_t status);
                                        
 typedef struct h2_proxy_ctx {
     conn_rec *owner;
@@ -270,12 +271,12 @@ static apr_status_t add_request(h2_proxy_session *session, request_rec *r)
 }
 
 static void request_done(h2_proxy_session *session, request_rec *r,
-                         int complete, int touched)
+                         apr_status_t status, int touched)
 {   
     h2_proxy_ctx *ctx = session->user_data;
     const char *task_id = apr_table_get(r->connection->notes, H2_TASK_ID_NOTE);
 
-    if (!complete) {
+    if (status != APR_SUCCESS) {
         if (!touched) {
             /* untouched request, need rescheduling */
             if (req_engine_push && is_h2 && is_h2(ctx->owner)) {
@@ -292,7 +293,7 @@ static void request_done(h2_proxy_session *session, request_rec *r,
         else {
             const char *uri;
             uri = apr_uri_unparse(r->pool, &r->parsed_uri, 0);
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, r->connection, 
                           APLOGNO(03471) "h2_proxy_session(%s): request %s -> %s "
                           "not complete, was touched",
                           ctx->engine_id, task_id, uri);
@@ -300,23 +301,15 @@ static void request_done(h2_proxy_session *session, request_rec *r,
     }
     
     if (r == ctx->rbase) {
-        ctx->r_status = complete? APR_SUCCESS : HTTP_GATEWAY_TIME_OUT;
+        ctx->r_status = (status == APR_SUCCESS)? APR_SUCCESS : HTTP_SERVICE_UNAVAILABLE;
     }
     
     if (req_engine_done && ctx->engine) {
-        if (complete) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, r->connection, 
-                          APLOGNO(03370)
-                          "h2_proxy_session(%s): finished request %s",
-                          ctx->engine_id, task_id);
-        }
-        else {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, r->connection, 
-                          APLOGNO(03371)
-                          "h2_proxy_session(%s): failed request %s",
-                          ctx->engine_id, task_id);
-        }
-        req_engine_done(ctx->engine, r->connection);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, r->connection, 
+                      APLOGNO(03370)
+                      "h2_proxy_session(%s): finished request %s",
+                      ctx->engine_id, task_id);
+        req_engine_done(ctx->engine, r->connection, status);
     }
 }    
 
@@ -382,7 +375,12 @@ static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, s2, ctx->owner, 
                               APLOGNO(03374) "eng(%s): pull request", 
                               ctx->engine_id);
-                status = s2;
+                /* give notice that we're leaving and cancel all ongoing
+                 * streams. */
+                next_request(ctx, 1); 
+                h2_proxy_session_cancel_all(ctx->session);
+                h2_proxy_session_process(ctx->session);
+                status = ctx->r_status = APR_SUCCESS;
                 break;
             }
             if (!ctx->next && h2_proxy_ihash_empty(ctx->session->streams)) {
