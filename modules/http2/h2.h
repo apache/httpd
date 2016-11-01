@@ -122,15 +122,11 @@ struct h2_request {
     const char *scheme;
     const char *authority;
     const char *path;
-    
     apr_table_t *headers;
 
     apr_time_t request_time;
-    
     unsigned int chunked : 1;   /* iff requst body needs to be forwarded as chunked */
     unsigned int serialize : 1; /* iff this request is written in HTTP/1.1 serialization */
-    unsigned int expect_100 : 1; /* iff we need a 100-continue response */
-    unsigned int expect_failed : 1; /* iff we are unable to fullfill expects */
 };
 
 typedef struct h2_headers h2_headers;

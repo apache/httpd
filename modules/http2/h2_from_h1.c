@@ -424,8 +424,13 @@ static apr_status_t pass_response(h2_task *task, ap_filter_t *f,
     status = ap_pass_brigade(f->next, parser->tmp);
     apr_brigade_cleanup(parser->tmp);
     
-    parser->state = H2_RP_DONE;
-    task->output.parse_response = 0;
+    /* reset parser for possible next response */
+    parser->state = H2_RP_STATUS_LINE;
+    apr_array_clear(parser->hlines);
+
+    if (response->status >= 200) {
+        task->output.sent_response = 1;
+    }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, 
                   APLOGNO(03197) "h2_task(%s): passed response %d", 
                   task->id, response->status);
@@ -486,6 +491,7 @@ apr_status_t h2_from_h1_parse_response(h2_task *task, ap_filter_t *f,
                 }
                 else if (line[0] == '\0') {
                     /* end of headers, pass response onward */
+                    
                     return pass_response(task, f, parser);
                 }
                 else {

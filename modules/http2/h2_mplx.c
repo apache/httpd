@@ -308,8 +308,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->stream_timeout = stream_timeout;
         m->workers = workers;
         m->workers_max = workers->max_workers;
-        m->workers_def_limit = 4;
-        m->workers_limit = m->workers_def_limit;
+        m->workers_limit = 6; /* the original h1 max parallel connections */
         m->last_limit_change = m->last_idle_block = apr_time_now();
         m->limit_change_interval = apr_time_from_msec(200);
         
@@ -568,9 +567,8 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_iq_clear(m->q);
         purge_streams(m);
 
-        /* 3. mark all slave connections as aborted and wakeup all sleeping 
-         *    tasks. Mark all still active streams as 'done'. m->streams has to
-         *    be empty afterwards with streams either in
+        /* 3. wakeup all sleeping tasks. Mark all still active streams as 'done'. 
+         *    m->streams has to be empty afterwards with streams either in
          *    a) m->shold because a task is still active
          *    b) m->spurge because task is done, or was not started */
         h2_ihash_iter(m->tasks, task_abort_connection, m);
@@ -612,8 +610,9 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         if (!h2_ihash_empty(m->tasks)) {
             /* when we are here, we lost track of the tasks still present.
              * this currently happens with mod_proxy_http2 when we shut
-             * down a h2_req_engine with tasks assigned... */ 
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,  APLOGNO(03056)
+             * down a h2_req_engine with tasks assigned. Since no parallel
+             * processing is going on any more, we just clean them up. */ 
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c,  APLOGNO(03056)
                           "h2_mplx(%ld): 3. release_join with %d tasks",
                           m->id, (int)h2_ihash_count(m->tasks));
             h2_ihash_iter(m->tasks, task_print, m);
@@ -977,7 +976,8 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
         }
         
         if (task->engine) {
-            if (!h2_req_engine_is_shutdown(task->engine)) {
+            if (!m->aborted && !task->c->aborted 
+                && !h2_req_engine_is_shutdown(task->engine)) {
                 ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, m->c,
                               "h2_mplx(%ld): task(%s) has not-shutdown "
                               "engine(%s)", m->id, task->id, 
@@ -1314,7 +1314,8 @@ apr_status_t h2_mplx_req_engine_pull(h2_req_engine *ngn,
     return status;
 }
  
-void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
+void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
+                             apr_status_t status)
 {
     h2_task *task = h2_ctx_cget_task(r_conn);
     
@@ -1325,6 +1326,10 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
         if (enter_mutex(m, &acquired) == APR_SUCCESS) {
             ngn_out_update_windows(m, ngn);
             h2_ngn_shed_done_task(m->ngn_shed, ngn, task);
+            if (status != APR_SUCCESS && h2_task_can_redo(task) 
+                && !h2_ihash_get(m->redo_tasks, task->stream_id)) {
+                h2_ihash_add(m->redo_tasks, task);
+            }
             if (task->engine) { 
                 /* cannot report that as done until engine returns */
             }
