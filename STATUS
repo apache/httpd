@@ -117,6 +117,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mpm_unix: Apache fails to start if previously crashed then restarted with
+     the same PID (e.g. in container).  PR 60261.
+     trunk patch: http://svn.apache.org/r1766160
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -210,18 +215,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jim, ylavic
      ylavic: r1756553 and r1649491 have a CHANGES entry.
 
-  *) mpm_unix: Apache fails to start if previously crashed then restarted with
-     the same PID (e.g. in container).  PR 60261.
-     trunk patch: http://svn.apache.org/r1766160
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim
-
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  PR 60313.
      trunk patch: http://svn.apache.org/r1739201
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1739201.patch
                   (w/o the APR_EGENERAL case added in r1482918, not in 2.4.x)
-     +1: ylavic
+     +1: ylavic, covener
 
   *) core: avoid adding multiple subrequest filters when there are nested 
      subrequests.  PR58292
