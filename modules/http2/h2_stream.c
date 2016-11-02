@@ -201,8 +201,8 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
     stream->pool         = pool;
     stream->session      = session;
 
-    h2_beam_create(&stream->input, pool, id, "input", 0);
-    h2_beam_create(&stream->output, pool, id, "output", 0);
+    h2_beam_create(&stream->input, pool, id, "input", H2_BEAM_OWNER_SEND, 0);
+    h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0);
     
     set_state(stream, H2_STREAM_ST_OPEN);
     apr_pool_cleanup_register(pool, stream, stream_pool_cleanup, 
