@@ -18,9 +18,6 @@ Changes with Apache 2.4.24
      than running with the modified XFF but original TCP address.
      PR 49839/PR 60251
 
-  *) core: avoid adding multiple subrequest filters when there are nested
-     subrequests. PR 58292
-
   *) mod_http2: connection shutdown revisited: corrected edge cases on
      shutting down ongoing streams, changed log warnings to be less noisy
      when waiting on long running tasks. [Stefan Eissing]
