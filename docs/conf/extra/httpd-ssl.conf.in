@@ -266,7 +266,7 @@ SSLCertificateKeyFile "@rel_sysconfdir@/server.key"
 #     mod_ssl sends the close notify alert.
 #   o ssl-accurate-shutdown:
 #     This forces an accurate shutdown when the connection is closed, i.e. a
-#     SSL close notify alert is send and mod_ssl waits for the close notify
+#     SSL close notify alert is sent and mod_ssl waits for the close notify
 #     alert of the client. This is 100% SSL/TLS standard compliant, but in
 #     practice often causes hanging connections with brain-dead browsers. Use
 #     this only for browsers where you know that their SSL implementation
