@@ -117,11 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: avoid adding multiple subrequest filters when there are nested 
-     subrequests.  PR58292
-     trunk patch: http://svn.apache.org/r1698239
-     2.4.x patch: trunk works
-     +1: covener, ylavic, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -228,6 +223,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   (w/o the APR_EGENERAL case added in r1482918, not in 2.4.x)
      +1: ylavic
 
+  *) core: avoid adding multiple subrequest filters when there are nested 
+     subrequests.  PR58292
+     trunk patch: 
+     2.4.x patch: 
+     +1: 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
