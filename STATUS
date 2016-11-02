@@ -225,9 +225,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) core: avoid adding multiple subrequest filters when there are nested 
      subrequests.  PR58292
-     trunk patch: 
-     2.4.x patch: 
-     +1: 
+     trunk patch:  http://svn.apache.org/r1698334
+     2.4.x patch:  trunk works modulo CHANGES
+     +1:  covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
