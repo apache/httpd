@@ -72,6 +72,7 @@ Documentación</title>
 </category>
 
 <category id="howto"><title>How-To / Tutoriales</title>
+    <page href="howto">Índice de Tutoriales </page>
     <page href="howto/auth.html">Autenticación y Autorización</page>
     <page href="howto/access.html">Control de Acceso</page>
     <page href="howto/cgi.html">CGI: Contenido Dinámico</page>

@@ -70,6 +70,7 @@ Documentation</title>
 </category>
 
 <category id="howto"><title>How-To / Tutorials</title>
+	<page href="howto">How to index page </page>
     <page href="howto/auth.html">Authentication and Authorization</page>
     <page href="howto/access.html">Access Control</page>
     <page href="howto/cgi.html">CGI: Dynamic Content</page>
