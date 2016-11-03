@@ -163,6 +163,11 @@ typedef struct {
 typedef int h2_beam_can_beam_callback(void *ctx, h2_bucket_beam *beam,
                                       apr_file_t *file);
 
+typedef enum {
+    H2_BEAM_OWNER_SEND,
+    H2_BEAM_OWNER_RECV
+} h2_beam_owner_t;
+
 /**
  * Will deny all transfer of apr_file_t across the beam and force
  * a data copy instead.
@@ -173,13 +178,14 @@ struct h2_bucket_beam {
     int id;
     const char *tag;
     apr_pool_t *pool;
-    h2_blist red;
-    h2_blist hold;
-    h2_blist purge;
-    apr_bucket_brigade *green;
+    h2_beam_owner_t owner;
+    h2_blist send_list;
+    h2_blist hold_list;
+    h2_blist purge_list;
+    apr_bucket_brigade *recv_buffer;
     h2_bproxy_list proxies;
-    apr_pool_t *red_pool;
-    apr_pool_t *green_pool;
+    apr_pool_t *send_pool;
+    apr_pool_t *recv_pool;
     
     apr_size_t max_buf_size;
     apr_interval_time_t timeout;
@@ -216,22 +222,23 @@ struct h2_bucket_beam {
  * mutex and will be used in multiple threads. It needs a pool allocator
  * that is only used inside that same mutex.
  *
- * @param pbeam will hold the created beam on return
- * @param red_pool      pool usable on red side, beam lifeline
+ * @param pbeam         will hold the created beam on return
+ * @param pool          pool owning the beam, beam will cleanup when pool released
+ * @param id            identifier of the beam
+ * @param tag           tag identifying beam for logging
+ * @param owner         if the beam is owned by the sender or receiver, e.g. if
+ *                      the pool owner is using this beam for sending or receiving
  * @param buffer_size   maximum memory footprint of buckets buffered in beam, or
  *                      0 for no limitation
- *
- * Call from the red side only.
  */
 apr_status_t h2_beam_create(h2_bucket_beam **pbeam,
-                            apr_pool_t *red_pool, 
-                            int id, const char *tag, 
+                            apr_pool_t *pool, 
+                            int id, const char *tag,
+                            h2_beam_owner_t owner,  
                             apr_size_t buffer_size);
 
 /**
  * Destroys the beam immediately without cleanup.
- *
- * Call from the red side only.
  */ 
 apr_status_t h2_beam_destroy(h2_bucket_beam *beam);
 
@@ -241,10 +248,10 @@ apr_status_t h2_beam_destroy(h2_bucket_beam *beam);
  * All accepted buckets are removed from the given brigade. Will return with
  * APR_EAGAIN on non-blocking sends when not all buckets could be accepted.
  * 
- * Call from the red side only.
+ * Call from the sender side only.
  */
 apr_status_t h2_beam_send(h2_bucket_beam *beam,  
-                          apr_bucket_brigade *red_buckets, 
+                          apr_bucket_brigade *bb, 
                           apr_read_type_e block);
 
 /**
@@ -253,7 +260,7 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
  * available or the beam has been closed. Non-blocking calls return APR_EAGAIN
  * if no data is available.
  *
- * Call from the green side only.
+ * Call from the receiver side only.
  */
 apr_status_t h2_beam_receive(h2_bucket_beam *beam, 
                              apr_bucket_brigade *green_buckets, 
@@ -262,15 +269,11 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
 
 /**
  * Determine if beam is empty. 
- * 
- * Call from red or green side.
  */
 int h2_beam_empty(h2_bucket_beam *beam);
 
 /**
  * Determine if beam has handed out proxy buckets that are not destroyed. 
- * 
- * Call from red or green side.
  */
 int h2_beam_holds_proxies(h2_bucket_beam *beam);
 
@@ -278,14 +281,14 @@ int h2_beam_holds_proxies(h2_bucket_beam *beam);
  * Abort the beam. Will cleanup any buffered buckets and answer all send
  * and receives with APR_ECONNABORTED.
  * 
- * Call from the red side only.
+ * Call from the sender side only.
  */
 void h2_beam_abort(h2_bucket_beam *beam);
 
 /**
  * Close the beam. Sending an EOS bucket serves the same purpose. 
  * 
- * Call from the red side only.
+ * Call from the sender side only.
  */
 apr_status_t h2_beam_close(h2_bucket_beam *beam);
 
@@ -297,7 +300,7 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam);
  * If a timeout is set on the beam, waiting might also time out and
  * return APR_ETIMEUP.
  *
- * Call from the red side only.
+ * Call from the sender side only.
  */
 apr_status_t h2_beam_wait_empty(h2_bucket_beam *beam, apr_read_type_e block);
 
@@ -322,27 +325,27 @@ void h2_beam_buffer_size_set(h2_bucket_beam *beam,
 apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam);
 
 /**
- * Register a callback to be invoked on the red side with the
- * amount of bytes that have been consumed by the red side, since the
+ * Register a callback to be invoked on the sender side with the
+ * amount of bytes that have been consumed by the receiver, since the
  * last callback invocation or reset.
  * @param beam the beam to set the callback on
  * @param cb   the callback or NULL
  * @param ctx  the context to use in callback invocation
  * 
- * Call from the red side, callbacks invoked on red side.
+ * Call from the sender side, callbacks invoked on sender side.
  */
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
                          h2_beam_io_callback *cb, void *ctx);
 
 /**
- * Register a callback to be invoked on the red side with the
- * amount of bytes that have been consumed by the red side, since the
+ * Register a callback to be invoked on the receiver side with the
+ * amount of bytes that have been produces by the sender, since the
  * last callback invocation or reset.
  * @param beam the beam to set the callback on
  * @param cb   the callback or NULL
  * @param ctx  the context to use in callback invocation
  * 
- * Call from the red side, callbacks invoked on red side.
+ * Call from the receiver side, callbacks invoked on receiver side.
  */
 void h2_beam_on_produced(h2_bucket_beam *beam, 
                          h2_beam_io_callback *cb, void *ctx);
