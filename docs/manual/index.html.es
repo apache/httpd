@@ -80,7 +80,8 @@ Documentación</h1>
 <li><a href="vhosts/">Servidores Virtuales</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Tutoriales</a></h2>
-<ul><li><a href="howto/auth.html">Autenticación y Autorización</a></li>
+<ul><li><a href="howto">Índice de Tutoriales </a></li>
+<li><a href="howto/auth.html">Autenticación y Autorización</a></li>
 <li><a href="howto/access.html">Control de Acceso</a></li>
 <li><a href="howto/cgi.html">CGI: Contenido Dinámico</a></li>
 <li><a href="howto/htaccess.html">Ficheros .htaccess</a></li>
