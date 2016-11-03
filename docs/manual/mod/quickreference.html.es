@@ -34,10 +34,6 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>La Guía Rápida de Referencia de Directivas muestra el uso, las
     opciones por defecto, el estado y el contexto de cada directiva de
@@ -48,7 +44,7 @@
     <p>La primera columna muestra el nombre y el uso de la directiva.
     La segunda columna muestra el valor por defecto de la directiva,
     si existe ese valor por defecto.  Si el valor por defecto es
-    demasiado largo para mostrarlo, el primer caracter va seguido de
+    demasiado largo para mostrarlo, el primer carácter va seguido de
     un signo "+".</p>
 
     <p>La tercera y la cuarta columna listan los contextos en los que
