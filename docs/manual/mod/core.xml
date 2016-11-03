@@ -4766,5 +4766,20 @@ as if 'QualifyRedirectURL ON' was configured.</compatibility>
 </directivesynopsis>
 
 
+<directivesynopsis>
+<name>RegisterHttpMethod</name>
+<description>Register non-standard HTTP methods</description>
+<syntax>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>HTTP Methods that are not conforming to the relvant RFCs are normally
+rejected by request processing in Apache HTTPD. To avoid this, modules
+can register non-standard HTTP methods they support.
+The <directive>RegisterHttpMethod</directive> allows to register such
+methods manually. This can be useful for if such methods are forwared
+for external processing, e.g. to a CGI script.</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

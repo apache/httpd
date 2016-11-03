@@ -3917,6 +3917,15 @@ static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
     return "HttpProtocol must be min=0.9|1.0";
 }
 
+static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL)
+        return err;
+    ap_method_register(cmd->pool, arg);
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4443,6 +4452,8 @@ AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "by default the client specified order determines selection"),
 AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
               "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9"),
+AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
+                "Registers non-standard HTTP methods"),
 { NULL }
 };
 

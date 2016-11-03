@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) core: New directive RegisterHttpMethod for registering non-standard
+     HTTP methods. [Stefan Fritsch]
+
   *) core: New directive HttpProtocol which allows to disable HTTP/0.9
      support. [Stefan Fritsch]
 
