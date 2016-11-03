@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) core: New directive HttpProtocol which allows to disable HTTP/0.9
+     support. [Stefan Fritsch]
+
   *) mod_http2: unannounced and multiple interim responses (status code < 200)
      are parsed and forwarded to client until a final response arrives.
      [Stefan Eissing]

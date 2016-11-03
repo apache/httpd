@@ -519,6 +519,9 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->trace_enable != AP_TRACE_UNSET)
         conf->trace_enable = virt->trace_enable;
 
+    if (virt->http09_enable != AP_HTTP09_UNSET)
+        conf->http09_enable = virt->http09_enable;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -3895,6 +3898,25 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
+                                     const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+
+    if (strncmp(arg, "min=", 4) == 0) {
+        arg += 4;
+        if (strcmp(arg, "0.9") == 0)
+            conf->http09_enable = AP_HTTP09_ENABLE;
+        else if (strcmp(arg, "1.0") == 0)
+            conf->http09_enable = AP_HTTP09_DISABLE;
+        else
+            return "HttpProtocol min must be one of '0.9' and '1.0'";
+	return NULL;
+    }
+    return "HttpProtocol must be min=0.9|1.0";
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4419,6 +4441,8 @@ AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
 AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "'off' (default) or 'on' to respect given order of protocols, "
               "by default the client specified order determines selection"),
+AP_INIT_TAKE1("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
+              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9"),
 { NULL }
 };
 
