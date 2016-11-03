@@ -161,7 +161,17 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "h2_proxy_session(%s): got interim HEADERS, status=%d",
                               session->id, r->status);
-                r->status_line = ap_get_status_line(r->status);
+                switch(r->status) {
+                    case 103:
+                        /* workaround until we get this into http protocol base
+                         * parts. without this, unknown codes are converted to
+                         * 500... */
+                        r->status_line = "103 Early Hints";
+                        break;
+                    default:
+                        r->status_line = ap_get_status_line(r->status);
+                        break;
+                }
                 ap_send_interim_response(r, 1);
             }
             stream->waiting_on_100 = 0;
