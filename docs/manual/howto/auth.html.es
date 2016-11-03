@@ -50,8 +50,8 @@
 	contraseñas</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Uso de múltiples proveedores</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">Más allá de la Autorización</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#socache">Authentication Caching</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#socache">Cache de Autenticación</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">Más información</a></li>
 </ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -475,81 +475,93 @@ Require group GroupName</pre>
 
     <h3><a name="authandororder" id="authandororder">Aplicando la lógica y ordenación</a></h3>
         <p>Controlar el cómo y en qué orden se va a aplicar la autorización ha 
-        	sido un misterio en el pasado. En Apache 2.2 un proveedior de autenticación
-        	C
+        	sido un misterio en el pasado. En Apache 2.2 un proveedor del 
+        	mecanismo de autenticación fue introducido para disociar el proceso actual
+        	de autenticación y soportar funcionalidad.
+        	Uno de los beneficios secundarios fue que los proveedores de autenticación
+        	podían ser configurados y llamados en un orden especifico que no dependieran
+        	en el orden de carga del propio modulo. 
+        	Este proveedor de dicho mecanismo, ha sido introducido en la autorización
+        	también. Lo que esto significa es que la directiva 
+        	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
+        	no sólo especifica que método de autorización deberá ser usado, si no
+        	también especifica el orden en que van a ser llamados. Múltiples
+        	métodos de autorización son llamados en el mismo orden en que la directiva
+            <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> aparece en la
+            configuración.
+        </p>
 
-        	 In Apache 2.2 a provider-based
-        authentication mechanism was introduced to decouple the actual
-        authentication process from authorization and supporting functionality.
-        One of the side benefits was that authentication providers could be
-        configured and called in a specific order which didn't depend on the
-        load order of the auth module itself. This same provider based mechanism
-        has been brought forward into authorization as well. What this means is
-        that the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive
-        not only specifies which authorization methods should be used, it also
-        specifies the order in which they are called. Multiple authorization
-        methods are called in the same order in which the
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives
-        appear in the configuration.</p>
+        <p>
+        	Con la Introducción del contenedor de directivas de autorización tales como
+	        <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
+	        y
+	        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>,
+	        La configuración también tiene control sobre cuándo se llaman a los métodos
+	        de autorización y qué criterios determinan cuándo se concede el acceso.
+	        Vease
+	        <a href="../mod/mod_authz_core.html#logic">Contenedores de autorización</a>
+	        Para un ejemplo de cómo pueden ser utilizados para expresar una lógica 
+	        más compleja de autorización.
+	    </p>
 
-        <p>With the introduction of authorization container directives
-        such as
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
-        and
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>,
-        the configuration also has control over when the
-        authorization methods are called and what criteria determines when
-        access is granted.  See
-        <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
-        for an example of how they may be used to express complex
-        authorization logic.</p>
-
-        <p>By default all
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-        directives are handled as though contained within a
-        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
-        container directive.  In other words, if
-        any of the specified authorization methods succeed, then authorization
-        is granted.</p>
+        <p>
+        	Por defecto todas las directivas 
+        	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+       		son manejadas como si estuvieran contenidas en una directiva
+       		<code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>.
+       		En otras palabras, Si alguno de los métodos de autorización 
+       		especificados tiene éxito, se concede la autorización.
+       	</p>
 
     
 
-    <h3><a name="reqaccessctrl" id="reqaccessctrl">Using authorization providers for access control</a></h3>
-        <p>Authentication by username and password is only part of the
-        story. Frequently you want to let people in based on something
-        other than who they are. Something such as where they are
-        coming from.</p>
+    <h3><a name="reqaccessctrl" id="reqaccessctrl">Uso de los proveedores de autorización para 
+    	el control de acceso</a></h3>
 
-        <p>The authorization providers <code>all</code>,
-        <code>env</code>, <code>host</code> and <code>ip</code> let you
-        allow or deny access based on other host based criteria such as
-        host name or ip address of the machine requesting a
-        document.</p>
+    	<p>
+    		La autenticación de nombre de usuario y contraseña es sólo parte
+    		de toda la historia que conlleva el proceso. Frecuentemente quiere
+    		dar acceso a la gente en base a algo más que lo que son.
+    		Algo como de donde vienen.
+    	</p>
 
-        <p>The usage of these providers is specified through the
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.
-        This directive registers the authorization providers
-        that will be called during the authorization stage of the request
-        processing. For example:</p>
+        <p>
+        	Los proveedores de autorización <code>all</code>,
+        	<code>env</code>, <code>host</code> y <code>ip</code>
+        	te permiten denegar o permitir el acceso basándose en otros
+        	criterios como el nombre de la máquina o la IP de la máquina que
+        	realiza la consulta para un documento.
+        </p>
+
+        <p>
+        	El uso de estos proveedores se especifica a través de la directiva
+        	<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.
+        	La directiva registra los proveedores de autorización que serán llamados
+        	durante la solicitud de la fase del proceso de autorización. Por ejemplo:
+        </p>
 
         <pre class="prettyprint lang-config">Require ip <var>address</var>
         </pre>
 
 
-        <p>where <var>address</var> is an IP address (or a partial IP
-        address) or:</p>
+        <p>
+        	Donde <var>address</var> es una dirección IP (o una dirección IP parcial) 
+        	o bien:
+        </p>
 
         <pre class="prettyprint lang-config">Require host <var>domain_name</var>
         </pre>
 
 
-        <p>where <var>domain_name</var> is a fully qualified domain name
-        (or a partial domain name); you may provide multiple addresses or
-        domain names, if desired.</p>
+        <p>
+        	Donde <var>domain_name</var> es el nombre completamente cualificado de un nombre 
+	        de dominio (FQDN) (o un nombre parcial del dominio);
+	        puede proporcionar múltiples direcciones o nombres de dominio, si se desea.
+        </p>
 
-        <p>For example, if you have someone spamming your message
-        board, and you want to keep them out, you could do the
-        following:</p>
+        <p>
+        	Por ejemplo, si alguien envía spam a su tablón de mensajes y desea
+        	mantenerlos alejados, podría hacer lo siguiente:</p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
@@ -557,9 +569,11 @@ Require group GroupName</pre>
 &lt;/RequireAll&gt;</pre>
 
 
-        <p>Visitors coming from that address will not be able to see
-        the content covered by this directive. If, instead, you have a
-        machine name, rather than an IP address, you can use that.</p>
+        <p>
+        	Visitantes que vengan desde esa IP no serán capaces de ver el contenido
+        	que cubre esta directiva. Si, en cambio, lo que se tiene es el nombre de
+        	la máquina, en vez de la dirección IP, podría usar:
+        </p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
@@ -567,8 +581,11 @@ Require group GroupName</pre>
 &lt;/RequireAll&gt;</pre>
 
 
-        <p>And, if you'd like to block access from an entire domain,
-        you can specify just part of an address or domain name:</p>
+        <p>
+        	Y, si lo que se quiere es bloquear el acceso desde un determinado dominio
+        	(bloquear el acceso desde el dominio entero), puede especificar parte 
+        	de la dirección o del propio dominio a bloquear:
+        </p>
 
         <pre class="prettyprint lang-config">&lt;RequireAll&gt;
     Require all granted
@@ -578,61 +595,88 @@ Require group GroupName</pre>
 &lt;/RequireAll&gt;</pre>
 
 
-        <p>Using <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
-        with multiple <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code> directives, each negated with <code>not</code>,
-        will only allow access, if all of negated conditions are true. In other words,
-        access will be blocked, if any of the negated conditions fails.</p>
-
-    
-
-    <h3><a name="filesystem" id="filesystem">Access Control backwards compatibility</a></h3>
-        <p>One of the side effects of adopting a provider based mechanism for
-        authentication is that the previous access control directives
-        <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
-        <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
-        <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and
-        <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> are no longer needed.
-        However to provide backwards compatibility for older configurations, these
-        directives have been moved to the <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> module.</p>
-
-        <div class="warning"><h3>Note</h3>
-        <p>The directives provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> have
-        been deprecated by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
-        Mixing old directives like <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> or <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> with new ones like
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> is technically possible
-        but discouraged. The <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> module was created to support
-        configurations containing only old directives to facilitate the 2.4 upgrade.
-        Please check the <a href="../upgrading.html">upgrading</a> guide for more
-        information.
+        <p>
+        	Usando <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
+	        con múltiples directivas <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code>, cada una negada con un <code>not</code>,
+	        Sólo permitirá el acceso, si todas las condiciones negadas son verdaderas.
+	        En otras palabras, el acceso será bloqueado, si cualquiera de las condiciones
+	        negadas fallara.
         </p>
-        </div>
+
     
 
+    <h3><a name="filesystem" id="filesystem">Compatibilidad de Control de Acceso con versiones 
+    	anteriores </a></h3>
+
+        <p>
+        	Uno de los efectos secundarios de adoptar proveedores basados en 
+        	mecanismos de autenticación es que las directivas anteriores
+	        <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
+	        <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
+	        <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> y
+        	<code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> ya no son necesarias.
+        	Sin embargo, para proporcionar compatibilidad con configuraciones antiguas,
+        	estas directivas se han movido al módulo <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.
+        </p>
+
+        <div class="warning"><h3>Nota:</h3>
+	        <p>
+	        	Las directivas proporcionadas por <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> 
+	        	han quedado obsoletas por <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Mezclar 
+	        	directivas antiguas como
+	        	<code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, 
+	            <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> ó 
+	            <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> con las nuevas 
+	            como 
+	            <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
+	            es técnicamente posible pero desaconsejable. El módulo 
+	            <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> se creó para soportar configuraciones
+	            que contuvieran sólo directivas antiguas para facilitar la actualización
+	            a la versión 2.4.
+	            Por favor revise la documentación de 
+	            <a href="../upgrading.html">actualización</a> para más información al
+	            respecto.
+	        </p>
+	    </div>
+	
+
+	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="socache" id="socache">Cache de Autenticación</a></h2>
+	<p>
+		Puede haber momentos en que la autenticación ponga una carga 
+		inaceptable en el proveedor (de autenticación) o en tu red.
+		Esto suele afectar a los usuarios de <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> 
+		(u otros proveedores de terceros/personalizados).
+		Para lidiar con este problema, HTTPD 2.3/2.4 introduce un nuevo proveedor
+		de caché  <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> para cachear las credenciales 
+		y reducir la carga en el proveedor(es) original.
+	</p>
+    <p>
+    	Esto puede ofrecer un aumento de rendimiento sustancial para algunos usuarios.
+    </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Authentication Caching</a></h2>
-    <p>There may be times when authentication puts an unacceptable load
-    on a provider or on your network.  This is most likely to affect users
-    of <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (or third-party/custom providers).
-    To deal with this, HTTPD 2.3/2.4 introduces a new caching provider
-    <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> to cache credentials and reduce
-    the load on the origin provider(s).</p>
-    <p>This may offer a substantial performance boost to some users.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="moreinformation" id="moreinformation">More information</a></h2>
-    <p>You should also read the documentation for
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
-    which contain some more information about how this all works.  The
-    directive <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> can also help
-    in simplifying certain authentication configurations.</p>
+<h2><a name="moreinformation" id="moreinformation">Más información</a></h2>
 
-    <p>The various ciphers supported by Apache for authentication data are
-    explained in <a href="../misc/password_encryptions.html">Password
-    Encryptions</a>.</p>
+    <p>
+    	También debería leer la documentación para
+    	<code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> y <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
+    	la cuál contiene más información de como funciona todo esto.
+    	La directiva <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></code> puede también ayudar 
+	    a la hora de simplificar ciertas configuraciones de autenticación.
+	</p>
 
-    <p>And you may want to look at the <a href="access.html">Access
-    Control</a> howto, which discusses a number of related topics.</p>
+    <p>
+    	Los diferentes algoritmos de cifrado que están soportados por Apache
+    	para la autenticación se explican en
+    	<a href="../misc/password_encryptions.html">Cifrado de Contraseñas</a>.
+    </p>
+
+    <p>
+    	Y tal vez quiera ojear la documentación de "how to"  
+    	<a href="access.html">Control de Acceso</a>  donde se mencionan temas 
+    	relacionados.</p>
 
 </div></div>
 <div class="bottomlang">
