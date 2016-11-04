@@ -668,14 +668,91 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     return APR_SUCCESS;
 }
 
+struct check_header_ctx {
+    request_rec *r;
+    int error;
+};
+
+/* check a single header, to be used with apr_table_do() */
+static int check_header(void *arg, const char *name, const char *val)
+{
+    struct check_header_ctx *ctx = arg;
+    if (name[0] == '\0') {
+        ctx->error = 1;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(02428)
+                      "Empty response header name, aborting request");
+        return 0;
+    }
+    if (ap_has_cntrl(name)) {
+        ctx->error = 1;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(02429)
+                      "Response header name '%s' contains control "
+                      "characters, aborting request",
+                      name);
+        return 0;
+    }
+    if (ap_has_cntrl(val)) {
+        ctx->error = 1;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(02430)
+                      "Response header '%s' contains control characters, "
+                      "aborting request: %s",
+                      name, val);
+        return 0;
+    }
+    return 1;
+}
+
+/**
+ * Check headers for HTTP conformance
+ * @return 1 if ok, 0 if bad
+ */
+static APR_INLINE int check_headers(request_rec *r)
+{
+    const char *loc;
+    struct check_header_ctx ctx = { r, 0 };
+
+    apr_table_do(check_header, &ctx, r->headers_out, NULL);
+    if (ctx.error)
+        return 0; /* problem has been logged by check_header() */
+
+    if ((loc = apr_table_get(r->headers_out, "Location")) != NULL) {
+        const char *scheme_end = ap_strchr_c(loc, ':');
+        const char *s = loc;
+
+        /*
+         * Check that the URI has a valid scheme and is absolute
+         * XXX Should we do a full uri parse here?
+         */
+        if (scheme_end == NULL || scheme_end == loc)
+            goto bad;
+
+        do {
+            if ((!apr_isalnum(*s) && *s != '.' && *s != '+' && *s != '-')
+                || !apr_isascii(*s) ) {
+                goto bad;
+            }
+        } while (++s < scheme_end);
+
+        if (scheme_end[1] != '/' || scheme_end[2] != '/')
+            goto bad;
+    }
+
+    return 1;
+
+bad:
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02431)
+                  "Bad Location header in response: '%s', aborting request",
+                  loc);
+    return 0;
+}
+
 typedef struct header_struct {
     apr_pool_t *pool;
     apr_bucket_brigade *bb;
 } header_struct;
 
 /* Send a single HTTP header field to the client.  Note that this function
- * is used in calls to table_do(), so their interfaces are co-dependent.
- * In other words, don't change this one without checking table_do in alloc.c.
+ * is used in calls to apr_table_do(), so don't change its interface.
  * It returns true unless there was a write error of some kind.
  */
 static int form_header_field(header_struct *h,
@@ -1175,6 +1252,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
     ap_bucket_error *eb = NULL;
+    core_server_config *conf;
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -1228,6 +1306,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!apr_is_empty_table(r->err_headers_out)) {
         r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                            r->headers_out);
+    }
+
+    conf = ap_get_core_module_config(r->server->module_config);
+    if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+        int ok = check_headers(r);
+        if (!ok && !(conf->http_conformance & AP_HTTP_CONFORMANCE_LOGONLY)) {
+            ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+            return AP_FILTER_ERROR;
+        }
     }
 
     /*

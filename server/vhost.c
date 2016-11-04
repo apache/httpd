@@ -747,6 +747,59 @@ static apr_status_t fix_hostname_non_v6(request_rec *r, char *host)
     return APR_SUCCESS;
 }
 
+/*
+ * If strict mode ever becomes the default, this should be folded into
+ * fix_hostname_non_v6()
+ */
+static apr_status_t strict_hostname_check(request_rec *r, char *host,
+                                          int logonly)
+{
+    char *ch;
+    int is_dotted_decimal = 1, leading_zeroes = 0, dots = 0;
+
+    for (ch = host; *ch; ch++) {
+        if (!apr_isascii(*ch)) {
+            goto bad;
+        }
+        else if (apr_isalpha(*ch) || *ch == '-') {
+            is_dotted_decimal = 0;
+        }
+        else if (ch[0] == '.') {
+            dots++;
+            if (ch[1] == '0' && apr_isdigit(ch[2]))
+                leading_zeroes = 1;
+        }
+        else if (!apr_isdigit(*ch)) {
+           /* also takes care of multiple Host headers by denying commas */
+            goto bad;
+        }
+    }
+    if (is_dotted_decimal) {
+        if (host[0] == '.' || (host[0] == '0' && apr_isdigit(host[1])))
+            leading_zeroes = 1;
+        if (leading_zeroes || dots != 3) {
+            /* RFC 3986 7.4 */
+            goto bad;
+        }
+    }
+    else {
+        /* The top-level domain must start with a letter (RFC 1123 2.1) */
+        while (ch > host && *ch != '.')
+            ch--;
+        if (ch[0] == '.' && ch[1] != '\0' && !apr_isalpha(ch[1]))
+            goto bad;
+    }
+    return APR_SUCCESS;
+
+bad:
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02415)
+                  "[strict] Invalid host name '%s'%s%.6s",
+                  host, *ch ? ", problem near: " : "", ch);
+    if (logonly)
+        return APR_SUCCESS;
+    return APR_EINVAL;
+}
+
 /* Lowercase and remove any trailing dot and/or :port from the hostname,
  * and check that it is sane.
  *
@@ -760,22 +813,23 @@ static apr_status_t fix_hostname_non_v6(request_rec *r, char *host)
  * Instead we just check for filesystem metacharacters: directory
  * separators / and \ and sequences of more than one dot.
  */
-static void fix_hostname(request_rec *r, const char *host_header)
+static int fix_hostname(request_rec *r, const char *host_header,
+                        unsigned http_conformance)
 {
     const char *src;
     char *host, *scope_id;
     apr_port_t port;
     apr_status_t rv;
     const char *c;
+    int is_v6literal = 0;
+    int strict = http_conformance & AP_HTTP_CONFORMANCE_STRICT;
+    int strict_logonly = http_conformance & AP_HTTP_CONFORMANCE_LOGONLY;
 
     src = host_header ? host_header : r->hostname;
 
-    /* According to RFC 2616, Host header field CAN be blank.
-     * XXX But only 'if the requested URI does not include an Internet host
-     * XXX name'. Can this happen?
-     */
+    /* According to RFC 2616, Host header field CAN be blank */
     if (!*src) {
-        return;
+        return is_v6literal;
     }
 
     /* apr_parse_addr_port will interpret a bare integer as a port
@@ -784,8 +838,16 @@ static void fix_hostname(request_rec *r, const char *host_header)
     for (c = src; apr_isdigit(*c); ++c);
     if (!*c) {
         /* pure integer */
+        if (strict) {
+            /* RFC 3986 7.4 */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02416)
+                         "[strict] purely numeric host names not allowed: %s",
+                         src);
+            if (!strict_logonly)
+                goto bad_nolog;
+        }
         r->hostname = src;
-        return;
+        return is_v6literal;
     }
 
     if (host_header) {
@@ -802,9 +864,7 @@ static void fix_hostname(request_rec *r, const char *host_header)
             r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
         }
         if (host_header[0] == '[')
-            rv = fix_hostname_v6_literal(r, host);
-        else
-            rv = fix_hostname_non_v6(r, host);
+            is_v6literal = 1;
     }
     else {
         /*
@@ -813,23 +873,31 @@ static void fix_hostname(request_rec *r, const char *host_header)
          */
         host = apr_pstrdup(r->pool, r->hostname);
         if (ap_strchr(host, ':') != NULL)
-            rv = fix_hostname_v6_literal(r, host);
-        else
-            rv = fix_hostname_non_v6(r, host);
+            is_v6literal = 1;
+    }
+
+    if (is_v6literal) {
+        rv = fix_hostname_v6_literal(r, host);
+    }
+    else {
+        rv = fix_hostname_non_v6(r, host);
+        if (strict && rv == APR_SUCCESS)
+            rv = strict_hostname_check(r, host, strict_logonly);
     }
     if (rv != APR_SUCCESS)
         goto bad;
+
     r->hostname = host;
-    return;
+    return is_v6literal;
 
 bad:
-    r->status = HTTP_BAD_REQUEST;
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00550)
                   "Client sent malformed Host header: %s",
-                  r->hostname);
-    return;
+                  src);
+bad_nolog:
+    r->status = HTTP_BAD_REQUEST;
+    return is_v6literal;
 }
-
 
 /* return 1 if host matches ServerName or ServerAliases */
 static int matches_aliases(server_rec *s, const char *host)
@@ -1040,23 +1108,79 @@ static void check_serverpath(request_rec *r)
     }
 }
 
+static APR_INLINE const char *construct_host_header(request_rec *r,
+                                                    int is_v6literal)
+{
+    struct iovec iov[5];
+    apr_size_t nvec = 0;
+    /*
+     * We cannot use ap_get_server_name/port here, because we must
+     * ignore UseCanonicalName/Port.
+     */
+    if (is_v6literal) {
+        iov[nvec].iov_base = "[";
+        iov[nvec].iov_len = 1;
+        nvec++;
+    }
+    iov[nvec].iov_base = (void *)r->hostname;
+    iov[nvec].iov_len = strlen(r->hostname);
+    nvec++;
+    if (is_v6literal) {
+        iov[nvec].iov_base = "]";
+        iov[nvec].iov_len = 1;
+        nvec++;
+    }
+    if (r->parsed_uri.port_str) {
+        iov[nvec].iov_base = ":";
+        iov[nvec].iov_len = 1;
+        nvec++;
+        iov[nvec].iov_base = r->parsed_uri.port_str;
+        iov[nvec].iov_len = strlen(r->parsed_uri.port_str);
+        nvec++;
+    }
+    return apr_pstrcatv(r->pool, iov, nvec, NULL);
+}
 
 AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 {
-    const char *host_header;
+    core_server_config *conf = ap_get_core_module_config(r->server->module_config);
+    const char *host_header = apr_table_get(r->headers_in, "Host");
+    int is_v6literal, have_hostname_from_url = 0;
 
     if (r->hostname) {
         /*
          * If there was a host part in the Request-URI, ignore the 'Host'
          * header.
          */
-        fix_hostname(r, NULL);
+        have_hostname_from_url = 1;
+        is_v6literal = fix_hostname(r, NULL, conf->http_conformance);
     }
-    else if ((host_header = apr_table_get(r->headers_in, "Host")) != NULL ) {
-        fix_hostname(r, host_header);
+    else if (host_header != NULL) {
+        is_v6literal = fix_hostname(r, host_header, conf->http_conformance);
     }
     if (r->status != HTTP_OK)
         return;
+
+    if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+        /*
+         * If we have both hostname from an absoluteURI and a Host header,
+         * we must ignore the Host header (RFC 2616 5.2).
+         * To enforce this, we reset the Host header to the value from the
+         * request line.
+         */
+        if (have_hostname_from_url && host_header != NULL) {
+            const char *info = "Would replace";
+            const char *new = construct_host_header(r, is_v6literal);
+            if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_LOGONLY)) {
+                apr_table_set(r->headers_in, "Host", r->hostname);
+                info = "Replacing";
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02417)
+                          "%s Host header '%s' with host from request uri: "
+                          "'%s'", info, host_header, new);
+        }
+    }
+
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
         if (r->hostname)

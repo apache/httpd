@@ -731,6 +731,11 @@ typedef struct {
 #define AP_HTTP09_DISABLE 2
     char http09_enable;
 
+#define AP_HTTP_CONFORMANCE_UNSET     0
+#define AP_HTTP_CONFORMANCE_LIBERAL   1
+#define AP_HTTP_CONFORMANCE_STRICT    2
+#define AP_HTTP_CONFORMANCE_LOGONLY   4
+    char http_conformance;
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

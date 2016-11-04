@@ -488,6 +488,8 @@
  * 20120211.66 (2.4.24-dev) Rename ap_proxy_check_backend() to
  *                          ap_proxy_check_connection().
  * 20120211.67 (2.5.0-dev)  Add http09_enable to core_server_config
+ *                          Add http_conformance to core_server_config,
+ *                          add ap_has_cntrl()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

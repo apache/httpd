@@ -2317,6 +2317,15 @@ AP_DECLARE(char *) ap_get_exec_line(apr_pool_t *p,
                                     const char *cmd,
                                     const char * const *argv);
 
+/**
+ * Check if string contains a control character
+ * @param str the string to check
+ * @param srclen length of the data
+ * @return 1 if yes, 0 if no control characters
+ */
+AP_DECLARE(int) ap_has_cntrl(const char *str)
+                AP_FN_ATTR_NONNULL_ALL;
+
 #define AP_NORESTART APR_OS_START_USEERR + 1
 
 /**
