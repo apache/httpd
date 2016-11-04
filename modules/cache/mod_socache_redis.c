@@ -16,6 +16,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_protocol.h"
 
 #include "apr.h"
 #include "apu_version.h"
@@ -32,6 +33,8 @@
 #include "ap_mpm.h"
 #include "http_log.h"
 #include "apr_redis.h"
+#include "apr_strings.h"
+#include "mod_status.h"
 
 /* The underlying apr_redis system is thread safe.. */
 #define RD_KEY_LEN 254
@@ -100,7 +103,8 @@ static apr_status_t socache_rd_init(ap_socache_instance_t *ctx,
     char *split;
     char *tok;
 
-    socache_rd_svr_cfg *sconf = ap_get_module_config(s->module_config, &socache_redis_module);
+    socache_rd_svr_cfg *sconf = ap_get_module_config(s->module_config,
+            &socache_redis_module);
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
 
@@ -295,7 +299,82 @@ static apr_status_t socache_rd_remove(ap_socache_instance_t *ctx, server_rec *s,
 
 static void socache_rd_status(ap_socache_instance_t *ctx, request_rec *r, int flags)
 {
-    /* TODO: Make a mod_status handler. meh. */
+    apr_redis_t *rc = ctx->rc;
+    int i;
+
+    for (i = 0; i < rc->ntotal; i++) {
+        apr_redis_server_t *rs;
+        apr_redis_stats_t *stats;
+        char *role;
+        apr_status_t rv;
+        char *br = (!(flags & AP_STATUS_SHORT) ? "</br>" : "");
+
+        rs = rc->live_servers[i];
+
+        ap_rprintf(r, "Redis server: %s:%d [%s]%s\n", rs->host, (int)rs->port,
+                (rs->status == APR_RC_SERVER_LIVE) ? "Up" : "Down",
+                br);
+        rv = apr_redis_stats(rs, r->pool, &stats);
+        if (rv != APR_SUCCESS)
+            continue;
+        if (!(flags & AP_STATUS_SHORT)) {
+            ap_rprintf(r, "<b>General::</b> Version: <i>%u.%u.%u</i> [%u bits], PID: <i>%u</i>, Uptime: <i>%u hrs</i> </br>\n",
+                     stats->major, stats->minor, stats->patch, stats->arch_bits,
+                     stats->process_id, stats->uptime_in_seconds/3600);
+             ap_rprintf(r, "<b>Clients::</b> Connected: <i>%d</i>, Blocked: <i>%d</i> </br>\n",
+                     stats->connected_clients, stats->blocked_clients);
+             ap_rprintf(r, "<b>Memory::</b> Total: <i>%lu</i>, Max: <i>%lu</i>, Used: <i>%lu</i> </br>\n",
+                     stats->total_system_memory, stats->maxmemory, stats->used_memory);
+             ap_rprintf(r, "<b>CPU::</b> System: <i>%u</i>, User: <i>%u</i></br>\n",
+                     stats->used_cpu_sys, stats->used_cpu_user );
+             ap_rprintf(r, "<b>Connections::</b> Recd: <i>%lu</i>, Processed: <i>%lu</i>, Rejected: <i>%lu</i> </br>\n",
+                     stats->total_connections_received, stats->total_commands_processed,
+                     stats->rejected_connections);
+             ap_rprintf(r, "<b>Cache::</b> Hits: <i>%lu</i>, Misses: <i>%lu</i> </br>\n",
+                     stats->keyspace_hits, stats->keyspace_misses);
+             ap_rprintf(r, "<b>Net::</b> Input bytes: <i>%lu</i>, Output bytes: <i>%lu</i> </br>\n",
+                     stats->total_net_input_bytes, stats->total_net_output_bytes);
+             if (stats->role == APR_RS_SERVER_MASTER)
+                 role = "master";
+             else if (stats->role == APR_RS_SERVER_SLAVE)
+                 role = "slave";
+             else
+                 role = "unknown";
+             ap_rprintf(r, "<b>Misc::</b> Role: <i>%s</i>, Connected Slaves: <i>%u</i>, Is Cluster?: <i>%s</i> \n",
+                     role, stats->connected_clients,
+                     (stats->cluster_enabled ? "yes" : "no"));
+            ap_rputs("<hr></br>\n", r);
+        }
+        else {
+            ap_rprintf(r, "Version: %u.%u.%u [%u bits], PID: %u, Uptime: %u hrs %s\n",
+                    stats->major, stats->minor, stats->patch, stats->arch_bits,
+                    stats->process_id, stats->uptime_in_seconds/3600, br);
+            ap_rprintf(r, "Clients:: Connected: %d, Blocked: %d %s\n",
+                    stats->connected_clients, stats->blocked_clients, br);
+            ap_rprintf(r, "Memory:: Total: %lu, Max: %lu, Used: %lu %s\n",
+                    stats->total_system_memory, stats->maxmemory, stats->used_memory,
+                    br);
+            ap_rprintf(r, "CPU:: System: %u, User: %u %s\n",
+                    stats->used_cpu_sys, stats->used_cpu_user , br);
+            ap_rprintf(r, "Connections:: Recd: %lu, Processed: %lu, Rejected: %lu %s\n",
+                    stats->total_connections_received, stats->total_commands_processed,
+                    stats->rejected_connections, br);
+            ap_rprintf(r, "Cache:: Hits: %lu, Misses: %lu %s\n",
+                    stats->keyspace_hits, stats->keyspace_misses, br);
+            ap_rprintf(r, "Net:: Input bytes: %lu, Output bytes: %lu %s\n",
+                    stats->total_net_input_bytes, stats->total_net_output_bytes, br);
+            if (stats->role == APR_RS_SERVER_MASTER)
+                role = "master";
+            else if (stats->role == APR_RS_SERVER_SLAVE)
+                role = "slave";
+            else
+                role = "unknown";
+            ap_rprintf(r, "Misc:: Role: %s, Connected Slaves: %u, Is Cluster?: %s %s\n",
+                    role, stats->connected_clients,
+                    (stats->cluster_enabled ? "yes" : "no"), br);
+        }
+    }
+
 }
 
 static apr_status_t socache_rd_iterate(ap_socache_instance_t *instance,
