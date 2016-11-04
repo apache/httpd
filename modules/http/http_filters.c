@@ -709,8 +709,9 @@ static int check_header(void *arg, const char *name, const char *val)
 static APR_INLINE int check_headers(request_rec *r)
 {
     const char *loc;
-    struct check_header_ctx ctx = { r, 0 };
+    struct check_header_ctx ctx = { 0, 0 };
 
+    ctx.r = r;
     apr_table_do(check_header, &ctx, r->headers_out, NULL);
     if (ctx.error)
         return 0; /* problem has been logged by check_header() */

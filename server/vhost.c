@@ -1145,7 +1145,8 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 {
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     const char *host_header = apr_table_get(r->headers_in, "Host");
-    int is_v6literal, have_hostname_from_url = 0;
+    int is_v6literal = 0;
+    int have_hostname_from_url = 0;
 
     if (r->hostname) {
         /*
