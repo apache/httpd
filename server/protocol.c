@@ -191,6 +191,10 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
 /* Get a line of protocol input, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
+ * 
+ * Pulls from r->proto_input_filters instead of r->input_filters for
+ * stricter protocol adherence and better input filter behavior during
+ * chunked trailer processing (for http).
  *
  * If s is NULL, ap_rgetline_core will allocate necessary memory from r->pool.
  *
@@ -229,7 +233,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
     for (;;) {
         apr_brigade_cleanup(bb);
-        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
+        rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_GETLINE,
                             APR_BLOCK_READ, 0);
         if (rv != APR_SUCCESS) {
             return rv;
@@ -343,7 +347,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             apr_brigade_cleanup(bb);
 
             /* We only care about the first byte. */
-            rv = ap_get_brigade(r->input_filters, bb, AP_MODE_SPECULATIVE,
+            rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_SPECULATIVE,
                                 APR_BLOCK_READ, 1);
             if (rv != APR_SUCCESS) {
                 return rv;

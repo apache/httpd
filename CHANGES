@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.24
 
+  *) core: ap_rgetline_core now pulls from r->proto_input_filters.
+
   *) core, http: Extend HttpProtocol with an option to enforce stricter HTTP
      conformance or to only log the found problems. [Stefan Fritsch]
 
