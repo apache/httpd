@@ -117,12 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mpm_unix: Apache fails to start if previously crashed then restarted with
-     the same PID (e.g. in container).  PR 60261.
-     trunk patch: http://svn.apache.org/r1766160
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, covener
-
   *) http: Respond with "408 Request Timeout" when a timeout occurs while
      reading the request body.  PR 60313.
      trunk patch: http://svn.apache.org/r1739201

@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) mpm_unix: Apache fails to start if previously crashed then restarted with
+     the same PID (e.g. in container).  PR 60261.
+     [Val <valentin.bremond gmail.com>, Yann Ylavic]
+
   *) mod_http2: unannounced and multiple interim responses (status code < 200)
      are parsed and forwarded to client until a final response arrives.
      [Stefan Eissing]

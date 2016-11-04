@@ -787,7 +787,10 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
         status = "httpd (no pid file) not running";
     }
     else {
-        if (kill(otherpid, 0) == 0) {
+        /* With containerization, httpd may get the same PID at each startup,
+         * handle it as if it were not running (it obviously can't).
+         */
+        if (otherpid != getpid() && kill(otherpid, 0) == 0) {
             running = 1;
             status = apr_psprintf(pconf,
                                   "httpd (pid %" APR_PID_T_FMT ") already "
