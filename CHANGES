@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) core: Correctly parse an IPv6 literal host specification in an absolute
+     URL in the request line. [Stefan Fritsch]
+
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
