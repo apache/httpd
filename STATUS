@@ -220,13 +220,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1739201
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1739201.patch
                   (w/o the APR_EGENERAL case added in r1482918, not in 2.4.x)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
   *) core: avoid adding multiple subrequest filters when there are nested 
      subrequests.  PR58292
      trunk patch:  http://svn.apache.org/r1698334
      2.4.x patch:  trunk works modulo CHANGES
-     +1:  covener
+     +1:  covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
