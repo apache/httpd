@@ -118,7 +118,7 @@ static apr_status_t socache_rd_init(ap_socache_instance_t *ctx,
 
     rv = apr_redis_create(p, nservers, 0, &ctx->rc);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03473)
                      "Failed to create Redis Object of '%d' size.",
                      nservers);
         return rv;
@@ -135,13 +135,13 @@ static apr_status_t socache_rd_init(ap_socache_instance_t *ctx,
 
         rv = apr_parse_addr_port(&host_str, &scope_id, &port, split, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03474)
                          "Failed to Parse redis Server: '%s'", split);
             return rv;
         }
 
         if (host_str == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03475)
                          "Failed to Parse Server, "
                          "no hostname specified: '%s'", split);
             return APR_EINVAL;
@@ -160,7 +160,7 @@ static apr_status_t socache_rd_init(ap_socache_instance_t *ctx,
                                      sconf->rwto,
                                      &st);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03476)
                          "Failed to Create redis Server: %s:%d",
                          host_str, port);
             return rv;
@@ -168,7 +168,7 @@ static apr_status_t socache_rd_init(ap_socache_instance_t *ctx,
 
         rv = apr_redis_add_server(ctx->rc, st);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03477)
                          "Failed to Add redis Server: %s:%d",
                          host_str, port);
             return rv;
@@ -230,7 +230,7 @@ static apr_status_t socache_rd_store(ap_socache_instance_t *ctx, server_rec *s,
     rv = apr_redis_setex(ctx->rc, buf, (char*)ucaData, nData, timeout, 0);
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(03478)
                      "scache_rd: error setting key '%s' "
                      "with %d bytes of data", buf, nData);
         return rv;
@@ -258,13 +258,13 @@ static apr_status_t socache_rd_retrieve(ap_socache_instance_t *ctx, server_rec *
     rv = apr_redis_getp(ctx->rc, p, buf, &data, &data_len, NULL);
     if (rv) {
         if (rv != APR_NOTFOUND) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(03479)
                          "scache_rd: 'retrieve' FAIL");
         }
         return rv;
     }
     else if (data_len > *destlen) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(03480)
                      "scache_rd: 'retrieve' OVERFLOW");
         return APR_ENOMEM;
     }
@@ -289,7 +289,7 @@ static apr_status_t socache_rd_remove(ap_socache_instance_t *ctx, server_rec *s,
     rv = apr_redis_delete(ctx->rc, buf, 0);
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03481)
                      "scache_rd: error deleting key '%s' ",
                      buf);
     }
