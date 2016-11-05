@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1756216:1767808 (outdated) -->
+<!-- English Revision: 1767808 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,6 +72,7 @@
 </category>
 
 <category id="howto"><title>Recettes / Tutoriels</title>
+    <page href="howto">Index des recettes et tutoriels</page>
     <page href="howto/auth.html">Authentification et autorisation</page>
     <page href="howto/access.html">Contrôle d'accès</page>
     <page href="howto/cgi.html">CGI: Contenu dynamique</page>
