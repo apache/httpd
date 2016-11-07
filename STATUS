@@ -217,6 +217,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works modulo CHANGES
      +1:  covener, jim
 
+  *) mod_socache_memcache: Provide memcache STATs to mod_status
+     trunk patch: http://svn.apache.org/r1768245
+     2.4.x patch: trunk works
+     +1: jim
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
