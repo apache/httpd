@@ -790,8 +790,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p>While this directive is supported in virtual host and directory context,
        the changes it makes are visible to any later configuration
        directives, beyond any enclosing configuration section (matching or not).
-       Support for the
-       the other configuration sections was erroneously permitted by the initial
+       Support for the other configuration sections was erroneously permitted by the initial
        implementation of this directive and is only preserved (with unintuitive 
        results) to maintain backward compatibility.</p>
 </usage>
