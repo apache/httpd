@@ -240,7 +240,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         }
 
         /* Something horribly wrong happened.  Someone didn't block! 
-         * (this also happens at the end of each kept-alive connection)
+         * (this also happens at the end of each keepalive connection)
          */
         if (APR_BRIGADE_EMPTY(bb)) {
             return APR_EGENERAL;
