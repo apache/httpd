@@ -684,6 +684,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02418)
                           "Invalid protocol '%s'", r->protocol);
             if (enforce_strict) {
+                r->proto_num = HTTP_VERSION(1,0);
+                r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+                r->connection->keepalive = AP_CONN_CLOSE;
                 r->status = HTTP_BAD_REQUEST;
                 return 0;
             }
