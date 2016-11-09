@@ -947,7 +947,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     else if (ap_has_cntrl(value)) {
                         err = HTTP_BAD_REQUEST;
                         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(02427)
-                                      "Request header field '%.*s' contains"
+                                      "Request header field '%.*s' contains "
                                       "control character", (int)LOG_NAME_MAX_LEN,
                                       last_field);
                     }
