@@ -718,21 +718,13 @@ static APR_INLINE int check_headers(request_rec *r)
 
     if ((loc = apr_table_get(r->headers_out, "Location")) != NULL) {
         const char *scheme_end = ap_strchr_c(loc, ':');
-        const char *s = loc;
 
         /*
          * Check that the URI has a valid scheme and is absolute
          * XXX Should we do a full uri parse here?
          */
-        if (scheme_end == NULL || scheme_end == loc)
+        if (!ap_is_url(loc))
             goto bad;
-
-        do {
-            if ((!apr_isalnum(*s) && *s != '.' && *s != '+' && *s != '-')
-                || !apr_isascii(*s) ) {
-                goto bad;
-            }
-        } while (++s < scheme_end);
 
         if (scheme_end[1] != '/' || scheme_end[2] != '/')
             goto bad;
