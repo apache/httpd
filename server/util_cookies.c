@@ -174,8 +174,9 @@ AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, c
  * $path or other attributes following our cookie if present. If we end
  * up with an empty cookie, remove the whole header.
  */
-static int extract_cookie_line(ap_cookie_do * v, const char *key, const char *val)
+static int extract_cookie_line(void *varg, const char *key, const char *val)
 {
+    ap_cookie_do *v = varg;
     char *last1, *last2;
     char *cookie = apr_pstrdup(v->r->pool, val);
     const char *name = apr_pstrcat(v->r->pool, v->name ? v->name : "", "=", NULL);
@@ -252,8 +253,7 @@ AP_DECLARE(apr_status_t) ap_cookie_read(request_rec * r, const char *name, const
     v.duplicated = 0;
     v.name = name;
 
-    apr_table_do((int (*) (void *, const char *, const char *))
-                 extract_cookie_line, (void *) &v, r->headers_in,
+    apr_table_do(extract_cookie_line, &v, r->headers_in,
                  "Cookie", "Cookie2", NULL);
     if (v.duplicated) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00011) LOG_PREFIX
