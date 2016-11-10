@@ -117,6 +117,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) core: avoid adding multiple subrequest filters when there are nested 
+     subrequests.  PR58292
+     trunk patch:  http://svn.apache.org/r1698334
+     2.4.x patch:  trunk works modulo CHANGES
+     +1:  covener, jim, jchampion
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -189,6 +194,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: Maybe the -Werror case could be handled later, for now this series
              avoids a lot of "warning: 'aplog_module_index' defined but not
              used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
+     jchampion: Fine by me. I just think the dead code should be removed from
+                the backport in the meantime, so people don't have a false sense
+                of security.
 
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
@@ -210,12 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
      +1: jim, ylavic
      ylavic: r1756553 and r1649491 have a CHANGES entry.
-
-  *) core: avoid adding multiple subrequest filters when there are nested 
-     subrequests.  PR58292
-     trunk patch:  http://svn.apache.org/r1698334
-     2.4.x patch:  trunk works modulo CHANGES
-     +1:  covener, jim
 
   *) mod_socache_memcache: Provide memcache STATs to mod_status
      trunk patch: http://svn.apache.org/r1768245
