@@ -222,6 +222,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jim
 
+  *) Remove unnecessary apr_table_do() function casts.
+     trunk patch: http://svn.apache.org/r1769192
+     2.4.x patch: trunk works
+     +1: jchampion
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
