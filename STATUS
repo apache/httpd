@@ -229,6 +229,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jchampion
 
+  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
+     trunk patch: http://svn.apache.org/r1769332
+     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
+     +1: jchampion
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
