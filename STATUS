@@ -227,12 +227,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Remove unnecessary apr_table_do() function casts.
      trunk patch: http://svn.apache.org/r1769192
      2.4.x patch: trunk works
-     +1: jchampion
+     +1: jchampion, rpluem
 
   *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
      trunk patch: http://svn.apache.org/r1769332
      2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
-     +1: jchampion
+     +1: jchampion, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
