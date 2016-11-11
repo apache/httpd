@@ -55,7 +55,7 @@
 	et les deuxièmes le ralentissant).</p>
       </dd>
 
-      <dt><a href="perf-scaling.html">AmÃ©lioration des performances</a></dt>
+      <dt><a href="perf-scaling.html">Amélioration des performances</a></dt>
 
       <dd>
         <p>Quelques options de personnalisation de la configuration
