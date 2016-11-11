@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1690352 -->
@@ -30,27 +30,27 @@
   <summary>
 
     <p>Vous trouverez plus loin une liste de pages de documentation
-    additionnelles concernant le projet de d&eacute;veloppement du serveur web
+    additionnelles concernant le projet de développement du serveur web
     Apache.</p>
 
     <note type="warning"><title>Avertissement</title>
-    <p>La mise &agrave; jour des documents ci-dessous permettant de prendre en
-    compte les modifications apport&eacute;es par la version 2.1 du serveur
-    HTTP Apache n'a pas &eacute;t&eacute; enti&egrave;rement men&eacute;e &agrave; bien. Certaines
-    informations sont probablement encore pertinentes, mais utilisez-les tout de m&ecirc;me avec
-    pr&eacute;cautions.</p>
+    <p>La mise à jour des documents ci-dessous permettant de prendre en
+    compte les modifications apportées par la version 2.1 du serveur
+    HTTP Apache n'a pas été entièrement menée à bien. Certaines
+    informations sont probablement encore pertinentes, mais utilisez-les tout de même avec
+    précautions.</p>
     </note>
 
     <dl>
-      <dt><a href="perf-tuning.html">Notes &agrave; propos des performances -
-      R&eacute;glages fins d'Apache</a></dt>
+      <dt><a href="perf-tuning.html">Notes à propos des performances -
+      Réglages fins d'Apache</a></dt>
 
       <dd>
-        <p>Notes &agrave; propos de la configuration d'Apache pour de plus
-	hautes performances (&agrave; l'ex&eacute;cution et &agrave; la compilation). Notes
+        <p>Notes à propos de la configuration d'Apache pour de plus
+	hautes performances (à l'exécution et à la compilation). Notes
 	expliquant pourquoi Apache accomplit certaines choses et
-	n'en accomplit pas certaines autres (les premi&egrave;res l'acc&eacute;l&eacute;rant
-	et les deuxi&egrave;mes le ralentissant).</p>
+	n'en accomplit pas certaines autres (les premières l'accélérant
+	et les deuxièmes le ralentissant).</p>
       </dd>
 
       <dt><a href="perf-scaling.html">Amélioration des performances</a></dt>
@@ -61,26 +61,26 @@
       </dd>
 
       <dt><a href="security_tips.html">Conseils concernant la
-      s&eacute;curit&eacute;</a></dt>
+      sécurité</a></dt>
 
       <dd>
         <p>Quelques conseils de type "faites" ou "ne faites pas" pour
-	que votre site web Apache reste s&eacute;curis&eacute;.</p>
+	que votre site web Apache reste sécurisé.</p>
       </dd>
 
-      <dt><a href="relevant_standards.html">Standards concern&eacute;s</a></dt>
+      <dt><a href="relevant_standards.html">Standards concernés</a></dt>
 
       <dd>
-        <p>Ce document constitue une page de r&eacute;f&eacute;rence pour la plupart
-	des standards concern&eacute;s par Apache.</p>
+        <p>Ce document constitue une page de référence pour la plupart
+	des standards concernés par Apache.</p>
       </dd>
 
       <dt><a href="password_encryptions.html">Formats de chiffrement des
       mots de passe</a></dt>
 
       <dd>
-        <p>Discussion &agrave; propos des divers algorithmes de chiffrement
-	support&eacute;s par Apache &agrave; des fins d'authentification.</p>
+        <p>Discussion à propos des divers algorithmes de chiffrement
+	supportés par Apache à des fins d'authentification.</p>
       </dd>
     </dl>
 
