@@ -400,7 +400,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                      */
                     if (do_alloc) {
                         tmp = NULL;
-                    } else {
+                    }
+                    else {
                         /* We're null terminated. */
                         tmp = last_char;
                     }
@@ -605,7 +606,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
              * happen if it exceeds the configured limit for a request-line.
              */
             if (APR_STATUS_IS_ENOSPC(rv)) {
-                r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+                r->status = HTTP_REQUEST_URI_TOO_LARGE;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
@@ -656,7 +657,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         r->assbackwards = 0;
         pro = ll;
         len = strlen(ll);
-    } else {
+    }
+    else {
         r->assbackwards = 1;
         pro = "HTTP/0.9";
         len = 8;
