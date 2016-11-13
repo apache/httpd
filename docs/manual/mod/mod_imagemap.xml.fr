@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1432445 -->
@@ -33,51 +33,51 @@
 
 <summary>
     <p>Ce module traite les fichiers <code>.map</code>, et remplace
-    ainsi la fonctionnalit&eacute; du programme CGI <code>imagemap</code>. Tout
-    r&eacute;pertoire ou type de document configur&eacute; pour utiliser le
-    gestionnaire <code>imap-file</code> (&agrave; l'aide des directives
+    ainsi la fonctionnalité du programme CGI <code>imagemap</code>. Tout
+    répertoire ou type de document configuré pour utiliser le
+    gestionnaire <code>imap-file</code> (à l'aide des directives
     <directive module="mod_mime">AddHandler</directive> ou <directive
-    module="core">SetHandler</directive>), sera trait&eacute; par ce
+    module="core">SetHandler</directive>), sera traité par ce
     module.</p>
 
-    <p>La directive suivante conf&egrave;re aux fichiers poss&egrave;dant l'extension
+    <p>La directive suivante confère aux fichiers possèdant l'extension
     <code>.map</code> le statut de fichiers imagemap :</p>
 
     <highlight language="config">AddHandler imap-file map</highlight>
 
-    <p>Notez que la syntaxe suivante reste encore support&eacute;e :</p>
+    <p>Notez que la syntaxe suivante reste encore supportée :</p>
 
     <highlight language="config">AddType application/x-httpd-imap map</highlight>
 
     <p>Cependant, nous essayons d'abandonner progressivement les "types
     MIME magiques", et cette syntaxe est sur le point de devenir
-    obsol&egrave;te.</p>
+    obsolète.</p>
 </summary>
 
-<section id="features"><title>Nouvelles fonctionnalit&eacute;s</title>
+<section id="features"><title>Nouvelles fonctionnalités</title>
 
-    <p>Le module imagemap propose quelques nouvelles fonctionnalit&eacute;s qui
-    n'&eacute;taient pas disponibles avec les programmes imagemap pr&eacute;c&eacute;demment
-    distribu&eacute;s.</p>
+    <p>Le module imagemap propose quelques nouvelles fonctionnalités qui
+    n'étaient pas disponibles avec les programmes imagemap précédemment
+    distribués.</p>
 
     <ul>
-      <li>R&eacute;f&eacute;rences d'URLs relatives &agrave; l'information contenue dans
-      l'en-t&ecirc;te Referer: .</li>
+      <li>Références d'URLs relatives à l'information contenue dans
+      l'en-tête Referer: .</li>
 
-      <li>Assignement <code>&lt;base&gt;</code> par d&eacute;faut via la
+      <li>Assignement <code>&lt;base&gt;</code> par défaut via la
       nouvelle directive <code>base</code>.</li>
 
       <li>Fichier <code>imagemap.conf</code> non requis.</li>
 
-      <li>R&eacute;f&eacute;rences &agrave; des points.</li>
+      <li>Références à des points.</li>
 
-      <li>G&eacute;n&eacute;ration configurable de menus d'images interactives.</li>
+      <li>Génération configurable de menus d'images interactives.</li>
     </ul>
 </section>
 
 <section id="imapfile"><title>Fichier imagemap</title>
 
-    <p>Les lignes d'un fichier imagemap peuvent se pr&eacute;senter sous
+    <p>Les lignes d'un fichier imagemap peuvent se présenter sous
     plusieurs formats :</p>
 
     <example>
@@ -90,137 +90,137 @@
     <p>Les directives sont <code>base</code>, <code>default</code>,
     <code>poly</code>, <code>circle</code>, <code>rect</code>, ou
     <code>point</code>. valeur est une URL absolue ou relative, ou une
-    des valeurs sp&eacute;ciales &eacute;num&eacute;r&eacute;es ci-dessous. Les coordonn&eacute;es sont des
-    paires <code><var>x</var>,<var>y</var></code> s&eacute;par&eacute;es par des
+    des valeurs spéciales énumérées ci-dessous. Les coordonnées sont des
+    paires <code><var>x</var>,<var>y</var></code> séparées par des
     espaces. Le texte entre guillemets est le texte du lien si un menu
-    imagemap est g&eacute;n&eacute;r&eacute;. Les lignes commen&ccedil;ant par '#' sont des
+    imagemap est généré. Les lignes commençant par '#' sont des
     commentaires.</p>
 
     <section id="imapfile.directives"><title>Directives d'un fichier
     imagemap</title>
-      <p>Les directives autoris&eacute;es dans un fichier imagemap sont au
-      nombre de six. Elles peuvent se trouver &agrave; n'importe quelle
-      position dans le fichier, mais sont trait&eacute;es dans l'ordre selon
-      lequel elles sont enregistr&eacute;es dans le fichier imagemap.</p>
+      <p>Les directives autorisées dans un fichier imagemap sont au
+      nombre de six. Elles peuvent se trouver à n'importe quelle
+      position dans le fichier, mais sont traitées dans l'ordre selon
+      lequel elles sont enregistrées dans le fichier imagemap.</p>
 
       <dl>
       <dt>Directive <code>base</code></dt>
 
-      <dd><p>Elle a le m&ecirc;me effet que <code>&lt;base
+      <dd><p>Elle a le même effet que <code>&lt;base
       href="<var>valeur</var>"&gt;</code>. Les URLs non absolues du
-      fichier imagemap sont consid&eacute;r&eacute;es comme relatives &agrave; cette valeur.
+      fichier imagemap sont considérées comme relatives à cette valeur.
       La directive <code>base</code> l'emporte sur une directive
-      <directive module="mod_imagemap">ImapBase</directive> d&eacute;finie dans
+      <directive module="mod_imagemap">ImapBase</directive> définie dans
       un fichier <code>.htaccess</code> ou dans le fichier de
       configuration du serveur. En l'absence de directive de
       configuration <directive>ImapBase</directive>, la valeur par
-      d&eacute;faut de <code>base</code> est
+      défaut de <code>base</code> est
       <code>http://nom_serveur/</code>.</p>
       <p><code>base_uri</code> est un synonyme de <code>base</code>.
-      Notez que la pr&eacute;sence ou l'absence d'un slash de fin dans l'URL
+      Notez que la présence ou l'absence d'un slash de fin dans l'URL
       est importante.</p></dd>
 
       <dt>Directive <code>default</code></dt>
 
-      <dd>La d&eacute;cision &agrave; prendre si les coordonn&eacute;es fournies ne
-      correspondent &agrave; aucune des directives <code>poly</code>,
+      <dd>La décision à prendre si les coordonnées fournies ne
+      correspondent à aucune des directives <code>poly</code>,
       <code>circle</code>, ou <code>rect</code>, et si aucune directive
-      <code>point</code> n'est pr&eacute;sente. En l'absence de d&eacute;finition
+      <code>point</code> n'est présente. En l'absence de définition
       d'une directive de configuration <directive module="mod_imagemap"
-      >ImapDefault</directive>, la valeur par d&eacute;faut est
+      >ImapDefault</directive>, la valeur par défaut est
       <code>nocontent</code> et provoque l'envoi d'un code de statut
-      <code>204 No Content</code>. Le client verra toujours la m&ecirc;me
+      <code>204 No Content</code>. Le client verra toujours la même
       page s'afficher.</dd>
 
       <dt>Directive <code>poly</code></dt>
 
-      <dd>Accepte comme arguments trois &agrave; cent points, et est actionn&eacute;e
-      si les coordonn&eacute;es s&eacute;lectionn&eacute;es par l'utilisateur tombent dans le
-      polygone d&eacute;fini par ces points.</dd>
+      <dd>Accepte comme arguments trois à cent points, et est actionnée
+      si les coordonnées sélectionnées par l'utilisateur tombent dans le
+      polygone défini par ces points.</dd>
 
       <dt>Directive <code>circle</code></dt>
 
-      <dd>Accepte comme arguments les coordonn&eacute;es du centre d'un cercle
-      et celles d'un point de ce cercle. Elle est actionn&eacute;e si les
-      coordonn&eacute;es s&eacute;lectionn&eacute;es par l'utilisateur tombent dans ce
+      <dd>Accepte comme arguments les coordonnées du centre d'un cercle
+      et celles d'un point de ce cercle. Elle est actionnée si les
+      coordonnées sélectionnées par l'utilisateur tombent dans ce
       cercle.</dd>
 
       <dt>Directive <code>rect</code></dt>
 
-      <dd>Accepte comme arguments les coordonn&eacute;es des sommets de deux
-      angles oppos&eacute;s d'un rectangle. Elle est actionn&eacute;e si les
-      coordonn&eacute;es s&eacute;lectionn&eacute;es par l'utilisateur tombent dans ce
+      <dd>Accepte comme arguments les coordonnées des sommets de deux
+      angles opposés d'un rectangle. Elle est actionnée si les
+      coordonnées sélectionnées par l'utilisateur tombent dans ce
       rectangle.</dd>
 
       <dt>Directive <code>point</code></dt>
 
       <dd>Elle n'accepte qu'un seul point comme argument. Si aucune
       autre directive ne correspond, c'est la directive
-      dont le point sp&eacute;cifi&eacute; est le plus pr&egrave;s du point s&eacute;lectionn&eacute; par
-      l'utilisateur qui est actionn&eacute;e. Notez que la directive
+      dont le point spécifié est le plus près du point sélectionné par
+      l'utilisateur qui est actionnée. Notez que la directive
       <code>default</code> ne sera pas suivie si une directive
-      <code>point</code> est pr&eacute;sente et si des coordonn&eacute;es valides sont
+      <code>point</code> est présente et si des coordonnées valides sont
       fournies.</dd>
       </dl>
     </section>
 
     <section id="imapfile.values"><title>Valeurs</title>
 
-      <p>Les valeurs pass&eacute;es aux directives peuvent contenir :</p>
+      <p>Les valeurs passées aux directives peuvent contenir :</p>
 
       <dl>
       <dt>une URL</dt>
 
-      <dd><p>L'URL peut &ecirc;tre absolue ou relative. Les URLs relatives
-      peuvent contenir '..' et seront consid&eacute;r&eacute;es comme relatives &agrave; la
+      <dd><p>L'URL peut être absolue ou relative. Les URLs relatives
+      peuvent contenir '..' et seront considérées comme relatives à la
       valeur de <code>base</code>.</p>
-      <p><code>base</code> en lui-m&ecirc;me, ne sera pas r&eacute;solu en fonction
+      <p><code>base</code> en lui-même, ne sera pas résolu en fonction
       de la valeur courante. Cependant, une directive <code>base
       mailto:</code> fonctionnera correctement.</p></dd>
 
       <dt><code>map</code></dt>
 
-      <dd>&Eacute;quivalent &agrave; l'URL du fichier imagemap lui-m&ecirc;me. Aucune
-      coordonn&eacute;e n'est sp&eacute;cifi&eacute;e, et un menu sera donc g&eacute;n&eacute;r&eacute;, &agrave; moins
+      <dd>Équivalent à l'URL du fichier imagemap lui-même. Aucune
+      coordonnée n'est spécifiée, et un menu sera donc généré, à moins
       qu'une directive <directive
-      module="mod_imagemap">ImapMenu</directive> n'ait &eacute;t&eacute; d&eacute;finie &agrave;
+      module="mod_imagemap">ImapMenu</directive> n'ait été définie à
       <code>none</code>.</dd>
 
       <dt><code>menu</code></dt>
-      <dd>&Eacute;quivalent &agrave; <code>map</code>.</dd>
+      <dd>Équivalent à <code>map</code>.</dd>
 
       <dt><code>referer</code></dt>
 
-      <dd>&Eacute;quivalent &agrave; l'URL du document r&eacute;f&eacute;rant. La valeur par d&eacute;faut
-      est <code>http://nom_serveur/</code> si aucun en-t&ecirc;te
-      <code>Referer:</code> n'est pr&eacute;sent.</dd>
+      <dd>Équivalent à l'URL du document référant. La valeur par défaut
+      est <code>http://nom_serveur/</code> si aucun en-tête
+      <code>Referer:</code> n'est présent.</dd>
 
       <dt><code>nocontent</code></dt>
 
       <dd>Envoie un code de statut <code>204 No Content</code>,
-      indiquant au client qu'il doit continuer &agrave; afficher la m&ecirc;me page.
+      indiquant au client qu'il doit continuer à afficher la même page.
       Valide pour toutes les directives, sauf <code>base</code>.</dd>
 
       <dt><code>error</code></dt>
 
-      <dd>Envoie un code de statut d'&eacute;chec <code>500 Server
+      <dd>Envoie un code de statut d'échec <code>500 Server
       Error</code>. Valide pour toutes les directives, sauf
       <code>base</code>, mais n'a de sens qu'avec la directive
       <code>default</code>.</dd>
       </dl>
     </section>
 
-    <section id="imapfile.coords"><title>Coordonn&eacute;es</title>
+    <section id="imapfile.coords"><title>Coordonnées</title>
 
       <dl>
       <dt><code>0,0 200,200</code></dt>
 
-      <dd>Une coordonn&eacute;e se compose de deux valeurs,  <var>x</var> et
-      <var>y</var>, s&eacute;par&eacute;es par une virgule. Les coordonn&eacute;es sont
-      s&eacute;par&eacute;es entre elles par des espaces. Pour s'adapter &agrave; la mani&egrave;re
-      dont Lynx traite les images interactives, la s&eacute;lection par un
-      utilisateur de la coordonn&eacute;e <code>0,0</code> a le m&ecirc;me effet que
-      si aucune coordonn&eacute;e n'a &eacute;t&eacute; s&eacute;lectionn&eacute;e.</dd>
+      <dd>Une coordonnée se compose de deux valeurs,  <var>x</var> et
+      <var>y</var>, séparées par une virgule. Les coordonnées sont
+      séparées entre elles par des espaces. Pour s'adapter à la manière
+      dont Lynx traite les images interactives, la sélection par un
+      utilisateur de la coordonnée <code>0,0</code> a le même effet que
+      si aucune coordonnée n'a été sélectionnée.</dd>
       </dl>
 
     </section>
@@ -231,23 +231,23 @@
       <dl>
       <dt><code>"<var>Texte du menu</var>"</code></dt>
 
-      <dd><p>Apr&egrave;s la valeur ou les coordonn&eacute;es, la ligne peut
-      &eacute;ventuellement contenir un texte entre guillemets. Cette cha&icirc;ne
-      constitue le texte du lien si un menu est g&eacute;n&eacute;r&eacute; :</p>
+      <dd><p>Après la valeur ou les coordonnées, la ligne peut
+      éventuellement contenir un texte entre guillemets. Cette chaîne
+      constitue le texte du lien si un menu est généré :</p>
 
       <example>
         &lt;a href="http://example.com/"&gt;<var>Texte de
 	menu</var>&lt;/a&gt;
       </example>
 
-      <p>Si aucun texte entre guillemets n'est pr&eacute;sent, le texte sera
-      constitu&eacute; du nom du lien :</p>
+      <p>Si aucun texte entre guillemets n'est présent, le texte sera
+      constitué du nom du lien :</p>
 
       <example>
         &lt;a href="http://example.com/"&gt;http://example.com&lt;/a&gt;
       </example>
 
-      <p>Si vous voulez ins&eacute;rer des guillemets dans le texte, vous devez
+      <p>Si vous voulez insérer des guillemets dans le texte, vous devez
       les inscrire sous la forme <code>&amp;quot;</code>.</p></dd>
       </dl>
 
@@ -257,14 +257,14 @@
 <section id="example"><title>Exemple de fichier imagemap</title>
 
     <example>
-      #Les commentaires sont affich&eacute;s dans un menu 'format&eacute;' ou
-      #'semi-format&eacute;'.<br />
+      #Les commentaires sont affichés dans un menu 'formaté' ou
+      #'semi-formaté'.<br />
       #Et peuvent contenir des balises html. &lt;hr&gt;<br />
       base referer<br />
       poly map "Puis-je avoir un menu, s'il vous plait ?" 0,0 0,10 10,10 10,0<br />
-      rect .. 0,0 77,27 "le r&eacute;pertoire du r&eacute;f&eacute;rant"<br />
+      rect .. 0,0 77,27 "le répertoire du référant"<br />
       circle http://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
-      rect autre_fichier "dans le m&ecirc;me r&eacute;pertoire que le r&eacute;f&eacute;rant" 306,0 419,27<br />
+      rect autre_fichier "dans le même répertoire que le référant" 306,0 419,27<br />
       point http://www.zyzzyva.example.com/ 100,100<br />
       point http://www.tripod.example.com/ 200,200<br />
       rect mailto:nate@tripod.example.com 100,150 200,0 "Bogues?"<br />
@@ -272,7 +272,7 @@
 
 </section>
 
-<section id="referencing"><title>R&eacute;f&eacute;rencement de votre fichier
+<section id="referencing"><title>Référencement de votre fichier
 imagemap</title>
 
     <example><title>Exemple HTML</title>
@@ -295,7 +295,7 @@ imagemap</title>
 
 <directivesynopsis>
 <name>ImapMenu</name>
-<description>Action &agrave; entreprendre si aucune coordonn&eacute;e n'est fournie
+<description>Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</description>
 <syntax>ImapMenu none|formatted|semiformatted|unformatted</syntax>
 <default>ImapMenu formatted</default>
@@ -304,37 +304,37 @@ lorsqu'on invoque un fichier imagemap</description>
 <override>Indexes</override>
 
 <usage>
-    <p>La directive <directive>ImapMenu</directive> permet de sp&eacute;cifier
-    l'action &agrave; entreprendre lorsqu'un fichier imagemap est invoqu&eacute; sans
-    coordonn&eacute;es valides.</p>
+    <p>La directive <directive>ImapMenu</directive> permet de spécifier
+    l'action à entreprendre lorsqu'un fichier imagemap est invoqué sans
+    coordonnées valides.</p>
 
     <dl>
       <dt><code>none</code></dt>
       <dd>Si l'argument d'ImapMenu est <code>none</code>, aucun menu
-      n'est g&eacute;n&eacute;r&eacute;, et l'action <code>default</code> est effectu&eacute;e.</dd>
+      n'est généré, et l'action <code>default</code> est effectuée.</dd>
 
       <dt><code>formatted</code></dt>
       <dd>Le menu <code>formatted</code> est le menu le plus simple. Les
-      commentaires du fichier imagemap sont ignor&eacute;s. Un en-t&ecirc;te de
-      niveau un est affich&eacute;, puis un s&eacute;parateur horizontal, puis chacun
-      des liens sur une ligne s&eacute;par&eacute;e. L'aspect du menu est similaire &agrave;
-      celui d'un listing de r&eacute;pertoire.</dd>
+      commentaires du fichier imagemap sont ignorés. Un en-tête de
+      niveau un est affiché, puis un séparateur horizontal, puis chacun
+      des liens sur une ligne séparée. L'aspect du menu est similaire à
+      celui d'un listing de répertoire.</dd>
 
       <dt><code>semiformatted</code></dt>
       <dd>Dans le menu <code>semiformatted</code>, les commentaires sont
-      affich&eacute;s au moment o&ugrave; ils apparaissent dans le fichier imagemap.
-      Les lignes vides sont interpr&egrave;t&eacute;es comme des lignes de s&eacute;paration
-      HTML. Aucun en-t&ecirc;te ni s&eacute;parateur horizontal n'est affich&eacute;. &Agrave; part
-      ces diff&eacute;rences, le menu <code>semiformatted</code> est identique
+      affichés au moment où ils apparaissent dans le fichier imagemap.
+      Les lignes vides sont interprètées comme des lignes de séparation
+      HTML. Aucun en-tête ni séparateur horizontal n'est affiché. À part
+      ces différences, le menu <code>semiformatted</code> est identique
       au menu <code>formatted</code>.</dd>
 
       <dt><code>unformatted</code></dt>
-      <dd>Les commentaires sont affich&eacute;s et les lignes vides sont
-      ignor&eacute;es. N'est affich&eacute; que ce qui apparait dans le fichier
-      imagemap. Toutes les lignes de s&eacute;paration HTML et les
-      en-t&ecirc;tes doivent &ecirc;tre inclus en tant que commentaires dans le
+      <dd>Les commentaires sont affichés et les lignes vides sont
+      ignorées. N'est affiché que ce qui apparait dans le fichier
+      imagemap. Toutes les lignes de séparation HTML et les
+      en-têtes doivent être inclus en tant que commentaires dans le
       fichier imagemap. Cela vous procure une grande souplesse pour
-      d&eacute;finir l'apparence de vos menus, mais vous oblige &agrave; r&eacute;diger vos
+      définir l'apparence de vos menus, mais vous oblige à rédiger vos
       fichiers imagemap en HTML, et non en texte plat.</dd>
     </dl>
 </usage>
@@ -342,8 +342,8 @@ lorsqu'on invoque un fichier imagemap</description>
 
 <directivesynopsis>
 <name>ImapDefault</name>
-<description>Action &agrave; entreprendre par d&eacute;faut lorsqu'un fichier imagemap
-est invoqu&eacute; avec des coordonn&eacute;es qui ne correspondent &agrave; aucune
+<description>Action à entreprendre par défaut lorsqu'un fichier imagemap
+est invoqué avec des coordonnées qui ne correspondent à aucune
 cible</description>
 <syntax>ImapDefault error|nocontent|map|referer|<var>URL</var></syntax>
 <default>ImapDefault nocontent</default>
@@ -352,20 +352,20 @@ cible</description>
 <override>Indexes</override>
 
 <usage>
-    <p>La directive <directive>ImapDefault</directive> permet de d&eacute;finir
-    la valeur par d&eacute;faut de la directive <code>default</code> utilis&eacute;e
-    dans les fichiers imagemap. Sa valeur est &eacute;cras&eacute;e par la pr&eacute;sence
-    &eacute;ventuelle d'une directive <code>default</code> dans le fichier
-    imagemap. Si cette directive est absente, l'action associ&eacute;e &agrave;
+    <p>La directive <directive>ImapDefault</directive> permet de définir
+    la valeur par défaut de la directive <code>default</code> utilisée
+    dans les fichiers imagemap. Sa valeur est écrasée par la présence
+    éventuelle d'une directive <code>default</code> dans le fichier
+    imagemap. Si cette directive est absente, l'action associée à
     <code>default</code> est <code>nocontent</code>, ce qui implique
     l'envoi d'un code de statut <code>204 No Content</code> au client.
-    Dans ce cas, le client doit continuer &agrave; afficher la m&ecirc;me page.</p>
+    Dans ce cas, le client doit continuer à afficher la même page.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ImapBase</name>
-<description>Valeur par d&eacute;faut de la directive <code>base</code> des
+<description>Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</description>
 <syntax>ImapBase map|referer|<var>URL</var></syntax>
 <default>ImapBase http://nom_serveur/</default>
@@ -374,11 +374,11 @@ fichiers imagemap</description>
 <override>Indexes</override>
 
 <usage>
-    <p>La directive <directive>ImapBase</directive> permet de d&eacute;finir la
-    valeur par d&eacute;faut de la directive <code>base</code> des fichiers
-    imagemap. Sa valeur est &eacute;cras&eacute;e par la pr&eacute;sence &eacute;ventuelle d'une
+    <p>La directive <directive>ImapBase</directive> permet de définir la
+    valeur par défaut de la directive <code>base</code> des fichiers
+    imagemap. Sa valeur est écrasée par la présence éventuelle d'une
     directive <code>base</code> dans le fichier imagemap. Si cette
-    directive est absente, la valeur par d&eacute;faut de la directive
+    directive est absente, la valeur par défaut de la directive
     <code>base</code> est
     <code>http://<var>nom_serveur</var>/</code>.</p>
 </usage>
