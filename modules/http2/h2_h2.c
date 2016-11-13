@@ -681,6 +681,31 @@ static int h2_h2_pre_close_conn(conn_rec *c)
     return DECLINED;
 }
 
+static void check_push(request_rec *r, const char *tag)
+{
+    const h2_config *conf = h2_config_rget(r);
+    if (conf && conf->push_list && conf->push_list->nelts > 0) {
+        int i, old_status;
+        const char *old_line;
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
+                      "%s, early announcing %d resources for push",
+                      tag, conf->push_list->nelts);
+        for (i = 0; i < conf->push_list->nelts; ++i) {
+            h2_push_res *push = &APR_ARRAY_IDX(conf->push_list, i, h2_push_res);
+            apr_table_addn(r->headers_out, "Link", 
+                           apr_psprintf(r->pool, "<%s>; rel=preload%s", 
+                                        push->uri_ref, push->critical? "; critical" : ""));
+        }
+        old_status = r->status;
+        old_line = r->status_line;
+        r->status = 103;
+        r->status_line = "103 Early Hints";
+        ap_send_interim_response(r, 1);
+        r->status = old_status;
+        r->status_line = old_line;
+    }
+}
+
 static int h2_h2_post_read_req(request_rec *r)
 {
     /* slave connection? */
@@ -691,7 +716,8 @@ static int h2_h2_post_read_req(request_rec *r)
          * that we manipulate filters only once. */
         if (task && !task->filters_set) {
             ap_filter_t *f;
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "adding request filters");
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, 
+                          "h2_task(%s): adding request filters", task->id);
 
             /* setup the correct filters to process the request for h2 */
             ap_add_input_filter("H2_REQUEST", task, r, r->connection);
@@ -729,6 +755,7 @@ static int h2_h2_late_fixups(request_rec *r)
                               "h2_slave_out(%s): copy_files on", task->id);
                 h2_beam_on_file_beam(task->output.beam, h2_beam_no_files, NULL);
             }
+            check_push(r, "late_fixup");
         }
     }
     return DECLINED;

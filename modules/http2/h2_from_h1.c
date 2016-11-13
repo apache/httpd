@@ -488,10 +488,13 @@ apr_status_t h2_from_h1_parse_response(h2_task *task, ap_filter_t *f,
                 }
                 else if (line[0] == '\0') {
                     /* end of headers, pass response onward */
-                    
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                                  "h2_task(%s): end of response", task->id);
                     return pass_response(task, f, parser);
                 }
                 else {
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                                  "h2_task(%s): response header %s", task->id, line);
                     status = parse_header(parser, line);
                 }
                 break;

@@ -353,7 +353,11 @@ static int add_push(link_ctx *ctx)
                 /* atm, we do not push on pushes */
                 h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
-                
+                if (has_param(ctx, "critical")) {
+                    h2_priority *prio = apr_pcalloc(ctx->pool, sizeof(*prio));
+                    prio->dependency = H2_DEPENDANT_BEFORE;
+                    push->priority = prio;
+                }
                 if (!ctx->pushes) {
                     ctx->pushes = apr_array_make(ctx->pool, 5, sizeof(h2_push*));
                 }

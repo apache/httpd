@@ -192,6 +192,13 @@ apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                                const char *authority, const char *path, 
                                apr_table_t *headers);
 
-
+/*******************************************************************************
+ * reverse mapping for link headers
+ ******************************************************************************/
+const char *h2_proxy_link_reverse_map(request_rec *r,
+                                      proxy_dir_conf *conf, 
+                                      const char *real_server_uri,
+                                      const char *proxy_server_uri,
+                                      const char *s);
 
 #endif /* defined(__mod_h2__h2_proxy_util__) */

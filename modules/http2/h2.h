@@ -55,8 +55,6 @@ extern const char *H2_MAGIC_TOKEN;
 /* Initial default window size, RFC 7540 ch. 6.5.2 */
 #define H2_INITIAL_WINDOW_SIZE      ((64*1024)-1)
 
-#define H2_HTTP_2XX(a)      ((a) >= 200 && (a) < 300)
-
 #define H2_STREAM_CLIENT_INITIATED(id)      (id&0x01)
 
 #define H2_ALEN(a)          (sizeof(a)/sizeof((a)[0]))
