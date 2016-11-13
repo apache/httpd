@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1437838 -->
@@ -25,33 +25,33 @@
 <modulesynopsis metafile="mod_heartbeat.xml.meta">
 
 <name>mod_heartbeat</name>
-<description>Envoie des messages d'&eacute;tat au mandataire frontal</description>
+<description>Envoie des messages d'état au mandataire frontal</description>
 <status>Experimental</status>
 <sourcefile>mod_heartbeat</sourcefile>
 <identifier>heartbeat_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.3
+<compatibility>Disponible à partir de la version 2.3
 du serveur HTTP Apache</compatibility>
 
 <summary>
-    <p><module>mod_heartbeat</module> envoie &agrave; un moniteur
+    <p><module>mod_heartbeat</module> envoie à un moniteur
     <module>mod_heartmonitor</module> des messages multicast l'informant
-    du nombre de connexions courantes. En g&eacute;n&eacute;ral,
-    <module>mod_heartmonitor</module> est charg&eacute; sur un serveur
-    mandataire o&ugrave; <module>mod_lbmethod_heartbeat</module> est charg&eacute;, ce
+    du nombre de connexions courantes. En général,
+    <module>mod_heartmonitor</module> est chargé sur un serveur
+    mandataire où <module>mod_lbmethod_heartbeat</module> est chargé, ce
     qui permet d'utiliser la <em>lbmethod</em> "heartbeat" au sein des
     directives <directive module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>
-    Le module <module>mod_heartbeat</module> est charg&eacute; sur le
-    serveur d'origine qui sert les requ&ecirc;tes via le
+    Le module <module>mod_heartbeat</module> est chargé sur le
+    serveur d'origine qui sert les requêtes via le
     serveur mandataire.
 </p>
 
     <note type="warning">
         Pour utiliser <module>mod_heartbeat</module>,
 	<module>mod_status</module> et <module>mod_watchdog</module>
-	doivent &ecirc;tre soit des modules statiques, soit des modules
-	dynamiques, et dans ce dernier cas, ils doivent &ecirc;tre charg&eacute;s
+	doivent être soit des modules statiques, soit des modules
+	dynamiques, et dans ce dernier cas, ils doivent être chargés
 	avant <module>mod_heartbeat</module>.
     </note>
 
@@ -60,9 +60,9 @@ du serveur HTTP Apache</compatibility>
 <section id="consuming">
     <title>Utilisation de la sortie de mod_heartbeat</title>
   <p>
-      Chaque seconde, ce module g&eacute;n&egrave;re un paquet multicast UDP contenant
-      le nombre de threads/processus occup&eacute;s et en attente. Le paquet
-      poss&egrave;de un format ASCII simple similaire aux param&egrave;tres de requ&ecirc;te
+      Chaque seconde, ce module génère un paquet multicast UDP contenant
+      le nombre de threads/processus occupés et en attente. Le paquet
+      possède un format ASCII simple similaire aux paramètres de requête
       GET en HTTP.
   </p>
 
@@ -72,14 +72,14 @@ v=1&amp;ready=75&amp;busy=0
 
   <p>
     Les utilisateurs disposeront dans le futur de nouvelles variables en
-    plus de busy et ready, et toujours s&eacute;par&eacute;es par des '&amp;'.
+    plus de busy et ready, et toujours séparées par des '&amp;'.
   </p>
 
 </section>
 
 <directivesynopsis>
 <name>HeartbeatAddress</name>
-<description>Adresse multicast &agrave; laquelle envoyer les requ&ecirc;tes
+<description>Adresse multicast à laquelle envoyer les requêtes
 heartbeat</description>
 <syntax>HeartbeatAddress <var>addr:port</var></syntax>
 <default>disabled</default>
@@ -87,9 +87,9 @@ heartbeat</description>
 
 <usage>
     <p>La directive <directive>HeartbeatAddress</directive> permet de
-    sp&eacute;cifier l'adresse multicast &agrave; laquelle <module>mod_heartbeat</module> va
-    envoyer ses informations. En g&eacute;n&eacute;ral, cette adresse correspond &agrave; la
-    valeur d&eacute;finie par la directive  <directive
+    spécifier l'adresse multicast à laquelle <module>mod_heartbeat</module> va
+    envoyer ses informations. En général, cette adresse correspond à la
+    valeur définie par la directive  <directive
     module="mod_heartmonitor">HeartbeatListen</directive> sur le serveur
     mandataire frontal.</p>
     <highlight language="config">
