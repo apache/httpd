@@ -63,9 +63,6 @@ Changes with Apache 2.5.0
 
   *) core: Split ap_create_request() from ap_read_request(). [Graham Leggett]
 
-  *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
-     [Yann Ylavic]
-
   *) mod_auth_digest: Fix compatibility with expression-based Authname. PR59039.
      [Eric Covener]
 
