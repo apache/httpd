@@ -41,7 +41,7 @@
 # logfile lines processed per hour compared to ~45,000 per hour
 # with 'logresolve'.
 #
-# I haven't yet seen any noticable reduction in the percentage of IPs
+# I haven't yet seen any noticeable reduction in the percentage of IPs
 # that fail to get resolved. Your mileage will no doubt vary. 5s is long
 # enough to wait IMO.
 #
@@ -207,7 +207,7 @@ sub nslookup {
 
 	 # do the hostname lookup inside an eval. The eval will use the
 	 # already configured SIGnal handler and drop out of the {} block
-	 # regardless of whether the alarm occured or not.
+	 # regardless of whether the alarm occurred or not.
 	eval {
 		alarm($TIMEOUT);
 		$hostname = gethostbyaddr(gethostbyname($ip), AF_INET);

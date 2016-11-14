@@ -453,6 +453,10 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #if APR_HAS_SO_ACCEPTFILTER
         apr_table_setn(conf->accf_map, "http", ACCEPT_FILTER_NAME);
         apr_table_setn(conf->accf_map, "https", "dataready");
+#elif defined(WIN32)
+        /* 'data' is disabled on Windows due to a DoS vuln (PR 59970) */
+        apr_table_setn(conf->accf_map, "http", "connect");
+        apr_table_setn(conf->accf_map, "https", "connect");
 #else
         apr_table_setn(conf->accf_map, "http", "data");
         apr_table_setn(conf->accf_map, "https", "data");

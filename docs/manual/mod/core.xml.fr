@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1750752 -->
+<!-- English Revision: 1768961 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -90,23 +90,17 @@ AcceptFilter https data
     <code>none</code> active le filtre <code>TCP_DEFER_ACCEPT</code>
     pour ce protocole. Pour plus de détails, voir la page de
     manuel Linux de <a
-    href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/
-    tcp.7.html">tcp(7)</a>.</p>
+    href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a>.</p>
 
     <p>Sous Windows, les valeurs par défaut sont :</p>
     <highlight language="config">
-AcceptFilter http data
-AcceptFilter https data
+AcceptFilter http connect
+AcceptFilter https connect
     </highlight>
 
     <p>Le module MPM pour Windows mpm_winnt utilise la directive
     AcceptFilter comme commutateur de l'API AcceptEx(), et ne supporte
-    pas la mise en tampon du protocole http. Deux valeurs utilisent
-    l'API Windows AcceptEx() et vont recycler les sockets réseau entre
-    les connexions. <code>data</code> attend jusqu'à ce que les données
-    aient été transmises comme décrit plus haut, et le tampon de données
-    initiales ainsi que les adresses réseau finales sont tous extraits
-    grâce à une seule invocation d'AcceptEx(). <code>connect</code>
+    pas la mise en tampon du protocole http. <code>connect</code>
     utilise l'API AcceptEx(), extrait aussi les adresses réseau finales,
     mais à l'instar de <code>none</code>, la valeur <code>connect</code>
     n'attend pas la transmission des données initiales.</p>
@@ -117,6 +111,23 @@ AcceptFilter https data
     défectueux, ainsi que pour certains fournisseurs de réseau comme les
     pilotes vpn, ou les filtres anti-spam, anti-virus ou
     anti-spyware.</p>
+
+    <note type="warning">
+      <title>L'AcceptFilter <code>data</code> (Windows)</title>
+
+      <p>Jusqu'à la version 2.4.23, le filtre d'acceptation <code>data</code>
+      attendait que des données aient été transmises et que le tampon de données
+      initial et l'adresse réseau finale aient été déterminés par l'invocation
+      AcceptEx(). Cette implémentation étant vulnérable à une attaque de type
+      denial of service, elle a été désactivée.</p>
+
+      <p>La version actuelle de httpd prend par défaut le filtre
+      <code>connect</code> sous Windows, et reprendra la valeur
+      <code>data</code> si <code>data</code> est spécifié. Il est fortement
+      conseillé aux utilisateurs des versions plus anciennes de définir
+      explicitement le filtre <code>connect</code> pour leurs AcceptFilter
+      comme indiqué plus haut.</p>
+    </note>
 
 </usage>
 <seealso><directive module="core">Protocol</directive></seealso>
@@ -839,6 +850,13 @@ DocumentRoot "/var/www/${servername}/htdocs"
     <p>Le caractère ":" est interdit dans les noms de variables afin
     d'éviter les conflits avec la syntaxe de la directive <directive
     module="mod_rewrite">RewriteMap</directive>.</p>
+
+    <p>Si cette directive est définie au sein d'un bloc VirtualHost, les
+    changements qu'elle induit sont visibles de toute directive
+    ultérieure, au delà de tout bloc VirtualHost. Le support des autres sections
+    de configuration a été permis par erreur par l'implémentation initiale de
+    cette directive, et n'est conservé (avec des effets imprévisibles) que dans un
+    but de compatibilité ascendante.</p>
 </usage>
 </directivesynopsis>
 

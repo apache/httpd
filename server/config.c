@@ -15,7 +15,7 @@
  */
 
 /*
- * http_config.c: once was auxillary functions for reading httpd's config
+ * http_config.c: once was auxiliary functions for reading httpd's config
  * file and converting filenames into a namespace
  *
  * Rob McCool
@@ -737,7 +737,7 @@ AP_DECLARE(void) ap_remove_loaded_module(module *mod)
      *
      *  Note: 1. We cannot determine if the module was successfully
      *           removed by ap_remove_module().
-     *        2. We have not to complain explicity when the module
+     *        2. We have not to complain explicitly when the module
      *           is not found because ap_remove_module() did it
      *           for us already.
      */
@@ -1326,7 +1326,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
         if (retval != NULL && strcmp(retval, DECLINE_CMD) != 0) {
             /* If the directive in error has already been set, don't
              * replace it.  Otherwise, an error inside a container
-             * will be reported as occuring on the first line of the
+             * will be reported as occurring on the first line of the
              * container.
              */
             if (!parms->err_directive) {

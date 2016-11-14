@@ -212,7 +212,8 @@ static char *get_cookie_param(request_rec *r, const char *name)
 /* Find the worker that has the 'route' defined
  */
 static proxy_worker *find_route_worker(proxy_balancer *balancer,
-                                       const char *route, request_rec *r)
+                                       const char *route, request_rec *r,
+                                       int recursion)
 {
     int i;
     int checking_standby;
@@ -249,10 +250,15 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                          * This enables to safely remove the member from the
                          * balancer. Of course you will need some kind of
                          * session replication between those two remote.
+                         * Also check that we haven't gone thru all the
+                         * balancer members by means of redirects.
+                         * This should avoid redirect cycles.
                          */
-                        if (*worker->s->redirect) {
+                        if ((*worker->s->redirect)
+                            && (recursion < balancer->workers->nelts)) {
                             proxy_worker *rworker = NULL;
-                            rworker = find_route_worker(balancer, worker->s->redirect, r);
+                            rworker = find_route_worker(balancer, worker->s->redirect,
+                                                        r, recursion + 1);
                             /* Check if the redirect worker is usable */
                             if (rworker && !PROXY_WORKER_IS_USABLE(rworker)) {
                                 /*
@@ -315,7 +321,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
         /* We have a route in path or in cookie
          * Find the worker that has this route defined.
          */
-        worker = find_route_worker(balancer, *route, r);
+        worker = find_route_worker(balancer, *route, r, 1);
         if (worker && strcmp(*route, worker->s->route)) {
             /*
              * Notice that the route of the worker chosen is different from

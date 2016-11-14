@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1753074 -->
+<!-- English Revision: 1755987 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -109,7 +109,7 @@
     <p>Bu kancayı kullanan iki modül (<code>mod_whatkilledus</code> ve
     <code>mod_backtrace</code>) zaten vardır. bunlar hakkında daha fazla bilgi
       edinmek için Jeff Trawick'in <a
-      href="http://people.apache.org/~trawick/exception_hook.html"
+      href="https://emptyhammock.com/projects/httpd/diag/"
       >EnableExceptionHook site</a>sine bakabilirsiniz.</p>
 </usage>
 </directivesynopsis>

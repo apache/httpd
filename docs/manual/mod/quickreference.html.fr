@@ -986,7 +986,7 @@ pleinement qualifiée</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>nom-fichier</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Nom du fichier dont le contenu sera inséré à la fin de
 l'index</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>octets</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du tampon TCP en entrée</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] [<var>chemin URL</var>]
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>état</var>] [<var>URL-path</var>]
 <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>état</var>] <var>regex</var>
@@ -1063,7 +1063,7 @@ pas.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou désactive l'exécution du

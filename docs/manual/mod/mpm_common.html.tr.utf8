@@ -140,7 +140,7 @@
 
     <p>Bu kancayı kullanan iki modül (<code>mod_whatkilledus</code> ve
     <code>mod_backtrace</code>) zaten vardır. bunlar hakkında daha fazla bilgi
-      edinmek için Jeff Trawick'in <a href="http://people.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a>sine bakabilirsiniz.</p>
+      edinmek için Jeff Trawick'in <a href="https://emptyhammock.com/projects/httpd/diag/">EnableExceptionHook site</a>sine bakabilirsiniz.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

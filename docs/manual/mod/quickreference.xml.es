@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 395228:1070904 (outdated) -->
+<!-- English Revision: 1070904 -->
+<!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Review by Sergio Ramos -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -21,23 +23,23 @@
 -->
 
 <quickreference metafile="quickreference.xml.meta">
-  <title>Gu&#237;a R&#225;pida de Referencia de Directivas</title>
+  <title>Guía Rápida de Referencia de Directivas</title>
   <summary>
-    <p>La Gu&#237;a R&#225;pida de Referencia de Directivas muestra el uso, las
+    <p>La Guía Rápida de Referencia de Directivas muestra el uso, las
     opciones por defecto, el estado y el contexto de cada directiva de
-    configuraci&#243;n de Apache.  Para m&#225;s informaci&#243;n sobre cada
+    configuración de Apache.  Para más información sobre cada
     directiva, consulte el <a href="directive-dict.html">Diccionario
     de Directivas</a>.</p>
 
     <p>La primera columna muestra el nombre y el uso de la directiva.
     La segunda columna muestra el valor por defecto de la directiva,
     si existe ese valor por defecto.  Si el valor por defecto es
-    demasiado largo para mostrarlo, el primer caracter va seguido de
+    demasiado largo para mostrarlo, el primer carácter va seguido de
     un signo "+".</p>
 
     <p>La tercera y la cuarta columna listan los contextos en los que
     la directiva puede funcionar y el estado de la directiva de
-    acuerdo con las notas que detallan m&#225;s abajo.</p>
+    acuerdo con las notas que detallan más abajo.</p>
   </summary>
 </quickreference>
 

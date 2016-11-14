@@ -18,7 +18,7 @@
 #include "h2.h"
 
 struct h2_request;
-struct h2_response;
+struct h2_headers;
 struct h2_ngheader;
 struct h2_session;
 struct h2_stream;
@@ -38,8 +38,8 @@ typedef void h2_push_digest_calc(h2_push_diary *diary, apr_uint64_t *phash, h2_p
 
 struct h2_push_diary {
     apr_array_header_t  *entries;
-    apr_size_t           NMax; /* Maximum for N, should size change be necessary */
-    apr_size_t           N;    /* Current maximum number of entries, power of 2 */
+    int         NMax; /* Maximum for N, should size change be necessary */
+    int         N;    /* Current maximum number of entries, power of 2 */
     apr_uint64_t         mask; /* mask for relevant bits */
     unsigned int         mask_bits; /* number of relevant bits */
     const char          *authority;
@@ -58,7 +58,8 @@ struct h2_push_diary {
  */
 apr_array_header_t *h2_push_collect(apr_pool_t *p, 
                                     const struct h2_request *req, 
-                                    const struct h2_response *res);
+                                    int push_policy, 
+                                    const struct h2_headers *res);
 
 /**
  * Create a new push diary for the given maximum number of entries.
@@ -67,7 +68,7 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p,
  * @param N the max number of entries, rounded up to 2^x
  * @return the created diary, might be NULL of max_entries is 0
  */
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t N);
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, int N);
 
 /**
  * Filters the given pushes against the diary and returns only those pushes
@@ -81,7 +82,7 @@ apr_array_header_t *h2_push_diary_update(struct h2_session *session, apr_array_h
  */
 apr_array_header_t *h2_push_collect_update(struct h2_stream *stream, 
                                            const struct h2_request *req, 
-                                           const struct h2_response *res);
+                                           const struct h2_headers *res);
 /**
  * Get a cache digest as described in 
  * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
@@ -94,7 +95,7 @@ apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
  * @param plen on successful return, the length of the binary data
  */
 apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *p, 
-                                      apr_uint32_t maxP, const char *authority, 
+                                      int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen);
 
 /**

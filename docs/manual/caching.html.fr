@@ -38,7 +38,8 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Mise en cache HTTP à trois états RFC2616</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">Mise en cache d'objets partagés à deux états de forme
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">Exemples de configuration du cache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">Mise en cache générale d'objets partagés à deux états de forme
     clé/valeur</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#file-caching">Mise en cache à base de fichiers spécialisés</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#security">Considérations sur la sécurité</a></li>
@@ -457,6 +458,14 @@ Vary: negotiate,accept-language,accept-charset
           
     
 
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Exemples de configuration du cache</a></h2>
+
+    
+
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="./mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li></ul></td></tr></table>
+
     <h3><a name="disk" id="disk">Mise en cache sur disque</a></h3>
       
 
@@ -583,9 +592,46 @@ CacheDirLength 1</pre>
       à la suite d'un nettoyage.</p>
     
 
+    <h3><a name="memcache" id="memcache">Cache en mémoire</a></h3>
+      
+
+      <p>En utilisant le module <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code>,
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> peut mettre en cache des données à partir de
+      diverses implémentations aussi nommées "fournisseurs". Par exemple, en
+      utilisant le module <code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code>, on peut
+      spécifier que c'est <a href="http://memcached.org">memcached</a> qui doit
+      être utilisé comme mécanisme de stockage sous-jacent.</p>
+
+      <p>Typiquement, le module sera configuré comme suit :</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache memcache:memcd.example.com:11211</pre>
+
+
+      <p>En outre, il est possible de spécifier plusieurs serveurs
+      <code>memcached</code> en les ajoutant à la fin de la ligne
+      <code>CacheSocache memcache:</code> et en les séparant par des virgules :</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212</pre>
+
+
+      <p>Divers autres fournisseurs <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code> utilisent
+      aussi ce format. Par exemple :</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache shmcb:/path/to/datafile(512000)</pre>
+
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache dbm:/path/to/datafile</pre>
+
+
+    
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">Mise en cache d'objets partagés à deux états de forme
+<h2><a name="socache-caching" id="socache-caching">Mise en cache générale d'objets partagés à deux états de forme
     clé/valeur</a></h2>
 
     

@@ -39,7 +39,7 @@
  * the request will be logged to the log file(s) defined outside
  * the virtual host section. If a TransferLog or CustomLog directive
  * appears in the VirtualHost section, the log files defined outside
- * the VirtualHost will _not_ be used. This makes this module compatable
+ * the VirtualHost will _not_ be used. This makes this module compatible
  * with the CLF and config log modules, where the use of TransferLog
  * inside the VirtualHost section overrides its use outside.
  *

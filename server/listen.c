@@ -763,7 +763,7 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     /* Check once whether or not SO_REUSEPORT is supported. */
     if (ap_have_so_reuseport < 0) {
         /* This is limited to Linux with defined SO_REUSEPORT (ie. 3.9+) for
-         * now since the implementation evenly distributes connections accross
+         * now since the implementation evenly distributes connections across
          * all the listening threads/processes.
          *
          * *BSDs have SO_REUSEPORT too but with a different semantic: the first

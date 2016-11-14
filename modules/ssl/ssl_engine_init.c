@@ -1005,7 +1005,7 @@ static apr_status_t ssl_init_ctx_cert_chain(server_rec *s,
      * SSLCACertificateFile and also use client authentication mod_ssl
      * would accept all clients also issued by this CA. Obviously this
      * isn't what we want in this situation. So this feature here exists
-     * to allow one to explicity configure CA certificates which are
+     * to allow one to explicitly configure CA certificates which are
      * used only for the server certificate chain.
      */
     if (!chain) {

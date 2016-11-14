@@ -17,7 +17,7 @@
 #define __mod_h2__h2_h2__
 
 /**
- * List of ALPN protocol identifiers that we suport in cleartext
+ * List of ALPN protocol identifiers that we support in cleartext
  * negotiations. NULL terminated.
  */
 extern const char *h2_clear_protos[];
@@ -36,7 +36,7 @@ extern const char *h2_tls_protos[];
 const char *h2_h2_err_description(unsigned int h2_error);
 
 /*
- * One time, post config intialization.
+ * One time, post config initialization.
  */
 apr_status_t h2_h2_init(apr_pool_t *pool, server_rec *s);
 

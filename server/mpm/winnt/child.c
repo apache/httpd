@@ -136,10 +136,17 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
      * state so -don't- close it.
      */
     if (context) {
+        HANDLE saved_event;
+
         apr_pool_clear(context->ptrans);
         context->ba = apr_bucket_alloc_create(context->ptrans);
         context->next = NULL;
+
+        saved_event = context->overlapped.hEvent;
+        memset(&context->overlapped, 0, sizeof(context->overlapped));
+        context->overlapped.hEvent = saved_event;
         ResetEvent(context->overlapped.hEvent);
+
         apr_thread_mutex_lock(qlock);
         if (qtail) {
             qtail->next = context;
@@ -323,8 +330,13 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                      "no known accept filter. Using 'none' instead",
                      lr->protocol);
     }
-    else if (strcmp(accf_name, "data") == 0)
-        accf = 2;
+    else if (strcmp(accf_name, "data") == 0) {
+        accf = 1;
+        accf_name = "connect";
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                     APLOGNO(03458) "winnt_accept: 'data' accept filter is no "
+                     "longer supported. Using 'connect' instead");
+    }
     else if (strcmp(accf_name, "connect") == 0)
         accf = 1;
     else if (strcmp(accf_name, "none") == 0)
@@ -350,7 +362,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
    }
 #endif
 
-    if (accf > 0) /* 'data' or 'connect' */
+    if (accf > 0) /* 'connect' */
     {
         if (WSAIoctl(nlsd, SIO_GET_EXTENSION_FUNCTION_POINTER,
                      &GuidAcceptEx, sizeof GuidAcceptEx, 
@@ -376,7 +388,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     }
     else /* accf == 0, 'none' */
     {
-reinit: /* target of data or connect upon too many AcceptEx failures */
+reinit: /* target of connect upon too many AcceptEx failures */
 
         /* last, low priority event is a not yet accepted connection */
         events[0] = exit_event;
@@ -421,9 +433,8 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             }
         }
 
-        if (accf > 0) /* Either 'connect' or 'data' */
+        if (accf > 0) /* 'connect' */
         {
-            DWORD len;
             char *buf;
 
             /* Create and initialize the accept socket */
@@ -453,20 +464,12 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 continue;
             }
 
-            if (accf == 2) { /* 'data' */
-                len = APR_BUCKET_BUFF_SIZE;
-                buf = apr_bucket_alloc(len, context->ba);
-                len -= PADDED_ADDR_SIZE * 2;
-            }
-            else /* (accf == 1) 'connect' */ {
-                len = 0;
-                buf = context->buff;
-            }
+            buf = context->buff;
 
             /* AcceptEx on the completion context. The completion context will be
              * signaled when a connection is accepted.
              */
-            if (!lpfnAcceptEx(nlsd, context->accept_socket, buf, len,
+            if (!lpfnAcceptEx(nlsd, context->accept_socket, buf, 0,
                               PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead,
                               &context->overlapped)) {
                 rv = apr_get_netos_error();
@@ -476,8 +479,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                      * 1) the client disconnects early
                      * 2) handshake was incomplete
                      */
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     continue;
@@ -492,8 +493,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                      * 3) the dynamic address / adapter has changed
                      * Give five chances, then fall back on AcceptFilter 'none'
                      */
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     ++err_count;
@@ -513,8 +512,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 }
                 else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
                          (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     ++err_count;
@@ -555,14 +552,10 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     /* exit_event triggered or event handle was closed */
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     break;
                 }
 
                 if (context->accept_socket == INVALID_SOCKET) {
-                    if (accf == 2)
-                        apr_bucket_free(buf);
                     continue;
                 }
             }
@@ -585,28 +578,9 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             /* Get the local & remote address
              * TODO; error check
              */
-            lpfnGetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+            lpfnGetAcceptExSockaddrs(buf, 0, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                                      &context->sa_server, &context->sa_server_len,
                                      &context->sa_client, &context->sa_client_len);
-
-            /* For 'data', craft a bucket for our data result
-             * and pass to worker_main as context->overlapped.Pointer
-             */
-            if (accf == 2 && BytesRead)
-            {
-                apr_bucket *b;
-                b = apr_bucket_heap_create(buf, APR_BUCKET_BUFF_SIZE,
-                                           apr_bucket_free, context->ba);
-                /* Adjust the bucket to refer to the actual bytes read */
-                b->length = BytesRead;
-                context->overlapped.Pointer = b;
-            }
-            else {
-                if (accf == 2) {
-                    apr_bucket_free(buf);
-                }
-                context->overlapped.Pointer = NULL;
-            }
         }
         else /* (accf = 0)  e.g. 'none' */
         {
@@ -680,7 +654,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
              * os_sock_make and os_sock_put that it does not query).
              */
             WSAEventSelect(context->accept_socket, 0, 0);
-            context->overlapped.Pointer = NULL;
             err_count = 0;
 
             context->sa_server_len = sizeof(context->buff) / 2;
@@ -785,24 +758,6 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
     return context;
 }
 
-apr_status_t winnt_insert_network_bucket(conn_rec *c,
-                                         apr_bucket_brigade *bb,
-                                         apr_socket_t *socket)
-{
-    apr_bucket *e;
-    winnt_conn_ctx_t *context = ap_get_module_config(c->conn_config,
-                                                     &mpm_winnt_module);
-    if (context == NULL || (e = context->overlapped.Pointer) == NULL)
-        return AP_DECLINED;
-
-    /* seed the brigade with AcceptEx read heap bucket */
-    APR_BRIGADE_INSERT_HEAD(bb, e);
-    /* also seed the brigade with the client socket. */
-    e = apr_bucket_socket_create(socket, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
-    return APR_SUCCESS;
-}
-
 /*
  * worker_main()
  * Main entry point for the worker threads. Worker threads block in
@@ -816,8 +771,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
     winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
-    apr_bucket *e;
-    int rc;
     conn_rec *c;
     apr_int32_t disconnected;
 
@@ -843,8 +796,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
             }
         }
 
-        e = context->overlapped.Pointer;
-
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf,
                                      context->sock, thread_num, sbh,
@@ -853,9 +804,6 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         if (!c) {
             /* ap_run_create_connection closes the socket on failure */
             context->accept_socket = INVALID_SOCKET;
-            if (e) { 
-                apr_bucket_free(e);
-            }
             continue;
         }
 
@@ -863,26 +811,7 @@ static DWORD __stdcall worker_main(void *thread_num_val)
         apr_os_thread_put(&thd, &osthd, context->ptrans);
         c->current_thread = thd;
 
-        /* follow ap_process_connection(c, context->sock) logic
-         * as it left us no chance to reinject our first data bucket.
-         */
-        ap_update_vhost_given_ip(c);
-
-        rc = ap_run_pre_connection(c, context->sock);
-        if (rc != OK && rc != DONE) {
-            c->aborted = 1;
-        }
-
-        if (e && c->aborted) {
-            apr_bucket_free(e);
-        }
-        else {
-            ap_set_module_config(c->conn_config, &mpm_winnt_module, context);
-        }
-
-        if (!c->aborted) {
-            ap_run_process_connection(c);
-        }
+        ap_process_connection(c, context->sock);
 
         apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, &disconnected);
 

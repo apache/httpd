@@ -268,6 +268,15 @@ LogLevel warn
     Require all granted
 </Directory>
 
+<IfModule headers_module>
+    #
+    # Avoid passing HTTP_PROXY environment to CGI's on this or any proxied
+    # backend servers which have lingering "httpoxy" defects.
+    # 'Proxy' request header is undefined by the IETF, not listed by IANA
+    #
+    RequestHeader unset Proxy early
+</IfModule>
+
 <IfModule mime_module>
     #
     # TypesConfig points to the file containing the list of mappings from

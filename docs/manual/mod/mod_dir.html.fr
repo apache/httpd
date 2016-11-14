@@ -98,12 +98,12 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
     modules tels que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> au cours des
     substitutions de niveau répertoire.</p>
 
-    <p>Dans les versions antérieures à 2.4, ce module ne modifiait pas
-    son comportement si un autre gestionnaire avait été défini pour
-    l'URL considérée. Ceci permettait de servir des index de répertoires
-    même si une directive <code class="directive">SetHandler</code> avait été
-    définie pour un répertoire entier, mais pouvait aussi être à
-    l'origine de conflits avec d'autres modules.</p> 
+    <p>Dans les versions antérieures à 2.4, ce module ne modifiait pas son
+    comportement si un autre gestionnaire avait été défini pour l'URL
+    considérée. Ceci permettait de servir des index de répertoires même si une
+    directive <code class="directive">SetHandler</code> avait été définie pour un
+    répertoire entier, mais pouvait aussi être à l'origine de conflits avec
+    d'autres modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p> 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

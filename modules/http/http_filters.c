@@ -1295,7 +1295,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     /*
-     * Control cachability for non-cachable responses if not already set by
+     * Control cachability for non-cacheable responses if not already set by
      * some other part of the server configuration.
      */
     if (r->no_cache && !apr_table_get(r->headers_out, "Expires")) {
@@ -1392,21 +1392,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
 {
     switch (rv) {
-    case AP_FILTER_ERROR: {
+    case AP_FILTER_ERROR:
         return AP_FILTER_ERROR;
-    }
-    case APR_ENOSPC: {
+
+    case APR_ENOSPC:
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
-    }
-    case APR_ENOTIMPL: {
+
+    case APR_ENOTIMPL:
         return HTTP_NOT_IMPLEMENTED;
-    }
-    case APR_ETIMEDOUT: {
+
+    case APR_TIMEUP:
+    case APR_ETIMEDOUT:
         return HTTP_REQUEST_TIME_OUT;
-    }
-    default: {
+
+    default:
         return status;
-    }
     }
 }
 

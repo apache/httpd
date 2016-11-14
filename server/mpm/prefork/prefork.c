@@ -703,7 +703,7 @@ static void child_main(int child_num_arg, int child_bucket)
         SAFE_ACCEPT(accept_mutex_off());      /* unlock after "accept" */
 
         if (status == APR_EGENERAL) {
-            /* resource shortage or should-not-occur occured */
+            /* resource shortage or should-not-occur occurred */
             clean_child_exit(APEXIT_CHILDSICK);
         }
         else if (status != APR_SUCCESS) {

@@ -27,7 +27,7 @@
 #include "h2_proxy_util.h"
 
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(apr_uint32_t n)
+unsigned char h2_proxy_log2(int n)
 {
     int lz = 0;
     if (!n) {
@@ -59,7 +59,7 @@ unsigned char h2_log2(apr_uint32_t n)
 /*******************************************************************************
  * ihash - hash for structs with int identifier
  ******************************************************************************/
-struct h2_ihash_t {
+struct h2_proxy_ihash_t {
     apr_hash_t *hash;
     size_t ioff;
 };
@@ -69,31 +69,31 @@ static unsigned int ihash(const char *key, apr_ssize_t *klen)
     return (unsigned int)(*((int*)key));
 }
 
-h2_ihash_t *h2_ihash_create(apr_pool_t *pool, size_t offset_of_int)
+h2_proxy_ihash_t *h2_proxy_ihash_create(apr_pool_t *pool, size_t offset_of_int)
 {
-    h2_ihash_t *ih = apr_pcalloc(pool, sizeof(h2_ihash_t));
+    h2_proxy_ihash_t *ih = apr_pcalloc(pool, sizeof(h2_proxy_ihash_t));
     ih->hash = apr_hash_make_custom(pool, ihash);
     ih->ioff = offset_of_int;
     return ih;
 }
 
-size_t h2_ihash_count(h2_ihash_t *ih)
+size_t h2_proxy_ihash_count(h2_proxy_ihash_t *ih)
 {
     return apr_hash_count(ih->hash);
 }
 
-int h2_ihash_empty(h2_ihash_t *ih)
+int h2_proxy_ihash_empty(h2_proxy_ihash_t *ih)
 {
     return apr_hash_count(ih->hash) == 0;
 }
 
-void *h2_ihash_get(h2_ihash_t *ih, int id)
+void *h2_proxy_ihash_get(h2_proxy_ihash_t *ih, int id)
 {
     return apr_hash_get(ih->hash, &id, sizeof(id));
 }
 
 typedef struct {
-    h2_ihash_iter_t *iter;
+    h2_proxy_ihash_iter_t *iter;
     void *ctx;
 } iter_ctx;
 
@@ -104,7 +104,7 @@ static int ihash_iter(void *ctx, const void *key, apr_ssize_t klen,
     return ictx->iter(ictx->ctx, (void*)val); /* why is this passed const?*/
 }
 
-int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx)
+int h2_proxy_ihash_iter(h2_proxy_ihash_t *ih, h2_proxy_ihash_iter_t *fn, void *ctx)
 {
     iter_ctx ictx;
     ictx.iter = fn;
@@ -112,30 +112,30 @@ int h2_ihash_iter(h2_ihash_t *ih, h2_ihash_iter_t *fn, void *ctx)
     return apr_hash_do(ihash_iter, &ictx, ih->hash);
 }
 
-void h2_ihash_add(h2_ihash_t *ih, void *val)
+void h2_proxy_ihash_add(h2_proxy_ihash_t *ih, void *val)
 {
     apr_hash_set(ih->hash, ((char *)val + ih->ioff), sizeof(int), val);
 }
 
-void h2_ihash_remove(h2_ihash_t *ih, int id)
+void h2_proxy_ihash_remove(h2_proxy_ihash_t *ih, int id)
 {
     apr_hash_set(ih->hash, &id, sizeof(id), NULL);
 }
 
-void h2_ihash_remove_val(h2_ihash_t *ih, void *val)
+void h2_proxy_ihash_remove_val(h2_proxy_ihash_t *ih, void *val)
 {
     int id = *((int*)((char *)val + ih->ioff));
     apr_hash_set(ih->hash, &id, sizeof(id), NULL);
 }
 
 
-void h2_ihash_clear(h2_ihash_t *ih)
+void h2_proxy_ihash_clear(h2_proxy_ihash_t *ih)
 {
     apr_hash_clear(ih->hash);
 }
 
 typedef struct {
-    h2_ihash_t *ih;
+    h2_proxy_ihash_t *ih;
     void **buffer;
     size_t max;
     size_t len;
@@ -151,7 +151,7 @@ static int collect_iter(void *x, void *val)
     return 0;
 }
 
-size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max)
+size_t h2_proxy_ihash_shift(h2_proxy_ihash_t *ih, void **buffer, size_t max)
 {
     collect_ctx ctx;
     size_t i;
@@ -160,15 +160,15 @@ size_t h2_ihash_shift(h2_ihash_t *ih, void **buffer, size_t max)
     ctx.buffer = buffer;
     ctx.max = max;
     ctx.len = 0;
-    h2_ihash_iter(ih, collect_iter, &ctx);
+    h2_proxy_ihash_iter(ih, collect_iter, &ctx);
     for (i = 0; i < ctx.len; ++i) {
-        h2_ihash_remove_val(ih, buffer[i]);
+        h2_proxy_ihash_remove_val(ih, buffer[i]);
     }
     return ctx.len;
 }
 
 typedef struct {
-    h2_ihash_t *ih;
+    h2_proxy_ihash_t *ih;
     int *buffer;
     size_t max;
     size_t len;
@@ -184,7 +184,7 @@ static int icollect_iter(void *x, void *val)
     return 0;
 }
 
-size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max)
+size_t h2_proxy_ihash_ishift(h2_proxy_ihash_t *ih, int *buffer, size_t max)
 {
     icollect_ctx ctx;
     size_t i;
@@ -193,9 +193,9 @@ size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max)
     ctx.buffer = buffer;
     ctx.max = max;
     ctx.len = 0;
-    h2_ihash_iter(ih, icollect_iter, &ctx);
+    h2_proxy_ihash_iter(ih, icollect_iter, &ctx);
     for (i = 0; i < ctx.len; ++i) {
-        h2_ihash_remove(ih, buffer[i]);
+        h2_proxy_ihash_remove(ih, buffer[i]);
     }
     return ctx.len;
 }
@@ -204,16 +204,16 @@ size_t h2_ihash_ishift(h2_ihash_t *ih, int *buffer, size_t max)
  * iqueue - sorted list of int
  ******************************************************************************/
 
-static void iq_grow(h2_iqueue *q, int nlen);
-static void iq_swap(h2_iqueue *q, int i, int j);
-static int iq_bubble_up(h2_iqueue *q, int i, int top, 
-                        h2_iq_cmp *cmp, void *ctx);
-static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
-                          h2_iq_cmp *cmp, void *ctx);
+static void iq_grow(h2_proxy_iqueue *q, int nlen);
+static void iq_swap(h2_proxy_iqueue *q, int i, int j);
+static int iq_bubble_up(h2_proxy_iqueue *q, int i, int top, 
+                        h2_proxy_iq_cmp *cmp, void *ctx);
+static int iq_bubble_down(h2_proxy_iqueue *q, int i, int bottom, 
+                          h2_proxy_iq_cmp *cmp, void *ctx);
 
-h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity)
+h2_proxy_iqueue *h2_proxy_iq_create(apr_pool_t *pool, int capacity)
 {
-    h2_iqueue *q = apr_pcalloc(pool, sizeof(h2_iqueue));
+    h2_proxy_iqueue *q = apr_pcalloc(pool, sizeof(h2_proxy_iqueue));
     if (q) {
         q->pool = pool;
         iq_grow(q, capacity);
@@ -222,18 +222,18 @@ h2_iqueue *h2_iq_create(apr_pool_t *pool, int capacity)
     return q;
 }
 
-int h2_iq_empty(h2_iqueue *q)
+int h2_proxy_iq_empty(h2_proxy_iqueue *q)
 {
     return q->nelts == 0;
 }
 
-int h2_iq_count(h2_iqueue *q)
+int h2_proxy_iq_count(h2_proxy_iqueue *q)
 {
     return q->nelts;
 }
 
 
-void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
+void h2_proxy_iq_add(h2_proxy_iqueue *q, int sid, h2_proxy_iq_cmp *cmp, void *ctx)
 {
     int i;
     
@@ -251,7 +251,7 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
     }
 }
 
-int h2_iq_remove(h2_iqueue *q, int sid)
+int h2_proxy_iq_remove(h2_proxy_iqueue *q, int sid)
 {
     int i;
     for (i = 0; i < q->nelts; ++i) {
@@ -271,15 +271,15 @@ int h2_iq_remove(h2_iqueue *q, int sid)
     return 0;
 }
 
-void h2_iq_clear(h2_iqueue *q)
+void h2_proxy_iq_clear(h2_proxy_iqueue *q)
 {
     q->nelts = 0;
 }
 
-void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
+void h2_proxy_iq_sort(h2_proxy_iqueue *q, h2_proxy_iq_cmp *cmp, void *ctx)
 {
     /* Assume that changes in ordering are minimal. This needs,
-     * best case, q->nelts - 1 comparisions to check that nothing
+     * best case, q->nelts - 1 comparisons to check that nothing
      * changed.
      */
     if (q->nelts > 0) {
@@ -304,7 +304,7 @@ void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx)
 }
 
 
-int h2_iq_shift(h2_iqueue *q)
+int h2_proxy_iq_shift(h2_proxy_iqueue *q)
 {
     int sid;
     
@@ -319,7 +319,7 @@ int h2_iq_shift(h2_iqueue *q)
     return sid;
 }
 
-static void iq_grow(h2_iqueue *q, int nlen)
+static void iq_grow(h2_proxy_iqueue *q, int nlen)
 {
     if (nlen > q->nalloc) {
         int *nq = apr_pcalloc(q->pool, sizeof(int) * nlen);
@@ -339,15 +339,15 @@ static void iq_grow(h2_iqueue *q, int nlen)
     }
 }
 
-static void iq_swap(h2_iqueue *q, int i, int j)
+static void iq_swap(h2_proxy_iqueue *q, int i, int j)
 {
     int x = q->elts[i];
     q->elts[i] = q->elts[j];
     q->elts[j] = x;
 }
 
-static int iq_bubble_up(h2_iqueue *q, int i, int top, 
-                        h2_iq_cmp *cmp, void *ctx) 
+static int iq_bubble_up(h2_proxy_iqueue *q, int i, int top, 
+                        h2_proxy_iq_cmp *cmp, void *ctx) 
 {
     int prev;
     while (((prev = (q->nalloc + i - 1) % q->nalloc), i != top) 
@@ -358,8 +358,8 @@ static int iq_bubble_up(h2_iqueue *q, int i, int top,
     return i;
 }
 
-static int iq_bubble_down(h2_iqueue *q, int i, int bottom, 
-                          h2_iq_cmp *cmp, void *ctx)
+static int iq_bubble_down(h2_proxy_iqueue *q, int i, int bottom, 
+                          h2_proxy_iq_cmp *cmp, void *ctx)
 {
     int next;
     while (((next = (q->nalloc + i + 1) % q->nalloc), i != bottom) 
@@ -371,7 +371,7 @@ static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
 }
 
 /*******************************************************************************
- * h2_ngheader
+ * h2_proxy_ngheader
  ******************************************************************************/
 #define H2_HD_MATCH_LIT_CS(l, name)  \
     ((strlen(name) == sizeof(l) - 1) && !apr_strnatcasecmp(l, name))
@@ -397,7 +397,7 @@ static int count_header(void *ctx, const char *key, const char *value)
 #define NV_ADD_LIT_CS(nv, k, v)     add_header(nv, k, sizeof(k) - 1, v, strlen(v))
 #define NV_ADD_CS_CS(nv, k, v)      add_header(nv, k, strlen(k), v, strlen(v))
 
-static int add_header(h2_ngheader *ngh, 
+static int add_header(h2_proxy_ngheader *ngh, 
                       const char *key, size_t key_len,
                       const char *value, size_t val_len)
 {
@@ -418,23 +418,23 @@ static int add_table_header(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p, 
-                                       const struct h2_request *req)
+h2_proxy_ngheader *h2_proxy_util_nghd_make_req(apr_pool_t *p, 
+                                               const h2_proxy_request *req)
 {
     
-    h2_ngheader *ngh;
+    h2_proxy_ngheader *ngh;
     size_t n;
     
-    AP_DEBUG_ASSERT(req);
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     n = 4;
     apr_table_do(count_header, &n, req->headers, NULL);
     
-    ngh = apr_pcalloc(p, sizeof(h2_ngheader));
+    ngh = apr_pcalloc(p, sizeof(h2_proxy_ngheader));
     ngh->nv =  apr_pcalloc(p, n * sizeof(nghttp2_nv));
     NV_ADD_LIT_CS(ngh, ":scheme", req->scheme);
     NV_ADD_LIT_CS(ngh, ":authority", req->authority);
@@ -458,7 +458,6 @@ typedef struct {
 #define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
 
 static literal IgnoredRequestHeaders[] = {
-    H2_DEF_LITERAL("expect"),
     H2_DEF_LITERAL("upgrade"),
     H2_DEF_LITERAL("connection"),
     H2_DEF_LITERAL("keep-alive"),
@@ -485,18 +484,18 @@ static int ignore_header(const literal *lits, size_t llen,
     return 0;
 }
 
-static int h2_req_ignore_header(const char *name, size_t len)
+static int h2_proxy_req_ignore_header(const char *name, size_t len)
 {
     return ignore_header(H2_LIT_ARGS(IgnoredRequestHeaders), name, len);
 }
 
 int h2_proxy_res_ignore_header(const char *name, size_t len)
 {
-    return (h2_req_ignore_header(name, len) 
+    return (h2_proxy_req_ignore_header(name, len) 
             || ignore_header(H2_LIT_ARGS(IgnoredProxyRespHds), name, len));
 }
 
-void h2_util_camel_case_header(char *s, size_t len)
+void h2_proxy_util_camel_case_header(char *s, size_t len)
 {
     size_t start = 1;
     size_t i;
@@ -528,7 +527,7 @@ static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
 {
     char *hname, *hvalue;
     
-    if (h2_req_ignore_header(name, nlen)) {
+    if (h2_proxy_req_ignore_header(name, nlen)) {
         return APR_SUCCESS;
     }
     else if (H2_HD_MATCH_LIT("cookie", name, nlen)) {
@@ -553,20 +552,19 @@ static apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
     
     hname = apr_pstrndup(pool, name, nlen);
     hvalue = apr_pstrndup(pool, value, vlen);
-    h2_util_camel_case_header(hname, nlen);
+    h2_proxy_util_camel_case_header(hname, nlen);
     apr_table_mergen(headers, hname, hvalue);
     
     return APR_SUCCESS;
 }
 
-static h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
+static h2_proxy_request *h2_proxy_req_createn(int id, apr_pool_t *pool, const char *method, 
                                   const char *scheme, const char *authority, 
                                   const char *path, apr_table_t *header, 
                                   int serialize)
 {
-    h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
+    h2_proxy_request *req = apr_pcalloc(pool, sizeof(h2_proxy_request));
     
-    req->id             = id;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
@@ -578,9 +576,9 @@ static h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method,
     return req;
 }
 
-h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize)
+h2_proxy_request *h2_proxy_req_create(int id, apr_pool_t *pool, int serialize)
 {
-    return h2_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
+    return h2_proxy_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
 }
 
 typedef struct {
@@ -592,13 +590,13 @@ static int set_h1_header(void *ctx, const char *key, const char *value)
 {
     h1_ctx *x = ctx;
     size_t klen = strlen(key);
-    if (!h2_req_ignore_header(key, klen)) {
+    if (!h2_proxy_req_ignore_header(key, klen)) {
         h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
     }
     return 1;
 }
 
-apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
+apr_status_t h2_proxy_req_make(h2_proxy_request *req, apr_pool_t *pool,
                          const char *method, const char *scheme, 
                          const char *authority, const char *path, 
                          apr_table_t *headers)
@@ -610,10 +608,10 @@ apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
     req->authority = authority;
     req->path      = path;
 
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     x.pool = pool;
     x.headers = req->headers;
@@ -625,7 +623,7 @@ apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
  * frame logging
  ******************************************************************************/
 
-int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
+int h2_proxy_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 {
     char scratch[128];
     size_t s_len = sizeof(scratch)/sizeof(scratch[0]);

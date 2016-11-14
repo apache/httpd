@@ -35,7 +35,8 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Three-state RFC2616 HTTP caching</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">Two-state Key/Value Shared Object Caching</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#examples">Cache Setup Examples</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">General Two-state Key/Value Shared Object Caching</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#file-caching">Specialized File Caching</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#security">Security Considerations</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
@@ -418,6 +419,14 @@ Vary: negotiate,accept-language,accept-charset
       to decide on which of many variants to return to the client.</p>
     
 
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Cache Setup Examples</a></h2>
+
+    
+
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="./mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li></ul></td></tr></table>
+
     <h3><a name="disk" id="disk">Caching to Disk</a></h3>
       
 
@@ -532,9 +541,45 @@ CacheDirLength 1</pre>
       leave enough "grow room" following a clean.</p>
     
 
+    <h3><a name="memcache" id="memcache">Caching to memcached</a></h3>
+      
+
+      <p>Using the <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code> module, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
+      can cache data from a variety of implementations (aka: "providers"). Using the
+      <code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code> module, for example, one can specify that
+      <a href="http://memcached.org">memcached</a> is to be used as the
+      the backend storage mechanism.</p>
+
+      <p>Typically the module will be configured as so:</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache memcache:memcd.example.com:11211</pre>
+
+
+      <p>Additional <code>memcached</code> servers can be specified by
+      appending them to the end of the <code>CacheSocache memcache:</code>
+      line separated by commas:</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212</pre>
+
+
+      <p>This format is also used with the other various <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code>
+      providers. For example:</p>
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache shmcb:/path/to/datafile(512000)</pre>
+
+
+      <pre class="prettyprint lang-config">CacheEnable socache /
+CacheSocache dbm:/path/to/datafile</pre>
+
+
+    
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">Two-state Key/Value Shared Object Caching</a></h2>
+<h2><a name="socache-caching" id="socache-caching">General Two-state Key/Value Shared Object Caching</a></h2>
 
     
 

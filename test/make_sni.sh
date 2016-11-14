@@ -82,7 +82,7 @@ do
 done
 
 if [ $# = 1 ]; then
-    echo "Aborted - just specifing one vhost makes no sense for SNI testing. Go wild !"
+    echo "Aborted - just specifying one vhost makes no sense for SNI testing. Go wild !"
     exit 1
 fi
 

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1690347 -->
@@ -35,21 +35,21 @@ OS/2</description>
     <p>Le serveur se compose d'un processus principal parent, et d'un
     petit nombre fixe de processus enfants.</p>
 
-    <p>La t&acirc;che du processus parent consiste &agrave; g&eacute;rer les processus
-    enfants, c'est &agrave; dire lancer ces processus de mani&egrave;re &agrave; ce
-    qu'il y en ait toujours un nombre &eacute;gal &agrave; la valeur de la directive
+    <p>La tâche du processus parent consiste à gérer les processus
+    enfants, c'est à dire lancer ces processus de manière à ce
+    qu'il y en ait toujours un nombre égal à la valeur de la directive
     <directive module="mpm_common">StartServers</directive> pour traiter
     les connexions.</p>
 
     <p>Chaque processus enfant comporte un jeu de threads esclaves et un
-    thread ma&icirc;tre qui accepte les connexions et les distribue aux
+    thread maître qui accepte les connexions et les distribue aux
     esclaves via une file de travail. Le jeu de threads esclaves est
-    dynamique et g&eacute;r&eacute; par un thread de maintenance de fa&ccedil;on &agrave; ce que le
+    dynamique et géré par un thread de maintenance de façon à ce que le
     nombre de threads inactifs soit maintenu entre <directive
     module="mpm_common">MinSpareThreads</directive> et <directive
     module="mpm_common">MaxSpareThreads</directive>.</p>
 </summary>
-<seealso><a href="../bind.html">D&eacute;finition des adresses et ports
+<seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise Apache</a></seealso>
 
 <directivesynopsis location="mod_unixd"><name>User</name>

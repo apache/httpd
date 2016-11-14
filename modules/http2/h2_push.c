@@ -34,7 +34,7 @@
 #include "h2_util.h"
 #include "h2_push.h"
 #include "h2_request.h"
-#include "h2_response.h"
+#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 
@@ -58,6 +58,7 @@ static const char *policy_str(h2_push_policy policy)
 
 typedef struct {
     const h2_request *req;
+    int push_policy;
     apr_pool_t *pool;
     apr_array_header_t *pushes;
     const char *s;
@@ -162,10 +163,10 @@ static char *mk_str(link_ctx *ctx, size_t end)
     if (ctx->i < end) {
         return apr_pstrndup(ctx->pool, ctx->s + ctx->i, end - ctx->i);
     }
-    return "";
+    return (char*)"";
 }
 
-static int read_qstring(link_ctx *ctx, char **ps)
+static int read_qstring(link_ctx *ctx, const char **ps)
 {
     if (skip_ws(ctx) && read_chr(ctx, '\"')) {
         size_t end;
@@ -178,7 +179,7 @@ static int read_qstring(link_ctx *ctx, char **ps)
     return 0;
 }
 
-static int read_ptoken(link_ctx *ctx, char **ps)
+static int read_ptoken(link_ctx *ctx, const char **ps)
 {
     if (skip_ws(ctx)) {
         size_t i;
@@ -208,7 +209,7 @@ static int read_link(link_ctx *ctx)
     return 0;
 }
 
-static int read_pname(link_ctx *ctx, char **pname)
+static int read_pname(link_ctx *ctx, const char **pname)
 {
     if (skip_ws(ctx)) {
         size_t i;
@@ -224,7 +225,7 @@ static int read_pname(link_ctx *ctx, char **pname)
     return 0;
 }
 
-static int read_pvalue(link_ctx *ctx, char **pvalue)
+static int read_pvalue(link_ctx *ctx, const char **pvalue)
 {
     if (skip_ws(ctx) && read_chr(ctx, '=')) {
         if (read_qstring(ctx, pvalue) || read_ptoken(ctx, pvalue)) {
@@ -237,7 +238,7 @@ static int read_pvalue(link_ctx *ctx, char **pvalue)
 static int read_param(link_ctx *ctx)
 {
     if (skip_ws(ctx) && read_chr(ctx, ';')) {
-        char *name, *value = "";
+        const char *name, *value = "";
         if (read_pname(ctx, &name)) {
             read_pvalue(ctx, &value); /* value is optional */
             apr_table_setn(ctx->params, name, value);
@@ -336,7 +337,7 @@ static int add_push(link_ctx *ctx)
                  */
                 path = apr_uri_unparse(ctx->pool, &uri, APR_URI_UNP_OMITSITEPART);
                 push = apr_pcalloc(ctx->pool, sizeof(*push));
-                switch (ctx->req->push_policy) {
+                switch (ctx->push_policy) {
                     case H2_PUSH_HEAD:
                         method = "HEAD";
                         break;
@@ -346,11 +347,11 @@ static int add_push(link_ctx *ctx)
                 }
                 headers = apr_table_make(ctx->pool, 5);
                 apr_table_do(set_push_header, headers, ctx->req->headers, NULL);
-                req = h2_req_createn(0, ctx->pool, method, ctx->req->scheme,
-                                     ctx->req->authority, path, headers,
-                                     ctx->req->serialize);
+                req = h2_req_create(0, ctx->pool, method, ctx->req->scheme,
+                                    ctx->req->authority, path, headers,
+                                    ctx->req->serialize);
                 /* atm, we do not push on pushes */
-                h2_request_end_headers(req, ctx->pool, 1, 0);
+                h2_request_end_headers(req, ctx->pool, 1);
                 push->req = req;
                 
                 if (!ctx->pushes) {
@@ -427,10 +428,10 @@ static int head_iter(void *ctx, const char *key, const char *value)
     return 1;
 }
 
-apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req, 
-                                    const h2_response *res)
+apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
+                                    int push_policy, const h2_headers *res)
 {
-    if (req && req->push_policy != H2_PUSH_NONE) {
+    if (req && push_policy != H2_PUSH_NONE) {
         /* Collect push candidates from the request/response pair.
          * 
          * One source for pushes are "rel=preload" link headers
@@ -444,11 +445,13 @@ apr_array_header_t *h2_push_collect(apr_pool_t *p, const h2_request *req,
             
             memset(&ctx, 0, sizeof(ctx));
             ctx.req = req;
+            ctx.push_policy = push_policy;
             ctx.pool = p;
             
             apr_table_do(head_iter, &ctx, res->headers, NULL);
             if (ctx.pushes) {
-                apr_table_setn(res->headers, "push-policy", policy_str(req->push_policy));
+                apr_table_setn(res->headers, "push-policy", 
+                               policy_str(push_policy));
             }
             return ctx.pushes;
         }
@@ -527,9 +530,9 @@ static unsigned int val_apr_hash(const char *str)
 static void calc_apr_hash(h2_push_diary *diary, apr_uint64_t *phash, h2_push *push) 
 {
     apr_uint64_t val;
-#if APR_UINT64MAX > APR_UINT_MAX
-    val = (val_apr_hash(push->req->scheme) << 32);
-    val ^= (val_apr_hash(push->req->authority) << 16);
+#if APR_UINT64_MAX > UINT_MAX
+    val = ((apr_uint64_t)(val_apr_hash(push->req->scheme)) << 32);
+    val ^= ((apr_uint64_t)(val_apr_hash(push->req->authority)) << 16);
     val ^= val_apr_hash(push->req->path);
 #else
     val = val_apr_hash(push->req->scheme);
@@ -552,7 +555,7 @@ static apr_int32_t ceil_power_of_2(apr_int32_t n)
 }
 
 static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype, 
-                                   apr_size_t N)
+                                   int N)
 {
     h2_push_diary *diary = NULL;
     
@@ -561,7 +564,7 @@ static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype,
         
         diary->NMax        = ceil_power_of_2(N);
         diary->N           = diary->NMax;
-        /* the mask we use in value comparision depends on where we got
+        /* the mask we use in value comparison depends on where we got
          * the values from. If we calculate them ourselves, we can use
          * the full 64 bits.
          * If we set the diary via a compressed golomb set, we have less
@@ -587,7 +590,7 @@ static h2_push_diary *diary_create(apr_pool_t *p, h2_push_digest_type dtype,
     return diary;
 }
 
-h2_push_diary *h2_push_diary_create(apr_pool_t *p, apr_size_t N)
+h2_push_diary *h2_push_diary_create(apr_pool_t *p, int N)
 {
     return diary_create(p, H2_PUSH_DIGEST_SHA256, N);
 }
@@ -681,7 +684,7 @@ apr_array_header_t *h2_push_diary_update(h2_session *session, apr_array_header_t
     
 apr_array_header_t *h2_push_collect_update(h2_stream *stream, 
                                            const struct h2_request *req, 
-                                           const struct h2_response *res)
+                                           const struct h2_headers *res)
 {
     h2_session *session = stream->session;
     const char *cache_digest = apr_table_get(req->headers, "Cache-Digest");
@@ -698,7 +701,7 @@ apr_array_header_t *h2_push_collect_update(h2_stream *stream,
                           session->id, cache_digest);
         }
     }
-    pushes = h2_push_collect(stream->pool, req, res);
+    pushes = h2_push_collect(stream->pool, req, stream->push_policy, res);
     return h2_push_diary_update(stream->session, pushes);
 }
 
@@ -711,9 +714,9 @@ static apr_int32_t h2_log2inv(unsigned char log2)
 typedef struct {
     h2_push_diary *diary;
     unsigned char log2p;
-    apr_uint32_t mask_bits;
-    apr_uint32_t delta_bits;
-    apr_uint32_t fixed_bits;
+    int mask_bits;
+    int delta_bits;
+    int fixed_bits;
     apr_uint64_t fixed_mask;
     apr_pool_t *pool;
     unsigned char *data;
@@ -812,10 +815,10 @@ static apr_status_t gset_encode_next(gset_encoder *encoder, apr_uint64_t pval)
  * @param plen on successful return, the length of the binary data
  */
 apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *pool, 
-                                      apr_uint32_t maxP, const char *authority, 
+                                      int maxP, const char *authority, 
                                       const char **pdata, apr_size_t *plen)
 {
-    apr_size_t nelts, N, i;
+    int nelts, N, i;
     unsigned char log2n, log2pmax;
     gset_encoder encoder;
     apr_uint64_t *hashes;
@@ -965,7 +968,7 @@ apr_status_t h2_push_diary_digest_set(h2_push_diary *diary, const char *authorit
 {
     gset_decoder decoder;
     unsigned char log2n, log2p;
-    apr_size_t N, i;
+    int N, i;
     apr_pool_t *pool = diary->entries->pool;
     h2_push_diary_entry e;
     apr_status_t status = APR_SUCCESS;

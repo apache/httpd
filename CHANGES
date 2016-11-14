@@ -4,6 +4,117 @@ Changes with Apache 2.4.24
 
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
  
+  *) mpm_unix: Apache fails to start if previously crashed then restarted with
+     the same PID (e.g. in container).  PR 60261.
+     [Val <valentin.bremond gmail.com>, Yann Ylavic]
+
+  *) mod_http2: unannounced and multiple interim responses (status code < 200)
+     are parsed and forwarded to client until a final response arrives.
+     [Stefan Eissing]
+  
+  *) mod_proxy_http2: improved robustness when main connection is closed early
+     by resetting all ongoing streams against the backend.
+     [Stefan Eissing]
+  
+  *) mod_http2: allocators from slave connections are released earlier, resulting
+     in less overall memory use on busy, long lived connections.
+     [Stefan Eissing]
+     
+  *) mod_remoteip: Pick up where we left off during a subrequest rather
+     than running with the modified XFF but original TCP address.
+     PR 49839/PR 60251
+
+  *) http: Respond with "408 Request Timeout" when a timeout occurs while
+     reading the request body.  [Yann Ylavic]
+
+  *) mod_http2: connection shutdown revisited: corrected edge cases on
+     shutting down ongoing streams, changed log warnings to be less noisy
+     when waiting on long running tasks. [Stefan Eissing]
+
+  *) mod_http2: changed all AP_DEBUG_ASSERT to ap_assert to have them 
+     available also in normal deployments. [Stefan Eissing]
+
+  *) mod_http2/mod_proxy_http2: 100-continue handling now properly implemented
+     up to the backend. Reused HTTP/2 proxy connections with more than a second
+     not used will block request bodies until a PING answer is received.
+     Requests headers are not delayed by this, since they are repeatable in
+     case of failure. This greatly increases robustness, especially with
+     busy server and/or low keepalive connections. [Stefan Eissing]
+     
+  *) mod_proxy_http2: fixed duplicate symbols with mod_http2.
+     [Stefan Eissing]
+  
+  *) mod_http2: rewrite of how responses and trailers are transferred between
+     master and slave connection. Reduction of internal states for tasks
+     and streams, stability. Heuristic id generation for slave connections
+     to better keep promise of connection ids unique at given point int time.
+     Fix for mod_cgid interop in high load situtations. 
+     Fix for handling of incoming trailers when no request body is sent.
+     [Stefan Eissing]
+  
+  *) mod_http2: fix suspended handling for streams. Output could become
+     blocked in rare cases. [Stefan Eissing]
+
+  *) mpm_winnt: Prevent a denial of service when the 'data' AcceptFilter is in
+     use by replacing it with the 'connect' filter. PR 59970. [Jacob Champion]
+
+  *) mod_cgid: Resolve a case where a short CGI response causes a subsequent
+     CGI to be killed prematurely, resulting in a truncated subsequent
+     response. [Eric Covener]
+
+  *) mod_proxy_hcheck: Set health check URI and expression correctly for health
+     check worker. PR 60038 [zdeno <zdeno@scnet.sk>]
+
+  *) mod_http2: if configured with nghttp2 1.14.0 and onward, invalid request
+     headers will immediately reset the stream with a PROTOCOL error. Feature
+     logged by module on startup as 'INVHD' in info message.
+     [Stefan Eissing]
+     
+  *) mod_http2: fixed handling of stream buffers during shutdown.
+     [Stefan Eissing]
+     
+  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
+     triggering mod_proxy_connect's AH01018 once the tunnel is established.
+     [Yann Ylavic]
+
+  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
+     connections (unless -I is specified), according to the Host header (if
+     any) or the requested URL's hostname otherwise.  [Yann Ylavic]
+
+  *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
+     and the error documents are proxied. PR 55415. [Luca Toscano]
+
+  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
+     not been modified (HTTP 304) to avoid subsequent bougus reads and
+     confusing error messages logged. [Luca Toscano]
+
+  *) mod_http2: h2 status resource follows latest draft, see
+     http://www.ietf.org/id/draft-benfield-http2-debug-state-01.txt
+     [Stefan Eissing]
+     
+  *) mod_http2: handling graceful shutdown gracefully, e.g. handling existing
+     streams to the end. [Stefan Eissing]
+  
+  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
+     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
+
+  *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
+     available before the request is sent.  PR 57832.  [Yann Ylavic]
+
+  *) mod_proxy_balancer: Prevent redirect loops between workers within a
+     balancer by limiting the number of redirects to the number balancer
+     members. PR 59864 [Ruediger Pluem]
+
+  *) mod_proxy: Correctly consider error response codes by the backend when
+     processing failonstatus. PR 59869 [Ruediger Pluem]
+
+  *) mod_dav: Add dav_get_provider_name() function to obtain the name
+     of the provider from mod_dav.  [Graham Leggett]
+
+  *) mod_dav: Add support for childtags to dav_error.
+     [Jari Urpalainen <jari.urpalainen nokia.com>]
+
+>>>>>>> .merge-right.r1769587
   *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
      string showing up in SCRIPT_FILENAME. PR59815
 
@@ -183,7 +294,7 @@ Changes with Apache 2.4.20
   *) mod_proxy_express: Fix possible use of DB handle after close.  PR 59230.
      [Petr <pgajdos suse.cz>]
 
-  *) core/util_script: relax alphanumeric filter of enviroment variable names
+  *) core/util_script: relax alphanumeric filter of environment variable names
      on Windows to allow '(' and ')' for passing PROGRAMFILES(X86) et.al.
      unadulterated in 64 bit versions of Windows. PR 46751.
      [John <john leineweb de>]
@@ -460,7 +571,7 @@ Changes with Apache 2.4.18
      fixes crash on a request that did not produce any response.
      [Stefan Eissing]
 
-  *) mod_http2: trailers are sent after reponse body if set in request_rec
+  *) mod_http2: trailers are sent after response body if set in request_rec
      trailers_out before the end-of-request bucket is sent through the 
      output filters. [Stefan Eissing]
 
@@ -816,7 +927,7 @@ Changes with Apache 2.4.13 (not released)
      [Yann Ylavic]
 
   *) mod_proxy_connect/wstunnel: If both client and backend sides get readable
-     at the same time, don't lose errors occuring while forwarding on the first
+     at the same time, don't lose errors occurring while forwarding on the first
      side when none occurs next on the other side, and abort.  [Yann Ylavic]
 
   *) mod_rewrite: Improve relative substitutions in per-directory/htaccess
@@ -969,7 +1080,7 @@ Changes with Apache 2.4.11 (not released)
      the URL parameter interpolates to an empty string. PR 56603.
      [<ajprout hotmail.com>]
 
-  *) core: Fix -D[efined] or <Define>[d] variables lifetime accross restarts. 
+  *) core: Fix -D[efined] or <Define>[d] variables lifetime across restarts. 
      PR 57328.  [Armin Abfalterer <a.abfalterer gmail.com>, Yann Ylavic].
 
   *) mod_proxy: Preserve original request headers even if they differ
@@ -1578,7 +1689,7 @@ Changes with Apache 2.4.7
      instead of an explicit cn=* filter. [David Hawes <dhawes vt.edu>]
 
   *) ab: Add wait time, fix processing time, and output write errors only if
-     they occured. [Christophe Jaillet]
+     they occurred. [Christophe Jaillet]
 
   *) worker MPM: Don't forcibly kill worker threads if the child process is
      exiting gracefully.  [Oracle Corporation]
@@ -1591,7 +1702,7 @@ Changes with Apache 2.4.7
      [Chris Darroch]
 
   *) ab: Add a new -l parameter in order not to check the length of the responses.
-     This can be usefull with dynamic pages.
+     This can be useful with dynamic pages.
      PR9945, PR27888, PR42040 [<ccikrs1 cranbrook edu>]
 
   *) Suppress formatting of startup messages written to the console when
@@ -1972,7 +2083,7 @@ Changes with Apache 2.4.5
      request information to the request_rec structure. [Daniel Gruno]
 
   *) mod_lua: Add a server scope for Lua states, which creates a pool of
-     states with managable minimum and maximum size. [Daniel Gruno]
+     states with manageable minimum and maximum size. [Daniel Gruno]
 
   *) mod_lua: Add new directive, LuaMapHandler, for dynamically mapping
      URIs to Lua scripts and functions using regular expressions.
@@ -2025,7 +2136,7 @@ Changes with Apache 2.4.4
   *) mod_slotmem_shm: Fix mistaken reset of num_free for restored shm.
      [Jim Jagielski]
 
-  *) mod_proxy: non-existance of byrequests is not an immediate error.
+  *) mod_proxy: non-existence of byrequests is not an immediate error.
      [Jim Jagielski]
 
   *) mod_proxy_balancer: Improve output of balancer-manager (re: Drn,
@@ -2967,7 +3078,7 @@ Changes with Apache 2.3.14
      binary needs PCRE. [Rainer Jung]
 
   *) configure: tolerate dependency checking failures for modules if
-     they have been enabled implicitely. [Rainer Jung]
+     they have been enabled implicitly. [Rainer Jung]
 
   *) configure: Allow to specify module specific custom linker flags via
      the MOD_XXX_LDADD variables. [Rainer Jung]
@@ -3073,7 +3184,7 @@ Changes with Apache 2.3.13
      state after a timeout when discarding a request body. PR 51103.
      [Stefan Fritsch]
 
-  *) core: Add various file existance test operators to ap_expr.
+  *) core: Add various file existence test operators to ap_expr.
      [Stefan Fritsch]
 
   *) mod_proxy_express: New mass reverse-proxy switch extension for
@@ -4349,7 +4460,7 @@ Changes with Apache 2.3.2
 
   *) mod_mime_magic: Fix detection of compressed content. [Rainer Jung]
 
-  *) mod_negotiation: Escape pathes of filenames in 406 responses to avoid
+  *) mod_negotiation: Escape paths of filenames in 406 responses to avoid
      HTML injections and HTTP response splitting.  PR 46837.
      [Geoff Keating <geoffk apple.com>]
 

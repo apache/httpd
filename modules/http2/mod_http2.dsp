@@ -161,7 +161,7 @@ SOURCE=./h2_request.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_response.c
+SOURCE=./h2_headers.c
 # End Source File
 # Begin Source File
 

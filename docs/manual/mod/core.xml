@@ -80,31 +80,42 @@ AcceptFilter https data
        requests.  Any value besides <code>none</code> will enable
        <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
        see the Linux
-       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+       <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">
        tcp(7)</a> man page.</p>
 
     <p>The default values on Windows are:</p>
     <highlight language="config">
-AcceptFilter http data
-AcceptFilter https data
+AcceptFilter http connect
+AcceptFilter https connect
     </highlight>
 
     <p>Window's mpm_winnt interprets the AcceptFilter to toggle the AcceptEx()
-       API, and does not support http protocol buffering.  There are two values
-       which utilize the Windows AcceptEx() API and will recycle network
-       sockets between connections.  <code>data</code> waits until data has
-       been transmitted as documented above, and the initial data buffer and
-       network endpoint addresses are all retrieved from the single AcceptEx()
-       invocation.  <code>connect</code> will use the AcceptEx() API, also
-       retrieve the network endpoint addresses, but like <code>none</code>
-       the <code>connect</code> option does not wait for the initial data
-       transmission.</p>
+       API, and does not support http protocol buffering. <code>connect</code>
+       will use the AcceptEx() API, also retrieve the network endpoint
+       addresses, but like <code>none</code> the <code>connect</code> option
+       does not wait for the initial data transmission.</p>
 
     <p>On Windows, <code>none</code> uses accept() rather than AcceptEx()
        and will not recycle sockets between connections.  This is useful for
        network adapters with broken driver support, as well as some virtual
        network providers such as vpn drivers, or spam, virus or spyware
        filters.</p>
+
+    <note type="warning">
+      <title>The <code>data</code> AcceptFilter (Windows)</title>
+
+      <p>For versions 2.4.23 and prior, the Windows <code>data</code> accept
+         filter waited until data had been transmitted and the initial data
+         buffer and network endpoint addresses had been retrieved from the
+         single AcceptEx() invocation. This implementation was subject to a
+         denial of service attack and has been disabled.</p>
+
+      <p>Current releases of httpd default to the <code>connect</code> filter
+         on Windows, and will fall back to <code>connect</code> if
+         <code>data</code> is specified. Users of prior releases are encouraged
+         to add an explicit setting of <code>connect</code> for their
+         AcceptFilter, as shown above.</p>
+    </note>
 
 </usage>
 <seealso><directive module="core">Protocol</directive></seealso>
@@ -775,6 +786,13 @@ DocumentRoot "/var/www/${servername}/htdocs"
 
     <p>Variable names may not contain colon ":" characters, to avoid clashes
     with <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
+
+    <p>While this directive is supported in virtual host and directory context,
+       the changes it makes are visible to any later configuration
+       directives, beyond any enclosing configuration section (matching or not).
+       Support for the other configuration sections was erroneously permitted by the initial
+       implementation of this directive and is only preserved (with unintuitive 
+       results) to maintain backward compatibility.</p>
 </usage>
 </directivesynopsis>
 

@@ -224,7 +224,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      *
      * Historically, this flush call was performed only for an SSLv2
      * connection or for a proxy connection.  Calling _out_flush can
-     * be expensive in cases where requests/reponses are pipelined,
+     * be expensive in cases where requests/responses are pipelined,
      * so limit the performance impact to handshake time.
      */
 #if OPENSSL_VERSION_NUMBER < 0x0009080df

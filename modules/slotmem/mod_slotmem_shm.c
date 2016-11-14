@@ -753,7 +753,7 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_fgrab
 };
 
-/* make the storage usuable from outside */
+/* make the storage usable from outside */
 static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
 {
     return (&storage);

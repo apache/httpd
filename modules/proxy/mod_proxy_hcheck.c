@@ -426,6 +426,8 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         PROXY_STRNCPY(hc->s->name,     wptr);
         PROXY_STRNCPY(hc->s->hostname, worker->s->hostname);
         PROXY_STRNCPY(hc->s->scheme,   worker->s->scheme);
+        PROXY_STRNCPY(hc->s->hcuri,    worker->s->hcuri);
+        PROXY_STRNCPY(hc->s->hcexpr,   worker->s->hcexpr);
         hc->hash.def = hc->s->hash.def = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_DEFAULT);
         hc->hash.fnv = hc->s->hash.fnv = ap_proxy_hashfunc(hc->s->name, PROXY_HASHFUNC_FNV);
         hc->s->port = port;

@@ -195,7 +195,7 @@ static int status_handler(request_rec *r)
     long req_time;
     int short_report;
     int no_table_report;
-    worker_score *ws_record = apr_palloc(r->pool, sizeof *ws_record);
+    worker_score *ws_record;
     process_score *ps_record;
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
@@ -292,6 +292,8 @@ static int status_handler(request_rec *r)
             i++;
         }
     }
+
+    ws_record = apr_palloc(r->pool, sizeof *ws_record);
 
     for (i = 0; i < server_limit; ++i) {
 #ifdef HAVE_TIMES
@@ -621,7 +623,7 @@ static int status_handler(request_rec *r)
                  "\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n"
                  "\"<b><code>I</code></b>\" Idle cleanup of worker, \n"
                  "\"<b><code>.</code></b>\" Open slot with no current process<br />\n"
-                 "<p />\n", r);
+                 "</p>\n", r);
         if (!ap_extended_status) {
             int j;
             int k = 0;

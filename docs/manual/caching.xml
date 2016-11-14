@@ -425,6 +425,28 @@ Vary: negotiate,accept-language,accept-charset
       to decide on which of many variants to return to the client.</p>
     </section>
 
+  </section>
+
+  <section id="examples">
+
+    <title>Cache Setup Examples</title>
+
+    <related>
+      <modulelist>
+        <module>mod_cache</module>
+        <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
+        <module>mod_socache_memcache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache">CacheEnable</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_socache">CacheSocache</directive>
+      </directivelist>
+    </related>
+
     <section id="disk">
       <title>Caching to Disk</title>
 
@@ -544,11 +566,51 @@ CacheDirLength 1
       leave enough "grow room" following a clean.</p>
     </section>
 
+    <section id="memcache">
+      <title>Caching to memcached</title>
+
+      <p>Using the <module>mod_cache_socache</module> module, <module>mod_cache</module>
+      can cache data from a variety of implementations (aka: "providers"). Using the
+      <module>mod_socache_memcache</module> module, for example, one can specify that
+      <a href="http://memcached.org">memcached</a> is to be used as the
+      the backend storage mechanism.</p>
+
+      <p>Typically the module will be configured as so:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:memcd.example.com:11211
+      </highlight>
+
+      <p>Additional <code>memcached</code> servers can be specified by
+      appending them to the end of the <code>CacheSocache memcache:</code>
+      line separated by commas:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212
+      </highlight>
+
+      <p>This format is also used with the other various <module>mod_cache_socache</module>
+      providers. For example:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache shmcb:/path/to/datafile(512000)
+      </highlight>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache dbm:/path/to/datafile
+      </highlight>
+
+    </section>
+
   </section>
 
   <section id="socache-caching">
 
-    <title>Two-state Key/Value Shared Object Caching</title>
+    <title>General Two-state Key/Value Shared Object Caching</title>
 
     <related>
       <modulelist>

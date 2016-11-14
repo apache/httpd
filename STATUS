@@ -113,16 +113,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=1753228&view=rev
-         http://svn.apache.org/viewvc?rev=1753229&view=rev
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: wrowe, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  *) core: avoid adding multiple subrequest filters when there are nested 
+     subrequests.  PR58292
+     trunk patch:  http://svn.apache.org/r1698334
+     2.4.x patch:  trunk works modulo CHANGES
+     +1:  covener, jim, jchampion
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -135,22 +134,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: trawick
      ylavic: there may be missing bits, see thread for commit r1736510.
 
-  *) mod_dav: Add support for childtags to dav_error.
-     trunk patch: http://svn.apache.org/r1746207
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim
-
-  *) mod_dav: Add dav_begin_multistatus, dav_send_one_response,
-     dav_finish_multistatus, dav_send_multistatus, dav_handle_err, 
-     dav_failed_proppatch, dav_success_proppatch to mod_dav.h.
-     trunk patch: http://svn.apache.org/r1748047
-     2.4.x: trunk works modulo CHANGES/MMN
-     +1: minfrin, jim
-
   *) core: Drop an invalid Last-Modified header value coming
-     from a FCGI/CGI script instead of replacing it with Unix epoch.
-     Warn the users about Last-Modified header value replacements and
-     improved handling of non-GMT datestr.
+     from a (F)CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements
+     and violations of the RFC.
      trunk patch: http://svn.apache.org/r1748379
                   http://svn.apache.org/r1750747
                   http://svn.apache.org/r1750749
@@ -158,71 +145,94 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1751138
                   http://svn.apache.org/r1751139
                   http://svn.apache.org/r1751147
-     2.4.x: trunk patches works (final view http://apaste.info/9v3)
-     The last revision has been discussed in dev@ and submitted by Yann.
-     Tested the code with a simple PHP script returning different Last-Modified
-     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday).
-     +1: elukey, jchampion
-
-  *) ab: Set the Server Name Indication (SNI) extension on outgoing TLS
-     connections (unless -I is specified), according to the Host header (if
-     any) or the requested URL's hostname otherwise.
-     trunk patch: http://svn.apache.org/r1750854
-                  http://svn.apache.org/r1750855
-                  http://svn.apache.org/r1750947
-                  http://svn.apache.org/r1750955
-                  http://svn.apache.org/r1750960
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-ab_sni.patch
-                  (needed to adapt CHANGES entry since r1750854)
-     +1: ylavic, covener
+                  http://svn.apache.org/r1757818
+     2.4.x: trunk patches work, final view:
+            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+     The problem has been discussed in dev@ extensively but we did not reach a common
+     agreement about how to proceed in the long term. While we wait, I would really like
+     to introduce useful logs for the users (the starting point of this change was a users@
+     email thread). If this is not the right way to go I will move the patch to other
+     sections of STATUS (stalled or being worked).
+     The code has been tested with a simple PHP script returning different Last-Modified
+     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
+     +1: elukey
 
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
      trunk patch: http://svn.apache.org/r1752331
                   http://svn.apache.org/r1752332
                   http://svn.apache.org/r1752333
-     +1: jchampion
+     +1: jchampion, jim (by inspection)
 
-  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
-     not been modified (HTTP 304) to avoid subsequent bogus reads and
-     confusing error messages logged.
-     trunk patch: http://svn.apache.org/r1752347
+  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
+     in the client certificate chain.  PR 55786.
+     trunk patch: http://svn.apache.org/r1756542
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, icing (by inspectin)
+
+  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
+     allowing per backend TLS configuration.
+     trunk patch: http://svn.apache.org/r1740928
+                  http://svn.apache.org/r1740960
+                  http://svn.apache.org/r1740967
+                  http://svn.apache.org/r1740987
+                  http://svn.apache.org/r1740998
+                  http://svn.apache.org/r1742697
+                  http://svn.apache.org/r1756976
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
+     +1: ylavic
+
+  *) Fix warnings with new compilers, warnings treated as error
+     in maintainer-mode, standard c-89 is enforced
+     trunk patch: http://svn.apache.org/r1702948
+                  http://svn.apache.org/r1759415
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1702948_and_co.patch
+     +1: ylavic, jorton, 
+     jchampion: r1702948 doesn't quite work as advertised. -Werror is never
+                added to CFLAGS because when combined with -Wstrict-prototypes,
+                the AC_LANG_PROGRAM won't compile (it uses a bare main()).
+     ylavic: Maybe the -Werror case could be handled later, for now this series
+             avoids a lot of "warning: 'aplog_module_index' defined but not
+             used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
+     jchampion: Fine by me. I just think the dead code should be removed from
+                the backport in the meantime, so people don't have a false sense
+                of security.
+
+  *) mod_cache: Bring up-to-date w/ trunk.
+     trunk patch:
+        try to use the key of a possible open but stale cache entry (PR 50317)
+            http://svn.apache.org/r1597533
+        socache_mc_store: Pass through expiration time.
+            http://svn.apache.org/r1649491
+        Preserve the Content-Type in case of 304 response
+            http://svn.apache.org/r1665216
+        Use the actual URI path and query-string (PR 21935)
+            http://svn.apache.org/r1756553
+            http://svn.apache.org/r1756631
+        better s-maxage support
+            http://svn.apache.org/r1726675
+            http://svn.apache.org/r1718496
+            http://svn.apache.org/r1718476
+        Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n](), update with APR doxygen
+            http://svn.apache.org/r1747469 
+     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
+     +1: jim, ylavic
+     ylavic: r1756553 and r1649491 have a CHANGES entry.
+
+  *) mod_socache_memcache: Provide memcache STATs to mod_status
+     trunk patch: http://svn.apache.org/r1768245
      2.4.x patch: trunk works
-     +1 elukey
+     +1: jim
 
-  *) autoconf: minor cleanup and removal of some dead code.
-     trunk patch: http://svn.apache.org/r1753315
-                  http://svn.apache.org/r1753316
-     +1: jchampion
-
-  *) mod_proxy_fcgi: avoid loops serving proxied error documents.
-     trunk patch: http://svn.apache.org/r1753167
+  *) Remove unnecessary apr_table_do() function casts.
+     trunk patch: http://svn.apache.org/r1769192
      2.4.x patch: trunk works
-     +1: elukey
+     +1: jchampion, rpluem
 
-  *) mod_proxy: Correctly consider error response codes by the backend when
-     processing failonstatus. PR 59869
-      Trunk version of patch:
-         http://svn.apache.org/r1753592
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: rpluem, jim
-
-  *) mod_proxy_balancer: Prevent redirect loops between workers within a
-     balancer by limiting the number of redirects to the number balancer
-     members. PR 59864
-      Trunk version of patch:
-         http://svn.apache.org/r1753594
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works (modulo CHANGES)
-      +1: rpluem, jim
-
-  *) mod_http: Add the HEAD method to the lookup hash for completeness.
-      Trunk version of patch:
-         http://svn.apache.org/r1753257
-      Backport version for 2.4.x of patch:
-         Trunk version of patch works
-      +1: wrowe
+  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
+     trunk patch: http://svn.apache.org/r1769332
+     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
+     +1: jchampion, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
@@ -280,6 +290,20 @@ PATCHES/ISSUES THAT ARE BEING WORKED
      minfrin: Yes, as you can see in the patch everything applies only
      if APR_XML_X2T_PARSED is defined, and the patch was tested with
      both apr-util v1.6 and apr-util v1.5.
+     -1: jorton, breaks binary backwards compat per dev@ discuss
+         msgid <20160902120654.GA12674@redhat.com>
+         (& also, making the structure change with apr-util version
+         means it breaks binary compat across an apr-util upgrade?)
+
+  * mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
+    once-per-restart msg (I guess the concern was that the RNG
+    could block after this message)
+
+      AH01757: generating secret for digest authentication ...
+
+    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
+    2.4.x patch: Just change the loglevel to DEBUG.
+    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
@@ -301,7 +325,7 @@ PATCHES/ISSUES THAT ARE STALLED
      +1: jkaluza
      +1: covener w/ doc or code to fix syntax (providername:providerarg not supported like syslog or socacheproviders, 
                  needs 2 args which is not valid in ErrorLog manual)
-     trawick: nit: fix "writing" in "/* NULL if we are writting to syslog */"
+     trawick: nit: fix "writing" in "/* NULL if we are writing to syslog */"
               (sorry, haven't finished reviewing completely)
      jim: What is the status of this??
 
@@ -362,7 +386,7 @@ PATCHES/ISSUES THAT ARE STALLED
      +1: jkaluza
 
   * mod_proxy: Ensure network errors detected by the proxy are returned as
-    504 Gateway Timout as opposed to 502 Bad Gateway
+    504 Gateway Timeout as opposed to 502 Bad Gateway
     trunk patch: https://svn.apache.org/viewvc?view=revision&revision=1480058
     2.4.x patch: trunk patch works modulo CHANGES
     +1:
@@ -409,7 +433,7 @@ PATCHES/ISSUES THAT ARE STALLED
           of described indirectly in a sample?
           Why are these new samples added to the install without three
           votes?  (I didn't veto it; put your name next to the two
-          existing ones and I'll be satisified that enough people
+          existing ones and I'll be satisfied that enough people
           considered this addition as an appropriate solution for a
           real httpd usability problem.)
      wrowe: I'd agree with trawick, and suggest that these scripts can begin

@@ -116,12 +116,20 @@ int h2_iq_count(h2_iqueue *q);
 /**
  * Add a stream id to the queue. 
  *
- * @param q the queue to append the task to
+ * @param q the queue to append the id to
  * @param sid the stream id to add
  * @param cmp the comparator for sorting
  * @param ctx user data for comparator 
  */
 void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx);
+
+/**
+ * Append the id to the queue if not already present. 
+ *
+ * @param q the queue to append the id to
+ * @param sid the id to append
+ */
+void h2_iq_append(h2_iqueue *q, int sid);
 
 /**
  * Remove the stream id from the queue. Return != 0 iff task
@@ -148,19 +156,38 @@ void h2_iq_clear(h2_iqueue *q);
 void h2_iq_sort(h2_iqueue *q, h2_iq_cmp *cmp, void *ctx);
 
 /**
- * Get the first stream id from the queue or NULL if the queue is empty. 
- * The task will be removed.
+ * Get the first id from the queue or 0 if the queue is empty. 
+ * The id is being removed.
  *
- * @param q the queue to get the first task from
- * @return the first stream id of the queue, 0 if empty
+ * @param q the queue to get the first id from
+ * @return the first id of the queue, 0 if empty
  */
 int h2_iq_shift(h2_iqueue *q);
+
+/**
+ * Get the first max ids from the queue. All these ids will be removed.
+ *
+ * @param q the queue to get the first task from
+ * @param pint the int array to receive the values
+ * @param max the maximum number of ids to shift
+ * @return the actual number of ids shifted
+ */
+size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max);
+
+/**
+ * Determine if int is in the queue already
+ *
+ * @parm q the queue
+ * @param sid the integer id to check for
+ * @return != 0 iff sid is already in the queue
+ */
+int h2_iq_contains(h2_iqueue *q, int sid);
 
 /*******************************************************************************
  * common helpers
  ******************************************************************************/
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(apr_uint32_t n);
+unsigned char h2_log2(int n);
 
 /**
  * Count the bytes that all key/value pairs in a table have
@@ -191,18 +218,18 @@ const char *h2_util_first_token_match(apr_pool_t *pool, const char *s,
 int h2_req_ignore_header(const char *name, size_t len);
 int h2_req_ignore_trailer(const char *name, size_t len);
 int h2_res_ignore_trailer(const char *name, size_t len);
-int h2_proxy_res_ignore_header(const char *name, size_t len);
 
 /**
  * Set the push policy for the given request. Takes request headers into 
  * account, see draft https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00
  * for details.
  * 
- * @param req the request to determine the policy for
+ * @param headers the http headers to inspect
  * @param p the pool to use
  * @param push_enabled if HTTP/2 server push is generally enabled for this request
+ * @return the push policy desired
  */
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled);
+int h2_push_policy_determine(apr_table_t *headers, apr_pool_t *p, int push_enabled);
 
 /*******************************************************************************
  * base64 url encoding, different table from normal base64
@@ -261,16 +288,10 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2_request helpers
  ******************************************************************************/
 
-struct h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                                  const char *scheme, const char *authority, 
-                                  const char *path, apr_table_t *header,
-                                  int serialize);
-struct h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize);
-
-apr_status_t h2_req_make(struct h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers);
+struct h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                                 const char *scheme, const char *authority, 
+                                 const char *path, apr_table_t *header,
+                                 int serialize);
 
 /*******************************************************************************
  * apr brigade helpers
@@ -358,14 +379,15 @@ do { \
     const char *line = "(null)"; \
     apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]); \
     len = h2_util_bb_print(buffer, bmax, (tag), "", (bb)); \
-    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%ld-%d): %s", \
-        (c)->id, (int)(sid), (len? buffer : line)); \
+    ap_log_cerror(APLOG_MARK, level, 0, (c), "bb_dump(%s): %s", \
+        (c)->log_id, (len? buffer : line)); \
 } while(0)
 
 
+typedef int h2_bucket_gate(apr_bucket *b);
 /**
  * Transfer buckets from one brigade to another with a limit on the 
- * maximum amount of bytes transfered. Does no setaside magic, lifetime
+ * maximum amount of bytes transferred. Does no setaside magic, lifetime
  * of brigades must fit. 
  * @param to   brigade to transfer buckets to
  * @param from brigades to remove buckets from
@@ -375,7 +397,8 @@ do { \
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                apr_bucket_brigade *from, 
                                apr_off_t *plen,
-                               int *peos);
+                               int *peos,
+                               h2_bucket_gate *should_append);
 
 /**
  * Get an approximnation of the memory footprint of the given

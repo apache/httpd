@@ -130,6 +130,8 @@ typedef struct dav_error {
 
     struct dav_error *prev;     /* previous error (in stack) */
 
+    const char *childtags;      /* error-tag may have children */
+
 } dav_error;
 
 /*
@@ -183,6 +185,23 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, int error_id,
 */
 DAV_DECLARE(dav_error*) dav_join_error(dav_error* dest, dav_error* src);
 
+typedef struct dav_response dav_response;
+
+/*
+** dav_handle_err()
+**
+** Handle the standard error processing. <err> must be non-NULL.
+**
+** <response> is set by the following:
+**   - dav_validate_request()
+**   - dav_add_lock()
+**   - repos_hooks->remove_resource
+**   - repos_hooks->move_resource
+**   - repos_hooks->copy_resource
+**   - vsn_hooks->update
+*/
+DAV_DECLARE(int) dav_handle_err(request_rec *r, dav_error *err,
+                                dav_response *response);
 
 /* error ID values... */
 
@@ -418,7 +437,7 @@ typedef struct dav_locktoken dav_locktoken;
 ** the sub-pools are a bit more general and heavyweight than these buffers.
 */
 
-/* buffer for reuse; can grow to accomodate needed size */
+/* buffer for reuse; can grow to accommodate needed size */
 typedef struct
 {
     apr_size_t alloc_len;       /* how much has been allocated */
@@ -436,7 +455,7 @@ DAV_DECLARE(void) dav_set_bufsize(apr_pool_t *p, dav_buffer *pbuf,
 DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf,
                                   const char *str);
 
-/* check that the buffer can accomodate <extra_needed> more bytes */
+/* check that the buffer can accommodate <extra_needed> more bytes */
 DAV_DECLARE(void) dav_check_bufsize(apr_pool_t *p, dav_buffer *pbuf,
                                     apr_size_t extra_needed);
 
@@ -467,7 +486,7 @@ typedef struct
 } dav_get_props_result;
 
 /* holds the contents of a <response> element */
-typedef struct dav_response
+struct dav_response
 {
     const char *href;           /* always */
     const char *desc;           /* optional description at <response> level */
@@ -478,7 +497,7 @@ typedef struct dav_response
     int status;
 
     struct dav_response *next;
-} dav_response;
+};
 
 typedef struct
 {
@@ -514,6 +533,42 @@ typedef enum {
 #define DAV_STYLE_ISO8601       1
 #define DAV_STYLE_RFC822        2
 #define DAV_TIMEBUF_SIZE        30
+
+/* Write a complete RESPONSE object out as a <DAV:response> xml
+ * element.  Data is sent into brigade BB, which is auto-flushed into
+ * the output filter stack for request R.  Use POOL for any temporary
+ * allocations.
+ *
+ * [Presumably the <multistatus> tag has already been written;  this
+ * routine is shared by dav_send_multistatus and dav_stream_response.]
+ */
+DAV_DECLARE(void) dav_send_one_response(dav_response *response,
+                                        apr_bucket_brigade *bb,
+                                        request_rec *r,
+                                        apr_pool_t *pool);
+
+/* Factorized helper function: prep request_rec R for a multistatus
+ * response and write <multistatus> tag into BB, destined for
+ * R->output_filters.  Use xml NAMESPACES in initial tag, if
+ * non-NULL.
+ */
+DAV_DECLARE(void) dav_begin_multistatus(apr_bucket_brigade *bb,
+                                        request_rec *r, int status,
+                                        apr_array_header_t *namespaces);
+
+/* Finish a multistatus response started by dav_begin_multistatus: */
+DAV_DECLARE(apr_status_t) dav_finish_multistatus(request_rec *r,
+                                                 apr_bucket_brigade *bb);
+
+/* Send a multistatus response */
+DAV_DECLARE(void) dav_send_multistatus(request_rec *r, int status,
+                                       dav_response *first,
+                                       apr_array_header_t *namespaces);
+
+DAV_DECLARE(apr_text *) dav_failed_proppatch(apr_pool_t *p,
+                                             apr_array_header_t *prop_ctx);
+DAV_DECLARE(apr_text *) dav_success_proppatch(apr_pool_t *p,
+                                              apr_array_header_t *prop_ctx);
 
 DAV_DECLARE(int) dav_get_depth(request_rec *r, int def_depth);
 
@@ -867,7 +922,7 @@ struct dav_hooks_liveprop
 **
 ** This structure is used as a standard way to determine if a particular
 ** property is a live property. Its use is not part of the mandated liveprop
-** interface, but can be used by liveprop providers in conjuction with the
+** interface, but can be used by liveprop providers in conjunction with the
 ** utility routines below.
 **
 ** spec->name == NULL is the defined end-sentinel for a list of specs.
@@ -2314,7 +2369,7 @@ struct dav_hooks_vsn
     ** exist. Any <DAV:mkworkspace> element is passed to the provider
     ** in the "doc" structure; it may be empty.
     **
-    ** If workspace creation is succesful, the state of the resource
+    ** If workspace creation is successful, the state of the resource
     ** object is updated appropriately.
     **
     ** This hook is optional; if the provider does not support workspaces,
@@ -2337,7 +2392,7 @@ struct dav_hooks_vsn
     ** Create an activity resource. The resource must not already
     ** exist.
     **
-    ** If activity creation is succesful, the state of the resource
+    ** If activity creation is successful, the state of the resource
     ** object is updated appropriately.
     **
     ** This hook is optional; if the provider does not support activities,

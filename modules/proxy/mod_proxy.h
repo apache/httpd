@@ -271,6 +271,10 @@ typedef struct {
     unsigned int inreslist:1;  /* connection in apr_reslist? */
     const char   *uds_path;    /* Unix domain socket path */
     const char   *ssl_hostname;/* Hostname (SNI) in use by SSL connection */
+    apr_bucket_brigade *tmp_bb;/* Temporary brigade created with the connection
+                                * and its scpool/bucket_alloc (NULL before),
+                                * must be left cleaned when used (locally).
+                                */
 } proxy_conn_rec;
 
 typedef struct {
@@ -374,7 +378,7 @@ typedef struct {
     unsigned int fnv;
 } proxy_hashes ;
 
-/* Runtime worker status informations. Shared in scoreboard */
+/* Runtime worker status information. Shared in scoreboard */
 /* The addition of member uds_path in 2.4.7 was an incompatible API change. */
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
@@ -580,7 +584,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
 /**
  * pre request hook.
  * It will return the most suitable worker at the moment
- * and coresponding balancer.
+ * and corresponding balancer.
  * The url is rewritten from balancer://cluster/uri to scheme://host:port/uri
  * and then the scheme_handler is called.
  *
@@ -632,6 +636,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock2(request_rec *r, proxy_server_conf *
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);
+/* DEPRECATED (will be replaced with ap_proxy_check_connection */
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
                                                             request_rec *r);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
@@ -763,7 +768,7 @@ PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
  * @param url    url containing balancer name
  * @param alias  alias/fake-path to this balancer
  * @param do_malloc true if shared struct should be malloced
- * @return       error message or NULL if successfull
+ * @return       error message or NULL if successful
  */
 PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,
@@ -916,6 +921,28 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s);
+
+#define PROXY_CHECK_CONN_EMPTY (1 << 0)
+/**
+ * Check a connection to the backend
+ * @param scheme calling proxy scheme (http, ajp, ...)
+ * @param conn   acquired connection
+ * @param server current server record
+ * @param max_blank_lines how many blank lines to consume,
+ *                        or zero for none (considered data)
+ * @param flags  PROXY_CHECK_* bitmask
+ * @return APR_SUCCESS: connection established,
+ *         APR_ENOTEMPTY: connection established with data,
+ *         APR_ENOSOCKET: not connected,
+ *         APR_EINVAL: worker in error state (unusable),
+ *         other: connection closed/aborted (remotely)
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
+                                                      proxy_conn_rec *conn,
+                                                      server_rec *server,
+                                                      unsigned max_blank_lines,
+                                                      int flags);
+
 /**
  * Make a connection to the backend
  * @param proxy_function calling proxy scheme (http, ajp, ...)

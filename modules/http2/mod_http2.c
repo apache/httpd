@@ -60,6 +60,7 @@ static int h2_h2_fixups(request_rec *r);
 typedef struct {
     unsigned int change_prio : 1;
     unsigned int sha256 : 1;
+    unsigned int inv_headers : 1;
 } features;
 
 static features myfeats;
@@ -84,15 +85,16 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     const char *mod_h2_init_key = "mod_http2_init_counter";
     nghttp2_info *ngh2;
     apr_status_t status;
-    const char *sep = "";
     
     (void)plog;(void)ptemp;
 #ifdef H2_NG2_CHANGE_PRIO
     myfeats.change_prio = 1;
-    sep = "+";
 #endif
 #ifdef H2_OPENSSL
     myfeats.sha256 = 1;
+#endif
+#ifdef H2_NG2_INVALID_HEADER_CB
+    myfeats.inv_headers = 1;
 #endif
     
     apr_pool_userdata_get(&data, mod_h2_init_key, s->process->pool);
@@ -108,8 +110,9 @@ static int h2_post_config(apr_pool_t *p, apr_pool_t *plog,
     ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03090)
                  "mod_http2 (v%s, feats=%s%s%s, nghttp2 %s), initializing...",
                  MOD_HTTP2_VERSION, 
-                 myfeats.change_prio? "CHPRIO" : "", sep, 
-                 myfeats.sha256?      "SHA256" : "",
+                 myfeats.change_prio? "CHPRIO"  : "", 
+                 myfeats.sha256?      "+SHA256" : "",
+                 myfeats.inv_headers? "+INVHD"  : "",
                  ngh2?                ngh2->version_str : "unknown");
     
     switch (h2_conn_mpm_type()) {
@@ -157,15 +160,16 @@ static apr_status_t http2_req_engine_push(const char *ngn_type,
 
 static apr_status_t http2_req_engine_pull(h2_req_engine *ngn, 
                                           apr_read_type_e block, 
-                                          apr_uint32_t capacity, 
+                                          int capacity, 
                                           request_rec **pr)
 {
     return h2_mplx_req_engine_pull(ngn, block, capacity, pr);
 }
 
-static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn)
+static void http2_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
+                                  apr_status_t status)
 {
-    h2_mplx_req_engine_done(ngn, r_conn);
+    h2_mplx_req_engine_done(ngn, r_conn, status);
 }
 
 /* Runs once per created child process. Perform any process 
@@ -230,8 +234,11 @@ static const char *val_H2_PUSH(apr_pool_t *p, server_rec *s,
     if (ctx) {
         if (r) {
             h2_task *task = h2_ctx_get_task(ctx);
-            if (task && task->request->push_policy != H2_PUSH_NONE) {
-                return "on";
+            if (task) {
+                h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+                if (stream && stream->push_policy != H2_PUSH_NONE) {
+                    return "on";
+                }
             }
         }
         else if (c && h2_session_push_enabled(ctx->session)) {
@@ -265,7 +272,10 @@ static const char *val_H2_PUSHED_ON(apr_pool_t *p, server_rec *s,
     if (ctx) {
         h2_task *task = h2_ctx_get_task(ctx);
         if (task && !H2_STREAM_CLIENT_INITIATED(task->stream_id)) {
-            return apr_itoa(p, task->request->initiated_on);
+            h2_stream *stream = h2_mplx_stream_get(task->mplx, task->stream_id);
+            if (stream) {
+                return apr_itoa(p, stream->initiated_on);
+            }
         }
     }
     return "";
@@ -334,7 +344,7 @@ static char *http2_var_lookup(apr_pool_t *p, server_rec *s,
             return (char *)vdef->lookup(p, s, c, r, ctx);
         }
     }
-    return "";
+    return (char*)"";
 }
 
 static int h2_h2_fixups(request_rec *r)

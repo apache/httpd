@@ -1046,9 +1046,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max,
          return;
     }
 
-    /* process remaining entries oldest to newest, the check for an emtpy
+    /* process remaining entries oldest to newest, the check for an empty
      * ring actually isn't necessary except when the compiler does
-     * corrupt 64bit arithmetics which happend to me once, so better safe
+     * corrupt 64bit arithmetics which happened to me once, so better safe
      * than sorry
      */
     while (!((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes))

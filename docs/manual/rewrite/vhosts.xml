@@ -201,7 +201,7 @@ RewriteRule  "^/(.*)$"                      "%1/docs/$1"
 RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
 RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
 RewriteCond  "${vhost:%1}"                  "^(/.*)$"
-RewriteRule  "^/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
 </highlight>
 
 </section>

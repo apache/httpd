@@ -20,8 +20,8 @@
 
 #include <nghttp2/nghttp2.h>
 
-struct h2_iqueue;
-struct h2_ihash_t;
+struct h2_proxy_iqueue;
+struct h2_proxy_ihash_t;
 
 typedef enum {
     H2_PROXYS_ST_INIT,             /* send initial SETTINGS, etc. */
@@ -52,7 +52,7 @@ typedef enum {
 
 typedef struct h2_proxy_session h2_proxy_session;
 typedef void h2_proxy_request_done(h2_proxy_session *s, request_rec *r,
-                                   int complete, int touched);
+                                   apr_status_t status, int touched);
 
 struct h2_proxy_session {
     const char *id;
@@ -63,6 +63,7 @@ struct h2_proxy_session {
     nghttp2_session *ngh2;   /* the nghttp2 session itself */
     
     unsigned int aborted : 1;
+    unsigned int check_ping : 1;
 
     h2_proxy_request_done *done;
     void *user_data;
@@ -73,10 +74,11 @@ struct h2_proxy_session {
     h2_proxys_state state;
     apr_interval_time_t wait_timeout;
 
-    struct h2_ihash_t *streams;
-    struct h2_iqueue *suspended;
+    struct h2_proxy_ihash_t *streams;
+    struct h2_proxy_iqueue *suspended;
     apr_size_t remote_max_concurrent;
     int last_stream_id;     /* last stream id processed by backend, or 0 */
+    apr_time_t last_frame_received;
     
     apr_bucket_brigade *input;
     apr_bucket_brigade *output;
@@ -100,6 +102,8 @@ apr_status_t h2_proxy_session_submit(h2_proxy_session *s, const char *url,
  *         APR_EOF     when the session has been terminated
  */
 apr_status_t h2_proxy_session_process(h2_proxy_session *s);
+
+void h2_proxy_session_cancel_all(h2_proxy_session *s);
 
 void h2_proxy_session_cleanup(h2_proxy_session *s, h2_proxy_request_done *done);
 

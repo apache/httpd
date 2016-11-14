@@ -49,7 +49,7 @@
  * = / ==       match; regex must be surrounded by slashes
  * ~            match; regex MAY NOT be surrounded by slashes
  *
- * Note that all operators may be preceeded by an exclamation mark
+ * Note that all operators may be preceded by an exclamation mark
  * (without spaces) in order to reverse their meaning.
  *
  */

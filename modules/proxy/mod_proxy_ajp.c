@@ -141,7 +141,7 @@ static apr_off_t get_content_length(request_rec * r)
  * XXX: AJP Auto Flushing
  *
  * When processing CMD_AJP13_SEND_BODY_CHUNK AJP messages we will do a poll
- * with FLUSH_WAIT miliseconds timeout to determine if more data is currently
+ * with FLUSH_WAIT milliseconds timeout to determine if more data is currently
  * available at the backend. If there is no more data available, we flush
  * the data to the client by adding a flush bucket to the brigade we pass
  * up the filter chain.
@@ -358,7 +358,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         }
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /* parse the reponse */
+    /* parse the response */
     result = ajp_parse_type(r, conn->data);
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
 
@@ -769,7 +769,10 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             break;
 
         /* Step Two: Make the Connection */
-        if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
+        if (ap_proxy_check_connection(scheme, backend, r->server, 0,
+                                      PROXY_CHECK_CONN_EMPTY)
+                && ap_proxy_connect_backend(scheme, backend, worker,
+                                            r->server)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00896)
                           "failed to make connection to backend: %s",
                           backend->hostname);

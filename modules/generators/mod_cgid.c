@@ -1298,8 +1298,8 @@ static void discard_script_output(apr_bucket_brigade *bb)
 
 struct cleanup_script_info {
     request_rec *r;
-    unsigned long conn_id;
     cgid_server_conf *conf;
+    pid_t pid;
 };
 
 static apr_status_t dead_yet(pid_t pid, apr_interval_time_t max_wait)
@@ -1351,25 +1351,19 @@ static apr_status_t cleanup_nonchild_process(request_rec *r, pid_t pid)
     return APR_EGENERAL;
 }
 
-static apr_status_t cleanup_script(void *vptr)
-{
-    struct cleanup_script_info *info = vptr;
-    int sd;
-    int rc;
+static apr_status_t get_cgi_pid(request_rec *r,  cgid_server_conf *conf, pid_t *pid) { 
     cgid_req_t req = {0};
-    pid_t pid;
     apr_status_t stat;
+    int rc, sd;
 
-    rc = connect_to_daemon(&sd, info->r, info->conf);
+    rc = connect_to_daemon(&sd, r, conf);
     if (rc != OK) {
         return APR_EGENERAL;
     }
 
-    /* we got a socket, and there is already a cleanup registered for it */
-
     req.req_type = GETPID_REQ;
     req.ppid = parent_pid;
-    req.conn_id = info->r->connection->id;
+    req.conn_id = r->connection->id;
 
     stat = sock_write(sd, &req, sizeof(req));
     if (stat != APR_SUCCESS) {
@@ -1377,18 +1371,26 @@ static apr_status_t cleanup_script(void *vptr)
     }
 
     /* wait for pid of script */
-    stat = sock_read(sd, &pid, sizeof(pid));
+    stat = sock_read(sd, pid, sizeof(*pid));
     if (stat != APR_SUCCESS) {
         return stat;
     }
 
     if (pid == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, info->r, APLOGNO(01261)
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01261)
                       "daemon couldn't find CGI process for connection %lu",
-                      info->conn_id);
+                      r->connection->id);
         return APR_EGENERAL;
     }
-    return cleanup_nonchild_process(info->r, pid);
+
+    return APR_SUCCESS;
+}
+
+
+static apr_status_t cleanup_script(void *vptr)
+{
+    struct cleanup_script_info *info = vptr;
+    return cleanup_nonchild_process(info->r, info->pid);
 }
 
 static int cgid_handler(request_rec *r)
@@ -1486,12 +1488,19 @@ static int cgid_handler(request_rec *r)
     }
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
-    info->r = r;
-    info->conn_id = r->connection->id;
     info->conf = conf;
-    apr_pool_cleanup_register(r->pool, info,
+    info->r = r;
+    rv = get_cgi_pid(r, conf, &(info->pid));
+
+    if (APR_SUCCESS == rv){  
+        apr_pool_cleanup_register(r->pool, info,
                               cleanup_script,
                               apr_pool_cleanup_null);
+    }
+    else { 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi PID");
+    }
+
     /* We are putting the socket discriptor into an apr_file_t so that we can
      * use a pipe bucket to send the data to the client.  APR will create
      * a cleanup for the apr_file_t which will close the socket, so we'll
@@ -1816,6 +1825,7 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     cgid_dirconf *dc = ap_get_module_config(r->per_dir_config, &cgid_module);
 
     struct cleanup_script_info *info;
+    apr_status_t rv;
 
     add_ssi_vars(r);
     env = ap_create_environment(r->pool, r->subprocess_env);
@@ -1827,13 +1837,22 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     send_req(sd, r, command, env, SSI_REQ);
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
-    info->r = r;
-    info->conn_id = r->connection->id;
     info->conf = conf;
-    /* for this type of request, the script is invoked through an
-     * intermediate shell process...  cleanup_script is only able
-     * to knock out the shell process, not the actual script
-     */
+    info->r = r;
+    rv = get_cgi_pid(r, conf, &(info->pid));
+    if (APR_SUCCESS == rv) {             
+        /* for this type of request, the script is invoked through an
+         * intermediate shell process...  cleanup_script is only able
+         * to knock out the shell process, not the actual script
+         */
+        apr_pool_cleanup_register(r->pool, info,
+                                  cleanup_script,
+                                  apr_pool_cleanup_null);
+    }
+    else { 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi PID (for SSI)");
+    }
+
     apr_pool_cleanup_register(r->pool, info,
                               cleanup_script,
                               apr_pool_cleanup_null);

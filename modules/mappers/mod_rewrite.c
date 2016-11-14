@@ -4077,7 +4077,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     /* Ok, we already know the pattern has matched, but we now
      * additionally have to check for all existing preconditions
      * (RewriteCond) which have to be also true. We do this at
-     * this very late stage to avoid unnessesary checks which
+     * this very late stage to avoid unnecessary checks which
      * would slow down the rewriting engine.
      */
     rewriteconds = p->rewriteconds;
@@ -4871,7 +4871,7 @@ static int hook_fixup(request_rec *r)
 
     /*
      *  Do the Options check after engine check, so
-     *  the user is able to explicitely turn RewriteEngine Off.
+     *  the user is able to explicitly turn RewriteEngine Off.
      */
     if (!(ap_allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
@@ -4886,7 +4886,7 @@ static int hook_fixup(request_rec *r)
     /*
      *  remember the current filename before rewriting for later check
      *  to prevent deadlooping because of internal redirects
-     *  on final URL/filename which can be equal to the inital one.
+     *  on final URL/filename which can be equal to the initial one.
      *  also, we'll restore original r->filename if we decline this
      *  request
      */

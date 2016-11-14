@@ -454,7 +454,6 @@
 	".\h2_private.h"\
 	".\h2_push.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_session.h"\
 	".\h2_stream.h"\
 	".\h2_task.h"\
@@ -517,7 +516,6 @@
 	".\h2.h"\
 	".\h2_from_h1.h"\
 	".\h2_private.h"\
-	".\h2_response.h"\
 	".\h2_task.h"\
 	".\h2_util.h"\
 	
@@ -648,7 +646,6 @@
 	".\h2_mplx.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_task.h"\
 	".\h2_util.h"\
 	
@@ -753,7 +750,6 @@
 	".\h2_ngn_shed.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_stream.h"\
 	".\h2_task.h"\
 	".\h2_util.h"\
@@ -815,7 +811,6 @@
 	".\h2_ngn_shed.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_task.h"\
 	".\h2_util.h"\
 	".\mod_http2.h"\
@@ -870,7 +865,6 @@
 	".\h2_private.h"\
 	".\h2_push.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_session.h"\
 	".\h2_stream.h"\
 	".\h2_util.h"\
@@ -934,58 +928,6 @@
 	".\h2_private.h"\
 	".\h2_push.h"\
 	".\h2_request.h"\
-	".\h2_util.h"\
-	
-
-./h2_response.c : \
-	"..\..\include\ap_config.h"\
-	"..\..\include\ap_config_layout.h"\
-	"..\..\include\ap_expr.h"\
-	"..\..\include\ap_hooks.h"\
-	"..\..\include\ap_mmn.h"\
-	"..\..\include\ap_regex.h"\
-	"..\..\include\ap_release.h"\
-	"..\..\include\apache_noprobes.h"\
-	"..\..\include\http_config.h"\
-	"..\..\include\http_core.h"\
-	"..\..\include\http_log.h"\
-	"..\..\include\httpd.h"\
-	"..\..\include\os.h"\
-	"..\..\include\util_cfgtree.h"\
-	"..\..\include\util_filter.h"\
-	"..\..\include\util_time.h"\
-	"..\..\srclib\apr-util\include\apr_buckets.h"\
-	"..\..\srclib\apr-util\include\apr_hooks.h"\
-	"..\..\srclib\apr-util\include\apr_optional.h"\
-	"..\..\srclib\apr-util\include\apr_optional_hooks.h"\
-	"..\..\srclib\apr-util\include\apr_uri.h"\
-	"..\..\srclib\apr-util\include\apu.h"\
-	"..\..\srclib\apr\include\apr.h"\
-	"..\..\srclib\apr\include\apr_allocator.h"\
-	"..\..\srclib\apr\include\apr_errno.h"\
-	"..\..\srclib\apr\include\apr_file_info.h"\
-	"..\..\srclib\apr\include\apr_file_io.h"\
-	"..\..\srclib\apr\include\apr_general.h"\
-	"..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\srclib\apr\include\apr_inherit.h"\
-	"..\..\srclib\apr\include\apr_mmap.h"\
-	"..\..\srclib\apr\include\apr_network_io.h"\
-	"..\..\srclib\apr\include\apr_poll.h"\
-	"..\..\srclib\apr\include\apr_pools.h"\
-	"..\..\srclib\apr\include\apr_ring.h"\
-	"..\..\srclib\apr\include\apr_strings.h"\
-	"..\..\srclib\apr\include\apr_tables.h"\
-	"..\..\srclib\apr\include\apr_thread_mutex.h"\
-	"..\..\srclib\apr\include\apr_thread_proc.h"\
-	"..\..\srclib\apr\include\apr_time.h"\
-	"..\..\srclib\apr\include\apr_user.h"\
-	"..\..\srclib\apr\include\apr_want.h"\
-	".\h2.h"\
-	".\h2_filter.h"\
-	".\h2_h2.h"\
-	".\h2_private.h"\
-	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_util.h"\
 	
 
@@ -1054,7 +996,6 @@
 	".\h2_private.h"\
 	".\h2_push.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_session.h"\
 	".\h2_stream.h"\
 	".\h2_task.h"\
@@ -1117,7 +1058,6 @@
 	".\h2_private.h"\
 	".\h2_push.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_session.h"\
 	".\h2_stream.h"\
 	".\h2_task.h"\
@@ -1361,7 +1301,6 @@
 	".\h2_mplx.h"\
 	".\h2_private.h"\
 	".\h2_request.h"\
-	".\h2_response.h"\
 	".\h2_session.h"\
 	".\h2_stream.h"\
 	".\h2_task.h"\

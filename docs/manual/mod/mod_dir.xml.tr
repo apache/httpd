@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1755988 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -309,7 +309,7 @@ FallbackResource /index.php
     <p>2.4 öncesi sürümlerde, bir URL için başka bir eylemcinin yapılandılmış
     olması durumunda bu modül herhangi bir eylemde bulunmaz ve sonuç olarak,
     tüm dizin için bir <directive>SetHandler</directive> belirtildiği durumda
-    index dosyalarının sunulmasının yanında  <directive>mod_rewrite</directive>
+    index dosyalarının sunulmasının yanında  <module>mod_rewrite</module>
     gibi modüller de ayrıca bazı çelişkili sonuçlar oluşturabilir.</p>
 </usage>
 </directivesynopsis>

@@ -42,11 +42,27 @@
 #include "h2_h2.h"
 #include "h2_mplx.h"
 #include "h2_request.h"
+#include "h2_headers.h"
 #include "h2_session.h"
 #include "h2_stream.h"
 #include "h2_task.h"
 #include "h2_worker.h"
 #include "h2_util.h"
+
+static void H2_TASK_OUT_LOG(int lvl, h2_task *task, apr_bucket_brigade *bb, 
+                            const char *tag)
+{
+    if (APLOG_C_IS_LEVEL(task->c, lvl)) {
+        conn_rec *c = task->c;
+        char buffer[4 * 1024];
+        const char *line = "(null)";
+        apr_size_t len, bmax = sizeof(buffer)/sizeof(buffer[0]);
+        
+        len = h2_util_bb_print(buffer, bmax, tag, "", bb);
+        ap_log_cerror(APLOG_MARK, lvl, 0, c, "bb_dump(%s): %s", 
+                      task->id, len? buffer : line);
+    }
+}
 
 /*******************************************************************************
  * task input handling
@@ -59,314 +75,47 @@ static int input_ser_header(void *ctx, const char *name, const char *value)
     return 1;
 }
 
-static void make_chunk(h2_task *task, apr_bucket_brigade *bb, 
-                       apr_bucket *first, apr_uint64_t chunk_len, 
-                       apr_bucket *tail)
-{
-    /* Surround the buckets [first, tail[ with new buckets carrying the
-     * HTTP/1.1 chunked encoding format. If tail is NULL, the chunk extends
-     * to the end of the brigade. */
-    char buffer[128];
-    apr_bucket *c;
-    int len;
-    
-    len = apr_snprintf(buffer, H2_ALEN(buffer), 
-                       "%"APR_UINT64_T_HEX_FMT"\r\n", chunk_len);
-    c = apr_bucket_heap_create(buffer, len, NULL, bb->bucket_alloc);
-    APR_BUCKET_INSERT_BEFORE(first, c);
-    c = apr_bucket_heap_create("\r\n", 2, NULL, bb->bucket_alloc);
-    if (tail) {
-        APR_BUCKET_INSERT_BEFORE(tail, c);
-    }
-    else {
-        APR_BRIGADE_INSERT_TAIL(bb, c);
-    }
-}
-
-static apr_status_t input_handle_eos(h2_task *task, request_rec *r, 
-                                     apr_bucket *b)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request? task->request->trailers : NULL;
-
-    if (task->input.chunked) {
-        task->input.tmp = apr_brigade_split_ex(bb, b, task->input.tmp);
-        if (t && !apr_is_empty_table(t)) {
-            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
-            apr_table_do(input_ser_header, task, t, NULL);
-            status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
-        }
-        else {
-            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
-        }
-        APR_BRIGADE_CONCAT(bb, task->input.tmp);
-    }
-    else if (r && t && !apr_is_empty_table(t)){
-        /* trailers passed in directly. */
-        apr_table_overlap(r->trailers_in, t, APR_OVERLAP_TABLES_SET);
-    }
-    task->input.eos_written = 1;
-    return status;
-}
-
-static apr_status_t input_append_eos(h2_task *task, request_rec *r)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_bucket_brigade *bb = task->input.bb;
-    apr_table_t *t = task->request? task->request->trailers : NULL;
-
-    if (task->input.chunked) {
-        if (t && !apr_is_empty_table(t)) {
-            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n");
-            apr_table_do(input_ser_header, task, t, NULL);
-            status = apr_brigade_puts(bb, NULL, NULL, "\r\n");
-        }
-        else {
-            status = apr_brigade_puts(bb, NULL, NULL, "0\r\n\r\n");
-        }
-    }
-    else if (r && t && !apr_is_empty_table(t)){
-        /* trailers passed in directly. */
-        apr_table_overlap(r->trailers_in, t, APR_OVERLAP_TABLES_SET);
-    }
-    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(bb->bucket_alloc));
-    task->input.eos_written = 1;
-    return status;
-}
-
-static apr_status_t input_read(h2_task *task, ap_filter_t* f,
-                               apr_bucket_brigade* bb, ap_input_mode_t mode,
-                               apr_read_type_e block, apr_off_t readbytes)
-{
-    apr_status_t status = APR_SUCCESS;
-    apr_bucket *b, *next, *first_data;
-    apr_off_t bblen = 0;
-    
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                  "h2_task(%s): read, mode=%d, block=%d, readbytes=%ld", 
-                  task->id, mode, block, (long)readbytes);
-    
-    if (mode == AP_MODE_INIT) {
-        return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
-    }
-    
-    if (f->c->aborted || !task->request) {
-        return APR_ECONNABORTED;
-    }
-    
-    if (!task->input.bb) {
-        if (!task->input.eos_written) {
-            input_append_eos(task, f->r);
-            return APR_SUCCESS;
-        }
-        return APR_EOF;
-    }
-    
-    /* Cleanup brigades from those nasty 0 length non-meta buckets
-     * that apr_brigade_split_line() sometimes produces. */
-    for (b = APR_BRIGADE_FIRST(task->input.bb);
-         b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
-        next = APR_BUCKET_NEXT(b);
-        if (b->length == 0 && !APR_BUCKET_IS_METADATA(b)) {
-            apr_bucket_delete(b);
-        } 
-    }
-    
-    while (APR_BRIGADE_EMPTY(task->input.bb) && !task->input.eos) {
-        /* Get more input data for our request. */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "h2_task(%s): get more data from mplx, block=%d, "
-                      "readbytes=%ld, queued=%ld",
-                      task->id, block, (long)readbytes, (long)bblen);
-        
-        /* Override the block mode we get called with depending on the input's
-         * setting. */
-        if (task->input.beam) {
-            status = h2_beam_receive(task->input.beam, task->input.bb, block, 
-                                     H2MIN(readbytes, 32*1024));
-        }
-        else {
-            status = APR_EOF;
-        }
-        
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
-                      "h2_task(%s): read returned", task->id);
-        if (APR_STATUS_IS_EAGAIN(status) 
-            && (mode == AP_MODE_GETLINE || block == APR_BLOCK_READ)) {
-            /* chunked input handling does not seem to like it if we
-             * return with APR_EAGAIN from a GETLINE read... 
-             * upload 100k test on test-ser.example.org hangs */
-            status = APR_SUCCESS;
-        }
-        else if (APR_STATUS_IS_EOF(status)) {
-            task->input.eos = 1;
-        }
-        else if (status != APR_SUCCESS) {
-            return status;
-        }
-        
-        /* Inspect the buckets received, detect EOS and apply
-         * chunked encoding if necessary */
-        h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
-                       "input.beam recv raw", task->input.bb);
-        first_data = NULL;
-        bblen = 0;
-        for (b = APR_BRIGADE_FIRST(task->input.bb); 
-             b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
-            next = APR_BUCKET_NEXT(b);
-            if (APR_BUCKET_IS_METADATA(b)) {
-                if (first_data && task->input.chunked) {
-                    make_chunk(task, task->input.bb, first_data, bblen, b);
-                    first_data = NULL;
-                    bblen = 0;
-                }
-                if (APR_BUCKET_IS_EOS(b)) {
-                    task->input.eos = 1;
-                    input_handle_eos(task, f->r, b);
-                    h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
-                                   "input.bb after handle eos", 
-                                   task->input.bb);
-                }
-            }
-            else if (b->length == 0) {
-                apr_bucket_delete(b);
-            } 
-            else {
-                if (!first_data) {
-                    first_data = b;
-                }
-                bblen += b->length;
-            }    
-        }
-        if (first_data && task->input.chunked) {
-            make_chunk(task, task->input.bb, first_data, bblen, NULL);
-        }            
-        
-        if (h2_task_logio_add_bytes_in) {
-            h2_task_logio_add_bytes_in(f->c, bblen);
-        }
-    }
-    
-    if (task->input.eos) {
-        if (!task->input.eos_written) {
-            input_append_eos(task, f->r);
-        }
-        if (APR_BRIGADE_EMPTY(task->input.bb)) {
-            return APR_EOF;
-        }
-    }
-
-    h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
-                   "task_input.bb", task->input.bb);
-           
-    if (APR_BRIGADE_EMPTY(task->input.bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
-                      "h2_task(%s): no data", task->id);
-        return (block == APR_NONBLOCK_READ)? APR_EAGAIN : APR_EOF;
-    }
-    
-    if (mode == AP_MODE_EXHAUSTIVE) {
-        /* return all we have */
-        APR_BRIGADE_CONCAT(bb, task->input.bb);
-    }
-    else if (mode == AP_MODE_READBYTES) {
-        status = h2_brigade_concat_length(bb, task->input.bb, readbytes);
-    }
-    else if (mode == AP_MODE_SPECULATIVE) {
-        status = h2_brigade_copy_length(bb, task->input.bb, readbytes);
-    }
-    else if (mode == AP_MODE_GETLINE) {
-        /* we are reading a single LF line, e.g. the HTTP headers. 
-         * this has the nasty side effect to split the bucket, even
-         * though it ends with CRLF and creates a 0 length bucket */
-        status = apr_brigade_split_line(bb, task->input.bb, block, 
-                                        HUGE_STRING_LEN);
-        if (APLOGctrace1(f->c)) {
-            char buffer[1024];
-            apr_size_t len = sizeof(buffer)-1;
-            apr_brigade_flatten(bb, buffer, &len);
-            buffer[len] = 0;
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                          "h2_task(%s): getline: %s",
-                          task->id, buffer);
-        }
-    }
-    else {
-        /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
-         * to support it. Seems to work. */
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
-                      APLOGNO(02942) 
-                      "h2_task, unsupported READ mode %d", mode);
-        status = APR_ENOTIMPL;
-    }
-    
-    if (APLOGctrace1(f->c)) {
-        apr_brigade_length(bb, 0, &bblen);
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
-                      "h2_task(%s): return %ld data bytes",
-                      task->id, (long)bblen);
-    }
-    return status;
-}
-
 /*******************************************************************************
  * task output handling
  ******************************************************************************/
 
-static apr_status_t open_response(h2_task *task)
+static apr_status_t open_output(h2_task *task)
 {
-    h2_response *response;
-    response = h2_from_h1_get_response(task->output.from_h1);
-    if (!response) {
-        /* This happens currently when ap_die(status, r) is invoked
-         * by a read request filter. */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03204)
-                      "h2_task(%s): write without response for %s %s %s",
-                      task->id, 
-                      task->request->method, 
-                      task->request->authority, 
-                      task->request->path);
-        task->c->aborted = 1;
-        return APR_ECONNABORTED;
-    }
-    
-    if (h2_task_logio_add_bytes_out) {
-        /* count headers as if we'd do a HTTP/1.1 serialization */
-        task->output.written = h2_util_table_bytes(response->headers, 3)+1;
-        h2_task_logio_add_bytes_out(task->c, task->output.written);
-    }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03348)
-                  "h2_task(%s): open response to %s %s %s",
+                  "h2_task(%s): open output to %s %s %s",
                   task->id, task->request->method, 
                   task->request->authority, 
                   task->request->path);
-    return h2_mplx_out_open(task->mplx, task->stream_id, response);
+    task->output.opened = 1;
+    return h2_mplx_out_open(task->mplx, task->stream_id, task->output.beam);
 }
 
-static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
+static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb, int block)
 {
     apr_off_t written, left;
     apr_status_t status;
 
     apr_brigade_length(bb, 0, &written);
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                  "h2_task(%s): write response body (%ld bytes)", 
-                  task->id, (long)written);
-    
+    H2_TASK_OUT_LOG(APLOG_TRACE2, task, bb, "h2_task send_out");
+    /* engines send unblocking */
     status = h2_beam_send(task->output.beam, bb, 
-                          task->blocking? APR_BLOCK_READ
-                          : APR_NONBLOCK_READ);
+                          block? APR_BLOCK_READ : APR_NONBLOCK_READ);
     if (APR_STATUS_IS_EAGAIN(status)) {
         apr_brigade_length(bb, 0, &left);
         written -= left;
         status = APR_SUCCESS;
     }
     if (status == APR_SUCCESS) {
-        task->output.written += written;
         if (h2_task_logio_add_bytes_out) {
             h2_task_logio_add_bytes_out(task->c, written);
         }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c, 
+                      "h2_task(%s): send_out done", task->id);
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c,
+                      "h2_task(%s): send_out (%ld bytes)", 
+                      task->id, (long)written);
     }
     return status;
 }
@@ -375,18 +124,12 @@ static apr_status_t send_out(h2_task *task, apr_bucket_brigade* bb)
  * request_rec out filter chain) into the h2_mplx for further sending
  * on the master connection. 
  */
-static apr_status_t output_write(h2_task *task, ap_filter_t* f, 
-                                 apr_bucket_brigade* bb)
+static apr_status_t slave_out(h2_task *task, ap_filter_t* f, 
+                              apr_bucket_brigade* bb)
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int flush = 0;
-    
-    if (APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                      "h2_task(%s): empty write", task->id);
-        return APR_SUCCESS;
-    }
+    int flush = 0, blocking;
     
     if (task->frozen) {
         h2_util_bb_log(task->c, task->stream_id, APLOG_TRACE2,
@@ -403,138 +146,246 @@ static apr_status_t output_write(h2_task *task, ap_filter_t* f,
         }
         return APR_SUCCESS;
     }
-    
-    if (!task->output.beam) {
-        h2_beam_create(&task->output.beam, task->pool, 
-                       task->stream_id, "output", 0);
-        if (task->output.copy_files) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                          "h2_task(%s): copy_files on", task->id);
-            h2_beam_on_file_beam(task->output.beam, h2_beam_no_files, NULL);
-        }
-    }
-    
-    /* Attempt to write saved brigade first */
-    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
-        status = send_out(task, task->output.bb); 
-        if (status != APR_SUCCESS) {
-            return status;
-        }
-    }
-    
-    /* If there is nothing saved (anymore), try to write the brigade passed */
-    if ((!task->output.bb || APR_BRIGADE_EMPTY(task->output.bb)) 
-        && !APR_BRIGADE_EMPTY(bb)) {
-        /* check if we have a flush before the end-of-request */
-        if (!task->output.response_open) {
-            for (b = APR_BRIGADE_FIRST(bb);
-                 b != APR_BRIGADE_SENTINEL(bb);
-                 b = APR_BUCKET_NEXT(b)) {
-                if (AP_BUCKET_IS_EOR(b)) {
-                    break;
-                }
-                else if (APR_BUCKET_IS_FLUSH(b)) {
-                    flush = 1;
-                }
+
+    /* we send block once we opened the output, so someone is there
+     * reading it *and* the task is not assigned to a h2_req_engine */
+    blocking = (!task->assigned && task->output.opened);
+    if (!task->output.opened) {
+        for (b = APR_BRIGADE_FIRST(bb);
+             b != APR_BRIGADE_SENTINEL(bb);
+             b = APR_BUCKET_NEXT(b)) {
+            if (APR_BUCKET_IS_FLUSH(b)) {
+                flush = 1;
+                break;
             }
         }
-
-        status = send_out(task, bb); 
-        if (status != APR_SUCCESS) {
-            return status;
+    }
+    
+    if (task->output.bb && !APR_BRIGADE_EMPTY(task->output.bb)) {
+        /* still have data buffered from previous attempt.
+         * setaside and append new data and try to pass the complete data */
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+        }
+        if (status == APR_SUCCESS) {
+            status = send_out(task, task->output.bb, blocking);
+        } 
+    }
+    else {
+        /* no data buffered here, try to pass the brigade directly */
+        status = send_out(task, bb, blocking); 
+        if (status == APR_SUCCESS && !APR_BRIGADE_EMPTY(bb)) {
+            /* could not write all, buffer the rest */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
+                          "h2_slave_out(%s): saving brigade", 
+                          task->id);
+            status = ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+            flush = 1;
         }
     }
     
-    /* If the passed brigade is not empty, save it before return */
-    if (!APR_BRIGADE_EMPTY(bb)) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, task->c, APLOGNO(03405)
-                      "h2_task(%s): could not write all, saving brigade", 
-                      task->id);
-        if (!task->output.bb) {
-            task->output.bb = apr_brigade_create(task->pool, 
-                                          task->c->bucket_alloc);
-        }
-        return ap_save_brigade(f, &task->output.bb, &bb, task->pool);
+    if (status == APR_SUCCESS && !task->output.opened && flush) {
+        /* got a flush or could not write all, time to tell someone to read */
+        status = open_output(task);
     }
-    
-    if (!task->output.response_open 
-        && (flush || h2_beam_get_mem_used(task->output.beam) > (32*1024))) {
-        /* if we have enough buffered or we got a flush bucket, open
-        * the response now. */
-        status = open_response(task);
-        task->output.response_open = 1;
-    }
-    
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, task->c, 
+                  "h2_slave_out(%s): slave_out leave", task->id);    
     return status;
 }
 
 static apr_status_t output_finish(h2_task *task)
 {
-    apr_status_t status = APR_SUCCESS;
-    
-    if (!task->output.response_open) {
-        status = open_response(task);
-        task->output.response_open = 1;
+    if (!task->output.opened) {
+        return open_output(task);
     }
-    return status;
+    return APR_SUCCESS;
 }
 
 /*******************************************************************************
  * task slave connection filters
  ******************************************************************************/
 
-static apr_status_t h2_filter_stream_input(ap_filter_t* filter,
-                                           apr_bucket_brigade* brigade,
-                                           ap_input_mode_t mode,
-                                           apr_read_type_e block,
-                                           apr_off_t readbytes)
+static apr_status_t h2_filter_slave_in(ap_filter_t* f,
+                                       apr_bucket_brigade* bb,
+                                       ap_input_mode_t mode,
+                                       apr_read_type_e block,
+                                       apr_off_t readbytes)
 {
-    h2_task *task = h2_ctx_cget_task(filter->c);
-    AP_DEBUG_ASSERT(task);
-    return input_read(task, filter, brigade, mode, block, readbytes);
-}
-
-static apr_status_t h2_filter_stream_output(ap_filter_t* filter,
-                                            apr_bucket_brigade* brigade)
-{
-    h2_task *task = h2_ctx_cget_task(filter->c);
-    AP_DEBUG_ASSERT(task);
-    return output_write(task, filter, brigade);
-}
-
-static apr_status_t h2_filter_read_response(ap_filter_t* filter,
-                                            apr_bucket_brigade* bb)
-{
-    h2_task *task = h2_ctx_cget_task(filter->c);
-    AP_DEBUG_ASSERT(task);
-    if (!task->output.from_h1) {
+    h2_task *task;
+    apr_status_t status = APR_SUCCESS;
+    apr_bucket *b, *next;
+    apr_off_t bblen;
+    apr_size_t rmax;
+    
+    task = h2_ctx_cget_task(f->c);
+    ap_assert(task);
+    rmax = ((readbytes <= APR_SIZE_MAX)? (apr_size_t)readbytes : APR_SIZE_MAX);
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                  "h2_slave_in(%s): read, mode=%d, block=%d, readbytes=%ld", 
+                  task->id, mode, block, (long)readbytes);
+    
+    if (mode == AP_MODE_INIT) {
+        return ap_get_brigade(f->c->input_filters, bb, mode, block, readbytes);
+    }
+    
+    if (f->c->aborted) {
         return APR_ECONNABORTED;
     }
-    return h2_from_h1_read_response(task->output.from_h1, filter, bb);
+    
+    if (!task->input.bb) {
+        return APR_EOF;
+    }
+    
+    /* Cleanup brigades from those nasty 0 length non-meta buckets
+     * that apr_brigade_split_line() sometimes produces. */
+    for (b = APR_BRIGADE_FIRST(task->input.bb);
+         b != APR_BRIGADE_SENTINEL(task->input.bb); b = next) {
+        next = APR_BUCKET_NEXT(b);
+        if (b->length == 0 && !APR_BUCKET_IS_METADATA(b)) {
+            apr_bucket_delete(b);
+        } 
+    }
+    
+    while (APR_BRIGADE_EMPTY(task->input.bb)) {
+        /* Get more input data for our request. */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                      "h2_slave_in(%s): get more data from mplx, block=%d, "
+                      "readbytes=%ld", task->id, block, (long)readbytes);
+        
+        /* Override the block mode we get called with depending on the input's
+         * setting. */
+        if (task->input.beam) {
+            status = h2_beam_receive(task->input.beam, task->input.bb, block, 
+                                     H2MIN(readbytes, 32*1024));
+        }
+        else {
+            status = APR_EOF;
+        }
+        
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
+                      "h2_slave_in(%s): read returned", task->id);
+        if (APR_STATUS_IS_EAGAIN(status) 
+            && (mode == AP_MODE_GETLINE || block == APR_BLOCK_READ)) {
+            /* chunked input handling does not seem to like it if we
+             * return with APR_EAGAIN from a GETLINE read... 
+             * upload 100k test on test-ser.example.org hangs */
+            status = APR_SUCCESS;
+        }
+        else if (APR_STATUS_IS_EOF(status)) {
+            break;
+        }
+        else if (status != APR_SUCCESS) {
+            return status;
+        }
+        
+        h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                       "input.beam recv raw", task->input.bb);
+        if (h2_task_logio_add_bytes_in) {
+            apr_brigade_length(bb, 0, &bblen);
+            h2_task_logio_add_bytes_in(f->c, bblen);
+        }
+    }
+    
+    /* Inspect the buckets received, detect EOS and apply
+     * chunked encoding if necessary */
+    if (status == APR_EOF && APR_BRIGADE_EMPTY(task->input.bb)) {
+        return APR_EOF;
+    }
+
+    h2_util_bb_log(f->c, task->stream_id, APLOG_TRACE2, 
+                   "task_input.bb", task->input.bb);
+           
+    if (APR_BRIGADE_EMPTY(task->input.bb)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                      "h2_slave_in(%s): no data", task->id);
+        return (block == APR_NONBLOCK_READ)? APR_EAGAIN : APR_EOF;
+    }
+    
+    if (mode == AP_MODE_EXHAUSTIVE) {
+        /* return all we have */
+        APR_BRIGADE_CONCAT(bb, task->input.bb);
+    }
+    else if (mode == AP_MODE_READBYTES) {
+        status = h2_brigade_concat_length(bb, task->input.bb, rmax);
+    }
+    else if (mode == AP_MODE_SPECULATIVE) {
+        status = h2_brigade_copy_length(bb, task->input.bb, rmax);
+    }
+    else if (mode == AP_MODE_GETLINE) {
+        /* we are reading a single LF line, e.g. the HTTP headers. 
+         * this has the nasty side effect to split the bucket, even
+         * though it ends with CRLF and creates a 0 length bucket */
+        status = apr_brigade_split_line(bb, task->input.bb, block, 
+                                        HUGE_STRING_LEN);
+        if (APLOGctrace1(f->c)) {
+            char buffer[1024];
+            apr_size_t len = sizeof(buffer)-1;
+            apr_brigade_flatten(bb, buffer, &len);
+            buffer[len] = 0;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                          "h2_slave_in(%s): getline: %s",
+                          task->id, buffer);
+        }
+    }
+    else {
+        /* Hmm, well. There is mode AP_MODE_EATCRLF, but we chose not
+         * to support it. Seems to work. */
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, f->c,
+                      APLOGNO(03472) 
+                      "h2_slave_in(%s), unsupported READ mode %d", 
+                      task->id, mode);
+        status = APR_ENOTIMPL;
+    }
+    
+    if (APLOGctrace1(f->c)) {
+        apr_brigade_length(bb, 0, &bblen);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, f->c,
+                      "h2_slave_in(%s): %ld data bytes", task->id, (long)bblen);
+    }
+    return status;
+}
+
+static apr_status_t h2_filter_slave_output(ap_filter_t* filter,
+                                           apr_bucket_brigade* brigade)
+{
+    h2_task *task = h2_ctx_cget_task(filter->c);
+    apr_status_t status;
+    
+    ap_assert(task);
+    status = slave_out(task, filter, brigade);
+    if (status != APR_SUCCESS) {
+        h2_task_rst(task, H2_ERR_INTERNAL_ERROR);
+    }
+    return status;
+}
+
+static apr_status_t h2_filter_parse_h1(ap_filter_t* f, apr_bucket_brigade* bb)
+{
+    h2_task *task = h2_ctx_cget_task(f->c);
+    apr_status_t status;
+    
+    ap_assert(task);
+    /* There are cases where we need to parse a serialized http/1.1 
+     * response. One example is a 100-continue answer in serialized mode
+     * or via a mod_proxy setup */
+    while (!task->output.sent_response) {
+        status = h2_from_h1_parse_response(task, f, bb);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, f->c,
+                      "h2_task(%s): parsed response", task->id);
+        if (APR_BRIGADE_EMPTY(bb) || status != APR_SUCCESS) {
+            return status;
+        }
+    }
+    
+    return ap_pass_brigade(f->next, bb);
 }
 
 /*******************************************************************************
  * task things
  ******************************************************************************/
  
-void h2_task_set_response(h2_task *task, h2_response *response) 
-{
-    AP_DEBUG_ASSERT(response);
-    AP_DEBUG_ASSERT(!task->response);
-    /* we used to clone the response into out own pool. But
-     * we have much tighter control over the EOR bucket nowadays,
-     * so just use the instance given */
-    task->response = response;
-    if (response->rst_error) {
-        h2_task_rst(task, response->rst_error);
-    }
-}
-
-
 int h2_task_can_redo(h2_task *task) {
-    if (task->submitted
-        || (task->input.beam && h2_beam_was_received(task->input.beam)) 
-        || !task->request) {
+    if (h2_beam_was_received(task->input.beam)) {
         /* cannot repeat that. */
         return 0;
     }
@@ -545,17 +396,14 @@ int h2_task_can_redo(h2_task *task) {
 
 void h2_task_redo(h2_task *task)
 {
-    task->response = NULL;
     task->rst_error = 0;
 }
 
 void h2_task_rst(h2_task *task, int error)
 {
     task->rst_error = error;
-    if (task->input.beam) {
-        h2_beam_abort(task->input.beam);
-    }
-    if (task->output.beam) {
+    h2_beam_abort(task->input.beam);
+    if (!task->worker_done) {
         h2_beam_abort(task->output.beam);
     }
     if (task->c) {
@@ -587,15 +435,18 @@ void h2_task_register_hooks(void)
     ap_hook_process_connection(h2_task_process_conn, 
                                NULL, NULL, APR_HOOK_FIRST);
 
-    ap_register_output_filter("H2_RESPONSE", h2_response_output_filter,
-                              NULL, AP_FTYPE_PROTOCOL);
-    ap_register_input_filter("H2_TO_H1", h2_filter_stream_input,
+    ap_register_input_filter("H2_SLAVE_IN", h2_filter_slave_in,
                              NULL, AP_FTYPE_NETWORK);
-    ap_register_output_filter("H1_TO_H2", h2_filter_stream_output,
+    ap_register_output_filter("H2_SLAVE_OUT", h2_filter_slave_output,
                               NULL, AP_FTYPE_NETWORK);
-    ap_register_output_filter("H1_TO_H2_RESP", h2_filter_read_response,
+    ap_register_output_filter("H2_PARSE_H1", h2_filter_parse_h1,
+                              NULL, AP_FTYPE_NETWORK);
+
+    ap_register_input_filter("H2_REQUEST", h2_filter_request_in,
+                             NULL, AP_FTYPE_PROTOCOL);
+    ap_register_output_filter("H2_RESPONSE", h2_filter_headers_out,
                               NULL, AP_FTYPE_PROTOCOL);
-    ap_register_output_filter("H2_TRAILERS", h2_response_trailers_filter,
+    ap_register_output_filter("H2_TRAILERS_OUT", h2_filter_trailers_out,
                               NULL, AP_FTYPE_PROTOCOL);
 }
 
@@ -621,40 +472,41 @@ static int h2_task_pre_conn(conn_rec* c, void *arg)
     if (h2_ctx_is_task(ctx)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                       "h2_h2, pre_connection, found stream task");
-        
-        /* Add our own, network level in- and output filters.
-         */
-        ap_add_input_filter("H2_TO_H1", NULL, NULL, c);
-        ap_add_output_filter("H1_TO_H2", NULL, NULL, c);
+        ap_add_input_filter("H2_SLAVE_IN", NULL, NULL, c);
+        ap_add_output_filter("H2_PARSE_H1", NULL, NULL, c);
+        ap_add_output_filter("H2_SLAVE_OUT", NULL, NULL, c);
     }
     return OK;
 }
 
-h2_task *h2_task_create(conn_rec *c, const h2_request *req, 
-                        h2_bucket_beam *input, h2_mplx *mplx)
+h2_task *h2_task_create(conn_rec *c, int stream_id, const h2_request *req, 
+                        h2_bucket_beam *input, h2_bucket_beam *output,  
+                        h2_mplx *mplx)
 {
     apr_pool_t *pool;
     h2_task *task;
     
+    ap_assert(mplx);
+    ap_assert(c);
+    ap_assert(req);
+
     apr_pool_create(&pool, c->pool);
     task = apr_pcalloc(pool, sizeof(h2_task));
     if (task == NULL) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_ENOMEM, c,
                       APLOGNO(02941) "h2_task(%ld-%d): create stream task", 
-                      c->id, req->id);
+                      c->id, stream_id);
         return NULL;
     }
-    
-    task->id          = apr_psprintf(pool, "%ld-%d", c->id, req->id);
-    task->stream_id   = req->id;
+    task->id          = apr_psprintf(pool, "%ld-%d", c->master->id, stream_id);
+    task->stream_id   = stream_id;
     task->c           = c;
     task->mplx        = mplx;
     task->c->keepalives = mplx->c->keepalives;
     task->pool        = pool;
     task->request     = req;
-    task->ser_headers = req->serialize;
-    task->blocking    = 1;
     task->input.beam  = input;
+    task->output.beam = output;
     
     apr_thread_cond_create(&task->cond, pool);
 
@@ -664,10 +516,6 @@ h2_task *h2_task_create(conn_rec *c, const h2_request *req,
 
 void h2_task_destroy(h2_task *task)
 {
-    if (task->output.beam) {
-        h2_beam_destroy(task->output.beam);
-        task->output.beam = NULL;
-    }
     if (task->eor) {
         apr_bucket_destroy(task->eor);
     }
@@ -676,42 +524,53 @@ void h2_task_destroy(h2_task *task)
     }
 }
 
-void h2_task_set_io_blocking(h2_task *task, int blocking)
+apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread, int worker_id)
 {
-    task->blocking = blocking;
-}
+    ap_assert(task);
 
-apr_status_t h2_task_do(h2_task *task, apr_thread_t *thread)
-{
-    AP_DEBUG_ASSERT(task);
-    
-    task->input.block = APR_BLOCK_READ;
-    task->input.chunked = task->request->chunked;
-    task->input.eos = !task->request->body;
-    if (task->input.eos && !task->input.chunked && !task->ser_headers) {
-        /* We do not serialize/chunk and have eos already, no need to
-         * create a bucket brigade. */
-        task->input.bb = NULL;
-        task->input.eos_written = 1;
-    }
-    else {
-        task->input.bb = apr_brigade_create(task->pool, task->c->bucket_alloc);
-        if (task->ser_headers) {
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
-                          "h2_task(%s): serialize request %s %s", 
-                          task->id, task->request->method, task->request->path);
-            apr_brigade_printf(task->input.bb, NULL, 
-                               NULL, "%s %s HTTP/1.1\r\n", 
-                               task->request->method, task->request->path);
-            apr_table_do(input_ser_header, task, task->request->headers, NULL);
-            apr_brigade_puts(task->input.bb, NULL, NULL, "\r\n");
+    if (task->c->master) {
+        /* Each conn_rec->id is supposed to be unique at a point in time. Since
+         * some modules (and maybe external code) uses this id as an identifier
+         * for the request_rec they handle, it needs to be unique for slave 
+         * connections also.
+         * The connection id is generated by the MPM and most MPMs use the formula
+         *    id := (child_num * max_threads) + thread_num
+         * which means that there is a maximum id of about
+         *    idmax := max_child_count * max_threads
+         * If we assume 2024 child processes with 2048 threads max, we get
+         *    idmax ~= 2024 * 2048 = 2 ** 22
+         * On 32 bit systems, we have not much space left, but on 64 bit systems
+         * (and higher?) we can use the upper 32 bits without fear of collision.
+         * 32 bits is just what we need, since a connection can only handle so
+         * many streams. 
+         */
+        int slave_id, free_bits;
+        
+        if (sizeof(unsigned long) >= 8) {
+            free_bits = 32;
+            slave_id = task->stream_id;
         }
-        if (task->input.eos) {
-            input_append_eos(task, NULL);
+        else {
+            /* Assume we have a more limited number of threads/processes
+             * and h2 workers on a 32-bit system. Use the worker instead
+             * of the stream id. */
+            free_bits = 8;
+            slave_id = worker_id; 
         }
+        task->c->id = (task->c->master->id << free_bits)^slave_id;
     }
     
-    task->output.from_h1 = h2_from_h1_create(task->stream_id, task->pool);
+    task->input.bb = apr_brigade_create(task->pool, task->c->bucket_alloc);
+    if (task->request->serialize) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
+                      "h2_task(%s): serialize request %s %s", 
+                      task->id, task->request->method, task->request->path);
+        apr_brigade_printf(task->input.bb, NULL, 
+                           NULL, "%s %s HTTP/1.1\r\n", 
+                           task->request->method, task->request->path);
+        apr_table_do(input_ser_header, task, task->request->headers, NULL);
+        apr_brigade_puts(task->input.bb, NULL, NULL, "\r\n");
+    }
     
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, task->c,
                   "h2_task(%s): process connection", task->id);
@@ -749,13 +608,16 @@ static apr_status_t h2_task_process_request(h2_task *task, conn_rec *c)
         }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_task(%s): start process_request", task->id);
+    
         ap_process_request(r);
         if (task->frozen) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                           "h2_task(%s): process_request frozen", task->id);
         }
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                      "h2_task(%s): process_request done", task->id);
+        else {
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
+                          "h2_task(%s): process_request done", task->id);
+        }
         
         /* After the call to ap_process_request, the
          * request pool will have been deleted.  We set
@@ -791,7 +653,7 @@ static int h2_task_process_conn(conn_rec* c)
     
     ctx = h2_ctx_get(c, 0);
     if (h2_ctx_is_task(ctx)) {
-        if (!ctx->task->ser_headers) {
+        if (!ctx->task->request->serialize) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c, 
                           "h2_h2, processing request directly");
             h2_task_process_request(ctx->task, c);
@@ -824,11 +686,11 @@ apr_status_t h2_task_thaw(h2_task *task)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, task->c, APLOGNO(03407) 
                       "h2_task(%s), thawed", task->id);
     }
-    task->detached = 1;
+    task->thawed = 1;
     return APR_SUCCESS;
 }
 
-int h2_task_is_detached(h2_task *task)
+int h2_task_has_thawed(h2_task *task)
 {
-    return task->detached;
+    return task->thawed;
 }

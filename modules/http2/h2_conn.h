@@ -31,7 +31,7 @@ apr_status_t h2_conn_setup(struct h2_ctx *ctx, conn_rec *c, request_rec *r);
 /**
  * Run the HTTP/2 connection in synchronous fashion. 
  * Return when the HTTP/2 session is done
- * and the connection will close or a fatal error occured.
+ * and the connection will close or a fatal error occurred.
  *
  * @param ctx the http2 context to run
  * @return APR_SUCCESS when session is done.
@@ -66,9 +66,8 @@ typedef enum {
 h2_mpm_type_t h2_conn_mpm_type(void);
 
 
-conn_rec *h2_slave_create(conn_rec *master, apr_pool_t *parent,
-                          apr_allocator_t *allocator);
-void h2_slave_destroy(conn_rec *slave, apr_allocator_t **pallocator);
+conn_rec *h2_slave_create(conn_rec *master, int slave_id, apr_pool_t *parent);
+void h2_slave_destroy(conn_rec *slave);
 
 apr_status_t h2_slave_run_pre_connection(conn_rec *slave, apr_socket_t *csd);
 void h2_slave_run_connection(conn_rec *slave);

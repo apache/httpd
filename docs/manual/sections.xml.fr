@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1731194 -->
+<!-- English Revision: 1755978 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -451,7 +451,7 @@ sites qui correspondent à l'URL spécifiée et auxquels on a
 accédé via le serveur mandataire du module <module>mod_proxy</module>.
 Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients à accéder au site <code>www.example.com</code> en passant par le serveur
-mandataire :.</p>
+mandataire :</p>
 
 <highlight language="config">
 &lt;Proxy "http://www.example.com/*"&gt;

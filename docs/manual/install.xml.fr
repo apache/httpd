@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1685413 -->
+<!-- English Revision: 1760550 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,37 +30,37 @@
 
     <p>Ce document couvre l'installation et la compilation du serveur
     HTTP Apache
-    sur les syst&egrave;mes Unix et similaires seulement. Pour la compilation et
+    sur les systèmes Unix et similaires seulement. Pour la compilation et
     l'installation sous Windows, voir <a
     href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
     Windows</a> et <a href="platform/win_compiling.html">Compilation
     d'Apache sous Microsoft Windows</a>. Pour les autres plateformes, se
-    r&eacute;f&eacute;rer &agrave; la documentation par
+    référer à la documentation par
      <a href="platform/">plateforme</a>.</p>
 
     <p>Apache httpd utilise <code>libtool</code> et <code>autoconf</code>
-    afin de cr&eacute;er un environnement de construction similaire &agrave; la plupart
+    afin de créer un environnement de construction similaire à la plupart
     des projets Open Source .</p>
 
-    <p>Si vous effectuez une mise &agrave; jour depuis une version mineure vers
-    la suivante (par exemple, 2.4.9 &agrave; 2.4.10), veuillez passer &agrave; la section
-    <a href="#upgrading">mise &agrave; jour</a>.</p>
+    <p>Si vous effectuez une mise à jour depuis une version mineure vers
+    la suivante (par exemple, 2.4.9 à 2.4.10), veuillez passer à la section
+    <a href="#upgrading">mise à jour</a>.</p>
 
 </summary>
 
 <seealso><a href="programs/configure.html">Configuration de l'arborescence
 	des sources</a></seealso>
-<seealso><a href="invoking.html">D&eacute;marrer Apache httpd</a></seealso>
-<seealso><a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a></seealso>
+<seealso><a href="invoking.html">Démarrer Apache httpd</a></seealso>
+<seealso><a href="stopping.html">Arrêt et redémarrage</a></seealso>
 
-<section id="overview"><title>Aper&ccedil;u pour les plus press&eacute;s</title>
+<section id="overview"><title>Aperçu pour les plus pressés</title>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
-        <td><a href="#download">T&eacute;l&eacute;chargement</a></td>
+        <td><a href="#download">Téléchargement</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td>Téléchargez la dernière version depuis <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
@@ -105,115 +105,115 @@
       </tr>
     </table>
 
-    <p><em>NN</em> doit &ecirc;tre remplac&eacute; par le num&eacute;ro de version courant,
+    <p><em>NN</em> doit être remplacé par le numéro de version courant,
     et <em>PREFIX</em> par le
-    chemin du r&eacute;pertoire d'installation. Si
-    <em>PREFIX</em> n'est pas sp&eacute;cifi&eacute;, le chemin du r&eacute;pertoire
-    d'installation prendra sa valeur par d&eacute;faut, &agrave; savoir
+    chemin du répertoire d'installation. Si
+    <em>PREFIX</em> n'est pas spécifié, le chemin du répertoire
+    d'installation prendra sa valeur par défaut, à savoir
     <code>/usr/local/apache2</code>.</p>
 
-    <p>Chaque &eacute;tape du processus de compilation et d'installation est
-    d&eacute;crite plus en d&eacute;tails ci-dessous, &agrave; commencer par les pr&eacute;requis
+    <p>Chaque étape du processus de compilation et d'installation est
+    décrite plus en détails ci-dessous, à commencer par les prérequis
     pour compiler et installer Apache httpd.</p>
 </section>
 
-<section id="requirements"><title>Pr&eacute;requis</title>
+<section id="requirements"><title>Prérequis</title>
 
-    <p>Les pr&eacute;requis pour la construction d'Apache httpd sont les suivants:</p>
+    <p>Les prérequis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
       <dt>APR et APR-Util</dt>
-      <dd>APR et APR-Util doivent &ecirc;tre d&eacute;j&agrave; install&eacute;s sur votre syst&egrave;me.
-      Si ce n'est pas le cas, ou si vous pr&eacute;f&eacute;rez ne pas utiliser les
-      versions fournies par le syst&egrave;me, t&eacute;l&eacute;chargez les derni&egrave;res
+      <dd>APR et APR-Util doivent être déjà installés sur votre système.
+      Si ce n'est pas le cas, ou si vous préférez ne pas utiliser les
+      versions fournies par le système, téléchargez les dernières
       versions d'APR et APR-Util depuis <a
-      href="http://apr.apache.org/">Apache APR</a>, d&eacute;compressez-les
+      href="http://apr.apache.org/">Apache APR</a>, décompressez-les
       respectivement dans <code>/racine_sources_httpd/srclib/apr</code> et
-      <code>/racine_sources_httpd/srclib/apr-util</code> (les noms des r&eacute;pertoires ne
-      doivent pas comporter de num&eacute;ros de versions ; par exemple, la
+      <code>/racine_sources_httpd/srclib/apr-util</code> (les noms des répertoires ne
+      doivent pas comporter de numéros de versions ; par exemple, la
       distribution d'APR doit se trouver dans /racine_sources_httpd/srclib/apr/), et
       utilisez l'option <code>--with-included-apr</code> du script
       <code>./configure</code>. Sur certaines plateformes, vous devrez
-      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      peut-être installer les paquets <code>-dev</code> correspondants
       pour permettre la compilation de httpd avec les versions
-      install&eacute;es d'APR et APR-Util.</dd>
+      installées d'APR et APR-Util.</dd>
 
-      <dt>Biblioth&egrave;que d'expressions rationnelles compatibles Perl
+      <dt>Bibliothèque d'expressions rationnelles compatibles Perl
       (PCRE)</dt>
-      <dd>Cette biblioth&egrave;que est n&eacute;cessaire mais n'est plus fournie avec la
-      distribution de httpd. T&eacute;l&eacute;chargez le code source depuis <a
+      <dd>Cette bibliothèque est nécessaire mais n'est plus fournie avec la
+      distribution de httpd. Téléchargez le code source depuis <a
       href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
       un portage du paquet. Si votre suite de compilation ne trouve pas
-      le script pcre-config install&eacute; au cours du processus de
+      le script pcre-config installé au cours du processus de
       construction de PCRE, indiquez son chemin via l'option
       <code>--with-pcre</code> du script <code>./configure</code>. Sur
       certaines plateformes, vous devrez
-      peut-&ecirc;tre installer les paquets <code>-dev</code> correspondants
+      peut-être installer les paquets <code>-dev</code> correspondants
       pour permettre la compilation de httpd avec la version
-      install&eacute;e de PCRE.</dd>
+      installée de PCRE.</dd>
 
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
-      temporaire. Apr&egrave;s l'installation le serveur occupe
-      approximativement 10 Mo d'espace disque. L'espace disque r&eacute;ellement
-      n&eacute;cessaire va varier consid&eacute;rablement en fonction de vos options
-      de configuration, de la pr&eacute;sence &eacute;ventuelle de
+      temporaire. Après l'installation le serveur occupe
+      approximativement 10 Mo d'espace disque. L'espace disque réellement
+      nécessaire va varier considérablement en fonction de vos options
+      de configuration, de la présence éventuelle de
       modules tiers, et bien entendu de la taille de votre site web et
-      des sites que vous h&eacute;bergez sur votre serveur.</dd>
+      des sites que vous hébergez sur votre serveur.</dd>
 
-      <dt>Compilateur ANSI-C et syst&egrave;me de construction</dt>
+      <dt>Compilateur ANSI-C et système de construction</dt>
       <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a
       href="http://gcc.gnu.org/">GNU C (GCC)</a> de la <a
       href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-      est recommand&eacute;. Si vous ne poss&eacute;dez pas GCC,
+      est recommandé. Si vous ne possédez pas GCC,
       assurez-vous au moins que votre compilateur soit compatible ANSI.
       En outre, votre <code>PATH</code> doit contenir
       les outils de construction de base tels que <code>make</code>.</dd>
 
       <dt>Connaissance de l'heure exacte</dt>
-      <dd>Les &eacute;l&eacute;ments du protocole HTTP font r&eacute;f&eacute;rence &agrave; l'heure du jour.
-      Par cons&eacute;quent, il est n&eacute;cessaire d'&eacute;quiper votre syst&egrave;me d'un
+      <dd>Les éléments du protocole HTTP font référence à l'heure du jour.
+      Par conséquent, il est nécessaire d'équiper votre système d'un
       dispositif de synchronisation du temps. Les programmes
-      <code>ntpdate</code> ou <code>xntpd</code>, bas&eacute;s sur le protocole NTP,
-      sont couramment utilis&eacute;s &agrave; cet effet.
+      <code>ntpdate</code> ou <code>xntpd</code>, basés sur le protocole NTP,
+      sont couramment utilisés à cet effet.
       Voir la <a href="http://www.ntp.org">page d'accueil de NTP</a>
-      pour plus de d&eacute;tails &agrave; propos du logiciel NTP et des serveurs
+      pour plus de détails à propos du logiciel NTP et des serveurs
       de temps publics.</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [OPTIONNEL]</dt>
-      <dd>L'interpr&eacute;teur Perl 5 (les versions 5.003 ou sup&eacute;rieures conviennent)
-      est n&eacute;cessaire pour l'ex&eacute;cution de certains scripts comme
+      <dd>L'interpréteur Perl 5 (les versions 5.003 ou supérieures conviennent)
+      est nécessaire pour l'exécution de certains scripts comme
       <program>apxs</program> ou <program>dbmmanage</program>
-      (qui sont &eacute;crits en Perl).
-      Si le script <program>configure</program> ne trouve pas d'interpr&eacute;teur
+      (qui sont écrits en Perl).
+      Si le script <program>configure</program> ne trouve pas d'interpréteur
       Perl 5, vous ne pourrez pas utiliser les scripts qui en ont besoin.
-      Bien entendu, vous pourrez tout de m&ecirc;me construire et utiliser
+      Bien entendu, vous pourrez tout de même construire et utiliser
       Apache httpd.</dd>
 
     </dl>
 </section>
 
-<section id="download"><title>T&eacute;l&eacute;chargement</title>
+<section id="download"><title>Téléchargement</title>
 
-    <p>Le serveur HTTP Apache peut &ecirc;tre t&eacute;l&eacute;charg&eacute; &agrave; partir du
-    <a href="http://httpd.apache.org/download.cgi">site de t&eacute;l&eacute;chargement
+    <p>Le serveur HTTP Apache peut être téléchargé à partir du
+    <a href="http://httpd.apache.org/download.cgi">site de téléchargement
     du serveur HTTP Apache</a>, qui fournit la liste de nombreux miroirs.
-    Il sera plus commode &agrave; la plupart des utilisateurs d'Apache sur les
-    syst&egrave;mes UNIX ou similaires de t&eacute;l&eacute;charger et de compiler
-    la version sources.  Le processus de construction (d&eacute;crit ci-dessous) est
+    Il sera plus commode à la plupart des utilisateurs d'Apache sur les
+    systèmes UNIX ou similaires de télécharger et de compiler
+    la version sources.  Le processus de construction (décrit ci-dessous) est
     simple, et vous permet de personnaliser votre serveur selon vos besoins.
     En outre, les versions binaires sont souvent plus anciennes que les
-    derni&egrave;res versions sources. Si vous t&eacute;l&eacute;chargez une version binaire,
-    suivez les instructions d&eacute;crites dans le fichier
+    dernières versions sources. Si vous téléchargez une version binaire,
+    suivez les instructions décrites dans le fichier
     <code>INSTALL.bindist</code> inclus dans la distribution.</p>
 
-    <p>Apr&egrave;s le t&eacute;l&eacute;chargement, il est important de v&eacute;rifier que vous
-    disposez d'une version compl&egrave;te et non modifi&eacute;e du serveur HTTP Apache.
-    Vous pouvez le faire en testant l'archive t&eacute;l&eacute;charg&eacute;e &agrave; l'aide de
-    la signature PGP. Vous trouverez les d&eacute;tails de cette op&eacute;ration sur la <a
+    <p>Après le téléchargement, il est important de vérifier que vous
+    disposez d'une version complète et non modifiée du serveur HTTP Apache.
+    Vous pouvez le faire en testant l'archive téléchargée à l'aide de
+    la signature PGP. Vous trouverez les détails de cette opération sur la <a
     href="http://httpd.apache.org/download.cgi#verify"
-    >page de t&eacute;l&eacute;chargement</a> ainsi qu'un exemple pr&eacute;cis d&eacute;crivant <a
+    >page de téléchargement</a> ainsi qu'un exemple précis décrivant <a
     href="http://httpd.apache.org/dev/verification.html">l'utilisation de
     PGP</a>.</p>
 
@@ -222,77 +222,77 @@
 <section id="extract"><title>Extraction</title>
 
     <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
-    simplement &agrave; d&eacute;compresser et &agrave; d&eacute;sarchiver cette derni&egrave;re :</p>
+    simplement à décompresser et à désarchiver cette dernière :</p>
 
 <example>
 $ gzip -d httpd-<em>NN</em>.tar.gz<br />
 $ tar xvf httpd-<em>NN</em>.tar
 </example>
 
-    <p>Ceci cr&eacute;era, dans le r&eacute;pertoire courant, un nouveau r&eacute;pertoire
+    <p>Ceci créera, dans le répertoire courant, un nouveau répertoire
     contenant le code source de la distribution. Vous devrez vous positionner
-    dans ce r&eacute;pertoire avant de proc&eacute;der &agrave; la compilation du serveur.</p>
+    dans ce répertoire avant de procéder à la compilation du serveur.</p>
 </section>
 
 <section id="configure"><title>Configuration de l'arborescence des sources</title>
 
-    <p>L'&eacute;tape suivante consiste &agrave; configurer l'arborescence des sources
+    <p>L'étape suivante consiste à configurer l'arborescence des sources
     d'Apache en fonction de votre plateforme et de vos besoins personnels.
-    Le script  <program>configure</program>, situ&eacute; &agrave; la racine du
-    r&eacute;pertoire de la distribution, a &eacute;t&eacute; con&ccedil;u &agrave; cet effet
-    (Les d&eacute;veloppeurs qui t&eacute;l&eacute;chargent
+    Le script  <program>configure</program>, situé à la racine du
+    répertoire de la distribution, a été conçu à cet effet
+    (Les développeurs qui téléchargent
     une version non officielle de l'arborescence des sources d'Apache
     devront disposer de
     <code>autoconf</code> et <code>libtool</code> et
-    ex&eacute;cuter <code>buildconf</code> avant de passer &agrave; l'&eacute;tape suivante,
-    ce qui n'est pas n&eacute;cessaire pour les versions officielles).</p>
+    exécuter <code>buildconf</code> avant de passer à l'étape suivante,
+    ce qui n'est pas nécessaire pour les versions officielles).</p>
 
-    <p>Pour configurer l'arborescence des sources avec les valeurs par d&eacute;faut
+    <p>Pour configurer l'arborescence des sources avec les valeurs par défaut
     pour toutes les options, entrez simplement <code>./configure</code>.
     Pour modifier les valeurs des options, <program>configure</program>
-    accepte toute une vari&eacute;t&eacute; de variables et
+    accepte toute une variété de variables et
     d'options de ligne de commande.</p>
 
     <p>L'option la plus importante <code>--prefix</code> est le chemin
-    du r&eacute;pertoire d'installation d'Apache, car Apache doit &ecirc;tre configur&eacute;
+    du répertoire d'installation d'Apache, car Apache doit être configuré
     en fonction de ce chemin pour pouvoir fonctionner correctement.
-    Il est possible de d&eacute;finir plus finement le chemin d'installation des fichiers
-    &agrave; l'aide d'<a
+    Il est possible de définir plus finement le chemin d'installation des fichiers
+    à l'aide d'<a
     href="programs/configure.html#installationdirectories">options
-    suppl&eacute;mentaires de configure</a>.</p>
+    supplémentaires de configure</a>.</p>
 
-    <p>&Agrave; ce niveau, vous pouvez aussi sp&eacute;cifier de quelles <a
-    href="programs/configure.html#optionalfeatures">fonctionnalit&eacute;s</a> vous
-    voulez disposer dans Apache en activant ou d&eacute;sactivant des <a
+    <p>À ce niveau, vous pouvez aussi spécifier de quelles <a
+    href="programs/configure.html#optionalfeatures">fonctionnalités</a> vous
+    voulez disposer dans Apache en activant ou désactivant des <a
     href="mod/">modules</a>.  Apache est fourni avec un grand nombre de
-    modules inclus par d&eacute;faut. Ils seront compil&eacute;s en tant qu'<a
-    href="dso.html">objets partag&eacute;s (DSOs)</a> qui pourront &ecirc;tre charg&eacute;s
-    ou d&eacute;charg&eacute;s &agrave; l'ex&eacute;cution. Vous pouvez aussi choisir de compiler
+    modules inclus par défaut. Ils seront compilés en tant qu'<a
+    href="dso.html">objets partagés (DSOs)</a> qui pourront être chargés
+    ou déchargés à l'exécution. Vous pouvez aussi choisir de compiler
     les modules statiquement via l'option
     <code>--enable-<var>module</var>=static</code>.</p>
-    <p>Des modules suppl&eacute;mentaires peuvent &ecirc;tre activ&eacute;s &agrave; l'aide de l'option
-    <code>--enable-<var>module</var></code>, o&ugrave;
-    <var>module</var> est le nom du module sans la cha&icirc;ne
-    <code>mod_</code> et o&ugrave; tout caract&egrave;re de soulignement est converti
-    en tiret. D'une mani&egrave;re similaire,
-    vous pouvez d&eacute;sactiver des modules &agrave; l'aide de l'option
-    <code>--disable-<var>module</var></code>.  Faites tr&egrave;s attention
+    <p>Des modules supplémentaires peuvent être activés à l'aide de l'option
+    <code>--enable-<var>module</var></code>, où
+    <var>module</var> est le nom du module sans la chaîne
+    <code>mod_</code> et où tout caractère de soulignement est converti
+    en tiret. D'une manière similaire,
+    vous pouvez désactiver des modules à l'aide de l'option
+    <code>--disable-<var>module</var></code>.  Faites très attention
     en utilisant ces options, car <program>configure</program> n'est pas en
-    mesure de vous avertir si le module que vous avez sp&eacute;cifi&eacute; n'existe pas;
+    mesure de vous avertir si le module que vous avez spécifié n'existe pas;
     il ignorera tout simplement l'option.</p>
 
-    <p>En outre, vous devrez peut-&ecirc;tre fournir au script
-    <program>configure</program> des informations suppl&eacute;mentaires sur
-    le chemin de votre compilateur, de vos biblioth&egrave;ques, ou de vos fichiers
-    d'en-t&ecirc;tes.  A cet effet, vous pouvez passer des options de ligne de
+    <p>En outre, vous devrez peut-être fournir au script
+    <program>configure</program> des informations supplémentaires sur
+    le chemin de votre compilateur, de vos bibliothèques, ou de vos fichiers
+    d'en-têtes.  A cet effet, vous pouvez passer des options de ligne de
     commande ou des variables d'environnement au script
     <program>configure</program>. Pour plus d'informations, voir la
     page de manuel de <program>configure</program>, ou lancez le script
     <program>configure</program> avec l'option <code>--help</code>.
     </p>
 
-    <p>Pour vous faire une id&eacute;e des possibilit&eacute;s qui s'offrent &agrave; vous, voici
-    un exemple typique de compilation d'Apache avec le r&eacute;pertoire
+    <p>Pour vous faire une idée des possibilités qui s'offrent à vous, voici
+    un exemple typique de compilation d'Apache avec le répertoire
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
     particuliers et les deux modules additionnels <module>mod_ldap</module>
     et <module>mod_lua</module> :</p>
@@ -304,113 +304,113 @@ $ tar xvf httpd-<em>NN</em>.tar
        --enable-lua=shared
 </example>
 
-    <p>Plusieurs minutes peuvent &ecirc;tre n&eacute;cessaires &agrave;
-    <program>configure</program> pour tester la disponibilit&eacute; des
-    fonctionnalit&eacute;s
-    au sein de votre syst&egrave;me, et construire les Makefiles qui seront utilis&eacute;s
+    <p>Plusieurs minutes peuvent être nécessaires à
+    <program>configure</program> pour tester la disponibilité des
+    fonctionnalités
+    au sein de votre système, et construire les Makefiles qui seront utilisés
     par la suite pour compiler le serveur.</p>
 
-    <p>Vous trouverez une description d&eacute;taill&eacute;e des options de
+    <p>Vous trouverez une description détaillée des options de
     <program>configure</program> dans sa page de manuel.</p>
 </section>
 
 <section id="compile"><title>Construction</title>
 
-    <p>Vous pouvez maintenant construire les diff&eacute;rents &eacute;l&eacute;ments qui
-    composent le paquet Apache en lan&ccedil;ant tout simplement la commande :</p>
+    <p>Vous pouvez maintenant construire les différents éléments qui
+    composent le paquet Apache en lançant tout simplement la commande :</p>
 
 <example>$ make</example>
 
-    <p>Vous devez &ecirc;tre patient, car il faut plusieurs minutes pour compiler
-    une configuration de base, et cette dur&eacute;e peut varier consid&eacute;rablement
-    en fonction de votre mat&eacute;riel et du nombre de modules que vous avez activ&eacute;s.</p>
+    <p>Vous devez être patient, car il faut plusieurs minutes pour compiler
+    une configuration de base, et cette durée peut varier considérablement
+    en fonction de votre matériel et du nombre de modules que vous avez activés.</p>
 </section>
 
 <section id="install"><title>Installation</title>
 
-    <p>Il est temps maintenant d'installer le paquet dans le r&eacute;pertoire
-    d'installation d&eacute;fini par <em>PREFIX</em> (voir plus haut l'option
-    <code>--prefix</code>) en lan&ccedil;ant:</p>
+    <p>Il est temps maintenant d'installer le paquet dans le répertoire
+    d'installation défini par <em>PREFIX</em> (voir plus haut l'option
+    <code>--prefix</code>) en lançant:</p>
 
 <example>$ make install</example>
 
-    <p>Cette &eacute;tape n&eacute;cessite habituellement les privil&egrave;ges
-    de root, car <em>PREFIX</em> est en g&eacute;n&eacute;ral un
-    r&eacute;pertoire poss&egrave;dant des droits en &eacute;criture
+    <p>Cette étape nécessite habituellement les privilèges
+    de root, car <em>PREFIX</em> est en général un
+    répertoire possèdant des droits en écriture
     restreints.</p>
 
-    <p>Si vous effectuez une mise &agrave; jour, l'installation n'&eacute;crasera pas
+    <p>Si vous effectuez une mise à jour, l'installation n'écrasera pas
     vos fichiers de configuration ou autres documents.</p>
 </section>
 
 <section id="customize"><title>Personnalisation</title>
 
     <p>Ensuite, vous pourrez personnaliser votre Serveur HTTP Apache en
-    &eacute;ditant les <a href="configuring.html">fichiers de configuration</a>
-    situ&eacute;s dans <code><em>PREFIX</em>/conf/</code>.</p>
+    éditant les <a href="configuring.html">fichiers de configuration</a>
+    situés dans <code><em>PREFIX</em>/conf/</code>.</p>
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p>Consultez le manuel d'Apache situ&eacute; dans
+    <p>Consultez le manuel d'Apache situé dans
     <code><em>PREFIX</em>/docs/manual/</code> ou
     <a href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
-    r&eacute;cente de ce manuel et la liste compl&egrave;te des <a
+    récente de ce manuel et la liste complète des <a
     href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </section>
 
 <section id="test"><title>Test</title>
 
-    <p>Vous pouvez maintenant <a href="invoking.html">d&eacute;marrer</a> votre
-    serveur HTTP Apache en lan&ccedil;ant:</p>
+    <p>Vous pouvez maintenant <a href="invoking.html">démarrer</a> votre
+    serveur HTTP Apache en lançant:</p>
 
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
-    <p>Vous devriez alors pouvoir requ&eacute;rir votre premier document
-    &agrave; l'aide de l'URL <code>http://localhost/</code>. La page web que vous
-    voyez est situ&eacute;e dans le r&eacute;pertoire d&eacute;fini par la directive
+    <p>Vous devriez alors pouvoir requérir votre premier document
+    à l'aide de l'URL <code>http://localhost/</code>. La page web que vous
+    voyez est située dans le répertoire défini par la directive
     <directive module="core">DocumentRoot</directive>,
-    qui est g&eacute;n&eacute;ralement <code><em>PREFIX</em>/htdocs/</code>.
-    Pour <a href="stopping.html">arr&ecirc;ter</a> le serveur, lancez:</p>
+    qui est généralement <code><em>PREFIX</em>/htdocs/</code>.
+    Pour <a href="stopping.html">arrêter</a> le serveur, lancez:</p>
 
 <example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
 </section>
-<section id="upgrading"><title>Mise &agrave; jour</title>
+<section id="upgrading"><title>Mise à jour</title>
 
-    <p>La premi&egrave;re &eacute;tape d'une mise &agrave; jour consiste &agrave; lire l'annonce de la
+    <p>La première étape d'une mise à jour consiste à lire l'annonce de la
     sortie de la nouvelle version et le fichier <code>CHANGES</code>
-    dans la distribution des sources afin de d&eacute;celer toutes les modifications
+    dans la distribution des sources afin de déceler toutes les modifications
     qui pourraient affecter votre site. Lors d'un changement majeur de version
-    (par exemple de 2.0 &agrave; 2.2 ou de 2.2 &agrave; 2.4),
-    il y aura certainement des diff&eacute;rences importantes quant &agrave; la
-    configuration de la compilation et de l'ex&eacute;cution qui n&eacute;cessiteront des
+    (par exemple de 2.0 à 2.2 ou de 2.2 à 2.4),
+    il y aura certainement des différences importantes quant à la
+    configuration de la compilation et de l'exécution qui nécessiteront des
     ajustements manuels.  Tous les
-    modules devront aussi &ecirc;tre mis &agrave; jour pour qu'ils s'adaptent aux
+    modules devront aussi être mis à jour pour qu'ils s'adaptent aux
     changements de l'API des modules.</p>
 
-    <p>La mise &agrave; jour d'une version mineure &agrave; la suivante (par exemple, de
-    2.2.55 &agrave; 2.2.57) est plus ais&eacute;e.  Le processus <code>make install</code>
-    n'&eacute;crasera aucun de vos documents existants, fichiers de log,
-    ou fichiers de configuration.  De plus, les d&eacute;veloppeurs font tout
-    leur possible pour &eacute;viter les changements entra&icirc;nant une
-    incompatibilit&eacute; dans les options de
-    <program>configure</program>, la configuration de l'ex&eacute;cution, ou l'API
-    des modules d'une version mineure &agrave; l'autre.  Dans la plupart des cas,
+    <p>La mise à jour d'une version mineure à la suivante (par exemple, de
+    2.2.55 à 2.2.57) est plus aisée.  Le processus <code>make install</code>
+    n'écrasera aucun de vos documents existants, fichiers de log,
+    ou fichiers de configuration.  De plus, les développeurs font tout
+    leur possible pour éviter les changements entraînant une
+    incompatibilité dans les options de
+    <program>configure</program>, la configuration de l'exécution, ou l'API
+    des modules d'une version mineure à l'autre.  Dans la plupart des cas,
     vous pourrez utiliser une ligne de commande
-    <program>configure</program> identique, le m&ecirc;me fichier de configuration,
+    <program>configure</program> identique, le même fichier de configuration,
     et tous vos modules continueront de fonctionner.</p>
 
-    <p>Pour effectuer une mise &agrave; jour entre deux versions mineures,
+    <p>Pour effectuer une mise à jour entre deux versions mineures,
     commencez par trouver le fichier
-    <code>config.nice</code> dans le r&eacute;pertoire de <code>construction</code>
-    de votre serveur install&eacute; ou &agrave; la racine de l'arborescence des sources
+    <code>config.nice</code> dans le répertoire de <code>construction</code>
+    de votre serveur installé ou à la racine de l'arborescence des sources
     de votre ancienne installation.  Il contient la reproduction exacte de la
-    ligne de commande <program>configure</program> que vous avez utilis&eacute;e pour
-    configurer l'arborescence des sources.  Ensuite, pour mettre &agrave; jour
+    ligne de commande <program>configure</program> que vous avez utilisée pour
+    configurer l'arborescence des sources.  Ensuite, pour mettre à jour
     l'ancienne version vers la nouvelle,
     il vous suffit de copier le fichier <code>config.nice</code> dans
-    l'arborescence des sources de la nouvelle version, de l'&eacute;diter pour
-    effectuer toute modification souhait&eacute;e, et de lancer :</p>
+    l'arborescence des sources de la nouvelle version, de l'éditer pour
+    effectuer toute modification souhaitée, et de lancer :</p>
 
     <example>
     $ ./config.nice<br />
@@ -422,14 +422,14 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <note type="warning">Vous devez toujours effectuer un test de la nouvelle
     version dans votre environnement avant de la mettre en production.
-    Par exemple, vous pouvez installer et ex&eacute;cuter la nouvelle version
-    en parall&egrave;le avec l'ancienne en utilisant une option
-    <code>--prefix</code> et un port diff&eacute;rents (en ajustant la directive
-    <directive module="mpm_common">Listen</directive>) afin de d&eacute;celer toute
-    incompatibilit&eacute; avant d'effectuer la mise &agrave; jour d&eacute;finitive.</note>
+    Par exemple, vous pouvez installer et exécuter la nouvelle version
+    en parallèle avec l'ancienne en utilisant une option
+    <code>--prefix</code> et un port différents (en ajustant la directive
+    <directive module="mpm_common">Listen</directive>) afin de déceler toute
+    incompatibilité avant d'effectuer la mise à jour définitive.</note>
 
-    <p>Vous pouvez ajouter des arguments suppl&eacute;mentaires &agrave;
-    <code>config.nice</code> ; ils seront alors ajout&eacute;s aux options de
+    <p>Vous pouvez ajouter des arguments supplémentaires à
+    <code>config.nice</code> ; ils seront alors ajoutés aux options de
     votre script <program>configure</program> original :</p>
 
      <example>
@@ -440,23 +440,23 @@ $ tar xvf httpd-<em>NN</em>.tar
 <section id="thirdp"><title>Paquets tiers</title>
 
     <p>De nombreux tiers fournissent leur propre distribution du
-    serveur HTTP Apache &agrave; installer sur une plate-forme particuli&egrave;re. On
-    peut citer les diff&eacute;rentes distributions Linux, divers
+    serveur HTTP Apache à installer sur une plate-forme particulière. On
+    peut citer les différentes distributions Linux, divers
     paquets tiers Windows, Mac OS X, Solaris et de nombreux autres.</p>
 
     <p>Notre license logicielle non seulement permet, mais aussi
-    encourage ce genre de redistribution. Cependant, ceci conduit &agrave; une
+    encourage ce genre de redistribution. Cependant, ceci conduit à une
     situation ou l'organisation de la configuration et les valeurs par
-    d&eacute;faut de votre installation du serveur peuvent ne pas correspondre
-    &agrave; ce qui est &eacute;crit dans la documentation. Bien que f&acirc;cheuse, cette
-    situation n'est pas appel&eacute;e &agrave; &eacute;voluer de sit&ocirc;t.</p>
+    défaut de votre installation du serveur peuvent ne pas correspondre
+    à ce qui est écrit dans la documentation. Bien que fâcheuse, cette
+    situation n'est pas appelée à évoluer de sitôt.</p>
 
     <p>Une  <a
     href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
     de ces distributions tierces</a> est maintenue dans le wiki du
-    serveur HTTP, et doit en refl&eacute;ter l'&eacute;tat actuel. Vous devrez
-    cependant vous familiariser par vous-m&ecirc;me avec la gestion du paquet
-    de votre plate-forme particuli&egrave;re et les proc&eacute;dures d'installation.</p>
+    serveur HTTP, et doit en refléter l'état actuel. Vous devrez
+    cependant vous familiariser par vous-même avec la gestion du paquet
+    de votre plate-forme particulière et les procédures d'installation.</p>
 
 </section>
 </manualpage>

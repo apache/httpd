@@ -158,7 +158,9 @@ else
    ifdef([APR_FIND_APU], [
      APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 
                   1, ${apr_major_version})
-   ], [apu_found=no])
+   ], [apu_found=no
+      AC_MSG_NOTICE([APR-util 1.x not supported with APR 1.x])
+      ])
 fi
 
 if test "$apu_found" = "no"; then
@@ -862,6 +864,6 @@ AC_SUBST(ap_make_delimiter)
 dnl Ensure that docs/conf is created.
 test -d docs/conf||$mkdir_p docs/conf
 
-AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh,[true],[
-  APACHE_GEN_MAKEFILES
-])
+AC_CONFIG_FILES(docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh)
+AC_CONFIG_COMMANDS([default], [true], [APACHE_GEN_MAKEFILES])
+AC_OUTPUT

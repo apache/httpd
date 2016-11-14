@@ -428,7 +428,7 @@ DAV_DECLARE(void) dav_xmlns_add(dav_xmlns_info *xi,
     apr_hash_set(xi->prefix_uri, prefix, APR_HASH_KEY_STRING, uri);
 
     /* note: this may overwrite an existing URI->prefix mapping, but it
-       doesn't matter -- any prefix is usuable to specify the URI. */
+       doesn't matter -- any prefix is usable to specify the URI. */
     apr_hash_set(xi->uri_prefix, uri, APR_HASH_KEY_STRING, prefix);
 }
 
@@ -587,7 +587,7 @@ static dav_error * dav_add_if_state(apr_pool_t *p, dav_if_header *ih,
 }
 
 /* fetch_next_token returns the substring from str+1
- * to the next occurence of char term, or \0, whichever
+ * to the next occurrence of char term, or \0, whichever
  * occurs first.  Leading whitespace is ignored.
  */
 static char *dav_fetch_next_token(char **str, char term)

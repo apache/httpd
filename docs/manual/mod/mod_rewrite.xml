@@ -381,7 +381,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       <directive module="mod_rewrite">RewriteRule</directive> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in per-directory (htaccess) context unless either
+      in a substitution in per-directory (htaccess) context unless any 
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
@@ -423,7 +423,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 <description>Defines a condition under which rewriting will take place
 </description>
 <syntax> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></syntax>
+      <em>TestString</em> <em>CondPattern</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -951,14 +951,14 @@ RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
 RewriteRule "^/images" "-" [F]
            </highlight>
         </li>
+     </ol>
 
-        <li>You can also set special flags for
-      <em>CondPattern</em> by appending
+     <p>You can also set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteCond</code>
       directive, where <em>flags</em> is a comma-separated list of any of the
-      following flags:
-
+      following flags:</p>
+      
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
         (<strong>n</strong>o <strong>c</strong>ase)<br />
@@ -996,8 +996,6 @@ RewriteRule ...some special stuff for any of these hosts...
         is well understood.
         </li>
       </ul>
-      </li>
-     </ol>
 
       <p><strong>Example:</strong></p>
 
@@ -1040,35 +1038,41 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule, it is matched against
-      the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>
-      of the request, or, in per-directory context (see below), the URL
-      path relative to that per-directory context. Subsequent patterns
-      are matched against the output of the last matching RewriteRule.</p>
+      expression</a>.  What this pattern is compared against varies depending
+      on where the <directive>RewriteRule</directive> directive is defined. </p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
-      <p>In <directive module="core">VirtualHost</directive> context,
+
+<ul>
+      <li><p>In <directive module="core">VirtualHost</directive> context,
       The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
+      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").
+      This is the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>.</p></li>
 
-      <p>In <directive module="core">Directory</directive> and htaccess context,
-      the <em>Pattern</em> will initially be matched against the
-      <em>filesystem</em> path, after removing the prefix that led the server
-      to the current <directive>RewriteRule</directive> (e.g. "app1/index.html"
-      or "index.html" depending on where the directives are defined).</p>
+      <li><p>In per-directory context (<directive module="core">Directory</directive> and .htaccess),
+      the <em>Pattern</em> is matched against only a partial path, for example a request
+      of "/app1/index.html" may result in comparison against "app1/index.html" 
+      or "index.html" depending on where the <directive>RewriteRule</directive> is 
+      defined.</p>
 
-      <p>If you wish to match against the hostname, port, or query string, use a
+      <p>The directory path where the rule is defined is stripped from the currently mapped
+      filesystem path before comparison (up to and including a trailing slash). 
+      The net result of this per-directory prefix stripping is that rules in
+      this context only match against the portion of the currently mapped filesystem path 
+      "below" where the rule is defined.</p>
+
+      <p>Directives such as <directive
+      >DocumentRoot</directive> and <directive>Alias</directive>, or even the 
+      result of previous <directive>RewriteRule</directive> substitutions, determine
+      the currently mapped filesystem path.  
+      </p>
+      </li>
+
+      <li><p>If you wish to match against the hostname, port, or query string, use a
       <directive module="mod_rewrite">RewriteCond</directive> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
-      <code>%{QUERY_STRING}</code> variables respectively.</p>
-
-      <p>In any case, remember that regular expressions are substring
-      matches. That is, you don't need the regex to describe the entire
-      string, just the part that you wish to match. Thus, using a regex
-      of <code>.</code> is often sufficient rather than <code>.*</code>,
-      and the regex <code>abc</code> is <strong>not</strong> the same as
-      <code>^abc$</code>.</p>
-
+      <code>%{QUERY_STRING}</code> variables respectively.</p></li>
+</ul>
 </note>
 
 <note><title>Per-directory Rewrites</title>
@@ -1085,13 +1089,7 @@ administrator has disabled override of <code>FollowSymLinks</code> for
 a user's directory, then you cannot use the rewrite engine. This
 restriction is required for security reasons.</li>
 
-<li>When using the rewrite engine in <code>.htaccess</code> files the
-per-directory prefix (that is, the URI path that lead to the directory
-containing this <code>.htaccess</code> file)
-is automatically <em>removed</em> for the RewriteRule pattern matching
-and automatically <em>added</em> after any relative (not starting with a
-slash or protocol name) substitution encounters the end of a rule set.
-See the <directive module="mod_rewrite">RewriteBase</directive>
+<li>See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
 relative substitutions.</li>
 

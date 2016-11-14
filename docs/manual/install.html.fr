@@ -73,7 +73,7 @@
       <tr>
         <td><a href="#download">Téléchargement</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td>Téléchargez la dernière version depuis <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 

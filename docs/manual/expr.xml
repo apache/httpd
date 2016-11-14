@@ -290,12 +290,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>TIME_YEAR</code></td>
         <td>The current year (e.g. <code>2010</code>)</td></tr>
     <tr><td><code>TIME_MON</code></td>
-        <td>The current month (<code>1</code>, ..., <code>12</code>)</td></tr>
+        <td>The current month (<code>01</code>, ..., <code>12</code>)</td></tr>
     <tr><td><code>TIME_DAY</code></td>
-        <td>The current day of the month</td></tr>
+        <td>The current day of the month (<code>01</code>, ...)</td></tr>
     <tr><td><code>TIME_HOUR</code></td>
         <td>The hour part of the current time
-            (<code>0</code>, ..., <code>23</code>)</td></tr>
+            (<code>00</code>, ..., <code>23</code>)</td></tr>
     <tr><td><code>TIME_MIN</code></td>
         <td>The minute part of the current time </td></tr>
     <tr><td><code>TIME_SEC</code></td>
@@ -464,7 +464,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".4"/><column width=".4"/></columnspec>
 
-    <tr><th>Name</th><th>Description</th><th>Restricted</th></tr>
+    <tr><th>Name</th><th>Description</th><th>Special notes</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
         <td>Get HTTP request header; header names may be added to the Vary
             header, see below</td><td></td></tr>
@@ -475,15 +475,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Get HTTP response header</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
         <td>Lookup request environment variable (as a shortcut,
-        <code>v</code> can be used too to access
-        variables).</td><td></td></tr>
+        <code>v</code> can also be used to access variables).</td>
+        <td>ordering</td></tr>
     <tr><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td><td></td></tr>
     <tr><td><code>note</code></td>
-        <td>Lookup request note</td><td></td></tr>
+        <td>Lookup request note</td><td>ordering</td></tr>
     <tr><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
-            <code>osenv</code></td><td></td></tr>
+            <code>osenv</code></td><td>ordering</td></tr>
     <tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td><td></td></tr>
     <tr><td><code>toupper</code></td>
@@ -506,15 +506,39 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
             encoding</td><td></td></tr>
     <tr><td><code>file</code></td>
         <td>Read contents from a file (including line endings, when present)
-        </td><td>yes</td></tr>
+        </td><td>restricted</td></tr>
+    <tr><td><code>filemod</code></td>
+        <td>Return last modification time of a file (or 0 if file does not exist
+            or is not regular file)</td><td>restricted</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Return size of a file (or 0 if file does not exist or is not
-            regular file)</td><td>yes</td></tr>
+            regular file)</td><td>restricted</td></tr>
 
     </table>
 
-    <p>The functions marked as "restricted" are not available in some modules
-    like <module>mod_include</module>.</p>
+    <p>The functions marked as "restricted" in the final column are not 
+    available in some modules like <module>mod_include</module>.</p>
+
+    <p>The functions marked as "ordering" in the final column require some
+    consideration for the ordering of different components of the server,
+    especially when the function is used within the 
+    &lt;<directive module="core">If</directive>&gt; directive which is
+    evaluated relatively early.</p>
+    <note>
+    <title>Environment variable ordering</title>
+    When environment variables are looked up within an 
+    &lt;<directive module="core">If</directive>&gt; condition, it's important 
+    to consider how extremely early in request processing that this 
+    resolution occurs. As a guideline, any directive defined outside of virtual host 
+    context (directory, location, htaccess) is not likely to have yet had a 
+    chance to execute. <directive module="mod_setenvif">SetEnvIf</directive>
+    in virtual host scope is one directive that runs prior to this resolution
+    <br/>
+    <br/>
+    When <code>reqenv</code> is used outside of &lt;<directive module="core"
+    >If</directive>&gt;, the resolution will generally occur later, but the 
+    exact timing depends on the directive the expression has been used within.
+    </note>
 
     <p>When the functions <code>req</code> or <code>http</code> are used,
     the header name will automatically be added to the Vary header of the
@@ -537,12 +561,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 </section>
 
 <section id="examples">
-    
-	<title>Example expressions</title>
+
+    <title>Example expressions</title>
     <p>The following examples show how expressions might be used to
     evaluate requests:</p>
-	<!-- This section should probably be extended with more, useful examples -->
-	<highlight language="config">
+
+    <!-- This section should probably be extended with more, useful examples -->
+    <highlight language="config">
 # Compare the host name to example.com and redirect to www.example.com if it matches
 &lt;If "%{HTTP_HOST} == 'example.com'"&gt;
     Redirect permanent "/" "http://www.example.com/"
@@ -556,7 +581,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 # Only allow access to this content during business hours
 &lt;Directory "/foo/bar/business"&gt;
     Require expr %{TIME_HOUR} -gt 9 &amp;&amp; %{TIME_HOUR} -lt 17
-&lt;/Directory&gt;	
+&lt;/Directory&gt;
 
 # Check a HTTP header for a list of values
 &lt;If "%{HTTP:X-example-header} in { 'foo', 'bar', 'baz' }"&gt;
@@ -590,9 +615,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 Header set foo-checksum "expr=%{md5:foo}"
 
 # This delays the evaluation of the condition clause compared to &lt;If&gt;
-Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path.php$#"
+Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path\.php$#"
 
-	</highlight>
+    </highlight>
 </section>
 
 <section id="other">

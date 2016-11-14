@@ -104,7 +104,7 @@ static APR_INLINE SC_HANDLE OpenSCManager(const void *lpMachine,
  *
  * If ap_real_exit_code is reset to 0, it will not be set or trigger this
  * behavior on exit.  All service and child processes are expected to
- * reset this flag to zero to avoid undesireable side effects.
+ * reset this flag to zero to avoid undesirable side effects.
  */
 AP_DECLARE_DATA int ap_real_exit_code = 1;
 

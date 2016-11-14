@@ -313,18 +313,30 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
-<p>Cette directive permet de spécifier les éléments dont les attributs
-d'URL doivent être réécrits en utilisant les règles standards
-<code class="directive">ProxyHTMLURLMap</code>. Vous devez définir une directive
-ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
-spécifier un nombre quelconque d'attributs</p>
-<p>Normalement, cette directive est définie globalement. Si vous
-définissez ProxyHTMLLinks à plusieurs niveaux, certains niveaux
-l'emportant sur d'autres, vous devrez spécifier un jeu complet
-de liens pour chaque niveau.</p>
-<p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
-défaut et définit les liens HTML selon les standards
-HTML 4 et XHTML 1.</p>
+<p>Cette directive permet de spécifier les éléments dont les attributs d'URL
+doivent être réécrits en utilisant les règles standards <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code>. Vous devez définir une
+directive ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
+spécifier un nombre quelconque d'attributs</p> <p>Normalement, cette directive
+est définie globalement. Si vous définissez ProxyHTMLLinks à plusieurs niveaux,
+certains niveaux l'emportant sur d'autres, vous devrez spécifier un jeu complet
+de liens pour chaque niveau.</p> <p>Le fichier <var>proxy-html.conf</var>
+fournit une configuration par défaut et définit les liens HTML selon les
+standards HTML 4 et XHTML 1.</p>
+<div class="example"><h3>Exemples issus de proxy-html.conf</h3><pre class="prettyprint lang-config">ProxyHTMLLinks  a          href
+ProxyHTMLLinks  area       href
+ProxyHTMLLinks  link       href
+ProxyHTMLLinks  img        src longdesc usemap
+ProxyHTMLLinks  object     classid codebase data usemap
+ProxyHTMLLinks  q          cite
+ProxyHTMLLinks  blockquote cite
+ProxyHTMLLinks  ins        cite
+ProxyHTMLLinks  del        cite
+ProxyHTMLLinks  form       action
+ProxyHTMLLinks  input      src usemap
+ProxyHTMLLinks  head       profile
+ProxyHTMLLinks  base       href
+ProxyHTMLLinks  script     src for</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -368,6 +380,16 @@ précédentes.</td></tr>
     en-têtes HTTP, afin de conserver le but original de cette forme
     de métaélément HTML.</p>
 
+    <div class="warning"><h3>Avertissement</h3> Compte tenu du fait que la
+    directive ProxyHTMLMeta promeut <strong>tous</strong> les éléments
+    <code>http-equiv</code> au rang d'en-têtes HTTP, il est conseillé de ne
+    l'activer que si vous faites autant confiance au contenu HTML qu'à votre
+    serveur mandataire. Avec cette directive en effet, si ce contenu est géré
+    par des gens malintentionnés, ces derniers seront en mesure d'injecter des
+    en-têtes HTTP arbitraires et peut-être malveillants dans les réponses de
+    votre serveur.  
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a> <a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a></h2>
@@ -407,7 +429,9 @@ liens HTML. Lors de l'interprétation d'un document, chaque fois qu'un
 lien correspond à <var>modèle-source</var>, la partie du lien concernée
 sera réécrite en <var>modèle-cible</var>, en tenant compte des
 modifications induites par les drapeaux éventuellement spécifiés et par
-la directive <code class="directive">ProxyHTMLExtended</code>.</p>
+la directive <code class="directive"><a href="#proxyhtmlextended">ProxyHTMLExtended</a></code>.
+Ne seront considérés comme des liens HTML que les éléments spécifiés via la
+directive <code class="directive"><a href="#proxyhtmllinks">ProxyHTMLLinks</a></code>.</p>
 
 <p>Le troisième argument optionnel permet de féfinir un des drapeaux
 suivants (les drapeaux sont sensibles à la casse) :</p>

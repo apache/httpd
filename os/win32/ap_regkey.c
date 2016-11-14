@@ -488,7 +488,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        /* Small possiblity the array is either unterminated
+        /* Small possibility the array is either unterminated
          * or single NULL terminated.  Avert.
          */
         buf = (char *)value;

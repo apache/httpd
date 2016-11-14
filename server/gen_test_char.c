@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
          * since Win32/OS2 use carets or doubled-double quotes,
          * and neither lf nor cr can be escaped.  We escape unix
          * specific as well, to assure that cross-compiled unix
-         * applications behave similiarly when invoked on win32/os2.
+         * applications behave similarly when invoked on win32/os2.
          *
          * Rem please keep in-sync with apr's list in win32/filesys.c
          */

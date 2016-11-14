@@ -27,7 +27,7 @@
 #include "h2_util.h"
 
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(apr_uint32_t n)
+unsigned char h2_log2(int n)
 {
     int lz = 0;
     if (!n) {
@@ -440,10 +440,12 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
 {
     int i;
     
+    if (h2_iq_contains(q, sid)) {
+        return;
+    }
     if (q->nelts >= q->nalloc) {
         iq_grow(q, q->nalloc * 2);
     }
-    
     i = (q->head + q->nelts) % q->nalloc;
     q->elts[i] = sid;
     ++q->nelts;
@@ -452,6 +454,11 @@ void h2_iq_add(h2_iqueue *q, int sid, h2_iq_cmp *cmp, void *ctx)
         /* bubble it to the front of the queue */
         iq_bubble_up(q, i, q->head, cmp, ctx);
     }
+}
+
+void h2_iq_append(h2_iqueue *q, int sid)
+{
+    h2_iq_add(q, sid, NULL, NULL);
 }
 
 int h2_iq_remove(h2_iqueue *q, int sid)
@@ -522,6 +529,18 @@ int h2_iq_shift(h2_iqueue *q)
     return sid;
 }
 
+size_t h2_iq_mshift(h2_iqueue *q, int *pint, size_t max)
+{
+    int i;
+    for (i = 0; i < max; ++i) {
+        pint[i] = h2_iq_shift(q);
+        if (pint[i] == 0) {
+            break;
+        }
+    }
+    return i;
+}
+
 static void iq_grow(h2_iqueue *q, int nlen)
 {
     if (nlen > q->nalloc) {
@@ -573,6 +592,17 @@ static int iq_bubble_down(h2_iqueue *q, int i, int bottom,
     return i;
 }
 
+int h2_iq_contains(h2_iqueue *q, int sid)
+{
+    int i;
+    for (i = 0; i < q->nelts; ++i) {
+        if (sid == q->elts[(q->head + i) % q->nalloc]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 /*******************************************************************************
  * h2_util for apt_table_t
  ******************************************************************************/
@@ -618,7 +648,7 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
 {
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
-    int files_allowed = pfile_buckets_allowed? *pfile_buckets_allowed : 0;
+    int files_allowed = pfile_buckets_allowed? (int)*pfile_buckets_allowed : 0;
     
     if (maxlen >= 0) {
         /* Find the bucket, up to which we reach maxlen/mem bytes */
@@ -653,8 +683,8 @@ static apr_status_t last_not_included(apr_bucket_brigade *bb,
                      * unless we do not move the file buckets */
                     --files_allowed;
                 }
-                else if (maxlen < b->length) {
-                    apr_bucket_split(b, maxlen);
+                else if (maxlen < (apr_off_t)b->length) {
+                    apr_bucket_split(b, (apr_size_t)maxlen);
                     maxlen = 0;
                 }
                 else {
@@ -852,7 +882,7 @@ apr_status_t h2_util_bb_readx(apr_bucket_brigade *bb,
             
             if (data_len > avail) {
                 apr_bucket_split(b, avail);
-                data_len = avail;
+                data_len = (apr_size_t)avail;
             }
             
             if (consume) {
@@ -903,11 +933,11 @@ apr_size_t h2_util_bucket_print(char *buffer, apr_size_t bmax,
             off += apr_snprintf(buffer+off, bmax-off, "eor");
         }
         else {
-            off += apr_snprintf(buffer+off, bmax-off, "meta(unknown)");
+            off += apr_snprintf(buffer+off, bmax-off, "%s", b->type->name);
         }
     }
     else {
-        const char *btype = "data";
+        const char *btype = b->type->name;
         if (APR_BUCKET_IS_FILE(b)) {
             btype = "file";
         }
@@ -972,7 +1002,8 @@ apr_size_t h2_util_bb_print(char *buffer, apr_size_t bmax,
 apr_status_t h2_append_brigade(apr_bucket_brigade *to,
                                apr_bucket_brigade *from, 
                                apr_off_t *plen,
-                               int *peos)
+                               int *peos,
+                               h2_bucket_gate *should_append)
 {
     apr_bucket *e;
     apr_off_t len = 0, remain = *plen;
@@ -983,7 +1014,10 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
     while (!APR_BRIGADE_EMPTY(from)) {
         e = APR_BRIGADE_FIRST(from);
         
-        if (APR_BUCKET_IS_METADATA(e)) {
+        if (!should_append(e)) {
+            goto leave;
+        }
+        else if (APR_BUCKET_IS_METADATA(e)) {
             if (APR_BUCKET_IS_EOS(e)) {
                 *peos = 1;
                 apr_bucket_delete(e);
@@ -1002,9 +1036,9 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
             
             if (remain < e->length) {
                 if (remain <= 0) {
-                    return APR_SUCCESS;
+                    goto leave;
                 }
-                apr_bucket_split(e, remain);
+                apr_bucket_split(e, (apr_size_t)remain);
             }
         }
         
@@ -1013,7 +1047,7 @@ apr_status_t h2_append_brigade(apr_bucket_brigade *to,
         len += e->length;
         remain -= e->length;
     }
-    
+leave:
     *plen = len;
     return APR_SUCCESS;
 }
@@ -1126,11 +1160,11 @@ h2_ngheader *h2_util_ngheader_make_req(apr_pool_t *p,
     h2_ngheader *ngh;
     size_t n;
     
-    AP_DEBUG_ASSERT(req);
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
+    ap_assert(req);
+    ap_assert(req->scheme);
+    ap_assert(req->authority);
+    ap_assert(req->path);
+    ap_assert(req->method);
 
     n = 4;
     apr_table_do(count_header, &n, req->headers, NULL);
@@ -1160,7 +1194,7 @@ typedef struct {
 #define H2_LIT_ARGS(a)      (a),H2_ALEN(a)
 
 static literal IgnoredRequestHeaders[] = {
-    H2_DEF_LITERAL("expect"),
+/*H2_DEF_LITERAL("expect"),*/
     H2_DEF_LITERAL("upgrade"),
     H2_DEF_LITERAL("connection"),
     H2_DEF_LITERAL("keep-alive"),
@@ -1194,15 +1228,12 @@ static literal IgnoredResponseTrailers[] = {
     H2_DEF_LITERAL("www-authenticate"),
     H2_DEF_LITERAL("proxy-authenticate"),
 };
-static literal IgnoredProxyRespHds[] = {
-    H2_DEF_LITERAL("alt-svc"),
-};
 
 static int ignore_header(const literal *lits, size_t llen,
                          const char *name, size_t nlen)
 {
     const literal *lit;
-    int i;
+    size_t i;
     
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
@@ -1227,12 +1258,6 @@ int h2_req_ignore_trailer(const char *name, size_t len)
 int h2_res_ignore_trailer(const char *name, size_t len)
 {
     return ignore_header(H2_LIT_ARGS(IgnoredResponseTrailers), name, len);
-}
-
-int h2_proxy_res_ignore_header(const char *name, size_t len)
-{
-    return (h2_req_ignore_header(name, len) 
-            || ignore_header(H2_LIT_ARGS(IgnoredProxyRespHds), name, len));
 }
 
 apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool, 
@@ -1276,13 +1301,12 @@ apr_status_t h2_headers_add_h1(apr_table_t *headers, apr_pool_t *pool,
  * h2 request handling
  ******************************************************************************/
 
-h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method, 
-                           const char *scheme, const char *authority, 
-                           const char *path, apr_table_t *header, int serialize)
+h2_request *h2_req_create(int id, apr_pool_t *pool, const char *method, 
+                          const char *scheme, const char *authority, 
+                          const char *path, apr_table_t *header, int serialize)
 {
     h2_request *req = apr_pcalloc(pool, sizeof(h2_request));
     
-    req->id             = id;
     req->method         = method;
     req->scheme         = scheme;
     req->authority      = authority;
@@ -1292,49 +1316,6 @@ h2_request *h2_req_createn(int id, apr_pool_t *pool, const char *method,
     req->serialize      = serialize;
     
     return req;
-}
-
-h2_request *h2_req_create(int id, apr_pool_t *pool, int serialize)
-{
-    return h2_req_createn(id, pool, NULL, NULL, NULL, NULL, NULL, serialize);
-}
-
-typedef struct {
-    apr_table_t *headers;
-    apr_pool_t *pool;
-} h1_ctx;
-
-static int set_h1_header(void *ctx, const char *key, const char *value)
-{
-    h1_ctx *x = ctx;
-    size_t klen = strlen(key);
-    if (!h2_req_ignore_header(key, klen)) {
-        h2_headers_add_h1(x->headers, x->pool, key, klen, value, strlen(value));
-    }
-    return 1;
-}
-
-apr_status_t h2_req_make(h2_request *req, apr_pool_t *pool,
-                         const char *method, const char *scheme, 
-                         const char *authority, const char *path, 
-                         apr_table_t *headers)
-{
-    h1_ctx x;
-
-    req->method    = method;
-    req->scheme    = scheme;
-    req->authority = authority;
-    req->path      = path;
-
-    AP_DEBUG_ASSERT(req->scheme);
-    AP_DEBUG_ASSERT(req->authority);
-    AP_DEBUG_ASSERT(req->path);
-    AP_DEBUG_ASSERT(req->method);
-
-    x.pool = pool;
-    x.headers = req->headers;
-    apr_table_do(set_h1_header, &x, headers, NULL);
-    return APR_SUCCESS;
 }
 
 /*******************************************************************************
@@ -1423,11 +1404,11 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
 /*******************************************************************************
  * push policy
  ******************************************************************************/
-void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_enabled)
+int h2_push_policy_determine(apr_table_t *headers, apr_pool_t *p, int push_enabled)
 {
     h2_push_policy policy = H2_PUSH_NONE;
     if (push_enabled) {
-        const char *val = apr_table_get(req->headers, "accept-push-policy");
+        const char *val = apr_table_get(headers, "accept-push-policy");
         if (val) {
             if (ap_find_token(p, val, "fast-load")) {
                 policy = H2_PUSH_FAST_LOAD;
@@ -1450,6 +1431,6 @@ void h2_push_policy_determine(struct h2_request *req, apr_pool_t *p, int push_en
             policy = H2_PUSH_DEFAULT;
         }
     }
-    req->push_policy = policy;
+    return policy;
 }
 

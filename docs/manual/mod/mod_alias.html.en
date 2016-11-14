@@ -54,7 +54,7 @@
     a new location.</p>
 
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
     within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
@@ -118,13 +118,13 @@ Alias "/foo" "/gaq"</pre>
     ignored.</p>
 
     <p>When the <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives are used
     within a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
     section, these directives will take precedence over any globally
     defined <code class="directive"><a href="#alias">Alias</a></code>,
-    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and 
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
     <code class="directive"><a href="#redirect">Redirect</a></code> directives.</p>
 
 </div>
@@ -302,7 +302,7 @@ a different URL</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>The Redirect directive maps an old URL into a new one by asking
+    <p>The <code class="directive">Redirect</code> directive maps an old URL into a new one by asking
     the client to refetch the resource at the new location.</p>
 
     <p>The old <em>URL-path</em> is a case-sensitive (%-decoded) path
@@ -313,10 +313,10 @@ a different URL</td></tr>
     In this latter case the scheme and hostname of the current server will
     be added.</p>
 
-    <p>Then any request beginning with <em>URL-Path</em> will return a
+    <p>Then any request beginning with <em>URL-path</em> will return a
     redirect request to the client at the location of the target
     <em>URL</em>.  Additional path information beyond the matched
-    <em>URL-Path</em> will be appended to the target URL.</p>
+    <em>URL-path</em> will be appended to the target URL.</p>
 
     <pre class="prettyprint lang-config"># Redirect to a URL on a different host
 Redirect "/service" "http://foo2.example.com/service"
@@ -342,10 +342,11 @@ Redirect "/one" "/two"</pre>
 
 
     <div class="note"><h3>Note</h3>
-    <p>Redirect directives take precedence over Alias and ScriptAlias
+    <p><code class="directive">Redirect</code> directives take precedence over <code class="directive"><a href="#alias">Alias</a></code> and <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>
     directives, irrespective of their ordering in the configuration
-    file. Redirect directives inside a Location take precedence over
-    Redirect and Alias directives with an URL-path.</p></div>
+    file. <code class="directive">Redirect</code> directives inside a Location take
+    precedence over <code class="directive">Redirect</code> and <code class="directive"><a href="#alias">Alias</a></code> directives with an <var>URL-path</var>.</p>
+    </div>
 
     <p>If no <var>status</var> argument is given, the redirect will
     be "temporary" (HTTP status 302). This indicates to the client
@@ -390,8 +391,8 @@ Redirect 303 "/three" "http://example.com/other"</pre>
     <p>If the <code class="directive">Redirect</code> directive is used within a
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
-    section with the URL-path omitted, then the URL parameter will be
-    interpreted using <a href="../expr.html">expression syntax</a>.<br />
+    section with the <var>URL-path</var> omitted, then the <var>URL</var> parameter
+    will be interpreted using <a href="../expr.html">expression syntax</a>.<br />
     This syntax is available in Apache 2.4.19 and later.</p>
 
     <pre class="prettyprint lang-config">&lt;Location "/one"&gt;

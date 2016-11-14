@@ -497,7 +497,7 @@ void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
         }
     }
 
-    /* Take a copy of the payload before proceeeding. */
+    /* Take a copy of the payload before proceeding. */
     tmp_payload = (*cache->copy)(cache, payload);
     if (tmp_payload == NULL) {
         /*

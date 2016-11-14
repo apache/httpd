@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1040494:1750752 (outdated) -->
-
+<?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
+<!-- English Revision: 1741251:1768961 (outdated) -->
+<!-- Translated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed by Sergio Ramos-->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with

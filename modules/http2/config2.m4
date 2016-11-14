@@ -30,11 +30,11 @@ h2_ctx.lo dnl
 h2_filter.lo dnl
 h2_from_h1.lo dnl
 h2_h2.lo dnl
+h2_headers.lo dnl
 h2_mplx.lo dnl
 h2_ngn_shed.lo dnl
 h2_push.lo dnl
 h2_request.lo dnl
-h2_response.lo dnl
 h2_session.lo dnl
 h2_stream.lo dnl
 h2_switch.lo dnl
@@ -154,6 +154,9 @@ dnl # nghttp2 >= 1.3.0: access to stream weights
 dnl # nghttp2 >= 1.5.0: changing stream priorities
       AC_CHECK_FUNCS([nghttp2_session_change_stream_priority], 
         [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_CHANGE_PRIO"])], [])
+dnl # nghttp2 >= 1.14.0: invalid header callback
+      AC_CHECK_FUNCS([nghttp2_session_callbacks_set_on_invalid_header_callback], 
+        [APR_ADDTO(MOD_CPPFLAGS, ["-DH2_NG2_INVALID_HEADER_CB"])], [])
     else
       AC_MSG_WARN([nghttp2 version is too old])
     fi

@@ -1004,7 +1004,7 @@ static void winnt_rewrite_args(process_rec *process)
      *   -k config
      *   -k uninstall
      *   -k stop
-     *   -k shutdown (same as -k stop). Maintained for backward compatability.
+     *   -k shutdown (same as -k stop). Maintained for backward compatibility.
      *
      * We can't leave this phase until we know our identity
      * and modify the command arguments appropriately.
@@ -1050,7 +1050,7 @@ static void winnt_rewrite_args(process_rec *process)
         my_pid = GetCurrentProcessId();
         parent_pid = (DWORD) atol(pid);
 
-        /* Prevent holding open the (nonexistant) console */
+        /* Prevent holding open the (nonexistent) console */
         ap_real_exit_code = 0;
 
         /* The parent gave us stdin, we need to remember this
@@ -1769,8 +1769,6 @@ static void winnt_hooks(apr_pool_t *p)
     ap_hook_mpm(winnt_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(winnt_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(winnt_get_name, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_network_bucket(winnt_insert_network_bucket, NULL, NULL,
-                                  APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(mpm_winnt) = {

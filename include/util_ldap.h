@@ -254,7 +254,7 @@ APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_
  * @param dn The first DN to compare.
  * @param reqdn The DN to compare the first DN to.
  * @param compare_dn_on_server Flag to determine whether the DNs should be checked using
- *                             LDAP calls or with a direct string comparision. A direct
+ *                             LDAP calls or with a direct string comparison. A direct
  *                             string comparison is faster, but not as accurate - false
  *                             negative comparisons are possible.
  * @tip Two DNs can be equal and still fail a string comparison. Eg "dc=example,dc=com"

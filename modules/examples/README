@@ -32,7 +32,7 @@ For windows, the process is slightly different;
 
     A. copy modules\examples\mod_example_hooks.c modules\examples\mod_myexample.c
     B. copy modules\examples\mod_example_hooks.dsp modules\examples\mod_myexample.dsp
-    C. replace the occurances of 'example_hooks' with your module name.
+    C. replace the occurrences of 'example_hooks' with your module name.
     D. add the new .dsp to your Apache.dsw workspace, with dependencies
        on the libapr, libaprutil and libhttpd projects.  With the newer
        Developer Studio 2002 through 2005, when you add the new .dsp

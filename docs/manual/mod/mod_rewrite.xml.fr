@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1747804:1755363 (outdated) -->
+<!-- English Revision: 1757839 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -82,7 +82,7 @@ règles permettant de réécrire les URLs des requêtes
     <example><title>Exemple</title>
     <highlight language="config">
 LogLevel alert rewrite:trace3
-    </highlight>      
+    </highlight>     
     </example>
 
     <note><title>RewriteLog</title>
@@ -190,8 +190,7 @@ pour le moteur de réécriture</description>
       les règles spécifiées dans le niveau parent s'appliquent
       <strong>avant</strong> les règles spécifiées dans le niveau
       enfant.<br />
-      Disponible depuis la version 2.3.10 du serveur HTTP
-      Apache.</p>
+      Disponible depuis la version 2.3.10 du serveur HTTP Apache.</p>
       </dd>
 
       <dt><code>InheritDown</code></dt>
@@ -228,7 +227,7 @@ pour le moteur de réécriture</description>
       Cette option est disponible à partir
       de la version 2.4.8 du serveur HTTP Apache.</p>
       </dd>
-
+      
       <dt><code>AllowNoSlash</code></dt>
       <dd>
       <p>Par défaut, <module>mod_rewrite</module> ignore les URLs qui
@@ -281,23 +280,25 @@ pour le moteur de réécriture</description>
       de l'URI réécrite, comme indiqué dans les liens ci-dessus.</p>
       </note>
       </dd>
+
       <dt><code>MergeBase</code></dt>
       <dd>
 
       <p>Avec cette option, la valeur de la directive <directive
-      module="mod_rewrite">RewriteBase</directive> est copiée depuis le
-      répertoire où elle est explicitement définie dans tout
-      sous-répertoire qui ne définit pas sa propre directive <directive
-      module="mod_rewrite">RewriteBase</directive>. C'était le
-      comportement par défaut de la version 2.4.0 à la version 2.4.3, et
-      cette option permet de le rétablir à partir de la version 2.4.4 du
-      serveur HTTP Apache.</p>
+      module="mod_rewrite">RewriteBase</directive> est recopiée depuis
+      une valeur explicitement définie dans tout sous-répertoire qui ne
+      définit pas sa propre directive <directive
+      module="mod_rewrite">RewriteBase</directive>. Il s'agissait du
+      comportement par défaut avec les versions 2.4.0 à 2.4.3, et ce
+      drapeau qui permet de retrouver ce comportement est disponible
+      depuis la version 2.4.4 du serveur HTTP Apache.</p>
       </dd>
-      
+
       <dt><code>IgnoreContextInfo</code></dt>
       <dd>
 
-      <p>Lors d'une substitution relative dans un contexte de répertoire (htaccess),
+      <p>Lors d'une
+      substitution relative dans un contexte de répertoire (htaccess),
       et si la directive <directive
       module="mod_rewrite">RewriteBase</directive> n'a pas été définie,
       ce module utilise des informations en provenance d'une extension
@@ -331,8 +332,7 @@ recherche de mots-clés</description>
       La source utilisée pour cette recherche peut être de plusieurs
       types.</p>
 
-      <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a>
-      est le nom de la table de correspondance
+      <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a> est le nom de la table de correspondance
       et servira à spécifier une fonction de mise en correspondance
       pour les chaînes de substitution d'une règle de réécriture selon
       une des constructions suivantes :</p>
@@ -360,7 +360,7 @@ recherche de mots-clés</description>
       <directive>RewriteMap</directive> comme suit </p>
 
       <highlight language="config">
-      RewriteMap "map-exemple" "txt:/chemin/vers/fichier/map.txt"
+      RewriteMap map-exemple "txt:/chemin/vers/fichier/map.txt"
       </highlight>
 
       <p>Vous pourrez ensuite utiliser cette table dans une
@@ -371,7 +371,7 @@ recherche de mots-clés</description>
       </highlight>
 
       <p>Les combinaisons suivantes pour <em>type de correspondance</em>
-      et <em>source de la correspondance</em>
+      et <em>MapSource</em>
       peuvent être utilisées :</p>
 
 <dl>
@@ -434,8 +434,9 @@ répertoire</description>
       répertoire (htaccess), sauf si au moins une de ces conditions est
       vérifiée :</p>
       <ul>
-          <li>La requête initiale, ainsi que la substitution, sont dans
-	  la <directive module="core">DocumentRoot</directive> (c'est à
+          <li>La requête initiale, ainsi que la substitution, se
+	  situent par raport à la valeur de la directive
+	  <directive module="core">DocumentRoot</directive> (c'est à
 	  dire que pour y accéder, il n'est pas nécessaire d'utiliser
 	  une directive telle qu'<directive
 	  module="mod_alias">Alias</directive>).</li>
@@ -444,9 +445,9 @@ répertoire</description>
 	  la substitution relative est aussi valide en tant qu'URL sur
 	  le serveur (ce qui est rare).</li>
 	  <li>A partir de la version 2.4.16 du serveur HTTP Apache,
-	  cette directive peut être omise lorsque la requête est
-	  transformée via une directive <directive
-	  module="mod_alias">Alias</directive> ou le module
+	  cette directive peut être omise lorsque la requête est mise en
+	  correspondance avec le système de fichiers via la directive
+	  <directive module="mod_alias">Alias</directive> ou le module
 	  <module>mod_userdir</module>.</li>
       </ul>
 
@@ -477,7 +478,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 la réécriture soit effectuée
 </description>
 <syntax> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em></syntax>
+      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -700,13 +701,12 @@ la réécriture soit effectuée
 		  en-tête ajouté par le navigateur. Cette
 		  valeur n'a pas été déséchappée (décodée), à la
 		  différence de la plupart des variables suivantes.</dd>
-
                 </dl>
 
         </li>
       </ul>
 
-      <p>Si <em>chaîne_de_test</em> contient la valeur spéciale
+      <p>Si la <em>chaîne_de_test</em> contient la valeur spéciale
       <code>expr</code>, <em>expression_de_comparaison</em> sera traité
       en tant qu'expression rationnelle de type <a
       href="../expr.html">ap_expr</a>. Si des en-têtes HTTP sont
@@ -825,12 +825,13 @@ la réécriture soit effectuée
       <ol>
         <li>Vous pouvez préfixer l'expression avec un caractère
 	'<code>!</code>' (point d'exclamation) pour inverser le résultat
-	de la condition, quelle que soit l'<em>expression_de_comparaison</em> utilisée.</li>
+	de la condition, quelle que soit l'<em>expression de
+	comparaison</em> utilisée.</li>
 
         <li>Vous pouvez effectuer des comparaisons lexicographiques de
 	chaînes	:
 
-          <dl>
+         <dl>
             <dt><strong>&lt;expression</strong></dt>
 	    <dd>inférieur au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
@@ -859,7 +860,7 @@ la réécriture soit effectuée
 	    <em>chaîne_de_test</em> est comparée à la
 	    chaîne vide.</dd>
 
-	    <dt><strong>&lt;=expression_de_comparaison</strong></dt>
+	    <dt><strong>&lt;=expression de comparaison</strong></dt>
 	    <dd>inférieur ou égal à au sens lexicographique<br />
             Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
@@ -868,7 +869,7 @@ la réécriture soit effectuée
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
 
-            <dt><strong>&gt;=expression_de_comparaison</strong></dt>
+            <dt><strong>&gt;=expression de comparaison</strong></dt>
 	    <dd>supérieur ou égal à au sens lexicographique<br />
             Considère l'<em>expression_de_comparaison</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
@@ -876,7 +877,8 @@ la réécriture soit effectuée
 	    suit lexicographiquement <em>expression_de_comparaison</em>, ou est
 	    égale à <em>expression_de_comparaison</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
-        </dl></li>
+        </dl>
+	</li>
 
         <li>
           Vous pouvez effectuer des comparaisons d'entiers :
@@ -885,28 +887,31 @@ la réécriture soit effectuée
             <dt><strong>-eq</strong></dt>
 	    <dd>est numériquement égal à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si les deux expressions sont
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si les deux expressions sont
 	    numériquement égales.</dd>
 
             <dt><strong>-ge</strong></dt>
 	    <dd>est numériquement supérieur ou égal à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
-	    numériquement
-	    supérieure ou égale à
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    numériquement supérieure ou égale à
 	    <em>expression_de_comparaison</em>.</dd>
 
              <dt><strong>-gt</strong></dt>
 	     <dd>est numériquement supérieur à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
 	    supérieure à <em>expression_de_comparaison</em>.</dd>
 
             <dt><strong>-le</strong></dt>
 	    <dd>est numériquement inférieur ou égal à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
 	    inférieure ou égale à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
@@ -916,7 +921,8 @@ la réécriture soit effectuée
              <dt><strong>-lt</strong></dt>
 	     <dd>est numériquement inférieur à<br />
             La <em>chaîne_de_test</em> est considérée comme un entier,
-	    et est comparée numériquement à l'<em>expression_de_comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    et est comparée numériquement à l'<em>expression de
+	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
 	    numériquement
 	    inférieure à <em>expression_de_comparaison</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
@@ -938,7 +944,7 @@ la réécriture soit effectuée
           <dl>
 
             <dt><strong>-d</strong></dt>
-	    <dd>est un répertoire (<strong>d</strong>irectory)<br />
+	    <dd>est un <strong>r</strong>épertoire<br />
 	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un répertoire.</dd>
 
@@ -961,7 +967,7 @@ la réécriture soit effectuée
             Voir <strong>-l</strong>.</dd>
 
             <dt><strong>-l</strong></dt>
-	    <dd>est un lien symbolique<br />
+	    <dd>est un <strong>l</strong>ien symbolique<br />
             Considère la <em>chaîne_de_test</em> comme un chemin et
 	    vérifie son existence et si elle est un lien symbolique. On
 	    peut aussi utiliser la convention bash <strong>-L</strong>
@@ -979,7 +985,8 @@ la réécriture soit effectuée
 	    d'une taille supérieure à zéro.</dd>
 
             <dt><strong>-U</strong></dt>
-	    <dd><p>test de l'existence d'une URL via une sous-requête<br />
+	    <dd><p>test de l'existence d'une
+	    URL via une sous-requête<br />
 	    Vérifie si <em>chaîne_de_test</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
@@ -1013,7 +1020,7 @@ RewriteRule ^(.+) /other/archive/$1 [R]
 
 	<li>
            <p>Si la <em>chaîne_de_test</em> contient la valeur spéciale
-	   <code>expr</code>, la <em>chaîne_de_comparaison</em> sera
+	   <code>expr</code>, la <em>chaîne de comparaison</em> sera
 	   traitée en tant qu'expression rationnelle de type <a
 	   href="../expr.html">ap_expr</a>.</p>
 
@@ -1029,13 +1036,14 @@ RewriteRule ^(.+) /other/archive/$1 [R]
            RewriteRule "^/images" "-" [F]
            </highlight>
         </li>
+    </ol>
 
-	<li>Vous pouvez aussi définir certains drapeaux pour
+	<p>Vous pouvez aussi définir certains drapeaux pour
 	l'<em>expression_de_comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
 	comme troisième argument de la directive
 	<code>RewriteCond</code>, où <em>drapeaux</em> est un
-	sous-ensemble séparé par des virgules des drapeaux suivants :
+	sous-ensemble séparé par des virgules des drapeaux suivants :</p>
 
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
@@ -1077,8 +1085,7 @@ RewriteRule ...règles concernant tous ces hôtes...
 	fonctionnement de l'en-tête Vary.
         </li>
       </ul>
-      </li>
-     </ol>
+      
 
       <p><strong>Exemple :</strong></p>
 
@@ -1088,17 +1095,18 @@ RewriteRule ...règles concernant tous ces hôtes...
 
 <highlight language="config">
 RewriteCond  "%{HTTP_USER_AGENT}"  "(iPhone|Blackberry|Android)"
-RewriteRule  "^/$"                 "/homepage.mobile.html"  [L]
+RewriteRule  "^/$"               "/homepage.mobile.html"  [L]
 
-RewriteRule  "^/$"                "/homepage.std.html"  [L]
+RewriteRule  "^/$"                 "/homepage.std.html"  [L]
 </highlight>
 
         <p>Explications : si vous utilisez un navigateur
-	qui s'identifie comme un navigateur de mobile (notez que cet
-	exemple est incomplet car il existe de nombreuses autres
-	plateformes mobiles), c'est la version mobile de la page
-	d'accueil qui sera servie. Dans le cas contraire, vous verrez
-	s'afficher la page d'accueil standard.</p>
+	qui s'identifie comme un
+	navigateur de plateforme mobile (notez que l'exemple est
+	incomplet car il existe de nombreuses autres plateformes
+	mobiles), c'est la version pour mobile de la page d'accueil qui
+	sera renvoyée. Dans le cas contraire, ce sera la page d'accueil
+	standard.</p>
 
 </usage>
 
@@ -1124,47 +1132,47 @@ RewriteRule  "^/$"                "/homepage.std.html"  [L]
 
       <p><a id="patterns" name="patterns"><em>Modèle</em></a> est une
       <a id="regexp" name="regexp">expression rationnelle</a>
-      compatible perl. Dans la première règle de réécriture,
-      l'expression est comparée au (%-decoded)
-      <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requête, ou, dans un contexte de répertoire (voir
-      ci-dessous), au chemin de l'URL relativement à ce contexte de
-      répertoire. 
-      Les expressions suivantes sont comparées à la sortie de
-      la dernière règle de réécriture qui
-      correspondait.</p>
+      compatible perl. Ce avec quoi ce modèle est comparé dépend de l'endroit où
+      la directive <directive>RewriteRule</directive> est définie.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est comparé ?</a></title>
 
-      <p>Dans un contexte de serveur virtuel <directive
+<ul>
+      <li><p>Dans un contexte de serveur virtuel <directive
       module="core">VirtualHost</directive>, le <em>modèle</em> est tout
       d'abord comparé à la portion de l'URL située entre le nom d'hôte
       éventuellement accompagné du port, et la chaîne de paramètres (par
-      exemple "/app1/index.html").</p>
+      exemple "/app1/index.html"). Il s'agit du <a
+      href="directive-dict.html#Syntax">URL-path</a> décodé de sa valeur "%xx".</p></li>
 
-      <p>Dans les contextes de répertoire <directive
-      module="core">Directory</directive> et htaccess, le
-      <em>modèle</em> est tout d'abord comparé au chemin du <em>système
-      de fichiers</em>, après suppression du préfixe ou chemin de base
-      ayant conduit le serveur vers la règle <directive>RewriteRule</directive> (par
-      exemple "app1/index.html" ou
-      "index.html" selon l'endroit où les directives sont définies).</p>
+      <li><p>Dans un contexte de répertoire (sections <directive
+      module="core">Directory</directive> et fichiers .htaccess), le
+      <em>Modèle</em> est comparé avec une partie de chemin ; par exemple une
+      requête pour "/app1/index.html" entraînera une comparaison avec
+      "app1/index.html" ou "index.html" selon l'endroit où la directive
+      <directive>RewriteRule</directive> est définie.</p>
 
-      <p>Si vous souhaitez faire une comparaison sur le nom
+      <p>Le chemin où la règle est défini est supprimé du chemin correspondant
+      du système de fichiers avant comparaison (jusqu'au slash final compris).
+      En conséquence de cette suppression, les règles définies dans
+      ce contexte n'effectuent des comparaisons qu'avec la portion du chemin
+      du système de fichiers "en dessous" de l'endroit où la règle est définie.</p>
+
+      <p>Le chemin correspondant actuel du système de fichiers est déterminé par
+      des directives telles que <directive>DocumentRoot</directive> et
+      <directive>Alias</directive>, ou même le résultat de substitutions dans
+      des règles <directive>RewriteRule</directive> précédentes.  
+      </p>
+      </li>
+
+      <li><p>Si vous souhaitez faire une comparaison sur le nom
       d'hôte, le port, ou la chaîne de requête, utilisez une
       directive <directive module="mod_rewrite">RewriteCond</directive>
       comportant respectivement les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
-      <code>%{QUERY_STRING}</code>.</p>
-
-      <p>Dans tous les cas, il faut garder à l'esprit que les expressions
-      rationnelles permettent de rechercher des correspondances de sous-chaînes.
-      En d'autres termes, l'expression rationnelle n'a pas besoin de correspondre à
-      l'ensemble de la chaîne, mais seulement à la partie que vous souhaitez
-      voir correspondre. Ainsi, l'utilisation de l'expression <code>.</code> est
-      souvent suffisante et préférable à <code>.*</code>, et l'expression
-      <code>abc</code> <strong>n'est pas</strong> identique à l'expression
-      <code>^abc$</code>.</p>
+      <code>%{QUERY_STRING}</code>.</p></li>
+</ul>
+      
 </note>
 
 <note><title>Réécritures dans un contexte de répertoire</title>
@@ -1183,16 +1191,9 @@ niveau du répertoire d'un utilisateur, vous ne pouvez pas utiliser le
 moteur de réécriture. Cette restriction a été instaurée à des fins de
 sécurité.</li>
 
-<li>Lorsqu'on utilise le moteur de réécriture dans un fichier
-<code>.htaccess</code>, le chemin de base du répertoire courant (qui est
-toujours le même pour ce même répertoire) est automatiquement
-<em>supprimé</em> au cours de la comparaison avec le modèle de la règle
-de réécriture, et automatiquement <em>ajouté</em> lorsqu'une
-substitution relative (ne débutant pas par un slash ou un nom de
-protocole) arrive à la fin d'un jeu de règles. Voir la directive
-<directive module="mod_rewrite">RewriteBase</directive> pour plus de
-détails à propos de l'ajout du préfixe après les substitutions
-relatives.</li>
+<li>Voir la directive
+<directive module="mod_rewrite">RewriteBase</directive> pour plus de détails à
+propos de l'ajout du préfixe après les substitutions relatives.</li>
 
 <li>Si vous souhaitez effectuer une comparaison en prenant en compte
 l'intégralité du
@@ -1301,7 +1302,7 @@ substitution !
 
       </dl>
 
-      <p>En plus du texte, la chaîne <em>Substition</em> peut
+      <p>En plus du texte, la chaîne <em>Substitution</em> peut
       comporter :</p>
 
       <ol>
@@ -1323,7 +1324,7 @@ substitution !
       <code>$</code><strong>N</strong> (<strong>N</strong>=0..9), qui
       seront remplacés par le contenu du <strong>N</strong>ème groupe
       du <em>Modèle</em> qui correspondait. Les variables du serveur
-      sont les mêmes que dans la <em>Chaîne de test</em> d'une
+      sont les mêmes que dans la <em>Chaîne_de_test</em> d'une
       directive <directive module="mod_rewrite">RewriteCond</directive>. Les
       fonctions de comparaison sont issues de la directive <directive
       module="mod_rewrite">RewriteMap</directive> dans la
@@ -1376,22 +1377,23 @@ substitution !
     </tr>
     <tr>
         <td>B</td>
-        <td>Echappe les caractères non-alphanumériques dans les
-	références arrières <em>avant</em> d'appliquer la transformation. <em><a
+        <td>Echappe les caractères non-alphanumériques
+	dans les références arrières <em>avant</em>
+	d'appliquer la transformation. <em><a
         href="../rewrite/flags.html#flag_b">détails ...</a></em></td>
     </tr>
     <tr>
         <td>backrefnoplus|BNP</td>
-       <td>Avec ce drapeau, si les références arrières sont échappées,
+        <td>Avec ce drapeau, si les références arrières sont échappées,
 	les espaces seront échappés en %20 au lieu de +. Ceci s'avère
 	utile lorsqu'une référence arrière est utilisée dans la partie
 	chemin, et non dans la chaîne de paramètres de la requête ;
 	pour plus de détails, voir <em><a
-	href="../rewrite/flags.html#flag_bnp">ici.</a></em></td> 
+	href="../rewrite/flags.html#flag_bnp">ici.</a></em></td>
     </tr>
 
-    <tr>    
-        <td>chain|C</td>
+    <tr>        
+	<td>chain|C</td>
         <td>La règle est chaînée avec la règle suivante. Si la règle
 	échoue, la ou les règles avec lesquelles elle est est chaînée
 	seront sautées. <em><a

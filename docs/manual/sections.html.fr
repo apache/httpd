@@ -402,7 +402,7 @@ sites qui correspondent à l'URL spécifiée et auxquels on a
 accédé via le serveur mandataire du module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.
 Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients à accéder au site <code>www.example.com</code> en passant par le serveur
-mandataire :.</p>
+mandataire :</p>
 
 <pre class="prettyprint lang-config">&lt;Proxy "http://www.example.com/*"&gt;
     Require host yournetwork.example.com

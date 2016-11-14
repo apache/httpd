@@ -609,7 +609,7 @@ other words, order of merging is important, so be careful!</p>
     Require all granted
 &lt;/Location&gt;
 
-# Woops!  This &lt;Directory&gt; section will have no effect
+# Whoops!  This &lt;Directory&gt; section will have no effect
 &lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted

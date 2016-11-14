@@ -14,7 +14,7 @@ Consuming:
   Every 1 second, this module generates a single multicast UDP packet,
   containing the number of busy and idle workers.
   
-  The packet is a simple ASCII format, similiar to GET query parameters in UDP.
+  The packet is a simple ASCII format, similar to GET query parameters in UDP.
   
   An Example packet:
     v=1&ready=75&busy=0

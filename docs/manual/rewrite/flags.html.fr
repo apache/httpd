@@ -111,6 +111,9 @@ ce que l'on souhaitait.</p>
 à l'URL résultante, ce qui fournit une réécriture correcte en
 <code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
 
+<pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1" [B,PT]</pre>
+
+
 <p>Notez que vous devrez peut-être aussi définir la
 directive <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code>
 à <code>On</code> pour

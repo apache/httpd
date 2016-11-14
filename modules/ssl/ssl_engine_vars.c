@@ -1090,7 +1090,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     }
 
     count = X509_get_ext_count(xs);
-    /* Create an array large enough to accomodate every extension. This is
+    /* Create an array large enough to accommodate every extension. This is
      * likely overkill, but safe.
      */
     array = apr_array_make(p, count, sizeof(char *));

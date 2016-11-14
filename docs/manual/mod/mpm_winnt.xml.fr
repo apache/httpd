@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1599013 -->
@@ -25,26 +25,26 @@
 <modulesynopsis metafile="mpm_winnt.xml.meta">
 
 <name>mpm_winnt</name>
-<description>Module multi-processus optimis&eacute; pour Windows
+<description>Module multi-processus optimisé pour Windows
 NT.</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
 <identifier>mpm_winnt_module</identifier>
 
 <summary>
-    <p>Ce module multi-processus (MPM) est le module par d&eacute;faut pour les
-    syst&egrave;mes d'exploitation de style Windows NT. Il consiste en un
-    processus de contr&ocirc;le unique qui lance un processus enfant unique,
-    ce dernier cr&eacute;ant &agrave; son tour des threads pour traiter les
-    requ&ecirc;tes.</p>
+    <p>Ce module multi-processus (MPM) est le module par défaut pour les
+    systèmes d'exploitation de style Windows NT. Il consiste en un
+    processus de contrôle unique qui lance un processus enfant unique,
+    ce dernier créant à son tour des threads pour traiter les
+    requêtes.</p>
 
     <p>La directive <directive
-    module="mpm_common">ThreadsPerChild</directive> d&eacute;finit le
-    nombre maximal de connexions clientes simultan&eacute;es.</p>
+    module="mpm_common">ThreadsPerChild</directive> définit le
+    nombre maximal de connexions clientes simultanées.</p>
 
-    <p>Ce MPM utilise par d&eacute;faut les APIs Windows avanc&eacute;es pour accepter
+    <p>Ce MPM utilise par défaut les APIs Windows avancées pour accepter
     les nouvelles connexions des clients. Avec certaines configurations,
-    des produits tiers peuvent interf&eacute;rer avec cette impl&eacute;mentation, et
+    des produits tiers peuvent interférer avec cette implémentation, et
     provoquer l'enregistrement des messages suivants dans les journaux
     du serveur :</p>
 
@@ -53,10 +53,10 @@ NT.</description>
         winnt_mpm: falling back to 'AcceptFilter none'.
     </example>
 
-    <p>Le MPM se rabat sur une impl&eacute;mentation plus s&ucirc;re, mais certaines
-    requ&ecirc;tes n'ont pas &eacute;t&eacute; trait&eacute;es correctement. Pour &eacute;viter cette
-    erreur, d&eacute;finissez la directive <directive
-    module="core">AcceptFilter</directive> &agrave; <code>none</code>.</p>
+    <p>Le MPM se rabat sur une implémentation plus sûre, mais certaines
+    requêtes n'ont pas été traitées correctement. Pour éviter cette
+    erreur, définissez la directive <directive
+    module="core">AcceptFilter</directive> à <code>none</code>.</p>
 
     <highlight language="config">
 AcceptFilter http none
@@ -64,47 +64,47 @@ AcceptFilter https none
     </highlight>
 
     <p><em>Avec les versions 2.0 et 2.2 d'Apache httpd, c'est la directive
-    <directive>Win32DisableAcceptEx</directive> qui &eacute;tait utilis&eacute;e &agrave; cet
+    <directive>Win32DisableAcceptEx</directive> qui était utilisée à cet
     effet.</em></p>
 
-    <p>Le MPM WinNT diff&egrave;re des autres MPMs Unix comme worker et event
-    &agrave; bien des &eacute;gards :</p>
+    <p>Le MPM WinNT diffère des autres MPMs Unix comme worker et event
+    à bien des égards :</p>
 
     <ul>
-      <li>Lorsqu'un processus enfant s'arr&ecirc;te suite &agrave; un arr&ecirc;t ou
-      red&eacute;marrage du serveur, ou lorsque que la limite <directive
+      <li>Lorsqu'un processus enfant s'arrête suite à un arrêt ou
+      redémarrage du serveur, ou lorsque que la limite <directive
       module="mpm_common">MaxConnectionsPerChild</directive> est
-      atteinte, les requ&ecirc;tes en cours de traitement par ce processus en
-      cours d'arr&ecirc;t n'ont que <directive
-      module="core">TimeOut</directive> secondes pour s'ex&eacute;cuter avant
-      l'arr&ecirc;t du processus. Les autres types de red&eacute;marrage ou arr&ecirc;t ne
-      sont pas impl&eacute;ment&eacute;s.</li>
+      atteinte, les requêtes en cours de traitement par ce processus en
+      cours d'arrêt n'ont que <directive
+      module="core">TimeOut</directive> secondes pour s'exécuter avant
+      l'arrêt du processus. Les autres types de redémarrage ou arrêt ne
+      sont pas implémentés.</li>
 
       <li>Les nouveau processus enfants relisent les fichiers de
-      configuration au lieu d'en h&eacute;riter du parent. Ce comportement ne
-      pose pas de probl&egrave;me si le processus enfant est cr&eacute;&eacute; au d&eacute;marrage
-      ou red&eacute;marrage, mais dans le cas o&ugrave; un processus enfant est cr&eacute;&eacute;
-      parce qu'un autre processus enfant s'est arr&ecirc;t&eacute; ou a atteint la
+      configuration au lieu d'en hériter du parent. Ce comportement ne
+      pose pas de problème si le processus enfant est créé au démarrage
+      ou redémarrage, mais dans le cas où un processus enfant est créé
+      parce qu'un autre processus enfant s'est arrêté ou a atteint la
       limite <directive
       module="mpm_common">MaxConnectionsPerChild</directive>, tout
       changement survenu entre temps dans la configuration sera alors
       pris en compte dans le processus enfant, et parent et enfant
-      utiliseront une configuration diff&eacute;rente. Si des modifications
-      planifi&eacute;es de la configuration ont &eacute;t&eacute; partiellement effectu&eacute;es,
-      et si la configuration courante n'est pas interpr&eacute;table, le
-      processus enfant de remplacement ne pourra pas d&eacute;marrer, et le
-      serveur s'arr&ecirc;tera. En cons&eacute;quence, toute modification des
-      fichiers de configuration doit &ecirc;tre accompagn&eacute;e d'un red&eacute;marrage
+      utiliseront une configuration différente. Si des modifications
+      planifiées de la configuration ont été partiellement effectuées,
+      et si la configuration courante n'est pas interprétable, le
+      processus enfant de remplacement ne pourra pas démarrer, et le
+      serveur s'arrêtera. En conséquence, toute modification des
+      fichiers de configuration doit être accompagnée d'un redémarrage
       du serveur.</li>
 
       <li>Les hooks <code>monitor</code> et <code>fatal_exception</code>
-      ne sont pas encore impl&eacute;ment&eacute;s.</li>
+      ne sont pas encore implémentés.</li>
 
       <li>La directive <directive>AcceptFilter</directive> est
-      impl&eacute;ment&eacute;e par le MPM et fournit un type de contr&ocirc;le diff&eacute;rent
+      implémentée par le MPM et fournit un type de contrôle différent
       sur le traitement des nouvelles connexions (Voir la documentation
       de la directive <directive module="core">AcceptFilter</directive>
-      pour plus de d&eacute;tails).</li>
+      pour plus de détails).</li>
     </ul>
 
 </summary>

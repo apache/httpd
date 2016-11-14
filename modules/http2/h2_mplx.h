@@ -40,7 +40,6 @@ struct apr_thread_cond_t;
 struct h2_bucket_beam;
 struct h2_config;
 struct h2_ihash_t;
-struct h2_response;
 struct h2_task;
 struct h2_stream;
 struct h2_request;
@@ -76,18 +75,16 @@ struct h2_mplx {
     struct h2_ihash_t *spurge;      /* all streams done, ready for destroy */
 
     struct h2_iqueue *q;            /* all stream ids that need to be started */
-    struct h2_ihash_t *sready;      /* all streams ready for response */
-    struct h2_ihash_t *sresume;     /* all streams that can be resumed */
-    
+    struct h2_iqueue *readyq;       /* all stream ids ready for output */
+        
     struct h2_ihash_t *tasks;       /* all tasks started and not destroyed */
     struct h2_ihash_t *redo_tasks;  /* all tasks that need to be redone */
     
-    apr_uint32_t max_streams;        /* max # of concurrent streams */
-    apr_uint32_t max_stream_started; /* highest stream id that started processing */
-    apr_uint32_t workers_busy;       /* # of workers processing on this mplx */
-    apr_uint32_t workers_limit;      /* current # of workers limit, dynamic */
-    apr_uint32_t workers_def_limit;  /* default # of workers limit */
-    apr_uint32_t workers_max;        /* max, hard limit # of workers in a process */
+    int max_streams;        /* max # of concurrent streams */
+    int max_stream_started; /* highest stream id that started processing */
+    int workers_busy;       /* # of workers processing on this mplx */
+    int workers_limit;      /* current # of workers limit, dynamic */
+    int workers_max;        /* max, hard limit # of workers in a process */
     apr_time_t last_idle_block;      /* last time, this mplx entered IDLE while
                                       * streams were ready */
     apr_time_t last_limit_change;    /* last time, worker limit changed */
@@ -106,7 +103,7 @@ struct h2_mplx {
     
     struct h2_workers *workers;
     int tx_handles_reserved;
-    apr_size_t tx_chunk_size;
+    int tx_chunk_size;
     
     h2_mplx_consumed_cb *input_consumed;
     void *input_consumed_ctx;
@@ -156,11 +153,15 @@ void h2_mplx_task_done(h2_mplx *m, struct h2_task *task, struct h2_task **ptask)
  * but let the ongoing ones finish normally.
  * @return the highest stream id being/been processed
  */
-apr_uint32_t h2_mplx_shutdown(h2_mplx *m);
+int h2_mplx_shutdown(h2_mplx *m);
+
+int h2_mplx_is_busy(h2_mplx *m);
 
 /*******************************************************************************
  * IO lifetime of streams.
  ******************************************************************************/
+
+struct h2_stream *h2_mplx_stream_get(h2_mplx *m, int id);
 
 /**
  * Notifies mplx that a stream has finished processing.
@@ -178,6 +179,8 @@ apr_status_t h2_mplx_stream_done(h2_mplx *m, struct h2_stream *stream);
  */
 apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
                                  struct apr_thread_cond_t *iowait);
+
+apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id);
 
 /*******************************************************************************
  * Stream processing.
@@ -216,19 +219,23 @@ apr_status_t h2_mplx_reprioritize(h2_mplx *m, h2_stream_pri_cmp *cmp, void *ctx)
 void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
 
 
-typedef apr_status_t stream_ev_callback(void *ctx, int stream_id);
+typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
 
 /**
  * Dispatch events for the master connection, such as
- * - resume: new output data has arrived for a suspended stream
- * - response: the response for a stream is ready
+ ± @param m the multiplexer
+ * @param on_resume new output data has arrived for a suspended stream 
+ * @param ctx user supplied argument to invocation.
  */
 apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m, 
                                             stream_ev_callback *on_resume, 
-                                            stream_ev_callback *on_response, 
                                             void *ctx);
 
-apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id);
+int h2_mplx_awaits_data(h2_mplx *m);
+
+typedef int h2_mplx_stream_cb(struct h2_stream *s, void *ctx);
+
+apr_status_t h2_mplx_stream_do(h2_mplx *m, h2_mplx_stream_cb *cb, void *ctx);
 
 /*******************************************************************************
  * Output handling of streams.
@@ -238,7 +245,7 @@ apr_status_t h2_mplx_suspend_stream(h2_mplx *m, int stream_id);
  * Opens the output for the given stream with the specified response.
  */
 apr_status_t h2_mplx_out_open(h2_mplx *mplx, int stream_id,
-                              struct h2_response *response);
+                              struct h2_bucket_beam *beam);
 
 /*******************************************************************************
  * h2_mplx list Manipulation.
@@ -331,7 +338,7 @@ typedef apr_status_t h2_mplx_req_engine_init(struct h2_req_engine *engine,
                                              const char *id, 
                                              const char *type,
                                              apr_pool_t *pool, 
-                                             apr_uint32_t req_buffer_size,
+                                             apr_size_t req_buffer_size,
                                              request_rec *r,
                                              h2_output_consumed **pconsumed,
                                              void **pbaton);
@@ -341,8 +348,9 @@ apr_status_t h2_mplx_req_engine_push(const char *ngn_type,
                                      h2_mplx_req_engine_init *einit);
 apr_status_t h2_mplx_req_engine_pull(struct h2_req_engine *ngn, 
                                      apr_read_type_e block, 
-                                     apr_uint32_t capacity, 
+                                     int capacity, 
                                      request_rec **pr);
-void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn);
+void h2_mplx_req_engine_done(struct h2_req_engine *ngn, conn_rec *r_conn,
+                             apr_status_t status);
 
 #endif /* defined(__mod_h2__h2_mplx__) */

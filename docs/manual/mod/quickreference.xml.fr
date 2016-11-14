@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1070904 -->
@@ -23,22 +23,22 @@
 -->
 
 <quickreference metafile="quickreference.xml.meta">
-  <title>Document de r&eacute;f&eacute;rence rapide des directives</title>
+  <title>Document de référence rapide des directives</title>
   <summary>
-    <p>Le document de r&eacute;f&eacute;rence rapide des directives montre l'usage,
-    les valeurs par d&eacute;faut, le statut,
+    <p>Le document de référence rapide des directives montre l'usage,
+    les valeurs par défaut, le statut,
     et le contexte de chaque directive de configuration d'Apache.  Pour plus
     d'informations sur chacun de ces termes, voir le <a
     href="directive-dict.html">Dictionnaire des directives</a>.</p>
 
-    <p>La premi&egrave;re colonne donne le nom de la directive et son usage.
-    Si la directive poss&egrave;de une valeur par d&eacute;faut, elle est indiqu&eacute;e dans la
-    deuxi&egrave;me colonne.
-    Si la valeur par d&eacute;faut est trop grande pour pouvoir &ecirc;tre affich&eacute;e,
-    elle sera tronqu&eacute;e et suivie d'un "+".</p>
+    <p>La première colonne donne le nom de la directive et son usage.
+    Si la directive possède une valeur par défaut, elle est indiquée dans la
+    deuxième colonne.
+    Si la valeur par défaut est trop grande pour pouvoir être affichée,
+    elle sera tronquée et suivie d'un "+".</p>
 
-    <p>La troisi&egrave;me colonne &eacute;num&egrave;re les contextes dans
-    lesquels la directive est applicable, et la quatri&egrave;me indique son statut en accord avec le
-    tableau des l&eacute;gendes ci-dessous.</p>
+    <p>La troisième colonne énumère les contextes dans
+    lesquels la directive est applicable, et la quatrième indique son statut en accord avec le
+    tableau des légendes ci-dessous.</p>
   </summary>
 </quickreference>

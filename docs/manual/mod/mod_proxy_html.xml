@@ -88,6 +88,15 @@ module for earlier 2.x versions.</compatibility>
     <code>&lt;meta http-equiv=...&gt;</code> declarations and convert
     them to real HTTP headers, in keeping with the original purpose
     of this form of the HTML &lt;meta&gt; element.</p>
+
+    <note type="warning"><title>Warning</title>
+      Because ProxyHTMLMeta promotes <strong>all</strong>
+      <code>http-equiv</code> elements to HTTP headers, it is important that you
+      only enable it in cases where you trust the HTML content as much as you
+      trust the upstream server. If the HTML is controlled by bad actors, it
+      will be possible for them to inject arbitrary, possibly malicious, HTTP
+      headers into your server's responses.
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -124,11 +133,14 @@ module for earlier 2.x versions.</compatibility>
 module for earlier 2.x versions.</compatibility>
 
 <usage>
-<p>This is the key directive for rewriting HTML links.  When parsing a document,
+<p>This is the key directive for rewriting HTML links. When parsing a document,
 whenever a link target matches <var>from-pattern</var>, the matching
 portion will be rewritten to <var>to-pattern</var>, as modified by any
-flags supplied and by the <directive>ProxyHTMLExtended</directive>
-directive.</p>
+flags supplied and by the 
+<directive module="mod_proxy_html">ProxyHTMLExtended</directive> directive.
+Only the elements specified using
+the <directive module="mod_proxy_html">ProxyHTMLLinks</directive> directive
+will be considered as HTML links.</p>
 
 <p>The optional third argument may define any of the following
 <strong>Flags</strong>.  Flags are case-sensitive.</p>
@@ -386,13 +398,33 @@ and defines the events in standard HTML 4 and XHTML 1.</p>
 for earlier 2.x versions</compatibility>
 <usage>
 <p>Specifies elements that have URL attributes that should be rewritten
-using standard <directive>ProxyHTMLURLMap</directive>s.  You will need one
-ProxyHTMLLinks directive per element, but it can have any number of attributes.</p>
+using standard <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>s.
+You will need one ProxyHTMLLinks directive per element,
+but it can have any number of attributes.</p>
 <p>Normally you'll set this globally.  If you set ProxyHTMLLinks in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
 <p>A default configuration is supplied in <var>proxy-html.conf</var>
 and defines the HTML links for standard HTML 4 and XHTML 1.</p>
+<example>
+<title>Examples from proxy-html.conf</title>
+<highlight language="config">
+ProxyHTMLLinks  a          href
+ProxyHTMLLinks  area       href
+ProxyHTMLLinks  link       href
+ProxyHTMLLinks  img        src longdesc usemap
+ProxyHTMLLinks  object     classid codebase data usemap
+ProxyHTMLLinks  q          cite
+ProxyHTMLLinks  blockquote cite
+ProxyHTMLLinks  ins        cite
+ProxyHTMLLinks  del        cite
+ProxyHTMLLinks  form       action
+ProxyHTMLLinks  input      src usemap
+ProxyHTMLLinks  head       profile
+ProxyHTMLLinks  base       href
+ProxyHTMLLinks  script     src for
+</highlight>
+</example>
 </usage>
 </directivesynopsis>
 

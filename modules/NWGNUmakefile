@@ -22,7 +22,7 @@ endif
 endif
 endif
 
-# If USE_STDSOCKETS is defined we allways build mod_ssl
+# If USE_STDSOCKETS is defined we always build mod_ssl
 ifdef USE_STDSOCKETS
 WITH_SSL = 1
 endif

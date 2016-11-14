@@ -42,7 +42,7 @@ fonction de leur appartenance à un groupe spécifié. Le module
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 
-<section id="requiredirectives"><title>The Require Directives</title>
+<section id="requiredirectives"><title>Les directives Require</title>
 
     <p>Les directives <directive
     module="mod_authz_core">Require</directive> d'Apache permettent,

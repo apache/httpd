@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1021924 -->
@@ -24,52 +24,52 @@
 
 <modulesynopsis metafile="mpm_netware.xml.meta">
 <name>mpm_netware</name>
-<description>Module multi-processus impl&eacute;mentant un serveur web bas&eacute;
-exclusivement sur les threads et optimis&eacute; pour Novell
+<description>Module multi-processus implémentant un serveur web basé
+exclusivement sur les threads et optimisé pour Novell
 NetWare</description>
 <status>MPM</status>
 <sourcefile>mpm_netware.c</sourcefile>
 <identifier>mpm_netware_module</identifier>
 
 <summary>
-    <p>Ce module multi-processus (MPM) impl&eacute;mente un serveur web bas&eacute;
-    exclusivement sur les threads et optimis&eacute; pour Novell NetWare.</p>
+    <p>Ce module multi-processus (MPM) implémente un serveur web basé
+    exclusivement sur les threads et optimisé pour Novell NetWare.</p>
 
-    <p>Le thread ma&icirc;tre est charg&eacute; du lancement de threads esclaves qui
-    attendent les connexions et les traitent au fur et &agrave; mesure de leur
-    arriv&eacute;e. Le serveur HTTP Apache essaie toujours de maintenir
+    <p>Le thread maître est chargé du lancement de threads esclaves qui
+    attendent les connexions et les traitent au fur et à mesure de leur
+    arrivée. Le serveur HTTP Apache essaie toujours de maintenir
     plusieurs threads
-    esclaves en <dfn>spare</dfn> (en r&eacute;serve) ou inactifs. De cette
-    fa&ccedil;on, les clients n'ont pas besoin d'attendre le lancement d'un
-    nouveau thread enfant pour que leurs requ&ecirc;tes soient trait&eacute;es.</p>
+    esclaves en <dfn>spare</dfn> (en réserve) ou inactifs. De cette
+    façon, les clients n'ont pas besoin d'attendre le lancement d'un
+    nouveau thread enfant pour que leurs requêtes soient traitées.</p>
 
     <p>Les directives <directive
     module="mpm_common">StartThreads</directive>, <directive
     module="mpm_common">MinSpareThreads</directive>, <directive
     module="mpm_common">MaxSpareThreads</directive>, et <directive
-    module="mpm_netware">MaxThreads</directive> contr&ocirc;lent
-    la mani&egrave;re dont le thread ma&icirc;tre cr&eacute;e les threads esclaves afin de
-    traiter les requ&ecirc;tes. En g&eacute;n&eacute;ral, Apache httpd s'auto-r&eacute;gule correctement,
-    et la plupart des sites ne n&eacute;cessitent aucune modification des
-    valeurs par d&eacute;faut de ces directives. Pour les sites dont le serveur
-    est limit&eacute; en m&eacute;moire, il peut s'av&eacute;rer n&eacute;cessaire de diminuer la
+    module="mpm_netware">MaxThreads</directive> contrôlent
+    la manière dont le thread maître crée les threads esclaves afin de
+    traiter les requêtes. En général, Apache httpd s'auto-régule correctement,
+    et la plupart des sites ne nécessitent aucune modification des
+    valeurs par défaut de ces directives. Pour les sites dont le serveur
+    est limité en mémoire, il peut s'avérer nécessaire de diminuer la
     valeur de la directive <directive
-    module="mpm_netware">MaxThreads</directive> afin d'&eacute;viter une
-    hyper-activit&eacute; du serveur (arr&ecirc;ts de threads inactifs et lancement incessant
-    de nouveau threads). Vous trouverez plus d'informations &agrave;
-    propos du contr&ocirc;le de la cr&eacute;ation de processus dans le document <a
-    href="../misc/perf-tuning.html">conseils en mati&egrave;re de
+    module="mpm_netware">MaxThreads</directive> afin d'éviter une
+    hyper-activité du serveur (arrêts de threads inactifs et lancement incessant
+    de nouveau threads). Vous trouverez plus d'informations à
+    propos du contrôle de la création de processus dans le document <a
+    href="../misc/perf-tuning.html">conseils en matière de
     performances</a>.</p>
 
     <p>La directive <directive
     module="mpm_common">MaxRequestsPerChild</directive>
-    contr&ocirc;le la fr&eacute;quence &agrave; laquelle le serveur recycle ses processus
-    en arr&ecirc;tant les anciens et en en lan&ccedil;ant de nouveaux. Sous le
-    syst&egrave;me d'exploitation NetWare, il est vivement recommand&eacute; de
-    laisser cette directive &agrave; 0, ce qui permet aux threads esclaves de
-    continuer &agrave; traiter les requ&ecirc;tes ind&eacute;finiment.</p>
+    contrôle la fréquence à laquelle le serveur recycle ses processus
+    en arrêtant les anciens et en en lançant de nouveaux. Sous le
+    système d'exploitation NetWare, il est vivement recommandé de
+    laisser cette directive à 0, ce qui permet aux threads esclaves de
+    continuer à traiter les requêtes indéfiniment.</p>
 </summary>
-<seealso><a href="../bind.html">D&eacute;finition des adresses et ports
+<seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise Apache httpd</a>
 </seealso>
 
@@ -96,17 +96,17 @@ qu'utilise Apache httpd</a>
 
 <directivesynopsis>
 <name>MaxThreads</name>
-<description>D&eacute;finit le nombre maximum de threads esclaves</description>
+<description>Définit le nombre maximum de threads esclaves</description>
 <syntax>MaxThreads <var>nombre</var></syntax>
 <default>MaxThreads 2048</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>La directive <directive>MaxThreads</directive> d&eacute;finit
-    le nombre maximum de threads esclaves que l'on d&eacute;sire autoriser. La
-    valeur par d&eacute;faut correspondant &agrave; la valeur cod&eacute;e en dur &agrave; la
-    compilation, la valeur de cette directive ne peut donc qu'&ecirc;tre
-    diminu&eacute;e, comme dans l'exemple suivant :</p>
+    <p>La directive <directive>MaxThreads</directive> définit
+    le nombre maximum de threads esclaves que l'on désire autoriser. La
+    valeur par défaut correspondant à la valeur codée en dur à la
+    compilation, la valeur de cette directive ne peut donc qu'être
+    diminuée, comme dans l'exemple suivant :</p>
 
     <example>
       MaxThreads 512

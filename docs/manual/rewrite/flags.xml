@@ -91,6 +91,10 @@ isn't a valid URL, and so would be encoded as
 before being passed on to the output URL, resulting in a correct mapping to
 <code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
 
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1" [B,PT]
+</highlight>
+
 <p>Note that you may also need to set <directive
 module="core">AllowEncodedSlashes</directive> to <code>On</code> to get this
 particular example to work, as httpd does not allow encoded slashes in URLs, and

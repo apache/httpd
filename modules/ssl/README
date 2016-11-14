@@ -59,7 +59,7 @@ DATA STRUCTURES
  For an overview how these are related and chained together have a look at the
  page in README.dsov.{fig,ps}. It contains overview diagrams for those data
  structures. It's designed for DIN A4 paper size, but you can easily generate
- a smaller version inside XFig by specifing a magnification on the Export
+ a smaller version inside XFig by specifying a magnification on the Export
  panel.
 
 INCOMPATIBILITIES
@@ -81,7 +81,7 @@ MAJOR CHANGES
  o The DBM based session cache is now based on APR's DBM API only.
  o The shared memory based session cache is now based on APR's APIs.
  o SSL I/O is now implemented in terms of filters rather than BUFF
- o Eliminated ap_global_ctx. Storing Persistant information in 
+ o Eliminated ap_global_ctx. Storing Persistent information in 
    process_rec->pool->user_data. The ssl_pphrase_Handle_CB() and 
    ssl_config_global_* () functions have an extra parameter now - 
    "server_rec *" -  which is used to retrieve the SSLModConfigRec.

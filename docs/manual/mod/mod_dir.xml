@@ -299,7 +299,7 @@ act as if "DirectoryCheckHandler ON" was specified.</compatibility>
     other handler was configured for a URL. This allows directory indexes to 
     be served even when a <directive>SetHandler</directive> directive is 
     specified for an entire directory, but it can also result in some conflicts
-    with modules such as <directive>mod_rewrite</directive>.</p>
+    with modules such as <module>mod_rewrite</module>.</p>
 </usage>
 </directivesynopsis>
 

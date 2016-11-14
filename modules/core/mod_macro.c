@@ -377,7 +377,7 @@ static char *substitute(char *buf,
 }
 
 /*
-  find first occurence of args in buf.
+  find first occurrence of args in buf.
   in case of conflict, the LONGEST argument is kept. (could be the FIRST?).
   returns the pointer and the whichone found, or NULL.
 */
@@ -464,7 +464,7 @@ static const char *process_content(apr_pool_t * pool,
     /* for each line of the macro body */
     for (i = 0; i < contents->nelts; i++) {
         const char *errmsg;
-        /* copy the line and subtitute macro parameters */
+        /* copy the line and substitute macro parameters */
         strncpy(line, ((char **) contents->elts)[i], MAX_STRING_LEN - 1);
         errmsg = substitute_macro_args(line, MAX_STRING_LEN,
                                        macro, replacements, used);
@@ -916,7 +916,7 @@ static int macro_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 /*
   macro module commands.
   configuration file macro stuff
-  they are processed immediatly when found, hence the EXEC_ON_READ.
+  they are processed immediately when found, hence the EXEC_ON_READ.
 */
 static const command_rec macro_cmds[] = {
     AP_INIT_RAW_ARGS(BEGIN_MACRO, macro_section, NULL, EXEC_ON_READ | OR_ALL,

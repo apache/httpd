@@ -905,7 +905,7 @@ typedef struct cr_ctx
 } cr_ctx;
 
 
-/* Okay, this deserves a little explaination -- in order for the errors that lua
+/* Okay, this deserves a little explanation -- in order for the errors that lua
  * generates to be 'accuarate', including line numbers, we basically inject
  * N line number new lines into the 'top' of the chunk reader.....
  *

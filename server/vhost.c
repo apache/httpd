@@ -228,7 +228,7 @@ const char *ap_parse_vhost_addrs(apr_pool_t *p,
     server_addr_rec **addrs;
     const char *err;
 
-    /* start the list of addreses */
+    /* start the list of addresses */
     addrs = &s->addrs;
     while (hostname[0]) {
         err = get_addresses(p, ap_getword_conf(p, &hostname), &addrs, s->port);
@@ -574,7 +574,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 
     /* The next things to go into the hash table are the virtual hosts
      * themselves.  They're listed off of main_s->next in the reverse
-     * order they occured in the config file, so we insert them at
+     * order they occurred in the config file, so we insert them at
      * the iphash_table_tail but don't advance the tail.
      */
 

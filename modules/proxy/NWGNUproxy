@@ -256,6 +256,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL)# Exports of mod_proxy$(DL)> $@
 	@echo $(DL) (AP$(VERSION_MAJMIN))$(DL)>> $@
 	@echo $(DL) proxy_module,$(DL)>> $@
+	@echo $(DL) proxy_hcmethods,$(DL)>> $@
 	@echo $(DL) proxy_hook_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_canon_handler,$(DL)>> $@
 	@echo $(DL) proxy_hook_get_post_request,$(DL)>> $@
@@ -277,6 +278,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_c2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_canon_netloc,$(DL)>> $@
 	@echo $(DL) ap_proxy_canonenc,$(DL)>> $@
+	@echo $(DL) ap_proxy_check_connection,$(DL)>> $@
 	@echo $(DL) ap_proxy_checkproxyblock,$(DL)>> $@
 	@echo $(DL) ap_proxy_checkproxyblock2,$(DL)>> $@
 	@echo $(DL) ap_proxy_conn_is_https,$(DL)>> $@
@@ -312,6 +314,7 @@ $(OBJDIR)/mod_proxy.imp: NWGNUproxy
 	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_share_worker,$(DL)>> $@
+	@echo $(DL) ap_proxy_show_hcmethod,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_connection_cleanup,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_disable,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_enable,$(DL)>> $@

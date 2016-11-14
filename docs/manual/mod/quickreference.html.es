@@ -34,10 +34,6 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>La Guía Rápida de Referencia de Directivas muestra el uso, las
     opciones por defecto, el estado y el contexto de cada directiva de
@@ -48,7 +44,7 @@
     <p>La primera columna muestra el nombre y el uso de la directiva.
     La segunda columna muestra el valor por defecto de la directiva,
     si existe ese valor por defecto.  Si el valor por defecto es
-    demasiado largo para mostrarlo, el primer caracter va seguido de
+    demasiado largo para mostrarlo, el primer carácter va seguido de
     un signo "+".</p>
 
     <p>La tercera y la cuarta columna listan los contextos en los que
@@ -851,7 +847,7 @@ must succeed for the enclosing directive to succeed.</td></tr>
 must succeed for the enclosing directive to not fail.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a condition under which rewriting will take place
+      <em>TestString</em> <em>CondPattern</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a condition under which rewriting will take place
 </td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>

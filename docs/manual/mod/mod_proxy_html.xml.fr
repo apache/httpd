@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1530513 -->
+<!-- English Revision: 1765368 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -102,6 +102,16 @@ précédentes.</compatibility>
     <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
     en-têtes HTTP, afin de conserver le but original de cette forme
     de métaélément HTML.</p>
+
+    <note type="warning"><title>Avertissement</title> Compte tenu du fait que la
+    directive ProxyHTMLMeta promeut <strong>tous</strong> les éléments
+    <code>http-equiv</code> au rang d'en-têtes HTTP, il est conseillé de ne
+    l'activer que si vous faites autant confiance au contenu HTML qu'à votre
+    serveur mandataire. Avec cette directive en effet, si ce contenu est géré
+    par des gens malintentionnés, ces derniers seront en mesure d'injecter des
+    en-têtes HTTP arbitraires et peut-être malveillants dans les réponses de
+    votre serveur.  
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -145,7 +155,9 @@ liens HTML. Lors de l'interprétation d'un document, chaque fois qu'un
 lien correspond à <var>modèle-source</var>, la partie du lien concernée
 sera réécrite en <var>modèle-cible</var>, en tenant compte des
 modifications induites par les drapeaux éventuellement spécifiés et par
-la directive <directive>ProxyHTMLExtended</directive>.</p>
+la directive <directive module="mod_proxy_html">ProxyHTMLExtended</directive>.
+Ne seront considérés comme des liens HTML que les éléments spécifiés via la
+directive <directive module="mod_proxy_html">ProxyHTMLLinks</directive>.</p>
 
 <p>Le troisième argument optionnel permet de féfinir un des drapeaux
 suivants (les drapeaux sont sensibles à la casse) :</p>
@@ -447,18 +459,35 @@ HTML 4 et XHTML 1.</p>
 <compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
 <usage>
-<p>Cette directive permet de spécifier les éléments dont les attributs
-d'URL doivent être réécrits en utilisant les règles standards
-<directive>ProxyHTMLURLMap</directive>. Vous devez définir une directive
-ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
-spécifier un nombre quelconque d'attributs</p>
-<p>Normalement, cette directive est définie globalement. Si vous
-définissez ProxyHTMLLinks à plusieurs niveaux, certains niveaux
-l'emportant sur d'autres, vous devrez spécifier un jeu complet
-de liens pour chaque niveau.</p>
-<p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
-défaut et définit les liens HTML selon les standards
-HTML 4 et XHTML 1.</p>
+<p>Cette directive permet de spécifier les éléments dont les attributs d'URL
+doivent être réécrits en utilisant les règles standards <directive
+module="mod_proxy_html">ProxyHTMLURLMap</directive>. Vous devez définir une
+directive ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
+spécifier un nombre quelconque d'attributs</p> <p>Normalement, cette directive
+est définie globalement. Si vous définissez ProxyHTMLLinks à plusieurs niveaux,
+certains niveaux l'emportant sur d'autres, vous devrez spécifier un jeu complet
+de liens pour chaque niveau.</p> <p>Le fichier <var>proxy-html.conf</var>
+fournit une configuration par défaut et définit les liens HTML selon les
+standards HTML 4 et XHTML 1.</p>
+<example>
+<title>Exemples issus de proxy-html.conf</title>
+<highlight language="config">
+ProxyHTMLLinks  a          href
+ProxyHTMLLinks  area       href
+ProxyHTMLLinks  link       href
+ProxyHTMLLinks  img        src longdesc usemap
+ProxyHTMLLinks  object     classid codebase data usemap
+ProxyHTMLLinks  q          cite
+ProxyHTMLLinks  blockquote cite
+ProxyHTMLLinks  ins        cite
+ProxyHTMLLinks  del        cite
+ProxyHTMLLinks  form       action
+ProxyHTMLLinks  input      src usemap
+ProxyHTMLLinks  head       profile
+ProxyHTMLLinks  base       href
+ProxyHTMLLinks  script     src for
+</highlight>
+</example>
 </usage>
 </directivesynopsis>
 

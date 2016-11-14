@@ -199,7 +199,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/h2_ngn_shed.o \
 	$(OBJDIR)/h2_push.o \
 	$(OBJDIR)/h2_request.o \
-	$(OBJDIR)/h2_response.o \
+	$(OBJDIR)/h2_headers.o \
 	$(OBJDIR)/h2_session.o \
 	$(OBJDIR)/h2_stream.o \
 	$(OBJDIR)/h2_switch.o \
@@ -355,25 +355,6 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL) (HTTP2)$(DL) > $@
 	@echo $(DL) http2_module,$(DL) >> $@
-	@echo $(DL) h2_ihash_add,$(DL) >> $@
-	@echo $(DL) h2_ihash_clear,$(DL) >> $@
-	@echo $(DL) h2_ihash_count,$(DL) >> $@
-	@echo $(DL) h2_ihash_create,$(DL) >> $@
-	@echo $(DL) h2_ihash_empty,$(DL) >> $@
-	@echo $(DL) h2_ihash_iter,$(DL) >> $@
-	@echo $(DL) h2_ihash_remove,$(DL) >> $@
-	@echo $(DL) h2_iq_add,$(DL) >> $@
-	@echo $(DL) h2_iq_create,$(DL) >> $@
-	@echo $(DL) h2_iq_remove,$(DL) >> $@
-	@echo $(DL) h2_log2,$(DL) >> $@
-	@echo $(DL) h2_proxy_res_ignore_header,$(DL) >> $@
-	@echo $(DL) h2_headers_add_h1,$(DL) >> $@
-	@echo $(DL) h2_req_create,$(DL) >> $@
-	@echo $(DL) h2_req_createn,$(DL) >> $@
-	@echo $(DL) h2_req_make,$(DL) >> $@
-	@echo $(DL) h2_util_camel_case_header,$(DL) >> $@
-	@echo $(DL) h2_util_frame_print,$(DL) >> $@
-	@echo $(DL) h2_util_ngheader_make_req,$(DL) >> $@
 	@echo $(DL) nghttp2_is_fatal,$(DL) >> $@
 	@echo $(DL) nghttp2_option_del,$(DL) >> $@
 	@echo $(DL) nghttp2_option_new,$(DL) >> $@
@@ -400,6 +381,7 @@ $(OBJDIR)/mod_http2.imp : NWGNUmod_http2
 	@echo $(DL) nghttp2_session_want_write,$(DL) >> $@
 	@echo $(DL) nghttp2_strerror,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_goaway,$(DL) >> $@
+	@echo $(DL) nghttp2_submit_ping,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_request,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_rst_stream,$(DL) >> $@
 	@echo $(DL) nghttp2_submit_settings,$(DL) >> $@

@@ -168,7 +168,7 @@ typedef struct worker_retained_data {
 #endif
     int hold_off_on_exponential_spawning;
     /*
-     * Current number of listeners buckets and maximum reached accross
+     * Current number of listeners buckets and maximum reached across
      * restarts (to size retained data according to dynamic num_buckets,
      * eg. idle_spawn_rate).
      */
@@ -1837,7 +1837,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (ap_daemons_to_start < num_buckets)
         ap_daemons_to_start = num_buckets;
     /* We want to create as much children at a time as the number of buckets,
-     * so to optimally accept connections (evenly distributed accross buckets).
+     * so to optimally accept connections (evenly distributed across buckets).
      * Thus min_spare_threads should at least maintain num_buckets children,
      * and max_spare_threads allow num_buckets more children w/o triggering
      * immediately (e.g. num_buckets idle threads margin, one per bucket).

@@ -55,6 +55,29 @@
     supersedes the modules presented in that article.</p>
 </section>
 
+<section id="connecting"><title>Connecting</title>
+
+    <p>To connect to your database, you'll need to specify
+    a driver, and connection parameters. These vary from
+    one database engine to another. For example, to connect
+    to mysql, do the following:</p>
+
+<highlight language="config">
+DBDriver mysql
+DBDParams host=localhost,dbname=pony,user=shetland,pass=appaloosa
+</highlight>
+
+    <p>You can then use this connection in a variety of other
+    modules, including <module>mod_rewrite</module>,
+    <module>mod_authn_dbd</module>, and <module>mod_lua</module>.
+    Further usage examples appear in each of those modules'
+    documentation.</p>
+
+    <p>See <directive>DBDParams</directive> for connection string
+    information for each of the supported database drivers.</p>
+
+</section>
+
 <section id="API"><title>Apache DBD API</title>
     <p><module>mod_dbd</module> exports five functions for other modules
     to use. The API is as follows:</p>

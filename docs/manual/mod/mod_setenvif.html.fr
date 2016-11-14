@@ -219,9 +219,9 @@ ainsi que les valeurs optionnelles qui doivent leur être affectées. Ils
 peuvent se présenter sous les formes suivantes :</p>
 
     <ol>
-      <li><code><em>nom-variable</em></code>, or</li>
+      <li><code><em>nom-variable</em></code>, ou</li>
 
-      <li><code>!<em>nom-variable</em></code>, or</li>
+      <li><code>!<em>nom-variable</em></code>, ou</li>
 
       <li><code><em>nom-variable</em>=<em>valeur</em></code></li>
     </ol>
@@ -253,9 +253,9 @@ SetEnvIf ^TS  ^[a-z]  HAVE_TS</pre>
     <p>Les trois premières lignes définissent la variable
     d'environnement <code>objet_est_une_image</code> si l'objet de la
     requête est un fichier image, et la quatrième définit la variable
-    <code>référant_intra_site</code> si la page référante se trouve
+    <code>intra_site_referral</code> si la page référante se trouve
     quelque part dans le site web
-    <code>www.mon-domaine.example.com</code>.</p>
+    <code>www.mydomain.example.com</code>.</p>
 
     <p>La dernière ligne définit la variable d'environnement
     <code>HAVE_TS</code> si la requête contient un en-tête dont le nom
@@ -329,7 +329,7 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     d'un point de vue sémantique à la directive <code class="directive"><a href="#setenvif">SetEnvIf</a></code>, et ne s'en distingue que
     par le fait que la comparaison des expressions rationnelles est
     effectuée sans tenir compte de la casse. Par exemple :</p>
-<pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=apache</pre>
+<pre class="prettyprint lang-config">SetEnvIfNoCase Host Example\.Org site=example</pre>
 
 
     <p>Cette ligne va définir la variable d'environnement
