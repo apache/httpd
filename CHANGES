@@ -67,9 +67,10 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
-  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
-     not been modified (HTTP 304) to avoid subsequent bogus reads and
-     confusing error messages logged. [Luca Toscano]
+  *) mod_proxy_fcgi: read the whole FCGI response even when the content
+     has not been modified (HTTP 304) or in case of a precondition failure
+     (HTTP 412) to avoid subsequent bogus reads and confusing
+     error messages logged. [Luca Toscano]
 
   *) mod_crypto: Add the all purpose crypto filters with support for HLS.
      [Graham Leggett]
