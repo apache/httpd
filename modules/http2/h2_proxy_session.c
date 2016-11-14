@@ -36,6 +36,8 @@ typedef struct h2_proxy_stream {
     const char *url;
     request_rec *r;
     h2_proxy_request *req;
+    const char *real_server_uri;
+    const char *p_server_uri;
     int standalone;
 
     h2_stream_state_t state;
@@ -161,7 +163,17 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "h2_proxy_session(%s): got interim HEADERS, status=%d",
                               session->id, r->status);
-                r->status_line = ap_get_status_line(r->status);
+                switch(r->status) {
+                    case 103:
+                        /* workaround until we get this into http protocol base
+                         * parts. without this, unknown codes are converted to
+                         * 500... */
+                        r->status_line = "103 Early Hints";
+                        break;
+                    default:
+                        r->status_line = ap_get_status_line(r->status);
+                        break;
+                }
                 ap_send_interim_response(r, 1);
             }
             stream->waiting_on_100 = 0;
@@ -216,8 +228,9 @@ static int add_header(void *table, const char *n, const char *v)
     return 1;
 }
 
-static void process_proxy_header(request_rec *r, const char *n, const char *v)
+static void process_proxy_header(h2_proxy_stream *stream, const char *n, const char *v)
 {
+    request_rec *r = stream->r;
     static const struct {
         const char *name;
         ap_proxy_header_reverse_map_fn func;
@@ -239,6 +252,13 @@ static void process_proxy_header(request_rec *r, const char *n, const char *v)
                           (*transform_hdrs[i].func)(r, dconf, v));
             return;
        }
+    }
+    if (!ap_cstr_casecmp("Link", n)) {
+        dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
+        apr_table_add(r->headers_out, n,
+                      h2_proxy_link_reverse_map(r, dconf, 
+                      stream->real_server_uri, stream->p_server_uri, v));
+        return;
     }
     apr_table_add(r->headers_out, n, v);
 }
@@ -274,7 +294,7 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, stream->session->c, 
                       "h2_proxy_stream(%s-%d): got header %s: %s", 
                       stream->session->id, stream->id, hname, hvalue);
-        process_proxy_header(stream->r, hname, hvalue);
+        process_proxy_header(stream, hname, hvalue);
     }
     return APR_SUCCESS;
 }
@@ -689,6 +709,10 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
         /* port info missing and port is not default for scheme: append */
         authority = apr_psprintf(stream->pool, "%s:%d", authority, puri.port);
     }
+    /* we need this for mapping relative uris in headers ("Link") back
+     * to local uris */
+    stream->real_server_uri = apr_psprintf(stream->pool, "%s://%s", scheme, authority); 
+    stream->p_server_uri = apr_psprintf(stream->pool, "%s://%s", puri.scheme, authority); 
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
     h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
                 authority, path, r->headers_in);

@@ -1233,6 +1233,7 @@ struct h2_stream *h2_session_push(h2_session *session, h2_stream *is,
                   
     stream = h2_session_open_stream(session, nid, is->id, push->req);
     if (stream) {
+        h2_session_set_prio(session, stream, push->priority);
         status = stream_schedule(session, stream, 1);
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c,
@@ -1271,6 +1272,10 @@ apr_status_t h2_session_set_prio(h2_session *session, h2_stream *stream,
 #ifdef H2_NG2_CHANGE_PRIO
     nghttp2_stream *s_grandpa, *s_parent, *s;
     
+    if (prio == NULL) {
+        /* we treat this as a NOP */
+        return APR_SUCCESS;
+    }
     s = nghttp2_session_find_stream(session->ngh2, stream->id);
     if (!s) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
@@ -1437,7 +1442,6 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
         nghttp2_data_provider provider, *pprovider = NULL;
         h2_ngheader *ngh;
         apr_table_t *hout;
-        const h2_priority *prio;
         const char *note;
         
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03073)
@@ -1454,7 +1458,7 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
         
         /* If this stream is not a pushed one itself,
          * and HTTP/2 server push is enabled here,
-         * and the response is in the range 200-299 *),
+         * and the response HTTP status is not sth >= 400,
          * and the remote side has pushing enabled,
          * -> find and perform any pushes on this stream
          *    *before* we submit the stream response itself.
@@ -1462,23 +1466,24 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
          *    headers that get pushed right afterwards.
          * 
          * *) the response code is relevant, as we do not want to 
-         *    make pushes on 401 or 403 codes, neiterh on 301/302
-         *    and friends. And if we see a 304, we do not push either
+         *    make pushes on 401 or 403 codes and friends. 
+         *    And if we see a 304, we do not push either
          *    as the client, having this resource in its cache, might
          *    also have the pushed ones as well.
          */
         if (!stream->initiated_on
-            && h2_headers_are_response(headers)
-            && H2_HTTP_2XX(headers->status)
+            && !stream->has_response
+            && (headers->status < 400)
+            && (headers->status != 304)
             && h2_session_push_enabled(session)) {
             
             h2_stream_submit_pushes(stream, headers);
         }
         
-        prio = h2_stream_get_priority(stream, headers);
-        if (prio) {
-            h2_session_set_prio(session, stream, prio);
+        if (!stream->pref_priority) {
+            stream->pref_priority = h2_stream_get_priority(stream, headers);
         }
+        h2_session_set_prio(session, stream, stream->pref_priority);
         
         hout = headers->headers;
         note = apr_table_get(headers->notes, H2_FILTER_DEBUG_NOTE);

@@ -512,10 +512,6 @@ static int task_print(void *ctx, void *val)
                       (stream? 0 : 1), task->worker_started, 
                       task->worker_done, task->frozen);
     }
-    else if (task) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
-                      "->03198: h2_stream(%ld-%d): NULL", m->id, task->stream_id);
-    }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, m->c, /* NO APLOGNO */
                       "->03198: h2_stream(%ld-NULL): NULL", m->id);
