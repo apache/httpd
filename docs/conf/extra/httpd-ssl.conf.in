@@ -287,4 +287,4 @@ BrowserMatch "MSIE [2-5]" \
 CustomLog "@rel_logfiledir@/ssl_request_log" \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
-</VirtualHost>                                  
+</VirtualHost>
