@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) Enforce http request grammer corresponding to RFC7230 for request lines
+     and request headers [William Rowe, Stefan Fritsch]
+
   *) core: New directive HttpProtocolOptions to control httpd enforcement
      of various RFC7230 requirements. [Stefan Fritsch, William Rowe]
 
