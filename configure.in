@@ -158,9 +158,7 @@ else
    ifdef([APR_FIND_APU], [
      APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 
                   1, ${apr_major_version})
-   ], [apu_found=no
-      AC_MSG_NOTICE([APR-util 1.x not supported with APR 1.x])
-      ])
+   ], [apu_found=no])
 fi
 
 if test "$apu_found" = "no"; then

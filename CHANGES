@@ -114,7 +114,6 @@ Changes with Apache 2.4.24
   *) mod_dav: Add support for childtags to dav_error.
      [Jari Urpalainen <jari.urpalainen nokia.com>]
 
->>>>>>> .merge-right.r1769587
   *) mod_proxy_fcgi: Fix 2.4.23 breakage for mod_rewrite per-dir and query 
      string showing up in SCRIPT_FILENAME. PR59815
 
