@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) core: Permit unencoded ';' characters to appear in proxy requests and
+     Location: response headers. Corresponds to modern browser behavior.
+     [William Rowe]
+
   *) core: ap_rgetline_core now pulls from r->proto_input_filters.
 
   *) core, http: Extend HttpProtocol with an option to enforce stricter HTTP

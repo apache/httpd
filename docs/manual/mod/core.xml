@@ -1239,12 +1239,11 @@ EnableSendfile On
 </directivesynopsis>
 
 <directivesynopsis>
-<name>HTTPProtocolOptions</name>
+<name>HttpProtocolOptions</name>
 <description>Modify restrictions on HTTP Request Messages</description>
-<syntax>HTTPProtocolOptions [Strict|Unsafe] [Allow0.9|Require1.0] 
-[StrictWhitespace|LenientWhitespace] [RegisteredMethods|LenientMethods]</syntax>
-<default>HTTPProtocolOptions Strict Allow0.9 LenientWhitespace 
-LenientMethods</default>
+<syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
+ [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>2.2.32 or 2.4.24 and later</compatibility>
@@ -1256,11 +1255,11 @@ LenientMethods</default>
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
       >RFC 7230 &sect;3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
-    custom user-agents which must be deperecated, an <code>Unsafe</code>
-    option has been added to revert to the legacy behavior. These rules are
-    applied prior to request processing, so must be configured at the global
-    or default (first) matching virtual host section, by interface and not
-    by name, to be honored.</p>
+    custom user-agents which must be deperecated, <code>Unsafe</code>
+    and <code>UnsafeURL</code> options have been added to revert to the legacy
+    behaviors. These rules are applied prior to request processing, so must be
+    configured at the global or default (first) matching virtual host section,
+    by IP/port interface and not by name, to be honored.</p>
 
     <p>Prior to the introduction of this directive, the Apache HTTP Server
     request message parsers were tolerant of a number of forms of input
@@ -1269,18 +1268,48 @@ LenientMethods</default>
       >RFC 7230 &sect;9.4 Request Splitting</a> and
     <a href="https://tools.ietf.org/html/rfc7230#section-9.5"
       >&sect;9.5 Response Smuggling</a> call out only two of the potential
-    risks of accepting non-conformant request messages. As of the introduction
-    of this directive, all grammer rules of the specification are enforced in
-    the default <code>Strict</code> operating mode.</p>
+    risks of accepting non-conformant request messages, while
+    <a href="https://tools.ietf.org/html/rfc7230#section-3.5"
+         >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" identify the
+    risks of accepting obscure whitespace and request message formatting. 
+    As of the introduction of this directive, all grammer rules of the
+    specification are enforced in the default <code>Strict</code> operating
+    mode, and the strict whitespace suggested by section 3.5 is enforced
+    and cannot be relaxed.</p>
 
+    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2"
+         >RFC 3986 &sect;2.2 and 2.3</a> define "Reserved Characters" and
+    "Unreserved Characters". All other character octets are required to
+    be %XX encoded under this spec, and RFC7230 defers to these requirements.
+    By default the <code>StrictURI</code> option will reject all requests 
+    containing invalid characters. This rule can be relaxed with the
+    <code>UnsafeURI</code> option to support badly written user-agents.</p>
+    
     <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
-    mode of operation for these reasons, most especially on outward-facing,
-    publicly accessible server deployments. Reviewing the messages within the
-    <directive>ErrorLog</directive>, configured with
-    <directive>LogLevel</directive> <code>info</code> level or below,
+    or <code>UnsafeURI</code> modes of operation, particularly on
+    outward-facing, publicly accessible server deployments.
+    If an interface is required for faulty monitoring or other custom service
+    consumers running on an intranet, users should toggle only those Unsafe
+    options which are necessary, and only on a specific virtual host configured
+    to service only their internal private network.</p>
+
+    <p>Reviewing the messages logged to the <directive>ErrorLog</directive>,
+    configured with <directive>LogLevel</directive> <code>debug</code> level,
     can help identify such faulty requests along with their origin.
-    Users should pay particular attention to any 400 responses in the access
-    log for indiciations that valid requests are unexpectedly rejected.</p>
+    Users should pay particular attention to the 400 responses in the access
+    log for invalid requests which were unexpectedly rejected.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1"
+         >RFC 7231 &sect;4.1</a> "Request Methods" "Overview" requires that
+    origin servers shall respond with an error when an unsupported method
+    is encountered in the request line. This already happens when the
+    <code>LenientMethods</code> option is used, but administrators may wish
+    to toggle the <code>RegisteredMethods</code> option and register any
+    non-standard methods using the <directive>RegisterHttpMethod</directive>
+    directive, particularly if the <code>Unsafe</code> option has been toggled.
+    The <code>RegisteredMethods</code> option should <strong>not</strong>
+    be toggled for forward proxy hosts, as the methods supported by the
+    origin servers are unknown to the proxy server.</p>
 
     <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6"
          >RFC 2616 &sect;19.6</a> "Compatibility With Previous Versions" had
@@ -1288,34 +1317,9 @@ LenientMethods</default>
     superceeds this with "The expectation to support HTTP/0.9 requests has
     been removed" and offers additional comments in 
     <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
-      >RFC 2616 Appendix A</a>. The <code>Require1.0</code> option allows
+      >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
     the user to remove support of the default <code>Allow0.9</code> option's
     behavior.</p>
-
-    <p><a href="https://tools.ietf.org/html/rfc7230#section-3.5"
-         >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" permits, and
-    identifies potential risks of parsing messages containing non-space
-    character whitespace. While the spec defines that exactly one space
-    seperates the URI from the method, and the protocol from the URI, the
-    Apache HTTP Server has traditionally been lenient in accepting other
-    whitespace including one or more horizontal-tab or space characters.
-    The default <code>LenientWhitespace</code> continues to accept such
-    requests from non-conforming user-agents, but the administrator may toggle
-    the <code>StrictWhitespace</code> option to insist on precisely two spaces
-    in the request line. Other whitespace including vertical-tab, form-feed,
-    and carriage-return characters are rejected and cannot be supported.</p>
-
-    <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1"
-         >RFC 7231 &sect;4.1</a> "Request Methods" "Overview" requires that
-    origin servers shall respond with an error when an unsupported method
-    is encountered in the request line. This already happens when the
-    <code>LenientMethods</code> option is used, but administrators may wish
-    to toggle the <code>RegisteredMethods</code> option and register all
-    permitted method tokens using the <directive>RegisterHttpMethod</directive>
-    directive, particularly if the <code>Unsafe</code> option has been toggled.
-    The <code>RegisteredMethods</code> option should <strong>not</strong>
-    be toggled for forward proxy hosts, as the methods supported by the
-    origin servers are unknown to the proxy server.</p>
 </usage>
 </directivesynopsis>
 

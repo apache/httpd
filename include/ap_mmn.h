@@ -487,12 +487,12 @@
  * 20120211.65 (2.4.24-dev) Add ap_check_pipeline().
  * 20120211.66 (2.4.24-dev) Rename ap_proxy_check_backend() to
  *                          ap_proxy_check_connection().
- * 20120211.67 (2.5.0-dev)  Add http09_enable to core_server_config
- *                          Add http_conformance to core_server_config
+ * 20120211.67 (2.4.24-dev) Add http09_enable, http_conformance, and
+ *                          http_methods to core_server_config
  *                          Add ap_has_cntrl(), ap_get_http_token()
  *                          Add ap_scan_http_field_[content|token]()
- *                          Added http_whitespace and http_methods to
- *                          core_server_config
+ *                          Replaced fold boolean with with multiple bit flags
+ *                          to ap_[r]getline()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

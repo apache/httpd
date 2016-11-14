@@ -1633,6 +1633,16 @@ AP_DECLARE(char *) ap_get_http_token(apr_pool_t *p, const char **ptr)
     return tok;
 }
 
+/* Scan a string for valid URI characters per RFC3986, and 
+ * return a pointer to the first non-URI character encountered.
+ */
+AP_DECLARE(const char *) ap_scan_http_uri_safe(const char *ptr)
+{
+    for ( ; TEST_CHAR(*ptr, T_URI_RFC3986); ++ptr) ;
+
+    return ptr;
+}
+
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas; and can also be delimited
