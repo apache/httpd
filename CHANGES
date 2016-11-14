@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
+     behavior in a routine that sends <DAV:response>'s to the output filters.
+     [Evgeny Kotkov]
+
   *) mod_http2: new directive 'H2PushResource' to enable early pushes before 
      processing of the main request starts. Resources are announced to the 
      client in Link headers on a 103 early hint response. 
