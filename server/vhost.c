@@ -751,8 +751,7 @@ static apr_status_t fix_hostname_non_v6(request_rec *r, char *host)
  * If strict mode ever becomes the default, this should be folded into
  * fix_hostname_non_v6()
  */
-static apr_status_t strict_hostname_check(request_rec *r, char *host,
-                                          int logonly)
+static apr_status_t strict_hostname_check(request_rec *r, char *host)
 {
     char *ch;
     int is_dotted_decimal = 1, leading_zeroes = 0, dots = 0;
@@ -795,8 +794,6 @@ bad:
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02415)
                   "[strict] Invalid host name '%s'%s%.6s",
                   host, *ch ? ", problem near: " : "", ch);
-    if (logonly)
-        return APR_SUCCESS;
     return APR_EINVAL;
 }
 
@@ -822,8 +819,7 @@ static int fix_hostname(request_rec *r, const char *host_header,
     apr_status_t rv;
     const char *c;
     int is_v6literal = 0;
-    int strict = http_conformance & AP_HTTP_CONFORMANCE_STRICT;
-    int strict_logonly = http_conformance & AP_HTTP_CONFORMANCE_LOGONLY;
+    int strict = (http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
 
     src = host_header ? host_header : r->hostname;
 
@@ -843,8 +839,7 @@ static int fix_hostname(request_rec *r, const char *host_header,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02416)
                          "[strict] purely numeric host names not allowed: %s",
                          src);
-            if (!strict_logonly)
-                goto bad_nolog;
+            goto bad_nolog;
         }
         r->hostname = src;
         return is_v6literal;
@@ -882,7 +877,7 @@ static int fix_hostname(request_rec *r, const char *host_header,
     else {
         rv = fix_hostname_non_v6(r, host);
         if (strict && rv == APR_SUCCESS)
-            rv = strict_hostname_check(r, host, strict_logonly);
+            rv = strict_hostname_check(r, host);
     }
     if (rv != APR_SUCCESS)
         goto bad;
@@ -1162,7 +1157,7 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
     if (r->status != HTTP_OK)
         return;
 
-    if (conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) {
+    if (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE) {
         /*
          * If we have both hostname from an absoluteURI and a Host header,
          * we must ignore the Host header (RFC 2616 5.2).
@@ -1172,10 +1167,8 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
         if (have_hostname_from_url && host_header != NULL) {
             const char *info = "Would replace";
             const char *new = construct_host_header(r, is_v6literal);
-            if (!(conf->http_conformance & AP_HTTP_CONFORMANCE_LOGONLY)) {
-                apr_table_set(r->headers_in, "Host", r->hostname);
-                info = "Replacing";
-            }
+            apr_table_set(r->headers_in, "Host", r->hostname);
+            info = "Replacing";
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02417)
                           "%s Host header '%s' with host from request uri: "
                           "'%s'", info, host_header, new);

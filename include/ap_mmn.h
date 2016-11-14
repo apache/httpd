@@ -491,6 +491,8 @@
  *                          Add http_conformance to core_server_config
  *                          Add ap_has_cntrl(), ap_get_http_token()
  *                          Add ap_scan_http_field_[content|token]()
+ *                          Added http_whitespace and http_methods to
+ *                          core_server_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

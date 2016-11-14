@@ -525,6 +525,12 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
         conf->http_conformance = virt->http_conformance;
 
+    if (virt->http_whitespace != AP_HTTP_WHITESPACE_UNSET)
+        conf->http_whitespace = virt->http_whitespace;
+
+    if (virt->http_methods != AP_HTTP_METHODS_UNSET)
+        conf->http_methods = virt->http_methods;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -3901,38 +3907,53 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_http_protocol(cmd_parms *cmd, void *dummy,
-                                     const char *arg)
+static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
 {
     core_server_config *conf =
         ap_get_core_module_config(cmd->server->module_config);
 
-    if (strncmp(arg, "min=", 4) == 0) {
-        arg += 4;
-        if (strcmp(arg, "0.9") == 0)
-            conf->http09_enable = AP_HTTP09_ENABLE;
-        else if (strcmp(arg, "1.0") == 0)
-            conf->http09_enable = AP_HTTP09_DISABLE;
-        else
-            return "HttpProtocol 'min' must be one of '0.9' and '1.0'";
-        return NULL;
-    }
-
-    if (strcmp(arg, "strict") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT;
-    else if (strcmp(arg, "strict,log-only") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_STRICT|
-                                 AP_HTTP_CONFORMANCE_LOGONLY;
-    else if (strcmp(arg, "liberal") == 0)
-        conf->http_conformance = AP_HTTP_CONFORMANCE_LIBERAL;
+    if (strcasecmp(arg, "allow0.9") == 0)
+        conf->http09_enable |= AP_HTTP09_ENABLE;
+    else if (strcasecmp(arg, "require1.0") == 0)
+        conf->http09_enable |= AP_HTTP09_DISABLE;
+    else if (strcasecmp(arg, "strict") == 0)
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_STRICT;
+    else if (strcasecmp(arg, "unsafe") == 0)
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
+    else if (strcasecmp(arg, "strictwhitespace") == 0)
+        conf->http_whitespace |= AP_HTTP_WHITESPACE_STRICT;
+    else if (strcasecmp(arg, "lenientwhitespace") == 0)
+        conf->http_whitespace |= AP_HTTP_WHITESPACE_LENIENT;
+    else if (strcasecmp(arg, "registeredmethods") == 0)
+        conf->http_methods |= AP_HTTP_METHODS_REGISTERED;
+    else if (strcasecmp(arg, "lenientmethods") == 0)
+        conf->http_methods |= AP_HTTP_METHODS_LENIENT;
     else
-        return "HttpProtocol accepts 'min=0.9', 'min=1.0', 'liberal', "
-               "'strict', 'strict,log-only'";
+        return "HttpProtocolOptions accepts 'Allow0.9' (default) or "
+               "'Require1.0', 'Unsafe' or 'Strict' (default), "
+               "'StrictWhitespace' or 'LenientWhitespace (default), and "
+               "'RegisteredMethods' or 'LenientMethods (default)";
 
-    if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT) &&
-        (conf->http_conformance & AP_HTTP_CONFORMANCE_LIBERAL)) {
-        return "HttpProtocol 'strict' and 'liberal' are mutually exclusive";
-    }
+    if ((conf->http09_enable & AP_HTTP09_ENABLE)
+            && (conf->http09_enable & AP_HTTP09_DISABLE))
+        return "HttpProtocolOptions 'Allow0.9' and 'Require1.0'"
+               " are mutually exclusive";
+
+    if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)
+            && (conf->http_conformance & AP_HTTP_CONFORMANCE_UNSAFE))
+        return "HttpProtocolOptions 'Strict' and 'Unsafe'"
+               " are mutually exclusive";
+
+    if ((conf->http_whitespace & AP_HTTP_WHITESPACE_STRICT)
+            && (conf->http_whitespace & AP_HTTP_WHITESPACE_LENIENT))
+        return "HttpProtocolOptions 'StrictWhitespace' and 'LenientWhitespace'"
+               " are mutually exclusive";
+
+    if ((conf->http_methods & AP_HTTP_METHODS_REGISTERED)
+            && (conf->http_methods & AP_HTTP_METHODS_LENIENT))
+        return "HttpProtocolOptions 'RegisteredMethods' and 'LenientMethods'"
+               " are mutually exclusive";
 
     return NULL;
 }
@@ -4470,9 +4491,9 @@ AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
 AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "'off' (default) or 'on' to respect given order of protocols, "
               "by default the client specified order determines selection"),
-AP_INIT_ITERATE("HttpProtocol", set_http_protocol, NULL, RSRC_CONF,
-              "'min=0.9' (default) or 'min=1.0' to allow/deny HTTP/0.9; "
-              "'liberal', 'strict', 'strict,log-only'"),
+AP_INIT_ITERATE("HttpProtocolOptions", set_http_protocol_options, NULL, RSRC_CONF,
+              "'Allow0.9' or 'Require1.0' (default) to allow or deny HTTP/0.9; "
+              "'Unsafe' or 'Strict' (default) to process incorrect requests"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
 { NULL }
