@@ -123,6 +123,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch:  trunk works modulo CHANGES
      +1:  covener, jim, jchampion
 
+  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
+     trunk patch: http://svn.apache.org/r1769332
+     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
+     +1: jchampion, rpluem, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -229,11 +234,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jchampion, rpluem
 
-  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
-     trunk patch: http://svn.apache.org/r1769332
-     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
-     +1: jchampion, rpluem
-
+  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
+     to relax or further constrain some behaviors.
+     trunk patches: too numerous to list, see 
+       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+     2.4.x patch: see
+       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+     +1: wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
