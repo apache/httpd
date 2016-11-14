@@ -577,8 +577,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     } deferred_error = rrl_none;
     char *ll;
     char *uri;
-    unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    char http[5];
     apr_size_t len;
     int num_blank_lines = DEFAULT_LIMIT_BLANK_LINES;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
@@ -670,7 +668,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         deferred_error = rrl_excesswhitespace; 
     }
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (strchr(badwhitespace, *uri) && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *uri) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
     if (!*uri && deferred_error == rrl_none)
@@ -682,8 +680,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         goto rrl_done;
     }
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (strchr(badwhitespace, *r->protocol) && deferred_error == rrl_none
-                && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *r->protocol) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
     if (!(ll = strpbrk(r->protocol, " \t\n\v\f\r"))) {
@@ -694,7 +691,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     if (strictspaces && *ll)
         deferred_error = rrl_excesswhitespace; 
     for ( ; apr_isspace(*ll); ++ll)
-        if (strchr(badwhitespace, *ll) && deferred_error == rrl_none)
+        if (ap_strchr_c(badwhitespace, *ll) && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     if (*ll && deferred_error == rrl_none)
         deferred_error = rrl_trailingtext;
@@ -881,6 +878,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
     char *tmp_field;
     core_server_config *conf = ap_get_core_module_config(r->server->module_config);
     int strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
+    int strictspaces = (conf->http_whitespace == AP_HTTP_WHITESPACE_STRICT);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -993,7 +991,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             }
             memcpy(last_field + last_len, field, len +1); /* +1 for nul */
             /* Replace obs-fold w/ SP per RFC 7230 3.2.4 */
-            if (strict) {
+            if (strict || strictspaces) {
                 last_field[last_len] = ' ';
             }
             last_len += len;
@@ -1022,8 +1020,22 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 return;
             }
 
-            if (!strict) {
+            if (!strict)
+            {
                 /* Not Strict ('Unsafe' mode), using the legacy parser */
+
+                if (strictspaces && strpbrk(last_field, "\n\v\f\r")) {
+                    r->status = HTTP_BAD_REQUEST;
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03451)
+                                  "Request header presented bad whitespace "
+                                  "(disallowed by StrictWhitespace)");
+                    return;
+                }
+                else {
+                    char *ll = last_field;
+                    while ((ll = strpbrk(ll, "\n\v\f\r")))
+                        *(ll++) = ' ';
+                }
 
                 if (!(value = strchr(last_field, ':'))) { /* Find ':' or */
                     r->status = HTTP_BAD_REQUEST;   /* abort bad request */
@@ -1034,9 +1046,18 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     return;
                 }
 
-                tmp_field = value - 1; /* last character of field-name */
+                /* last character of field-name */
+                tmp_field = value - (value > last_field ? 1 : 0);
 
                 *value++ = '\0'; /* NUL-terminate at colon */
+
+                if (strictspaces && strpbrk(last_field, " \t")) {
+                    r->status = HTTP_BAD_REQUEST;
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03452)
+                                  "Request header field name with whitespace "
+                                  "(disallowed by StrictWhitespace)");
+                    return;
+                }
 
                 while (*value == ' ' || *value == '\t') {
                      ++value;            /* Skip to start of value   */
@@ -1045,7 +1066,14 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 /* Strip LWS after field-name: */
                 while (tmp_field > last_field
                            && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
+                    *(tmp_field--) = '\0';
+                }
+
+                if (tmp_field == last_field) {
+                    r->status = HTTP_BAD_REQUEST;
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(03453)
+                                  "Request header field name was empty");
+                    return;
                 }
             }
             else /* Using strict RFC7230 parsing */
