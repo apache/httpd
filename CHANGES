@@ -172,6 +172,9 @@ Changes with Apache 2.4.22
 
 Changes with Apache 2.4.21
 
+  *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
+     [Yann Ylavic]
+
   *) mod_http2: more rigid error handling in DATA frame assembly, leading
      to deterministic connection errors if assembly fails.
      [Stefan Eissing, Pal Nilsen <https://github.com/maedox>]
