@@ -79,7 +79,7 @@
  * char in here and get it to work, because if char is signed then it
  * will first be sign extended.
  */
-#define TEST_CHAR(c, f)        (test_char_table[(unsigned)(c)] & (f))
+#define TEST_CHAR(c, f)        (test_char_table[(unsigned char)(c)] & (f))
 
 /* Win32/NetWare/OS2 need to check for both forward and back slashes
  * in ap_getparents() and ap_escape_url.
@@ -1525,7 +1525,7 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
     while (!string_end) {
         const unsigned char c = (unsigned char)*cur;
 
-        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP) && c != '\0') {
+        if (!TEST_CHAR(c, T_HTTP_TOKEN_STOP)) {
             /* Non-separator character; we are finished with leading
              * whitespace. We must never have encountered any trailing
              * whitespace before the delimiter (comma) */
@@ -1591,6 +1591,46 @@ AP_DECLARE(const char *) ap_parse_token_list_strict(apr_pool_t *p,
     }
 
     return NULL;
+}
+
+/* Scan a string for HTTP VCHAR/obs-text characters including HT and SP
+ * (as used in header values, for example, in RFC 7230 section 3.2)
+ * returning the pointer to the first non-HT ASCII ctrl character.
+ */
+AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr)
+{
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_CTRLS); ++ptr) ;
+
+    return ptr;
+}
+
+/* Scan a string for HTTP token characters, returning the pointer to
+ * the first non-token character.
+ */
+AP_DECLARE(const char *) ap_scan_http_token(const char *ptr)
+{
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_TOKEN_STOP); ++ptr) ;
+
+    return ptr;
+}
+
+/* Retrieve a token, advancing the pointer to the first non-token character
+ * and returning a copy of the token string.
+ * The caller must handle whitespace and determine the meaning of the
+ * terminating character. Returns NULL if the character at **ptr is not
+ * a valid token character.
+ */
+AP_DECLARE(char *) ap_get_http_token(apr_pool_t *p, const char **ptr)
+{
+    const char *tok_end = ap_scan_http_token(*ptr);
+    char *tok;
+
+    if (tok_end == *ptr)
+        return NULL;
+
+    tok = apr_pstrmemdup(p, *ptr, tok_end - *ptr);
+    *ptr = tok_end;
+    return tok;
 }
 
 /* Retrieve a token, spacing over it and returning a pointer to

@@ -1585,6 +1585,31 @@ AP_DECLARE(int) ap_find_etag_weak(apr_pool_t *p, const char *line, const char *t
  */
 AP_DECLARE(int) ap_find_etag_strong(apr_pool_t *p, const char *line, const char *tok);
 
+/* Scan a string for field content chars, as defined by RFC7230 section 3.2
+ * including VCHAR/obs-text, as well as HT and SP
+ * @param ptr The string to scan
+ * @return A pointer to the first (non-HT) ASCII ctrl character.
+ * @note lws and trailing whitespace are scanned, the caller is responsible
+ * for trimming leading and trailing whitespace
+ */
+AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr);
+
+/* Scan a string for token characters, as defined by RFC7230 section 3.2.6 
+ * @param ptr The string to scan
+ * @return A pointer to the first non-token character.
+ */
+AP_DECLARE(const char *) ap_scan_http_token(const char *ptr);
+
+/* Retrieve a token, advancing the pointer to the first non-token character
+ * and returning a copy of the token string.
+ * @param ptr The string to scan. On return, this points to the first non-token
+ *  character encountered, or NULL if *ptr was not a token character
+ * @return A copy of the token string
+ * @note The caller must handle leading and trailing whitespace as applicable
+ *  and evaluate the terminating character.
+ */
+AP_DECLARE(char *) ap_get_http_token(apr_pool_t *p, const char **ptr);
+
 /**
  * Retrieve an array of tokens in the format "1#token" defined in RFC2616. Only
  * accepts ',' as a delimiter, does not accept quoted strings, and errors on
