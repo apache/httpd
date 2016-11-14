@@ -403,9 +403,9 @@ static int stream_response_data(nghttp2_session *ngh2, uint8_t flags,
     
     status = ap_pass_brigade(stream->r->output_filters, stream->output);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, stream->r, APLOGNO(03359)
-                  "h2_proxy_session(%s): stream=%d, response DATA %ld, %"
-                  APR_OFF_T_FMT " total", session->id, stream_id, (long)len,
-                  stream->data_received);
+                  "h2_proxy_session(%s): stream=%d, response DATA %ld, %ld"
+                  " total", session->id, stream_id, (long)len,
+                  (long)stream->data_received);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, session->c, APLOGNO(03344)
                       "h2_proxy_session(%s): passing output on stream %d", 
@@ -537,9 +537,9 @@ static ssize_t stream_request_data(nghttp2_session *ngh2, int32_t stream_id,
 
         stream->data_sent += readlen;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, stream->r, APLOGNO(03468) 
-                      "h2_proxy_stream(%d): request DATA %ld, %"
-                      APR_OFF_T_FMT" total, flags=%d", 
-                      stream->id, (long)readlen, stream->data_sent,
+                      "h2_proxy_stream(%d): request DATA %ld, %ld"
+                      " total, flags=%d", 
+                      stream->id, (long)readlen, (long)stream->data_sent,
                       (int)*data_flags);
         return readlen;
     }

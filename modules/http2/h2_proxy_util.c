@@ -794,9 +794,9 @@ static int skip_ws(link_ctx *ctx)
     return (ctx->i < ctx->slen);
 }
 
-static int find_chr(link_ctx *ctx, char c, size_t *pidx)
+static int find_chr(link_ctx *ctx, char c, int *pidx)
 {
-    size_t j;
+    int j;
     for (j = ctx->i; j < ctx->slen; ++j) {
         if (ctx->s[j] == c) {
             *pidx = j;
@@ -818,7 +818,7 @@ static int read_chr(link_ctx *ctx, char c)
 static int skip_qstring(link_ctx *ctx)
 {
     if (skip_ws(ctx) && read_chr(ctx, '\"')) {
-        size_t end;
+        int end;
         if (find_chr(ctx, '\"', &end)) {
             ctx->i = end + 1;
             return 1;
@@ -830,7 +830,7 @@ static int skip_qstring(link_ctx *ctx)
 static int skip_ptoken(link_ctx *ctx)
 {
     if (skip_ws(ctx)) {
-        size_t i;
+        int i;
         for (i = ctx->i; i < ctx->slen && ptoken_char(ctx->s[i]); ++i) {
             /* nop */
         }
@@ -847,7 +847,7 @@ static int read_link(link_ctx *ctx)
 {
     ctx->link_start = ctx->link_end = 0;
     if (skip_ws(ctx) && read_chr(ctx, '<')) {
-        size_t end;
+        int end;
         if (find_chr(ctx, '>', &end)) {
             ctx->link_start = ctx->i;
             ctx->link_end = end;
@@ -909,7 +909,7 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
     char *p;
     
     olen = end - start;
-    nlen = strlen(ns);
+    nlen = (int)strlen(ns);
     delta = nlen - olen;
     plen = ctx->slen + delta + 1;
     p = apr_pcalloc(ctx->pool, plen);
@@ -917,7 +917,7 @@ static size_t subst_str(link_ctx *ctx, int start, int end, const char *ns)
     strncpy(p + start, ns, nlen);
     strcpy(p + start + nlen, ctx->s + end);
     ctx->s = p;
-    ctx->slen = strlen(p);
+    ctx->slen = (int)strlen(p);
     if (ctx->i >= end) {
         ctx->i += delta;
     }
@@ -970,7 +970,7 @@ static void map_link(link_ctx *ctx)
             if (prepend_p_server) {
                 if (ctx->server_uri == NULL) {
                     ctx->server_uri = ap_construct_url(ctx->pool, "", ctx->r);
-                    ctx->su_len = strlen(ctx->server_uri);
+                    ctx->su_len = (int)strlen(ctx->server_uri);
                 }
                 if (!strncmp(mapped, ctx->server_uri, ctx->su_len)) {
                     mapped += ctx->su_len;
@@ -1035,11 +1035,11 @@ const char *h2_proxy_link_reverse_map(request_rec *r,
     ctx.pool = r->pool;
     ctx.conf = conf;
     ctx.real_backend_uri = real_backend_uri;
-    ctx.rbu_len = strlen(ctx.real_backend_uri);
+    ctx.rbu_len = (int)strlen(ctx.real_backend_uri);
     ctx.p_server_uri = proxy_server_uri;
-    ctx.psu_len = strlen(ctx.p_server_uri);
+    ctx.psu_len = (int)strlen(ctx.p_server_uri);
     ctx.s = s;
-    ctx.slen = strlen(s);
+    ctx.slen = (int)strlen(s);
     while (read_link(&ctx)) {
         while (skip_param(&ctx)) {
             /* nop */
