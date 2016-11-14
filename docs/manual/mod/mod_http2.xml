@@ -933,5 +933,43 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2PushResource</name>
+        <description>Declares resources for early pushing to the client</description>
+        <syntax>H2PushResource [add] path [critical]</syntax>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+            <context>directory</context>
+            <context>.htaccess</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.24 and later.</compatibility>
+        
+        <usage>
+            <p>
+                When added to a directory/location HTTP/2 PUSHes will be attempted
+                for all paths added via this directive. This directive can be used
+                several times for the same location.
+            </p>
+            <p>
+                This directive pushes resources much earlier than adding 
+                <code>Link</code> headers via <module>mod_headers</module>.
+                <module>mod_http2</module> announces these resources in a
+                <code>103 Early Hints</code> interim response to the client.
+                That means that clients not supporting PUSH will still get
+                early preload hints.
+            </p>
+            <p>
+                In contrast to setting <code>Link</code> response headers 
+                via <module>mod_headers</module>, this directive will only
+                take effect on HTTP/2 connections. 
+            </p>
+            <p>
+                By adding <code>critical</code> to such a resource, the server
+                will give processing it more preference and send its data, once
+                available, before the data from the main request.
+            </p>
+        </usage>
+    </directivesynopsis>
     
 </modulesynopsis>

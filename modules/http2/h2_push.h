@@ -25,6 +25,7 @@ struct h2_stream;
 
 typedef struct h2_push {
     const struct h2_request *req;
+    h2_priority *priority;
 } h2_push;
 
 typedef enum {
