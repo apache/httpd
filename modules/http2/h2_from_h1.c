@@ -615,8 +615,8 @@ static void make_chunk(h2_task *task, apr_bucket_brigade *bb,
     }
     task->input.chunked_total += chunk_len;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c,
-                  "h2_task(%s): added chunk %"APR_OFF_T_FMT", total %"
-                  APR_OFF_T_FMT, task->id, chunk_len, task->input.chunked_total);
+                  "h2_task(%s): added chunk %ld, total %ld", 
+                  task->id, (long)chunk_len, (long)task->input.chunked_total);
 }
 
 static int ser_header(void *ctx, const char *name, const char *value) 

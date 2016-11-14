@@ -62,6 +62,7 @@ static h2_config defconf = {
     NULL,                   /* map of content-type to priorities */
     256,                    /* push diary size */
     0,                      /* copy files across threads */
+    NULL                    /* push list */
 };
 
 void h2_config_init(apr_pool_t *pool)
