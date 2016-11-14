@@ -525,9 +525,6 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
         conf->http_conformance = virt->http_conformance;
 
-    if (virt->http_stricturi != AP_HTTP_URI_UNSET)
-        conf->http_stricturi = virt->http_stricturi;
-
     if (virt->http_methods != AP_HTTP_METHODS_UNSET)
         conf->http_methods = virt->http_methods;
 
@@ -3921,10 +3918,6 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
         conf->http_conformance |= AP_HTTP_CONFORMANCE_STRICT;
     else if (strcasecmp(arg, "unsafe") == 0)
         conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
-    else if (strcasecmp(arg, "stricturi") == 0)
-        conf->http_stricturi |= AP_HTTP_URI_STRICT;
-    else if (strcasecmp(arg, "unsafeuri") == 0)
-        conf->http_stricturi |= AP_HTTP_URI_UNSAFE;
     else if (strcasecmp(arg, "registeredmethods") == 0)
         conf->http_methods |= AP_HTTP_METHODS_REGISTERED;
     else if (strcasecmp(arg, "lenientmethods") == 0)
@@ -3932,18 +3925,12 @@ static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
     else
         return "HttpProtocolOptions accepts "
                "'Unsafe' or 'Strict' (default), "
-               "'UnsafeURI' or 'StrictURI' (default), "
                "'RegisteredMethods' or 'LenientMethods' (default), and "
                "'Require1.0' or 'Allow0.9' (default)";
 
     if ((conf->http09_enable & AP_HTTP09_ENABLE)
             && (conf->http09_enable & AP_HTTP09_DISABLE))
         return "HttpProtocolOptions 'Allow0.9' and 'Require1.0'"
-               " are mutually exclusive";
-
-    if ((conf->http_stricturi & AP_HTTP_URI_STRICT)
-            && (conf->http_stricturi & AP_HTTP_URI_UNSAFE))
-        return "HttpProtocolOptions 'StrictURI' and 'UnsafeURI'"
                " are mutually exclusive";
 
     if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)
@@ -4493,8 +4480,9 @@ AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "'off' (default) or 'on' to respect given order of protocols, "
               "by default the client specified order determines selection"),
 AP_INIT_ITERATE("HttpProtocolOptions", set_http_protocol_options, NULL, RSRC_CONF,
-              "'Allow0.9' or 'Require1.0' (default) to allow or deny HTTP/0.9; "
-              "'Unsafe' or 'Strict' (default) to process incorrect requests"),
+                "'Allow0.9' or 'Require1.0' (default); "
+                "'RegisteredMethods' or 'LenientMethods' (default); "
+                "'Unsafe' or 'Strict' (default). Sets HTTP acceptance rules"),
 AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
                 "Registers non-standard HTTP methods"),
 { NULL }

@@ -489,8 +489,9 @@
  *                          ap_proxy_check_connection().
  * 20120211.67 (2.4.24-dev) Add http09_enable, http_conformance, and
  *                          http_methods to core_server_config
- *                          Add ap_has_cntrl(), ap_get_http_token()
- *                          Add ap_scan_http_field_[content|token]()
+ *                          Add ap_scan_http_field_token(),
+ *                          ap_scan_http_field_content(),
+ *                          and ap_scan_vchar_obstext()
  *                          Replaced fold boolean with with multiple bit flags
  *                          to ap_[r]getline()
  */

@@ -741,11 +741,6 @@ typedef struct {
 #define AP_HTTP_METHODS_REGISTERED    2
     char http_methods;
 
-#define AP_HTTP_URI_UNSET             0
-#define AP_HTTP_URI_UNSAFE            1
-#define AP_HTTP_URI_STRICT            2
-    char http_stricturi;
-
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */

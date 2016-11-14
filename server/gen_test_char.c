@@ -53,7 +53,7 @@
 #define T_ESCAPE_FORENSIC     (0x20)
 #define T_ESCAPE_URLENCODED   (0x40)
 #define T_HTTP_CTRLS          (0x80)
-#define T_URI_RFC3986        (0x100)
+#define T_VCHAR_OBSTEXT      (0x100)
 
 int main(int argc, char *argv[])
 {
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
            "#define T_ESCAPE_FORENSIC      (%u)\n"
            "#define T_ESCAPE_URLENCODED    (%u)\n"
            "#define T_HTTP_CTRLS           (%u)\n"
-           "#define T_URI_RFC3986          (%u)\n"
+           "#define T_VCHAR_OBSTEXT        (%u)\n"
            "\n"
            "static const unsigned short test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
            T_ESCAPE_FORENSIC,
            T_ESCAPE_URLENCODED,
            T_HTTP_CTRLS,
-           T_URI_RFC3986);
+           T_VCHAR_OBSTEXT);
 
     for (c = 0; c < 256; ++c) {
         flags = 0;
@@ -143,11 +143,8 @@ int main(int argc, char *argv[])
          * and unreserved (2.3) that are possible somewhere within a URI.
          * Spec requires all others to be %XX encoded, including obs-text.
          */
-        if (c && (strchr("%"                              /* pct-encode */
-                         ":/?#[]@"                        /* gen-delims */ 
-                         "!$&'()*+,;="                    /* sub-delims */
-                         "-._~", c) || apr_isalnum(c))) { /* unreserved */
-            flags |= T_URI_RFC3986;
+        if (c && !apr_iscntrl(c) && c != ' ') {
+            flags |= T_VCHAR_OBSTEXT;
         }
 
         /* For logging, escape all control characters,

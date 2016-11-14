@@ -1241,9 +1241,9 @@ EnableSendfile On
 <directivesynopsis>
 <name>HttpProtocolOptions</name>
 <description>Modify restrictions on HTTP Request Messages</description>
-<syntax>HttpProtocolOptions [Strict|Unsafe] [StrictURL|UnsafeURL]
- [RegisteredMethods|LenientMethods] [Allow0.9|Require1.0]</syntax>
-<default>HttpProtocolOptions Strict StrictURL LenientMethods Allow0.9</default>
+<syntax>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict LenientMethods Allow0.9</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>2.2.32 or 2.4.24 and later</compatibility>
@@ -1255,11 +1255,11 @@ EnableSendfile On
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
       >RFC 7230 &sect;3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
-    custom user-agents which must be deperecated, <code>Unsafe</code>
-    and <code>UnsafeURL</code> options have been added to revert to the legacy
-    behaviors. These rules are applied prior to request processing, so must be
-    configured at the global or default (first) matching virtual host section,
-    by IP/port interface and not by name, to be honored.</p>
+    custom user-agents which must be deperecated the <code>Unsafe</code>
+    option has been added to revert to the legacy behaviors. These rules
+    are applied prior to request processing, so must be configured at the
+    global or default (first) matching virtual host section, by IP/port
+    interface (and not by name) to be honored.</p>
 
     <p>Prior to the introduction of this directive, the Apache HTTP Server
     request message parsers were tolerant of a number of forms of input
@@ -1277,21 +1277,12 @@ EnableSendfile On
     mode, and the strict whitespace suggested by section 3.5 is enforced
     and cannot be relaxed.</p>
 
-    <p><a href="https://tools.ietf.org/html/rfc3986#section-2.2"
-         >RFC 3986 &sect;2.2 and 2.3</a> define "Reserved Characters" and
-    "Unreserved Characters". All other character octets are required to
-    be %XX encoded under this spec, and RFC7230 defers to these requirements.
-    By default the <code>StrictURI</code> option will reject all requests 
-    containing invalid characters. This rule can be relaxed with the
-    <code>UnsafeURI</code> option to support badly written user-agents.</p>
-    
     <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
-    or <code>UnsafeURI</code> modes of operation, particularly on
-    outward-facing, publicly accessible server deployments.
-    If an interface is required for faulty monitoring or other custom service
-    consumers running on an intranet, users should toggle only those Unsafe
-    options which are necessary, and only on a specific virtual host configured
-    to service only their internal private network.</p>
+    mode of operation, particularly on outward-facing, publicly accessible
+    server deployments.  If an interface is required for faulty monitoring
+    or other custom service consumers running on an intranet, users should
+    toggle the Unsafe option only on a specific virtual host configured
+    to service their internal private network.</p>
 
     <p>Reviewing the messages logged to the <directive>ErrorLog</directive>,
     configured with <directive>LogLevel</directive> <code>debug</code> level,
