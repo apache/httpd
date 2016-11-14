@@ -532,7 +532,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
         nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->signature->algorithm));
 #else
-        ASN1_OBJECT *paobj;
+        const ASN1_OBJECT *paobj;
         X509_ALGOR_get0(&paobj, NULL, NULL, X509_get0_tbs_sigalg(xs));
         nid = OBJ_obj2nid(paobj);
 #endif
