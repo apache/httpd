@@ -21,20 +21,22 @@
 #include "apr.h"
 #include "apu_version.h"
 
+#include "ap_socache.h"
+#include "ap_mpm.h"
+#include "http_log.h"
+#include "apr_strings.h"
+#include "mod_status.h"
+
+typedef struct {
+    apr_uint32_t ttl;
+    apr_uint32_t rwto;
+} socache_rd_svr_cfg;
+
 /* apr_redis support requires >= 1.6 */
 #if APU_MAJOR_VERSION > 1 || \
     (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 5)
 #define HAVE_APU_REDIS 1
 #endif
-
-#ifdef HAVE_APU_REDIS
-
-#include "ap_socache.h"
-#include "ap_mpm.h"
-#include "http_log.h"
-#include "apr_redis.h"
-#include "apr_strings.h"
-#include "mod_status.h"
 
 /* The underlying apr_redis system is thread safe.. */
 #define RD_KEY_LEN 254
@@ -62,11 +64,8 @@
 
 module AP_MODULE_DECLARE_DATA socache_redis_module;
 
-typedef struct {
-    apr_uint32_t ttl;
-    apr_uint32_t rwto;
-} socache_rd_svr_cfg;
-
+#ifdef HAVE_APU_REDIS
+#include "apr_redis.h"
 struct ap_socache_instance_t {
     const char *servers;
     apr_redis_t *rc;
