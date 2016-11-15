@@ -27,21 +27,20 @@
 
   <summary>
 
-    <p>Apache 2.x is a general-purpose webserver, designed to
+    <note type="warning"><title>Warning</title>
+      <p>This document is partially out of date and might be inaccurate.</p>
+    </note>
+
+    <p>Apache 2.4 is a general-purpose webserver, designed to
     provide a balance of flexibility, portability, and performance.
     Although it has not been designed specifically to set benchmark
-    records, Apache 2.x is capable of high performance in many
+    records, Apache 2.4 is capable of high performance in many
     real-world situations.</p>
 
-    <p>Compared to Apache 1.3, release 2.x contains many additional
-    optimizations to increase throughput and scalability. Most of
-    these improvements are enabled by default. However, there are
-    compile-time and run-time configuration choices that can
-    significantly affect performance. This document describes the
-    options that a server administrator can configure to tune the
-    performance of an Apache 2.x installation. Some of these
-    configuration options enable the httpd to better take advantage
-    of the capabilities of the hardware and OS, while others allow
+    <p>This document describes the options that a server administrator
+    can configure to tune the performance of an Apache 2.4 installation.
+    Some of these configuration options enable the httpd to better take
+    advantage of the capabilities of the hardware and OS, while others allow
     the administrator to trade functionality for speed.</p>
 
   </summary>
@@ -86,7 +85,7 @@
         needed to enable it. (With Linux, for example, this means
         using Linux 2.4 or later. For early releases of Solaris 8,
         you may need to apply a patch.) On systems where it is
-        available, <code>sendfile</code> enables Apache 2 to deliver
+        available, <code>sendfile</code> enables Apache to deliver
         static content faster and with lower CPU utilization.</p>
       </li>
     </ul>
@@ -123,15 +122,12 @@
 
       <p>Prior to Apache 1.3, <directive module="core"
       >HostnameLookups</directive> defaulted to <code>On</code>.
-      This adds latency to every request because it requires a
-      DNS lookup to complete before the request is finished. In
-      Apache 1.3 this setting defaults to <code>Off</code>. If you need
-      to have addresses in your log files resolved to hostnames, use the
-      <program>logresolve</program>
-      program that comes with Apache, or one of the numerous log
-      reporting packages which are available.</p>
-
-      <p>It is recommended that you do this sort of postprocessing of
+      causing an extra latency penalty for every request due to a
+      DNS lookup to complete before the request was finished.
+      In Apache 2.4 this setting defaults to <code>Off</code>. If you need
+      to have addresses in your log files resolved to hostnames, please
+      consider post-processing rather than forcing Apache to do it in the first
+      place. It is recommended that you do this sort of post-processing of
       your log files on some machine other than the production web
       server machine, in order that this activity not adversely affect
       server performance.</p>
@@ -143,8 +139,14 @@
       an IP address) then you will pay for
       two DNS lookups (a reverse, followed by a forward lookup
       to make sure that the reverse is not being spoofed). For best
-      performance, therefore, use IP addresses, rather than names, when
-      using these directives, if possible.</p>
+      performance, whenever it is possible, use IP addresses rather
+      than domain names.</p>
+
+      <note type="warning"><title>Warning:</title>
+      <p>Please use the <directive
+      module="mod_authz_core">Require</directive> directive with Apache 2.4;
+      more info in the related <a href="../upgrading.html">upgrading guide</a>.</p>
+      </note>
 
       <p>Note that it's possible to scope the directives, such as
       within a <code>&lt;Location "/server-status"&gt;</code> section.
@@ -153,7 +155,6 @@
       except for <code>.html</code> and <code>.cgi</code> files:</p>
 
       <highlight language="config">
-HostnameLookups off
 &lt;Files ~ "\.(html|cgi)$"&gt;
   HostnameLookups on
 &lt;/Files&gt;
@@ -345,67 +346,29 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     <section id="process">
 
-      <title>Process Creation</title>
+    <title>Recycle child processes</title>
 
-      <p>Prior to Apache 1.3 the <directive module="prefork"
-      >MinSpareServers</directive>, <directive module="prefork"
-      >MaxSpareServers</directive>, and <directive module="mpm_common"
-      >StartServers</directive> settings all had drastic effects on
-      benchmark results. In particular, Apache required a "ramp-up"
-      period in order to reach a number of children sufficient to serve
-      the load being applied. After the initial spawning of
-      <directive module="mpm_common">StartServers</directive> children,
-      only one child per second would be created to satisfy the
-      <directive module="prefork">MinSpareServers</directive>
-      setting. So a server being accessed by 100 simultaneous
-      clients, using the default <directive module="mpm_common"
-      >StartServers</directive> of <code>5</code> would take on
-      the order of 95 seconds to spawn enough children to handle
-      the load. This works fine in practice on real-life servers
-      because they aren't restarted frequently. But it does really
-      poorly on benchmarks which might only run for ten minutes.</p>
+    <p><directive module="mpm_common">MaxConnectionsPerChild</directive>
+    limits the numbers of connections that a child process can handle during
+    its lifetime (by default set to <code>0</code> - unlimited). This affects all
+    the <a href="../mpm.html#defaults">MPMs</a>, even the ones using threads.
+    For example, each process created by the <module>worker</module> MPM spawns
+    multiple threads that will handle connections, but this does not influence
+    the overall count. It only means that the sum of requests handled by all the
+    threads spawned by a single process will be counted against the
+    <directive module="mpm_common">MaxConnectionsPerChild</directive> value.</p>
 
-      <p>The one-per-second rule was implemented in an effort to
-      avoid swamping the machine with the startup of new children. If
-      the machine is busy spawning children, it can't service
-      requests. But it has such a drastic effect on the perceived
-      performance of Apache that it had to be replaced. As of Apache
-      1.3, the code will relax the one-per-second rule. It will spawn
-      one, wait a second, then spawn two, wait a second, then spawn
-      four, and it will continue exponentially until it is spawning
-      32 children per second. It will stop whenever it satisfies the
-      <directive module="prefork">MinSpareServers</directive>
-      setting.</p>
+    <p><directive module="mpm_common">MaxConnectionsPerChild</directive> should
+    not have any limit in the optimal use case, since there should not be any
+    reason to force a process kill other than software bugs causing memory leaks
+    or excessive CPU usage.</p>
 
-      <p>This appears to be responsive enough that it's almost
-      unnecessary to twiddle the <directive module="prefork"
-      >MinSpareServers</directive>, <directive module="prefork"
-      >MaxSpareServers</directive> and <directive module="mpm_common"
-      >StartServers</directive> knobs. When more than 4 children are
-      spawned per second, a message will be emitted to the
-      <directive module="core">ErrorLog</directive>. If you
-      see a lot of these errors, then consider tuning these settings.
-      Use the <module>mod_status</module> output as a guide.</p>
-
-    <p>Related to process creation is process death induced by the
-    <directive module="mpm_common">MaxConnectionsPerChild</directive>
-    setting. By default this is <code>0</code>,
-    which means that there is no limit to the number of connections
-    handled per child. If your configuration currently has this set
-    to some very low number, such as <code>30</code>, you may want to bump this
-    up significantly. If you are running SunOS or an old version of
-    Solaris, limit this to <code>10000</code> or so because of memory leaks.</p>
-
-    <p>When keep-alives are in use, children will be kept busy
-    doing nothing waiting for more requests on the already open
+    <p>When keep-alives are in use, a process (or a thread spawned by a process)
+    will be kept busy doing nothing but waiting for more requests on the already open
     connection. The default <directive module="core"
     >KeepAliveTimeout</directive> of <code>5</code>
     seconds attempts to minimize this effect. The tradeoff here is
-    between network bandwidth and server resources. In no event
-    should you raise this above about <code>60</code> seconds, as <a
-    href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
-    most of the benefits are lost</a>.</p>
-
+    between network bandwidth and server resources.</p>
     </section>
 
   </section>
