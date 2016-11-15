@@ -92,6 +92,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2push">H2Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushdiarysize">H2PushDiarySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2pushpriority">H2PushPriority</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#h2pushresource">H2PushResource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2serializeheaders">H2SerializeHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2sessionextrafiles">H2SessionExtraFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2streammaxmemsize">H2StreamMaxMemSize</a></li>
@@ -637,6 +638,41 @@
 H2PushPriority image/jpeg before           # weight inherited
 H2PushPriority text/css   interleaved      # weight 256 default</pre>
 </div>
+        
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declares resources for early pushing to the client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>H2PushResource [add] path [critical]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.24 and later.</td></tr>
+</table>
+            <p>
+                When added to a directory/location HTTP/2 PUSHes will be attempted
+                for all paths added via this directive. This directive can be used
+                several times for the same location.
+            </p>
+            <p>
+                This directive pushes resources much earlier than adding 
+                <code>Link</code> headers via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>.
+                <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> announces these resources in a
+                <code>103 Early Hints</code> interim response to the client.
+                That means that clients not supporting PUSH will still get
+                early preload hints.
+            </p>
+            <p>
+                In contrast to setting <code>Link</code> response headers 
+                via <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>, this directive will only
+                take effect on HTTP/2 connections. 
+            </p>
+            <p>
+                By adding <code>critical</code> to such a resource, the server
+                will give processing it more preference and send its data, once
+                available, before the data from the main request.
+            </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
