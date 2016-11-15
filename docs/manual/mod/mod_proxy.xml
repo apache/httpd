@@ -865,8 +865,9 @@ expressions</description>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    <note><strong>Note: </strong>This directive cannot be used within a 
-    <code>&lt;Directory&gt;</code> context.</note>
+    <note><strong>Note: </strong>This directive is not supported within
+    <directive type="section" module="core">Directory</directive> and
+    <directive type="section" module="core">Files</directive> containers.</note>
 
     <note type="warning">The <directive
     module="mod_proxy">ProxyRequests</directive> directive should
@@ -901,10 +902,6 @@ expressions</description>
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
-
-    <p>The ProxyPass directive is not supported in <directive type="section" module="core"
-    >Directory</directive> or <directive type="section" module="core"
-    >Files</directive> sections.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
