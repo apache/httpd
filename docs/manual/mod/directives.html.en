@@ -343,6 +343,7 @@
 <li><a href="mod_systemd.html#idleshutdown">IdleShutdown</a></li>
 <li><a href="core.html#if">&lt;If&gt;</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
+<li><a href="core.html#iffile">&lt;IfFile&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
 <li><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></li>
 <li><a href="mod_imagemap.html#imapbase">ImapBase</a></li>
