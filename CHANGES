@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Add <IfFile> configuration section to allow any file on disk to be
+     used as a conditional.  [Edward Lu, Eric Covener]
+
   *) event: Avoid listener periodic wake ups by using the pollset wake-ability
      when available.  PR 57399.  [Yann Ylavic, Luca Toscano]
 

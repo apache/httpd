@@ -2241,6 +2241,43 @@ if a test is true at startup</description>
 </directivesynopsis>
 
 <directivesynopsis type="section">
+<name>IfFile</name>
+<description>Encloses directives that will be processed only
+if file exists at startup</description>
+<syntax>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;
+    </code> section is used to mark directives that are conditional on
+    the existence of a file on disk. The directives within an
+    <directive type="section">IfFile</directive> section are only
+    processed if the <var>filename</var> exists. If <var> filename</var>
+    doesn't exist, everything between the start and end markers is
+    ignored. <var>filename</var> can be an absolute path or a path
+    relative to the server root.</p>
+
+    <p>The <var>filename</var> in the <directive type="section">IfFile
+    </directive> section directive can take the same forms as the
+    <var>test</var> variable in the <directive type="section">IfDefine
+    </directive> section, i.e. the test can be negated if the <code>
+    !</code> character is placed directly before <var>filename</var>.
+    </p>
+   
+    <p>If a relative <var>filename</var> is supplied, the check is
+    <directive>ServerRoot</directive> relative.  In the  case where
+    this directive occurs before the <directive>ServerRoot</directive>,
+    the path will be checked relative to the compiled-in server root or
+    the server root passed in on the command line via the <code>-d</code>
+    parameter.</p>
+    
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
 <name>IfModule</name>
 <description>Encloses directives that are processed conditional on the
 presence or absence of a specific module</description>
