@@ -801,14 +801,17 @@ AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum)
  * from status_lines[shortcut[i]] to status_lines[shortcut[i+1]-1];
  * or use NULL to fill the gaps.
  */
-AP_DECLARE(int) ap_index_of_response(int status)
+static int index_of_response(int status)
 {
-    static int shortcut[6] = {0, LEVEL_200, LEVEL_300, LEVEL_400,
-    LEVEL_500, RESPONSE_CODES};
+    static int shortcut[6] = {0, LEVEL_200, LEVEL_300, LEVEL_400, LEVEL_500,
+                                 RESPONSE_CODES};
     int i, pos;
 
-    if (status < 100) {               /* Below 100 is illegal for HTTP status */
-        return LEVEL_500;
+    if (status < 100) {     /* Below 100 is illegal for HTTP status */
+        return -1;
+    }
+    if (status > 999) {     /* Above 999 is also illegal for HTTP status */
+        return -1;
     }
 
     for (i = 0; i < 5; i++) {
@@ -819,11 +822,31 @@ AP_DECLARE(int) ap_index_of_response(int status)
                 return pos;
             }
             else {
-                return LEVEL_500;            /* status unknown (falls in gap) */
+                break;
             }
         }
     }
-    return LEVEL_500;                         /* 600 or above is also illegal */
+    return 0;               /* Status unknown (falls in gap) or above 600 */
+}
+
+AP_DECLARE(int) ap_index_of_response(int status)
+{
+    int index = index_of_response(status);
+    return (index <= 0) ? LEVEL_500 : index;
+}
+
+AP_DECLARE(const char *) ap_get_status_line_ex(apr_pool_t *p, int status)
+{
+    int index = index_of_response(status);
+    if (index < 0) {
+        return status_lines[LEVEL_500];
+    }
+    else if (index == 0) {
+        return apr_psprintf(p, "%i Status %i", status, status);
+    }
+    else {
+        return status_lines[index];
+    }
 }
 
 AP_DECLARE(const char *) ap_get_status_line(int status)

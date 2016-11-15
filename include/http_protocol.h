@@ -473,6 +473,17 @@ AP_DECLARE(int) ap_index_of_response(int status);
  */
 AP_DECLARE(const char *) ap_get_status_line(int status);
 
+/**
+ * Return the Status-Line for a given status code (excluding the
+ * HTTP-Version field). If an invalid status code is passed,
+ * "500 Internal Server Error" will be returned, whereas an unknown
+ * status will be returned like "xxx Status xxx".
+ * @param p The pool to allocate from when status is unknown
+ * @param status The HTTP status code
+ * @return The Status-Line
+ */
+AP_DECLARE(const char *) ap_get_status_line_ex(apr_pool_t *p, int status);
+
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
 /**
