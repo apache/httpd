@@ -2851,6 +2851,49 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
     }
 }
 
+static const char *start_iffile(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    apr_finfo_t sb;
+    const char *endp;
+    int file_exists = 0;
+    int not = 0;
+    const char *relative;
+
+    endp = ap_strrchr_c(arg, '>');
+    if (endp == NULL) {
+        return unclosed_directive(cmd);
+    }
+
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
+
+    if (arg[0] == '!') {
+        not = 1;
+        arg++;
+    }
+
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
+    }
+
+    relative = ap_server_root_relative(cmd->temp_pool, arg);
+    file_exists = (apr_stat(&sb, relative, 0, cmd->pool) == APR_SUCCESS);
+
+    if ((!not && file_exists) || (not && !file_exists)) {
+        ap_directive_t *parent = NULL;
+        ap_directive_t *current = NULL;
+        const char *retval;
+
+        retval = ap_build_cont_config(cmd->pool, cmd->temp_pool, cmd,
+                                      &current, &parent, "<IfFile");
+        *(ap_directive_t **)dummy = current;
+        return retval;
+    }
+    else {
+        *(ap_directive_t **)dummy = NULL;
+        return ap_soak_end_container(cmd, "<IfFile");
+    }
+}
+
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
 static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
@@ -4464,6 +4507,8 @@ AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of specified modules"),
 AP_INIT_TAKE1("<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of command line defines"),
+AP_INIT_TAKE1("<IfFile", start_iffile, NULL, EXEC_ON_READ | OR_ALL,
+  "Container for directives based on existence of files on disk"),
 AP_INIT_RAW_ARGS("<DirectoryMatch", dirsection, (void*)1, RSRC_CONF,
   "Container for directives affecting resources located in the "
   "specified directories"),
