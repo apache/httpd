@@ -128,6 +128,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
      +1: jchampion, rpluem, wrowe
 
+  *) CMake: fix various issues for Windows/Visual Studio build environments.
+     PR59685.
+     trunk patch: http://svn.apache.org/r1752331
+                  http://svn.apache.org/r1752332
+                  http://svn.apache.org/r1752333
+     +1: jchampion, jim (by inspection), wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,13 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
      +1: elukey
-
-  *) CMake: fix various issues for Windows/Visual Studio build environments.
-     PR59685.
-     trunk patch: http://svn.apache.org/r1752331
-                  http://svn.apache.org/r1752332
-                  http://svn.apache.org/r1752333
-     +1: jchampion, jim (by inspection)
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
