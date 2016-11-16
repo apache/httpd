@@ -1165,13 +1165,11 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
          * request line.
          */
         if (have_hostname_from_url && host_header != NULL) {
-            const char *info = "Would replace";
-            const char *new = construct_host_header(r, is_v6literal);
-            apr_table_set(r->headers_in, "Host", r->hostname);
-            info = "Replacing";
+            const char *repl = construct_host_header(r, is_v6literal);
+            apr_table_set(r->headers_in, "Host", repl);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02417)
-                          "%s Host header '%s' with host from request uri: "
-                          "'%s'", info, host_header, new);
+                          "Replacing host header '%s' with host '%s' given "
+                          "in the request uri", host_header, repl);
         }
     }
 
