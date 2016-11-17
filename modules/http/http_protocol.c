@@ -826,27 +826,25 @@ static int index_of_response(int status)
             }
         }
     }
-    return 0;               /* Status unknown (falls in gap) or above 600 */
+    return -2;              /* Status unknown (falls in gap) or above 600 */
 }
 
 AP_DECLARE(int) ap_index_of_response(int status)
 {
     int index = index_of_response(status);
-    return (index <= 0) ? LEVEL_500 : index;
+    return (index < 0) ? LEVEL_500 : index;
 }
 
 AP_DECLARE(const char *) ap_get_status_line_ex(apr_pool_t *p, int status)
 {
     int index = index_of_response(status);
-    if (index < 0) {
-        return status_lines[LEVEL_500];
-    }
-    else if (index == 0) {
-        return apr_psprintf(p, "%i Status %i", status, status);
-    }
-    else {
+    if (index >= 0) {
         return status_lines[index];
     }
+    else if (index == -2) {
+        return apr_psprintf(p, "%i Status %i", status, status);
+    }
+    return status_lines[LEVEL_500];
 }
 
 AP_DECLARE(const char *) ap_get_status_line(int status)
