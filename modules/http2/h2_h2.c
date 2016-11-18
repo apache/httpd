@@ -684,7 +684,8 @@ static int h2_h2_pre_close_conn(conn_rec *c)
 static void check_push(request_rec *r, const char *tag)
 {
     const h2_config *conf = h2_config_rget(r);
-    if (conf && conf->push_list && conf->push_list->nelts > 0) {
+    if (!r->expecting_100 
+        && conf && conf->push_list && conf->push_list->nelts > 0) {
         int i, old_status;
         const char *old_line;
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
