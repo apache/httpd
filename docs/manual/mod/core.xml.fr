@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1764961 -->
+<!-- English Revision: 1769718 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2437,6 +2437,45 @@ host</context>
   &lt;/IfDefine&gt;
 &lt;/IfDefine&gt;
     </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>IfFile</name>
+<description>Regroupe des directives qui ne seront traitées que si un fichier
+existe au démarrage</description>
+<syntax>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La section <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;</code>
+    permet de conditionner le traitement de directives à
+    l'existence d'un fichier sur disque. Ainsi, les directives définies au sein
+    d'une section <directive type="section">IfFile</directive> ne seront
+    traitées que si le fichier <var>filename</var> existe. Si le fichier
+    <var>filename</var> n'existe pas, tout ce qui se trouve entre les marqueurs
+    start et end sera ignoré. <var>filename</var> peut être un chemin absolu ou
+    relatif au chemin défini par la directive ServerRoot.</p>
+
+    <p>Le paramètre <var>filename</var> de l'en-tête d'une section <directive
+    type="section">IfFile</directive> peut prendre la même forme que la variable
+    <var>test</var> de la section <directive
+    type="section">IfDefine</directive> ; à ce titre, le résultat du test peut être
+    inversé en plaçant le caractère <code>!</code> juste avant
+    <var>filename</var>.
+    </p>
+   
+    <p>Si <var>filename</var> est un chemin relatif, il sera généré par rapport
+    au chemin défini par la directive <directive>ServerRoot</directive>. Lorsque
+    la directive <directive type="section">IfFile</directive> intervient avant
+    la définition de la directive <directive>ServerRoot</directive>,
+    <var>filename</var> sera relatif au répertoire racine par défaut du serveur
+    ou au répertoire racine passé dans la ligne de commande via l'option
+    <code>-d</code>.</p>
+    
 </usage>
 </directivesynopsis>
 
