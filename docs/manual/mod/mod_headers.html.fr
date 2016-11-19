@@ -345,8 +345,15 @@ version 2.4.10</td></tr>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.<br />
-    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-tête avec le même nom.
+    <div class="note">
+    L'en-tête Content-Type est un cas particulier car il est possible que sa
+    valeur ait été déterminée mais que l'en-tête ne soit pas présent dans la
+    réponse lorsque <code>setifempty</code> est évalué. Dans ce cas, il est
+    préférable d'utiliser <code>set</code> comme dans l'exemple suivant :
+    <pre class="prettyprint lang-config">Header set Content-Type "text/plain" "expr=-z %{CONTENT_TYPE}"</pre>
+
+    </div></dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
