@@ -75,6 +75,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#iffile">&lt;IfFile&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
@@ -2377,6 +2378,42 @@ test retourne "vrai" au démarrage du serveur</td></tr>
   &lt;/IfDefine&gt;
 &lt;/IfDefine&gt;</pre>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="iffile" id="iffile">Directive</a> <a name="IfFile" id="IfFile">&lt;IfFile&gt;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui ne seront traitées que si un fichier
+existe au démarrage</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>La section <code>&lt;IfFile <var>filename</var>&gt;...&lt;/IfFile&gt;</code>
+    permet de conditionner le traitement de directives à
+    l'existence d'un fichier sur disque. Ainsi, les directives définies au sein
+    d'une section <code class="directive">&lt;IfFile&gt;</code> ne seront
+    traitées que si le fichier <var>filename</var> existe. Si le fichier
+    <var>filename</var> n'existe pas, tout ce qui se trouve entre les marqueurs
+    start et end sera ignoré. <var>filename</var> peut être un chemin absolu ou
+    relatif au chemin défini par la directive ServerRoot.</p>
+
+    <p>Le paramètre <var>filename</var> de l'en-tête d'une section <code class="directive">&lt;IfFile&gt;</code> peut prendre la même forme que la variable
+    <var>test</var> de la section <code class="directive">&lt;IfDefine&gt;</code> ; à ce titre, le résultat du test peut être
+    inversé en plaçant le caractère <code>!</code> juste avant
+    <var>filename</var>.
+    </p>
+   
+    <p>Si <var>filename</var> est un chemin relatif, il sera généré par rapport
+    au chemin défini par la directive <code class="directive">ServerRoot</code>. Lorsque
+    la directive <code class="directive">&lt;IfFile&gt;</code> intervient avant
+    la définition de la directive <code class="directive">ServerRoot</code>,
+    <var>filename</var> sera relatif au répertoire racine par défaut du serveur
+    ou au répertoire racine passé dans la ligne de commande via l'option
+    <code>-d</code>.</p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
