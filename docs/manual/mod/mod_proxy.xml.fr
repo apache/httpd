@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1748948 -->
+<!-- English Revision: 1769637 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -989,8 +989,9 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     chemin virtuel local ; <var>url</var> est une URL partielle pour le
     serveur distant et ne doit pas contenir de chaîne d'arguments.</p>
 
-    <note><strong>Note : </strong>Cette directive ne peut pas être
-    utilisée dans un contexte de niveau répertoire.</note>
+    <note><strong>Note : </strong>Cette directive n'est pas supportée au sein
+    des sections <directive type="section" module="core">Directory</directive>
+    et <directive type="section" module="core">Files</directive>.</note>
 
     <note type="warning">En général, la directive <directive
     module="mod_proxy">ProxyRequests</directive> doit être définie à
@@ -1040,12 +1041,8 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     <code>http://example.com/miroir/foo/bar</code> en une requête
     mandatée pour <code>http://backend.example.com/bar</code>.</p>
 
-    <p>La directive ProxyPass ne peut pas être placée dans une section
-    <directive type="section" module="core">Directory</directive> ou
-    <directive type="section" module="core">Files</directive>.</p>
-
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
-    souple, reportez-vous à la documentaion de la directive <directive
+    souple, reportez-vous à la documentation de la directive <directive
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
 
