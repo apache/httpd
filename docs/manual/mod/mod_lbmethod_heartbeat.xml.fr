@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1347906 -->
@@ -25,8 +25,8 @@
 <modulesynopsis metafile="mod_lbmethod_heartbeat.xml.meta">
 
 <name>mod_lbmethod_heartbeat</name>
-<description>Algorithme d'ordonnancement de r&eacute;partition de charge pour
-<module>mod_proxy_balancer</module> bas&eacute; sur le comptage de trafic Heartbeat</description>
+<description>Algorithme d'ordonnancement de répartition de charge pour
+<module>mod_proxy_balancer</module> basé sur le comptage de trafic Heartbeat</description>
 <status>Experimental</status>
 <sourcefile>mod_lbmethod_heartbeat.c</sourcefile>
 <identifier>lbmethod_heartbeat_module</identifier>
@@ -34,16 +34,16 @@
 
 <summary>
     <p>lbmethod=heartbeat utilise les services du module
-    <module>mod_heartmonitor</module> pour r&eacute;partir la charge entre les
-    serveurs d'origine qui fournissent des donn&eacute;es heartbeat via le
+    <module>mod_heartmonitor</module> pour répartir la charge entre les
+    serveurs d'origine qui fournissent des données heartbeat via le
     module <module>mod_heartbeat</module>.</p>
 
-<p>Son algorithme de r&eacute;partition de charge favorise les serveurs dont la
-capacit&eacute; de traitement moyenne r&eacute;partie dans le temps est la plus
-importante, mais il ne s&eacute;lectionne pas forc&eacute;ment le serveur qui pr&eacute;sente
-la disponibilit&eacute; instantan&eacute;e la plus importante. Les serveurs qui ne
-poss&egrave;dent aucun client actif sont p&eacute;nalis&eacute;s, car ils sont consid&eacute;r&eacute;s
-comme non enti&egrave;rement initialis&eacute;s.</p>
+<p>Son algorithme de répartition de charge favorise les serveurs dont la
+capacité de traitement moyenne répartie dans le temps est la plus
+importante, mais il ne sélectionne pas forcément le serveur qui présente
+la disponibilité instantanée la plus importante. Les serveurs qui ne
+possèdent aucun client actif sont pénalisés, car ils sont considérés
+comme non entièrement initialisés.</p>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
@@ -53,7 +53,7 @@ comme non enti&egrave;rement initialis&eacute;s.</p>
 
 <directivesynopsis>
 <name>HeartbeatStorage</name>
-<description>Indique le chemin permettant de lire les donn&eacute;es
+<description>Indique le chemin permettant de lire les données
 heartbeat</description>
 <syntax>HeartbeatStorage <var>chemin-fichier</var></syntax>
 <default>HeartbeatStorage logs/hb.dat</default>
@@ -61,9 +61,9 @@ heartbeat</description>
 
 <usage>
     <p>La directive <directive>HeartbeatStorage</directive> permet de
-    sp&eacute;cifier le chemin d'acc&egrave;s aux donn&eacute;es heartbeat. Ce fichier texte
-    n'est utilis&eacute; que si le module <module>mod_slotmem_shm</module>
-    n'est pas charg&eacute;.</p>
+    spécifier le chemin d'accès aux données heartbeat. Ce fichier texte
+    n'est utilisé que si le module <module>mod_slotmem_shm</module>
+    n'est pas chargé.</p>
 </usage>
 </directivesynopsis>
 </modulesynopsis>

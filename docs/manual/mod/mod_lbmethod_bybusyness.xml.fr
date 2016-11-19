@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1174718 -->
@@ -25,43 +25,43 @@
 <modulesynopsis metafile="mod_lbmethod_bybusyness.xml.meta">
 
 <name>mod_lbmethod_bybusyness</name>
-<description>Algorithme de planification avec r&eacute;partition de charge de
-l'attribution des requ&ecirc;tes en attente pour le module
+<description>Algorithme de planification avec répartition de charge de
+l'attribution des requêtes en attente pour le module
 <module>mod_proxy_balancer</module></description>
 <status>Extension</status>
 <sourcefile>mod_lbmethod_bybusyness.c</sourcefile>
 <identifier>lbmethod_bybusyness_module</identifier>
-<compatibility>Dissoci&eacute; de <module>mod_proxy_balancer</module> depuis la
+<compatibility>Dissocié de <module>mod_proxy_balancer</module> depuis la
 version 2.3</compatibility>
 
 <summary>
-<p>Ce module ne fournit pas lui-m&ecirc;me de directive de configuration. Il
-n&eacute;cessite les services de <module>mod_proxy_balancer</module>, et
-fournit la m&eacute;thode de r&eacute;partition de charge <code>bybusyness</code>.</p>
+<p>Ce module ne fournit pas lui-même de directive de configuration. Il
+nécessite les services de <module>mod_proxy_balancer</module>, et
+fournit la méthode de répartition de charge <code>bybusyness</code>.</p>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
 
 <section id="busyness">
 
-    <title>Algorithme d'attribution des requ&ecirc;tes en attente</title>
+    <title>Algorithme d'attribution des requêtes en attente</title>
 
-    <p>Activ&eacute; via <code>lbmethod=bybusyness</code>, ce planificateur
-    surveille le nombre de requ&ecirc;tes assign&eacute;es &agrave; chaque processus worker
-    &agrave; l'instant pr&eacute;sent. Une nouvelle requ&ecirc;te est automatiquement
-    assign&eacute;e au processus worker auquel est assign&eacute; le plus petit nombre de
-    requ&ecirc;tes. Ceci s'av&egrave;re utile dans le cas o&ugrave; les
-    processus worker mettent en file d'attente les requ&ecirc;tes entrantes
-    ind&eacute;pendamment d'Apache, et permet de s'assurer que la longueur des
-    files reste raisonnable, et qu'une requ&ecirc;te est toujours assign&eacute;e au
-    processus worker qui sera &agrave; m&ecirc;me de la servir le plus
-    rapidement et avec une latence r&eacute;duite.</p>
+    <p>Activé via <code>lbmethod=bybusyness</code>, ce planificateur
+    surveille le nombre de requêtes assignées à chaque processus worker
+    à l'instant présent. Une nouvelle requête est automatiquement
+    assignée au processus worker auquel est assigné le plus petit nombre de
+    requêtes. Ceci s'avère utile dans le cas où les
+    processus worker mettent en file d'attente les requêtes entrantes
+    indépendamment d'Apache, et permet de s'assurer que la longueur des
+    files reste raisonnable, et qu'une requête est toujours assignée au
+    processus worker qui sera à même de la servir le plus
+    rapidement et avec une latence réduite.</p>
 
-    <p>Si plusieurs processus worker s'av&egrave;rent les moins charg&eacute;s, le
-    choix d'un de ces derniers est effectu&eacute; &agrave; partir des statistiques
-    (et des estimations de charges) qu'utilise la m&eacute;thode de d&eacute;compte
-    des requ&ecirc;tes. Au fil du temps, la distribution des t&acirc;ches finit par
-    ressembler &agrave; celle de <code>byrequests</code> (tel qu'impl&eacute;ment&eacute; par
+    <p>Si plusieurs processus worker s'avèrent les moins chargés, le
+    choix d'un de ces derniers est effectué à partir des statistiques
+    (et des estimations de charges) qu'utilise la méthode de décompte
+    des requêtes. Au fil du temps, la distribution des tâches finit par
+    ressembler à celle de <code>byrequests</code> (tel qu'implémenté par
     <module>mod_lbmethod_byrequests</module>).</p>
 
 </section>
