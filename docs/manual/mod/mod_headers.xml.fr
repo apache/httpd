@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1736594 -->
+<!-- English Revision: 1770153 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -463,8 +463,16 @@ version 2.4.10</compatibility>
 
     <dt><code>setifempty</code></dt>
     <dd>L'en-tête est défini, mais seulement s'il n'existe
-    aucun en-tête avec le même nom.<br />
-    Disponible depuis la version 2.4.7 du serveur HTTP Apache.</dd>
+    aucun en-tête avec le même nom.
+    <note>
+    L'en-tête Content-Type est un cas particulier car il est possible que sa
+    valeur ait été déterminée mais que l'en-tête ne soit pas présent dans la
+    réponse lorsque <code>setifempty</code> est évalué. Dans ce cas, il est
+    préférable d'utiliser <code>set</code> comme dans l'exemple suivant :
+    <highlight language="config">
+    Header set Content-Type "text/plain" "expr=-z %{CONTENT_TYPE}"
+    </highlight>
+    </note></dd>
 
     <dt><code>unset</code></dt>
     <dd>L'en-tête est supprimé s'il existe. Si plusieurs en-têtes
