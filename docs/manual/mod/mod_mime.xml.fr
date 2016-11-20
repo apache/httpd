@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1678567 -->
@@ -25,26 +25,26 @@
 <modulesynopsis metafile="mod_mime.xml.meta">
 
 <name>mod_mime</name>
-<description>Associe les extensions des fichiers demand&eacute;s avec l'action
-d&eacute;clench&eacute;e par ces fichiers et avec leur contenu (type MIME, langue,
-jeu de caract&egrave;re et codage)</description>
+<description>Associe les extensions des fichiers demandés avec l'action
+déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
+jeu de caractère et codage)</description>
 <status>Base</status>
 <sourcefile>mod_mime.c</sourcefile>
 <identifier>mime_module</identifier>
 
 <summary>
-    <p>Ce module permet d'assigner des m&eacute;tadonn&eacute;es aux contenus
-    s&eacute;lectionn&eacute;s pour une r&eacute;ponse HTTP, en associant des mod&egrave;les d'URI
-    ou de noms de fichiers aux valeurs des m&eacute;tadonn&eacute;es. Par exemple, les
-    extensions de noms de fichiers d&eacute;finissent souvent le type de m&eacute;dium
-    Internet, la langue, le jeu de caract&egrave;res et le codage du contenu.
-    Ces informations sont relay&eacute;es par les messages HTTP v&eacute;hiculant ces
-    contenus, et utilis&eacute;es au cours de la n&eacute;gociation de contenu lors de
-    la s&eacute;lection des diff&eacute;rentes possibilit&eacute;s, de mani&egrave;re &agrave; ce que les
-    pr&eacute;f&eacute;rences des utilisateurs soient respect&eacute;es lors du choix d'un
-    contenu &agrave; servir parmi plusieurs autres contenus. Voir
-    <module>mod_negotiation</module> pour plus d'informations &agrave; propos
-    de la <a href="../content-negotiation.html">n&eacute;gociation de
+    <p>Ce module permet d'assigner des métadonnées aux contenus
+    sélectionnés pour une réponse HTTP, en associant des modèles d'URI
+    ou de noms de fichiers aux valeurs des métadonnées. Par exemple, les
+    extensions de noms de fichiers définissent souvent le type de médium
+    Internet, la langue, le jeu de caractères et le codage du contenu.
+    Ces informations sont relayées par les messages HTTP véhiculant ces
+    contenus, et utilisées au cours de la négociation de contenu lors de
+    la sélection des différentes possibilités, de manière à ce que les
+    préférences des utilisateurs soient respectées lors du choix d'un
+    contenu à servir parmi plusieurs autres contenus. Voir
+    <module>mod_negotiation</module> pour plus d'informations à propos
+    de la <a href="../content-negotiation.html">négociation de
     contenu</a>.</p>
 
     <p>Les directives <directive
@@ -52,50 +52,50 @@ jeu de caract&egrave;re et codage)</description>
     module="mod_mime">AddEncoding</directive>, <directive
     module="mod_mime">AddLanguage</directive> et <directive
     module="mod_mime">AddType</directive> permettent d'associer des
-    extensions de fichiers aux m&eacute;tadonn&eacute;es de ces fichiers. Elles
-    d&eacute;finissent respectivement le jeu de caract&egrave;res, le codage du
+    extensions de fichiers aux métadonnées de ces fichiers. Elles
+    définissent respectivement le jeu de caractères, le codage du
     contenu, la langue du contenu et le <glossary>type de
-    m&eacute;dium</glossary> (content-type) des documents. La directive
+    médium</glossary> (content-type) des documents. La directive
     <directive module="mod_mime">TypesConfig</directive> permet de
-    sp&eacute;cifier un fichier qui contient lui-m&ecirc;me des associations entre
+    spécifier un fichier qui contient lui-même des associations entre
     extensions et types de media.</p>
 
-    <p>De plus, <module>mod_mime</module> peut d&eacute;finir le <a
+    <p>De plus, <module>mod_mime</module> peut définir le <a
     href="../handler.html">gestionnaire</a> et les <a
-    href="../filter.html">filtres</a> qui sont &agrave; l'origine du contenu et
+    href="../filter.html">filtres</a> qui sont à l'origine du contenu et
     le traitent. Les directives <directive
     module="mod_mime">AddHandler</directive>, <directive
     module="mod_mime">AddOutputFilter</directive>, et <directive
-    module="mod_mime">AddInputFilter</directive> permettent de contr&ocirc;ler
+    module="mod_mime">AddInputFilter</directive> permettent de contrôler
     les modules ou les scripts qui vont servir le document. La directive
-    <directive module="mod_mime">MultiviewsMatch</directive> permet &agrave;
-    <module>mod_negotiation</module> de d&eacute;terminer les extensions de
-    fichiers &agrave; inclure lors des tests de correspondances multivues.</p>
+    <directive module="mod_mime">MultiviewsMatch</directive> permet à
+    <module>mod_negotiation</module> de déterminer les extensions de
+    fichiers à inclure lors des tests de correspondances multivues.</p>
 
-    <p>Alors que <module>mod_mime</module> associe des m&eacute;tadonn&eacute;es avec
+    <p>Alors que <module>mod_mime</module> associe des métadonnées avec
     des extensions de fichiers, le serveur de base <module>core</module>
     fournit des directives permettant d'associer tous les fichiers d'un
-    conteneur donn&eacute; (par exemple <directive type="section"
+    conteneur donné (par exemple <directive type="section"
     module="core">Location</directive>, <directive type="section"
     module="core">Directory</directive>, ou <directive type="section"
-    module="core">Files</directive>) avec des m&eacute;tadonn&eacute;es particuli&egrave;res.
+    module="core">Files</directive>) avec des métadonnées particulières.
     Parmi ces directives, on trouve <directive
     module="core">ForceType</directive>, <directive
     module="core">SetHandler</directive>, <directive
     module="core">SetInputFilter</directive>, et <directive
     module="core">SetOutputFilter</directive>. Les directives du serveur
     de base l'emportent sur toute directive d'association d'extensions
-    de noms de fichiers d&eacute;finie par <module>mod_mime</module>.</p>
+    de noms de fichiers définie par <module>mod_mime</module>.</p>
 
-    <p>Notez que la modification des m&eacute;tadonn&eacute;es d'un fichier ne modifie
-    pas la valeur de l'en-t&ecirc;te <code>Last-Modified</code>. Ainsi,
-    certaines copies de documents pr&eacute;alablement mises en cache peuvent
-    encore &ecirc;tre utilis&eacute;es par un client ou un mandataire avec les
-    anciens en-t&ecirc;tes. Si vous modifiez les m&eacute;tadonn&eacute;es (langue, type de
-    contenu, jeu de caract&egrave;re ou codage), vous devez donc enregistrer
-    une modification du fichier concern&eacute; (afin de mettre &agrave; jour sa date
-    de derni&egrave;re modification), pour &ecirc;tre s&ucirc;r que tous les visiteurs
-    recevront le documents avec les en-t&ecirc;tes corrects. </p>
+    <p>Notez que la modification des métadonnées d'un fichier ne modifie
+    pas la valeur de l'en-tête <code>Last-Modified</code>. Ainsi,
+    certaines copies de documents préalablement mises en cache peuvent
+    encore être utilisées par un client ou un mandataire avec les
+    anciens en-têtes. Si vous modifiez les métadonnées (langue, type de
+    contenu, jeu de caractère ou codage), vous devez donc enregistrer
+    une modification du fichier concerné (afin de mettre à jour sa date
+    de dernière modification), pour être sûr que tous les visiteurs
+    recevront le documents avec les en-têtes corrects. </p>
 </summary>
 <seealso><directive
 module="mod_mime_magic">MimeMagicFile</directive></seealso>
@@ -107,52 +107,52 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <section id="multipleext"><title>Fichiers avec extensions
 multiples</title>
-    <p>Les fichiers peuvent poss&eacute;der plusieurs extensions dont l'ordre
+    <p>Les fichiers peuvent posséder plusieurs extensions dont l'ordre
     est <em>normalement</em> sans importance. Par exemple, si
-    le fichier <code>welcome.html.fr</code> est associ&eacute; au type de
-    contenu <code>text/html</code> et &agrave; la langue fran&ccedil;aise, le fichier
-    <code>welcome.fr.html</code> poss&egrave;dera exactement les m&ecirc;me
-    m&eacute;tadonn&eacute;es. Si le fichier poss&egrave;de plusieurs extensions associ&eacute;es
-    au m&ecirc;me type de m&eacute;tadonn&eacute;e, c'est celle de ces extensions la plus &agrave;
-    droite qui sera utilis&eacute;e, except&eacute; pour ce qui concerne les langues
+    le fichier <code>welcome.html.fr</code> est associé au type de
+    contenu <code>text/html</code> et à la langue française, le fichier
+    <code>welcome.fr.html</code> possèdera exactement les même
+    métadonnées. Si le fichier possède plusieurs extensions associées
+    au même type de métadonnée, c'est celle de ces extensions la plus à
+    droite qui sera utilisée, excepté pour ce qui concerne les langues
     et les codages de contenu. Par exemple, si <code>.gif</code> est
-    associ&eacute; au <glossary>type de m&eacute;dium</glossary>
-    <code>image/gif</code>, et <code>.html</code> au type de m&eacute;dium
+    associé au <glossary>type de médium</glossary>
+    <code>image/gif</code>, et <code>.html</code> au type de médium
     <code>text/html</code>, le fichier <code>welcome.gif.html</code>
-    sera associ&eacute; au type de m&eacute;dium <code>text/html</code>.</p>
+    sera associé au type de médium <code>text/html</code>.</p>
 
     <p>Les <a href="#charset-lang">Languages</a> et les <a
-    href="#contentencoding">codages de contenu</a> sont trait&eacute;s de
-    mani&egrave;re cumulative, car il est possible d'assigner plusieurs
-    langues ou codages &agrave; une ressource particuli&egrave;re. Par exemple, le
-    fichier <code>welcome.html.en.de</code> sera servi avec les en-t&ecirc;tes
+    href="#contentencoding">codages de contenu</a> sont traités de
+    manière cumulative, car il est possible d'assigner plusieurs
+    langues ou codages à une ressource particulière. Par exemple, le
+    fichier <code>welcome.html.en.de</code> sera servi avec les en-têtes
     <code>Content-Language: en, de</code> et <code>Content-Type:
     text/html</code>.</p>
 
-    <p>Des pr&eacute;cautions doivent &ecirc;tre prises lorsqu'un fichier avec
-    extensions multiples est associ&eacute; &agrave; la fois &agrave; un <glossary>type de
-    m&eacute;dium</glossary> et &agrave; un gestionnaire. En g&eacute;n&eacute;ral, cela impliquera
-    la gestion de la requ&ecirc;te par le module associ&eacute; au gestionnaire. Par
-    exemple, si l'extension <code>.imap</code> est associ&eacute;e au
+    <p>Des précautions doivent être prises lorsqu'un fichier avec
+    extensions multiples est associé à la fois à un <glossary>type de
+    médium</glossary> et à un gestionnaire. En général, cela impliquera
+    la gestion de la requête par le module associé au gestionnaire. Par
+    exemple, si l'extension <code>.imap</code> est associée au
     gestionnaire <code>imap-file</code> (du module
     <module>mod_imagemap</module>), et si l'extension <code>.html</code>
-    est associ&eacute;e au type de m&eacute;dium <code>text/html</code>, le fichier
-    <code>world.imap.html</code> sera &agrave; la fois associ&eacute; au gestionnaire
-    <code>imap-file</code> et au type de m&eacute;dium <code>text/html</code>.
+    est associée au type de médium <code>text/html</code>, le fichier
+    <code>world.imap.html</code> sera à la fois associé au gestionnaire
+    <code>imap-file</code> et au type de médium <code>text/html</code>.
     Pour son traitement, c'est le gestionnaire <code>imap-file</code>
-    qui sera utilis&eacute;, et il sera donc trait&eacute; en tant que fichier
+    qui sera utilisé, et il sera donc traité en tant que fichier
     imagemap.</p>
 
-    <p>Si vous pr&eacute;f&eacute;rez que seule la derni&egrave;re partie d'un nom de fichier
-    s&eacute;par&eacute;e du reste du nom par un point soit associ&eacute;e &agrave; une m&eacute;tadonn&eacute;e
-    particuli&egrave;re, n'utilisez pas les directives <code>Add*</code>. Par
+    <p>Si vous préférez que seule la dernière partie d'un nom de fichier
+    séparée du reste du nom par un point soit associée à une métadonnée
+    particulière, n'utilisez pas les directives <code>Add*</code>. Par
     exemple, si vous souhaitez que le fichier <code>foo.html.cgi</code>
-    soit trait&eacute; en tant que script CGI, mais pas le fichier
+    soit traité en tant que script CGI, mais pas le fichier
     <code>bar.cgi.html</code>, alors, au lieu d'utiliser
-    <code>AddHandler cgi-script .cgi</code>, utilisez plut&ocirc;t :</p>
+    <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
 
     <example><title>Configuration du gestionnaire en se basant seulement
-    sur la derni&egrave;re extension</title>
+    sur la dernière extension</title>
     <highlight language="config">
 &lt;FilesMatch "[^.]+\.cgi$"&gt;
   SetHandler cgi-script
@@ -163,85 +163,85 @@ multiples</title>
 </section>
 
 <section id="contentencoding"><title>Codage du contenu</title>
-    <p>Un fichier d'un <glossary>type de m&eacute;dium</glossary> particulier
-    peut &ecirc;tre &eacute;galement cod&eacute; d'une certaine mani&egrave;re pour simplifier sa
-    transmission sur Internet. Alors que cela concerne en g&eacute;n&eacute;ral la
+    <p>Un fichier d'un <glossary>type de médium</glossary> particulier
+    peut être également codé d'une certaine manière pour simplifier sa
+    transmission sur Internet. Alors que cela concerne en général la
     compression, comme <code>gzip</code>, il peut aussi s'agir de
     chiffrement, comme <code>pgp</code> ou d'un codage comme UUencoding,
-    qui est con&ccedil;u pour transmettre un fichier binaire sous un format
+    qui est conçu pour transmettre un fichier binaire sous un format
     ASCII (texte).</p>
 
     <p>La <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC
-    HTTP/1.1</a>, section 14.11 stipule &agrave; ce titre :</p>
+    HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
 
     <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
-      <p>Le champ d'en-t&ecirc;te Content-Encoding de l'entit&eacute; est utilis&eacute; en
-      tant que modificateur du type de m&eacute;dium. Lorsqu'il est pr&eacute;sent, sa
-      valeur indique quels codages de contenu additionnels ont &eacute;t&eacute;
-      appliqu&eacute;s au corps de l'entit&eacute;, et ainsi quels m&eacute;canismes de
-      d&eacute;codage doivent &ecirc;tre appliqu&eacute;s afin de retrouver le type de
-      m&eacute;dium r&eacute;f&eacute;renc&eacute; par le champ d'en-t&ecirc;te Content-Type. Le codage de
-      contenu est principalement utilis&eacute; pour permettre la compression
+      <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
+      tant que modificateur du type de médium. Lorsqu'il est présent, sa
+      valeur indique quels codages de contenu additionnels ont été
+      appliqués au corps de l'entité, et ainsi quels mécanismes de
+      décodage doivent être appliqués afin de retrouver le type de
+      médium référencé par le champ d'en-tête Content-Type. Le codage de
+      contenu est principalement utilisé pour permettre la compression
       d'un document sans perdre l'information concernant le type de
-      m&eacute;dium sous-jacent.</p>
+      médium sous-jacent.</p>
     </blockquote>
 
     <p>En utilisant plusieurs extensions (voir la <a
-    href="#multipleext">section ci-dessus &agrave; propos des extensions de
+    href="#multipleext">section ci-dessus à propos des extensions de
     fichiers multiples</a>), vous pouvez indiquer qu'un fichier est d'un
-    <em>type</em>, particulier, et poss&egrave;de aussi un <em>codage</em>
+    <em>type</em>, particulier, et possède aussi un <em>codage</em>
     particulier.</p>
 
-    <p>Consid&eacute;rons par exemple un fichier contenant un document
-    Microsoft Word et compress&eacute; par pkzip pour r&eacute;duire sa taille. Si
-    l'extension <code>.doc</code> est associ&eacute;e au type de fichier
-    Microsoft Word, et si l'extension <code>.zip</code> est associ&eacute;e au
+    <p>Considérons par exemple un fichier contenant un document
+    Microsoft Word et compressé par pkzip pour réduire sa taille. Si
+    l'extension <code>.doc</code> est associée au type de fichier
+    Microsoft Word, et si l'extension <code>.zip</code> est associée au
     codage de fichier pkzip, alors le fichier
-    <code>Resume.doc.zip</code> sera identifi&eacute; comme document Word
-    compress&eacute; par pkzip.</p>
+    <code>Resume.doc.zip</code> sera identifié comme document Word
+    compressé par pkzip.</p>
 
-    <p>Apache joint un en-t&ecirc;te <code>Content-encoding</code> &agrave; la
-    ressource afin d'informer le navigateur client &agrave; propos de la
-    m&eacute;thode de codage.</p>
+    <p>Apache joint un en-tête <code>Content-encoding</code> à la
+    ressource afin d'informer le navigateur client à propos de la
+    méthode de codage.</p>
 
     <highlight language="config">Content-encoding: pkzip</highlight>
 </section>
 
-<section id="charset-lang"><title>Jeux de caract&egrave;res et langues</title>
-    <p>En plus du type de fichier et du codage, un autre &eacute;l&eacute;ment
+<section id="charset-lang"><title>Jeux de caractères et langues</title>
+    <p>En plus du type de fichier et du codage, un autre élément
     important d'information est la langue dans laquelle le document est
-    &eacute;crit, et avec quel jeu de caract&egrave;res le contenu du fichier doit
-    &ecirc;tre affich&eacute;. Par exemple, un document peut &ecirc;tre &eacute;crit en alphabet
-    vietnamien ou cyrillique, et doit &ecirc;tre affich&eacute; en cons&eacute;quence. Cette
-    information est &eacute;galement transmise via des en-t&ecirc;tes HTTP.</p>
+    écrit, et avec quel jeu de caractères le contenu du fichier doit
+    être affiché. Par exemple, un document peut être écrit en alphabet
+    vietnamien ou cyrillique, et doit être affiché en conséquence. Cette
+    information est également transmise via des en-têtes HTTP.</p>
 
-    <p>Les jeu de caract&egrave;res, langue, codage et type MIME sont tous
-    utilis&eacute;s au cours du processus de n&eacute;gociation de contenu (voir
-    <module>mod_negotiation</module>) afin de d&eacute;terminer quel document
+    <p>Les jeu de caractères, langue, codage et type MIME sont tous
+    utilisés au cours du processus de négociation de contenu (voir
+    <module>mod_negotiation</module>) afin de déterminer quel document
     servir au client, lorsque plusieurs choix sont possibles en fonction
-    du jeu de caract&egrave;res, de la langue, du codage ou du type MIME. Toutes
-    les associations d'extensions de noms de fichiers cr&eacute;&eacute;es via les
+    du jeu de caractères, de la langue, du codage ou du type MIME. Toutes
+    les associations d'extensions de noms de fichiers créées via les
     directives <directive module="mod_mime">AddCharset</directive>,
     <directive module="mod_mime">AddEncoding</directive>, <directive
     module="mod_mime">AddLanguage</directive> et <directive
     module="mod_mime">AddType</directive> (ainsi que les associations
-    d'extensions list&eacute;es dans le fichier d&eacute;fini par la directive
+    d'extensions listées dans le fichier défini par la directive
     <directive module="mod_mime_magic">MimeMagicFile</directive>),
-    participent &agrave; ce processus de s&eacute;lection. Les extensions de noms de
-    fichiers qui n'ont &eacute;t&eacute; associ&eacute;s que par des directives <directive
+    participent à ce processus de sélection. Les extensions de noms de
+    fichiers qui n'ont été associés que par des directives <directive
     module="mod_mime">AddHandler</directive>, <directive
     module="mod_mime" >AddInputFilter</directive> ou <directive
-    module="mod_mime">AddOutputFilter</directive>, peuvent &ecirc;tre incluses
-    ou exclues du processus de s&eacute;lection en utilisant la directive
+    module="mod_mime">AddOutputFilter</directive>, peuvent être incluses
+    ou exclues du processus de sélection en utilisant la directive
     <directive module="mod_mime">MultiviewsMatch</directive>.</p>
 
-    <section id="charset"><title>Jeu de caract&egrave;res</title>
-      <p>Pour transmettre cette information suppl&eacute;mentaire, Apache peut
-      ajouter un en-t&ecirc;te <code>Content-Language</code>, afin de
-      sp&eacute;cifier la langue dans laquelle le document est &eacute;crit, et peut
-      ajouter des informations additionnelles &agrave; l'en-t&ecirc;te
-      <code>Content-Type</code> pour indiquer le jeu de caract&egrave;res
-      particulier qui doit &ecirc;tre utilis&eacute; pour restituer correctement le
+    <section id="charset"><title>Jeu de caractères</title>
+      <p>Pour transmettre cette information supplémentaire, Apache peut
+      ajouter un en-tête <code>Content-Language</code>, afin de
+      spécifier la langue dans laquelle le document est écrit, et peut
+      ajouter des informations additionnelles à l'en-tête
+      <code>Content-Type</code> pour indiquer le jeu de caractères
+      particulier qui doit être utilisé pour restituer correctement le
       document.</p>
 
       <example>
@@ -249,16 +249,16 @@ multiples</title>
 Content-Type: text/plain; charset=ISO-8859-1
       </example>
 
-      <p>La langue est sp&eacute;cifi&eacute;e via son abr&eacute;viation en deux lettres. Le
-      <code>jeu de caract&egrave;res</code> est le nom du jeu de caract&egrave;res
-      particulier qui doit &ecirc;tre utilis&eacute;.</p>
+      <p>La langue est spécifiée via son abréviation en deux lettres. Le
+      <code>jeu de caractères</code> est le nom du jeu de caractères
+      particulier qui doit être utilisé.</p>
     </section>
 </section>
 
 <directivesynopsis>
 <name>AddCharset</name>
-<description>Associe les extensions de noms de fichiers sp&eacute;cifi&eacute;es au
-jeu de caract&egrave;res sp&eacute;cifi&eacute;</description>
+<description>Associe les extensions de noms de fichiers spécifiées au
+jeu de caractères spécifié</description>
 <syntax>AddCharset <var>jeu-car</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -267,14 +267,14 @@ jeu de caract&egrave;res sp&eacute;cifi&eacute;</description>
 
 <usage>
     <p>La directive <directive>AddCharset</directive> permet d'associer
-    les extensions de noms de fichiers sp&eacute;cifi&eacute;es au jeu de caract&egrave;res
-    sp&eacute;cifi&eacute; (le nom enregistr&eacute; sur l'Internet d'un codage de caract&egrave;res
-    donn&eacute;). <var>jeu-car</var> est le <a
-    href="http://www.iana.org/assignments/character-sets">param&egrave;tre jeu
-    de caract&egrave;res du type de m&eacute;dium</a> pour les ressources dont le nom
+    les extensions de noms de fichiers spécifiées au jeu de caractères
+    spécifié (le nom enregistré sur l'Internet d'un codage de caractères
+    donné). <var>jeu-car</var> est le <a
+    href="http://www.iana.org/assignments/character-sets">paramètre jeu
+    de caractères du type de médium</a> pour les ressources dont le nom
     de fichier contient <var>extension</var>. Cette association est
-    ajout&eacute;e &agrave; toutes les autres d&eacute;j&agrave; en vigueur, et &eacute;crase toute
-    association pr&eacute;existante pour la m&ecirc;me <var>extension</var>.</p>
+    ajoutée à toutes les autres déjà en vigueur, et écrase toute
+    association préexistante pour la même <var>extension</var>.</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -286,21 +286,21 @@ AddCharset SHIFT_JIS .sjis
     </example>
 
     <p>Avec cet exemple, le document <code>xxxx.ja.jis</code> sera
-    trait&eacute; en tant que document japonais dont le jeu de caract&egrave;re est
+    traité en tant que document japonais dont le jeu de caractère est
     <code>ISO-2022-JP</code> (idem pour le document
     <code>xxxx.jis.ja</code>). La directive
-    <directive>AddCharset</directive> sert &agrave; la fois &agrave; informer le
-    client sur le codage des caract&egrave;res du document afin que ce dernier
-    puisse &ecirc;tre interpr&eacute;t&eacute; et affich&eacute; correctement, et &agrave; la <a
-    href="../content-negotiation.html">n&eacute;gociation de contenu</a>, au
-    cours de laquelle le serveur d&eacute;cide lequel parmi plusieurs
-    documents possibles il renvoie au client en fonction des pr&eacute;f&eacute;rences
-    de ce dernier en mati&egrave;re de jeu de caract&egrave;res.</p>
+    <directive>AddCharset</directive> sert à la fois à informer le
+    client sur le codage des caractères du document afin que ce dernier
+    puisse être interprété et affiché correctement, et à la <a
+    href="../content-negotiation.html">négociation de contenu</a>, au
+    cours de laquelle le serveur décide lequel parmi plusieurs
+    documents possibles il renvoie au client en fonction des préférences
+    de ce dernier en matière de jeu de caractères.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
 </usage>
@@ -310,8 +310,8 @@ AddCharset SHIFT_JIS .sjis
 
 <directivesynopsis>
 <name>AddEncoding</name>
-<description>Associe les extensions de noms de fichiers donn&eacute;es au type
-de codage sp&eacute;cifi&eacute;</description>
+<description>Associe les extensions de noms de fichiers données au type
+de codage spécifié</description>
 <syntax>AddEncoding <var>codage</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -320,12 +320,12 @@ de codage sp&eacute;cifi&eacute;</description>
 
 <usage>
     <p>La directive <directive>AddEncoding</directive> permet d'associer
-    les extensions de noms de fichiers donn&eacute;es au codage de contenu HTTP
-    sp&eacute;cifi&eacute;. <var>codage</var> est le codage de contenu HTTP &agrave; ajouter
-    &agrave; la valeur du champ d'en-t&ecirc;te Content-Encoding pour les documents
-    poss&eacute;dant l'<var>extension</var> sp&eacute;cifi&eacute;e. Cette association est
-    ajout&eacute;e &agrave; toutes les autres d&eacute;j&agrave; en vigueur, et &eacute;crase toute
-    association pr&eacute;existante pour la m&ecirc;me <var>extension</var>.</p>
+    les extensions de noms de fichiers données au codage de contenu HTTP
+    spécifié. <var>codage</var> est le codage de contenu HTTP à ajouter
+    à la valeur du champ d'en-tête Content-Encoding pour les documents
+    possédant l'<var>extension</var> spécifiée. Cette association est
+    ajoutée à toutes les autres déjà en vigueur, et écrase toute
+    association préexistante pour la même <var>extension</var>.</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -334,38 +334,38 @@ AddEncoding x-compress .Z
       </highlight>
     </example>
 
-    <p>Avec cet exemple, les noms de fichiers poss&eacute;dant l'extension
-    <code>.gz</code> seront marqu&eacute;s comme cod&eacute;s &agrave; l'aide du codage
-    <code>x-gzip</code>, et les noms de fichiers poss&eacute;dant l'extension
-    <code>.Z</code> comme cod&eacute;s avec <code>x-compress</code>.</p>
+    <p>Avec cet exemple, les noms de fichiers possédant l'extension
+    <code>.gz</code> seront marqués comme codés à l'aide du codage
+    <code>x-gzip</code>, et les noms de fichiers possédant l'extension
+    <code>.Z</code> comme codés avec <code>x-compress</code>.</p>
 
     <p>Les clients anciens n'acceptent que <code>x-gzip</code> et
     <code>x-compress</code>, bien que les standards stipulent qu'ils
-    sont respectivement &eacute;quivalents &agrave; <code>gzip</code> et
+    sont respectivement équivalents à <code>gzip</code> et
     <code>compress</code>. Apache effectue ses comparaisons de codages
-    de contenu en ignorant tout pr&eacute;fixe <code>x-</code>. Lorsqu'il
-    r&eacute;pond avec un codage, Apache utilise l'une ou l'autre forme (c'est
-    &agrave; dire <code>x-foo</code> ou <code>foo</code>) selon les besoins du
-    client. Si le client n'a pas besoin d'une forme particuli&egrave;re, Apache
-    utilisera la forme employ&eacute;e par la directive
-    <code>AddEncoding</code>. Pour r&eacute;sumer, vous devez toujours utiliser
+    de contenu en ignorant tout préfixe <code>x-</code>. Lorsqu'il
+    répond avec un codage, Apache utilise l'une ou l'autre forme (c'est
+    à dire <code>x-foo</code> ou <code>foo</code>) selon les besoins du
+    client. Si le client n'a pas besoin d'une forme particulière, Apache
+    utilisera la forme employée par la directive
+    <code>AddEncoding</code>. Pour résumer, vous devez toujours utiliser
     <code>x-gzip</code> et <code>x-compress</code> pour ces deux
-    codages sp&eacute;cifiques. Certains codages plus r&eacute;cents, comme
-    <code>deflate</code>, doivent &ecirc;tre sp&eacute;cifi&eacute;s sans le pr&eacute;fixe
+    codages spécifiques. Certains codages plus récents, comme
+    <code>deflate</code>, doivent être spécifiés sans le préfixe
     <code>x-</code>.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddHandler</name>
-<description>Associe les extensions de noms de fichiers donn&eacute;es au
-gestionnaire sp&eacute;cifi&eacute;</description>
+<description>Associe les extensions de noms de fichiers données au
+gestionnaire spécifié</description>
 <syntax>AddHandler <var>nom-gestionnaire</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -375,9 +375,9 @@ gestionnaire sp&eacute;cifi&eacute;</description>
 <usage>
     <p>Les fichiers dont le nom a pour extension <var>extension</var>
     seront servis par le <var><a
-    href="../handler.html">nom-gestionnaire</a></var> sp&eacute;cifi&eacute;. Cette
-    association est ajout&eacute;e &agrave; toutes les autres d&eacute;j&agrave; en vigueur, et
-    &eacute;crase toute association pr&eacute;existante pour la m&ecirc;me
+    href="../handler.html">nom-gestionnaire</a></var> spécifié. Cette
+    association est ajoutée à toutes les autres déjà en vigueur, et
+    écrase toute association préexistante pour la même
     <var>extension</var>. Par exemple, pour associer les scripts CGI
     avec l'extension de fichier <code>.cgi</code>, vous pouvez utiliser
     :</p>
@@ -386,14 +386,14 @@ gestionnaire sp&eacute;cifi&eacute;</description>
       AddHandler cgi-script .cgi
     </highlight>
 
-    <p>Une fois cette ligne ins&eacute;r&eacute;e dans votre fichier httpd.conf, tout
-    fichier poss&eacute;dant l'extension <code>.cgi</code> sera trait&eacute; en tant
+    <p>Une fois cette ligne insérée dans votre fichier httpd.conf, tout
+    fichier possédant l'extension <code>.cgi</code> sera traité en tant
     que programme CGI.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
@@ -402,7 +402,7 @@ gestionnaire sp&eacute;cifi&eacute;</description>
 <directivesynopsis>
 <name>AddInputFilter</name>
 <description>Associe les extensions de noms de fichiers aux
-filtres sp&eacute;cifi&eacute;s qui traiteront les requ&ecirc;tes clients</description>
+filtres spécifiés qui traiteront les requêtes clients</description>
 <syntax>AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -412,24 +412,24 @@ filtres sp&eacute;cifi&eacute;s qui traiteront les requ&ecirc;tes clients</descr
 <usage>
     <p>La directive <directive>AddInputFilter</directive> permet
     d'associer l'extension de nom de fichier <var>extension</var> aux <a
-    href="../filter.html">filtres</a> sp&eacute;cifi&eacute;s qui traiteront les
-    requ&ecirc;tes clients et les entr&eacute;es POST &agrave; leur r&eacute;ception par le
-    serveur. Ceci s'ajoute &agrave; toute d&eacute;finition de filtre pr&eacute;existante, y
+    href="../filter.html">filtres</a> spécifiés qui traiteront les
+    requêtes clients et les entrées POST à leur réception par le
+    serveur. Ceci s'ajoute à toute définition de filtre préexistante, y
     compris la directive <directive
     module="core">SetInputFilter</directive>. Cette
-    association est ajout&eacute;e &agrave; toutes les autres d&eacute;j&agrave; en vigueur, et
-    &eacute;crase toute association pr&eacute;existante pour la m&ecirc;me
+    association est ajoutée à toutes les autres déjà en vigueur, et
+    écrase toute association préexistante pour la même
     <var>extension</var>.</p>
 
-    <p>Si plusieurs <var>filtres</var> sont sp&eacute;cifi&eacute;s, ils doivent &ecirc;tre
-    s&eacute;par&eacute;s par des points-virgules et inscrits dans l'ordre selon
+    <p>Si plusieurs <var>filtres</var> sont spécifiés, ils doivent être
+    séparés par des points-virgules et inscrits dans l'ordre selon
     lequel ils devront traiter le contenu. L'argument <var>filtre</var>
-    est insensible &agrave; la casse.</p>
+    est insensible à la casse.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
 </usage>
@@ -439,8 +439,8 @@ filtres sp&eacute;cifi&eacute;s qui traiteront les requ&ecirc;tes clients</descr
 
 <directivesynopsis>
 <name>AddLanguage</name>
-<description>Associe l'extension de nom de fichier donn&eacute;e &agrave; la langue
-sp&eacute;cifi&eacute;</description>
+<description>Associe l'extension de nom de fichier donnée à la langue
+spécifié</description>
 <syntax>AddLanguage <var>symbole-langue</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -449,13 +449,13 @@ sp&eacute;cifi&eacute;</description>
 
 <usage>
     <p>La directive <directive>AddLanguage</directive> permet d'associer
-    l'extension de nom de fichier donn&eacute;e &agrave; la langue sp&eacute;cifi&eacute;e. Les
-    fichiers dont l'extension correspond &agrave; la valeur
+    l'extension de nom de fichier donnée à la langue spécifiée. Les
+    fichiers dont l'extension correspond à la valeur
     de l'argument <var>extension</var> se voient attribuer la valeur de
-    l'argument <var>symbole-langue</var> comme en-t&ecirc;te HTTP
-    Content-Language en accord avec les identifiants de langues d&eacute;finis
+    l'argument <var>symbole-langue</var> comme en-tête HTTP
+    Content-Language en accord avec les identifiants de langues définis
     par la RFC 3066. Cette directive l'emporte sur toute association
-    pr&eacute;existante pour la m&ecirc;me <var>extension</var>.</p>
+    préexistante pour la même <var>extension</var>.</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -465,19 +465,19 @@ AddLanguage fr .fr
       </highlight>
     </example>
 
-    <p>Avec cet exemple, le document <code>xxxx.en.Z</code> sera trait&eacute;
-    en tant que document compress&eacute; de langue anglaise (idem pour le
+    <p>Avec cet exemple, le document <code>xxxx.en.Z</code> sera traité
+    en tant que document compressé de langue anglaise (idem pour le
     document <code>xxxx.Z.en</code>). Bien que la langue soit fournie au
     client, le navigateur n'utilise habituellement pas cette
     information. La directive <directive>AddLanguage</directive> est
-    principalement utilis&eacute;e au cours de la <a
-    href="../content-negotiation.html">n&eacute;gociation de contenu</a>, o&ugrave; le
+    principalement utilisée au cours de la <a
+    href="../content-negotiation.html">négociation de contenu</a>, où le
     serveur choisit d'envoyer un document parmi plusieurs documents
-    possibles en fonction de la pr&eacute;f&eacute;rence du client en mati&egrave;re de
+    possibles en fonction de la préférence du client en matière de
     langue.</p>
 
     <p>Si une extension fait l'objet de plusieurs associations de
-    langues, c'est la derni&egrave;re qui sera utilis&eacute;e. Ainsi, dans le cas
+    langues, c'est la dernière qui sera utilisée. Ainsi, dans le cas
     suivant,</p>
 
     <highlight language="config">
@@ -486,13 +486,13 @@ AddLanguage en-gb .en
 AddLanguage en-us .en
     </highlight>
 
-    <p>les documents poss&eacute;dant l'extension <code>.en</code> seront
-    trait&eacute;s en tant que documents de langue <code>en-us</code>.</p>
+    <p>les documents possédant l'extension <code>.en</code> seront
+    traités en tant que documents de langue <code>en-us</code>.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
@@ -501,7 +501,7 @@ AddLanguage en-us .en
 <directivesynopsis>
 <name>AddOutputFilter</name>
 <description>Associe les extensions de noms de fichiers aux
-filtres sp&eacute;cifi&eacute;s qui traiteront les r&eacute;ponses en provenance du
+filtres spécifiés qui traiteront les réponses en provenance du
 serveur</description>
 <syntax>AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</syntax>
@@ -511,58 +511,58 @@ serveur</description>
 
 <usage>
     <p>La directive <directive>AddOutputFilter</directive> permet
-    d'associer l'extension de nom de fichier d&eacute;finie par l'argument
+    d'associer l'extension de nom de fichier définie par l'argument
     <var>extension</var> aux <a
-    href="../filter.html">filtres</a> qui traiteront les r&eacute;ponses en
+    href="../filter.html">filtres</a> qui traiteront les réponses en
     provenance du serveur avant de les envoyer au client. Ces filtres
-    s'ajoutent &agrave; tout filtre d&eacute;fini par d'autres directives comme
+    s'ajoutent à tout filtre défini par d'autres directives comme
     <directive module="core">SetOutputFilter</directive> et <directive
     module="mod_filter">AddOutputFilterByType</directive>. Cette association
-    est fusionn&eacute;e avec toute autre association en vigueur, et l'emporte
-    sur toute association pr&eacute;existante pour la m&ecirc;me
+    est fusionnée avec toute autre association en vigueur, et l'emporte
+    sur toute association préexistante pour la même
     <var>extension</var>.</p>
 
     <p>Avec l'exemple suivant, tous les fichiers <code>.shtml</code>
-    seront trait&eacute;s en tant qu'inclusions c&ocirc;t&eacute; serveur (SSI), et la
-    sortie sera compress&eacute;e &agrave; l'aide du module
+    seront traités en tant qu'inclusions côté serveur (SSI), et la
+    sortie sera compressée à l'aide du module
     <module>mod_deflate</module>.</p>
 
     <highlight language="config">
       AddOutputFilter INCLUDES;DEFLATE shtml
     </highlight>
 
-    <p>Si plusieurs <var>filtres</var> sont sp&eacute;cifi&eacute;s, ils doivent &ecirc;tre
-    s&eacute;par&eacute;s par des points-virgules et inscrits dans l'ordre selon
+    <p>Si plusieurs <var>filtres</var> sont spécifiés, ils doivent être
+    séparés par des points-virgules et inscrits dans l'ordre selon
     lequel il devront traiter le contenu. L'argument <var>filtre</var>
-    est insensible &agrave; la casse.</p>
+    est insensible à la casse.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
-    <p>Notez que toute d&eacute;finition de filtres via la directive <directive
+    <p>Notez que toute définition de filtres via la directive <directive
     module="mod_mime">AddOutputFilter</directive> remplace toutes les
-    d&eacute;finitions pr&eacute;c&eacute;dentes effectu&eacute;es via cette m&ecirc;me directive.</p>
+    définitions précédentes effectuées via cette même directive.</p>
 
     <highlight language="config">
-# Filtre sp&eacute;cifi&eacute; "DEFLATE"
+# Filtre spécifié "DEFLATE"
 AddOutputFilter DEFLATE shtml
 &lt;Location "/foo"&gt;
-  # Filtre sp&eacute;cifi&eacute; "INCLUDES", remplace "DEFLATE"
+  # Filtre spécifié "INCLUDES", remplace "DEFLATE"
   AddOutputFilter INCLUDES shtml
 &lt;/Location&gt;
 &lt;Location "/bar"&gt;
-  # Filtre sp&eacute;cifi&eacute; "INCLUDES;DEFLATE", remplace "DEFLATE"
+  # Filtre spécifié "INCLUDES;DEFLATE", remplace "DEFLATE"
   AddOutputFilter INCLUDES;DEFLATE shtml
 &lt;/Location&gt;
 &lt;Location "/bar/baz"&gt;
-  # Filtre sp&eacute;cifi&eacute; "BUFFER", remplace "INCLUDES;DEFLATE"
+  # Filtre spécifié "BUFFER", remplace "INCLUDES;DEFLATE"
   AddOutputFilter BUFFER shtml
 &lt;/Location&gt;
 &lt;Location "/bar/baz/buz"&gt;
-  # Pas de filtre sp&eacute;cifi&eacute;, suppression de "BUFFER"
+  # Pas de filtre spécifié, suppression de "BUFFER"
   RemoveOutputFilter shtml
 &lt;/Location&gt;
     </highlight>
@@ -574,8 +574,8 @@ AddOutputFilter DEFLATE shtml
 <directivesynopsis>
 <name>AddType</name>
 <description>Associe les extensions de noms de fichiers au type de
-contenu sp&eacute;cifi&eacute;</description>
-<syntax>AddType <var>type-m&eacute;dium</var> <var>extension</var>
+contenu spécifié</description>
+<syntax>AddType <var>type-médium</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -583,18 +583,18 @@ contenu sp&eacute;cifi&eacute;</description>
 
 <usage>
     <p>La directive <directive>AddType</directive> permet d'associer les
-    extensions de noms de fichiers donn&eacute;es au type de contenu sp&eacute;cifi&eacute;.
-    <var>type-m&eacute;dium</var> est le <glossary ref="media-type">Type
-    MIME</glossary> &agrave; utiliser pour les fichiers dont le nom poss&egrave;de
-    l'extension <var>extension</var>. Cette association s'ajoute &agrave; toute
+    extensions de noms de fichiers données au type de contenu spécifié.
+    <var>type-médium</var> est le <glossary ref="media-type">Type
+    MIME</glossary> à utiliser pour les fichiers dont le nom possède
+    l'extension <var>extension</var>. Cette association s'ajoute à toute
     autre association en vigueur, et l'emporte sur toute association
-    pr&eacute;existante pour la m&ecirc;me <var>extension</var>.</p>
+    préexistante pour la même <var>extension</var>.</p>
 
     <note>
-      Plut&ocirc;t que d'&eacute;diter directement le fichier <directive
-      module="mod_mime">TypesConfig</directive>, il est recommand&eacute;
+      Plutôt que d'éditer directement le fichier <directive
+      module="mod_mime">TypesConfig</directive>, il est recommandé
       d'utiliser la directive <directive>AddType</directive> pour
-      ajouter de nouveaux types de m&eacute;dias.
+      ajouter de nouveaux types de médias.
     </note>
 
     <example><title>Exemple</title>
@@ -603,7 +603,7 @@ contenu sp&eacute;cifi&eacute;</description>
       </highlight>
     </example>
 
-    <p>Ou, pour sp&eacute;cifier plusieurs extensions dans une seule directive
+    <p>Ou, pour spécifier plusieurs extensions dans une seule directive
     :</p>
 
     <example><title>Exemple</title>
@@ -612,17 +612,17 @@ contenu sp&eacute;cifi&eacute;</description>
       </highlight>
     </example>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial. Les noms de fichiers
-    peuvent poss&eacute;der <a href="#multipleext">plusieurs extensions</a>, et
-    l'argument <var>extension</var> sera compar&eacute; &agrave; chacune d'entre
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial. Les noms de fichiers
+    peuvent posséder <a href="#multipleext">plusieurs extensions</a>, et
+    l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
-    <p>Il est possible d'obtenir un effet similaire &agrave; celui de la
+    <p>Il est possible d'obtenir un effet similaire à celui de la
     directive <directive
     module="mod_negotiation">LanguagePriority</directive> du module
     <module>mod_negotiation</module> en qualifiant un <var>type de
-    m&eacute;dia</var> avec <code>qs</code> :</p>
+    média</var> avec <code>qs</code> :</p>
 
     <example><title>Exemple</title>
       <highlight language="config">
@@ -630,39 +630,39 @@ contenu sp&eacute;cifi&eacute;</description>
       </highlight>
     </example>
 
-    <p>Ceci peut s'av&eacute;rer utile dans certaines situations, par exemple
-    lorsqu'un client qui a ajout&eacute; un en-t&ecirc;te <code>Accept: */*</code> &agrave;
-    sa requ&ecirc;te n'est pas en mesure de traiter le contenu renvoy&eacute; par le
+    <p>Ceci peut s'avérer utile dans certaines situations, par exemple
+    lorsqu'un client qui a ajouté un en-tête <code>Accept: */*</code> à
+    sa requête n'est pas en mesure de traiter le contenu renvoyé par le
     serveur.</p>
 
-    <p>&Agrave; la base, cette directive configure le type de contenu g&eacute;n&eacute;r&eacute;
-    pour les fichiers statiques servis &agrave; partir du syst&egrave;me de fichiers.
+    <p>À la base, cette directive configure le type de contenu généré
+    pour les fichiers statiques servis à partir du système de fichiers.
     Dans le cas des ressources autres que les fichiers statiques pour
-    lesquelles le g&eacute;n&eacute;rateur de la r&eacute;ponse sp&eacute;cifie en g&eacute;n&eacute;ral un
+    lesquelles le générateur de la réponse spécifie en général un
     Content-Type, cette directive n'a aucun effet.</p>
 
     <note><title>Note</title>
-    <p>Si aucun gestionnaire n'est explicitement d&eacute;fini pour une
-    requ&ecirc;te, le type de contenu sp&eacute;cifi&eacute; sera aussi utilis&eacute; comme nom du
+    <p>Si aucun gestionnaire n'est explicitement défini pour une
+    requête, le type de contenu spécifié sera aussi utilisé comme nom du
     gestionnaire.</p>
 
     <p>Lorsqu'aucune directive comme <directive
     module="core">SetHandler</directive> ou
-    <directive>module="mod_mime">AddHandler</directive> ne s'applique &agrave;
-    une requ&ecirc;te, le nom de gestionnaire interne normalement d&eacute;fini
-    par une de ces directives est en fait d&eacute;fini par le type de contenu
-    sp&eacute;cifi&eacute; par la pr&eacute;sente directive.</p>
+    <directive>module="mod_mime">AddHandler</directive> ne s'applique à
+    une requête, le nom de gestionnaire interne normalement défini
+    par une de ces directives est en fait défini par le type de contenu
+    spécifié par la présente directive.</p>
     <p>
     Pour des raisons historiques, certains modules tiers comme mod_php
     peuvent adopter ce type de comportement pour prendre en compte la
-    requ&ecirc;te concern&eacute;e.
+    requête concernée.
     </p>
-    <p>Il est conseill&eacute; d'&eacute;viter les configurations qui reposent sur de
-    tels types "synth&eacute;tiques". En outre, les configurations qui
-    limitent l'acc&egrave;s aux directives <directive
+    <p>Il est conseillé d'éviter les configurations qui reposent sur de
+    tels types "synthétiques". En outre, les configurations qui
+    limitent l'accès aux directives <directive
     module="core">SetHandler</directive> ou <directive
     module="mod_mime">AddHandler</directive> doivent aussi limiter
-    l'acc&egrave;s &agrave; la directive AddType.</p>
+    l'accès à la directive AddType.</p>
     </note>
 
 </usage>
@@ -684,42 +684,42 @@ recherche de correspondance de fichier avec les vues multiples
 
 <usage>
     <p>La directive <directive>MultiviewsMatch</directive> permet trois
-    comportements diff&eacute;rents pour la fonctionnalit&eacute; Multiviews du module
+    comportements différents pour la fonctionnalité Multiviews du module
     <a href="mod_negotiation.html">mod_negotiation</a>. Les vues
-    multiples permettent d'associer une requ&ecirc;te pour un fichier, par
-    exemple <code>index.html</code>, &agrave; toute extension n&eacute;goci&eacute;e
-    s'ajoutant &agrave; la requ&ecirc;te de base, par exemple
+    multiples permettent d'associer une requête pour un fichier, par
+    exemple <code>index.html</code>, à toute extension négociée
+    s'ajoutant à la requête de base, par exemple
     <code>index.html.en</code>, <code>index.html.fr</code>, ou
     <code>index.html.gz</code>.</p>
 
     <p>L'option <code>NegotiatedOnly</code> implique que toute extension
-    s'ajoutant au nom de base doit correspondre &agrave; une extension de
-    <module>mod_mime</module> reconnue pour la n&eacute;gociation de contenu,
+    s'ajoutant au nom de base doit correspondre à une extension de
+    <module>mod_mime</module> reconnue pour la négociation de contenu,
     par exemple Charset, Content-Type, Language, ou Encoding. C'est la
-    valeur d'option par d&eacute;faut, et la contrainte la plus stricte
+    valeur d'option par défaut, et la contrainte la plus stricte
     dont les effets de bord inattendus sont les moins nombreux.</p>
 
-    <p>Pour inclure des extensions associ&eacute;es avec des gestionnaires
-    et/ou des filtres, d&eacute;finissez la directive
-    <directive>MultiviewsMatch</directive> avec les mots-cl&eacute;s
+    <p>Pour inclure des extensions associées avec des gestionnaires
+    et/ou des filtres, définissez la directive
+    <directive>MultiviewsMatch</directive> avec les mots-clés
     <code>Handlers</code>, <code>Filters</code>, ou les deux. Si tous
-    les autres facteurs sont &eacute;gaux, c'est le fichier de plus petite
-    taille qui sera servi ; par exemple, si le choix doit s'op&eacute;rer entre
+    les autres facteurs sont égaux, c'est le fichier de plus petite
+    taille qui sera servi ; par exemple, si le choix doit s'opérer entre
     <code>index.html.cgi</code> de 500 octets et
     <code>index.html.pl</code> de 1000 octets, c'est le fichier
     <code>.cgi</code> qui l'emportera dans cet exemple. Les utilisateurs
-    de fichiers <code>.asis</code> auront avantage &agrave; utiliser l'option
-    Handler, si les fichiers <code>.asis</code> sont associ&eacute;s au
+    de fichiers <code>.asis</code> auront avantage à utiliser l'option
+    Handler, si les fichiers <code>.asis</code> sont associés au
     gestionnaire <code>asis-handler</code>.</p>
 
     <p>Vous pouvez enfin autoriser l'association de toute extension avec
-    l'option <code>Any</code>, m&ecirc;me si <module>mod_mime</module> ne
-    reconna&icirc;t pas l'extension. Ceci
-    peut conduire &agrave; des r&eacute;sultats impr&eacute;visibles, comme l'envoi de
+    l'option <code>Any</code>, même si <module>mod_mime</module> ne
+    reconnaît pas l'extension. Ceci
+    peut conduire à des résultats imprévisibles, comme l'envoi de
     fichiers .old ou .bak contrairement aux souhaits du webmaster.</p>
 
     <p>Par exemple, la configuration suivante va permettre l'inclusion
-    des extensions associ&eacute;es aux gestionnaires et aux filtres dans les
+    des extensions associées aux gestionnaires et aux filtres dans les
     vues multiples, tout en excluant les fichiers de type inconnu :</p>
 
     <highlight language="config">
@@ -739,10 +739,10 @@ recherche de correspondance de fichier avec les vues multiples
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
-<description>D&eacute;finit un symbole de langue par d&eacute;faut &agrave; affecter au champ
-d'en-t&ecirc;te Content-Language pour toutes les ressources dans le contexte
-courant auxquelles aucun symbole de langue n'a &eacute;t&eacute;
-associ&eacute;.</description>
+<description>Définit un symbole de langue par défaut à affecter au champ
+d'en-tête Content-Language pour toutes les ressources dans le contexte
+courant auxquelles aucun symbole de langue n'a été
+associé.</description>
 <syntax>DefaultLanguage <var>symbole-langue</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -750,25 +750,25 @@ associ&eacute;.</description>
 
 <usage>
     <p>La directive <directive>DefaultLanguage</directive> permet
-    d'indiquer &agrave; Apache que toutes les ressources du contexte courant
-    (par exemple, toutes les ressources concern&eacute;es par le conteneur
+    d'indiquer à Apache que toutes les ressources du contexte courant
+    (par exemple, toutes les ressources concernées par le conteneur
     <directive module="core" type="section">Directory</directive>
-    courant) qui ne poss&egrave;dent pas d'extension de langue explicite
-    (comme <code>.fr</code> ou <code>.de</code> tel que d&eacute;fini par la
+    courant) qui ne possèdent pas d'extension de langue explicite
+    (comme <code>.fr</code> ou <code>.de</code> tel que défini par la
     directive <directive module="mod_mime">AddLanguage</directive>),
-    verront leur en-t&ecirc;te HTTP Content-Language affect&eacute; de la langue
+    verront leur en-tête HTTP Content-Language affecté de la langue
     <var>symbole-langue</var>. Ceci permet de marquer des arborescences
-    de r&eacute;pertoires enti&egrave;res comme contenant des documents en fran&ccedil;ais,
-    par exemple, sans avoir &agrave; renommer chaque fichier. Notez qu'&agrave; la
-    diff&eacute;rence de l'utilisation des extensions pour sp&eacute;cifier des
+    de répertoires entières comme contenant des documents en français,
+    par exemple, sans avoir à renommer chaque fichier. Notez qu'à la
+    différence de l'utilisation des extensions pour spécifier des
     langues, <directive>DefaultLanguage</directive> ne permet de
-    sp&eacute;cifier qu'une seule langue.</p>
+    spécifier qu'une seule langue.</p>
 
     <p>Si aucune directive <directive>DefaultLanguage</directive> n'est
-    en vigueur, et si un fichier ne poss&egrave;de pas d'extension configur&eacute;e
+    en vigueur, et si un fichier ne possède pas d'extension configurée
     par la directive <directive
-    module="mod_mime">AddLanguage</directive>, aucun champ d'en-t&ecirc;te
-    Content-Language ne sera g&eacute;n&eacute;r&eacute;.</p>
+    module="mod_mime">AddLanguage</directive>, aucun champ d'en-tête
+    Content-Language ne sera généré.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -781,7 +781,7 @@ associ&eacute;.</description>
 
 <directivesynopsis>
 <name>ModMimeUsePathInfo</name>
-<description>Indique &agrave; <module>mod_mime</module> de traiter les &eacute;l&eacute;ments
+<description>Indique à <module>mod_mime</module> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
 fichier</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
@@ -791,12 +791,12 @@ fichier</description>
 <usage>
     <p>La directive <directive>ModMimeUsePathInfo</directive> permet de
     combiner le nom de fichier avec la partie <code>path_info</code> de
-    l'URL pour appliquer les directives <module>mod_mime</module> &agrave; la
-    requ&ecirc;te. La valeur par d&eacute;faut est <code>Off</code> - situation dans
-    laquelle l'&eacute;l&eacute;ment <code>path_info</code> est ignor&eacute;.</p>
+    l'URL pour appliquer les directives <module>mod_mime</module> à la
+    requête. La valeur par défaut est <code>Off</code> - situation dans
+    laquelle l'élément <code>path_info</code> est ignoré.</p>
 
-    <p>L'utilisation de cette directive est conseill&eacute;e si vous utilisez
-    un syst&egrave;me de fichiers virtuel.</p>
+    <p>L'utilisation de cette directive est conseillée si vous utilisez
+    un système de fichiers virtuel.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -804,22 +804,22 @@ fichier</description>
       </highlight>
     </example>
 
-    <p>Consid&eacute;rons une requ&ecirc;te pour <code>/index.php/foo.shtml</code>,
-    <module>mod_mime</module> ne traitera pas la requ&ecirc;te entrante comme
+    <p>Considérons une requête pour <code>/index.php/foo.shtml</code>,
+    <module>mod_mime</module> ne traitera pas la requête entrante comme
     <code>/index.php/foo.shtml</code> et les directives comme
     <code>AddOutputFilter INCLUDES .shtml</code> ajouteront le filtre
-    <code>INCLUDES</code> &agrave; la requ&ecirc;te. Si la directive
-    <directive>ModMimeUsePathInfo</directive> n'est pas d&eacute;finie, le
-    filtre <code>INCLUDES</code> ne sera pas ajout&eacute;. Le fonctionnement
+    <code>INCLUDES</code> à la requête. Si la directive
+    <directive>ModMimeUsePathInfo</directive> n'est pas définie, le
+    filtre <code>INCLUDES</code> ne sera pas ajouté. Le fonctionnement
     sera identique dans le cas des chemins virtuels, tels que ceux
-    d&eacute;finis par la directive <directive type="section">Location</directive></p>
+    définis par la directive <directive type="section">Location</directive></p>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
-<description>Supprime toute association de jeu de caract&egrave;res pour un
+<description>Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</description>
 <syntax>RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -829,14 +829,14 @@ ensemble d'extensions de noms de fichiers</description>
 
 <usage>
     <p>La directive <directive>RemoveCharset</directive> permet de
-    supprimer toute association de jeu de caract&egrave;res pour les fichiers
-    dont les noms poss&egrave;dent les extensions sp&eacute;cifi&eacute;es. Ceci permet, au
+    supprimer toute association de jeu de caractères pour les fichiers
+    dont les noms possèdent les extensions spécifiées. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier.</p>
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -859,10 +859,10 @@ ensemble d'extensions de noms de fichiers</description>
 <usage>
     <p>La directive <directive>RemoveEncoding</directive> permet de
     supprimer toute association de codage pour les fichiers dont les
-    noms poss&egrave;dent les extensions sp&eacute;cifi&eacute;es. Ceci permet, au
+    noms possèdent les extensions spécifiées. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier. Voici un exemple
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
     <example><title>/foo/.htaccess:</title>
@@ -876,25 +876,25 @@ AddType text/plain .asc
     </example>
 
     <p>Avec cette configuration, le fichier <code>foo.gz</code> sera
-    marqu&eacute; comme cod&eacute; avec gzip, mais <code>foo.gz.asc</code> sera
-    marqu&eacute; comme fichier texte non cod&eacute;.</p>
+    marqué comme codé avec gzip, mais <code>foo.gz.asc</code> sera
+    marqué comme fichier texte non codé.</p>
 
     <note><title>Note</title>
-      <p>Les directives <directive>RemoveEncoding</directive> &eacute;tant
-      trait&eacute;es <em>apr&egrave;s</em> toute directive <directive
+      <p>Les directives <directive>RemoveEncoding</directive> étant
+      traitées <em>après</em> toute directive <directive
       module="mod_mime">AddEncoding</directive>, il est possible
-      qu'elles annulent les effets de ces derni&egrave;res si les deux
-      apparaissent dans la configuration du m&ecirc;me r&eacute;pertoire.</p>
+      qu'elles annulent les effets de ces dernières si les deux
+      apparaissent dans la configuration du même répertoire.</p>
     </note>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveHandler</name>
-<description>Supprime toute association de gestionnaire &agrave; un ensemble
+<description>Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</description>
 <syntax>RemoveHandler <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -904,11 +904,11 @@ d'extensions de noms de fichiers</description>
 
 <usage>
     <p>La directive <directive>RemoveHandler</directive> permet de
-    supprimer toute association de gestionnaire &agrave; des fichiers dont le
-    nom poss&egrave;de l'extension donn&eacute;e. Ceci permet, au
+    supprimer toute association de gestionnaire à des fichiers dont le
+    nom possède l'extension donnée. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier. Voici un exemple
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
     <example><title>/foo/.htaccess:</title>
@@ -923,20 +923,20 @@ d'extensions de noms de fichiers</description>
       </highlight>
     </example>
 
-    <p>Avec cette derni&egrave;re ligne, les fichiers <code>.html</code> du
-    r&eacute;pertoire <code>/foo/bar</code> seront trait&eacute;s en tant que fichiers
-    normaux, au lieu d'&ecirc;tre trait&eacute;s en tant que candidats &agrave;
-    l'interpr&eacute;tation (voir le module <module>mod_include</module>
+    <p>Avec cette dernière ligne, les fichiers <code>.html</code> du
+    répertoire <code>/foo/bar</code> seront traités en tant que fichiers
+    normaux, au lieu d'être traités en tant que candidats à
+    l'interprétation (voir le module <module>mod_include</module>
     module).</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveInputFilter</name>
-<description>Supprime toute association de filtre en entr&eacute;e &agrave; un
+<description>Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</description>
 <syntax>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -947,14 +947,14 @@ ensemble d'extensions de noms de fichiers</description>
 <usage>
     <p>La directive <directive>RemoveInputFilter</directive> permet de
     supprimer toute association de <a href="../filter.html">filtre</a>
-    en entr&eacute;e &agrave; des fichiers dont le nom poss&egrave;de l'extension donn&eacute;e.
+    en entrée à des fichiers dont le nom possède l'extension donnée.
     Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier.</p>
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 </usage>
 <seealso><directive module="mod_mime">AddInputFilter</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
@@ -962,7 +962,7 @@ ensemble d'extensions de noms de fichiers</description>
 
 <directivesynopsis>
 <name>RemoveLanguage</name>
-<description>Supprime toute association de langue &agrave; un ensemble
+<description>Supprime toute association de langue à un ensemble
 d'extensions de noms de fichiers</description>
 <syntax>RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -972,20 +972,20 @@ d'extensions de noms de fichiers</description>
 
 <usage>
     <p>La directive <directive>RemoveLanguage</directive> permet de
-    supprimer toute association de langue &agrave; des fichiers dont le nom
-    poss&egrave;de l'extension donn&eacute;e. Ceci permet, au
+    supprimer toute association de langue à des fichiers dont le nom
+    possède l'extension donnée. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier.</p>
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveOutputFilter</name>
-<description>Supprime toute association de filtre en sortie &agrave; un
+<description>Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</description>
 <syntax>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -996,13 +996,13 @@ ensemble d'extensions de noms de fichiers</description>
 <usage>
     <p>La directive <directive>RemoveOutputFilter</directive> permet de
     supprimer toute association de <a href="../filter.html">filtre</a>
-    en sortie &agrave; des fichiers dont le nom poss&egrave;de l'extension donn&eacute;e. Ceci permet, au
+    en sortie à des fichiers dont le nom possède l'extension donnée. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier.</p>
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier.</p>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -1015,7 +1015,7 @@ ensemble d'extensions de noms de fichiers</description>
 
 <directivesynopsis>
 <name>RemoveType</name>
-<description>Supprime toute association de type de contenu &agrave; un ensemble
+<description>Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</description>
 <syntax>RemoveType <var>extension</var> [<var>extension</var>]
 ...</syntax>
@@ -1026,11 +1026,11 @@ d'extensions de noms de fichiers</description>
 <usage>
     <p>La directive <directive>RemoveType</directive> permet de
     supprimer toute association de <glossary ref="media-type">type de
-    m&eacute;dium</glossary> &agrave; des fichiers dont le nom poss&egrave;de l'extension
-    donn&eacute;e. Ceci permet, au
+    médium</glossary> à des fichiers dont le nom possède l'extension
+    donnée. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
-    association h&eacute;rit&eacute;e du r&eacute;pertoire parent ou de la configuration du
-    serveur pour un r&eacute;pertoire particulier. Voici un exemple
+    association héritée du répertoire parent ou de la configuration du
+    serveur pour un répertoire particulier. Voici un exemple
     d'utilisation de cette directive :</p>
 
     <example><title>/foo/.htaccess:</title>
@@ -1040,22 +1040,22 @@ d'extensions de noms de fichiers</description>
     </example>
 
     <p>Cette ligne aura pour effet de supprimer tout traitement
-    sp&eacute;cifique des fichiers <code>.cgi</code> dans le r&eacute;pertoire
-    <code>/foo/</code> et ses sous-r&eacute;pertoires, et les r&eacute;ponses
-    contenant ce type de fichier ne poss&egrave;deront pas de champ d'en-t&ecirc;te
+    spécifique des fichiers <code>.cgi</code> dans le répertoire
+    <code>/foo/</code> et ses sous-répertoires, et les réponses
+    contenant ce type de fichier ne possèderont pas de champ d'en-tête
     HTTP Content-Type.</p>
 
     <note><title>Note</title>
-      <p>Les directives <directive>RemoveType</directive> sont trait&eacute;es
-      <em>apr&egrave;s</em> toutes les directives <directive
+      <p>Les directives <directive>RemoveType</directive> sont traitées
+      <em>après</em> toutes les directives <directive
       module="mod_mime">AddType</directive>, et il est possible que les
-      effets de ces derni&egrave;res soient annul&eacute;s si les deux types de
-      directives sont pr&eacute;sents au sein de la configuration du m&ecirc;me
-      r&eacute;pertoire.</p>
+      effets de ces dernières soient annulés si les deux types de
+      directives sont présents au sein de la configuration du même
+      répertoire.</p>
     </note>
 
-    <p>L'argument <var>extension</var> est insensible &agrave; la casse et peut
-    &ecirc;tre sp&eacute;cifi&eacute; avec ou sans le point initial.</p>
+    <p>L'argument <var>extension</var> est insensible à la casse et peut
+    être spécifié avec ou sans le point initial.</p>
 </usage>
 </directivesynopsis>
 
@@ -1067,55 +1067,55 @@ d'extensions de noms de fichiers</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>La directive <directive>TypesConfig</directive> permet de d&eacute;finir
+    <p>La directive <directive>TypesConfig</directive> permet de définir
     le chemin du fichier de configuration des <glossary
-    ref="media-type">types de m&eacute;dia</glossary>. L'argument
-    <var>chemin-fichier</var> est un chemin relatif au r&eacute;pertoire d&eacute;fini
+    ref="media-type">types de média</glossary>. L'argument
+    <var>chemin-fichier</var> est un chemin relatif au répertoire défini
     par la directive <directive module="core">ServerRoot</directive>. Ce
-    fichier contient la liste des associations par d&eacute;faut des extensions
+    fichier contient la liste des associations par défaut des extensions
     de noms de fichiers aux types de contenus. La plupart des
     administrateurs utilisent le fichier <code>mime.types</code> fourni
-    par leur syst&egrave;me d'exploitation,
-    qui associe les extensions de noms de fichiers courantes &agrave; la liste
-    officielle des types de m&eacute;dia enregistr&eacute;s par l'IANA et maintenue &agrave;
+    par leur système d'exploitation,
+    qui associe les extensions de noms de fichiers courantes à la liste
+    officielle des types de média enregistrés par l'IANA et maintenue à
     <a href=
     "http://www.iana.org/assignments/media-types/index.html"
     >http://www.iana.org/assignments/media-types/index.html</a>, ainsi
     qu'un grand nombre de types non officiels. Ce fichier permet de
     simplifier le fichier <code>httpd.conf</code> en fournissant la
-    majorit&eacute; des d&eacute;finitions de types de m&eacute;dia, et ses d&eacute;finitions
-    peuvent &ecirc;tre &eacute;cras&eacute;es par des directives <directive
+    majorité des définitions de types de média, et ses définitions
+    peuvent être écrasées par des directives <directive
     module="mod_mime">AddType</directive>, selon les besoins. Il est
-    d&eacute;conseill&eacute; de modifier le contenu du fichier
-    <code>mime.types</code> car il peut &ecirc;tre remplac&eacute; lors d'une mise &agrave;
+    déconseillé de modifier le contenu du fichier
+    <code>mime.types</code> car il peut être remplacé lors d'une mise à
     jour du serveur.</p>
 
-    <p>Le fichier contient des lignes dont le format est identique &agrave;
+    <p>Le fichier contient des lignes dont le format est identique à
     celui des arguments d'une directive <directive
     module="mod_mime">AddType</directive> :</p>
 
     <example>
-      <var>type-m&eacute;dium</var> [<var>extension</var>] ...
+      <var>type-médium</var> [<var>extension</var>] ...
     </example>
 
-    <p>Les extensions sont insensibles &agrave; la casse. Les lignes vides et
-    les lignes commen&ccedil;ant par un di&egrave;se (<code>#</code>) sont
-    ignor&eacute;es. Les lignes vides servent &agrave; compl&eacute;ter le fichier
-    mime.types. Apache httpd peut encore d&eacute;terminer ces types via le
+    <p>Les extensions sont insensibles à la casse. Les lignes vides et
+    les lignes commençant par un dièse (<code>#</code>) sont
+    ignorées. Les lignes vides servent à compléter le fichier
+    mime.types. Apache httpd peut encore déterminer ces types via le
     module <module>mod_mime_magic</module>.</p>
 
     <note>
-      Merci de <strong>ne pas</strong> soumettre de requ&ecirc;tes au Projet
-      de Serveur HTTP Apache pour ajouter une entr&eacute;e dans le fichier
+      Merci de <strong>ne pas</strong> soumettre de requêtes au Projet
+      de Serveur HTTP Apache pour ajouter une entrée dans le fichier
       <code>mime.types</code> fourni, sauf si :
-      1) le type de m&eacute;dium est d&eacute;j&agrave; enregistr&eacute; &agrave; l'IANA
-      2) et si l'extension est largement accept&eacute;e et ne provoque pas de
-      conflits d'extensions entre les diff&eacute;rentes plate-formes. Les
-      requ&ecirc;tes du type <code>cat&eacute;gorie/x-sous-type</code> seront
-      syst&eacute;matiquement rejet&eacute;es, ainsi que toute nouvelle extension de
+      1) le type de médium est déjà enregistré à l'IANA
+      2) et si l'extension est largement acceptée et ne provoque pas de
+      conflits d'extensions entre les différentes plate-formes. Les
+      requêtes du type <code>catégorie/x-sous-type</code> seront
+      systématiquement rejetées, ainsi que toute nouvelle extension de
       deux lettres, car elle ont de fortes chances d'entrer en conflit
-      par la suite avec les inombrables langues pr&eacute;existantes et les
-      espaces de nommage des jeux de caract&egrave;res.
+      par la suite avec les inombrables langues préexistantes et les
+      espaces de nommage des jeux de caractères.
     </note>
 </usage>
 <seealso><module>mod_mime_magic</module></seealso>
