@@ -117,6 +117,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Remove unnecessary apr_table_do() function casts.
+     trunk patch: http://svn.apache.org/r1769192
+     2.4.x patch: trunk works
+     +1: jchampion, rpluem, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -211,11 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1768245
      2.4.x patch: trunk works
      +1: jim
-
-  *) Remove unnecessary apr_table_do() function casts.
-     trunk patch: http://svn.apache.org/r1769192
-     2.4.x patch: trunk works
-     +1: jchampion, rpluem
 
   *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
      to relax or further constrain some behaviors.
