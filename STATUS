@@ -225,6 +225,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
      +1: wrowe
 
+  *) Fix Scoreboard full error with heavily-loaded event MPM under
+     SSL. Bugz: 53555
+     trunk patch:
+       http://svn.apache.org/r1705922
+       http://svn.apache.org/r1706523
+       http://svn.apache.org/r1738464
+       http://svn.apache.org/r1738466
+       http://svn.apache.org/r1738486
+       http://svn.apache.org/r1738628
+       http://svn.apache.org/r1738631
+       http://svn.apache.org/r1738632
+       http://svn.apache.org/r1738633
+       http://svn.apache.org/r1738635
+       http://svn.apache.org/r1756848
+       http://svn.apache.org/r1757009
+       http://svn.apache.org/r1757011
+       http://svn.apache.org/r1757029
+       http://svn.apache.org/r1757030
+       http://svn.apache.org/r1757031
+       http://svn.apache.org/r1757056
+       http://svn.apache.org/r1757061
+     2.4.x patch: http://home.apache.org/~jim/patches/bugz-53555.patch
+     +1: 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
