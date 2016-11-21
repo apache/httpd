@@ -513,38 +513,42 @@ expr=<var>expression</var>]</a></td><td></td><td>s</td><td>T</td></tr><tr><td cl
 <tr class="odd"><td><a href="mod_http2.html#h2push">H2Push on|off</a></td><td> on </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Switch</td></tr>
 <tr><td><a href="mod_http2.html#h2pushdiarysize">H2PushDiarySize <em>n</em></a></td><td> 256 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Server Push Diary Size</td></tr>
 <tr class="odd"><td><a href="mod_http2.html#h2pushpriority">H2PushPriority <em>mime-type</em> [after|before|interleaved] [weight]</a></td><td> * After 16 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Server Push Priority</td></tr>
-<tr><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
-<tr><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
-<tr><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
-<tr><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
+<tr><td><a href="mod_http2.html#h2pushresource">H2PushResource [add] path [critical]</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Declares resources for early pushing to the client</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2serializeheaders">H2SerializeHeaders on|off</a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serialize Request/Response Processing Switch</td></tr>
+<tr><td><a href="mod_http2.html#h2sessionextrafiles">H2SessionExtraFiles <em>n</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of Extra File Handles</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2streammaxmemsize">H2StreamMaxMemSize <em>bytes</em></a></td><td> 65536 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of output data buffered per stream.</td></tr>
+<tr><td><a href="mod_http2.html#h2tlscooldownsecs">H2TLSCoolDownSecs <em>seconds</em></a></td><td> 1 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2tlswarmupsize">H2TLSWarmUpSize <em>amount</em></a></td><td> 1048576 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_http2.html#h2upgrade">H2Upgrade on|off</a></td><td> on for h2c, off for +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">H2 Upgrade Protocol Switch</td></tr>
+<tr class="odd"><td><a href="mod_http2.html#h2windowsize">H2WindowSize <em>bytes</em></a></td><td> 65535 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Size of Stream Window for upstream data.</td></tr>
+<tr><td><a href="mod_headers.html#header">Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
 <var>header</var> [[expr=]<var>value</var> [<var>replacement</var>]
 [early|env=[!]<var>varname</var>|expr=<var>expression</var>]]
-</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
-<tr><td><a href="mod_autoindex.html#headername">HeaderName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin listesinin tepesine yerleştirilecek dosyanın ismini
+</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesinin tepesine yerleştirilecek dosyanın ismini
 belirler.</td></tr>
-<tr class="odd"><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Multicast address for heartbeat packets</td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen<var>addr:port</var></a></td><td></td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">multicast address to listen for incoming heartbeat requests </td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>number-of-servers</var></a></td><td> 10 </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the maximum number of servers that will be sending
+<tr><td><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress <var>addr:port</var></a></td><td></td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Multicast address for heartbeat packets</td></tr>
+<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen<var>addr:port</var></a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">multicast address to listen for incoming heartbeat requests </td></tr>
+<tr><td><a href="mod_heartmonitor.html#heartbeatmaxservers">HeartbeatMaxServers <var>number-of-servers</var></a></td><td> 10 </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Specifies the maximum number of servers that will be sending
 heartbeat requests to this server</td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
-<tr class="odd"><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
-<tr><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
+<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
+<tr><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
+<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Modify restrictions on HTTP Request Messages</td></tr>
-<tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
+<tr><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Modify restrictions on HTTP Request Messages</td></tr>
+<tr class="odd"><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
-<tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
-<tr><td><a href="mod_systemd.html#idleshutdown">IdleShutdown seconds</a></td><td> 0 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable shutting down the httpd when it is idle for some time.</td></tr>
-<tr class="odd"><td><a href="core.html#if">&lt;If <var>ifade</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Çalışma anında bir koşul bir istek tarafından yerine getirildiği
+<tr><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
+<tr class="odd"><td><a href="mod_systemd.html#idleshutdown">IdleShutdown seconds</a></td><td> 0 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable shutting down the httpd when it is idle for some time.</td></tr>
+<tr><td><a href="core.html#if">&lt;If <var>ifade</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Çalışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak yönergeleri barındırır.</td></tr>
-<tr><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parametre-adı</var>&gt; ...
-    &lt;/IfDefine&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Başlatma sırasında bir doğruluk sınamasından sonra işleme
+<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parametre-adı</var>&gt; ...
+    &lt;/IfDefine&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak yönergeleri sarmalar.</td></tr>
+<tr><td><a href="core.html#iffile">&lt;IfFile [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfFile&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Encloses directives that will be processed only
+if file exists at startup</td></tr>
 <tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>modül-dosyası</var>|<var>modül-betimleyici</var>&gt; ...
     &lt;/IfModule&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Belli bir modülün varlığına veya yokluğuna göre işleme sokulacak
 yönergeleri sarmalar.</td></tr>
