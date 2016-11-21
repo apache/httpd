@@ -225,31 +225,47 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
      +1: wrowe
 
-  *) Fix Scoreboard full error with heavily-loaded event MPM under
-     SSL. Bugz: 53555
-     trunk patch:
-       http://svn.apache.org/r1705922
-       http://svn.apache.org/r1706523
-       http://svn.apache.org/r1738464
-       http://svn.apache.org/r1738466
-       http://svn.apache.org/r1738486
-       http://svn.apache.org/r1738628
-       http://svn.apache.org/r1738631
-       http://svn.apache.org/r1738632
-       http://svn.apache.org/r1738633
-       http://svn.apache.org/r1738635
-       http://svn.apache.org/r1756848
-       http://svn.apache.org/r1757009
-       http://svn.apache.org/r1757011
-       http://svn.apache.org/r1757029
-       http://svn.apache.org/r1757030
-       http://svn.apache.org/r1757031
-       http://svn.apache.org/r1757056
-       http://svn.apache.org/r1757061
-       http://svn.apache.org/r1770750
-       http://svn.apache.org/r1770752
-     2.4.x patch: http://home.apache.org/~jim/patches/bugz-53555.patch
-     +1: 
+  *) ap_reclaim_child_processes(): Implement terminate immediately
+     trunk patches:
+       https://svn.apache.org/r1757061
+       https://svn.apache.org/r1770750
+     2.4.x patch: https://people.apache.org/~sf/PR53555_1_ap_reclaim_child_processes.diff
+     +1: sf
+
+  *) Improve mod_status view of async connections
+     trunk patches:
+       https://svn.apache.org/r1738628
+       https://svn.apache.org/r1757009
+       https://svn.apache.org/r1756848
+       https://svn.apache.org/r1757029
+     2.4.x patch: https://people.apache.org/~sf/PR53555_2_mod_status.diff
+     +1: sf
+
+  *) mpm_event: Free resources earlier during shutdown
+     trunk patches:
+       https://svn.apache.org/r1705922
+       https://svn.apache.org/r1706523
+       https://svn.apache.org/r1738464
+       https://svn.apache.org/r1738466
+       https://svn.apache.org/r1738486
+     2.4.x patch: https://people.apache.org/~sf/PR53555_3_free_early.diff
+     +1: sf
+
+  *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
+     re-use scoreboard slots of still running, gracefully finishing processes.
+     TODO: Update docs
+     PR: 53555
+     trunk patches:
+       https://svn.apache.org/r1738631
+       https://svn.apache.org/r1738633
+       https://svn.apache.org/r1738635
+       https://svn.apache.org/r1757030
+       https://svn.apache.org/r1757031
+       https://svn.apache.org/r1770752
+       https://svn.apache.org/r1770768
+     2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
+     +1: sf
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
 
