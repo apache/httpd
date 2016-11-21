@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_dir: Responses that go through "FallbackResource" might appear to
+     hang due to unterminated chunked encoding. PR58292. [Eric Covener]
+
   *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
      behavior in a routine that sends <DAV:response>'s to the output filters.
      [Evgeny Kotkov]

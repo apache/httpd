@@ -117,12 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: avoid adding multiple subrequest filters when there are nested 
-     subrequests.  PR58292
-     trunk patch:  http://svn.apache.org/r1698334
-     2.4.x patch:  trunk works modulo CHANGES
-     +1:  covener, jim, jchampion
-
   *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
      trunk patch: http://svn.apache.org/r1769332
      2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch

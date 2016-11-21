@@ -711,8 +711,17 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     update_r_in_filters(r->output_filters, rr, r);
 
     if (r->main) {
-        ap_add_output_filter_handle(ap_subreq_core_filter_handle,
-                                    NULL, r, r->connection);
+        ap_filter_t *next = r->output_filters;
+        while (next && (next != r->proto_output_filters)) {
+            if (next->frec == ap_subreq_core_filter_handle) {
+                break;
+            }
+            next = next->next;
+        }
+        if (!next || next == r->proto_output_filters) {
+            ap_add_output_filter_handle(ap_subreq_core_filter_handle,
+                                        NULL, r, r->connection);
+        }
     }
     else {
         /*
