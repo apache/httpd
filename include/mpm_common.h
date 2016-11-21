@@ -94,8 +94,7 @@ typedef void ap_reclaim_callback_fn_t(int childnum, pid_t pid,
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
  *
- * @param terminate Not Implemented, value is ignored !!!
- *        Either 1 or 0.  If 1, send the child processes SIGTERM
+ * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
  * @param mpm_callback Callback invoked for each dead child process

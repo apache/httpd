@@ -63,7 +63,13 @@
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
-typedef enum {DO_NOTHING, SEND_SIGTERM, SEND_SIGKILL, GIVEUP} action_t;
+typedef enum {
+    DO_NOTHING,
+    SEND_SIGTERM,
+    SEND_SIGTERM_NOLOG,
+    SEND_SIGKILL,
+    GIVEUP
+} action_t;
 
 typedef struct extra_process_t {
     struct extra_process_t *next;
@@ -142,6 +148,8 @@ static int reclaim_one_pid(pid_t pid, action_t action)
                      " still did not exit, "
                      "sending a SIGTERM",
                      pid);
+        /* FALLTHROUGH */
+    case SEND_SIGTERM_NOLOG:
         kill(pid, SIGTERM);
         break;
 
@@ -173,7 +181,6 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     return 0;
 }
 
-/* XXX The terminate argument is ignored. Implement or remove? */
 AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
                                             ap_reclaim_callback_fn_t *mpm_callback)
 {
@@ -194,6 +201,7 @@ AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
                           * children but take no action against
                           * stragglers
                           */
+        {SEND_SIGTERM_NOLOG, 0}, /* skipped if terminate == 0 */
         {SEND_SIGTERM, apr_time_from_sec(3)},
         {SEND_SIGTERM, apr_time_from_sec(5)},
         {SEND_SIGTERM, apr_time_from_sec(7)},
@@ -203,19 +211,21 @@ AP_DECLARE(void) ap_reclaim_child_processes(int terminate,
     int cur_action;      /* index of action we decided to take this
                           * iteration
                           */
-    int next_action = 1; /* index of first real action */
+    int next_action = terminate ? 1 : 2; /* index of first real action */
 
     ap_mpm_query(AP_MPMQ_MAX_DAEMON_USED, &max_daemons);
 
     do {
-        apr_sleep(waittime);
-        /* don't let waittime get longer than 1 second; otherwise, we don't
-         * react quickly to the last child exiting, and taking action can
-         * be delayed
-         */
-        waittime = waittime * 4;
-        if (waittime > apr_time_from_sec(1)) {
-            waittime = apr_time_from_sec(1);
+        if (action_table[next_action].action_time > 0) {
+            apr_sleep(waittime);
+            /* don't let waittime get longer than 1 second; otherwise, we don't
+             * react quickly to the last child exiting, and taking action can
+             * be delayed
+             */
+            waittime = waittime * 4;
+            if (waittime > apr_time_from_sec(1)) {
+                waittime = apr_time_from_sec(1);
+            }
         }
 
         /* see what action to take, if any */
