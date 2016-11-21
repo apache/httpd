@@ -117,11 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
-     trunk patch: http://svn.apache.org/r1769332
-     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
-     +1: jchampion, rpluem, wrowe
-
   *) CMake: fix various issues for Windows/Visual Studio build environments.
      PR59685.
      trunk patch: http://svn.apache.org/r1752331
