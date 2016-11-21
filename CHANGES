@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) event: Allow to use the whole allocated scoreboard (up to ServerLimit
+     slots) to avoid scoreboard full errors when some processes are finishing
+     gracefully. Also, make gracefully finishing processes close all
+     keep-alive connections. PR 53555. [Stefan Fritsch]
+
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 
