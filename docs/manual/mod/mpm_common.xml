@@ -619,10 +619,12 @@ Apache HTTP Server</a></seealso>
     module="mpm_common">ThreadLimit</directive> sets
     the maximum configured value for <directive
     module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
-    Apache httpd process. Any attempts to change this directive during a
-    restart will be ignored, but <directive
-    module="mpm_common">MaxRequestWorkers</directive> can be modified during
-    a restart.</p>
+    Apache httpd process. For the <module>event</module> MPM, this directive
+    also defines how many old server processes may keep running and finish processing
+    open connections.
+    Any attempts to change this directive during a restart will be ignored, but
+    <directive module="mpm_common">MaxRequestWorkers</directive> can be modified
+    during a restart.</p>
 
     <p>Special care must be taken when using this directive.  If
     <directive>ServerLimit</directive> is set to a value much higher
@@ -639,14 +641,21 @@ Apache HTTP Server</a></seealso>
     might want to set <directive
     module="mpm_common">MaxRequestWorkers</directive> to.</p>
 
-    <p>With <module>worker</module> and <module>event</module>, use this
-    directive only if your <directive module="mpm_common">MaxRequestWorkers
+    <p>With <module>worker</module>, use this directive only if your
+    <directive module="mpm_common">MaxRequestWorkers
     </directive> and <directive module="mpm_common">ThreadsPerChild</directive>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
     processes required by what you may want for <directive
     module="mpm_common">MaxRequestWorkers </directive> and <directive
     module="mpm_common">ThreadsPerChild</directive>.</p>
+
+    <p>With <module>event</module>, increase this directive if the process
+    number defined by your <directive
+    module="mpm_common">MaxRequestWorkers</directive> and <directive
+    module="mpm_common">ThreadsPerChild</directive> settings, plus the
+    number of gracefully shutting down processes, is more than 16 server
+    processes (default).</p>
 
     <note><title>Note</title>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
