@@ -117,12 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) CMake: fix various issues for Windows/Visual Studio build environments.
-     PR59685.
-     trunk patch: http://svn.apache.org/r1752331
-                  http://svn.apache.org/r1752332
-                  http://svn.apache.org/r1752333
-     +1: jchampion, jim (by inspection), wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
