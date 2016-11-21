@@ -253,7 +253,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
      re-use scoreboard slots of still running, gracefully finishing processes.
-     TODO: Update docs
      PR: 53555
      trunk patches:
        https://svn.apache.org/r1738631
@@ -264,6 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1770752
        https://svn.apache.org/r1770768
      2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
+     docs: https://svn.apache.org/r1770771 (in addition to the above)
      +1: sf
 
 
