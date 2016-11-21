@@ -3159,6 +3159,7 @@ static void server_main_loop(int remaining_children_to_start, int num_buckets)
                 if (!ps->quiescing)
                     active_daemons--;
                 ps->quiescing = 0;
+                /* NOTE: We don't dec in the (child_slot < 0) case! */
                 retained->total_daemons--;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
