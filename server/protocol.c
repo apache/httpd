@@ -680,8 +680,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         len = 0;
         goto rrl_done;
     }
-    else if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
-                 && deferred_error == rrl_none) {
+    else if (strict && ll[0] && apr_isspace(ll[1])
+             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
 
@@ -689,8 +689,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * If non-SP whitespace is encountered, mark as specific error
      */
     for (uri = ll; apr_isspace(*uri); ++uri) 
-        if (ap_strchr_c("\t\n\v\f\r", *uri)
-                && deferred_error == rrl_none)
+        if (*uri != ' ' && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
 
@@ -706,14 +705,14 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         ll = strpbrk(ll, "\t\n\v\f\r ");
     }
 
-    /* Verify method terminated with a single SP, or mark as specific error */
+    /* Verify URI terminated with a single SP, or mark as specific error */
     if (!ll) {
         r->protocol = "";
         len = 0;
         goto rrl_done;
     }
-    else if (strict && ll[0] && (ll[0] != ' ' || apr_isspace(ll[1]))
-            && deferred_error == rrl_none) {
+    else if (strict && ll[0] && apr_isspace(ll[1])
+             && deferred_error == rrl_none) {
         deferred_error = rrl_excesswhitespace; 
     }
 
@@ -721,8 +720,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
      * If non-SP whitespace is encountered, mark as specific error
      */
     for (r->protocol = ll; apr_isspace(*r->protocol); ++r->protocol) 
-        if (ap_strchr_c("\t\n\v\f\r", *r->protocol)
-                && deferred_error == rrl_none)
+        if (*r->protocol != ' ' && deferred_error == rrl_none)
             deferred_error = rrl_badwhitespace; 
     *ll = '\0';
 
