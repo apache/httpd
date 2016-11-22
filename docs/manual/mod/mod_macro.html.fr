@@ -29,6 +29,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_macro.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -53,6 +55,8 @@ de configuration Apache.</td></tr>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#macro">&lt;Macro&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#macroignorebadnesting">MacroIgnoreBadNesting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#undefmacro">UndefMacro</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#use">Use</a></li>
 </ul>
@@ -232,6 +236,28 @@ UndefMacro DirGroup</pre>
 
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="macroignorebadnesting" id="macroignorebadnesting">Directive</a> <a name="MacroIgnoreBadNesting" id="MacroIgnoreBadNesting">MacroIgnoreBadNesting</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about bad nesting of Macros</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MacroIgnoreBadNesting</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="macroignoreemptyargs" id="macroignoreemptyargs">Directive</a> <a name="MacroIgnoreEmptyArgs" id="MacroIgnoreEmptyArgs">MacroIgnoreEmptyArgs</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore warnings, and does not log, about empty Macro argument(s)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MacroIgnoreEmptyArgs</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_macro</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="undefmacro" id="undefmacro">Directive</a> <a name="UndefMacro" id="UndefMacro">UndefMacro</a></h2>
 <table class="directive">
