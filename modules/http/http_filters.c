@@ -739,7 +739,6 @@ static int check_header(void *arg, const char *name, const char *val)
  */
 static APR_INLINE int check_headers(request_rec *r)
 {
-    const char *loc;
     struct check_header_ctx ctx;
     core_server_config *conf =
             ap_get_core_module_config(r->server->module_config);
