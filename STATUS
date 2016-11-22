@@ -223,6 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: see
        svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
      +1: wrowe
+     icing: might need r1770817 as well (var unused warning)
 
   *) ap_reclaim_child_processes(): Implement terminate immediately
      trunk patches:
