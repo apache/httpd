@@ -781,9 +781,9 @@ static const char *macro_section(cmd_parms * cmd,
 		CHECK_MACRO_FLAG(arg, IGNORE_EMPTY_MACRO_FLAG, macro->ignore_empty);
 		CHECK_MACRO_FLAG(arg, IGNORE_BAD_NESTING_MACRO_FLAG, macro->ignore_bad_nesting);
 		if (*arg != ' ') {
-			char *c = ap_strchr(arg, ' ');
+			char *c = ap_strchr((char *)arg, ' ');
 			if (c) *c = '\0';
-			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(02804)
+			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(03483)
 				"%s: unknown flag '%s'", where, arg);
 			if (c) {
 				*c = ' ';
