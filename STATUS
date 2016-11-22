@@ -117,6 +117,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
+     in the client certificate chain.  PR 55786.
+     trunk patch: http://svn.apache.org/r1756542
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic, icing (by inspectin), jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -151,12 +156,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
      +1: elukey
-
-  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
-     in the client certificate chain.  PR 55786.
-     trunk patch: http://svn.apache.org/r1756542
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, icing (by inspectin), jim
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.
