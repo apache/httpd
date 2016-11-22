@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in the client certificate chain.  PR 55786.
      trunk patch: http://svn.apache.org/r1756542
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, icing (by inspectin)
+     +1: ylavic, icing (by inspectin), jim
 
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.
