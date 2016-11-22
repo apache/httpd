@@ -267,7 +267,7 @@ static const char *check_macro_arguments(apr_pool_t * pool,
         }
 
 		if ((tab[i][0] == '$') && (tab[i][1] == '{')) {
-			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(02805)
+			ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(03484)
 				"macro '%s' (%s) "
 				"argument name '%s' (#%d) clashes with 'Define' syntax '${...}', better use '$(...)'.",
 				macro->name, macro->location, tab[i], i + 1);
