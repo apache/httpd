@@ -277,4 +277,32 @@ UndefMacro RestrictedAccessPolicy
 </usage>
 </directivesynopsis>
 
+<!-- MacroIgnoreEmptyArg -->
+<directivesynopsis>
+<name>MacroIgnoreEmptyArgs</name>
+<description>Ignore warnings, and does not log, about empty Macro argument(s)</description>
+
+<syntax>MacroIgnoreEmptyArgs</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+</directivesynopsis>
+
+<!-- MacroIgnoreBadNesting -->
+<directivesynopsis>
+<name>MacroIgnoreBadNesting</name>
+<description>Ignore warnings, and does not log, about bad nesting of Macros</description>
+
+<syntax>MacroIgnoreBadNesting</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+</directivesynopsis>
+
 </modulesynopsis>
