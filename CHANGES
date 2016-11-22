@@ -4,6 +4,34 @@ Changes with Apache 2.4.24
 
   *) mod_ssl: Add support for OpenSSL 1.1.0. [Rainer Jung]
  
+  *) mod_dir: Responses that go through "FallbackResource" might appear to
+     hang due to unterminated chunked encoding. PR58292. [Eric Covener]
+
+  *) mod_dav: Fix a potential cause of unbounded memory usage or incorrect
+     behavior in a routine that sends <DAV:response>'s to the output filters.
+     [Evgeny Kotkov]
+
+  *) mod_http2: new directive 'H2PushResource' to enable early pushes before 
+     processing of the main request starts. Resources are announced to the 
+     client in Link headers on a 103 early hint response. 
+     All responses with status code <400 are inspected for Link header and
+     trigger pushes accordingly. 304 still does prevent pushes.
+     'H2PushResource' can mark resources as 'critical' which gives them higher
+     priority than the main resource. This leads to preferred scheduling for
+     processing and, when content is available, will send it first. 'critical'
+     is also recognized on Link headers. [Stefan Eissing]
+     
+  *) mod_proxy_http2: uris in Link headers are now mapped back to a suitable
+     local url when available. Relative uris with an absolute path are mapped
+     as well. This makes reverse proxy mapping available for resources
+     announced in this header. 
+     With 103 interim responses being forwarded to the main client connection,
+     this effectively allows early pushing of resources by a reverse proxied
+     backend server. [Stefan Eissing]
+     
+  *) mod_proxy_http2: adding support for newly proposed 103 status code.
+     [Stefan Eissing]
+     
   *) mpm_unix: Apache fails to start if previously crashed then restarted with
      the same PID (e.g. in container).  PR 60261.
      [Val <valentin.bremond gmail.com>, Yann Ylavic]
@@ -84,9 +112,10 @@ Changes with Apache 2.4.24
   *) mod_proxy_fcgi: avoid loops when ProxyErrorOverride is enabled
      and the error documents are proxied. PR 55415. [Luca Toscano]
 
-  *) mod_proxy_fcgi: read the whole FCGI response even when the content has
-     not been modified (HTTP 304) to avoid subsequent bougus reads and
-     confusing error messages logged. [Luca Toscano]
+  *) mod_proxy_fcgi: read the whole FCGI response even when the content
+     has not been modified (HTTP 304) or in case of a precondition failure
+     (HTTP 412) to avoid subsequent bogus reads and confusing
+     error messages logged. [Luca Toscano]
 
   *) mod_http2: h2 status resource follows latest draft, see
      http://www.ietf.org/id/draft-benfield-http2-debug-state-01.txt
@@ -147,6 +176,9 @@ Changes with Apache 2.4.22
      1.5.8
 
 Changes with Apache 2.4.21
+
+  *) ab: Use caseless matching for HTTP tokens (e.g. content-length). PR 59111.
+     [Yann Ylavic]
 
   *) mod_http2: more rigid error handling in DATA frame assembly, leading
      to deterministic connection errors if assembly fails.

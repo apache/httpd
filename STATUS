@@ -117,11 +117,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: avoid adding multiple subrequest filters when there are nested 
-     subrequests.  PR58292
-     trunk patch:  http://svn.apache.org/r1698334
-     2.4.x patch:  trunk works modulo CHANGES
-     +1:  covener, jim, jchampion
+  *) Remove unnecessary apr_table_do() function casts.
+     trunk patch: http://svn.apache.org/r1769192
+     2.4.x patch: trunk works
+     +1: jchampion, rpluem, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -156,13 +155,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
      +1: elukey
-
-  *) CMake: fix various issues for Windows/Visual Studio build environments.
-     PR59685.
-     trunk patch: http://svn.apache.org/r1752331
-                  http://svn.apache.org/r1752332
-                  http://svn.apache.org/r1752333
-     +1: jchampion, jim (by inspection)
 
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.
@@ -224,15 +216,54 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: jim
 
-  *) Remove unnecessary apr_table_do() function casts.
-     trunk patch: http://svn.apache.org/r1769192
-     2.4.x patch: trunk works
-     +1: jchampion, rpluem
+  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
+     to relax or further constrain some behaviors.
+     trunk patches: too numerous to list, see 
+       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+     2.4.x patch: see
+       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+     +1: wrowe
 
-  *) ssl: clear the error queue before SSL_read/write/accept(). PR60223
-     trunk patch: http://svn.apache.org/r1769332
-     2.4.x patch: https://home.apache.org/~jchampion/patches/2.4.x-ssl-error-queue.patch
-     +1: jchampion, rpluem
+  *) ap_reclaim_child_processes(): Implement terminate immediately
+     trunk patches:
+       https://svn.apache.org/r1757061
+       https://svn.apache.org/r1770750
+     2.4.x patch: https://people.apache.org/~sf/PR53555_1_ap_reclaim_child_processes.diff
+     +1: sf
+
+  *) Improve mod_status view of async connections
+     trunk patches:
+       https://svn.apache.org/r1738628
+       https://svn.apache.org/r1757009
+       https://svn.apache.org/r1756848
+       https://svn.apache.org/r1757029
+     2.4.x patch: https://people.apache.org/~sf/PR53555_2_mod_status.diff
+     +1: sf
+
+  *) mpm_event: Free resources earlier during shutdown
+     trunk patches:
+       https://svn.apache.org/r1705922
+       https://svn.apache.org/r1706523
+       https://svn.apache.org/r1738464
+       https://svn.apache.org/r1738466
+       https://svn.apache.org/r1738486
+     2.4.x patch: https://people.apache.org/~sf/PR53555_3_free_early.diff
+     +1: sf
+
+  *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
+     re-use scoreboard slots of still running, gracefully finishing processes.
+     PR: 53555
+     trunk patches:
+       https://svn.apache.org/r1738631
+       https://svn.apache.org/r1738633
+       https://svn.apache.org/r1738635
+       https://svn.apache.org/r1757030
+       https://svn.apache.org/r1757031
+       https://svn.apache.org/r1770752
+       https://svn.apache.org/r1770768
+     2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
+     docs: https://svn.apache.org/r1770771 (in addition to the above)
+     +1: sf
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED

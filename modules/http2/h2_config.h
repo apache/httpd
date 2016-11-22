@@ -45,6 +45,12 @@ typedef enum {
 
 struct apr_hash_t;
 struct h2_priority;
+struct h2_push_res;
+
+typedef struct h2_push_res {
+    const char *uri_ref;
+    int critical;
+} h2_push_res;
 
 /* Apache httpd module configuration for h2. */
 typedef struct h2_config {
@@ -70,14 +76,14 @@ typedef struct h2_config {
     
     int push_diary_size;          /* # of entries in push diary */
     int copy_files;               /* if files shall be copied vs setaside on output */
+    apr_array_header_t *push_list;/* list of h2_push_res configurations */
 } h2_config;
 
 
 void *h2_config_create_dir(apr_pool_t *pool, char *x);
+void *h2_config_merge_dir(apr_pool_t *pool, void *basev, void *addv);
 void *h2_config_create_svr(apr_pool_t *pool, server_rec *s);
-void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv);
-
-apr_status_t h2_config_apply_header(const h2_config *config, request_rec *r);
+void *h2_config_merge_svr(apr_pool_t *pool, void *basev, void *addv);
 
 extern const command_rec h2_cmds[];
 

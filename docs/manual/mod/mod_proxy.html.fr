@@ -1107,8 +1107,9 @@ sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
     chemin virtuel local ; <var>url</var> est une URL partielle pour le
     serveur distant et ne doit pas contenir de chaîne d'arguments.</p>
 
-    <div class="note"><strong>Note : </strong>Cette directive ne peut pas être
-    utilisée dans un contexte de niveau répertoire.</div>
+    <div class="note"><strong>Note : </strong>Cette directive n'est pas supportée au sein
+    des sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</div>
 
     <div class="warning">En général, la directive <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> doit être définie à
     <strong>off</strong> lorsqu'on utilise la directive
@@ -1145,10 +1146,6 @@ sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
     <p>va convertir en interne toute requête pour
     <code>http://example.com/miroir/foo/bar</code> en une requête
     mandatée pour <code>http://backend.example.com/bar</code>.</p>
-
-    <p>La directive ProxyPass ne peut pas être placée dans une section
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau

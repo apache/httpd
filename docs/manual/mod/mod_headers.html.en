@@ -309,8 +309,16 @@ available in 2.4.10 and later</td></tr>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name.<br />
-    Available in 2.4.7 and later.</dd>
+    with this name.
+    <div class="note">
+    The Content-Type header is a special use case since there might be
+    the chance that its value have been determined but the header is not part
+    of the response when <code>setifempty</code> is evaluated.
+    It is safer to use <code>set</code> for this use case like in the
+    following example:
+    <pre class="prettyprint lang-config">Header set Content-Type "text/plain" "expr=-z %{CONTENT_TYPE}"</pre>
+
+    </div></dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.

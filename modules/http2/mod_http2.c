@@ -48,9 +48,9 @@ static void h2_hooks(apr_pool_t *pool);
 AP_DECLARE_MODULE(http2) = {
     STANDARD20_MODULE_STUFF,
     h2_config_create_dir, /* func to create per dir config */
-    h2_config_merge,
+    h2_config_merge_dir,  /* func to merge per dir config */
     h2_config_create_svr, /* func to create per server config */
-    h2_config_merge,      /* func to merge per server config */
+    h2_config_merge_svr,  /* func to merge per server config */
     h2_cmds,              /* command handlers */
     h2_hooks
 };

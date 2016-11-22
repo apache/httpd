@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1328329 -->
@@ -25,53 +25,53 @@
 <modulesynopsis metafile="mod_lbmethod_byrequests.xml.meta">
 
 <name>mod_lbmethod_byrequests</name>
-<description>Algorithme de planification avec r&eacute;partition de charge du
-traitement des requ&ecirc;tes pour le module
+<description>Algorithme de planification avec répartition de charge du
+traitement des requêtes pour le module
 <module>mod_proxy_balancer</module></description>
 <status>Extension</status>
 <sourcefile>mod_lbmethod_byrequests.c</sourcefile>
 <identifier>lbmethod_byrequests_module</identifier>
-<compatibility>Dissoci&eacute; de <module>mod_proxy_balancer</module> dans la
+<compatibility>Dissocié de <module>mod_proxy_balancer</module> dans la
 version 2.3</compatibility>
 
 <summary>
-<p>Ce module ne fournit pas lui-m&ecirc;me de directive de configuration. Il
-n&eacute;cessite les services de <module>mod_proxy_balancer</module>, et
-fournit la m&eacute;thode de r&eacute;partition de charge <code>byrequests</code>.</p>
+<p>Ce module ne fournit pas lui-même de directive de configuration. Il
+nécessite les services de <module>mod_proxy_balancer</module>, et
+fournit la méthode de répartition de charge <code>byrequests</code>.</p>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
 
 <section id="requests">
-    <title>Algorithme d'attribution des requ&ecirc;tes</title>
-    <p>Activ&eacute; via <code>lbmethod=byrequests</code>, ce planificateur &agrave;
-    &eacute;t&eacute; con&ccedil;u dans le but de distribuer les requ&ecirc;tes &agrave; tous les
-    processus worker afin qu'ils traitent tous le nombre de requ&ecirc;tes
-    pour lequel ils ont &eacute;t&eacute; configur&eacute;s. Il fonctionne de la mani&egrave;re
+    <title>Algorithme d'attribution des requêtes</title>
+    <p>Activé via <code>lbmethod=byrequests</code>, ce planificateur à
+    été conçu dans le but de distribuer les requêtes à tous les
+    processus worker afin qu'ils traitent tous le nombre de requêtes
+    pour lequel ils ont été configurés. Il fonctionne de la manière
     suivante : </p>
 
-    <p><dfn>lbfactor</dfn> correspond &agrave; la <em>quantit&eacute; de travail que
+    <p><dfn>lbfactor</dfn> correspond à la <em>quantité de travail que
     nous attendons de ce processus worker</em>, ou en d'autres termes
-    son <em>quota de travail</em>. C'est une valeur normalis&eacute;e
-    repr&eacute;sentant leur part du travail &agrave; accomplir.</p>
+    son <em>quota de travail</em>. C'est une valeur normalisée
+    représentant leur part du travail à accomplir.</p>
 
-    <p><dfn>lbstatus</dfn> repr&eacute;sente <em>combien il est urgent que
+    <p><dfn>lbstatus</dfn> représente <em>combien il est urgent que
     ce processus worker travaille pour remplir son quota de
     travail</em>.</p>
 
-    <p>Le <dfn>worker</dfn> est un membre du dispositif de r&eacute;partition
-    de charge, en g&eacute;n&eacute;ral un serveur distant traitant un des protocoles
-    support&eacute;s.</p>
+    <p>Le <dfn>worker</dfn> est un membre du dispositif de répartition
+    de charge, en général un serveur distant traitant un des protocoles
+    supportés.</p>
 
-    <p>On distribue &agrave; chaque processus worker son quota de travail, puis
+    <p>On distribue à chaque processus worker son quota de travail, puis
     on regarde celui qui a le plus besoin de travailler
-    (le plus grand lbstatus). Ce processus est alors s&eacute;lectionn&eacute; pour
-    travailler, et son lbstatus diminu&eacute; de l'ensemble des quotas de
-    travail que nous avons distribu&eacute;s &agrave; tous les processus. La somme de
-    tous les lbstatus n'est ainsi pas modifi&eacute;e, et nous pouvons
-    distribuer les requ&ecirc;tes selon nos souhaits.</p>
+    (le plus grand lbstatus). Ce processus est alors sélectionné pour
+    travailler, et son lbstatus diminué de l'ensemble des quotas de
+    travail que nous avons distribués à tous les processus. La somme de
+    tous les lbstatus n'est ainsi pas modifiée, et nous pouvons
+    distribuer les requêtes selon nos souhaits.</p>
 
-    <p>Si certains processus workers sont d&eacute;sactiv&eacute;s, les autres feront
+    <p>Si certains processus workers sont désactivés, les autres feront
     l'objet d'une planification normale.</p>
 
     <example><pre><code>for each worker in workers
@@ -83,7 +83,7 @@ fournit la m&eacute;thode de r&eacute;partition de charge <code>byrequests</code
 candidate lbstatus -= total factor</code></pre>
     </example>
 
-    <p>Si un r&eacute;partiteur de charge est configur&eacute; comme suit :</p>
+    <p>Si un répartiteur de charge est configuré comme suit :</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -103,7 +103,7 @@ candidate lbstatus -= total factor</code></pre>
         <td>0</td></tr>
     </table>
 
-    <p>Et si <var>b</var> est d&eacute;sactiv&eacute;, la planification suivante est
+    <p>Et si <var>b</var> est désactivé, la planification suivante est
     mise en oeuvre :</p>
 
     <table style="data">
@@ -130,7 +130,7 @@ candidate lbstatus -= total factor</code></pre>
     <tr><td colspan="5">(repeat)</td></tr>
     </table>
 
-    <p>C'est &agrave; dire la chronologie suivante : <var>a</var> <var>c</var>
+    <p>C'est à dire la chronologie suivante : <var>a</var> <var>c</var>
     <var>d</var>
     <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
     <var>d</var> ... Veuillez noter que :</p>
@@ -148,7 +148,7 @@ candidate lbstatus -= total factor</code></pre>
         <td>25</td></tr>
     </table>
 
-    <p>A le m&ecirc;me effet que :</p>
+    <p>A le même effet que :</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -163,8 +163,8 @@ candidate lbstatus -= total factor</code></pre>
         <td>1</td></tr>
     </table>
 
-    <p>Ceci est d&ucirc; au fait que toutes les valeurs de <dfn>lbfactor</dfn>
-    sont normalis&eacute;es et &eacute;valu&eacute;es en fonction des autres. Avec :</p>
+    <p>Ceci est dû au fait que toutes les valeurs de <dfn>lbfactor</dfn>
+    sont normalisées et évaluées en fonction des autres. Avec :</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -178,9 +178,9 @@ candidate lbstatus -= total factor</code></pre>
     </table>
 
     <p>le processus <var>b</var> va, en moyenne, se voir assigner 4 fois
-    plus de requ&ecirc;tes que <var>a</var> et <var>c</var>.</p>
+    plus de requêtes que <var>a</var> et <var>c</var>.</p>
 
-    <p>La configuration suivante, asym&eacute;trique, fonctionne comme on peut
+    <p>La configuration suivante, asymétrique, fonctionne comme on peut
     s'y attendre :</p>
 
     <table style="data">
@@ -224,8 +224,8 @@ candidate lbstatus -= total factor</code></pre>
     <tr><td colspan="3">(repeat)</td></tr>
     </table>
 
-    <p>Apr&egrave;s 10 distributions, la planification se r&eacute;p&egrave;te et 7
-    <var>a</var> sont s&eacute;lectionn&eacute;s avec 3 <var>b</var> intercal&eacute;s.</p>
+    <p>Après 10 distributions, la planification se répète et 7
+    <var>a</var> sont sélectionnés avec 3 <var>b</var> intercalés.</p>
 </section>
 
 </modulesynopsis>

@@ -985,8 +985,9 @@ through</td></tr>
     a local virtual path; <var>url</var> is a partial URL for the
     remote server and cannot include a query string.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a 
-    <code>&lt;Directory&gt;</code> context.</div>
+    <div class="note"><strong>Note: </strong>This directive is not supported within
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> containers.</div>
 
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
     usually be set <strong>off</strong> when using
@@ -1017,8 +1018,6 @@ through</td></tr>
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
-
-    <p>The ProxyPass directive is not supported in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the

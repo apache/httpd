@@ -103,8 +103,7 @@ static void fix_vary(request_rec *r)
      * its comma-separated fieldname values, and then add them to varies
      * if not already present in the array.
      */
-    apr_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
-                 (void *) varies, r->headers_out, "Vary", NULL);
+    apr_table_do(uniq_field_values, varies, r->headers_out, "Vary", NULL);
     
     /* If we found any, replace old Vary fields with unique-ified value */
     
@@ -275,8 +274,7 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
     
     set_basic_http_header(headers, r, r->pool);
     if (r->status == HTTP_NOT_MODIFIED) {
-        apr_table_do((int (*)(void *, const char *, const char *)) copy_header,
-                     (void *) headers, r->headers_out,
+        apr_table_do(copy_header, headers, r->headers_out,
                      "ETag",
                      "Content-Location",
                      "Expires",
@@ -290,8 +288,7 @@ static h2_headers *create_response(h2_task *task, request_rec *r)
                      NULL);
     }
     else {
-        apr_table_do((int (*)(void *, const char *, const char *)) copy_header,
-                     (void *) headers, r->headers_out, NULL);
+        apr_table_do(copy_header, headers, r->headers_out, NULL);
     }
     
     return h2_headers_rcreate(r, r->status, headers, r->pool);
@@ -491,10 +488,13 @@ apr_status_t h2_from_h1_parse_response(h2_task *task, ap_filter_t *f,
                 }
                 else if (line[0] == '\0') {
                     /* end of headers, pass response onward */
-                    
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                                  "h2_task(%s): end of response", task->id);
                     return pass_response(task, f, parser);
                 }
                 else {
+                    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
+                                  "h2_task(%s): response header %s", task->id, line);
                     status = parse_header(parser, line);
                 }
                 break;
@@ -615,8 +615,8 @@ static void make_chunk(h2_task *task, apr_bucket_brigade *bb,
     }
     task->input.chunked_total += chunk_len;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, task->c,
-                  "h2_task(%s): added chunk %"APR_OFF_T_FMT", total %"
-                  APR_OFF_T_FMT, task->id, chunk_len, task->input.chunked_total);
+                  "h2_task(%s): added chunk %ld, total %ld", 
+                  task->id, (long)chunk_len, (long)task->input.chunked_total);
 }
 
 static int ser_header(void *ctx, const char *name, const char *value) 

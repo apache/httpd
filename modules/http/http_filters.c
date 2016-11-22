@@ -776,8 +776,7 @@ static void fixup_vary(request_rec *r)
      * its comma-separated fieldname values, and then add them to varies
      * if not already present in the array.
      */
-    apr_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
-                 (void *) varies, r->headers_out, "Vary", NULL);
+    apr_table_do(uniq_field_values, varies, r->headers_out, "Vary", NULL);
 
     /* If we found any, replace old Vary fields with unique-ified value */
 
