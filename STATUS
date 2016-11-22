@@ -117,11 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
-     in the client certificate chain.  PR 55786.
-     trunk patch: http://svn.apache.org/r1756542
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, icing (by inspectin), jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
