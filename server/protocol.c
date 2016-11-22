@@ -743,8 +743,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
     else {
         for ( ; apr_isspace(*ll); ++ll)
-            if (ap_strchr_c("\t\n\v\f\r", *ll)
-                    && deferred_error == rrl_none)
+            if (*ll != ' ' && deferred_error == rrl_none)
                 deferred_error = rrl_badwhitespace; 
         if (*ll && deferred_error == rrl_none)
             deferred_error = rrl_trailingtext;
