@@ -427,6 +427,8 @@
 <li><a href="mod_lua.html#luaroot">LuaRoot</a></li>
 <li><a href="mod_lua.html#luascope">LuaScope</a></li>
 <li><a href="mod_macro.html#macro" id="M" name="M">&lt;Macro&gt;</a></li>
+<li><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></li>
+<li><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></li>
 <li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>

@@ -657,6 +657,8 @@ processing</td></tr>
 <tr class="odd"><td><a href="mod_macro.html#macro" id="M" name="M">
 &lt;Macro <var>name</var> [<var>par1</var> .. <var>parN</var>]&gt;
 ... &lt;/Macro&gt;</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Define a configuration file macro</td></tr>
+<tr><td><a href="mod_macro.html#macroignorebadnesting">MacroIgnoreBadNesting</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Ignore warnings, and does not log, about bad nesting of Macros</td></tr>
+<tr class="odd"><td><a href="mod_macro.html#macroignoreemptyargs">MacroIgnoreEmptyArgs</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore warnings, and does not log, about empty Macro argument(s)</td></tr>
 <tr><td><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of connections that an individual child server
 will handle during its life</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">持続的な接続上で許可されるリクエストの数</td></tr>
