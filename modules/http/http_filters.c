@@ -749,27 +749,7 @@ static APR_INLINE int check_headers(request_rec *r)
     if (!apr_table_do(check_header, &ctx, r->headers_out, NULL))
         return 0; /* problem has been logged by check_header() */
 
-    if ((loc = apr_table_get(r->headers_out, "Location")) != NULL) {
-        const char *scheme_end = ap_strchr_c(loc, ':');
-
-        /*
-         * Check that the URI has a valid scheme and is absolute
-         * XXX Should we do a full uri parse here?
-         */
-        if (!ap_is_url(loc))
-            goto bad;
-
-        if (scheme_end[1] != '/' || scheme_end[2] != '/')
-            goto bad;
-    }
-
     return 1;
-
-bad:
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02431)
-                  "Bad Location header in response: '%s', aborting request",
-                  loc);
-    return 0;
 }
 
 typedef struct header_struct {
