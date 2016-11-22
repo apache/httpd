@@ -122,36 +122,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
-     proxy_post_handshake hook fails. 
-     Trunk patch: r1645529 (works)
-     2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
-     +1: trawick
-     ylavic: there may be missing bits, see thread for commit r1736510.
-
-  *) core: Drop an invalid Last-Modified header value coming
-     from a (F)CGI script instead of replacing it with Unix epoch.
-     Warn the users about Last-Modified header value replacements
-     and violations of the RFC.
-     trunk patch: http://svn.apache.org/r1748379
-                  http://svn.apache.org/r1750747
-                  http://svn.apache.org/r1750749
-                  http://svn.apache.org/r1750953
-                  http://svn.apache.org/r1751138
-                  http://svn.apache.org/r1751139
-                  http://svn.apache.org/r1751147
-                  http://svn.apache.org/r1757818
-     2.4.x: trunk patches work, final view:
-            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
-     The problem has been discussed in dev@ extensively but we did not reach a common
-     agreement about how to proceed in the long term. While we wait, I would really like
-     to introduce useful logs for the users (the starting point of this change was a users@
-     email thread). If this is not the right way to go I will move the patch to other
-     sections of STATUS (stalled or being worked).
-     The code has been tested with a simple PHP script returning different Last-Modified
-     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
-     +1: elukey
-
   *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
      allowing per backend TLS configuration.
      trunk patch: http://svn.apache.org/r1740928
@@ -259,6 +229,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entried should be added at the START of the list ]
+
+  *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
+     proxy_post_handshake hook fails. 
+     Trunk patch: r1645529 (works)
+     2.4.x patch which adds CHANGES: https://emptyhammock.com/media/downloads/r1645529-to-2.4.x.txt
+     +1: trawick
+     ylavic: there may be missing bits, see thread for commit r1736510.
+
+  *) core: Drop an invalid Last-Modified header value coming
+     from a (F)CGI script instead of replacing it with Unix epoch.
+     Warn the users about Last-Modified header value replacements
+     and violations of the RFC.
+     trunk patch: http://svn.apache.org/r1748379
+                  http://svn.apache.org/r1750747
+                  http://svn.apache.org/r1750749
+                  http://svn.apache.org/r1750953
+                  http://svn.apache.org/r1751138
+                  http://svn.apache.org/r1751139
+                  http://svn.apache.org/r1751147
+                  http://svn.apache.org/r1757818
+     2.4.x: trunk patches work, final view:
+            http://home.apache.org/~elukey/httpd-2.4.x-core-last_modified_tz_logging.patch
+     The problem has been discussed in dev@ extensively but we did not reach a common
+     agreement about how to proceed in the long term. While we wait, I would really like
+     to introduce useful logs for the users (the starting point of this change was a users@
+     email thread). If this is not the right way to go I will move the patch to other
+     sections of STATUS (stalled or being worked).
+     The code has been tested with a simple PHP script returning different Last-Modified
+     headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
+     +1: elukey
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
