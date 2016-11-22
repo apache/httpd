@@ -117,10 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Remove unnecessary apr_table_do() function casts.
-     trunk patch: http://svn.apache.org/r1769192
-     2.4.x patch: trunk works
-     +1: jchampion, rpluem, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
