@@ -226,6 +226,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      docs: https://svn.apache.org/r1770771 (in addition to the above)
      +1: sf, jim
 
+  *) mod_ratelimit: Allow for initial burst of data before we start
+     throttling: PR 60145
+     trunk patches:
+       https://svn.apache.org/r1770951
+    2.4.x patch: trunk works modulo CHANGES and next-number
+    +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
