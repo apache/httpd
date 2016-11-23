@@ -972,4 +972,31 @@ H2TLSCoolDownSecs 0
         </usage>
     </directivesynopsis>
     
+    <directivesynopsis>
+        <name>H2EarlyHints</name>
+        <description>Determine sending of 103 status codes</description>
+        <syntax>H2EarlyHints on|off</syntax>
+        <default>H2EarlyHints off</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.24 and later.</compatibility>
+        
+        <usage>
+            <p>
+                This setting controls if HTTP status 103 interim responses are
+                forwarded to the client or not. By default, this is currently 
+                not the case since a range of clients still have trouble with
+                unexpected interim responses.
+            </p>
+            <p>
+                When set to <code>on</code>, PUSH resources announced with
+                <code>H2PushResource</code> will trigger an interim 103 response
+                before the final response. The 103 response will carry <code>Link</code>
+                headers that advise the <code>preload</code> of such resources. 
+            </p>
+        </usage>
+    </directivesynopsis>
+    
 </modulesynopsis>

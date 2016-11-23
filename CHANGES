@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: new directive 'H2EarlyHints' to enable sending of HTTP status
+     103 interim responses. Disabled by default. [Stefan Eissing]
+     
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.  [Yann Ylavic]
 

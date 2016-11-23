@@ -62,7 +62,8 @@ static h2_config defconf = {
     NULL,                   /* map of content-type to priorities */
     256,                    /* push diary size */
     0,                      /* copy files across threads */
-    NULL                    /* push list */
+    NULL,                   /* push list */
+    0,                      /* early hints, http status 103 */
 };
 
 void h2_config_init(apr_pool_t *pool)
@@ -97,6 +98,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->push_diary_size      = DEF_VAL;
     conf->copy_files           = DEF_VAL;
     conf->push_list            = NULL;
+    conf->early_hints          = DEF_VAL;
     return conf;
 }
 
@@ -148,6 +150,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
     else {
         n->push_list        = add->push_list? add->push_list : base->push_list;
     }
+    n->early_hints          = H2_CONFIG_GET(add, base, early_hints);
     return n;
 }
 
@@ -203,6 +206,8 @@ apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, push_diary_size);
         case H2_CONF_COPY_FILES:
             return H2_CONFIG_GET(conf, &defconf, copy_files);
+        case H2_CONF_EARLY_HINTS:
+            return H2_CONFIG_GET(conf, &defconf, early_hints);
         default:
             return DEF_VAL;
     }
@@ -588,6 +593,23 @@ static const char *h2_conf_add_push_res(cmd_parms *cmd, void *dirconf,
     return NULL;
 }
 
+static const char *h2_conf_set_early_hints(cmd_parms *parms,
+                                           void *arg, const char *value)
+{
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
+    if (!strcasecmp(value, "On")) {
+        cfg->early_hints = 1;
+        return NULL;
+    }
+    else if (!strcasecmp(value, "Off")) {
+        cfg->early_hints = 0;
+        return NULL;
+    }
+    
+    (void)arg;
+    return "value must be On or Off";
+}
+
 #define AP_END_CMD     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 
 const command_rec h2_cmds[] = {
@@ -631,6 +653,8 @@ const command_rec h2_cmds[] = {
                   OR_FILEINFO, "on to perform copy of file data"),
     AP_INIT_TAKE123("H2PushResource", h2_conf_add_push_res, NULL,
                    OR_FILEINFO, "add a resource to be pushed in this location/on this server."),
+    AP_INIT_TAKE1("H2EarlyHints", h2_conf_set_early_hints, NULL,
+                  RSRC_CONF, "on to enable interim status 103 responses"),
     AP_END_CMD
 };
 

@@ -1501,6 +1501,14 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
                            apr_itoa(stream->pool, connFlowOut));
         }
         
+        if (headers->status == 103 
+            && !h2_config_geti(session->config, H2_CONF_EARLY_HINTS)) {
+            /* suppress sending this to the client, it might have triggered 
+             * pushes and served its purpose nevertheless */
+            rv = 0;
+            goto leave;
+        }
+        
         ngh = h2_util_ngheader_make_res(stream->pool, headers->status, hout);
         rv = nghttp2_submit_response(session->ngh2, stream->id,
                                      ngh->nv, ngh->nvlen, pprovider);
