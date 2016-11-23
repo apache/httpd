@@ -160,10 +160,17 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
             }
             r = stream->r;
             if (r->status >= 100 && r->status < 200) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
-                              "h2_proxy_session(%s): got interim HEADERS, status=%d",
-                              session->id, r->status);
+                /* By default, we will forward all interim responses when
+                 * we are sitting on a HTTP/2 connection to the client */
+                int forward = session->h2_front;
                 switch(r->status) {
+                    case 100:
+                        if (stream->waiting_on_100) {
+                            stream->waiting_on_100 = 0;
+                            r->status_line = ap_get_status_line(r->status);
+                            forward = 1;
+                        } 
+                        break;
                     case 103:
                         /* workaround until we get this into http protocol base
                          * parts. without this, unknown codes are converted to
@@ -174,9 +181,14 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                         r->status_line = ap_get_status_line(r->status);
                         break;
                 }
-                ap_send_interim_response(r, 1);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03487) 
+                              "h2_proxy_session(%s): got interim HEADERS, "
+                              "status=%d, will forward=%d",
+                              session->id, r->status, forward);
+                if (forward) {
+                    ap_send_interim_response(r, 1);
+                }
             }
-            stream->waiting_on_100 = 0;
             stream_resume(stream);
             break;
         case NGHTTP2_PING:
@@ -582,6 +594,7 @@ static int on_invalid_header_cb(nghttp2_session *ngh2,
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          proxy_server_conf *conf,
+                                         int h2_front, 
                                          unsigned char window_bits_connection,
                                          unsigned char window_bits_stream,
                                          h2_proxy_request_done *done)
@@ -602,6 +615,7 @@ h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
         session->conf = conf;
         session->pool = p_conn->scpool;
         session->state = H2_PROXYS_ST_INIT;
+        session->h2_front = h2_front;
         session->window_bits_stream = window_bits_stream;
         session->window_bits_connection = window_bits_connection;
         session->streams = h2_proxy_ihash_create(pool, offsetof(h2_proxy_stream, id));

@@ -1473,6 +1473,8 @@ static apr_status_t on_stream_headers(h2_session *session, h2_stream *stream,
          */
         if (!stream->initiated_on
             && !stream->has_response
+            && stream->request && stream->request->method
+            && !strcmp("GET", stream->request->method)
             && (headers->status < 400)
             && (headers->status != 304)
             && h2_session_push_enabled(session)) {
