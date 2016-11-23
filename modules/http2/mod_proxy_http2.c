@@ -335,14 +335,17 @@ static apr_status_t next_request(h2_proxy_ctx *ctx, int before_leave)
 
 static apr_status_t proxy_engine_run(h2_proxy_ctx *ctx) {
     apr_status_t status = OK;
+    int h2_front;
     
     /* Step Four: Send the Request in a new HTTP/2 stream and
      * loop until we got the response or encounter errors.
      */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->owner, 
                   "eng(%s): setup session", ctx->engine_id);
-    ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf, 
-                                          30, h2_proxy_log2((int)ctx->req_buffer_size), 
+    h2_front = is_h2? is_h2(ctx->owner) : 0;
+    ctx->session = h2_proxy_session_setup(ctx->engine_id, ctx->p_conn, ctx->conf,
+                                          h2_front, 30, 
+                                          h2_proxy_log2((int)ctx->req_buffer_size), 
                                           request_done);
     if (!ctx->session) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->owner, 
