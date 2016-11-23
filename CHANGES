@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ratelimit: Allow for initial "burst" amount at full speed before
+     throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
+     Jim Jagielski]
+
   *) event: Allow to use the whole allocated scoreboard (up to ServerLimit
      slots) to avoid scoreboard full errors when some processes are finishing
      gracefully. Also, make gracefully finishing processes close all
