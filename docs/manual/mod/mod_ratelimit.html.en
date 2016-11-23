@@ -39,9 +39,15 @@
 The connection speed to be simulated is specified, in KiB/s, using the environment
 variable <code>rate-limit</code>.</p>
 
+<p>Optionally, an initial amount of burst data, in KiB, may be
+configured to be passed at full speed before throttling to the
+specified rate limit.  This value is optional, and is set using
+the environment variable <code>rate-initial-burst</code>.</p>
+
 <div class="example"><h3>Example Configuration</h3><pre class="prettyprint lang-config">&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400
+    SetEnv rate-initial-burst 512
 &lt;/Location&gt;</pre>
 </div>
 
