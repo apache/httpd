@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: new directive 'H2EarlyHints' to enable sending of HTTP status
-     103 interim responses. Disabled by default. [Stefan Eissing]
-     
   *) mod_ratelimit: Allow for initial "burst" amount at full speed before
      throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
      Jim Jagielski]
