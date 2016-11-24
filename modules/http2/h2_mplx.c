@@ -899,6 +899,7 @@ static h2_task *next_stream_task(h2_mplx *m)
                 h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
             }
             stream->started = 1;
+            stream->can_be_cleaned = 0;
             task->worker_started = 1;
             task->started_at = apr_time_now();
             if (sid > m->max_stream_started) {
