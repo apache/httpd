@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1737462:1770843 (outdated) -->
+<!-- English Revision: 1770843 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -281,6 +281,36 @@ UndefMacro LocalAccessPolicy
 UndefMacro RestrictedAccessPolicy
     </highlight>
 </usage>
+</directivesynopsis>
+
+<!-- MacroIgnoreEmptyArg -->
+<directivesynopsis>
+<name>MacroIgnoreEmptyArgs</name>
+<description>Ignore les avertissements et n'inscrit rien dans le journal à
+propos des arguments de Macro vides</description>
+
+<syntax>MacroIgnoreEmptyArgs</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+</directivesynopsis>
+
+<!-- MacroIgnoreBadNesting -->
+<directivesynopsis>
+<name>MacroIgnoreBadNesting</name>
+<description>Ignore les avertissements et n'inscrit rien dans le journal à
+propos d'une imbrication de Macros non conforme</description>
+
+<syntax>MacroIgnoreBadNesting</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
 </directivesynopsis>
 
 </modulesynopsis>
