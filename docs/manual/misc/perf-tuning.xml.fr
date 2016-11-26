@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1675498:1769877 (outdated) -->
+<!-- English Revision: 1769877 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,73 +29,74 @@
 
   <summary>
 
-    <p>Apache 2.x est un serveur web &agrave; usage g&eacute;n&eacute;ral, con&ccedil;u dans un but
-    d'&eacute;quilibre entre souplesse, portabilit&eacute; et performances. Bien que non
-    con&ccedil;u dans le seul but d'&eacute;tablir une r&eacute;f&eacute;rence en la mati&egrave;re,
-    Apache 2.x est capable de hautes performances dans de nombreuses situations
-    du monde r&eacute;el.</p>
+    <note type="warning"><title>Avertissement</title>
+      <p>Ce document est en partie obsolète et son contenu peut s'avérer
+      inapproprié.</p>
+    </note>
 
-    <p>Compar&eacute;e &agrave; Apache 1.3, la version 2.x comporte de nombreuses
-    optimisations suppl&eacute;mentaires permettant d'am&eacute;liorer le d&eacute;bit du serveur
-    et sa personnalisation. La plupart de ces am&eacute;liorations sont activ&eacute;es par
-    d&eacute;faut. Cependant, certains choix de configuration &agrave; la compilation et &agrave;
-    l'ex&eacute;cution peuvent affecter les performances de mani&egrave;re significative. Ce
-    document d&eacute;crit les options qu'un administrateur de serveur peut configurer
-    pour am&eacute;liorer les performances d'une installation d'Apache 2.x. Certaines
-    de ces options de configuration permettent au d&eacute;mon httpd de mieux tirer
-    parti des possibilit&eacute;s du mat&eacute;riel et du syst&egrave;me d'exploitation, tandis
-    que d'autres permettent &agrave; l'administrateur de privil&eacute;gier la vitesse
-    par rapport aux fonctionnalit&eacute;s.</p>
+    <p>Apache 2.4 est un serveur web à usage général, conçu dans un but
+    d'équilibre entre souplesse, portabilité et performances. Bien que non
+    conçu dans le seul but d'établir une référence en la matière,
+    Apache 2.4 est capable de hautes performances dans de nombreuses situations
+    du monde réel.</p>
+
+    <p>Ce
+    document décrit les options qu'un administrateur de serveur peut configurer
+    pour améliorer les performances d'une installation d'Apache 2.4. Certaines
+    de ces options de configuration permettent au démon httpd de mieux tirer
+    parti des possibilités du matériel et du système d'exploitation, tandis
+    que d'autres permettent à l'administrateur de privilégier la vitesse
+    par rapport aux fonctionnalités.</p>
 
   </summary>
 
   <section id="hardware">
 
-    <title>Probl&egrave;mes mat&eacute;riels et relatifs au syst&egrave;me d'exploitation</title>
+    <title>Problèmes matériels et relatifs au système d'exploitation</title>
 
-    <p>Le principal probl&egrave;me mat&eacute;riel qui affecte les performances du serveur
-    web est la m&eacute;moire vive (RAM). Un serveur web ne devrait jamais avoir &agrave;
-    utiliser le swap, car le swapping augmente le temps de r&eacute;ponse de chaque
-    requ&ecirc;te au del&agrave; du point que les utilisateurs consid&egrave;rent comme
-    "trop lent". Ceci incite les utilisateurs &agrave; cliquer sur "Stop", puis
-    "Charger &agrave; nouveau", ce qui a pour effet d'augmenter encore la charge
-    du serveur. Vous pouvez, et m&ecirc;me devez d&eacute;finir la valeur de la directive
-    <directive module="mpm_common">MaxRequestWorkers</directive> de fa&ccedil;on &agrave; ce que
+    <p>Le principal problème matériel qui affecte les performances du serveur
+    web est la mémoire vive (RAM). Un serveur web ne devrait jamais avoir à
+    utiliser le swap, car le swapping augmente le temps de réponse de chaque
+    requête au delà du point que les utilisateurs considèrent comme
+    "trop lent". Ceci incite les utilisateurs à cliquer sur "Stop", puis
+    "Charger à nouveau", ce qui a pour effet d'augmenter encore la charge
+    du serveur. Vous pouvez, et même devez définir la valeur de la directive
+    <directive module="mpm_common">MaxRequestWorkers</directive> de façon à ce que
     votre serveur ne lance pas un nombre de processus enfants tel qu'il
-    commence &agrave; faire du swapping. La m&eacute;thode pour y parvenir est
-    simple : d&eacute;terminez la taille de votre processus Apache standard en
-    consultant votre liste de processus &agrave; l'aide d'un outil tel que
-    <code>top</code>, et divisez votre quantit&eacute; totale de m&eacute;moire disponible
+    commence à faire du swapping. La méthode pour y parvenir est
+    simple : déterminez la taille de votre processus Apache standard en
+    consultant votre liste de processus à l'aide d'un outil tel que
+    <code>top</code>, et divisez votre quantité totale de mémoire disponible
     par cette taille, tout en gardant un espace suffisant
     pour les autres processus.</p>
 
-    <p>Hormis ce r&eacute;glage relatif &agrave; la m&eacute;moire, le reste est trivial : le
-    processeur, la carte r&eacute;seau et les disques doivent &ecirc;tre suffisamment
-    rapides, o&ugrave; "suffisamment rapide" doit &ecirc;tre d&eacute;termin&eacute; par
-    l'exp&eacute;rience.</p>
+    <p>Hormis ce réglage relatif à la mémoire, le reste est trivial : le
+    processeur, la carte réseau et les disques doivent être suffisamment
+    rapides, où "suffisamment rapide" doit être déterminé par
+    l'expérience.</p>
 
-    <p>Le choix du syst&egrave;me d'exploitation d&eacute;pend principalement du
+    <p>Le choix du système d'exploitation dépend principalement du
     contexte local. Voici cependant quelques conseils qui se sont
-    g&eacute;n&eacute;ralement av&eacute;r&eacute;s utiles :</p>
+    généralement avérés utiles :</p>
 
     <ul>
       <li>
-        <p>Ex&eacute;cutez la derni&egrave;re version stable et le niveau de patches le
-	plus haut du syst&egrave;me d'exploitation que vous avez choisi. De nombreux
-	&eacute;diteurs de syst&egrave;mes d'exploitation ont am&eacute;lior&eacute; de mani&egrave;re
+        <p>Exécutez la dernière version stable et le niveau de patches le
+	plus haut du système d'exploitation que vous avez choisi. De nombreux
+	éditeurs de systèmes d'exploitation ont amélioré de manière
 	significative les performances de leurs piles TCP et de leurs
-	biblioth&egrave;ques de thread ces derni&egrave;res ann&eacute;es.</p>
+	bibliothèques de thread ces dernières années.</p>
       </li>
 
       <li>
-        <p>Si votre syst&egrave;me d'exploitation poss&egrave;de un appel syst&egrave;me
-	<code>sendfile(2)</code>, assurez-vous d'avoir install&eacute; la version
-	et/ou les patches n&eacute;cessaires &agrave; son activation. (Pour Linux, par
+        <p>Si votre système d'exploitation possède un appel système
+	<code>sendfile(2)</code>, assurez-vous d'avoir installé la version
+	et/ou les patches nécessaires à son activation. (Pour Linux, par
 	exemple, cela se traduit par Linux 2.4 ou plus. Pour les versions
-	anciennes de Solaris 8, vous pouvez &ecirc;tre amen&eacute; &agrave; appliquer un patch.)
-	Sur les syst&egrave;mes o&ugrave; il est disponible, <code>sendfile</code> permet
-	&agrave; Apache 2 de servir les contenus statiques plus rapidement, tout en
-	induisant une charge CPU inf&eacute;rieure.</p>
+	anciennes de Solaris 8, vous pouvez être amené à appliquer un patch.)
+	Sur les systèmes où il est disponible, <code>sendfile</code> permet
+	à Apache de servir les contenus statiques plus rapidement, tout en
+	induisant une charge CPU inférieure.</p>
       </li>
     </ul>
 
@@ -103,7 +104,7 @@
 
   <section id="runtime">
 
-    <title>Optimisation de la configuration &agrave; l'ex&eacute;cution</title>
+    <title>Optimisation de la configuration à l'exécution</title>
 
     <related>
       <modulelist>
@@ -127,53 +128,55 @@
 
     <section id="dns">
 
-      <title>HostnameLookups et autres consid&eacute;rations &agrave; propos du DNS</title>
+      <title>HostnameLookups et autres considérations à propos du DNS</title>
 
       <p>Avant Apache 1.3, la directive
-      <directive module="core">HostnameLookups</directive> &eacute;tait positionn&eacute;e
-      par d&eacute;faut &agrave; <code>On</code>. Ce r&eacute;glage augmente le temps de r&eacute;ponse de
-      chaque requ&ecirc;te car il entra&icirc;ne une recherche DNS et le traitement de la
-      requ&ecirc;te ne pourra pas &ecirc;tre achev&eacute; tant que cette recherche ne sera
-      pas termin&eacute;e. Avec Apache 1.3, ce r&eacute;glage est d&eacute;fini par d&eacute;faut &agrave;
-      <code>Off</code>. Si vous souhaitez que les adresses dans vos fichiers
-      journaux soient r&eacute;solues en noms d'h&ocirc;tes, utilisez le programme
-      <program>logresolve</program> fourni avec Apache, ou un des nombreux
-      paquets g&eacute;n&eacute;rateurs de rapports sur les journaux disponibles.</p>
-
-      <p>Il est recommand&eacute; d'effectuer ce genre de traitement a posteriori
-      de vos fichiers journaux sur une autre machine que celle qui h&eacute;berge le
-      serveur web en production, afin que cette activit&eacute; n'affecte pas les
+      <directive module="core">HostnameLookups</directive> était positionnée
+      par défaut à <code>On</code>, ce qui impliquait une recherche DNS et donc un temps d'attente
+      supplémentaire pour chaque requête. Avec Apache 2.4, <directive
+      module="core">HostnameLookups</directive> est positionnée par défaut à
+      <code>Off</code>. Si vous avez besoin de convertir des adresses IP en noms
+      d'hôtes dans vos fichiers journaux, il est préférable d'effectuer un
+      traitement à postériori plutôt que de forcer Apache à le faire en temps
+      réel. Il est recommandé d'effectuer ce genre de traitement a posteriori
+      de vos fichiers journaux sur une autre machine que celle qui héberge le
+      serveur web en production, afin que cette activité n'affecte pas les
       performances du serveur.</p>
 
       <p>Si vous utilisez une directive
       <code><directive module="mod_access_compat">Allow</directive>from domain</code>
       ou
       <code><directive module="mod_access_compat">Deny</directive> from domain</code>
-      (ce qui signifie que vous utilisez un nom d'h&ocirc;te ou un nom de domaine &agrave;
+      (ce qui signifie que vous utilisez un nom d'hôte ou un nom de domaine à
       la place d'une adresse IP), vous devrez compter avec deux recherches
       DNS (une recherche inverse suivie d'une recherche directe pour
-      s'assurer que l'adresse IP n'a pas &eacute;t&eacute; usurp&eacute;e). C'est pourquoi il est
-      pr&eacute;f&eacute;rable, pour am&eacute;liorer les performances, d'utiliser des adresses IP
-      plut&ocirc;t que des noms lorsqu'on utilise ces directives, du moins chaque
-      fois que c'est possible.</p>
+      s'assurer que l'adresse IP n'a pas été usurpée). C'est pourquoi il est
+      préférable, pour améliorer les performances, et chaque fois que c'est
+      possible, d'utiliser des adresses IP plutôt que des noms de domaines.</p>
 
-      <p>Notez qu'il est possible de modifier la port&eacute;e des directives, en les
-      pla&ccedil;ant par exemple &agrave; l'int&eacute;rieur d'une section
+      <note type="warning"><title>Avertissement :</title>
+      <p>Veuillez utiliser la directive <directive
+      module="mod_authz_core">Require</directive> avec Apache 2.4 ; pour plus de
+      détails, reportez-vous au <a href="../upgrading.html">guide de mise à
+      jour</a> correspondant.</p>
+      </note>
+
+      <p>Notez qu'il est possible de modifier la portée des directives, en les
+      plaçant par exemple à l'intérieur d'une section
       <code>&lt;Location "/server-status"&gt;</code>. Les recherches DNS ne
-      seront alors effectu&eacute;es que pour les requ&ecirc;tes qui satisfont aux crit&egrave;res.
-      Voici un exemple qui d&eacute;sactive les recherches DNS sauf pour les fichiers
+      seront alors effectuées que pour les requêtes qui satisfont aux critères.
+      Voici un exemple qui désactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
 
       <highlight language="config">
-HostnameLookups off
 &lt;Files ~ "\.(html|cgi)$"&gt;
   HostnameLookups on
 &lt;/Files&gt;
       </highlight>
 
-      <p>Mais m&ecirc;me dans ce cas, si vous n'avez besoin de noms DNS que dans
-      certains CGIs, vous pouvez effectuer l'appel &agrave; <code>gethostbyname</code>
-      dans les CGIs sp&eacute;cifiques qui en ont besoin.</p>
+      <p>Mais même dans ce cas, si vous n'avez besoin de noms DNS que dans
+      certains CGIs, vous pouvez effectuer l'appel à <code>gethostbyname</code>
+      dans les CGIs spécifiques qui en ont besoin.</p>
 
     </section>
 
@@ -183,9 +186,9 @@ HostnameLookups off
 
       <p>Chaque fois que la ligne <code>Options FollowSymLinks</code> sera
       absente, ou que la ligne <code>Options SymLinksIfOwnerMatch</code> sera
-      pr&eacute;sente dans votre espace d'adressage, Apache devra effectuer des
-      appels syst&egrave;me suppl&eacute;mentaires pour v&eacute;rifier la pr&eacute;sence de liens
-      symboliques. Un appel suppl&eacute;mentaire par &eacute;l&eacute;ment du chemin du fichier.
+      présente dans votre espace d'adressage, Apache devra effectuer des
+      appels système supplémentaires pour vérifier la présence de liens
+      symboliques. Un appel supplémentaire par élément du chemin du fichier.
       Par exemple, si vous avez :</p>
 
       <highlight language="config">
@@ -195,13 +198,13 @@ DocumentRoot "/www/htdocs"
 &lt;/Directory&gt;
       </highlight>
 
-      <p>et si une requ&ecirc;te demande l'URI <code>/index.html</code>, Apache
-      effectuera un appel &agrave; <code>lstat(2)</code> pour
+      <p>et si une requête demande l'URI <code>/index.html</code>, Apache
+      effectuera un appel à <code>lstat(2)</code> pour
       <code>/www</code>, <code>/www/htdocs</code>, et
-      <code>/www/htdocs/index.html</code>. Les r&eacute;sultats de ces appels &agrave;
-      <code>lstat</code> ne sont jamais mis en cache, ils devront donc &ecirc;tre
-      g&eacute;n&eacute;r&eacute;s &agrave; nouveau pour chaque nouvelle requ&ecirc;te. Si vous voulez absolument
-      v&eacute;rifier la s&eacute;curit&eacute; des liens symboliques, vous pouvez utiliser une
+      <code>/www/htdocs/index.html</code>. Les résultats de ces appels à
+      <code>lstat</code> ne sont jamais mis en cache, ils devront donc être
+      générés à nouveau pour chaque nouvelle requête. Si vous voulez absolument
+      vérifier la sécurité des liens symboliques, vous pouvez utiliser une
       configuration du style :</p>
 
       <highlight language="config">
@@ -215,13 +218,13 @@ DocumentRoot "/www/htdocs"
 &lt;/Directory&gt;
       </highlight>
 
-      <p>Ceci &eacute;vite au moins les v&eacute;rifications suppl&eacute;mentaires pour le chemin
-      d&eacute;fini par <directive module="core">DocumentRoot</directive>. Notez que
+      <p>Ceci évite au moins les vérifications supplémentaires pour le chemin
+      défini par <directive module="core">DocumentRoot</directive>. Notez que
       vous devrez ajouter des sections similaires si vous avez des chemins
-      d&eacute;finis par les directives
+      définis par les directives
       <directive module="mod_alias">Alias</directive> ou
       <directive module="mod_rewrite">RewriteRule</directive> en dehors de
-      la racine de vos documents. Pour am&eacute;liorer les performances, et supprimer
+      la racine de vos documents. Pour améliorer les performances, et supprimer
       toute protection des liens symboliques, ajoutez l'option
       <code>FollowSymLinks</code> partout, et n'utilisez jamais l'option
       <code>SymLinksIfOwnerMatch</code>.</p>
@@ -232,10 +235,10 @@ DocumentRoot "/www/htdocs"
 
       <title>AllowOverride</title>
 
-      <p>Dans toute partie de votre espace d'adressage o&ugrave; vous autoriserez
-      la surcharge de la configuration (en g&eacute;n&eacute;ral &agrave; l'aide de fichiers
+      <p>Dans toute partie de votre espace d'adressage où vous autoriserez
+      la surcharge de la configuration (en général à l'aide de fichiers
       <code>.htaccess</code>), Apache va tenter d'ouvrir <code>.htaccess</code>
-      pour chaque &eacute;l&eacute;ment du chemin du fichier demand&eacute;. Par exemple, si vous
+      pour chaque élément du chemin du fichier demandé. Par exemple, si vous
       avez : </p>
 
       <highlight language="config">
@@ -245,25 +248,25 @@ DocumentRoot "/www/htdocs"
 &lt;/Directory&gt;
       </highlight>
 
-      <p>et qu'une requ&ecirc;te demande l'URI <code>/index.html</code>, Apache
+      <p>et qu'une requête demande l'URI <code>/index.html</code>, Apache
       tentera d'ouvrir <code>/.htaccess</code>, <code>/www/.htaccess</code>,
-      et <code>/www/htdocs/.htaccess</code>. Les solutions sont similaires &agrave;
-      celles &eacute;voqu&eacute;es pr&eacute;c&eacute;demment pour <code>Options FollowSymLinks</code>.
-      Pour am&eacute;liorer les performances, utilisez <code>AllowOverride None</code>
+      et <code>/www/htdocs/.htaccess</code>. Les solutions sont similaires à
+      celles évoquées précédemment pour <code>Options FollowSymLinks</code>.
+      Pour améliorer les performances, utilisez <code>AllowOverride None</code>
       pour tous les niveaux de votre espace d'adressage.</p>
 
     </section>
 
     <section id="negotiation">
 
-      <title>N&eacute;gociation</title>
+      <title>Négociation</title>
 
-      <p>Dans la mesure du possible, &eacute;vitez toute n&eacute;gociation de contenu si
+      <p>Dans la mesure du possible, évitez toute négociation de contenu si
       vous tenez au moindre gain en performances. En pratique toutefois,
-      les b&eacute;n&eacute;fices de la n&eacute;gociation l'emportent souvent sur la diminution
+      les bénéfices de la négociation l'emportent souvent sur la diminution
       des performances.
-      Il y a cependant un cas dans lequel vous pouvez acc&eacute;l&eacute;rer le serveur.
-      Au lieu d'utiliser une directive g&eacute;n&eacute;rique comme :</p>
+      Il y a cependant un cas dans lequel vous pouvez accélérer le serveur.
+      Au lieu d'utiliser une directive générique comme :</p>
 
       <highlight language="config">DirectoryIndex index</highlight>
 
@@ -271,60 +274,60 @@ DocumentRoot "/www/htdocs"
 
       <highlight language="config">DirectoryIndex index.cgi index.pl index.shtml index.html</highlight>
 
-      <p>o&ugrave; vous placez le choix courant en premi&egrave;re position.</p>
+      <p>où vous placez le choix courant en première position.</p>
 
-      <p>Notez aussi que cr&eacute;er explicitement un fichier de
+      <p>Notez aussi que créer explicitement un fichier de
       <code>correspondances de type</code> fournit de meilleures performances
       que l'utilisation des <code>MultiViews</code>, car les informations
-      n&eacute;cessaires peuvent &ecirc;tre simplement obtenues en lisant ce fichier, sans
-      avoir &agrave; parcourir le r&eacute;pertoire &agrave; la recherche de types de fichiers.</p>
+      nécessaires peuvent être simplement obtenues en lisant ce fichier, sans
+      avoir à parcourir le répertoire à la recherche de types de fichiers.</p>
 
-    <p>Par cons&eacute;quent, si la n&eacute;gociation de contenu est n&eacute;cessaire pour votre
-    site, pr&eacute;f&eacute;rez les fichiers de <code>correspondances de type</code> aux
-    directives <code>Options MultiViews</code> pour mener &agrave; bien cette
-    n&eacute;gociation. Se r&eacute;f&eacute;rer au document sur la
-    <a href="../content-negotiation.html">N&eacute;gociation de contenu</a> pour une
-    description compl&egrave;te des m&eacute;thodes de n&eacute;gociation, et les instructions
-    permettant de cr&eacute;er des fichiers de <code>correspondances de type</code>.</p>
+    <p>Par conséquent, si la négociation de contenu est nécessaire pour votre
+    site, préférez les fichiers de <code>correspondances de type</code> aux
+    directives <code>Options MultiViews</code> pour mener à bien cette
+    négociation. Se référer au document sur la
+    <a href="../content-negotiation.html">Négociation de contenu</a> pour une
+    description complète des méthodes de négociation, et les instructions
+    permettant de créer des fichiers de <code>correspondances de type</code>.</p>
 
     </section>
 
     <section>
 
-      <title>Transfert en m&eacute;moire</title>
+      <title>Transfert en mémoire</title>
 
-      <p>Dans les situations o&ugrave; Apache 2.x doit consulter le contenu d'un
-      fichier en train d'&ecirc;tre servi - par exemple &agrave; l'occasion du traitement
-      d'une inclusion c&ocirc;t&eacute; serveur - il transf&egrave;re en g&eacute;n&eacute;ral le fichier en
-      m&eacute;moire si le syst&egrave;me d'exploitation supporte une forme quelconque
+      <p>Dans les situations où Apache 2.x doit consulter le contenu d'un
+      fichier en train d'être servi - par exemple à l'occasion du traitement
+      d'une inclusion côté serveur - il transfère en général le fichier en
+      mémoire si le système d'exploitation supporte une forme quelconque
       de <code>mmap(2)</code>.</p>
 
-      <p>Sur certains syst&egrave;mes, ce transfert en m&eacute;moire am&eacute;liore les
-      performances. Dans certains cas, ce transfert peut toutefois les d&eacute;grader
-      et m&ecirc;me diminuer la stabilit&eacute; du d&eacute;mon httpd :</p>
+      <p>Sur certains systèmes, ce transfert en mémoire améliore les
+      performances. Dans certains cas, ce transfert peut toutefois les dégrader
+      et même diminuer la stabilité du démon httpd :</p>
 
       <ul>
         <li>
-          <p>Dans certains syst&egrave;mes d'exploitation, <code>mmap</code> devient
+          <p>Dans certains systèmes d'exploitation, <code>mmap</code> devient
 	  moins efficace que <code>read(2)</code> quand le nombre de
 	  processeurs augmente. Sur les serveurs multiprocesseurs sous Solaris,
-	  par exemple, Apache 2.x sert parfois les fichiers consult&eacute;s par le
-	  serveur plus rapidement quand <code>mmap</code> est d&eacute;sactiv&eacute;.</p>
+	  par exemple, Apache 2.x sert parfois les fichiers consultés par le
+	  serveur plus rapidement quand <code>mmap</code> est désactivé.</p>
         </li>
 
         <li>
-          <p>Si vous transf&eacute;rez en m&eacute;moire un fichier localis&eacute; dans un syst&egrave;me
-	  de fichiers mont&eacute; par NFS, et si un processus sur
+          <p>Si vous transférez en mémoire un fichier localisé dans un système
+	  de fichiers monté par NFS, et si un processus sur
 	  une autre machine cliente NFS supprime ou tronque le fichier, votre
 	  processus peut rencontrer une erreur de bus la prochaine fois qu'il
-	  essaiera d'acc&eacute;der au contenu du fichier en m&eacute;moire.</p>
+	  essaiera d'accéder au contenu du fichier en mémoire.</p>
         </li>
       </ul>
 
-      <p>Pour les installations o&ugrave; une de ces situations peut se produire,
-      vous devez utiliser <code>EnableMMAP off</code> afin de d&eacute;sactiver le
-      transfert en m&eacute;moire des fichiers servis. (Note : il est possible de
-      passer outre cette directive au niveau de chaque r&eacute;pertoire.)</p>
+      <p>Pour les installations où une de ces situations peut se produire,
+      vous devez utiliser <code>EnableMMAP off</code> afin de désactiver le
+      transfert en mémoire des fichiers servis. (Note : il est possible de
+      passer outre cette directive au niveau de chaque répertoire.)</p>
 
     </section>
 
@@ -332,107 +335,70 @@ DocumentRoot "/www/htdocs"
 
       <title>Sendfile</title>
 
-      <p>Dans les cas o&ugrave; Apache peut se permettre d'ignorer le contenu du
-      fichier &agrave; servir - par exemple, lorsqu'il sert un contenu de fichier
-      statique - il utilise en g&eacute;n&eacute;ral le support sendfile du noyau si le
-      syst&egrave;me d'exploitation supporte l'op&eacute;ration <code>sendfile(2)</code>.</p>
+      <p>Dans les cas où Apache peut se permettre d'ignorer le contenu du
+      fichier à servir - par exemple, lorsqu'il sert un contenu de fichier
+      statique - il utilise en général le support sendfile du noyau si le
+      système d'exploitation supporte l'opération <code>sendfile(2)</code>.</p>
 
-      <p>Sur la plupart des plateformes, l'utilisation de sendfile am&eacute;liore
-      les performances en &eacute;liminant les m&eacute;canismes de lecture et envoi s&eacute;par&eacute;s.
-      Dans certains cas cependant, l'utilisation de sendfile peut nuire &agrave; la
-      stabilit&eacute; du d&eacute;mon httpd :</p>
+      <p>Sur la plupart des plateformes, l'utilisation de sendfile améliore
+      les performances en éliminant les mécanismes de lecture et envoi séparés.
+      Dans certains cas cependant, l'utilisation de sendfile peut nuire à la
+      stabilité du démon httpd :</p>
 
       <ul>
         <li>
-          <p>Certaines plateformes peuvent pr&eacute;senter un support de sendfile
-	  d&eacute;faillant que la construction du syst&egrave;me n'a pas d&eacute;tect&eacute;, en
-	  particulier si les binaires ont &eacute;t&eacute; construits sur une autre machine
-	  et transf&eacute;r&eacute;s sur la machine o&ugrave; le support de sendfile est
-	  d&eacute;faillant.</p>
+          <p>Certaines plateformes peuvent présenter un support de sendfile
+	  défaillant que la construction du système n'a pas détecté, en
+	  particulier si les binaires ont été construits sur une autre machine
+	  et transférés sur la machine où le support de sendfile est
+	  défaillant.</p>
         </li>
         <li>
-          <p>Dans le cas d'un syst&egrave;me de fichiers mont&eacute;
-	  sous NFS, le noyau peut s'av&eacute;rer incapable de servir
-	  les fichiers r&eacute;seau de mani&egrave;re fiable depuis
+          <p>Dans le cas d'un système de fichiers monté
+	  sous NFS, le noyau peut s'avérer incapable de servir
+	  les fichiers réseau de manière fiable depuis
 	  son propre cache.</p>
         </li>
       </ul>
 
-      <p>Pour les installations o&ugrave; une de ces situations peut se produire,
-      vous devez utiliser <code>EnableSendfile off</code> afin de d&eacute;sactiver
-      la mise &agrave; disposition de contenus de fichiers par sendfile. (Note : il
+      <p>Pour les installations où une de ces situations peut se produire,
+      vous devez utiliser <code>EnableSendfile off</code> afin de désactiver
+      la mise à disposition de contenus de fichiers par sendfile. (Note : il
       est possible de passer outre cette directive au niveau de chaque
-      r&eacute;pertoire.)</p>
+      répertoire.)</p>
 
     </section>
 
     <section id="process">
 
-      <title>Process Creation</title>
+      <title>Recyclage des processus enfants</title>
 
-      <p>Avant Apache 1.3, les directives
-      <directive module="prefork">MinSpareServers</directive>,
-      <directive module="prefork">MaxSpareServers</directive>, et
-      <directive module="mpm_common">StartServers</directive> avaient des
-      effets drastiques sur les performances de r&eacute;f&eacute;rence. En particulier,
-      Apache avait besoin d'un d&eacute;lai de "mont&eacute;e en puissance" afin d'atteindre
-      un nombre de processus enfants suffisant pour supporter la charge qui lui
-      &eacute;tait appliqu&eacute;e. Apr&egrave;s le lancement initial des processus enfants par
-      <directive module="mpm_common">StartServers</directive>, seulement un
-      processus enfant par seconde &eacute;tait cr&eacute;&eacute; afin d'atteindre la valeur de la
-      directive <directive module="prefork">MinSpareServers</directive>. Ainsi,
-      un serveur acc&eacute;d&eacute; par 100 clients simultan&eacute;s et utilisant la valeur par
-      d&eacute;faut de <code>5</code> pour la directive
-      <directive module="mpm_common">StartServers</directive>, n&eacute;cessitait
-      environ 95 secondes pour lancer suffisamment de processus enfants
-      permettant de faire face &agrave; la charge. Ceci fonctionne en pratique pour
-      les serveurs en production, car ils sont rarement red&eacute;marr&eacute;s. Ce n'est
-      cependant pas le cas pour les tests de r&eacute;f&eacute;rence (benchmarks) o&ugrave; le
-      serveur ne fonctionne que 10 minutes.</p>
+    <p>La directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> permet de limiter le
+    nombre de connexions qu'un processus enfant peut gérer au cours de sa vie
+    (par défaut, la valeur est <code>0</code>, soit aucune limite). Tous les <a
+    href="../mpm.html#defaults">MPMs</a> sont concernés, même ceux qui utilisent
+    des threads. Par exemple, chaque processus créé par le MPM
+    <module>worker</module> lance plusieurs threads qui gèrent les connexions,
+    mais cette directive n'en affecte pas le nombre total. Cela signifie
+    seulement que la valeur de la directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> ne limitera que le
+    nombre de requêtes traitées par les threads lancés par un seul processus
+    enfant.</p>
 
-      <p>La r&egrave;gle "un processus par seconde" avait &eacute;t&eacute; impl&eacute;ment&eacute;e afin
-      d'&eacute;viter l'enlisement de la machine dans le d&eacute;marrage de nouveaux
-      processus enfants. Pendant que la machine est occup&eacute;e &agrave; lancer des
-      processus enfants, elle ne peut pas traiter les requ&ecirc;tes. Mais cette
-      r&egrave;gle impactait tellement la perception des performances d'Apache qu'elle
-      a d&ucirc; &ecirc;tre remplac&eacute;e. A partir d'Apache 1.3, le code a assoupli la r&egrave;gle
-      "un processus par seconde". Il va en lancer un, attendre une seconde,
-      puis en lancer deux, attendre une seconde, puis en lancer quatre et
-      ainsi de suite jusqu'&agrave; lancer 32 processus. Il s'arr&ecirc;tera lorsque le
-      nombre de processus aura atteint la valeur d&eacute;finie par la directive
-      <directive module="prefork">MinSpareServers</directive>.</p>
+    <p>Dans des conditions d'utilisation optimales, la directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> ne devrait imposer
+    aucune limite, car il n'y a à priori aucune raison de tuer un processus, si
+    ce n'est suite à un bug logiciel causant des fuites de mémoire ou un usage
+    excessif du CPU.</p>   
 
-      <p>Ceci s'av&egrave;re suffisamment r&eacute;actif pour pouvoir en g&eacute;n&eacute;ral se passer
-      de manipuler les valeurs des directives
-      <directive module="prefork">MinSpareServers</directive>,
-      <directive module="prefork">MaxSpareServers</directive> et
-      <directive module="mpm_common">StartServers</directive>. Lorsque plus de
-      4 processus enfants sont lanc&eacute;s par seconde, un message est &eacute;mis vers
-      le journal des erreurs. Si vous voyez appara&icirc;tre souvent ce genre de
-      message, vous devez vous pencher sur ces r&eacute;glages. Pour vous guider,
-      utilisez les informations d&eacute;livr&eacute;es par le module
-      <module>mod_status</module>.</p>
-
-    <p>&Agrave; mettre en relation avec la cr&eacute;ation de processus, leur destruction
-    est d&eacute;finie par la valeur de la directive
-    <directive module="mpm_common">MaxConnectionsPerChild</directive>. Sa valeur
-    par d&eacute;faut est <code>0</code>, ce qui signifie qu'il n'y a pas de limite
-    au nombre de connexions qu'un processus enfant peut traiter. Si votre
-    configuration actuelle a cette directive r&eacute;gl&eacute;e &agrave; une valeur tr&egrave;s basse,
-    de l'ordre de <code>30</code>, il est conseill&eacute; de l'augmenter de mani&egrave;re
-    significative. Si vous utilisez SunOs ou une ancienne version de Solaris,
-    utilisez une valeur de l'ordre de <code>10000</code>  &agrave; cause des fuites
-    de m&eacute;moire.</p>
-
-    <p>Lorsqu'ils sont en mode "keep-alive", les processus enfants sont
-    maintenus et ne font rien sinon attendre la prochaine requ&ecirc;te sur la
-    connexion d&eacute;j&agrave; ouverte. La valeur par d&eacute;faut de <code>5</code> de la
-    directive <directive module="core">KeepAliveTimeout</directive> tend &agrave;
+    <p>Lorsque le mode "keep-alive" est activé, un processus (ou un thread lancé
+    par un processus) est
+    maintenu et ne fait rien sinon attendre la prochaine requête sur la
+    connexion déjà ouverte. La valeur par défaut de <code>5</code> de la
+    directive <directive module="core">KeepAliveTimeout</directive> tend à
     minimiser cet effet. Il faut trouver le bon compromis entre la bande
-    passante r&eacute;seau et les ressources du serveur. En aucun cas vous ne devez
-    choisir une valeur sup&eacute;rieure &agrave; <code>60</code> seconds, car
-    <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
-    la plupart des b&eacute;n&eacute;fices sont alors perdus</a>.</p>
+    passante réseau et les ressources du serveur.</p>
 
     </section>
 
@@ -440,49 +406,49 @@ DocumentRoot "/www/htdocs"
 
   <section id="compiletime">
 
-    <title>Optimisation de la configuration &agrave; la compilation</title>
+    <title>Optimisation de la configuration à la compilation</title>
 
     <section>
 
       <title>Choisir un Module Multi-Processus (MPM)</title>
 
-      <p>Apache 2.x supporte les mod&egrave;les simultan&eacute;s enfichables, appel&eacute;s
+      <p>Apache 2.x supporte les modèles simultanés enfichables, appelés
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
-      plateformes ont des modules MPM sp&eacute;cifiques :
+      plateformes ont des modules MPM spécifiques :
       <module>mpm_netware</module>, <module>mpmt_os2</module> et
-      <module>mpm_winnt</module>. Sur les syst&egrave;mes de type Unix, vous avez le
+      <module>mpm_winnt</module>. Sur les systèmes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
-      la vitesse et l'&eacute;volutivit&eacute; du d&eacute;mon httpd :</p>
+      la vitesse et l'évolutivité du démon httpd :</p>
 
       <ul>
 
         <li>Le MPM <module>worker</module> utilise plusieurs processus
-	enfants poss&eacute;dant chacun de nombreux threads. Chaque thread g&egrave;re une
-	seule connexion &agrave; la fois. Worker est en g&eacute;n&eacute;ral un bon choix pour les
-	serveurs pr&eacute;sentant un traffic important car il poss&egrave;de une empreinte
-	m&eacute;moire plus petite que le MPM prefork.</li>
+	enfants possédant chacun de nombreux threads. Chaque thread gère une
+	seule connexion à la fois. Worker est en général un bon choix pour les
+	serveurs présentant un traffic important car il possède une empreinte
+	mémoire plus petite que le MPM prefork.</li>
 
 	<li>Comme le MPM Worker, le MPM <module>event</module> utilise
-	les threads, mais il a &eacute;t&eacute; con&ccedil;u pour traiter davantage de
-	requ&ecirc;tes simultan&eacute;ment en confiant une partie du travail &agrave; des
+	les threads, mais il a été conçu pour traiter davantage de
+	requêtes simultanément en confiant une partie du travail à des
 	threads de support, ce qui permet aux threads principaux de
-	traiter de nouvelles requ&ecirc;tes.</li>
+	traiter de nouvelles requêtes.</li>
 
         <li>Le MPM <module>prefork</module> utilise plusieurs processus enfants
-	poss&eacute;dant chacun un seul thread. Chaque processus g&egrave;re une seule
-	connexion &agrave; la fois. Sur de nombreux syst&egrave;mes, prefork est comparable
-	en mati&egrave;re de vitesse &agrave; worker, mais il utilise plus de m&eacute;moire. De par
-	sa conception sans thread, prefork pr&eacute;sente des avantages par rapport &agrave;
-	worker dans certaines situations : il peut &ecirc;tre utilis&eacute; avec les
-	modules tiers qui ne supportent pas le threading, et son d&eacute;bogage est plus
-	ais&eacute; sur les platesformes pr&eacute;sentant un support du d&eacute;bogage des threads
+	possédant chacun un seul thread. Chaque processus gère une seule
+	connexion à la fois. Sur de nombreux systèmes, prefork est comparable
+	en matière de vitesse à worker, mais il utilise plus de mémoire. De par
+	sa conception sans thread, prefork présente des avantages par rapport à
+	worker dans certaines situations : il peut être utilisé avec les
+	modules tiers qui ne supportent pas le threading, et son débogage est plus
+	aisé sur les platesformes présentant un support du débogage des threads
 	rudimentaire.</li>
 
       </ul>
 
       <p>Pour plus d'informations sur ces deux MPMs et les autres, veuillez
-      vous r&eacute;f&eacute;rer &agrave; la <a href="../mpm.html">documentation sur les
+      vous référer à la <a href="../mpm.html">documentation sur les
       MPM</a>.</p>
 
     </section>
@@ -491,53 +457,53 @@ DocumentRoot "/www/htdocs"
 
         <title>Modules</title>
 
-        <p>Comme le contr&ocirc;le de l'utilisation de la m&eacute;moire est tr&egrave;s important
-	en mati&egrave;re de performance, il est conseill&eacute; d'&eacute;liminer les modules que
+        <p>Comme le contrôle de l'utilisation de la mémoire est très important
+	en matière de performance, il est conseillé d'éliminer les modules que
 	vous n'utilisez pas vraiment. Si vous avez construit ces modules en
-	tant que <a href="../dso.html">DSOs</a>, leur &eacute;limination consiste
-	simplement &agrave; commenter la directive
-	<directive module="mod_so">LoadModule</directive> associ&eacute;e &agrave; ce
-	module. Ceci vous permet de v&eacute;rifier si votre site fonctionne toujours
-	apr&egrave;s la suppression de tel ou tel module.</p>
+	tant que <a href="../dso.html">DSOs</a>, leur élimination consiste
+	simplement à commenter la directive
+	<directive module="mod_so">LoadModule</directive> associée à ce
+	module. Ceci vous permet de vérifier si votre site fonctionne toujours
+	après la suppression de tel ou tel module.</p>
 
-        <p>Par contre, si les modules que vous voulez supprimer sont li&eacute;s
-	statiquement &agrave; votre binaire Apache, vous devrez recompiler ce dernier
-	afin de pouvoir les &eacute;liminer.</p>
+        <p>Par contre, si les modules que vous voulez supprimer sont liés
+	statiquement à votre binaire Apache, vous devrez recompiler ce dernier
+	afin de pouvoir les éliminer.</p>
 
-        <p>La question qui d&eacute;coule de ce qui pr&eacute;c&egrave;de est &eacute;videmment de
+        <p>La question qui découle de ce qui précède est évidemment de
 	savoir de quels modules vous avez besoin et desquels vous pouvez vous
-	passer. La r&eacute;ponse sera bien entendu diff&eacute;rente d'un site web &agrave;
-	l'autre. Cependant, la liste <em>minimale</em> de modules n&eacute;cessaire &agrave;
+	passer. La réponse sera bien entendu différente d'un site web à
+	l'autre. Cependant, la liste <em>minimale</em> de modules nécessaire à
 	la survie de votre site contiendra certainement
 	<module>mod_mime</module>, <module>mod_dir</module> et
 	<module>mod_log_config</module>. <code>mod_log_config</code> est bien
 	entendu optionnel puisque vous pouvez faire fonctionner un site web
 	en se passant de fichiers journaux ; ceci est cependant
-	d&eacute;conseill&eacute;.</p>
+	déconseillé.</p>
 
     </section>
 
     <section>
 
-      <title>Op&eacute;rations atomiques</title>
+      <title>Opérations atomiques</title>
 
-      <p>Certains modules, &agrave; l'instar de <module>mod_cache</module> et des
-      versions de d&eacute;veloppement r&eacute;centes du MPM worker, utilisent l'API
-      atomique d'APR. Cette API propose des op&eacute;rations atomiques que l'on
-      peut utiliser pour all&eacute;ger la synchronisation des threads.</p>
+      <p>Certains modules, à l'instar de <module>mod_cache</module> et des
+      versions de développement récentes du MPM worker, utilisent l'API
+      atomique d'APR. Cette API propose des opérations atomiques que l'on
+      peut utiliser pour alléger la synchronisation des threads.</p>
 
-      <p>Par d&eacute;faut, APR impl&eacute;mente ces op&eacute;rations en utilisant les
-      m&eacute;canismes les plus efficaces disponibles sur chaque plateforme cible
-      (Syst&egrave;me d'exploitation et processeur). De nombreux processeurs modernes,
-      par exemple, poss&egrave;dent une instruction qui effectue une op&eacute;ration
-      atomique de type comparaison et &eacute;change ou compare-and-swap (CAS) au
-      niveau mat&eacute;riel. Sur certaines platesformes cependant, APR utilise par
-      d&eacute;faut une impl&eacute;mentation de l'API atomique plus lente, bas&eacute;e sur les
-      mutex, afin d'assurer la compatibilit&eacute; avec les anciens mod&egrave;les de
-      processeurs qui ne poss&egrave;dent pas ce genre d'instruction. Si vous
-      construisez Apache pour une de ces platesformes, et ne pr&eacute;voyez de
-      l'ex&eacute;cuter que sur des processeurs r&eacute;cents, vous pouvez s&eacute;lectionner une
-      impl&eacute;mentation atomique plus rapide &agrave; la compilation en utilisant
+      <p>Par défaut, APR implémente ces opérations en utilisant les
+      mécanismes les plus efficaces disponibles sur chaque plateforme cible
+      (Système d'exploitation et processeur). De nombreux processeurs modernes,
+      par exemple, possèdent une instruction qui effectue une opération
+      atomique de type comparaison et échange ou compare-and-swap (CAS) au
+      niveau matériel. Sur certaines platesformes cependant, APR utilise par
+      défaut une implémentation de l'API atomique plus lente, basée sur les
+      mutex, afin d'assurer la compatibilité avec les anciens modèles de
+      processeurs qui ne possèdent pas ce genre d'instruction. Si vous
+      construisez Apache pour une de ces platesformes, et ne prévoyez de
+      l'exécuter que sur des processeurs récents, vous pouvez sélectionner une
+      implémentation atomique plus rapide à la compilation en utilisant
       l'option <code>--enable-nonportable-atomics</code> du
       script configure :</p>
 
@@ -552,27 +518,27 @@ DocumentRoot "/www/htdocs"
       <ul>
 
         <li>Solaris sur SPARC<br />
-            Sur Solaris/SPARC, APR utilise par d&eacute;faut les op&eacute;rations
-	    atomiques bas&eacute;es sur les mutex. Cependant, si vous ajoutez l'option
+            Sur Solaris/SPARC, APR utilise par défaut les opérations
+	    atomiques basées sur les mutex. Cependant, si vous ajoutez l'option
 	    <code>--enable-nonportable-atomics</code> au script configure, APR
-	    g&eacute;n&egrave;re un code qui utilise le code op&eacute;ration SPARC v8plus pour des
-	    op&eacute;rations de compare-and-swap mat&eacute;riel plus rapides. Si vous
-	    utilisez cette option de configure avec Apache, les op&eacute;rations
-	    atomiques seront plus efficaces (permettant d'all&eacute;ger la charge du
-	    processeur et un plus haut niveau de simultan&eacute;it&eacute;), mais
-	    l'ex&eacute;cutable produit ne fonctionnera que sur les processeurs
+	    génère un code qui utilise le code opération SPARC v8plus pour des
+	    opérations de compare-and-swap matériel plus rapides. Si vous
+	    utilisez cette option de configure avec Apache, les opérations
+	    atomiques seront plus efficaces (permettant d'alléger la charge du
+	    processeur et un plus haut niveau de simultanéité), mais
+	    l'exécutable produit ne fonctionnera que sur les processeurs
 	    UltraSPARC.
 	</li>
 
         <li>Linux sur x86<br />
-            Sous Linux, APR utilise par d&eacute;faut les op&eacute;rations atomiques bas&eacute;es
+            Sous Linux, APR utilise par défaut les opérations atomiques basées
 	    sur les mutex. Cependant, si vous ajoutez l'option
 	    <code>--enable-nonportable-atomics</code> au script configure,
-	    APR g&eacute;n&eacute;rera un code qui utilise un code d'op&eacute;ration du 486
-	    pour des op&eacute;rations de compare-and-swap mat&eacute;riel plus rapides. Le
-	    code r&eacute;sultant est plus efficace en mati&egrave;re d'op&eacute;rations atomiques,
-	    mais l'ex&eacute;cutable produit ne fonctionnera que sur des processeurs
-	    486 et sup&eacute;rieurs (et non sur des 386).
+	    APR générera un code qui utilise un code d'opération du 486
+	    pour des opérations de compare-and-swap matériel plus rapides. Le
+	    code résultant est plus efficace en matière d'opérations atomiques,
+	    mais l'exécutable produit ne fonctionnera que sur des processeurs
+	    486 et supérieurs (et non sur des 386).
         </li>
 
       </ul>
@@ -583,42 +549,42 @@ DocumentRoot "/www/htdocs"
 
       <title>Module mod_status et ExtendedStatus On</title>
 
-      <p>Si vous incluez le module <module>mod_status</module> &agrave; la
-      construction d'Apache et ajoutez <code>ExtendedStatus On</code> &agrave; sa
-      configuration, Apache va effectuer pour chaque requ&ecirc;te deux appels &agrave;
+      <p>Si vous incluez le module <module>mod_status</module> à la
+      construction d'Apache et ajoutez <code>ExtendedStatus On</code> à sa
+      configuration, Apache va effectuer pour chaque requête deux appels à
       <code>gettimeofday(2)</code> (ou <code>times(2)</code> selon votre
-      syst&egrave;me d'exploitation), et (pour les versions ant&eacute;rieures &agrave; 1.3) de
-      nombreux appels suppl&eacute;mentaires &agrave; <code>time(2)</code>. Tous ces
-      appels sont effectu&eacute;s afin que le rapport de statut puisse contenir
-      des indications temporelles. Pour am&eacute;liorer les performances, utilisez
-      <code>ExtendedStatus off</code> (qui est le r&eacute;glage par d&eacute;faut).</p>
+      système d'exploitation), et (pour les versions antérieures à 1.3) de
+      nombreux appels supplémentaires à <code>time(2)</code>. Tous ces
+      appels sont effectués afin que le rapport de statut puisse contenir
+      des indications temporelles. Pour améliorer les performances, utilisez
+      <code>ExtendedStatus off</code> (qui est le réglage par défaut).</p>
 
     </section>
 
     <section>
 
-      <title>accept Serialization - points de connexion &agrave; un programme (sockets) multiples</title>
+      <title>accept Serialization - points de connexion à un programme (sockets) multiples</title>
 
     <note type="warning"><title>Mise en garde :</title>
-      <p>Cette section n'a pas &eacute;t&eacute; totalement mise &agrave; jour car elle ne tient pas
+      <p>Cette section n'a pas été totalement mise à jour car elle ne tient pas
       compte des changements intervenus dans la version 2.x du Serveur HTTP
       Apache. Certaines informations sont encore pertinentes, il vous est
-      cependant conseill&eacute; de les utiliser avec prudence.</p>
+      cependant conseillé de les utiliser avec prudence.</p>
     </note>
 
-      <p>Ce qui suit est une br&egrave;ve discussion &agrave; propos de l'API des sockets
+      <p>Ce qui suit est une brève discussion à propos de l'API des sockets
       Unix. Supposons que votre serveur web utilise plusieurs directives
-      <directive module="mpm_common">Listen</directive> afin d'&eacute;couter
+      <directive module="mpm_common">Listen</directive> afin d'écouter
       plusieurs ports ou de multiples adresses. Afin de tester chaque socket
       pour voir s'il a une connexion en attente, Apache utilise
       <code>select(2)</code>. <code>select(2)</code> indique si un socket a
-      <em>z&eacute;ro</em> ou <em>au moins une</em> connexion en attente. Le mod&egrave;le
+      <em>zéro</em> ou <em>au moins une</em> connexion en attente. Le modèle
       d'Apache comporte plusieurs processus enfants, et tous ceux qui sont
-      inactifs testent la pr&eacute;sence de nouvelles connexions au m&ecirc;me moment.
-      Une impl&eacute;mentation rudimentaire de ceci pourrait ressembler &agrave;
+      inactifs testent la présence de nouvelles connexions au même moment.
+      Une implémentation rudimentaire de ceci pourrait ressembler à
       l'exemple suivant
       (ces exemples ne sont pas extraits du code d'Apache, ils ne sont
-      propos&eacute;s qu'&agrave; des fins p&eacute;dagogiques) :</p>
+      proposés qu'à des fins pédagogiques) :</p>
 
       <highlight language="c">
         for (;;) {
@@ -644,42 +610,42 @@ DocumentRoot "/www/htdocs"
         }
       </highlight>
 
-      <p>Mais cette impl&eacute;mentation rudimentaire pr&eacute;sente une s&eacute;rieuse lacune.
-      Rappelez-vous que les processus enfants ex&eacute;cutent cette boucle au m&ecirc;me
+      <p>Mais cette implémentation rudimentaire présente une sérieuse lacune.
+      Rappelez-vous que les processus enfants exécutent cette boucle au même
       moment ; ils vont ainsi bloquer sur <code>select</code> s'ils se trouvent
-      entre deux requ&ecirc;tes. Tous ces processus bloqu&eacute;s vont se r&eacute;activer et
-      sortir de <code>select</code> quand une requ&ecirc;te va appara&icirc;tre sur un des
-      sockets (le nombre de processus enfants qui se r&eacute;activent varie en
-      fonction du syst&egrave;me d'exploitation et des r&eacute;glages de synchronisation).
+      entre deux requêtes. Tous ces processus bloqués vont se réactiver et
+      sortir de <code>select</code> quand une requête va apparaître sur un des
+      sockets (le nombre de processus enfants qui se réactivent varie en
+      fonction du système d'exploitation et des réglages de synchronisation).
       Ils vont alors tous entrer dans la boucle et tenter un
       <code>"accept"</code> de la connexion. Mais seulement un d'entre eux y
       parviendra (en supposant qu'il ne reste q'une seule connexion en
       attente), les autres vont se bloquer au niveau de <code>accept</code>.
       Ceci verrouille vraiment ces processus de telle sorte qu'ils ne peuvent
-      plus servir de requ&ecirc;tes que par cet unique socket, et il en sera ainsi
-      jusqu'&agrave; ce que suffisamment de nouvelles requ&ecirc;tes apparaissent sur ce
-      socket pour les r&eacute;activer tous. Cette lacune a &eacute;t&eacute; document&eacute;e pour la
-      premi&egrave;re fois dans
+      plus servir de requêtes que par cet unique socket, et il en sera ainsi
+      jusqu'à ce que suffisamment de nouvelles requêtes apparaissent sur ce
+      socket pour les réactiver tous. Cette lacune a été documentée pour la
+      première fois dans
       <a href="http://bugs.apache.org/index/full/467">PR#467</a>. Il existe
       au moins deux solutions.</p>
 
-      <p>La premi&egrave;re consiste &agrave; rendre les sockets non blocants. Dans ce cas,
+      <p>La première consiste à rendre les sockets non blocants. Dans ce cas,
       <code>accept</code> ne bloquera pas les processus enfants, et ils
-      pourront continuer &agrave; s'ex&eacute;cuter imm&eacute;diatement. Mais ceci consomme des
+      pourront continuer à s'exécuter immédiatement. Mais ceci consomme des
       ressources processeur. Supposons que vous ayez dix processus enfants
       inactifs dans <code>select</code>, et qu'une connexion arrive.
-      Neuf des dix processus vont se r&eacute;activer, tenter un <code>accept</code>
-      de la connexion, &eacute;chouer, et boucler dans <code>select</code>, tout en
+      Neuf des dix processus vont se réactiver, tenter un <code>accept</code>
+      de la connexion, échouer, et boucler dans <code>select</code>, tout en
       n'ayant finalement rien accompli. Pendant ce temps, aucun de ces processus
-      ne traite les requ&ecirc;tes qui arrivent sur d'autres sockets jusqu'&agrave; ce
+      ne traite les requêtes qui arrivent sur d'autres sockets jusqu'à ce
       qu'ils retournent dans <code>select</code>. Finalement, cette solution
-      ne semble pas tr&egrave;s efficace, &agrave; moins que vous ne disposiez d'autant de
+      ne semble pas très efficace, à moins que vous ne disposiez d'autant de
       processeurs inactifs (dans un serveur multiprocesseur) que de processus
-      enfants inactifs, ce qui n'est pas une situation tr&egrave;s courante.</p>
+      enfants inactifs, ce qui n'est pas une situation très courante.</p>
 
-      <p>Une autre solution, celle qu'utilise Apache, consiste &agrave; s&eacute;rialiser les
-      entr&eacute;es dans la boucle interne. La boucle ressemble &agrave; ceci (les
-      diff&eacute;rences sont mises en surbrillance) :</p>
+      <p>Une autre solution, celle qu'utilise Apache, consiste à sérialiser les
+      entrées dans la boucle interne. La boucle ressemble à ceci (les
+      différences sont mises en surbrillance) :</p>
 
       <highlight language="c">
         for (;;) {
@@ -709,74 +675,74 @@ DocumentRoot "/www/htdocs"
 
       <p><a id="serialize" name="serialize">Les fonctions</a>
       <code>accept_mutex_on</code> et <code>accept_mutex_off</code>
-      impl&eacute;mentent un s&eacute;maphore permettant une exclusion mutuelle. Un seul
-      processus enfant &agrave; la fois peut poss&eacute;der le mutex. Plusieurs choix se
-      pr&eacute;sentent pour impl&eacute;menter ces mutex. Ce choix est d&eacute;fini dans
-      <code>src/conf.h</code> (versions ant&eacute;rieures &agrave; 1.3) ou
-      <code>src/include/ap_config.h</code> (versions 1.3 ou sup&eacute;rieures).
+      implémentent un sémaphore permettant une exclusion mutuelle. Un seul
+      processus enfant à la fois peut posséder le mutex. Plusieurs choix se
+      présentent pour implémenter ces mutex. Ce choix est défini dans
+      <code>src/conf.h</code> (versions antérieures à 1.3) ou
+      <code>src/include/ap_config.h</code> (versions 1.3 ou supérieures).
       Certaines architectures ne font pas ce choix du mode de verrouillage ;
       l'utilisation de directives
       <directive module="mpm_common">Listen</directive> multiples sur ces
-      architectures est donc peu s&ucirc;r.</p>
+      architectures est donc peu sûr.</p>
 
       <p>La directive <directive module="core">Mutex</directive> permet
-      de modifier l'impl&eacute;mentation du mutex <code>mpm-accept</code> &agrave;
-      l'ex&eacute;cution. Des consid&eacute;rations sp&eacute;cifiques aux diff&eacute;rentes
-      impl&eacute;mentations de mutex sont document&eacute;es avec cette directive.</p>
+      de modifier l'implémentation du mutex <code>mpm-accept</code> à
+      l'exécution. Des considérations spécifiques aux différentes
+      implémentations de mutex sont documentées avec cette directive.</p>
 
-      <p>Une autre solution qui a &eacute;t&eacute; imagin&eacute;e mais jamais impl&eacute;ment&eacute;e, consiste
-      &agrave; s&eacute;rialiser partiellement la boucle -- c'est &agrave; dire y faire entrer un
-      certain nombre de processus. Ceci ne pr&eacute;senterait un int&eacute;r&ecirc;t que sur les
-      machines multiprocesseurs o&ugrave; plusieurs processus enfants peuvent
-      s'ex&eacute;cuter simultan&eacute;ment, et encore, la s&eacute;rialisation ne tire pas
-      vraiment parti de toute la bande passante. C'est une possibilit&eacute;
-      d'investigation future, mais demeure de priorit&eacute; basse car les serveurs
-      web &agrave; architecture hautement parall&egrave;le ne sont pas la norme.</p>
+      <p>Une autre solution qui a été imaginée mais jamais implémentée, consiste
+      à sérialiser partiellement la boucle -- c'est à dire y faire entrer un
+      certain nombre de processus. Ceci ne présenterait un intérêt que sur les
+      machines multiprocesseurs où plusieurs processus enfants peuvent
+      s'exécuter simultanément, et encore, la sérialisation ne tire pas
+      vraiment parti de toute la bande passante. C'est une possibilité
+      d'investigation future, mais demeure de priorité basse car les serveurs
+      web à architecture hautement parallèle ne sont pas la norme.</p>
 
       <p>Pour bien faire, vous devriez faire fonctionner votre serveur sans
       directives <directive module="mpm_common">Listen</directive> multiples
-      si vous visez les performances les plus &eacute;lev&eacute;es.
+      si vous visez les performances les plus élevées.
       Mais lisez ce qui suit.</p>
 
     </section>
 
     <section>
 
-      <title>accept Serialization - point de connexion &agrave; un programme (sockets) unique</title>
+      <title>accept Serialization - point de connexion à un programme (sockets) unique</title>
 
-      <p>Ce qui pr&eacute;c&egrave;de convient pour les serveurs &agrave; sockets multiples, mais
-      qu'en est-il des serveurs &agrave; socket unique ? En th&eacute;orie, ils ne
-      devraient pas rencontrer les m&ecirc;mes probl&egrave;mes car tous les processus
-      enfants peuvent se bloquer dans <code>accept(2)</code> jusqu'&agrave; ce qu'une
-      connexion arrive, et ils ne sont pas utilis&eacute;s &agrave; ne rien faire. En
-      pratique, ceci dissimule un m&ecirc;me comportement de bouclage
-      discut&eacute; plus haut dans la solution non-blocante. De la mani&egrave;re dont
-      sont impl&eacute;ment&eacute;es les piles TCP, le noyau r&eacute;active v&eacute;ritablement tous les
-      processus bloqu&eacute;s dans <code>accept</code> quand une seule connexion
+      <p>Ce qui précède convient pour les serveurs à sockets multiples, mais
+      qu'en est-il des serveurs à socket unique ? En théorie, ils ne
+      devraient pas rencontrer les mêmes problèmes car tous les processus
+      enfants peuvent se bloquer dans <code>accept(2)</code> jusqu'à ce qu'une
+      connexion arrive, et ils ne sont pas utilisés à ne rien faire. En
+      pratique, ceci dissimule un même comportement de bouclage
+      discuté plus haut dans la solution non-blocante. De la manière dont
+      sont implémentées les piles TCP, le noyau réactive véritablement tous les
+      processus bloqués dans <code>accept</code> quand une seule connexion
       arrive. Un de ces processus prend la connexion en compte et retourne
       dans l'espace utilisateur, les autres bouclant dans l'espace du
-      noyau et se d&eacute;sactivant quand ils s'aper&ccedil;oivent qu'il n'y a pas de
+      noyau et se désactivant quand ils s'aperçoivent qu'il n'y a pas de
       connexion pour eux. Ce bouclage est invisible depuis le code de l'espace
-      utilisateur, mais il est quand-m&ecirc;me pr&eacute;sent. Ceci peut conduire &agrave; la
-      m&ecirc;me augmentation de charge &agrave; perte que la solution non blocante au cas
+      utilisateur, mais il est quand-même présent. Ceci peut conduire à la
+      même augmentation de charge à perte que la solution non blocante au cas
       des sockets multiples peut induire.</p>
 
-      <p>Pour cette raison, il appara&icirc;t que de nombreuses architectures se
-      comportent plus "proprement" si on s&eacute;rialise m&ecirc;me dans le cas d'une socket
-      unique. Il s'agit en fait du comportement par d&eacute;faut dans la plupart des
-      cas. Des exp&eacute;riences pouss&eacute;es sous Linux (noyau 2.0.30 sur un
-      biprocesseur Pentium pro 166 avec 128 Mo de RAM) ont montr&eacute; que la
-      s&eacute;rialisation d'une socket unique provoque une diminution inf&eacute;rieure &agrave; 3%
-      du nombre de requ&ecirc;tes par secondes par rapport au traitement non
-      s&eacute;rialis&eacute;. Mais le traitement non s&eacute;rialis&eacute; des sockets uniques induit
-      un temps de r&eacute;ponse suppl&eacute;mentaire de 100 ms pour chaque requ&ecirc;te. Ce
-      temps de r&eacute;ponse est probablement provoqu&eacute; par une limitation sur les
-      lignes &agrave; haute charge, et ne constitue un probl&egrave;me que sur les r&eacute;seaux
-      locaux. Si vous voulez vous passer de la s&eacute;rialisation des sockets
-      uniques, vous pouvez d&eacute;finir
+      <p>Pour cette raison, il apparaît que de nombreuses architectures se
+      comportent plus "proprement" si on sérialise même dans le cas d'une socket
+      unique. Il s'agit en fait du comportement par défaut dans la plupart des
+      cas. Des expériences poussées sous Linux (noyau 2.0.30 sur un
+      biprocesseur Pentium pro 166 avec 128 Mo de RAM) ont montré que la
+      sérialisation d'une socket unique provoque une diminution inférieure à 3%
+      du nombre de requêtes par secondes par rapport au traitement non
+      sérialisé. Mais le traitement non sérialisé des sockets uniques induit
+      un temps de réponse supplémentaire de 100 ms pour chaque requête. Ce
+      temps de réponse est probablement provoqué par une limitation sur les
+      lignes à haute charge, et ne constitue un problème que sur les réseaux
+      locaux. Si vous voulez vous passer de la sérialisation des sockets
+      uniques, vous pouvez définir
       <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> et les
-      serveurs &agrave; socket unique ne pratiqueront plus du tout la
-      s&eacute;rialisation.</p>
+      serveurs à socket unique ne pratiqueront plus du tout la
+      sérialisation.</p>
 
     </section>
 
@@ -784,38 +750,38 @@ DocumentRoot "/www/htdocs"
 
       <title>Fermeture en prenant son temps (Lingering close)</title>
 
-      <p>Comme discut&eacute; dans <a
+      <p>Comme discuté dans <a
       href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
-      draft-ietf-http-connection-00.txt</a> section 8, pour impl&eacute;menter de
-      mani&egrave;re <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
-      les deux directions d'une communication ind&eacute;pendamment (rappelez-vous
-      qu'une connexion TCP est bidirectionnelle, chaque direction &eacute;tant
-      ind&eacute;pendante de l'autre).</p>
+      draft-ietf-http-connection-00.txt</a> section 8, pour implémenter de
+      manière <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
+      les deux directions d'une communication indépendamment (rappelez-vous
+      qu'une connexion TCP est bidirectionnelle, chaque direction étant
+      indépendante de l'autre).</p>
 
-      <p>Quand cette fonctionnalit&eacute; fut ajout&eacute;e &agrave; Apache, elle causa une
-      avalanche de probl&egrave;mes sur plusieurs versions d'Unix &agrave; cause d'une
-      impl&eacute;mentation &agrave; courte vue. La sp&eacute;cification TCP ne pr&eacute;cise pas que
-      l'&eacute;tat <code>FIN_WAIT_2</code> poss&egrave;de un temps de r&eacute;ponse mais elle ne
-      l'exclut pas. Sur les syst&egrave;mes qui n'introduisent pas ce temps de
-      r&eacute;ponse, Apache 1.2 induit de nombreux blocages d&eacute;finitifs de socket
-      dans l'&eacute;tat <code>FIN_WAIT_2</code>. On peut eviter ceci dans de nombreux
-      cas tout simplement en mettant &agrave; jour TCP/IP avec le dernier patch mis &agrave;
-      disposition par le fournisseur. Dans les cas o&ugrave; le fournisseur n'a
+      <p>Quand cette fonctionnalité fut ajoutée à Apache, elle causa une
+      avalanche de problèmes sur plusieurs versions d'Unix à cause d'une
+      implémentation à courte vue. La spécification TCP ne précise pas que
+      l'état <code>FIN_WAIT_2</code> possède un temps de réponse mais elle ne
+      l'exclut pas. Sur les systèmes qui n'introduisent pas ce temps de
+      réponse, Apache 1.2 induit de nombreux blocages définitifs de socket
+      dans l'état <code>FIN_WAIT_2</code>. On peut eviter ceci dans de nombreux
+      cas tout simplement en mettant à jour TCP/IP avec le dernier patch mis à
+      disposition par le fournisseur. Dans les cas où le fournisseur n'a
       jamais fourni de patch (par exemple, SunOS4 -- bien que les utilisateurs
-      poss&eacute;dant une license source puissent le patcher eux-m&ecirc;mes), nous avons
-      d&eacute;cid&eacute; de d&eacute;sactiver cette fonctionnalit&eacute;.</p>
+      possédant une license source puissent le patcher eux-mêmes), nous avons
+      décidé de désactiver cette fonctionnalité.</p>
 
-      <p>Il y a deux m&eacute;thodes pour arriver &agrave; ce r&eacute;sultat. La premi&egrave;re est
+      <p>Il y a deux méthodes pour arriver à ce résultat. La première est
       l'option de socket <code>SO_LINGER</code>. Mais le sort a voulu que cette
-      solution ne soit jamais impl&eacute;ment&eacute;e correctement dans la plupart des
-      piles TCP/IP. Et m&ecirc;me dans les rares cas o&ugrave; cette solution a &eacute;t&eacute;
-      impl&eacute;ment&eacute;e correctement (par exemple Linux 2.0.31), elle se
+      solution ne soit jamais implémentée correctement dans la plupart des
+      piles TCP/IP. Et même dans les rares cas où cette solution a été
+      implémentée correctement (par exemple Linux 2.0.31), elle se
       montre beaucoup plus gourmande (en temps processeur) que la solution
       suivante.</p>
 
-      <p>Pour la plus grande partie, Apache impl&eacute;mente cette solution &agrave; l'aide
-      d'une fonction appel&eacute;e <code>lingering_close</code> (d&eacute;finie dans
-      <code>http_main.c</code>). La fonction ressemble approximativement &agrave;
+      <p>Pour la plus grande partie, Apache implémente cette solution à l'aide
+      d'une fonction appelée <code>lingering_close</code> (définie dans
+      <code>http_main.c</code>). La fonction ressemble approximativement à
       ceci :</p>
 
       <highlight language="c">
@@ -844,19 +810,19 @@ DocumentRoot "/www/htdocs"
         }
       </highlight>
 
-      <p>Ceci ajoute naturellement un peu de charge &agrave; la fin d'une connexion,
-      mais s'av&egrave;re n&eacute;cessaire pour une impl&eacute;mentation fiable. Comme HTTP/1.1
-      est de plus en plus pr&eacute;sent et que toutes les connexions sont
-      persistentes, la charge sera amortie par la multiplicit&eacute; des requ&ecirc;tes.
-      Si vous voulez jouer avec le feu en d&eacute;sactivant cette fonctionnalit&eacute;,
-      vous pouvez d&eacute;finir <code>NO_LINGCLOSE</code>, mais c'est fortement
-      d&eacute;conseill&eacute;. En particulier, comme les connexions persistantes en
-      pipeline de HTTP/1.1 commencent &agrave; &ecirc;tre utilis&eacute;es,
-      <code>lingering_close</code> devient une absolue n&eacute;cessit&eacute; (et les
+      <p>Ceci ajoute naturellement un peu de charge à la fin d'une connexion,
+      mais s'avère nécessaire pour une implémentation fiable. Comme HTTP/1.1
+      est de plus en plus présent et que toutes les connexions sont
+      persistentes, la charge sera amortie par la multiplicité des requêtes.
+      Si vous voulez jouer avec le feu en désactivant cette fonctionnalité,
+      vous pouvez définir <code>NO_LINGCLOSE</code>, mais c'est fortement
+      déconseillé. En particulier, comme les connexions persistantes en
+      pipeline de HTTP/1.1 commencent à être utilisées,
+      <code>lingering_close</code> devient une absolue nécessité (et les
       <a
       href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       connexions en pipeline sont plus rapides</a> ; vous avez donc tout
-      int&eacute;r&ecirc;t &agrave; les supporter).</p>
+      intérêt à les supporter).</p>
 
     </section>
 
@@ -864,28 +830,28 @@ DocumentRoot "/www/htdocs"
 
       <title>Fichier tableau de bord (Scoreboard file)</title>
 
-      <p>Les processus parent et enfants d'Apache communiquent entre eux &agrave;
-      l'aide d'un objet appel&eacute; "Tableau de bord" (Scoreboard). Id&eacute;alement, cet
-      &eacute;change devrait s'effectuer en m&eacute;moire partag&eacute;e. Pour les syst&egrave;mes
-      d'exploitation auxquels nous avons eu acc&egrave;s, ou pour lesquels nous avons
-      obtenu des informations suffisamment d&eacute;taill&eacute;es pour effectuer un
-      portage, cet &eacute;change est en g&eacute;n&eacute;ral impl&eacute;ment&eacute; en utilisant la m&eacute;moire
-      partag&eacute;e. Pour les autres, on utilise par d&eacute;faut un fichier d'&eacute;change sur
-      disque. Le fichier d'&eacute;change sur disque est non seulement lent, mais
-      aussi peu fiable (et propose moins de fonctionnalit&eacute;s). Recherchez dans
-      le fichier <code>src/main/conf.h</code> correspondant &agrave; votre
+      <p>Les processus parent et enfants d'Apache communiquent entre eux à
+      l'aide d'un objet appelé "Tableau de bord" (Scoreboard). Idéalement, cet
+      échange devrait s'effectuer en mémoire partagée. Pour les systèmes
+      d'exploitation auxquels nous avons eu accès, ou pour lesquels nous avons
+      obtenu des informations suffisamment détaillées pour effectuer un
+      portage, cet échange est en général implémenté en utilisant la mémoire
+      partagée. Pour les autres, on utilise par défaut un fichier d'échange sur
+      disque. Le fichier d'échange sur disque est non seulement lent, mais
+      aussi peu fiable (et propose moins de fonctionnalités). Recherchez dans
+      le fichier <code>src/main/conf.h</code> correspondant à votre
       architecture soit <code>USE_MMAP_SCOREBOARD</code>, soit
-      <code>USE_SHMGET_SCOREBOARD</code>. La d&eacute;finition de l'un des deux
+      <code>USE_SHMGET_SCOREBOARD</code>. La définition de l'un des deux
       (ainsi que leurs compagnons respectifs <code>HAVE_MMAP</code> et
-      <code>HAVE_SHMGET</code>), active le code fourni pour la m&eacute;moire
-      partag&eacute;e. Si votre syst&egrave;me propose une autre solution pour la gestion de
-      la m&eacute;moire partag&eacute;e, &eacute;ditez le fichier <code>src/main/http_main.c</code>
-      et ajoutez la portion de code n&eacute;cessaire pour pouvoir l'utiliser dans
+      <code>HAVE_SHMGET</code>), active le code fourni pour la mémoire
+      partagée. Si votre système propose une autre solution pour la gestion de
+      la mémoire partagée, éditez le fichier <code>src/main/http_main.c</code>
+      et ajoutez la portion de code nécessaire pour pouvoir l'utiliser dans
       Apache (Merci de nous envoyer aussi le patch correspondant).</p>
 
-      <note>Note &agrave; caract&egrave;re historique : le portage d'Apache sous Linux
-      n'utilisait pas la m&eacute;moire partag&eacute;e avant la version 1.2. Ceci entra&icirc;nait
-      un comportement tr&egrave;s rudimentaire et peu fiable des versions ant&eacute;rieures
+      <note>Note à caractère historique : le portage d'Apache sous Linux
+      n'utilisait pas la mémoire partagée avant la version 1.2. Ceci entraînait
+      un comportement très rudimentaire et peu fiable des versions antérieures
       d'Apache sous Linux.</note>
 
     </section>
@@ -894,12 +860,12 @@ DocumentRoot "/www/htdocs"
 
       <title>DYNAMIC_MODULE_LIMIT</title>
 
-      <p>Si vous n'avez pas l'intention d'utiliser les modules charg&eacute;s
-      dynamiquement (ce qui est probablement le cas si vous &ecirc;tes en train de
+      <p>Si vous n'avez pas l'intention d'utiliser les modules chargés
+      dynamiquement (ce qui est probablement le cas si vous êtes en train de
       lire ce document afin de personnaliser votre serveur en recherchant le
-      moindre des gains en performances), vous pouvez ajouter la d&eacute;finition
-      <code>-DDYNAMIC_MODULE_LIMIT=0</code> &agrave; la construction de votre serveur.
-      Ceci aura pour effet de lib&eacute;rer la m&eacute;moire RAM allou&eacute;e pour le
+      moindre des gains en performances), vous pouvez ajouter la définition
+      <code>-DDYNAMIC_MODULE_LIMIT=0</code> à la construction de votre serveur.
+      Ceci aura pour effet de libérer la mémoire RAM allouée pour le
       chargement dynamique des modules.</p>
 
     </section>
@@ -908,61 +874,61 @@ DocumentRoot "/www/htdocs"
 
   <section id="trace">
 
-    <title>Appendice : Analyse d&eacute;taill&eacute;e d'une trace</title>
+    <title>Appendice : Analyse détaillée d'une trace</title>
 
-    <p>Voici la trace d'un appel syst&egrave;me d'Apache 2.0.38 avec le MPM worker
-    sous Solaris 8. Cette trace a &eacute;t&eacute; collect&eacute;e &agrave; l'aide de la commande :</p>
+    <p>Voici la trace d'un appel système d'Apache 2.0.38 avec le MPM worker
+    sous Solaris 8. Cette trace a été collectée à l'aide de la commande :</p>
 
     <example>
       truss -l -p <var>httpd_child_pid</var>.
     </example>
 
-    <p>L'option <code>-l</code> demande &agrave; truss de tracer l'ID du LWP
+    <p>L'option <code>-l</code> demande à truss de tracer l'ID du LWP
     (lightweight process--la version de Solaris des threads niveau noyau) qui
-    invoque chaque appel syst&egrave;me.</p>
+    invoque chaque appel système.</p>
 
-    <p>Les autres syst&egrave;mes peuvent proposer des utilitaires de tra&ccedil;age
-    des appels syst&egrave;me diff&eacute;rents comme <code>strace</code>,
+    <p>Les autres systèmes peuvent proposer des utilitaires de traçage
+    des appels système différents comme <code>strace</code>,
     <code>ktrace</code>, ou <code>par</code>. Ils produisent cependant tous une
     trace similaire.</p>
 
-    <p>Dans cette trace, un client a demand&eacute; un fichier statique de 10 ko au
-    d&eacute;mon httpd. Le tra&ccedil;age des requ&ecirc;tes pour des contenus non statiques
-    ou comportant une n&eacute;gociation de contenu a une pr&eacute;sentation
-    diff&eacute;rente (et m&ecirc;me assez laide dans certains cas).</p>
+    <p>Dans cette trace, un client a demandé un fichier statique de 10 ko au
+    démon httpd. Le traçage des requêtes pour des contenus non statiques
+    ou comportant une négociation de contenu a une présentation
+    différente (et même assez laide dans certains cas).</p>
 
     <example>
 <pre>/67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
 /67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9</pre>
     </example>
 
-    <p>Dans cette trace, le thread &agrave; l'&eacute;coute s'ex&eacute;cute &agrave; l'int&eacute;rieur de
+    <p>Dans cette trace, le thread à l'écoute s'exécute à l'intérieur de
     LWP #67.</p>
 
-    <note>Notez l'absence de la s&eacute;rialisation d'<code>accept(2)</code>. Sur
-    cette plateforme sp&eacute;cifique, le MPM worker utilise un accept non s&eacute;rialis&eacute;
-    par d&eacute;faut sauf s'il est en &eacute;coute sur des ports multiples.</note>
+    <note>Notez l'absence de la sérialisation d'<code>accept(2)</code>. Sur
+    cette plateforme spécifique, le MPM worker utilise un accept non sérialisé
+    par défaut sauf s'il est en écoute sur des ports multiples.</note>
 
     <example>
 <pre>/65:    lwp_park(0x00000000, 0)                         = 0
 /67:    lwp_unpark(65, 1)                               = 0</pre>
     </example>
 
-    <p>Apr&egrave;s avoir accept&eacute; la connexion, le thread &agrave; l'&eacute;coute r&eacute;active un
-    thread du worker pour effectuer le traitement de la requ&ecirc;te. Dans cette
-    trace, le thread du worker qui traite la requ&ecirc;te est associ&eacute; &agrave;
+    <p>Après avoir accepté la connexion, le thread à l'écoute réactive un
+    thread du worker pour effectuer le traitement de la requête. Dans cette
+    trace, le thread du worker qui traite la requête est associé à
     LWP #65.</p>
 
     <example>
 <pre>/65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0</pre>
     </example>
 
-    <p>Afin de pouvoir impl&eacute;menter les h&ocirc;tes virtuels, Apache doit conna&icirc;tre
-    l'adresse du socket local utilis&eacute; pour accepter la connexion. On pourrait
+    <p>Afin de pouvoir implémenter les hôtes virtuels, Apache doit connaître
+    l'adresse du socket local utilisé pour accepter la connexion. On pourrait
     supprimer cet appel dans de nombreuses situations (par exemple dans le cas
-    o&ugrave; il n'y a pas d'h&ocirc;te virtuel ou dans le cas o&ugrave; les directives
+    où il n'y a pas d'hôte virtuel ou dans le cas où les directives
     <directive module="mpm_common">Listen</directive> contiennent des adresses
-    sans caract&egrave;res de substitution). Mais aucun effort n'a &eacute;t&eacute; accompli &agrave; ce
+    sans caractères de substitution). Mais aucun effort n'a été accompli à ce
     jour pour effectuer ces optimisations.</p>
 
     <example>
@@ -970,13 +936,13 @@ DocumentRoot "/www/htdocs"
 /65:    brk(0x002190E8)                                 = 0</pre>
     </example>
 
-    <p>L'appel <code>brk(2)</code> alloue de la m&eacute;moire dans le tas. Ceci est
-    rarement visible dans une trace d'appel syst&egrave;me, car le d&eacute;mon httpd
-    utilise des allocateurs m&eacute;moire de son cru (<code>apr_pool</code> et
-    <code>apr_bucket_alloc</code>) pour la plupart des traitements de requ&ecirc;tes.
-    Dans cette trace, le d&eacute;mon httpd vient juste de d&eacute;marrer, et il doit
-    appeler <code>malloc(3)</code> pour r&eacute;server les blocs de m&eacute;moire
-    n&eacute;cessaires &agrave; la cr&eacute;ation de ses propres allocateurs de m&eacute;moire.</p>
+    <p>L'appel <code>brk(2)</code> alloue de la mémoire dans le tas. Ceci est
+    rarement visible dans une trace d'appel système, car le démon httpd
+    utilise des allocateurs mémoire de son cru (<code>apr_pool</code> et
+    <code>apr_bucket_alloc</code>) pour la plupart des traitements de requêtes.
+    Dans cette trace, le démon httpd vient juste de démarrer, et il doit
+    appeler <code>malloc(3)</code> pour réserver les blocs de mémoire
+    nécessaires à la création de ses propres allocateurs de mémoire.</p>
 
     <example>
 <pre>/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
@@ -990,50 +956,50 @@ DocumentRoot "/www/htdocs"
 
     <p>Ensuite, le thread de worker passe la connexion du client (descripteur
     de fichier 9) en mode non blocant. Les appels <code>setsockopt(2)</code>
-    et <code>getsockopt(2)</code> constituent un effet de bord de la mani&egrave;re
+    et <code>getsockopt(2)</code> constituent un effet de bord de la manière
     dont la libc de Solaris utilise <code>fcntl(2)</code> pour les sockets.</p>
 
     <example>
 <pre>/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97</pre>
     </example>
 
-    <p>Le thread de worker lit la requ&ecirc;te du client.</p>
+    <p>Le thread de worker lit la requête du client.</p>
 
     <example>
 <pre>/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0
 /65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10</pre>
     </example>
 
-    <p>Ce d&eacute;mon httpd a &eacute;t&eacute; configur&eacute; avec les options
+    <p>Ce démon httpd a été configuré avec les options
     <code>Options FollowSymLinks</code> et <code>AllowOverride None</code>. Il
-    n'a donc ni besoin d'appeler <code>lstat(2)</code> pour chaque r&eacute;pertoire
-    du chemin du fichier demand&eacute;, ni besoin de v&eacute;rifier la pr&eacute;sence de fichiers
+    n'a donc ni besoin d'appeler <code>lstat(2)</code> pour chaque répertoire
+    du chemin du fichier demandé, ni besoin de vérifier la présence de fichiers
     <code>.htaccess</code>. Il appelle simplement <code>stat(2)</code> pour
-    v&eacute;rifier d'une part que le fichier existe, et d'autre part que c'est un
-    fichier r&eacute;gulier, et non un r&eacute;pertoire.</p>
+    vérifier d'une part que le fichier existe, et d'autre part que c'est un
+    fichier régulier, et non un répertoire.</p>
 
     <example>
 <pre>/65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269</pre>
     </example>
 
-    <p>Dans cet exemple, le d&eacute;mon httpd peut envoyer l'en-t&ecirc;te de la r&eacute;ponse
-    HTTP et le fichier demand&eacute; &agrave; l'aide d'un seul appel syst&egrave;me
-    <code>sendfilev(2)</code>. La s&eacute;mantique de sendfile varie en fonction des
-    syst&egrave;mes d'exploitation. Sur certains autres syst&egrave;mes, il faut faire un
-    appel &agrave; <code>write(2)</code> ou <code>writev(2)</code> pour envoyer les
-    en-t&ecirc;tes avant d'appeler <code>sendfile(2)</code>.</p>
+    <p>Dans cet exemple, le démon httpd peut envoyer l'en-tête de la réponse
+    HTTP et le fichier demandé à l'aide d'un seul appel système
+    <code>sendfilev(2)</code>. La sémantique de sendfile varie en fonction des
+    systèmes d'exploitation. Sur certains autres systèmes, il faut faire un
+    appel à <code>write(2)</code> ou <code>writev(2)</code> pour envoyer les
+    en-têtes avant d'appeler <code>sendfile(2)</code>.</p>
 
     <example>
 <pre>/65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78</pre>
     </example>
 
-    <p>Cet appel &agrave; <code>write(2)</code> enregistre la requ&ecirc;te dans le journal
-    des acc&egrave;s. Notez qu'une des choses manquant &agrave; cette trace est un appel &agrave;
-    <code>time(2)</code>. A la diff&eacute;rence d'Apache 1.3, Apache 2.x utilise
-    <code>gettimeofday(3)</code> pour consulter l'heure. Sur certains syst&egrave;mes
+    <p>Cet appel à <code>write(2)</code> enregistre la requête dans le journal
+    des accès. Notez qu'une des choses manquant à cette trace est un appel à
+    <code>time(2)</code>. A la différence d'Apache 1.3, Apache 2.x utilise
+    <code>gettimeofday(3)</code> pour consulter l'heure. Sur certains systèmes
     d'exploitation, comme Linux ou Solaris, <code>gettimeofday</code> est
-    impl&eacute;ment&eacute; de mani&egrave;re optimis&eacute;e de telle sorte qu'il consomme moins de
-    ressources qu'un appel syst&egrave;me habituel.</p>
+    implémenté de manière optimisée de telle sorte qu'il consomme moins de
+    ressources qu'un appel système habituel.</p>
 
     <example>
 <pre>/65:    shutdown(9, 1, 1)                               = 0
@@ -1050,22 +1016,22 @@ DocumentRoot "/www/htdocs"
 /65:    lwp_park(0x00000000, 0)         (sleeping...)</pre>
     </example>
 
-    <p>Enfin, le thread de worker ferme le fichier qu'il vient de d&eacute;livrer et
-    se bloque jusqu'&agrave; ce que le thread en &eacute;coute lui assigne une autre
+    <p>Enfin, le thread de worker ferme le fichier qu'il vient de délivrer et
+    se bloque jusqu'à ce que le thread en écoute lui assigne une autre
     connexion.</p>
 
     <example>
 <pre>/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)</pre>
     </example>
 
-    <p>Pendant ce temps, le thread &agrave; l'&eacute;coute peut accepter une autre connexion
-    &agrave; partir du moment o&ugrave; il a assign&eacute; la connexion pr&eacute;sente &agrave; un thread de
-    worker (selon une certaine logique de contr&ocirc;le de flux dans le MPM worker
-    qui impose des limites au thread &agrave; l'&eacute;coute si tous les threads de worker
-    sont occup&eacute;s). Bien que cela n'apparaisse pas dans cette trace,
-    l'<code>accept(2)</code> suivant peut (et le fait en g&eacute;n&eacute;ral, en situation
-    de charge &eacute;lev&eacute;e) s'ex&eacute;cuter en parall&egrave;le avec le traitement de la
-    connexion qui vient d'&ecirc;tre accept&eacute;e par le thread de worker.</p>
+    <p>Pendant ce temps, le thread à l'écoute peut accepter une autre connexion
+    à partir du moment où il a assigné la connexion présente à un thread de
+    worker (selon une certaine logique de contrôle de flux dans le MPM worker
+    qui impose des limites au thread à l'écoute si tous les threads de worker
+    sont occupés). Bien que cela n'apparaisse pas dans cette trace,
+    l'<code>accept(2)</code> suivant peut (et le fait en général, en situation
+    de charge élevée) s'exécuter en parallèle avec le traitement de la
+    connexion qui vient d'être acceptée par le thread de worker.</p>
 
   </section>
 
