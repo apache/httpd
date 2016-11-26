@@ -28,23 +28,22 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
-    <p>Apache 2.x est un serveur web à usage général, conçu dans un but
+    <div class="warning"><h3>Avertissement</h3>
+      <p>Ce document est en partie obsolète et son contenu peut s'avérer
+      inapproprié.</p>
+    </div>
+
+    <p>Apache 2.4 est un serveur web à usage général, conçu dans un but
     d'équilibre entre souplesse, portabilité et performances. Bien que non
     conçu dans le seul but d'établir une référence en la matière,
-    Apache 2.x est capable de hautes performances dans de nombreuses situations
+    Apache 2.4 est capable de hautes performances dans de nombreuses situations
     du monde réel.</p>
 
-    <p>Comparée à Apache 1.3, la version 2.x comporte de nombreuses
-    optimisations supplémentaires permettant d'améliorer le débit du serveur
-    et sa personnalisation. La plupart de ces améliorations sont activées par
-    défaut. Cependant, certains choix de configuration à la compilation et à
-    l'exécution peuvent affecter les performances de manière significative. Ce
+    <p>Ce
     document décrit les options qu'un administrateur de serveur peut configurer
-    pour améliorer les performances d'une installation d'Apache 2.x. Certaines
+    pour améliorer les performances d'une installation d'Apache 2.4. Certaines
     de ces options de configuration permettent au démon httpd de mieux tirer
     parti des possibilités du matériel et du système d'exploitation, tandis
     que d'autres permettent à l'administrateur de privilégier la vitesse
@@ -103,7 +102,7 @@
 	exemple, cela se traduit par Linux 2.4 ou plus. Pour les versions
 	anciennes de Solaris 8, vous pouvez être amené à appliquer un patch.)
 	Sur les systèmes où il est disponible, <code>sendfile</code> permet
-	à Apache 2 de servir les contenus statiques plus rapidement, tout en
+	à Apache de servir les contenus statiques plus rapidement, tout en
 	induisant une charge CPU inférieure.</p>
       </li>
     </ul>
@@ -122,16 +121,12 @@
 
       <p>Avant Apache 1.3, la directive
       <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> était positionnée
-      par défaut à <code>On</code>. Ce réglage augmente le temps de réponse de
-      chaque requête car il entraîne une recherche DNS et le traitement de la
-      requête ne pourra pas être achevé tant que cette recherche ne sera
-      pas terminée. Avec Apache 1.3, ce réglage est défini par défaut à
-      <code>Off</code>. Si vous souhaitez que les adresses dans vos fichiers
-      journaux soient résolues en noms d'hôtes, utilisez le programme
-      <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> fourni avec Apache, ou un des nombreux
-      paquets générateurs de rapports sur les journaux disponibles.</p>
-
-      <p>Il est recommandé d'effectuer ce genre de traitement a posteriori
+      par défaut à <code>On</code>, ce qui impliquait une recherche DNS et donc un temps d'attente
+      supplémentaire pour chaque requête. Avec Apache 2.4, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est positionnée par défaut à
+      <code>Off</code>. Si vous avez besoin de convertir des adresses IP en noms
+      d'hôtes dans vos fichiers journaux, il est préférable d'effectuer un
+      traitement à postériori plutôt que de forcer Apache à le faire en temps
+      réel. Il est recommandé d'effectuer ce genre de traitement a posteriori
       de vos fichiers journaux sur une autre machine que celle qui héberge le
       serveur web en production, afin que cette activité n'affecte pas les
       performances du serveur.</p>
@@ -144,9 +139,14 @@
       la place d'une adresse IP), vous devrez compter avec deux recherches
       DNS (une recherche inverse suivie d'une recherche directe pour
       s'assurer que l'adresse IP n'a pas été usurpée). C'est pourquoi il est
-      préférable, pour améliorer les performances, d'utiliser des adresses IP
-      plutôt que des noms lorsqu'on utilise ces directives, du moins chaque
-      fois que c'est possible.</p>
+      préférable, pour améliorer les performances, et chaque fois que c'est
+      possible, d'utiliser des adresses IP plutôt que des noms de domaines.</p>
+
+      <div class="warning"><h3>Avertissement :</h3>
+      <p>Veuillez utiliser la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> avec Apache 2.4 ; pour plus de
+      détails, reportez-vous au <a href="../upgrading.html">guide de mise à
+      jour</a> correspondant.</p>
+      </div>
 
       <p>Notez qu'il est possible de modifier la portée des directives, en les
       plaçant par exemple à l'intérieur d'une section
@@ -155,8 +155,7 @@
       Voici un exemple qui désactive les recherches DNS sauf pour les fichiers
       <code>.html</code> et <code>.cgi</code> :</p>
 
-      <pre class="prettyprint lang-config">HostnameLookups off
-&lt;Files ~ "\.(html|cgi)$"&gt;
+      <pre class="prettyprint lang-config">&lt;Files ~ "\.(html|cgi)$"&gt;
   HostnameLookups on
 &lt;/Files&gt;</pre>
 
@@ -355,73 +354,32 @@
 
     
 
-    <h3><a name="process" id="process">Process Creation</a></h3>
+    <h3><a name="process" id="process">Recyclage des processus enfants</a></h3>
 
       
 
-      <p>Avant Apache 1.3, les directives
-      <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>,
-      <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>, et
-      <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> avaient des
-      effets drastiques sur les performances de référence. En particulier,
-      Apache avait besoin d'un délai de "montée en puissance" afin d'atteindre
-      un nombre de processus enfants suffisant pour supporter la charge qui lui
-      était appliquée. Après le lancement initial des processus enfants par
-      <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, seulement un
-      processus enfant par seconde était créé afin d'atteindre la valeur de la
-      directive <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>. Ainsi,
-      un serveur accédé par 100 clients simultanés et utilisant la valeur par
-      défaut de <code>5</code> pour la directive
-      <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, nécessitait
-      environ 95 secondes pour lancer suffisamment de processus enfants
-      permettant de faire face à la charge. Ceci fonctionne en pratique pour
-      les serveurs en production, car ils sont rarement redémarrés. Ce n'est
-      cependant pas le cas pour les tests de référence (benchmarks) où le
-      serveur ne fonctionne que 10 minutes.</p>
+    <p>La directive <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> permet de limiter le
+    nombre de connexions qu'un processus enfant peut gérer au cours de sa vie
+    (par défaut, la valeur est <code>0</code>, soit aucune limite). Tous les <a href="../mpm.html#defaults">MPMs</a> sont concernés, même ceux qui utilisent
+    des threads. Par exemple, chaque processus créé par le MPM
+    <code class="module"><a href="../mod/worker.html">worker</a></code> lance plusieurs threads qui gèrent les connexions,
+    mais cette directive n'en affecte pas le nombre total. Cela signifie
+    seulement que la valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> ne limitera que le
+    nombre de requêtes traitées par les threads lancés par un seul processus
+    enfant.</p>
 
-      <p>La règle "un processus par seconde" avait été implémentée afin
-      d'éviter l'enlisement de la machine dans le démarrage de nouveaux
-      processus enfants. Pendant que la machine est occupée à lancer des
-      processus enfants, elle ne peut pas traiter les requêtes. Mais cette
-      règle impactait tellement la perception des performances d'Apache qu'elle
-      a dû être remplacée. A partir d'Apache 1.3, le code a assoupli la règle
-      "un processus par seconde". Il va en lancer un, attendre une seconde,
-      puis en lancer deux, attendre une seconde, puis en lancer quatre et
-      ainsi de suite jusqu'à lancer 32 processus. Il s'arrêtera lorsque le
-      nombre de processus aura atteint la valeur définie par la directive
-      <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>.</p>
+    <p>Dans des conditions d'utilisation optimales, la directive <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> ne devrait imposer
+    aucune limite, car il n'y a à priori aucune raison de tuer un processus, si
+    ce n'est suite à un bug logiciel causant des fuites de mémoire ou un usage
+    excessif du CPU.</p>   
 
-      <p>Ceci s'avère suffisamment réactif pour pouvoir en général se passer
-      de manipuler les valeurs des directives
-      <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>,
-      <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> et
-      <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>. Lorsque plus de
-      4 processus enfants sont lancés par seconde, un message est émis vers
-      le journal des erreurs. Si vous voyez apparaître souvent ce genre de
-      message, vous devez vous pencher sur ces réglages. Pour vous guider,
-      utilisez les informations délivrées par le module
-      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
-
-    <p>À mettre en relation avec la création de processus, leur destruction
-    est définie par la valeur de la directive
-    <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>. Sa valeur
-    par défaut est <code>0</code>, ce qui signifie qu'il n'y a pas de limite
-    au nombre de connexions qu'un processus enfant peut traiter. Si votre
-    configuration actuelle a cette directive réglée à une valeur très basse,
-    de l'ordre de <code>30</code>, il est conseillé de l'augmenter de manière
-    significative. Si vous utilisez SunOs ou une ancienne version de Solaris,
-    utilisez une valeur de l'ordre de <code>10000</code>  à cause des fuites
-    de mémoire.</p>
-
-    <p>Lorsqu'ils sont en mode "keep-alive", les processus enfants sont
-    maintenus et ne font rien sinon attendre la prochaine requête sur la
+    <p>Lorsque le mode "keep-alive" est activé, un processus (ou un thread lancé
+    par un processus) est
+    maintenu et ne fait rien sinon attendre la prochaine requête sur la
     connexion déjà ouverte. La valeur par défaut de <code>5</code> de la
     directive <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> tend à
     minimiser cet effet. Il faut trouver le bon compromis entre la bande
-    passante réseau et les ressources du serveur. En aucun cas vous ne devez
-    choisir une valeur supérieure à <code>60</code> seconds, car
-    <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
-    la plupart des bénéfices sont alors perdus</a>.</p>
+    passante réseau et les ressources du serveur.</p>
 
     
 
