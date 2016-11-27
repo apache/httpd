@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1334018 -->
@@ -25,55 +25,55 @@
 <modulesynopsis metafile="mod_mime_magic.xml.meta">
 
 <name>mod_mime_magic</name>
-<description>D&eacute;termine le type MIME d'un fichier &agrave; partir de quelques
+<description>Détermine le type MIME d'un fichier à partir de quelques
 octets de son contenu</description>
 <status>Extension</status>
 <sourcefile>mod_mime_magic.c</sourcefile>
 <identifier>mime_magic_module</identifier>
 
 <summary>
-    <p>Ce module permet de d&eacute;terminer le <glossary ref="mime-type">type
-    MIME</glossary> des fichiers de la m&ecirc;me mani&egrave;re que la commande Unix
-    <code>file(1)</code>, &agrave; savoir en se basant sur les premiers octets
-    du fichier. Il est con&ccedil;u comme une "seconde ligne de d&eacute;fense" pour
-    les cas o&ugrave; <module>mod_mime</module> ne parvient pas &agrave; d&eacute;terminer le
+    <p>Ce module permet de déterminer le <glossary ref="mime-type">type
+    MIME</glossary> des fichiers de la même manière que la commande Unix
+    <code>file(1)</code>, à savoir en se basant sur les premiers octets
+    du fichier. Il est conçu comme une "seconde ligne de défense" pour
+    les cas où <module>mod_mime</module> ne parvient pas à déterminer le
     type du fichier.</p>
 
-    <p>Ce module est d&eacute;riv&eacute; d'une version libre de la commande Unix
+    <p>Ce module est dérivé d'une version libre de la commande Unix
     <code>file(1)</code> qui utilise des "nombres magiques" et autres
     marques distinctives issus du contenu du fichier pour essayer de
-    d&eacute;terminer le type de contenu. Ce module n'est activ&eacute; que si le
-    fichier magique est sp&eacute;cifi&eacute; par la directive <directive
+    déterminer le type de contenu. Ce module n'est activé que si le
+    fichier magique est spécifié par la directive <directive
     module="mod_mime_magic">MimeMagicFile</directive>.</p>
 </summary>
 
 <section id="format"><title>Format du fichier magique</title>
 
-    <p>Le fichier contient du texte ASCII sur 4 &agrave; 5 colonnes. Les lignes
-    vides sont autoris&eacute;es mais ignor&eacute;es. Toute ligne commen&ccedil;ant par un
-    di&egrave;se (<code>#</code>) est un commentaire. Les autres lignes sont
-    interpr&eacute;t&eacute;es en colonnes comme suit :</p>
+    <p>Le fichier contient du texte ASCII sur 4 à 5 colonnes. Les lignes
+    vides sont autorisées mais ignorées. Toute ligne commençant par un
+    dièse (<code>#</code>) est un commentaire. Les autres lignes sont
+    interprétées en colonnes comme suit :</p>
 
     <table style="zebra" border="1">
     <columnspec><column width=".15"/><column width=".8"/></columnspec>
     <tr><th>Colonne</th><th>Description</th></tr>
     <tr><td>1</td>
-        <td>num&eacute;ro de l'octet &agrave; partir duquel la v&eacute;rification d&eacute;bute<br />
-         "<code>&gt;</code>" indique une d&eacute;pendance par rapport &agrave; la
-	 derni&egrave;re ligne non-"<code>&gt;</code>"</td></tr>
+        <td>numéro de l'octet à partir duquel la vérification débute<br />
+         "<code>&gt;</code>" indique une dépendance par rapport à la
+	 dernière ligne non-"<code>&gt;</code>"</td></tr>
 
     <tr><td>2</td>
-        <td><p>type de donn&eacute;e &agrave; rechercher</p>
+        <td><p>type de donnée à rechercher</p>
         <table border="1">
         <columnspec><column width=".2"/><column width=".7"/></columnspec>
         <tr><td><code>byte</code></td>
-            <td>caract&egrave;re unique</td></tr>
+            <td>caractère unique</td></tr>
         <tr><td><code>short</code></td>
             <td>entier sur 16 bits selon l'ordre de la machine</td></tr>
         <tr><td><code>long</code></td>
             <td>entier sur 32 bits selon l'ordre de la machine</td></tr>
         <tr><td><code>string</code></td>
-            <td>cha&icirc;ne de taille choisie</td></tr>
+            <td>chaîne de taille choisie</td></tr>
         <tr><td><code>date</code></td>
             <td>date au format entier long (secondes depuis le temps Unix epoch/1970)</td></tr>
         <tr><td><code>beshort</code></td>
@@ -91,7 +91,7 @@ octets de son contenu</description>
         </table></td></tr>
 
     <tr><td>3</td>
-        <td>contenu des donn&eacute;es &agrave; rechercher</td></tr>
+        <td>contenu des données à rechercher</td></tr>
 
     <tr><td>4</td>
         <td>type MIME si correspondance</td></tr>
@@ -101,7 +101,7 @@ octets de son contenu</description>
     </table>
 
     <p>Par exemple, les lignes du fichier magique suivantes
-    permettraient de reconna&icirc;tre certains formats audio :</p>
+    permettraient de reconnaître certains formats audio :</p>
 
     <example>
 <pre># Sun/NeXT audio data
@@ -116,10 +116,10 @@ octets de son contenu</description>
 &gt;12    belong     23       audio/x-adpcm</pre>
     </example>
 
-    <p>Et celles-ci permettraient de reconna&icirc;tre la diff&eacute;rence entre les
+    <p>Et celles-ci permettraient de reconnaître la différence entre les
     fichiers <code>*.doc</code> qui contiennent des documents Microsoft
     Word et les documents FrameMaker (ce sont des formats de fichiers
-    incompatibles qui poss&egrave;dent le m&ecirc;me suffixe).</p>
+    incompatibles qui possèdent le même suffixe).</p>
 
     <example>
 <pre># Frame
@@ -137,45 +137,45 @@ octets de son contenu</description>
 0  string  \333\245-\0\0\0           application/msword</pre>
     </example>
 
-    <p>Un champ optionnel codage MIME peut &ecirc;tre ajout&eacute; dans la cinqui&egrave;me
-    colonne. Par exemple, cette ligne permet de reconna&icirc;tre les fichiers
-    compress&eacute;s par gzip et d&eacute;finissent le type de codage.</p>
+    <p>Un champ optionnel codage MIME peut être ajouté dans la cinquième
+    colonne. Par exemple, cette ligne permet de reconnaître les fichiers
+    compressés par gzip et définissent le type de codage.</p>
 
     <example>
-<pre># gzip (GNU zip, &agrave; ne pas confondre avec
+<pre># gzip (GNU zip, à ne pas confondre avec
 #       l'archiveur zip [Info-ZIP/PKWARE])
 
 0  string  \037\213  application/octet-stream  x-gzip</pre>
     </example>
 </section>
 
-<section id="performance"><title>Probl&egrave;mes li&eacute;s aux performances</title>
-    <p>Ce module n'est pas fait pour tous les syst&egrave;mes. Si votre syst&egrave;me
-    parvient &agrave; peine &agrave; supporter sa charge, ou si vous testez les
-    performances d'un serveur web, il est d&eacute;conseill&eacute; d'utiliser ce
-    module car son fonctionnement a un prix en mati&egrave;re de ressources
-    consomm&eacute;es.</p>
+<section id="performance"><title>Problèmes liés aux performances</title>
+    <p>Ce module n'est pas fait pour tous les systèmes. Si votre système
+    parvient à peine à supporter sa charge, ou si vous testez les
+    performances d'un serveur web, il est déconseillé d'utiliser ce
+    module car son fonctionnement a un prix en matière de ressources
+    consommées.</p>
 
-    <p>Des efforts ont cependant &eacute;t&eacute; fournis pour am&eacute;liorer les
+    <p>Des efforts ont cependant été fournis pour améliorer les
     performances du code original de la commande <code>file(1)</code> en
-    l'adaptant pour fonctionner sur un serveur web &agrave; forte charge. Il a
-    &eacute;t&eacute; con&ccedil;u pour un serveur sur lequel des milliers d'utilisateurs
-    publient leurs propres documents, ce qui est probablement tr&egrave;s
-    courant sur un intranet. Il s'av&egrave;re souvent b&eacute;n&eacute;fique qu'un serveur
-    puisse prendre des d&eacute;cisions plus pertinentes &agrave; propos du contenu
+    l'adaptant pour fonctionner sur un serveur web à forte charge. Il a
+    été conçu pour un serveur sur lequel des milliers d'utilisateurs
+    publient leurs propres documents, ce qui est probablement très
+    courant sur un intranet. Il s'avère souvent bénéfique qu'un serveur
+    puisse prendre des décisions plus pertinentes à propos du contenu
     d'un fichier que celles se basant sur le nom du fichier seul, ne
     serait-ce que pour diminuer le nombre d'appels du type "pourquoi ma
     page ne s'affiche-t-elle pas ?" survenant lorsque les utilisateurs
-    nomment leurs fichiers incorrectement. Vous devez d&eacute;terminer si la
-    charge suppl&eacute;mentaire convient &agrave; votre environnement.</p>
+    nomment leurs fichiers incorrectement. Vous devez déterminer si la
+    charge supplémentaire convient à votre environnement.</p>
 </section>
 
 <section id="notes"><title>Notes</title>
     <p>Les notes suivantes s'appliquent au module
     <module>mod_mime_magic</module> et sont incluses ici pour
-    conformit&eacute; avec les restrictions de copyright des contributeurs
-    qui requi&egrave;rent de les accepter.</p>
-    <p>Note de traduction : ces informations de type l&eacute;gal ne sont pas traductibles</p>
+    conformité avec les restrictions de copyright des contributeurs
+    qui requièrent de les accepter.</p>
+    <p>Note de traduction : ces informations de type légal ne sont pas traductibles</p>
 
     <note>
       <p>mod_mime_magic: MIME type lookup via file magic numbers<br />
@@ -257,22 +257,22 @@ octets de son contenu</description>
 
 <directivesynopsis>
 <name>MimeMagicFile</name>
-<description>Active la d&eacute;termination du type MIME en se basant sur le
+<description>Active la détermination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique
-sp&eacute;cifi&eacute;</description>
+spécifié</description>
 <syntax>MimeMagicFile <var>chemin-fichier</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p>La directive <directive>MimeMagicFile</directive> permet
-    d'activer ce module, le fichier par d&eacute;faut fourni &eacute;tant
-    <code>conf/magic</code>. Les chemins sans slash '/' de d&eacute;but sont
-    relatifs au r&eacute;pertoire d&eacute;fini par la directive <directive
+    d'activer ce module, le fichier par défaut fourni étant
+    <code>conf/magic</code>. Les chemins sans slash '/' de début sont
+    relatifs au répertoire défini par la directive <directive
     module="core">ServerRoot</directive>. Les serveurs virtuels
-    utilisent le m&ecirc;me fichier que le serveur principal sauf si un
-    fichier sp&eacute;cifique a &eacute;t&eacute; d&eacute;fini pour ce serveur virtuel, auquel cas
-    c'est ce dernier fichier qui sera utilis&eacute;.</p>
+    utilisent le même fichier que le serveur principal sauf si un
+    fichier spécifique a été défini pour ce serveur virtuel, auquel cas
+    c'est ce dernier fichier qui sera utilisé.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">

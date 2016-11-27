@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1174747 -->
@@ -32,39 +32,39 @@
 <compatibility>NetWare seulement</compatibility>
 
 <summary>
-    <p>Ce module active le chiffrement SSL sur un port sp&eacute;cifique. Il
-    s'appuie sur la fonctionnalit&eacute; de chiffrement SSL int&eacute;gr&eacute;e au
-    syst&egrave;me d'exploitation Netware.</p>
+    <p>Ce module active le chiffrement SSL sur un port spécifique. Il
+    s'appuie sur la fonctionnalité de chiffrement SSL intégrée au
+    système d'exploitation Netware.</p>
 </summary>
 
 <directivesynopsis>
 <name>SecureListen</name>
 <description>Active le chiffrement SSL pour le port
-sp&eacute;cifi&eacute;</description>
+spécifié</description>
 <syntax>SecureListen [<var>adresse-IP</var>:]<var>num-port</var>
 <var>nom-certificat</var> [MUTUAL]</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier le port et le nom de
-    certificat de style eDirectory qui seront utilis&eacute;s pour activer le
-    chiffrement SSL. En outre, un troisi&egrave;me param&egrave;tre optionnel permet
+    <p>Cette directive permet de spécifier le port et le nom de
+    certificat de style eDirectory qui seront utilisés pour activer le
+    chiffrement SSL. En outre, un troisième paramètre optionnel permet
     d'activer l'authentification mutuelle.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>NWSSLTrustedCerts</name>
-<description>Liste de certificats clients suppl&eacute;mentaires</description>
+<description>Liste de certificats clients supplémentaires</description>
 <syntax>NWSSLTrustedCerts <var>nom-fichier</var>
 [<var>nom-fichier</var>] ...</syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier une liste de fichiers (au
-    format DER) contenant des certificats clients utilis&eacute;s lors de
-    l'&eacute;tablissement d'une connexion SSL mandat&eacute;e. Chaque certificat
-    client utilis&eacute; par un serveur doit &ecirc;tre enregistr&eacute; s&eacute;par&eacute;ment dans
+    <p>Cette directive permet de spécifier une liste de fichiers (au
+    format DER) contenant des certificats clients utilisés lors de
+    l'établissement d'une connexion SSL mandatée. Chaque certificat
+    client utilisé par un serveur doit être enregistré séparément dans
     son propre fichier <code>.der</code>.</p>
 </usage>
 </directivesynopsis>
@@ -72,15 +72,15 @@ sp&eacute;cifi&eacute;</description>
 <directivesynopsis>
 <name>NWSSLUpgradeable</name>
 <description>Permet de promouvoir une connexion non SSL au statut de
-connexion SSL &agrave; la demande</description>
+connexion SSL à la demande</description>
 <syntax>NWSSLUpgradeable [<var>adresse-IP</var>:]<var>num-port</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de promouvoir une connexion &eacute;tablie sur
-    l'adresse IP et/ou le port sp&eacute;cifi&eacute;s au statut de connexion SSL &agrave; la
-    demande du client. L'adresse et/ou le port doivent avoir &eacute;t&eacute; d&eacute;finis
-    au pr&eacute;alable par une directive <directive
+    <p>Cette directive permet de promouvoir une connexion établie sur
+    l'adresse IP et/ou le port spécifiés au statut de connexion SSL à la
+    demande du client. L'adresse et/ou le port doivent avoir été définis
+    au préalable par une directive <directive
     module="mpm_common">Listen</directive>.</p>
 </usage>
 </directivesynopsis>
