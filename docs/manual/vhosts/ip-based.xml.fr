@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='ISO-8859-1' ?>
+<?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1363767 -->
@@ -30,81 +30,81 @@
 <a href="name-based.html">Support Apache des serveurs virtuels par nom</a>
 </seealso>
 
-<section id="explanation"><title>Qu'est-ce que l'hébergement virtuel
-basé sur IP</title>
-<p>L'hébergement virtuel basé sur IP est une méthode permettant
+<section id="explanation"><title>Qu'est-ce que l'hÃ©bergement virtuel
+basÃ© sur IP</title>
+<p>L'hÃ©bergement virtuel basÃ© sur IP est une mÃ©thode permettant
 d'appliquer certaines directives en fonction de l'adresse IP et du port
-sur lesquels la requête est reçue. En général, il s'agit de servir
-différents sites web sur des ports ou interfaces différents.</p>
+sur lesquels la requÃªte est reÃ§ue. En gÃ©nÃ©ral, il s'agit de servir
+diffÃ©rents sites web sur des ports ou interfaces diffÃ©rents.</p>
 
-<p>Dans de nombreux cas, l'<a href="name-based.html">hébergement virtuel
-basé sur le nom</a> est plus adapté car il permet à plusieurs serveurs
-virtuels de partager la même adresse/port. Voir le document <a
-href="name-based.html#namevip">Hébergement virtuel basé sur IP ou sur le
-nom</a> pour prendre votre décision.</p>
+<p>Dans de nombreux cas, l'<a href="name-based.html">hÃ©bergement virtuel
+basÃ© sur le nom</a> est plus adaptÃ© car il permet Ã  plusieurs serveurs
+virtuels de partager la mÃªme adresse/port. Voir le document <a
+href="name-based.html#namevip">HÃ©bergement virtuel basÃ© sur IP ou sur le
+nom</a> pour prendre votre dÃ©cision.</p>
 </section>
 
 
 
-<section id="requirements"><title>Système requis</title>
+<section id="requirements"><title>SystÃ¨me requis</title>
 
     <p>Comme l'indique le terme <cite>par IP</cite>, le serveur 
-    <strong>doit disposer de couples adresses IP/port différents pour chaque 
-    serveur virtuel par IP</strong>. La machine peut posséder 
-    plusieurs connexions physiques au réseau, ou utiliser des 
-    interfaces virtuelles qui sont supportées par la plupart des 
-    systèmes d'exploitation modernes (Consultez la documentation des 
-    systèmes d'exploitation pour plus de détails, notamment les "alias 
+    <strong>doit disposer de couples adresses IP/port diffÃ©rents pour chaque 
+    serveur virtuel par IP</strong>. La machine peut possÃ©der 
+    plusieurs connexions physiques au rÃ©seau, ou utiliser des 
+    interfaces virtuelles qui sont supportÃ©es par la plupart des 
+    systÃ¨mes d'exploitation modernes (Consultez la documentation des 
+    systÃ¨mes d'exploitation pour plus de dÃ©tails, notamment les "alias 
     IP" et la commande "ifconfig" pour les activer), et/ou utiliser
     plusieurs ports.</p>
 
     <p>Dans la terminologie du serveur HTTP Apache, l'utilisation de
     plusieurs ports TCP pour une seule adresse IP se nomme aussi
-    hébergement virtuel basé sur IP.</p>
+    hÃ©bergement virtuel basÃ© sur IP.</p>
 
 </section>
 
 <section id="howto"><title>Comment configurer Apache</title>
 
-    <p>Il y a deux manières de configurer Apache pour le support de 
+    <p>Il y a deux maniÃ¨res de configurer Apache pour le support de 
     multiples serveurs virtuels. Il suffit soit de faire tourner un 
-    processus résident <program>httpd</program> pour chaque nom de 
-    domaine, soit de faire tourner un unique processus résident qui 
-    gère tous les serveurs virtuels.</p>
+    processus rÃ©sident <program>httpd</program> pour chaque nom de 
+    domaine, soit de faire tourner un unique processus rÃ©sident qui 
+    gÃ¨re tous les serveurs virtuels.</p>
 
-    <p>Utilisez des processus résidents multiples lorsque&nbsp;:</p>
+    <p>Utilisez des processus rÃ©sidents multiples lorsque&nbsp;:</p>
 
     <ul>
-      <li>il y a des problèmes de répartition de sécurité, tels 
+      <li>il y a des problÃ¨mes de rÃ©partition de sÃ©curitÃ©, tels 
       qu'une entreprise1 ne souhaite que personne d'une entreprise2 
-      ne puisse lire ses données excepté via le Web. Dans ce cas, 
-      vous aurez besoin de deux processus résidents, chacun fonctionnant 
-      avec des paramètres <directive module="mpm_common">User</directive>, 
+      ne puisse lire ses donnÃ©es exceptÃ© via le Web. Dans ce cas, 
+      vous aurez besoin de deux processus rÃ©sidents, chacun fonctionnant 
+      avec des paramÃ¨tres <directive module="mpm_common">User</directive>, 
       <directive module="mpm_common">Group</directive>, 
       <directive module="mpm_common">Listen</directive>, et 
-      <directive module="core">ServerRoot</directive> différents.</li>
+      <directive module="core">ServerRoot</directive> diffÃ©rents.</li>
 
-      <li>vous disposez suffisamment de mémoire et de 
+      <li>vous disposez suffisamment de mÃ©moire et de 
       <a href="../misc/descriptors.html">descripteurs de fichiers</a> 
-      pour l'écoute de chaque alias IP de la machine. Il est seulement 
+      pour l'Ã©coute de chaque alias IP de la machine. Il est seulement 
       possible d'appliquer la directive 
       <directive module="mpm_common">Listen</directive>, soit sur toutes 
       les adresses avec le joker "*", soit uniquement sur des adresses 
-      spécifiques. Donc, si vous avez besoin d'écouter une adresse 
+      spÃ©cifiques. Donc, si vous avez besoin d'Ã©couter une adresse 
       en particulier, vous devrez le faire pour l'ensemble des 
       autres adresses (Bien qu'il soit plus simple de lancer un 
-      processus <program>httpd</program> pour écouter N-1 adresses, 
+      processus <program>httpd</program> pour Ã©couter N-1 adresses, 
       et un autre pour l'adresse restante).</li>
     </ul>
 
-    <p>Utilisez un unique processus résident lorsque&nbsp;:</p>
+    <p>Utilisez un unique processus rÃ©sident lorsque&nbsp;:</p>
 
     <ul>
       <li>le partage de la configuration httpd entre les serveurs 
       virtuels est acceptable.</li>
 
-      <li>la machine assume déjà une grande quantité de requêtes, et 
-      que l'ajout de processus résidents supplémentaires en affecterait 
+      <li>la machine assume dÃ©jÃ  une grande quantitÃ© de requÃªtes, et 
+      que l'ajout de processus rÃ©sidents supplÃ©mentaires en affecterait 
       les performances.</li>
     </ul>
 
@@ -112,38 +112,38 @@ nom</a> pour prendre votre décision.</p>
 
 <section id="multiple"><title>Configuration de processus multiples</title>
 
-    <p>Créez une installation indépendante du programme 
+    <p>CrÃ©ez une installation indÃ©pendante du programme 
     <program>httpd</program> pour chaque serveur virtuel. Pour 
     chacune d'elle, utilisez la directive 
     <directive module="mpm_common">Listen</directive> dans le fichier 
-    de configuration pour définir l'adresse IP (ou serveur virtuel) 
-    que le processus résident doit gérer. Par exemple&nbsp;:</p>
+    de configuration pour dÃ©finir l'adresse IP (ou serveur virtuel) 
+    que le processus rÃ©sident doit gÃ©rer. Par exemple&nbsp;:</p>
 
     <example>
     Listen 192.168.0.1:80
     </example>
 
-    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
-    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS 
+    <p>Il est recommandÃ© d'utiliser une adresse IP plutÃ´t qu'un nom 
+    de domaine (consultez <a href="../dns-caveats.html">ProblÃ¨mes DNS 
     avec Apache</a>).</p>
 
 </section>
 
 <section id="single"><title>Configuration d'un unique processus 
-résident pour des serveurs virtuels</title>
+rÃ©sident pour des serveurs virtuels</title>
 
-    <p>Dans ce cas, un unique processus httpd va gérer les requêtes 
+    <p>Dans ce cas, un unique processus httpd va gÃ©rer les requÃªtes 
     pour le serveur principal et tous les serveurs virtuels. Dans le 
     fichier de configuration, la directive 
-    <directive module="core">VirtualHost</directive> va servir à 
-    définir les autres directives 
+    <directive module="core">VirtualHost</directive> va servir Ã  
+    dÃ©finir les autres directives 
     <directive module="core">ServerAdmin</directive>, 
     <directive module="core">ServerName</directive>, 
     <directive module="core">DocumentRoot</directive>, 
     <directive module="core">ErrorLog</directive> et 
     <directive module="mod_log_config">TransferLog</directive> ou 
     <directive module="mod_log_config">CustomLog</directive> avec des 
-    valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
+    valeurs diffÃ©rentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
     <example>
     &lt;VirtualHost 192.168.0.1:80&gt;<br />
@@ -163,41 +163,41 @@ résident pour des serveurs virtuels</title>
     &lt;/VirtualHost&gt;
 		</example>
 
-    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
-    de domaine dans la définition du  &lt;VirtualHost&gt; (consultez <a
-    href="../dns-caveats.html">Problèmes DNS avec Apache</a>).</p>
+    <p>Il est recommandÃ© d'utiliser une adresse IP plutÃ´t qu'un nom 
+    de domaine dans la dÃ©finition du  &lt;VirtualHost&gt; (consultez <a
+    href="../dns-caveats.html">ProblÃ¨mes DNS avec Apache</a>).</p>
 
     <p>Les adresses IP et ports explicites l'emportent sur leurs
-    équivalents avec caractères génériques, et tout serveur virtuel qui
-    correspond à la requête l'emporte sur la configuration du serveur de
+    Ã©quivalents avec caractÃ¨res gÃ©nÃ©riques, et tout serveur virtuel qui
+    correspond Ã  la requÃªte l'emporte sur la configuration du serveur de
     base.</p>
 
     <p>Presque <strong>toutes</strong> les directives de configuration 
-    peuvent être employées dans une directive VirtualHost, à l'exception 
-    des directives qui contrôlent la création du processus et de 
-    quelques autres. Pour connaître celles utilisables dans une 
-    directive VirtualHost, vérifiez leur 
+    peuvent Ãªtre employÃ©es dans une directive VirtualHost, Ã  l'exception 
+    des directives qui contrÃ´lent la crÃ©ation du processus et de 
+    quelques autres. Pour connaÃ®tre celles utilisables dans une 
+    directive VirtualHost, vÃ©rifiez leur 
     <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant 
     l'<a href="../mod/directives.html">Index des directives</a>.</p>
 
 <!-- 
     <p>Les directives <directive module="mpm_common">User</directive> et  
-    <directive module="mpm_common">Group</directive> NE doivent PLUS être 
-    utilisées à l'intérieur d'une directive VirtualHost lors d'une 
-    <a href="../suexec.html">exécution sous suEXEC</a>. Voir la directive 
-    <a href="../mod/mod_suexec.html/#suexecusergroup">SuexecUserGroup</a> définie 
+    <directive module="mpm_common">Group</directive> NE doivent PLUS Ãªtre 
+    utilisÃ©es Ã  l'intÃ©rieur d'une directive VirtualHost lors d'une 
+    <a href="../suexec.html">exÃ©cution sous suEXEC</a>. Voir la directive 
+    <a href="../mod/mod_suexec.html/#suexecusergroup">SuexecUserGroup</a> dÃ©finie 
     en remplacement depuis la version 2.0.</p>
  -->
-    <p><directive module="mod_suexec">SuexecUserGroup</directive> peut être
-    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
+    <p><directive module="mod_suexec">SuexecUserGroup</directive> peut Ãªtre
+    utilisÃ©es Ã  l'intÃ©rieur d'une directive VirtualHost si l'exÃ©cution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
-    <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
+    <p><em>SÃ‰CURITÃ‰&nbsp;:</em> lorsque vous spÃ©cifiez oÃ¹ Ã©crire les 
     fichiers journaux, soyez attentif aux risques si quelqu'un d'autre 
-    que celui qui a démarré Apache dispose des droits d'écriture 
+    que celui qui a dÃ©marrÃ© Apache dispose des droits d'Ã©criture 
     sur l'emplacement de ces fichiers. Consultez les 
-    <a href="../misc/security_tips.html">Conseils sur la sécurité</a> 
-    pour plus de détails.</p>
+    <a href="../misc/security_tips.html">Conseils sur la sÃ©curitÃ©</a> 
+    pour plus de dÃ©tails.</p>
 
 </section>
 </manualpage>
