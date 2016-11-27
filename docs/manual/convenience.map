@@ -270,6 +270,7 @@ gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mod_unixd.html#group
 h2copyfiles	mod/mod_http2.html#h2copyfiles
 h2direct	mod/mod_http2.html#h2direct
+h2earlyhints	mod/mod_http2.html#h2earlyhints
 h2maxsessionstreams	mod/mod_http2.html#h2maxsessionstreams
 h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
@@ -278,6 +279,7 @@ h2moderntlsonly	mod/mod_http2.html#h2moderntlsonly
 h2push	mod/mod_http2.html#h2push
 h2pushdiarysize	mod/mod_http2.html#h2pushdiarysize
 h2pushpriority	mod/mod_http2.html#h2pushpriority
+h2pushresource	mod/mod_http2.html#h2pushresource
 h2serializeheaders	mod/mod_http2.html#h2serializeheaders
 h2sessionextrafiles	mod/mod_http2.html#h2sessionextrafiles
 h2streammaxmemsize	mod/mod_http2.html#h2streammaxmemsize
@@ -299,6 +301,7 @@ identitychecktimeout	mod/mod_ident.html#identitychecktimeout
 idleshutdown	mod/mod_systemd.html#idleshutdown
 if	mod/core.html#if
 ifdefine	mod/core.html#ifdefine
+iffile	mod/core.html#iffile
 ifmodule	mod/core.html#ifmodule
 ifversion	mod/mod_version.html#ifversion
 imapbase	mod/mod_imagemap.html#imapbase
@@ -382,6 +385,8 @@ luaquickhandler	mod/mod_lua.html#luaquickhandler
 luaroot	mod/mod_lua.html#luaroot
 luascope	mod/mod_lua.html#luascope
 macro	mod/mod_macro.html#macro
+macroignorebadnesting	mod/mod_macro.html#macroignorebadnesting
+macroignoreemptyargs	mod/mod_macro.html#macroignoreemptyargs
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
