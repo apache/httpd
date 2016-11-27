@@ -839,9 +839,9 @@ MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
 -----END DH PARAMETERS-----</pre></div>
-    <p>Ajoute les paramÃ¨tres personnalisÃ©s incluant les lignes "BEGIN DH
-    PARAMETERS" et "END DH PARAMETERS" Ã&nbsp; la fin du premier fichier de
-    certificat dÃ©fini via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>.</p>
+    <p>Ajoute les paramètres personnalisés incluant les lignes "BEGIN DH
+    PARAMETERS" et "END DH PARAMETERS" à la fin du premier fichier de
+    certificat défini via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>.</p>
 
 
 
