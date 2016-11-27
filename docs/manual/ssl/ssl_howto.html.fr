@@ -161,11 +161,11 @@ installations de httpd à partir des sources, ou
 <code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
 etc...</p>
 
-<p>Le chemin spÃ©cifiÃ© par la directive
+<p>Le chemin spécifié par la directive
 <code class="directive">SSLStaplingCache</code> (par exemple <code>logs/</code>)
-doit Ãªtre le mÃªme que celui spÃ©cifiÃ© par la directive
+doit être le même que celui spécifié par la directive
 <code class="directive">SSLSessionCache</code>. Ce chemin est relatif au chemin
-spÃ©cifiÃ© par la directive <code class="directive">ServerRoot</code>.</p>
+spécifié par la directive <code class="directive">ServerRoot</code>.</p>
 
 <p>Cette directive <code class="directive">SSLStaplingCache</code> particulière
 nécessite le chargement du module <code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code> (à

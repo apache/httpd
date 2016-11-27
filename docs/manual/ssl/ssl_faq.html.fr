@@ -786,22 +786,22 @@ dans votre section d'hôte virtuel avec support SSL :</p>
 
 
 <h3><a name="srp" id="srp">Comment activer TLS-SRP ?</a></h3>
-    <p>Le protocole TLS-SRP (Echange de clÃ©s sÃ©curisÃ© par mot de passe
-    pour TLS comme spÃ©cifiÃ© dans la RFC 5054) peut complÃ©ter ou mÃªme
+    <p>Le protocole TLS-SRP (Echange de clés sécurisé par mot de passe
+    pour TLS comme spécifié dans la RFC 5054) peut compléter ou même
     remplacer les certificats lors du processus d'authentification des
-    connexions SSL. Pour utiliser TLS-SRP, spÃ©cifiez un fichier de
-    vÃ©rification SRP OpenSSL via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code>. Vous pouvez crÃ©er
-    le fichier de vÃ©rification via l'utilitaire <code>openssl</code> :</p>
+    connexions SSL. Pour utiliser TLS-SRP, spécifiez un fichier de
+    vérification SRP OpenSSL via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile</a></code>. Vous pouvez créer
+    le fichier de vérification via l'utilitaire <code>openssl</code> :</p>
     <div class="example"><p><code>
     openssl srp -srpvfile passwd.srpv -add username
     </code></p></div>
-    <p>Une fois ce fichier crÃ©Ã©, vous devez le rÃ©fÃ©rencer dans la
+    <p>Une fois ce fichier créé, vous devez le référencer dans la
     configuration du serveur SSL :</p>
     <div class="example"><p><code>
     SSLSRPVerifierFile /path/to/passwd.srpv
     </code></p></div>
-    <p>Pour forcer les clients Ã&nbsp; utiliser des algorithmes de chiffrement
-    basÃ©s sur TLS-SRP et s'affranchissant des certificats, utilisez la
+    <p>Pour forcer les clients à utiliser des algorithmes de chiffrement
+    basés sur TLS-SRP et s'affranchissant des certificats, utilisez la
     directive suivante :</p>
     <div class="example"><p><code>
     SSLCipherSuite "!DSS:!aRSA:SRP"
@@ -841,9 +841,9 @@ MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
 Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
 -----END DH PARAMETERS-----</pre></div>
-    <p>Ajoute les paramÃ¨tres personnalisÃ©s incluant les lignes "BEGIN DH
-    PARAMETERS" et "END DH PARAMETERS" Ã&nbsp; la fin du premier fichier de
-    certificat dÃ©fini via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>.</p>
+    <p>Ajoute les paramètres personnalisés incluant les lignes "BEGIN DH
+    PARAMETERS" et "END DH PARAMETERS" à la fin du premier fichier de
+    certificat défini via la directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
