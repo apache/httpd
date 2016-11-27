@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='ISO-8859-1' ?>
+<?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1365935 -->
@@ -24,89 +24,89 @@
 
 <manualpage metafile="details.xml.meta">
 <parentdocument href="./">Serveurs virtuels</parentdocument>
-   <title>Détails sur le fonctionnement des serveurs virtuels</title>
+   <title>DÃ©tails sur le fonctionnement des serveurs virtuels</title>
 
 <summary>
 
-    <p>Le code gérant les serveurs virtuels a été réécrit à partir de
-    zéro dans <strong>Apache 1.3</strong>. Ce document vise à expliquer
-    dans le détail comment Apache procède lors du choix de l'utilisation
-    d'un serveur virtuel en fonction d'une requête reçue. L'apparition
+    <p>Le code gÃ©rant les serveurs virtuels a Ã©tÃ© rÃ©Ã©crit Ã  partir de
+    zÃ©ro dans <strong>Apache 1.3</strong>. Ce document vise Ã  expliquer
+    dans le dÃ©tail comment Apache procÃ¨de lors du choix de l'utilisation
+    d'un serveur virtuel en fonction d'une requÃªte reÃ§ue. L'apparition
     de la directive  <directive module="core">NameVirtualHost</directive>
-    a rendu beaucoup plus facile et plus sûre la configuration des
-    serveurs virtuels par rapport aux versions précédant la 1.3.</p>
+    a rendu beaucoup plus facile et plus sÃ»re la configuration des
+    serveurs virtuels par rapport aux versions prÃ©cÃ©dant la 1.3.</p>
 
-    <p>Si vous voulez juste <cite>que ça marche</cite> sans en
+    <p>Si vous voulez juste <cite>que Ã§a marche</cite> sans en
     comprendre le fonctionnement, voici <a href="examples.html">quelques
     exemples</a>.</p>
 
 </summary>
 
-<section id="configparsing"><title>Interprétation des fichiers
+<section id="configparsing"><title>InterprÃ©tation des fichiers
 de configuration</title>
 
     <p>Un <em>serveur  principal (main_server)</em> contient toutes
-    les définitions qui apparaissent en dehors des sections
+    les dÃ©finitions qui apparaissent en dehors des sections
     <code>&lt;VirtualHost&gt;</code>. Les serveurs virtuels, aussi
-    appelés <em>vhosts</em> (pour virtual hosts), sont définis par les
+    appelÃ©s <em>vhosts</em> (pour virtual hosts), sont dÃ©finis par les
     sections <directive type="section" module="core">VirtualHost</directive>.</p>
 
     <p>Les directives
     <directive module="core">ServerName</directive> et
     <directive module="core">ServerPath</directive>
-    peuvent être placées n'importe où dans le cadre de définition d'un
-    serveur. Cependant, chaque fois que l'une d'elles est lue, elle écrase
-    ses instances précédentes (dans le contexte du même serveur).</p>
+    peuvent Ãªtre placÃ©es n'importe oÃ¹ dans le cadre de dÃ©finition d'un
+    serveur. Cependant, chaque fois que l'une d'elles est lue, elle Ã©crase
+    ses instances prÃ©cÃ©dentes (dans le contexte du mÃªme serveur).</p>
 
     <p>Le serveur principal n'a pas de valeur par
-    défaut pour <code>ServerPath</code> ni pour <code>ServerAlias</code>.
-    La valeur par défaut de <code>ServerName</code> est déduite à partir
+    dÃ©faut pour <code>ServerPath</code> ni pour <code>ServerAlias</code>.
+    La valeur par dÃ©faut de <code>ServerName</code> est dÃ©duite Ã  partir
     de l'adresses IP du serveur.</p>
 
-	<p>Les numéros de port spécifiés par la directive
-	<code>VirtualHost</code> n'ont rien à voir avec les ports sur
-	lesquels Apache va se mettre en écoute. Ils permettent seulement
-	de déterminer quel <code>VirtualHost</code> devra être
-	sélectionné pour traiter la requête.</p>
+	<p>Les numÃ©ros de port spÃ©cifiÃ©s par la directive
+	<code>VirtualHost</code> n'ont rien Ã  voir avec les ports sur
+	lesquels Apache va se mettre en Ã©coute. Ils permettent seulement
+	de dÃ©terminer quel <code>VirtualHost</code> devra Ãªtre
+	sÃ©lectionnÃ© pour traiter la requÃªte.</p>
 
     <p>Chaque adresse incluse dans une directive <code>VirtualHost</code>
-    peut disposer d'un port optionnel. Si le port n'est pas précisé, il
+    peut disposer d'un port optionnel. Si le port n'est pas prÃ©cisÃ©, il
     pourra prendre n'importe quelle valeur. Le port particulier
-    <code>*</code> représente un joker qui correspond à tous les ports.
-    L'ensemble des adresses (y compris les résultats multiples
-    <code>A</code> issus des requêtes DNS) est appelé <em>jeu
+    <code>*</code> reprÃ©sente un joker qui correspond Ã  tous les ports.
+    L'ensemble des adresses (y compris les rÃ©sultats multiples
+    <code>A</code> issus des requÃªtes DNS) est appelÃ© <em>jeu
     d'adresses</em> du serveur virtuel.</p>
 
-    <p>À moins qu'une directive
-    <directive module="core">NameVirtualHost</directive> ne soit utilisée
+    <p>Ã€ moins qu'une directive
+    <directive module="core">NameVirtualHost</directive> ne soit utilisÃ©e
     pour la paire adresse IP exacte/port dans la directive
-    <code>VirtualHost</code>, Apache sélectionne le serveur virtuel qui
+    <code>VirtualHost</code>, Apache sÃ©lectionne le serveur virtuel qui
     correspond le mieux en se basant sur l'adresse IP (ou une adresse
-    quelconque) et le numéro de port. Si plusieurs serveurs virtuels
-    correspondent sans pouvoir être départagés, c'est le premier qui
-    apparaît dans le fichier de configuration qui sera sélectionné.</p>
+    quelconque) et le numÃ©ro de port. Si plusieurs serveurs virtuels
+    correspondent sans pouvoir Ãªtre dÃ©partagÃ©s, c'est le premier qui
+    apparaÃ®t dans le fichier de configuration qui sera sÃ©lectionnÃ©.</p>
 
-    <p>Si vous souhaitez qu'Apache <em>affine</em> ses critères de
-    sélection en faisant entrer en jeu l'en-tête HTTP <code>Host</code>
+    <p>Si vous souhaitez qu'Apache <em>affine</em> ses critÃ¨res de
+    sÃ©lection en faisant entrer en jeu l'en-tÃªte HTTP <code>Host</code>
     fourni par le client, la directive <code>NameVirtualHost</code> <em>doit</em>
-    apparaître avec la paire adresse IP exacte (ou adresse
-    quelconque)/port utilisée dans le jeu de directives
+    apparaÃ®tre avec la paire adresse IP exacte (ou adresse
+    quelconque)/port utilisÃ©e dans le jeu de directives
     <code>VirtualHost</code> correspondant.</p>
 
-    <p>La sélection du serveur virtuel en fonction du nom n'intervient
-    qu'après la sélection d'un serveur virtuel à base d'adresse IP
+    <p>La sÃ©lection du serveur virtuel en fonction du nom n'intervient
+    qu'aprÃ¨s la sÃ©lection d'un serveur virtuel Ã  base d'adresse IP
     unique, et ne prend en compte que l'ensemble des serveurs virtuels
-    qui possèdent la même paire adresse IP/port.</p>
+    qui possÃ¨dent la mÃªme paire adresse IP/port.</p>
 
-    <p>On peut utiliser des nom d'hôtes à la place d'adresses IP dans la
-    définition des serveurs virtuels, mais ils seront résolus en
-    adresses IP au démarrage du serveur et ceci n'est pas recommandé.</p>
+    <p>On peut utiliser des nom d'hÃ´tes Ã  la place d'adresses IP dans la
+    dÃ©finition des serveurs virtuels, mais ils seront rÃ©solus en
+    adresses IP au dÃ©marrage du serveur et ceci n'est pas recommandÃ©.</p>
 
 
     <p>On peut utiliser plusieurs directives <code>NameVirtualHost</code>
     pour un groupe de directives <code>VirtualHost</code>, mais seule
-    une directive <code>NameVirtualHost</code> doit être utilisée pour
-    chaque couple IP:port donné.</p>
+    une directive <code>NameVirtualHost</code> doit Ãªtre utilisÃ©e pour
+    chaque couple IP:port donnÃ©.</p>
 
     <p>L'ordre d'apparition des directives <code>NameVirtualHost</code>
     et <code>VirtualHost</code> est sans importance, ce qui fait que
@@ -160,28 +160,28 @@ de configuration</title>
 </tr></table>
 
 
-    <p>(Il est conseillé d'adopter le choix de gauche pour faciliter
-    la lisibilité des fichiers de configuration.)</p>
+    <p>(Il est conseillÃ© d'adopter le choix de gauche pour faciliter
+    la lisibilitÃ© des fichiers de configuration.)</p>
     
     <p>Pendant la phase d'initialisation, une liste de chaque adresse
-    IP est générée et introduite dans une table de 'hash'. Si une
-    adresse IP est utilisée dans une directive <code>NameVirtualHost</code>,
+    IP est gÃ©nÃ©rÃ©e et introduite dans une table de 'hash'. Si une
+    adresse IP est utilisÃ©e dans une directive <code>NameVirtualHost</code>,
     cette liste contient les noms des serveurs virtuels pour cette
-    adresse. Si aucun serveur virtuel n'est défini pour cette adresse,
-    la directive <code>NameVirtualHost</code> est ignorée et un message
-    est envoyé au journal d'erreurs. Quand un serveur virtuel par IP
-    est utilisé, la table de 'hash' reste vide.</p>
+    adresse. Si aucun serveur virtuel n'est dÃ©fini pour cette adresse,
+    la directive <code>NameVirtualHost</code> est ignorÃ©e et un message
+    est envoyÃ© au journal d'erreurs. Quand un serveur virtuel par IP
+    est utilisÃ©, la table de 'hash' reste vide.</p>
 
-    <p>La fonction de 'hash' étant rapide, le temps d'exécution d'un
-    'hash' sur une adresse IP lors d'une requête est minimale et
-    quasiment imperceptible. De plus, la table est optimisée pour les
-    adresses IP dont le dernier octet est le seul à changer.</p>
+    <p>La fonction de 'hash' Ã©tant rapide, le temps d'exÃ©cution d'un
+    'hash' sur une adresse IP lors d'une requÃªte est minimale et
+    quasiment imperceptible. De plus, la table est optimisÃ©e pour les
+    adresses IP dont le dernier octet est le seul Ã  changer.</p>
 
-    <p>Pour chaque serveur virtuel, diverses valeurs sont initialisées
-    par défaut. En particulier&nbsp;:</p>
+    <p>Pour chaque serveur virtuel, diverses valeurs sont initialisÃ©es
+    par dÃ©faut. En particulier&nbsp;:</p>
 
     <ol>
-      <li>Dans le cas où un serveur virtuel ne contient pas de directives
+      <li>Dans le cas oÃ¹ un serveur virtuel ne contient pas de directives
       <directive module="core">ServerAdmin</directive>,
       <directive module="core">Timeout</directive>,
       <directive module="core">KeepAliveTimeout</directive>,
@@ -189,231 +189,231 @@ de configuration</title>
       <directive module="core">MaxKeepAliveRequests</directive>,
       <directive module="mpm_common">ReceiveBufferSize</directive>,
       ou <directive module="mpm_common">SendBufferSize</directive>,
-      alors la valeur de chacun de ces paramètres est héritée de celle du
-      serveur principal. (C'est à dire, héritée de la valeur finale après
+      alors la valeur de chacun de ces paramÃ¨tres est hÃ©ritÃ©e de celle du
+      serveur principal. (C'est Ã  dire, hÃ©ritÃ©e de la valeur finale aprÃ¨s
       lecture de la configuration du serveur principal.)</li>
 
-      <li>Les permissions par défaut sur les répertoires de chaque
-      serveur virtuel sont assemblées avec celles du serveur principal.
-      Elles concernent également toutes les informations de configuration
-      par répertoire pour tous les modules.</li>
+      <li>Les permissions par dÃ©faut sur les rÃ©pertoires de chaque
+      serveur virtuel sont assemblÃ©es avec celles du serveur principal.
+      Elles concernent Ã©galement toutes les informations de configuration
+      par rÃ©pertoire pour tous les modules.</li>
 
-      <li>Les configurations par serveur pour chaque module sont assemblées
-      à partir de celles du serveur principal.</li>
+      <li>Les configurations par serveur pour chaque module sont assemblÃ©es
+      Ã  partir de celles du serveur principal.</li>
     </ol>
 
     <p>L'essentiel des valeurs de configuration des serveurs virtuels
-    provient de valeurs par défaut issues du serveur principal.
+    provient de valeurs par dÃ©faut issues du serveur principal.
     Mais la position dans le fichier de configuration des directives
     du serveur principal n'a pas d'importance -- l'ensemble de la
     configuration du serveur principal est lu avant que ces valeurs par
-    défaut soient appliquées aux serveur virtuels. Ainsi, même si la
-    définition d'une valeur apparaît après celle d'un serveur virtuel,
+    dÃ©faut soient appliquÃ©es aux serveur virtuels. Ainsi, mÃªme si la
+    dÃ©finition d'une valeur apparaÃ®t aprÃ¨s celle d'un serveur virtuel,
     cette valeur peut affecter la definition du serveur virtuel.</p>
 
-    <p>Dans le cas où le serveur principal n'a pas de <code>ServerName</code>
-    à ce stade, le nom de la machine sur laquelle tourne le programme
-    <program>httpd</program> est utilisé à sa place. Nous appellerons
+    <p>Dans le cas oÃ¹ le serveur principal n'a pas de <code>ServerName</code>
+    Ã  ce stade, le nom de la machine sur laquelle tourne le programme
+    <program>httpd</program> est utilisÃ© Ã  sa place. Nous appellerons
     <em>jeu d'adresses du serveur principal</em> les adresses IP
-    renvoyées par une résolution DNS sur le <code>ServerName</code>
+    renvoyÃ©es par une rÃ©solution DNS sur le <code>ServerName</code>
     du serveur principal.</p>
 
-    <p>Pour tous les champs <code>ServerName</code> non définis, dans
+    <p>Pour tous les champs <code>ServerName</code> non dÃ©finis, dans
     le cas d'une configuration en serveur virtuel par nom, la valeur
-    adoptée par défaut est la première adresse donnée dans la section
-    <code>VirtualHost</code> qui définit le serveur virtuel.</p>
+    adoptÃ©e par dÃ©faut est la premiÃ¨re adresse donnÃ©e dans la section
+    <code>VirtualHost</code> qui dÃ©finit le serveur virtuel.</p>
 
     <p>Si un serveur virtuel contient la valeur magique
-    <code>_default_</code>, il fonctionne sur le même <code>ServerName</code>
+    <code>_default_</code>, il fonctionne sur le mÃªme <code>ServerName</code>
     que le serveur principal.</p>
 
 </section>
 
 <section id="hostmatching"><title>Choix du serveur virtuel</title>
 
-    <p>À la réception d'une requête, le serveur procède comme suit pour
-    déterminer quel serveur virtuel utiliser&nbsp;:</p>
+    <p>Ã€ la rÃ©ception d'une requÃªte, le serveur procÃ¨de comme suit pour
+    dÃ©terminer quel serveur virtuel utiliser&nbsp;:</p>
 
-    <section id="hashtable"><title>Vérification dans la table de hash</title>
+    <section id="hashtable"><title>VÃ©rification dans la table de hash</title>
 
-    <p>Après que le client se soit connecté, l'adresse
-    IP à laquelle le client s'est connecté est recherchée dans la
+    <p>AprÃ¨s que le client se soit connectÃ©, l'adresse
+    IP Ã  laquelle le client s'est connectÃ© est recherchÃ©e dans la
     table de hash IP interne.</p>
 
-    <p>Si la résolution de l'adresse IP n'aboutit pas (adresse IP non
-    trouvée), la requête est servie par le serveur virtuel
-    <code>_default_</code> s'il est défini pour le port correspondant
-    à la requête. Sinon, elle est servie par le serveur principal.</p>
+    <p>Si la rÃ©solution de l'adresse IP n'aboutit pas (adresse IP non
+    trouvÃ©e), la requÃªte est servie par le serveur virtuel
+    <code>_default_</code> s'il est dÃ©fini pour le port correspondant
+    Ã  la requÃªte. Sinon, elle est servie par le serveur principal.</p>
 
-    <p>Si l'adresse IP n'est pas trouvée dans la table de hash, la
-    recherche du numéro de port peut aussi se terminer par une
-    correspondance à un <code>NameVirtualHost *</code> qui est géré
+    <p>Si l'adresse IP n'est pas trouvÃ©e dans la table de hash, la
+    recherche du numÃ©ro de port peut aussi se terminer par une
+    correspondance Ã  un <code>NameVirtualHost *</code> qui est gÃ©rÃ©
     ensuite comme les autres serveurs virtuels par noms.</p>
 
-    <p>Si une liste est bien trouvée dans la table pour l'adresse
-    IP recherchée, l'étape suivante est de déterminer s'il s'agit
+    <p>Si une liste est bien trouvÃ©e dans la table pour l'adresse
+    IP recherchÃ©e, l'Ã©tape suivante est de dÃ©terminer s'il s'agit
     d'un serveur virtuel par nom ou par IP.</p>
 
     </section>
 
     <section id="ipbased"><title>Serveur virtuel par IP</title>
 
-    <p>Si l'entrée trouvée dispose d'une liste de noms vide, c'est
+    <p>Si l'entrÃ©e trouvÃ©e dispose d'une liste de noms vide, c'est
     qu'il s'agit d'un serveur virtuel par IP, et aucun autre choix
-    n'est plus à faire&nbsp;; la requête est servie par ce serveur virtuel.</p>
+    n'est plus Ã  faire&nbsp;; la requÃªte est servie par ce serveur virtuel.</p>
 
     </section>
 
     <section id="namebased"><title>Serveur virtuel par nom</title>
 
-    <p>Si l'entrée trouvée correspond à un serveur virtuel par nom,
+    <p>Si l'entrÃ©e trouvÃ©e correspond Ã  un serveur virtuel par nom,
     la liste de noms contient au moins une structure de serveurs
-    virtuels. Les serveurs virtuels se présentent dans cette liste
-    dans le même ordre que la lecture des directives <code>VirtualHost</code>
+    virtuels. Les serveurs virtuels se prÃ©sentent dans cette liste
+    dans le mÃªme ordre que la lecture des directives <code>VirtualHost</code>
     dans le fichier de configuration.</p>
 
     <p>Le premier serveur virtuel de cette liste (donc, le premier
     serveur virtuel du fichier de configuration
-    attribué à l'adresse IP spécifiée)
-    se voit attribuer la plus grande priorité, ce
-    qui signifie que c'est lui qui traite les requêtes présentant un
-    nom de serveur invalide ou ne présentant pas de champ
-    <code>Host:</code> dans l'en-tête.</p>
+    attribuÃ© Ã  l'adresse IP spÃ©cifiÃ©e)
+    se voit attribuer la plus grande prioritÃ©, ce
+    qui signifie que c'est lui qui traite les requÃªtes prÃ©sentant un
+    nom de serveur invalide ou ne prÃ©sentant pas de champ
+    <code>Host:</code> dans l'en-tÃªte.</p>
 
-    <p>Si un champ <code>Host:</code> est transmis dans l'en-tête de
-    la requête, son occurrence est recherchée dans la liste et le
-    premier serveur virtuel qui présente un <code>ServerName</code>
+    <p>Si un champ <code>Host:</code> est transmis dans l'en-tÃªte de
+    la requÃªte, son occurrence est recherchÃ©e dans la liste et le
+    premier serveur virtuel qui prÃ©sente un <code>ServerName</code>
     ou un <code>ServerAlias</code> correspondant est choisi pour
-    servir la requête. Il est possible que le champ <code>Host:</code>
-    contienne un numéro de port, mais Apache utilise toujours le
-    port sur lequel il a effectivement reçu la requête.</p>
+    servir la requÃªte. Il est possible que le champ <code>Host:</code>
+    contienne un numÃ©ro de port, mais Apache utilise toujours le
+    port sur lequel il a effectivement reÃ§u la requÃªte.</p>
 
-    <p>La liste complète des noms dans la section
-    <code>VirtualHost</code> sont traités comme un
-    <code>ServerAlias</code> sans caractères génériques (mais ne sont
-    pas écrasés par une directive <code>ServerAlias</code>).</p>
+    <p>La liste complÃ¨te des noms dans la section
+    <code>VirtualHost</code> sont traitÃ©s comme un
+    <code>ServerAlias</code> sans caractÃ¨res gÃ©nÃ©riques (mais ne sont
+    pas Ã©crasÃ©s par une directive <code>ServerAlias</code>).</p>
 
-    <p>Dans le cas où le client a envoyé une requête en HTTP/1.0 sans
-    champ d'en-tête <code>Host:</code>, il est impossible de
-    déterminer le serveur auquel le client veut se connecter&nbsp;; l'URI
-    de la requête est recherché dans tous les <code>ServerPath</code>
-    existants. Le premier chemin trouvé est utilisé et la requête est
+    <p>Dans le cas oÃ¹ le client a envoyÃ© une requÃªte en HTTP/1.0 sans
+    champ d'en-tÃªte <code>Host:</code>, il est impossible de
+    dÃ©terminer le serveur auquel le client veut se connecter&nbsp;; l'URI
+    de la requÃªte est recherchÃ© dans tous les <code>ServerPath</code>
+    existants. Le premier chemin trouvÃ© est utilisÃ© et la requÃªte est
     servie par le serveur virtuel correspondant.</p>
 
-    <p>Si aucun serveur virtuel n'est trouvé, la requête est servie
-    par le premier serveur virtuel qui écoute sur le port demandé et
-    qui est sur la liste associée à l'adresse IP vers laquelle la
-    requête a été envoyée (comme déjà précisé ci-avant).</p>
+    <p>Si aucun serveur virtuel n'est trouvÃ©, la requÃªte est servie
+    par le premier serveur virtuel qui Ã©coute sur le port demandÃ© et
+    qui est sur la liste associÃ©e Ã  l'adresse IP vers laquelle la
+    requÃªte a Ã©tÃ© envoyÃ©e (comme dÃ©jÃ  prÃ©cisÃ© ci-avant).</p>
 
     </section>
 
     <section id="persistent"><title>Connexions persistantes</title>
 
-    <p>La recherche par adresse IP décrite ci-avant n'est faite
+    <p>La recherche par adresse IP dÃ©crite ci-avant n'est faite
     qu'<em>une fois</em> pour chaque session TCP/IP, alors que la
-    recherche par nom est réalisée pour <em>chaque</em> requête au
+    recherche par nom est rÃ©alisÃ©e pour <em>chaque</em> requÃªte au
     cours d'une connexion persistante (KeepAlive). En d'autres termes,
-    il est possible pour un client de faire des requêtes sur
-    différents serveurs virtuels par nom, au cours d'une unique
+    il est possible pour un client de faire des requÃªtes sur
+    diffÃ©rents serveurs virtuels par nom, au cours d'une unique
     connexion persistante.</p>
 
     </section>
 
     <section id="absoluteURI"><title>URI absolu</title>
 
-    <p>Au cas où l'URI de la requête est absolu, et que son nom de
+    <p>Au cas oÃ¹ l'URI de la requÃªte est absolu, et que son nom de
     serveur et son port correspondent au serveur principal (ou l'un
-    des serveurs virtuels configurés), <em>et</em> qu'ils correspondent
-    à l'adresse et au port de la requête, alors l'URI est amputé
-    de son préfixe protocole/nom de serveur/port et traité par le
+    des serveurs virtuels configurÃ©s), <em>et</em> qu'ils correspondent
+    Ã  l'adresse et au port de la requÃªte, alors l'URI est amputÃ©
+    de son prÃ©fixe protocole/nom de serveur/port et traitÃ© par le
     serveur correspondant (principal ou virtuel). Si cette correspondance
-    n'existe pas, l'URI reste inchangé et la requête est considérée
-    comme une requête d'un serveur mandataire (proxy).</p>
+    n'existe pas, l'URI reste inchangÃ© et la requÃªte est considÃ©rÃ©e
+    comme une requÃªte d'un serveur mandataire (proxy).</p>
 </section>
 
 <section id="observations"><title>Observations</title>
 
     <ul>
-      <li>Les serveurs virtuels par nom et par IP n'interfèrent
+      <li>Les serveurs virtuels par nom et par IP n'interfÃ¨rent
       jamais entre eux. Les serveurs virtuels par IP ne sont joignables
       qu'au travers de leur(s) adresse(s) IP propre(s), et en aucun
       cas par une autre adresse. Les serveurs virtuels par nom
       ne sont accessibles que par leur(s) adresse(s) IP qui ne peuvent
-      être définies qu'au moyen de la directive
+      Ãªtre dÃ©finies qu'au moyen de la directive
       <code>NameVirtualHost</code>.</li>
 
-      <li>Les vérifications sur <code>ServerAlias</code> et
-      <code>ServerPath</code> ne sont jamais réalisées pour les
+      <li>Les vÃ©rifications sur <code>ServerAlias</code> et
+      <code>ServerPath</code> ne sont jamais rÃ©alisÃ©es pour les
       serveurs virtuels par IP.</li>
 
-      <li>L'ordre dans lequel sont agencés dans le fichier de
+      <li>L'ordre dans lequel sont agencÃ©s dans le fichier de
       configuration le serveur virtuel <code>_default_</code>, les
       serveurs virtuels par nom et par IP, et la directive
       <code>NameVirtualHost</code> est sans incidence sur le
       fonctionnement. Seul l'ordre des serveurs virtuels par nom
-      pour une adresse donnée a une importance. Le serveur virtuel
-      par nom qui est présent en premier dans la configuration se
-      voit attribué la priorité la plus haute pour les requêtes
+      pour une adresse donnÃ©e a une importance. Le serveur virtuel
+      par nom qui est prÃ©sent en premier dans la configuration se
+      voit attribuÃ© la prioritÃ© la plus haute pour les requÃªtes
       arrivant sur son jeu d'adresses IP.</li>
 
-      <li>Le numéro de port présenté
-      dans le champ d'en-tête <code>Host:</code> n'est jamais utilisé
+      <li>Le numÃ©ro de port prÃ©sentÃ©
+      dans le champ d'en-tÃªte <code>Host:</code> n'est jamais utilisÃ©
       pour les tests de correspondances. Apache ne prend en compte
-      que le numéro de port sur lequel le client a envoyé la requête.</li>
+      que le numÃ©ro de port sur lequel le client a envoyÃ© la requÃªte.</li>
 
       <li>Si une directive <code>ServerPath</code> existe, et se
-      trouve être préfixe d'une autre directive <code>ServerPath</code>
-      qui apparaît plus loin dans la configuration, la première
-      sera toujours utilisée et la deuxième jamais. (Ceci ne se
-      produit que dans le cas où aucun champ <code>Host:</code>
-      n'a été présenté par le client pour distinguer les deux.)</li>
+      trouve Ãªtre prÃ©fixe d'une autre directive <code>ServerPath</code>
+      qui apparaÃ®t plus loin dans la configuration, la premiÃ¨re
+      sera toujours utilisÃ©e et la deuxiÃ¨me jamais. (Ceci ne se
+      produit que dans le cas oÃ¹ aucun champ <code>Host:</code>
+      n'a Ã©tÃ© prÃ©sentÃ© par le client pour distinguer les deux.)</li>
 
-      <li>Dans le cas où deux serveurs virtuels par IP ont une
-      adresse en commun, le serveur virtuel qui apparaît en premier
+      <li>Dans le cas oÃ¹ deux serveurs virtuels par IP ont une
+      adresse en commun, le serveur virtuel qui apparaÃ®t en premier
       dans la configuration est toujours choisi. Ce genre de chose
       peut arriver par inadvertance. Le serveur envoie une alerte
-      dans le journal d'erreurs si ce cas se présente.</li>
+      dans le journal d'erreurs si ce cas se prÃ©sente.</li>
 
-      <li>Le serveur virtuel <code>_default_</code> ne sert la requête
+      <li>Le serveur virtuel <code>_default_</code> ne sert la requÃªte
       que si aucun autre serveur virtuel travaillant sur l'adresse
-      IP <em>et</em> le port demandés n'est trouvé. La requête n'est
-      traitée que si le numéro de port qui a reçu la requête est
-      associé au serveur virtuel <code>_default_</code> (qui par
-      défaut, correspond à <code>Listen</code>). Un port joker peut
-      être spécifié (<em>comme dans</em> <code>_default_:*</code>)
-      pour récupérer les requêtes sur tous les ports ouverts. Ceci
-      est également applicable aux serveurs virtuels
+      IP <em>et</em> le port demandÃ©s n'est trouvÃ©. La requÃªte n'est
+      traitÃ©e que si le numÃ©ro de port qui a reÃ§u la requÃªte est
+      associÃ© au serveur virtuel <code>_default_</code> (qui par
+      dÃ©faut, correspond Ã  <code>Listen</code>). Un port joker peut
+      Ãªtre spÃ©cifiÃ© (<em>comme dans</em> <code>_default_:*</code>)
+      pour rÃ©cupÃ©rer les requÃªtes sur tous les ports ouverts. Ceci
+      est Ã©galement applicable aux serveurs virtuels
       <code>NameVirtualHost *</code>. Notez que ceci n'est qu'une
-      extension du principe de "meilleure correspondance", au même titre
-      qu'une correspondance spécifique et exacte est préférée à une
+      extension du principe de "meilleure correspondance", au mÃªme titre
+      qu'une correspondance spÃ©cifique et exacte est prÃ©fÃ©rÃ©e Ã  une
       valeur quelconque.</li>
 
-      <li>Le serveur principal ne sert les requêtes que
-      lorsque l'adresse IP et le port demandés par le client ne
-      correspondent à aucun serveur virtuel (y compris un serveur
+      <li>Le serveur principal ne sert les requÃªtes que
+      lorsque l'adresse IP et le port demandÃ©s par le client ne
+      correspondent Ã  aucun serveur virtuel (y compris un serveur
       virtuel <code>_default_</code>). En d'autres termes, le serveur
       principal n'est utile que pour les combinaisons adresse/port
-      non spécifiées (sauf quand un serveur virtuel <code>_default_</code>
+      non spÃ©cifiÃ©es (sauf quand un serveur virtuel <code>_default_</code>
       correspond au port).</li>
 
       <li>Ni les serveurs virtuels <code>_default_</code>, ni le
-      serveur principal ne sont utilisés pour traiter une requête
-      avec un champ d'en-tête <code>Host:</code> inconnu ou manquant
-      lorsque l'adresse (et le port) de connexion correspondent à
+      serveur principal ne sont utilisÃ©s pour traiter une requÃªte
+      avec un champ d'en-tÃªte <code>Host:</code> inconnu ou manquant
+      lorsque l'adresse (et le port) de connexion correspondent Ã 
       des serveurs virtuels par nom, par exemple, dans une directive
       <code>NameVirtualHost</code>.</li>
 
       <li>Il ne faut jamais employer de noms DNS dans des directives
       <code>VirtualHost</code>, car cela oblige le serveur a s'appuyer
-      sur le DNS au moment du démarrage. De plus, vous vous exposez
-      à des problèmes de sécurité si vous n'avez pas la maîtrise du
-      DNS pour la totalité de vos domaines. Voir la documentation
+      sur le DNS au moment du dÃ©marrage. De plus, vous vous exposez
+      Ã  des problÃ¨mes de sÃ©curitÃ© si vous n'avez pas la maÃ®trise du
+      DNS pour la totalitÃ© de vos domaines. Voir la documentation
       <a href="../dns-caveats.html">disponible ici</a>, ainsi que
-      les deux points précisés ci-après.</li>
+      les deux points prÃ©cisÃ©s ci-aprÃ¨s.</li>
 
       <li>Un nom de serveur <code>ServerName</code> devrait toujours
-      être indiqué pour chaque serveur virtuel. Sans cela, une
-      résolution DNS est nécessaire pour chaque serveur virtuel.</li>
+      Ãªtre indiquÃ© pour chaque serveur virtuel. Sans cela, une
+      rÃ©solution DNS est nÃ©cessaire pour chaque serveur virtuel.</li>
       </ul>
       </section>
 
@@ -421,30 +421,30 @@ de configuration</title>
 
 <section id="tips"><title>Trucs et astuces</title>
 
-    <p>En plus des points évoqués sur la page des
-    <a href="../dns-caveats.html#tips">problèmes liés au DNS</a>,
-    voici quelques points intéressants&nbsp;:</p>
+    <p>En plus des points Ã©voquÃ©s sur la page des
+    <a href="../dns-caveats.html#tips">problÃ¨mes liÃ©s au DNS</a>,
+    voici quelques points intÃ©ressants&nbsp;:</p>
 
     <ul>
-      <li>Toujours positionner les définitions relatives au serveur
-      principal avant toute définition <code>VirtualHost</code>.
-      (Ceci améliore grandement la lisibilité de la configuration
-      -- la manière dont la configuration est interprétée après la
-      lecture des fichiers ne met pas en évidence le fait que les
-      définitions positionnées avant et surtout après les serveurs
+      <li>Toujours positionner les dÃ©finitions relatives au serveur
+      principal avant toute dÃ©finition <code>VirtualHost</code>.
+      (Ceci amÃ©liore grandement la lisibilitÃ© de la configuration
+      -- la maniÃ¨re dont la configuration est interprÃ©tÃ©e aprÃ¨s la
+      lecture des fichiers ne met pas en Ã©vidence le fait que les
+      dÃ©finitions positionnÃ©es avant et surtout aprÃ¨s les serveurs
       virtuels peuvent impacter le fonctionnement de tous les
       serveurs virtuels.)</li>
 
-      <li>Toujours regrouper les définitions <code>NameVirtualHost</code>
+      <li>Toujours regrouper les dÃ©finitions <code>NameVirtualHost</code>
       et <code>VirtualHost</code> correspondantes
-      dans la configuration pour une meilleure lisibilité.</li>
+      dans la configuration pour une meilleure lisibilitÃ©.</li>
 
-      <li>Éviter les <code>ServerPaths</code> qui sont préfixes
-      d'autres <code>ServerPaths</code>. Si cela ne peut être évité,
-      veillez à ce que le serveur virtuel contenant le préfixe le plus
-      long (donc le plus précis) apparaisse dans le fichier de
+      <li>Ã‰viter les <code>ServerPaths</code> qui sont prÃ©fixes
+      d'autres <code>ServerPaths</code>. Si cela ne peut Ãªtre Ã©vitÃ©,
+      veillez Ã  ce que le serveur virtuel contenant le prÃ©fixe le plus
+      long (donc le plus prÃ©cis) apparaisse dans le fichier de
       configuration avant le plus court. (<em>par exemple</em>,
-      "ServerPath /abc" est à spécifier après  "ServerPath /abc/def").</li>
+      "ServerPath /abc" est Ã  spÃ©cifier aprÃ¨s  "ServerPath /abc/def").</li>
     </ul>
 
 </section>
