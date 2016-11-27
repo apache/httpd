@@ -42,7 +42,7 @@
     est un processus qui permet à une personne d'aller là où elle veut
     aller, ou d'obtenir les informations qu'elle désire.</p>
 
-    <p>Pour le contrÃ´le d'accÃ¨s en gÃ©nÃ©ral, voir le document <a href="access.html">Tutoriel du contrÃ´le d'accÃ¨s</a>.</p>
+    <p>Pour le contrôle d'accès en général, voir le document <a href="access.html">Tutoriel du contrôle d'accès</a>.</p>
 
 
 </div>
