@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='ISO-8859-1' ?>
+<?xml version='1.0' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1753872 -->
@@ -29,25 +29,25 @@
 
 <summary>
 
-    <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
+    <p>Le principe des <cite>Serveurs Virtuels</cite> consiste Ã  
     faire fonctionner un ou plusieurs serveurs Web (comme 
     <code>www.company1.example.com</code> et <code>www.company2.example.com</code>) 
-    sur une même machine. Les serveurs virtuels peuvent être soit 
-    "<a href="ip-based.html">par-IP</a>" où une adresse IP est 
-    attribuée pour chaque serveur Web, soit "<a href="name-based.html"
-    >par-nom</a>" où plusieurs noms de domaine se côtoient sur 
-    des mêmes adresses IP. L'utilisateur final ne perçoit pas 
-    qu'en fait il s'agit d'un même serveur physique.</p>
+    sur une mÃªme machine. Les serveurs virtuels peuvent Ãªtre soit 
+    "<a href="ip-based.html">par-IP</a>" oÃ¹ une adresse IP est 
+    attribuÃ©e pour chaque serveur Web, soit "<a href="name-based.html"
+    >par-nom</a>" oÃ¹ plusieurs noms de domaine se cÃ´toient sur 
+    des mÃªmes adresses IP. L'utilisateur final ne perÃ§oit pas 
+    qu'en fait il s'agit d'un mÃªme serveur physique.</p>
 
-    <p>Apache a été le précurseur des serveurs proposant cette 
-    méthode de serveurs virtuels basés sur les adresses IP. Ses 
+    <p>Apache a Ã©tÃ© le prÃ©curseur des serveurs proposant cette 
+    mÃ©thode de serveurs virtuels basÃ©s sur les adresses IP. Ses 
     versions 1.1 et suivantes proposent les deux 
-    méthodes de serveurs virtuels : par-IP et par-nom. Cette 
-    deuxième méthode est parfois également appelée <em>host-based</em> 
+    mÃ©thodes de serveurs virtuels : par-IP et par-nom. Cette 
+    deuxiÃ¨me mÃ©thode est parfois Ã©galement appelÃ©e <em>host-based</em> 
     ou <em>serveur virtuel non-IP</em>.</p>
 
     <p>Vous trouverez ci-dessous une liste documentaire qui vous 
-    expliquera en détails le fonctionnement du support des serveurs
+    expliquera en dÃ©tails le fonctionnement du support des serveurs
     virtuels par le serveur HTTP Apache.</p>
 
 </summary>
@@ -57,8 +57,8 @@
 <seealso><a href="ip-based.html">Serveurs virtuels par-IP</a></seealso>
 <seealso><a href="examples.html">Exemples de serveurs virtuels</a></seealso>
 <seealso><a href="fd-limits.html">Limites des descripteurs de fichiers</a></seealso>
-<seealso><a href="mass.html">Hébergement virtuel en masse</a></seealso>
-<seealso><a href="details.html">Détails sur les critères de choix du serveur</a></seealso>
+<seealso><a href="mass.html">HÃ©bergement virtuel en masse</a></seealso>
+<seealso><a href="details.html">DÃ©tails sur les critÃ¨res de choix du serveur</a></seealso>
 
 <section id="support"><title>Support des serveurs virtuels</title>
 
@@ -73,8 +73,8 @@
       (ou, <em>trop de fichiers journaux</em>)</li>
       <li><a href="mass.html">Configuration dynamique en masse de 
       Serveurs Virtuels</a></li>
-      <li><a href="details.html">Explication approfondie des critères 
-      de sélection d'un Serveur Virtuel</a></li>
+      <li><a href="details.html">Explication approfondie des critÃ¨res 
+      de sÃ©lection d'un Serveur Virtuel</a></li>
     </ul>
 
 </section>
@@ -89,7 +89,7 @@
       <li><directive module="core">ServerPath</directive></li>
     </ul>
 
-    <p>Pour vérifier et analyser la configuration de vos serveurs 
+    <p>Pour vÃ©rifier et analyser la configuration de vos serveurs 
     virtuels, vous pouvez utiliser l'argument <code>-S</code> sur 
     la ligne de commande.</p>
 
@@ -103,9 +103,9 @@
     httpd.exe -S
     </example>
 
-    <p>Cette commande affichera dans le détail comment Apache a 
-    traité son fichier de configuration. Les erreurs de configuration 
-    peuvent être corrigées par l'examen attentif des adresses IP et 
+    <p>Cette commande affichera dans le dÃ©tail comment Apache a 
+    traitÃ© son fichier de configuration. Les erreurs de configuration 
+    peuvent Ãªtre corrigÃ©es par l'examen attentif des adresses IP et 
     des noms de serveurs. (Consultez la documentation du programme 
     <program>httpd</program> pour les autres arguments de la ligne de 
     commande)</p>
