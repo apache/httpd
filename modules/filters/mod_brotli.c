@@ -240,7 +240,7 @@ static apr_status_t process_chunk(brotli_ctx_t *ctx,
             output = BrotliEncoderTakeOutput(ctx->state, &output_len);
             ctx->total_out += output_len;
 
-            b = apr_bucket_transient_create(output, output_len,
+            b = apr_bucket_transient_create((const char *)output, output_len,
                                             ctx->bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
 
@@ -289,7 +289,7 @@ static apr_status_t flush(brotli_ctx_t *ctx,
         output = BrotliEncoderTakeOutput(ctx->state, &output_len);
         ctx->total_out += output_len;
 
-        b = apr_bucket_heap_create(output, output_len, NULL,
+        b = apr_bucket_heap_create((const char *)output, output_len, NULL,
                                    ctx->bb->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
     }
