@@ -128,8 +128,8 @@ static apr_status_t bail_out_on_error(http_ctx_t *ctx,
  * Parse a chunk line with optional extension, detect overflow.
  * There are several error cases:
  *  1) If the chunk link is misformatted, APR_EINVAL is returned.
- *  2) If the conversion would require too many bits, APR_EGENERAL is returned.
- *  3) If the conversion used the correct number of bits, but an overflow
+ *  1) If the conversion would require too many bits, APR_EGENERAL is returned.
+ *  2) If the conversion used the correct number of bits, but an overflow
  *     caused only the sign bit to flip, then APR_ENOSPC is returned.
  * A negative chunk length always indicates an overflow error.
  */
