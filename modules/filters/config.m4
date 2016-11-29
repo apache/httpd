@@ -159,18 +159,20 @@ const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);]
       [AC_MSG_RESULT(yes)
        ap_brotli_found=yes
        ap_brotli_cflags="-I${ap_brotli_base}/include"
-       ap_brotli_libs="-L${ap_brotli_base}/lib -lbrotlienc"],
+       ap_brotli_libs="-L${ap_brotli_base}/lib -lbrotlienc -lbrotlicommon"],
       [AC_MSG_RESULT(no)]
     )
     CPPFLAGS=$ap_save_cppflags
   else
     if test -n "$PKGCONFIG"; then
-      AC_MSG_CHECKING([for Brotli library via pkg-config])
-      if $PKGCONFIG --exists "libbrotlienc"; then
+      AC_MSG_CHECKING([for Brotli library >= 1.0.0 via pkg-config])
+      if $PKGCONFIG --exists "brotli >= 1.0.0"; then
         AC_MSG_RESULT(yes)
         ap_brotli_found=yes
-        ap_brotli_cflags=`$PKGCONFIG libbrotlienc --cflags`
-        ap_brotli_libs=`$PKGCONFIG libbrotlienc --libs`
+        ap_brotli_cflags=`$PKGCONFIG brotli --cflags`
+        ap_brotli_libs=`$PKGCONFIG brotli --libs`
+        dnl We only support compression, drop -lbrotlidec.
+        APR_REMOVEFROM(ap_brotli_libs, [-lbrotlidec])
       else
         AC_MSG_RESULT(no)
       fi
