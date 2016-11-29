@@ -291,6 +291,9 @@ Package=<4>
     Project_Dep_Name mod_proxy_ftp
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_proxy_hcheck
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_proxy_http
     End Project Dependency
     Begin Project Dependency
@@ -2358,6 +2361,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_proxy_ftp"=.\modules\proxy\mod_proxy_ftp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy_hcheck"=.\modules\proxy\mod_proxy_hcheck.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
