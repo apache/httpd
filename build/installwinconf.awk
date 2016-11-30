@@ -166,6 +166,7 @@ BEGIN {
           print "#LoadModule proxy_express_module modules/mod_proxy_express.so" > dstfl;
           print "#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so" > dstfl;
           print "#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so" > dstfl;
+          print "#LoadModule proxy_hcheck_module modules/mod_proxy_hcheck.so" > dstfl;
           print "#LoadModule proxy_html_module modules/mod_proxy_html.so" > dstfl;
           print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
           print "#LoadModule proxy_http2_module modules/mod_proxy_http2.so" > dstfl;
