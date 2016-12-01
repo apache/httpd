@@ -117,23 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
-     allowing per backend TLS configuration.
-     trunk patch: http://svn.apache.org/r1740928
-                  http://svn.apache.org/r1740960
-                  http://svn.apache.org/r1740967
-                  http://svn.apache.org/r1740987
-                  http://svn.apache.org/r1740998
-                  http://svn.apache.org/r1742697
-                  http://svn.apache.org/r1756976
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
-     +1: ylavic
-
   *) Fix warnings with new compilers, warnings treated as error
      in maintainer-mode, standard c-89 is enforced
      trunk patch: http://svn.apache.org/r1702948
@@ -170,21 +153,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
      +1: jim, ylavic, wrowe
      ylavic: r1756553 and r1649491 have a CHANGES entry.
-
-  *) mod_socache_memcache: Provide memcache STATs to mod_status
-     trunk patch: http://svn.apache.org/r1768245
-     trunk patch: http://svn.apache.org/r1770828
-     2.4.x patch: trunk works
-     +1: jim
-
-  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
-     to relax or further constrain some behaviors.
-     trunk patches: too numerous to list, see 
-       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-     2.4.x patch: see
-       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-       Last updated: 1 Dec with a missing element of http_filters.c
-     +1: wrowe
 
   *) ap_reclaim_child_processes(): Implement terminate immediately
      trunk patches:
@@ -226,6 +194,38 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
      docs: https://svn.apache.org/r1770771 (in addition to the above)
      +1: sf, jim, wrowe
+
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
+     allowing per backend TLS configuration.
+     trunk patch: http://svn.apache.org/r1740928
+                  http://svn.apache.org/r1740960
+                  http://svn.apache.org/r1740967
+                  http://svn.apache.org/r1740987
+                  http://svn.apache.org/r1740998
+                  http://svn.apache.org/r1742697
+                  http://svn.apache.org/r1756976
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
+     +1: ylavic
+
+  *) mod_socache_memcache: Provide memcache STATs to mod_status
+     trunk patch: http://svn.apache.org/r1768245
+     trunk patch: http://svn.apache.org/r1770828
+     2.4.x patch: trunk works
+     +1: jim
+
+  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
+     to relax or further constrain some behaviors.
+     trunk patches: too numerous to list, see 
+       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+     2.4.x patch: see
+       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+       Last updated: 1 Dec with a missing element of http_filters.c
+     +1: wrowe
 
   *) mod_ratelimit: Allow for initial burst of data before we start
      throttling: PR 60145
