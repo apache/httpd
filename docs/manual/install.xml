@@ -153,14 +153,14 @@
       the affected support scripts. Of course, you will still be able to 
       build and use Apache HTTPd.</dd>
 
-      <dt><a href="http://apr.apache.org">apr/apr-util >= 1.2</a></dt>
+      <dt><a href="http://apr.apache.org">apr/apr-util >= 1.4</a></dt>
       <dd><code>apr</code> and <code>apr-util</code> are bundled
       with the Apache HTTPd source releases, and will be used without any 
       problems in almost all circumstances. However, if 
-      <code>apr</code> or <code>apr-util</code>, versions 1.0 or 1.1,
+      <code>apr</code> or <code>apr-util</code>, versions 1.0, 1.1 or 1.2,
       are installed on your system, you must either upgrade your
       <code>apr</code>/<code>apr-util</code> installations to
-      1.2, force the use of the bundled libraries or have httpd use 
+      1.4, force the use of the bundled libraries or have httpd use 
       separate builds. To use the bundled 
       <code>apr</code>/<code>apr-util</code> sources specify the 
       <code>--with-included-apr</code> option to configure:
@@ -176,13 +176,13 @@
       To build Apache HTTPd against a manually installed 
       <code>apr</code>/<code>apr-util</code>:
       <example>
-        # Build and install apr 1.2<br />
+        # Build and install apr 1.4<br />
         cd srclib/apr<br/>
         ./configure --prefix=/usr/local/apr-httpd/<br/>
         make<br/>
         make install<br />
         <br />
-        # Build and install apr-util 1.2<br />
+        # Build and install apr-util 1.4<br />
         cd ../apr-util<br />
         ./configure --prefix=/usr/local/apr-util-httpd/ 
           --with-apr=/usr/local/apr-httpd/<br />
