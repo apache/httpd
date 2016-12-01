@@ -221,8 +221,10 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 return APR_EINVAL;
             }
         }
-        else if (!strict && (c == ' ' || c == '\t')) {
-            /* Be lenient up to 10 BWS (term from rfc7230 - 3.2.3).
+        else if (c == ' ' || c == '\t') {
+            /* Be lenient up to 10 implied *LWS, a legacy of RFC 2616,
+             * and noted as errata to RFC7230;
+             * https://www.rfc-editor.org/errata_search.php?rfc=7230&eid=4667
              */
             ctx->state = BODY_CHUNK_CR;
             if (++ctx->chunk_bws > 10) {
