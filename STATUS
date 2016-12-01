@@ -139,7 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1702948
                   http://svn.apache.org/r1759415
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1702948_and_co.patch
-     +1: ylavic, jorton, 
+     +1: ylavic, jorton, wrowe
      jchampion: r1702948 doesn't quite work as advertised. -Werror is never
                 added to CFLAGS because when combined with -Wstrict-prototypes,
                 the AC_LANG_PROGRAM won't compile (it uses a bare main()).
@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n](), update with APR doxygen
             http://svn.apache.org/r1747469 
      2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
-     +1: jim, ylavic
+     +1: jim, ylavic, wrowe
      ylavic: r1756553 and r1649491 have a CHANGES entry.
 
   *) mod_socache_memcache: Provide memcache STATs to mod_status
@@ -183,6 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
      2.4.x patch: see
        svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
+       Last updated: 1 Dec with a missing element of http_filters.c
      +1: wrowe
 
   *) ap_reclaim_child_processes(): Implement terminate immediately
@@ -190,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1757061
        https://svn.apache.org/r1770750
      2.4.x patch: https://people.apache.org/~sf/PR53555_1_ap_reclaim_child_processes.diff
-     +1: sf, jim
+     +1: sf, jim, wrowe
 
   *) Improve mod_status view of async connections
      trunk patches:
@@ -199,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1756848
        https://svn.apache.org/r1757029
      2.4.x patch: https://people.apache.org/~sf/PR53555_2_mod_status.diff
-     +1: sf, jim
+     +1: sf, jim, wrowe
 
   *) mpm_event: Free resources earlier during shutdown
      trunk patches:
@@ -209,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1738466
        https://svn.apache.org/r1738486
      2.4.x patch: https://people.apache.org/~sf/PR53555_3_free_early.diff
-     +1: sf, jim
+     +1: sf, jim, wrowe
 
   *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
      re-use scoreboard slots of still running, gracefully finishing processes.
@@ -224,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1770768
      2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
      docs: https://svn.apache.org/r1770771 (in addition to the above)
-     +1: sf, jim
+     +1: sf, jim, wrowe
 
   *) mod_ratelimit: Allow for initial burst of data before we start
      throttling: PR 60145
