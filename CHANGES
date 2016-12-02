@@ -2,6 +2,13 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_socache_memcache: Pass expiration time through to memcached.
+     [Faidon Liambotis <paravoid debian.org>, Joe Orton]
+
+  *) mod_cache: Use the actual URI path and query-string for identifying the
+     cached entity (key), such that rewrites are taken into account when
+     running afterwards (CacheQuickHandler off).  PR 21935.  [Yann Ylavic]
+
   *) mod_http2: new directive 'H2EarlyHints' to enable sending of HTTP status
      103 interim responses. Disabled by default. [Stefan Eissing]
      
