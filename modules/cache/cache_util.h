@@ -300,7 +300,7 @@ apr_status_t cache_remove_lock(cache_server_conf *conf,
         cache_request_rec *cache, request_rec *r, apr_bucket_brigade *bb);
 
 cache_provider_list *cache_get_providers(request_rec *r,
-        cache_server_conf *conf, apr_uri_t uri);
+                                         cache_server_conf *conf);
 
 /**
  * Get a value from a table, where the table may contain multiple

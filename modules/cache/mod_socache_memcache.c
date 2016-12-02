@@ -214,8 +214,14 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
         return APR_EINVAL;
     }
 
-    /* In APR-util - unclear what 'timeout' is, as it was not implemented */
-    rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, 0, 0);
+    /* memcache needs time in seconds till expiry; fail if this is not
+     * positive *before* casting to unsigned (apr_uint32_t). */
+    expiry -= apr_time_now();
+    if (apr_time_sec(expiry) <= 0) {
+        return APR_EINVAL;
+    }
+    rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData,
+                          apr_time_sec(expiry), 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(00790)
