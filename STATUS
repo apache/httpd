@@ -117,22 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Fix warnings with new compilers, warnings treated as error
-     in maintainer-mode, standard c-89 is enforced
-     trunk patch: http://svn.apache.org/r1702948
-                  http://svn.apache.org/r1759415
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1702948_and_co.patch
-     +1: ylavic, jorton, wrowe
-     jchampion: r1702948 doesn't quite work as advertised. -Werror is never
-                added to CFLAGS because when combined with -Wstrict-prototypes,
-                the AC_LANG_PROGRAM won't compile (it uses a bare main()).
-     ylavic: Maybe the -Werror case could be handled later, for now this series
-             avoids a lot of "warning: 'aplog_module_index' defined but not
-             used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
-     jchampion: Fine by me. I just think the dead code should be removed from
-                the backport in the meantime, so people don't have a false sense
-                of security.
-
   *) mod_cache: Bring up-to-date w/ trunk.
      trunk patch:
         try to use the key of a possible open but stale cache entry (PR 50317)
