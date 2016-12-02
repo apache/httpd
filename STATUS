@@ -117,25 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Improve mod_status view of async connections
-     trunk patches:
-       https://svn.apache.org/r1738628
-       https://svn.apache.org/r1757009
-       https://svn.apache.org/r1756848
-       https://svn.apache.org/r1757029
-     2.4.x patch: https://people.apache.org/~sf/PR53555_2_mod_status.diff
-     +1: sf, jim, wrowe
-
-  *) mpm_event: Free resources earlier during shutdown
-     trunk patches:
-       https://svn.apache.org/r1705922
-       https://svn.apache.org/r1706523
-       https://svn.apache.org/r1738464
-       https://svn.apache.org/r1738466
-       https://svn.apache.org/r1738486
-     2.4.x patch: https://people.apache.org/~sf/PR53555_3_free_early.diff
-     +1: sf, jim, wrowe
-
   *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
      re-use scoreboard slots of still running, gracefully finishing processes.
      PR: 53555
