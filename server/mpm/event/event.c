@@ -181,6 +181,8 @@ static apr_uint32_t connection_count = 0;   /* Number of open connections */
 static apr_uint32_t lingering_count = 0;    /* Number of connections in lingering close */
 static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
 static apr_uint32_t clogged_count = 0;      /* Number of threads processing ssl conns */
+static apr_uint32_t threads_shutdown = 0;   /* Number of threads that have shutdown
+                                               early during graceful termination */
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
@@ -288,9 +290,8 @@ static apr_pollset_t *event_pollset;
 /* The structure used to pass unique initialization info to each thread */
 typedef struct
 {
-    int pid;
-    int tid;
-    int sd;
+    int pslot;  /* process slot */
+    int tslot;  /* worker slot of the thread */
 } proc_info;
 
 /* Structure used to pass information to the thread responsible for
@@ -911,6 +912,8 @@ static int start_lingering_close_nonblocking(event_conn_state_t *cs)
         || apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS) {
         apr_socket_close(csd);
         ap_push_pool(worker_queue_info, cs->p);
+        if (dying)
+            ap_queue_interrupt_one(worker_queue);
         return 0;
     }
     return start_lingering_close_common(cs, 0);
@@ -934,6 +937,8 @@ static int stop_lingering_close(event_conn_state_t *cs)
         AP_DEBUG_ASSERT(0);
     }
     ap_push_pool(worker_queue_info, cs->p);
+    if (dying)
+        ap_queue_interrupt_one(worker_queue);
     return 0;
 }
 
@@ -1219,6 +1224,9 @@ static void close_listeners(int process_slot, int *closed)
         }
         /* wake up the main thread */
         kill(ap_my_pid, SIGTERM);
+
+        ap_free_idle_pools(worker_queue_info);
+        ap_queue_interrupt_all(worker_queue);
     }
 }
 
@@ -1439,6 +1447,8 @@ static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *
     TO_QUEUE_ELEM_INIT(cs);
 
     ap_push_pool(worker_queue_info, cs->p);
+    if (dying)
+        ap_queue_interrupt_one(worker_queue);
 }
 
 /* call 'func' for all elements of 'q' with timeout less than 'timeout_time'.
@@ -1518,7 +1528,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     timer_event_t *te;
     apr_status_t rc;
     proc_info *ti = dummy;
-    int process_slot = ti->pid;
+    int process_slot = ti->pslot;
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
@@ -1584,6 +1594,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                              *keepalive_q->total,
                              apr_atomic_read32(&lingering_count),
                              apr_atomic_read32(&suspended_count));
+                if (dying) {
+                    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
+                                 "%u/%u workers shutdown",
+                                 apr_atomic_read32(&threads_shutdown),
+                                 threads_per_child);
+                }
                 apr_thread_mutex_unlock(timeout_mutex);
             }
         }
@@ -1818,11 +1834,12 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             /* If all workers are busy, we kill older keep-alive connections so that they
              * may connect to another process.
              */
-            if (workers_were_busy && *keepalive_q->total) {
-                ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                             "All workers are busy, will close %d keep-alive "
-                             "connections",
-                             *keepalive_q->total);
+            if ((workers_were_busy || dying) && *keepalive_q->total) {
+                if (!dying)
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                                 "All workers are busy, will close %d keep-alive "
+                                 "connections",
+                                 *keepalive_q->total);
                 process_timeout_queue(keepalive_q, 0,
                                       start_lingering_close_nonblocking);
             }
@@ -1869,6 +1886,34 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     return NULL;
 }
 
+/*
+ * During graceful shutdown, if there are more running worker threads than
+ * open connections, exit one worker thread.
+ *
+ * return 1 if thread should exit, 0 if it should continue running.
+ */
+static int worker_thread_should_exit_early(void)
+{
+    for (;;) {
+        apr_uint32_t conns = apr_atomic_read32(&connection_count);
+        apr_uint32_t dead = apr_atomic_read32(&threads_shutdown);
+        apr_uint32_t newdead;
+
+        AP_DEBUG_ASSERT(dead <= threads_per_child);
+        if (conns >= threads_per_child - dead)
+            return 0;
+
+        newdead = dead + 1;
+        if (apr_atomic_cas32(&threads_shutdown, newdead, dead) == dead) {
+            /*
+             * No other thread has exited in the mean time, safe to exit
+             * this one.
+             */
+            return 1;
+        }
+    }
+}
+
 /* XXX For ungraceful termination/restart, we definitely don't want to
  *     wait for active connections to finish but we may want to wait
  *     for idle workers to get out of the queue code and release mutexes,
@@ -1879,8 +1924,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
 {
     proc_info *ti = dummy;
-    int process_slot = ti->pid;
-    int thread_slot = ti->tid;
+    int process_slot = ti->pslot;
+    int thread_slot = ti->tslot;
     apr_socket_t *csd = NULL;
     event_conn_state_t *cs;
     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
@@ -1914,6 +1959,9 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                                                   : SERVER_READY, NULL);
       worker_pop:
         if (workers_may_exit) {
+            break;
+        }
+        if (dying && worker_thread_should_exit_early()) {
             break;
         }
 
@@ -1993,9 +2041,8 @@ static void create_listener_thread(thread_starter * ts)
     apr_status_t rv;
 
     my_info = (proc_info *) ap_malloc(sizeof(proc_info));
-    my_info->pid = my_child_num;
-    my_info->tid = -1;          /* listener thread doesn't have a thread slot */
-    my_info->sd = 0;
+    my_info->pslot = my_child_num;
+    my_info->tslot = -1;      /* listener thread doesn't have a thread slot */
     rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
@@ -2108,9 +2155,8 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
             }
 
             my_info = (proc_info *) ap_malloc(sizeof(proc_info));
-            my_info->pid = my_child_num;
-            my_info->tid = i;
-            my_info->sd = 0;
+            my_info->pslot = my_child_num;
+            my_info->tslot = i;
 
             /* We are creating threads right now */
             ap_update_child_status_from_indexes(my_child_num, i,

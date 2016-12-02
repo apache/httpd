@@ -280,6 +280,19 @@ void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
     }
 }
 
+void ap_free_idle_pools(fd_queue_info_t *queue_info)
+{
+    apr_pool_t *p;
+
+    queue_info->max_recycled_pools = 0;
+    do {
+        ap_pop_pool(&p, queue_info);
+        if (p != NULL)
+            apr_pool_destroy(p);
+    } while (p != NULL);
+}
+
+
 apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info)
 {
     apr_status_t rv;
@@ -477,15 +490,28 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
     return rv;
 }
 
-apr_status_t ap_queue_interrupt_all(fd_queue_t * queue)
+static apr_status_t queue_interrupt(fd_queue_t * queue, int all)
 {
     apr_status_t rv;
 
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
-    apr_thread_cond_broadcast(queue->not_empty);
+    if (all)
+        apr_thread_cond_broadcast(queue->not_empty);
+    else
+        apr_thread_cond_signal(queue->not_empty);
     return apr_thread_mutex_unlock(queue->one_big_mutex);
+}
+
+apr_status_t ap_queue_interrupt_all(fd_queue_t * queue)
+{
+    return queue_interrupt(queue, 1);
+}
+
+apr_status_t ap_queue_interrupt_one(fd_queue_t * queue)
+{
+    return queue_interrupt(queue, 0);
 }
 
 apr_status_t ap_queue_term(fd_queue_t * queue)

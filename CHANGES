@@ -15,6 +15,9 @@ Changes with Apache 2.4.24
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.  [Yann Ylavic]
 
+  *) mpm_event: Free memory earlier when shutting down processes.
+     [Stefan Fritsch]
+
   *) mod_status: Display the process slot number in the async connection
      overview. [Stefan Fritsch]
 
