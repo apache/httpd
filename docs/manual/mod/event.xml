@@ -112,7 +112,7 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         and also the number of allowed processes
         (<directive module="mpm_common">MaxRequestWorkers</directive> 
         / <directive module="mpm_common">ThreadsPerChild</directive>), meanwhile
-        the Scoreboad is a representation of all the running processes and
+        the Scoreboard is a representation of all the running processes and
         the status of their worker threads. If the scoreboard is full (so all the
         threads have a state that is not idle) but the number of active requests
         served is not <directive module="mpm_common">MaxRequestWorkers</directive>,
@@ -120,17 +120,24 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         but that are queued instead (up to the limit imposed by
         <directive module="mpm_common">ListenBacklog</directive>). Most of the times
         the threads are stuck in the Graceful state, namely they are waiting to
-        finish their work with a TCP connection to terminate and free a
+        finish their work with a TCP connection to safely terminate and free up a
         scoreboard slot (for example handling long running requests, slow clients
-        or a connection with keep-alive enabled). Two scenarios are very common:</p>
+        or connections with keep-alive enabled). Two scenarios are very common:</p>
         <ul>
-            <li>Httpd graceful restart.</li>
+            <li>During a <a href="../stopping.html#graceful">graceful restart</a>.
+            The parent process signals all its children to complete
+            their work and terminate, while it reloads the config and forks new
+            processes. If the old children keep running for a while before stopping,
+            the scoreboard will be partially occupied until their slots are freed.
+            </li>
             <li>When the server load goes down in a way that causes httpd to
             stop some processes (for example due to
             <directive module="mpm_common">MaxSpareThreads</directive>).
             This is particularly problematic because when the load increases again,
-            httpd will try to start more processes.
-            If the pattern repeats, the number of processes can rise quite a bit.
+            httpd will try to start new processes.
+            If the pattern repeats, the number of processes can rise quite a bit,
+            ending up in a mixture of old processes trying to stop and new ones
+            trying to do some work.
             </li>
         </ul>
         <p>From 2.4.24 onward, mpm-event is smarter and it is able to handle
