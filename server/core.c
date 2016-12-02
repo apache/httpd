@@ -2340,7 +2340,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "Regex could not be compiled";
         }
     }
-    else if (!strcmp(cmd->path, "/") == 0)
+    else if (strcmp(cmd->path, "/") != 0)
     {
         char *newpath;
 
