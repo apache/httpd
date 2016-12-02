@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) ap_reclaim_child_processes(): Implement terminate immediately
-     trunk patches:
-       https://svn.apache.org/r1757061
-       https://svn.apache.org/r1770750
-     2.4.x patch: https://people.apache.org/~sf/PR53555_1_ap_reclaim_child_processes.diff
-     +1: sf, jim, wrowe
-
   *) Improve mod_status view of async connections
      trunk patches:
        https://svn.apache.org/r1738628
