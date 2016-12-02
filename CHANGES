@@ -15,6 +15,14 @@ Changes with Apache 2.4.24
   *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
      in the client certificate chain.  PR 55786.  [Yann Ylavic]
 
+  *) event: Allow to use the whole allocated scoreboard (up to ServerLimit
+     slots) to avoid scoreboard full errors when some processes are finishing
+     gracefully. Also, make gracefully finishing processes close all
+     keep-alive connections. PR 53555. [Stefan Fritsch]
+
+  *) mpm_event: Don't take over scoreboard slots from gracefully finishing
+     threads. [Stefan Fritsch]
+
   *) mpm_event: Free memory earlier when shutting down processes.
      [Stefan Fritsch]
 
