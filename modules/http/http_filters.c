@@ -722,6 +722,7 @@ static int check_header(void *arg, const char *name, const char *val)
         /* Simply terminate scanning on a CTL char, allowing whitespace */
         test = val;
         do {
+            while (*test == ' ' || *test == '\t') test++;
             test = ap_scan_vchar_obstext(test);
         } while (*test == ' ' || *test == '\t');
     }
