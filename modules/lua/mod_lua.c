@@ -1958,6 +1958,7 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->codecache = AP_LUA_CACHE_UNSET;
     cfg->vm_min = 0;
     cfg->vm_max = 0;
+    cfg->inherit = AP_LUA_INHERIT_UNSET;
 
     return cfg;
 }
