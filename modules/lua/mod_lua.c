@@ -89,7 +89,8 @@ apr_global_mutex_t *lua_ivm_mutex;
 apr_shm_t *lua_ivm_shm;
 char *lua_ivm_shmfile;
 
-static apr_status_t shm_cleanup_wrapper(void *unused) {
+static apr_status_t shm_cleanup_wrapper(void *unused)
+{
     if (lua_ivm_shm) {
         return apr_shm_destroy(lua_ivm_shm);
     }
@@ -151,9 +152,11 @@ static const char *scope_to_string(unsigned int scope)
     }
 }
 
-static void ap_lua_release_state(lua_State* L, ap_lua_vm_spec* spec, request_rec* r) {
+static void ap_lua_release_state(lua_State* L, ap_lua_vm_spec* spec, request_rec* r)
+{
     char *hash;
     apr_reslist_t* reslist = NULL;
+
     if (spec->scope == AP_LUA_SCOPE_SERVER) {
         ap_lua_server_spec* sspec = NULL;
         lua_settop(L, 0);
@@ -334,7 +337,8 @@ static int lua_handler(request_rec *r)
 /* ------------------- Input/output content filters ------------------- */
 
 
-static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_filter_ctx** c) {
+static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_filter_ctx** c)
+{
     apr_pool_t *pool;
     ap_lua_vm_spec *spec;
     int n, rc;
@@ -424,7 +428,8 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
     return APR_ENOENT;
 }
 
-static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade *pbbIn) {
+static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade *pbbIn)
+{
     request_rec *r = f->r;
     int rc;
     lua_State *L;
@@ -593,7 +598,7 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
     /* While the Lua function is still yielding, pass buckets to the coroutine */
     if (!ctx->broken) {
         lastCall = 0;
-        while(!APR_BRIGADE_EMPTY(ctx->tmpBucket)) {
+        while (!APR_BRIGADE_EMPTY(ctx->tmpBucket)) {
             apr_bucket *pbktIn = APR_BRIGADE_FIRST(ctx->tmpBucket);
             apr_bucket *pbktOut;
             const char *data;
