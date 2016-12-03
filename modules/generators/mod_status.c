@@ -294,7 +294,7 @@ static int status_handler(request_rec *r)
     }
 
     ws_record = apr_palloc(r->pool, sizeof *ws_record);
-    
+
     for (i = 0; i < server_limit; ++i) {
 #ifdef HAVE_TIMES
         clock_t proc_tu = 0, proc_ts = 0, proc_tcu = 0, proc_tcs = 0;
