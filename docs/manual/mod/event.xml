@@ -144,7 +144,17 @@ of the <directive>AsyncRequestWorkerFactor</directive>.</p>
         graceful terminations in a much better way. Some of the improvements are:</p>
         <ul>
             <li>Allow the use of all the scoreboard slots up to
-            <directive module="mpm_common">ServerLimit</directive>.</li>
+            <directive module="mpm_common">ServerLimit</directive>.
+            <directive module="mpm_common">MaxRequestWorkers</directive> and
+            <directive module="mpm_common">ThreadsPerChild</directive> are used
+            to limit the amount of active processes, meanwhile
+            <directive module="mpm_common">ServerLimit</directive> 
+            takes also into account the ones doing a graceful
+            close to allow extra slots when needed. The idea is to use
+            <directive module="mpm_common">ServerLimit</directive> to instruct httpd
+            about how many overall processes are tolerated before impacting
+            the system resources.
+            </li>
             <li>Force gracefully finishing processes to close their
             connections in keep-alive state.</li>
             <li>During graceful shutdown, if there are more running worker threads
