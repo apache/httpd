@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_lua: Fix default value of LuaInherit directive. It should be 
+     'parent-first' instead of 'none', as per documentation.  PR 60419
+     [Christophe Jaillet]
+
   *) mod_ratelimit: Allow for initial "burst" amount at full speed before
      throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
      Jim Jagielski]
