@@ -3236,8 +3236,8 @@ LogLevel info ssl_module:warn</pre>
 
     <p>Examples:</p>
 
-    <pre class="prettyprint lang-config">        LogLevelOverride 192.0.2.0/24 ssl:trace6
-        LogLevelOverride 192.0.2.7 ssl:trace8</pre>
+    <pre class="prettyprint lang-config">    LogLevelOverride 192.0.2.0/24 ssl:trace6
+    LogLevelOverride 192.0.2.7 ssl:trace8</pre>
 
 
     <div class="note">

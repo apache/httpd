@@ -3291,8 +3291,8 @@ LogLevel info
     <p>Examples:</p>
 
     <highlight language="config">
-        LogLevelOverride 192.0.2.0/24 ssl:trace6
-        LogLevelOverride 192.0.2.7 ssl:trace8
+    LogLevelOverride 192.0.2.0/24 ssl:trace6
+    LogLevelOverride 192.0.2.7 ssl:trace8
     </highlight>
 
     <note>

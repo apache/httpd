@@ -125,6 +125,8 @@ configuration</td></tr>
             <dd>Only a simple list of enabled modules</dd>
         <dt><code>?server</code></dt>
             <dd>Only the basic server information</dd>
+        <dt><code>?providers</code></dt>
+            <dd>List the providers that are available on your server</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
