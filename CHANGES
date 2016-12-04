@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: CVE-2016-8740: Mitigate DoS memory exhaustion via endless
-     CONTINUATION frames.
-     [Naveen Tiwari <naveen.tiwari@asu.edu> and CDF/SEFCOM at Arizona State University, Stefan Eissing]
-
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
      'parent-first' instead of 'none', as per documentation.  PR 60419
      [Christophe Jaillet]
