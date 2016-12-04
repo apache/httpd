@@ -155,8 +155,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      throttling: PR 60145
      trunk patches:
        https://svn.apache.org/r1770951
-    2.4.x patch: trunk works modulo CHANGES and next-number
-    +1: jim
+     2.4.x patch: trunk works modulo CHANGES and next-number
+     +1: jim
+     jailletc36: compatibility note missing in the XML file
+
+
+  *) mod_lua: Fix default value of LuaInherit directive. It should be 
+     'parent-first' instead of 'none', as per documentation.  PR 60419
+     trunk patch: http://svn.apache.org/r1772489
+                  http://svn.apache.org/r1772504 (CHANGES)
+     2.4.x patch: trunk works
+     +1: jailletc36
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
