@@ -2,6 +2,10 @@
 
 Changes with Apache 2.4.24
 
+  *) mod_http2: CVE-2016-8740: Mitigate DoS memory exhaustion via endless
+     CONTINUATION frames.
+     [Naveen Tiwari <naveen.tiwari@asu.edu> and CDF/SEFCOM at Arizona State University, Stefan Eissing]
+
   *) mod_socache_memcache: Pass expiration time through to memcached.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
 
