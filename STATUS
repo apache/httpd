@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Last updated: 1 Dec with a missing element of http_filters.c
      When testing, revert;
        http://svn.apache.org/r1772339 
-     +1: wrowe
+     +1: wrowe, covener
 
   *) mod_ratelimit: Allow for initial burst of data before we start
      throttling: PR 60145
