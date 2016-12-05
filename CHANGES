@@ -68,12 +68,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_ajp: Add "secret" parameter to proxy workers to implement legacy
      AJP13 authentication.  PR 53098.  [Dmitry A. Bakshaev <dab1818 gmail com>]
 
-  *) mpm_event: Don't take over scoreboard slots from gracefully finishing
-     threads. [Stefan Fritsch]
-
-  *) mod_status: Display the process slot number in the async connection
-     overview. [Stefan Fritsch]
-
   *) mpm: Generalise the ap_mpm_register_socket functions to accept pipes
      or sockets. [Graham Leggett]
 
@@ -113,17 +107,11 @@ Changes with Apache 2.5.0
   *) core: Extend support for asynchronous write completion from the
      network filter to any connection or request filter. [Graham Leggett]
 
-  *) mpm_event: Free memory earlier when shutting down processes.
-     [Stefan Fritsch]
-
   *) mod_auth_digest: remove AuthDigestEnableQueryStringHack which is no
      more documented since dec 2012 (r1415960). [Christophe Jaillet]
 
   *) mod_charset_lite: On EBCDIC platforms, make sure mod_charset_lite runs
      after other resource-level filters. [Eric Covener]
-
-  *) mod_dir: Responses that go through "FallbackResource" might appear to
-     hang due to unterminated chunked encoding. PR58292. [Eric Covener]
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script.  [Yann Ylavic]
