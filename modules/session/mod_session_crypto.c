@@ -18,6 +18,7 @@
 #include "apu_version.h"
 #include "apr_base64.h"                /* for apr_base64_decode et al */
 #include "apr_lib.h"
+#include "apr_md5.h"
 #include "apr_strings.h"
 #include "http_log.h"
 #include "http_core.h"
@@ -56,6 +57,146 @@ typedef struct {
     const char *params;
     int library_set;
 } session_crypto_conf;
+
+/* Wrappers around apr_siphash24() and apr_crypto_equals(),
+ * available in APU-1.6/APR-2.0 only.
+ */
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+
+#include "apr_siphash.h"
+
+#define AP_SIPHASH_DSIZE    APR_SIPHASH_DSIZE
+#define AP_SIPHASH_KSIZE    APR_SIPHASH_KSIZE
+#define ap_siphash24_auth   apr_siphash24_auth
+
+#define ap_crypto_equals    apr_crypto_equals
+
+#else
+
+#define AP_SIPHASH_DSIZE    8
+#define AP_SIPHASH_KSIZE    16
+
+#define ROTL64(x, n) (((x) << (n)) | ((x) >> (64 - (n))))
+
+#define U8TO64_LE(p) \
+    (((apr_uint64_t)((p)[0])      ) | \
+     ((apr_uint64_t)((p)[1]) <<  8) | \
+     ((apr_uint64_t)((p)[2]) << 16) | \
+     ((apr_uint64_t)((p)[3]) << 24) | \
+     ((apr_uint64_t)((p)[4]) << 32) | \
+     ((apr_uint64_t)((p)[5]) << 40) | \
+     ((apr_uint64_t)((p)[6]) << 48) | \
+     ((apr_uint64_t)((p)[7]) << 56))
+
+#define U64TO8_LE(p, v) \
+do { \
+    (p)[0] = (unsigned char)((v)      ); \
+    (p)[1] = (unsigned char)((v) >>  8); \
+    (p)[2] = (unsigned char)((v) >> 16); \
+    (p)[3] = (unsigned char)((v) >> 24); \
+    (p)[4] = (unsigned char)((v) >> 32); \
+    (p)[5] = (unsigned char)((v) >> 40); \
+    (p)[6] = (unsigned char)((v) >> 48); \
+    (p)[7] = (unsigned char)((v) >> 56); \
+} while (0)
+
+#define SIPROUND() \
+do { \
+    v0 += v1; v1=ROTL64(v1,13); v1 ^= v0; v0=ROTL64(v0,32); \
+    v2 += v3; v3=ROTL64(v3,16); v3 ^= v2; \
+    v0 += v3; v3=ROTL64(v3,21); v3 ^= v0; \
+    v2 += v1; v1=ROTL64(v1,17); v1 ^= v2; v2=ROTL64(v2,32); \
+} while(0)
+
+static apr_uint64_t ap_siphash24(const void *src, apr_size_t len,
+                                 const unsigned char key[AP_SIPHASH_KSIZE])
+{
+    const unsigned char *ptr, *end;
+    apr_uint64_t v0, v1, v2, v3, m;
+    apr_uint64_t k0, k1;
+    unsigned int rem;
+
+    k0 = U8TO64_LE(key + 0);
+    k1 = U8TO64_LE(key + 8);
+    v3 = k1 ^ (apr_uint64_t)0x7465646279746573ULL;
+    v2 = k0 ^ (apr_uint64_t)0x6c7967656e657261ULL;
+    v1 = k1 ^ (apr_uint64_t)0x646f72616e646f6dULL;
+    v0 = k0 ^ (apr_uint64_t)0x736f6d6570736575ULL;
+
+    rem = (unsigned int)(len & 0x7);
+    for (ptr = src, end = ptr + len - rem; ptr < end; ptr += 8) {
+        m = U8TO64_LE(ptr);
+        v3 ^= m;
+        SIPROUND();
+        SIPROUND();
+        v0 ^= m;
+    }
+    m = (apr_uint64_t)(len & 0xff) << 56;
+    switch (rem) {
+        case 7: m |= (apr_uint64_t)ptr[6] << 48;
+        case 6: m |= (apr_uint64_t)ptr[5] << 40;
+        case 5: m |= (apr_uint64_t)ptr[4] << 32;
+        case 4: m |= (apr_uint64_t)ptr[3] << 24;
+        case 3: m |= (apr_uint64_t)ptr[2] << 16;
+        case 2: m |= (apr_uint64_t)ptr[1] << 8;
+        case 1: m |= (apr_uint64_t)ptr[0];
+        case 0: break;
+    }
+    v3 ^= m;
+    SIPROUND();
+    SIPROUND();
+    v0 ^= m;
+
+    v2 ^= 0xff;
+    SIPROUND();
+    SIPROUND();
+    SIPROUND();
+    SIPROUND();
+
+    return v0 ^ v1 ^ v2 ^ v3;
+}
+
+static void ap_siphash24_auth(unsigned char out[AP_SIPHASH_DSIZE],
+                              const void *src, apr_size_t len,
+                              const unsigned char key[AP_SIPHASH_KSIZE])
+{
+    apr_uint64_t h;
+    h = ap_siphash24(src, len, key);
+    U64TO8_LE(out, h);
+}
+
+static int ap_crypto_equals(const void *buf1, const void *buf2,
+                            apr_size_t size)
+{
+    const unsigned char *p1 = buf1;
+    const unsigned char *p2 = buf2;
+    unsigned char diff = 0;
+    apr_size_t i;
+
+    for (i = 0; i < size; ++i) {
+        diff |= p1[i] ^ p2[i];
+    }
+
+    return 1 & ((diff - 1) >> 8);
+}
+
+#endif
+
+static void compute_auth(const void *src, apr_size_t len,
+                         const char *passphrase, apr_size_t passlen,
+                         unsigned char auth[AP_SIPHASH_DSIZE])
+{
+    unsigned char key[APR_MD5_DIGESTSIZE];
+
+    /* XXX: if we had a way to get the raw bytes from an apr_crypto_key_t
+     *      we could use them directly (not available in APR-1.5.x).
+     * MD5 is 128bit too, so use it to get a suitable siphash key
+     * from the passphrase.
+     */
+    apr_md5(key, passphrase, passlen);
+
+    ap_siphash24_auth(auth, src, len, key);
+}
 
 /**
  * Initialise the encryption as per the current config.
@@ -128,21 +269,14 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     apr_crypto_block_t *block = NULL;
     unsigned char *encrypt = NULL;
     unsigned char *combined = NULL;
-    apr_size_t encryptlen, tlen;
+    apr_size_t encryptlen, tlen, combinedlen;
     char *base64;
     apr_size_t blockSize = 0;
     const unsigned char *iv = NULL;
     apr_uuid_t salt;
     apr_crypto_block_key_type_e *cipher;
     const char *passphrase;
-
-    /* by default, return an empty string */
-    *out = "";
-
-    /* don't attempt to encrypt an empty string, trying to do so causes a segfault */
-    if (!in || !*in) {
-        return APR_SUCCESS;
-    }
+    apr_size_t passlen;
 
     /* use a uuid as a salt value, and prepend it to our result */
     apr_uuid_get(&salt);
@@ -152,9 +286,9 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     }
 
     /* encrypt using the first passphrase in the list */
-    passphrase = APR_ARRAY_IDX(dconf->passphrases, 0, char *);
-    res = apr_crypto_passphrase(&key, &ivSize, passphrase,
-            strlen(passphrase),
+    passphrase = APR_ARRAY_IDX(dconf->passphrases, 0, const char *);
+    passlen = strlen(passphrase);
+    res = apr_crypto_passphrase(&key, &ivSize, passphrase, passlen,
             (unsigned char *) (&salt), sizeof(apr_uuid_t),
             *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
     if (APR_STATUS_IS_ENOKEY(res)) {
@@ -183,8 +317,9 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     }
 
     /* encrypt the given string */
-    res = apr_crypto_block_encrypt(&encrypt, &encryptlen, (unsigned char *)in,
-            strlen(in), block);
+    res = apr_crypto_block_encrypt(&encrypt, &encryptlen,
+                                   (const unsigned char *)in, strlen(in),
+                                   block);
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01830)
                 "apr_crypto_block_encrypt failed");
@@ -198,18 +333,20 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     }
     encryptlen += tlen;
 
-    /* prepend the salt and the iv to the result */
-    combined = apr_palloc(r->pool, ivSize + encryptlen + sizeof(apr_uuid_t));
-    memcpy(combined, &salt, sizeof(apr_uuid_t));
-    memcpy(combined + sizeof(apr_uuid_t), iv, ivSize);
-    memcpy(combined + sizeof(apr_uuid_t) + ivSize, encrypt, encryptlen);
+    /* prepend the salt and the iv to the result (keep room for the MAC) */
+    combinedlen = AP_SIPHASH_DSIZE + sizeof(apr_uuid_t) + ivSize + encryptlen;
+    combined = apr_palloc(r->pool, combinedlen);
+    memcpy(combined + AP_SIPHASH_DSIZE, &salt, sizeof(apr_uuid_t));
+    memcpy(combined + AP_SIPHASH_DSIZE + sizeof(apr_uuid_t), iv, ivSize);
+    memcpy(combined + AP_SIPHASH_DSIZE + sizeof(apr_uuid_t) + ivSize,
+           encrypt, encryptlen);
+    /* authenticate the whole salt+IV+ciphertext with a leading MAC */
+    compute_auth(combined + AP_SIPHASH_DSIZE, combinedlen - AP_SIPHASH_DSIZE,
+                 passphrase, passlen, combined);
 
-    /* base64 encode the result */
-    base64 = apr_palloc(r->pool, apr_base64_encode_len(ivSize + encryptlen +
-                    sizeof(apr_uuid_t) + 1)
-            * sizeof(char));
-    apr_base64_encode(base64, (const char *) combined,
-            ivSize + encryptlen + sizeof(apr_uuid_t));
+    /* base64 encode the result (APR handles the trailing '\0') */
+    base64 = apr_palloc(r->pool, apr_base64_encode_len(combinedlen));
+    apr_base64_encode(base64, (const char *) combined, combinedlen);
     *out = base64;
 
     return res;
@@ -234,12 +371,20 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     char *decoded;
     apr_size_t blockSize = 0;
     apr_crypto_block_key_type_e *cipher;
+    unsigned char auth[AP_SIPHASH_DSIZE];
     int i = 0;
 
     /* strip base64 from the string */
     decoded = apr_palloc(r->pool, apr_base64_decode_len(in));
     decodedlen = apr_base64_decode(decoded, in);
     decoded[decodedlen] = '\0';
+
+    /* sanity check - decoded too short? */
+    if (decodedlen < (AP_SIPHASH_DSIZE + sizeof(apr_uuid_t))) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO()
+                "too short to decrypt, aborting");
+        return APR_ECRYPT;
+    }
 
     res = crypt_init(r, f, &cipher, dconf);
     if (res != APR_SUCCESS) {
@@ -249,14 +394,25 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     /* try each passphrase in turn */
     for (; i < dconf->passphrases->nelts; i++) {
         const char *passphrase = APR_ARRAY_IDX(dconf->passphrases, i, char *);
-        apr_size_t len = decodedlen;
-        char *slider = decoded;
+        apr_size_t passlen = strlen(passphrase);
+        apr_size_t len = decodedlen - AP_SIPHASH_DSIZE;
+        unsigned char *slider = (unsigned char *)decoded + AP_SIPHASH_DSIZE;
+
+        /* Verify authentication of the whole salt+IV+ciphertext by computing
+         * the MAC and comparing it (timing safe) with the one in the payload.
+         */
+        compute_auth(slider, len, passphrase, passlen, auth);
+        if (!ap_crypto_equals(auth, decoded, AP_SIPHASH_DSIZE)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO()
+                    "auth does not match, skipping");
+            continue;
+        }
 
         /* encrypt using the first passphrase in the list */
-        res = apr_crypto_passphrase(&key, &ivSize, passphrase,
-                strlen(passphrase),
-                (unsigned char *)decoded, sizeof(apr_uuid_t),
-                *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
+        res = apr_crypto_passphrase(&key, &ivSize, passphrase, passlen,
+                                    slider, sizeof(apr_uuid_t),
+                                    *cipher, APR_MODE_CBC, 1, 4096,
+                                    f, r->pool);
         if (APR_STATUS_IS_ENOKEY(res)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01832)
                     "the passphrase '%s' was empty", passphrase);
@@ -279,7 +435,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
         }
 
         /* sanity check - decoded too short? */
-        if (decodedlen < (sizeof(apr_uuid_t) + ivSize)) {
+        if (len < (sizeof(apr_uuid_t) + ivSize)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(01836)
                     "too short to decrypt, skipping");
             res = APR_ECRYPT;
@@ -290,8 +446,8 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
         slider += sizeof(apr_uuid_t);
         len -= sizeof(apr_uuid_t);
 
-        res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)slider, key,
-                r->pool);
+        res = apr_crypto_block_decrypt_init(&block, &blockSize, slider, key,
+                                            r->pool);
         if (APR_SUCCESS != res) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01837)
                     "apr_crypto_block_decrypt_init failed");
@@ -304,7 +460,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
 
         /* decrypt the given string */
         res = apr_crypto_block_decrypt(&decrypted, &decryptedlen,
-                (unsigned char *)slider, len, block);
+                                       slider, len, block);
         if (res) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01838)
                     "apr_crypto_block_decrypt failed");
