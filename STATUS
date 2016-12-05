@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Last updated: 1 Dec with a missing element of http_filters.c
      When testing, revert;
        http://svn.apache.org/r1772339 
-     +1: wrowe, covener
+     +1: wrowe, covener, jim
 
   *) mod_ratelimit: Allow for initial burst of data before we start
      throttling: PR 60145
@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1772489
                   http://svn.apache.org/r1772504 (CHANGES)
      2.4.x patch: trunk works
-     +1: jailletc36
+     +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
