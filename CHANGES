@@ -4,7 +4,29 @@ Changes with Apache 2.4.24
 
   *) mod_http2: CVE-2016-8740: Mitigate DoS memory exhaustion via endless
      CONTINUATION frames.
-     [Naveen Tiwari <naveen.tiwari@asu.edu> and CDF/SEFCOM at Arizona State University, Stefan Eissing]
+     [Naveen Tiwari <naveen.tiwari@asu.edu> and CDF/SEFCOM at Arizona State
+     University, Stefan Eissing]
+
+  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
+     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
+
+  *) Enforce http request grammer corresponding to RFC7230 for request lines
+     and request headers [William Rowe, Stefan Fritsch]
+
+  *) core: New directive HttpProtocolOptions to control httpd enforcement
+     of various RFC7230 requirements. [Stefan Fritsch, William Rowe]
+
+  *) core: Permit unencoded ';' characters to appear in proxy requests and
+     Location: response headers. Corresponds to modern browser behavior.
+     [William Rowe]
+
+  *) core: ap_rgetline_core now pulls from r->proto_input_filters.
+
+  *) core: Correctly parse an IPv6 literal host specification in an absolute
+     URL in the request line. [Stefan Fritsch]
+
+  *) core: New directive RegisterHttpMethod for registering non-standard
+     HTTP methods. [Stefan Fritsch]
 
   *) mod_socache_memcache: Pass expiration time through to memcached.
      [Faidon Liambotis <paravoid debian.org>, Joe Orton]
@@ -64,24 +86,6 @@ Changes with Apache 2.4.24
   *) mpm_unix: Apache fails to start if previously crashed then restarted with
      the same PID (e.g. in container).  PR 60261.
      [Val <valentin.bremond gmail.com>, Yann Ylavic]
-
-  *) Enforce http request grammer corresponding to RFC7230 for request lines
-     and request headers [William Rowe, Stefan Fritsch]
-
-  *) core: New directive HttpProtocolOptions to control httpd enforcement
-     of various RFC7230 requirements. [Stefan Fritsch, William Rowe]
-
-  *) core: Permit unencoded ';' characters to appear in proxy requests and
-     Location: response headers. Corresponds to modern browser behavior.
-     [William Rowe]
-
-  *) core: ap_rgetline_core now pulls from r->proto_input_filters.
-
-  *) core: Correctly parse an IPv6 literal host specification in an absolute
-     URL in the request line. [Stefan Fritsch]
-
-  *) core: New directive RegisterHttpMethod for registering non-standard
-     HTTP methods. [Stefan Fritsch]
 
   *) mod_http2: unannounced and multiple interim responses (status code < 200)
      are parsed and forwarded to client until a final response arrives.
@@ -171,9 +175,6 @@ Changes with Apache 2.4.24
   *) mod_http2: handling graceful shutdown gracefully, e.g. handling existing
      streams to the end. [Stefan Eissing]
   
-  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
-     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
-
   *) mod_proxy_{http,ajp,fcgi}: don't reuse backend connections with data
      available before the request is sent.  PR 57832.  [Yann Ylavic]
 
