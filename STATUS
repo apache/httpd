@@ -147,6 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works modulo CHANGES and next-number
      +1: jim
      jailletc36: compatibility note missing in the XML file
+     jim:        Will address during commit
 
 
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
