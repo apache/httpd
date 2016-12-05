@@ -117,16 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
-     to relax or further constrain some behaviors.
-     trunk patches: too numerous to list, see 
-       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-     2.4.x patch: see
-       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-       Last updated: 1 Dec with a missing element of http_filters.c
-     When testing, revert;
-       http://svn.apache.org/r1772339 
-     +1: wrowe, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

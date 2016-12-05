@@ -723,10 +723,24 @@ typedef struct {
 #define AP_MERGE_TRAILERS_DISABLE  2
     int merge_trailers;
 
-
-
     apr_array_header_t *protocols;
     int protocols_honor_order;
+
+#define AP_HTTP09_UNSET   0
+#define AP_HTTP09_ENABLE  1
+#define AP_HTTP09_DISABLE 2
+    char http09_enable;
+
+#define AP_HTTP_CONFORMANCE_UNSET     0
+#define AP_HTTP_CONFORMANCE_UNSAFE    1
+#define AP_HTTP_CONFORMANCE_STRICT    2
+    char http_conformance;
+
+#define AP_HTTP_METHODS_UNSET         0
+#define AP_HTTP_METHODS_LENIENT       1
+#define AP_HTTP_METHODS_REGISTERED    2
+    char http_methods;
+
 } core_server_config;
 
 /* for AddOutputFiltersByType in core.c */
