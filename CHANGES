@@ -12,6 +12,11 @@ Changes with Apache 2.4.24
      core: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
+  *) SECURITY: CVE-2016-0736 (cve.mitre.org)
+     mod_session_crypto: Authenticate the session data/cookie with a
+     MAC (SipHash) to prevent deciphering or tampering with a padding
+     oracle attack.  [Yann Ylavic, Colm MacCarthaigh]
+
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
      'parent-first' instead of 'none', as per documentation.  PR 60419
      [Christophe Jaillet]
