@@ -2,12 +2,15 @@
 
 Changes with Apache 2.4.24
 
-  *) mod_http2: CVE-2016-8740: Mitigate DoS memory exhaustion via endless
+
+  *) SECURITY: CVE-2016-8740 (cve.mitre.org)
+     mod_http2: Mitigate DoS memory exhaustion via endless
      CONTINUATION frames.
      [Naveen Tiwari <naveen.tiwari@asu.edu> and CDF/SEFCOM at Arizona State
      University, Stefan Eissing]
 
-  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
+  *) SECURITY: CVE-2016-5387 (cve.mitre.org)
+     core: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
   *) Enforce http request grammer corresponding to RFC7230 for request lines
