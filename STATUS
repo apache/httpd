@@ -117,12 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_lua: Fix default value of LuaInherit directive. It should be 
-     'parent-first' instead of 'none', as per documentation.  PR 60419
-     trunk patch: http://svn.apache.org/r1772489
-                  http://svn.apache.org/r1772504 (CHANGES)
-     2.4.x patch: trunk works
-     +1: jailletc36, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -162,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1772812
                   http://svn.apache.org/r1772813
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, covener
+     +1: ylavic, covener, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
