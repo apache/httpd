@@ -201,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            PR60403.
      2.4.x patch: https://svn.apache.org/r892808
      2.2.x patch: 2.4 works
-     +1: covener
+     +1: covener, jchampion
 
 PATCHES/ISSUES THAT ARE STALLED
 
