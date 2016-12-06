@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Eric Covener, Jacob Champion]
      trunk patch: http://svn.apache.org/r1772919
      2.4.x patch: trunk works (modulo CHANGES)
-     +1: jchampion
+     +1: jchampion, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
