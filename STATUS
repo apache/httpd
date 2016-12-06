@@ -149,6 +149,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: compatibility note missing in the XML file
      jim:        Will address during commit
 
+  *) SECURITY: CVE-2016-2161 (cve.mitre.org)
+     mod_auth_digest: Prevent segfaults during client entry allocation when the
+     shared memory space is exhausted. [Maksim Malyutin <m.malyutin dsec.ru>,
+     Eric Covener, Jacob Champion]
+     trunk patch: http://svn.apache.org/r1772919
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: jchampion
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
