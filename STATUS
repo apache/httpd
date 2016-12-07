@@ -148,6 +148,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jailletc36: compatibility note missing in the XML file
      jim:        Will address during commit
 
+  *) Propose we apr_pstrdup constant r->protocol assignments, and always fail
+     entirely invalid protocols (expecting these are part two of a URL with
+     embedded raw SP characters), without considering 'strict'-ness.
+     Backports: r1773159 through merge branch commit r1773161
+     Trunk patch:
+       https://svn.apache.org/r1773159
+     2.4.x patch:
+       https://svn.apache.org/r1773161
+     +1: wrowe
+
+  *) With oddball whitespace now disallowed, strictness makes no difference
+     in the two cases of field content handling. Noted by rpluem.
+     Backports: r1773162 through merge branch commit r1773163
+     Trunk patch:
+       https://svn.apache.org/r1773162
+     2.4.x patch:
+       https://svn.apache.org/r1773163
+     +1: wrowe
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
