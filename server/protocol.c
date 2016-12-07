@@ -782,15 +782,18 @@ rrl_done:
             memcpy((char*)r->protocol, "HTTP", 4);
     }
     else if (r->protocol[0]) {
+        r->assbackwards = 0;
+        r->proto_num = HTTP_VERSION(1,0);
         /* Defer setting the r->protocol string till error msg is composed */
-        r->proto_num = HTTP_VERSION(0,9);
-        if (deferred_error == rrl_none)
+        if (strict && deferred_error == rrl_none)
             deferred_error = rrl_badprotocol;
+        else
+            r->protocol  = "HTTP/1.0";
     }
     else {
         r->assbackwards = 1;
+        r->protocol = "HTTP/0.9";
         r->proto_num = HTTP_VERSION(0, 9);
-        r->protocol  = apr_pstrdup(r->pool, "HTTP/0.9");
     }
 
     /* Determine the method_number and parse the uri prior to invoking error
@@ -903,7 +906,7 @@ rrl_failed:
         r->assbackwards = 0;
         r->connection->keepalive = AP_CONN_CLOSE;
         r->proto_num = HTTP_VERSION(1, 0);
-        r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+        r->protocol  = "HTTP/1.0";
     }
     return 0;
 }
