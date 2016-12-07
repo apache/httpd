@@ -117,13 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) SECURITY: CVE-2016-2161 (cve.mitre.org)
-     mod_auth_digest: Prevent segfaults during client entry allocation when the
-     shared memory space is exhausted. [Maksim Malyutin <m.malyutin dsec.ru>,
-     Eric Covener, Jacob Champion]
-     trunk patch: http://svn.apache.org/r1772919
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: jchampion, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
