@@ -47,8 +47,9 @@
     <p>The CGI (Common Gateway Interface) defines a way for a web
     server to interact with external content-generating programs,
     which are often referred to as CGI programs or CGI scripts. It
-    is the simplest, and most common, way to put dynamic content on
-    your web site. This document will be an introduction to setting
+    is a simple way to put dynamic content on
+    your web site, using whatever programming language you're most
+    familiar with. This document will be an introduction to setting
     up CGI on your Apache web server, and getting started writing
     CGI programs.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
