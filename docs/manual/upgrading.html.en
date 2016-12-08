@@ -150,21 +150,21 @@
       <p>Here are some examples of old and new ways to do the same
       access control.</p>
 
-      <p>In this example, all requests are denied.</p>
+      <p>In this example, there is no authentication and all requests are denied.</p>
       <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order deny,allow
 Deny from all</pre>
 </div>
       <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require all denied</pre>
 </div>
 
-      <p>In this example, all requests are allowed.</p>
+      <p>In this example, there is no authentication and all requests are allowed.</p>
       <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order allow,deny
 Allow from all</pre>
 </div>
       <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">Require all granted</pre>
 </div>
 
-      <p>In the following example, all hosts in the example.org domain
+      <p>In the following example, there is no authentication and all hosts in the example.org domain
       are allowed access; all other hosts are denied access.</p>
 
       <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order Deny,Allow
@@ -221,6 +221,64 @@ access.log - GET /server-status 200 127.0.0.1</pre>
         to the new ones on a later stage or just migrate everything in bulk.  
       </p>
     
+
+     <p>In many configurations with authentication, where the value of the
+     <code class="directive">Satisfy</code> was the default of <em>ALL</em>, snippets
+     that simply disabled host-based access control are omitted:</p>
+
+      <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order Deny,Allow
+Deny from all
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config"># No replacement needed
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+
+     <p>In configurations where both authentication and access control were meaningfully combined, the 
+        access control directives should be migrated. This example allows requests meeting <em>both</em> criteria:</p>
+      <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order allow,deny
+Deny from all
+# Satisfy ALL is the default
+Satisfy ALL
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+&lt;RequireAll&gt;
+  Require valid-user
+  Require ip 127.0.0.1
+&lt;/RequireAll&gt;</pre>
+</div>
+
+     <p>In configurations where both authentication and access control were meaningfully combined, the 
+        access control directives should be migrated. This example allows requests meeting <em>either</em> criteria:</p>
+      <div class="example"><h3>2.2 configuration:</h3><pre class="prettyprint lang-config">Order allow,deny
+Deny from all
+Satisfy any
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>2.4 configuration:</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+# Implicitly &lt;RequireAny&gt;
+Require valid-user
+Require ip 127.0.0.1</pre>
+</div>
 
     
 
