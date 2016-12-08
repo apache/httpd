@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1773159
      2.4.x patch:
        https://svn.apache.org/r1773161
-     +1: wrowe
+     +1: wrowe, jim
 
   *) With oddball whitespace now disallowed, strictness makes no difference
      in the two cases of field content handling. Noted by rpluem.
@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1773162
      2.4.x patch:
        https://svn.apache.org/r1773163
-     +1: wrowe
+     +1: wrowe, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
