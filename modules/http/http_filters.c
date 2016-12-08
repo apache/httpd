@@ -632,6 +632,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 struct check_header_ctx {
     request_rec *r;
     int strict;
+    const char *badheader;
 };
 
 /* check a single header, to be used with apr_table_do() */
@@ -657,6 +658,7 @@ static int check_header(void *arg, const char *name, const char *val)
                       "Response header name '%s' contains invalid "
                       "characters, aborting request",
                       name);
+        ctx->badheader = name;
         return 0;
     }
 
@@ -666,6 +668,7 @@ static int check_header(void *arg, const char *name, const char *val)
                       "Response header '%s' value of '%s' contains invalid "
                       "characters, aborting request",
                       name, val);
+        ctx->badheader = name;
         return 0;
     }
     return 1;
@@ -680,13 +683,21 @@ static APR_INLINE int check_headers(request_rec *r)
     struct check_header_ctx ctx;
     core_server_config *conf =
             ap_get_core_module_config(r->server->module_config);
+    int rv = 1;
 
     ctx.r = r;
     ctx.strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    if (!apr_table_do(check_header, &ctx, r->headers_out, NULL))
-        return 0; /* problem has been logged by check_header() */
+    ctx.badheader = NULL;
 
-    return 1;
+    while (!apr_table_do(check_header, &ctx, r->headers_out, NULL)){ 
+       if (ctx.badheader) { 
+           apr_table_unset(r->headers_out, ctx.badheader);
+           apr_table_unset(r->err_headers_out, ctx.badheader);
+       }
+       rv = 0; /* problem has been logged by check_header() */
+    }
+
+    return rv;
 }
 
 typedef struct header_struct {
@@ -1249,8 +1260,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     if (!check_headers(r)) {
-        ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
-        return AP_FILTER_ERROR;
+        r->status = 500;
     }
 
     /*
