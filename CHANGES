@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     PR 51350 [Luca Toscano]
+
   *) SECURITY: CVE-2016-2161 (cve.mitre.org)
      mod_auth_digest: Prevent segfaults during client entry allocation when the
      shared memory space is exhausted. [Maksim Malyutin <m.malyutin dsec.ru>,
