@@ -788,17 +788,28 @@ static int proxy_trans(request_rec *r)
      */
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
-
+    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &proxy_module);
     /* short way - this location is reverse proxied? */
     if (dconf->alias) {
         int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
+        if (OK == rv) { 
+            /* Got a hit. Need to make sure it's not explicitly declined */
+            if (conf->aliases->nelts) {
+                ent = (struct proxy_alias *) conf->aliases->elts;
+                for (i = 0; i < conf->aliases->nelts; i++) {
+                    int rv = ap_proxy_trans_match(r, &ent[i], dconf);
+                    if (DECLINED == rv) { 
+                        return DECLINED;
+                    }
+                }
+            }
+            return OK; 
+        }
         if (DONE != rv) {
             return rv;
         }
     }
-
-    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
-                                                      &proxy_module);
 
     /* long way - walk the list of aliases, find a match */
     if (conf->aliases->nelts) {
