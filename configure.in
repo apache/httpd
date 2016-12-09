@@ -223,18 +223,18 @@ fi
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
 
-AC_PATH_PROG(PCRE_CONFIG, pcre-config, false)
-if test -d "$with_pcre" && test -x "$with_pcre/bin/pcre-config"; then
-   PCRE_CONFIG=$with_pcre/bin/pcre-config
-elif test -x "$with_pcre"; then
-   PCRE_CONFIG=$with_pcre
-fi
+AC_CHECK_TARGET_TOOLS(PCRE_CONFIG, [pcre2-config pcre-config],
+                      [`which $with_pcre 2>/dev/null`],
+                      [$with_pcre/bin:$with_pcre])
 
-if test "$PCRE_CONFIG" != "false"; then
+if test "x$PCRE_CONFIG" != "x"; then
   if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
-    AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
+    AC_MSG_ERROR([Did not find working script at $PCRE_CONFIG])
   fi
   case `$PCRE_CONFIG --version` in
+  [1[0-9].*])
+    AC_DEFINE(HAVE_PCRE2, 1, [Detected PCRE2]) 
+    ;;
   [[1-5].*])
     AC_MSG_ERROR([Need at least pcre version 6.7])
     ;;
@@ -244,10 +244,10 @@ if test "$PCRE_CONFIG" != "false"; then
   esac
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(PCRE_INCLUDES, [`$PCRE_CONFIG --cflags`])
-  APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs`])
+  APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs8 2>/dev/null || $PCRE_CONFIG --libs`])
   APR_ADDTO(HTTPD_LIBS, [\$(PCRE_LIBS)])
 else
-  AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
+  AC_MSG_ERROR([pcre(2)-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
 APACHE_SUBST(PCRE_LIBS)
 
