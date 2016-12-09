@@ -172,6 +172,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener
 
+  *) Fix potential looping in new check_headers() due to new pattern of
+     ap_die() from http header filter.  Also, remove the bad headers explicitly.
+     Trunk patch:  https://svn.apache.org/r1773293
+     2.4.x patch: trunk works
+     +1: covener
+     covener: This is not ideal but the looping/OOM is bad.
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
