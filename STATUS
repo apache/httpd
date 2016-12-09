@@ -167,6 +167,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1773163
      +1: wrowe, jim
 
+  *) ProxyPass ! in server scope doesn't block per-location ProxyPass. Worked in 2.2
+     Trunk patch: https://svn.apache.org/r1773397
+     2.4.x patch: trunk works
+     +1 covener
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
