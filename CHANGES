@@ -1,9 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+ *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
+     configured in <Location>, like in 2.2. PR 60458.
+     [Eric Covener]
+
   *) core: Drop Content-Length header and message-body from HTTP 204 responses.
      PR 51350 [Luca Toscano]
-
+ 
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
      'parent-first' instead of 'none', as per documentation.  PR 60419
      [Christophe Jaillet]
