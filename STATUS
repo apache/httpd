@@ -180,6 +180,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      covener: This is not ideal but the looping/OOM is bad.
      jim: with the understanding that more work post release
 
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     Trunk patch: http://svn.apache.org/r1773346
+     2.4.x patch: trunk works modulo CHANGES
+     +1: elukey
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
