@@ -1192,6 +1192,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
     ap_bucket_error *eb = NULL;
+    void *dying = NULL;
     int eos = 0;
 
     AP_DEBUG_ASSERT(!r->main);
@@ -1199,7 +1200,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
-
     if (ctx->headers_sent) {
         /* Eat body if response must not have one. */
         if (r->header_only || r->status == HTTP_NO_CONTENT) {
@@ -1208,6 +1208,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         }
     }
     else if (!ctx->headers_error && !check_headers(r)) {
+        apr_pool_userdata_get(&dying, "http_header_filter_dying", r->pool);
         ctx->headers_error = 1;
     }
     for (e = APR_BRIGADE_FIRST(b);
@@ -1252,8 +1253,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          * otherwise we can end up in infinite recursion, better fall through
          * with 500, minimal headers and an empty body (EOS only).
          */
-        if (ap_is_initial_req(r)) {
+        if (!dying) {
             apr_brigade_cleanup(b);
+            apr_pool_userdata_setn("true", "http_header_filter_dying",
+                                   apr_pool_cleanup_null, r->pool);
             ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
             return AP_FILTER_ERROR;
         }
