@@ -117,14 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) With oddball whitespace now disallowed, strictness makes no difference
-     in the two cases of field content handling. Noted by rpluem.
-     Backports: r1773162 through merge branch commit r1773163
-     Trunk patch:
-       https://svn.apache.org/r1773162
-     2.4.x patch:
-       https://svn.apache.org/r1773163
-     +1: wrowe, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
