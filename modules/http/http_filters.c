@@ -1199,15 +1199,17 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
-    else if (ctx->headers_sent) {
-        /* r->header_only or HTTP_NO_CONTENT case below, don't let
-         * the body pass trhough.
-         */
-        apr_brigade_cleanup(b);
-        return APR_SUCCESS;
-    }
 
-    if (!ctx->headers_error && !check_headers(r)) {
+    if (ctx->headers_sent) {
+        if (r->header_only || r->status == HTTP_NO_CONTENT) {
+            /* r->header_only or HTTP_NO_CONTENT case below, don't let
+             * the body pass trhough.
+             */
+            apr_brigade_cleanup(b);
+            return APR_SUCCESS;
+        }
+    }
+    else if (!ctx->headers_error && !check_headers(r)) {
         /* Eat body until EOS */
         ctx->headers_error = 1;
     }
@@ -1382,10 +1384,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     terminate_header(b2);
 
     ap_pass_brigade(f->next, b2);
+    ctx->headers_sent = 1;
 
     if (r->header_only || r->status == HTTP_NO_CONTENT) {
         apr_brigade_cleanup(b);
-        ctx->headers_sent = 1;
         return APR_SUCCESS;
     }
 
