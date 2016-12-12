@@ -22,7 +22,10 @@ Changes with Apache 2.4.24
      MAC (SipHash) to prevent deciphering or tampering with a padding
      oracle attack.  [Yann Ylavic, Colm MacCarthaigh]
 
- *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     PR 51350 [Luca Toscano]
+
+  *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
      configured in <Location>, like in 2.2. PR 60458.
      [Eric Covener]
 

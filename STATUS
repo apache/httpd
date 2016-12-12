@@ -136,11 +136,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        https://svn.apache.org/r1773163
      +1: wrowe, jim, ylavic
 
-  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
-     Trunk patch: http://svn.apache.org/r1773346
-     2.4.x patch: trunk works modulo CHANGES
-     +1: elukey, wrowe, ylavic
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
