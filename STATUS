@@ -117,6 +117,35 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) ProxyPass ! in server scope doesn't block per-location ProxyPass. Worked in 2.2
+     Trunk patch: https://svn.apache.org/r1773397
+     2.4.x patch: trunk works
+     +1 covener, jim, ylavic
+
+  *) Propose we apr_pstrdup constant r->protocol assignments, and always fail
+     entirely invalid protocols (expecting these are part two of a URL with
+     embedded raw SP characters), without considering 'strict'-ness.
+     Backports: r1773159 through merge branch commit r1773161
+     Trunk patch:
+       https://svn.apache.org/r1773159
+     2.4.x patch:
+       https://svn.apache.org/r1773161
+     +1: wrowe, jim, ylavic
+
+  *) With oddball whitespace now disallowed, strictness makes no difference
+     in the two cases of field content handling. Noted by rpluem.
+     Backports: r1773162 through merge branch commit r1773163
+     Trunk patch:
+       https://svn.apache.org/r1773162
+     2.4.x patch:
+       https://svn.apache.org/r1773163
+     +1: wrowe, jim, ylavic
+
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     Trunk patch: http://svn.apache.org/r1773346
+     2.4.x patch: trunk works modulo CHANGES
+     +1: elukey, wrowe, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,33 +173,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patches:
        https://svn.apache.org/r1770951
      2.4.x patch: trunk works modulo CHANGES and next-number
-     +1: jim
+     +1: jim, ylavic
      jailletc36: compatibility note missing in the XML file
      jim:        Will address during commit
-
-  *) Propose we apr_pstrdup constant r->protocol assignments, and always fail
-     entirely invalid protocols (expecting these are part two of a URL with
-     embedded raw SP characters), without considering 'strict'-ness.
-     Backports: r1773159 through merge branch commit r1773161
-     Trunk patch:
-       https://svn.apache.org/r1773159
-     2.4.x patch:
-       https://svn.apache.org/r1773161
-     +1: wrowe, jim
-
-  *) With oddball whitespace now disallowed, strictness makes no difference
-     in the two cases of field content handling. Noted by rpluem.
-     Backports: r1773162 through merge branch commit r1773163
-     Trunk patch:
-       https://svn.apache.org/r1773162
-     2.4.x patch:
-       https://svn.apache.org/r1773163
-     +1: wrowe, jim
-
-  *) ProxyPass ! in server scope doesn't block per-location ProxyPass. Worked in 2.2
-     Trunk patch: https://svn.apache.org/r1773397
-     2.4.x patch: trunk works
-     +1 covener, jim
 
   *) Fix potential looping in new check_headers() due to new pattern of
      ap_die() from http header filter.  Also, remove the bad headers explicitly.
@@ -183,11 +188,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      wrowe: *IIUC* If we are transmitting the discarded body to the client,
             and switching the code to 500, this isn't really a salvagable
             resolution. Two alternatives suggested to the list a few days ago.
+     ylavic: how about r1773761?
 
-  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
-     Trunk patch: http://svn.apache.org/r1773346
-     2.4.x patch: trunk works modulo CHANGES
-     +1: elukey, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
