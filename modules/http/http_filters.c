@@ -1249,11 +1249,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         apr_table_clear(r->headers_out);
         apr_table_clear(r->err_headers_out);
 
-        /* Don't try ErrorDocument if we are (internal-)redirect-ed already,
-         * otherwise we can end up in infinite recursion, better fall through
-         * with 500, minimal headers and an empty body (EOS only).
+        /* Don't try ErrorDocument if we are (internal-)redirect-ed or dying
+         * already, otherwise we can end up in infinite recursion, better fall
+         * through with 500, minimal headers and an empty body (EOS only).
          */
-        if (!dying) {
+        if (ap_is_initial_req(r) && !dying) {
             apr_brigade_cleanup(b);
             apr_pool_userdata_setn("true", "http_header_filter_dying",
                                    apr_pool_cleanup_null, r->pool);
