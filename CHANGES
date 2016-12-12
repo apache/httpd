@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.24
-
+ 
   *) SECURITY: CVE-2016-8740 (cve.mitre.org)
      mod_http2: Mitigate DoS memory exhaustion via endless
      CONTINUATION frames.
@@ -21,6 +21,10 @@ Changes with Apache 2.4.24
      mod_session_crypto: Authenticate the session data/cookie with a
      MAC (SipHash) to prevent deciphering or tampering with a padding
      oracle attack.  [Yann Ylavic, Colm MacCarthaigh]
+
+ *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
+     configured in <Location>, like in 2.2. PR 60458.
+     [Eric Covener]
 
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
      'parent-first' instead of 'none', as per documentation.  PR 60419
