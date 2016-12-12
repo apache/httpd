@@ -222,11 +222,10 @@ fi
 
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
-
-if test "$with_pcre" = "" || test "$with_pcre" = "yes"; then
-  with_pcre = "$PATH"
+if test "x$with_pcre" = "x" || test "$with_pcre" = "yes"; then
+  with_pcre="$PATH"
 else
-  with_pcre = "$with_pcre/bin:$with_pcre"
+  with_pcre="$with_pcre/bin:$with_pcre"
 fi
 
 AC_CHECK_TARGET_TOOLS(PCRE_CONFIG, [pcre2-config pcre-config],
