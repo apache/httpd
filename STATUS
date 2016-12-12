@@ -124,7 +124,8 @@ RELEASE SHOWSTOPPERS:
                    https://svn.apache.org/r1773861
                    https://svn.apache.org/r1773862
                    https://svn.apache.org/r1773865
-     2.4.x patch: trunk works
+     2.4.x patch: trunk works, or (to ease review):
+                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1773293_and_co.patch
      +1: ylavic, wrowe
 
   *) Final CVE check
