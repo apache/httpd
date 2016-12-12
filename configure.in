@@ -222,7 +222,6 @@ fi
 
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
-echo PCRE PATH was $with_pcre
 
 if test "$with_pcre" = "" || test "$with_pcre" = "yes"; then
   with_pcre = "$PATH"
