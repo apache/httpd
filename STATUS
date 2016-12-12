@@ -117,16 +117,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Propose we apr_pstrdup constant r->protocol assignments, and always fail
-     entirely invalid protocols (expecting these are part two of a URL with
-     embedded raw SP characters), without considering 'strict'-ness.
-     Backports: r1773159 through merge branch commit r1773161
-     Trunk patch:
-       https://svn.apache.org/r1773159
-     2.4.x patch:
-       https://svn.apache.org/r1773161
-     +1: wrowe, jim, ylavic
-
   *) With oddball whitespace now disallowed, strictness makes no difference
      in the two cases of field content handling. Noted by rpluem.
      Backports: r1773162 through merge branch commit r1773163
