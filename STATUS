@@ -118,7 +118,6 @@ RELEASE SHOWSTOPPERS:
      ap_die() from http header filter.  Also, clear the previous headers
      and body explicitly.
      Trunk patch:  https://svn.apache.org/r1773293
-                   https://svn.apache.org/r1773293
                    https://svn.apache.org/r1773761
                    https://svn.apache.org/r1773779
                    https://svn.apache.org/r1773812
