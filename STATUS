@@ -177,13 +177,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch:  https://svn.apache.org/r1773293
      2.4.x patch: trunk works
      +1: covener, jim
+     -1: wrowe
      covener: This is not ideal but the looping/OOM is bad.
      jim: with the understanding that more work post release
+     wrowe: *IIUC* If we are transmitting the discarded body to the client,
+            and switching the code to 500, this isn't really a salvagable
+            resolution. Two alternatives suggested to the list a few days ago.
 
   *) core: Drop Content-Length header and message-body from HTTP 204 responses.
      Trunk patch: http://svn.apache.org/r1773346
      2.4.x patch: trunk works modulo CHANGES
-     +1: elukey
+     +1: elukey, wrowe
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
