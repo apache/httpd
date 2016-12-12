@@ -715,17 +715,7 @@ static int check_header(void *arg, const char *name, const char *val)
         return 0;
     }
 
-    if (ctx->strict) { 
-        test = ap_scan_http_field_content(val);
-    }
-    else {
-        /* Simply terminate scanning on a CTL char, allowing whitespace */
-        test = val;
-        do {
-            while (*test == ' ' || *test == '\t') test++;
-            test = ap_scan_vchar_obstext(test);
-        } while (*test == ' ' || *test == '\t');
-    }
+    test = ap_scan_http_field_content(val);
     if (*test) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(02430)
                       "Response header '%s' value of '%s' contains invalid "
