@@ -1201,16 +1201,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     if (ctx->headers_sent) {
+        /* Eat body if response must not have one. */
         if (r->header_only || r->status == HTTP_NO_CONTENT) {
-            /* r->header_only or HTTP_NO_CONTENT case below, don't let
-             * the body pass trhough.
-             */
             apr_brigade_cleanup(b);
             return APR_SUCCESS;
         }
     }
     else if (!ctx->headers_error && !check_headers(r)) {
-        /* Eat body until EOS */
         ctx->headers_error = 1;
     }
     for (e = APR_BRIGADE_FIRST(b);
@@ -1238,21 +1235,38 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         }
     }
     if (ctx->headers_error) {
-        /* We'll come back here from ap_send_error_response(),
-         * so clear anything from this response.
-         */
-        apr_brigade_cleanup(b);
         if (!eos) {
+            /* Eat body until EOS */
+            apr_brigade_cleanup(b);
             return APR_SUCCESS;
         }
+
+        /* We may come back here from ap_die() below,
+         * so clear anything from this response.
+         */
         ctx->headers_error = 0;
         apr_table_clear(r->headers_out);
         apr_table_clear(r->err_headers_out);
+
+        /* Don't try ErrorDocument if we are (internal-)redirect-ed already,
+         * otherwise we can end up in infinite recursion, better fall through
+         * with 500, minimal headers and an empty body (EOS only).
+         */
+        if (ap_is_initial_req(r)) {
+            apr_brigade_cleanup(b);
+            ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
+            return AP_FILTER_ERROR;
+        }
+        AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
+        APR_BUCKET_REMOVE(e);
+        apr_brigade_cleanup(b);
+        APR_BRIGADE_INSERT_TAIL(b, e);
         r->status = HTTP_INTERNAL_SERVER_ERROR;
-        ap_send_error_response(r, 0);
-        return AP_FILTER_ERROR;
+        r->content_type = r->content_encoding = NULL;
+        r->content_languages = NULL;
+        ap_set_content_length(r, 0);
     }
-    if (eb) {
+    else if (eb) {
         int status;
         status = eb->status;
         apr_brigade_cleanup(b);
