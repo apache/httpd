@@ -232,6 +232,7 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
 {
     int rc;
     int options = 0;
+    apr_size_t nlim;
 #ifdef HAVE_PCRE2
     pcre2_match_data *matchdata;
     size_t *ovector;
@@ -251,13 +252,17 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
      * e.g. 10 matches, to avoid a malloc-per-call. If it must be alloced,
      * implement a general context using palloc and no free implementation.
      */
-    matchdata = pcre2_match_data_create(nmatch, NULL);
+    nlim = ((apr_size_t)preg->re_nsub + 1) > nmatch
+         ? ((apr_size_t)preg->re_nsub + 1) : nmatch;
+    matchdata = pcre2_match_data_create(nlim, NULL);
     if (matchdata == NULL)
         return AP_REG_ESPACE;
     ovector = pcre2_get_ovector_pointer(matchdata);
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
                      (const unsigned char *)buff, len,
                      0, options, matchdata, NULL);
+    if (rc == 0)
+        rc = nlim;            /* All captured slots were filled in */
 #else
     if (nmatch > 0) {
         if (nmatch <= POSIX_MALLOC_THRESHOLD) {
@@ -272,14 +277,13 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     }
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
                    0, options, ovector, nmatch * 3);
-#endif
-
     if (rc == 0)
         rc = nmatch;            /* All captured slots were filled in */
+#endif
 
     if (rc >= 0) {
         apr_size_t i;
-        apr_size_t nlim = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
+        nlim = (apr_size_t)rc < nmatch ? (apr_size_t)rc : nmatch;
         for (i = 0; i < nlim; i++) {
             pmatch[i].rm_so = ovector[i * 2];
             pmatch[i].rm_eo = ovector[i * 2 + 1];
