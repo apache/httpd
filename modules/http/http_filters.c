@@ -632,7 +632,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 struct check_header_ctx {
     request_rec *r;
     int strict;
-    const char *badheader;
 };
 
 /* check a single header, to be used with apr_table_do() */
@@ -644,7 +643,6 @@ static int check_header(void *arg, const char *name, const char *val)
     if (name[0] == '\0') {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, APLOGNO(02428)
                       "Empty response header name, aborting request");
-        ctx->badheader = name;
         return 0;
     }
 
@@ -659,7 +657,6 @@ static int check_header(void *arg, const char *name, const char *val)
                       "Response header name '%s' contains invalid "
                       "characters, aborting request",
                       name);
-        ctx->badheader = name;
         return 0;
     }
 
@@ -669,7 +666,6 @@ static int check_header(void *arg, const char *name, const char *val)
                       "Response header '%s' value of '%s' contains invalid "
                       "characters, aborting request",
                       name, val);
-        ctx->badheader = name;
         return 0;
     }
     return 1;
@@ -684,21 +680,11 @@ static APR_INLINE int check_headers(request_rec *r)
     struct check_header_ctx ctx;
     core_server_config *conf =
             ap_get_core_module_config(r->server->module_config);
-    int rv = 1;
 
     ctx.r = r;
     ctx.strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    ctx.badheader = NULL;
-
-    while (!apr_table_do(check_header, &ctx, r->headers_out, NULL)){
-       if (ctx.badheader) {
-           apr_table_unset(r->headers_out, ctx.badheader);
-           apr_table_unset(r->err_headers_out, ctx.badheader);
-       }
-       rv = 0; /* problem has been logged by check_header() */
-    }
-
-    return rv;
+    return apr_table_do(check_header, &ctx, r->headers_out, NULL) &&
+           apr_table_do(check_header, &ctx, r->err_headers_out, NULL);
 }
 
 typedef struct header_struct {
@@ -1191,6 +1177,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
 typedef struct header_filter_ctx {
     int headers_sent;
+    int headers_error;
 } header_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
@@ -1205,23 +1192,36 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
     ap_bucket_error *eb = NULL;
+    int eos = 0;
 
     AP_DEBUG_ASSERT(!r->main);
 
-    if (r->header_only || r->status == HTTP_NO_CONTENT) {
-        if (!ctx) {
-            ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
-        }
-        else if (ctx->headers_sent) {
-            apr_brigade_cleanup(b);
-            return OK;
-        }
+    if (!ctx) {
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
+    }
+    else if (ctx->headers_sent) {
+        /* r->header_only or HTTP_NO_CONTENT case below, don't let
+         * the body pass trhough.
+         */
+        apr_brigade_cleanup(b);
+        return APR_SUCCESS;
     }
 
+    if (!ctx->headers_error && !check_headers(r)) {
+        /* Eat body until EOS */
+        ctx->headers_error = 1;
+    }
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
     {
+        if (ctx->headers_error) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                eos = 1;
+                break;
+            }
+            continue;
+        }
         if (AP_BUCKET_IS_ERROR(e) && !eb) {
             eb = e->data;
             continue;
@@ -1235,9 +1235,23 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, b);
         }
     }
+    if (ctx->headers_error) {
+        /* We'll come back here from ap_send_error_response(),
+         * so clear anything from this response.
+         */
+        apr_brigade_cleanup(b);
+        if (!eos) {
+            return APR_SUCCESS;
+        }
+        ctx->headers_error = 0;
+        apr_table_clear(r->headers_out);
+        apr_table_clear(r->err_headers_out);
+        r->status = HTTP_INTERNAL_SERVER_ERROR;
+        ap_send_error_response(r, 0);
+        return AP_FILTER_ERROR;
+    }
     if (eb) {
         int status;
-
         status = eb->status;
         apr_brigade_cleanup(b);
         ap_die(status, r);
@@ -1258,10 +1272,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (!apr_is_empty_table(r->err_headers_out)) {
         r->headers_out = apr_table_overlay(r->pool, r->err_headers_out,
                                            r->headers_out);
-    }
-
-    if (!check_headers(r)) {
-        r->status = 500;
     }
 
     /*
@@ -1376,7 +1386,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (r->header_only || r->status == HTTP_NO_CONTENT) {
         apr_brigade_cleanup(b);
         ctx->headers_sent = 1;
-        return OK;
+        return APR_SUCCESS;
     }
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
