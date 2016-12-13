@@ -113,21 +113,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) Looping during check_headers() failure.
-     Fix potential looping in new check_headers() due to new pattern of
-     ap_die() from http header filter.  Also, clear the previous headers
-     and body explicitly.
-     Trunk patch:  https://svn.apache.org/r1773293
-                   https://svn.apache.org/r1773761
-                   https://svn.apache.org/r1773779
-                   https://svn.apache.org/r1773812
-                   https://svn.apache.org/r1773861
-                   https://svn.apache.org/r1773862
-                   https://svn.apache.org/r1773865
-     2.4.x patch: trunk works, or (to ease review):
-                  http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1773293_and_co.patch
-     +1: ylavic, wrowe, jim
-
   *) Final CVE check
 
 
