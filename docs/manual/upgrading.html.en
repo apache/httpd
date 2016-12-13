@@ -257,7 +257,7 @@ AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 &lt;RequireAll&gt;
   Require valid-user
-  require ip 127.0.0.1
+  Require ip 127.0.0.1
 &lt;/RequireAll&gt;</pre>
 </div>
 
