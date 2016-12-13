@@ -31,7 +31,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Bandwidth Rate Limiting for Clients</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ratelimit_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ratelimit.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ratelimit.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td><code>rate-initial-burst</code> available in httpd 2.4.24 and later.</td></tr></table>
 <h3>Summary</h3>
 
 
@@ -49,7 +50,10 @@ the environment variable <code>rate-initial-burst</code>.</p>
     SetEnv rate-limit 400
     SetEnv rate-initial-burst 512
 &lt;/Location&gt;</pre>
-</div>
+<div class="warning">
+If the value specified for <code>rate-limit</code> causes integer overflow, the rate-limited will be disabled.
+If the value specified for <code>rate-limit-burst</code> causes integer overflow, the burst will be disabled.
+</div></div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
