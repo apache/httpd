@@ -97,6 +97,8 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
         ratelimit = atoi(rl) * 1024;
         if (ratelimit <= 0) {
             /* remove ourselves */
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r,
+                          APLOGNO(03488) "rl: disabling: rate-limit = %s (too high?)", rl);
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -106,7 +108,9 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
         if (rl != NULL) {
             burst = atoi(rl) * 1024;
             if (burst <= 0) {
-                burst = 0;
+               ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r,
+                             APLOGNO(03489) "rl: disabling burst: rate-initial-burst = %s (too high?)", rl);
+               burst = 0;
             }
         }
 
