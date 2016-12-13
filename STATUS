@@ -146,6 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      throttling: PR 60145
      trunk patches:
        https://svn.apache.org/r1770951
+       https://svn.apache.org/r1774008
      2.4.x patch: trunk works modulo CHANGES and next-number
      +1: jim, ylavic
      jailletc36: compatibility note missing in the XML file
