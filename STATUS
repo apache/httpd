@@ -34,7 +34,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.24  : In development.
+    2.4.24  : In development. Jim proposes to T&R ~ Dec 15th.
     2.4.23  : Tagged on June 30, 2016. Released on July 05, 2016.
     2.4.22  : Tagged on June 20, 2016, not released.
     2.4.21  : Tagged on June 16, 2016, not released.
@@ -119,17 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_ratelimit: Allow for initial burst of data before we start
-     throttling: PR 60145
-     trunk patches:
-       https://svn.apache.org/r1770951
-       https://svn.apache.org/r1774008
-     2.4.x patch: trunk works modulo CHANGES and next-number
-     +1: jim, ylavic, elukey
-     jailletc36: compatibility note missing in the XML file
-     jim:        Will address during commit
-     elukey: the maximum value limitation for the new burst feature needs
-             to be documented.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
