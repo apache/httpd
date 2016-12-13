@@ -119,7 +119,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) mod_socache_memcache: Provide memcache STATs to mod_status
+     trunk patch: http://svn.apache.org/r1768245
+     trunk patch: http://svn.apache.org/r1770828
+     2.4.x patch: trunk works
+     +1: jim, icing, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -135,12 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1756976
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
      +1: ylavic
-
-  *) mod_socache_memcache: Provide memcache STATs to mod_status
-     trunk patch: http://svn.apache.org/r1768245
-     trunk patch: http://svn.apache.org/r1770828
-     2.4.x patch: trunk works
-     +1: jim, icing
 
   *) mod_ratelimit: Allow for initial burst of data before we start
      throttling: PR 60145
