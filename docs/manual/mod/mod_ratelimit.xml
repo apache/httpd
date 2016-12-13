@@ -30,6 +30,7 @@ the document to validate. -->
 <status>Extension</status>
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
+<compatibility><code>rate-initial-burst</code> available in httpd 2.4.24 and later.</compatibility>
 
 <summary>
 
@@ -54,4 +55,8 @@ the environment variable <code>rate-initial-burst</code>.</p>
 
 </summary>
 
+<note type="warning">
+If the value specified for <code>rate-limit</code> causes integer overflow, the rate-limited will be disabled.
+If the value specified for <code>rate-limit-burst</code> causes integer overflow, the burst will be disabled.
+</note>
 </modulesynopsis>
