@@ -51,12 +51,14 @@ the environment variable <code>rate-initial-burst</code>.</p>
     SetEnv rate-initial-burst 512
 &lt;/Location&gt;
 </highlight>
-</example>
-
-</summary>
 
 <note type="warning">
 If the value specified for <code>rate-limit</code> causes integer overflow, the rate-limited will be disabled.
 If the value specified for <code>rate-limit-burst</code> causes integer overflow, the burst will be disabled.
 </note>
+
+</example>
+
+</summary>
+
 </modulesynopsis>
