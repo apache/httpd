@@ -44,7 +44,7 @@
     than <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, which also provides
     dynamic growth, but is intended to handle much, much
     larger numbers of backends. It is ideally suited as a
-    front-end HTTP switch.</p>
+    front-end HTTP switch and for micro-services architectures.</p>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
