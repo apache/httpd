@@ -22,6 +22,9 @@ Changes with Apache 2.4.24
      MAC (SipHash) to prevent deciphering or tampering with a padding
      oracle attack.  [Yann Ylavic, Colm MacCarthaigh]
 
+  *) mod_socache_memcache: Provide memcache stats to mod_status.
+     [Jim Jagielski]
+
   *) http_filters: Fix potential looping in new check_headers() due to new
      pattern of ap_die() from http header filter. Explicitly clear the
      previous headers and body.

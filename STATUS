@@ -119,11 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_socache_memcache: Provide memcache STATs to mod_status
-     trunk patch: http://svn.apache.org/r1768245
-     trunk patch: http://svn.apache.org/r1770828
-     2.4.x patch: trunk works
-     +1: jim, icing, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
