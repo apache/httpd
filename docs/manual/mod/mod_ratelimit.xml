@@ -30,6 +30,7 @@ the document to validate. -->
 <status>Extension</status>
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
+<compatibility><code>rate-initial-burst</code> available in httpd 2.4.24 and later.</compatibility>
 
 <summary>
 
@@ -37,13 +38,25 @@ the document to validate. -->
 The connection speed to be simulated is specified, in KiB/s, using the environment
 variable <code>rate-limit</code>.</p>
 
+<p>Optionally, an initial amount of burst data, in KiB, may be
+configured to be passed at full speed before throttling to the
+specified rate limit.  This value is optional, and is set using
+the environment variable <code>rate-initial-burst</code>.</p>
+
 <example><title>Example Configuration</title>
 <highlight language="config">
 &lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400 
+    SetEnv rate-initial-burst 512
 &lt;/Location&gt;
 </highlight>
+
+<note type="warning">
+If the value specified for <code>rate-limit</code> causes integer overflow, the rate-limited will be disabled.
+If the value specified for <code>rate-limit-burst</code> causes integer overflow, the burst will be disabled.
+</note>
+
 </example>
 
 </summary>

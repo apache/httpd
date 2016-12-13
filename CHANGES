@@ -33,6 +33,10 @@ Changes with Apache 2.4.24
      pollution by malicious clients, upstream servers or faulty modules.
      [Stefan Fritsch, Eric Covener, Yann Ylavic]
 
+  *) mod_ratelimit: Allow for initial "burst" amount at full speed before
+     throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
+     Jim Jagielski]
+
   *) mod_socache_memcache: Provide memcache stats to mod_status.
      [Jim Jagielski]
 
