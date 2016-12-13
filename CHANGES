@@ -22,6 +22,17 @@ Changes with Apache 2.4.24
      MAC (SipHash) to prevent deciphering or tampering with a padding
      oracle attack.  [Yann Ylavic, Colm MacCarthaigh]
 
+  *) SECURITY: CVE-2016-8743 (cve.mitre.org)
+     Enforce HTTP request grammar corresponding to RFC7230 for request lines
+     and request headers, to prevent response splitting and cache pollution by
+     malicious clients or downstream proxies. [William Rowe, Stefan Fritsch]
+
+  *) Validate HTTP response header grammar defined by RFC7230, resulting
+     in a 500 error in the event that invalid response header contents are
+     detected when serving the response, to avoid response splitting and cache
+     pollution by malicious clients, upstream servers or faulty modules.
+     [Stefan Fritsch, Eric Covener, Yann Ylavic]
+
   *) mod_socache_memcache: Provide memcache stats to mod_status.
      [Jim Jagielski]
 
@@ -39,9 +50,6 @@ Changes with Apache 2.4.24
   *) mod_lua: Fix default value of LuaInherit directive. It should be 
      'parent-first' instead of 'none', as per documentation.  PR 60419
      [Christophe Jaillet]
-
-  *) Enforce http request grammer corresponding to RFC7230 for request lines
-     and request headers [William Rowe, Stefan Fritsch]
 
   *) core: New directive HttpProtocolOptions to control httpd enforcement
      of various RFC7230 requirements. [Stefan Fritsch, William Rowe]
