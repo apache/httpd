@@ -38,7 +38,7 @@
     than <module>mod_proxy_balancer</module>, which also provides
     dynamic growth, but is intended to handle much, much
     larger numbers of backends. It is ideally suited as a
-    front-end HTTP switch.</p>
+    front-end HTTP switch and for micro-services architectures.</p>
 
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>.</p>
