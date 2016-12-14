@@ -135,6 +135,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
      +1: ylavic
 
+  *) Follow up on check_headers() (r1773995) to restore EOC semantic.
+     trunk patch: http://svn.apache.org/r1774286
+     2.4.x patch: trunk works
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
