@@ -118,6 +118,11 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+ 
+  *) Limit some kinds of rewrite looping. PR60478
+     trunk patch: http://svn.apache.org/r1774288.
+     2.4.x patch: trunk works
+     +1: covener, ylavic, jchampion
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -139,11 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1774286
      2.4.x patch: trunk works
      +1: ylavic
- 
-  *) Limit some kinds of rewrite looping. PR60478
-     trunk patch: http://svn.apache.org/r1774288.
-     2.4.x patch: trunk works
-     +1: covener, ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
