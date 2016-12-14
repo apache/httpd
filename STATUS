@@ -143,7 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Limit some kinds of rewrite looping. PR60478
      trunk patch: http://svn.apache.org/r1774288.
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, ylavic
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
