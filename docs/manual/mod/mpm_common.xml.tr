@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1755987:1772336 (outdated) -->
+<!-- English Revision: 1772336 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -631,7 +631,9 @@ ScoreBoardFile /var/run/apache_status
       olduğunda ise, Apache httpd sürecinin ömrü boyunca <directive
       module="mpm_common">MaxRequestWorkers</directive> yönergesine
       atanabilecek  azami değeri <directive module="mpm_common"
-      >ThreadLimit</directive> ile birlikte belirler. Bu yönergeyi bir yeniden
+      >ThreadLimit</directive> ile birlikte belirler. <module>event</module> modülü 
+      için bu yönerge kaç eski sunucunun çalışmayı sürdüreceğini ve kaçının açık 
+      bağlantıları işlemeyi bitireceğini belirler. Bu yönergeyi bir yeniden
       başlatma sırasında değiştirirseniz bu değişiklik yok sayılır fakat
       <directive module="mpm_common">MaxRequestWorkers</directive>
       değişiklikleri dikkate alınır.</p>
@@ -650,8 +652,7 @@ ScoreBoardFile /var/run/apache_status
       <directive module="mpm_common">MaxRequestWorkers</directive> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
 
-    <p><module>worker</module> ve <module>event</module> modülü söz konusu
-      olduğunda bu yönergeyi
+    <p><module>worker</module> modülü söz konusu olduğunda bu yönergeyi
       <directive module="mpm_common">MaxRequestWorkers</directive> ve
       <directive module="mpm_common">ThreadsPerChild</directive> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
@@ -660,7 +661,13 @@ ScoreBoardFile /var/run/apache_status
       >ThreadsPerChild</directive> için gerekli gördüğünüz sunucu süreci
       sayısından fazlasını atamayınız.</p>
 
-    <note><title>Ek Bilgi</title>
+    <p><module>event</module> modülü söz konusu olduğunda, <directive
+      module="mpm_common">MaxRequestWorkers</directive> ve <directive
+      module="mpm_common">ThreadsPerChild</directive> yönergeleri ile belirlenen 
+      süreç sayısına ek olarak zarifçe kapatılan süreçlerin sayısıyla arttırıp 16
+      sunucu sürecinden (16 öntanımlıdır) fazlasına ayarlayınız.</p>
+
+     <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ServerLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<module>prefork</module> için
         200000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol

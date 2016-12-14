@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 1597081:1766106 (outdated) -->
+<!-- English Revision: 1766106 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -409,6 +409,28 @@
         saptar ve istemciye hangi sürümle yanıt verileceğine karar verir.</p>
     </section>
 
+  </section>
+
+  <section id="examples">
+
+    <title>Önbellek Ayarlama Örnekleri</title>
+
+    <related>
+      <modulelist>
+        <module>mod_cache</module>
+        <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
+        <module>mod_socache_memcache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache">CacheEnable</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_socache">CacheSocache</directive>
+      </directivelist>
+    </related>
+
     <section id="disk">
       <title>Disk Üzerinde Önbellekleme</title>
 
@@ -525,11 +547,52 @@ CacheDirLength 1
         ardından yeterli bir büyüme alanı kalacak şekilde yapılandırılması
         temin edilmelidir.</p>
     </section>
+    
+    <section id="memcache">
+      <title>memcached ile önbellekleme</title>
+
+      <p><module>mod_cache_socache</module> modülünü kullanarak, 
+        <module>mod_cache</module> çeşitli gerçeklenimlerden (diğer adıyla: 
+        "sağlayıcılar"dan) gelen veriyi önbellekleyebilir.   
+        <module>mod_socache_memcache</module> modülü kullanılarak, örneğin, 
+        artalan saklama mekanizması olarak 
+        <a href="http://memcached.org">memcached</a> kullanıldığı 
+        söylenebilir.</p>
+
+      <p>Genelde modül şöyle yapılandırılır:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:memcd.example.com:11211
+      </highlight>
+
+      <p>İlave <code>memcached</code> sunucular 
+        <code>CacheSocache memcache:</code> satırının ardına virgüllerle 
+        ayrılarak eklenebilir:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212
+      </highlight>
+
+      <p>Bu biçim diğer <module>mod_cache_socache</module> sağlayıcıları için de kullanılabilir:</p>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache shmcb:/path/to/datafile(512000)
+      </highlight>
+
+      <highlight language="config">
+CacheEnable socache /
+CacheSocache dbm:/path/to/datafile
+      </highlight>
+
+    </section>
 
   </section>
 
   <section id="socache-caching">
-    <title>İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</title>
+    <title>Genel İki durumlu Anahtar/Değer Paylaşımlı Nesne Önbellekleme</title>
 
     <related>
       <modulelist>
