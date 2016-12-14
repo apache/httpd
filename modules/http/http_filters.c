@@ -1806,12 +1806,12 @@ apr_status_t ap_http_outerror_filter(ap_filter_t *f,
      *              EOS bucket.
      */
     if (ctx->seen_eoc) {
-        for (e = APR_BRIGADE_FIRST(b);
-             e != APR_BRIGADE_SENTINEL(b);
-             e = APR_BUCKET_NEXT(e))
-        {
-            if (!APR_BUCKET_IS_METADATA(e)) {
-                APR_BUCKET_REMOVE(e);
+        e = APR_BRIGADE_FIRST(b);
+        while (e != APR_BRIGADE_SENTINEL(b)) {
+            apr_bucket *c = e;
+            e = APR_BUCKET_NEXT(e);
+            if (!APR_BUCKET_IS_METADATA(c)) {
+                apr_bucket_delete(c);
             }
         }
     }
