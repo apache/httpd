@@ -31,7 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge Apache HTTP Sunucusunun sadece Unix ve Unix benzeri
@@ -72,7 +71,9 @@
       <tr>
         <td><a href="#download">İndirme</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a> adresinden en son 
+          dağıtımı indirin.
+
         </td>
       </tr>
 
