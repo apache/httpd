@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.24
- 
+
   *) SECURITY: CVE-2016-8740 (cve.mitre.org)
      mod_http2: Mitigate DoS memory exhaustion via endless
      CONTINUATION frames.
@@ -32,6 +32,10 @@ Changes with Apache 2.4.24
      detected when serving the response, to avoid response splitting and cache
      pollution by malicious clients, upstream servers or faulty modules.
      [Stefan Fritsch, Eric Covener, Yann Ylavic]
+
+  *) mod_rewrite: Limit runaway memory use by short circuiting some kinds of
+     looping RewriteRules when the local path significantly exceeds 
+     LimitRequestLine.  PR 60478. [Jeff Wheelhouse <apache wheelhouse.org>]
 
   *) mod_ratelimit: Allow for initial "burst" amount at full speed before
      throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
