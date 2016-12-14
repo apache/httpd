@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+ *) mod_rewrite: Limit runaway memory use by short circuiting some kinds of
+    looping RewriteRules when the local path significantly exceeds 
+    LimitRequestLine.  PR 60478. [Jeff Wheelhouse <apache wheelhouse.org>]
+
  *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
      configured in <Location>, like in 2.2. PR 60458.
      [Eric Covener]
