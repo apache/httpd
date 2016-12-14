@@ -504,7 +504,7 @@ heartbeat requests to this server</td></tr>
 <tr><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
 </td></tr>
 <tr class="odd"><td><a href="core.html#httpprotocoloptions">HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
- [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Modify restrictions on HTTP Request Messages</td></tr>
+ [Allow0.9|Require1.0]</a></td><td> Strict LenientMetho +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP İstek İletilerindeki sınırlamalarda değişiklik yapar</td></tr>
 <tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>skd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>skd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
@@ -798,7 +798,7 @@ URL’ye yönlendirir.</td></tr>
 <tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
 URL’ye yönlendirir.</td></tr>
 <tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
-<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Register non-standard HTTP methods</td></tr>
+<tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Standart olamayan HTTP yöntemlerini belirler</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for useragent IP addresses</td></tr>
 <tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>

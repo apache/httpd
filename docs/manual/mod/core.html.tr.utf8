@@ -33,7 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -181,31 +180,40 @@ AcceptFilter https data</pre>
       tamponlanmasını desteklemez.  <code>none</code> dahil her değer
       dinleyici üzerinde <code>TCP_DEFER_ACCEPT</code> seçeneğini etkin kılar.
       Daha ayrıntılı bilgi edinmek için Linux
-      <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a> kılavuz sayfasına bakınız.</p>
+      <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a> kılavuz sayfasına bakınız.</p>
 
     <p>Windows’taki öntanımlı değerler::</p>
 
-    <pre class="prettyprint lang-config">AcceptFilter http data
-AcceptFilter https data</pre>
+    <pre class="prettyprint lang-config">AcceptFilter http connect
+AcceptFilter https connect</pre>
 
 
     <p>Windows'un <code>mpm_winnt</code> modülü <code>AcceptEx()</code>
       arayüzünü açıp kapamak için <code>AcceptFilter</code>'i yorumlar ve
-      http protokol tamponlamasını desteklemez. Windows
-      <code>AcceptEx()</code> arayüzünü tetikleyen iki değer vardır ve ağ
-      soketlerini bağlantılar arasında yer değiştirirler. <code>data</code>,
-      veri aktarılana kadar yukarıda anlatıldığı gibi bekler ve ilk veri
-      tamponu ve uç ağ adresleri tek bir <code>AcceptEx()</code> çağrısından
-      alınır. <code>connect</code>, <code>AcceptEx()</code> arayüzünü
-      kullanacak, ayrıca uç ağ adresleri de alınacak, fakat
-      <code>none</code> gibi <code>connect</code> seçeneği de ilk veri
-      aktarımını beklemeyecektir.</p>
+      http protokol tamponlamasını desteklemez. <code>connect</code>, <code>AcceptEx()</code> arayüzünü kullanacak, ayrıca uç ağ adresleri de alınacak, fakat <code>none</code> gibi <code>connect</code> seçeneği de ilk veri aktarımını beklemeyecektir.</p>
 
     <p>Windows'ta <code>none</code> <code>AcceptEx()</code>'ten ziyade
       <code>accept()</code> kullanır ve ağ soketlerini bağlantılar arasında
       yer değiştirmez. Sürücü desteği bozuk ağ bağdaştırıcılarından başka
       vpn sürücüleri gibi bazı sanal ağ sağlayıcılar veya spam, virus veya
       casus yazılım süzgeçleri için kullanışlıdır.</p>
+    
+    <div class="warning">
+      <h3><code>data</code> AcceptFilter (Windows)</h3>
+
+      <p>2.4.23 ve öncesi sürümlerde, Windows <code>data</code> accept
+         süzgeci veri aktarılana kadar bekletildikten sonra ilk veri 
+         tamponlanır ve uç ağ adresi için tek bir AcceptEx() çağrısı yapılır. 
+         Bu gerçeklenim hizmet reddi saldırısına konu olduğundan iptal 
+         edilmiştir.</p>
+
+      <p>httpd'nin şu anki dağıtımları için Windows'da <code>connect</code> 
+        süzgeci öntanımlıdır ve <code>data</code> belirtilmiş olsa dahi  
+        <code>connect</code> belirtilmiş gibi davranılır. Önceki sürümleri 
+        kullananların AcceptFilter satırını yukarıdaki gibi 
+        <code>connect</code> süzgecine ayarlamaları gerekmektedir.</p>
+    </div>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -573,7 +581,8 @@ AcceptFilter https data</pre>
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
       yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
 
-    <div class="note"><p>Güvenlik ve başarımı arttırmak için <code>&lt;Directory "/"&gt;</code>
+    <div class="note"><p>Güvenlik ve başarımı arttırmak için 
+      <code>&lt;Directory "/"&gt;</code>
       bloğu içinde <code>AllowOverride</code> yönergesine <code>None</code>
       dışında bir değer atamayın. Böyle yapmak yerine bir <code>.htaccess</code>
       dosyası yerleştirmeyi düşündüğünüz dizine ait bir
@@ -867,6 +876,13 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> sözdizimi ile
       karışmalardan kaçınmak için değişken isimleri ikinokta ":" karakterleri
       içeremez.</p>
+    
+    <p>Bu yönerge sanal konakta ve dizin içeriğinde desteklenirken yapılan 
+      değişiklikler (eşleşsin eşleşmesin) yönergeyi sarmalayan yapılandırma 
+      bölümünün ötesinde, sonraki yapılandırma yönergelerine de görünür olur. Diğer 
+      yapılandırma bölümleri için sağlanan bu desteğe bu yönergenin ilk 
+      gerçekleniminde hatalı olarak izin verilmişti. Geriye uyumluluk amacıyla 
+      (önceden sezilmeyen sonuçlarıyla) bu durum muhafaza edilmiştir.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2016,16 +2032,71 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>HTTP İstek İletilerindeki sınırlamalarda değişiklik yapar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
  [Allow0.9|Require1.0]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>HttpProtocolOptions Strict LenientMethods Allow0.9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.2.32 veya 2.4.24 ve sonrası</td></tr>
+</table>
+    <p>Bu yönerge HTTP istek satırına
+      (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) ve the HTTP istek başlığı alanlarına
+      (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>) uygulanmış kuralları öntanımlı olarak veya 
+      <code>Strict</code> seçeneği kullanılarak  değiştirir. Eski modüller, 
+      uygulamalar veya kullanımı önerilmeyen özel istemciler için eski davranışlara 
+      dönmeyi sağlamak üzere <code>Unsafe</code> seçeneği eklenmiştir. Bu kurallar 
+      istek işlenmeden önce uygulanır. Dolayısıyla yönerge, ana bölümde veya 
+      öntanımlı (ilk) eşleşen sanal konak bölümünde yapılandırılmalıdır.</p>
+
+    <p>Bu yönerge devreye girmeden önce, Apache HTTP Sunucusunun istek iletisi 
+      ayrıştırıcıları protokolle uyumlu olmayan bir dizi girdi şekline 
+      toleranslıydı. <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4 İstek bölme</a> ve
+      <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Yanıt kaçırma</a> çağrıları uyumsuz istek iletilerinin kabulündeki 
+      olası risklerden yalnızca iki tanesidir.
+      <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 
+      §3.5</a> "İleti Ayrıştırma Sağlamlığı" belirsiz boşlukların kabul ve 
+      istek iletisi biçimleme risklerini tanımlar. Bu yönergenin devreye girmesini 
+      takiben belirtimin tüm imla kurallarına öntanımlı <code>Strict</code> işlem 
+      kipi ve 3.5 bölümünde tavsiye edilen hoşgörüsüz boşluk uygulanır ve esnekliğe 
+      müsamaha edilmez.</p>
+
+    <p>Kullanıcılar, özellikle dışa bakan, herkes tarafından erişilebilen sunucu 
+      konuşlandırmalarında  <code>Unsafe</code> işlem kipine geçiş yapmaya karşı 
+      kesinlikle uyarılır. Eğer bir arayüz hataları izlemek veya bir intranette 
+      çalışan özel hizmet tüketicileri için gerekliyse, kullanıcılar, sadece, 
+      dahili özel ağlarına hizmet etmek üzere yapılandırılmış özel bir sanal konak 
+      üzerinde <code>Unsafe</code> işlem kipine geçiş yapmalıdır.</p>
+
+    <p><code class="directive">LogLevel</code> <code>debug</code> seviyesiyle 
+      yapılandırılmış <code class="directive">ErrorLog</code> ile kaydedilmiş günlüklerin  
+      gözden geçirilmesi, böyle hatalı isteklerin kaynaklandıkları yerle birlikte  
+      belirlenmesine yardımcı olabilir. Kullanıcılar, beklenmedik bir şekilde 
+      reddedilmiş geçersiz istekleri bulmak için erişim günlüklerindeki 400 
+      yanıtlarına özellikle dikkat etmelidir.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231 
+      §4.1</a> "İstek Yöntemleri" "Genel Bakış" bölümlerinde bir istek 
+      satırında desteklenmeyen bir yöntem saptadığında özgün sunucuların bir 
+      hatayla yanıt vermesini gerekli görmüştür. <code>LenientMethods</code> 
+      seçeneği kullanıldığında olan zaten budur. <code>RegisteredMethods</code> 
+      seçeneğine geçiş yapmak isteyen yöneticiler 
+      <code class="directive">RegisterHttpMethod</code> yönergesini kullanarak standart 
+      olmayan yöntemleri belirlemelidir. Özellikle <code>Unsafe</code> seçeneğine 
+      geçiş yapılacaksa bu yol izlenmelidir. Özgün sunucunun kullandığı yöntemleri 
+      vekil sunucu bilemeyeceği için ileri vekil konaklarda 
+      <code>RegisteredMethods</code> seçeneğine geçiş yapılmamalıdır.</p>
+
+    <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 
+      §19.6</a> "Önceki Sürümlerle Uyumluluk" bölümünde HTTP sunucularının 
+      eski HTTP/0.9 isteklerini desteklemesi tavsiye edilmektedir. RFC 7230 
+      "HTTP/0.9 isteklerini destekleme beklentisi kaldırılmıştır." cümlesiyle bunu 
+      geçersiz kılmış ve <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Ek A</a> bölümünde bununla ilgili yorumlar yer almıştır. 
+      <code>Require1.0</code> seçeneği kullanıcıya öntanımlı <code>Allow0.9</code> 
+      seçeneğinin davranışına verilen desteği kaldırma imkanını vermektedir.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Yönergesi</a></h2>
 <table class="directive">
@@ -3729,13 +3800,20 @@ davranılır.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Register non-standard HTTP methods</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Standart olamayan HTTP yöntemlerini belirler</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RegisterHttpMethod <var>yöntem</var> [<var>yöntem</var> [...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+</table>
+    <p>İlgili RFClerle uyumlu olmayan HTTP Yöntemleri Apache HTTPD'de isteğin 
+      işlenmesi sırasında  normal olarak reddedilir. Bundan kaçınmak için, uyumsuz 
+      HTTP yöntemlerini modüller destekli hale getirebilir.  
+      <code class="directive">RegisterHttpMethod</code> yönergesi böyle yöntemleri elle 
+      desteklenir yapmaya yarar. Bu tür yöntemler CGI gibi harici işlemlere 
+      aktarılıyorsa bu işlem yararlıdır.</p>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Yönergesi</a></h2>
 <table class="directive">
