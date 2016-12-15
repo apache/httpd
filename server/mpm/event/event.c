@@ -1967,12 +1967,16 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rc)) {
-                /* Woken up, either update timeouts or shutdown,
-                 * both logics are above.
+                /* Woken up, if we are exiting we must fall through to kill
+                 * kept-alive connections, otherwise we only need to update
+                 * timeouts (logic is above, so restart the loop).
                  */
-                continue;
+                if (!listener_may_exit) {
+                    continue;
+                }
+                timeout_time = 0;
             }
-            if (!APR_STATUS_IS_TIMEUP(rc)) {
+            else if (!APR_STATUS_IS_TIMEUP(rc)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
                              APLOGNO(03267)
                              "apr_pollset_poll failed.  Attempting to "
