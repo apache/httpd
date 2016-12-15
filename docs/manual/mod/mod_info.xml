@@ -118,7 +118,7 @@ configuration</description>
     <module>mod_info</module> will dump the pre-parsed configuration to
     <code>stdout</code> during server startup.</p>
 
-    <highlight langage="sh">
+    <highlight language="sh">
     httpd -DDUMP_CONFIG -k start
     </highlight>
     
