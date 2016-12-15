@@ -38,6 +38,8 @@
 
 
 <p>Provides a filter named <code>RATE_LIMIT</code> to limit client bandwidth.
+The throttling is applied to each HTTP response while it is transferred to the client,
+and not aggregated at IP/client level.
 The connection speed to be simulated is specified, in KiB/s, using the environment
 variable <code>rate-limit</code>.</p>
 
