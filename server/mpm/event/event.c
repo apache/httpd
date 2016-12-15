@@ -490,6 +490,9 @@ static void disable_listensocks(int process_slot)
 static void enable_listensocks(int process_slot)
 {
     int i;
+    if (listener_may_exit) {
+        return;
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00457)
                  "Accepting new connections again: "
                  "%u active conns (%u lingering/%u clogged/%u suspended), "
