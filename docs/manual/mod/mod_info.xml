@@ -125,7 +125,7 @@ configuration</description>
     <p>Pre-parsed means that directives like
     <directive type="section" module="core">IfDefine</directive> and
     <directive type="section" module="core">IfModule</directive> are
-    evaluated and environment varialbles are replaced. However it does
+    evaluated and environment variables are replaced. However it does
     not represent the final state of the configuration. In particular,
     it does not represent the merging or overriding that may happen
     for repeated directives.</p>
