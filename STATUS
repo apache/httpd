@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Follow up on check_headers() (r1773995) to restore EOC semantic.
      trunk patch: http://svn.apache.org/r1774286
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, rpluem
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
