@@ -117,6 +117,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Follow up on check_headers() (r1773995) to restore EOC semantic.
+     trunk patch: http://svn.apache.org/r1774286
+     2.4.x patch: trunk works
+     +1: ylavic, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -131,11 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1756976
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
      +1: ylavic
-
-  *) Follow up on check_headers() (r1773995) to restore EOC semantic.
-     trunk patch: http://svn.apache.org/r1774286
-     2.4.x patch: trunk works
-     +1: ylavic, rpluem, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
