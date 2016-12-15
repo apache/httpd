@@ -1865,7 +1865,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             if (terminate_mode == ST_UNGRACEFUL
                 || apr_atomic_read32(&connection_count) == 0)
                 break;
-            process_keepalive_queue(0); /* kill'em all early \m/ */
         }
 
         if (conns_this_child <= 0)
