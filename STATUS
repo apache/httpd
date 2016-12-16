@@ -118,13 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) APR_HAVE_foo is checked via #if, not #ifdef (since it should always be
-     defined, to either 0 or 1).
-     This fixes a compile error on Windows introduced by r1702948.
-     as well as straightens up two long-time glitches.
-     trunk patch: http://svn.apache.org/r1706595
-     2.4.x patch: trunk works
-     +1: rjung, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
