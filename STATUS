@@ -140,6 +140,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic
 
+  *) mod_socache_memcache: Use correct format pattern, "%lu" is wrong for
+     apr_uint64_t on some platforms.
+     Followup to r1649491 (trunk) resp. r1774016 (2.4.x).
+     trunk patch: http://svn.apache.org/r1774602
+     2.4.x patch: trunk works
+     +1: rjung
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
