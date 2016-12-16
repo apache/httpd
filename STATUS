@@ -118,6 +118,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_socache_memcache: Use correct format pattern, "%lu" is wrong for
+     apr_uint64_t on some platforms.
+     Followup to r1649491 (trunk) resp. r1774016 (2.4.x).
+     trunk patch: http://svn.apache.org/r1774602
+     2.4.x patch: trunk works
+     +1: rjung, jim, ylavic
+
+  *) APR_HAVE_foo is checked via #if, not #ifdef (since it should always be
+     defined, to either 0 or 1).
+     This fixes a compile error on Windows introduced by r1702948.
+     as well as straightens up two long-time glitches.
+     trunk patch: http://svn.apache.org/r1706595
+     2.4.x patch: trunk works
+     +1: rjung, jim, ylavic
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -140,26 +155,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim
 
-  *) mod_socache_memcache: Use correct format pattern, "%lu" is wrong for
-     apr_uint64_t on some platforms.
-     Followup to r1649491 (trunk) resp. r1774016 (2.4.x).
-     trunk patch: http://svn.apache.org/r1774602
-     2.4.x patch: trunk works
-     +1: rjung, jim
-
   *) mod_socache_memcache: Add ../generators to include path for Windows
      build. It now needs mod_status.h.
      Untested but exactly analogous to what works for
      mod_socache_shmcb and others.
      trunk patch: http://svn.apache.org/r1774609
-     2.4.x patch: trunk works
-     +1: rjung, jim
-
-  *) APR_HAVE_foo is checked via #if, not #ifdef (since it should always be
-     defined, to either 0 or 1).
-     This fixes a compile error on Windows introduced by r1702948.
-     as well as straightens up two long-time glitches.
-     trunk patch: http://svn.apache.org/r1706595
      2.4.x patch: trunk works
      +1: rjung, jim
 
