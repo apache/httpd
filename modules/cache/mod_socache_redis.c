@@ -322,16 +322,16 @@ static void socache_rd_status(ap_socache_instance_t *ctx, request_rec *r, int fl
                      stats->process_id, stats->uptime_in_seconds/3600);
              ap_rprintf(r, "<b>Clients::</b> Connected: <i>%d</i>, Blocked: <i>%d</i> <br />\n",
                      stats->connected_clients, stats->blocked_clients);
-             ap_rprintf(r, "<b>Memory::</b> Total: <i>%lu</i>, Max: <i>%lu</i>, Used: <i>%lu</i> <br />\n",
+             ap_rprintf(r, "<b>Memory::</b> Total: <i>%" APR_UINT64_T_FMT "</i>, Max: <i>%" APR_UINT64_T_FMT "</i>, Used: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                      stats->total_system_memory, stats->maxmemory, stats->used_memory);
              ap_rprintf(r, "<b>CPU::</b> System: <i>%u</i>, User: <i>%u</i><br />\n",
                      stats->used_cpu_sys, stats->used_cpu_user );
-             ap_rprintf(r, "<b>Connections::</b> Recd: <i>%lu</i>, Processed: <i>%lu</i>, Rejected: <i>%lu</i> <br />\n",
+             ap_rprintf(r, "<b>Connections::</b> Recd: <i>%" APR_UINT64_T_FMT "</i>, Processed: <i>%" APR_UINT64_T_FMT "</i>, Rejected: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                      stats->total_connections_received, stats->total_commands_processed,
                      stats->rejected_connections);
-             ap_rprintf(r, "<b>Cache::</b> Hits: <i>%lu</i>, Misses: <i>%lu</i> <br />\n",
+             ap_rprintf(r, "<b>Cache::</b> Hits: <i>%" APR_UINT64_T_FMT "</i>, Misses: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                      stats->keyspace_hits, stats->keyspace_misses);
-             ap_rprintf(r, "<b>Net::</b> Input bytes: <i>%lu</i>, Output bytes: <i>%lu</i> <br />\n",
+             ap_rprintf(r, "<b>Net::</b> Input bytes: <i>%" APR_UINT64_T_FMT "</i>, Output bytes: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                      stats->total_net_input_bytes, stats->total_net_output_bytes);
              if (stats->role == APR_RS_SERVER_MASTER)
                  role = "master";
@@ -350,17 +350,17 @@ static void socache_rd_status(ap_socache_instance_t *ctx, request_rec *r, int fl
                     stats->process_id, stats->uptime_in_seconds/3600, br);
             ap_rprintf(r, "Clients:: Connected: %d, Blocked: %d %s\n",
                     stats->connected_clients, stats->blocked_clients, br);
-            ap_rprintf(r, "Memory:: Total: %lu, Max: %lu, Used: %lu %s\n",
+            ap_rprintf(r, "Memory:: Total: %" APR_UINT64_T_FMT ", Max: %" APR_UINT64_T_FMT ", Used: %" APR_UINT64_T_FMT " %s\n",
                     stats->total_system_memory, stats->maxmemory, stats->used_memory,
                     br);
             ap_rprintf(r, "CPU:: System: %u, User: %u %s\n",
                     stats->used_cpu_sys, stats->used_cpu_user , br);
-            ap_rprintf(r, "Connections:: Recd: %lu, Processed: %lu, Rejected: %lu %s\n",
+            ap_rprintf(r, "Connections:: Recd: %" APR_UINT64_T_FMT ", Processed: %" APR_UINT64_T_FMT ", Rejected: %" APR_UINT64_T_FMT " %s\n",
                     stats->total_connections_received, stats->total_commands_processed,
                     stats->rejected_connections, br);
-            ap_rprintf(r, "Cache:: Hits: %lu, Misses: %lu %s\n",
+            ap_rprintf(r, "Cache:: Hits: %" APR_UINT64_T_FMT ", Misses: %" APR_UINT64_T_FMT " %s\n",
                     stats->keyspace_hits, stats->keyspace_misses, br);
-            ap_rprintf(r, "Net:: Input bytes: %lu, Output bytes: %lu %s\n",
+            ap_rprintf(r, "Net:: Input bytes: %" APR_UINT64_T_FMT ", Output bytes: %" APR_UINT64_T_FMT " %s\n",
                     stats->total_net_input_bytes, stats->total_net_output_bytes, br);
             if (stats->role == APR_RS_SERVER_MASTER)
                 role = "master";
