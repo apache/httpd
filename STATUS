@@ -138,14 +138,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      are already or about to be closed.
      trunk patch: http://svn.apache.org/r1774541
      2.4.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, jim
 
   *) mod_socache_memcache: Use correct format pattern, "%lu" is wrong for
      apr_uint64_t on some platforms.
      Followup to r1649491 (trunk) resp. r1774016 (2.4.x).
      trunk patch: http://svn.apache.org/r1774602
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, jim
 
   *) mod_socache_memcache: Add ../generators to include path for Windows
      build. It now needs mod_status.h.
@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      mod_socache_shmcb and others.
      trunk patch: http://svn.apache.org/r1774609
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
