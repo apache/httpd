@@ -318,15 +318,15 @@ static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int fl
                     stats->version , stats->pointer_size, stats->pid, stats->uptime/3600);
             ap_rprintf(r, "<b>Clients::</b> Structures: <i>%u</i>, Total: <i>%u</i>, Current: <i>%u</i> <br />\n",
                     stats->connection_structures, stats->total_connections, stats->curr_connections);
-            ap_rprintf(r, "<b>Storage::</b> Total Items: <i>%u</i>, Current Items: <i>%u</i>, Bytes: <i>%lu</i> <br />\n",
+            ap_rprintf(r, "<b>Storage::</b> Total Items: <i>%u</i>, Current Items: <i>%u</i>, Bytes: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                     stats->total_items, stats->curr_items, stats->bytes);
             ap_rprintf(r, "<b>CPU::</b> System: <i>%u</i>, User: <i>%u</i> <br />\n",
                     (unsigned)stats->rusage_system, (unsigned)stats->rusage_user );
             ap_rprintf(r, "<b>Cache::</b> Gets: <i>%u</i>, Sets: <i>%u</i>, Hits: <i>%u</i>, Misses: <i>%u</i> <br />\n",
                     stats->cmd_get, stats->cmd_set, stats->get_hits, stats->get_misses);
-            ap_rprintf(r, "<b>Net::</b> Input bytes: <i>%lu</i>, Output bytes: <i>%lu</i> <br />\n",
+            ap_rprintf(r, "<b>Net::</b> Input bytes: <i>%" APR_UINT64_T_FMT "</i>, Output bytes: <i>%" APR_UINT64_T_FMT "</i> <br />\n",
                     stats->bytes_read, stats->bytes_written);
-            ap_rprintf(r, "<b>Misc::</b> Evictions: <i>%lu</i>, MaxMem: <i>%u</i>, Threads: <i>%u</i> <br />\n",
+            ap_rprintf(r, "<b>Misc::</b> Evictions: <i>%" APR_UINT64_T_FMT "</i>, MaxMem: <i>%u</i>, Threads: <i>%u</i> <br />\n",
                     stats->evictions, stats->limit_maxbytes, stats->threads);
             ap_rputs("<hr><br />\n", r);
         }
@@ -335,15 +335,15 @@ static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int fl
                     stats->version , stats->pointer_size, stats->pid, stats->uptime/3600, br);
             ap_rprintf(r, "Clients:: Structures: %d, Total: %d, Current: %u %s\n",
                     stats->connection_structures, stats->total_connections, stats->curr_connections, br);
-            ap_rprintf(r, "Storage:: Total Items: %u, Current Items: %u, Bytes: %lu %s\n",
+            ap_rprintf(r, "Storage:: Total Items: %u, Current Items: %u, Bytes: %" APR_UINT64_T_FMT " %s\n",
                     stats->total_items, stats->curr_items, stats->bytes, br);
             ap_rprintf(r, "CPU:: System: %u, User: %u %s\n",
                     (unsigned)stats->rusage_system, (unsigned)stats->rusage_user , br);
             ap_rprintf(r, "Cache:: Gets: %u, Sets: %u, Hits: %u, Misses: %u %s\n",
                     stats->cmd_get, stats->cmd_set, stats->get_hits, stats->get_misses, br);
-            ap_rprintf(r, "Net:: Input bytes: %lu, Output bytes: %lu %s\n",
+            ap_rprintf(r, "Net:: Input bytes: %" APR_UINT64_T_FMT ", Output bytes: %" APR_UINT64_T_FMT " %s\n",
                     stats->bytes_read, stats->bytes_written, br);
-            ap_rprintf(r, "Misc:: Evictions: %lu, MaxMem: %u, Threads: %u %s\n",
+            ap_rprintf(r, "Misc:: Evictions: %" APR_UINT64_T_FMT ", MaxMem: %u, Threads: %u %s\n",
                     stats->evictions, stats->limit_maxbytes, stats->threads, br);
         }
     }
