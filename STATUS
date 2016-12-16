@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      as well as straightens up two long-time glitches.
      trunk patch: http://svn.apache.org/r1706595
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
