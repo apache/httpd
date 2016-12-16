@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1328305 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Le module Apache mod_rewrite</title>
+
+<summary>
+
+       <p><module>mod_rewrite</module> permet de modifier les requ&ecirc;tes
+       entrantes dynamiquement, en fonction de r&egrave;gles manipulant des <a
+       href="intro.html#regex">expressions rationnelles</a>. Vous pouvez
+       ainsi relier des URLs arbitraires &agrave; votre propre structure d'URLs
+       interne comme vous le souhaitez.</p>
+
+      <p>Il fournit un
+      m&eacute;canisme de manipulation d'URL particuli&egrave;rement souple et
+      puissant en supportant un nombre illimit&eacute; de r&egrave;gles et de
+      conditions attach&eacute;es &agrave; chaque r&egrave;gle. Les manipulations d'URLs
+      peuvent d&eacute;pendre de tests vari&eacute;s : les URLs peuvent
+      &ecirc;tre finement caract&eacute;ris&eacute;es en fonction de variables du serveur,
+      de variables d'environnement, d'en-t&ecirc;tes HTTP, de rep&egrave;res
+      temporels, de recherches dans des bases de donn&eacute;es
+      externes, ou m&ecirc;me de requ&ecirc;tes vers des bases de donn&eacute;es externes
+      et de diff&eacute;rents gestionnaires ou programmes externes.</p>
+
+      <p>Les r&egrave;gles de r&eacute;&eacute;criture peuvent agir sur l'ensemble des URLs (la partie chemin
+      et la cha&icirc;ne de param&egrave;tres) et peuvent &ecirc;tre utilis&eacute;es dans le contexte du serveur principal
+      (<code>httpd.conf</code>), mais aussi dans le contexte des
+      serveurs virtuels (sections <directive
+      type="section" module="core">VirtualHost</directive>), ou dans le
+      contexte des
+      r&eacute;pertoires (fichiers <code>.htaccess</code> et blocs
+      <code>&lt;Directory&gt;</code>. Le r&eacute;sultat
+      r&eacute;&eacute;crit peut conduire vers d'autres r&egrave;gles &agrave; un
+      traitement secondaire interne, une redirection vers une requ&ecirc;te
+      externe ou m&ecirc;me l'envoi vers un serveur mandataire, en fonction
+      des  <a href="flags.html">drapeaux</a> que vous attachez aux
+      r&egrave;gles</p>
+
+	<p>mod_rewrite &eacute;tant tr&egrave;s puissant, il peut par
+	cons&eacute;quent &ecirc;tre tr&egrave;s complexe. Ce document
+	compl&egrave;te la <a
+      href="../mod/mod_rewrite.html">documentation de
+      r&eacute;f&eacute;rence du module mod_rewrite</a>, et est sens&eacute; all&eacute;ger un
+      peu cette complexit&eacute;, et pr&eacute;senter des exemples largement
+      comment&eacute;s, ainsi que des situations courantes que vous
+      pourrez traiter avec mod_rewrite. Mais nous voulons aussi vous
+      montrer des situations o&ugrave; vous ne devrez pas utiliser
+      mod_rewrite, et lui pr&eacute;f&eacute;rer d'autres
+      fonctionnalit&eacute;s standard d'Apache, &eacute;vitant ainsi
+      d'entrer dans une complexit&eacute; inutile.</p>
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">documentation de
+r&eacute;f&eacute;rence de mod_rewrite</a></li>
+<li><a href="intro.html">Introduction aux expressions rationnelles et &agrave;
+mod_rewrite</a></li>
+<li><a href="remapping.html">Utilisation de mod_rewrite pour la
+redirection et la remise en correspondance avec le syst&egrave;me de
+fichiers des URLs</a></li>
+<li><a href="access.html">Utilisation de mod_rewrite pour le
+contr&ocirc;le d'acc&egrave;s</a></li>
+<li><a href="vhosts.html">Les serveurs virtuels dynamiques avec mod_rewrite</a></li>
+<li><a href="proxy.html">Les serveurs mandataires dynamiques avec mod_rewrite</a></li>
+<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
+<li><a href="advanced.html">Techniques avanc&eacute;es</a></li>
+<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
+<li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li>
+<li><a href="tech.html">D&eacute;tails techniques</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Documentation de
+r&eacute;f&eacute;rence de mod_rewrite</a></seealso>
+<seealso><a href="../urlmapping.html">Mise en correspondance des URLs
+avec le syst&egrave;me de fichiers</a></seealso>
+<seealso><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
+</a></seealso>
+<seealso><a href="../glossary.html">Glossaire</a></seealso>
+
+</manualpage>
+
+

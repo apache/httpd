@@ -1,0 +1,80 @@
+-*- mode:org -*-
+* Requirements:
+** lua 5.1 ( http://www.lua.org/ )
+** Apache HTTPD 2.2 ( http://httpd.apache.org/ ) or Apache HTTPD 2.3
+
+* Documentation
+  See docs/README
+
+* Building
+  For now, see docs/building-from-subversion.txt
+
+* To Consider
+  Allow definition of lua_State instances associated with arbitrary
+  pool using the pool's user_data constuct. There would, here, be two
+  types, pooled and singleton. On the other hand, singleton would work
+  fine for almost all cases -- the exception being a process or server
+  pool, and then we could stay singleton anyway and lock around it.
+
+  The current "server scope" behavior could, instead, fall into
+  connection scope, for long-lived connections, really we want thread
+  scope (which Brian Akins knows how to do). Is there a pool
+  associated with a thread? Contention on the pool is a pain in a
+  highly concurrent environment.
+
+  Could use apr_thread_data_(get|set) if I can find a way to hook into
+  thread destruction. Looks like apr threads let you use the standard
+  APR_POOL_DECLARE_ACCESSOR(thread); defined method, just need to look
+  up what form that takes. -- apr_thread_pool_get -- just attach to
+  that pool.
+
+  Given that, we can associate a hash of lua_State instances with
+  arbitrary pools, such as the request pool, thread pool, server pool,
+  etc. We then use the file as key into the hash. Users, able to
+  specify the handler function, can then make use of the same file
+  with different handlers to reuse states.
+
+  
+
+* Task List
+** TODO Use r->file to determine file, doing rewriting in translate_name   
+** TODO Provide means to get useful output from lua errors in response body
+   Probably have to put it on the vm spec for pre-handler errors, as
+   it is pre-handler, will prolly be on the request_config somewhere,
+   but sometimes cannot put there, so... fun
+** TODO Mapping in the server_rec
+** TODO Connection scoped vms
+** TODO Figure out how reentrancy works regarding filter chain stuff. 
+   Do we need new "threads"?
+** TODO Flesh out apw_*getvm for each flavor we allow
+** TODO Rework apw_sgetvm to use the create_vm stuff like apw_rgetvm
+** TODO apw_rgetvm needs to handle connection scoped vms     
+** TODO provide means to implement authn and authz providers
+** TODO: Flatten LuaHook* to LuaHook phase file fn ?
+** TODO: document or remove block sections
+** TODO: test per-dir behavior of block sections
+** TODO: Suppress internal details (fs path to scripts, etc) in error responses
+    
+* License
+  Apache License, Version 2.0,
+  
+  http://www.apache.org/licenses/LICENSE-2.0 
+
+  See NOTICE file for more information
+        
+* Problems and Patches:
+  Please use dev@httpd.apache.org for discussing mod_lua development
+  To subscribe send email to dev-subscribe@httpd.apache.org  
+  Note that this is for development discussion, not user support :-)
+   
+* Contributors Include
+** Brian McCallister
+** Paul Querna
+** Garrett Rooney
+** Martin Traverso
+** Brian Akins
+** Justin Erenkrantz
+** Philip M. Gollucci
+** Stefan Fritsch
+** Eric Covener
+** Daniel Gruno

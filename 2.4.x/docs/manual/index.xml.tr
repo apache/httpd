@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 1732097 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<indexpage metafile="index.xml.meta">
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Apache HTTP Sunucusu Sürüm &httpd.major;.&httpd.minor;
+Belgeleri</title>
+
+<category id="release"><title>Sürümlerin Dağıtım Bilgileri</title>
+    <page href="new_features_2_4.html">2.3/2.4’deki yeni özellikler</page>
+    <page href="new_features_2_2.html">Apache 2.1/2.2’deki yeni özellikler</page>
+    <page href="new_features_2_0.html">Apache 2.0’daki yeni özellikler</page>
+    <page href="upgrading.html">2.2’den 2.4’e yükseltme</page>
+    <page href="license.html">Apache Lisansı</page>
+</category>
+
+<category id="manual"><title>Başvuru Kılavuzu</title>
+    <page href="install.html">Derleme ve Kurulum</page>
+    <page href="invoking.html">Başlatma</page>
+    <page href="stopping.html">Durdurma ve Yeniden Başlatma</page>
+    <page href="mod/quickreference.html">Çalışma anı Yapılandırma Yönergeleri</page>
+    <page href="mod/">Modüller</page>
+    <page href="mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</page>
+    <page href="filter.html">Süzgeçler</page>
+    <page href="handler.html">Eylemciler</page>
+    <page href="expr.html">İfade Çözümleyici</page>
+    <page href="programs/">Sunucu ve Desteklenen Programlar</page>
+    <page href="glossary.html">Terimler</page>
+</category>
+
+<category id="usersguide"><title>Kullanıcı Kılavuzu</title>
+    <page href="getting-started.html">Başlarken</page>
+    <page href="bind.html">Adres ve Portları Dinleme</page>
+    <page href="configuring.html">Yapılandırma Dosyaları</page>
+    <page href="sections.html">Yapılandırma Bölümleri</page>
+    <page href="caching.html">İçerik Bellekleme</page>
+    <page href="content-negotiation.html">İçerik Dili Yönetimi</page>
+    <page href="dso.html">Devingen Paylaşımlı Nesneler (DSO’lar)</page>
+    <page href="env.html">Ortam Değişkenleri</page>
+    <page href="logs.html">Günlük Dosyaları</page>
+    <page href="urlmapping.html">URL’lerin Dosya Sistemi ile Eşlenmesi</page>
+    <page href="misc/perf-tuning.html">Başarım Arttırma</page>
+    <page href="misc/security_tips.html">Güvenlik İpuçları</page>
+    <page href="server-wide.html">Sunucu Genelinde Yapılandırma</page>
+    <page href="ssl/">SSL/TLS Şifrelemesi</page>
+    <page href="suexec.html">CGI için Suexec Desteği</page>
+    <page href="rewrite/">mod_rewrite ile URL Yeniden Yazma Rehberi</page>
+    <page href="vhosts/">Sanal Konaklar</page>
+</category>
+
+<category id="howto"><title>Nasıllar ve Öğreticiler</title>
+    <page href="howto/auth.html">Kimlik Doğrulama ve Yetkilendirme</page>
+    <page href="howto/access.html">Erişim Denetimi</page>
+    <page href="howto/cgi.html">CGI: Devingen İçerik</page>
+    <page href="howto/htaccess.html">.htaccess dosyaları</page>
+    <page href="howto/ssi.html">Sunucu Taraflı İçerik Yerleştirme (SSI)</page>
+    <page href="howto/public_html.html">Kullanıcı Dizinleri (public_html)</page>
+    <page href="howto/reverse_proxy.html">Ters vekil yapılandırma rehberi</page>
+</category>
+
+<category id="platform"><title>Platformlara Özgü Bilgiler</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">RPM tabanlı Sistemler (Redhat / CentOS / Fedora)</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">EBCDIC Port</page>
+</category>
+
+<category id="other"><title>Diğer Konular</title>
+    <page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
+    <page href="sitemap.html">Site Haritası</page>
+    <page href="developer/">Geliştiriciler için Belgeler</page>
+    <page href="http://httpd.apache.org/docs-project/">Belgelendirmeye Yardım</page>
+    <page href="misc/">Diğer Bilgiler</page>
+    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+</category>
+
+</indexpage>
+

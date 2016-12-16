@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+Upon adding a new module XML doc, you will need to:
+
+svn ps svn:eol-style native <alltextfiles>
+svn ps svn:keywords LastChangedRevision mod_allowmethods.xml
+
+in order for it to rebuild correctly.
+
+-->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_allowmethods.xml.meta">
+<name>mod_allowmethods</name>
+<description>Easily restrict what HTTP methods can be used on the server</description>
+<status>Experimental</status>
+<sourcefile>mod_allowmethods.c</sourcefile>
+<identifier>allowmethods_module</identifier>
+
+
+<summary>
+<p>This module makes it easy to restrict what HTTP methods can be
+used on a server. The most common configuration would be:</p>
+
+<highlight language="config">
+&lt;Location "/"&gt;
+   AllowMethods GET POST OPTIONS
+&lt;/Location&gt;
+</highlight>
+
+</summary>
+
+<directivesynopsis>
+<name>AllowMethods</name>
+<description>Restrict access to the listed HTTP methods</description>
+<syntax>AllowMethods reset|<em>HTTP-method</em>
+[<em>HTTP-method</em>]...</syntax>
+<default>AllowMethods reset</default>
+<contextlist><context>directory</context></contextlist>
+<status>Experimental</status>
+
+<usage>
+
+<p>The HTTP-methods are case sensitive and are generally, as per
+RFC, given in upper case. The GET and HEAD methods are treated as
+equivalent. The <code>reset</code> keyword can be used to
+turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
+
+<highlight language="config">
+&lt;Location "/svn"&gt;
+   AllowMethods reset
+&lt;/Location&gt;
+</highlight>
+
+<note><title>Caution</title>
+  <p>The TRACE method cannot be denied by this module;
+  use <directive module="core">TraceEnable</directive> instead.</p>
+</note>
+
+<p><module>mod_allowmethods</module> was written to replace the rather
+kludgy implementation of <directive module="core">Limit</directive> and
+<directive module="core">LimitExcept</directive>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

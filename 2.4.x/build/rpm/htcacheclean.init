@@ -1,0 +1,100 @@
+#!/bin/bash
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# htcacheclean    Startup script for the Apache cache cleaner
+#
+# chkconfig: - 85 15
+# description: The Apache htcacheclean daemon maintains and prunes the
+#              size of the mod_cache_disk cache directory.
+# processname: htcacheclean
+# pidfile: /var/log/httpd/htcacheclean.pid
+# config: /etc/sysconfig/htcacheclean
+#
+### BEGIN INIT INFO
+# Provides: htcacheclean
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Should-Start: httpd
+# Short-Description: start and stop Apache htcacheclean
+# Description: The Apache htcacheclean daemon maintains a mod_cache_disk
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# What were we called? Multiple instances of the same daemon can be
+# created by creating suitably named symlinks to this startup script
+prog=$(basename $0 | sed -e 's/^[SK][0-9][0-9]//')
+
+if [ -f /etc/sysconfig/${prog} ]; then
+        . /etc/sysconfig/${prog}
+fi
+
+# Path to htcacheclean, server binary, and short-form for messages.
+htcacheclean=${HTTPD-/usr/sbin/htcacheclean}
+lockfile=${LOCKFILE-/var/lock/subsys/${prog}}
+pidfile=/var/run/${prog}.pid
+interval=${INTERVAL-10}
+cachepath=${CACHEPATH-/var/cache/httpd/cache-root}
+limit=${LIMIT-100M}
+RETVAL=0
+
+start() {
+        echo -n $"Starting $prog: "
+        daemon --pidfile=${pidfile} $htcacheclean -d "$interval" -p "$cachepath" -l "$limit" -P "$pidfile" $OPTIONS
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && touch ${lockfile}
+        return $RETVAL
+}
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc -p ${pidfile} $htcacheclean
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f ${lockfile}
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+        status -p ${pidfile} $htcacheclean
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  condrestart)
+	if status -p ${pidfile} $htcacheclean >&/dev/null; then
+		stop
+		start
+	fi
+	;;
+  *)
+	echo $"Usage: $prog {start|stop|restart|condrestart|status|help}"
+	exit 1
+esac
+
+exit $RETVAL

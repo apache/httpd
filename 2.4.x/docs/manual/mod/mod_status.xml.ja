@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis metafile="mod_status.xml.meta">
+<!-- English Revision: 668628:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<name>mod_status</name>
+<description>サーバの活動状況と性能に関する情報を提供する</description>
+<status>Base</status>
+<sourcefile>mod_status.c</sourcefile>
+<identifier>status_module</identifier>
+
+
+<summary>
+    <p>この Status モジュールによりサーバ管理者はサーバがどのくらい
+    の性能で動作しているかを知ることができるようになります。
+    現時点でのサーバの統計情報を読みやすい形式で表した HTML ページが
+    表示されます。必要であれば、このページは自動的にリフレッシュさせる
+    こともできます (互換性のあるブラウザを使用している場合)。
+    別に、現時点でのサーバの状態を単純な機械読み取り可能なリストで
+    表すページもあります。</p>
+
+    <p>表示される情報は:</p>
+
+    <ul>
+      <li>リクエストを扱っているワーカーの数</li>
+
+      <li>アイドル (訳注: リクエストを扱っていない) ワーカーの数</li>
+
+      <li>各ワーカーの状態、ワーカーが扱ったリクエストの数、
+      ワーカーが送った総バイト数 (*)</li>
+
+      <li>総アクセス数と総バイト数 (*)</li>
+
+      <li>サーバが起動もしくは再起動された時刻と動作している時間</li>
+
+      <li>平均の 1 秒あたりのリクエスト数、1 秒あたりの送られたバイト数、
+      リクエストあたりのバイト数 (*)</li>
+
+      <li>各ワーカーと Apache 全体で使用されている CPU の割合 (*)</li>
+
+      <li>現時点のホストと処理されているリクエスト (*)</li>
+    </ul>
+
+    <p>"(*)" の付いている情報を表示するには 
+    <directive module="mod_status">ExtendedStatus</directive> 
+    が <code>On</code> になっている必要があります。</p>
+</summary>
+
+<section id="enable">
+    <title>Status を使用可能にする</title>
+
+    <p>example.com ドメインからのブラウザのみに対して
+    ステータスの報告を使用可能にするには
+    以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
+<example>
+    &lt;Location /server-status&gt;<br />
+    SetHandler server-status<br />
+<br />
+    Order Deny,Allow<br />
+    Deny from all<br />
+    Allow from .example.com<br />
+    &lt;/Location&gt;
+</example>
+
+    <p>これで、サーバの統計情報をウェブブラウザを使って
+    <code>http://your.server.name/server-status</code> をアクセスすることにより
+    知ることができるようになります。</p>
+</section>
+
+<section id="autoupdate">
+
+    <title>自動更新</title>
+    <p>ブラウザが「リフレッシュ」機能をサポートしていれば、ステータスページを
+    自動的に更新するようにできます。N 秒毎に更新させるためには
+    <code>http://your.server.name/server-status?refresh=N</code>
+    というページをアクセスしてください。</p>
+
+</section>
+
+<section id="machinereadable">
+
+    <title>機械読み取り可能なステータスファイル</title>
+    <p><code>http://your.server.name/server-status?auto</code> を
+    アクセスすることにより、ステータスファイルの機械読み取り可能なバージョンを
+    得ることができます。これは自動的に実行されるときに便利です。
+    Apache の <code>/support</code> ディレクトリにある
+    Perl プログラム <code>log_server_status</code> を見てください。</p>
+
+    <note>
+      <strong><module>mod_status</module> がサーバに組み込まれている
+      場合、ハンドラの機能はディレクトリ<em>毎</em>のファイル
+      (<em>すなわち</em>、<code>.htaccess</code>) も含む<em>すべて</em>の
+      設定ファイルで使用可能になることには注意をしておく必要があります。
+      これは、サイトによってはセキュリティに関する望ましくない結果を
+      もたらすことがあるかもしれません。</strong>
+    </note>
+
+</section>
+
+<directivesynopsis>
+
+<name>ExtendedStatus</name>
+<description>各リクエストに対して拡張ステータス情報を保存する</description>
+<syntax>ExtendedStatus On|Off</syntax>
+<default>ExtendedStatus Off</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>この設定はサーバ全体に対して適用され、バーチャルホスト毎に
+    変更することはできません。拡張ステータス情報の収集はサーバの
+    動作を遅くすることがあります。</p>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+
+<name>SeeRequestTail</name>
+<description>リクエストの最初の 63 文字か最後の 63 文字
+のどちらを mod_status が表示するかを決める</description>
+<syntax>SeeRequestTail On|Off</syntax>
+<default>SeeRequestTail Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Apache 2.2.7 以降</compatibility>
+
+<usage>
+    <p><code>ExtendedStatus On</code> に設定すると mod_status 
+    は処理中のリクエスト<transnote>の文字列</transnote>を表示します。
+    歴史的な理由で、リクエストのうちの63文字だけが表示用に記録されます。
+    このディレクティブで、最初の63文字を記録する(従来からの動作、
+    そして現在もデフォルト)か、最後の63文字を記録するかを決めます。
+    もちろん、リクエストの長さが64文字以上のときに効果があります
+    <transnote>63文字以下だと結果的に同じ動作</transnote>。</p>
+
+    <p>Apache が <code
+    >GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code
+    > というリクエストを扱っているとき、 mod_status は以下のように表示します:
+    </p>
+
+    <table border="1">
+      <tr>
+        <th>Off (デフォルト)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
+

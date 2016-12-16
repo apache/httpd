@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_example_hooks.xml.meta">
+
+<name>mod_example_hooks</name>
+<description>Illustration de l'API des modules Apache</description>
+<status>Experimental</status>
+<sourcefile>mod_example_hooks.c</sourcefile>
+<identifier>example_hooks_module</identifier>
+
+<summary>
+    <p>Certains fichiers situ&eacute;s dans le r&eacute;pertoire
+    <code>modules/examples</code> de l'arborescence de la
+    distribution d'Apache sont fournis &agrave; titre d'exemples pour ceux qui
+    souhaitent &eacute;crire des modules qui utilisent l'API d'Apache.</p>
+
+    <p>Le fichier principal est <code>mod_example_hooks.c</code>, qui
+    constitue une illustration exhaustive des diff&eacute;rents m&eacute;canismes et
+    syntaxes d'appels. En aucun cas un module additionnel n'aura &agrave;
+    inclure des routines pour tous les appels - il n'en n&eacute;cessitera au
+    contraire qu'un petit nombre !</p>
+
+    <p>Le module example_hooks fonctionne r&eacute;ellement. Si vous le chargez dans
+    votre serveur, activez le gestionnaire "example-hooks-handler" dans une
+    section location, et essayez d'acc&eacute;der &agrave; la zone du site web
+    correspondante, vous verrez s'afficher certaines sorties que le
+    module example_hooks produit au cours des diff&eacute;rents appels.</p>
+</summary>
+
+<section id="compiling"><title>Compilation du module example_hooks</title>
+
+    <p>Pour inclure le module example_hooks dans votre serveur, effectuez les
+    &eacute;tapes suivantes :</p>
+
+    <ol>
+      <li>Ex&eacute;cutez <program>configure</program> avec l'option
+      <code>--enable-example-hooks</code>.</li>
+
+      <li>Compilez le serveur (ex&eacute;cutez la commande
+      "<code>make</code>").</li>
+    </ol>
+
+    <p>Pour ajouter votre propre module :</p>
+
+    <ol type="A">
+      <li><code>cp modules/examples/mod_example_hooks.c
+      modules/nouveau_module/<em>mod_monexemple.c</em></code></li>
+
+      <li>Modifiez le fichier.</li>
+
+      <li>Cr&eacute;ez <code>modules/nouveau_module/config.m4</code>.
+        <ol>
+          <li>Ajoutez <code>APACHE_MODPATH_INIT(nouveau_module)</code>.</li>
+          <li>Copiez la ligne APACHE_MODULE contenant "example_hooks" depuis
+	  <code>modules/examples/config.m4</code>.</li>
+          <li>Remplacez le premier argument "example-hooks" par
+	  <em>monexemple</em>.</li>
+          <li>Remplacez le second argument par une br&egrave;ve description de
+	  votre module. Cette description sera utilis&eacute;e par la commande
+	  <code>configure --help</code>.</li>
+          <li>Si la compilation de votre module n&eacute;cessite des drapeaux
+	  de compilation C, des drapeaux d'&eacute;dition de liens, ou de
+	  biblioth&egrave;ques suppl&eacute;mentaires, ajoutez les respectivement &agrave;
+	  CFLAGS, LDFLAGS et LIBS. Reportez-vous aux fichiers
+	  <code>config.m4</code> des r&eacute;pertoires des autres modules pour
+	  plus d'exemples.</li>
+          <li>Ajoutez <code>APACHE_MODPATH_FINISH</code>.</li>
+        </ol>
+      </li>
+
+      <li>Cr&eacute;ez le fichier
+      <code>module/nouveau_module/Makefile.in</code>.
+      Si la compilation de votre module ne n&eacute;cessite pas d'instructions
+      particuli&egrave;res, ce fichier ne doit contenir que la ligne
+      <code>include $(top_srcdir)/build/special.mk</code>.</li>
+
+      <li>Ex&eacute;cutez ./buildconf &agrave; la racine du r&eacute;pertoire.</li>
+
+      <li>Compilez le serveur apr&egrave;s avoir ex&eacute;cut&eacute; la commande configure
+      avec l'option --enable-monexemple.</li>
+
+    </ol>
+</section>
+
+<section id="using"><title>Utilisation du module
+<code>mod_example_hooks</code></title>
+
+    <p>Pour activer le module example_hooks, ajoutez &agrave; votre fichier
+    <code>httpd.conf</code> un bloc du style :</p>
+<highlight language="config">
+&lt;Location "/example-hooks-info"&gt;
+   SetHandler example-hooks-handler
+&lt;/Location&gt;
+</highlight>
+
+    <p>Vous pouvez aussi ajouter ce qui suit dans un fichier <a
+    href="core.html#accessfilename"><code>.htaccess</code></a>, puis
+    acc&eacute;der au fichier "test.example" &agrave; partir du r&eacute;pertoire
+    correspondant :</p>
+
+<highlight language="config">
+   AddHandler example-hooks-handler ".example"
+   </highlight>
+
+    <p>Apr&egrave;s avoir recharg&eacute; la configuration ou red&eacute;marr&eacute; votre serveur,
+    vous devriez pouvoir acc&eacute;der &agrave; ce fichier et voir s'afficher ce qui
+    a &eacute;t&eacute; d&eacute;crit plus haut.</p>
+</section>
+
+<directivesynopsis>
+<name>Example</name>
+<description>Directive de d&eacute;monstration pour illustrer l'API des modules
+Apache</description>
+<syntax>Example</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+
+<usage>
+    <p>La directive <directive>Example</directive> n'a pour fonction que
+    de d&eacute;finir un drapeau de d&eacute;monstration que le gestionnaire de
+    contenu du module example_hooks va afficher. Elle ne poss&egrave;de aucun
+    argument. Si vous naviguez vers une URL &agrave; laquelle le gestionnaire
+    de contenu example_hooks s'applique, vous verrez s'afficher les routines
+    du module, ainsi que l'ordre dans lequel elles ont &eacute;t&eacute; appel&eacute;es pour
+    servir le document demand&eacute;. On peut observer l'effet de cette
+    directive dans la phrase "<code>Example
+    directive declared here: YES/NO</code>".</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

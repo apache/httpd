@@ -1,0 +1,14 @@
+# testing with conf/test14.conf
+AH00112: Warning: DocumentRoot [/projects/apache/web] does not exist
+[core:warn] directory /projects/apache/web on line 5 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 17 of "./conf/test14.conf"
+[core:warn] directory /projects/apache/web/intranet on line 8 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 17 of "./conf/test14.conf"
+AH00112: Warning: DocumentRoot [/projects/perl/web] does not exist
+[core:warn] directory /projects/perl/web on line 5 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 19 of "./conf/test14.conf"
+[core:warn] directory /projects/perl/web/intranet on line 8 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 19 of "./conf/test14.conf"
+AH00112: Warning: DocumentRoot [/projects/mines/web] does not exist
+[core:warn] directory /projects/mines/web on line 5 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 21 of "./conf/test14.conf"
+[core:warn] directory /projects/mines/web/intranet on line 8 of macro 'myvirtualhost' (defined on line 3 of "./conf/test14.conf") used on line 21 of "./conf/test14.conf"
+[core:error] done line 23. on line 23 of ./conf/test14.conf
+AH00526: Syntax error on line 23 of ./conf/test14.conf:
+Configuration processing stopped by Error directive
+# exit: 1

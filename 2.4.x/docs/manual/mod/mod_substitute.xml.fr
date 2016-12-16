@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1743885 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_substitute.xml.meta">
+
+<name>mod_substitute</name>
+<description>Effectue des opérations de recherche/remplacement sur les
+corps de réponses</description>
+<status>Extension</status>
+<sourcefile>mod_substitute.c</sourcefile>
+<identifier>substitute_module</identifier>
+<compatibility>Disponible depuis la version 2.2.7
+du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p><module>mod_substitute</module> fournit un mécanisme permettant
+    d'effectuer des substitutions de chaînes fixes ou d'expressions
+    rationnelles sur les corps de réponses.</p>
+</summary>
+
+<directivesynopsis>
+<name>Substitute</name>
+<description>Modèle de substition dans le contenu de la
+réponse</description>
+<syntax>Substitute <var>s/modèle/substitution/[infq]</var></syntax>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>Substitute</directive> permet de
+    spécifier un modèle de recherche/remplacement à appliquer au corps
+    de la réponse.</p>
+
+    <p>La signification du modèle peut être modifiée via toute
+    combinaison de ces drapeaux :</p>
+
+    <dl>
+        <dt><code>i</code></dt>
+        <dd>Effectue une comparaison sans tenir compte de la casse.</dd>
+        <dt><code>n</code></dt>
+        <dd>Par défaut, le modèle est traité en tant qu'expression
+	rationnelle. Le drapeau <code>n</code> force le traitement du
+	modèle en tant que chaîne fixe.</dd>
+        <dt><code>f</code></dt>
+	<!-- Paragraphe suivant à améliorer par un connaisseur de ce
+	module -->
+        <dd>Avec le drapeau <code>f</code>, <code>mod_substitute</code> met à plat le
+	résultat d'une substitution (les conteneurs ou buckets ne sont
+	pas dissociés), ce qui permet à d'éventuelles substitutions
+	ultérieures de s'effectuer sur cette dernière. C'est le
+	comportement par défaut.</dd>
+        <dt><code>q</code></dt>
+	<!-- Paragraphe suivant à améliorer par un connaisseur de ce
+	module -->
+        <dd>Avec le drapeau <code>q</code>, <code>mod_substitute</code> dissocie les
+	conteneurs (ou buckets) après chaque substitution. Ceci peut
+	améliorer la rapidité de la réponse et diminuer la quantité de
+	mémoire utilisée, mais ne doit être utilisé que s'il n'existe
+	aucune possibilité pour que le résultat d'une substitution ne
+	corresponde au modèle ou à l'expression rationnelle d'une
+	substitution ultérieure.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+        <highlight language="config">
+&lt;Location "/&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s/foo/bar/ni"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <p>Si le modèle ou la chaîne de substitution contient un caractère
+    slash '/', il faut utiliser un autre délimiteur :</p>
+
+    <example><title>Exemple d'utilisation d'un délimiteur
+    alternatif</title>
+        <highlight language="config">
+&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+    <p>Lorsqu'on utilise des expressions rationnelles, on peut insérer
+    des références arrières dans les opérations de comparaison et de
+    substitution, comme illustré dans l'exemple suivant :</p>
+    <example><title>Exemple d'utilisation de références arrières et de captures</title>
+        <highlight language="config">
+&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    # "foo=k,bar=k" -> "foo/bar=k"
+    Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Un scénario courant d'utilisation de <code>mod_substitute</code>
+    est la situation où un serveur frontal mandate des requêtes pour un
+    serveur d'arrière-plan qui renvoie des documents HTML contenant des
+    URLs intégrées codées en dur qui font référence à ce serveur
+    d'arrière-plan. Ces URLs ne fonctionnent pas pour l'utilisateur
+    final car le serveur d'arrière-plan est hors d'atteinte.</p>
+
+    <p>On peut, dans ce cas, utiliser <code>mod_substitute</code> pour
+    réécrire ces URLs afin qu'elles soit utilisables dans la partie
+    située derrière le mandataire :</p>
+
+    <example><title>Réécriture des URLs intégrées à un contenu mandaté</title>
+    <highlight language="config">
+ProxyPass        "/blog/" "http://internal.blog.example.com"
+ProxyPassReverse "/blog/" "http://internal.blog.example.com/"
+
+Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    </highlight>
+    </example>
+
+    <p>La directive <directive
+    module="mod_proxy">ProxyPassReverse</directive> modifie tout en-tête
+    <code>Location</code> (redirection) envoyé par le serveur
+    d'arrière-plan et, dans cet exemple, la directive
+    <directive>Substitute</directive> se charge à son tour de la modification de
+    la réponse HTML.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SubstituteMaxLineLength</name>
+<description>Définit la longueur de ligne maximale</description>
+<syntax>SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</syntax>
+<default>SubstituteMaxLineLength 1m</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.11 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La taille de la ligne traitée par <module>mod_substitute</module>
+    est limitée afin de restreindre l'utilisation des ressources
+    mémoire. La directive <directive>SubstituteMaxLineLength</directive>
+    permet de définir cette limite. La valeur de la limite peut être
+    spécifiée sous la forme d'un nombre d'octets, et peut être suffixée
+    par une des lettres <code>b</code>, <code>B</code>, <code>k</code>,
+    <code>K</code>, <code>m</code>, <code>M</code>, <code>g</code> ou
+    <code>G</code> pour fournir une valeur respectivement en octets,
+    kiloOctets, mégaOctets ou gigaOctets.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location "/"&gt;
+    AddOutputFilterByType SUBSTITUTE text/html
+    SubstituteMaxLineLength 10m
+    Substitute "s/foo/bar/ni"
+&lt;/Location&gt;
+        </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SubstituteInheritBefore</name>
+<description>Modifie l'ordre de fusion des modèles hérités</description>
+<syntax>SubstituteInheritBefore on|off</syntax>
+<default>SubstituteInheritBefore on</default>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible à partir de la version 2.4.17 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de définir si l'on applique les modèles
+<directive module="mod_substitute">Substitute</directive> hérités en premier
+(valeur <code>on</code>), ou après ceux du
+contexte courant (valeur <code>off</code>). La valeur de la directive
+<directive>SubstituteInheritBefore</directive> est
+elle-même héritée, et les contextes qui en héritent (ceux qui ne
+définissent pas explicitement leur propre directive
+<directive>SubstituteInheritBefore</directive>) appliqueront donc
+l'ordre de fusion défini le plus proche.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

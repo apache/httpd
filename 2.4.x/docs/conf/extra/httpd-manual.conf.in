@@ -1,0 +1,33 @@
+#
+# Provide access to the documentation on your server as
+#  http://yourserver.example.com/manual/
+# The documentation is always available at
+#  http://httpd.apache.org/docs/2.4/
+#
+# Required modules: mod_alias, mod_authz_core, mod_authz_host,
+#                   mod_setenvif, mod_negotiation
+#
+
+AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn))?(/.*)?$ "@exp_manualdir@$1"
+
+<Directory "@exp_manualdir@">
+    Options Indexes
+    AllowOverride None
+    Require all granted
+
+    <Files *.html>
+        SetHandler type-map
+    </Files>
+    # .tr is text/troff in mime.types!
+    <Files *.html.tr.utf8>
+        ForceType "text/html; charset=utf-8"
+    </Files>
+
+    AddLanguage da .da
+
+    SetEnvIf Request_URI ^/manual/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)/ prefer-language=$1
+    RedirectMatch 301 ^/manual(?:/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)){2,}(/.*)?$ /manual/$1$2
+
+    LanguagePriority en da de es fr ja ko pt-br ru tr
+    ForceLanguagePriority Prefer Fallback
+</Directory>

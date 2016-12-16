@@ -1,0 +1,3 @@
+# testing with conf/test07.conf
+httpd: Syntax error on line 2 of ./conf/test07.conf: macro 'foo' (defined on line 2 of "./conf/test07.conf")\n\tcontents error: expected token not found: </Macro>
+# exit: 1

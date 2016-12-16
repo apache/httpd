@@ -1,0 +1,102 @@
+#pragma D depends_on provider io
+typedef struct request_rec {
+    uintptr_t pool;
+    uintptr_t connection;
+    uintptr_t server;
+    uintptr_t next;
+    uintptr_t prev;
+    uintptr_t main;
+    char *the_request;
+    int assbackwards;
+    int proxyreq;
+    int header_only;
+    char *protocol;
+    int proto_num;
+    char *hostname;
+    int64_t request_time;
+    char *status_line;
+    int status;
+    const char *method;
+    int method_number;
+    int64_t allowed;
+    uintptr_t allowed_xmethods;
+    uintptr_t allowed_methods;
+    offset_t sent_bodyct;
+    offset_t bytes_sent;
+    int64_t mtime;
+    int chunked;
+    char *range;
+    offset_t clength;
+    offset_t remaining;
+    offset_t read_length;
+    int read_body;
+    int read_chunked;
+    unsigned expecting_100;
+    uintptr_t headers_in;
+    uintptr_t headers_out;
+    uintptr_t err_headers_out;
+    uintptr_t subprocess_env;
+    uintptr_t notes;
+    char *content_type;   /* Break these out --- we dispatch on 'em */
+    char *handler;        /* What we *really* dispatch on */
+    char *content_encoding;
+    uintptr_t content_languages;
+    char *vlist_validator;
+    char *user;
+    char *ap_auth_type;
+    int no_cache;
+    int no_local_copy;
+    char *unparsed_uri;
+    char *uri;
+    char *filename;
+    char *canonical_filename;
+    char *path_info;
+    char *args;
+    /* finfo */
+    uintptr_t finfo_pool;
+    int32_t finfo_valid;
+    int32_t finfo_protection;
+    int32_t finfo_filetype;
+    int finfo_user;
+    int finfo_group;
+    uint64_t finfo_inode;
+    uint64_t finfo_device;
+    int32_t finfo_nlink;
+    offset_t finfo_size;
+    offset_t finfo_csize;
+    int64_t finfo_atime;
+    int64_t finfo_mtime;
+    int64_t finfo_ctime;
+    char *finfo_fname;
+    char *finfo_name;
+    uintptr_t finfo_ffilehand;
+    /* parsed_uri */
+    char *uri_scheme;
+    char *uri_hostinfo;
+    char *uri_user;
+    char *uri_password;
+    char *uri_hostname;
+    char *uri_port_str;
+    char *uri_path;
+    char *uri_query;
+    char *uri_fragment;
+    uintptr_t uri_hostent;
+    uint16_t uri_port;
+    unsigned uri_is_initialized:1;
+    unsigned uri_dns_looked_up:1;
+    unsigned uri_dns_resolved:1;
+
+    /* back to request_rec */
+    int used_path_info;
+    uintptr_t per_dir_config;
+    uintptr_t request_config;
+    uintptr_t htaccess;
+    uintptr_t output_filters;
+    uintptr_t input_filters;
+    uintptr_t proto_output_filters;
+    uintptr_t proto_input_filters;
+    int eos_sent;
+    uintptr_t kept_body;
+    uintptr_t invoke_mtx;
+} request_rec;
+

@@ -1,0 +1,170 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 1673563 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="handler.xml.meta">
+
+  <title>Utilisation des gestionnaires d'Apache (handlers)</title>
+
+  <summary>
+    <p>Ce document d&eacute;crit l'utilisation des gestionnaires d'Apache (handlers).</p>
+  </summary>
+
+  <section id="definition">
+    <title>Qu'est-ce qu'un gestionnaire ?</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imagemap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="core">SetHandler</directive>
+      </directivelist>
+    </related>
+
+
+    <p>Un "gestionnaire" est une repr&eacute;sentation interne &agrave; Apache de l'action
+    qui doit &ecirc;tre entreprise quand un fichier est appel&eacute;. En g&eacute;n&eacute;ral, les
+    fichiers ont des gestionnaires implicites, bas&eacute;s sur le type du fichier.
+    Normalement, tous les fichiers sont trait&eacute;s simplement par le serveur,
+    mais certains types de fichiers sont "g&eacute;r&eacute;s" s&eacute;par&eacute;ment.</p>
+
+    <p>Les gestionnaires peuvent aussi &ecirc;tre configur&eacute;s explicitement,
+    soit en fonction des extensions des noms de fichier, soit en fonction
+    du chemin du fichier,
+    sans faire r&eacute;f&eacute;rence au type de fichier. Ceci a le double avantage d'&ecirc;tre
+    une solution plus &eacute;l&eacute;gante, et aussi d'autoriser &agrave; associer &agrave; la fois
+    un type <strong>et</strong> un gestionnaire avec un fichier. (Voir aussi <a
+    href="mod/mod_mime.html#multipleext">Fichiers avec extensions
+    multiples</a>.)</p>
+
+    <p>Les gestionnaires peuvent &ecirc;tre soit partie int&eacute;grante
+    du serveur ou inclus dans un module, soit ajout&eacute;s &agrave; l'aide de la directive
+    <directive module="mod_actions">Action</directive>. Les gestionnaires
+    int&eacute;gr&eacute;s dans la distribution standard se pr&eacute;sentent comme suit :</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: envoie le fichier en utilisant
+      le <code>default_handler()</code>, qui est le gestionnaire utilis&eacute; par
+      d&eacute;faut pour traiter les contenus statiques. (core)</li>
+
+      <li><strong>send-as-is</strong>: envoie les fichiers avec en-t&ecirc;tes HTTP
+      tels quels. (<module>mod_asis</module>)</li>
+
+      <li><strong>cgi-script</strong>: traite le fichier comme un
+      script CGI. (<module>mod_cgi</module>)</li>
+
+      <li><strong>imap-file</strong>: Traite le fichier comme un ensemble
+      de r&egrave;gles de descriptions d'images (imagemap).
+      (<module>mod_imagemap</module>)</li>
+
+      <li><strong>server-info</strong>: Extrait des informations sur la
+      configuration du serveur. (<module>mod_info</module>)</li>
+
+      <li><strong>server-status</strong>: R&eacute;dige un rapport sur le statut
+      du serveur. (<module>mod_status</module>)</li>
+
+      <li><strong>type-map</strong>: Traite le fichier comme une description
+      de type pour la n&eacute;gociation du contenu.
+      (<module>mod_negotiation</module>)</li>
+    </ul>
+  </section>
+  <section id="examples">
+    <title>Exemples</title>
+
+    <section id="example1">
+      <title>Modification d'un contenu statique &agrave; l'aide d'un script CGI</title>
+
+      <p>Les directives suivantes vont faire en sorte que les requ&ecirc;tes pour
+      des fichiers poss&eacute;dant une extension <code>html</code> d&eacute;clenchent
+      l'ex&eacute;cution du script CGI <code>footer.pl</code>.</p>
+
+      <highlight language="config">
+Action add-footer /cgi-bin/footer.pl
+AddHandler add-footer .html
+      </highlight>
+
+      <p>&Agrave; ce moment-l&agrave;, le script CGI se charge d'envoyer le document
+      initialement demand&eacute; (r&eacute;f&eacute;renc&eacute; par la variable d'environnement
+      <code>PATH_TRANSLATED</code>) et d'effectuer tous ajout ou modification
+      voulus.</p>
+
+    </section>
+    <section id="example2">
+      <title>Fichiers avec en-t&ecirc;tes HTTP</title>
+
+      <p>Les directives suivantes vont activer le gestionnaire
+      <code>send-as-is</code>, qui est utilis&eacute; pour les fichiers qui poss&egrave;dent
+      leurs propres en-t&ecirc;tes HTTP. Tous les fichiers situ&eacute;s dans le r&eacute;pertoire
+      <code>/web/htdocs/asis/</code> seront trait&eacute;s par le gestionnaire
+      <code>send-as-is</code>, sans tenir compte de l'extension
+      de leur nom de fichier.</p>
+
+      <highlight language="config">
+&lt;Directory "/web/htdocs/asis"&gt;
+    SetHandler send-as-is
+&lt;/Directory&gt;
+      </highlight>
+
+    </section>
+  </section>
+  <section id="programmer">
+    <title>Note du d&eacute;veloppeur</title>
+
+    <p>Pour impl&eacute;menter la fonctionnalit&eacute; des gestionnaires, l'
+    <a href="developer/API.html">API Apache</a> a fait l'objet d'un ajout
+    que vous pourriez &ecirc;tre amen&eacute; &agrave; utiliser.
+
+    Plus pr&eacute;cis&eacute;ment, un nouvel enregistrement a &eacute;t&eacute; ajout&eacute; &agrave; la structure
+    <code>request_rec</code> :</p>
+
+    <highlight language="c">
+      char *handler
+    </highlight>
+
+    <p>Si vous voulez que votre module d&eacute;clenche l'utilisation d'un
+    gestionnaire, il vous suffit de d&eacute;finir <code>r-&gt;handler</code> avec
+    le nom du gestionnaire &agrave; n'importe quel moment avant l'&eacute;tape
+    <code>invoke_handler</code>
+    de la requ&ecirc;te. Les gestionnaires sont impl&eacute;ment&eacute;s comme auparavant,
+    quoique l'on utilise le nom du gestionnaire &agrave; la place d'un type
+    de contenu. Bien que ce ne soit pas obligatoire, la convention de nommage
+    des gestionnaires stipule l'utilisation d'un mot compos&eacute; s&eacute;par&eacute; par des
+    tirets, sans slashes, afin de ne pas interf&eacute;rer avec l'espace de nommage
+    des types de m&eacute;dia.</p>
+  </section>
+</manualpage>
+
+
+
+
+

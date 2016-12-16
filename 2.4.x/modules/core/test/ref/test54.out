@@ -1,0 +1,6 @@
+# testing with conf/test54.conf
+[macro:warn] macro 'foo' (defined on line 2 of "./conf/test54.conf"): empty contents!
+[core:error] done line 6. on line 6 of ./conf/test54.conf
+AH00526: Syntax error on line 6 of ./conf/test54.conf:
+Configuration processing stopped by Error directive
+# exit: 1

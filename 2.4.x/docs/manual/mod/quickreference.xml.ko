@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 395228:1070904 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<quickreference metafile="quickreference.xml.meta">
+  <title>지시어 빠른참조</title>
+  <summary>
+    <p>이 문서는 아파치 설정지시어 각각의 용도, 기본값, 상태,
+    사용장소를 보여준다. 이들은 <a
+    href="directive-dict.html">지시어 사전</a>에서 설명한다.</p>
+
+    <p>첫번째 열은 지시어 이름과 용도를 알려준다. 두번째 열은
+    지시어에 기본값이 있다면 기본값을 보여준다. 만약 기본값이
+    너무 길다면, "+" 기호로 생략했음을 알린다.</p>
+
+    <p>세번째와 네번째 열은 각각 아래 표에 따라 지시어를 사용할
+    수 있는 장소와 지시어의 상태를 나타낸다.</p>
+  </summary>
+</quickreference>

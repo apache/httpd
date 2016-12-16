@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 420990:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_speling.xml.meta">
+
+<name>mod_speling</name>
+<description>ユーザが入力したであろう間違った URL を、
+大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで
+修正を試みる</description>
+<status>Extension</status>
+<sourcefile>mod_speling.c</sourcefile>
+<identifier>speling_module</identifier>
+
+
+<summary>
+
+    <p>リクエストの綴りが間違っていたり、
+    大文字小文字が違っていたりするために、Apache のコアサーバが
+    ドキュメントへのリクエストへの応答を正しく提供できないことがあります。
+    このモジュールは、他のすべてのモジュールがあきらめた後であったとしても、
+    リクエストに合うドキュメントを見つけようとすることによりこの問題の
+    解決を試みます。このモジュールはリクエストされたディレクトリにある
+    それぞれのドキュメントの名前と、リクエストされたドキュメントの名前とを
+    <strong>大文字小文字の区別を無視し</strong>、<strong>一文字までの
+    綴りの間違い</strong> (文字の挿入/省略/隣合う文字の置換、間違った文字)
+    を許可して比較することにより、目的を達成しようとします。
+    この方法でリクエストに合うドキュメントの一覧が作成されます。</p>
+
+    <p>ディレクトリをスキャンした後に、</p>
+
+    <ul>
+      <li>適切なドキュメントが見つからなかった場合、
+      Apache はいつもと同じように処理をし、
+      「ドキュメントが見つからない」というエラーを返します。</li>
+
+      <li>リクエストに「ほとんど」合うドキュメントが一つだけ見つかった場合、
+       それがリダイレクト応答として返されます。</li>
+
+      <li>よく似たドキュメントが複数見つかった場合、
+      そのリストがクライアントに返され、
+      クライアントが正しい候補を選択できるようにします。</li>
+    </ul>
+
+</summary>
+
+<directivesynopsis>
+<name>CheckSpelling</name>
+<description>spelling モジュールを使用するようにする</description>
+<syntax>CheckSpelling on|off</syntax>
+<default>CheckSpelling Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+<compatibility>CheckSpelling は Apache 1.1 では別配布のモジュールで、
+大文字小文字の間違いのみの機能でした。Apache 1.3 で Apache の配布に
+含まれるようになりました。Apache 1.3.2 より前では <code>CheckSpelling</code>
+ディレクティブは「サーバ」と「バーチャルホスト」コンテキストでのみ
+使用可能でした</compatibility>
+
+<usage>
+    <p>このディレクティブは綴り用のモジュールを使用するかどうかを
+    決めます。使用時には、以下のことを覚えておいてください</p>
+
+    <ul>
+      <li>同時にたくさんの綴りの訂正を行なわなければならないときは、
+      そのために行なわれるディレクトリのスキャンがサーバの性能に
+      影響を与えます。</li>
+
+      <li>ドキュメントの中に綴りの「訂正」により
+      意図せず合ってしまうような重要なファイルがないようにしてください。
+      </li>
+
+      <li>モジュールはユーザ名の綴りの間違い
+      (<code>http://my.host/~apahce/</code> のように)
+      を訂正することはできません。
+      訂正できるのはファイル名とディレクトリ名だけです。</li>
+
+      <li>綴りの訂正は存在するファイルに厳密に適用されますので、
+      <code>&lt;Location /status&gt;</code>
+      はネゴシエーションの結果のファイル "<code>/stats.html</code>"
+      として間違って扱われるかもしれません。</li>
+    </ul>
+
+    <!-- XXX: is that really true?! -nd -->
+    <p><a href="mod_dav.html">DAV</a> が有効なディレクトリでは
+    <module>mod_speling</module> は有効にしないでください。
+    新しく作成したリソース名を既に存在するファイル名に「修正」しようとする、
+    例えば、新規ドキュメント <code>doc43.html</code> が既に存在する
+    <code>doc34.html</code> にリダイレクトされて、
+    期待とは違う挙動になるからです。</p>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>大文字小文字の修正だけ行うようにする</description>
+<syntax>CheckCaseOnly on|off</syntax>
+<default>CheckCaseOnly Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p> このディレクティブがセットされると、
+    綴り訂正機能は大文字小文字の修正のみ働き、他の修正機能は働きません。</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

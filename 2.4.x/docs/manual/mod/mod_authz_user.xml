@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_user.xml.meta">
+
+<name>mod_authz_user</name>
+<description>User Authorization</description>
+<status>Base</status>
+<sourcefile>mod_authz_user.c</sourcefile>
+<identifier>authz_user_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module provides authorization capabilities so that
+    authenticated users can be allowed or denied access to portions
+    of the web site. <module>mod_authz_user</module> grants
+    access if the authenticated user is listed in a <code>Require user</code>
+    directive. Alternatively <code>Require valid-user</code> can be used to
+    grant access to all successfully authenticated users.</p>
+</summary>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="requiredirectives"><title>The Require Directives</title>
+
+    <p>Apache's <directive module="mod_authz_core">Require</directive>
+    directives are used during the authorization phase to ensure that
+    a user is allowed to access a resource.  mod_authz_user extends the
+    authorization types with <code>user</code> and <code>valid-user</code>.
+    </p>
+
+    <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
+    within the user require directives.</p>
+
+<section id="requser"><title>Require user</title>
+
+    <p>This directive specifies a list of users that are allowed to gain
+    access.</p>
+
+    <highlight language="config">
+      Require user john paul george ringo
+    </highlight>
+
+</section>
+
+<section id="reqvaliduser"><title>Require valid-user</title>
+
+    <p>When this directive is specified, any successfully authenticated
+    user will be allowed to gain access.</p>
+
+    <highlight language="config">
+      Require valid-user
+    </highlight>
+
+</section>
+
+</section>
+
+</modulesynopsis>

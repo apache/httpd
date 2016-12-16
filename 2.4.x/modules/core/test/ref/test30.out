@@ -1,0 +1,7 @@
+# testing with conf/test30.conf
+[macro:warn] macro 'foo' (defined on line 4 of "./conf/test30.conf"): argument name prefix conflict ($dir #1 and $directive #2), be careful about your macro definition!
+[core:warn] section Directory /unexpected/1 on line 2 of macro 'foo' (defined on line 4 of "./conf/test30.conf") used on line 10 of "./conf/test30.conf"
+[core:error] done! on line 12 of ./conf/test30.conf
+AH00526: Syntax error on line 12 of ./conf/test30.conf:
+Configuration processing stopped by Error directive
+# exit: 1

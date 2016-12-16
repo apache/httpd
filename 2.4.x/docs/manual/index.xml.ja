@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English Revision: 1524238:1732097 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<indexpage metafile="index.xml.meta">
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Apache HTTP サーバ バージョン &httpd.major;.&httpd.minor;
+ドキュメント</title>
+
+<category id="release"><title>リリースノート</title>
+    <page href="new_features_2_4.html">Apache 2.3/2.4 の新機能</page>
+    <page href="new_features_2_2.html">Apache 2.1/2.2 の新機能</page>
+    <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
+    <page href="upgrading.html">2.2 から 2.4 へのアップグレード</page>
+    <page href="license.html">Apache ライセンス</page>
+</category>
+
+<category id="manual"><title>リファレンスマニュアル</title>
+    <page href="install.html">コンパイルとインストール</page>
+    <page href="invoking.html">起動</page>
+    <page href="stopping.html">終了と再起動</page>
+    <page href="mod/quickreference.html">実行の設定用ディレクティブ</page>
+    <page href="mod/">モジュール</page>
+    <page href="mpm.html">マルチプロセッシングモジュール (MPM)</page>
+    <page href="filter.html">フィルタ</page>
+    <page href="handler.html">ハンドラ</page>
+    <page href="expr.html">Expression parser</page>
+    <page href="programs/">サーバとサポートプログラム</page>
+    <page href="glossary.html">用語集</page>
+</category>    
+
+<category id="usersguide"><title>ユーザの手引</title>
+    <page href="getting-started.html">Getting Started</page>
+    <page href="bind.html">アドレスとポートのバインド</page>
+    <page href="configuring.html">設定ファイル</page>
+    <page href="sections.html">セクションの設定</page>
+    <page href="caching.html">キャッシュ機能</page>
+    <page href="content-negotiation.html">コンテントネゴシエーション</page>
+    <page href="dso.html">動的共有オブジェクト (DSO)</page>
+    <page href="env.html">環境変数</page>
+    <page href="logs.html">ログファイル</page>
+    <page href="urlmapping.html">URL をファイルシステムにマップする</page>
+    <page href="misc/perf-tuning.html">性能に関する調整</page>
+    <page href="misc/security_tips.html">セキュリティ情報</page>
+    <page href="server-wide.html">サーバ全体の設定</page>
+    <page href="ssl/">SSL/TLS による暗号化</page>
+    <page href="suexec.html">CGI の Suexec 実行</page>
+    <page href="rewrite/">mod_rewriteによる URL Rewriting</page>
+    <page href="vhosts/">バーチャルホスト</page>
+</category>
+
+<category id="howto"><title>How-To / チュートリアル</title>
+    <page href="howto/auth.html">認証、承認、アクセス制御
+    </page>
+    <page href="howto/cgi.html">CGI: 動的コンテンツ</page>
+    <page href="howto/htaccess.html">.htaccess ファイル</page>
+    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
+    <page href="howto/public_html.html">ユーザ専用ディレクトリ
+    (public_html)</page>
+</category>
+
+<category id="platform"><title>プラットフォーム固有の情報</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/rpm.html">RPMベースのシステム (Redhat / CentOS / Fedora)</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">EBCDIC 版</page>
+</category>
+
+<category id="other"><title>その他</title>
+    <page href="http://wiki.apache.org/httpd/FAQ">よくある質問 (FAQ)</page>
+    <page href="sitemap.html">サイトマップ</page>
+    <page href="developer/">開発者のためのドキュメント</page>
+    <page href="http://httpd.apache.org/docs-project/">ドキュメンテーションプロジェクトへの協力</page>
+    <page href="misc/">その他</page>
+    <page href="http://wiki.apache.org/httpd/">ウィキ</page>
+</category>
+
+</indexpage>
+

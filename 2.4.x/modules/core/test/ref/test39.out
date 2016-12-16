@@ -1,0 +1,7 @@
+# testing with conf/test39.conf
+[core:warn] Thanks for using mod_macro! on line 1 of macro 'modmacro' (defined on line 4 of "./conf/test39.conf") used on line 15 of "./conf/test39.conf"
+[core:warn] macro foo on line 1 of macro 'foo' (defined on line 17 of "./conf/test39.conf") used on line 21 of "./conf/test39.conf"
+[core:error] done! on line 23 of ./conf/test39.conf
+AH00526: Syntax error on line 23 of ./conf/test39.conf:
+Configuration processing stopped by Error directive
+# exit: 1

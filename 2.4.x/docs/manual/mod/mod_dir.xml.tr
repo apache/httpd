@@ -1,0 +1,317 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1755988 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dir.xml.meta">
+<name>mod_dir</name>
+<description>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</description>
+<status>Base</status>
+<sourcefile>mod_dir.c</sourcefile>
+<identifier>dir_module</identifier>
+
+<summary>
+    <p>Bir dizin içerik dosyası şu iki kaynaktan birinden gelebilir:</p>
+
+    <ul>
+      <li>Kullanıcı tarafından yazılmış ve ismi genellikle
+        <code>index.html</code> olan bir dosya. Dosya ismi <directive
+        module="mod_dir" >DirectoryIndex</directive> yönergesi ile belirlenir.
+        Bu, <module>mod_dir</module> modülü tarafından denetlenir.</li>
+
+      <li>Aksi takdirde içerik listesi sunucu tarafından üretilir. Bu,
+        <module>mod_autoindex</module> modülü tarafından sağlanır.</li>
+    </ul>
+    <p>Bu iki işlev tamamen birbirinden ayrıdır, dolayısıyla eğer isterseniz
+      kendiliğinden dizin içerik listesi üretimini tamamen iptal
+      edebilirsiniz.</p>
+
+    <p>Sunucu <code>http://example.com/filanca/birdizin</code> şeklinde bir
+      istek aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü
+      çizgisiyle biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir
+      bölü çizgisi eklenmesini gerektirir, bu bakımdan <module>mod_dir</module>
+      modülü isteği <code>http://example.com/filanca/birdizin/</code> şeklinde
+      yönlendirir.</p>
+</summary>
+
+<directivesynopsis>
+<name>DirectoryIndex</name>
+<description>İstemci bir dizin istediğinde dizin içeriğini listeler.
+</description>
+<syntax>DirectoryIndex
+    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</syntax>
+<default>DirectoryIndex index.html</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>DirectoryIndex</directive> yönergesi, istemci, dizinin
+      sonuna bir bölü çizgisi ekleyerek dizin içeriğinin listelenmesini
+      istediğinde bakılmak üzere özkaynakları listeler.
+      <code><em>yerel-url</em></code>, sunucu üstünde istenen dizine göreli
+      bir belgenin URL’sidir; normal olarak dizin içindeki bir dosyanın
+      ismidir. Çeşitli URL’ler verilebilirse de sunucu daima ilk bulduğuyla
+      dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
+      seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
+
+    <highlight language="config">
+DirectoryIndex index.html
+    </highlight>
+
+    <p>Bu yapılandırmadan sonra yapılan bir
+      <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
+      mevcutsa <code>http://sunucum/belgeler/index.html</code> dosyasını
+      döndürecek, değilse ürettiği dizin içerik listesini gönderecektir.</p>
+
+    <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
+
+    <highlight language="config">
+DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </highlight>
+
+    <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
+      <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
+      CGI betiği çalıştırılacaktır.</p>
+
+    <p><code>disabled</code> değeri tek başına <module>mod_dir</module>’in bir
+      dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
+      öncesinde ve sonrasında başka bir değiştirge hatta bir
+      <code>disabled</code> daha olsa bile sadece bir <code>disabled</code>
+      verilmiş gibi yorumlanır.</p>
+    <p><strong>Bilginize:</strong> <a href="../sections.html"><em>Aynı
+      bağlamdaki</em></a> çok sayıda <directive>DirectoryIndex</directive>
+      yönergesi bir öncekini değiştirmek yerine onun bulunduğu listeye
+      eklenir:</p>
+    <highlight language="config">
+# 1. örnek: İçerik dosyası olarak index.html atayıp sonraki satırda buna
+# index.php'yi ekleyebilirsiniz.
+&lt;Directory "/foo"&gt;
+    DirectoryIndex index.html
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+
+# 2. Örnek: Atamaların tet bir satırda yapıldığı bu örnek 1. örneğe denktir.
+&lt;Directory "/foo"&gt;
+    DirectoryIndex index.html index.php
+&lt;/Directory&gt;
+
+# 3. Örnek: Listeyi tamamen değiştirmek için, listeyi önce sıfırlamalısınız:
+# Bu örnekte içerik dosyası olarak listede sadece index.php kalır.
+&lt;Directory "/foo"&gt;
+    DirectoryIndex index.html
+    DirectoryIndex disabled
+    DirectoryIndex index.php
+&lt;/Directory&gt;
+    </highlight>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectoryIndexRedirect</name>
+<description>Dizin içerik listeleri için harici bir yönlendirme yapılandırır.
+</description>
+<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother |
+<var>3xx-kodu</var>
+</syntax>
+<default>DirectoryIndexRedirect off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Apache HTTP Sunucusunun 2.3.14 ve sonraki sürümlerinde
+    kullanılabilmektedir.</compatibility>
+
+<usage>
+    <p>Öntanımlı olarak, <directive>DirectoryIndex</directive> listeyi
+      istemciye şeffaf olarak seçip gönderir.
+      <directive>DirectoryIndexRedirect</directive> ise harici bir
+      yönlendirmeye sebep olur.</p>
+
+    <p>Bunlardan biri kullanılabilir:</p>
+    <ul>
+     <li><code>on</code>: Dizin listesi kaynağına bir 302 yönlendirmesi
+     yapılır.</li>
+     <li><code>off</code>: Bir yönlendirme yapılmaz. mod_dir için eski davranış
+     böyleydi.</li>
+     <li><code>permanent</code>: Dizin listesi kaynağına bir 301 (kalıcı)
+     yönlendirmesi yapılır.</li>
+     <li><code>temp</code>: Bu <code>on</code> ile aynı etkiye sahiptir.</li>
+     <li><code>seeother</code>: Dizin listesi kaynağına bir 303 yönlendirmesi
+     ("diğerine bak" olarak da bilinir)yapılır.</li>
+     <li><var>3xx-code</var>: 3xx kodu ile seçilen yönlendirme yapılır.</li>
+    </ul>
+
+    <example><title>Örnek</title>
+    <highlight language="config">
+DirectoryIndexRedirect on
+    </highlight></example>
+
+    <p><code>http://example.com/docs/</code> için yapılan bir istek, <code
+      >http://example.com/docs/index.html</code> (mevcutsa) adresine geçici bir
+      yönlendirme döndürür.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>DirectorySlash</directive> yönergesi, bir dizin isteğinde
+      bulunan URL’lerin sonuna <module>mod_dir</module> modülü tarafından bir
+      bölü çizgisi eklenip eklenmeyeceğini belirler.</p>
+
+    <p>Normalde, bir kullanıcı sona bir bölü çizgisi eklemeden bir dizin için
+      istekte bulunursa <module>mod_dir</module> zaten onu aynı özkaynağa
+      yönlendirir, fakat isteğin sonuna bir bölü çizgisi eklenmesinin bazı iyi
+      sebepleri vardır:</p>
+
+    <ul>
+    <li>Kullanıcı bunun sonucunda meşru bir URL ile istekte bulunmuş olur.</li>
+    <li><module>mod_autoindex</module> gerektiği gibi çalışır. Yoksa
+      bağlantıdaki yolu sunamayacağından yanlış yolu gösterirdi.</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive> yönergesi
+      sadece bölü çizgisi ile biten dizin istekleri için değerlendirilir.</li>
+    <li>HTML sayfa içindeki göreli URL başvuruları gerektiği gibi
+      çalışacaktır.</li>
+    </ul>
+
+    <p>Siz yine de bu etkiyi istemezseniz ve yukarıdaki sebepler de size uygun
+      değilse yönlendirmeyi aşağıdaki gibi kapatabilirsiniz. Ancak bunu
+      yaparken dikkatli olun, bununla ilgili bazı güvenlik sorunları olasılığı
+      vardır.</p>
+
+    <highlight language="config">
+# Aşağıdaki güvenlik uyarısına bakınız!<br />
+&lt;Location "/bir/yol"&gt;<br />
+  DirectorySlash Off<br />
+  SetHandler bir-eylemci<br />
+&lt;/Location&gt;
+    </highlight>
+
+    <note type="warning"><title>Güvenlik Uyarı</title>
+    <p>Bölü çizgisi ile biten yönlendirmelerin kapatılması bir bilginin
+      istemeyek açığa çıkmasına sebep olabilir. <module>mod_autoindex</module>
+      modülünün etkin olduğunu (<code>Options +Indexes</code>) ve <directive
+      module="mod_dir" >DirectoryIndex</directive> ile geçerli bir özkaynağın
+      (<code>index.html</code> olsun) atandığını ama bu URL için başka hiçbir
+      özel eylemci tanımlanmadığını varsayalım. Bu durumda bölü çizgisi ile
+      biten bir istek olduğunda <code>index.html</code> dosyası sunulurdu.
+      <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
+      listelenmesi ile sonuçlanırdı.</strong></p>
+    </note>
+    <p>Bir yönlendirme sözkonusu olduğunda bazı tarayıcıların yanlışlıkla POST
+      isteklerini GET istekleri haline getirme (böylece POST verisi iptal olur)
+      olasılığı olduğuna da dikkat edin.</p>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>FallbackResource</name>
+<description>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+</description>
+<syntax>FallbackResource disabled | <var>yerel-url</var></syntax>
+<default>disabled - httpd 404 döndürecektir (Yok)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility><code>disabled</code> değiştirgesi 2.4.4 sürümü ve sonrasında kullanılabilmektedir.</compatibility>
+<usage>
+    <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
+      404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
+      Örnek:</p>
+
+    <highlight language="config">
+FallbackResource /not-404.php
+    </highlight>
+
+    <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
+      yerine <code>not-404.php</code> dosyası sunulacaktır.</p>
+
+    <p>Belli bir dizindeki mevcut bir dosya veya betik için yapılanlar dışındaki
+      tüm isteklerin tek bir dosya veya özkaynakla yerine getirilmesi sıkça istenen
+      bir durum olup bu mekanizmaya 'ön denetleyici' adı verilir.</p>
+
+    <p>httpd'nin önceki sürümlerinde bir dosya veya dizinin varlığının sınanması
+      için genellikle <module>mod_rewrite</module> modülü ve <code>-f</code> ve
+      <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
+      yapılandırma yeterli olmaktadır.</p>
+
+    <highlight language="config">
+FallbackResource /index.php
+    </highlight>
+
+    <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
+
+    <p>Üst dizinden hiçbir şeyin miras alınmaması isteniyorsa bu özelliği
+        kapatmak için <code>disabled</code> değiştirgesini kullanın.</p>
+
+    <p><em>http://example.com/blog/</em> gibi bir alt URI <var>yerel-url</var>
+      olarak sağlanır:</p>
+
+    <highlight language="config">
+&lt;Directory "/web/example.com/htdocs/blog"&gt;
+  FallbackResource /blog/index.php
+&lt;/Directory&gt;
+    </highlight>
+
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>DirectoryCheckHandler</name>
+<description>Başka bir eylemci yapılandırılmışsa bu modülün nasıl yanıt
+  vereceğini belirler</description>
+<syntax>DirectoryCheckHandler On|Off</syntax>
+<default>DirectoryCheckHandler Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>2.4.8 ve sonrasında kullanılabilmektedir. 2.4 öncesi sürümler
+  örtük olarak "DirectoryCheckHandler ON" belirtilmiş gibi
+  davranır.</compatibility>
+<usage>
+    <p><directive>DirectoryCheckHandler</directive> yönergesi, geçerli URL için
+    başka bir eylemcinin yapılandırılmış olması durumunda,
+    <module>mod_dir</module> modülünün index dosyaları için dizine mi
+    bakacağını yoksa URL'nin sonuna bölü çizgisi mi ekleyeceğini belirler.
+    Eylemciler <directive module="core">SetHandler</directive> gibi
+    yönergelerle atanabileceği gibi dizin işlemleri sırasında
+    <module>mod_rewrite</module> gibi modüller tarafından da atanabilir.
+    </p>
+
+    <p>2.4 öncesi sürümlerde, bir URL için başka bir eylemcinin yapılandılmış
+    olması durumunda bu modül herhangi bir eylemde bulunmaz ve sonuç olarak,
+    tüm dizin için bir <directive>SetHandler</directive> belirtildiği durumda
+    index dosyalarının sunulmasının yanında  <module>mod_rewrite</module>
+    gibi modüller de ayrıca bazı çelişkili sonuçlar oluşturabilir.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

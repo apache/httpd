@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE language SYSTEM "../lang.dtd">
+<!-- English Revision: 744890 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<language id="da">
+    <name>Dansk</name>
+    <charset>ISO-8859-1</charset>
+    <source-ext>.xml.da</source-ext>
+    <target-ext>.html.da</target-ext>
+
+    <!-- sitemap needed
+    <chm>
+        <lang>0x406 Danish</lang>
+        <toc-font>,8,0</toc-font>
+        <charset>windows-1252</charset>
+        <settings>Danish</settings>
+    </chm>
+    -->
+
+    <man>
+        <charset>ISO-8859-1</charset>
+    </man>
+
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Dansk</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Kerne funktioner og Multi-Processing Modules</message>
+        <message id="othermodules">Andre moduler</message>
+        <message id="obsoletemodules">Forældede Moduler</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">Forældede Apache Moduler</message>
+        <message id="apachemodule">Apache Moduler</message>
+        <message id="apachecore">Apache Kerne funktioner</message>
+        <message id="apachempmcommon">Apache MPM Fælles Direktiver</message>
+        <message id="apachempm">Apache MPM</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Beskrivelse</message>
+        <message id="seealso">Se også</message>
+        <message id="topics">Emner</message>
+        <message id="status">Status</message>
+        <message id="moduleidentifier">Modul&nbsp;Identifikation</message>
+        <message id="sourcefile">Kilde&nbsp;Fil</message>
+        <message id="compatibility">Kompatibilitet</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Relaterede moduler</message>
+        <message id="relateddirectives">Relaterede Direktiver</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyzæøå</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ</message>
+        <message id="name-section">NAVN</message>
+        <message id="hyphenation"></message>
+        <message id="foundabug">Bugfix checklist</message>
+        <message id="httpdchangelog">httpd changelog</message>
+        <message id="httpdknownissues">Known issues</message>
+        <message id="httpdreportabug">Report a bug</message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">Syntaks</message>
+        <message id="default">Standard</message>
+        <message id="context">Kontekst</message>
+        <message id="override">Tilsidesæt</message>
+        <message id="status">Status</message>
+        <message id="module">Modul</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Kerne</message>
+        <message id="extension" letter="E">Udvidelser</message>
+        <message id="experimental" letter="X">Eksperimental</message>
+        <message id="external" letter="T">Ekstern</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">server konfiguration</message>
+        <message id="virtualhost" letter="v">virtuel vært</message>
+        <message id="directory" letter="d">mappe</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">Direktiver</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <!-- the optional attribute before-name takes a string.
+             if "yes", the 'Directive' word is place before the name instead of
+             being placed behind. See fr.xml for an example. -->
+        <message id="directive">Direktiv</message>
+        <message id="nodirectives">Dette modul har ingen direktiver.</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">Referat</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">Se ordbog</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Apache HTTP Server</message>
+        <message id="apachehttpserver">Apache HTTP Server Version
+            &httpd.major;.&httpd.minor;</message>
+        <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
+        <message id="search">Google Søgning</message> <!-- search button -->
+        <message id="index">Indeks</message> <!-- deprecated -->
+        <message id="home">Hjem</message> <!-- deprecated -->
+        <message id="comments">Kommentarer</message>
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP Server</message>
+        <message id="documentation">Dokumentation</message>
+        <message id="version">Version &httpd.major;.&httpd.minor;</message>
+
+        <!-- super menu -->
+        <message id="modules">Moduler</message>
+        <message id="faq">FAQ</message>
+        <message id="glossary">Ordbog</message>
+        <message id="sitemap">Sitemap</message>
+
+        <!-- footer line -->
+        <message id="before-license">Licenseret under</message>
+        <message id="after-license"></message>
+        <message id="langavail">Tilgængelige sprog</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">Denne oversættelse kan være forældet. Se den Engelske version for de seneste opdateringer.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</message>
+
+        <!-- retirement -->
+        <message id="retired.headline">Please note</message>
+        <message id="retired.description">
+            <p>This document refers to the <strong>2.0</strong> version of Apache httpd, which <strong>is no longer maintained</strong>. Upgrade, and refer to the current version of httpd instead, documented at:</p>
+        </message>
+        <message id="retired.current">Current release version of Apache HTTP Server documentation</message>
+        <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
+
+    </messages>
+</language>
+

@@ -1,0 +1,121 @@
+#
+# To build with exerimental modules set the environment
+#  variable WITH_EXPERIMENTAL=1
+# To build with the mod_ssl module set the environment
+#  variable WITH_SSL=1
+# To build with the mod_lua module set the environment
+#  variable WITH_LUA=1
+# To build with the mod_http2 module set the environment
+#  variable WITH_HTTP2=1
+#
+# Check if LDAP is enabled in APR-UTIL
+#
+include $(AP_WORK)/build/NWGNUenvironment.inc
+ifeq "$(wildcard $(APRUTIL)/include/apr_ldap.h)" "$(APRUTIL)/include/apr_ldap.h"
+WITH_LDAP = $(shell $(AWK) '/^\#define APR_HAS_LDAP /{print $$3}' $(APRUTIL)/include/apr_ldap.h)
+else
+WITH_LDAP = 1
+ifneq "$(MAKECMDGOALS)" "clean"
+ifneq "$(findstring clobber_,$(MAKECMDGOALS))" "clobber_"
+WITH_LDAP = 0
+endif
+endif
+endif
+
+# If USE_STDSOCKETS is defined we always build mod_ssl
+ifdef USE_STDSOCKETS
+WITH_SSL = 1
+endif
+
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	aaa \
+	cache \
+	cluster \
+	core \
+	dav/main \
+	dav/fs \
+	dav/lock \
+	echo \
+	examples \
+	generators \
+	loggers \
+	mappers \
+	metadata \
+	proxy \
+	filters \
+	database \
+	session \
+	slotmem \
+	$(EOLIST)
+
+# If WITH_LDAP and LDAPSDK have been defined then build the util_ldap module
+ifeq "$(WITH_LDAP)" "1"
+ifneq "$(LDAPSDK)" ""
+SUBDIRS += ldap
+endif
+endif
+
+# If WITH_SSL and OSSLSDK have been defined then build the mod_ssl module
+ifeq "$(WITH_SSL)" "1"
+ifneq "$(OSSLSDK)" ""
+SUBDIRS += ssl
+endif
+endif
+
+# If WITH_LUA and LUASRC have been defined then build the mod_lua module
+ifeq "$(WITH_LUA)" "1"
+ifneq "$(LUASRC)" ""
+SUBDIRS += lua
+endif
+endif
+
+# Allow the mod_http2 module to be built if WITH_HTTP2 is defined
+ifeq "$(WITH_HTTP2)" "1"
+ifneq "$(NGH2SRC)" ""
+SUBDIRS += http2
+endif
+endif
+
+# Allow the experimental modules to be built if WITH_EXPERIMENTAL is defined
+ifeq "$(WITH_EXPERIMENTAL)" "1"
+SUBDIRS += experimental
+endif
+
+# Allow the debugging modules to be built if WITH_DEBUGGING is defined
+ifeq "$(WITH_DEBUGGING)" "1"
+SUBDIRS += debugging
+endif
+
+# Allow the test modules to be built if WITH_TEST is defined
+ifeq "$(WITH_TEST)" "1"
+SUBDIRS += test
+endif
+
+#If the mod_edir directory exists then build the mod_edir module
+ifeq "$(wildcard $(STDMOD)/mod_edir)" "$(STDMOD)/mod_edir"
+SUBDIRS += mod_edir
+endif
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+include $(AP_WORK)/build/NWGNUhead.inc
+
+#
+# build this level's files
+
+ifeq "$(wildcard NWGNUmakefile.mak)" "NWGNUmakefile.mak"
+include NWGNUmakefile.mak
+endif
+
+#
+# You can use this target if all that is needed is to copy files to the
+# installation area
+#
+install :: nlms FORCE
+

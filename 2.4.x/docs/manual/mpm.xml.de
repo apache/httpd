@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English Revision: 420990:1602766 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="mpm.xml.meta">
+
+  <title>Multi-Processing-Module (MPMs)</title>
+
+<summary>
+  <p>Das Dokument beschreibt, was ein Multi-Processing-Modul ist und wie solche
+    Module beim Apache HTTP Server verwendet werden.</p>
+</summary>
+
+<section id="introduction"><title>Einf&uuml;hrung</title>
+
+  <p>Der Apache HTTP Server wurde als leistungsf&auml;higer und flexibler Webserver
+    konzipiert, der auf einer Vielzahl von Plattformen in einer
+    Reihe unterschiedlicher Umgebungen arbeiten kann. Unterschiedliche
+    Plattformen und unterschiedliche Umgebungen verlangen oftmals verschiedene
+    F&auml;higkeiten oder kennen verschiedene Wege, die gleiche
+    Funktionalt&auml;t sehr effizient zu implementieren. Der Apache hat durch
+    seinen modularen Aufbau schon immer eine breite Auswahl von Umgebungen
+    unterst&uuml;tzt. Dieses Design erlaubt es dem Webmaster, durch Auswahl der
+    Module, die zur Kompilierungszeit oder zur Laufzeit geladen werden, die
+    Features auszuw&auml;hlen, die in den Server intregiert werden.</p>
+
+  <p>Der Apache 2.0 erweitert dieses modulare Design auf die grundlegenden
+    Funktionen eines Webservers. Der Server wird mit einer Auswahl von
+    Multi-Processing-Modulen (MPMs) ausgeliefert, die f&uuml;r die Bindung an
+    Netzwerkports der Maschine, die Annahme von Anfragen und die Abfertigung von
+    Kindprozessen zur Behandlung der Anfragen zust&auml;ndig sind.</p>
+
+  <p>Die Erweiterung des modularen Aufbaus auf diese Ebene des Servers
+    bringt zwei wesentliche Vorteile:</p>
+
+  <ul>
+    <li>Der Apache kann nun eine Vielfalt von Betriebssystemen sauberer und
+      effizienter unterst&uuml;tzen. Insbesondere die Windows-Version des Apache
+      ist jetzt deutlich effizienter, da <module>mpm_winnt</module> native
+      Netzwerkf&auml;higkeiten anstelle der im Apache 1.3 verwendeten
+      POSIX-Schicht benutzen kann. Dieser Vorteil gilt auch f&uuml;r andere
+      Betriebssysteme, f&uuml;r die spezielle MPMs implementiert sind.</li>
+    
+    <li>Der Server l&auml;&szlig;t sich besser auf die Bed&uuml;rfnisse der
+      jeweiligen Website anpassen. Sites beispielsweise, die eine hohe
+      Skalierbarkeit ben&ouml;tigen, k&ouml;nnen ein Threaded-MPM wie
+      <module>worker</module> oder <module>event</module> w&auml;hlen,
+      w&auml;hrend Sites, die Stabilit&auml;t oder Kompatibilit&auml;t mit
+      &auml;lterer Software erfordern, <module>prefork</module> w&auml;hlen
+      k&ouml;nnen.</li>
+  </ul>
+
+  <p>Auf Anwenderebene erscheinen MPMs fast wie andere Apache-Module. Der
+    Hauptunterschied ist, dass jeweils nur ein einziges MPM in den Server
+    geladen werden kann. Die Liste der verf&uuml;gbaren MPMs finden Sie im <a
+      href="mod/">Modul-Index</a>.</p>
+
+</section>
+
+<section id="choosing"><title>Auswahl eines MPMs</title>
+
+  <p>MPMs m&uuml;ssen w&auml;hrend der
+    <transnote>Quelltext-</transnote>Konfiguration ausgew&auml;hlt und in den
+    Server einkompiliert werden. Compiler sind in der Lage eine Reihe von
+    Funktionen zu optimieren, wenn Threads verwendet werden. Sie k&ouml;nnen
+    dies allerdings nur, wenn sie wissen, dass Threads benutzt werden.</p>
+
+  <p>Um das gew&uuml;nschte MPM tats&auml;chlich auszuw&auml;hlen, verwenden Sie
+    beim <program>configure</program>-Skript das Argument
+    <code>--with-mpm=<em>NAME</em></code>. <em>NAME</em> ist der Name des
+    gew&uuml;nschten MPMs.</p>
+
+  <p>Ist der Server kompiliert, so ist es mittels <code>./httpd -l</code>
+    m&ouml;glich, das ausgew&auml;hlte MPM zu ermitteln. Dieser Befehl listet
+    alle in den Server einkompilierten Module auf, einschlie&szlig;lich des
+    MPM.</p>
+</section>
+
+<section id="defaults"><title>MPM-Voreinstellungen</title>
+
+  <p>Die folgende Tabelle gibt die voreingestellten MPMs f&uuml;r verschiedene
+    Betriebssysteme an. Wenn Sie w&auml;hrend der Kompilierung keine andere
+    Auswahl treffen, wird dieses MPM gew&auml;hlt.</p>
+
+<table>
+<columnspec><column width=".2"/><column width=".2"/></columnspec>
+<tr><td>BeOS</td><td><module>beos</module></td></tr>
+<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
+<tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
+<tr><td>Unix</td><td><module>prefork</module></td></tr>
+<tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
+</table>
+</section>
+
+</manualpage>

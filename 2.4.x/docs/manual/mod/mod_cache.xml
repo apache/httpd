@@ -1,0 +1,1096 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cache.xml.meta">
+
+<name>mod_cache</name>
+<description>RFC 2616 compliant HTTP caching filter.</description>
+<status>Extension</status>
+<sourcefile>mod_cache.c</sourcefile>
+<identifier>cache_module</identifier>
+
+<summary>
+    <note type="warning">This module should be used with care, as when the
+    <directive module="mod_cache">CacheQuickHandler</directive> directive is
+    in its default value of <strong>on</strong>, the <directive
+    module="mod_access_compat">Allow</directive> and <directive
+    module="mod_access_compat">Deny</directive> directives will be circumvented.
+    You should not enable quick handler caching for any content to which you
+    wish to limit access by client host name, address or environment
+    variable.</note>
+
+    <p><module>mod_cache</module> implements an <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
+    <strong>HTTP content caching filter</strong>, with support for the caching
+    of content negotiated responses containing the Vary header.</p>
+
+    <p>RFC 2616 compliant caching provides a mechanism to verify whether
+    stale or expired content is still fresh, and can represent a significant
+    performance boost when the origin server supports <strong>conditional
+    requests</strong> by honouring the
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
+    HTTP request header. Content is only regenerated from scratch when the content
+    has changed, and not when the cached entry expires.</p>
+
+    <p>As a filter, <module>mod_cache</module> can be placed in front of
+    content originating from any handler, including <strong>flat
+    files</strong> (served from a slow disk cached on a fast disk), the output
+    of a <strong>CGI script</strong> or <strong>dynamic content
+    generator</strong>, or content <strong>proxied from another
+    server</strong>.</p>
+
+    <p>In the default configuration, <module>mod_cache</module> inserts the
+    caching filter as far forward as possible within the filter stack,
+    utilising the <strong>quick handler</strong> to bypass all per request
+    processing when returning content to the client. In this mode of
+    operation, <module>mod_cache</module> may be thought of as a caching
+    proxy server bolted to the front of the webserver, while running within
+    the webserver itself.</p>
+
+    <p>When the quick handler is switched off using the
+    <directive module="mod_cache">CacheQuickHandler</directive> directive,
+    it becomes possible to insert the <strong>CACHE</strong> filter at a
+    point in the filter stack chosen by the administrator. This provides the
+    opportunity to cache content before that content is personalised by the
+    <module>mod_include</module> filter, or optionally compressed by the
+    <module>mod_deflate</module> filter.</p>
+
+    <p>Under normal operation, <module>mod_cache</module> will respond to
+    and can be controlled by the
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    and
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    headers sent from a client in a request, or from a
+    server within a response. Under exceptional circumstances,
+    <module>mod_cache</module> can be configured to override these headers
+    and force site specific behaviour, however such behaviour will be limited
+    to this cache only, and will not affect the operation of other caches
+    that may exist between the client and server, and as a result is not
+    recommended unless strictly necessary.</p>
+
+    <p>RFC 2616 allows for the cache to return stale data while the existing
+    stale entry is refreshed from the origin server, and this is supported
+    by <module>mod_cache</module> when the
+    <directive module="mod_cache">CacheLock</directive> directive is suitably
+    configured. Such responses will contain a
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    HTTP header with a 110 response code. RFC 2616 also allows a cache to return
+    stale data when the attempt made to refresh the stale data returns an
+    error 500 or above, and this behaviour is supported by default by
+    <module>mod_cache</module>. Such responses will contain a
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    HTTP header with a 111 response code.</p>
+
+    <p><module>mod_cache</module> requires the services of one or more
+    storage management modules. The following storage management modules are included in
+    the base Apache distribution:</p>
+    <dl>
+    <dt><module>mod_cache_disk</module></dt>
+    <dd>Implements a disk based storage manager. Headers and bodies are
+    stored separately on disk, in a directory structure derived from the
+    md5 hash of the cached URL. Multiple content negotiated responses can
+    be stored concurrently, however the caching of partial content is not
+    supported by this module. The <program>htcacheclean</program> tool is
+    provided to list cached URLs, remove cached URLs, or to maintain the size
+    of the disk cache within size and inode limits.</dd>
+    <dt><module>mod_cache_socache</module></dt>
+    <dd>Implements a shared object cache based storage manager. Headers and
+    bodies are stored together beneath a single key based on the URL of the
+    response being cached. Multiple content negotiated responses can
+    be stored concurrently, however the caching of partial content is not
+    supported by this module.</dd>
+    </dl>
+
+    <p>Further details, discussion, and examples, are provided in the
+    <a href="../caching.html">Caching Guide</a>.</p>
+</summary>
+<seealso><a href="../caching.html">Caching Guide</a></seealso>
+
+<section id="related"><title>Related Modules and Directives</title>
+    <related>
+      <modulelist>
+        <module>mod_cache_disk</module>
+        <module>mod_cache_socache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_disk">CacheMaxFileSize</directive>
+        <directive module="mod_cache_socache">CacheSocache</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMinTime</directive>
+        <directive module="mod_cache_socache">CacheSocacheMaxSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadSize</directive>
+        <directive module="mod_cache_socache">CacheSocacheReadTime</directive>
+      </directivelist>
+    </related>
+</section>
+
+<section id="sampleconf"><title>Sample Configuration</title>
+    <example><title>Sample httpd.conf</title>
+    <highlight language="config">
+#
+# Sample Cache Configuration
+#
+LoadModule cache_module modules/mod_cache.so
+&lt;IfModule mod_cache.c&gt;
+    LoadModule cache_disk_module modules/mod_cache_disk.so
+    &lt;IfModule mod_cache_disk.c&gt;
+        CacheRoot "c:/cacheroot"
+        CacheEnable disk  "/"
+        CacheDirLevels 5
+        CacheDirLength 3
+    &lt;/IfModule&gt;
+
+    # When acting as a proxy, don't cache the list of security updates
+    CacheDisable "http://security.update.server/update-list/"
+&lt;/IfModule&gt;
+      </highlight>
+    </example>
+</section>
+
+<section id="thunderingherd"><title>Avoiding the Thundering Herd</title>
+  <p>When a cached entry becomes stale, <module>mod_cache</module> will submit
+  a conditional request to the backend, which is expected to confirm whether the
+  cached entry is still fresh, and send an updated entity if not.</p>
+  <p>A small but finite amount of time exists between the time the cached entity
+  becomes stale, and the time the stale entity is fully refreshed. On a busy
+  server, a significant number of requests might arrive during this time, and
+  cause a <strong>thundering herd</strong> of requests to strike the backend
+  suddenly and unpredictably.</p>
+  <p>To keep the thundering herd at bay, the <directive>CacheLock</directive>
+  directive can be used to define a directory in which locks are created for
+  URLs <strong>in flight</strong>. The lock is used as a <strong>hint</strong>
+  by other requests to either suppress an attempt to cache (someone else has
+  gone to fetch the entity), or to indicate that a stale entry is being refreshed
+  (stale content will be returned in the mean time).
+  </p>
+  <section>
+    <title>Initial caching of an entry</title>
+    <p>When an entity is cached for the first time, a lock will be created for the
+    entity until the response has been fully cached. During the lifetime of the
+    lock, the cache will suppress the second and subsequent attempt to cache the
+    same entity. While this doesn't hold back the thundering herd, it does stop
+    the cache attempting to cache the same entity multiple times simultaneously.
+    </p>
+  </section>
+  <section>
+    <title>Refreshment of a stale entry</title>
+    <p>When an entity reaches its freshness lifetime and becomes stale, a lock
+    will be created for the entity until the response has either been confirmed as
+    still fresh, or replaced by the backend. During the lifetime of the lock, the
+    second and subsequent incoming request will cause stale data to be returned,
+    and the thundering herd is kept at bay.</p>
+  </section>
+  <section>
+    <title>Locks and Cache-Control: no-cache</title>
+    <p>Locks are used as a <strong>hint only</strong> to enable the cache to be
+    more gentle on backend servers, however the lock can be overridden if necessary.
+    If the client sends a request with a Cache-Control header forcing a reload, any
+    lock that may be present will be ignored, and the client's request will be
+    honored immediately and the cached entry refreshed.</p>
+    <p>As a further safety mechanism, locks have a configurable maximum age.
+    Once this age has been reached, the lock is removed, and a new request is
+    given the opportunity to create a new lock. This maximum age can be set using
+    the <directive>CacheLockMaxAge</directive> directive, and defaults to 5
+    seconds.
+    </p>
+  </section>
+  <section>
+    <title>Example configuration</title>
+    <example><title>Enabling the cache lock</title>
+    <highlight language="config">
+#
+# Enable the cache lock
+#
+&lt;IfModule mod_cache.c&gt;
+    CacheLock on
+    CacheLockPath "/tmp/mod_cache-lock"
+    CacheLockMaxAge 5
+&lt;/IfModule&gt;
+      </highlight>
+    </example>
+  </section>
+</section>
+
+<section id="finecontrol"><title>Fine Control with the CACHE Filter</title>
+  <p>Under the default mode of cache operation, the cache runs as a quick handler,
+  short circuiting the majority of server processing and offering the highest
+  cache performance available.</p>
+
+  <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
+  acting as if a free standing RFC 2616 caching proxy had been placed in front of
+  the server.</p>
+
+  <p>While this mode offers the best performance, the administrator may find that
+  under certain circumstances they may want to perform further processing on the
+  request after the request is cached, such as to inject personalisation into the
+  cached page, or to apply authorisation restrictions to the content. Under these
+  circumstances, an administrator is often forced to place independent reverse
+  proxy servers either behind or in front of the caching server to achieve this.</p>
+
+  <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler
+  </directive> directive can be set to <strong>off</strong>, and the server will
+  process all phases normally handled by a non-cached request, including the
+  <strong>authentication and authorisation</strong> phases.</p>
+
+  <p>In addition, the administrator may optionally specify the <strong>precise point
+  within the filter chain</strong> where caching is to take place by adding the
+  <strong>CACHE</strong> filter to the output filter chain.</p>
+
+  <p>For example, to cache content before applying compression to the response,
+  place the <strong>CACHE</strong> filter before the <strong>DEFLATE</strong>
+  filter as in the example below:</p>
+
+  <highlight language="config">
+# Cache content before optional compression
+CacheQuickHandler off
+AddOutputFilterByType CACHE;DEFLATE text/plain
+  </highlight>
+
+  <p>Another option is to have content cached before personalisation is applied
+  by <module>mod_include</module> (or another content processing filter). In this
+  example templates containing tags understood by
+  <module>mod_include</module> are cached before being parsed:</p>
+
+  <highlight language="config">
+# Cache content before mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+  </highlight>
+
+  <p>You may place the <strong>CACHE</strong> filter anywhere you wish within the
+  filter chain. In this example, content is cached after being parsed by
+  <module>mod_include</module>, but before being processed by
+  <module>mod_deflate</module>:</p>
+
+  <highlight language="config">
+# Cache content between mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html
+  </highlight>
+
+  <note type="warning"><title>Warning:</title>If the location of the
+  <strong>CACHE</strong> filter in the filter chain is changed for any reason,
+  you may need to <strong>flush your cache</strong> to ensure that your data
+  served remains consistent. <module>mod_cache</module> is not in a position
+  to enforce this for you.</note>
+
+</section>
+
+<section id="status"><title>Cache Status and Logging</title>
+  <p>Once <module>mod_cache</module> has made a decision as to whether or not
+  an entity is to be served from cache, the detailed reason for the decision
+  is written to the subprocess environment within the request under the
+  <strong>cache-status</strong> key. This reason can be logged by the
+  <directive module="mod_log_config">LogFormat</directive> directive as
+  follows:</p>
+
+  <highlight language="config">
+    LogFormat "%{cache-status}e ..."
+  </highlight>
+
+  <p>Based on the caching decision made, the reason is also written to the
+  subprocess environment under one the following four keys, as appropriate:</p>
+
+  <dl>
+    <dt>cache-hit</dt><dd>The response was served from cache.</dd>
+    <dt>cache-revalidate</dt><dd>The response was stale and was successfully
+      revalidated, then served from cache.</dd>
+    <dt>cache-miss</dt><dd>The response was served from the upstream server.</dd>
+    <dt>cache-invalidate</dt><dd>The cached entity was invalidated by a request
+      method other than GET or HEAD.</dd>
+  </dl>
+
+  <p>This makes it possible to support conditional logging of cached requests
+  as per the following example:</p>
+
+  <highlight language="config">
+CustomLog "cached-requests.log" common env=cache-hit
+CustomLog "uncached-requests.log" common env=cache-miss
+CustomLog "revalidated-requests.log" common env=cache-revalidate
+CustomLog "invalidated-requests.log" common env=cache-invalidate
+  </highlight>
+
+  <p>For module authors, a hook called <var>cache_status</var> is available,
+  allowing modules to respond to the caching outcomes above in customised
+  ways.</p>
+</section>
+
+<directivesynopsis>
+<name>CacheEnable</name>
+<description>Enable caching of specified URLs using a specified storage
+manager</description>
+<syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>A url-string of '/' applied to forward proxy content in 2.2 and
+ earlier.</compatibility>
+
+
+<usage>
+    <p>The <directive>CacheEnable</directive> directive instructs
+    <module>mod_cache</module> to cache urls at or below
+    <var>url-string</var>. The cache storage manager is specified with the
+    <var>cache_type</var> argument. The <directive>CacheEnable</directive>
+    directive can alternatively be placed inside either
+    <directive type="section">Location</directive> or
+    <directive type="section">LocationMatch</directive> sections to indicate
+    the content is cacheable.
+    <var>cache_type</var> <code>disk</code> instructs
+    <module>mod_cache</module> to use the disk based storage manager
+    implemented by <module>mod_cache_disk</module>. <var>cache_type</var>
+    <code>socache</code> instructs <module>mod_cache</module> to use the
+    shared object cache based storage manager implemented by
+    <module>mod_cache_socache</module>.</p>
+    <p>In the event that the URL space overlaps between different
+    <directive>CacheEnable</directive> directives (as in the example below),
+    each possible storage manager will be run until the first one that
+    actually processes the request. The order in which the storage managers are
+    run is determined by the order of the <directive>CacheEnable</directive>
+    directives in the configuration file. <directive>CacheEnable</directive>
+    directives within <directive type="section">Location</directive> or
+    <directive type="section">LocationMatch</directive> sections are processed
+    before globally defined <directive>CacheEnable</directive> directives.</p>
+
+    <p>When acting as a forward proxy server, <var>url-string</var> must
+    minimally begin with a protocol for which caching should be enabled.</p>
+
+    <highlight language="config">
+# Cache content (normal handler only)
+CacheQuickHandler off
+&lt;Location "/foo"&gt;
+    CacheEnable disk
+&lt;/Location&gt;
+
+# Cache regex (normal handler only)
+CacheQuickHandler off
+&lt;LocationMatch "foo$"&gt;
+    CacheEnable disk
+&lt;/LocationMatch&gt;
+
+# Cache all but forward proxy url's (normal or quick handler)
+CacheEnable  disk  /
+
+# Cache FTP-proxied url's (normal or quick handler)
+CacheEnable  disk  ftp://
+
+# Cache forward proxy content from www.example.org (normal or quick handler)
+CacheEnable  disk  http://www.example.org/
+    </highlight>
+
+    <p>A hostname starting with a <strong>"*"</strong> matches all hostnames with
+    that suffix. A hostname starting with <strong>"."</strong> matches all
+    hostnames containing the domain components that follow.</p>
+
+    <highlight language="config">
+# Match www.example.org, and fooexample.org
+CacheEnable  disk  "http://*example.org/"
+# Match www.example.org, but not fooexample.org
+CacheEnable  disk  "http://.example.org/"
+    </highlight>
+
+    <p> The <code>no-cache</code> environment variable can be set to
+    disable caching on a finer grained set of resources in versions
+    2.2.12 and later.</p>
+
+</usage>
+<seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDisable</name>
+<description>Disable caching of specified URLs</description>
+<syntax>CacheDisable <var>url-string</var> | <var>on</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheDisable</directive> directive instructs
+    <module>mod_cache</module> to <em>not</em> cache urls at or below
+    <var>url-string</var>.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      CacheDisable "/local_files"
+      </highlight>
+    </example>
+
+    <p>If used in a <directive type="section">Location</directive> directive,
+    the path needs to be specified below the Location, or if the word "on"
+    is used, caching for the whole location will be disabled.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location "/foo"&gt;
+    CacheDisable on
+&lt;/Location&gt;
+      </highlight>
+    </example>
+
+    <p>The <code>no-cache</code> environment variable can be set to
+    disable caching on a finer grained set of resources in versions
+    2.2.12 and later.</p>
+
+</usage>
+<seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheMaxExpire</name>
+<description>The maximum time in seconds to cache a document</description>
+<syntax>CacheMaxExpire <var>seconds</var></syntax>
+<default>CacheMaxExpire 86400 (one day)</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheMaxExpire</directive> directive specifies the maximum number of
+    seconds for which cachable HTTP documents will be retained without checking the origin
+    server. Thus, documents will be out of date at most this number of seconds. This maximum
+    value is enforced even if an expiry date was supplied with the document.</p>
+
+    <highlight language="config">
+      CacheMaxExpire 604800
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinExpire</name>
+<description>The minimum time in seconds to cache a document</description>
+<syntax>CacheMinExpire <var>seconds</var></syntax>
+<default>CacheMinExpire 0</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheMinExpire</directive> directive specifies the minimum number of
+    seconds for which cachable HTTP documents will be retained without checking the origin
+    server. This is only used if no valid expire time was supplied with the document.</p>
+
+
+    <highlight language="config">
+      CacheMinExpire 3600
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDefaultExpire</name>
+<description>The default duration to cache a document when no expiry date is specified.</description>
+<syntax>CacheDefaultExpire <var>seconds</var></syntax>
+<default>CacheDefaultExpire 3600 (one hour)</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheDefaultExpire</directive> directive specifies a default time,
+    in seconds, to cache a document if neither an expiry date nor last-modified date are provided
+    with the document. The value specified with the <directive>CacheMaxExpire</directive>
+    directive does <em>not</em> override this setting.</p>
+
+    <highlight language="config">
+      CacheDefaultExpire 86400
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreNoLastMod</name>
+<description>Ignore the fact that a response has no Last Modified
+header.</description>
+<syntax>CacheIgnoreNoLastMod On|Off</syntax>
+<default>CacheIgnoreNoLastMod Off</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, documents without a last-modified date are not cached.
+    Under some circumstances the last-modified date is removed (during
+    <module>mod_include</module> processing for example) or not provided
+    at all. The <directive>CacheIgnoreNoLastMod</directive> directive
+    provides a way to specify that documents without last-modified dates
+    should be considered for caching, even without a last-modified date.
+    If neither a last-modified date nor an expiry date are provided with
+    the document then the value specified by the
+    <directive>CacheDefaultExpire</directive> directive will be used to
+    generate an expiration date.</p>
+
+    <highlight language="config">
+      CacheIgnoreNoLastMod On
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreCacheControl</name>
+<description>Ignore request to not serve cached content to client</description>
+<syntax>CacheIgnoreCacheControl On|Off</syntax>
+<default>CacheIgnoreCacheControl Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, requests containing a Cache-Control: no-cache or
+    Pragma: no-cache header value will not be served from the cache.  The
+    <directive>CacheIgnoreCacheControl</directive> directive allows this
+    behavior to be overridden.  <directive>CacheIgnoreCacheControl On</directive>
+    tells the server to attempt to serve the resource from the cache even
+    if the request contains no-cache header values.  Resources requiring
+    authorization will <em>never</em> be cached.</p>
+
+    <highlight language="config">
+      CacheIgnoreCacheControl On
+    </highlight>
+
+    <note type="warning"><title>Warning:</title>
+       This directive will allow serving from the cache even if the client has
+       requested that the document not be served from the cache.  This might
+       result in stale content being served.
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>Ignore query string when caching</description>
+<syntax>CacheIgnoreQueryString On|Off</syntax>
+<default>CacheIgnoreQueryString Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, requests with query string parameters are cached separately
+    for each unique query string. This is according to RFC 2616/13.9 done only
+    if an expiration time is specified. The
+    <directive>CacheIgnoreQueryString</directive> directive tells the cache to
+    cache requests even if no expiration time is specified, and to reply with
+    a cached reply even if the query string differs. From a caching point of
+    view the request is treated as if having no query string when this
+    directive is enabled.</p>
+
+    <highlight language="config">
+      CacheIgnoreQueryString On
+    </highlight>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLastModifiedFactor</name>
+<description>The factor used to compute an expiry date based on the
+LastModified date.</description>
+<syntax>CacheLastModifiedFactor <var>float</var></syntax>
+<default>CacheLastModifiedFactor 0.1</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>In the event that a document does not provide an expiry date but does
+    provide a last-modified date, an expiry date can be calculated based on
+    the time since the document was last modified. The
+    <directive>CacheLastModifiedFactor</directive> directive specifies a
+    <var>factor</var> to be used in the generation of this expiry date
+    according to the following formula:
+
+    <code>expiry-period = time-since-last-modified-date * <var>factor</var>
+    expiry-date = current-date + expiry-period</code>
+
+    For example, if the document was last modified 10 hours ago, and
+    <var>factor</var> is 0.1 then the expiry-period will be set to
+    10*0.1 = 1 hour. If the current time was 3:00pm then the computed
+    expiry-date would be 3:00pm + 1hour = 4:00pm.
+
+    If the expiry-period would be longer than that set by
+    <directive>CacheMaxExpire</directive>, then the latter takes
+    precedence.</p>
+
+    <highlight language="config">
+      CacheLastModifiedFactor 0.5
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreHeaders</name>
+<description>Do not store the given HTTP header(s) in the cache.
+</description>
+<syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
+<default>CacheIgnoreHeaders None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>According to RFC 2616, hop-by-hop HTTP headers are not stored in
+    the cache.  The following HTTP headers are hop-by-hop headers and thus
+    do not get stored in the cache in <em>any</em> case regardless of the
+    setting of <directive>CacheIgnoreHeaders</directive>:</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><directive>CacheIgnoreHeaders</directive> specifies additional HTTP
+    headers that should not to be stored in the cache.  For example, it makes
+    sense in some cases to prevent cookies from being stored in the cache.</p>
+
+    <p><directive>CacheIgnoreHeaders</directive> takes a space separated list
+    of HTTP headers that should not be stored in the cache. If only hop-by-hop
+    headers not should be stored in the cache (the RFC 2616 compliant
+    behaviour), <directive>CacheIgnoreHeaders</directive> can be set to
+    <code>None</code>.</p>
+
+    <example><title>Example 1</title>
+    <highlight language="config">
+      CacheIgnoreHeaders Set-Cookie
+      </highlight>
+    </example>
+
+    <example><title>Example 2</title>
+    <highlight language="config">
+      CacheIgnoreHeaders None
+      </highlight>
+    </example>
+
+    <note type="warning"><title>Warning:</title>
+      If headers like <code>Expires</code> which are needed for proper cache
+      management are not stored due to a
+      <directive>CacheIgnoreHeaders</directive> setting, the behaviour of
+      mod_cache is undefined.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreURLSessionIdentifiers</name>
+<description>Ignore defined session identifiers encoded in the URL when caching
+</description>
+<syntax>CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</syntax>
+<default>CacheIgnoreURLSessionIdentifiers None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Sometimes applications encode the session identifier into the URL like in the following
+    Examples:
+    </p>
+    <ul>
+      <li><code>/someapplication/image.gif;jsessionid=123456789</code></li>
+      <li><code>/someapplication/image.gif?PHPSESSIONID=12345678</code></li>
+    </ul>
+    <p>This causes cachable resources to be stored separately for each session, which
+    is often not desired. <directive>CacheIgnoreURLSessionIdentifiers</directive> lets
+    define a list of identifiers that are removed from the key that is used to identify
+    an entity in the cache, such that cachable resources are not stored separately for
+    each session.
+    </p>
+    <p><code>CacheIgnoreURLSessionIdentifiers None</code> clears the list of ignored
+    identifiers. Otherwise, each identifier is added to the list.</p>
+
+    <example><title>Example 1</title>
+    <highlight language="config">
+      CacheIgnoreURLSessionIdentifiers jsessionid
+      </highlight>
+    </example>
+
+    <example><title>Example 2</title>
+    <highlight language="config">
+      CacheIgnoreURLSessionIdentifiers None
+      </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreExpired</name>
+<description>Attempt to cache responses that the server reports as expired</description>
+<syntax>CacheStoreExpired On|Off</syntax>
+<default>CacheStoreExpired Off</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>Since httpd 2.2.4, responses which have already expired are not
+       stored in the cache.  The <directive>CacheStoreExpired</directive>
+       directive allows this behavior to be overridden.
+       <directive>CacheStoreExpired</directive> On
+       tells the server to attempt to cache the resource if it is stale.
+       Subsequent requests would trigger an If-Modified-Since request of
+       the origin server, and the response may be fulfilled from cache
+       if the backend resource has not changed.</p>
+
+    <highlight language="config">
+      CacheStoreExpired On
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>Attempt to cache responses that the server has marked as private</description>
+<syntax>CacheStorePrivate On|Off</syntax>
+<default>CacheStorePrivate Off</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, responses with Cache-Control: private header values will not
+       be stored in the cache.  The <directive>CacheStorePrivate</directive>
+       directive allows this behavior to be overridden.
+       <directive>CacheStorePrivate</directive> On
+       tells the server to attempt to cache the resource even if it contains
+       private header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <highlight language="config">
+      CacheStorePrivate On
+    </highlight>
+
+    <note type="warning"><title>Warning:</title>
+       This directive will allow caching even if the upstream server has
+       requested that the resource not be cached.  This directive is only
+       ideal for a 'private' cache.
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>Attempt to cache requests or responses that have been marked as no-store.</description>
+<syntax>CacheStoreNoStore On|Off</syntax>
+<default>CacheStoreNoStore Off</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, requests or responses with Cache-Control: no-store header
+       values will not be stored in the cache.  The
+       <directive>CacheStoreNoStore</directive> directive allows this
+       behavior to be overridden.  <directive>CacheStoreNoStore</directive> On
+       tells the server to attempt to cache the resource even if it contains
+       no-store header values.  Resources requiring authorization will
+       <em>never</em> be cached.</p>
+
+    <highlight language="config">
+      CacheStoreNoStore On
+    </highlight>
+
+    <note type="warning"><title>Warning:</title>
+       As described in RFC 2616, the no-store directive is intended to
+       "prevent the inadvertent release or retention of sensitive information
+       (for example, on backup tapes)."  Enabling this option could store
+       sensitive information in the cache.  You are hereby warned.
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLock</name>
+<description>Enable the thundering herd lock.</description>
+<syntax>CacheLock <var>on|off</var></syntax>
+<default>CacheLock off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.2.15 and later</compatibility>
+
+<usage>
+  <p>The <directive>CacheLock</directive> directive enables the thundering herd lock
+  for the given URL space.</p>
+
+  <p>In a minimal configuration the following directive is all that is needed to
+  enable the thundering herd lock in the default system temp directory.</p>
+
+  <highlight language="config">
+# Enable cache lock
+CacheLock on
+  </highlight>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockPath</name>
+<description>Set the lock path directory.</description>
+<syntax>CacheLockPath <var>directory</var></syntax>
+<default>CacheLockPath /tmp/mod_cache-lock</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+  <p>The <directive>CacheLockPath</directive> directive allows you to specify the
+  directory in which the locks are created. By default, the system's temporary
+  folder is used. Locks consist of empty files that only exist for stale URLs
+  in flight, so is significantly less resource intensive than the traditional
+  disk cache.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockMaxAge</name>
+<description>Set the maximum possible age of a cache lock.</description>
+<syntax>CacheLockMaxAge <var>integer</var></syntax>
+<default>CacheLockMaxAge 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+  <p>The <directive>CacheLockMaxAge</directive> directive specifies the maximum
+  age of any cache lock.</p>
+
+  <p>A lock older than this value in seconds will be ignored, and the next
+  incoming request will be given the opportunity to re-establish the lock.
+  This mechanism prevents a slow client taking an excessively long time to refresh
+  an entity.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+  <name>CacheQuickHandler</name>
+  <description>Run the cache from the quick handler.</description>
+  <syntax>CacheQuickHandler <var>on|off</var></syntax>
+  <default>CacheQuickHandler on</default>
+  <contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
+  <compatibility>Apache HTTP Server 2.3.3 and later</compatibility>
+
+  <usage>
+    <p>The <directive module="mod_cache">CacheQuickHandler</directive> directive
+    controls the phase in which the cache is handled.</p>
+
+    <p>In the default enabled configuration, the cache operates within the quick
+    handler phase. This phase short circuits the majority of server processing,
+    and represents the most performant mode of operation for a typical server.
+    The cache <strong>bolts onto</strong> the front of the server, and the
+    majority of server processing is avoided.</p>
+
+    <p>When disabled, the cache operates as a normal handler, and is subject to
+    the full set of phases when handling a server request. While this mode is
+    slower than the default, it allows the cache to be used in cases where full
+    processing is required, such as when content is subject to authorisation.</p>
+
+    <highlight language="config">
+# Run cache as a normal handler
+CacheQuickHandler off
+    </highlight>
+
+    <p>It is also possible, when the quick handler is disabled, for the
+    administrator to choose the precise location within the filter chain where
+    caching is to be performed, by adding the <strong>CACHE</strong> filter to
+    the chain.</p>
+
+    <highlight language="config">
+# Cache content before mod_include and mod_deflate
+CacheQuickHandler off
+AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html
+    </highlight>
+
+    <p>If the CACHE filter is specified more than once, the last instance will
+    apply.</p>
+
+  </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheHeader</name>
+<description>Add an X-Cache header to the response.</description>
+<syntax>CacheHeader <var>on|off</var></syntax>
+<default>CacheHeader off</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.9 and later</compatibility>
+
+<usage>
+  <p>When the <directive module="mod_cache">CacheHeader</directive> directive
+  is switched on, an <strong>X-Cache</strong> header will be added to the response
+  with the cache status of this response. If the normal handler is used, this
+  directive may appear within a <directive module="core" type="section">Directory</directive>
+  or <directive module="core" type="section">Location</directive> directive. If the quick
+  handler is used, this directive must appear within a server or virtual host
+  context, otherwise the setting will be ignored.</p>
+
+  <dl>
+    <dt><strong>HIT</strong></dt><dd>The entity was fresh, and was served from
+    cache.</dd>
+    <dt><strong>REVALIDATE</strong></dt><dd>The entity was stale, was successfully
+    revalidated and was served from cache.</dd>
+    <dt><strong>MISS</strong></dt><dd>The entity was fetched from the upstream
+      server and was not served from cache.</dd>
+  </dl>
+
+  <highlight language="config">
+# Enable the X-Cache header
+CacheHeader on
+  </highlight>
+
+  <highlight language="config">
+    X-Cache: HIT from localhost
+  </highlight>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDetailHeader</name>
+<description>Add an X-Cache-Detail header to the response.</description>
+<syntax>CacheDetailHeader <var>on|off</var></syntax>
+<default>CacheDetailHeader off</default>
+<contextlist><context>server config</context>
+      <context>virtual host</context>
+      <context>directory</context>
+      <context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.9 and later</compatibility>
+
+<usage>
+  <p>When the <directive module="mod_cache">CacheDetailHeader</directive> directive
+  is switched on, an <strong>X-Cache-Detail</strong> header will be added to the response
+  containing the detailed reason for a particular caching decision.</p>
+
+  <p>It can be useful during development of cached RESTful services to have additional
+  information about the caching decision written to the response headers, so as to
+  confirm whether <code>Cache-Control</code> and other headers have been correctly
+  used by the service and client.</p>
+
+  <p>If the normal handler is used, this directive may appear within a
+  <directive module="core" type="section">Directory</directive> or
+  <directive module="core" type="section">Location</directive> directive. If the quick handler
+  is used, this directive must appear within a server or virtual host context, otherwise
+  the setting will be ignored.</p>
+
+  <highlight language="config">
+# Enable the X-Cache-Detail header
+CacheDetailHeader on
+  </highlight>
+
+  <example>
+    X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
+  </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheKeyBaseURL</name>
+<description>Override the base URL of reverse proxied cache keys.</description>
+<syntax>CacheKeyBaseURL <var>URL</var></syntax>
+<default>CacheKeyBaseURL http://example.com</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.9 and later</compatibility>
+
+<usage>
+  <p>When the <directive module="mod_cache">CacheKeyBaseURL</directive> directive
+  is specified, the URL provided will be used as the base URL to calculate
+  the URL of the cache keys in the reverse proxy configuration. When not specified,
+  the scheme, hostname and port of the current virtual host is used to construct
+  the cache key. When a cluster of machines is present, and all cached entries
+  should be cached beneath the same cache key, a new base URL can be specified
+  with this directive.</p>
+
+  <highlight language="config">
+# Override the base URL of the cache key.
+CacheKeyBaseURL "http://www.example.com/"
+  </highlight>
+
+  <note type="warning">Take care when setting this directive. If two separate virtual
+  hosts are accidentally given the same base URL, entries from one virtual host
+  will be served to the other.</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStaleOnError</name>
+<description>Serve stale content in place of 5xx responses.</description>
+<syntax>CacheStaleOnError <var>on|off</var></syntax>
+<default>CacheStaleOnError on</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.9 and later</compatibility>
+
+<usage>
+  <p>When the <directive module="mod_cache">CacheStaleOnError</directive> directive
+  is switched on, and when stale data is available in the cache, the cache will
+  respond to 5xx responses from the backend by returning the stale data instead of
+  the 5xx response. While the Cache-Control headers sent by clients will be respected,
+  and the raw 5xx responses returned to the client on request, the 5xx response so
+  returned to the client will not invalidate the content in the cache.</p>
+
+  <highlight language="config">
+# Serve stale data on error.
+CacheStaleOnError on
+  </highlight>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

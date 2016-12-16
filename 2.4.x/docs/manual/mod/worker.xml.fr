@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1414098 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="worker.xml.meta">
+<name>worker</name>
+<description>Module multi-processus implémentant un serveur web hybride
+multi-processus multi-thread</description>
+<status>MPM</status>
+<sourcefile>worker.c</sourcefile>
+<identifier>mpm_worker_module</identifier>
+
+<summary>
+    <p>Ce module multi-processus (MPM) implémente un serveur hybride
+    multi-processus multi-thread. En utilisant les threads pour servir
+    les requêtes, il peut en traiter un grand nombre tout en consommant
+    moins de ressources qu'un serveur à base de processus. Cependant, il
+    conserve une grande partie de la stabilité d'un serveur à base de
+    processus en maintenant plusieurs processus disponibles, chacun de
+    ces derniers possédant de nombreux threads.</p>
+
+    <p>Les directives les plus importantes qui permettent de contrôler
+    ce MPM sont <directive
+    module="mpm_common">ThreadsPerChild</directive>, qui définit le
+    nombre de threads lancés par chaque processus enfant et <directive
+    module="mpm_common">MaxRequestWorkers</directive>, qui définit le nombre
+    global maximum de threads qui peuvent être lancés.</p>
+</summary>
+<seealso><a href="../bind.html">Définition des adresses et ports
+qu'utilise le serveur HTTP Apache</a></seealso>
+
+<section id="how-it-works"><title>Comment ça marche</title>
+    <p>Un processus de contrôle unique (le parent) a pour tâche de
+    lancer les processus enfants. Chaque processus enfant crée un nombre
+    fixe de threads serveurs selon la valeur de la directive <directive
+    module="mpm_common">ThreadsPerChild</directive>, ainsi
+    qu'un thread chargé d'attendre les connexions et de les passer à un
+    thread serveur pour traitement au fur et à mesure de leur arrivée.</p>
+
+    <p>Le serveur HTTP Apache essaie toujours de maintenir un jeu de
+    threads serveurs
+    inactifs ou <dfn>en réserve</dfn>, qui se tiennent prêts à traiter
+    les requêtes entrantes. De cette façon, les clients n'ont pas besoin
+    d'attendre la création d'un nouveau thread ou d'un nouveau processus
+    pour que leurs requêtes puissent être traitées. Le nombre de
+    processus lancés initialement est défini par la directive <directive
+    module="mpm_common">StartServers</directive>. En cours de
+    fonctionnement, le serveur évalue le nombre total de threads inactifs
+    dans tous les processus, et en crée ou en arrête de façon à
+    maintenir ce nombre à l'intérieur des limites définies par les
+    directives <directive
+    module="mpm_common">MinSpareThreads</directive> et <directive
+    module="mpm_common">MaxSpareThreads</directive>. Comme ce module
+    s'auto-contrôle de manière efficace, on peut en général conserver
+    les valeurs par défaut. Le nombre maximum de clients pouvant être
+    servis simultanément (c'est à dire le nombre global maximum de
+    threads pour tous les processus) est défini par la directive
+    <directive module="mpm_common">MaxRequestWorkers</directive>. Le nombre
+    maximum de processus enfants actifs est défini par la valeur de la
+    directive <directive module="mpm_common">MaxRequestWorkers</directive>
+    divisée par la valeur de la directive <directive module="mpm_common">
+    ThreadsPerChild</directive>.</p>
+
+    <p>Deux directives permettent de fixer des limites absolues pour le
+    nombre de processus enfants actifs et le nombre de threads serveurs
+    par processus enfant, et ne peuvent être modifiées qu'en
+    arrêtant complètement le serveur et en le démarrant à nouveau.
+    La valeur de la directive <directive
+    module="mpm_common">ServerLimit</directive> constitue une limite
+    absolue pour le nombre de processus enfants actifs, et doit être
+    supérieure ou égale à la valeur de la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive> divisée par la valeur de
+    la directive <directive module="mpm_common">
+    ThreadsPerChild</directive>. La valeur de la directive <directive
+    module="mpm_common">ThreadLimit</directive> constitue une limite
+    absolue pour le nombre de threads par processus enfant, et doit être
+    supérieure ou égale à la valeur de la directive <directive
+    module="mpm_common">ThreadsPerChild</directive>.</p>
+
+    <p>En plus du jeu de processus enfants actifs, il peut exister
+    quelques processus enfants en cours d'arrêt, mais dont au moins un
+    thread serveur est encore en train de traiter une connexion client
+    existante. Il peut subsister en théorie jusqu'à <directive
+    module="mpm_common">MaxRequestWorkers</directive> processus en cours
+    d'arrêt, bien qu'en réalité, ce nombre sera en général beaucoup plus
+    petit. Ce comportement peut être évité en désactivant l'arrêt de
+    processus enfants individuels de la manière suivante :</p>
+
+    <ul>
+      <li>définir la valeur de <directive module="mpm_common">
+      MaxConnectionsPerChild</directive> à zéro</li>
+
+      <li>Définir la valeur de <directive module="mpm_common">
+      MaxSpareThreads</directive> à la même valeur que <directive
+      module="mpm_common">MaxRequestWorkers</directive></li>
+    </ul>
+
+    <p>Voici un exemple typique de configuration du contrôle
+    processus-thread pour le MPM <module>worker</module> :</p>
+
+    <highlight language="config">
+ServerLimit         16
+StartServers         2
+MaxRequestWorkers  150
+MinSpareThreads     25
+MaxSpareThreads     75
+ThreadsPerChild     25
+    </highlight>
+
+    <p>Alors que le processus parent est en général démarré en tant que
+    <code>root</code> sous Unix afin de se mettre en écoute du port 80,
+    les processus enfants et les threads sont lancés par le serveur sous un
+    utilisateur avec privilèges restreints. On peut utiliser les
+    directives <directive
+    module="mod_unixd">User</directive> et <directive
+    module="mod_unixd">Group</directive> pour définir les privilèges
+    des processus enfants. Les processus enfants doivent pouvoir être en
+    mesure de lire tous les contenus destinés à être servis, mais
+    doivent avoir des privilèges aussi bas que possible. De plus, ces
+    directives définissent également les privilèges dont vont hériter les
+    scripts CGI (sauf si on utilise <program>suexec</program>).</p>
+
+    <p>La directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> permet de
+    définir la fréquence à laquelle le serveur recycle ses processus en
+    arrêtant les plus anciens et en en lançant de nouveaux.</p>
+
+    <p>Ce module MPM utilise le mutex <code>mpm-accept</code> pour
+    sérialiser l'accès aux connexions entrantes lorsqu'un problème
+    d'afflux de requêtes peut survenir (en général, lorsqu'il y a
+    plusieurs sockets en écoute). Les différents aspects de
+    l'implémentation de ce mutex peuvent être configurés via la
+    directive <directive module="core">Mutex</directive>. Vous
+    trouverez des informations plus détaillées à propos de ce mutex dans
+    la documentation sur les <a
+    href="../misc/perf-tuning.html">conseils en matière de
+    performances</a>.</p>
+
+</section>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+
+</modulesynopsis>

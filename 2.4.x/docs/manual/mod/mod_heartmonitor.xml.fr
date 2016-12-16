@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1437838 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_heartmonitor.xml.meta">
+
+<name>mod_heartmonitor</name>
+<description>Moniteur centralisé pour les serveurs d'origine mod_heartbeat</description>
+<status>Experimental</status>
+<sourcefile>mod_heartmonitor.c</sourcefile>
+<identifier>heartmonitor_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+<p>
+<module>mod_heartmonitor</module> interprète les messages d'état générés
+par les serveurs d'origine pour lesquels <module>mod_heartbeat</module> est activé et
+fournit ces informations à <module>mod_lbmethod_heartbeat</module>, ce
+qui permet d'utiliser la <em>lbmethod</em> "heartbeat" au sein des
+directives <directive module="mod_proxy">ProxyPass</directive>.
+</p>
+
+<p>Ce module utilise les services de <module>mod_slotmem_shm</module>,
+lorsqu'il est disponible, au lieu d'un simple fichier texte. Aucune
+configuration supplémentaire n'est requise pour utiliser
+<module>mod_slotmem_shm</module>.</p>
+
+    <note type="warning">
+        Pour utiliser <module>mod_heartmonitor</module>,
+	<module>mod_status</module> et <module>mod_watchdog</module>
+	doivent être soit des modules statiques, soit des modules
+	dynamiques, et dans ce dernier cas, ils doivent être chargés
+	avant <module>mod_heartmonitor</module>.
+    </note>
+</summary>
+
+<directivesynopsis>
+<name>HeartbeatListen</name>
+<description>Adresse multicast d'écoute des requêtes entrantes heartbeat</description>
+<syntax>HeartbeatListen<var>addr:port</var></syntax>
+<default>disabled</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>HeartbeatListen</directive> permet de
+    spécifier l'adresse multicast sur laquelle le serveur va surveiller les
+    informations d'état en provenance de serveurs où
+    <module>mod_heartbeat</module> est activé. Cette adresse correspond
+    en général à la valeur de la directive <directive
+    module="mod_heartbeat">HeartbeatAddress</directive> sur le serveur
+    d'origine.
+    </p>
+
+    <highlight language="config">
+    HeartbeatListen 239.0.0.1:27999
+    </highlight>
+
+    <p>Tant que cette directive n'est pas utilisée, le module est
+    désactivé.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HeartbeatStorage</name>
+<description>Chemin vers le stockage des données heartbeat</description>
+<syntax>HeartbeatStorage <var>chemin fichier</var></syntax>
+<default>HeartbeatStorage logs/hb.dat</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>HeartbeatStorage</directive> permet de
+    spécifier le chemin de stockage des données heartbeat. Ce fichier
+    texte n'est utilisé que si <module>mod_slotmem_shm</module> n'est
+    pas chargé.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HeartbeatMaxServers</name>
+<description>Spécifie le nombre maximal de serveurs qui pourront envoyer
+des requêtes heartbeat à ce serveur.</description>
+<syntax>HeartbeatMaxServers <var>nombre-de-serveurs</var></syntax>
+<default>HeartbeatMaxServers 10</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>HeartbeatMaxServers</directive>
+    spécifie le nombre maximal de serveurs qui pourront envoyer des
+    requêtes heartbeat à ce serveur de monitoring. Elle permet ainsi de
+    contrôler la quantité de mémoire partagée allouée pour le stockage
+    des données heartbeat lorsqu'on utilise
+    <module>mod_slotmem_shm</module>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

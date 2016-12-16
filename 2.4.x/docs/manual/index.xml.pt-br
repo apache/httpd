@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
+<!-- English Revision: 420993:1732097 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<indexpage metafile="index.xml.meta">
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Documenta&#231;&#227;o do Servidor HTTP Apache Vers&#227;o
+&httpd.major;.&httpd.minor;</title>
+
+<category id="release"><title>Notas da Vers&#227;o</title>
+    <page href="new_features_2_4.html">Novas funcionalidades no Apache 2.3/2.4</page>
+    <page href="new_features_2_2.html">Novas funcionalidades no Apache 2.1/2.2</page>
+    <page href="new_features_2_0.html">Novas funcionalidades no Apache 2.0</page>
+    <page href="upgrading.html">Atualizando da vers&#227;o 2.2 para 2.4</page>
+    <page href="license.html">Licen&#231;a Apache</page>
+</category>
+
+<category id="manual"><title>Manual de Refer&#234;ncia</title>
+    <page href="install.html">Compilando e Instalando</page>
+    <page href="invoking.html">Iniciando</page>
+    <page href="stopping.html">Parando ou Reiniciando</page>
+    <page href="mod/directives.html">Diretrizes de Configura&#231;&#227;o para execu&#231;&#227;o</page>
+    <page href="mod/quickreference.html">Refer&#234;ncia R&#225;pida de Diretrizes</page>
+    <page href="mod/">M&#243;dulos</page>
+    <page href="mpm.html">M&#243;dulos Multi-Processos (MPMs)</page>
+    <page href="filter.html">Filtros</page>
+    <page href="handler.html">Handlers</page>
+    <page href="programs/">Servidor e Programas Suportados</page>
+    <page href="glossary.html">Gloss&#225;rio</page>
+</category>    
+
+<category id="usersguide"><title>Guia do Usu&#225;rio</title>
+    <page href="bind.html">Portas de escuta</page>
+    <page href="configuring.html">Arquivos de Configura&#231;&#227;o</page>
+    <page href="sections.html">Se&#231;&#245;es de Configura&#231;&#227;o</page>
+    <page href="caching.html">Cach&#234; de Conte&#250;do</page>
+    <page href="content-negotiation.html">Negocia&#231;&#227;o de Conte&#250;do</page>
+    <page href="dso.html">Objetos Din&#226;micos Compartilhados (DSO)</page>
+    <page href="env.html">Vari&#225;veis de Ambiente</page>
+    <page href="logs.html">Arquivos de Registro</page>
+    <page href="urlmapping.html">Mapeando URLs para o Sistema de Arquivos</page>
+    <page href="misc/perf-tuning.html">Ajustes de Performance</page>
+    <page href="misc/security_tips.html">Dicas de Seguran&#231;a</page>
+    <page href="server-wide.html">Configura&#231;&#245;es Globais do Servidor</page>
+    <page href="ssl/">Encriptamento SSL/TLS</page>
+    <page href="suexec.html">Execu&#231;&#227;o Suexec para CGI</page>
+    <page href="rewrite/">Guia para Reescrever URL</page>
+    <page href="vhosts/">Hosting Virtuais</page>
+</category>
+
+<category id="howto"><title>How-To / Tutoriais</title>
+    <page href="howto/auth.html">Autentica&#231;&#227;o, Autoriza&#231;&#227;o, e 
+    Controle de Acesso</page>
+    <page href="howto/cgi.html">CGI: Conte&#250;do Din&#226;mico</page>
+    <page href="howto/htaccess.html">Arquivos .htaccess</page>
+    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
+    <page href="howto/public_html.html">Diret&#243;rios Web para usu&#225;rios individuais
+    (public_html)</page>
+</category>
+
+<category id="platform"><title>Notas Espec&#237;ficas para diferentes Platformas</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">EBCDIC Port</page>
+</category>
+
+<category id="other"><title>Outros T&#243;picos</title>
+    <page href="faq/">Perguntas Mais Frequentes</page>
+    <page href="sitemap.html">Mapa do Site</page>
+    <page href="developer/">Documenta&#231;&#227;o para Desenvolvedores</page>
+    <page href="misc/">Outras Notas</page>
+</category>
+
+</indexpage>
+

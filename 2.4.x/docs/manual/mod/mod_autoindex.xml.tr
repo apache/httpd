@@ -1,0 +1,1121 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1741864 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_autoindex.xml.meta">
+<name>mod_autoindex</name>
+
+<description>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
+yaptığı gibi dizin içeriğini listeler.</description>
+<status>Base</status>
+<sourcefile>mod_autoindex.c</sourcefile>
+<identifier>autoindex_module</identifier>
+
+<summary>
+      <p>Bir dizin içerik dosyası iki kaynaktan gelebilir:</p>
+
+    <ul>
+      <li>Bu dizinde bulunan ve genellikle <code>index.html</code>
+        adında bir dosya olarak. Kullanılan dosyanın veya dosyaların ismi
+        <directive module="mod_dir">DirectoryIndex</directive> yönergesi ile
+        belirlenir ve <module>mod_dir</module> tarafından denetlenir.</li>
+
+      <li>Kullanıcı tarafından böyle bir dosya sağlanmadığı takdirde dizin
+        içerik listesini sunucu üretir. Diğer yönergeler bu listenin biçemini
+        belirler. Listede gösterilen dosya türü simgeleri <directive
+        module="mod_autoindex" >AddIcon</directive>, <directive
+        module="mod_autoindex" >AddIconByEncoding</directive> ve <directive
+        module="mod_autoindex" >AddIconByType</directive> yönergeleri ile
+        belirlenir. Bunlar <module>mod_autoindex</module> tarafından
+        denetlenir.</li>
+    </ul>
+
+    <p>İki işlev birbirinden ayrı tutulmuştur, böylece kendiliğinden içerik
+      listesi üretimi tamamen iptal edilebilir (veya değiştirilebilir).</p>
+
+    <p>Kendiliğinden içerik listesi üretimi <code>Options +Indexes</code> ile
+      etkin kılınabilir. Daha fazla bilgi için <directive module="core"
+      >Options</directive> yönergesinin açıklamasına bakınız.</p>
+
+    <p><directive module="mod_autoindex">IndexOptions</directive> yönergesi
+      <code><a href="#indexoptions.fancyindexing" >FancyIndexing</a></code>
+      seçeneği ile kullanılmışsa sütun başlıkları listenin sıralamasını
+      sütundaki sıralamaya göre değiştirecek hiper bağlar haline getirilir
+      (süslü liste). Aynı başlığa peşpeşe tıklamak suretiyle sıralamayı
+      büyükten küçüğe veya tersine değiştirebilirsiniz. Bu sütun başlığı
+      bağlarının oluşturulması <directive module="mod_autoindex"
+      >IndexOptions</directive> yönergesi <code><a
+      href="#indexoptions.suppresscolumnsorting"
+      >SuppressColumnSorting</a></code> seçeneği ile kullanılarak
+      engellenebilir.</p>
+
+    <p>Boyuta göre sıralamada daima dosyanın asıl boyutuna bakılır.
+      Dolayısıyla ikisi de "1K" olarak gösterilen iki dosyadan 1010 baytlık
+      olanı küçükten büyüğe sıralamada 1011 baytlıktan önce
+      gösterilecektir.</p>
+</summary>
+
+<section id="query">
+    <title>Sütun Sıralamada Sorgu Seçenekleri</title>
+
+    <p>İstemciye, dizin içeriğini listelerken neleri hangi sırada
+      listeleyeceğini belirleyebilmesi için içerik üzerinde biraz denetim
+      sağlayabileceği çeşitli sorgu dizgesi bileşenleri sağlanmıştır.
+      Çıktı üzerinde kullanıcı denetimini tamamen ortadan kaldırmak için
+      <directive module="mod_autoindex">IndexOptions</directive> yönergesinin
+      <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code>
+      seçeneği kullanılabilir.</p>
+
+    <p>Sütun sıralama başlıklarının her biri hedefi kendisi olan birer hiper
+      bağ olup aşağıda sıralanan sorgu seçeneklerini kullanırlar. Bu
+      seçeneklerin her biri her dizin içerik listesi isteğine eklenebilir.</p>
+
+    <ul>
+      <li><code>C=N</code> dizini dosya adına göre sıralar</li>
+
+      <li><code>C=M</code> dizini son değişiklik zamanına ve ardından dosya
+        ismine göre sıralar.</li>
+
+      <li><code>C=S</code> dizini boyuta ve ardından dosya adına göre
+        sıralar</li>
+
+      <li class="separate"><code>C=D</code> dizini açıklamaya ve ardından
+        dosya adına göre sıralar.</li>
+
+      <li><code>O=A</code> artan sıralama uygulanır.</li>
+
+      <li class="separate"><code>O=D</code>  azalan sıralama uygulanır.</li>
+
+      <li><code>F=0</code> listeleme basit listeleme biçiminde yapılır
+        (<code>FancyIndexing</code> seçeneği ile etkinleştirilen biçimde
+        değil)</li>
+
+      <li><code>F=1</code> listeleme <code>FancyIndexing</code> seçeneği ile
+        etkinleştirilen biçimde yapılır</li>
+
+      <li class="separate"><code>F=2</code> listeleme <code><a
+        href="#indexoptions.fancyindexing" >FancyIndexing</a></code> ve
+        <code><a href="#indexoptions.htmltable" >HTMLTable</a></code> seçeneği
+        ile etkinleştirilen biçimde yapılır.</li>
+
+      <li><code>V=0</code> sürüme göre sıralama iptal edilir.</li>
+
+      <li class="separate"><code>V=1</code> sürüme göre sıralama etkin
+        kılınır.</li>
+
+      <li><code>P=<var>kalıp</var></code> sadece belirtilen
+        <code><em>kalıp</em></code> ile eşleşen dosyalar istelenir.</li>
+    </ul>
+
+    <p><code>P=<var>kalıp</var></code> sorgu seçeneğinin normalde <directive
+      module="mod_autoindex" >IndexIgnore</directive> yönergesi işleme
+      sokulduktan sonra değerlendirildiğine ve dosya isimlerinin diğer
+      kendiliğinden içerik listeleme koşullarının konusu olmaya devam ettiğine
+      dikkat ediniz. <module>mod_autoindex</module> modülündeki Sorgu
+      Seçenekleri çözümleyicisi tanımadığı bir seçeneğe rastlar rastlamaz
+      işlemi durdurur. Sorgu Seçenekleri yukarıda belirtilene uygun olarak iyi
+      biçimli olmak zorundadır.</p>
+
+    <p>Aşağıdaki basit örnekte sorgu seçeneklerinin kullanımı gösterilmiştir.
+      Son satırda bulunan "submit" düğmesindeki tanınmayan "X" girdisine
+      dikkat ediniz. "X=Göster" girdisi tüm seçenekler işlendikten sonra
+      <module>mod_autoindex</module> tarafından son argüman olarak ele
+      alınacak ve çözümleme işlemi o noktada duracaktır.</p>
+
+    <example><pre>
+&lt;form action="" method="get">
+  &lt;input type="text" name="P" value="*" /> ile eşleşen
+  &lt;select name="C">
+    &lt;option value="N" selected="selected">isme&lt;/option>
+    &lt;option value="M"> değişiklik tarihine&lt;/option>
+    &lt;option value="S"> boyuta&lt;/option>
+    &lt;option value="D"> açıklamaya&lt;/option>
+  &lt;/select> göre
+  &lt;select name="O">
+    &lt;option value="A" selected="selected"> artan&lt;/option>
+    &lt;option value="D"> azalan&lt;/option>
+  &lt;/select>
+  &lt;select name="V">
+    &lt;option value="0" selected="selected">normal&lt;/option>
+    &lt;option value="1"> sürümlü&lt;/option>
+  &lt;/select> sıralamayla bir
+  &lt;select name="F">
+    &lt;option value="0"> basit liste&lt;/option>
+    &lt;option value="1" selected="selected"> süslü liste&lt;/option>
+    &lt;option value="2"> tablolu liste&lt;/option>
+  &lt;/select>
+  &lt;input type="submit" name="X" value="Göster" />
+&lt;/form></pre>
+    </example>
+
+</section>
+
+<directivesynopsis>
+<name>AddAlt</name>
+<description>Dosyaya göre seçilen simgenin yerinde gösterilecek metni belirler.
+</description>
+<syntax>AddAlt <var>metin</var> <var>dosya</var> [<var>dosya</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>AddAlt</directive> yönergesi, <code><a
+      href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
+      üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
+      metni belirler. <code><em>dosya</em></code> olarak dosya türünü
+      betimleyecek bir dosya uzantısı, dosya isminin bir kısmı, bir dosya ismi
+      kalıbı veya tam yoluyla bir dosya ismi belirtilebilir. Eğer
+      <code><em>metin</em></code> boşluk karakterleri içeriyorsa tırnak içine
+      (<code>"</code> veya <code>'</code>) alınmalıdır. Simge metni, simge
+      bulunamadığı veya istemci resim gösteremediği takdirde ya da kullanıcı
+      resim yüklememeyi tercih etmişse gösterilir.</p>
+
+    <highlight language="config">
+AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddAltByEncoding</name>
+<description>Dosyanın MIME kodlamasına göre seçilen simgenin yerinde
+gösterilecek metni belirler.</description>
+<syntax>AddAltByEncoding <var>metin</var> <var>MIME-kodlaması</var>
+[<var>MIME-kodlaması</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>AddAltByEncoding</directive> yönergesi, <code><a
+      href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
+      üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
+      metni belirler. <code><em>MIME-kodlaması</em></code> olarak
+      <code>x-compress</code> gibi geçerli bir içerik kodlaması
+      belirtilmelidir. Eğer <code><em>metin</em></code> boşluk karakterleri
+      içeriyorsa tırnak içine (<code>"</code> veya <code>'</code>)
+      alınmalıdır. Simge metni simge bulunamadığı veya istemci resim
+      gösteremediği takdirde ya da kullanıcı resim yüklememeyi tercih etmişse
+      gösterilir.</p>
+
+    <highlight language="config">
+AddAltByEncoding gzip x-gzip
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddAltByType</name>
+<description>Dosyanın MIME türüne göre seçilen simgenin yerinde gösterilecek
+metni belirler.</description>
+<syntax>AddAltByType <var>metin</var> <var>MIME-türü</var>
+[<var>MIME-türü</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>AddAltByType</directive> yönergesi, <code><a
+      href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
+      üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
+      metni belirler. <code><em>MIME-türü</em></code> olarak
+      <code>text/html</code> gibi geçerli bir içerik türü belirtilmelidir.
+      Eğer <code><em>metin</em></code> boşluk karakterleri içeriyorsa tırnak
+      içine (<code>"</code> veya <code>'</code>) alınmalıdır. Simge metni
+      simge bulunamadığı veya istemci resim gösteremediği takdirde ya da
+      kullanıcı resim yüklememeyi tercih etmişse gösterilir.</p>
+
+    <highlight language="config">
+AddAltByType 'salt metin' text/plain
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddDescription</name>
+<description>Bir dosya için gösterilecek açıklama belirtilir.</description>
+<syntax>AddDescription <var>metin dosya</var> [<var>dosya</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
+      >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
+      dosya için gösterilecek açıklamayı belirler. <code><em>dosya</em></code>
+      olarak dosya türünü betimleyecek bir dosya uzantısı, dosya isminin bir
+      kısmı, bir dosya ismi kalıbı veya tam yoluyla bir dosya ismi
+      belirtilebilir. Eğer dosya açıklamasını içeren
+      <code><em>metin</em></code> boşluk karakterleri içeriyorsa çift tırnak
+      (<code>"</code>) içine alınmalıdır.</p>
+
+    <highlight language="config">
+AddDescription "Mars Gezegeni" mars.gif <br/>
+AddDescription "Dostum Marshall" dostlar/mars.gif
+    </highlight>
+
+    <p>Normalde öntanımlı açıklama alanının genişliği 23 bayttır. <code><a
+      href="#indexoptions.suppressicon" >IndexOptions SuppressIcon</a></code>
+      seçeneği buna 6 bayt daha ekler; <code><a
+      href="#indexoptions.suppresssize" >IndexOptions SuppressSize</a></code>
+      seçeneği 7 bayt, <code><a href="#indexoptions.suppresslastmodified"
+      >IndexOptions SuppressLastModified</a></code> seçeneği ise 19 bayt
+      ekler. Böylece en fazla 55 karakterlik öntanımlı sütun genişliğine
+      ulaşılabilir.</p>
+
+    <p><var>dosya</var> kısmî dosya ismi içerebileceğinden çok kısa dosya ismi
+      belirtilmesi yüzünden istemeden de olsa başka dosyalarla
+      eşleşebileceğini unutmayın. Örneğin, <code>le.html</code> doğrudan
+      <code>le.html</code> ile eşleşebileceği gibi <code>example.html</code>
+      ile de eşleşecektir. Şüpheli durumların ortaya çıkabileceği durumlarda
+      mümkün olduğunca dosya isminin tamamını kullanın ve saptanan ilk
+      eşleşmenin kullanılacağını aklınızdan çıkarmayın ayrıca,
+      <code>AddDescription</code> listesini de uygun şekilde sıralayın.</p>
+
+    <p>Açıklama sütununun öntanımlı genişliği geçersiz kılınabilir hatta
+      sınırsız açıklama uzunluğu atanabilir. Bu konu için <directive
+      module="mod_autoindex" >IndexOptions</directive> yönergesinin <a
+      href="#indexoptions.descriptionwidth" ><code>DescriptionWidth</code></a>
+      seçeneğinin açıklamasına bakınız.</p>
+
+    <note><title>Önemli</title>
+      <p><directive>AddDescription</directive> ile tanımlanan açıklama metni
+        HTML etiketleri ve karakter öğeleri içerebilir. Eğer açıklama
+        sütununun genişlik sınırlamasından dolayı bir HTML etiketinin içeriği
+        kırpılırsa bu durum dizin listesinin kalanını etkileyebilir (örneğin,
+        kalın gösterim listenin kalanına yayılabilir).</p>
+    </note>
+
+    <note><title>Yol bilgisi içeren değiştirgeler</title>
+      <p>Mutlak yollar henüz desteklenmemetedir ve çalışma anında hiçbir şeyle
+        eşleşmeyeceklerdir. Normalde sadece htaccess bağlamında kullanılan,
+        göreli yol bilgisi içeren değiştirgeler, kısmi dizin isimleriyle
+        eşleşmemeleri için örtük olarak '*/' öneki alırlar.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIcon</name>
+<description>Bir dosya için gösterilecek simgeyi dosya adına göre belirler.
+</description>
+<syntax>AddIcon <var>simge</var> <var>isim</var> [<var>isim</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
+      >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde adı
+      <code><em>isim</em></code> ile biten bir dosya için gösterilecek simgeyi
+      belirler. <code><em>simge</em></code> ya simgenin göreli URL’si (%
+      öncelemeli), tam nitelenmiş bir uzak URL ya da
+      <code>(<var>alt-metin</var>,<var>url</var>)</code>
+      biçeminde olmalıdır; buradaki <code><em>alt-metin</em></code> simge
+      gösterilemediği durumda tarayıcı tarafından simgenin yerinde
+      gösterilecek metindir.</p>
+
+    <p><code><em>isim</em></code> olarak ya (listeyi düzgün biçemlemek
+      amacıyla) dizinler için <code>^^DIRECTORY^^</code>, boş satırlar için
+      <code>^^BLANKICON^^</code> ya da dosya türünü betimleyecek bir dosya
+      uzantısı, dosya isminin bir kısmı, bir dosya ismi kalıbı veya tam
+      yoluyla bir dosya ismi belirtilebilir.</p>
+
+    <p><code>^^BLANKICON^^</code> sadece biçemleme için kullanılır,
+      dolayısıyla <code>IndexOptions HTMLTable</code> kullanıyorsanız
+      gereksizdir.</p>
+
+    <highlight language="config">
+#Examples
+AddIcon (IMG,/icons/image.png) .gif .jpg .png
+AddIcon /icons/dir.png ^^DIRECTORY^^
+AddIcon /icons/backup.png *~
+    </highlight>
+
+    <p>Mümkünse <directive>AddIcon</directive> yerine <directive
+      module="mod_autoindex">AddIconByType</directive> yönergesi tercih
+      edilmelidir.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIconByEncoding</name>
+<description>Bir dosya için gösterilecek simgeyi dosyanın MIME kodlamasına
+göre belirler.</description>
+<syntax>AddIconByEncoding <var>simge</var> <var>MIME-kodlaması</var>
+[<var>MIME-kodlaması</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
+      >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
+      dosya için gösterilecek simgeyi belirler. <code><em>simge</em></code> ya
+      simgenin göreli URL’si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
+      <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
+      buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
+      tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
+
+    <p><code><em>MIME-kodlaması</em></code> olarak <code>x-compress</code>
+      gibi geçerli bir içerik kodlaması belirtilmelidir.</p>
+
+    <highlight language="config">
+AddIconByEncoding /icons/compress.png x-compress
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIconByType</name>
+<description>Bir dosya için gösterilecek simgeyi dosyanın MIME türüne göre
+belirler.</description>
+<syntax>AddIconByType <var>simge</var> <var>MIME-türü</var>
+[<var>MIME-türü</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
+      >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde MIME
+      türü <code><em>MIME-türü</em></code> olarak belirtilen bir dosya için
+      gösterilecek simgeyi belirler. <code><em>simge</em></code> ya simgenin
+      göreli URL’si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
+      <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
+      buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
+      tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
+
+    <p><var>MIME-türü</var> MIME türleri ile eşleşen bir dosya kalıbı ifadesi
+      olabilir.</p>
+
+    <highlight language="config">
+AddIconByType (IMG,/icons/image.png) image/*
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DefaultIcon</name>
+<description>Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
+belirler.</description>
+<syntax>DefaultIcon <var>URL-yolu</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>The <directive>DefaultIcon</directive> yönergesi  <code><a
+      href="#indexoptions.fancyindexing" >FancyIndexing</a></code> seçeneğiyle
+      üretilen dizin listesinde özel bir simge atanmamış dosyalar için
+      gösterilecek simgeyi belirler. <code><em>URL-yolu</em></code> simgeye
+      bir göreli URL (% öncelemeli) veya tam nitelenmiş uzak bir URL
+      belirtir.</p>
+
+    <highlight language="config">
+DefaultIcon /icon/unknown.png
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HeaderName</name>
+<description>Dizin listesinin tepesine yerleştirilecek dosyanın ismini
+belirler.</description>
+<syntax>HeaderName <var>dosya-ismi</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>HeaderName</directive> yönergesi, dizin listesinin tepesine
+      yerleştirilecek dosyanın ismini belirler. Dosyanın ismi
+      <code><em>dosya-ismi</em></code> ile belirtilir.</p>
+
+    <highlight language="config">
+HeaderName HEADER.html
+    </highlight>
+
+    <note>
+      <p><code>HeaderName</code> and <directive module="mod_autoindex"
+        >ReadmeName</directive> yönergelerinde
+        <code><em>dosya-ismi</em></code> artık içeriği listelenecek dizine
+        erişmek için kullanılan bir göreli URL yolu olarak ele alınmaktadır.
+        Eğer <code><em>dosya-ismi</em></code> bir bölü çizgisi ("/") ile
+        başlıyorsa <directive module="core">DocumentRoot</directive>
+        yönergesinde belirtilen dizine göre belirtildiği varsayılır.</p>
+
+      <highlight language="config">
+HeaderName /include/HEADER.html
+      </highlight>
+
+      <p><code><em>dosya-ismi</em></code>,  içerik türü <code>text/*</code>
+        (<code>text/html</code>, <code>text/plain</code> gibi) olan bir belge
+        olarak çözümlenmelidir. Yani, aşağıdaki örnekteki gibi betiğin asıl
+        dosya türü <code>text/html</code> olarak imlenmişse
+        <code><em>dosya-ismi</em></code> bir CGI betiğinin ismi bile
+        olabilir:</p>
+
+      <highlight language="config">
+AddType text/html .cgi
+      </highlight>
+
+      <p><directive module="core">Options</directive> ile
+        <code>MultiViews</code> etkin kılınmışsa dosyaya <a
+        href="../content-negotiation.html">içerik dili uzlaşımı</a> da
+        uygulanabilir. <code><em>dosya-ismi</em></code> ile belirtilen dosya
+        <code>text/html</code> türünde durağan bir belge (bir CGI betiği
+        değil) ise ve <directive module="core">options</directive> ile
+        <code>Includes</code> ve <code>IncludesNOEXEC</code> seçeneklerinden
+        biri belirtilmişse dosya bir SSI sayfası olarak ele alınır
+        (<module>mod_include</module> belgesine bakınız).</p>
+    </note>
+
+    <p>Eğer yönergede belirtilen dosya bir HTML belge gibi başlıyorsa
+      (&lt;html&gt;, &lt;head&gt;, vs.) ve bu etiketlerin yinelenmemesini
+      istiyorsanız <a href="#indexoptions.suppresshtmlpreamble"
+      ><code>IndexOptions +SuppressHTMLPreamble</code></a> ataması yapmanız
+      gerekecektir.</p>
+</usage>
+<seealso><directive module="mod_autoindex">ReadmeName</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexIgnore</name>
+<description>Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
+</description>
+<syntax>IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</syntax>
+<default>IndexIgnore "."</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexIgnore</directive> yönergesi, dizin içerik listesinden
+      gizlenecek dosyaların listesini belirtmek için kullanılır.
+      <code><em>dosya</em></code> olarak kabuk tarzı bir dosya ismi kalıbı
+      veya tam yoluyla bir dosya ismi belirtilebilir. Evvelce yapılmış bir
+      atamada değişiklik yapmak yerine birden fazla
+      <directive>IndexIgnore</directive> ataması yapabilirsiniz. Liste
+      öntanımlı olarak içinde bulunulan dizini (<code>./</code>) içerir.</p>
+
+    <highlight language="config">
+IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    </highlight>
+
+    <note><title>Düzenli İfadeler</title>
+      <p>Bu yönerge, <directive module="core" type="section"
+      >DirectoryMatch</directive> gibidüzenli ifadeler içeren yapılandırma
+      bölümlerinde henüz çalışmamaktadır.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexIgnoreReset</name>
+<description>Bir dizini listelerken gizlenecek dosyalar listesini boşaltır
+</description>
+<syntax>IndexIgnoreReset ON|OFF</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+<compatibility>Apache HTTP Sunucusunun 2.3.10 ve sonraki sürümlerinde kullanılabilmektedir.</compatibility>
+
+<usage>
+    <p>Bu yönerge, diğer yapılandırma bölümlerince bir şekilde miras alınmayan
+      ve <directive>IndexIgnore</directive> tarafından yoksayılan dosyaları
+      kaldırır. </p>
+
+    <highlight language="config">
+&lt;Directory "/var/www"&gt;
+    IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+&lt;Directory "/var/www/backups"&gt;
+    IndexIgnoreReset ON
+    IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+    </highlight>
+
+    <note type="warning"><p>Bu yönergeyi kullandıktan sonra, açıkça yoksaymak
+      istediğiniz kalıpların bir listesi için öntanımlı yapılandırmayı gözden
+      geçirin.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexOptions</name>
+<description>Dizin içerik listesini yapılandıracak seçenekler belirtilir.
+</description>
+<syntax>IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
+...</syntax>
+<default>Öntanımlı olarak hiçbir seçenek etkin değildir.</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexOptions</directive> yönergesi dizin içerik listesinin
+      davranışını belirler. <code><em>seçenek</em></code> olarak şunlar
+      belirtilebilir:</p>
+
+    <dl>
+      <dt><a name="indexoptions.addaltclass"
+               id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd><code>IndexOptions HTMLTable</code> etkin ve bir
+        <code>IndexStyleSheet</code> tanımlı olduğunda dizin listesi
+        tablosunun her satırına fazladan bir CSS sınıfı bildirimi ekler.
+        Tablonun her satırına uygulanmaması için standart <code>even</code> ve
+        <code>odd</code> sınıfları yerine <code>even-<em>ALT</em></code> ve
+        <code>odd-<em>ALT</em></code> bildirimleri kullanılabilir. Burada
+        <em>ALT</em> ya bir dosya biçimiyle ilişkili standat bir alt
+        dizgesidir ya da <code>AddAlt*</code> yönergeleriyle tanımlanan bir
+        alt dizgesidir.
+      </dd>
+
+      <dt><a name="indexoptions.charset" id="indexoptions.charset"
+        ><code>Charset=<em>karakter-kümesi</em></code></a> (<em>Apache HTTP
+        Sunucusunun 2.0.61 ve sonraki sürümleri</em>)</dt>
+
+      <dd><code>Charset</code> seçeneği üretilen sayfa için bir karakter
+        kümesi belirtebilmenizi sağlar. Dizinin bulunduğu dosya sisteminin
+        karakter kodlamasına bağlı olarak öntanımlı değeri Windows ve Mac OS
+        X'te <var>UTF-8</var>, diğerlerinde <var>ISO-8859-1</var>’dir (İlgili
+        dosya sisteminin Unicode dosya isimleri kullanıp kullanmamasına
+        bağlıdır).
+
+      <highlight language="config">
+IndexOptions Charset=UTF-8
+      </highlight>
+      </dd>
+
+      <dt><a name="indexoptions.descriptionwidth"
+               id="indexoptions.descriptionwidth"
+            ><code>DescriptionWidth=[<em>n</em> | *]</code></a></dt>
+
+      <dd><p><code>DescriptionWidth</code> seçeneği üretilen sayfada açıklama
+        sütununun genişliğini sizin belirleyebilmenizi sağlar. Bu seçenek
+        kullanılmadığında veya <code>-DescriptionWidth</code> olarak
+        belirtildiğinde uygun genişliği <module>mod_autoindex</module>
+        hesaplar.</p>
+
+        <p><code>DescriptionWidth=<em>n</em></code> ile açıklama sütununun
+          genişliği <code><em>n</em></code> baytla sınırlanır.</p>
+
+        <p><code>DescriptionWidth=*</code> ile açıklama sütununun genişliği en
+          uzun açıklama metni sığacak şekilde arttırılır.</p>
+
+        <p><strong>Sütun genişliğinin sabitliği nedeniyle metnin
+          kırpılmasından kaynaklanan sorunlar için <directive
+          module="mod_autoindex" >AddDescription</directive> yönergesinin
+          açıklamasına bakınız.</strong></p></dd>
+
+      <dt><a name="indexoptions.fancyindexing"
+               id="indexoptions.fancyindexing"
+             ><code>FancyIndexing</code></a></dt>
+
+      <dd>Dizin içerik listesi süslü olur.</dd>
+
+      <dt><a name="indexoptions.foldersfirst"
+               id="indexoptions.foldersfirst"
+             ><code>FoldersFirst</code></a></dt>
+
+      <dd>Bu seçenek etkin kılındığında dizin içerik listesinde alt dizinler
+        dosyalardan önce listelenir. Listelemede genel olarak iki bileşen
+        vardır: Alt dizinler ve dosyalar. Her biri kendi arasında sıraya
+        dizilir ve alt dizinlerin tamamı dosyalardan önce gösterilir. Örneğin
+        sıralama isme göre azalan sırada yapılıyorsa ve
+        <code>FoldersFirst</code> etkinse <code>Zed</code> dizini listede
+        <code>Beta</code> dizininden ve <code>Gamma</code> ve
+        <code>Alpha</code> dosyalarından önce yer alacaktır. <strong>Bu
+        seçenek sadece <a href="#indexoptions.fancyindexing"
+        ><code>FancyIndexing</code></a>  seçeneği etkinse etkili
+        olacaktır.</strong></dd>
+
+      <dt><a name="indexoptions.htmltable"
+               id="indexoptions.htmltable"
+             ><code>HTMLTable</code></a></dt>
+
+      <dd><a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği ile birlikte süslü listeleme için basit bir tablo oluşturur.
+        UTF-8'in etkin olduğu platformlarda gereklidir. Bununla birlikte,
+        Linux, WinNT gibi sağdan sola veya soldan sağa yazım yönünün değiştiği
+        platformlarda dosya isimleri ve açıklamalar için bu özellikle gerekli
+        olabilir.</dd>
+
+      <dt><a name="indexoptions.iconsarelinks"
+               id="indexoptions.iconsarelinks"
+             ><code>IconsAreLinks</code></a></dt>
+
+      <dd>Bu seçenek <a href="#indexoptions.fancyindexing"
+        ><code>FancyIndexing</code></a>  seçeneği ile birlikte süslü
+        listelemede dosya simgesini dosyaya bir hiper bağ haline getirir.</dd>
+
+      <dt><a name="indexoptions.iconheight" id="indexoptions.iconheight"
+             ><code>IconHeight[=<em>benek-sayısı</em>]</code></a></dt>
+
+      <dd>Bu seçeneğin varlığı <code>IconWidth</code> seçeneği ile
+        kullanıldığında dosya simgesinin <code>img</code> etiketinin
+        <code>height</code> ve <code>width</code> özniteliklerini içermesine
+        sebep olur. Böylece tarayıcının tüm simgelerin yüklenmesini beklemeden
+        sayfa yerleşimi için bir ön hesaplama yapabilmesi mümkün olur. Seçenek
+        bir değer belirtilmeksizin kullanıldığında Apache http tarafından
+        atanmış standart simge yüksekliği öntanımlıdır. <strong>Bu
+        seçenek sadece <a href="#indexoptions.fancyindexing"
+        ><code>FancyIndexing</code></a>  seçeneği etkinse etkili
+        olacaktır.</strong></dd>
+
+      <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth"
+             ><code>IconWidth[=<em>benek-sayısı</em>]</code></a></dt>
+
+      <dd>Bu seçeneğin varlığı <code>IconHeight</code> seçeneği ile
+        kullanıldığında dosya simgesinin <code>img</code> etiketinin
+        <code>height</code> ve <code>width</code> özniteliklerini içermesine
+        sebep olur. Böylece tarayıcının tüm simgelerin yüklenmesini beklemeden
+        sayfa yerleşimi için bir ön hesaplama yapabilmesi mümkün olur. Seçenek
+        bir değer belirtilmeksizin kullanıldığında Apache httpd tarafından
+        atanmış standart simge genişliği öntanımlıdır.</dd>
+
+      <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase"
+             ><code>IgnoreCase</code></a></dt>
+
+      <dd>Bu seçenek etkin kılındığında isimler harf büyüklüğüne duyarsız
+        sıralanır. Örneğin, isme göre artan sıralamada <code>IgnoreCase</code>
+        etkinse Zeta dosyası alfa dosyasından sonra listelenir (Dikkat: GAMMA
+        daima gamma’dan önce listelenir.)</dd>
+
+      <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient"
+             ><code>IgnoreClient</code></a></dt>
+
+      <dd>Bu seçenek <module>mod_autoindex</module>’in listenin sıralanmasına
+        etki edenler dahil tüm sorgu değişkenlerini yoksaymasına sebep olur
+        (örtük olarak <code><a href="#indexoptions.suppresscolumnsorting"
+        >SuppressColumnSorting</a></code> uygulanır).</dd>
+
+      <dt><a name="indexoptions.namewidth" id="indexoptions.namewidth"
+             ><code>NameWidth=[<em>n</em> | *]</code></a></dt>
+
+      <dd><p><code>NameWidth</code> seçeneği dosya ismi sütunu için bir
+        genişlik belirtebilmenizi mümkün kılar.</p>
+
+      <p>Hiç belirtilmediğinde veya <code>-NameWidth</code> biçeminde
+        belirtildiğinde <module>mod_autoindex</module> uygun genişliği kendisi
+        hesaplayacaktır, fakat en fazla 20 karakter olabilir.</p>
+
+      <p><code>NameWidth=<em>n</em></code> ile sütun genişliği
+        <code><em>n</em></code> bayt genişlikte sabitlenir.</p>
+
+      <p><code>NameWidth=*</code> olduğunda ise sütun genişliği en geniş
+        satırın sığacağı kadar arttırılır.</p></dd>
+
+      <dt><a name="indexoptions.scanhtmltitles"
+               id="indexoptions.scanhtmltitles"
+             ><code>ScanHTMLTitles</code></a></dt>
+
+      <dd>Bu seçenek süslü listeleme için HTML belgelerden sayfa başlığının
+        okunmasını sağlar. Dosya için <directive module="mod_autoindex"
+        >AddDescription</directive> ile bir açıklama tanımlanmımışsa Apache
+        httpd belgenin <code>title</code> etiketinin içeriğini okuyacaktır. Bu
+        seçenek işlemciyi ve diski fazla meşgul eder.</dd>
+
+      <dt><a name="indexoptions.showforbidden"
+               id="indexoptions.showforbidden"
+             ><code>ShowForbidden</code></a></dt>
+
+      <dd>Alt istek <code>HTTP_UNAUTHORIZED</code> veya
+        <code>HTTP_FORBIDDEN</code> döndürdüğünden dolayı normalde gizli olan
+        dosyalar bu seçenek belirtilmişse listede gösterilir.</dd>
+
+      <dt><a name="indexoptions.suppresscolumnsorting"
+               id="indexoptions.suppresscolumnsorting"
+               ><code>SuppressColumnSorting</code></a></dt>
+
+      <dd>Bu seçenek belirtilmişse Apache, süslü dizin listesinde sütun
+        başlıklarını sıralama için hiper bağ haline getirmeyecektir. Sütun
+        başlıkları için öntanımlı davranış hiper bağ olmak olup bunlar
+        seçilerek dizin listesinin o sütundaki değerlere göre sıralanması
+        sağlanır. Bu davranış <a href="#indexoptions.ignoreclient"
+        ><code>IndexOptions IgnoreClient</code></a> ile sağlanmaktadır.</dd>
+
+      <dt><a name="indexoptions.suppressdescription"
+               id="indexoptions.suppressdescription"
+               ><code>SuppressDescription</code></a></dt>
+
+      <dd>Süslü listelemede dosya açıklamalarının gösterilmesini engeller.
+        Öntanımlı olarak hiçbir dosya açıklaması tanımlı değildir, dolayısıyla
+        bu seçenek kullanılarak ekran genişliğinden 23 karakterlik yer
+        kazanılabilir. Dosya açıklamalarının nasıl belirlendiğini öğrenmek
+        için <directive module="mod_autoindex" >AddDescription</directive>
+        yönergesinin açıklamasına bakınız. Ayrıca, açıklama sütununun
+        genişliğini ayarlayan <code><a href="#indexoptions.descriptionwidth"
+        >DescriptionWidth</a></code> dizin listeleme seçeneğine de
+        bakınız. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
+
+      <dt><a name="indexoptions.suppresshtmlpreamble"
+               id="indexoptions.suppresshtmlpreamble"
+               ><code>SuppressHTMLPreamble</code></a></dt>
+
+      <dd>Eğer dizin aslında <directive module="mod_autoindex"
+        >HeaderName</directive> yönergesi ile belirtilmiş bir dosya içeriyorsa
+        modül normal olarak bu dosyanın içeriğinin öncesine HTML başlangıç
+        etiketlerini (<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>,
+        vs.) yerleştirir. Bu seçenek bu davranışı iptal ederek modülün dosya
+        içeriğinin başlangıcına bir şey eklememesini sağlar. Bu durumda başlık
+        dosyasının uygun HTML etiketlerini içermesi gerekir. Böyle bir başlık
+        dosyası yoksa normal olarak HTML başlangıç etiketleri üretilir. Eğer
+        bir <directive module="mod_autoindex">ReadmeName</directive> yönergesi
+        de belirtilirse ve bu dosya mevcutsa, kapayan
+        &lt;/body&gt;&lt;/html&gt; etiketleri de çıktı bulunmaz. Buna
+        dayanarak bu etiketleri de sizin koymanız gerekebilir.</dd>
+
+      <dt><a name="indexoptions.suppressicon"
+              id="indexoptions.suppressicon"><code>SuppressIcon</code></a>
+      </dt>
+
+      <dd>Süslü dizin listesinde dosya simgelerinin gösterilmesini engeller.
+        Son belirtim, süslü dizin listelemede kullanılan <code>pre</code>
+        etiketinin içeriğinde <code>img</code> ve <code>hr</code>
+        etiketlerinin bulunmasına izin vermediğinden <code>SuppressIcon</code>
+        ve <code>SuppressRules</code> seçenekleri birlikte kullanılarak HTML
+        3.2 belirtimine uyum sağlanır.</dd>
+
+      <dt><a name="indexoptions.suppresslastmodified"
+               id="indexoptions.suppresslastmodified"
+               ><code>SuppressLastModified</code></a></dt>
+
+      <dd>Süslü dizin listelemede son değişiklik tarihinin gösterilmesi
+        engellenir. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
+
+      <dt><a name="indexoptions.suppressrules"
+               id="indexoptions.suppressrules"><code>SuppressRules</code></a>
+      </dt>
+
+      <dd>Dizin listelemede <code>hr</code> etiketinin kullanımını engeller.
+        Son belirtim, süslü dizin listelemede kullanılan <code>pre</code>
+        etiketinin içeriğinde <code>img</code> ve <code>hr</code>
+        etiketlerinin bulunmasına izin vermediğinden <code>SuppressIcon</code>
+        ve <code>SuppressRules</code> seçenekleri birlikte kullanılarak HTML
+        3.2 belirtimine uyum sağlanır. <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
+
+      <dt><a name="indexoptions.suppresssize" id="indexoptions.suppresssize"
+             ><code>SuppressSize</code></a></dt>
+
+      <dd>Süslü dizin listelemede dosya boyutunun gösterilmesi engellenir.
+       <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.trackmodified"
+               id="indexoptions.trackmodified"><code>TrackModified</code></a>
+      </dt>
+
+      <dd>Bu seçenek listelenen dizin için HTTP başlığında
+        <code>Last-Modified</code> ve <code>ETag</code> alanlarının dönmesini
+        sağlar. Sadece işletim sistemi veya dosya sistemi uygun stat()
+        sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri ve
+        OS/2'nin JFS'si ile Win32’nin NTFS’i böyledir. Ancak OS/2 ve Win32 FAT dosya
+        sistemleri böyle değildir. Bu özellik etkin kılındığında istemci veya
+        vekil <code>HEAD</code> istekleriyle dosya listesindeki değişiklikleri
+        izleyebilirler. Yalnız, bazı işletim sistemlerinin yeni ve silinmiş
+        dosyaların izini iyi sürdüğü halde dizin içindeki dosyaların boyut ve
+        tarih değişikliklerini izlemediklerine dikkat ediniz. <strong>Mevcut
+        bir dosyanın boyut ve zaman damgasındaki değişiklikler
+        <code>Last-Modified</code> başlığının  güncellenmesini tüm Unix
+        sistemlerinde sağlamaz</strong>. Bu gibi durumlarda bu seçeneğin
+        kapalı kalması daha iyidir.</dd>
+
+      <dt><a name="indexoptions.type" id="indexoptions.type"
+      >Type=<var>MIME-türü</var></a></dt>
+
+      <dd><code>Type</code> anahtar sözcüğü üretilen sayfanın MIME içerik
+        türünün belirtilebilmesini sağlar. <var>text/html</var> öntanımlıdır.
+
+      <highlight language="config">
+IndexOptions Type=text/plain
+      </highlight>
+      </dd>
+      <dt><a name="indexoptions.versionsort"
+               id="indexoptions.versionsort"><code>VersionSort</code></a>
+      </dt>
+
+      <dd><code>VersionSort</code> seçeneği isimlerinde sürüm numarası bulunan
+        dosyaların sayısal sıralamaya uygun olarak sıralanmalarını sağlar.
+        Normalde sıralama karakter sıralamasına göre yapılır, ardından sürüm
+        numaralı dosyalar veya açıklamalar kendi aralarında sayısal sıralamaya
+        tabi tutulur.
+
+      <example><title>Örnek:</title>
+        foo-1.7<br />
+        foo-1.7.2<br />
+        foo-1.7.12<br />
+        foo-1.8.2<br />
+        foo-1.8.2a<br />
+        foo-1.12
+      </example>
+
+      <p>Sıfır ile başlalan numaralara ondalık sayı muamelesi yapılır:</p>
+
+      <example>
+        foo-1.001<br />
+        foo-1.002<br />
+        foo-1.030<br />
+        foo-1.04
+      </example>
+      </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml"><code>XHTML</code></a></dt>
+
+      <dd><code>XHTML</code> seçeneği <module>mod_autoindex</module>’in kodu
+        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.
+        <strong>Bu seçenek sadece
+        <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+        seçeneği etkinse etkili olacaktır.</strong></dd>
+    </dl>
+
+   <!--
+     XXX: we should consider to allow sections inside <usage>
+     this would require some xslt changes...
+   -->
+  <dl><dt><code>+</code> veya <code>-</code> Önekli Seçenekler</dt>
+    <dd>
+      <p>Çok sayıda <directive>IndexOptions</directive> yönergesinin
+        işlenebileceğine dikkat edin.</p>
+
+      <ul>
+      <li>Tek bir dizin için çok sayıda <directive>IndexOptions</directive>
+        yönergesi belirtilmişse bunlar ayrı ayrı değil birlikte ele alınır.
+        Yani,
+
+     <highlight language="config">
+&lt;Directory "/foo"&gt;
+    IndexOptions HTMLTable
+    IndexOptions SuppressColumnsorting
+&lt;/Directory&gt;
+     </highlight>
+
+      <p>yapılandırmasındaki <directive>IndexOptions</directive>
+        yönergeleri</p>
+
+     <highlight language="config">
+IndexOptions HTMLTable SuppressColumnsorting
+     </highlight>
+
+      <p>yönergesine eşdeğerdir.</p>
+      </li>
+
+      <li>Seçeneklerde <code>+</code> veya <code>-</code> önekleri
+        kullanılabilmektedir.</li>
+      </ul>
+
+      <p><code>+</code> veya <code>-</code> önekli seçeneklere rastlandığında
+        bunlar mevcut (üst dizinden miras alınanlar ve/veya önceki atamalar)
+        <directive>IndexOptions</directive> yönergelerine uygulanır. Ancak,
+        önek kullanılmamış bir seçeneğe raslandığında, o noktada önceki ve
+        miras alınmış bu tür seçenekler iptal edilir. Şu örneği ele
+        alalım:</p>
+
+     <highlight language="config">
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
+IndexOptions +SuppressSize
+     </highlight>
+
+      <p>Bunun net etkisi
+        <code>IndexOptions FancyIndexing +SuppressSize</code>
+        atamasına eşdeğerdir, çünkü öneksiz <code>FancyIndexing</code>
+        seçeneği kendinden önceki önekli seçenekleri iptal etmiş fakat hemen
+        ardından eklenmelerine izin vermiştir.</p>
+
+      <p>Belli bir dizine önceki seçenekleri temizleyerek koşulsuz olarak
+        tamamen yeni seçenekler atamak istiyorsanız
+        <directive>IndexOptions</directive> yönergesinde seçenekleri
+        <code>+</code> veya <code>-</code> öneklerini kullanmadan
+        belirtiniz.</p>
+    </dd>
+  </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexOrderDefault</name>
+<description>Dizin içerik listesinin öntanımlı sıralamasını belirler.
+</description>
+<syntax>IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</syntax>
+<default>IndexOrderDefault Ascending Name</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexOrderDefault</directive> yönergesi <code><a
+      href="#indexoptions.fancyindexing" >FancyIndexing</a></code> seçeneğinin
+      etkin olduğu durumda işe yarar. Öntanımlı olarak süslü listelemede dizin
+      içeriği dosya ismine göre artan sıralamayla listelenir.
+      <directive>IndexOrderDefault</directive> yönergesi bu öntanımlı
+      sıralamanın değiştirilmesini mümkün kılar.</p>
+
+    <p><directive>IndexOrderDefault</directive> yönergesi iki değer alır. İlki
+      sıralama yönünü belirtmek üzere <code>Ascending</code> (küçükten büyüğe)
+      veya <code>Descending</code> (büyükten küçüğe) olmak zorundadır. İkinci
+      değer ise birincil sıralama anahtarını belirtmek üzere
+      <code>Name</code>, <code>Date</code>, <code>Size</code> ve
+      <code>Description</code> sözcüklerinden biri olmalıdır (anlamları
+      sırayla: İsim, Tarih, Boyut, Açıklama). İkincil sıralama anahtarı
+      <em>daima</em> artan sıralamayla dosya ismidir.</p>
+
+    <p>Sütunun tepesindeki sıralama bağını kaldırmak için
+      <code><a href="#indexoptions.suppresscolumnsorting"
+      >SuppressColumnSorting</a></code> seçeneğinin yanında, sıralama
+      tercihlerinizi geçersiz kılmak için sorgu dizgesine elle sıralama
+      seçenekleri eklenmesini engellemek için
+      <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code>
+      seçeneğini de kullanarak istemcinin listeyi yeniden sıralamasını
+      engelleyebilirsiniz.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexStyleSheet</name>
+<description>Dizin listesine bir biçembent ekler.</description>
+<syntax>IndexStyleSheet <var>url-yolu</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexStyleSheet</directive> yönergesi dizin listelemesi için
+      kullanılacak biçembent dosyasının ismini belirtmek için kullanılır.</p>
+
+    <highlight language="config">
+IndexStyleSheet "/css/style.css"
+    </highlight>
+
+    <p>Bu yönergenin <code>IndexOptions HTMLTable</code> ile birlikte
+      kullanılması sonuçlanan HTML dosyasına bir miktar CSS sınıfı ekler.
+      Tablonun tamamı <code>indexlist</code> için bir CSS kimliği verir ve
+      aşağıdaki sınıflar listenin çeşitli parçalarıyla ilişkilendirilir:</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Sınıf</th><th>Tanım</th></tr>
+    <tr><td>tr.indexhead</td>
+        <td>Liste satırının başlığı</td></tr>
+    <tr><td>th.indexcolicon and td.indexcolicon</td>
+         <td>Simge sütunu</td></tr>
+    <tr><td>th.indexcolname and td.indexcolname</td>
+         <td>Dosya ismi sütunu</td></tr>
+    <tr><td>th.indexcollastmod and td.indexcollastmod</td>
+        <td>Son değişiklik sütunu</td></tr>
+    <tr><td>th.indexcolsize and td.indexcolsize</td>
+        <td>Dosya boyutu sütunu</td></tr>
+    <tr><td>th.indexcoldesc and td.indexcoldesc</td>
+        <td>Açıklama sütunu</td></tr>
+    <tr><td>tr.breakrow</td>
+        <td>Tablonun altınaki yatay çizgi</td></tr>
+    <tr><td>tr.odd and tr.even</td>
+        <td>Tek ve çift satırlar</td></tr>
+    </table>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexHeadInsert</name>
+<description>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</description>
+<syntax>IndexHeadInsert <var>"imlenim ..."</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexHeadInsert</directive> yönergesi, dizin listesi için
+    üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
+    dizge tanımlar.</p>
+    <highlight language="config">
+IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ReadmeName</name>
+<description>Dizin listesinin sonuna yerleştirilecek dosyanın ismini
+belirler.</description>
+<syntax>ReadmeName <var>dosya-ismi</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>ReadmeName</directive> yönergesi dizin listesinin sonuna
+      eklenecek dosyanın ismini belirler. <code><em>dosya-ismi</em></code> ile
+      listeye dahil edilecek dosyanın ismi listelenen dizine göreli olarak
+      belirtilir. Eğer dosya ismi 2. örnekteki gibi bir bölü çizgisi ile
+      başlıyorsa <directive module="core">DocumentRoot</directive>’a göreli
+      belirtildiği varsayılır.</p>
+
+    <highlight language="config">
+# 1. Örnek
+ReadmeName FOOTER.html
+    </highlight>
+
+    <highlight language="config">
+# 2. Örnek
+ReadmeName /include/FOOTER.html
+    </highlight>
+
+    <p>Ayrıca bu davranışın daha ayrıntılı ele alındığı <directive
+      module="mod_autoindex" >HeaderName</directive> yönergesine de
+      bakınız.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

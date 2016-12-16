@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_debug.xml.meta">
+
+<name>mod_log_debug</name>
+<description>Journalisation supplémentaire à des fins de débogage</description>
+<status>Experimental</status>
+<sourcefile>mod_log_debug.c</sourcefile>
+<identifier>log_debug_module</identifier>
+<compatibility>Disponible depuis la version 2.3.14 d'Apache</compatibility>
+
+<section id="examples"><title>Exemples</title>
+
+    <ol>
+      <li>
+        Enregistre un message après le traitement d'une requête pour
+	/foo/* :
+
+        <highlight language="config">
+&lt;Location "/foo/"&gt;
+&nbsp;&nbsp;LogMessage "/foo/ has been requested"
+&lt;/Location&gt;
+        </highlight>
+      </li>
+
+      <li>
+        Enregistre un message si une requête pour /foo/* est traitée
+	dans une sous-requête :
+        <highlight language="config">
+&lt;Location "/foo/"&gt;
+&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}
+&lt;/Location&gt;
+        </highlight>
+
+        Le branchement (hook) par défaut log_transaction n'est pas
+	exécuté pour les sous-requêtes ; nous devons donc en utiliser un
+	autre.
+      </li>
+
+
+      <li>
+        Enregistre un message si un client IPv6 est à l'origine d'un
+	dépassement de délai pour une requête :
+        <highlight language="config">
+            LogMessage "IPv6 timeout from %{REMOTE_ADDR}" "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
+        </highlight>
+        Notez l'emplacement des guillemets pour l'argument
+	<code>expr=</code>.
+      </li>
+
+      <li>
+        Enregistre la valeur de la variable d'environnement de requête
+	"X-Foo" à chaque étape du traitement :
+        <highlight language="config">
+&lt;Location "/"&gt;
+&nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
+&lt;/Location&gt;
+        </highlight>
+        En association avec les repères de temps en microsecondes du journal des erreurs,
+	<code>hook=all</code> permet aussi de déterminer la durée d'exécution des
+	différentes phases du traitement de la requête.
+      </li>
+
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>LogMessage</name>
+<description>Enregistre des messages personnalisés dans le journal des
+erreurs</description>
+<syntax>LogMessage <var>message</var>
+[hook=<var>hook</var>] [expr=<var>expression</var>]
+</syntax>
+<default>Non défini</default>
+<contextlist><context>directory</context>
+</contextlist>
+
+<usage>
+    <p>Cette directive permet d'enregistrer un message personnalisé dans
+    le journal des erreurs. Ce message peut utiliser des variables et
+    des fonctions dans la <a href="../expr.html">syntaxe ap_expr</a>.
+    D'éventuelles références à des en-têtes HTTP dans l'expression
+    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
+    correspondants à l'en-tête Vary.
+    Les messages sont enregistrés au loglevel info.</p>
+
+    <p>Le branchement (hook) précise la phase du traitement de la
+    requête avant laquelle le message sera enregistré. Les branchements
+    suivants sont supportés :</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width="1"/></columnspec>
+    <tr><th>Nom</th></tr>
+    <tr><td><code>translate_name</code></td></tr>
+    <tr><td><code>type_checker</code></td></tr>
+    <tr><td><code>quick_handler</code></td></tr>
+    <tr><td><code>map_to_storage</code></td></tr>
+    <tr><td><code>check_access</code></td></tr>
+    <tr><td><code>check_access_ex</code></td></tr>
+    <tr><td><code>insert_filter</code></td></tr>
+    <tr><td><code>check_authn</code></td></tr>
+    <tr><td><code>check_authz</code></td></tr>
+    <tr><td><code>fixups</code></td></tr>
+    <tr><td><code>handler</code></td></tr>
+    <tr><td><code>log_transaction</code></td></tr>
+    </table>
+
+    <p>Le branchement par défaut est <code>log_transaction</code>. La
+    valeur spéciale <code>all</code> est également supportée ; dans ce cas,
+    le message sera enregistré à chaque phase. Tous les branchements ne
+    sont pas exécutés pour chaque requête.</p>
+
+    <p>L'expression optionnelle permet de restreindre l'enregistrement
+    du message en fonction d'une certaine condition. La syntaxe de
+    l'expression est décrite dans la <a
+    href="../expr.html">documentation ap_expr</a>. D'éventuelles
+    références à des en-têtes HTTP dans l'expression
+    rationnelle n'entraîneront pas l'ajout des noms d'en-tête
+    correspondants à l'en-tête Vary.</p>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

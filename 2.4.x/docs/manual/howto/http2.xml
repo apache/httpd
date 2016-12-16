@@ -1,0 +1,247 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+  <title>HTTP/2 guide</title>
+
+  <summary>
+    <p>This is the howto guide for the HTTP/2 implementation in Apache httpd. This
+    feature is <em>experimental</em> and you may expect interfaces and directives to
+    change between releases.
+    </p>
+  </summary>
+  <seealso><a href="../mod/mod_http2.html">mod_http2</a></seealso>
+
+  <section id="protocol">
+    <title>The HTTP/2 protocol</title>
+    <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP.
+    It focuses on making more efficient use of network resources. It does not change the fundamentals
+    of HTTP, the semantics. There are still request and responses and headers and all that. So, if
+    you already know HTTP/1, you know 95% about HTTP/2 as well.</p>
+    <p>There has been a lot written about HTTP/2 and how it works. The most normative is, of course,
+    its <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> 
+    (<a href="http://httpwg.org/specs/rfc7540.html">also available in more readable formatting, YMMV</a>).
+    So, there you'll find the nuts and bolts.</p>
+    <p>But, as RFC do, it's not really a good thing to read first. It's better to first understand
+    <em>what</em> a thing wants to do and then read the RFC about <em>how</em> it is done. A much
+    better document to start with is <a href="https://daniel.haxx.se/http2/">http2  explained</a>
+    by Daniel Stenberg, the author of <a href="https://curl.haxx.se">curl</a>. It is available in
+    an ever growing list of languages, too!</p>
+    <p>Too Long, Didn't read: there are some new terms and gotchas that need to be kept in mind while reading this document:</p>
+    <ul>
+        <li>HTTP/2 is a <strong>binary protocol</strong>, as opposed to HTTP 1.1 that is plain text. The latter is meant to be human readable (for example sniffing network traffic) meanwhile the former is not. More info in the official FAQ <a href="https://http2.github.io/faq/#why-is-http2-binary">question</a>.</li>
+        <li><strong>h2</strong> is HTTP/2 over TLS (protocol negotiation via ALPN).</li>
+        <li><strong>h2c</strong> is HTTP/2 over TCP.</li>
+        <li>A <strong>frame</strong> is the smallest unit of communication within an HTTP/2 connection, consisting of a header and a variable-length sequence of octets structured according to the frame type. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer"> section</a>.</li>
+        <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer"> section</a>.</li>
+        <li>HTTP/2 is able to run <strong>multiple streams</strong> of data over the same TCP connection, avoiding the classic HTTP 1.1 head of blocking slow request and avoiding to re-instantiate TCP connections for each request/response (KeepAlive patched the problem in HTTP 1.1 but did not fully solve it).</li>
+    </ul>
+  </section>
+
+  <section id="implementation">
+    <title>HTTP/2 in Apache httpd</title>
+    <p>The HTTP/2 protocol is implemented by its own httpd module, aptly named
+    <a href="../mod/mod_http2.html">mod_http2</a>. It implements the complete set
+    of features described by RFC 7540 and supports HTTP/2 over cleartext (http:), as
+    well as secure (https:) connections. The cleartext variant is named '<code>h2c</code>', 
+    the secure one '<code>h2</code>'. For <code>h2c</code> it allows the <em>direct</em>
+    mode and the <code>Upgrade:</code> via an initial HTTP/1 request.</p>
+    <p>One feature of HTTP/2 that offers new capabilities for web developers is
+    <a href="#push">Server Push</a>. See that section on how your web application
+    can make use of it.</p>
+  </section>
+  
+  <section id="building">
+    <title>Build httpd with HTTP/2 support</title>
+    <p><a href="../mod/mod_http2.html">mod_http2</a> uses the library of <a href="https://nghttp2.org">nghttp2</a>
+    as its implementation base. In order to build <code>mod_http2</code> you need at least version 1.2.1 of
+    <code>libnghttp2</code> installed on your system.</p>
+    <p>When you <code>./configure</code> you Apache httpd source tree, you need to give it 
+    '<code>--enable-http2</code>' as additional argument to trigger the build of the module.
+    Should your <code>libnghttp2</code> reside in an unusual place (whatever that is on your
+    operating system), you may announce its location with '<code>--with-nghttp2=&lt;path&gt;</code>'
+    to <code>configure</code>.</p>
+    <p>While that should do the trick for most, they are people who might prefer a statically
+    linked <code>nghttp2</code> in this module. For those, the option <code>--enable-nghttp2-staticlib-deps</code>
+    exists. It works quite similar to how one statically links openssl to mod_ssl.</p>
+    <p>Speaking of SSL, you need to be aware that most browsers will speak HTTP/2 only on <code>https:</code>
+    URLs, so you need a server with SSL support. But not only that, you will need a SSL library
+    that supports the <code>ALPN</code> extension. If OpenSSL is the library you use, you need
+    at least version 1.0.2.</p>
+  </section>
+
+  <section id="basic-config">
+    <title>Basic Configuration</title>
+
+    <p>When you have a <code>httpd</code> built with <code>mod_http2</code> you need some
+    basic configuration for it becoming active. The first thing, as with every Apache module,
+    is that you need to load it:</p>
+    <highlight language="config">
+LoadModule http2_module modules/mod_http2.so
+    </highlight>
+    
+    <p>The second directive you need to add to your server configuration is</p>
+    <highlight language="config">
+Protocols h2 http/1.1
+</highlight>
+    <p>This allows h2, the secure variant, to be the preferred protocol on your server
+    connections. When you want to enable all HTTP/2 variants, you simply write:</p>
+    <highlight language="config">
+Protocols h2 h2c http/1.1
+</highlight>
+    <p>Depending on where you put this directive, it affects all connections or just
+    the ones to a certain virtual host. You can nest it, as in:</p>
+    <highlight language="config">
+Protocols http/1.1
+&lt;VirtualHost ...&gt;
+    ServerName test.example.org
+    Protocols h2 http/1.1
+&lt;/VirtualHost&gt;
+</highlight>
+
+    <p>This allows only HTTP/1 on connections, except SSL connections to <code>test.example.org</code>
+    which offer HTTP/2.</p>
+    <note><title>Choose a strong SSLCipherSuite</title>
+     <p>The <directive module="mod_ssl">SSLCipherSuite</directive> needs to be configured with a strong TLS cipher suite. The current version of mod_http2 does not enforce any cipher but most clients do so. Pointing a browser to a <code>h2</code> enabled server with a inappropriate cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid long debugging sessions! If you want to be sure about the cipher suite to choose please avoid the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS blacklist</a>.</p>
+    </note>
+    <p>The order of protocols mentioned is also relevant. By default, the first one is the 
+    most preferred protocol. When a client offers multiple choices, the one most to the 
+    left is selected. In</p>
+    <highlight language="config">
+Protocols http/1.1 h2
+</highlight>
+    <p>the most preferred protocol is HTTP/1 and it will always be selected unless a 
+    client <em>only</em> supports h2. Since we want to talk HTTP/2 to clients that
+    support it, the better order is</p>
+    <highlight language="config">
+Protocols h2 h2c http/1.1
+</highlight>
+
+    <p>There is one more thing to ordering: the client has its own preferences, too. If
+    you want, you can configure your server to select the protocol most preferred by
+    the client:</p>
+    <highlight language="config">
+ProtocolsHonorOrder Off
+    </highlight>
+    <p>makes the order <em>you</em> wrote the Protocols irrelevant and only the client's
+    ordering will decide.</p>
+    <p>A last thing: the protocols you configure are not checked for correctness
+    or spelling. You can mention protocols that do not exist, so there is no need
+    to guard <code>Protocols</code> with any <code>IfModule</code> checks.</p>
+    <p>For more advanced tips on configuration, see the <a href="../mod/mod_http2.html#dimensioning">
+    modules section about dimensioning</a> and <a href="../mod/mod_http2.html#misdirected">
+    how to manage multiple hosts with the same certificate</a>.</p>
+  </section>
+
+  <section id="clients">
+    <title>Clients</title>
+    <p>Almost all modern browsers support HTTP/2, but only over SSL connections: Firefox (v43),
+    Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome for Android (v49)
+    and Internet Explorer (v11 on Windows10) (<a href="http://caniuse.com/#search=http2">source</a>).</p>
+    <p>Other clients, as well as servers, are listed 
+    <a href="https://github.com/http2/http2-spec/wiki/Implementations">on the Implementations wiki</a>,
+    among them implementations for c, c++, common lisp, dart, erlang, haskell, java, nodejs,  php, 
+    python, perl, ruby, rust, scala and swift.</p>
+    <p>Several of the non-browser client implementations support HTTP/2 over cleartext, h2c. The
+    most versatile being <a href="https://curl.haxx.se">curl</a>.</p>
+  </section>
+
+  <section id="tools">
+    <title>Useful tools to debug HTTP/2</title>
+    <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
+    your version supports HTTP/2 checking its <code>Features</code>:</p>
+    <highlight language="config">
+    $ curl -V
+    curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
+    Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...] 
+    Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
+    </highlight>
+    <note><title>Mac OS homebrew notes</title>
+    brew install curl --with-openssl --with-nghttp2 
+    </note>
+    <p>And for really deep inspection <a href="https://wiki.wireshark.org/HTTP2">wireshark</a>.</p>
+    <p>The <a href="https://nghttp2.org">nghttp2</a> package also includes clients, such as:</p>
+    <ul>
+        <li><a href="https://nghttp2.org/documentation/nghttp.1.html">nghttp</a> - useful to visualize the HTTP/2 frames and get a better idea of the protocol.</li>
+        <li><a href="https://nghttp2.org/documentation/h2load-howto.html">h2load</a> - useful to stress-test your server.</li>
+    </ul>
+    <p>Chrome offers detailed HTTP/2 logs on its connections via the 
+    <a href="chrome://net-internals/#http2">special net-internals page</a>. There is also an interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> to visualize when your browser is using HTTP/2.</p>
+  </section>
+
+  <section id="push">
+    <title>Server Push</title>
+    <p>The HTTP/2 protocol allows the server to PUSH responses to a client it never
+    asked for. The tone of the conversation is: &quot;here is a request that you
+    never sent and the response to it will arrive soon...&quot;</p>
+    <p>But there are restrictions: the client can disable this feature and the
+    server may only ever PUSH on a request that came from the client.</p>
+    <p>The intention is to allow the server to send resources to the client that
+    it will most likely need: a css or javascript resource that belongs to a html
+    page the client requested. A set of images that is referenced by a css, etc.</p>
+    <p>The advantage for the client is that it saves the time to send the request which
+    may range from a few milliseconds to half a second, depending on where on the 
+    globe both are located. The disadvantage is that the client may get sent
+    things it already has in its cache. Sure, HTTP/2 allows for the early cancellation
+    of such requests, but still there are resources wasted.</p>
+    <p>To summarize: there is no one good strategy on how to make best use of this 
+    feature of HTTP/2 and everyone is still experimenting. So, how do you experiment
+    with it in Apache httpd?</p>
+    <p><code>mod_http2</code> inspect response header for <code>Link</code> headers
+    in a certain format:</p>
+    <highlight language="config">
+Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload
+    </highlight>
+    <p>If the connection supports PUSH, these two resources will be sent to the
+    client. As a web developer, you may set these headers either directly in
+    your application response or you configure the server via</p>
+    <highlight language="config">
+&lt;Location /xxx.html&gt;
+    Header add Link "&lt;/xxx.css&gt;;rel=preload"
+    Header add Link "&lt;/xxx.js&gt;;rel=preload"
+&lt;/Location&gt;
+    </highlight>
+    <p>If you want to use <code>preload</code> links without triggering a PUSH, you
+    can use the <code>nopush</code> parameter, as in</p>
+    <highlight language="config">
+Link &lt;/xxx.css&gt;;rel=preload;nopush
+    </highlight>
+    <p>or you may disable PUSHes for your server entirely with the directive</p>
+    <highlight language="config">
+H2Push Off
+    </highlight>
+    <p>And there is more:</p>
+    <p>The module will keep a diary of what has been PUSHed for each connection
+    (hashes of URLs, basically) and will not PUSH the same resource twice. When
+    the connection closes, this information is discarded.</p>
+    <p>There are people thinking about how a client can tell a server what it
+    already has, so PUSHes for those things can be avoided, but this is all
+    highly experimental right now.</p>
+    <p>Another experimental draft that has been implemented in <code>mod_http2</code>
+    is the <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
+    Accept-Push-Policy Header Field</a> where a client can, for each request, define
+    what kind of PUSHes it accepts.</p>
+  </section>
+  
+</manualpage>

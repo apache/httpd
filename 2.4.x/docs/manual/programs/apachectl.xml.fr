@@ -1,0 +1,173 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="apachectl.xml.meta">
+<parentdocument href="./">Programmes</parentdocument>
+
+  <title>apachectl - L'interface de contr&ocirc;le du serveur HTTP
+  Apache</title>
+
+<summary>
+     <p><code>apachectl</code> est un frontal pour le serveur HTTP
+     Apache. Il a &eacute;t&eacute; con&ccedil;u pour aider l'administrateur &agrave; contr&ocirc;ler le
+     fonctionnement du d&eacute;mon Apache <program>httpd</program>.</p>
+
+     <p>Le script <code>apachectl</code> poss&egrave;de deux modes de
+     fonctionnement. Il peut fonctionner en tant que simple frontal
+     de la commande <program>httpd</program> et ne fait alors que
+     d&eacute;finir toute variable d'environnement n&eacute;cessaire, puis invoque
+     <program>httpd</program> en lui passant tout argument de ligne de
+     commande souhait&eacute;. Il peut aussi fonctionner en tant que script
+     d'initialisation SysV n'acceptant qu'un seul argument tel que
+     <code>start</code>, <code>restart</code> et <code>stop</code>, et
+     traduisant ce dernier en signaux appropri&eacute;s pour le d&eacute;mon
+     <program>httpd</program>.</p>
+
+     <p>Si votre installation d'Apache utilise des chemins non
+     standards, vous devrez &eacute;diter le script <code>apachectl</code> afin
+     de d&eacute;finir les chemins appropri&eacute;s pour le binaire
+     <program>httpd</program>. Vous pouvez aussi sp&eacute;cifier tout argument
+     de ligne de commande de <program>httpd</program> n&eacute;cessaire. Voir
+     les commentaires dans le script pour plus de d&eacute;tails.</p>
+
+     <p>Le script <code>apachectl</code> renvoie une valeur &eacute;gale &agrave; 0 en
+     cas de succ&egrave;s, et une valeur sup&eacute;rieure &agrave; 0 en cas de probl&egrave;me.
+     Voir les commentaires dans le script pour plus de d&eacute;tails.</p>
+</summary>
+<seealso><a href="../invoking.html">D&eacute;marrer Apache</a></seealso>
+<seealso><a href="../stopping.html">Arr&ecirc;ter Apache</a></seealso>
+<seealso><a href="../configuring.html">Fichiers de
+configuration</a></seealso>
+<seealso><a href="../platform/">Documentation sp&eacute;cifique aux
+plates-formes</a></seealso>
+<seealso><program>httpd</program></seealso>
+
+<section id="synopsis"><title>R&eacute;sum&eacute;</title>
+
+<p>En mode frontal (pass-through), <code>apachectl</code> peut sp&eacute;cifier
+tous les arguments qu'accepte le binaire <program>httpd</program>.</p>
+
+<p><code><strong>apachectl</strong> [ <var>argument-httpd</var> ]</code></p>
+
+<p>En mode script d'initialisation SysV, <code>apachectl</code>
+n'accepte qu'un seul des arguments d&eacute;finis ci-dessous.</p>
+
+<p><code><strong>apachectl</strong> <var>commande</var></code></p>
+
+</section>
+
+<section id="options"><title>Options</title>
+
+<p>Seules les options du style initialisation SysV sont d&eacute;crites ici.
+Les autres arguments sont d&eacute;crits dans la page de manuel de
+<program>httpd</program>.</p>
+
+<dl>
+
+<dt><code>start</code></dt>
+
+<dd>D&eacute;marre le d&eacute;mon Apache <program>httpd</program>. Renvoie une erreur
+s'il est d&eacute;j&agrave; en cours d'ex&eacute;cution. &Eacute;quivalent &agrave; <code>apachectl -k
+start</code>.</dd>
+
+<dt><code>stop</code></dt>
+
+<dd>Arr&ecirc;te le d&eacute;mon Apache <program>httpd</program>. &Eacute;quivalent &agrave;
+<code>apachectl -k stop</code>.</dd>
+
+<dt><code>restart</code></dt>
+
+<dd>Red&eacute;marre le d&eacute;mon Apache <program>httpd</program>. Si le d&eacute;mon
+n'est pas en cours d'ex&eacute;cution, il est d&eacute;marr&eacute;. Cette option v&eacute;rifie
+automatiquement les fichiers de configuration (de la m&ecirc;me mani&egrave;re que
+l'option <code>configtest</code> ) avant de lancer le red&eacute;marrage, afin
+d'&ecirc;tre s&ucirc;r que le fonctionnement du d&eacute;mon ne sera pas compromis.
+Equivalent &agrave; <code>apachectl -k restart</code>.</dd>
+
+<dt><code>fullstatus</code></dt>
+
+<dd>Affiche le rapport d'&eacute;tat complet du module
+<module>mod_status</module>. Pour que ceci fonctionne,
+<module>mod_status</module> doit &ecirc;tre activ&eacute; dans votre serveur et vous
+devez disposer d'un navigateur en mode texte tel que <code>lynx</code>
+sur votre syst&egrave;me. L'URL utilis&eacute;e pour acc&eacute;der au rapport d'&eacute;tat peut
+&ecirc;tre modifi&eacute;e en d&eacute;finissant la variable <code>STATUSURL</code> dans le
+script.</dd>
+
+<dt><code>status</code></dt>
+
+<dd>Affiche un rapport d'&eacute;tat succinct. Similaire &agrave; l'option
+<code>fullstatus</code>, except&eacute; que la liste des requ&ecirc;tes en cours de
+traitement est omise.</dd>
+
+<dt><code>graceful</code></dt>
+
+<dd>Red&eacute;marre le d&eacute;mon Apache <program>httpd</program> en douceur. Si le
+d&eacute;mon n'est pas en cours d'ex&eacute;cution, il est d&eacute;marr&eacute;. &Agrave; la diff&eacute;rence
+d'un red&eacute;marrage normal, les connexions en cours ne sont pas ferm&eacute;es.
+Comme effet de bord, les anciens fichiers journaux ne seront pas ferm&eacute;s
+imm&eacute;diatement. Cela signifie que si l'on utilise un script de rotation
+des journaux, un d&eacute;lai suffisant sera n&eacute;cessaire afin d'&ecirc;tre s&ucirc;r que les
+fichiers journaux seront bien ferm&eacute;s avant leur traitement par le script
+de rotation. Cette option v&eacute;rifie
+automatiquement les fichiers de configuration (de la m&ecirc;me mani&egrave;re que
+l'option <code>configtest</code> ) avant de lancer le red&eacute;marrage, afin
+d'&ecirc;tre s&ucirc;r que le fonctionnement du d&eacute;mon ne sera pas compromis.
+&Eacute;quivalent &agrave; <code>apachectl -k graceful</code>.</dd>
+
+<dt><code>graceful-stop</code></dt>
+
+<dd>Arr&ecirc;te le d&eacute;mon Apache <program>httpd</program> en douceur. &Agrave; la
+diff&eacute;rence d'un arr&ecirc;t normal, les connexions en cours ne sont pas
+ferm&eacute;es. Comme effet de bord, les anciens fichiers journaux ne seront
+pas ferm&eacute;s imm&eacute;diatement. &Eacute;quivalent &agrave; <code>apachectl -k
+graceful-stop</code>.</dd>
+
+<dt><code>configtest</code></dt>
+
+<dd>Effectue une v&eacute;rification de la syntaxe du fichier de configuration.
+Avec cette option, le script parcourt le fichier de configuration et
+renvoie soit <code>Syntax Ok</code>, soit des informations d&eacute;taill&eacute;es &agrave;
+propos des &eacute;ventuelles erreurs de syntaxe. Equivalent &agrave; <code>apachectl
+-t</code>.</dd>
+
+</dl>
+
+<p>Les options suivantes &eacute;taient disponibles dans les anciennes versions
+et ont &eacute;t&eacute; supprim&eacute;es.</p>
+
+<dl>
+
+<dt><code>startssl</code></dt>
+
+<dd>Pour d&eacute;marrer <program>httpd</program> avec le support SSL, vous
+devez &eacute;diter votre fichier de configuration et y inclure les
+directives appropri&eacute;es, puis utiliser la commande de d&eacute;marrage normale
+<code>apachectl start</code>.</dd>
+
+</dl>
+
+</section>
+
+</manualpage>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_nw_ssl.xml.meta">
+
+<name>mod_nw_ssl</name>
+<description>Active le chiffrement SSL pour Netware</description>
+<status>Base</status>
+<sourcefile>mod_nw_ssl.c</sourcefile>
+<identifier>nwssl_module</identifier>
+<compatibility>NetWare seulement</compatibility>
+
+<summary>
+    <p>Ce module active le chiffrement SSL sur un port spécifique. Il
+    s'appuie sur la fonctionnalité de chiffrement SSL intégrée au
+    système d'exploitation Netware.</p>
+</summary>
+
+<directivesynopsis>
+<name>SecureListen</name>
+<description>Active le chiffrement SSL pour le port
+spécifié</description>
+<syntax>SecureListen [<var>adresse-IP</var>:]<var>num-port</var>
+<var>nom-certificat</var> [MUTUAL]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de spécifier le port et le nom de
+    certificat de style eDirectory qui seront utilisés pour activer le
+    chiffrement SSL. En outre, un troisième paramètre optionnel permet
+    d'activer l'authentification mutuelle.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NWSSLTrustedCerts</name>
+<description>Liste de certificats clients supplémentaires</description>
+<syntax>NWSSLTrustedCerts <var>nom-fichier</var>
+[<var>nom-fichier</var>] ...</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de spécifier une liste de fichiers (au
+    format DER) contenant des certificats clients utilisés lors de
+    l'établissement d'une connexion SSL mandatée. Chaque certificat
+    client utilisé par un serveur doit être enregistré séparément dans
+    son propre fichier <code>.der</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>NWSSLUpgradeable</name>
+<description>Permet de promouvoir une connexion non SSL au statut de
+connexion SSL à la demande</description>
+<syntax>NWSSLUpgradeable [<var>adresse-IP</var>:]<var>num-port</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de promouvoir une connexion établie sur
+    l'adresse IP et/ou le port spécifiés au statut de connexion SSL à la
+    demande du client. L'adresse et/ou le port doivent avoir été définis
+    au préalable par une directive <directive
+    module="mpm_common">Listen</directive>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

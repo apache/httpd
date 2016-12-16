@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
+
+<name>mod_auth_basic</name>
+<description>Authentification HTTP de base</description>
+<status>Base</status>
+<sourcefile>mod_auth_basic.c</sourcefile>
+<identifier>auth_basic_module</identifier>
+<compatibility>Disponible depuis la version 2.1 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet d'utiliser l'authentification basique HTTP pour
+    restreindre l'acc&egrave;s en recherchant les utilisateurs dans les
+    fournisseurs d'authentification sp&eacute;cifi&eacute;s. Il est en g&eacute;n&eacute;ral
+    combin&eacute; avec au moins un module d'authentification comme
+    <module>mod_authn_file</module> et un module d'autorisation comme
+    <module>mod_authz_user</module>. L'authentification HTTP &agrave;
+    base de condens&eacute; (digest), quant &agrave; elle, est fournie par le module
+    <module>mod_auth_digest</module>. </p>
+</summary>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="../howto/auth.html">Mode d'emploi de
+l'authentification</a></seealso>
+
+<directivesynopsis>
+<name>AuthBasicProvider</name>
+<description>D&eacute;finit le(les) fournisseur(s) d'authentification pour
+cette zone du site web</description>
+<syntax>AuthBasicProvider <var>nom fournisseur</var>
+[<var>nom fournisseur</var>] ...</syntax>
+<default>AuthBasicProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthBasicProvider</directive> permet de
+    d&eacute;finir le fournisseur utilis&eacute; pour authentifier les utilisateurs
+    pour la zone du site web concern&eacute;e. Le fournisseur par d&eacute;faut
+    <code>file</code> est impl&eacute;ment&eacute; par le module
+    <module>mod_authn_file</module>. Assurez-vous que le module
+    impl&eacute;mentant le fournisseur choisi soit bien pr&eacute;sent dans le
+    serveur.</p>
+
+    <example><title>Exemple</title>
+      <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthType basic
+    AuthName "private area"
+    AuthBasicProvider  dbm
+    AuthDBMType        SDBM
+    AuthDBMUserFile    "/www/etc/dbmpasswd"
+    Require            valid-user
+&lt;/Location&gt;
+    </highlight>
+    </example>
+    <p>Les fournisseurs sont sollicit&eacute;s dans l'ordre jusqu'&agrave; ce que l'un
+    d'entre eux trouve une correspondance pour le nom d'utilisateur de
+    la requ&ecirc;te ; alors, ce dernier fournisseur sera le seul &agrave; v&eacute;rifier
+    le mot de passe. Un &eacute;chec dans la v&eacute;rification du mot de passe
+    n'entra&icirc;ne pas le passage du contr&ocirc;le au fournisseur suivant.</p>
+
+    <p>Les diff&eacute;rents fournisseurs disponibles sont impl&eacute;ment&eacute;s par les
+    modules <module>mod_authn_dbm</module>,
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
+    <module>mod_authnz_ldap</module> et <module>mod_authn_socache</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicAuthoritative</name>
+<description>D&eacute;finit si les processus d'autorisation et
+d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plus bas
+niveau</description>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normalement, chaque module d'autorisation &eacute;num&eacute;r&eacute; dans la
+    directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> va tenter de
+    v&eacute;rifier l'utilisateur, et si ce dernier n'est trouv&eacute; dans aucun des
+    fournisseurs, l'acc&egrave;s sera refus&eacute;. D&eacute;finir explicitement la
+    directive <directive>AuthBasicAuthoritative</directive> &agrave;
+    <code>Off</code> permet de confier l'autorisation et
+    l'authentification &agrave; d'autres modules non bas&eacute;s sur les fournisseurs
+    si <strong>aucun identifiant utilisateur</strong> ou aucune
+    <strong>r&egrave;gle</strong> ne correspondent &agrave; l'identifiant utilisateur
+    sp&eacute;cifi&eacute;. Ceci ne peut s'av&eacute;rer n&eacute;cessaire que lorsque
+    <module>mod_auth_basic</module> est combin&eacute; avec des modules tiers
+    qui n'ont pas &eacute;t&eacute; configur&eacute;s &agrave; l'aide de la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>. Lorsqu'on
+    utilise de tels modules, l'ordre dans lequel s'effectue le
+    traitement est d&eacute;fini dans le code source des modules et n'est pas
+    configurable.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicFake</name>
+<description>Authentification de base simul&eacute;e &agrave; l'aide des nom
+d'utilisateur et mot de passe fournis</description>
+<syntax>AuthBasicFake off|nom-utilisateur [mot-de-passe]</syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<compatibility>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
+Apache</compatibility>
+<usage>
+    <p>Les nom d'utilisateur et mot de passe sp&eacute;cifi&eacute;s sont rassembl&eacute;s
+    dans un en-t&ecirc;te d'autorisation qui est transmis au serveur ou au
+    service sous-jacent au serveur. Ces nom d'utilisateur et mot de
+    passe sont interpr&eacute;t&eacute;s par l'<a href="../expr.html">interpr&eacute;teur
+    d'expression</a>, ce qui permet de les d&eacute;finir en fonction de
+    param&egrave;tres de la requ&ecirc;te.</p>
+
+    <p>Si aucun mot de passe n'est sp&eacute;cifi&eacute;, la valeur par d&eacute;faut
+    "password" sera utilis&eacute;e. Pour d&eacute;sactiver l'authentification de base
+    simul&eacute;e pour un espace d'URL, d&eacute;finissez AuthBasicFake &agrave; "off".</p>
+
+    <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
+    pr&eacute;d&eacute;finis sont transmis &agrave; un serveur d'arri&egrave;re-plan :</p>
+
+    <example><title>Exemple de transmission d'un nom d'utilisateur et
+    d'un mot de passe pr&eacute;d&eacute;finis</title>
+    <highlight language="config">
+&lt;Location "/demo"&gt;
+    AuthBasicFake demo demopass
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Dans l'exemple suivant, l'adresse email extraite d'un certificat
+    client est transmise au serveur, &eacute;tendant par l&agrave;-m&ecirc;me la
+    fonctionnalit&eacute; de l'option FakeBasicAuth de la directive <directive
+    module="mod_ssl">SSLOptions</directive>. Comme avec l'option
+    FakeBasicAuth, le mot de passe se voit attribu&eacute; le contenu fixe de
+    la cha&icirc;ne "password".</p>
+
+    <example><title>Exemple d'utilisation avec un certificat</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Pour compl&eacute;ter l'exemple pr&eacute;c&eacute;dent, il est possible de g&eacute;n&eacute;rer la
+    valeur du mot de passe en proc&eacute;dant &agrave; un hashage de l'adresse email
+    &agrave; partir d'un mot d'une passphrase initial fix&eacute;e, puis de transmettre le
+    r&eacute;sultat obtenu au serveur d'arri&egrave;re-plan. Ceci peut s'av&eacute;rer utile
+    pour donner acc&egrave;s &agrave; des serveurs anciens qui ne supportent pas les
+    certificats clients.</p>
+
+    <example><title>Exemple de g&eacute;n&eacute;ration de mot de passe par hashage de
+    l'adresse email</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    AuthBasicFake "%{SSL_CLIENT_S_DN_Email}" "%{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <example><title>D&eacute;sactivation de l'authentification simul&eacute;e</title>
+    <highlight language="config">
+&lt;Location "/public"&gt;
+    AuthBasicFake off
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicUseDigestAlgorithm</name>
+<description>V&eacute;rifie les mots de passe aupr&egrave;s des fournisseurs
+d'authentification &agrave; la mani&egrave;re de l'authentification de type Digest.
+</description>
+<syntax>AuthBasicUseDigestAlgorithm MD5|Off</syntax>
+<default>AuthBasicUseDigestAlgorithm Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Disponible &agrave; partir de la version 2.4.7 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Normalement, lorsqu'on utilise l'authentification basique, les
+    fournisseurs sp&eacute;cifi&eacute;s via la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> tentent de
+    contr&ocirc;ler l'identit&eacute; d'un utilisateur en recherchant dans leurs
+    bases de donn&eacute;es l'existence d'un couple utilisateur/mot de passe
+    correspondant. Les mots de passe enregistr&eacute;s sont en g&eacute;n&eacute;ral
+    chiffr&eacute;s, mais ce n'est pas syst&eacute;matique ; chaque fournisseur peut
+    choisir son propre mode de stockage des mots de passe.</p>
+
+    <p>Lorsqu'on utilise l'authentification de type Digest, les
+    fournisseurs sp&eacute;cifi&eacute;s par la directive <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> effectuent
+    une recherche similaire dans leurs bases de
+    donn&eacute;es pour trouver un couple utilisateur/mot de passe
+    correspondant. Cependant, &agrave; la diff&eacute;rence de l'authentification
+    basique, les donn&eacute;es associ&eacute;es &agrave; chaque utilisateur et comportant le
+    nom d'utilisateur, le domaine de protection (realm) et le mot de
+    passe doivent &ecirc;tre contenues dans une cha&icirc;ne chiffr&eacute;e (Voir le
+    document <a
+    href="http://tools.ietf.org/html/rfc2617#section-3.2.2.2">RFC 2617,
+    Section 3.2.2.2</a> pour plus de d&eacute;tails &agrave; propos du type de
+    chiffrement utilis&eacute; pour cette cha&icirc;ne).</p>
+
+    <p>A cause de la diff&eacute;rence entre les m&eacute;thodes de stockage des
+    donn&eacute;es des authentifications de type basique et digest, le passage
+    d'une m&eacute;thode d'authentification de type digest &agrave; une m&eacute;thode
+    d'authentification de type basique requiert l'attribution de
+    nouveaux
+    mots de passe &agrave; chaque utilisateur, car leur mots de passe existant
+    ne peut pas &ecirc;tre extrait &agrave; partir du sch&eacute;ma de stockage utilis&eacute;
+    par les fournisseurs d'authentification de type digest.</p>
+
+    <p>Si la directive <directive
+    module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive> est
+    d&eacute;finie &agrave; la valeur <code>MD5</code>, le mot de passe d'un
+    utilisateur dans le cas de l'authentification basique sera v&eacute;rifi&eacute;
+    en utilisant le m&ecirc;me format de chiffrement que dans le cas de
+    l'authentification de type digest. Tout d'abord, une cha&icirc;ne
+    comportant le nom d'utilisateur, le domaine de protection (realm) et
+    le mot de passe est g&eacute;n&eacute;r&eacute;e sous forme de condens&eacute; (hash) en
+    utilisant l'algorithme MD5 ; puis le nom d'utilisateur et cette
+    cha&icirc;ne chiffr&eacute;e sont transmis aux fournisseurs sp&eacute;cifi&eacute;s via la
+    directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> comme si la
+    directive <directive module="mod_authn_core">AuthType</directive>
+    &eacute;tait d&eacute;finie &agrave; <code>Digest</code> et si l'authentification de type
+    Digest &eacute;tait utilis&eacute;e.
+    </p>
+
+    <p>Gr&acirc;ce &agrave; cette directive, un site peut basculer d'une
+    authentification de type digest &agrave; basique sans devoir changer les
+    mots de passe des utilisateurs. </p>
+
+    <note>
+      Le processus inverse consistant &agrave; passer d'une authentification de
+      type basique &agrave; digest sans changer les mots de passe n'est en
+      g&eacute;n&eacute;ral pas possible. Les mots de passe enregistr&eacute;s dans le cas
+      d'une authentification de type basique ne pourront &ecirc;tre extraits
+      et chiffr&eacute;s &agrave; nouveau selon le sch&eacute;ma de l'authentification de
+      type digest, que s'ils ont &eacute;t&eacute; stock&eacute;s en clair ou selon un sch&eacute;ma de
+      chiffrement r&eacute;versible.
+    </note>
+
+    <note>
+      Seuls les fournisseurs qui supportent l'authentification de type
+      digest pourront authentifier les utilisateurs lorsque la directive
+      <directive
+      module="mod_auth_basic">AuthBasicUseDigestAlgorithm</directive>
+      est d&eacute;finie &agrave; <code>MD5</code>. L'utilisation d'un autre
+      fournisseur provoquera un message d'erreur et le client se verra
+      refuser l'acc&egrave;s.</note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1678234 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_scgi.xml.meta">
+
+<name>mod_proxy_scgi</name>
+<description>Module fournissant le support de la passerelle SCGI à
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_scgi.c</sourcefile>
+<identifier>proxy_scgi_module</identifier>
+<compatibility>Disponible depuis la version 2.2.14 d'Apache</compatibility>
+
+<summary>
+    <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
+    chargement de <module>mod_proxy</module>. Il fournit le support du
+    <a href="http://python.ca/scgi/protocol.txt">protocole SCGI, version
+    1</a>.</p>
+
+    <p>Ainsi, pour être en mesure de traiter le protocole SCGI,
+    <module>mod_proxy</module> et <module>mod_proxy_scgi</module>
+    doivent être chargés dans le serveur.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre réseau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="examples"><title>Exemples</title>
+    <p>Rappelez-vous, pour que les exemples suivants puissent
+    fonctionner, vous devez activer <module>mod_proxy</module> et
+    <module>mod_proxy_scgi</module>.</p>
+
+    <example><title>Passerelle simple</title>
+    <highlight language="config">
+      ProxyPass /scgi-bin/ scgi://localhost:4000/
+      </highlight>
+    </example>
+
+    <p>La passerelle à répartition de charge nécessite le chargement du
+    module <module>mod_proxy_balancer</module> et d'au moins un module
+    fournissant un algorithme de répartition de charge, comme
+    <module>mod_lbmethod_byrequests</module> en plus des modules
+    déjà cités. <module>mod_lbmethod_byrequests</module> est le module
+    par défaut et sera utilisé dans cet exemple de configuration.</p>
+
+    <example><title>Passerelle à répartition de charge</title>
+    <highlight language="config">
+ProxyPass "/scgi-bin/" "balancer://somecluster/"
+&lt;Proxy "balancer://somecluster"&gt;
+    BalancerMember "scgi://localhost:4000"
+    BalancerMember "scgi://localhost:4001"
+&lt;/Proxy&gt;
+    </highlight>
+    </example>
+</section>
+
+<section id="env"><title>Variables d'environnement</title>
+    <p>En plus des directives de configuration qui permettent de
+    contrôler le comportement de <module>mod_proxy</module>, une
+    <dfn>variable d'environnement</dfn> peut aussi
+    contrôler le fournisseur de protocole SCGI :</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>Par défaut, <module>mod_proxy_scgi</module> ne créera ni
+	exportera jamais la variable d'environnement
+	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arrière-plan
+	de déterminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et de rester en conformité avec la section
+	3.3 de la RFC 3875. Si au contraire vous souhaitez que
+	<module>mod_proxy_scgi</module> génère une estimation la plus
+	précise possible de <var>PATH_INFO</var>, définissez cette
+	variable d'environnement. La variable doit être définie avant
+	que la directive <directive
+	module="env">SetEnv</directive> ne soit effective. Il est possible
+	d'utiliser à la	place la directive <directive
+	module="setenv">SetEnvIf</directive> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	</dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>ProxySCGISendfile</name>
+<description>Active l'évaluation du pseudo en-tête de réponse
+<var>X-Sendfile</var></description>
+<syntax>ProxySCGISendfile On|Off|<var>nom-en-tête</var></syntax>
+<default>ProxySCGISendfile Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>ProxySCGISendfile</directive> permet au
+    serveur cible SCGI de faire servir les fichiers directement par la
+    passerelle. Ceci s'avère bénéfique en
+    matière de performances &mdash;
+    httpd peut alors utiliser <code>sendfile</code> ou d'autres
+    optimisations, ce qui n'est pas possible si les fichiers passent par
+    la socket du serveur cible. En outre, les fichiers ne sont transmis
+    qu'une seule fois.</p>
+    <p>L'argument de la directive
+    <directive>ProxySCGISendfile</directive> détermine le comportement
+    de la passerelle :</p>
+    <dl>
+    <dt><code>Off</code></dt>
+    <dd>Aucun traitement particulier n'est effectué.</dd>
+
+    <dt><code>On</code></dt>
+    <dd>La passerelle recherche un en-tête dans la réponse du serveur
+    cible nommé <code>X-Sendfile</code>, et interprète sa valeur comme
+    le nom du fichier à servir. L'en-tête est ensuite supprimé de la
+    réponse finale. Cet argument produit le même effet que
+    <code>ProxySCGISendfile X-Sendfile</code>.</dd>
+
+    <dt>toute autre valeur</dt>
+    <dd>Identique à <code>On</code>, mais au lieu de rechercher le nom
+    d'en-tête codé en dur <code>X-Sendfile</code>, c'est la
+    valeur de l'argument qui constitue le nom de l'en-tête
+    à rechercher.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+    # Utilise le nom d'en-tête par défaut (X-Sendfile)
+    ProxySCGISendfile On
+
+    # Utilise un nom d'en-tête différent
+    ProxySCGISendfile X-Send-Static
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxySCGIInternalRedirect</name>
+<description>Active ou désactive les réponses de redirection interne en
+provenance du serveur cible.</description>
+<syntax>ProxySCGIInternalRedirect On|Off|<var>Headername</var></syntax>
+<default>ProxySCGIInternalRedirect On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Le paramètre <var>Headername</var> est disponible depuis
+la version 2.4.13 du serveur HTTP Apache.</compatibility>
+
+<usage>
+    <p>La directive <directive>ProxySCGIInternalRedirect</directive>
+    permet au serveur cible de rediriger en interne la passerelle vers
+    une URL différente. Cette fonctionnalité trouve son origine dans
+    <module>mod_cgi</module> qui redirige la réponse en interne si
+    l'état de la réponse est <code>OK</code> (<code>200</code>), et si
+    la réponse contient un en-tête <code>Location</code>
+    (ou un autre en-tête défini) dont la valeur
+    débute par un slash (<code>/</code>). Cette valeur est interprétée
+    comme une nouvelle URL locale vers laquelle Apache httpd effectue sa
+    redirection.</p>
+
+    <p>De ce point de vue, <module>mod_proxy_scgi</module> fait la même
+    chose que <module>mod_cgi</module>, mais vous pouvez en plus
+    désactiver la fonctionnalité ou spécifier
+    l'utilisation d'un en-tête autre que <code>Location</code>.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+    ProxySCGIInternalRedirect Off
+# Django et certains autres frameworks qualifient pleinement les "URLs
+# locales" définies par l'application ; il faut donc utiliser un autre
+# en-tête.
+&lt;Location /django-app/&gt;
+    ProxySCGIInternalRedirect X-Location
+&lt;/Location&gt;
+    
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

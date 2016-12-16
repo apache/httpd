@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 1740719 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="socache.xml.meta">
+
+  <title>Le cache des objets partagés du serveur HTTP Apache</title>
+
+  <summary>
+    <p>Le cache des objets partagés est un concept de partage de données
+    de base entre tous les processus d'un serveur, sans se préoccuper du
+    <a href="mpm.html">modèle de threads et de processus</a>. On
+    l'utilise lorsque les avantages apportés par le partage de données
+    entre processus contrebalance la perte de performances consécutive à
+    la communication interprocessus.</p>
+  </summary>
+
+  <section id="providers">
+    <title>Fournisseurs du cache d'objets partagés</title>
+    <p>Le cache d'objets partagés en tant que tel est une abstraction.
+    Il est implémenté par quatre modules différents. Pour pouvoir
+    utiliser le cache, un ou plusieurs de ces modules doivent être
+    présents et configurés.</p>
+    <p>Le seul élément de configuration consiste à définir le
+    fournisseur de cache à utiliser. Ceci est de la responsabilité des
+    modules qui utilisent le cache, et pour cela, ils activent la
+    sélection via des directives telles que <directive
+    module="mod_cache_socache">CacheSocache</directive>, <directive
+    module="mod_authn_socache">AuthnCacheSOCache</directive>, <directive
+    module="mod_ssl">SSLSessionCache</directive>, et <directive
+    module="mod_ssl">SSLStaplingCache</directive>.</p>
+    <p>Les fournisseurs actuellement disponibles sont :</p>
+    <dl>
+    <dt>"dbm" (<module>mod_socache_dbm</module>)</dt>
+    <dd>Celui-ci utilise un fichier de hashage DBM. Le choix de la
+    DBM sous-jacente peut être configurable si la version
+    d'APR installée supporte de multiples implémentations de DBM.</dd>
+    <dt>"dc" (<module>mod_socache_dc</module>)</dt>
+    <dd>Celui-ci utilise les bibliothèques de mise en cache de sessions
+    distribuées <a href="http://distcache.sourceforge.net/">distcache</a>.</dd>
+    <dt>"memcache" (<module>mod_socache_memcache</module>)</dt>
+    <dd>Celui-ci utilise le système à hautes performances de mise en
+    cache d'objets de mémoire distribuée <a
+    href="http://memcached.org/">memcached</a>.</dd>
+    <dt>"shmcb" (<module>mod_socache_shmcb</module>)</dt>
+    <dd>Celui-ci utilise un tampon cyclique à hautes performances au
+    sein d'un segment de mémoire partagée.</dd>
+    </dl>
+
+    <p>L'API fournit les fonctions suivantes :</p>
+
+    <dl>
+      <dt>const char *create(ap_socache_instance_t **instance, const char *arg,
+                          apr_pool_t *tmp, apr_pool_t *p);</dt>
+      <dd>Cette fonction permet de créer un cache de session basé sur
+      la chaîne de configuration spécifiée. Le pointeur d'instance
+      renvoyé dans le paramètre instance sera passé comme premier
+      argument des invocations subséquentes.</dd>
+
+      <dt>apr_status_t init(ap_socache_instance_t *instance, const char *cname,
+                         const struct ap_socache_hints *hints,
+                         server_rec *s, apr_pool_t *pool)</dt>
+      <dd>Cette fonction permet d'initialiser le cache. L'argument cname
+      doit avoir une longueur maximale de 16 caractères et permet
+      d'identifier de manière unique l'utilisateur du cache au sein du
+      serveur ; il est recommandé d'utiliser le nom du module, par
+      exemple "mod_ssl-sess". Comme cette chaîne peut être utilisée au
+      sein d'un système de fichiers, il est conseillé de n'utiliser que
+      des caractères alphanumériques [a-z0-9_-]. Si l'argument hints
+      n'est pas égal à NULL, il fournit un ensemble d'indications au
+      fournisseur. La valeur retournée est le code d'erreur APR.</dd>
+
+      <dt>void destroy(ap_socache_instance_t *instance, server_rec *s)</dt>
+      <dd>Cette fonction permet de détruire l'instance de cache
+      spécifiée.</dd>
+
+      <dt>apr_status_t store(ap_socache_instance_t *instance, server_rec *s,
+                          const unsigned char *id, unsigned int idlen,
+                          apr_time_t expiry,
+                          unsigned char *data, unsigned int datalen,
+                          apr_pool_t *pool)</dt>
+      <dd>Cette fonction permet de stocker un objet dans une instance de
+      cache.</dd>
+
+      <dt>apr_status_t retrieve(ap_socache_instance_t *instance, server_rec *s,
+                             const unsigned char *id, unsigned int idlen,
+                             unsigned char *data, unsigned int *datalen,
+                             apr_pool_t *pool)</dt>
+      <dd>Cette fonction permet d'extraire un objet du cache.</dd>
+
+      <dt>apr_status_t remove(ap_socache_instance_t *instance, server_rec *s,
+                           const unsigned char *id, unsigned int idlen,
+                           apr_pool_t *pool)</dt>
+      <dd>Supprime un objet du cache.</dd>
+
+      <dt>void status(ap_socache_instance_t *instance, request_rec *r, int flags)</dt>
+      <dd>Renvoie le statut d'une instance de cache à destination de mod_status.</dd>
+
+      <dt>apr_status_t iterate(ap_socache_instance_t *instance, server_rec *s,
+                            void *userctx, ap_socache_iterator_t *iterator,
+                            apr_pool_t *pool)</dt>
+      <dd>Envoie tous les objets gardés en cache à une fonction pour traitement itératif.</dd>
+    </dl>
+
+  </section>
+
+</manualpage>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1684312 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_logio.xml.meta">
+
+<name>mod_logio</name>
+<description>Journalisation des octets en entrée et en sortie pour
+chaque requête</description>
+<status>Extension</status>
+<sourcefile>mod_logio.c</sourcefile>
+<identifier>logio_module</identifier>
+
+<summary>
+
+    <p>Ce module permet d'enregistrer le nombre d'octets reçus et
+    envoyés pour chaque requête. Ce nombre reflète le nombre réel
+    d'octets transmis sur le réseau, et prend en compte les en-têtes et
+    corps des requêtes et des réponses. Le décompte est effectué avant
+    SSL/TLS en entrée et après SSL/TLS en sortie, si bien que le
+    résultat reflètera toute modification introduite par le
+    chiffrement.</p>
+
+    <p>Pour fonctionner, ce module requiert le chargement du module
+    <module>mod_log_config</module>.</p>
+
+    <note>Lorsqu'on utilise les connexions persistantes avec SSL, le
+    supplément de trafic induit par la négociation SSL est enregistré
+    dans le décompte des octets transmis dans le cadre de la première
+    requête de la connexion. Lors d'une renégociation SSL au niveau d'un
+    répertoire, le décompte d'octets est associé à la
+    requête qui a déclenché la renégociation.</note>
+
+</summary>
+
+<seealso><module>mod_log_config</module></seealso>
+<seealso><a href="../logs.html">Les fichiers journaux
+d'Apache</a></seealso>
+
+<section id="formats">
+<title>Formats de journaux personnalisés</title>
+
+    <p>Ce module introduit trois nouvelles directives de journalisation.
+    Les caractéristiques de la requête en elle-même sont journalisées en
+    insérant des directives "<code>%</code>" dans la chaîne de format,
+    qui seront remplacées comme suit dans le fichier journal :</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Chaîne&nbsp;de&nbsp;Format</th>
+        <th>Description</th></tr>
+
+    <tr><td><code>%I</code></td>
+        <td>Octets reçus, en-têtes et corps de requête inclus ; ne peut
+	pas être nul.</td></tr>
+
+    <tr><td><code>%O</code></td>
+        <td>Octets envoyés, en-têtes inclus ; ne peut
+	pas être nul.</td></tr>
+
+    <tr><td><code>%S</code></td>
+	<td>Nombre d'octets transmis (en émission et réception), y
+	compris corps et en-têtes de requête. Ce nombre ne peut pas être
+	nul, et il correspond à la combinaison des formats %I et %O.<br />
+	Disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
+
+    <tr><td><code>%^FB</code></td>
+        <td>Délai en microsecondes entre l'arrivée de la requête et
+	l'écriture du premier octet des en-têtes de la réponse.
+	Disponible uniquement si la directive
+	<directive>LogIOTrackTTFB</directive> a été définie à ON.<br />
+	Disponible à partir de la version 2.4.13 du serveur HTTP Apache
+        </td></tr>	
+    </table>
+
+    <p>En général, cette fonctionnalité s'utilise comme suit :</p>
+
+    <dl>
+      <dt>Format de journal d'entrées/sorties combiné :</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</section>
+
+</modulesynopsis>

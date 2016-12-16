@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>How-To / Tutorials</title>
+
+  <section id="howto">
+
+    <title>How-To / Tutorials</title>
+
+    <dl>
+      <dt>Authentication and Authorization</dt>
+      <dd>
+        <p>Authentication is any process by which you verify that
+        someone is who they claim they are. Authorization is any
+        process by which someone is allowed to be where they want to
+        go, or to have information that they want to have.</p>
+
+        <p>See: <a href="auth.html">Authentication, Authorization</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Access Control</dt>
+      <dd>
+        <p>Access control refers to the process of restricting, or
+        granting access to a resource based on arbitrary criteria. There
+        are a variety of different ways that this can be
+        accomplished.</p>
+
+        <p>See: <a href="access.html">Access Control</a></p>
+      </dd>
+    </dl>
+
+   <dl>
+      <dt>Dynamic Content with CGI</dt>
+      <dd>
+        <p>The CGI (Common Gateway Interface) defines a way for a web
+        server to interact with external content-generating programs,
+        which are often referred to as CGI programs or CGI scripts. It
+        is a simple way to put dynamic content on
+        your web site. This document will be an introduction to setting
+        up CGI on your Apache web server, and getting started writing
+        CGI programs.</p>
+
+        <p>See: <a href="cgi.html">CGI: Dynamic Content</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt><code>.htaccess</code> files</dt>
+      <dd>
+        <p><code>.htaccess</code> files provide a way to make configuration
+        changes on a per-directory basis. A file, containing one or more
+        configuration directives, is placed in a particular document directory,
+        and the directives apply to that directory, and all subdirectories thereof.</p>
+
+        <p>See: <a href="htaccess.html"><code>.htaccess</code> files</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>HTTP/2 with httpd</dt>
+      <dd>
+      <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP. 
+        It focuses on making more efficient use of network resources without changing the semantics of HTTP.
+        This guide explains how HTTP/2 is implemented in httpd, showing basic configurations tips and 
+        best practices.
+      </p>
+
+        <p>See: <a href="http2.html">HTTP/2 guide</a></p>
+      </dd>
+    </dl>
+
+
+    <dl>
+      <dt>Introduction to Server Side Includes</dt>
+      <dd>
+        <p>SSI (Server Side Includes) are directives that are placed in
+        HTML pages, and evaluated on the server while the pages are
+        being served. They let you add dynamically generated content to
+        an existing HTML page, without having to serve the entire page
+        via a CGI program, or other dynamic technology.</p>
+
+        <p>See: <a href="ssi.html">Server Side Includes (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Per-user web directories</dt>
+      <dd>
+        <p>On systems with multiple users, each user can be permitted to have a
+        web site in their home directory using the <directive
+        module="mod_userdir">UserDir</directive> directive. Visitors
+        to a URL <code>http://example.com/~username/</code> will get content
+        out of the home directory of the user "<code>username</code>", out of
+        the subdirectory specified by the <directive
+        module="mod_userdir">UserDir</directive> directive.</p>
+
+        <p>See: <a href="public_html.html"
+        >User web directories (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Reverse Proxy guide</dt>
+      <dd>
+        <p>Apache httpd has extensive capabilities as a reverse proxy server using the
+        <directive module="mod_proxy">ProxyPass</directive> directive as well as
+        <directive module="mod_proxy">BalancerMember</directive> to create sophisticated
+        reverse proxying implementations which provide for high-availability, load
+        balancing and failover, cloud-based clustering and dynamic on-the-fly reconfiguration.</p>
+
+        <p>See: <a href="reverse_proxy.html">Reverse proxy guide</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>
+
+

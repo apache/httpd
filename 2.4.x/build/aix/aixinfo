@@ -1,0 +1,16 @@
+
+PKG="ASF"
+NAME="httpd"
+ARCH="powerpc"
+VERSION="2.2.22"
+CATEGORY="application"
+VENDOR="Apache Software Foundation"
+EMAIL="dev@httpd.apache.org"
+VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`
+REVISION=`build/get-version.sh all include/ap_release.h AP_SERVER`
+VERSION=`echo $REVISION | cut -d- -s -f1`
+RELEASE=`echo $REVISION | cut -d- -s -f2`
+if [ "x$VERSION" = "x" ]; then
+      VERSION=$REVISION
+      RELEASE=0
+fi

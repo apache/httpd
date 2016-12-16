@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1765368 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_html.xml.meta">
+
+<name>mod_proxy_html</name>
+<description>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
+adressables depuis les réseaux des clients dans un contexte de
+mandataire.</description>
+<status>Base</status>
+<sourcefile>mod_proxy_html.c</sourcefile>
+<identifier>proxy_html_module</identifier>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures</compatibility>
+
+<summary>
+    <p>Ce module fournit un filtre en sortie permettant de réécrire les
+    liens HTML dans un contexte de mandataire, afin de s'assurer que ces
+    liens fonctionnent pour les utilisateurs en dehors du mandataire. Il
+    accomplit la même tâche que la directive ProxyPassReverse d'Apache
+    accomplit pour les en-têtes HTTP, et fait partie des composants
+    essentiels d'un mandataire inverse.</p>
+
+<p>Par exemple, si une entreprise possède un serveur d'applications
+nommé appserver.example.com qui n'est visible que depuis son réseau
+interne, et un serveur web public <code>www.example.com</code>, il peut
+être souhaitable de fournir une passerelle vers le serveur d'application
+à l'adresse <code>http://www.example.com/appserver/</code>. Lorsque le
+serveur d'applications présente un lien vers lui-même, ce lien doit être
+réécrit pour fonctionner à travers la passerelle. A cet effet,
+mod_proxy_html permet de réécrire <code>&lt;a
+href="http://appserver.example.com/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
+en <code>&lt;a
+href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>,
+ce qui permet de rendre le serveur d'applications accessible depuis
+l'extérieur.</p>
+
+<p>mod_proxy_html a été développé à l'origine à Web&#222;ing, dont la <a
+href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
+détaillée pourra s'avérer utile aux utilisateurs.</p>
+</summary>
+
+<directivesynopsis>
+<name>ProxyHTMLMeta</name>
+<description>Active ou désactive une préinterprétation supplémentaire
+des métadonnées dans les sections HTML <code>&lt;head&gt;</code>.</description>
+<syntax>ProxyHTMLMeta <var>On|Off</var></syntax>
+<default>ProxyHTMLMeta Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.4 du serveur HTTP
+Apache ; proposé en tant que module tiers dans les versions 2.x
+précédentes.</compatibility>
+
+<usage>
+    <p>Cette directive permet d'activer ou désactiver une
+    préinterprétation supplémentaire des métadonnées dans les sections
+    HTML <code>&lt;head&gt;</code>. Si cette préinterprétation n'est pas
+    requise, définissez ProxyHTMLMeta à Off et les performances
+    seront légèrement améliorées. Cependant, elle s'avère parfois
+    nécessaire pour assurer un fonctionnement correct de l'internationalisation.</p>
+    <p>La directive ProxyHTMLMeta a deux effets. Le premier et le plus
+    important est la détection des codages de caractères déclarés sous
+    la forme</p>
+    <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
+    <p>ou, dans le cas d'un document XHTML, sous la forme d'une
+    déclaration XML. Elle n'est pas nécessaire si le jeu de caractères
+    est déclaré explicitement dans un en-tête HTTP (ce qui est
+    préférable) en provenance du serveur d'arrière-plan, ou si le
+    document est en <var>utf-8</var> (unicode) ou un de ses
+    sous-ensembles comme ASCII. Vous pourrez aussi vous en passer
+    lorsque le document utilise une valeur par défaut déclarée via la
+    directive <directive
+    module="mod_xml2enc">xml2EncDefault</directive>, avec le risque de
+    propager une déclaration incorrecte. Une directive
+    <directive>ProxyHTMLCharsetOut</directive> permettra d'annuler ce
+    risque, mais pourra induire une surcharge de traitement supérieure à
+    celle de ProxyHTMLMeta.</p>
+    <p>Le deuxième effet est l'interprétation de toutes les déclarations
+    <code>&lt;meta http-equiv=...&gt;</code> et leur conversion en
+    en-têtes HTTP, afin de conserver le but original de cette forme
+    de métaélément HTML.</p>
+
+    <note type="warning"><title>Avertissement</title> Compte tenu du fait que la
+    directive ProxyHTMLMeta promeut <strong>tous</strong> les éléments
+    <code>http-equiv</code> au rang d'en-têtes HTTP, il est conseillé de ne
+    l'activer que si vous faites autant confiance au contenu HTML qu'à votre
+    serveur mandataire. Avec cette directive en effet, si ce contenu est géré
+    par des gens malintentionnés, ces derniers seront en mesure d'injecter des
+    en-têtes HTTP arbitraires et peut-être malveillants dans les réponses de
+    votre serveur.  
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLEnable</name>
+<description>Permet d'activer/désactiver le filtre proxy_html.</description>
+<syntax>ProxyHTMLEnable <var>On|Off</var></syntax>
+<default>ProxyHTMLEnable Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+
+<usage>
+    <p>Cette directive est un simple commutateur permettant
+    d'activer/désactiver le filtre proxy_html. Si
+    <module>mod_xml2enc</module> est chargé, elle va aussi activer
+    automatiquement le support de l'internationalisation.</p>
+    <p>Notez que le filtre proxy_html s'agira que si les données sont de
+    type HTML (Content-Type text/html ou application/xhtml+xml), et si
+    elles passent par un mandataire. Vous pouvez passer outre ces
+    contraintes (à vos risques et périls) en définissant la variable
+    d'environnement <var>PROXY_HTML_FORCE</var>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLURLMap</name>
+<description>Définit une règle de réécriture des liens HTML</description>
+<syntax>ProxyHTMLURLMap <var>modèle-source modèle-cible [drapeaux] [cond]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+
+<usage>
+<p>Il s'agit de la directive la plus importante pour la réécriture des
+liens HTML. Lors de l'interprétation d'un document, chaque fois qu'un
+lien correspond à <var>modèle-source</var>, la partie du lien concernée
+sera réécrite en <var>modèle-cible</var>, en tenant compte des
+modifications induites par les drapeaux éventuellement spécifiés et par
+la directive <directive module="mod_proxy_html">ProxyHTMLExtended</directive>.
+Ne seront considérés comme des liens HTML que les éléments spécifiés via la
+directive <directive module="mod_proxy_html">ProxyHTMLLinks</directive>.</p>
+
+<p>Le troisième argument optionnel permet de féfinir un des drapeaux
+suivants (les drapeaux sont sensibles à la casse) :</p>
+<dl>
+<dt>h</dt>
+<dd><p>Ignore les liens HTML (les traverse sans les modifier)</p></dd>
+<dt>e</dt>
+<dd><p>Ignore les évènements de scripting (les traverse sans les
+modifier)</p></dd>
+<dt>c</dt>
+<dd><p>Traverse les sections de type style ou script sans les modifier.</p></dd>
+
+<dt>L</dt>
+<dd><p>Last-match. Si cette règle s'applique, aucune autre règle ne sera
+prise en compte (notez qu'il s'agit du comportement automatique pour les
+liens HTML).</p></dd>
+<dt>l</dt>
+<dd><p>L'opposé de L. Passe outre le comportement par défaut du
+changement unique pour les liens HTML.</p></dd>
+<dt>R</dt>
+<dd><p>Utilise des expressions rationnelles pour les modèles.
+<code>modèle-source</code> est une expression rationnelle, et
+<code>modèle-cible</code> une chaîne de remplacement qui peut être basée
+elle aussi sur une expression rationnelle. La mémorisation dans les
+expressions rationnelles est supportée : vous pouvez utiliser des
+parenthèses () dans le <code>modèle-source</code>, et récupérer la
+correspondance de leur contenu via les variables $1 à $9 dans le
+<code>modèle-cible</code>.</p>
+
+<p>Si le drapeau R n'est pas fourni, la directive utilisera des chaînes
+littérales pour les différents modèles de recherche/remplacement. La
+logique de recherche est <em>"commence par"</em> dans les liens HTML, et
+<em>"contient"</em> dans les évènements de scripting et les sections de
+type style ou script.
+</p>
+</dd>
+<dt>x</dt>
+<dd><p>Utilise les expressions rationnelles étendues POSIX. Ne
+s'applique qu'avec R.</p></dd>
+<dt>i</dt>
+<dd><p>Recherche de correspondance sensible à la casse. Ne
+s'applique qu'avec R.</p></dd>
+
+<dt>n</dt>
+<dd><p>Désactive la mémorisation dans les expressions rationnelles (pour
+améliorer les performances). Ne s'applique qu'avec R.</p></dd>
+<dt>s</dt>
+<dd><p>Recherche de correspondance dans les expressions rationnelles
+basée sur la ligne. Ne s'applique qu'avec R.</p></dd>
+<dt>^</dt>
+<dd><p>Recherche de correspondance au début seulement. Ne concerne que
+les recherches de correspondance par rapport à des chaînes, et ne
+s'applique pas aux liens HTML.</p></dd>
+<dt>$</dt>
+<dd><p>Recherche de correspondance à la fin seulement. Ne concerne que
+les recherches de correspondance par rapport à des chaînes, et ne
+s'applique pas aux liens HTML.</p></dd>
+<dt>V</dt>
+<dd><p>Insère des variables d'environnement dans le
+<code>modèle-cible</code>. Un <code>modèle-cible</code> de la forme
+<code>${varname|default}</code> sera remplacé par la valeur de la
+variable d'environnement <code>varname</code>. Si cette dernière n'est
+pas définie, <code>modèle-cible</code> sera remplacé par
+<code>default</code>. La spécification de <code>|default</code> est
+facultative.</p>
+<p>NOTE: l'insertion de variables d'environnement n'est possible que si
+la directive <directive>ProxyHTMLInterp</directive> a été définie à
+<var>On</var>.</p>
+</dd>
+
+<dt>v</dt>
+<dd><p>Insère des variables d'environnement dans le
+<code>modèle-source</code>. La syntaxe du modèle est identique à la
+syntaxe précédente.</p>
+<p>NOTE: l'insertion de variables d'environnement n'est possible que si
+la directive <directive>ProxyHTMLInterp</directive> a été définie à
+<var>On</var>.</p>
+</dd>
+</dl>
+
+<p>Le quatrième argument optionnel <strong>cond</strong> définit une
+condition qui sera évaluée pour chaque requête, sous réserve que la
+directive <directive>ProxyHTMLInterp</directive> ait été définie à
+<var>On</var>. Si la condition est évaluée à FALSE, la règle ne sera pas
+appliquée à la requête. Si elle est évaluée à TRUE, ou si aucune
+condition n'est définie, la règle s'applique.</p>
+<p>La <strong>condition</strong> est évaluée par l'<a
+href="../expr.html">interpréteur d'expression</a>. La syntaxe simple des
+conditions dans mod_proxy_html 3.x pour HTTPD 2.0 et 2.2 est aussi
+supportée.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLInterp</name>
+<description>Active la réinterprétation des règles
+<directive>ProxyHTMLURLMap</directive> pour chaque requête.</description>
+<syntax>ProxyHTMLInterp <var>On|Off</var></syntax>
+<default>ProxyHTMLInterp Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+
+<usage>
+    <p>Cette directive permet d'activer le réinterprétation pour chaque
+    requête des modèles source et cible de la directive
+    <directive>ProxyHTMLURLMap</directive>.</p>
+    <p>Si la réinterprétation n'est pas activée, toutes les règles sont
+    précompilées au démarrage du serveur. Si elle est activée, les
+    règles doivent être recompilées pour chaque requête, ce qui induit
+    une charge de traitement supplémentaire. Elle ne doit donc être activée que si
+    cela s'avère nécessaire.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLDocType</name>
+<description>Définit une déclaration de type de document HTML ou XHTML.</description>
+<syntax>ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br/><strong>OU</strong>
+<br/>ProxyHTMLDocType <var>fpi [SGML|XML]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+
+<usage>
+<p>Avec la première syntaxe, les documents seront déclarés de type HTML
+4.01 ou XHTML 1.0 selon l'option spécifiée. Cette option détermine aussi
+si la syntaxe utilisée en sortie est HTML ou XHTML. Notez que le format
+des documents en provenance du serveur d'arrière-plan n'est pas
+important, car l'interpréteur le détectera automatiquement. Si le
+second argument optionnel est défini à "Legacy", les documents seront
+déclarés de type "Transitional" ; cette option peut être nécessaire si
+vous mandatez du contenu datant d'avant 1998, ou si vous travaillez avec
+des outils de création/publication déficients.</p>
+<p>Avec la deuxième syntaxe, cette directive vous permet d'insérer votre
+propre FPI (Formal Public Identifier). Le second argument optionnel
+détermine si la syntaxe utilisée sera SGML/HTML ou XML/XHTML.</p>
+<p>Par défaut, aucun FPI n'est inséré, étant donné qu'il vaut mieux pas
+de FPI du tout qu'un FPI bogué. Si par contre votre serveur d'arrière-plan
+génère du contenu HTML ou XHTML correct, vous pouvez définir cette
+directive en conséquence.</p>
+<p>Avec la première syntaxe, mod_proxy_html va aussi mettre le code HTML
+en conformité avec le standard spécifié. Il ne pourra pas corriger
+toutes les erreurs, mais il va supprimer les éléments et attributs non
+conformes. Il peut aussi journaliser les autres erreurs si la directive
+<directive module="core">LogLevel</directive> est définie à
+Debug.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLFixups</name>
+<description>Corrige les erreurs HTML simples.</description>
+<syntax>ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Cette directive accepte un à trois arguments parmi les suivants :</p>
+<ul>
+<li><code>lowercase</code>Les Urls sont réécrites en minuscules</li>
+<li><code>dospath</code>Les slashes inversés dans les URLs sont
+remplacés par des slashes directs.</li>
+<li><code>reset</code>Annule toute option définie à un niveau supérieur
+dans la configuration</li>
+</ul>
+<p>Cette directive doit être utilisée avec prudence. Elle peut corriger
+certaines erreurs de création, mais risque aussi de modifier par erreur
+des liens corrects. Ne l'utilisez que si vous êtes sûr que le serveur
+d'arrière-plan est déficient.</p> 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLExtended</name>
+<description>Détermine si l'on doit corriger les liens dans les scripts
+en ligne, les feuilles de style et les évènements de type scripting.</description>
+<syntax>ProxyHTMLExtended <var>On|Off</var></syntax>
+<default>ProxyHTMLExtended Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Si cette directive est définie à <code>Off</code>, les liens HTML
+sont réécrits en fonction des directives
+<directive>ProxyHTMLURLMap</directive>, mais les liens qui apparaissent
+dans le code Javascript et les feuilles de style restent inchangés.</p>
+<p>Si elle est définie à <code>On</code>, tous les évènements de type
+scripting (définis par la directive
+<directive>ProxyHTMLEvents</directive>) et les scripts inclus ou les
+feuilles de style sont aussi
+traités par les règles <directive>ProxyHTMLURLMap</directive>, en
+fonction des drapeaux définis pour chacune d'entre elles. Ne définissez
+cette directive à <code>On</code> qu'en cas de nécessité absolue, car la
+charge supplémentaire induite impacte les performances.</p>
+<p>Vous devez aussi prêter attention aux modèles de comparaison, car
+l'interpréteur n'a aucune notion de la forme que pourrait prendre une URL dans un
+script embarqué ou une feuille de style. En particulier, la comparaison
+étendus du caractère <code>/</code> a de fortes chances d'induire des
+correspondances erronées.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLStripComments</name>
+<description>Détermine si les commentaires HTML doivent être supprimés.</description>
+<syntax>ProxyHTMLStripComments <var>On|Off</var></syntax>
+<default>ProxyHTMLStripComments Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Si cette directive est définie à <code>On</code>, mod_proxy_html
+supprimera les commentaires HTML. Notez que cela supprimera aussi tout
+script ou style inclus dans les commentaires (une monstruosité
+introduite en 1995/1996 avec Netscape 2 pour les navigateurs plus
+anciens, et encore utilisée de nos jours). Cette directive peut aussi
+interférer avec des processeurs basés sur les commentaires comme SSI ou
+ESI : assurez-vous d'exécuter ces derniers <em>avant</em> mod_proxy_html
+dans la chaîne de filtrage si vous supprimez les commentaires !</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLBufSize</name>
+<description>Définit l'incrément de la taille du tampon, ainsi que sa
+taille initiale, pour la mise en
+tampon des scripts en ligne et des feuilles de style.</description>
+<syntax>ProxyHTMLBufSize <var>nb-octets</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Pour pouvoir interpréter du contenu non HTML (feuilles de style et
+scripts) embarqué dans des documents HTML, mod_proxy_html doit le lire
+et le mémoriser en entier dans un
+tampon. Ce tampon devra être étendu autant que nécessaire afin de
+pouvoir accueillir le plus grand script ou la plus grande feuille de
+style de la page, selon un incrément de <var>nb-octets</var> que cette
+directive permet de définir.</p>
+<p>La valeur par défaut est 8192 et sera suffisante pour la plupart des
+pages. Cependant, si vous savez que vous allez mandater des
+pages contenant des feuilles de style et/ou scripts plus grands que 8k
+(cette taille s'entend pour chaque script ou feuilles de style, non pour
+leur ensemble), il sera plus efficace de définir une taille de
+tampon initiale plus grande afin d'éviter d'avoir à le redimensionner
+dynamiquement au cours du traitement d'une requête.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLEvents</name>
+<description>Spécifie les attributs à traiter comme des évènements de
+type scripting.</description>
+<syntax>ProxyHTMLEvents <var>attribut [attribut ...]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Cette directive permet de spécifier un ou plusieurs attributs à
+traiter comme
+des évènements de type scripting et de leur appliquer les règles
+<directive>ProxyHTMLURLMap</directive> lorsqu'elles ont été définies. Vous
+pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
+directives <code>ProxyHTMLEvents</code>.</p>
+<p>Normalement, cette directive est définie globalement. Si vous
+définissez ProxyHTMLEvents à plusieurs niveaux, certains niveaux
+l'emportant sur d'autres, vous devrez spécifier un jeu complet
+d'évènements pour chaque niveau.</p>
+<p>Le fichier <var>proxy-html.conf</var> fournit une configuration par
+défaut et définit les évènements selon les standards
+HTML 4 et XHTML 1.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLLinks</name>
+<description>Spécifie les éléments HTML dont les attributs d'URL doivent
+être réécrits.</description>
+<syntax>ProxyHTMLLinks <var>élément attribut [attribut2 ...]</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Cette directive permet de spécifier les éléments dont les attributs d'URL
+doivent être réécrits en utilisant les règles standards <directive
+module="mod_proxy_html">ProxyHTMLURLMap</directive>. Vous devez définir une
+directive ProxyHTMLLinks pour chaque élément, mais chacune d'entre elles peut
+spécifier un nombre quelconque d'attributs</p> <p>Normalement, cette directive
+est définie globalement. Si vous définissez ProxyHTMLLinks à plusieurs niveaux,
+certains niveaux l'emportant sur d'autres, vous devrez spécifier un jeu complet
+de liens pour chaque niveau.</p> <p>Le fichier <var>proxy-html.conf</var>
+fournit une configuration par défaut et définit les liens HTML selon les
+standards HTML 4 et XHTML 1.</p>
+<example>
+<title>Exemples issus de proxy-html.conf</title>
+<highlight language="config">
+ProxyHTMLLinks  a          href
+ProxyHTMLLinks  area       href
+ProxyHTMLLinks  link       href
+ProxyHTMLLinks  img        src longdesc usemap
+ProxyHTMLLinks  object     classid codebase data usemap
+ProxyHTMLLinks  q          cite
+ProxyHTMLLinks  blockquote cite
+ProxyHTMLLinks  ins        cite
+ProxyHTMLLinks  del        cite
+ProxyHTMLLinks  form       action
+ProxyHTMLLinks  input      src usemap
+ProxyHTMLLinks  head       profile
+ProxyHTMLLinks  base       href
+ProxyHTMLLinks  script     src for
+</highlight>
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLCharsetOut</name>
+<description>Spécifie un jeu de caractères pour la sortie de
+mod_proxy_html.</description>
+<syntax>ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.4 du serveur HTTP Apache.
+Disponible en tant que module tiers dans les versions 2.x antérieures.</compatibility>
+<usage>
+<p>Cette directive permet de spécifier un jeu de caractères pour la
+sortie de mod_proxy_html. Elle ne devrait jamais être utilisée, car tout
+changement par rapport à la valeur par défaut <code>UTF-8</code> (Unicode -
+utilisé en interne par libxml2) induit une charge supplémentaire de
+traitement. La définition spéciale <code>ProxyHTMLCharsetOut *</code>
+permet de générer une sortie qui utilisera le même encodage que
+l'entrée.</p>
+<p>Notez que tout ceci ne fonctionne que si le module
+<module>mod_xml2enc</module> est chargé.</p>
+</usage>
+</directivesynopsis>
+
+
+
+</modulesynopsis>
+

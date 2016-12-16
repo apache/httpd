@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 151408:1745806 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">How-To / Tutorials</parentdocument>
+
+  <title>사용자별 웹디렉토리</title>
+
+<summary>
+<p>여러 사용자가 있는 시스템에서 <directive
+    module="mod_userdir">UserDir</directive> 지시어를 사용하면
+    각 사용자는 자신의 홈디렉토리 안에 웹사이트를 만들 수 있다.
+    URL <code>http://example.com/~username/</code>에 접근하면
+    사용자 "<code>username</code>"의 홈디렉토리에서 <directive
+    module="mod_userdir">UserDir</directive> 지시어로 지정한
+    하위디렉토리에 있는 페이지를 가져오게 된다.</p>
+
+</summary>
+
+<seealso><a href="../urlmapping.html">URL을 파일시스템에 대응</a></seealso>
+
+  <section id="related">
+    <title>사용자별 웹디렉토리</title>
+    <related>
+      <modulelist>
+        <module>mod_userdir</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_userdir">UserDir</directive>
+        <directive module="core">DirectoryMatch</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+    </section>
+
+    <section id="userdir">
+    <title>UserDir로 파일경로 지정하기</title>
+
+    <p><directive module="mod_userdir">UserDir</directive>
+    지시어는 사용자별 페이지를 가져올 디렉토리를 지정한다. 이
+    지시어의 사용법은 여러가지다.</p>
+
+    <p>슬래쉬로 시작하지않는 경로를 지정하면 각 사용자의
+    홈디렉토리에 상대적인 디렉토리 경로로 처리한다. 예를 들어,
+    아래 설정의 경우:</p>
+
+    <example>
+      UserDir public_html
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code>은
+    파일 경로 <code>/home/rbowen/public_html/file.html</code>을
+    뜻한다.</p>
+
+    <p>슬래쉬로 시작하는 경로를 지정하면 지정한 디렉토리에
+    사용자명을 더한 디렉토리 경로를 사용한다. 예를 들어, 아래
+    설정의 경우:</p>
+
+    <example>
+      UserDir /var/html
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code>은
+    파일 경로 <code>/var/html/rbowen/file.html</code>을 뜻한다.</p>
+
+    <p>별표 (*)를 포함한 경로를 지정하면 별표를 사용자명으로
+    대체한 경로를 사용한다. 예를 들어, 아래 설정의 경우:</p>
+
+    <example>
+      UserDir /var/www/*/docs
+    </example>
+
+    <p>URL <code>http://example.com/~rbowen/file.html</code>은
+    파일 경로 <code>/var/www/rbowen/docs/file.html</code>을
+    뜻한다.</p>
+
+  </section>
+
+  <section id="enable">
+    <title>기능을 이용할 사용자 제한하기</title>
+
+    <p>UserDir 문서에 있는 문법을 사용하여 사용자별 웹디렉토리
+    기능을 이용할 수 있는 사용자를 제한할 수 있다:</p>
+
+    <example>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </example>
+
+    <p>위 설정은 <code>disabled</code> 문장에 열거한 사람을
+    제외하고 모든 사용자에게 웹디렉토리 기능을 허락한다. 또,
+    다음과 같이 몇몇 사용자를 제외하고 기능을 허락하지 않을
+    수도 있다:</p>
+
+    <example>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </example>
+
+    <p><directive module="mod_userdir">UserDir</directive>
+    문서에 있는 다른 예들도 참고하라.</p>
+
+  </section>
+
+  <section id="cgi">
+  <title>각 사용자별 cgi 디렉토리 지정하기</title>
+
+   <p>사용자마다 cgi-bin 디렉토리를 부여하려면 <directive
+   module="core" type="section">Directory</directive> 지시어를
+   사용하여 사용자 홈디렉토리의 특정 하위디렉토리를 cgi 가능하게
+   만든다.</p>
+
+    <example>
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </example>
+
+    <p><code>UserDir</code>이 <code>public_html</code>이라고
+    가정하면, 다음과 같이 그 안에 있는 cgi 프로그램
+    <code>example.cgi</code>를 실행할 수 있다.</p>
+
+    <example>
+    http://example.com/~rbowen/cgi-bin/example.cgi
+    </example>
+
+    </section>
+
+    <section id="htaccess">
+    <title>사용자가 설정을 변경할 수 있도록 만들기</title>
+
+    <p>사용자가 자신의 웹공간에 대한 웹서버 설정을 수정하려면,
+    <code>.htaccess</code> 파일을 사용할 수 있어야 한다. <directive
+    module="core">AllowOverride</directive>를 사용자가 수정할
+    수 있는 지시어에 적합한 값으로 설정하라. 어떻게 동작하는지에
+    대한 자세한 졍보는 <a href="htaccess.html">.htaccess
+    투토리얼</a>을 참고하라.</p>
+
+  </section>
+
+</manualpage>

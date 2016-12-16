@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision: 1738639 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>How-To / Tutoriels</title>
+
+  <section id="howto">
+
+    <title>How-To / Tutoriels</title>
+
+    <dl>
+      <dt>Authentification et autorisation</dt>
+      <dd>
+        <p>L'authentification représente tout processus par lequel vous
+	vérifiez si quelqu'un correspond bien à la personne qu'il
+	prétend être. L'autorisation représente tout processus
+	permettant de savoir si une personne est autorisée à aller là où
+	elle veut aller, ou à obtenir les informations qu'elle demande.</p>
+
+        <p>Voir <a href="auth.html">Authentification, Autorisation</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Contrôle d'accès</dt>
+      <dd>
+        <p>Le contrôle d'accès se réfère au processus permettant
+	d'interdire ou d'accorder l'accès à une ressource en fonction de
+	certains critères, et il existe de nombreuses façons d'y
+	parvenir.</p>
+
+        <p>Voir <a href="access.html">Contrôle d'accès</a></p>
+      </dd>
+    </dl>
+
+   <dl>
+      <dt>Contenu dynamique avec CGI</dt>
+      <dd>
+        <p>L'interface CGI (Common Gateway Interface)
+	fournit au serveur web une méthode d'interaction avec des
+	programmes externes générateurs de contenu, souvent nommés
+	programmes CGI ou scripts CGI. Il s'agit d'une méthode
+	simple permettant d'ajouter du contenu
+	dynamique à votre site web. Ce document se veut une introduction
+	à la configuration de CGI sur votre serveur web Apache et à
+	l'écriture de programmes CGI.</p>
+
+        <p>Voir <a href="cgi.html">CGI : contenu dynamique</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Fichiers <code>.htaccess</code></dt>
+      <dd>
+        <p>Les fichiers <code>.htaccess</code> permettent de modifier la
+	configuration du serveur au niveau de chaque répertoire. À cet
+	effet, un fichier est placé dans un répertoire particulier du site
+	web, et les directives de configuration qu'il contient s'appliquent à ce
+	répertoire et à tous ses sous-répertoires.</p>
+
+        <p>Voir <a href="htaccess.html">Fichiers <code>.htaccess</code></a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>HTTP/2 avec httpd</dt>
+      <dd>
+      <p>HTTP/2 est une évolution du protocole de la couche application le plus
+      connu au monde, HTTP. Les efforts se sont concentrés sur une amélioration
+      de l'efficacité de l'utilisation des ressources réseau sans modifier la
+      sémantique de HTTP. Ce guide explique la manière dont HTTP/2 est
+      implémenté dans httpd, donne des conseils pour une configuration de base
+      ainsi qu'une liste de recommandations.
+      </p>
+
+        <p>Voir le <a href="http2.html">guide HTTP/2</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Introduction au Inclusions côté Serveur (Server Side Includes
+      ou SSI)</dt>
+      <dd>
+        <p>Les SSI sont des directives que l'on place dans des pages
+	HTML, et qui sont évaluées par le serveur lorsque ces pages sont
+	servies. Elles vous permettent d'ajouter du contenu généré
+	dynamiquement à une page HTML existante, sans avoir à servir
+	l'intégralité de la page via un programme CGI, ou toute autre
+	technologie dynamique.</p>
+
+        <p>Voir <a href="ssi.html">Server Side Includes (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Répertoires web de l'utilisateur</dt>
+      <dd>
+        <p>Sur les systèmes multi-utilisateurs, vous pouvez permettre à
+	chaque utilisateur d'avoir un site web dans son répertoire home
+	via la directive <directive
+	module="mod_userdir">UserDir</directive>. Les visiteurs de l'URL
+	<code>http://example.com/~nom-utilisateur/</code> vont recevoir
+	du contenu situé dans le répertoire home de l'utilisateur
+	"<code>nom-utilisateur</code>", et dans le sous-répertoire
+	spécifié par la directive <directive
+	module="mod_userdir">UserDir</directive>.</p>
+
+        <p>Voir <a href="public_html.html"
+        >Répertoires web des utilisateurs (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+    <dl>
+      <dt>Mandataires inverses</dt>
+      <dd>
+        <p>Apache httpd possède des fonctionnalités évoluées de serveur
+	mandataire inverse via ses directives <directive
+	module="mod_proxy">ProxyPass</directive> et <directive
+	module="mod_proxy">BalancerMember</directive> qui permettent
+	d'implémenter un système de mandataire inverse sophistiqué garantissant
+	une haute disponibilité, une répartition et une réattribution de charge,
+	un regroupement de serveurs en grappe (clustering) basé sur le cloud et
+	une reconfiguration dynamique à la volée.</p>
+
+        <p>Voir le <a href="reverse_proxy.html"></a>Guide de configuration des
+	mandataires inverses</p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>
+
+

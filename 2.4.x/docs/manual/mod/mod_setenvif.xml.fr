@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1727648 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_setenvif.xml.meta">
+
+<name>mod_setenvif</name>
+<description>Permet de définir des variables d'environnement en fonction
+de certainescaractéristiques de la requête</description>
+<status>Base</status>
+<sourcefile>mod_setenvif.c</sourcefile>
+<identifier>setenvif_module</identifier>
+
+<summary>
+
+    <p>Le module <module>mod_setenvif</module> vous permet de définir
+    des variables d'environnement internes de manière conditionnelle en fonction
+    de critères que vous pouvez spécifier. Ces variables d'environnement
+    peuvent être utilisées par d'autres parties du serveur pour prendre
+    des décisions quant aux actions à entreprendre, et pour déterminer
+    si les scripts CGI et les pages SSI doivent pouvoir y accéder.</p>
+
+    <p>Les directives sont interprétées selon l'ordre dans lequel elles
+    apparaîssent dans les fichiers de configuration. Ainsi, des
+    séquences plus complexes peuvent être utilisées, comme dans cet
+    exemple qui définit netscape si le navigateur est Mozilla et non
+    MSIE.</p>
+
+<highlight language="config">
+BrowserMatch ^Mozilla netscape
+BrowserMatch MSIE !netscape
+</highlight>
+
+   <p>Lorsque le serveur cherche un chemin via une <glossary
+   ref="subrequest">sous-requête</glossary> interne (par exemple la
+   recherche d'un <directive
+   module="mod_dir">DirectoryIndex</directive>), ou lorsqu'il génère un
+   listing du contenu d'un répertoire via le module
+   <module>mod_autoindex</module>, la sous-requête n'hérite pas des
+   variables d'environnement spécifiques à la requête. En outre, à cause
+   des phases de l'API auxquelles <module>mod_setenvif</module> prend
+   part, les directives <directive
+   module="mod_setenvif">SetEnvIf</directive> ne sont pas évaluées
+   séparément dans la sous-requête.</p>
+
+</summary>
+
+<seealso><a href="../env.html">Les variables d'environnement et le
+serveur HTTP Apache</a></seealso>
+
+<directivesynopsis>
+<name>BrowserMatch</name>
+<description>Définit des variables d'environnement en fonction du
+contenu de l'en-tête HTTP User-Agent</description>
+<syntax>BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
+[[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+  <p>La directive <directive>BrowserMatch</directive> est un cas
+  particulier de la directive <directive
+  module="mod_setenvif">SetEnvIf</directive>, qui définit des variables
+  d'environnement en fonction du contenu de l'en-tête de requête HTTP
+  <code>User-Agent</code>. Les deux lignes suivantes produisent le même
+  effet :</p>
+<highlight language="config">
+BrowserMatch Robot is_a_robot
+SetEnvIf User-Agent Robot is_a_robot
+</highlight>
+
+    <p>Quelques exemples supplémentaires :</p>
+<highlight language="config">
+BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+BrowserMatch MSIE !javascript
+</highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BrowserMatchNoCase</name>
+<description>Définit des variables d'environnement en fonction du
+contenu de l'en-tête HTTP User-Agent sans tenir compte de la
+casse</description>
+<syntax>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+
+    <p>La directive <directive>BrowserMatchNoCase</directive> est
+    identique sur le plan sémantique à la directive <directive
+    module="mod_setenvif">BrowserMatch</directive>. Elle permet
+    cependant une comparaison insensible à la casse. Par exemple :</p>
+<highlight language="config">
+BrowserMatchNoCase mac platform=macintosh
+BrowserMatchNoCase win platform=windows
+</highlight>
+
+    <p>Les directives <directive>BrowserMatch</directive> et
+    <directive>BrowserMatchNoCase</directive> sont des cas particuliers
+    des directives <directive module="mod_setenvif">SetEnvIf</directive>
+    et <directive module="mod_setenvif">SetEnvIfNoCase</directive>.
+    Ainsi, les deux lignes suivantes produisent le même effet :</p>
+<highlight language="config">
+BrowserMatchNoCase Robot is_a_robot
+SetEnvIfNoCase User-Agent Robot is_a_robot
+</highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnvIf</name>
+<description>Définit des variables d'environnement en fonction des
+attributs de la requête</description>
+<syntax>SetEnvIf <em>attribut
+    regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>SetEnvIf</directive> permet de définir
+    des variables d'environnement en fonction des attributs de la
+    requête. L'<em>attribut</em> spécifié comme premier argument peut
+    se présenter sous l'une des trois formes suivantes :</p>
+
+<ol>
+<li>Un champ d'en-tête de requête HTTP (voir la <a
+    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour
+    plus d'information à leur propos) ; par exemple : <code>Host</code>,
+    <code>User-Agent</code>, <code>Referer</code>, ou
+    <code>Accept-Language</code>. Il est possible d'utiliser une
+    expression rationnelle pour spécifier un jeu d'en-têtes de
+    requête.</li>
+
+<li>Une des caractéristiques de la requête suivantes :
+    <ul>
+      <li><code>Remote_Host</code> - le nom d'hôte (s'il est disponible)
+      du client qui effectue la requête</li>
+
+      <li><code>Remote_Addr</code> - l'adresse IP du client qui effectue
+      la requête</li>
+
+      <li><code>Server_Addr</code> - l'adresse IP du serveur qui a reçu
+      la requête (uniquement à partir des versions supérieures à
+      2.0.43)</li>
+
+      <li><code>Request_Method</code> - Le nom de la méthode HTTP
+      utilisée (<code>GET</code>, <code>POST</code>, <em>et
+      cetera...</em>)</li>
+
+      <li><code>Request_Protocol</code> - le nom et la version du
+      protocole utilisé pour la requête (par exemple "HTTP/0.9",
+      "HTTP/1.1", <em>etc...</em>)</li>
+
+      <li><code>Request_URI</code> - la ressource demandée dans la ligne
+      de requête HTTP -- en général la partie de l'URL suivant le
+      protocole et le nom du serveur, sans la chaîne d'arguments. Voir
+      la directive <directive
+      module="mod_rewrite">RewriteCond</directive> du module
+      <module>mod_rewrite</module> pour plus d'informations sur la
+      manière de mettre en correspondance votre chaîne d'arguments.</li>
+    </ul>
+</li>
+
+<li>Le nom d'une variable d'environnement parmi la liste de celles qui
+sont associées à la requête. Ceci permet à la directive
+<directive>SetEnvIf</directive> d'effectuer des tests en fonction du
+résultat de comparaisons précédentes. Seules les variables
+d'environnement définies par des directives
+<code>SetEnvIf[NoCase]</code> précédentes sont disponibles pour
+effectuer des tests de cette manière. 'Précédentes' signifie qu'elles se
+trouvent à un niveau plus global de la configuration (par exemple au
+niveau du serveur principal), ou plus haut chronologiquement dans le
+contexte de la directive. Les variables d'environnement ne seront prises
+en compte que si aucune correspondance n'a été trouvée parmi les
+caractéristiques de la requête, et si <em>attribut</em> n'a pas été
+spécifié sous la forme d'une expression rationnelle.</li>
+
+</ol>
+
+<p>Le second argument (<em>regex</em>) est une <glossary
+ref="regex">expression rationnelle</glossary>. Si  <em>regex</em>
+correspond à l'<em>attribut</em>, les arguments suivants sont évalués.</p>
+
+<p>Le reste des arguments constitue les noms des variables à définir,
+ainsi que les valeurs optionnelles qui doivent leur être affectées. Ils
+peuvent se présenter sous les formes suivantes :</p>
+
+    <ol>
+      <li><code><em>nom-variable</em></code>, ou</li>
+
+      <li><code>!<em>nom-variable</em></code>, ou</li>
+
+      <li><code><em>nom-variable</em>=<em>valeur</em></code></li>
+    </ol>
+
+    <p>Dans la première forme, la valeur sera définie à "1". Dans la
+    seconde forme, la variable sera supprimée si elle a été définie au
+    préalable, et dans la troisième forme, la variable sera définie à la
+    valeur littérale spécifiée par <code><em>valeur</em></code>. Depuis
+    la version 2.0.51, Apache httpd reconnaît les occurrences de variables
+    <code>$1</code>..<code>$9</code> à l'intérieur de
+    <code><em>valeur</em></code>, et les remplace par les
+    sous-expressions entre parenthèses correspondantes de
+    <var>regex</var>. <code>$0</code> permet d'accéder à l'ensemble de la chaîne
+    qui correspond à ce modèle.</p>
+
+<highlight language="config">
+SetEnvIf Request_URI "\.gif$" object_is_image=gif
+SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+    
+SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral
+    
+SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+SetEnvIf Request_URI "\.(.*)$" EXTENSION=$1
+    
+SetEnvIf ^TS  ^[a-z]  HAVE_TS
+</highlight>
+
+    <p>Les trois premières lignes définissent la variable
+    d'environnement <code>objet_est_une_image</code> si l'objet de la
+    requête est un fichier image, et la quatrième définit la variable
+    <code>intra_site_referral</code> si la page référante se trouve
+    quelque part dans le site web
+    <code>www.mydomain.example.com</code>.</p>
+
+    <p>La dernière ligne définit la variable d'environnement
+    <code>HAVE_TS</code> si la requête contient un en-tête dont le nom
+    commence par "TS" et dont la valeur commence par tout caractère du
+    jeu [a-z].</p>
+</usage>
+
+<seealso><a href="../env.html">Les variables d'environnement et le
+serveur HTTP Apache</a> pour des exemples supplémentaires.
+</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>SetEnvIfExpr</name>
+<description>Définit des variables d'environnement en fonction d'une expression ap_expr</description>
+<syntax>SetEnvIfExpr <em>expr
+    [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>SetEnvIfExpr</directive> permet de
+    définir des variables d'environnement en fonction d'une expression
+    <directive module="core" type="section">If</directive> <code>ap_expr</code>. Cette
+    expression est évaluée à l'exécution, et utilise les variables
+    d'environnement <em>env-variable</em> de la même manière que la
+    directive <directive>SetEnvIf</directive>.</p>
+
+<highlight language="config">
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+</highlight>
+
+    <p>Dans cet exemple, la variable d'environnement
+    <code>iso_delivered</code> est définie chaque fois que notre
+    application tente de l'envoyer via <code>X-Sendfile</code>.</p>
+
+    <p>Il pourrait être plus utile de définir une variable rfc1918 si
+    l'adresse IP distante est une adresse privée au sens de la RFC 1918
+    :</p>
+
+<highlight language="config">
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
+</highlight>
+</usage>
+
+<seealso><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une référence complète et davantage d'exemples.</seealso>
+<seealso>La directive <directive module="core"
+type="section">If</directive> permet d'obtenir des résultats
+similaires.</seealso>
+<seealso><module>mod_filter</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnvIfNoCase</name>
+<description>Définit des variables d'environnement en fonction des
+attributs de la requête sans tenir compte de la casse</description>
+<syntax>SetEnvIfNoCase <em>attribut regex
+        [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+
+    <p>La directive <directive>SetEnvIfNoCase</directive> est identique
+    d'un point de vue sémantique à la directive <directive
+    module="mod_setenvif">SetEnvIf</directive>, et ne s'en distingue que
+    par le fait que la comparaison des expressions rationnelles est
+    effectuée sans tenir compte de la casse. Par exemple :</p>
+<highlight language="config">
+   SetEnvIfNoCase Host Example\.Org site=example
+</highlight>
+
+    <p>Cette ligne va définir la variable d'environnement
+    <code>site</code> avec la valeur "<code>example</code>" si le champ
+    d'en-tête de requête HTTP <code>Host:</code> est présent et contient
+    <code>Example.Org</code>, <code>example.org</code>, ou une autre
+    combinaison des mêmes caractères, sans tenir compte de la casse.</p>
+</usage>
+</directivesynopsis>
+</modulesynopsis>

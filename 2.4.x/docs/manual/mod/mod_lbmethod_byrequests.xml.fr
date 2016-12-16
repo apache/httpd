@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1328329 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_lbmethod_byrequests.xml.meta">
+
+<name>mod_lbmethod_byrequests</name>
+<description>Algorithme de planification avec répartition de charge du
+traitement des requêtes pour le module
+<module>mod_proxy_balancer</module></description>
+<status>Extension</status>
+<sourcefile>mod_lbmethod_byrequests.c</sourcefile>
+<identifier>lbmethod_byrequests_module</identifier>
+<compatibility>Dissocié de <module>mod_proxy_balancer</module> dans la
+version 2.3</compatibility>
+
+<summary>
+<p>Ce module ne fournit pas lui-même de directive de configuration. Il
+nécessite les services de <module>mod_proxy_balancer</module>, et
+fournit la méthode de répartition de charge <code>byrequests</code>.</p>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="requests">
+    <title>Algorithme d'attribution des requêtes</title>
+    <p>Activé via <code>lbmethod=byrequests</code>, ce planificateur à
+    été conçu dans le but de distribuer les requêtes à tous les
+    processus worker afin qu'ils traitent tous le nombre de requêtes
+    pour lequel ils ont été configurés. Il fonctionne de la manière
+    suivante : </p>
+
+    <p><dfn>lbfactor</dfn> correspond à la <em>quantité de travail que
+    nous attendons de ce processus worker</em>, ou en d'autres termes
+    son <em>quota de travail</em>. C'est une valeur normalisée
+    représentant leur part du travail à accomplir.</p>
+
+    <p><dfn>lbstatus</dfn> représente <em>combien il est urgent que
+    ce processus worker travaille pour remplir son quota de
+    travail</em>.</p>
+
+    <p>Le <dfn>worker</dfn> est un membre du dispositif de répartition
+    de charge, en général un serveur distant traitant un des protocoles
+    supportés.</p>
+
+    <p>On distribue à chaque processus worker son quota de travail, puis
+    on regarde celui qui a le plus besoin de travailler
+    (le plus grand lbstatus). Ce processus est alors sélectionné pour
+    travailler, et son lbstatus diminué de l'ensemble des quotas de
+    travail que nous avons distribués à tous les processus. La somme de
+    tous les lbstatus n'est ainsi pas modifiée, et nous pouvons
+    distribuer les requêtes selon nos souhaits.</p>
+
+    <p>Si certains processus workers sont désactivés, les autres feront
+    l'objet d'une planification normale.</p>
+
+    <example><pre><code>for each worker in workers
+    worker lbstatus += worker lbfactor
+    total factor    += worker lbfactor
+    if worker lbstatus > candidate lbstatus
+        candidate = worker
+
+candidate lbstatus -= total factor</code></pre>
+    </example>
+
+    <p>Si un répartiteur de charge est configuré comme suit :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td></tr>
+    <tr><th>lbstatus</th>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td></tr>
+    </table>
+
+    <p>Et si <var>b</var> est désactivé, la planification suivante est
+    mise en oeuvre :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-50</em></td>
+        <td>0</td>
+        <td>25</td>
+        <td>25</td></tr>
+    <tr><th>lbstatus</th>
+        <td>-25</td>
+        <td>0</td>
+        <td><em>-25</em></td>
+        <td>50</td></tr>
+    <tr><th>lbstatus</th>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><em>0</em></td></tr>
+    <tr><td colspan="5">(repeat)</td></tr>
+    </table>
+
+    <p>C'est à dire la chronologie suivante : <var>a</var> <var>c</var>
+    <var>d</var>
+    <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
+    <var>d</var> ... Veuillez noter que :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td></tr>
+    </table>
+
+    <p>A le même effet que :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>Ceci est dû au fait que toutes les valeurs de <dfn>lbfactor</dfn>
+    sont normalisées et évaluées en fonction des autres. Avec :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>4</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>le processus <var>b</var> va, en moyenne, se voir assigner 4 fois
+    plus de requêtes que <var>a</var> et <var>c</var>.</p>
+
+    <p>La configuration suivante, asymétrique, fonctionne comme on peut
+    s'y attendre :</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th></tr>
+    <tr><th>lbfactor</th>
+        <td>70</td>
+        <td>30</td></tr>
+    <tr><td colspan="2">&nbsp;</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-30</em></td>
+        <td>30</td></tr>
+    <tr><th>lbstatus</th>
+        <td>40</td>
+        <td><em>-40</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>10</em></td>
+        <td>-10</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-20</em></td>
+        <td>20</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-50</em></td>
+        <td>50</td></tr>
+    <tr><th>lbstatus</th>
+        <td>20</td>
+        <td><em>-20</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-10</em></td>
+        <td>10</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-40</em></td>
+        <td>40</td></tr>
+    <tr><th>lbstatus</th>
+        <td>30</td>
+        <td><em>-30</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>0</em></td>
+        <td>0</td></tr>
+    <tr><td colspan="3">(repeat)</td></tr>
+    </table>
+
+    <p>Après 10 distributions, la planification se répète et 7
+    <var>a</var> sont sélectionnés avec 3 <var>b</var> intercalés.</p>
+</section>
+
+</modulesynopsis>

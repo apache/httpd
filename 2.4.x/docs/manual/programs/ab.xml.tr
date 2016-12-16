@@ -1,0 +1,344 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1676925 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
+   Reviewed by: Orhan Berent <berent belgeler.gen.tr>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="ab.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>ab - Apache HTTP sunucusu başarım ölçme aracı</title>
+
+<summary>
+    <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
+      (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir
+      kıyaslama aracıdır. Mevcut Apache kurulumunuzun görevini nasıl yerine
+      getirdiği hakkında bir izlenim edinmeniz için tasarlanmıştır.
+      Özellikle, Apache kurulumunuzun saniyede kaç isteği sunma yeteneğinde
+      olduğunu gösterir.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>ab</strong>
+    [ -<strong>A</strong> <var>yetkili-kullanıcı:parola</var> ]
+    [ -<strong>b</strong> <var>tampon-boyu</var> ]
+    [ -<strong>B</strong> <var>yerel-adres</var> ]
+    [ -<strong>c</strong> <var>bağlantı-sayısı</var> ]
+    [ -<strong>C</strong> <var>çerez-ismi=değer</var> ]
+    [ -<strong>d</strong> ]
+    [ -<strong>e</strong> <var>csv-dosyası</var> ]
+    [ -<strong>f</strong> <var>protokol</var> ]
+    [ -<strong>g</strong> <var>gnuplot-dosyası</var> ]
+    [ -<strong>h</strong> ]
+    [ -<strong>H</strong> <var>özel-başlık</var> ]
+    [ -<strong>i</strong> ]
+    [ -<strong>k</strong> ]
+    [ -<strong>l</strong> ]
+    [ -<strong>m</strong> <var>HTTP-yöntemi</var> ]
+    [ -<strong>n</strong> <var>istek-sayısı</var> ]
+    [ -<strong>p</strong> <var>POST-dosyası</var> ]
+    [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
+    [ -<strong>q</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>s</strong> <var>zamanasimi</var> ]
+    [ -<strong>S</strong> ]
+    [ -<strong>t</strong> <var>saniye</var> ]
+    [ -<strong>T</strong> <var>içerik-türü</var> ]
+    [ -<strong>u</strong> <var>PUT-dosyası</var> ]
+    [ -<strong>v</strong> <var>ayrıntı-düzeyi</var>]
+    [ -<strong>V</strong> ]
+    [ -<strong>w</strong> ]
+    [ -<strong>x</strong> <var>&lt;table&gt;-öznitelikleri</var> ]
+    [ -<strong>X</strong> <var>vekil</var>[:<var>port</var>] ]
+    [ -<strong>y</strong> <var>&lt;tr&gt;-öznitelikleri</var> ]
+    [ -<strong>z</strong> <var>&lt;td&gt;-öznitelikleri</var> ]
+    [ -<strong>Z</strong> <var>şifre-kümesi</var> ]
+    [http[s]://]<var>konakadı</var>[:<var>port</var>]/<var>dizin</var>
+    </code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-A</strong>
+      <var>yetkili-kullanıcı</var>:<var>parola</var></code></dt>
+    <dd>Sunucuya TEMEL Kimlik Doğrulamada kullanılmak üzere kanıt sağlar.
+      Kullanıcı adı ile parola arasına sadece <code>:</code> konur ve
+      sunucunun buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "401
+      kimlik doğrulaması gerekli" yanıtı beklenmeden) bağlantı üzerinden
+      base64 kodlu olarak sunucuya gönderilir.</dd>
+
+    <dt><code><strong>-b</strong> <var>tampon-boyu</var></code></dt>
+    <dd>TCP gönderme/alma tamponlarının bayt cinsinden uzunluğu.</dd>
+
+    <dt><code><strong>-B</strong> <var>yerel-adres</var></code></dt>
+    <dd>Uzak bağlantılar yaparken dinlenecek adres.</dd>
+
+    <dt><code><strong>-c</strong> <var>bağlantı-sayısı</var></code></dt>
+    <dd>Aynı anda işleme sokulacak bağlantı sayısı. Aynı anda bir bağlantı
+      öntanımlı değerdir.</dd>
+
+    <dt><code><strong>-C</strong>
+      <var>çerez-ismi</var>=<var>değer</var></code></dt>
+    <dd>İsteğe bir <code>Cookie:</code> satırı ekler. Argüman olarak
+      genellikle bir <code><var>isim=değer</var></code> çifti kullanılır. Bu
+      çiftler birden fazla olabilir.</dd>
+
+    <dt><code><strong>-d</strong></code></dt>
+    <dd>"percentage served within XX [ms] table" iletisi gösterilmez. (Geriye
+      uyumluluk için vardır).</dd>
+
+    <dt><code><strong>-e</strong> <var>csv-dosyası</var></code></dt>
+    <dd>Sunulan isteğin birim zamanda (milisaniye) ne kadarının (yüzde
+      cinsinden) sunulduğunu gösteren virgül ayraçlı değerler (CSV) dosyası.
+      Sonuçlar 'bobin haline' getirilmiş olduğundan doğal olarak 'gnuplot'
+      dosyasından daha yararlıdır.</dd>
+
+    <dt><code><strong>-f</strong> <var>protokol</var></code></dt>
+    <dd>SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1, TLS1.1, TLS1.2 veya
+      ALL). TLS1.1 ve TLS1.2 desteği 2.4.4 ve sonraki sürümler
+      içindir.</dd>
+
+    <dt><code><strong>-g</strong> <var>gnuplot-dosyası</var></code></dt>
+    <dd>Ölçülen değerler bir 'gnuplot' veya TSV (sekme ayraçlı değerler)
+      dosyasına yazılır. Bu dosya, Gnuplot, IDL, Mathematica, Igor hatta
+      Excel tarafından veri dosyası olarak kabul edilir. Veri sütunlarının
+      başlıkları dosyanın ilk satırında bulunur. </dd>
+
+    <dt><code><strong>-h</strong></code></dt>
+    <dd>Kullanım bilgisi gösterir.</dd>
+
+    <dt><code><strong>-H</strong> <var>özel-başlık</var></code></dt>
+    <dd>İsteğe fazladan başlık ekler. <var>özel-başlık</var>, aralarında iki
+      nokta imi bulunan bir isim-değer çifti olarak belirtilir. Örnek:
+      <code>"Accept-Encoding: zip/zop;8bit"</code></dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd><code>GET</code> istekleri yerine <code>HEAD</code> istekleri
+      yapılır.</dd>
+
+    <dt><code><strong>-k</strong></code></dt>
+    <dd>HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek
+      bir oturum içinde çok sayıda isteğe hizmet sunulabilir. Özellik
+      öntanımlı olarak kapalıdır.</dd>
+
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>Yanıtarın uzunluğu sabit değilse hataları raporlamaz. Özdevinimli
+      sayfalarda kullanışlı olabilir. 2.4.7 ve sonraki sürümler
+      içindir.</dd>
+
+    <dt><code><strong>-m</strong> <var>HTTP-yöntemi</var></code></dt>
+    <dd>İstekler için özel HTTP yöntemi, belirtilir.
+    2.4.10 ve sonraki sürümler içindir.</dd>
+
+    <dt><code><strong>-n</strong> <var>istek-sayısı</var></code></dt>
+    <dd>Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı.
+      Öntanımlı olarak hiçbir başarım ölçütü sağlamayan tek bir istek
+      yapılır.</dd>
+
+    <dt><code><strong>-p</strong> <var>POST-dosyası</var></code></dt>
+    <dd>POST isteği ile ilgili verileri içeren dosya. Ayrıca
+      <code><strong>-T</strong></code> seçeneğini de belirtmeyi
+      unutmayın..</dd>
+
+    <dt><code><strong>-P</strong>
+      <var>vekil-yetkilisi</var>:<var>parola</var></code></dt>
+    <dd>Vekil sunucuya TEMEL Kimlik Doğrulamasında kullanılacak kanıtları
+      sağlar. Kullanıcı adı ile parola arasına sadece <code>:</code> konur ve
+      vekilin buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "407
+      vekilde kimlik doğrulaması gerekiyor" yanıtı beklenmeden) bağlantı
+      üzerinden base64 kodlu olarak sunucuya gönderilir.</dd>
+
+    <dt><code><strong>-q</strong></code></dt>
+    <dd>İstek sayısı 150'den fazla olduğunda,
+      <code><strong>ab</strong></code> her 100 veya %10 istekte bir, standart
+      hataya bir işlenen istek sayacı çıktılar.
+      <code><strong>-q</strong></code> seçeneği bu çıktının üretilmemesini
+      sağlar.</dd>
+
+    <dt><code><strong>-r</strong></code></dt>
+    <dd>Soket hata alsa bile program çıkmaz.</dd>
+
+    <dt><code><strong>-s</strong> <var>zamanasimi</var></code></dt>
+    <dd>Soket zaman aşımına uğramadan önce beklenecek azami saniye sayısı.
+      30 saniye öntanımlı süredir.
+      2.4.4 ve sonraki sürümler içindir.</dd>
+
+    <dt><code><strong>-S</strong></code></dt>
+    <dd>Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan
+      fazlası varsa ne ortalama değer ne standart sapma değeri ne de
+      uyarı/hata iletileri gösterilir. Öntanımlı olarak,
+      asgari/ortalama/azami değerler gösterilir. (Geriye uyumluluk).</dd>
+
+    <dt><code><strong>-t</strong> <var>saniye</var></code></dt>
+    <dd>Ölçümleme işleminin ne kadar süreyle uygulanacağı belirtilir. Dahili
+      olarak <code><strong>-n 50000</strong></code> seçeneği uygulanır. Bunu
+      belli bir süreye göre kıyaslama yapmak amacıyla kullanabilirsiniz.
+      Öntanımlı olarak bir süre kısıtlaması yoktur.</dd>
+
+    <dt><code><strong>-T</strong> <var>içerik-türü</var></code></dt>
+    <dd>POST/PUT verisi için kullanılacak içerik türü belirtilir. Örnek:
+      <code>application/x-www-form-urlencoded</code>.
+      Öntanımlı değer: <code>text/plain</code>.</dd>
+
+    <dt><code><strong>-v</strong> <var>ayrıntı-düzeyi</var></code></dt>
+    <dd>Çıktının ayrıntı düzeyi belirtilir.  <code>4</code> ve üstü ile
+      başlıklar hakkında bilgi, <code>3</code> ve üstü ile yanıt kodları
+      (404, 200, vb.), <code>2</code> ve üstü ile ise uyarı ve bilgi
+      iletileri gösterilir.</dd>
+
+    <dt><code>-u <var>PUT-dosyası</var></code></dt>
+    <dd>PUT verisini içeren dosya.  Ayrıca, <code>-T</code> seçeneğini
+      belirtmeyi de unutmayın.</dd>
+
+    <dt><code><strong>-V</strong></code></dt>
+    <dd>Sürüm bilgilerini gösterir ve çıkar.</dd>
+
+    <dt><code><strong>-w</strong></code></dt>
+    <dd>Sonuçları HTML tabloları olarak basar. Öntanımlı tablo, beyaz
+      artalanlı ve iki sütunludur.</dd>
+
+    <dt><code><strong>-x</strong>
+      <var>&lt;table&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;table&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir. Belirtilen öznitelikler etiket içine <code>&lt;table
+      <var>buraya</var> &gt;</code> biçeminde yerleştirilir.</dd>
+
+    <dt><code><strong>-X</strong>
+      <var>vekil</var>[:<var>port</var>]</code></dt>
+    <dd>İstekler için bir vekil sunucu kullanılır.</dd>
+
+    <dt><code><strong>-y</strong>
+      <var>&lt;tr&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;tr&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir.</dd>
+
+    <dt><code><strong>-z</strong>
+      <var>&lt;td&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;td&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir.</dd>
+
+    <dt><code>-Z <var>şifre-kümesi</var></code></dt>
+    <dd>SSL/TLS şifre kümesi belirtilir
+      (<code><strong>openssl</strong></code>(1) şifrelerine bakınız).</dd>
+    </dl>
+</section>
+
+<section id="output"><title>Çıktı</title>
+    <p>Aşağıda <code><strong>ab</strong></code> tarafından döndürülen değerler
+      açıklanmıştır:</p>
+
+    <dl>
+        <dt>Server Software</dt>
+        <dd>İlk başarılı yanıtın, varsa, <var>server</var> HTTP başlığında
+          döndürülen değer. Bu başlıktaki başlangıçtan 32 ondalık değerli
+          karaktere (genellikle boşluk veya CR/LF karakteri) kadar tüm
+          karakterleri içerir.</dd>
+
+        <dt>Server Hostname</dt>
+        <dd>Komut satırında belirtilen DNS veya IP adresi.</dd>
+
+        <dt>Server Port</dt>
+        <dd><code><strong>ab</strong></code>'nin bağlandığı port. Komut
+          satırında port belirtilmemişse, öntanımlı olarak http için 80, https
+          için 443'tür.</dd>
+
+        <dt>SSL/TLS Protocol</dt>
+        <dd>İstemci le sunucu arasında uzlaşılmış protokol değerleri. Bu sadece
+          SSL kullanılıyorsa çıktılanır.</dd>
+
+        <dt>Document Path</dt>
+        <dd>Komut satırı dizgesinden çözümlenen isteğin URI'si.</dd>
+
+        <dt>Document Length</dt>
+        <dd>Başarıyla döndürülen ilk belgenin bayt cinsinden uzunluğu. Eğer
+          belge uzunluğu sınama sırasında değişirse yanıt bir hata
+          içerecektir.</dd>
+
+        <dt>Concurrency Level</dt>
+        <dd>Sınama sırasında kullanılan eşzamanlı istemcilerin sayısı.</dd>
+
+        <dt>Time taken for tests</dt>
+        <dd>İlk soket bağlantısının alındığı andan son yanıtın alındığı ana
+          kadar geçen süre.</dd>
+
+        <dt>Complete requests</dt>
+        <dd>Alınan başarılı yanıtların sayısı.</dd>
+
+        <dt>Failed requests</dt>
+        <dd>Başarısızlık olarak addedilen isteklerin sayısı. Sayı sıfırdan
+          büyükse, diğer satırda,  bağlanma, okuma, yanlış içerik uzunluğu,
+          istisnalar gibi sebeplerle başarısız olmuş istekler gösterilir.</dd>
+
+        <dt>Write errors</dt>
+        <dd>Başarısız yazma hatalarının (kırık boru) sayısı.</dd>
+
+        <dt>Non-2xx responses</dt>
+        <dd>200 serisi yanıt kodları ile açıklanamayan yanıtların sayısı. Tüm
+          yanıtlar 200 olursa bu alan çıktılanmaz.</dd>
+
+        <dt>Keep-Alive requests</dt>
+        <dd>Keep-Alive isteklerinde sonuçlanan bağlantı sayısı.</dd>
+
+        <dt>Total body sent</dt>
+        <dd>Sınamanın parçası olarak veri gönderimi yapılandırılmışsa, bu
+          sınama sırasında gönderilen toplam bayt sayısıdır. Sınama sırasında
+          gövde gönderilmiyorsa bu alan çıktılanmaz.</dd>
+
+        <dt>Total transferred</dt>
+        <dd>Sunucudan alınan toplam bayt sayısı. Bu sayı aslında hattan
+          gönderilen bayt sayısıdır.</dd>
+
+        <dt>HTML transferred</dt>
+        <dd>Sunucudan alınan belge baytlarının sayısı. Bu sayı HTTP
+          başlıklarının bayt sayısını içermez.</dd>
+
+        <dt>Requests per second</dt>
+        <dd>Saniyedeki istek sayısı. İstek sayısının toplam süreye
+          oranıdır.</dd>
+
+        <dt>Time per request</dt>
+        <dd>İstek başına harcanan süre. İlk değer <code>eşzamanlılık * süre *
+          1000 / biten</code> formülüyle hesaplanırken ikincisi için
+          <code>süre * 1000 / biten</code> formülü kullanılır.</dd>
+
+        <dt>Transfer rate</dt>
+        <dd><code>okunantoplam / 1024 / süre</code> formülüyle hesaplanan
+          aktarım hızı.</dd>
+    </dl>
+</section>
+
+<section id="bugs"><title>Börtü böcek</title>
+    <p>Duruk bildirimli sabit uzunlukta çeşitli tamponlar vardır.
+      Sunucudan gelen yanıt başlıkları ve diğer harici girdiler, komut satırı
+      argümanları ile birlikte basitçe çözümlenir, bu size can sıkıcı
+      gelebilir.</p>
+
+    <p>HTTP/1.x protokolünü tamamen gerçeklemez; sadece yanıtların 'belli
+      başlı' bazı biçimlerini kabul eder. Aksi takdirde,
+      <code><strong>strstr</strong></code>(3) işlevinin yoğun kullanımı
+      nedeniyle sunucu yerine <code><strong>ab</strong></code>'nin başarımını
+      ölçerdiniz.</p>
+</section>
+
+</manualpage>

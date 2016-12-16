@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cgid.xml.meta">
+
+<name>mod_cgid</name>
+<description>Execution of CGI scripts using an
+    external CGI daemon</description>
+<status>Base</status>
+<sourcefile>mod_cgid.c</sourcefile>
+<identifier>cgid_module</identifier>
+<compatibility>Unix threaded MPMs only</compatibility>
+
+<summary>
+    <p>Except for the optimizations and the additional <directive
+    module="mod_cgid">ScriptSock</directive> directive noted below,
+    <module>mod_cgid</module> behaves similarly to <module>mod_cgi</module>.
+    <strong>See the <module>mod_cgi</module> summary for additional details
+    about Apache and CGI.</strong></p>
+
+    <p>On certain unix operating systems, forking a process from a
+    multi-threaded server is a very expensive operation because the
+    new process will replicate all the threads of the parent
+    process. In order to avoid incurring this expense on each CGI
+    invocation, <module>mod_cgid</module> creates an external daemon that is
+    responsible for forking child processes to run CGI scripts. The
+    main server communicates with this daemon using a unix domain
+    socket.</p>
+
+    <p>This module is used by default instead of
+    <module>mod_cgi</module> whenever a multi-threaded MPM
+    is selected during the compilation process. At the user level,
+    this module is identical in configuration and operation to
+    <module>mod_cgi</module>. The only exception is the
+    additional directive <code>ScriptSock</code> which gives the
+    name of the socket to use for communication with the cgi
+    daemon.</p>
+</summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../suexec.html">Running CGI programs under different
+    user IDs</a></seealso>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLog</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogLength</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogBuffer</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptSock</name>
+<description>The filename prefix of the socket to use for communication with
+the cgi daemon</description>
+<syntax>ScriptSock <var>file-path</var></syntax>
+<default>ScriptSock cgisock</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This directive sets the filename prefix of the socket to use for
+    communication with the CGI daemon, an extension corresponding to
+    the process ID of the server will be appended. The socket will be opened
+    using the permissions of the user who starts Apache (usually
+    root). To maintain the security of communications with CGI
+    scripts, it is important that no other user has permission to
+    write in the directory where the socket is located.</p>
+
+    <p>If <var>file-path</var> is not an absolute path, the location specified
+    will be relative to the value of 
+    <directive module="core">DefaultRuntimeDir</directive>.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      ScriptSock /var/run/cgid.sock
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CGIDScriptTimeout</name>
+<description>The length of time to wait for more output from the
+CGI program</description>
+<syntax>CGIDScriptTimeout <var>time</var>[s|ms]</syntax>
+<default>value of <directive module="core">Timeout</directive> directive when 
+unset</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>CGIDScriptTimeout defaults to zero in releases 2.4 and earlier
+</compatibility>
+
+<usage>
+    <p>This directive limits the length of time to wait for more output from
+    the CGI program.  If the time is exceeded, the request and CGI are 
+    terminated.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      CGIDScriptTimeout 20
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

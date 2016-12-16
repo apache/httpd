@@ -1,0 +1,321 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_ext_filter.xml.meta">
+
+<name>mod_ext_filter</name>
+<description>Pass the response body through an external program before
+delivery to the client</description>
+<status>Extension</status>
+<sourcefile>mod_ext_filter.c</sourcefile>
+<identifier>ext_filter_module</identifier>
+
+<summary>
+    <p><module>mod_ext_filter</module> presents a simple and familiar
+    programming model for <a href="../filter.html">filters</a>. With
+    this module, a program which reads from stdin and writes to stdout
+    (i.e., a Unix-style filter command) can be a filter for
+    Apache. This filtering mechanism is much slower than using a
+    filter which is specially written for the Apache API and runs
+    inside of the Apache server process, but it does have the
+    following benefits:</p>
+
+    <ul>
+      <li>the programming model is much simpler</li>
+
+      <li>any programming/scripting language can be used, provided
+      that it allows the program to read from standard input and
+      write to standard output</li>
+
+      <li>existing programs can be used unmodified as Apache
+      filters</li>
+    </ul>
+
+    <p>Even when the performance characteristics are not suitable
+    for production use, <module>mod_ext_filter</module> can be used as
+    a prototype environment for filters.</p>
+
+</summary>
+<seealso><a href="../filter.html">Filters</a></seealso>
+
+<section id="examples"><title>Examples</title>
+
+    <section><title>Generating HTML from some other type of response</title>
+      <highlight language="config">
+# mod_ext_filter directive to define a filter
+# to HTML-ize text/c files using the external
+# program /usr/bin/enscript, with the type of
+# the result set to text/html
+ExtFilterDefine c-to-html mode=output \
+    intype=text/c outtype=text/html \
+    cmd="/usr/bin/enscript --color -W html -Ec -o - -"
+
+&lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;
+    # core directive to cause the new filter to
+    # be run on output
+    SetOutputFilter c-to-html
+    
+    # mod_mime directive to set the type of .c
+    # files to text/c
+    AddType text/c .c
+&lt;/Directory&gt;
+      </highlight>
+    </section>
+
+    <section><title>Implementing a content encoding filter</title>
+      <p>Note: this gzip example is just for the purposes of illustration.
+      Please refer to <module>mod_deflate</module> for a practical
+      implementation.</p>
+
+      <highlight language="config">
+# mod_ext_filter directive to define the external filter
+ExtFilterDefine gzip mode=output cmd=/bin/gzip
+
+&lt;Location "/gzipped"&gt;
+    
+    # core directive to cause the gzip filter to be
+    # run on output
+    SetOutputFilter gzip
+    
+    # mod_headers directive to add
+    # "Content-Encoding: gzip" header field
+    Header set Content-Encoding gzip
+&lt;/Location&gt;
+      </highlight>
+    </section>
+
+    <section><title>Slowing down the server</title>
+      <highlight language="config">
+# mod_ext_filter directive to define a filter
+# which runs everything through cat; cat doesn't
+# modify anything; it just introduces extra pathlength
+# and consumes more resources
+ExtFilterDefine slowdown mode=output cmd=/bin/cat \
+    preservescontentlength
+
+&lt;Location "/"&gt;
+    # core directive to cause the slowdown filter to
+    # be run several times on output
+    #
+    SetOutputFilter slowdown;slowdown;slowdown
+&lt;/Location&gt;
+      </highlight>
+    </section>
+
+    <section><title>Using sed to replace text in the response</title>
+      <highlight language="config">
+# mod_ext_filter directive to define a filter which
+# replaces text in the response
+#
+ExtFilterDefine fixtext mode=output intype=text/html \
+    cmd="/bin/sed s/verdana/arial/g"
+
+&lt;Location "/"&gt;
+    # core directive to cause the fixtext filter to
+    # be run on output
+    SetOutputFilter fixtext
+&lt;/Location&gt;
+      </highlight>
+
+<note>
+<p>You can do the same thing using <module>mod_substitute</module>
+without invoking an external process.</p>
+</note>
+    </section>
+
+    <section><title>Tracing another filter</title>
+      <highlight language="config">
+# Trace the data read and written by mod_deflate
+# for a particular client (IP 192.168.1.31)
+# experiencing compression problems.
+# This filter will trace what goes into mod_deflate.
+ExtFilterDefine tracebefore \
+    cmd="/bin/tracefilter.pl /tmp/tracebefore" \
+    EnableEnv=trace_this_client
+
+# This filter will trace what goes after mod_deflate.
+# Note that without the ftype parameter, the default
+# filter type of AP_FTYPE_RESOURCE would cause the
+# filter to be placed *before* mod_deflate in the filter
+# chain.  Giving it a numeric value slightly higher than
+# AP_FTYPE_CONTENT_SET will ensure that it is placed
+# after mod_deflate.
+ExtFilterDefine traceafter \
+    cmd="/bin/tracefilter.pl /tmp/traceafter" \
+    EnableEnv=trace_this_client ftype=21
+
+&lt;Directory "/usr/local/docs"&gt;
+    SetEnvIf Remote_Addr 192.168.1.31 trace_this_client
+    SetOutputFilter tracebefore;deflate;traceafter
+&lt;/Directory&gt;
+      </highlight>
+
+      <example><title>Here is the filter which traces the data:</title>
+      <highlight language="perl">
+#!/usr/local/bin/perl -w
+use strict;
+
+open(SAVE, "&gt;$ARGV[0]")
+    or die "can't open $ARGV[0]: $?";
+
+while (&lt;STDIN&gt;) {
+    print SAVE $_;
+    print $_;
+}
+
+close(SAVE);
+        </highlight>
+      </example>
+    </section>
+</section> <!-- /Examples -->
+
+<directivesynopsis>
+<name>ExtFilterDefine</name>
+<description>Define an external filter</description>
+<syntax>ExtFilterDefine <var>filtername</var> <var>parameters</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>ExtFilterDefine</directive> directive defines the
+    characteristics of an external filter, including the program to
+    run and its arguments.</p>
+
+    <p><var>filtername</var> specifies the name of the filter being
+    defined. This name can then be used in <directive module="core"
+    >SetOutputFilter</directive>
+    directives. It must be unique among all registered filters.
+    <em>At the present time, no error is reported by the
+    register-filter API, so a problem with duplicate names isn't
+    reported to the user.</em></p>
+
+    <p>Subsequent parameters can appear in any order and define the
+    external command to run and certain other characteristics. The
+    only required parameter is <code>cmd=</code>. These parameters
+    are:</p>
+
+    <dl>
+      <dt><code>cmd=<var>cmdline</var></code></dt>
+
+      <dd>The <code>cmd=</code> keyword allows you to specify the
+      external command to run. If there are arguments after the
+      program name, the command line should be surrounded in
+      quotation marks (<em>e.g.</em>, <code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code>.) Normal shell quoting is
+      not necessary since the program is run directly, bypassing the shell.
+      Program arguments are blank-delimited. A backslash can be used to
+      escape blanks which should be part of a program argument. Any
+      backslashes which are part of the argument must be escaped with
+      backslash themselves.  In addition to the standard CGI environment
+      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and
+      QUERY_STRING_UNESCAPED will also be set for the program.</dd>
+
+      <dt><code>mode=<var>mode</var></code></dt>
+
+      <dd>Use <code>mode=output</code> (the default) for filters which
+      process the response.  Use <code>mode=input</code> for filters
+      which process the request.  <code>mode=input</code> is available
+      in Apache 2.1 and later.</dd>
+
+      <dt><code>intype=<var>imt</var></code></dt>
+
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of documents which should be filtered. By default,
+      all documents are filtered. If <code>intype=</code> is
+      specified, the filter will be disabled for documents of other
+      types.</dd>
+
+      <dt><code>outtype=<var>imt</var></code></dt>
+
+      <dd>This parameter specifies the internet media type (<em>i.e.</em>,
+      MIME type) of filtered documents. It is useful when the
+      filter changes the internet media type as part of the
+      filtering operation. By default, the internet media type is
+      unchanged.</dd>
+
+      <dt><code>PreservesContentLength</code></dt>
+
+      <dd>The <code>PreservesContentLength</code> keyword specifies
+      that the filter preserves the content length. This is not the
+      default, as most filters change the content length. In the
+      event that the filter doesn't modify the length, this keyword
+      should be specified.</dd>
+
+      <dt><code>ftype=<var>filtertype</var></code></dt>
+
+      <dd>This parameter specifies the numeric value for filter type
+      that the filter should be registered as.  The default value,
+      AP_FTYPE_RESOURCE, is sufficient in most cases.  If the filter
+      needs to operate at a different point in the filter chain than
+      resource filters, then this parameter will be necessary.  See
+      the AP_FTYPE_foo definitions in util_filter.h for appropriate
+      values.</dd>
+
+      <dt><code>disableenv=<var>env</var></code></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which, if set, will disable the filter.</dd>
+
+      <dt><code>enableenv=<var>env</var></code></dt>
+
+      <dd>This parameter specifies the name of an environment variable
+      which must be set, or the filter will be disabled.</dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ExtFilterOptions</name>
+<description>Configure <module>mod_ext_filter</module> options</description>
+<syntax>ExtFilterOptions <var>option</var> [<var>option</var>] ...</syntax>
+<default>ExtFilterOptions NoLogStderr</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>The <directive>ExtFilterOptions</directive> directive specifies
+    special processing options for <module>mod_ext_filter</module>.
+    <var>Option</var> can be one of</p>
+
+    <dl>
+      <dt><code>LogStderr | NoLogStderr</code></dt>
+
+      <dd>The <code>LogStderr</code> keyword specifies that
+      messages written to standard error by the external filter
+      program will be saved in the Apache error log.
+      <code>NoLogStderr</code> disables this feature.</dd>
+
+      <dt><code>Onfail=[abort|remove]</code></dt>
+      <dd>Determines how to proceed if the external filter program
+      cannot be started.  With <code>abort</code> (the default value)
+      the request will be aborted.  With <code>remove</code>, the
+      filter is removed and the request continues without it.</dd>
+    </dl>
+
+    <highlight language="config">
+      ExtFilterOptions LogStderr
+    </highlight>
+
+    <p>Messages written to the filter's standard error will be stored
+    in the Apache error log.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

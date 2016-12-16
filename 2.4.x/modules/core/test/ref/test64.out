@@ -1,0 +1,7 @@
+# testing with conf/test64.conf
+[core:warn] on line 2 on line 2 of ./conf/test64.conf
+[core:warn] from line 3 to line 4 on line 4 of ./conf/test64.conf
+[core:error] done on line 5. on line 5 of ./conf/test64.conf
+AH00526: Syntax error on line 5 of ./conf/test64.conf:
+Configuration processing stopped by Error directive
+# exit: 1

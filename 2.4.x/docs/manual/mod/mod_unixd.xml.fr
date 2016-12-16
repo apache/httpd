@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1584684 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_unixd.xml.meta">
+
+<name>mod_unixd</name>
+<description>S&eacute;curit&eacute; de base (n&eacute;cessaire) pour les plates-formes de la
+famille Unix.</description>
+<status>Base</status>
+<sourcefile>mod_unixd.c</sourcefile>
+<identifier>unixd_module</identifier>
+
+<seealso><a href="../suexec.html">Support de suEXEC</a></seealso>
+
+<directivesynopsis>
+<name>Group</name>
+<description>Groupe sous lequel le serveur va traiter les
+requ&ecirc;tes</description>
+<syntax>Group <var>groupe unix</var></syntax>
+<default>Group #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>Group</directive> permet de d&eacute;finir le
+    groupe sous lequel le serveur va traiter les requ&ecirc;tes. Pour
+    utiliser cette directive, le serveur doit avoir &eacute;t&eacute; d&eacute;marr&eacute; par
+    <code>root</code>. Si vous d&eacute;marrez le serveur en tant
+    qu'utilisateur non root, celui-ci ne pourra pas adopter le groupe
+    sp&eacute;cifi&eacute; comme groupe d'ex&eacute;cution, et continuera &agrave; s'ex&eacute;cuter sous
+    le groupe de l'utilisateur qui l'aura lanc&eacute;. <var>groupe unix</var>
+    peut se pr&eacute;senter sous la forme :</p>
+
+    <dl>
+      <dt>d'un nom de groupe</dt>
+      <dd>R&eacute;f&eacute;rence le groupe sp&eacute;cifi&eacute; par son nom.</dd>
+
+      <dt>du caract&egrave;re <code>#</code> suivi d'un num&eacute;ro de groupe.</dt>
+      <dd>R&eacute;f&eacute;rence le groupe sp&eacute;cifi&eacute; par son num&eacute;ro.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      Group www-group
+      </highlight>
+    </example>
+
+    <p>Il est conseill&eacute; de cr&eacute;er un groupe d&eacute;di&eacute; &agrave; l'ex&eacute;cution du
+    serveur. Certains administrateurs utilisent l'utilisateur
+    <code>nobody</code>, mais ce n'est pas toujours souhaitable ou m&ecirc;me
+    possible.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute;</title>
+      <p>Ne d&eacute;finissez pas la directive <directive>Group</directive> (ou
+      <directive module="mod_unixd">User</directive>) &agrave;
+      <code>root</code> &agrave; moins de savoir exactement ce que vous faites
+      ainsi que les dangers encourus.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostGroup</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>User</name>
+<description>L'utilisateur sous lequel le serveur va traiter les
+requ&ecirc;tes</description>
+<syntax>User <var>utilisateur unix</var></syntax>
+<default>User #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>User</directive> permet de d&eacute;finir
+    l'utilisateur sous lequel le serveur va traiter les requ&ecirc;tes. Pour
+    utiliser cette directive, le serveur doit avoir &eacute;t&eacute; d&eacute;marr&eacute;
+    par <code>root</code>. Si vous d&eacute;marrez le serveur en tant
+    qu'utilisateur non root, celui-ci ne pourra pas adopter
+    l'utilisateur avec privil&egrave;ges restreints comme utilisateur
+    d'ex&eacute;cution, et continuera &agrave; s'ex&eacute;cuter sous
+    l'utilisateur qui l'aura lanc&eacute;. Si vous d&eacute;marrez le serveur en tant
+    que <code>root</code>, il est normal que le processus parent
+    continue &agrave; s'ex&eacute;cuter sous root. <var>utilisateur unix</var> peut se
+    pr&eacute;senter sous la forme :</p>
+
+    <dl>
+      <dt>d'un nom d'utilisateur</dt>
+      <dd>R&eacute;f&eacute;rence l'utilisateur sp&eacute;cifi&eacute; par son nom.</dd>
+
+      <dt>le caract&egrave;re # suivi d'un num&eacute;ro d'utilisateur.</dt>
+      <dd>R&eacute;f&eacute;rence l'utilisateur sp&eacute;cifi&eacute; par son num&eacute;ro.</dd>
+    </dl>
+
+    <p>L'utilisateur ne doit pas poss&eacute;der de privil&egrave;ges qui lui
+    permettraient d'acc&eacute;der &agrave; des fichiers non destin&eacute;s au
+    monde ext&eacute;rieur, et parall&egrave;lement, l'utilisateur ne doit pas
+    ex&eacute;cuter de code dont l'usage soit destin&eacute; &agrave; un usage autre que les
+    requ&ecirc;tes HTTP. Il est conseill&eacute; de cr&eacute;er un utilisateur et un groupe
+    d&eacute;di&eacute;s &agrave; l'ex&eacute;cution du serveur. Certains administrateurs utilisent
+    l'utilisateur <code>nobody</code>, mais ce n'est pas toujours
+    souhaitable, car l'utilisateur <code>nobody</code> peut avoir
+    diverses utilisations dans le syst&egrave;me.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute;</title>
+      <p>Ne d&eacute;finissez pas la directive <directive>Group</directive> (ou
+      <directive module="mod_unixd">User</directive>) &agrave;
+      <code>root</code> &agrave; moins de savoir exactement ce que vous faites
+      ainsi que les dangers encourus.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostUser</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>R&eacute;pertoire dans lequel Apache doit se positionner au
+d&eacute;marrage apr&egrave;s avoir effectu&eacute; un chroot(8).</description>
+<syntax>ChrootDir <var>chemin-r&eacute;pertoire</var></syntax>
+<default>Non d&eacute;fini</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>mod_unixd</module></modulelist>
+<compatibility>Disponible depuis la version 2.2.10 d'Apache</compatibility>
+
+<usage>
+    <p>Cette directive fait en sorte que le serveur effectue un
+    <var>chroot(8)</var> vers le r&eacute;pertoire sp&eacute;cifi&eacute; apr&egrave;s le d&eacute;marrage,
+    mais avant d'accepter les requ&ecirc;tes en provenance du r&eacute;seau.</p>
+    <p>Notez que l'ex&eacute;cution du serveur dans un environnement chroot
+    n'est pas simple et n&eacute;cessite une configuration particuli&egrave;re, en
+    particulier si vous utilisez des scripts CGI ou PHP. Il est
+    conseill&eacute; de se familiariser avec l'op&eacute;ration chroot avant d'essayer
+    d'utiliser cette fonctionnalit&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>Active ou d&eacute;sactive la fonctionnalit&eacute; suEXEC</description>
+<syntax>Suexec On|Off</syntax>
+<default>On si le binaire suexec existe avec les mode et propri&eacute;taire
+appropri&eacute;s, Off dans le cas contraire</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Lorsque cette directive est d&eacute;finie &agrave; On, le d&eacute;marrage &eacute;chouera si
+    le binaire suexec n'existe pas, ou poss&egrave;de un propri&eacute;taire ou mode
+    fichier invalide.</p>
+    <p>Lorsque cette directive est d&eacute;finie &agrave; Off, suEXEC sera d&eacute;sactiv&eacute;,
+    m&ecirc;me si le binaire suexec existe et poss&egrave;de un propri&eacute;taire et mode
+    fichier valides.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

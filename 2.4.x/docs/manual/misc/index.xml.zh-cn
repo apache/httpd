@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 636430 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>Apache 杂项文档</title>
+
+  <summary>
+
+    <p>下面是适用于 Apache 服务器开发项目的附加文档。</p>
+
+    <note type="warning"><title>警告</title>
+    <p>下面的文档尚未完全更新，以反映自 Apache HTTP 服务器版本 2.1
+    之后的修改。某些信息可能仍旧适用，但请小心使用它。</p>
+    </note>
+
+    <dl>
+      <dt><a href="perf-tuning.html">Apache 性能调谐</a></dt>
+
+      <dd>
+        <p>对如何在编译或运行时，配置 Apache，以便性能更高的说明。
+        解释了为什么 Apache 这样做，而不那样做 (这会让它更慢或更快)。</p>
+      </dd>
+
+      <dt><a href="security_tips.html">安全技巧</a></dt>
+
+      <dd>
+        <p>做和不做 - 如何让你的 Apache 站点保持安全。</p>
+      </dd>
+
+      <dt><a href="relevant_standards.html">相关标准</a></dt>
+
+      <dd>
+        <p>这篇文档是 Apache 遵循的相关标准的参考页面。</p>
+      </dd>
+
+      <dt><a href="password_encryptions.html">密码加密格式</a></dt>
+
+      <dd>
+        <p>对 Apache 身份认证支持的各种密码加密格式的讨论。</p>
+      </dd>
+    </dl>
+
+  </summary>
+
+</manualpage>

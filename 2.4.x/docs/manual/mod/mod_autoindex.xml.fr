@@ -1,0 +1,1222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1741864 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.  -->
+
+<modulesynopsis metafile="mod_autoindex.xml.meta">
+<name>mod_autoindex</name>
+
+<description>Génère automatiquement des index de répertoires d'une
+manière similaire à la commande Unix <code>ls</code>, ou à la commande
+shell Win32 <code>dir</code></description>
+<status>Base</status>
+<sourcefile>mod_autoindex.c</sourcefile>
+<identifier>autoindex_module</identifier>
+
+<summary>
+      <p>L'index d'un répertoire peut être généré de deux manières :</p>
+
+    <ul>
+      <li>Un fichier situé dans ce répertoire, en général appelé
+      <code>index.html</code>, mais dont le nom de ce ou ces fichiers peut être défini par la
+      directive <directive
+      module="mod_dir">DirectoryIndex</directive>. C'est le module
+      <module>mod_dir</module> qui traite alors cet index.</li>
+
+      <li>Un listing généré par le serveur, dont le format est contrôlé
+      par un certain nombre de directives. Les directives <directive
+      module="mod_autoindex">AddIcon</directive>, <directive
+      module="mod_autoindex">AddIconByEncoding</directive> et <directive
+      module="mod_autoindex">AddIconByType</directive> permettent de
+      définir une liste d'icônes à afficher en fonction des différents
+      types de fichiers ; pour chaque fichier listé, le premier icône
+      qui correspond au type du fichier est affiché. C'est le module
+      <module>mod_autoindex</module> qui traite alors cet index.</li>
+    </ul>
+    <p>Les deux fonctions sont séparées, si bien que vous pouvez
+    entièrement supprimer (ou remplacer) la génération automatique
+    d'index, si vous le souhaitez.</p>
+
+    <p>On active la génération automatique d'index en spécifiant
+    <code>Options +Indexes</code>. Voir la directive <directive
+    module="core">Options</directive> pour plus de détails.</p>
+
+    <p>Si la directive <directive
+    module="mod_autoindex">IndexOptions</directive> est spécifiée avec
+    l'option <code><a href="#indexoptions.fancyindexing"
+    >FancyIndexing</a></code>, les en-têtes de colonnes sont des liens
+    qui permettent de contrôler l'ordre de tri de l'affichage. Si vous
+    actionnez le lien d'un en-tête, le listing sera généré à nouveau,
+    trié en fonction des valeurs de la colonne concernée. Si l'on
+    actionne de manière répétitive le même en-tête, l'ordre de tri est
+    commuté entre les ordres croissant et décroissant. On peut supprimer
+    ces liens d'en-têtes de colonnes à l'aide de l'option
+    <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    de la directive <directive
+    module="mod_autoindex">IndexOptions</directive>.</p>
+
+    <p>Notez que lorsque l'affichage est trié en fonction de la taille,
+    c'est la taille <em>réelle</em> qui est prise en compte, et non la
+    valeur affichée - ainsi, un fichier de 1010 octets sera toujours
+    affiché avant un fichier de 1011 octets (en ordre croissant), même
+    si la taille affichée des deux fichiers est "1K".</p>
+</summary>
+
+<section id="query">
+    <title>Arguments de la requête d'autoindexation</title>
+
+    <p>La chaîne de paramètres de la requête peut contenir de nombreux
+    arguments permettant dans une certaine mesure au client de contrôler
+    l'ordre de l'index du répertoire, ainsi que la liste des fichiers à
+    afficher. Si vous souhaitez désactiver cette fonctionnalité,
+    utilisez l'option <code><a
+    href="#indexoptions.ignoreclient">IndexOptions
+    IgnoreClient</a></code>.</p>
+
+    <p>Les en-têtes de tri des colonnes eux-mêmes sont des hyper-liens
+    auto-référant qui ajoutent les options de tri à la requête énumérées
+    ci-dessous qui peuvent être ajoutées à toute requête concernant la
+    ressource répertoire.</p>
+
+    <ul>
+      <li><code>C=N</code> trie l'affichage en fonction du nom de
+      fichier</li>
+
+      <li><code>C=M</code> trie l'affichage en fonction de la date de
+      dernière modification, puis du nom de fichier</li>
+
+      <li><code>C=S</code> trie l'affichage en fonction de la taille,
+      puis du nom de fichier</li>
+
+      <li class="separate"><code>C=D</code> trie l'affichage en fonction
+      de la description, puis du nom de fichier</li>
+
+      <li><code>O=A</code> trie l'affichage selon l'ordre croissant</li>
+
+      <li class="separate"><code>O=D</code> trie l'affichage selon
+      l'ordre décroissant</li>
+
+      <li><code>F=0</code> affiche le listing sous la forme d'une simple
+      liste (sans FancyIndex)</li>
+
+      <li><code>F=1</code> affiche le listing avec en-têtes de colonnes
+      sous forme de liens hyper-textes (FancyIndexed)</li>
+
+      <li class="separate"><code>F=2</code> affiche le listing sous
+      forme de table HTML avec en-têtes de colonnes contenant des liens
+      hyper-textes (FancyIndexed)</li>
+
+      <li><code>V=0</code> désactive le tri en fonction de la
+      version</li>
+
+      <li class="separate"><code>V=1</code> active le tri en fonction de
+      la version</li>
+
+      <li><code>P=<var>modèle</var></code> n'affiche que les fichiers
+      correspondant au <var>modèle</var> spécifié</li>
+    </ul>
+
+    <p>Notez que l'argument 'P' (pour Pattern) n'est testé
+    qu'<em>après</em> que les directives habituelles <directive
+    module="mod_autoindex">IndexIgnore</directive> ont été traitées,
+    et que tous les noms de fichiers sont encore assujettis aux mêmes
+    critères que pour tout autre listing auto-indexé. L'interpréteur
+    d'arguments de requête de <module>mod_autoindex</module> s'arrête
+    immédiatement s'il rencontre une option non reconnue. Les arguments
+    de requête doivent être bien formés, selon la table ci-dessus.</p>
+
+    <p>Les options de requêtes sont illustrées par l'exemple ci-dessous,
+    qui peut être copié et collé dans un fichier header.html. Notez que
+    l'argument inconnu "X", pour le bouton submit, est introduit en
+    dernier afin de s'assurer que tous les arguments ont été
+    interprétés avant que mod_autoindex ne rencontre l'entrée X=Go.</p>
+
+    <example>
+      &lt;form action="" method="get"&gt;<br />
+      <indent>
+        Montre moi une &lt;select name="F"&gt;<br />
+        <indent>
+          &lt;option value="0"&gt; liste simple&lt;/option&gt;<br />
+          &lt;option value="1" selected="selected"&gt; liste avec
+	  en-têtes&lt;/option&gt;<br />
+          &lt;option value="2"&gt; liste avec en-tête sous forme de
+	  table&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        triée par &lt;select name="C"&gt;<br />
+        <indent>
+          &lt;option value="N" selected="selected"&gt; nom&lt;/option&gt;<br />
+          &lt;option value="M"&gt; date de modification&lt;/option&gt;<br />
+          &lt;option value="S"&gt; taille&lt;/option&gt;<br />
+          &lt;option value="D"&gt; description&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        &lt;select name="O"&gt;<br />
+        <indent>
+          &lt;option value="A" selected="selected"&gt; croissant&lt;/option&gt;<br />
+          &lt;option value="D"&gt; décroissant&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        &lt;select name="V"&gt;<br />
+        <indent>
+          &lt;option value="0" selected="selected"&gt; dans l'ordre
+	  normal&lt;/option&gt;<br />
+          &lt;option value="1"&gt; en fonction de la version&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        correspondant à &lt;input type="text" name="P" value="*" /&gt;<br />
+        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+      </indent>
+      &lt;/form&gt;
+    </example>
+
+</section>
+
+<directivesynopsis>
+<name>AddAlt</name>
+<description>Texte optionnel à afficher à la place d'un icône pour un
+fichier en fonction de son nom</description>
+<syntax>AddAlt <var>texte</var> <var>fichier</var> [<var>fichier</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>AddAlt</directive> permet d'afficher un
+    texte optionnel pour un fichier, à la place d'un icône, dans le cas
+    d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>fichier</var> est une extension de fichier, un nom de fichier
+    partiel, une expression avec caractères génériques ou un nom de
+    fichier complet permettant de caractériser le(s) fichier(s)
+    concerné(s). Si <var>texte</var> contient des espaces, vous devez
+    l'entourer de guillemets ou d'apostrophes (<code>"</code> ou
+    <code>'</code>). Ce texte optionnel sera affiché si le client ne
+    peut pas afficher d'images, si le chargement d'images est désactivé
+    ou si l'icône ne peut pas être trouvé.</p>
+
+    <highlight language="config">
+AddAlt "PDF file" *.pdf
+AddAlt Compressed *.gz *.zip *.Z
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddAltByEncoding</name>
+<description>Texte optionnel à afficher à la place d'un icône pour un
+fichier en fonction de son codage MIME</description>
+<syntax>AddAltByEncoding <var>texte</var> <var>codage MIME</var>
+[<var>codage MIME</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>AddAltByEncoding</directive> permet
+    d'afficher un texte optionnel à la place d'un icône pour un fichier
+    dans le cas d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>codage MIME</var> doit être un type valide, comme
+    <code>x-compress</code>. Si <var>texte</var> contient des espaces,
+    vous devez l'entourer de guillemets ou d'apostrophes (<code>"</code>
+    ou <code>'</code>). Ce texte optionnel sera affiché si le client ne
+    peut pas afficher d'images, si le chargement d'images est désactivé
+    ou si l'icône ne peut pas être trouvé.</p>
+
+    <highlight language="config">
+      AddAltByEncoding gzip x-gzip
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddAltByType</name>
+<description>Texte optionnel à afficher à la place d'un icône pour un
+fichier en fonction de son type MIME</description>
+<syntax>AddAltByType <var>texte</var> <var>type MIME</var>
+[<var>type MIME</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>AddAltByType</directive> permet
+    d'afficher un texte optionnel à la place d'un icône pour un fichier
+    dans le cas d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>type MIME</var> doit être un type MIME valide, comme
+    <code>text/html</code>. Si <var>texte</var> contient des espaces,
+    vous devez l'entourer de guillemets ou d'apostrophes (<code>"</code>
+    ou <code>'</code>). Ce texte optionnel sera affiché si le client ne
+    peut pas afficher d'images, si le chargement d'images est désactivé
+    ou si l'icône ne peut pas être trouvé.</p>
+
+    <highlight language="config">
+      AddAltByType 'Fichier texte' text/plain
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddDescription</name>
+<description>Afficher la description d'un fichier</description>
+<syntax>AddDescription <var>texte</var> [<var>fichier</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Cette directive permet d'afficher une description pour un
+    fichier, dans le cas d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>fichier</var> est une extension de fichier, un nom de fichier
+    partiel, une expression avec caractères génériques ou un nom de
+    fichier complet permettant de caractériser le fichier.
+    <var>texte</var> doit être entouré de guillemets
+    (<code>"</code>).</p>
+
+    <highlight language="config">
+AddDescription "The planet Mars" mars.gif
+AddDescription "My friend Marshall" friends/mars.gif
+    </highlight>
+
+    <p>La taille par défaut, habituelle du champ de description est de
+    23 octets. L'option <code><a href="#indexoptions.suppressicon"
+    >IndexOptions SuppressIcon</a></code> ajoute 6 octets, l'option
+    <code><a href="#indexoptions.suppresssize">IndexOptions
+    SuppressSize</a></code> en ajoute 7 et l'option <code><a
+    href="#indexoptions.suppresslastmodified">IndexOptions
+    SuppressLastModified</a></code> en ajoute 19. Ainsi, la plus grande
+    taille par défaut qui peut être assignée à la colonne description
+    est de 55 octets.</p>
+
+    <p>Comme l'argument <var>fichier</var> peut être un nom de fichier
+    partiel, vous devez garder à l'esprit qu'un nom de fichier partiel
+    trop court pourra correspondre à des fichiers non voulus. Par
+    exemple, <code>le.html</code> correspondra au fichier
+    <code>le.html</code>, mais aussi au fichier
+    <code>example.html</code>. En cas d'ambiguïté, utilisez un nom de
+    fichier aussi complet que possible, et ordonnez votre liste de
+    directives <code>AddDescription</code> en conséquence.</p>
+
+    <p>Voir le mot-clé <a href="#indexoptions.descriptionwidth"
+    >DescriptionWidth</a> de la directive <directive
+    >module="mod_autoindex">IndexOptions</directive> pour plus de
+    détails sur la manière d'augmenter la taille de cette colonne, ou
+    pour permettre des descriptions de taille illimitée.</p>
+
+    <note><title>Avertissement</title>
+      <p>Le texte descriptif défini par la directive
+      <directive>AddDescription</directive> peut contenir des marquages
+      HTML, comme des balises ou des entités caractères. Si la limite de
+      taille de la colonne description venait à tronquer une balise (par
+      exemple couper la fin d'une phrase en caractères gras), le
+      résultat pourrait en affecter toute la suite du listing du
+      répertoire.</p>
+    </note>
+
+    <note><title>Arguments avec chemins</title>
+      <p>Les chemins absolus ne sont actuellement pas supportés et ne
+      peuvent correspondre à aucun chemin réel à l'exécution. Les
+      arguments contenant des chemins relatifs, qui ne devraient être
+      normalement utilisés que dans les fichiers htaccess, sont
+      implicitement préfixés par '*/' afin d'éviter toute association
+      avec des noms de répertoires partiels.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIcon</name>
+<description>Icône à afficher pour un fichier en fonction de son
+nom</description>
+<syntax>AddIcon <var>icône</var> <var>nom</var> [<var>nom</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Cette directive permet de déterminer l'icône à afficher à côté
+    d'un fichier dont le nom se termine par <var>nom</var>, dans le cas
+    d'un affichage <code><a href="#indexoptions.fancyindexing"
+    >FancyIndexing</a></code>. <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL distante pleinement qualifiée, ou de la forme
+    <code>(<var>alttext</var>,<var>url</var>)</code>, où
+    <var>alttext</var> est le symbole texte correspondant à l'icône à
+    afficher dans les navigateurs en mode texte.</p>
+
+    <p><var>nom</var> correspond à <code>^^DIRECTORY^^</code> pour les
+    répertoires, <code>^^BLANKICON^^</code> pour les lignes vides
+    (pour personnaliser la présentation du listing), une extension de
+    fichier, une expression avec caractères génériques, un nom de
+    fichier partiel ou un nom de fichier complet.</p>
+
+    <p><code>^^BLANKICON^^</code> n'est utilisé que pour le formatage,
+    et n'est donc pas nécessaire si vous utilisez <code>IndexOptions
+    HTMLTable</code>.</p>
+
+    <highlight language="config">
+#Examples
+AddIcon (IMG,/icons/image.png) .gif .jpg .png
+AddIcon /icons/dir.png ^^DIRECTORY^^
+AddIcon /icons/backup.png *~
+    </highlight>
+
+    <p>Lorsque c'est possible, il est préférable d'utiliser <directive
+    module="mod_autoindex">AddIconByType</directive> plutôt que
+    <directive>AddIcon</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIconByEncoding</name>
+<description>Icône à afficher à côté d'un fichier en fonction de son
+codage MIME</description>
+<syntax>AddIconByEncoding <var>icône</var> <var>codage MIME</var>
+[<var>codage MIME</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Cette directive permet de déterminer l'icône à afficher à côté
+    d'un fichier dans le cas d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL pleinement qualifiée, ou de la forme
+    <code>(<var>alttext</var>,<var>url</var>)</code>, où
+    <var>alttext</var> est le symbole texte correspondant à l'icône à
+    afficher dans les navigateurs en mode texte.</p>
+
+    <p><var>codage MIME</var> doit être un codage valide, comme
+    <code>x-compress</code>.</p>
+
+    <highlight language="config">
+      AddIconByEncoding /icons/compress.png x-compress
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AddIconByType</name>
+<description>Icône à afficher à côté d'un fichier en fonction de son
+type MIME</description>
+<syntax>AddIconByType <var>icône</var> <var>type MIME</var>
+[<var>type MIME</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Cette directive permet de déterminer l'icône à afficher à côté
+    d'un fichier de type MIME <var>type MIME</var> dans le cas d'un
+    affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL pleinement qualifiée, ou de la forme
+    <code>(<var>alttext</var>,<var>url</var>)</code>, où
+    <var>alttext</var> est le symbole texte correspondant à l'icône à
+    afficher dans les navigateurs en mode texte.</p>
+
+    <p><var>type MIME</var> est une expression avec caractères
+    génériques représentant le type MIME.</p>
+
+    <highlight language="config">
+      AddIconByType (IMG,/icons/image.png) image/*
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DefaultIcon</name>
+<description>Icône à afficher par défaut lorsqu'aucun icône spécifique
+n'est précisé</description>
+<syntax>DefaultIcon <var>chemin URL</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>DefaultIcon</directive> permet de définir
+    l'icône à afficher à côté d'un fichier lorsqu'aucun icône spécifique
+    n'a été précisé, dans le cas d'un affichage <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
+    <var>chemin URL</var> est une URL relative (échappée par des
+    caractères '%') vers l'icône ou une URL pleinement qualifiée.</p>
+
+    <highlight language="config">
+      DefaultIcon /icon/unknown.png
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HeaderName</name>
+<description>Nom du fichier qui sera inséré au début de la page
+contenant l'index</description>
+<syntax>HeaderName <var>nom fichier</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>HeaderName</directive> permet de définir
+    le nom du fichier qui sera inséré au début de la page contenant
+    l'index. <var>nom fichier</var> est le nom du fichier à inclure.</p>
+
+    <highlight language="config">
+      HeaderName HEADER.html
+    </highlight>
+
+    <note>
+      <p>Les deux directives HeaderName et <directive
+      module="mod_autoindex">ReadmeName</directive> traitent maintenant
+      <var>nom fichier</var> comme un chemin URI relatif au chemin
+      utilisé pour accéder au répertoire faisant l'objet de l'index. Si
+      <var>nom fichier</var> commence par un slash '/', il sera
+      considéré comme relatif au répertoire défini par la directive
+      <directive module="core">DocumentRoot</directive>.</p>
+
+      <highlight language="config">
+        HeaderName /include/HEADER.html
+      </highlight>
+
+      <p><var>nom fichier</var> doit correspondre à un document dont le
+      type MIME est du style <code>text/*</code> (<em>par exemple</em>
+      <code>text/html</code>, <code>text/plain</code>, etc...). Cela
+      signifie que <var>nom fichier</var> peut faire référence à un
+      script CGI si le véritable type MIME du script (et non celui de sa
+      sortie) est marqué comme <code>text/html</code> par exemple à
+      l'aide d'une directive comme :</p>
+
+      <highlight language="config">
+        AddType text/html .cgi
+      </highlight>
+
+      <p>Une <a href="../content-negotiation.html">négociation de
+      contenu</a> sera effectuée si <directive
+      module="core">Options</directive> <code>MultiViews</code> a été
+      précisé. Si <var>nom fichier</var> correspond à un document
+      statique <code>text/html</code> (et non à un script CGI), et une
+      des deux <directive module="core">options</directive>
+      <code>Includes</code> ou <code>IncludesNOEXEC</code> est activée,
+      le fichier sera traité en tant qu'inclusion côté serveur (Server
+      Side Include) (voir la documentation de
+      <module>mod_include</module>).</p>
+    </note>
+
+    <p>Si le fichier spécifié par la directive
+    <directive>HeaderName</directive> contient les en-têtes d'un
+    document HTML ((&lt;html&gt;, &lt;head&gt;, etc...), vous serez
+    probablement amené à définir <a
+    href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
+    +SuppressHTMLPreamble</code></a>, de manière à ce que ces balises ne
+    soient pas répétées.</p>
+</usage>
+
+<seealso><directive module="mod_autoindex">ReadmeName</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexIgnore</name>
+<description>Ajouts à la liste des fichiers à cacher lors de l'affichage
+de l'index d'un répertoire</description>
+<syntax>IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</syntax>
+<default>IndexIgnore "."</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>IndexIgnore</directive> permet
+    d'effectuer des ajouts à la liste des fichiers à cacher lors de
+    l'affichage de l'index d'un répertoire. <var>fichier</var> est une
+    expression avec caractères génériques de style shell ou un nom de
+    fichier complet. Plusieurs directives IndexIgnore effectuent des
+    ajouts à la liste, et ne remplacent pas la liste des fichiers à
+    ignorer. Par défaut, la liste contient <code>.</code> (le répertoire
+    courant).</p>
+
+    <highlight language="config">
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
+    </highlight>
+
+    <note><title>Expressions rationnelles</title>
+      <p>Cette directive est actuellement incompatible avec les sections
+      de configuration qui comportent des arguments avec expressions
+      rationnelles comme  <directive module="core"
+      type="section">DirectoryMatch</directive></p>
+    </note>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexIgnoreReset</name>
+<description>Vide la liste des fichiers à cacher lors de l'affichage du
+contenu d'un répertoire</description>
+<syntax>IndexIgnoreReset ON|OFF</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+<compatibility>Versions 2.3.10 et supérieures</compatibility>
+
+<usage>
+    <p>La directive <directive>IndexIgnoreReset</directive> supprime
+    toute liste de fichiers définie par la directive
+    <directive>IndexIgnore</directive> et héritée par ailleurs d'autres
+    sections de configuration.</p>
+
+    <highlight language="config">
+&lt;Directory "/var/www"&gt;
+    IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+&lt;Directory "/var/www/backups"&gt;
+    IndexIgnoreReset ON
+    IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+&lt;/Directory&gt;
+    </highlight>
+
+    <note type="warning"><p>Revoyez la configuration par défaut pour une
+    liste de modèles que vous voulez ignorer explicitement après usage
+    de cette directive.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexOptions</name>
+<description>Diverses options de configuration pour l'indexation d'un
+répertoire</description>
+<syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+...</syntax>
+<default>Par défaut, aucune option n'est activée.</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>IndexOptions</directive> permet de
+    spécifier les options de configuration de l'indexation du
+    répertoire. <var>option</var> peut prendre l'une des valeurs
+    suivantes :</p>
+
+    <dl>
+      <dt><a name="indexoptions.addaltclass"
+               id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd>Ajoute une déclaration de classe CSS supplémentaire à chaque
+      enregistrement de la table du listing du répertoire dans le cas où
+      <code>IndexOptions HTMLTable</code> est activé et où un
+      <code>IndexStyleSheet</code> a été défini. Plutôt que d'appliquer
+      à chaque enregistrement de la table les classes standards
+      <code>even</code> et <code>odd</code>, c'est ici une classe
+      <code>even-<em>ALT</em></code> ou <code>odd-<em>ALT</em></code>
+      qui sera appliquée, où <em>ALT</em> sera soit le texte alternatif
+      standard associé au style du fichier (par exemple <em>snd</em>,
+      <em>txt</em>, <em>img</em>, etc...), soit le texte alternatif
+      défini par une des différentes directives <code>AddAlt*</code>.
+      </dd>
+
+
+      <dt><a name="indexoptions.charset"
+               id="indexoptions.charset"
+      >Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
+      supérieures du serveur HTTP Apache</em>)</dt>
+
+      <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
+      jeu de caractères de la page générée. La valeur par défaut est
+      <var>UTF-8</var> sous Windows et MAC OS X, et
+      <var>ISO-8859-1</var> dans les autres cas (en fait selon que le
+      système de fichiers sous-jacent utilise les noms de fichiers en
+      Unicode ou non).
+
+      <highlight language="config">
+        IndexOptions Charset=UTF-8
+      </highlight>
+      </dd>
+
+      <dt><a name="indexoptions.descriptionwidth"
+               id="indexoptions.descriptionwidth"
+      >DescriptionWidth=[<var>n</var> | *]</a></dt>
+
+      <dd>Le mot-clé <code>DescriptionWidth</code> vous permet de
+      spécifier la taille en caractères de la colonne description.</dd>
+
+      <dt>Avec <code>-DescriptionWidth</code> (ou si l'option n'est pas
+      définie), <module>mod_autoindex</module> calcule la meilleure
+      taille.</dt>
+
+      <dd><code>DescriptionWidth=<var>n</var></code> fixe la taille de
+      la colonne à <var>n</var> octets.</dd>
+
+      <dd><code>DescriptionWidth=*</code> ajuste la taille de la colonne
+      à la plus longue chaîne de description.
+
+      <strong>Voir la section concernant <directive
+      module="mod_autoindex">AddDescription</directive> pour les dangers
+      inhérants à la troncature des descriptions.</strong></dd>
+
+      <dt><a name="indexoptions.fancyindexing"
+               id="indexoptions.fancyindexing">FancyIndexing</a></dt>
+
+      <dd>Cette option active l'indexation "améliorée" des répertoires,
+      c'est à dire avec en-têtes de colonnes sous forme d'hyper-liens
+      auto-référants.</dd>
+
+      <dt><a name="indexoptions.foldersfirst"
+               id="indexoptions.foldersfirst">FoldersFirst</a></dt>
+
+      <dd>Lorsque cette option est activée, la liste des
+      sous-répertoires apparaîtra <em>toujours</em> en premier, suivie
+      de la liste des fichiers normaux du répertoire. Le listing
+      comporte principalement deux parties, les fichiers et les
+      sous-répertoires, chacun d'eux étant trié séparément et les
+      sous-répertoires affichés en premier. Par exemple, si l'ordre de
+      tri est décroissant par nom, et si <code>FoldersFirst</code> est
+      activé, le sous-répertoire <code>Zed</code> sera affiché avant le
+      sous-répertoire <code>Beta</code>, qui sera lui-même affiché avant
+      les fichiers normaux <code>Gamma</code> et <code>Alpha</code>.
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.htmltable"
+               id="indexoptions.htmltable">HTMLTable</a></dt>
+
+      <dd>Cette option pour l'affichage
+      <code>FancyIndexing</code> permet de construire une table simple
+      pour l'affichage de l'index du répertoire. Cette option s'avèrera
+      particulièrement nécessaire pour les plates-formes où utf-8 est
+      activé et dans le cas où les noms de fichiers ou les chaînes
+      de description alternent entre les ordres de lecture gauche à
+      droite et droite à gauche.</dd>
+
+      <dt><a name="indexoptions.iconsarelinks"
+               id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
+
+      <dd>Configure la partie réservée aux icônes de l'ancrage pour le
+      nom de fichier, dans le cas d'un affichage "amélioré".</dd>
+
+      <dt><a name="indexoptions.iconheight"
+               id="indexoptions.iconheight">IconHeight[=<var
+               >pixels</var>]</a></dt>
+
+      <dd>Si cette option est présente, en combinaison avec
+      <code>IconWidth</code>, le serveur va inclure les attributs
+      <code>height</code> et <code>width</code> dans la balise
+      <code>img</code> qui référence le fichier de l'icône. Ceci va
+      permettre au navigateur de prévoir les caractéristiques de la page
+      sans devoir attendre que toutes les images aient été chargées. En
+      l'absence de cette option, c'est la hauteur standard définie par
+      le logiciel Apache httpd qui est choisie comme valeur par défaut.
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.iconwidth"
+               id="indexoptions.iconwidth">IconWidth[=<var
+               >pixels</var>]</a></dt>
+
+      <dd>Si cette option est présente, en combinaison avec
+      <code>IconHeight</code>, le serveur va inclure les attributs
+      <code>height</code> et <code>width</code> dans la balise
+      <code>img</code> qui référence le fichier de l'icône. Ceci va
+      permettre au navigateur de prévoir les caractéristiques de la page
+      sans devoir attendre que toutes les images aient été chargées. En
+      l'absence de cette option, c'est la largeur standard définie par
+      le logiciel Apache httpd qui est choisie comme valeur par défaut.</dd>
+
+      <dt><a name="indexoptions.ignorecase"
+               id="indexoptions.ignorecase">IgnoreCase</a></dt>
+
+      <dd>Si cette option est activée, les noms sont triés sans tenir
+      compte de la casse. Par exemple, si le tri s'effectue sur les noms
+      dans l'ordre croissant, et si <code>IgnoreCase</code> est activé,
+      le fichier Zeta apparaîtra après le fichier alfa (Note : le
+      fichier GAMMA apparaîtra toujours avant le fichier gamma).
+      </dd>
+
+      <dt><a name="indexoptions.ignoreclient"
+               id="indexoptions.ignoreclient">IgnoreClient</a></dt>
+
+      <dd>Si cette option est activée, <module>mod_autoindex</module> va
+      ignorer toutes les variables de requête fournies par le client, y
+      compris les informations de tri (ce qui implique l'activation de
+      l'option <code><a href="#indexoptions.suppresscolumnsorting"
+      >SuppressColumnSorting</a></code>).</dd>
+
+      <dt><a name="indexoptions.namewidth"
+               id="indexoptions.namewidth">NameWidth=[<var>n</var>
+               | *]</a></dt>
+
+      <dd>Le mot-clé <code>NameWidth</code> vous permet de spécifier la
+      largeur en octets de la colonne correspondant au nom du
+      fichier.</dd>
+
+      <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
+      définie), <module
+      >mod_autoindex</module> va calculer la meilleure largeur
+      possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
+
+      <dd><code>NameWidth=<var>n</var></code> fixe la largeur de la
+      colonne à <var>n</var> octets.</dd>
+
+      <dd><code>NameWidth=*</code> définit la largeur de colonne à la
+      valeur nécessaire.</dd>
+
+      <dt><a name="indexoptions.scanhtmltitles"
+               id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
+
+      <dd>L'activation de cette option permet d'extraire le titre des
+      documents HTML dans le cas d'un affichage "amélioré". Si le fichier
+      ne possède aucune description définie par la directive <directive
+      module="mod_autoindex">AddDescription</directive>, httpd va lire
+      le document pour tenter d'en extraire le <code>titre</code>. Ce
+      processus est coûteux en ressources disque et CPU.</dd>
+
+      <dt><a name="indexoptions.showforbidden"
+               id="indexoptions.showforbidden">ShowForbidden</a></dt>
+
+      <dd>Si cette option est activée, Apache httpd affichera les fichiers
+      normalement cachés suite au retour des valeurs
+      <code>HTTP_UNAUTHORIZED</code> ou <code>HTTP_FORBIDDEN</code> par
+      la sous-requête.</dd>
+
+      <dt><a name="indexoptions.suppresscolumnsorting"
+               id="indexoptions.suppresscolumnsorting"
+               >SuppressColumnSorting</a></dt>
+
+      <dd>Si cette option est activée, Apache httpd supprimera les liens
+      hyper-texte dans les en-têtes de colonnes dans le cas d'un
+      affichage "amélioré". Par défaut, ces en-têtes constituent des liens
+      hyper-texte, et la sélection de l'un d'entre eux va trier l'index
+      du répertoire en fonction des valeurs de la colonne
+      correspondante. Cependant, les arguments de la chaîne de
+      paramètres de la requête ajoutés à l'URL seront toujours ignorés.
+      Ce comportement est contrôlé par l'option <a
+      href="#indexoptions.ignoreclient"><code>IndexOptions
+      IgnoreClient</code></a>.</dd>
+
+      <dt><a name="indexoptions.suppressdescription"
+               id="indexoptions.suppressdescription"
+               >SuppressDescription</a></dt>
+
+      <dd>L'activation de cette option va supprimer la description des
+      fichiers dans le cas d'un affichage "amélioré". Par défaut aucune
+      description de fichier n'est définie, et par conséquent
+      l'utilisation de cette option va permettre de récupérer un espace
+      à l'écran de 23 caractères pouvant être utilisé pour autre chose.
+      Voir la directive <directive module="mod_autoindex"
+      >AddDescription</directive> pour plus d'informations à propos de
+      la définition des descriptions de fichiers. Voir aussi l'option
+      d'index <code><a
+      href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
+      pour limiter la taille de la colonne description.
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.suppresshtmlpreamble"
+               id="indexoptions.suppresshtmlpreamble"
+               >SuppressHTMLPreamble</a></dt>
+
+      <dd>Si le répertoire contient effectivement le fichier spécifié
+      par la directive <directive
+      module="mod_autoindex">HeaderName</directive>, le module inclut
+      en général le contenu du fichier après avoir inséré un préambule
+      HTML standard (<code>&lt;html&gt;</code>,
+      <code>&lt;head&gt;</code>, <em>etc...</em>). L'activation de
+      l'option <code>SuppressHTMLPreamble</code> supprime l'insertion de
+      ce préambule, et le module va alors commencer l'affichage
+      directement par le contenu du fichier d'en-tête. Dans ce cas par
+      contre, le fichier d'en-tête doit contenir des instructions HTML
+      appropriées. S'il n'y a pas de fichier d'en-tête, le préambule est
+      généré comme dans le cas général. Si vous spécifiez aussi une
+      directive <directive
+      module="mod_autoindex">ReadmeName</directive>, et si ce
+      fichier existe, les balises de fermeture closing
+      &lt;/body&gt;&lt;/html&gt; seront aussi omises dans la sortie, en
+      supposant que vous ayez placé ces balises de fermeture dans ce
+      fichier.</dd>
+
+      <dt><a name="indexoptions.suppressicon"
+               id="indexoptions.suppressicon">SuppressIcon</a></dt>
+
+      <dd>L'activation de cette option supprime l'affichage des icônes
+      dans le cas d'un affichage "amélioré". La combinaison de
+      <code>SuppressIcon</code> et <code>SuppressRules</code> permet de
+      générer une sortie au format HTML 3.2 qui, selon les dernières
+      spécifications, interdit les éléments <code>img</code> et
+      <code>hr</code> dans les blocs <code>pre</code> (utilisés pour
+      formater les affichages "améliorés").</dd>
+
+      <dt><a name="indexoptions.suppresslastmodified"
+               id="indexoptions.suppresslastmodified"
+               >SuppressLastModified</a></dt>
+
+      <dd>L'activation de cette option supprime l'affichage de la date
+      de dernière modification dans le cas d'un affichage "amélioré".
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.suppressrules"
+               id="indexoptions.suppressrules">SuppressRules</a>
+      </dt>
+
+      <dd>L'activation de cette option supprime l'affichage des lignes
+      horizontales (éléments <code>hr</code>) dans les index de
+      répertoires. La combinaison de
+      <code>SuppressIcon</code> et <code>SuppressRules</code> permet de
+      générer une sortie au format HTML 3.2 qui, selon les dernières
+      spécifications, interdit les éléments <code>img</code> et
+      <code>hr</code> dans les blocs <code>pre</code> (utilisés pour
+      formater les affichages "améliorés").
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.suppresssize"
+               id="indexoptions.suppresssize">SuppressSize</a></dt>
+
+      <dd>L'activation de cette option supprime l'affichage de la taille
+      du fichier dans le cas d'un affichage "amélioré".
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+      <dt><a name="indexoptions.trackmodified"
+               id="indexoptions.trackmodified">TrackModified</a></dt>
+
+      <dd>Cette option renvoie les valeurs <code>Last-Modified</code> et
+      <code>ETag</code> pour le répertoire indexé dans l'en-tête HTTP.
+      Elle n'est valide que si le système d'exploitation et le système
+      de fichiers renvoient des résultats appropriés pour la fonction
+      stat(). C'est le cas de certains systèmes Unix, ainsi que JFS sous
+      OS/2 ou
+      les volumes NTFS sous Win32. Ce n'est par contre pas le cas
+      des volumes FAT Win32 et OS/2. Lorsque cette option est activée, le
+      client ou le mandataire peuvent détecter les changements dans la
+      liste des fichiers lorsqu'ils effectuent une requête
+      <code>HEAD</code>. Notez que certains systèmes d'exploitation
+      détectent correctement les nouveaux fichiers et les fichiers
+      supprimés, mais ne détectent pas les modifications de tailles ou
+      de dates des fichiers du répertoire. <strong>Les modifications de
+      taille ou de date d'un fichier existant ne mettent pas à jour
+      l'en-tête <code>Last-Modified</code> sur toutes les plate-formes
+      Unix.</strong> Si c'est le cas, laissez cette option
+      désactivée.</dd>
+
+      <dt><a name="indexoptions.type"
+               id="indexoptions.type"
+      >Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
+      supérieures du serveur HTTP Apache</em>)</dt>
+
+      <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
+      MIME de la page générée. La valeur par défaut est
+      <var>text/html</var>.
+
+      <highlight language="config">
+        IndexOptions Type=text/plain
+      </highlight>
+      </dd>
+
+
+      <dt><a name="indexoptions.versionsort"
+               id="indexoptions.versionsort">VersionSort</a>
+      (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
+
+      <dd>Le mot-clé <code>VersionSort</code> permet de trier les
+      fichiers contenant des numéros de version d'une manière
+      spécifique. Les chaînes sont triées comme d'habitude, excepté les
+      sous-chaînes de chiffres du nom de fichier et de sa description
+      qui sont comparées en fonction de leur valeur numérique.
+
+      <example><title>Exemple :</title>
+        foo-1.7<br />
+        foo-1.7.2<br />
+        foo-1.7.12<br />
+        foo-1.8.2<br />
+        foo-1.8.2a<br />
+        foo-1.12
+      </example>
+
+      <p>Si le nombre commence par le chiffre 0, il est considéré comme
+      la partie fractionnaire d'un nombre :</p>
+
+      <example>
+        foo-1.001<br />
+        foo-1.002<br />
+        foo-1.030<br />
+        foo-1.04
+      </example>
+      </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml">XHTML</a>
+      (<em>Versions 2.0.49 et supérieures du serveur HTTP Apache</em>)</dt>
+
+      <dd>Le mot-clé <code>XHTML</code> enjoint
+      <module>mod_autoindex</module> de générer du code XHTML 1.0 au
+      lieu de HTML 3.2.
+
+      <strong>Cette option n'a d'effet que si <a
+      href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+      est aussi activé.</strong>
+      </dd>
+
+    </dl>
+
+   <!--
+     XXX: we should consider to allow sections inside <usage>
+     this would require some xslt changes...
+   -->
+   <dl><dt>Options d'index incrémentales</dt>
+   <dd>
+     <p>Vous devez porter une attention particulière à la manière dont
+     les <directive>IndexOptions</directive> multiples sont traitées.</p>
+
+     <ul>
+     <li>Plusieurs directives <directive>IndexOptions</directive>
+     apparaissant dans la même section directory sont maintenant
+     fusionnées. Le résultat de :
+
+     <highlight language="config">
+&lt;Directory "/foo"&gt;
+    IndexOptions HTMLTable
+    IndexOptions SuppressColumnsorting
+&lt;/Directory&gt;
+     </highlight>
+
+     <p>est équivalent à</p>
+
+     <highlight language="config">
+       IndexOptions HTMLTable SuppressColumnsorting
+     </highlight>
+     </li>
+
+     <li>L'ajout de la syntaxe incrémentale (en préfixant les mots-clés
+     avec <code>+</code> ou <code>-</code>).</li>
+     </ul>
+
+     <p>Chaque fois qu'un mot-clé préfixé par '+' ou '-' est trouvé, il
+     est appliqué aux définitions des
+     <directive>IndexOptions</directive> courantes (qui ont été
+     éventuellement héritées d'un directory de niveau supérieur). Par
+     contre, si un mot-clé non préfixé est trouvé, il supprime toutes
+     les definitions héritées, ainsi que toute
+     définition incrémentale. Considérons l'exemple
+     suivant :</p>
+
+     <highlight language="config">
+IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
+IndexOptions +SuppressSize
+     </highlight>
+
+     <p>L'effet global est équivalent à l'effet qu'aurait provoqué
+     <code>IndexOptions FancyIndexing +SuppressSize</code>, car l'option
+     non préfixée <code>FancyIndexing</code> annule les mots-clés
+     incrémentaux situés avant elle, mais leur permet ensuite de
+     s'incrémenter à nouveau.</p>
+
+     <p>Pour définir inconditionnellement les
+     <directive>IndexOptions</directive> pour un répertoire particulier,
+     tout en supprimant les définitions héritées, spécifiez les
+     mots-clés sans préfixe <code>+</code> ou <code>-</code></p>
+   </dd>
+   </dl>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexOrderDefault</name>
+<description>Définit l'ordre d'affichage par défaut d'un index de
+répertoire</description>
+<syntax>IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</syntax>
+<default>IndexOrderDefault Ascending Name</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>IndexOrderDefault</directive> s'utilise
+    en combinaison avec l'option d'index <code><a
+    href="#indexoptions.fancyindexing">FancyIndexing</a></code>. Par
+    défaut, les index de répertoires "améliorés" sont affichés selon l'ordre
+    croissant des noms de fichiers ; la directive
+    <directive>IndexOrderDefault</directive> vous permet de modifier ce
+    comportement.</p>
+
+    <p>La directive <directive>IndexOrderDefault</directive> accepte
+    deux arguments. Le premier est soit <code>Ascending</code>, soit
+    <code>Descending</code>, et indique l'ordre de tri. Le second doit
+    prendre une des valeurs <code>Name</code>, <code>Date</code>,
+    <code>Size</code>, ou <code>Description</code>, et permet
+    d'identifier la clé primaire. La clé secondaire est
+    <em>toujours</em> le nom du fichier selon un ordre croissant.</p>
+
+    <p>Si vous le désirez, vous pouvez empêcher le client de modifier
+    l'ordre de tri de la liste en ajoutant l'option d'index  <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    qui supprime le lien de définition du tri de l'en-tête de la
+    colonne, ainsi que l'option <code><a
+    href="#indexoptions.ignoreclient">IgnoreClient</a></code> qui
+    empêche ce même client de passer outre vos préférences de tri en
+    ajoutant manuellement des options de tri à la chaîne de paramètres
+    de la requête.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexStyleSheet</name>
+<description>Ajoute une feuille de style CSS à l'index du
+répertoire</description>
+<syntax>IndexStyleSheet <var>chemin-url</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>IndexStyleSheet</directive> permet de
+    définir le nom du fichier qui servira de feuille de style CSS pour
+    l'index.
+    </p>
+    <highlight language="config">
+      IndexStyleSheet "/css/style.css"
+    </highlight>
+
+    <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
+    HTMLTable</code> ajoute plusieurs classes CSS au document HTML
+    résultant. Un identifiant CSS <code>indexlist</code> est attribué à
+    l'ensemble de la table et les classes suivantes sont associées aux
+    différentes parties du listing :</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Classe</th><th>Définition</th></tr>
+    <tr><td>tr.indexhead</td><td>Ligne d'en-tête du listing</td></tr>
+    <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Colonne de
+    l'icône</td></tr>
+    <tr><td>th.indexcolname and td.indexcolname</td> <td>Colonne du nom
+    du fichier</td></tr>
+    <tr><td>th.indexcollastmod and td.indexcollastmod</td> <td>Colonne
+    de la date de dernière modification</td></tr>
+    <tr><td>th.indexcolsize and td.indexcolsize</td> <td>Colonne de la
+    taille du fichier</td></tr>
+    <tr><td>th.indexcoldesc and td.indexcoldesc</td> <td>Colonne de la
+    description</td></tr>
+    <tr><td>tr.breakrow</td> <td>Pied de page</td></tr>
+    <tr><td>tr.odd and tr.even</td> <td>Alternance des lignes paires et
+    impaires</td></tr>
+    </table>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexHeadInsert</name>
+<description>Insère du texte dans la section HEAD de la page
+d'index.</description>
+<syntax>IndexHeadInsert <var>"marque ..."</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>IndexHeadInsert</directive> permet de
+    spécifier une chaîne de caractères à insérer dans la section
+    <var>&lt;head&gt;</var> du code HTML généré pour la page
+    d'index.</p>
+    <highlight language="config">
+      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ReadmeName</name>
+<description>Nom du fichier dont le contenu sera inséré à la fin de
+l'index</description>
+<syntax>ReadmeName <var>nom-fichier</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>ReadmeName</directive> permet de définir
+    le nom du fichier dont le contenu sera ajouté à la fin de l'index.
+    <var>nom-fichier</var> est le nom du fichier à inclure, et est
+    considéré comme relatif au répertoire faisant l'objet de l'index. Si
+    <var>nom-fichier</var> commence par un slash '/', comme dans
+    l'exemple 2, il sera considéré
+    comme relatif au répertoire défini par la directive <directive
+    module="core">DocumentRoot</directive>.
+    </p>
+
+    <highlight language="config">
+# Example 1
+ReadmeName FOOTER.html
+    </highlight>
+
+    <highlight language="config">
+# Example 2
+ReadmeName /include/FOOTER.html
+    </highlight>
+
+    <p>Voir aussi la directive <directive module="mod_autoindex"
+    >HeaderName</directive>, où cette fonctionnalité est décrite plus en
+    détails.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

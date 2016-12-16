@@ -1,0 +1,228 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htcacheclean.xml.meta">
+<parentdocument href="./">Programmes</parentdocument>
+
+<title>htcacheclean - Nettoyage du cache sur disque</title>
+
+<summary>
+    <p><code>htcacheclean</code> permet de maintenir la taille de
+    l'espace de stockage r&eacute;serv&eacute; &agrave; <module>mod_disk_cache</module> en
+    dessous d'une limite de taille donn&eacute;e ou d'inodes utilis&eacute;s. Cet
+    utilitaire peut s'ex&eacute;cuter
+    soit manuellement, soit en mode d&eacute;mon. Lorsqu'il fonctionne en mode
+    d&eacute;mon, il se met en attente en arri&egrave;re-plan et recherche &agrave;
+    intervalles r&eacute;guliers dans le r&eacute;pertoire du cache les contenus &agrave;
+    supprimer. Pour arr&ecirc;ter proprement le d&eacute;mon, vous pouvez lui envoyer
+    un signal TERM ou INT. Lorsqu'il est lanc&eacute; manuellement, une
+    recherche des contenus du cache qui peuvent &ecirc;tre supprim&eacute;s est
+    effectu&eacute;e une seule fois. Si une ou plusieurs URLs sont sp&eacute;cifi&eacute;es,
+    chacune d'entre elles sera supprim&eacute;e du cache, si elle est pr&eacute;sente.</p>
+</summary>
+<seealso><module>mod_disk_cache</module></seealso>
+
+<section id="synopsis"><title>Syntaxe</title>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    [ -<strong>R</strong><var>arrondi</var> ]
+    -<strong>p</strong><var>chemin</var>
+    [-<strong>l</strong><var>limite</var>|
+    -<strong>L</strong><var>limite</var>]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>i</strong> ]
+    [ -<strong>P</strong><var>fichier-pid</var> ]
+    [ -<strong>R</strong><var>arrondi</var> ]
+    -<strong>d</strong><var>intervalle</var>
+    -<strong>p</strong><var>chemin</var>
+    [-<strong>l</strong><var>limite</var>|
+    -<strong>L</strong><var>limite</var>]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>v</strong> ]
+    [ -<strong>R</strong><var>arrondi</var> ]
+    -<strong>p</strong><var>chemin</var>
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]</code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>R</strong><var>arrondi</var> ]
+    -<strong>p</strong><var>chemin</var>
+    <var>url</var></code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>-d<var>intervalle</var></code></dt>
+    <dd>Configure en mode d&eacute;mon et planifie le nettoyage du cache toutes
+    les <var>intervalle</var> minutes. Cette option et les options
+    <code>-D</code>, <code>-v</code> et <code>-r</code> s'excluent
+    mutuellement. Pour arr&ecirc;ter le d&eacute;mon proprement, il suffit de lui
+    envoyer un signal <code>SIGTERM</code> ou <code>SIGINT</code>.</dd>
+
+    <dt><code>-D</code></dt>
+    <dd>Le programme s'ex&eacute;cute mais ne supprime aucun contenu ("dry run"). Cette
+    option et l'option <code>-d</code> s'excluent mutuellement. Si ce mode
+    est combin&eacute; avec la suppression des r&eacute;pertoires avec
+    <code>-t</code>, les inodes signal&eacute;s comme supprim&eacute;s dans les
+    statistiques ne peuvent pas prendre en compte les r&eacute;pertoires
+    supprim&eacute;s, et seront marqu&eacute;s en tant qu'estimation.</dd>
+
+    <dt><code>-v</code></dt>
+    <dd>Ex&eacute;cution verbeuse et affichage de statistiques. Cette
+    option et l'option <code>-d</code> s'excluent mutuellement.</dd>
+
+    <dt><code>-r</code></dt>
+    <dd>Nettoyage en profondeur. Le serveur web Apache doit &ecirc;tre arr&ecirc;t&eacute;
+    (dans le cas contraire, il risque de rester des d&eacute;chets dans le
+    cache). Cette option implique l'option <code>-t</code> et s'exclue
+    mutuellement avec l'option <code>-d</code>.</dd>
+
+    <dt><code>-n</code></dt>
+    <dd>Ex&eacute;cution en retrait. L'ex&eacute;cution du programme est ralentie en
+    faveur des autres processus. <code>htcacheclean</code> s'interrompt
+    de temps en temps de fa&ccedil;on &agrave; ce que a) les entr&eacute;es/sorties disque
+    soient retard&eacute;es et b) que le noyau puisse mettre ce temps
+    processeur &agrave; disposition des autres processus.</dd>
+
+    <dt><code>-t</code></dt>
+    <dd>Supprime tous les r&eacute;pertoires vides. Par d&eacute;faut, seuls les
+    fichiers sont supprim&eacute;s du cache ; avec certaines configurations,
+    cependant, un grand nombre de r&eacute;pertoires sont cr&eacute;&eacute;s et m&eacute;ritent que
+    l'on y pr&ecirc;te attention. Si votre configuration n&eacute;cessite un grand
+    nombre de r&eacute;pertoires, au point que le remplissage de la table
+    d'inodes ou d'allocation de fichiers puisse poser probl&egrave;me,
+    l'utilisation de cette option est conseill&eacute;e.</dd>
+
+    <dt><code>-p<var>chemin</var></code></dt>
+    <dd>D&eacute;finit <var>chemin</var> comme r&eacute;pertoire racine du cache sur
+    disque. Cette valeur doit correspondre &agrave; celle sp&eacute;cifi&eacute;e par la
+    directive <directive
+    module="mod_disk_cache">CacheRoot</directive>.</dd>
+
+    <dt><code>-P<var>fichier-pid</var></code></dt>
+    <dd>Permet de sp&eacute;cifier <var>fichier-pid</var> comme nom du fichier
+    dans le lequel sera enregistr&eacute; l'identifiant du processus en mode
+    d&eacute;mon.</dd>
+
+    <dt><code>-R<var>round</var></code></dt>
+    <dd>Permet de sp&eacute;cifier le plus petit commun multiple de la taille
+    du cache, afin de tenir compte de la taille des blocs. D&eacute;finir ce
+    param&egrave;tre &agrave; la taille d'un bloc de la partition du cache.</dd>
+
+    <dt><code>-l<var>limite</var></code></dt>
+    <dd>D&eacute;finit <var>limite</var> comme la taille maximale du cache sur
+    disque. La valeur s'exprime par d&eacute;faut en octets (ou en ajoutant le
+    suffixe <code>B</code> &agrave; la valeur). Ajoutez le suffixe
+    <code>K</code> pour KOctets ou <code>M</code> pour MOctets.</dd>
+
+    <dt><code>-L<var>limite</var></code></dt>
+    <dd>Sp&eacute;cifie <var>limite</var> comme la limite totale en inodes du
+    cache disque.</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>Ex&eacute;cution intelligente. Le programme ne s'ex&eacute;cute que lorsque le
+    cache sur disque a &eacute;t&eacute; modifi&eacute;. Cette option ne peut s'utiliser
+    qu'avec l'option <code>-d</code>.</dd>
+
+    <dt><code>-a</code></dt>
+    <dd>Affiche la liste des URLs actuellement stock&eacute;es dans le cache.
+    Les variantes de la m&ecirc;me URL seront list&eacute;es une seule fois par
+    variante.</dd>
+
+    <dt><code>-A</code></dt>
+    <dd>Affiche la liste des URLs actuellement stock&eacute;es dans le cache,
+    ainsi que leurs attributs dans l'ordre suivant : url, header size,
+    body size, status, entity version, date, expiry, request time,
+    response time, body present, head request.</dd>
+    </dl>
+</section>
+
+<section id="delete"><title>Suppression d'une URL particuli&egrave;re</title>
+    <p>Si une ou plusieurs URLs sont pass&eacute;es en argument &agrave;
+    <code>htcacheclean</code>, chacune d'entre elles sera supprim&eacute;e du
+    cache. S'il existe plusieurs variantes de ces URLs, elles seront
+    toutes supprim&eacute;es.</p>
+
+    <p>Lorsqu'une URL mandat&eacute;e en inverse doit &ecirc;tre supprim&eacute;e, l'URL
+    effective est construite &agrave; partir de l'en-t&ecirc;te
+    <strong>Host</strong>, du <strong>port</strong>, du
+    <strong>chemin</strong> et de la <strong>requ&ecirc;te</strong>. Notez que
+    le '?' doit toujours &ecirc;tre sp&eacute;cifi&eacute; explicitement dans l'URL, qu'une
+    cha&icirc;ne de param&egrave;tres soit pr&eacute;sente ou non. Par exemple, pour
+    supprimer le chemin <strong>/</strong> du serveur
+    <strong>localhost</strong>, l'URL devra &ecirc;tre sp&eacute;cifi&eacute;e comme suit :
+    <strong>http://localhost:80/?</strong>.</p>
+
+</section>
+
+<section id="list"><title>Affichage des URLs pr&eacute;sentes dans le cache</title>
+    <p>Les options <code>-a</code> ou <code>-A</code> permettent
+    d'afficher les URLs pr&eacute;sentes dans le cache telles qu'elles s'y
+    trouvent, une URL par ligne. L'option <code>-A</code> affiche
+    l'entr&eacute;e du cache compl&egrave;te pour chaque URL, avec ses diff&eacute;rents
+    champs dans l'ordre suivant :</p>
+
+    <dl>
+        <dt>url</dt><dd>L'URL de l'entr&eacute;e consid&eacute;r&eacute;e.</dd>
+        <dt>header size</dt><dd>La taille de l'en-t&ecirc;te en octets.</dd>
+        <dt>body size</dt><dd>La taille du corps en octets.</dd>
+        <dt>status</dt><dd>Etat de la r&eacute;ponse en cache.</dd>
+        <dt>entity version</dt><dd>Le nombre de fois que cette entr&eacute;e a
+	&eacute;t&eacute; revalid&eacute;e sans &ecirc;tre effac&eacute;e.</dd>
+        <dt>date</dt><dd>Date de la r&eacute;ponse.</dd>
+        <dt>expiry</dt><dd>Date d'expiration de la r&eacute;ponse.</dd>
+        <dt>request time</dt><dd>Date du d&eacute;but de la requ&ecirc;te.</dd>
+        <dt>response time</dt><dd>Date de la fin de la requ&ecirc;te.</dd>
+        <dt>body present</dt><dd>Ce champ contient la valeur 0 si aucun
+	corps n'est stock&eacute; avec cette requ&ecirc;te, 1 dans le cas contraire.</dd>
+        <dt>head request</dt><dd>Ce champ contient la valeur 1 si
+	l'entr&eacute;e comporte une requ&ecirc;te HEAD en cache sans corps, 0 dans
+	le cas contraire.</dd>
+    </dl>
+
+</section>
+
+<section id="exit"><title>Valeur renvoy&eacute;e</title>
+    <p><code>htcacheclean</code> renvoie z&eacute;ro ("true") si toutes les
+    op&eacute;rations se sont d&eacute;roul&eacute;es normalement, et <code>1</code> dans le
+    cas contraire. Si une URL est sp&eacute;cifi&eacute;e, et si cette URL &eacute;tait
+    pr&eacute;sente dans le cache et a &eacute;t&eacute; supprim&eacute;e avec succ&egrave;s,
+    <code>htcacheclean</code> renvoie <code>0</code>, et <code>2</code>
+    dans le cas contraire. Si une erreur est survenue au cours de la
+    suppression de l'URL, <code>htcacheclean</code> renvoie
+    <code>1</code>.</p>
+</section>
+
+</manualpage>

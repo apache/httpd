@@ -1,0 +1,239 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_socache.xml.meta">
+
+<name>mod_authn_socache</name>
+<description>G&egrave;re un cache des donn&eacute;es d'authentification pour diminuer
+la charge des serveurs d'arri&egrave;re-plan</description>
+<status>Base</status>
+<sourcefile>mod_authn_socache.c</sourcefile>
+<identifier>authn_socache_module</identifier>
+<compatibility>Versions 2.3 et ult&eacute;rieures</compatibility>
+
+<summary>
+    <p>Maintient un cache des donn&eacute;es d'authentification pour limiter
+    les sollicitations du serveur d'arri&egrave;re-plan.</p>
+</summary>
+
+<section id="intro"><title>Mise en cache des donn&eacute;es d'authentification</title>
+    <p>Certains utilisateurs qui mettent oeuvre une authentification
+    lourde s'appuyant par exemple sur des requ&ecirc;tes SQL
+    (<module>mod_authn_dbd</module>) ont signal&eacute; une charge induite
+    inacceptable sur leur fournisseur d'authentification. Cela se
+    produit typiquement dans le cas o&ugrave; une page HTML contient des
+    centaines d'objets (images, scripts, pages de styles, media,
+    etc...), et o&ugrave; une requ&ecirc;te pour cette page g&eacute;n&egrave;re des centaines de
+    sous-requ&ecirc;tes &agrave; effet imm&eacute;diat pour des contenus suppl&eacute;mentaires
+    authentifi&eacute;s.</p>
+    <p>Pour r&eacute;soudre ce probl&egrave;me, mod_authn_socache fournit une solution
+    qui permet de maintenir un cache des donn&eacute;es d'authentification.</p>
+</section>
+
+<section id="usage"><title>Utilisation</title>
+    <p>Le cache d'authentification doit &ecirc;tre utilis&eacute; lorsque les
+    requ&ecirc;tes d'authentification induisent une charge significative sur le
+    serveur, le serveur d'arri&egrave;re-plan ou le r&eacute;seau. Cette mise en cache
+    n'apportera probablement aucune am&eacute;lioration dans le cas d'une
+    authentification &agrave; base de fichier (<module>mod_authn_file</module>)
+    ou de base de donn&eacute;es dbm (<module>mod_authn_dbm</module>) car ces
+    m&eacute;thodes sont de par leur conception rapides et l&eacute;g&egrave;res (la mise en
+    cache peut cependant s'av&eacute;rer utile dans le cas o&ugrave; le fichier est
+    situ&eacute; sur un montage r&eacute;seau). Les fournisseurs d'authentification
+    bas&eacute;s sur SQL ou LDAP ont plus de chances de tirer parti de cette
+    mise en cache, en particulier lorsqu'un probl&egrave;me de performances est
+    d&eacute;tect&eacute;. <module>mod_authnz_ldap</module> g&eacute;rant son propre cache,
+    seul <module>mod_authn_dbd</module> est concern&eacute; par notre sujet.</p>
+    <p>Les principales r&egrave;gles &agrave; appliquer pour la mise en cache sont :</p>
+    <ol><li>Inclure le fournisseur pour lequel vous voulez effectuer une
+    mise en cache dans une directive
+    <directive>AuthnCacheProvideFor</directive>.</li>
+        <li>Mettre <var>socache</var> avant le fournisseur pour lequel
+	vous voulez effectuer une mise en cache dans votre directive
+	<directive module="mod_auth_basic">AuthBasicProvider</directive>
+	ou <directive
+	module="mod_auth_digest">AuthDigestProvider</directive>.</li>
+    </ol>
+    <p>Voici un exemple simple permettant d'acc&eacute;l&eacute;rer
+    <module>mod_authn_dbd</module> et utilisant dbm comme moteur de la
+    mise en cache :</p>
+    <highlight language="config">
+    #AuthnCacheSOCache est optionnel. S'il est d&eacute;fini, il l'est pour
+    #l'ensemble du serveur
+AuthnCacheSOCache dbm
+&lt;Directory "/usr/www/myhost/private"&gt;
+    AuthType Basic
+    AuthName "Cached Authentication Example"
+    AuthBasicProvider socache dbd
+    AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+    AuthnCacheProvideFor dbd
+    Require valid-user
+    #Optionnel
+    AuthnCacheContext dbd-authn-example
+&lt;/Directory&gt;
+    </highlight>
+</section>
+
+<section id="dev"><title>La mise en cache avec les modules tiers</title>
+    <p>Les d&eacute;veloppeurs de modules doivent savoir que la mise en cache
+    avec mod_authn_socache doit &ecirc;tre activ&eacute;e dans leurs modules. La
+    fonction de l'API <var>ap_authn_cache_store</var> permet de
+    mettre en cache les donn&eacute;es d'authentification qu'un fournisseur
+    vient de rechercher ou de g&eacute;n&eacute;rer. Vous trouverez des exemples
+    d'utilisation &agrave; <a
+    href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
+    >r957072</a>, o&ugrave; trois fournisseurs authn sont activ&eacute;s pour la mise
+    en cache.</p>
+</section>
+
+<directivesynopsis>
+<name>AuthnCacheEnable</name>
+<description>Active la mise en cache de l'authentification en tout
+endroit</description>
+<syntax>AuthnCacheEnable</syntax>
+<contextlist><context>server config</context></contextlist>
+<override>None</override>
+
+<usage>
+    <p>Normalement, cette directive n'est pas n&eacute;cessaire : l'activation
+    est implicite si la mise en cache de l'authentification a &eacute;t&eacute;
+    activ&eacute;e en tout autre endroit du fichier <var>httpd.conf</var>. Par
+    contre, si cette mise en cache n'a pas &eacute;t&eacute; activ&eacute;e, par d&eacute;faut, elle
+    ne sera pas initialis&eacute;e, et ne sera donc pas disponible dans un
+    contexte de fichier <var>.htaccess</var>. Cette directive permet
+    d'&ecirc;tre s&ucirc;r que la mise en cache a bien &eacute;t&eacute; activ&eacute;e et pourra
+    donc &ecirc;tre utilis&eacute;e dans les fichiers <var>.htaccess</var>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthnCacheSOCache</name>
+<description>S&eacute;lectionne le fournisseur socache d'arri&egrave;re-plan &agrave;
+utiliser</description>
+<syntax>AuthnCacheSOCache <var>nom-fournisseur[:arguments-fournisseur]</var></syntax>
+<contextlist><context>server config</context></contextlist>
+<override>None</override>
+<compatibility>Les arguments optionnels du fournisseur sont disponibles
+&agrave; partir de la version 2.4.7 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Cette d&eacute;finition s'applique &agrave; l'ensemble du serveur et permet de
+    s&eacute;lectionner un fournisseur pour le <a href="../socache.html">cache
+    d'objets partag&eacute;s</a>, ainsi que des arguments &eacute;ventuels pour ce
+    fournisseur. Les fournisseurs disponibles sont, entre autres, "dbm",
+    "dc", "memcache", ou "shmcb", chacun d'entre eux n&eacute;cessitant le chargement
+    du module appropri&eacute;. Si elle est
+    absente, c'est la valeur par d&eacute;faut pour votre plate-forme qui sera
+    utilis&eacute;e.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthnCacheProvideFor</name>
+<description>Sp&eacute;cifie le fournisseur pour lequel on veut effectuer une
+mise en cache</description>
+<syntax>AuthnCacheProvideFor <var>fournisseur-authn</var> [...]</syntax>
+<default>None</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier un ou plusieurs fournisseurs
+    pour le(s)quel(s) on veut effectuer une mise en cache. Les donn&eacute;es
+    d'authentification trouv&eacute;es par un fournisseur non sp&eacute;cifi&eacute; dans une
+    directive AuthnCacheProvideFor ne seront pas mises en cache.</p>
+
+    <p>Par exemple, pour mettre en cache les donn&eacute;es d'authentification
+    trouv&eacute;es par <module>mod_authn_dbd</module> ou par un fournisseur
+    personnalis&eacute; <var>mon-fournisseur</var>, et ne pas mettre en cache
+    celles trouv&eacute;es par les fournisseurs l&eacute;gers comme file ou dbm :</p>
+    <highlight language="config">
+AuthnCacheProvideFor dbd mon-fournisseur
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthnCacheTimeout</name>
+<description>D&eacute;finit une dur&eacute;e de vie pour les entr&eacute;es du cache</description>
+<syntax>AuthnCacheTimeout <var>dur&eacute;e-de-vie</var> (secondes)</syntax>
+<default>300 (5 minutes)</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La mise en cache des donn&eacute;es d'authentification peut constituer
+    un trou de s&eacute;curit&eacute;, bien qu'un mise en cache de courte dur&eacute;e ne
+    posera probablement pas de probl&egrave;me. En g&eacute;n&eacute;ral, il est conseill&eacute; de
+    conserver les entr&eacute;es du cache de fa&ccedil;on &agrave; ce que la charge du serveur
+    d'arri&egrave;re-plan reste normale, mais pas plus longtemps ;
+    une dur&eacute;e de vie plus longue peut &ecirc;tre param&eacute;tr&eacute;e si les
+    changements d'utilisateurs et de mots de passe sont peu fr&eacute;quents.
+    La dur&eacute;e de vie par d&eacute;faut de 300 secondes (5 minutes) est &agrave; la fois
+    raisonnable et suffisamment importante pour r&eacute;duire la charge d'un
+    serveur d'arri&egrave;re-plan comme dbd (requ&ecirc;tes SQL).</p>
+    <p>Cette dur&eacute;e de vie ne doit pas &ecirc;tre confondue avec la dur&eacute;e de
+    vie de session qui est un tout autre sujet. Cependant, vous devez
+    utiliser votre logiciel de gestion de session pour v&eacute;rifier si les
+    donn&eacute;es d'authentification mises en cache peuvent allonger
+    accidentellement une session, et en tenir compte lorsque vous
+    d&eacute;finissez la dur&eacute;e de vie.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthnCacheContext</name>
+<description>Sp&eacute;cifie une cha&icirc;ne de contexte &agrave; utiliser dans la cl&eacute; du
+cache</description>
+<syntax>AuthnCacheContext <var>directory|server|cha&icirc;ne-personnalis&eacute;e</var></syntax>
+<default>directory</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier une cha&icirc;ne &agrave; utiliser avec le
+    nom d'utilisateur fourni (et le domaine d'authentification - realm -
+    dans le cas d'une authentification &agrave; base de condens&eacute;s) lors de la
+    construction d'une cl&eacute; de cache. Ceci permet de lever l'ambigu&iuml;t&eacute;
+    entre plusieurs noms d'utilisateurs identiques servant diff&eacute;rentes
+    zones d'authentification sur le serveur.</p>
+    <p>Il y a deux valeurs sp&eacute;ciales pour le param&egrave;tre : <var>directory</var>,
+    qui utilise le contexte de r&eacute;pertoire de la requ&ecirc;te comme cha&icirc;ne, et
+    <var>server</var>, qui utilise le nom du serveur virtuel.</p>
+    <p>La valeur par d&eacute;faut est <var>directory</var>, qui est aussi la
+    d&eacute;finition la plus courante. Ceci est cependant loin d'&ecirc;tre optimal,
+    car par exemple, <var>$app-base</var>, <var>$app-base/images</var>,
+    <var>$app-base/scripts</var> et <var>$app-base/media</var>
+    poss&egrave;deront chacun leur propre cl&eacute; de cache. Il est pr&eacute;f&eacute;rable
+    d'utiliser le fournisseur de mot de passe : par exemple un fichier
+    <var>htpasswd</var> ou une table de base de donn&eacute;es.</p>
+    <p>Les contextes peuvent &ecirc;tre partag&eacute;s entre diff&eacute;rentes zones du
+    serveur, o&ugrave; les donn&eacute;es d'authentification sont partag&eacute;es. Ceci est
+    cependant susceptible de cr&eacute;er des trous de s&eacute;curit&eacute; de type
+    cross-site ou cross-application, et cette directive n'est donc pas
+    disponible dans les contextes <var>.htaccess</var>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

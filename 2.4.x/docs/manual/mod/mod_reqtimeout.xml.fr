@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1334024 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_reqtimeout.xml.meta">
+
+<name>mod_reqtimeout</name>
+<description>D&eacute;finit le d&eacute;lai maximum et le taux minimum de transfert des
+donn&eacute;es pour la r&eacute;ception des requ&ecirc;tes
+</description>
+<status>Extension</status>
+<sourcefile>mod_reqtimeout.c</sourcefile>
+<identifier>reqtimeout_module</identifier>
+<compatibility>Disponible depuis la version 2.2.15 du serveur HTTP Apache</compatibility>
+
+<section id="examples"><title>Exemples</title>
+
+    <ol>
+      <li>
+        Accorde 10 secondes pour la r&eacute;ception des en-t&ecirc;tes de la requ&ecirc;te
+	et 30 secondes pour la r&eacute;ception du corps :
+
+        <highlight language="config">
+          RequestTimeout headerinit=10 body=30
+        </highlight>
+      </li>
+
+      <li>
+        Accorde au moins 10 secondes pour la r&eacute;ception du corps de
+	la requ&ecirc;te. Si le client envoie des donn&eacute;es, augmente ce d&eacute;lai
+	d'une seconde pour chaque paquet de 1000 octets re&ccedil;us, sans
+	limite sup&eacute;rieure (sauf si une limite a &eacute;t&eacute;
+	sp&eacute;cifi&eacute;e via la directive <directive
+	module="core">LimitRequestBody</directive>) :
+
+        <highlight language="config">
+          RequestReadTimeout body=10,MinRate=1000
+        </highlight>
+      </li>
+
+      <li>
+        Accorde au moins 10 secondes pour la r&eacute;ception de de la
+	requ&ecirc;te, en-t&ecirc;tes inclus. Si le client envoie des donn&eacute;es, augmente ce d&eacute;lai
+	d'une seconde pour chaque paquet de 500 octets re&ccedil;us, mais
+	n'alloue que 30 secondes pour la requ&ecirc;te, en-t&ecirc;tes inclus :
+
+        <highlight language="config">
+          RequestReadTimeout header=10-30,MinRate=500
+        </highlight>
+      </li>
+
+      <li>
+        En g&eacute;n&eacute;ral, un serveur doit avoir ses d&eacute;lais d'en-t&ecirc;te et de
+	corps configur&eacute;s. Si les serveurs virtuels http et https
+	utilisent une configuration commune, les d&eacute;lais ne doivent pas
+	&ecirc;tre d&eacute;finis trop bas :
+
+        <highlight language="config">
+          RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+        </highlight>
+      </li>
+
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>RequestReadTimeout</name>
+<description>D&eacute;finit des d&eacute;lais maximums pour la r&eacute;ception des en-t&ecirc;tes
+et corps des requ&ecirc;tes en provenance du client.
+</description>
+<syntax>RequestReadTimeout
+[header=<var>d&eacute;lai</var>[-<var>d&eacute;lai-maxi</var>][,MinRate=<var>taux-mini</var>]
+[body=<var>d&eacute;lai</var>[-<var>d&eacute;lai-maxi</var>][,MinRate=<var>taux-mini</var>]
+</syntax>
+<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.2.15 du serveur HTTP
+Apache ; d&eacute;sactiv&eacute;e par d&eacute;faut depuis la version 2.3.14.</compatibility>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir diff&eacute;rents d&eacute;lais pour la
+    r&eacute;ception des en-t&ecirc;tes et corps des requ&ecirc;tes en provenance du
+    client. Si le client ne parvient pas &agrave; respecter ces d&eacute;lais, un code
+    d'erreur <code>408 REQUEST TIME OUT</code> est envoy&eacute;.</p>
+
+    <p>Pour les serveurs virtuels SSL, le d&eacute;lai concernant les en-t&ecirc;tes
+    inclut le temps n&eacute;cessaire &agrave; la n&eacute;gociation SSL initiale. Si le
+    navigateur du client est configur&eacute; pour demander des listes de
+    r&eacute;vocations de certificats, et si le serveur correspondant n'est pas
+    disponible, le d&eacute;lai avant lequel le navigateur va abandonner son
+    attente de CRL au cours de la n&eacute;gociation SSL initiale peut &ecirc;tre
+    assez important. Par cons&eacute;quent, les valeurs de d&eacute;lais d'en-t&ecirc;tes ne
+    doivent pas &ecirc;tre trop basses pour les serveurs virtuels SSL. Le d&eacute;lai
+    concernant le corps inclut le temps n&eacute;cessaire &agrave; la ren&eacute;gociation
+    SSL (si elle est n&eacute;cessaire).</p>
+
+    <p>Lorsqu'une directive <directive
+    module="core">AcceptFilter</directive> est active (ce qui est en
+    g&eacute;n&eacute;ral le cas sous Linux et FreeBSD), la socket n'est envoy&eacute;e au
+    processus du serveur qu'apr&egrave;s la r&eacute;ception du premier octet (ou de
+    l'ensemble de la requ&ecirc;te si <code>httpready</code> est d&eacute;fini). Le
+    d&eacute;lai configur&eacute; pour les en-t&ecirc;tes via la directive
+    <code>RequestReadTimeout</code> n'entre en ligne de compte qu'une fois
+    la socket re&ccedil;ue par le processus du serveur.</p>
+
+    <p>Il existe deux m&eacute;thodes pour sp&eacute;cifier le d&eacute;lai (pour l'en-t&ecirc;te
+    ou le corps) :
+    </p>
+
+    <ul>
+
+    <li><strong>Valeur de d&eacute;lai fixe</strong>:<br />
+
+    <example><var>type</var>=<var>d&eacute;lai</var></example>
+
+    <p>Le temps en secondes allou&eacute; pour la lecture des en-t&ecirc;tes ou du
+    corps de la requ&ecirc;te. La valeur 0 signifie aucune limite.</p>
+    </li>
+
+    <li><strong>D&eacute;sactivation du module pour un serveur virtuel :</strong>:<br />
+
+    <example>header=0 body=0</example>
+
+    <p>Avec cet exemple, le module <module>mod_reqtimeout</module> est
+    compl&egrave;tement d&eacute;sactiv&eacute;.</p>
+    </li>
+
+    <li><strong>La valeur du d&eacute;lai qui est augment&eacute;e lorsque des donn&eacute;es
+    sont re&ccedil;ues</strong> :<br />
+    <example>
+    <var>type</var>=<var>d&eacute;lai</var>,MinRate=<var>taux-mini</var>
+    </example>
+
+    <p>Identique &agrave; ce qui pr&eacute;c&egrave;de, mais chaque fois que des donn&eacute;es sont
+    re&ccedil;ues, la valeur du d&eacute;lai est augment&eacute;e en fonction du taux-mini
+    sp&eacute;cifi&eacute; (en octets par seconde).</p>
+    </li>
+
+    <li><strong>La valeur du d&eacute;lai augmente lorsque des donn&eacute;es sont
+    re&ccedil;ues, jusqu'&agrave; une limite sup&eacute;rieure</strong>:<br />
+    <example>
+    <var>type</var>=<var>d&eacute;lai</var>-<var>d&eacute;lai-maxi</var>,MinRate=<var>taux-mini</var>
+    </example>
+
+    <p>Identique &agrave; ce qui pr&eacute;c&egrave;de, mais le d&eacute;lai n'augmentera pas au
+    del&agrave; de la borne sup&eacute;rieure du d&eacute;lai sp&eacute;cifi&eacute;e.</p>
+    </li>
+
+    </ul>
+
+
+
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>

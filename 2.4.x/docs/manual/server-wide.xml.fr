@@ -1,0 +1,140 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 922232 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="server-wide.xml.meta">
+
+  <title>Configuration &agrave; l'&eacute;chelle du serveur</title>
+
+<summary>
+<p>Ce document explique le fonctionnement de certaines directives du serveur
+de base qui sont utilis&eacute;es pour configurer les op&eacute;rations &eacute;l&eacute;mentaires du
+serveur.</p>
+</summary>
+
+  <section id="identification">
+    <title>Identification du serveur</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerAdmin</directive>
+        <directive module="core">ServerSignature</directive>
+        <directive module="core">ServerTokens</directive>
+        <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
+      </directivelist>
+    </related>
+
+    <p>Les directives <directive module="core">ServerAdmin</directive> et
+    <directive module="core">ServerTokens</directive> contr&ocirc;lent la nature des
+    informations &agrave; propos du serveur qui seront affich&eacute;es dans les documents
+    g&eacute;n&eacute;r&eacute;s par le serveur comme les messages d'erreur. La directive
+    <directive module="core">ServerTokens</directive> d&eacute;finit la valeur du
+    champ d'en-t&ecirc;te de la r&eacute;ponse du serveur HTTP.</p>
+
+    <p>Le serveur utilise les directives
+    <directive module="core">ServerName</directive>,
+    <directive module="core">UseCanonicalName</directive> et
+    <directive module="core">UseCanonicalPhysicalPort</directive> pour
+    d&eacute;terminer la mani&egrave;re de construire des URLs vers ses propres ressources.
+    Par exemple, quand un client &eacute;met une requ&ecirc;te vers un r&eacute;pertoire, mais
+    n'ajoute pas le slash final au nom du r&eacute;pertoire, httpd doit rediriger le
+    client vers le nom complet incluant le slash final afin que le client
+    puisse r&eacute;soudre correctement les r&eacute;f&eacute;rences relatives pr&eacute;sentes dans
+    le document.</p>
+  </section>
+
+  <section id="locations">
+    <title>Localisation des fichiers</title>
+
+    <related>
+      <directivelist>
+        <directive module="mpm_common">CoreDumpDirectory</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="core">Mutex</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mpm_common">ScoreBoardFile</directive>
+        <directive module="core">ServerRoot</directive>
+      </directivelist>
+    </related>
+
+    <p>Ces directives contr&ocirc;lent la localisation des diff&eacute;rents fichiers
+    n&eacute;cessaires au bon fonctionnement de httpd. Quand le chemin utilis&eacute; ne
+    commence pas par un slash (/), la localisation des fichiers est relative
+    &agrave; la valeur de la directive
+    <directive module="core">ServerRoot</directive>. Soyez prudent avec la
+    localisation de fichiers dans des r&eacute;pertoires o&ugrave; les utilisateurs non root
+    ont les droits en &eacute;criture. Voir la documention sur les
+    <a href="misc/security_tips.html#serverroot">Conseils &agrave; propos
+    de la s&eacute;curit&eacute;</a> pour plus de d&eacute;tails.</p>
+  </section>
+
+  <section id="resource">
+    <title>Limitation de l'utilisation des ressources</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">LimitRequestBody</directive>
+        <directive module="core">LimitRequestFields</directive>
+        <directive module="core">LimitRequestFieldsize</directive>
+        <directive module="core">LimitRequestLine</directive>
+        <directive module="core">RLimitCPU</directive>
+        <directive module="core">RLimitMEM</directive>
+        <directive module="core">RLimitNPROC</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
+      </directivelist>
+    </related>
+
+    <p>Les directives <directive>LimitRequest</directive>* permettent de
+    limiter la quantit&eacute; de ressources consomm&eacute;es par httpd pour le traitement
+    des requ&ecirc;tes des clients. Cette limitation permet de minimiser les effets
+    de certains types d'attaques par d&eacute;ni de service.</p>
+
+    <p>Les directives <directive>RLimit</directive>* permettent de limiter la
+    quantit&eacute; de ressources utilisable par les processus initi&eacute;s (forked) par
+    les processus enfants httpd. Elles permettent en particulier de contr&ocirc;ler
+    les ressources utilis&eacute;es par les scripts CGI et les commandes exec des
+    "Inclusions c&ocirc;t&eacute; serveur" (Server Side Includes ou SSI).</p>
+
+    <p>La directive <directive module="mpm_common">ThreadStackSize</directive>
+    permet sur certaines plates-formes de contr&ocirc;ler la taille de la pile.</p>
+  </section>
+
+  <section id="implementation">
+    <title>Choix d'impl&eacute;mentation</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">Mutex</directive>
+      </directivelist>
+    </related>
+
+    <p>La directive <directive>Mutex</directive> permet de modifier
+    l'impl&eacute;mentation sous-jacente des mutex, afin de r&eacute;soudre les
+    probl&egrave;mes de fonctionnement ou de performance dus au choix par
+    d&eacute;faut d'<glossary>APR</glossary>.</p>
+  </section>
+
+</manualpage>

@@ -1,0 +1,5 @@
+# testing with conf/test16.conf
+[macro:warn] bad (negative) nesting on line 2 of macro 'foo' (defined on line 3 of "./conf/test16.conf")
+[macro:warn] bad cumulated nesting (-1) in macro 'foo' (defined on line 3 of "./conf/test16.conf")
+httpd: Syntax error on line 9 of ./conf/test16.conf: </Limit> without matching <Limit> section
+# exit: 1

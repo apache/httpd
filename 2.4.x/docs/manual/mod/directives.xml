@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<directiveindex metafile="directives.xml.meta">
+  <title>Directive Index</title>
+  <summary>
+    <p>
+      Each Apache directive available in the standard Apache
+      distribution is listed here. They are described using a
+      consistent format, and there is <a href="directive-dict.html"
+      rel="Glossary">a dictionary</a> of the terms used in their
+      descriptions available.
+    </p>
+
+    <p>
+      A <a href="quickreference.html">Directive Quick-Reference</a>
+      is also available giving details about each directive in a
+      summary form.
+    </p>
+  </summary>
+</directiveindex>

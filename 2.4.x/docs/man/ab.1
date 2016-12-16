@@ -1,0 +1,213 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "AB" 1 "2015-05-01" "Apache HTTP Server" "ab"
+
+.SH NAME
+ab \- Apache HTTP server benchmarking tool
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBB\fR \fIlocal-address\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBl\fR ] [ -\fBm\fR \fIHTTP-method\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR \fItimeout\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+ab is a tool for benchmarking your Apache Hypertext Transfer Protocol (HTTP) server\&. It is designed to give you an impression of how your current Apache installation performs\&. This especially shows you how many requests per second your Apache installation is capable of serving\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-A \fIauth-username\fR:\fIpassword\fR
+Supply BASIC Authentication credentials to the server\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the server needs it (\fIi\&.e\&.\fR, has sent an 401 authentication needed)\&.  
+.TP
+-b \fIwindowsize\fR
+Size of TCP send/receive buffer, in bytes\&.  
+.TP
+-B \fIlocal-address\fR
+Address to bind to when making outgoing connections\&.  
+.TP
+-c \fIconcurrency\fR
+Number of multiple requests to perform at a time\&. Default is one request at a time\&.  
+.TP
+-C \fIcookie-name\fR=\fIvalue\fR
+Add a Cookie: line to the request\&. The argument is typically in the form of a \fIname\fR=\fIvalue\fR pair\&. This field is repeatable\&.  
+.TP
+-d
+Do not display the "percentage served within XX [ms] table"\&. (legacy support)\&.  
+.TP
+-e \fIcsv-file\fR
+Write a Comma separated value (CSV) file which contains for each percentage (from 1% to 100%) the time (in milliseconds) it took to serve that percentage of the requests\&. This is usually more useful than the 'gnuplot' file; as the results are already 'binned'\&.  
+.TP
+-f \fIprotocol\fR
+Specify SSL/TLS protocol (SSL2, SSL3, TLS1, TLS1\&.1, TLS1\&.2, or ALL)\&. TLS1\&.1 and TLS1\&.2 support available in 2\&.4\&.4 and later\&.  
+.TP
+-g \fIgnuplot-file\fR
+Write all measured values out as a 'gnuplot' or TSV (Tab separate values) file\&. This file can easily be imported into packages like Gnuplot, IDL, Mathematica, Igor or even Excel\&. The labels are on the first line of the file\&.  
+.TP
+-h
+Display usage information\&.  
+.TP
+-H \fIcustom-header\fR
+Append extra headers to the request\&. The argument is typically in the form of a valid header line, containing a colon-separated field-value pair (\fIi\&.e\&.\fR, "Accept-Encoding: zip/zop;8bit")\&.  
+.TP
+-i
+Do HEAD requests instead of GET\&.  
+.TP
+-k
+Enable the HTTP KeepAlive feature, \fIi\&.e\&.\fR, perform multiple requests within one HTTP session\&. Default is no KeepAlive\&.  
+.TP
+-l
+Do not report errors if the length of the responses is not constant\&. This can be useful for dynamic pages\&. Available in 2\&.4\&.7 and later\&.  
+.TP
+-m \fIHTTP-method\fR
+Custom HTTP method for the requests\&. Available in 2\&.4\&.10 and later\&.  
+.TP
+-n \fIrequests\fR
+Number of requests to perform for the benchmarking session\&. The default is to just perform a single request which usually leads to non-representative benchmarking results\&.  
+.TP
+-p \fIPOST-file\fR
+File containing data to POST\&. Remember to also set -T\&.  
+.TP
+-P \fIproxy-auth-username\fR:\fIpassword\fR
+Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
+.TP
+-q
+When processing more than 150 requests, ab outputs a progress count on stderr every 10% or 100 requests or so\&. The -q flag will suppress these messages\&.  
+.TP
+-r
+Don't exit on socket receive errors\&.  
+.TP
+-s \fItimeout\fR
+Maximum number of seconds to wait before the socket times out\&. Default is 30 seconds\&. Available in 2\&.4\&.4 and later\&.  
+.TP
+-S
+Do not display the median and standard deviation values, nor display the warning/error messages when the average and median are more than one or two times the standard deviation apart\&. And default to the min/avg/max values\&. (legacy support)\&.  
+.TP
+-t \fItimelimit\fR
+Maximum number of seconds to spend for benchmarking\&. This implies a -n 50000 internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
+.TP
+-T \fIcontent-type\fR
+Content-type header to use for POST/PUT data, eg\&. application/x-www-form-urlencoded\&. Default is text/plain\&.  
+.TP
+-u \fIPUT-file\fR
+File containing data to PUT\&. Remember to also set -T\&.  
+.TP
+-v \fIverbosity\fR
+Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc\&.), 2 and above prints warnings and info\&.  
+.TP
+-V
+Display version number and exit\&.  
+.TP
+-w
+Print out results in HTML tables\&. Default table is two columns wide, with a white background\&.  
+.TP
+-x \fI<table>-attributes\fR
+String to use as attributes for <table>\&. Attributes are inserted <table \fIhere\fR >\&.  
+.TP
+-X \fIproxy\fR[:\fIport\fR]
+Use a proxy server for the requests\&.  
+.TP
+-y \fI<tr>-attributes\fR
+String to use as attributes for <tr>\&.  
+.TP
+-z \fI<td>-attributes\fR
+String to use as attributes for <td>\&.  
+.TP
+-Z \fIciphersuite\fR
+Specify SSL/TLS cipher suite (See openssl ciphers)  
+ 
+.SH "OUTPUT"
+ 
+.PP
+The following list describes the values returned by ab:
+ 
+ 
+.TP
+Server Software
+The value, if any, returned in the \fIserver\fR HTTP header of the first successful response\&. This includes all characters in the header from beginning to the point a character with decimal value of 32 (most notably: a space or CR/LF) is detected\&.  
+.TP
+Server Hostname
+The DNS or IP address given on the command line  
+.TP
+Server Port
+The port to which ab is connecting\&. If no port is given on the command line, this will default to 80 for http and 443 for https\&.  
+.TP
+SSL/TLS Protocol
+The protocol parameters negotiated between the client and server\&. This will only be printed if SSL is used\&.  
+.TP
+Document Path
+The request URI parsed from the command line string\&.  
+.TP
+Document Length
+This is the size in bytes of the first successfully returned document\&. If the document length changes during testing, the response is considered an error\&.  
+.TP
+Concurrency Level
+The number of concurrent clients used during the test  
+.TP
+Time taken for tests
+This is the time taken from the moment the first socket connection is created to the moment the last response is received  
+.TP
+Complete requests
+The number of successful responses received  
+.TP
+Failed requests
+The number of requests that were considered a failure\&. If the number is greater than zero, another line will be printed showing the number of requests that failed due to connecting, reading, incorrect content length, or exceptions\&.  
+.TP
+Write errors
+The number of errors that failed during write (broken pipe)\&.  
+.TP
+Non-2xx responses
+The number of responses that were not in the 200 series of response codes\&. If all responses were 200, this field is not printed\&.  
+.TP
+Keep-Alive requests
+The number of connections that resulted in Keep-Alive requests  
+.TP
+Total body sent
+If configured to send data as part of the test, this is the total number of bytes sent during the tests\&. This field is omitted if the test did not include a body to send\&.  
+.TP
+Total transferred
+The total number of bytes received from the server\&. This number is essentially the number of bytes sent over the wire\&.  
+.TP
+HTML transferred
+The total number of document bytes received from the server\&. This number excludes bytes received in HTTP headers  
+.TP
+Requests per second
+This is the number of requests per second\&. This value is the result of dividing the number of requests by the total time taken  
+.TP
+Time per request
+The average time spent per request\&. The first value is calculated with the formula concurrency * timetaken * 1000 / done while the second value is calculated with the formula timetaken * 1000 / done  
+.TP
+Transfer rate
+The rate of transfer as calculated by the formula totalread / 1024 / timetaken  
+ 
+.SH "BUGS"
+ 
+.PP
+There are various statically declared buffers of fixed length\&. Combined with the lazy parsing of the command line arguments, the response headers from the server and other external inputs, this might bite you\&.
+ 
+.PP
+It does not implement HTTP/1\&.x fully; only accepts some 'expected' forms of responses\&. The rather heavy use of strstr(3) shows up top in profile, which might indicate a performance problem; \fIi\&.e\&.\fR, you would measure the ab performance rather than the server's\&.
+ 

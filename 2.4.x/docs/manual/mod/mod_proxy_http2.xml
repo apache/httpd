@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_http2.xml.meta">
+
+<name>mod_proxy_http2</name>
+<description>HTTP/2 support module for
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_http2.c</sourcefile>
+<identifier>proxy_http2_module</identifier>
+
+<summary>
+    <p>This module <em>requires</em> the service of <module
+    >mod_proxy</module>. It provides the features used for
+    proxying HTTP/2 requests. <module>mod_proxy_http2</module>
+    supports HTTP/2 only. It does <em>not</em>
+    provide any downgrades to HTTP/1.1.</p>
+
+    <p>Thus, in order to get the ability of handling HTTP/2 proxy requests,
+    <module>mod_proxy</module> and <module>mod_proxy_http2</module>
+    have to be present in the server.</p>
+
+    <p><module>mod_proxy_http2</module> works with incoming requests
+    over HTTP/1.1 and HTTP/2 requests. If <module>mod_http2</module>
+    handles the frontend connection, requests against the same HTTP/2
+    backend are sent over a single connection, whenever possible.</p>
+
+    <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
+    to provide the core http/2 engine.</p>
+
+    <note type="warning"><title>Warning</title>
+        <p>This module is experimental. Its behaviors, directives, and 
+        defaults are subject to more change from release to 
+        release relative to other standard modules. Users are encouraged to 
+        consult the "CHANGES" file for potential updates.</p>
+    </note>
+
+    <note type="warning"><title>Warning</title>
+      <p>Do not enable proxying until you have <a
+      href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </note>
+</summary>
+<seealso><module>mod_http2</module></seealso>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_connect</module></seealso>
+
+    <section id="examples"><title>Basic Examples</title>
+
+    <p>The examples below demonstrate how to configure HTTP/2 for
+    backend connections for a reverse proxy. </p>
+
+    <example><title>HTTP/2 (TLS)</title>
+    <highlight language="config">
+ProxyPass "/app" "h2://app.example.com"
+ProxyPassReverse "/app" "h2://app.example.com"
+    </highlight>
+    </example>
+
+    <example><title>HTTP/2 (cleartext)</title>
+    <highlight language="config">
+ProxyPass "/app" "h2c://app.example.com"
+ProxyPassReverse "/app" "h2c://app.example.com"
+    </highlight>
+    </example>
+    </section> <!-- /examples -->
+
+<section id="notes"><title>Request notes</title>
+    <p><module>mod_proxy_http</module> creates the following request notes for
+        logging using the <code>%{VARNAME}n</code> format in
+        <directive module="mod_log_config">LogFormat</directive> or
+        <directive module="core">ErrorLogFormat</directive>:
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>The local port used for the connection to the backend server.</dd>
+        <dt>proxy-status</dt>
+        <dd>The HTTP/2 status received from the backend server.</dd>
+    </dl>
+</section>
+
+</modulesynopsis>

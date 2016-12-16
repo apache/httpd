@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 151408:1587031 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_user.xml.meta">
+
+<name>mod_authz_user</name> 
+<description>사용자 권한부여</description>
+<status>Base</status>
+<sourcefile>mod_authz_user.c</sourcefile>
+<identifier>authz_user_module</identifier>
+<compatibility>아파치 2.1 이후부터</compatibility>
+
+<summary>
+    <p>이 모듈은 권한을 부여하여, 인증한 사용자가 웹사이트의
+    일부에 접근할 수 있는지 결정한다.
+    <module>mod_authz_user</module>는 <code>Require user</code>
+    지시어 목록에 인증한 사용자가 들어있으면 접근을 허용한다.
+    또, <code>require valid-user</code>는 성공적으로 인증한
+    사용자 모두에게 접근을 허용한다.</p>
+</summary>
+<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="core">Satisfy</directive></seealso>
+
+<directivesynopsis>
+<name>AuthzUserAuthoritative</name>
+<description>권한부여를 저수준 모듈로 넘겨줄지 여부</description>
+<syntax>AuthzUserAuthoritative On|Off</syntax>
+<default>AuthzUserAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive>AuthzUserAuthoritative</directive> 지시어를
+    직접 <code>Off</code>로 설정하면 해당 <strong>사용자가
+    없는</strong> 경우 사용자 권한부여를 (<code>modules.c</code>
+    파일에서 정의한) 저수준 모듈로 넘겨준다.</p>
+
+    <p>기본적으로 제어를 넘기지않고, 모르는 사용자의 경우 인증
+    필요 응답을 한다. 이 지시어를 <code>Off</code>로 설정하지않으면
+    시스템이 안전하게 유지되며, NCSA 웹서버와 같이 동작한다.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

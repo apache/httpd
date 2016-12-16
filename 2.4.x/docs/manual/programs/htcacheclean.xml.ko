@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 105711:1174747 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htcacheclean.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>htcacheclean - 디스크 캐쉬를 청소한다</title>
+
+<summary>
+    <p><code>htcacheclean</code>은 <module>mod_cache_disk</module>가
+    사용하는 저장소 용량을 일정 한도로 유지한다. 이 도구는 직접
+    실행하거나 데몬(daemon)으로 실행할 수 있다. 프로그램을 데몬으로
+    실행하면 백그라운드에서 잠자고 있다가 일정 주기로 캐쉬
+    디렉토리에서 지울 것이 있는지 검사한다. 데몬에게 TERM이나
+    INT 시그널을 보내면 안전하게 종료한다.</p>
+</summary>
+<seealso><module>mod_cache_disk</module></seealso>
+
+<section id="synopsis"><title>개요</title>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    -<strong>p</strong><var>path</var>
+    -<strong>l</strong><var>limit</var></code></p>
+
+    <p><code><strong>htcacheclean</strong> -<strong>b</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>i</strong> ]
+    -<strong>d</strong><var>interval</var>
+    -<strong>p</strong><var>path</var>
+    -<strong>l</strong><var>limit</var></code></p>
+</section>
+
+<section id="options"><title>옵션</title>
+    <dl>
+    <dt><code>-d<var>interval</var></code></dt>
+    <dd>데몬으로 실행하여 <var>interval</var> 분마다 캐쉬를
+    청소한다. 이 옵션은 <code>-D</code>, <code>-v</code>,
+    <code>-r</code> 옵션과 함께 사용할 수 없다. 데몬을 안전하게
+    종료하려면 데몬에게 <code>SIGTERM</code> 혹은
+    <code>SIGINT</code> 시그널을 보내면 된다.</dd>
+
+    <dt><code>-D</code></dt>
+    <dd>검사만 하고 실제 아무것도 지우지 않는다. 이 옵션은
+    <code>-d</code> 옵션과 함께 사용할 수 없다.</dd>
+
+    <dt><code>-v</code></dt>
+    <dd>자세한 통계를 출력한다. 이 옵션은 <code>-d</code> 옵션과
+    함께 사용할 수 없다.</dd>
+
+    <dt><code>-r</code></dt>
+    <dd>완전히 청소한다. 아파치 웹서버가 동작하지 않는다고 가정한다
+    (만약 동작한다면 캐쉬에 이상한 값이 저장된다). 이 옵션은
+    <code>-d</code> 옵션과 함께 사용할 수 없다.</dd>
+
+    <dt><code>-n</code></dt>
+    <dd>친절하게(nice) 동작한다. 다른 프로세스를 위해 느리게
+    동작한다. <code>htcacheclean</code>가 자주 잠을 자게되여
+    (1) 디스크 입출력이 지연되고 (2) 그동안 커널은 다른 프로세스를
+    스케줄할 수 있다.</dd>
+
+    <dt><code>-p<var>path</var></code></dt>
+    <dd><var>path</var>를 디스크 캐쉬의 최상위 디렉토리로 지정한다.
+    <directive module="mod_cache_disk">CacheRoot</directive>
+    지시어에 사용한 값과 동일한 값을 사용해야 한다.</dd>
+
+    <dt><code>-l<var>limit</var></code></dt>
+    <dd>전체 디스크 캐쉬 용량 제한을 <var>limit</var>로 제한한다.
+    값은 기본적으로 (혹은 숫자에 <code>B</code>를 붙이면) 바이트
+    단위이다. 킬로바이트는 <code>K</code>를, 메가바이트는
+    <code>M</code>을 뒤에 붙인다.</dd>
+
+    <dt><code>-i</code></dt>
+    <dd>지능적으로 디스크 캐쉬가 변경된 경우에만 동작한다. 이
+    옵션은 <code>-d</code> 옵션과 함께만 사용할 수 있다.</dd>
+    </dl>
+</section>
+
+<section id="exit"><title>종료코드</title>
+    <p><code>htcacheclean</code>는 모든 작업이 성공한 경우에
+    ("참") 종료코드 0을 반환하고, 실패한 경우에는 <code>1</code>을
+    반환한다.</p>
+</section>
+
+</manualpage>

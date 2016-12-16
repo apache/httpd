@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="logresolve.xml.meta">
+<parentdocument href="./">Programmes</parentdocument>
+
+  <title>logresolve - R&eacute;soud les adresses IP en noms d'h&ocirc;tes dans les
+  fichiers journaux d'Apache</title>
+
+<summary>
+     <p><code>logresolve</code> est un programme agissant apr&egrave;s
+     traitement pour r&eacute;soudre les adresses IP dans les journaux d'acc&egrave;s
+     d'Apache. Pour minimiser la charge de votre serveur de noms,
+     logresolve poss&egrave;de son propre cache interne sous forme d'une table
+     de hashage. Cela implique que chaque num&eacute;ro IP ne fera l'objet
+     d'une requ&ecirc;te DNS que la premi&egrave;re fois o&ugrave; il est rencontr&eacute; dans le
+     fichier journal.</p>
+
+     <p>Le programme re&ccedil;oit le fichier journal sur son entr&eacute;e standard.
+     Les adresses IP doivent se trouver en t&ecirc;te de chaque ligne et
+     doivent &ecirc;tre s&eacute;par&eacute;es du reste de la ligne par un espace.</p>
+</summary>
+
+<section id="synopsis"><title>Syntaxe</title>
+
+     <p><code><strong>logresolve</strong> [ -<strong>s</strong>
+     <var>nom-fichier</var> ] [ -<strong>c</strong> ] &lt;
+     <var>access_log</var> &gt; <var>access_log.new</var></code></p>
+</section>
+
+
+<section id="options"><title>Options</title>
+
+<dl>
+
+<dt><code>-s <var>nom-fichier</var></code></dt>
+
+<dd>Sp&eacute;cifie le nom du fichier o&ugrave; seront enregistr&eacute;es des
+statistiques.</dd>
+
+<dt><code>-c</code></dt>
+
+<dd>Avec cette option, <code>logresolve</code> effectue certaines
+v&eacute;rifications DNS : apr&egrave;s avoir trouv&eacute; le nom d'h&ocirc;te correspondant &agrave; une
+adresse IP, <code>logresolve</code> effectue une recherche DNS sur ce
+nom d'h&ocirc;te et v&eacute;rifie si une des adresses IP trouv&eacute;es correspond &agrave;
+l'adresse originale.</dd>
+
+</dl>
+</section>
+
+</manualpage>

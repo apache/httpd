@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="intro.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite Introduction</title>
+
+<summary>
+<p>This document supplements the <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It
+describes the basic concepts necessary for use of
+<module>mod_rewrite</module>. Other documents go into greater detail,
+but this doc should help the beginner get their feet wet.
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<!-- <seealso><a href="intro.html">mod_rewrite introduction</a></seealso> -->
+<seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Advanced techniques</a></seealso>
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+
+<section id="introduction"><title>Introduction</title>
+<p>The Apache module <module>mod_rewrite</module> is a very powerful and
+sophisticated module which provides a way to do URL manipulations. With
+it, you can do nearly all types of URL rewriting that you may need. It
+is, however, somewhat complex, and may be intimidating to the beginner.
+There is also a tendency to treat rewrite rules as magic incantation,
+using them without actually understanding what they do.</p>
+
+<p>This document attempts to give sufficient background so that what
+follows is understood, rather than just copied blindly.
+</p>
+
+<p>Remember that many common URL-manipulation tasks don't require the
+full power and complexity of <module>mod_rewrite</module>. For simple
+tasks, see <module>mod_alias</module> and the documentation
+on <a href="../urlmapping.html">mapping URLs to the
+filesystem</a>.</p>
+
+<p>Finally, before proceeding, be sure to configure
+<module>mod_rewrite</module>'s log level to one of the trace levels using
+the <directive module="core">LogLevel</directive> directive. Although this
+can give an overwhelming amount of information, it is indispensable in
+debugging problems with <module>mod_rewrite</module> configuration, since
+it will tell you exactly how each rule is processed.</p>
+
+</section>
+
+<section id="regex"><title>Regular Expressions</title>
+
+<p>mod_rewrite uses the <a href="http://pcre.org/">Perl Compatible
+Regular Expression</a> vocabulary. In this document, we do not attempt
+to provide a detailed reference to regular expressions. For that, we
+recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="http://perldoc.perl.org/perlre.html">Perl regular
+expression man page</a>, and <a
+href="http://shop.oreilly.com/product/9780596528126.do">Mastering
+Regular Expressions, by Jeffrey Friedl</a>.</p>
+
+<p>In this document, we attempt to provide enough of a regex vocabulary
+to get you started, without being overwhelming, in the hope that
+<directive module="mod_rewrite">RewriteRule</directive>s will be scientific
+formulae, rather than magical incantations.</p>
+
+<section id="regexvocab"><title>Regex vocabulary</title>
+
+<p>The following are the minimal building blocks you will need, in order
+to write regular expressions and <directive
+module="mod_rewrite">RewriteRule</directive>s. They certainly do not
+represent a complete regular expression vocabulary, but they are a good
+place to start, and should help you read basic regular expressions, as
+well as write your own.</p>
+
+<table>
+<tr>
+<th>Character</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+
+<tr><td><code>.</code></td><td>Matches any single
+character</td><td><code>c.t</code> will match <code>cat</code>,
+<code>cot</code>, <code>cut</code>, etc.</td></tr>
+<tr><td><code>+</code></td><td>Repeats the previous match one or more
+times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
+<code>aaa</code>, etc</td></tr>
+<tr><td><code>*</code></td><td>Repeats the previous match zero or more
+times.</td><td><code>a*</code> matches all the same things
+<code>a+</code> matches, but will also match an empty string.</td></tr>
+<tr><td><code>?</code></td><td>Makes the match optional.</td><td>
+<code>colou?r</code> will match <code>color</code> and <code>colour</code>.</td>
+</tr>
+<tr><td><code>^</code></td><td>Called an anchor, matches the beginning
+of the string</td><td><code>^a</code> matches a string that begins with
+<code>a</code></td></tr>
+<tr><td><code>$</code></td><td>The other anchor, this matches the end of
+the string.</td><td><code>a$</code> matches a string that ends with
+<code>a</code>.</td></tr>
+<tr><td><code>( )</code></td><td>Groups several characters into a single
+unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code>
+matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
+For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
+<tr><td><code>[ ]</code></td><td>A character class - matches one of the
+characters</td><td><code>c[uoa]t</code> matches <code>cut</code>,
+<code>cot</code> or <code>cat</code>.</td></tr>
+<tr><td><code>[^ ]</code></td><td>Negative character class - matches any character not specified</td><td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but not <code>c/t</code></td></tr>
+</table>
+
+<p>In <module>mod_rewrite</module> the <code>!</code> character can be
+used before a regular expression to negate it. This is, a string will
+be considered to have matched only if it does not match the rest of
+the expression.</p>
+
+</section>
+
+<section id="InternalBackRefs"><title>Regex Back-Reference Availability</title>
+
+      <p>One important thing here has to be remembered: Whenever you
+      use parentheses in <em>Pattern</em> or in one of the
+      <em>CondPattern</em>, back-references are internally created
+      which can be used with the strings <code>$N</code> and
+      <code>%N</code> (see below). These are available for creating
+      the <em>Substitution</em> parameter of a 
+      <directive module="mod_rewrite">RewriteRule</directive> or
+      the <em>TestString</em> parameter of a 
+      <directive module="mod_rewrite">RewriteCond</directive>.</p>
+      <p>  Captures in the <directive module="mod_rewrite"
+      >RewriteRule</directive> patterns are (counterintuitively) available to 
+       all preceding 
+      <directive module="mod_rewrite">RewriteCond</directive> directives,
+      because the <directive module="mod_rewrite">RewriteRule</directive>
+      expression is evaluated before the individual conditions.</p>
+
+      <p>Figure 1 shows to which 
+      locations the back-references are transferred for expansion as 
+      well as illustrating the flow of the RewriteRule, RewriteCond 
+      matching. In the next chapters, we will be exploring how to use 
+      these back-references, so do not fret if it seems a bit alien 
+      to you at first.
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png"
+      alt="Flow of RewriteRule and RewriteCond matching" /><br />
+      <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
+      In this example, a request for <code>/test/1234</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>RewriteRule Basics</title>
+<p>A <directive module="mod_rewrite">RewriteRule</directive> consists
+of three arguments separated by spaces. The arguments are</p>
+<ol>
+<li><var>Pattern</var>: which incoming URLs should be affected by the rule;</li>
+<li><var>Substitution</var>: where should the matching requests be sent;</li>
+<li><var>[flags]</var>: options affecting the rewritten request.</li>
+</ol>
+
+<p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>. 
+It is initially (for the first rewrite rule or until a substitution occurs) 
+matched against the URL-path of the incoming request (the part after the 
+hostname but before any question mark indicating the beginning of a query 
+string) or, in per-directory context, against the request's path relative 
+to the directory for which the rule is defined. Once a substitution has 
+occurred, the rules that follow are matched against the substituted
+value.
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png"
+      alt="Syntax of the RewriteRule directive" /><br />
+      <dfn>Figure 2:</dfn> Syntax of the RewriteRule directive.
+</p>
+
+
+<p>The <var>Substitution</var> can itself be one of three things:</p>
+
+<dl>
+<dt>A full filesystem path to a resource</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games" "/usr/local/games/web"
+</highlight>
+<p>This maps a request to an arbitrary location on your filesystem, much
+like the <directive module="mod_alias">Alias</directive> directive.</p>
+</dd>
+
+<dt>A web-path to a resource</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/foo$" "/bar"
+</highlight>
+<p>If <directive module="core">DocumentRoot</directive> is set
+to <code>/usr/local/apache2/htdocs</code>, then this directive would
+map requests for <code>http://example.com/foo</code> to the
+path <code>/usr/local/apache2/htdocs/bar</code>.</p>
+</dd>
+
+<dt>An absolute URL</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
+</highlight>
+<p>This tells the client to make a new request for the specified URL.</p>
+</dd>
+</dl>
+
+<p>The <var>Substitution</var> can also
+contain <em>back-references</em> to parts of the incoming URL-path
+matched by the <var>Pattern</var>. Consider the following:</p>
+<highlight language="config">
+RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
+</highlight>
+<p>The variable <code>$1</code> will be replaced with whatever text
+was matched by the expression inside the parenthesis in
+the <var>Pattern</var>. For example, a request
+for <code>http://example.com/product/r14df/view</code> will be mapped
+to the path <code>/var/web/productdb/r14df</code>.</p>
+
+<p>If there is more than one expression in parenthesis, they are
+available in order in the
+variables <code>$1</code>, <code>$2</code>, <code>$3</code>, and so
+on.</p>
+
+
+</section>
+
+<section id="flags"><title>Rewrite Flags</title>
+<p>The behavior of a <directive
+module="mod_rewrite">RewriteRule</directive> can be modified by the
+application of one or more flags to the end of the rule. For example, the
+matching behavior of a rule can be made case-insensitive by the
+application of the <code>[NC]</code> flag:
+</p>
+<highlight language="config">
+RewriteRule "^puppy.html" "smalldog.html" [NC]
+</highlight>
+
+<p>For more details on the available flags, their meanings, and
+examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
+
+</section>
+
+
+<section id="rewritecond"><title>Rewrite Conditions</title>
+<p>One or more <directive module="mod_rewrite">RewriteCond</directive>
+directives can be used to restrict the types of requests that will be
+subject to the
+following <directive module="mod_rewrite">RewriteRule</directive>. The
+first argument is a variable describing a characteristic of the
+request, the second argument is a <a href="#regex">regular
+expression</a> that must match the variable, and a third optional
+argument is a list of flags that modify how the match is evaluated.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png"
+      alt="Syntax of the RewriteCond directive" /><br />
+      <dfn>Figure 3:</dfn> Syntax of the RewriteCond directive
+</p>
+
+<p>For example, to send all requests from a particular IP range to a
+different server, you could use:</p>
+<highlight language="config">
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)" "http://intranet.example.com$1"
+</highlight>
+
+<p>When more than
+one <directive module="mod_rewrite">RewriteCond</directive> is
+specified, they must all match for
+the <directive module="mod_rewrite">RewriteRule</directive> to be
+applied. For example, to deny requests that contain the word "hack" in
+their query string, unless they also contain a cookie containing
+the word "go", you could use:</p>
+<highlight language="config">
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}" "!go"
+RewriteRule "." "-" [F]
+</highlight>
+<p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
+
+<p>Matches in the regular expressions contained in
+the <directive module="mod_rewrite">RewriteCond</directive>s can be
+used as part of the <var>Substitution</var> in
+the <directive module="mod_rewrite">RewriteRule</directive> using the
+variables <code>%1</code>, <code>%2</code>, etc. For example, this
+will direct the request to a different directory depending on the
+hostname used to access the site:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)" "/sites/%1/$1"
+</highlight>
+<p>If the request was for <code>http://example.com/foo/bar</code>,
+then <code>%1</code> would contain <code>example.com</code>
+and <code>$1</code> would contain <code>foo/bar</code>.</p>
+
+
+
+</section>
+
+<section id="rewritemap"><title>Rewrite maps</title>
+
+<p>The <directive module="mod_rewrite">RewriteMap</directive> directive
+provides a way to call an external function, so to speak, to do your
+rewriting for you. This is discussed in greater detail in the <a
+href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
+</section>
+
+<section id="htaccess"><title>.htaccess files</title>
+
+<p>Rewriting is typically configured in the main server configuration
+setting (outside any <directive type="section"
+module="core">Directory</directive> section) or
+inside <directive type="section" module="core">VirtualHost</directive>
+containers. This is the easiest way to do rewriting and is
+recommended. It is possible, however, to do rewriting
+inside <directive type="section" module="core">Directory</directive>
+sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
+files</a> at the expense of some additional complexity. This technique
+is called per-directory rewrites.</p>
+
+<p>The main difference with per-server rewrites is that the path
+prefix of the directory containing the <code>.htaccess</code> file is
+stripped before matching in
+the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <directive module="mod_rewrite">RewriteBase</directive> should be used to assure the request is properly mapped.</p>
+
+</section>
+
+</manualpage>
+
+

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 926432 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<moduleindex metafile="index.xml.meta">
+  <title>Modul-Index</title>
+  <summary>
+    <p>
+      Nachfolgend ist eine Liste aller Module angegeben, die als
+      Bestandteil der Distribution des Apache HTTP Servers mitgeliefert
+      werden. Bitte beachten Sie auch die vollst&#228;ndige alphabetische
+      Liste <a href="directives.html">aller
+      Apache-HTTP-Server-Direktiven</a>.
+    </p>
+  </summary>
+  <seealso><a href="../mpm.html">Multi-Processing-Module (MPMs)</a>
+  </seealso>
+  <seealso><a href="quickreference.html">Kurzreferenz der Direktiven</a>
+  </seealso>
+</moduleindex>

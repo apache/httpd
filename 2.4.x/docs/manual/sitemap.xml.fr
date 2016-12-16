@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 1732097 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<sitemap metafile="sitemap.xml.meta">
+
+  <title>Plan du site</title>
+
+<summary>
+<p>Cette page contient la liste des éléments actuellement disponibles de
+la <a href="./">Documentation du serveur HTTP Apache Version
+&httpd.major;.&httpd.minor;</a>.</p>
+</summary>
+
+<category id="release">
+<title>Notes de version</title>
+<page href="upgrading.html">Mise à jour vers 2.4 depuis 2.2</page>
+<page href="new_features_2_4.html">Nouvelles fonctionnalités d'Apache 2.3/2.4</page>
+<page href="new_features_2_2.html">Nouvelles fonctionnalités d'Apache 2.1/2.2</page>
+<page href="new_features_2_0.html">Nouvelles fonctionnalités d'Apache 2.0</page>
+<page href="license.html">License Apache</page>
+</category>
+
+<category id="using">
+<title>Utilisation du serveur HTTP Apache</title>
+<page href="install.html">Compilation et installation</page>
+<page href="invoking.html">Démarrage</page>
+<page href="stopping.html">Arrêt ou redémarrage</page>
+<page href="configuring.html">Fichiers de configuration</page>
+<page href="sections.html">Comment fonctionnent les sections Directory,
+Location et Files</page>
+<page href="caching.html">Mise en cache du contenu</page>
+<page href="server-wide.html">Configuration niveau serveur</page>
+<page href="logs.html">Fichiers de traces</page>
+<page href="urlmapping.html">Mise en correspondance des URLs avec le système de fichiers</page>
+<page href="dso.html">Objets Dynamiques Partagés (DSO)</page>
+<page href="content-negotiation.html">Négociation sur le contenu</page>
+<page href="custom-error.html">Messages d'erreur personnalisés</page>
+<page href="bind.html">Définition des adresses et ports qu'utilise
+Apache</page>
+<page href="mpm.html">Modules multi-processus (MPMs)</page>
+<page href="env.html">Les variables d'environnement d'Apache</page>
+<page href="expr.html">L'interprétation des expressions dans Apache</page>
+<page href="handler.html">Utilisation des gestionnaires d'Apache</page>
+<page href="filter.html">Filtres</page>
+<page href="socache.html">Support du cache des objets partagés</page>
+<page href="suexec.html">Support de suEXEC</page>
+<page href="dns-caveats.html">Considérations à propos de DNS et Apache</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</page>
+</category>
+
+<category id="vhosts">
+<title>Documentation des serveurs virtuels Apache</title>
+<page separate="yes" href="vhosts/">Aperçu</page>
+<page href="vhosts/name-based.html">Serveurs virtuels basés sur le nom</page>
+<page href="vhosts/ip-based.html">Support des serveurs virtuels basés
+sur l'adresse IP</page>
+<page href="vhosts/mass.html">Configuration dynamique de l'hébergement
+virtuel de masse</page>
+<page href="vhosts/examples.html">Exemples de serveurs virtuels</page>
+<page href="vhosts/details.html">Discussion approfondie à propos de la
+sélection d'un serveur virtuel</page>
+<page href="vhosts/fd-limits.html">Limitations inhérentes aux
+descripteurs de fichiers</page>
+</category>
+
+<category id="rewrite">
+<title>Guide de réécriture d'URLs</title>
+<page separate="yes" href="rewrite/">Survol</page>
+<page href="mod/mod_rewrite.html">Documentation de référence de mod_rewrite</page>
+<page href="rewrite/intro.html">Introduction à l'utilisation des expressions
+rationnelles avec mod_rewrite</page>
+<page href="rewrite/remapping.html">Utilisation de mod_rewrite pour les
+redirections et la traduction des URLs</page>
+<page href="rewrite/access.html">Utilisation de mod_rewrite pour le contrôle d'accès</page>
+<page href="rewrite/vhosts.html">Les serveurs virtuels dynamique avec mod_rewrite</page>
+<page href="rewrite/proxy.html">Le mandat dynamique avec mod_rewrite</page>
+<page href="rewrite/rewritemap.html">Utilisation d'une table de
+réécriture</page>
+<page href="rewrite/advanced.html">Techniques avancées</page>
+<page href="rewrite/avoid.html">Quand ne pas utiliser mod_rewrite</page>
+<page href="rewrite/flags.html">Drapeaux de réécriture</page>
+<page href="rewrite/tech.html">Détails techniques</page>
+
+
+
+</category>
+
+<category id="ssl">
+<title>Chiffrement SSL/TLS avec Apache</title>
+<page separate="yes" href="ssl/">Aperçu</page>
+<page href="ssl/ssl_intro.html">Chiffrement SSL/TLS :
+Introduction</page>
+<page href="ssl/ssl_compat.html">Chiffrement SSL/TLS :
+Compatibilité</page>
+<page href="ssl/ssl_howto.html">Chiffrement SSL/TLS : Recettes</page>
+<page href="ssl/ssl_faq.html">Chiffrement SSL/TLS : FAQ</page>
+</category>
+
+<category id="howto">
+<title>Guides, Tutoriels, and Recettes</title>
+<page separate="yes" href="howto/">Aperçu</page>
+<page href="howto/auth.html">Authentification et autorisation</page>
+<page href="howto/access.html">Contrôle d'accès</page>
+<page href="howto/cgi.html">Contenu dynamique avec CGI</page>
+<page href="howto/ssi.html">Introduction aux Inclusions côté serveur
+(Server Side Includes - SSI)</page>
+<page href="howto/htaccess.html">Fichiers .htaccess</page>
+<page href="howto/public_html.html">Répertoires web des
+utilisateurs</page>
+<page href="howto/reverse_proxy.html">Guide de configuration des mandataires
+inverses</page>
+</category>
+
+<category id="platform">
+<title>Notes spécifiques à certains systèmes</title>
+<page separate="yes" href="platform/">Aperçu</page>
+<page href="platform/windows.html">Utiliser Apache avec Microsoft
+Windows</page>
+<page href="platform/win_compiling.html">Compiler Apache pour
+Microsoft Windows</page>
+<page href="platform/rpm.html">Utilisation d'Apache avec les systèmes à
+base de paquets RPM</page>
+<page href="platform/netware.html">Utiliser Apache avec Novell
+NetWare</page>
+<page href="platform/perf-hp.html">Mise en oeuvre d'un serveur web
+hautes performances sous HPUX</page>
+<page href="platform/ebcdic.html">Le portage d'Apache sous EBCDIC</page>
+</category>
+
+<category id="programs">
+<title>Le serveur HTTP Apache et ses programmes associés</title>
+<page separate="yes" href="programs/">Aperçu</page>
+<page href="programs/httpd.html">Page de manuel : httpd</page>
+<page href="programs/ab.html">Page de manuel : ab</page>
+<page href="programs/apachectl.html">Page de manuel : apachectl</page>
+<page href="programs/apxs.html">Page de manuel : apxs</page>
+<page href="programs/configure.html">Page de manuel : configure</page>
+<page href="programs/dbmmanage.html">Page de manuel : dbmmanage</page>
+<page href="programs/fcgistarter.html">Page de manuel : fcgistarter</page>
+<page href="programs/htcacheclean.html">Page de manuel : htcacheclean</page>
+<page href="programs/htdbm.html">Page de manuel : htdbm</page>
+<page href="programs/htdigest.html">Page de manuel : htdigest</page>
+<page href="programs/htpasswd.html">Page de manuel : htpasswd</page>
+<page href="programs/httxt2dbm.html">Page de manuel : httxt2dbm</page>
+<page href="programs/logresolve.html">Page de manuel : logresolve</page>
+<page href="programs/log_server_status.html">Page de manuel : log_server_status</page>
+<page href="programs/rotatelogs.html">Page de manuel : rotatelogs</page>
+<page href="programs/split-logfile.html">Page de manuel : split-logfile</page>
+<page href="programs/suexec.html">Page de manuel : suexec</page>
+<page href="programs/other.html">Autres programmes</page>
+</category>
+
+<category id="misc">
+<title>Documentations diverses sur Apache</title>
+<page separate="yes" href="misc/">Aperçu</page>
+<page href="misc/perf-tuning.html">Considérations à propos des
+performances - Configuration fine d'Apache</page>
+<page href="misc/security_tips.html">Conseils en matière de sécurité</page>
+<page href="misc/relevant_standards.html">Standards concernés</page>
+<page href="misc/password_encryptions.html">Formats de chiffrement des
+mots de passe</page>
+</category>
+
+<category id="modules">
+<title>Modules Apache</title>
+<page href="mod/module-dict.html">Définitions des termes utilisés pour
+décrire les modules Apache</page>
+<page href="mod/directive-dict.html">Définitions des termes utilisés
+pour décrire les directives Apache</page>
+</category>
+
+<category id="developer">
+<title>Documentation du développeur</title>
+<page separate="yes" href="developer/">Aperçu</page>
+<page href="developer/API.html">Notes sur l'API Apache</page>
+<page href="developer/new_api_2_4.html">Mises à jour de l'API dans Apache HTTPD 2.4</page>
+<page href="developer/modguide.html">Développement de modules pour Apache HTTPD 2.4</page>
+<page href="developer/documenting.html">Documentation d'Apache HTTPD</page>
+<page href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
+d'Apache 2.x</page>
+<page href="developer/modules.html">Convertir un module depuis la
+version 1.3 vers la version 2.x</page>
+<page href="developer/request.html">Traitement des requêtes avec
+la version 2.x</page>
+<page href="developer/filters.html">Fonctionnement des filtres dans la
+version 2.x</page>
+<page href="developer/output-filters.html">Guide des filtres en sortie
+dans la version 2.x</page>
+<page href="developer/thread_safety.html">Sécurité des
+threads dans la version 2.x</page>
+</category>
+
+<category id="index">
+<title>Glossaire et Index</title>
+<page href="glossary.html">Glossaire</page>
+<page href="mod/">Index des modules</page>
+<page href="mod/directives.html">Index des directives</page>
+<page href="mod/quickreference.html">Référence rapide des directives</page>
+</category>
+
+</sitemap>

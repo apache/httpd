@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>Platform Specific Notes</title>
+
+  <section id="win">
+
+    <title>Microsoft Windows</title>
+
+    <dl>
+      <dt>Using Apache</dt>
+      <dd>
+        <p>This document explains how to install, configure and run Apache 2.4
+        under Microsoft Windows.</p>
+
+        <p>See: <a href="windows.html">Using Apache with Microsoft Windows</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Compiling Apache</dt>
+      <dd>
+        <p>There are many important points before you begin compiling Apache.
+        This document explain them.</p>
+
+        <p>See: <a href="win_compiling.html"
+        >Compiling Apache for Microsoft Windows</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+  <section id="unix">
+
+    <title>Unix Systems</title>
+
+    <dl>
+      <dt>RPM Based Systems (Redhat / CentOS / Fedora)</dt>
+      <dd>
+        <p>This document explains how to build, install, and run Apache 2.4
+        on systems supporting the RPM packaging format.</p>
+
+        <p>See: <a href="rpm.html">Using Apache With RPM Based Systems</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+  <section id="other">
+
+    <title>Other Platforms</title>
+
+    <dl>
+      <dt>Novell NetWare</dt>
+      <dd>
+        <p>This document explains how to install, configure and run Apache 2.4
+        under Novell NetWare 5.1 and above.</p>
+
+        <p>See: <a href="netware.html">Using Apache With Novell NetWare</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>EBCDIC</dt>
+      <dd>
+        <p>Version 1.3 of the Apache HTTP Server is the first version which
+        includes a port to a (non-ASCII) mainframe machine which uses the
+        EBCDIC character set as its native codeset.</p>
+
+        <note type="warning"><strong>Warning:</strong> This document
+        has not been updated to take into account changes made in
+        the 2.4 version of the Apache HTTP Server. Some of the
+        information may still be relevant, but please use it
+        with care.</note>
+
+        <p>See: <a href="ebcdic.html">The Apache EBCDIC Port</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>

@@ -1,0 +1,13 @@
+# testing with conf/test34.conf
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test34.conf"): argument name prefix conflict ($d #1 and $dd #2), be careful about your macro definition!
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test34.conf"): argument '$d' (#1) never used
+[macro:warn] macro 'foo' (defined on line 3 of "./conf/test34.conf"): argument '$dd' (#2) never used
+[macro:warn] macro 'bla' (defined on line 7 of "./conf/test34.conf"): argument name prefix conflict ($dd #1 and $d #2), be careful about your macro definition!
+[macro:warn] macro 'bla' (defined on line 7 of "./conf/test34.conf"): argument '$dd' (#1) never used
+[macro:warn] macro 'bla' (defined on line 7 of "./conf/test34.conf"): argument '$d' (#2) never used
+[core:warn] macro foo conflict one on line 1 of macro 'foo' (defined on line 3 of "./conf/test34.conf") used on line 11 of "./conf/test34.conf"
+[core:warn] macro bla conflict two on line 1 of macro 'bla' (defined on line 7 of "./conf/test34.conf") used on line 12 of "./conf/test34.conf"
+[core:error] done on line 14. on line 14 of ./conf/test34.conf
+AH00526: Syntax error on line 14 of ./conf/test34.conf:
+Configuration processing stopped by Error directive
+# exit: 1

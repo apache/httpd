@@ -1,0 +1,62 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTDİGEST" 1 "2013-04-17" "Apache HTTP Sunucusu" "htdigest"
+.nh
+.SH İSİM
+htdigest \- Özet kimlik doğrulama dosyalarını yönetir
+
+.SH "KULLANIM"
+ 
+.PP
+\fBhtdigest\fR [ -\fBc\fR ] \fIparola-dosyası\fR \fIbölge\fR \fIkullanıcı\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBhtdigest\fR, HTTP kullanıcılarının digest türü kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının saklanmasında kullanılacak düz metin dosyalarını oluşturmak ve güncellemek için kullanılır\&. Apache HTTP sunucusunun mevcut özkaynaklarının kullanımı sadece \fBhtdigest\fR tarafından oluşturulan dosyalarda listelenmiş kullanıcılara tahsis edilebilir\&.
+ 
+.PP
+Bu kılavuz sayfası sadece komut satırı değiştirgelerini listeler\&. Kullanıcı kimlik doğrulamasını \fBhttpd\fR'de yapılandırmak için gerekli yönergelerle ilgili ayrıntılar için Apache dağıtımının bir parçası olan ve http://httpd\&.apache\&.org/ adresinde de bulunan Apache HTTP Sunucusu Belgelerine bakınız\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-c\fR
+\fIparola-dosyası\fR oluşturur\&. Dosya mevcutsa, dosya silinip yeniden yazılır\&.  
+.TP
+\fIparola-dosyası\fR
+Kullanıcı ismi, parola ve bölge bilgilerini içeren dosyanın ismi\&. \fB-c\fR seçeneği verilmişse ve dosya mevcut değilse oluşturulur, dosya mevcutsa silinip yeniden oluşturulur\&.  
+.TP
+\fIbölge\fR
+Kullanıcının mensup olduğu bölge ismi\&. Daha fazla bilgi için: http://tools\&.ietf\&.org/html/rfc2617#section-3\&.2\&.1  
+.TP
+\fIkullanıcı\fR
+\fIparola-dosyası\fR'nda oluşturulacak veya güncellenecek kullanıcı ismi\&. \fIkullanıcı\fR bu dosyada mevcut değilse yeni bir girdi eklenir\&. Girdi mevcutsa parolası değiştirilir\&.  
+ 
+.SH "GÜVENLİK DEĞERLENDİRMELERİ"
+ 
+.PP
+Bu program bir setuid çalıştırılabiliri olarak güvenilir olmadığından \fIsetuid yapılmamalıdır\fR\&.
+ 

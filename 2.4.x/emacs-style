@@ -1,0 +1,12 @@
+(add-hook 'c-mode-hook
+          (function (lambda ()
+			(c-set-offset 'inclass' ++)
+			(c-set-offset 'defun-block-intro' ++)
+			(c-set-offset 'statement-block-intro' ++)
+			(c-set-offset 'substatement' ++)
+			(c-set-offset 'brace-list-intro' ++)
+			(c-set-offset 'statement-case-intro' ++)
+			(c-set-offset 'inextern-lang' 0)
+			)))
+(setq c++-mode-hook c-mode-hook)
+(setq-default indent-tabs-mode nil)

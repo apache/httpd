@@ -1,0 +1,3 @@
+# testing with conf/test37.conf
+httpd: Syntax error on line 3 of ./conf/test37.conf: macro 'stupid' (defined on line 3 of "./conf/test37.conf"): empty argument #1 name
+# exit: 1

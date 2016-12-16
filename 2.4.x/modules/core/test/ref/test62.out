@@ -1,0 +1,15 @@
+# testing with conf/test62.conf
+[core:warn] Line:1-2 start at 11 on line 1 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 11 of "./conf/test62.conf"
+[core:warn] Line:3-4 stop at 11 on line 2 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 11 of "./conf/test62.conf"
+[core:warn] Line:1-2 start at 12 on line 1 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 13 of "./conf/test62.conf"
+[core:warn] Line:3-4 stop at 13 on line 2 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 13 of "./conf/test62.conf"
+[core:warn] Line:1-2 start at 14 on line 1 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 16 of "./conf/test62.conf"
+[core:warn] Line:3-4 stop at 16 on line 2 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 16 of "./conf/test62.conf"
+[core:warn] Line:1-2 start at 17 on line 1 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 18 of "./conf/test62.conf"
+[core:warn] Line:3-4 stop at 18 on line 2 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 18 of "./conf/test62.conf"
+[core:warn] Line:1-2 start at 19 on line 1 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 23 of "./conf/test62.conf"
+[core:warn] Line:3-4 stop at 23 on line 2 of macro 'line' (defined on line 4 of "./conf/test62.conf") used on line 23 of "./conf/test62.conf"
+[core:error] done line 25. on line 25 of ./conf/test62.conf
+AH00526: Syntax error on line 25 of ./conf/test62.conf:
+Configuration processing stopped by Error directive
+# exit: 1

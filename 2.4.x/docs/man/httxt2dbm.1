@@ -1,0 +1,65 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTTXT2DBM" 1 "2013-03-20" "Apache HTTP Server" "httxt2dbm"
+
+.SH NAME
+httxt2dbm \- Generate dbm files for use with RewriteMap
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fBhttxt2dbm\fR [ -\fBv\fR ] [ -\fBf\fR \fIDBM_TYPE\fR ] -\fBi\fR \fISOURCE_TXT\fR -\fBo\fR \fIOUTPUT_DBM\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+httxt2dbm is used to generate dbm files from text input, for use in RewriteMap with the dbm map type\&.
+ 
+.PP
+If the output file already exists, it will not be truncated\&. New keys will be added and existing keys will be updated\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-v
+More verbose output  
+.TP
+-f \fIDBM_TYPE\fR
+Specify the DBM type to be used for the output\&. If not specified, will use the APR Default\&. Available types are: GDBM for GDBM files, SDBM for SDBM files, DB for berkeley DB files, NDBM for NDBM files, default for the default DBM type\&.  
+.TP
+-i \fISOURCE_TXT\fR
+Input file from which the dbm is to be created\&. The file should be formated with one record per line, of the form: key value\&. See the documentation for RewriteMap for further details of this file's format and meaning\&.  
+.TP
+-o \fIOUTPUT_DBM\fR
+Name of the output dbm files\&.  
+ 
+.SH "EXAMPLES"
+ 
+.nf
+
+      httxt2dbm -i rewritemap\&.txt -o rewritemap\&.dbm
+      httxt2dbm -f SDBM -i rewritemap\&.txt -o rewritemap\&.dbm 
+.fi
+ 

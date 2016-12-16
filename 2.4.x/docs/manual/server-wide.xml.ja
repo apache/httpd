@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English Revision: 420990:922232 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="server-wide.xml.meta">
+
+  <title>サーバ全体の設定</title>
+
+<summary>
+<p>このドキュメントでは<module>core</module>
+サーバのディレクティブの中で、
+基本動作を設定するためのものを説明します。</p>
+</summary>
+
+  <section id="identification">
+    <title>サーバ ID</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerAdmin</directive>
+        <directive module="core">ServerSignature</directive>
+        <directive module="core">ServerTokens</directive>
+        <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
+      </directivelist>
+    </related>
+
+    <p><directive module="core">ServerAdmin</directive> ディレクティブと
+    <directive module="core">ServerTokens</directive>
+    ディレクティブは、エラーメッセージなどのサーバが作るドキュメントに、
+    どのようなサーバの情報を表示するかを制御します。
+    <directive module="core">ServerTokens</directive> ディレクティブは、Server HTTP
+    レスポンスヘッダフィールドの値を設定します。</p>
+
+    <p><directive module="core">ServerName</directive>,
+    <directive module="core">UseCanonicalName</directive>,
+    <directive module="core">UseCanonicalPhysicalPort</directive>
+    ディレクティブは、サーバが自分自身を参照する URL
+    を作るときに使われます。
+    たとえば、クライアントがディレクトリを要求して、
+    そのディレクトリ名の最後にスラッシュが付いていないような場合には、
+    ドキュメントの相対的な参照を正しく解決できるようにするために、
+    Apache は最後のスラッシュを含んだ完全なパスにクライアントを
+    リダイレクトさせる必要があります。</p>
+  </section>
+
+  <section id="locations">
+    <title>ファイルの位置</title>
+
+    <related>
+      <directivelist>
+        <directive module="mpm_common">CoreDumpDirectory</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="mpm_common">LockFile</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mpm_common">ScoreBoardFile</directive>
+        <directive module="core">ServerRoot</directive>
+      </directivelist>
+    </related>
+
+    <p>これらのディレクティブは Apache
+    が適切な動作をするために必要な各種ファイルの位置を制御します。
+    パスがスラッシュ (/) で始まっていないときは、ファイルは
+    <directive module="core">ServerRoot</directive> からの相対パスとして
+    探されます。root
+    以外のユーザが書き込み可能なパスにファイルを置く場合は注意が必要です。
+    詳細は<a href="misc/security_tips.html#serverroot">「セキュリティ情報」</a>
+    を参照してください。</p>
+  </section>
+
+  <section id="resource">
+    <title>リソースの制限</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">LimitRequestBody</directive>
+        <directive module="core">LimitRequestFields</directive>
+        <directive module="core">LimitRequestFieldsize</directive>
+        <directive module="core">LimitRequestLine</directive>
+        <directive module="core">RLimitCPU</directive>
+        <directive module="core">RLimitMEM</directive>
+        <directive module="core">RLimitNPROC</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
+      </directivelist>
+    </related>
+
+    <p><directive>LimitRequest</directive>* ディレクティブは Apache
+    がクライアントからのリクエスト読み込みで使う
+    リソースを制限するために使われます。これらの値を制限することで、
+    いくつかのサービス拒否攻撃は影響を和らげることができます。</p>
+
+    <p><directive>RLimit</directive>* ディレクティブは、Apache の子プロセスから
+    fork されたプロセスが使用するリソースを制限するために使われます。
+    特に、これは CGI スクリプトと SSI exec
+    コマンドで使われるリソースを制御します。</p>
+
+    <p><directive module="mpm_common">ThreadStackSize</directive> は Netware
+    でのみ、スタックの大きさを制御するために使われます。</p>
+  </section>
+</manualpage>

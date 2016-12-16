@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dav.xml.meta">
+
+<name>mod_dav</name>
+<description>Fonctionnalit&eacute; de cr&eacute;ation et gestion de versions de
+documents via le web (<a
+href="http://www.webdav.org/">WebDAV</a>)</description>
+<status>Extension</status>
+<sourcefile>mod_dav.c</sourcefile>
+<identifier>dav_module</identifier>
+
+<summary>
+    <p>Ce module ajoute &agrave; Apache une fonctionnalit&eacute; <a
+    href="http://www.webdav.org">WebDAV</a> de classes 1 et 2
+    ('Web-based Distributed Authoring and Versioning' ou Cr&eacute;ation et
+    gestion de versions de documents via le web). Il s'agit d'une
+    extension du protocole HTTP qui permet de cr&eacute;er, d&eacute;placer, copier et
+    supprimer des ressources ou collections de ressources sur un serveur
+    web distant.</p>
+</summary>
+<seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
+<seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
+<seealso><a href="http://www.webdav.org">Ressources WebDAV</a></seealso>
+
+<section id="example"><title>Activation de WebDAV</title>
+    <p>Pour activer le module <module>mod_dav</module>, ajoutez la ligne
+    suivante &agrave; un conteneur de votre fichier <code>httpd.conf</code>
+    :</p>
+
+    <highlight language="config">Dav On</highlight>
+
+    <p>Ceci active le fournisseur de syst&egrave;me de fichier DAV impl&eacute;ment&eacute; par
+    le module <module>mod_dav_fs</module>. Ce dernier doit donc &ecirc;tre
+    compil&eacute; dans le serveur ou charg&eacute; au d&eacute;marrage &agrave; l'aide de la
+    directive <directive module="mod_so">LoadModule</directive>.</p>
+
+    <p>En outre, vous devez indiquer o&ugrave; se trouve la base de donn&eacute;es des
+    verrous DAV via une directive <directive
+    module="mod_dav_fs">DavLockDB</directive> dans la section globale de
+    votre fichier <code>httpd.conf</code> :</p>
+
+    <highlight language="config">
+      DavLockDB /usr/local/apache2/var/DavLock
+    </highlight>
+
+    <p>Le r&eacute;pertoire contenant le fichier de la base de donn&eacute;es des
+    verrous doit avoir des droits en &eacute;criture pour l'utilisateur et le
+    groupe sous lesquels Apache s'ex&eacute;cute et d&eacute;finis respectivement par
+    les directives <directive module="mod_unixd">User</directive> et
+    <directive module="mod_unixd">Group</directive>.</p>
+
+    <p>Si vous souhaitez limiter l'acc&egrave;s aux r&eacute;pertoires o&ugrave; DAV est
+    activ&eacute;, vous pouvez ajouter une clause <directive module="core"
+    type="section">Limit</directive> dans la section <directive
+    module="core" type="section">Location</directive> consid&eacute;r&eacute;e. Pour
+    d&eacute;finir la quantit&eacute; maximale de donn&eacute;es en octets qu'un client
+    DAV peut envoyer par requ&ecirc;te, vous devez utiliser la directive
+    <directive module="core">LimitXMLRequestBody</directive>, car La
+    directive <directive module="core">LimitRequestBody</directive>
+    "habituelle" n'a aucune incidence sur les requ&ecirc;tes DAV.</p>
+
+    <example><title>Exemple complet</title>
+      <highlight language="config">
+DavLockDB "/usr/local/apache2/var/DavLock"
+
+&lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
+    Require all granted
+    Dav On
+
+    AuthType Basic
+    AuthName DAV
+    AuthUserFile "user.passwd"
+
+    &lt;LimitExcept GET POST OPTIONS&gt;
+        Require user admin
+    &lt;/LimitExcept&gt;
+&lt;/Directory&gt;
+      </highlight>
+    </example>
+
+</section>
+
+<section id="security"><title>Probl&egrave;mes concernant la s&eacute;curit&eacute;</title>
+
+    <p>Etant donn&eacute; que les m&eacute;thodes d'acc&egrave;s DAV permettent &agrave; des clients
+    distants de manipuler des fichiers sur le serveur, vous devez vous
+    assurer que votre serveur est bien s&eacute;curis&eacute; avant d'activer
+    <module>mod_dav</module>.</p>
+
+    <p>Tout r&eacute;pertoire du serveur o&ugrave; DAV est activ&eacute; doit &ecirc;tre prot&eacute;g&eacute;
+    par une proc&eacute;dure d'authentification. L'utilisation de
+    l'authentification HTTP de base n'est pas recommand&eacute;e. Vous devez
+    utiliser au moins l'authentification HTTP &agrave; base de condens&eacute;s
+    qu'impl&eacute;mente le module <module>mod_auth_digest</module>.
+    Pratiquement tous les clients WebDAV supportent cette m&eacute;thode
+    d'authentification. Vous pouvez aussi utiliser l'authentification de
+    base sur une connexion o&ugrave; <a href="../ssl/">SSL</a> est activ&eacute;.</p>
+
+    <p>Pour que <module>mod_dav</module> puisse manipuler des fichiers,
+    il doit avoir des permissions en &eacute;criture sur les r&eacute;pertoires et les
+    fichiers qui sont sous son contr&ocirc;le ; en d'autre termes, c'est
+    l'utilisateur et le groupe sous lesquels Apache s'ex&eacute;cute et d&eacute;finis
+    par les directives <directive module="mod_unixd">User</directive> et
+    <directive module="mod_unixd">Group</directive> qui doivent avoir
+    les droits en &eacute;criture sur ces fichiers et r&eacute;pertoires. Les fichiers
+    nouvellement cr&eacute;&eacute;s appartiendront aussi &agrave; ces utilisateur et groupe.
+    Par cons&eacute;quent, il est important de contr&ocirc;ler l'acc&egrave;s &agrave; ce compte.
+    Les r&eacute;pertoires DAV sont consid&eacute;r&eacute;s comme priv&eacute;s du point de vue
+    d'Apache, et la modification des fichiers qu'ils contiennent
+    autrement que par l'interm&eacute;diaire d'Apache (par exemple par FTP ou
+    par des outils du niveau du syst&egrave;me de fichiers) ne doit pas &ecirc;tre
+    permise.</p>
+
+    <p><module>mod_dav</module> peut faire l'objet de plusieurs sortes
+    d'attaques par d&eacute;ni de service. La directive <directive
+    module="core">LimitXMLRequestBody</directive> permet de limiter la
+    quantit&eacute; de m&eacute;moire consomm&eacute;e pour interpr&eacute;ter des requ&ecirc;tes DAV de
+    grande taille. En outre, la directive <directive
+    module="mod_dav">DavDepthInfinity</directive> permet d'emp&ecirc;cher les
+    requ&ecirc;tes <code>PROPFIND</code> concernant un r&eacute;pertoire de tr&egrave;s
+    grande taille de consommer de grandes quantit&eacute;s de m&eacute;moire. Un autre
+    type d'attaque par d&eacute;ni de service peut aussi &ecirc;tre men&eacute; par un
+    client qui remplit simplement tout l'espace disque disponible avec
+    des fichiers de tr&egrave;s grande taille. Etant donn&eacute; qu'il n'existe aucun
+    moyen direct d'&eacute;viter ce genre d'attaque dans Apache, vous ne devez
+    accorder des acc&egrave;s DAV qu'&agrave; des utilisateurs de confiance.</p>
+</section>
+
+<section id="complex"><title>Configurations complexes</title>
+
+    <p>Les requ&ecirc;tes ayant pour but de manipuler des fichiers dynamiques
+    (scripts PHP, scripts CGI, etc...) en utilisant
+    <module>mod_dav</module> sont courantes. Ce traitement n'est pas
+    &eacute;vident car une requ&ecirc;te
+    <code>GET</code> va toujours tenter d'ex&eacute;cuter le script, plut&ocirc;t que
+    de t&eacute;l&eacute;charger son contenu. Pour &eacute;viter cet inconv&eacute;nient, une
+    m&eacute;thode possible consiste &agrave; faire correspondre deux URLs
+    diff&eacute;rentes au m&ecirc;me contenu, l'une d'entre elles servant &agrave; lancer le
+    script, alors que l'autre peut &ecirc;tre utilis&eacute;e pour le t&eacute;l&eacute;charger et
+    le manipuler avec DAV.</p>
+
+<highlight language="config">
+Alias "/phparea" "/home/gstein/php_files"
+Alias "/php-source" "/home/gstein/php_files"
+&lt;Location "/php-source"&gt;
+Dav On
+ForceType text/plain
+&lt;/Location&gt;
+</highlight>
+
+    <p>Avec cette configuration, on peut utiliser
+    <code>http://example.com/phparea</code> pour afficher le r&eacute;sultat de
+    l'ex&eacute;cution des scripts PHP, et
+    <code>http://example.com/php-source</code> pour les manipuler avec
+    DAV.</p>
+</section>
+
+<directivesynopsis>
+<name>Dav</name>
+<description>Active les m&eacute;thodes HTTP WebDAV</description>
+<syntax>Dav On|Off|<var>nom fournisseur</var></syntax>
+<default>Dav Off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>Dav</directive> permet d'activer les
+    m&eacute;thodes HTTP WebDAV pour le conteneur condid&eacute;r&eacute; :</p>
+
+    <highlight language="config">
+&lt;Location "/foo"&gt;
+    Dav On
+&lt;/Location&gt;
+    </highlight>
+
+    <p>La valeur <code>On</code> est en fait un alias vers le
+    fournisseur par d&eacute;faut <code>filesystem</code> impl&eacute;ment&eacute; par le
+    module <module>mod_dav_fs</module>. Notez que lorsque DAV est activ&eacute;
+    pour un conteneur, on <em>ne peut pas</em> le d&eacute;sactiver pour ses
+    sous-conteneurs. Pour un exemple de configuration complet,
+    reportez-vous &agrave; la <a href="#example">section pr&eacute;c&eacute;dente</a>.</p>
+
+    <note type="warning">
+      N'activez pas WebDAV tant que votre serveur n'est pas s&eacute;curis&eacute;. Si
+      vous passez outre cette recommandation, tout le monde pourra
+      enregistrer des fichiers sur votre syst&egrave;me.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavMinTimeout</name>
+<description>Dur&eacute;e minimale pendant laquelle le serveur maintient un
+verrou sur une ressource DAV</description>
+<syntax>DavMinTimeout <var>secondes</var></syntax>
+<default>DavMinTimeout 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>Lorsqu'un client demande le verrouillage d'une ressource DAV, il
+    peut aussi sp&eacute;cifier une dur&eacute;e au bout de laquelle le verrou sera
+    automatiquement supprim&eacute; par le serveur. Cette valeur ne constitue
+    qu'une demande, et le serveur peut l'ignorer ou informer le client
+    qu'il va utiliser une valeur arbitraire.</p>
+
+    <p>La directive <directive>DavMinTimeout</directive> permet de
+    sp&eacute;cifier, en secondes, la dur&eacute;e minimale de verrouillage &agrave; renvoyer
+    au client. Les R&eacute;pertoires Web de Microsoft pr&eacute;sentent une dur&eacute;e par
+    d&eacute;faut de 120 secondes ; la directive
+    <directive>DavMinTimeout</directive> permet de d&eacute;finir une valeur
+    sup&eacute;rieure (par exemple 600 secondes), afin de r&eacute;duire les risques
+    de perte du verrou par le client suite &agrave; une surcharge du
+    r&eacute;seau.</p>
+
+    <example><title>Exemple</title>
+      <highlight language="config">
+&lt;Location "/MSWord"&gt;
+    DavMinTimeout 600
+&lt;/Location&gt;
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavDepthInfinity</name>
+<description>Autorise les requ&ecirc;tes PROPFIND avec en-t&ecirc;te Depth:
+Infinity</description>
+<syntax>DavDepthInfinity on|off</syntax>
+<default>DavDepthInfinity off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DavDepthInfinity</directive> permet
+    d'autoriser le traitement des requ&ecirc;tes <code>PROPFIND</code>
+    contenant l'en-t&ecirc;te Depth: Infinity. Par d&eacute;faut, ce type de requ&ecirc;te
+    n'est pas autoris&eacute;, car il peut favoriser les attaques de type D&eacute;ni
+    de service.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
+

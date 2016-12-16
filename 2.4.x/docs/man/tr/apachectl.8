@@ -1,0 +1,95 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "APACHECTL" 8 "2013-04-17" "Apache HTTP Sunucusu" "apachectl"
+.nh
+.SH İSİM
+apachectl \- Apache HTTP Sunucusu Denetim Arayüzü
+
+.SH "KULLANIM"
+ 
+.PP
+\fBapachectl\fR önyüz kipinde çalıştığında \fBhttpd\fR programının bütün komut satırı argümanlarını kabul edebilir\&.
+ 
+.PP
+\fBapachectl\fR [ \fIhttpd-argümanları\fR ]
+ 
+.PP
+SysV başlatma betiği kipinde ise, \fBapachectl\fR aşağıda tanımlanan basit, tek sözcüklük komutları kabul eder\&.
+ 
+.PP
+\fBapachectl\fR \fIkomut\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBapachectl\fR Apache Hiper Metin Aktarım Protokolü (HTTP) sunucusu için bir denetim aracıdır\&. Sistem yöneticisinin Apache \fBhttpd\fR artalan sürecini denetimi altında tutabilmesine yardımcı olmak amacıyla tasarlanmıştır\&.
+ 
+.PP
+\fBapachectl\fR iki kipte işleyebilir\&. İlkinde, \fBhttpd\fR komutu için basit bir önyüz gibi davranarak, gerekli ortam değişkenlerini atar ve belirtilen komut satırı seçenekleriyle \fBhttpd\fR sürecini başlatır\&. İkinci kipte ise, \fBapachectl\fR bir SysV başlatma betiği olarak \fBstart\fR, \fBrestart\fR, \fBstop\fR gibi tek sözcüklük basit argümanlar alır ve bunları uygun sinyallere dönüştürerek \fBhttpd\fR'ye gönderir\&.
+ 
+.PP
+Eğer Apache kurulumunuzda standart dışı dosya yolları kullanmışsanız, \fBhttpd\fR programına uygun yolları atamak için \fBapachectl\fR betiğini elden geçirmelisiniz\&. Bu arada gerek gördüğünüz \fBhttpd\fR komut satırı argümanlarını da belirtebilirsiniz\&. Ayrıntılar için betik içindeki açıklamalara bakınız\&.
+ 
+.PP
+\fBapachectl\fR betiği başarı durumunda 0 çıkış değeri ile döner\&. Bir hata durumunda ise sıfırdan farklı bir değerle döner\&. Daha fazla bilgi için betik içindeki açıklamalara bakınız\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+.PP
+Burada sadece SysV başlatma betiğine özgü seçeneklere yer verilmiştir\&. Diğer argümanlar için \fBhttpd\fR kılavuz sayfasına bakınız\&.
+ 
+ 
+.TP
+\fBstart\fR
+Apache \fBhttpd\fR artalan sürecini başlatır\&. Zaten çalışmaktaysa bir hata verir\&. \fBapachectl -k start\fR komutuna eşdeğerdir\&.  
+.TP
+\fBstop\fR
+Apache \fBhttpd\fR artalan sürecini durdurur\&. \fBapachectl -k stop\fR komutuna eşdeğerdir\&.  
+.TP
+\fBrestart\fR
+Apache \fBhttpd\fR artalan sürecini yeniden başlatır; çalışmıyorsa çalıştırılır\&. Artalan sürecinin ölü olmadığından emin olmak için yeniden başlatmadan önce \fBconfigtest\fR seçeneği verilmiş gibi yapılandırma dosyaları sınanır\&. \fBapachectl -k restart\fR komutuna eşdeğerdir\&.  
+.TP
+\fBfullstatus\fR
+\fBmod_status\fR üzerinden tam bir durum raporu gösterir\&. Bunun çalışması için sunucuda \fBmod_status\fR etkinleştirilmiş olmalı ve sisteminizde \fBlynx\fR gibi bir metin kipi HTTP tarayıcı kurulu olmalıdır\&. Durum raporuna erişmek için kullanılacak adres betik içinde STATUSURL değişkenine atanabilir\&.  
+.TP
+\fBstatus\fR
+Özet halinde bir durum raporu gösterir\&. O an sunulmakta olan isteklerin gösterilmemesi dışında \fBfullstatus\fR seçeneği gibidir\&.  
+.TP
+\fBgraceful\fR
+Apache \fBhttpd\fR artalan sürecini \fInazikçe\fR yeniden başlatır; çalışmıyorsa çalıştırılır\&. O an hizmet sunmakta olan çocuk süreçleri hemen durdurmaması dışında normal yeniden başlatma gibidir\&. Bir yan etki olarak eski günlük dosyaları hemen kapatılmaz\&. Yani, günlük dosyalarını döndüren bir betik kullanıyorsanız yenilerini başlatmadan önce eski dosyaların tamamen kapandığından emin olmak için belli bir süre beklemeniz gerekecektir\&. Artalan sürecinin ölü olmadığından emin olmak için yeniden başlatmadan önce \fBconfigtest\fR seçeneği verilmiş gibi yapılandırma dosyaları sınanır\&. \fBapachectl -k graceful\fR komutuna eşdeğerdir\&.  
+.TP
+\fBgraceful-stop\fR
+Apache \fBhttpd\fR artalan sürecini \fInazikçe\fR durdurur\&. O an hizmet sunmakta olan çocuk süreçleri hemen durdurmaması dışında normal durdurma gibidir\&. Bir yan etki olarak eski günlük dosyaları hemen kapatılmaz\&. \fBapachectl -k graceful-stop\fR komutuna eşdeğerdir\&.  
+.TP
+\fBconfigtest\fR
+Yapılandırma dosyasında sözdizimi denetimi yapılmasını sağlar\&. Yapılandırma dosyaları çözümlenir ve bir sorun yoksa bir Syntax Ok raporu verilir fakat, bir hata varsa o hataya ilişkin ayrıntılı bilgi verilir\&. \fBapachectl -t\fR komutuna eşdeğerdir\&.  
+ 
+.PP
+Aşağıdaki seçenek eski sürümlerde kullanılmaktaydı, fakat artık kullanılmamaktadır\&.
+ 
+ 
+.TP
+startssl
+\fBhttpd\fR programını SSL destekli başlatmak için, yapılandırma dosyanızı ilgili yönergeleri içermesi için elden geçirmeli ve normal \fBapachectl start\fR komutunu kullanmalısınız\&.  
+ 

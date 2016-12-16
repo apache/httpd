@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1174747 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htaccess.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite et les fichiers .htaccess</title>
+
+<summary>
+
+<p>Ce document est un compl&eacute;ment de la <a
+href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
+<module>mod_rewrite</module>. Il d&eacute;crit les changements apport&eacute;s aux r&egrave;gles
+lorsqu'on utilise mod_rewrite dans les fichiers .htaccess, et comment
+travailler avec ces changements.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
+<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Redirection et remise en
+correspondance</a></seealso>
+<!-- <seealso><a href="access.html">Controlling access</a></seealso> -->
+<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
+<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
+<seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+
+</manualpage>

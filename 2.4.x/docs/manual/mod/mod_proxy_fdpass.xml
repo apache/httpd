@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_fdpass.xml.meta">
+
+<name>mod_proxy_fdpass</name>
+<description>fdpass external process support module for
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_fdpass.c</sourcefile>
+<identifier>proxy_fdpass_module</identifier>
+<compatibility>Available for unix in version 2.3 and later</compatibility>
+
+<summary>
+    <p>This module <em>requires</em> the service of <module
+    >mod_proxy</module>. It provides support for the passing the socket of the
+    client to another process.</p>
+
+    <p><code>mod_proxy_fdpass</code> uses the ability of AF_UNIX domain
+    sockets to <a href="http://www.freebsd.org/cgi/man.cgi?query=recv">pass an
+    open file descriptor</a> to allow another process to finish handling a request.
+    </p>
+
+    <p>The module has a <code>proxy_fdpass_flusher</code> provider interface,
+    which allows another module to optionally send the response headers, or even
+    the start of the response body.  The default <code>flush</code> provider
+    disables keep-alive, and sends the response headers, letting the external
+    process just send a response body.
+    </p>
+    
+    <p>In order to use another provider, you have to set the <code>flusher</code>
+    parameter in the <directive module="mod_proxy">ProxyPass</directive> directive.
+    </p>
+
+    <p>At this time the only data passed to the external process is the client
+    socket. To receive a client socket, call recvfrom with an allocated
+    <a href="http://www.kernel.org/doc/man-pages/online/pages/man3/cmsg.3.html"
+    ><code>struct cmsghdr</code></a>. Future versions of this module may include
+    more data after the client socket, but this is not implemented at this time.
+    </p>
+</summary>
+
+<seealso><module>mod_proxy</module></seealso>
+</modulesynopsis>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1728020 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cgi.xml.meta">
+
+<name>mod_cgi</name>
+<description>Exécution des scripts CGI</description>
+<status>Base</status>
+<sourcefile>mod_cgi.c</sourcefile>
+<identifier>cgi_module</identifier>
+
+<summary>
+    <p>Tout fichier pris en compte par le gestionnaire
+    <code>cgi-script</code> sera traité en tant que script CGI et
+    exécuté par le serveur, sa sortie étant renvoyée au client. Les
+    fichiers sont associés à ce gestionnaire soit parce qu'ils possèdent
+    un nom contenant une extension définie par la directive <directive
+    module="mod_mime">AddHandler</directive>, soit parce qu'ils se
+    situent dans un répertoire défini par une directive <directive
+    module="mod_alias">ScriptAlias</directive>.</p>
+
+    <p>Comme introduction à l'utilisation des scripts CGI avec Apache,
+    voir notre tutoriel <a href="../howto/cgi.html">Les contenus
+    dynamiques avec CGI</a>.</p>
+
+    <p>Il est recommandé d'utiliser le module <module>mod_cgid</module>
+    à la place de <module>mod_cgi</module> lorsqu'on utilise un module MPM
+    multi-threadé sous Unix. Vus de l'utilisateur, les deux modules
+    sont pratiquement identiques.</p>
+
+    <p>À des fins de compatibilité ascendante, le gestionnaire
+    cgi-script sera aussi activé pour tout fichier possédant le type
+    MIME <code>application/x-httpd-cgi</code>. L'utilisation du type
+    MIME magic est obsolète.</p>
+</summary>
+
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
+<seealso><directive module="core">Options</directive> ExecCGI</seealso>
+<seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><a href="../suexec.html">Exécuter des programmes CGI sous des
+utilisateurs différents</a></seealso>
+<seealso><a href="http://www.ietf.org/rfc/rfc3875">La spécification
+CGI</a></seealso>
+
+<section id="env"><title>Les variables d'environnement CGI</title>
+    <p>Le serveur va définir les variables d'environnement CGI comme
+    décrit dans la <a
+    href="http://www.ietf.org/rfc/rfc3875">Spécification CGI</a>, de la
+    manière suivante :</p>
+
+    <dl>
+      <dt>PATH_INFO</dt>
+
+      <dd>Cette variable ne sera pas disponible si la directive
+      <directive module="core">AcceptPathInfo</directive> est
+      explicitement définie à <code>off</code>. Par défaut, si la
+      directive <directive>AcceptPathInfo</directive> n'est pas définie,
+      <module>mod_cgi</module> acceptera des informations de chemin (en
+      ajoutant /infos/chemin après le nom du script dans l'URI), alors
+      que le serveur de base retournera une erreur 404 NOT FOUND pour
+      les requêtes contenant des informations de chemin supplémentaires.
+      Ne pas définir la directive <directive>AcceptPathInfo</directive>
+      a le même effet sur les requêtes avec <module>mod_cgi</module> que
+      de la définir à <code>On</code>.</dd>
+
+      <dt>REMOTE_HOST</dt>
+
+      <dd>Cette variable ne sera définie que si la directive <directive
+      module="core">HostnameLookups</directive> est définie à
+      <code>on</code> (elle est à <code>off</code> par défaut), et si
+      une recherche DNS inverse sur l'adresse IP de l'hôte client
+      aboutit effectivement à un nom d'hôte.</dd>
+
+      <dt>REMOTE_IDENT</dt>
+
+      <dd>Cette variable ne sera définie que si la directive <directive
+      module="mod_ident">IdentityCheck</directive>
+      est définie à <code>on</code>, et si l'hôte client supporte le
+      protocole ident. Notez que l'on ne peut accorder une confiance
+      aveugle au contenu de cette variable car il peut être aisément
+      falsifié, et si un mandataire s'intercale entre le client et le
+      serveur, il est totalement inutilisable.</dd>
+
+      <dt>REMOTE_USER</dt>
+
+      <dd>Cette variable ne sera définie que si le script CGI fait
+      l'objet d'une authentification.</dd>
+
+    </dl>
+    <p>Ce module utilise aussi les fonctions de base <a
+    href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga0e81f9571a8a73f5da0e89e1f46d34b1">ap_add_common_vars</a>
+    et <a
+    href="https://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__SCRIPT.html#ga6b975cd7ff27a338cb8752381a4cc14f">ap_add_cgi_vars</a>
+    pour ajouter des variables d'environnement comme :</p> 
+       <dl>
+           <dt>DOCUMENT_ROOT</dt>
+
+           <dd>Prend la valeur définie par la directive <directive
+	   module="core">DocumentRoot</directive>.</dd>
+
+           <dt>SERVER_NAME</dt>
+
+           <dd>Le nom de domaine pleinement qualifié pour la requête considérée</dd>
+
+           <dt>SERVER_ADDR</dt>
+
+           <dd>L'adresse IP du serveur virtuel qui traite la requête</dd>
+
+           <dt>SERVER_ADMIN</dt>
+
+           <dd>Prend la valeur définie par la directive <directive
+	   module="core">ServerAdmin</directive>.</dd>
+      </dl>
+    <p>Pour une liste exhaustive de ces variables, vous pouvez écrire un script
+    CGI basique qui extrait toutes les variables d'environnement passées par
+    Apache selon un format adapté.
+    </p>
+</section>
+
+<section id="cgi-debug"><title>Débogage des scripts CGI</title>
+    <p>Le débogage des scripts CGI était difficile par le passé,
+    principalement parce qu'il n'était pas possible d'étudier la sortie
+    (sortie standard et erreurs) des scripts dont l'exécution échouait.
+    Les directives qui suivent permettent une journalisation plus détaillée des
+    erreurs.</p>
+
+    <section><title>Format du fichier journal CGI</title>
+      <p>Lorsqu'il est configuré, le journal des erreurs CGI enregistre
+      la sortie de tout programme CGI dont l'exécution ne s'effectue pas
+      correctement. Un script CGI dont l'exécution échoue provoque la
+      journalisation d'une grande quantité d'informations. Les deux
+      premières lignes possèdent toujours le format suivant :</p>
+
+      <example>
+        %% [<var>date</var>] <var>requête</var><br />
+        %% <var>état HTTP</var> <var>nom du script CGI</var>
+      </example>
+
+      <p>Si le script CGI n'a pas pu démarrer, le fichier journal
+      contiendra les deux lignes supplémentaires suivantes :</p>
+
+      <example>
+        %%erreur<br />
+        <var>message d'erreur</var>
+      </example>
+
+      <p>Par contre, si l'erreur provient du renvoi par le script
+      d'informations incorrectes dans les en-têtes (dû souvent à une
+      bogue du script), les informations suivantes sont journalisées
+      :</p>
+
+      <example>
+        %requête<br />
+        <var>Tous les en-têtes de requête HTTP reçus</var><br />
+        <var>Les entités POST ou PUT (s'il en existe)</var><br />
+        %réponse<br />
+        <var>Tous les en-têtes générés par le script CGI</var><br />
+        %stdout<br />
+        <var>la sortie standard CGI</var><br />
+        %stderr<br />
+        <var>la sortie d'erreurs standard CGI</var><br />
+      </example>
+
+      <p>(Les parties %stdout et %stderr seront absentes si le script
+      n'a rien envoyé sur la sortie standard ou la sortie
+      d'erreurs).</p>
+    </section>
+</section>
+
+<directivesynopsis>
+<name>ScriptLog</name>
+<description>Chemin du fichier journal des erreurs du script
+CGI</description>
+<syntax>ScriptLog <var>chemin fichier</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>ScriptLog</directive> permet de définir
+    le chemin du fichier journal des erreurs du script CGI. Si cette
+    directive n'est pas définie, aucune journalisation des erreurs n'est
+    effectuée. Si elle est définie, toute erreur CGI sera enregistrée
+    dans le fichier dont le nom est fourni en argument. S'il s'agit d'un
+    chemin de fichier relatif, il est considéré par rapport au
+    répertoire défini par la directive <directive
+    module="core">ServerRoot</directive>.
+    </p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      ScriptLog logs/cgi_log
+      </highlight>
+    </example>
+
+    <p>Ce journal sera ouvert par l'utilisateur sous lequel les
+    processus enfants s'exécutent, c'est à dire l'utilisateur spécifié
+    par la directive du serveur <directive
+    module="mod_unixd">User</directive>. Ceci implique que le
+    répertoire dans lequel se trouve le journal doit être accessible en
+    écriture pour cet utilisateur, ou bien que le fichier est créé
+    manuellement et accessible en écriture pour cet utilisateur. Si vous
+    placez le journal du script dans votre répertoire principal des
+    journaux, ne modifiez <strong>JAMAIS</strong> les permissions de ce
+    dernier afin de le le rendre accessible en écriture par
+    l'utilisateur sous lequel les processus enfants s'exécutent.</p>
+
+    <p>Notez que l'on ne doit activer la journalisation des scripts
+    qu'à des fins de débogage lors de l'écriture de scripts CGI, et non
+    de manière permanente sur un serveur en production. Elle n'est pas
+    optimisée en terme de performances et d'efficacité, et peut
+    présenter des problèmes de sécurité si on l'utilise dans un cadre
+    autre que celui pour lequel elle a été conçue.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptLogLength</name>
+<description>Taille maximale du fichier journal des scripts
+CGI</description>
+<syntax>ScriptLogLength <var>octets</var></syntax>
+<default>ScriptLogLength 10385760</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p>La directive <directive>ScriptLogLength</directive> permet de
+    définir la taille maximale du fichier journal des scripts CGI. Comme
+    le fichier journal accumule une grande quantité d'informations par
+    erreur CGI (tous les en-têtes de la requête, toutes les sorties du
+    script), il peut vite atteindre une grande taille. En limitant la
+    taille du fichier, cette directive permet d'éviter les problèmes que
+    causerait sa croissance sans limites. Lorsque le fichier a atteint
+    cette taille maximale, plus aucune information n'y est
+    enregistrée.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptLogBuffer</name>
+<description>Taille maximale des requêtes PUT ou POST qui seront
+enregistrées dans le journal du script</description>
+<syntax>ScriptLogBuffer <var>octets</var></syntax>
+<default>ScriptLogBuffer 1024</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<modulelist><module>mod_cgi</module><module>mod_cgid</module>
+</modulelist>
+
+<usage>
+    <p>Cette directive permet de limiter la taille du corps de toute
+    entité PUT ou POST qui sera enregistrée dans le journal, afin
+    de prévenir une croissance trop importante et trop rapide du fichier
+    journal due à la réception de corps de requête de grandes tailles.
+    Cette directive permet de modifier cette taille maximale, dont la
+    valeur par défaut est de 1024 octets.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

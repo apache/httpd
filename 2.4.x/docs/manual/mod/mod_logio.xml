@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_logio.xml.meta">
+
+<name>mod_logio</name>
+<description>Logging of input and output bytes per request</description>
+<status>Extension</status>
+<sourcefile>mod_logio.c</sourcefile>
+<identifier>logio_module</identifier>
+
+<summary>
+
+    <p>This module provides the logging of input and output number of
+    bytes received/sent per request. The numbers reflect the actual bytes
+    as received on the network, which then takes into account the
+    headers and bodies of requests and responses. The counting is done
+    before SSL/TLS on input and after SSL/TLS on output, so the numbers
+    will correctly reflect any changes made by encryption.</p>
+
+    <p>This module requires <module>mod_log_config</module>.</p>
+
+    <note>When KeepAlive connections are used with SSL, the overhead of the SSL
+    handshake is reflected in the byte count of the first request on the
+    connection.  When per-directory SSL renegotiation occurs, the bytes are associated
+    with the request that triggered the renegotiation.</note>
+
+</summary>
+
+<seealso><module>mod_log_config</module></seealso>
+<seealso><a href="../logs.html">Apache Log Files</a></seealso>
+
+<section id="formats">
+<title>Custom Log Formats</title>
+
+    <p>This module adds three new logging directives. The characteristics of the
+    request itself are logged by placing "<code>%</code>" directives in
+    the format string, which are replaced in the log file by the values as
+    follows:</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Format&nbsp;String</th>
+        <th>Description</th></tr>
+
+    <tr><td><code>%I</code></td>
+        <td>Bytes received, including request and headers, cannot be
+        zero.</td></tr>
+
+    <tr><td><code>%O</code></td>
+        <td>Bytes sent, including headers, cannot be zero.</td></tr>
+
+    <tr><td><code>%S</code></td>
+        <td>Bytes transferred (received and sent), including request and headers,
+        cannot be zero. This is the combination of %I and %O.<br />
+        Available in Apache 2.4.7 and later</td></tr>
+
+    <tr><td><code>%^FB</code></td>
+        <td>Delay in microseconds between when the request arrived and the
+        first byte of the response headers are written.  Only available if 
+        <directive>LogIOTrackTTFB</directive> is set to ON.<br />
+        Available in Apache 2.4.13 and later</td></tr>
+    </table>
+
+    <p>Usually, the functionality is used like this:</p>
+
+    <dl>
+      <dt>Combined I/O log format:</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>LogIOTrackTTFB</name>
+<description>Enable tracking of time to first byte (TTFB)</description>
+<syntax>LogIOTrackTTFB ON|OFF</syntax>
+<default>LogIOTrackTTFB OFF</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>none</override>
+<compatibility>Apache HTTP Server 2.4.13 and later</compatibility>
+
+<usage>
+    <p>This directive configures whether this module tracks the delay
+    between the request being read and the first byte of the response
+    headers being written.  The resulting value may be logged with the 
+    <code>%^FB</code> format.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

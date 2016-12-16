@@ -1,0 +1,3 @@
+# testing with conf/test03.conf
+httpd: Syntax error on line 5 of ./conf/test03.conf: macro 'bla' undefined
+# exit: 1

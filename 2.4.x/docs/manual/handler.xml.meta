@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
+
+<metafile reference="handler.xml">
+  <basename>handler</basename>
+  <path>/</path>
+  <relpath>.</relpath>
+
+  <variants>
+    <variant>en</variant>
+    <variant outdated="yes">es</variant>
+    <variant>fr</variant>
+    <variant outdated="yes">ja</variant>
+    <variant outdated="yes">ko</variant>
+    <variant>tr</variant>
+    <variant outdated="yes">zh-cn</variant>
+  </variants>
+</metafile>

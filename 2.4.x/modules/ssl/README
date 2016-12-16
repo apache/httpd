@@ -1,0 +1,106 @@
+SYNOPSIS
+
+ This Apache module provides strong cryptography for the Apache 2 webserver
+ via the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS
+ v1) protocols by the help of the SSL/TLS implementation library OpenSSL which
+ is based on SSLeay from Eric A. Young and Tim J. Hudson. 
+
+ The mod_ssl package was created in April 1998 by Ralf S. Engelschall 
+ and was originally derived from software developed by Ben Laurie for 
+ use in the Apache-SSL HTTP server project.  The mod_ssl implementation 
+ for Apache 1.3 continues to be supported by the modssl project 
+ <http://www.modssl.org/>.
+
+SOURCES
+
+ See the top-level LAYOUT file for file descriptions.
+
+ The source files are written in clean ANSI C and pass the ``gcc -O -g
+ -ggdb3 -Wall -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes
+ -Wmissing-declarations -Wnested-externs -Winline'' compiler test
+ (assuming `gcc' is GCC 2.95.2 or newer) without any complains. When
+ you make changes or additions make sure the source still passes this
+ compiler test.
+
+FUNCTIONS
+  
+ Inside the source code you will be confronted with the following types of
+ functions which can be identified by their prefixes:
+
+   ap_xxxx() ............... Apache API function
+   ssl_xxxx() .............. mod_ssl function
+   SSL_xxxx() .............. OpenSSL function (SSL library)
+   OpenSSL_xxxx() .......... OpenSSL function (SSL library)
+   X509_xxxx() ............. OpenSSL function (Crypto library)
+   PEM_xxxx() .............. OpenSSL function (Crypto library)
+   EVP_xxxx() .............. OpenSSL function (Crypto library)
+   RSA_xxxx() .............. OpenSSL function (Crypto library)
+
+DATA STRUCTURES
+
+ Inside the source code you will be confronted with the following
+ data structures:
+
+   server_rec .............. Apache (Virtual) Server
+   conn_rec ................ Apache Connection
+   request_rec ............. Apache Request
+   SSLModConfig ............ mod_ssl (Global)  Module Configuration
+   SSLSrvConfig ............ mod_ssl (Virtual) Server Configuration
+   SSLDirConfig ............ mod_ssl Directory Configuration
+   SSLConnConfig ........... mod_ssl Connection Configuration
+   SSLFilterRec ............ mod_ssl Filter Context
+   SSL_CTX ................. OpenSSL Context
+   SSL_METHOD .............. OpenSSL Protocol Method
+   SSL_CIPHER .............. OpenSSL Cipher
+   SSL_SESSION ............. OpenSSL Session
+   SSL ..................... OpenSSL Connection
+   BIO ..................... OpenSSL Connection Buffer
+
+ For an overview how these are related and chained together have a look at the
+ page in README.dsov.{fig,ps}. It contains overview diagrams for those data
+ structures. It's designed for DIN A4 paper size, but you can easily generate
+ a smaller version inside XFig by specifying a magnification on the Export
+ panel.
+
+INCOMPATIBILITIES
+
+ The following intentional incompatibilities exist between mod_ssl 2.x
+ from Apache 1.3 and this mod_ssl version for Apache 2:
+
+ o The complete EAPI-based SSL_VENDOR stuff was removed.
+ o The complete EAPI-based SSL_COMPAT stuff was removed.
+ o The <IfDefine> variable MOD_SSL is no longer provided automatically 
+
+MAJOR CHANGES 
+
+ For a complete history of changes for Apache 2 mod_ssl, see the 
+ CHANGES file in the top-level directory.  The following 
+ is a condensed summary of the major changes were made between 
+ mod_ssl 2.x from Apache 1.3 and this mod_ssl version for Apache 2:
+
+ o The DBM based session cache is now based on APR's DBM API only.
+ o The shared memory based session cache is now based on APR's APIs.
+ o SSL I/O is now implemented in terms of filters rather than BUFF
+ o Eliminated ap_global_ctx. Storing Persistent information in 
+   process_rec->pool->user_data. The ssl_pphrase_Handle_CB() and 
+   ssl_config_global_* () functions have an extra parameter now - 
+   "server_rec *" -  which is used to retrieve the SSLModConfigRec.
+ o Properly support restarts, allowing mod_ssl to be added to a server
+   that is already running and to change server certs/keys on restart
+ o Various performance enhancements
+ o proxy support is no longer an "extension", much of the mod_ssl core
+   was re-written (ssl_engine_{init,kernel,config}.c) to be generic so
+   it could be re-used in proxy mode.
+   - the optional function ssl_proxy_enable is provide for mod_proxy
+     to enable proxy support
+   - proxy support now requires 'SSLProxyEngine on' to be configured
+   - proxy now supports SSLProxyCARevocation{Path,File} in addition to
+     the original SSLProxy* directives
+ o per-directory SSLCACertificate{File,Path} is now thread-safe but
+   requires SSL_set_cert_store patch to OpenSSL
+ o the ssl_engine_{ds,ext}.c source files are obsolete and no longer
+   exist
+
+TODO
+
+ See the top-level STATUS file for current efforts and goals.

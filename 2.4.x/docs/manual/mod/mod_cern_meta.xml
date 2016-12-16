@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cern_meta.xml.meta">
+
+<name>mod_cern_meta</name>
+<description>CERN httpd metafile semantics</description>
+<status>Extension</status>
+<sourcefile>mod_cern_meta.c</sourcefile>
+<identifier>cern_meta_module</identifier>
+
+<summary>
+    <p>Emulate the CERN HTTPD Meta file semantics. Meta files are HTTP
+    headers that can be output in addition to the normal range of
+    headers for each file accessed. They appear rather like the
+    Apache .asis files, and are able to provide a crude way of
+    influencing the Expires: header, as well as providing other
+    curiosities. There are many ways to manage meta information,
+    this one was chosen because there is already a large number of
+    CERN users who can exploit this module.</p>
+
+    <p>More information on the <a
+    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    >CERN metafile semantics</a> is available.</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_asis</module></seealso>
+
+<directivesynopsis>
+<name>MetaFiles</name>
+<description>Activates CERN meta-file processing</description>
+<syntax>MetaFiles on|off</syntax>
+<default>MetaFiles off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Turns on/off Meta file processing on a per-directory basis.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaDir</name>
+<description>Name of the directory to find CERN-style meta information
+files</description>
+<syntax>MetaDir <var>directory</var></syntax>
+<default>MetaDir .web</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Specifies the name of the directory in which Apache can find
+    meta information files. The directory is usually a 'hidden'
+    subdirectory of the directory that contains the file being
+    accessed. Set to "<code>.</code>" to look in the same directory
+    as the file:</p>
+
+    <highlight language="config">MetaDir .</highlight>
+
+    <p>Or, to set it to a subdirectory of the directory containing the
+    files:</p>
+
+    <highlight language="config">MetaDir .meta</highlight>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MetaSuffix</name>
+<description>File name suffix for the file containing CERN-style
+meta information</description>
+<syntax>MetaSuffix <var>suffix</var></syntax>
+<default>MetaSuffix .meta</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>Specifies the file name suffix for the file containing the
+    meta information. For example, the default values for the two
+    directives will cause a request to
+    <code>DOCUMENT_ROOT/somedir/index.html</code> to look in
+    <code>DOCUMENT_ROOT/somedir/.web/index.html.meta</code> and
+    will use its contents to generate additional MIME header
+    information.</p>
+
+    <example><title>Example:</title>
+    <highlight language="config">
+      MetaSuffix .meta
+     </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 805049 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="perf-hp.xml.meta">
+  <parentdocument href="./">Notes sp&eacute;cifiques aux
+  plates-formes</parentdocument>
+
+  <title>Mise en oeuvre d'un serveur Web hautes performances sous
+  HPUX</title>
+
+  <summary>
+
+<pre>
+Date: Wed, 05 Nov 1997 16:59:34 -0800
+From: Rick Jones &lt;<a
+href="mailto:raj@cup.hp.com">raj@cup.hp.com</a>&gt;
+Reply-To: <a href="mailto:raj@cup.hp.com"
+>raj@cup.hp.com</a>
+Organization: Network Performance
+Subject: HP-UX tuning tips
+</pre>
+
+    <p>Traduction du corps du message cit&eacute; ci-dessus :</p>
+
+    <p>Voici quelques conseils de personnalisation pour HPUX &agrave; ajouter &agrave;
+    la page de personnalisation.</p>
+
+    <p>Pour HP-UX 9.X: mettre &agrave; jour vers la version 10.20<br />
+    Pour HP-UX 10.[00|01|10]: mettre &agrave; jour vers la version 10.20</p>
+
+    <p>Pour HP-UX 10.20:</p>
+
+    <p>Installez le dernier patch cumulatif &agrave; propos du transport ARPA.
+    Ceci va vous permettre de configurer la taille de la table de
+    hashage de recherche de connexion TCP. La valeur par d&eacute;faut est 256
+    conteneurs et doit &ecirc;tre une puissance de deux. &Agrave; cet effet, utilisez
+    adb pour modifier l'image *disque* du noyau. Le nom de la variable
+    est <code>tcp_hash_size</code>. Notez qu'il est imp&eacute;ratif d'utiliser
+    "<code>W</code>" pour sp&eacute;cifier une quantit&eacute; sur 32 bits, et non
+    "<code>w</code>" qui indique une valeur sur 16 bits, lors de la
+    modification de l'image disque car la variable
+    <code>tcp_hash_size</code> est une quantit&eacute; sur 32 bits.</p>
+
+    <p>Comment d&eacute;terminer cette valeur ? Examinez la sortie de <a
+    href="ftp://ftp.cup.hp.com/dist/networking/tools/connhist"
+    >ftp://ftp.cup.hp.com/dist/networking/tools/connhist</a>, et
+    comptez le nombre total de connexions TCP existant sur le syst&egrave;me.
+    Il est en g&eacute;n&eacute;ral souhaitable que ce nombre divis&eacute; par la taille de
+    la table de hashage soit raisonnablement petit, disons inf&eacute;rieur &agrave;
+    10. Les administrateurs peuvent consulter le document SPECweb96 de
+    HP pour quelques r&eacute;glages courants. On peut les trouver &agrave; <a
+    href="http://www.specbench.org/">http://www.specbench.org/</a>. Si
+    un syst&egrave;me HP-UX traite 1000 connexions SPECweb96 par seconde, une
+    valeur de temps <code>TIME_WAIT</code> de 60 secondes permettrait le
+    suivi de 60000 connexions TCP.</p>
+
+    <p>Les administrateurs peuvent tester la profondeur de leur file
+    d'attente d'&eacute;coute avec <a
+    href="ftp://ftp.cup.hp.com/dist/networking/misc/listenq"
+    >ftp://ftp.cup.hp.com/dist/networking/misc/listenq</a>.</p>
+
+    <p>Si Apache s'ex&eacute;cute sur un syst&egrave;me &agrave; base de PA-8000, il est
+    conseill&eacute; de modifier l'ex&eacute;cutable Apache avec la commande chatr
+    afin d'utiliser une page de grande taille. La commande sera du style
+    "<code>chatr +pi L &lt;BINARY&gt;</code>". Le GID de l'ex&eacute;cutable en
+    cours de fonctionnement doit poss&eacute;der le privil&egrave;ge
+    <code>MLOCK</code>. Pour assigner ce privil&egrave;ge <code>MLOCK</code>,
+    consultez <code>Setprivgrp(1m)</code>. La modification peut &ecirc;tre
+    valid&eacute;e en ex&eacute;cutant Glance et en examinant les portions de m&eacute;moire
+    du/des serveur(s) afin de s'assurer qu'elles montrent une fraction
+    non triviale du segment de texte verrouill&eacute;.</p>
+
+    <p>Si Apache s'ex&eacute;cute sur un syst&egrave;me MP (multi-processeurs), il est
+    conseill&eacute; d'&eacute;crire un petit programme qui utilise
+    <code>mpctl()</code> et permettant d'associer les processus aux
+    processeurs. Un simple algorithme <code>pid % numcpu</code> suffira
+    probablement. Cette modification peut aussi &ecirc;tre ajout&eacute;e dans le
+    code source.</p>
+
+    <p>Si l'administrateur s'int&eacute;resse au nombre de connexions
+    <code>FIN_WAIT_2</code>, il peut utiliser nettune pour diminuer la
+    valeur de <code>tcp_keepstart</code>. Il devra cependant &ecirc;tre
+    prudent - surtout ne pas diminuer cette valeur en dessous de, disons
+    deux &agrave; quatre minutes. Si <code>tcp_hash_size</code> a &eacute;t&eacute; d&eacute;fini,
+    il est probablement appropri&eacute; de laisser les connexions
+    <code>FIN_WAIT_2</code> prendre plus de temps &agrave; expirer (peut-&ecirc;tre
+    m&ecirc;me la valeur par d&eacute;faut de deux heures) - elles n'auront en
+    g&eacute;n&eacute;ral pas un grand impact sur les performances.</p>
+
+    <p>On peut ajouter d'autres choses au code de base, mais elles
+    feront peut-&ecirc;tre l'objet d'un autre email. N'h&eacute;sitez pas &agrave; m'envoyer
+    un message si vous &ecirc;tes int&eacute;ress&eacute;.</p>
+
+    <p>sinc&egrave;rement ,</p>
+
+    <p>rick jones</p>
+
+    <p><a href="http://www.netperf.org/netperf/"
+    >http://www.netperf.org/netperf/</a></p>
+
+  </summary>
+
+</manualpage>
+
+

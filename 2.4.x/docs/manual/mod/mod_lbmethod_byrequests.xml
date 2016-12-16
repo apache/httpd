@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_lbmethod_byrequests.xml.meta">
+
+<name>mod_lbmethod_byrequests</name>
+<description>Request Counting load balancer scheduler algorithm for <module
+>mod_proxy_balancer</module></description>
+<status>Extension</status>
+<sourcefile>mod_lbmethod_byrequests.c</sourcefile>
+<identifier>lbmethod_byrequests_module</identifier>
+<compatibility>Split off from <module>mod_proxy_balancer</module> in 2.3</compatibility>
+
+<summary>
+<p>This module does not provide any configuration directives of its own.
+It requires the services of <module>mod_proxy_balancer</module>, and
+provides the <code>byrequests</code> load balancing method..</p>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+
+<section id="requests">
+    <title>Request Counting Algorithm</title>
+    <p>Enabled via <code>lbmethod=byrequests</code>, the idea behind this
+    scheduler is that we distribute the requests among the
+    various workers to ensure that each gets their configured share
+    of the number of requests. It works as follows:</p>
+
+    <p><dfn>lbfactor</dfn> is <em>how much we expect this worker
+    to work</em>, or <em>the workers' work quota</em>. This is
+    a normalized value representing their "share" of the amount of
+    work to be done.</p>
+
+    <p><dfn>lbstatus</dfn> is <em>how urgent this worker has to work
+    to fulfill its quota of work</em>.</p>
+
+    <p>The <dfn>worker</dfn> is a member of the load balancer,
+    usually a remote host serving one of the supported protocols.</p>
+
+    <p>We distribute each worker's work quota to the worker, and then look
+    which of them needs to work most urgently (biggest lbstatus).  This
+    worker is then selected for work, and its lbstatus reduced by the
+    total work quota we distributed to all workers.  Thus the sum of all
+    lbstatus does not change(*) and we distribute the requests
+    as desired.</p>
+
+    <p>If some workers are disabled, the others will
+    still be scheduled correctly.</p>
+
+    <example><pre><code>for each worker in workers
+    worker lbstatus += worker lbfactor
+    total factor    += worker lbfactor
+    if worker lbstatus > candidate lbstatus
+        candidate = worker
+
+candidate lbstatus -= total factor</code></pre>
+    </example>
+
+    <p>If a balancer is configured as follows:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td></tr>
+    <tr><th>lbstatus</th>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td></tr>
+    </table>
+
+    <p>And <var>b</var> gets disabled, the following schedule is produced:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-50</em></td>
+        <td>0</td>
+        <td>25</td>
+        <td>25</td></tr>
+    <tr><th>lbstatus</th>
+        <td>-25</td>
+        <td>0</td>
+        <td><em>-25</em></td>
+        <td>50</td></tr>
+    <tr><th>lbstatus</th>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td><em>0</em></td></tr>
+    <tr><td colspan="5">(repeat)</td></tr>
+    </table>
+
+    <p>That is it schedules: <var>a</var> <var>c</var> <var>d</var>
+    <var>a</var> <var>c</var> <var>d</var> <var>a</var> <var>c</var>
+    <var>d</var> ... Please note that:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td>
+        <td>25</td></tr>
+    </table>
+
+    <p>Has the exact same behavior as:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th>
+        <th>d</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>This is because all values of <dfn>lbfactor</dfn> are normalized
+    with respect to the others. For:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th>
+        <th>c</th></tr>
+    <tr><th>lbfactor</th>
+        <td>1</td>
+        <td>4</td>
+        <td>1</td></tr>
+    </table>
+
+    <p>worker <var>b</var> will, on average, get 4 times the requests
+    that <var>a</var> and <var>c</var> will.</p>
+
+    <p>The following asymmetric configuration works as one would expect:</p>
+
+    <table style="data">
+    <tr><th>worker</th>
+        <th>a</th>
+        <th>b</th></tr>
+    <tr><th>lbfactor</th>
+        <td>70</td>
+        <td>30</td></tr>
+    <tr><td colspan="2">&nbsp;</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-30</em></td>
+        <td>30</td></tr>
+    <tr><th>lbstatus</th>
+        <td>40</td>
+        <td><em>-40</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>10</em></td>
+        <td>-10</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-20</em></td>
+        <td>20</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-50</em></td>
+        <td>50</td></tr>
+    <tr><th>lbstatus</th>
+        <td>20</td>
+        <td><em>-20</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-10</em></td>
+        <td>10</td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>-40</em></td>
+        <td>40</td></tr>
+    <tr><th>lbstatus</th>
+        <td>30</td>
+        <td><em>-30</em></td></tr>
+    <tr><th>lbstatus</th>
+        <td><em>0</em></td>
+        <td>0</td></tr>
+    <tr><td colspan="3">(repeat)</td></tr>
+    </table>
+
+    <p>That is after 10 schedules, the schedule repeats and 7 <var>a</var>
+    are selected with 3 <var>b</var> interspersed.</p>
+</section>
+
+</modulesynopsis>

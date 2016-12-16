@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 105569:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cache.xml.meta">
+
+<name>mod_cache</name>
+<description>URI를 키로 사용하여 내용을 캐쉬한다.</description>
+<status>Experimental</status>
+<sourcefile>mod_cache.c</sourcefile>
+<identifier>cache_module</identifier>
+
+<summary>
+    <note type="warning">
+      이 모듈은 실험적인 상태이다. 문서는 아직 작업중이다...
+    </note>
+
+    <p><module>mod_cache</module>는 같은 컴퓨터에 있는 내용이나
+    프록시된 내용을 캐쉬할 수 있는 <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>
+    호환 HTTP 내용캐쉬를 구현한다. <module>mod_cache</module>를
+    사용하려면 저장관리모듈(storage management module)이 필요하다.
+    기본 아파치 배포본에는 두가지 저장관리모듈이 있다:</p>
+    <dl>
+    <dt><module>mod_cache_disk</module></dt>
+    <dd>는 디스크기반 저장관리자를 구현한다.</dd>
+
+    <dt><module>mod_mem_cache</module></dt>
+    <dd>는 메모리기반 저장관리자를 구현한다.
+    <module>mod_mem_cache</module>는 파일기술자를 캐쉬하거나
+    힙(heap) 공간에 객체를 캐쉬하는 두가지 방식중 한가지 방법으로
+    동작하도록 설정할 수 있다. <module>mod_mem_cache</module>는
+    자신이 생성한 내용을 캐쉬하거나, (<dfn>역프록시(reverse proxy)</dfn>로
+    알려진) <directive module="mod_proxy">ProxyPass</directive>를
+    사용하여 <module>mod_proxy</module>를 위해 뒷단 서버내용을
+    캐쉬할 수 있다.</dd>
+    </dl>
+
+    <p>내용을 URI를 토대로 만든 키로 캐쉬에 저장하고 가져온다.
+    접근보호가 된 내용은 캐쉬하지않는다.</p>
+</summary>
+
+<section id="related"><title>관련된 모듈과 지시어</title>
+    <related>
+      <modulelist>
+        <module>mod_cache_disk</module>
+        <module>mod_mem_cache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheSize</directive>
+        <directive module="mod_cache_disk">CacheGcInterval</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheExpiryCheck</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_disk">CacheMaxFileSize</directive>
+        <directive module="mod_cache_disk">CacheTimeMargin</directive>
+        <directive module="mod_cache_disk">CacheGcDaily</directive>
+        <directive module="mod_cache_disk">CacheGcUnused</directive>
+        <directive module="mod_cache_disk">CacheGcClean</directive>
+        <directive module="mod_cache_disk">CacheGcMemUsage</directive>
+        <directive module="mod_mem_cache">MCacheSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectCount</directive>
+        <directive module="mod_mem_cache">MCacheMinObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
+        <directive module="mod_mem_cache">MCacheMaxStreamingBuffer</directive>
+      </directivelist>
+    </related>
+</section>
+
+<section id="sampleconf"><title>설정예</title>
+    <example><title>Sample httpd.conf</title>
+      #<br />
+      # 예제 캐쉬 설정<br />
+      #<br />
+      LoadModule cache_module modules/mod_cache.so<br />
+      <br />
+      &lt;IfModule mod_cache.c&gt;<br />
+      <indent>
+        #LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
+        <indent>
+          CacheRoot c:/cacheroot<br />
+          CacheSize 256<br />
+          CacheEnable disk  /<br />
+          CacheDirLevels 5<br />
+          CacheDirLength 3<br />
+        </indent>
+        &lt;/IfModule&gt; <br />
+        <br />
+        LoadModule mem_cache_module modules/mod_mem_cache.so<br />
+        &lt;IfModule mod_mem_cache.c&gt;<br />
+        <indent>
+          CacheEnable mem  /<br />
+          MCacheSize 4096<br />
+          MCacheMaxObjectCount 100<br />
+          MCacheMinObjectSize 1<br />
+          MCacheMaxObjectSize 2048<br />
+        </indent>
+        &lt;/IfModule&gt;<br />
+      </indent>
+      &lt;/IfModule&gt;
+    </example>
+</section>
+
+<directivesynopsis>
+<name>CacheEnable</name>
+<description>지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</description>
+<syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheEnable</directive> 지시어를 사용하면
+    <module>mod_cache</module>가 <var>url-string</var> 이하
+    url들을 캐쉬한다. 캐쉬 저장관리자는 <var>cache_type</var>
+    아규먼트로 지정한다. <var>cache_type</var> <code>mem</code>은
+    <module>mod_mem_cache</module>가 구현하는 메모리기반
+    저장관리자를 사용한다. <var>cache_type</var> <code>disk</code>는
+    <module>mod_cache_disk</module>가 구현하는 디스크기반
+    저장관리자를 사용한다. <var>cache_type</var> <code>fd</code>는
+    <module>mod_mem_cache</module>가 구현하는 파일기술자 캐쉬를
+    사용한다.</p>
+    <p>(아래 예와 같이) URL 공간이 다른
+    <directive>CacheEnable</directive> 지시어와 겹치면 실제로
+    한 저장관리자가 요청을 처리할때까지 두 저장관리자를 모두
+    실행한다. 설정파일에서 <directive>CacheEnable</directive>
+    지시어의 순서대로 저장관리자가 실행된다.</p>
+
+    <example>
+      CacheEnable  mem   /manual<br />
+      CacheEnable  fd    /images<br />
+      CacheEnable  disk  /<br />
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheHeader</name>
+<description>Add an X-Cache header to the response.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDisable</name>
+<description>특정 URL을 캐쉬하지 않는다</description>
+<syntax>CacheDisable <var> url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDisable</directive> 지시어를 사용하면
+    <module>mod_cache</module>가 <var>url-string</var> 이하의
+    url들을 캐쉬하지 <em>않는다</em>.</p>
+
+    <example><title>예제</title>
+      CacheDisable /local_files
+    </example>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheMaxExpire</name>
+<description>문서를 캐쉬하는 초단위 최대시간</description>
+<syntax>CacheMaxExpire <var>seconds</var></syntax>
+<default>CacheMaxExpire 86400 (하루)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheMaxExpire</directive> 지시어는 실제 서버를
+    검사하지않고 캐쉬가능한 HTTP 문서를 유지할 수 있는 초단위
+    최대시간을 지정한다. 즉, 문서는 최대한 이 설정값만큼 오래되었다.
+    문서가 만기시간을 지정하여도 이 최대값을 지킨다.</p>
+
+    <example>
+      CacheMaxExpire 604800
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinExpire</name>
+<description>The minimum time in seconds to cache a document</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDefaultExpire</name>
+<description>만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</description>
+<syntax>CacheDefaultExpire <var>seconds</var></syntax>
+<default>CacheDefaultExpire 3600 (one hour)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDefaultExpire</directive> 지시어는 문서의
+    만기시간과 최근수정시간이 없는 경우 문서를 캐쉬할 초단위
+    기본 시간을 지정한다. <directive>CacheMaxExpire</directive>로
+    지정한 값이 이 설정을 무시하지 <em>않는다</em>.</p>
+
+    <example>
+      CacheDefaultExpire 86400
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheQuickHandler</name>
+<description>Run the cache from the quick handler.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStaleOnError</name>
+<description>Serve stale content in place of 5xx responses.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreExpired</name>
+<description>Attempt to cache responses that the server reports as expired</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>Attempt to cache requests or responses that have been marked as no-store.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>Attempt to cache responses that the server has marked as private</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDetailHeader</name>
+<description>Add an X-Cache-Detail header to the response.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreNoLastMod</name>
+<description>응답에 Last Modified 헤더가 없다는 사실을 무시한다.</description>
+<syntax>CacheIgnoreNoLastMod On|Off</syntax>
+<default>CacheIgnoreNoLastMod Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>보통 최근수정일이 없는 문서는 캐쉬하지 않는다. 어떤 경우
+    최근수정일을 (예를 들어 <module>mod_include</module> 처리중에)
+    빼거나 처음부터 없었을 수가 있다.
+    <directive>CacheIgnoreNoLastMod</directive> 지시어는 최근수정일이
+    없는 문서도 반드시 캐쉬하도록 만든다. 문서에 최근수정일과
+    만기시간이 없는 경우 <directive>CacheDefaultExpire</directive>
+    지시어로 지정한 값을 만기시간으로 사용한다.</p>
+
+    <example>
+      CacheIgnoreNoLastMod On
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>Ignore query string when caching</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreURLSessionIdentifiers</name>
+<description>Ignore defined session identifiers encoded in the URL when caching
+</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreCacheControl</name>
+<description>클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</description>
+<syntax>CacheIgnoreCacheControl On|Off</syntax>
+<default>CacheIgnoreCacheControl Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>보통 no-cache나 no-store 헤더값을 가진 문서는 캐쉬에
+    저장하지않는다. <directive>CacheIgnoreCacheControl</directive>
+    지시어는 이런 행동을 변경한다.
+    <directive>CacheIgnoreCacheControl</directive> On을 사용하면
+    서버는 문서에 no-cache나 no-store 헤더값이 있어도 문서를
+    캐쉬한다. 인증이 필요한 문서는 <em>절대로</em> 캐쉬하지
+    않는다.</p>
+
+    <example>
+      CacheIgnoreCacheControl On
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheKeyBaseURL</name>
+<description>Override the base URL of reverse proxied cache keys.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLastModifiedFactor</name>
+<description>LastModified 시간으로 만기시간을 계산하는데 사용하는
+계수.</description>
+<syntax>CacheLastModifiedFactor <var>float</var></syntax>
+<default>CacheLastModifiedFactor 0.1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>문서에 만기시간은 없지만 최근수정일이 있는 경우 최근수정일
+    이후 지난 시간으로 만기시간을 계산한다.
+    <directive>CacheLastModifiedFactor</directive> 지시어는
+    만기시간을 계산하는 다음 공식에서 사용할 <var>factor</var>를
+    지정한다:
+
+    <code>expiry-period = time-since-last-modified-date * <var>factor</var>
+    expiry-date = current-date + expiry-period</code>
+
+    예를 들어, 문서가 10 시간 전에 마지막으로 수정되었고 <var>factor</var>가
+    0.1이라면 만기기간은 10*01 = 1 시간이 된다. 현재 시간이
+    3:00pm이라면 만기시간은 3:00pm + 1시간 = 4:00pm이다.
+
+    만기기간이 <directive>CacheMaxExpire</directive> 보다 길다면
+    <directive>CacheMaxExpire</directive>를 사용한다.</p>
+
+    <example>
+      CacheLastModifiedFactor 0.5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLock</name>
+<description>Enable the thundering herd lock.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockMaxAge</name>
+<description>Set the maximum possible age of a cache lock.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockPath</name>
+<description>Set the lock path directory.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreHeaders</name>
+<description>캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
+</description>
+<syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
+<default>CacheIgnoreHeaders None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>RFC 2616에 따르면 홉간(hop-by-hop) HTTP 헤더는 캐쉬에
+    저장하지 않는다. 홉간 HTTP 헤더에는 다음과 같은 것이 있으며,
+    <directive>CacheIgnoreHeaders</directive> 설정과 관계없이
+    <em>어떤</em> 경우에도 캐쉬에 저장되지 않는다.</p>
+
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><directive>CacheIgnoreHeaders</directive>는 캐쉬에 저장하면
+    안되는 HTTP 헤더를 추가로 지정한다. 예를 들어, 쿠키(cookie)를
+    캐쉬에 저장하면 안되는 경우가 있다.</p>
+
+    <p><directive>CacheIgnoreHeaders</directive>는 캐쉬에 저장하지
+    않을 HTTP 헤더들을 공백으로 구분한 목록을 받는다. (RFC 2616에
+    따라) 캐쉬에 홉간 헤더만 저장하지 않으려면,
+    <directive>CacheIgnoreHeaders</directive>를
+    <code>None</code>으로 설정한다.</p>
+
+    <example><title>예제 1</title>
+      CacheIgnoreHeaders Set-Cookie
+    </example>
+
+    <example><title>예제 2</title>
+      CacheIgnoreHeaders None
+    </example>
+
+    <note type="warning"><title>경고:</title>
+      <directive>CacheIgnoreHeaders</directive> 설정을 사용하여
+      <code>Expires</code> 같이 캐쉬 관리에 필요한 헤더를 저장하지
+      않으면, mod_cache는 비정상적으로 동작한다.
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

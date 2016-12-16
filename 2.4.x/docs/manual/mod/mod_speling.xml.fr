@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_speling.xml.meta">
+
+<name>mod_speling</name>
+<description>Tente de corriger les erreurs de casse dans les URLs ou les
+fautes de frappe mineures.</description>
+<status>Extension</status>
+<sourcefile>mod_speling.c</sourcefile>
+<identifier>speling_module</identifier>
+
+
+
+<summary>
+
+    <p>Il arrive que des requ&ecirc;tes pour des documents ne puissent pas
+    &ecirc;tre trait&eacute;es par le serveur Apache de base &agrave; cause d'une erreur
+    de frappe ou de casse. Ce module permet de traiter ce
+    probl&egrave;me en essayant de trouver un document correspondant, m&ecirc;me
+    lorsque tous les autres modules y ont renonc&eacute;. Sa m&eacute;thode de travail
+    consiste &agrave; comparer chaque nom de document du r&eacute;pertoire demand&eacute;
+    avec le document de la requ&ecirc;te <strong>sans tenir compte de la
+    casse</strong>, et en acceptant <strong>jusqu'&agrave; une erreur</strong>
+    (insertion, omission, inversion de caract&egrave;re ou caract&egrave;re
+    erron&eacute;). Une liste de tous les documents qui correspondent est alors
+    &eacute;labor&eacute;e en utilisant cette strat&eacute;gie.</p>
+
+    <p>Si apr&egrave;s le parcours du r&eacute;pertoire,</p>
+
+    <ul>
+      <li>aucun document correspondant n'a &eacute;t&eacute; trouv&eacute;, Apache proc&egrave;dera
+      normalement et renverra une erreur "document non trouv&eacute;".</li>
+
+      <li>un seul document correspondant pratiquement &agrave; la requ&ecirc;te a
+      &eacute;t&eacute; trouv&eacute;, celui-ci est renvoy&eacute; sous la forme d'une r&eacute;ponse de
+      redirection.</li>
+
+      <li>plusieurs documents pouvant correspondre ont &eacute;t&eacute; trouv&eacute;s, une
+      liste des documents est envoy&eacute;e au client afin que ce dernier
+      puisse s&eacute;lectionner le document correct.</li>
+    </ul>
+
+</summary>
+
+
+<directivesynopsis>
+<name>CheckSpelling</name>
+<description>Active le module de correction</description>
+<syntax>CheckSpelling on|off</syntax>
+<default>CheckSpelling Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Cette directive permet d'activer ou de d&eacute;sactiver le module de
+    correction. Lorsqu'il est activ&eacute;, rappelez-vous que :</p>
+
+    <ul>
+      <li>le parcours du r&eacute;pertoire n&eacute;cessaire &agrave; la correction aura un
+      impact sur les performances du serveur lorsque de nombreuses
+      corrections devront &ecirc;tre effectu&eacute;es au m&ecirc;me moment.</li>
+
+      <li>l'arborescence ne doit pas contenir de documents
+      sensibles qui pourraient &ecirc;tre consid&eacute;r&eacute;s par erreur comme
+      correspondant &agrave; la requ&ecirc;te.</li>
+
+      <li>le module ne corrige pas les noms d'utilisateur mal
+      orthographi&eacute;s (comme dans
+      <code>http://mon.serveur/~apahce/</code>), mais seulement les noms
+      de fichiers ou de r&eacute;pertoires.</li>
+
+      <li>les corrections s'appliquent strictement aux fichiers
+      existants, si bien qu'une requ&ecirc;te pour <code>&lt;Location
+      "/status"&gt;</code> pour &ecirc;tre trait&eacute;e de mani&egrave;re incorrecte comme
+      une requ&ecirc;te pour le fichier n&eacute;goci&eacute; "<code>/stats.html</code>".</li>
+    </ul>
+
+    <!-- XXX: is that really true?! -nd -->
+    <p>mod_speling ne doit pas &ecirc;tre activ&eacute; pour des r&eacute;pertoires o&ugrave; <a
+    href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
+    "corriger" les noms des ressources nouvellement cr&eacute;&eacute;es en fonction
+    des noms de fichiers existants ; par exemple, lors du chargement
+    d'un nouveau document <code>doc43.html</code>, il est possible qu'il
+    redirige vers un document existant <code>doc34.html</code>, ce qui
+    ne correspond pas &agrave; ce que l'on souhaite.
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>Limite l'action du module aux corrections de
+majuscules</description>
+<syntax>CheckCaseOnly on|off</syntax>
+<default>CheckCaseOnly Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Lorsqu'elle est d&eacute;finie &agrave; "on", cette directive permet de limiter
+    l'action du module aux inversions majuscule/minuscule. Les autres
+    corrections ne sont pas effectu&eacute;es.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

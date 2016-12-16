@@ -1,0 +1,92 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1450091 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="httxt2dbm.xml.meta">
+<parentdocument href="./">Programmes</parentdocument>
+
+<title>httxt2dbm - G&eacute;n&egrave;re des fichiers dbm &agrave; utiliser avec
+RewriteMap</title>
+
+<summary>
+    <p><code>httxt2dbm</code> permet, &agrave; partir d'une entr&eacute;e au format
+    texte, de g&eacute;n&eacute;rer des fichiers dbm &agrave; utiliser dans les directives
+    <directive module="mod_rewrite">RewriteMap</directive> avec le type
+    de table <code>dbm</code>.
+    </p>
+
+    <p>Si le fichier de sortie existe d&eacute;j&agrave;, il ne sera pas tronqu&eacute;. Les
+    nouvelles cl&eacute;s seront ajout&eacute;es et les cl&eacute;s pr&eacute;existantes mises &agrave;
+    jour.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><module>mod_rewrite</module></seealso>
+
+<section id="synopsis"><title>Syntaxe</title>
+    <p><code><strong>httxt2dbm</strong>
+    [ -<strong>v</strong> ]
+    [ -<strong>f</strong> <var>TYPE_DBM</var> ]
+    -<strong>i</strong> <var>TEXTE_SOURCE</var>
+    -<strong>o</strong> <var>SORTIE_DBM</var>
+    </code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code>-v</code></dt>
+    <dd>Sortie plus verbeuse</dd>
+
+    <dt><code>-f <var>TYPE_DBM</var></code></dt>
+    <dd>Sp&eacute;cifie le type DBM &agrave; utiliser pour le fichier de sortie.
+    S'il n'est pas sp&eacute;cifi&eacute;, c'est la valeur par d&eacute;faut de
+    l'<glossary>APR</glossary> qui sera utilis&eacute;e. Les types disponibles
+    sont :
+    <code>GDBM</code> pour les fichiers GDBM,
+    <code>SDBM</code> pour les fichiers SDBM,
+    <code>DB</code> pour les fichiers DB,
+    <code>NDBM</code> pour les fichiers NDBM,
+    <code>default</code> pour le type DBM par d&eacute;faut
+    </dd>
+
+    <dt><code>-i <var>TEXTE_SOURCE</var></code></dt>
+    <dd>Le fichier d'entr&eacute;e &agrave; partir duquel le fichier dbm sera cr&eacute;&eacute;. Le
+    fichier doit &ecirc;tre format&eacute; de fa&ccedil;on &agrave; ne contenir qu'un seul
+    enregistrement par ligne, de la forme : <code>cl&eacute; valeur</code>.
+    Voir la documentation de la directive <directive
+    module="mod_rewrite">RewriteMap</directive> pour plus de d&eacute;tails &agrave;
+    propos du format de ce fichier et de sa signification.
+    </dd>
+
+    <dt><code>-o <var>SORTIE_DBM</var></code></dt>
+    <dd>Nom du fichier dbm de sortie.</dd>
+    </dl>
+</section>
+
+<section id="examples"><title>Exemples</title>
+    <example>
+      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
+      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
+    </example>
+</section>
+
+</manualpage>

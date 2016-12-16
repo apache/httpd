@@ -1,0 +1,9 @@
+# testing with conf/test61.conf
+[core:warn] F4:1 x=line=17 on line 1 of macro 'f4' (defined on line 13 of "./conf/test61.conf") used on line 17 of "./conf/test61.conf"
+[core:warn] F3:1 x=line=17 on line 1 of macro 'f3' (defined on line 9 of "./conf/test61.conf") used on line 2 of "macro 'f4' (defined on line 13 of "./conf/test61.conf") used on line 17 of "./conf/test61.conf""
+[core:warn] F2:1 x=line=17 on line 1 of macro 'f2' (defined on line 5 of "./conf/test61.conf") used on line 2 of "macro 'f3' (defined on line 9 of "./conf/test61.conf") used on line 2 of "macro 'f4' (defined on line 13 of "./conf/test61.conf") used on line 17 of "./conf/test61.conf"""
+[core:warn] F1:1 x=line=17 on line 1 of macro 'f1' (defined on line 2 of "./conf/test61.conf") used on line 2 of "macro 'f2' (defined on line 5 of "./conf/test61.conf") used on line 2 of "macro 'f3' (defined on line 9 of "./conf/test61.conf") used on line 2 of "macro 'f4' (defined on line 13 of "./conf/test61.conf") used on line 17 of "./conf/test61.conf""""
+[core:error] done line 18. on line 18 of ./conf/test61.conf
+AH00526: Syntax error on line 18 of ./conf/test61.conf:
+Configuration processing stopped by Error directive
+# exit: 1

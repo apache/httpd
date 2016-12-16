@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
+<!-- English Revision: 105989:1223050 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_2.xml.meta">
+
+<title>아파치 2.2의 새로운 기능 개요</title>
+
+<summary>
+  <p>이 문서는 아파치 웹서버 2.0 버전과 2.2 버전간의 주된 차이점을
+     설명한다. 1.3 버전 이후의 새로운 기능은 <a
+     href="new_features_2_0.html">2.0 새로운 기능</a> 문서를
+     참고하라.</p>
+</summary>
+
+  <section id="core">
+    <title>핵심 부분에서 나아진 점</title>
+    <dl>
+
+      <dt>Authn/Authz</dt>
+      <dd>...</dd>
+
+      <dt>캐쉬</dt>
+      <dd>...</dd>
+
+      <dt>프록시</dt>
+      <dd>새로운 <module>mod_proxy_balancer</module> 모듈이
+      <module>mod_proxy</module>를 위한 부하분산 서비스를 제공한다.
+      새로운 <module>mod_proxy_ajp</module> 모듈은 <a
+      href="http://tomcat.apache.org/">아파치 톰캣</a>이
+      사용하는 <code>Apache JServ Protocol 1.3 버전</code>을
+      지원한다.</dd>
+
+      <dt>똑똑한 필터</dt>
+      <dd><module>mod_filter</module>는 출력필터순서를 동적으로
+      설정할 수 있다. 그래서 요청 헤더, 응답 헤더, 환경변수에
+      따라 선택적으로 필터를 사용할 수 있고, 2.0 구조의 의심스러운
+      의존관계와 순서 문제를 덜어준다.</dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>모듈에서 나아진 점</title>
+    <dl>
+      <dt><module>mod_authnz_ldap</module></dt>
+      <dd>이 모듈은 2.0의 <code>mod_auth_ldap</code> 모듈을
+      2.2의 <code>Authn/Authz</code> 구조로 옮긴 것이다. <directive
+      module="core">Require</directive> 지시어에서 LDAP
+      속성(attribute) 값과 복잡한 검색 필터를 사용할 수 있는
+      기능이 추가되었다.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd>아파치가 읽어들인 설정지시어를 파일명과 줄번호와 같이
+      보여주는 <code>?config</code> 아규먼트가 추가되었다. 모듈은
+      모든 요청 훅(hook)의 순서와 <code>httpd -V</code>와 비슷한
+      컴파일 정보도 보여준다.</dd>
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>모듈 개발자에게 달라진 점</title>
+    <dl>
+      <dt>APR 1.0 API</dt>
+
+      <dd>아파치 2.2는 APR 1.0 API를 사용한다. <code>APR</code>과
+      <code>APR-Util</code>에서 없어지기로 예정되었던 함수와
+      심볼이 모두 없어졌다. 자세한 내용은 <a
+      href="http://apr.apache.org/">APR 웹사이트</a>를 참고하라.</dd>
+
+      <dt>연결 오류 로그 기록</dt>
+
+      <dd>클라이언트와 연결에 발생한 오류를 로그에 기록하기위해
+      함수 <code>ap_log_cerror</code>를 새로 추가했다. 로그에
+      기록하면 문구에 클라이언트 IP 주소가 나온다.</dd>
+
+      <dt>설정 테스트용 훅 추가</dt>
+
+      <dd>사용자가 httpd에 <code>-t</code> 옵션을 사용한 경우에만
+      모듈이 특별한 코드를 실행하도록 훅 <code>test_config</code>를
+      새로 추가했다.</dd>
+
+      <dt>쓰레드기반 MPM의 스택크기 지정</dt>
+
+      <dd>모든 쓰레드기반 MPM의 스택크기를 지정하기위해
+      <code>ThreadStackSize</code> 지시어를 새로 추가했다. 쓰레드
+      스택크기 기본값이 작은 플레폼에서 일부 제삼자가 만든 모듈을
+      사용할 경우에 필요하다.</dd>
+
+      <dt>출력필터를 위한 프로토콜 처리</dt>
+
+      <dd>전에는 모든 필터에게 자신이 처리한 응답에 올바른 응답
+      헤더를 생성하는지 확인할 책임이 있었다. 이제 필터는
+      <code>ap_register_output_filter_protocol</code> 혹은
+      <code>ap_filter_protocol</code> 호출을 사용하여 일상적인
+      프로토콜 관리를 <module>mod_filter</module>에게 떠넘길
+      수 있다.</dd>
+    </dl>
+  </section>
+</manualpage>

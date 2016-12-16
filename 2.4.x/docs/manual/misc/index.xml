@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>Apache Miscellaneous Documentation</title>
+
+  <summary>
+
+    <p>Below is a list of additional documentation pages that apply
+    to the Apache web server development project.</p>
+
+    <note type="warning"><title>Warning</title>
+    <p>The documents below have not been fully updated
+    to take into account changes made in the 2.1 version of the
+    Apache HTTP Server. Some of the information may still be
+    relevant, but please use it with care.</p>
+    </note>
+
+    <dl>
+      <dt><a href="perf-tuning.html">Performance Notes - Apache
+      Tuning</a></dt>
+
+      <dd>
+        <p>Notes about how to (run-time and compile-time) configure
+        Apache for highest performance. Notes explaining why Apache
+        does some things, and why it doesn't do other things (which
+        make it slower/faster).</p>
+      </dd>
+
+      <dt><a href="security_tips.html">Security Tips</a></dt>
+
+      <dd>
+        <p>Some "do"s - and "don't"s - for keeping your Apache web
+        site secure.</p>
+      </dd>
+
+      <dt><a href="relevant_standards.html">Relevant Standards</a></dt>
+
+      <dd>
+        <p>This document acts as a reference page for most of the relevant
+        standards that Apache follows.</p>
+      </dd>
+
+      <dt><a href="password_encryptions.html">Password Encryption Formats</a></dt>
+
+      <dd>
+        <p>Discussion of the various ciphers supported by Apache for
+        authentication purposes.</p>
+      </dd>
+    </dl>
+
+  </summary>
+
+</manualpage>

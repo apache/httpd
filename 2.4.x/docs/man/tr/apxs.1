@@ -1,0 +1,251 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "APXS" 1 "2013-08-16" "Apache HTTP Sunucusu" "apxs"
+.nh
+.SH İSİM
+apxs \- Apache Eklenti Aracı
+
+.SH "KULLANIM"
+ 
+.PP
+\fBapxs\fR -\fBg\fR [ -\fBS\fR \fIisim=değer\fR ] -\fBn\fR \fImodüladı\fR
+ 
+.PP
+\fBapxs\fR -\fBq\fR [ -\fBv\fR ] [ -\fBS\fR \fIisim=değer\fR ] \fIsorgu\fR \&.\&.\&.
+ 
+.PP
+\fBapxs\fR -\fBc\fR [ -\fBS\fR \fIisim=değer\fR ] [ -\fBo\fR \fIdso-dosyası\fR ] [ -\fBI\fR \fIinclude-dizini\fR ] [ -\fBD\fR \fIisim=değer\fR ] [ -\fBL\fR \fIlib-dizini\fR ] [ -\fBl\fR \fIkütüphane-adı\fR ] [ -\fBWc,\fR\fIderleyici-seçenekleri\fR ] [ -\fBWl,\fR\fIilintileyici-seçenekleri\fR ] [ -\fBp\fR ] \fIdosya\fR \&.\&.\&.
+ 
+.PP
+\fBapxs\fR -\fBi\fR [ -\fBS\fR \fIisim=değer\fR ] [ -\fBn\fR \fImodüladı\fR ] [ -\fBa\fR ] [ -\fBA\fR ] \fIdso-dosyası\fR \&.\&.\&.
+ 
+.PP
+\fBapxs\fR -\fBe\fR [ -\fBS\fR \fIisim=değer\fR ] [ -\fBn\fR \fImodüladı\fR ] [ -\fBa\fR ] [ -\fBA\fR ] \fIdso-dosyası\fR \&.\&.\&.
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBapxs\fR, Apache Hiper Metin Aktarım Protokolü (HTTP) sunucusu için ek modül derleme ve kurulum aracıdır\&. Bu araç sayesinde, bir veya daha fazla kaynak veya nesne \fIdosya\fRsından bir devingen paylaşımlı nesne (DSO - "Dynamic Shared Object" kısaltması) derlemek ve bu nesneyi (modülü) Apache sunucusuna çalışma anında \fBmod_so\fR modülünün \fBLoadModule\fR yönergesi üzerinden yüklemek mümkün olmaktadır\&.
+ 
+.PP
+Bu eklenti mekanizmasını platformunuzda kullanmak için DSO desteğinin olması ve \fBhttpd\fR programının \fBmod_so\fR modülünü içerecek şekilde derlenmiş olması gerekir\&. Eğer bunlar mevcut değilse \fBapxs\fR aracı durumu size bildirecektir\&. Bunu aşağıdaki komutla kendiniz de sınayabilirsiniz:
+ 
+.nf
+
+      $ httpd -l
+    
+.fi
+ 
+.PP
+\fBmod_so\fR modülü gösterilen listede yer almalıdır\&. Bu gereksinimler sağlandığı takdirde \fBapxs\fR aracı sayesinde DSO mekanizması üzerinden kendi modüllerinizi kurmak suretiyle Apache sunucunuzun işlevselliğini kolayca arttırabilirsiniz\&. Örnek bir uygulama:
+ 
+.nf
+
+      $ apxs -i -a -c mod_foo\&.c
+      gcc -fpic -DSHARED_MODULE -I/dosya/yolu/apache/include -c mod_foo\&.c
+      ld -Bshareable -o mod_foo\&.so mod_foo\&.o
+      cp mod_foo\&.so /dosya/yolu/apache/modules/mod_foo\&.so
+      chmod 755 /dosya/yolu/apache/modules/mod_foo\&.so
+      [`foo' modülü /dosya/yolu/apache/etc/httpd\&.conf'ta etkinleştiriliyor]
+      $ apachectl restart
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so\&.c(303): loaded module foo_module
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started
+      $ _
+    
+.fi
+ 
+.PP
+\fIdosya\fR olarak bir C kaynak dosyası (\&.c), bir nesne dosyası (\&.o) ve hatta bir kütüphane arşivi archive (\&.a) belirtebilirsiniz\&. \fBapxs\fR aracı bu dosya uzantılarını tanıdığından C dosyalarını derleme işleminden, arşiv ve nesne dosyalarını ise doğrudan ilintileme işleminden geçirir\&. Fakat böyle önceden derlenmiş nesne dosyalarını kullanırken, devingen paylaşımlı nesne olarak kullanılmalarını sağlamak üzere konumdan bağımsız kod (PIC) üretecek şekilde derlenmiş olduklarından emin olmalısınız\&. Örneğin GCC'yi bunun için daima \fB-fpic\fR seçeneği ile kullanmalısınız\&. Diğer C derleyiciler için, \fBapxs\fR'in nesne dosyalarını derlerken kullanacağı seçenekleri öğrenmek için o derleyicilerin kılavuz sayfalarına bakınız\&.
+ 
+.PP
+Apache'deki DSO desteği ile ilgili daha ayrıntılı bilgi edinmek için \fBmod_so\fR belgesini okumakla yetinmeyip src/modules/standard/mod_so\&.c kaynak dosyasını da okuyunuz\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+.SS "Ortak Seçenekler"
+ 
+ 
+.TP
+\fB-n\fR \fImodüladı\fR
+\fB-i\fR (kurulum) ve \fB-g\fR (şablon üretimi) seçenekleri için modül ismi belirtmek amacıyla kullanılır\&. Bir modül ismi belirtmek için bu seçeneği kullanın\&. \fB-g\fR seçeneği için bu gereklidir\&. \fB-i\fR seçeneği için ise araç, modül ismini kaynağın ismine bakarak veya (son çare olarak) dosya isminden tahmin etmeye çalışarak saptamaya çalışır\&.  
+  
+.SS "Sorgu Seçenekleri"
+ 
+ 
+.TP
+\fB-q\fR \fIsorgu\fR
+httpd'yi derlemekte kullanılacak değişkenler ve ortam ayarları için bir sorgu gerçekleştirir\&. When invoked without \fIsorgu\fR belirtilmeksizin çağrıldığında, bilinen değişkenleri değerleriyle birlikte basar\&. İsteğe bağlı \fB-v\fR seçeneği liste çıktısını biçemler\&. .PP Modülünüzü yükleyecek \fBhttpd\fR'yi derlemek için kullanılacak ayarları elle belirtmek için kullanılır\&. Örneğin, Apache'nin C başlık dosyalarının yerini kendi Makefile dosyalarınızın içinde şöyle belirtebilirsiniz: INC=-I`apxs -q INCLUDEDIR`  
+  
+.SS "Yapılandırma Seçenekleri"
+ 
+ 
+.TP
+\fB-S\fR \fIisim=değer\fR
+Bu seçenek yukarıda açıklanan \fBapxs\fR ayarlarını değiştirir\&.  
+  
+.SS "Şablon Üretme Seçenekleri"
+ 
+ 
+.TP
+\fB-g\fR
+\fImodüladı\fR (\fB-n\fR seçeneğine bakınız) adında bir alt dizin oluşturur ve içine iki dosya yerleştirir: Kendi modülünüzü oluşturabilmeniz için veya \fBapxs\fR mekanizmaları ile hemen oynamaya başlayabilmeniz için mod_\fImodüladı\fR\&.c adında bir modül kaynak dosyası örneği ve bu modülü derleyip kurmayı kolaylaştırmak için bir Makefile dosyası\&.  
+  
+.SS "DSO Derleme Seçenekleri"
+ 
+ 
+.TP
+\fB-c\fR
+Bu seçenek derleme yapılacağını belirtir\&. Önce belirtilen C kaynak \fIdosyalar\fRını (\&.c), nesne dosyalarını (\&.o) elde etmek için derler\&. Sonra bunları kalan nesne dosyaları (\&.o ve \&.a) ile ilintileyerek \fIdso-dosyası\fR adında bir devingen paylaşımlı nesne oluşturur\&. Eğer \fB-o\fR seçeneği ile modül ismi belirtilmemişse \fIdosyalar\fR arasındaki ilk dosyanın ismine bakarak dosya ismi tahmin edilmeye çalışılır ve mod_\fIisim\fR\&.so dosya adı bu isimden elde edilir\&.  
+.TP
+\fB-o\fR \fIdso-dosyası\fR
+Oluşturulacak devingen paylaşımlı nesnenin ismini belirtmek için kullanılır\&. Modül ismi bu seçenekle belirtilmez ve \fIdosya\fR listesinden bir isim tahmini de yapılamazsa son çare olarak mod_unknown\&.so ismi kullanılır\&.  
+.TP
+\fB-D\fR \fIisim=değer\fR
+Bu seçenek doğrudan derleme komutlarına aktarılır\&. Bu seçeneği derleme işlemine kendi tanımlarınızı belirtmek için kullanın\&.  
+.TP
+\fB-I\fR \fIinclude-dizini\fR
+Bu seçenek doğrudan derleme komutlarına aktarılır\&. Bu seçeneği derleme işleminde kullanılmak üzere kendi başlık dosyalarınızı içeren dizinleri arama yollarına eklemek için kullanın\&.  
+.TP
+\fB-L\fR \fIlib-dizini\fR
+Bu seçenek doğrudan derleme komutlarına aktarılır\&. Bu seçeneği derleme işleminde kullanılmak üzere kendi kütüphane dizinlerinizi arama yollarına eklemek için kullanın\&.  
+.TP
+\fB-l\fR \fIkütüphane-adı\fR
+Bu seçenek doğrudan derleme komutlarına aktarılır\&. Bu seçeneği derleme işleminde kullanılmak üzere kendi kütüphanelerinizi arama yollarına eklemek için kullanın\&.  
+.TP
+\fB-Wc\fR,\fIderleyici-seçenekleri\fR
+Bu seçenek libtool --mode=compile komutuna doğrudan seçenek aktarmak için kullanılır\&. Bu seçeneği yerel derleyiciniz için gereken ek seçenekleri belirtmek için kullanın\&.  
+.TP
+\fB-Wl\fR,\fIilintileyici-seçenekleri\fR
+Bu seçenek libtool --mode=link komutuna doğrudan seçenek aktarmak için kullanılır\&. Bu seçeneği yerel ilintileyiciniz için gereken ek seçenekleri belirtmek için kullanın\&.  
+.TP
+\fB-p\fR
+Bu seçenek apxs'in apr/apr-util kütüphaneleriyle ilintilenmesini sağlar\&. apr/apr-util kütüphanelerini kullanan yardımcı uygulamaları derlerken yararlıdır\&.  
+  
+.SS "DSO Kurulum ve Yapılandırma Seçenekleri"
+  
+ 
+.TP
+\fB-i\fR
+Kurulum işlemini belirtir ve devingen olarak paylaşımlı nesneleri sunucunun \fImodules\fR dizinine kurar\&.  
+.TP
+\fB-a\fR
+İlgili LoadModule satırını Apache'nin httpd\&.conf yapılandırma dosyasına özdevinimli olarak ekleyerek veya böyle bir satır varsa bunu etkin kılarak modülü etkinleştirir\&.  
+.TP
+\fB-A\fR
+\fBLoadModule\fR yönergesini daha sonra etkinleştirmek üzere satırın başına bir diyez imi (#) yerleştirmesi dışında \fB-a\fR seçeneği ile aynıdır\&.  
+.TP
+\fB-e\fR
+Modülü kurmaya çalışmaksızın Apache'nin httpd\&.conf yapılandırma dosyasını \fB-i\fR işlemine benzer şekilde \fB-a\fR ve \fB-A\fR seçenekleri ile düzenleme işlemini belirtir\&.  
+  
+.SH "ÖRNEKLER"
+ 
+.PP
+Apache'nin sunucu işlevselliğini genişletmek amacıyla kullanacağınız mod_foo\&.c adında bir Apache modülünüz olduğunu varsayalım\&. Öncelikle, C kaynak dosyasını, Apache sunucusuna çalışma anında yüklenmeye uygun bir paylaşımlı nesne olarak derlemeniz gerekir\&. Bunu sağlamak için şu komutları vermelisiniz:
+ 
+.nf
+
+      $ apxs -c mod_foo\&.c
+      /dosya/yolu/libtool --mode=compile gcc \&.\&.\&. -c mod_foo\&.c
+      /dosya/yolu/libtool --mode=link gcc \&.\&.\&. -o mod_foo\&.la mod_foo\&.slo
+      $ _
+    
+.fi
+ 
+.PP
+Bundan sonra, Apache yapılandırmanızın bu paylaşımlı nesneyi yüklemek için bir \fBLoadModule\fR yönergesi içermesini sağlamalısınız\&. \fBapxs\fR bu adımı basitleştirmek amacıyla, paylaşımlı nesneyi sunucunun \fImodules\fR dizinine özdevinimli olarak kurmak ve httpd\&.conf dosyasını buna uygun olarak güncellemek için bir yol sağlar\&. Bu sonuç şöyle elde edilebilir:
+ 
+.nf
+
+      $ apxs -i -a mod_foo\&.la
+      /dosya/yolu/instdso\&.sh mod_foo\&.la /path/to/apache/modules
+      /dosya/yolu/libtool --mode=install cp mod_foo\&.la /dosya/yolu/apache/modules
+      \&.\&.\&.
+      chmod 755 /dosya/yolu/apache/modules/mod_foo\&.so
+      [`foo' modülü /dosya/yolu/apache/conf/httpd\&.conf'da etkinleştiriliyor] 
+      $ _
+    
+.fi
+ 
+.PP
+Yapılandıma dosyasına (eğer yoksa) şu satır eklenir:
+ 
+.nf
+
+      LoadModule foo_module modules/mod_foo\&.so
+    
+.fi
+ 
+.PP
+Bunu öntanımlı olarak iptal etmek isterseniz \fB-A\fR seçeneğini kullanmanız gerekir:
+ 
+.nf
+
+      $ apxs -i -A mod_foo\&.c
+    
+.fi
+ 
+.PP
+\fBapxs\fR mekanizmalarını hızlıca denemek için örnek bir Apache modül şablonunu ve bir Makefile dosyasını şöyle oluşturabilirsiniz:
+ 
+.nf
+
+      $ apxs -g -n foo
+      Creating [DIR]  foo
+      Creating [FILE] foo/Makefile
+      Creating [FILE] foo/modules\&.mk
+      Creating [FILE] foo/mod_foo\&.c
+      Creating [FILE] foo/\&.deps
+      $ _
+    
+.fi
+ 
+.PP
+Ardından bu örnek modülü bir paylaşımlı nesne olarak derleyip Apache sunucusuna yükleyebilirsiniz:
+ 
+.nf
+
+      $ cd foo
+      $ make all reload
+      apxs -c mod_foo\&.c
+      /dosya/yolu/libtool --mode=compile gcc \&.\&.\&. -c mod_foo\&.c
+      /dosya/yolu/libtool --mode=link gcc \&.\&.\&. -o mod_foo\&.la mod_foo\&.slo
+      apxs -i -a -n "foo" mod_foo\&.la
+      /dosya/yolu/instdso\&.sh mod_foo\&.la /dosya/yolu/apache/modules
+      /dosya/yolu/libtool --mode=install cp mod_foo\&.la /dosya/yolu/apache/modules
+      \&.\&.\&.
+       chmod 755 /dosya/yolu/apache/modules/mod_foo\&.so
+      [`foo' modülü /dosya/yolu/apache/conf/httpd\&.conf'ta etkinleştiriliyor]
+       apachectl restart
+       /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start
+      chmod 755 /dosya/yolu/apache/modules/mod_foo\&.so
+      [`foo' modülü /dosya/yolu/apache/etc/httpd\&.conf'ta etkinleştiriliyor]
+      apachectl restart
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so\&.c(303): loaded module foo_module
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started
+      $ _
+    
+.fi
+ 

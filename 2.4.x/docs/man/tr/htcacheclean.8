@@ -1,0 +1,146 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTCACHECLEAN" 8 "2013-04-17" "Apache HTTP Sunucusu" "htcacheclean"
+.nh
+.SH İSİM
+htcacheclean \- Disk arabelleğini temizler
+
+.SH "KULLANIM"
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] [ -\fBR\fR\fIboyut\fR ] -\fBp\fR\fIyol\fR [ -\fBl\fR\fIsınır\fR | -\fBL\fR\fIlimit\fR ]
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpiddosyası\fR ] [ -\fBR\fR\fIboyut\fR ] -\fBd\fR\fIsüre\fR -\fBp\fR\fIyol\fR [ -\fBl\fR\fIsınır\fR | -\fBL\fR\fIlimit\fR ]
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBv\fR ] [ -\fBR\fR\fIboyut\fR ] -\fBp\fR\fIyol\fR [ -\fBa\fR ] [ -\fBA\fR ]
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBR\fR\fIboyut\fR ] -\fBp\fR\fIyol\fR \fIurl\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBhtcacheclean\fR, mod_cache_disk deposunun boyutlarını belli sınırlar içinde veya kullanımdaki dosya düğümlerinin sınırları içinde tutmak için kullanılır\&. Bu araç ya elle ya da bir artalan süreci olarak çalıştırılır\&. Artalan süreci olarak çalıştırıldığında, silinecek arabellek içeriğini tespit etmek için arabellek dizinlerine belli aralıklarla bakmak dışında uykuda olur\&. Artalan sürecini temiz olarak durdurmak için TERM veya INT sinyali göndermeniz yeterlidir\&. Elle çalıştırıldığında, silinecek arabellek içeriğini tespit etmek için arabellek dizinlerine bir kereliğine bakar\&. Bir veya daha fazla URL belirtilmesi durumunda arabellekte olanlar arabellekten silinir\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-d\fR\fI süre\fR
+Artalanda çalışarak \fIsüre\fR dakikada bir arabelleği temizler\&. Bu seçenek \fB-D\fR, \fB-v\fR ve \fB-r\fR seçenekleri ile birlikte kullanılamaz\&. Artalan sürecini temiz olarak sonlandırmak için SIGTERM veya SIGINT göndermek yeterlidir\&.  
+.TP
+\fB-D\fR
+Kuru kuruya çalışıp, hiçbir şeyi silmez\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&. Kuru çalıştırma sırasında \fB-t\fR seçeneği ile dizinler silinmek istenirse, statlarda silinmiş görünen dosya düğümleri silinmiş dizinler olarak hesaba katılmaz ve tahmini olarak imlenir\&.  
+.TP
+\fB-v\fR
+Çıktı daha ayrıntılı olur\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&.  
+.TP
+\fB-r\fR
+İyice temizlik yapılır\&. Bunun için Apache HTTP sunucusunun çalışmadığı varsayılır (aksi takdirde arabellek içeriği bozulabilir)\&. \fB-t\fR seçeneğinin de uygulanmasını sağlar\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&.  
+.TP
+\fB-n\fR
+Nazik olur\&. Diğer süreçlerin yararına daha yavaş çalışır\&. (a) disk G/Ç işlemlerinde gecikmeler olursa ve (b) çekirdek bu arada başka bir süreci öne çekmişse \fBhtcacheclean\fR uyumayı tercih edecektir\&.  
+.TP
+\fB-t\fR
+Tüm boş dizinleri siler\&. Öntanımlı olarak, sadece arabellek dosyaları silinirse de bazı yapılandırmalarda büyük miktarda dizin oluşturulması bu seçeneğin kullanılmasını gerektirebilir\&. Yapılandırmanız çok sayıda dizin gerektiriyorsa ve dosya düğümlerinin veya dosya ayırma tablolarının tükenmesi sözkonusu ise bu seçeneğin kullanılması önerilir\&.  
+.TP
+\fB-p\fR\fI yol\fR
+\fIyol\fR, disk arabelleğinin kök dizini olarak belirtilir\&. CacheRoot yönergesinde belirtilen dizin olmalıdır\&.  
+.TP
+\fB-P\fR\fIpiddosyası\fR
+Artalan süreci olarak çalışmada süreç kimliğinin yazılacağı dosyanın adını belirtmek için kullanılır\&.  
+.TP
+\fB-R\fR\fIboyut\fR
+Disk bloklarının boyunu denkleştirmek için yuvarlanacak üst boyutu belirtmekte kullanılır\&. Arabellek bölümünün blok boyutunu belirler\&.  
+.TP
+\fB-l\fR\fI sınır\fR
+\fIsınır\fR, disk arabelleğinin toplam boyutu olarak belirtilir\&. Değerin öntanımlı olarak bayt cinsinden belirtileceği varsayılır\&. Değerin sonuna kilobayt için K, megabayt M, bayt için B harfi konulabilir\&.  
+.TP
+\fB-L\fR\fIlimit\fR
+Disk arabellek dosyası düğümü toplamının sınırını belirlemekte kullanılır\&.  
+.TP
+\fB-i\fR
+Akıllı olup sadece disk arabelleği değiştiği zaman çalışır\&. Bu seçenek \fB-d\fR seçeneği ile birlikte belirtilmek zorundadır\&.  
+.TP
+\fB-a\fR
+O an arabellekte saklanmakta olan URL'leri listeler\&. Birden fazla aynı URL varsa yalnız biri listelenir\&.  
+.TP
+\fB-A\fR
+O an arabellekte saklanmakta olan URL'leri öznitelikleri ile listeler\&. Öznitelikler şu sırayla verilir: url, header size, body size, status, entity version, date, expiry, request time, response time, body present, head request  
+ 
+.SH "BELLİ BİR URL'NİN SİLİNMESİ"
+ 
+.PP
+\fBhtcacheclean\fR tarafından aktarılan URL'ler arabellekten silinir\&. Bir URL birden fazla mevcutsa hepsi silinir\&.
+ 
+.PP
+Ters vekilli bir URL silinmişse, etkin URL \fBHost\fR başlığı \fBport\fR, \fByol\fR ve \fBsorgu\fR ile oluşturulur\&. Bir sorgu dizgesi olsun olmasın, URL içinde '?' daima açıkça belirtilmelidir\&. Örneğin, \fBlocalhost\fR sunucusundaki \fB/\fR yolu silinmek istenirse silinecek URL \fBhttp://localhost:80/?\fR olurdu\&.
+ 
+.SH "ARABELLEKTEKİ URL'LERİN LİSTELENMESİ"
+ 
+.PP
+\fBhtcacheclean\fR'e \fB-a\fR veya \fB-A\fR seçeneğinin aktarılmasıyla, arabellekteki URL'ler bulundukça her satıra bir URL gelecek biçemde listelenir\&. \fB-A\fR seçeneği URL'nin ardından arabellek içeriğini tamamını şu sırayla dökümler:
+ 
+ 
+.TP
+url
+Öğenin URL'si\&. 
+.TP
+header size
+Bayt cinsinden başlık uzunluğu\&. 
+.TP
+body size
+Bayt cinsinden gövde uzunluğu\&. 
+.TP
+status
+Arabellekteki yanıtın durumu\&. 
+.TP
+entity version
+Öğenin silinmeksizin kaç kere doğrulandığı\&. 
+.TP
+date
+Yanıt tarihi\&. 
+.TP
+expiry
+Yanıtın zaman aşımı tarihi\&. 
+.TP
+request time
+İsteğin başlama zamanı\&. 
+.TP
+response time
+İsteğin bitiş zamanı\&. 
+.TP
+body present
+0 ise istekle birlikte gövde saklanmaz, 1 ise saklanır\&. 
+.TP
+head request
+1 ise, öğe, gövde olmaksızın arabellekli bir HEAD isteği içerir, 0 ise içermez\&. 
+ 
+.SH "ÇIKIŞ DURUMU"
+ 
+.PP
+\fBhtcacheclean\fR, tüm işlemler başarıyla yerine getirildiğinde 0, aksi takdirde 1 döndürür\&. Bir URL belirtildiğinde, bu URL arablleklenmi ve silinmişse 0, aksi takdirde 2 döndürür\&. URL'nin silinmesi sırasında bir hata oluşursa 1 döndürür\&.
+ 

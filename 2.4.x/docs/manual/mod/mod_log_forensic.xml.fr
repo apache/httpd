@@ -1,0 +1,173 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1343880 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_log_forensic.xml.meta">
+
+<name>mod_log_forensic</name>
+<description>Journalisation l&eacute;gale des requ&ecirc;tes envoy&eacute;es au
+serveur</description>
+<status>Extension</status>
+<sourcefile>mod_log_forensic.c</sourcefile>
+<identifier>log_forensic_module</identifier>
+<compatibility><module>mod_unique_id</module> n'est plus obligatoire
+depuis la version 2.1</compatibility>
+
+<summary>
+    <p>Ce module permet la journalisation l&eacute;gale des requ&ecirc;tes client. La
+    journalisation s'effectuant avant et apr&egrave;s le traitement de la
+    requ&ecirc;te, le journal l&eacute;gal contient deux lignes pour chaque requ&ecirc;te.
+    Le processus de journalisation l&eacute;gale est tr&egrave;s strict, &agrave; savoir
+    :</p>
+
+    <ul>
+    <li>Le format est fig&eacute;. Vous ne pouvez pas modifier le format du
+    journal &agrave; l'ex&eacute;cution.</li>
+    <li>S'il ne peut pas enregistrer ses donn&eacute;es, le processus enfant se
+    termine aussit&ocirc;t, et peut &eacute;ventuellement enregistrer un vidage
+    m&eacute;moire (selon la d&eacute;finition de la directive <directive
+    module="mpm_common">CoreDumpDirectory</directive>).</li>
+    </ul>
+
+    <p>Pour interpr&eacute;ter les donn&eacute;es du journal l&eacute;gal, vous pouvez vous
+    aider du script <code>check_forensic</code> qui se trouve dans le
+    r&eacute;pertoire support de la distribution.</p>
+    <note>Note de traduction : le terme "l&eacute;gal" utilis&eacute; dans le pr&eacute;sent document ne sugg&egrave;re aucunement que
+    ce module apporte une valeur juridique aux journaux. Il est &agrave; comprendre dans le contexte
+    similaire &agrave; ce que l'on trouve en analyse medico-l&eacute;gale. En d'autres termes, la finalit&eacute; de ce module
+    est de simplifier les op&eacute;rations d'investigation autour du traitement des requ&ecirc;tes par le serveur.</note>
+</summary>
+<seealso><a href="../logs.html">Les fichiers journaux
+d'Apache</a></seealso>
+<seealso><module>mod_log_config</module></seealso>
+
+<section id="formats"><title>Format du journal Forensic</title>
+    <p>Chaque requ&ecirc;te fait l'objet d'une double journalisation. La
+    requ&ecirc;te est journalis&eacute;e une premi&egrave;re fois avant son traitement
+    (c'est &agrave; dire apr&egrave;s la r&eacute;ception des en-t&ecirc;tes). La deuxi&egrave;me entr&eacute;e
+    du journal est &eacute;crite <em>apr&egrave;s</em> le traitement de la requ&ecirc;te, en
+    fait au moment de la journalisation habituelle.</p>
+
+    <p>Un identifiant unique est attribu&eacute; &agrave; chaque requ&ecirc;te afin de
+    pouvoir l'identifier. Cette identifiant l&eacute;gal peut faire l'objet
+    d'un enregistrement dans le journal standard en utilisant l'&eacute;l&eacute;ment
+    de cha&icirc;ne de format <code>%{forensic-id}n</code>. Si vous utilisez
+    <module>mod_unique_id</module>, c'est l'identifiant qu'il g&eacute;n&egrave;re qui
+    sera utilis&eacute;.</p>
+
+    <p>La premi&egrave;re partie de la journalisation de la requ&ecirc;te enregistre
+    l'identifiant l&eacute;gal, la ligne de la requ&ecirc;te et tous les en-t&ecirc;tes
+    re&ccedil;us s&eacute;par&eacute;s par des caract&egrave;res pipe (<code>|</code>). Voici &agrave;
+    titre d'exemple &agrave; quoi pourrait ressembler une telle entr&eacute;e (tout
+    &eacute;tant rassembl&eacute; sur une seule ligne) :</p>
+
+    <example>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </example>
+
+    <p>Le caract&egrave;re plus ('+') de d&eacute;but indique qu'il s'agit de la
+    premi&egrave;re entr&eacute;e de journal pour cette requ&ecirc;te. La seconde entr&eacute;e ne
+    contiendra qu'un caract&egrave;re moins ('-') suivi de l'identifiant :</p>
+
+    <example>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </example>
+
+    <p>Le script <code>check_forensic</code> prend comme argument le nom
+    du fichier journal. Il recherche ces paires d'identifiants
+    <code>+</code>/<code>-</code> et affiche un message d'erreur si la
+    journalisation d'une requ&ecirc;te n'est pas compl&egrave;te.</p>
+</section>
+
+<section id="security"><title>Consid&eacute;rations &agrave; propos de
+s&eacute;curit&eacute;</title>
+    <p>Voir le document <a
+    href="../misc/security_tips.html#serverroot">conseils en mati&egrave;re de
+    s&eacute;curit&eacute;</a> pour des d&eacute;tails sur les raisons pour lesquelles votre
+    s&eacute;curit&eacute; pourrait &ecirc;tre compromise si le r&eacute;pertoire dans lequel les
+    fichiers journaux sont stock&eacute;s sont inscriptibles par tout autre
+    utilisateur que celui qui d&eacute;marre le serveur.</p>
+    <p>Les fichiers journaux peuvent contenir des donn&eacute;es sensibles
+    comme le contenu des en-t&ecirc;tes <code>Authorization:</code> (qui
+    peuvent contenir des mots de passe) ; ils ne doivent donc &ecirc;tre
+    lisibles que par l'utilisateur qui d&eacute;marre le serveur.</p>
+</section>
+
+<directivesynopsis>
+<name>ForensicLog</name>
+<description>D&eacute;finit le nom de fichier du journal l&eacute;gal</description>
+<syntax>ForensicLog <var>nom-fichier</var>|<var>pipe</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ForensicLog</directive> permet de
+    contr&ocirc;ler la journalisation des requ&ecirc;tes &agrave; des fins d'analyse
+    l&eacute;gale. Chaque entr&eacute;e du journal se voit assigner un identifiant
+    unique qui peut &ecirc;tre associ&eacute; &agrave; la requ&ecirc;te en utilisant la directive
+    <directive module="mod_log_config">CustomLog</directive> habituelle.
+    <module>mod_log_forensic</module> cr&eacute;e un &eacute;l&eacute;ment nomm&eacute;
+    <code>forensic-id</code>, qui peut &ecirc;tre ajout&eacute; au journal standard
+    en utilisant l'&eacute;l&eacute;ment de format <code>%{forensic-id}n</code>.</p>
+
+    <p>L'argument, qui permet de sp&eacute;cifier l'emplacement vers lequel le
+    journal l&eacute;gal sera &eacute;crit, peut contenir les deux types de valeurs
+    suivants :</p>
+
+    <dl>
+      <dt><var>nom-fichier</var></dt>
+      <dd>Un nom de fichier relatif au r&eacute;pertoire d&eacute;fini par la
+      directive <directive module="core">ServerRoot</directive>.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>Le caract&egrave;re pipe "<code>|</code>", suivi du chemin vers un
+      programme qui recevra les informations de la journalisation sur
+      son entr&eacute;e standard. Le nom du programme peut &ecirc;tre relatif au
+      r&eacute;pertoire d&eacute;fini par la directive <directive
+      module="core">ServerRoot</directive>.
+
+      <note type="warning"><title>S&eacute;curit&eacute; :</title>
+      <p>Si les journaux sont redirig&eacute;s vers un programme, ce dernier
+      s'ex&eacute;cutera sous l'utilisateur qui a d&eacute;marr&eacute;
+      <program>httpd</program>. Ce sera l'utilisateur root si le serveur
+      a &eacute;t&eacute; d&eacute;marr&eacute; par root ; v&eacute;rifiez que le programme est
+      s&eacute;curis&eacute; ou passe sous le contr&ocirc;le d'un utilisateur poss&eacute;dant des
+      droits restreints.</p>
+      </note>
+
+      <note><title>Note</title>
+        <p>Lors de la sp&eacute;cification d'un chemin de fichier sur les
+	plate-formes non-Unix, il faut prendre soin de ne pas oublier
+	que seuls les slashes directs doivent &ecirc;tre utilis&eacute;s, m&ecirc;me si la
+	plate-forme autorise l'emploi d'anti-slashes. D'une mani&egrave;re
+	g&eacute;n&eacute;rale, c'est une bonne id&eacute;e que de n'utiliser que des slashes
+	directs dans les fichiers de configuration.</p>
+      </note></dd>
+    </dl>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

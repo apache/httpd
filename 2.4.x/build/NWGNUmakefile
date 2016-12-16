@@ -1,0 +1,140 @@
+#
+# Declare the sub-directories to be built here
+#
+
+SUBDIRS = \
+	$(APR_WORK)/build \
+	$(EOLIST) 
+
+#
+# Get the 'head' of the build environment.  This includes default targets and
+# paths to tools
+#
+
+include $(AP_WORK)/build/NWGNUhead.inc
+
+#
+# build this level's files
+
+FILES_prebuild_headers = \
+	$(SRC)/include/ap_config_layout.h \
+	$(NWOS)/test_char.h \
+	$(PCRE)/config.h \
+	$(PCRE)/pcre.h \
+	$(EOLIST) 
+    
+nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp $(STDMOD)/cache/mod_cache.imp
+
+libs :: chkapr $(NWOS)/chartables.c
+
+$(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
+
+$(STDMOD)/cache/mod_cache.imp: make_nw_export.awk $(STDMOD)/cache/mod_cache.h $(STDMOD)/cache/cache_util.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
+
+$(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
+    
+nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
+	@echo $(DL)GEN  $@$(DL)
+	$(CC) $< @cc.opt
+
+cc.opt : NWGNUmakefile $(APBUILD)/NWGNUenvironment.inc $(APBUILD)/NWGNUtail.inc $(APBUILD)/NWGNUhead.inc
+	@echo $(DL)-P$(DL)> $@
+	@echo $(DL)-EP$(DL)>> $@
+	@echo $(DL)-nosyspath$(DL)>> $@
+	@echo $(DL)-w nocmdline$(DL)>> $@
+	@echo $(DL)$(DEFINES)$(DL)>> $@
+	@echo $(DL)-I$(SRC)/include$(DL)>> $@
+	@echo $(DL)-I$(HTTPD)$(DL)>> $@
+	@echo $(DL)-I$(STDMOD)/aaa$(DL)>> $@
+	@echo $(DL)-I$(STDMOD)/core$(DL)>> $@
+	@echo $(DL)-I$(NWOS)$(DL)>> $@
+	@echo $(DL)-I$(SERVER)/mpm/netware$(DL)>> $@
+	@echo $(DL)-I$(APR)/include$(DL)>> $@
+	@echo $(DL)-I$(APRUTIL)/include$(DL)>> $@
+	@echo $(DL)-ir $(NOVELLLIBC)$(DL)>> $@
+
+$(SRC)/include/ap_config_layout.h: $(NWOS)/netware_config_layout.h
+	@echo Creating $@
+	$(call COPY,$<,$@)
+
+$(PCRE)/%.h: $(PCRE)/%.h.generic
+	@echo Creating $@
+	$(call COPY,$<,$@)
+
+$(PCRE)/%.h: $(PCRE)/%.hw
+	@echo Creating $@
+	$(call COPY,$<,$@)
+
+ifneq "$(BUILDTOOL_AS_NLM)" "1"
+
+$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
+	@echo $(DL)GEN  $@$(DL)
+	$< $@
+
+%.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
+	@echo $(DL)Creating Build Helper $@$(DL)
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DHAVE_CONFIG_H $< -o $@
+
+$(NWOS)/test_char.h: gen_test_char.exe $(SERVER)/gen_test_char.c
+	@echo $(DL)GEN  $@$(DL)
+	$< > $@
+
+%.exe: $(SERVER)/%.c
+	@echo $(DL)Creating Build Helper $@$(DL)
+	$(CC_FOR_BUILD) $(CFLAGS_FOR_BUILD) -DCROSS_COMPILE $< -o $@
+
+else
+
+ifneq "$(wildcard $(NWOS)/chartables.c)" "$(NWOS)/chartables.c"
+$(error Error: required source $(NWOS)/chartables.c not found!)
+endif
+
+ifneq "$(wildcard $(NWOS)/test_char.h)" "$(NWOS)/test_char.h"
+$(error Error: required header $(NWOS)/test_char.h not found!)
+endif
+
+endif
+
+#
+# Check for minimum APR version
+#
+chkapr: $(APR)/build/nw_ver.awk $(APR)/include/apr_version.h
+	@echo $(DL)Checking for APR version...$(DL)
+	$(AWK) -v WANTED=$(APR_WANTED) -f $^
+
+#
+# You can use this target if all that is needed is to copy files to the
+# installation area
+#
+install :: nlms FORCE
+
+clean ::
+	$(call DEL,$(SRC)/include/ap_config_layout.h)
+	$(call DEL,$(PCRE)/config.h)
+	$(call DEL,$(PCRE)/pcre.h)
+	$(call DEL,$(STDMOD)/cache/mod_cache.imp)
+	$(call DEL,$(DAV)/main/dav.imp)
+	$(call DEL,$(NWOS)/httpd.imp)
+	$(call DEL,nw_export.i)
+	$(call DEL,cc.opt)
+	$(call DEL,NWGNUversion.inc)
+ifneq "$(BUILDTOOL_AS_NLM)" "1"
+	$(call DEL,$(NWOS)/chartables.c)
+	$(call DEL,$(NWOS)/test_char.h)
+	$(call DEL,dftables.exe)
+	$(call DEL,gen_test_char.exe)
+endif
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(APBUILD)/NWGNUtail.inc
+    

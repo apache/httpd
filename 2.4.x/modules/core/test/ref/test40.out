@@ -1,0 +1,18 @@
+# testing with conf/test40.conf
+AH00112: Warning: DocumentRoot [/foo/document/root/directory] does not exist
+[core:warn] location /A on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 15 of "./conf/test40.conf"
+[core:warn] location /B on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 16 of "./conf/test40.conf"
+[core:warn] location /C on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 17 of "./conf/test40.conf"
+[core:warn] location /D on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 18 of "./conf/test40.conf"
+[core:warn] location /E on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 19 of "./conf/test40.conf"
+[core:warn] location /G on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 20 of "./conf/test40.conf"
+[core:warn] location /H on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 21 of "./conf/test40.conf"
+[core:warn] location /J on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 22 of "./conf/test40.conf"
+[core:warn] location /K on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 23 of "./conf/test40.conf"
+[core:warn] location /L on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 24 of "./conf/test40.conf"
+[core:warn] location /M on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 25 of "./conf/test40.conf"
+[core:warn] location /N on line 2 of macro 'subdiraccesscontrol' (defined on line 7 of "./conf/test40.conf") used on line 26 of "./conf/test40.conf"
+[core:error] Stop configuration file processing. on line 33 of ./conf/test40.conf
+AH00526: Syntax error on line 33 of ./conf/test40.conf:
+Configuration processing stopped by Error directive
+# exit: 1

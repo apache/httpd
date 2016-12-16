@@ -1,0 +1,8 @@
+# testing with conf/test13.conf
+[macro:warn] macro 'foo' multiply defined: defined on line 2 of "./conf/test13.conf", redefined on line 12 of "./conf/test13.conf"
+[core:warn] macro FOO line 1 on line 1 of macro 'foo' (defined on line 2 of "./conf/test13.conf") used on line 10 of "./conf/test13.conf"
+[core:warn] redefined macro foo line 1 on line 1 of macro 'foo' (defined on line 12 of "./conf/test13.conf") used on line 16 of "./conf/test13.conf"
+[core:error] done line 18. on line 18 of ./conf/test13.conf
+AH00526: Syntax error on line 18 of ./conf/test13.conf:
+Configuration processing stopped by Error directive
+# exit: 1

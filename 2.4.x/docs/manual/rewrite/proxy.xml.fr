@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1673563 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Utilisation de mod_rewrite comme mandataire</title>
+
+<summary>
+
+<p>Ce document est un compl&eacute;ment de la <a
+href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
+<module>mod_rewrite</module>. Il d&eacute;crit comment utiliser le drapeau [P]
+de la directive RewriteRule pour mandater un contenu vers un autre
+serveur. Plusieurs recettes d&eacute;crivant des sc&eacute;narios courants sont
+fournies.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
+<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Redirection et remise en
+correspondance</a></seealso>
+<seealso><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
+<!--<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>-->
+<seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>Mandater du contenu avec mod_rewrite</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+    <p>
+    mod_rewrite impl&eacute;mente le drapeau [P] qui permet de passer des URLs,
+    via mod_proxy, &agrave; un autre serveur. Deux exemples sont fournis ici.
+    Dans le premier, une URL est pass&eacute;e directement &agrave; un autre serveur,
+    et servie comme si c'&eacute;tait une URL locale. Dans le deuxi&egrave;me, nous
+    mandatons un contenu manquant vers un serveur d'arri&egrave;re-plan.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Pour passer une URL &agrave; un autre serveur, on utilise le drapeau
+      [P] comme suit :</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/produits/"
+RewriteRule    "^widget/(.*)$"  "http://produits.example.com/widget/$1"  [P]
+ProxyPassReverse "/produits/objet/" "http://produits.example.com/objet/"
+</highlight>
+
+   <p>Dans le deuxi&egrave;me exemple, nous ne mandatons la requ&ecirc;te que si nous
+   ne trouvons pas la ressource localement. Ceci peut s'av&eacute;rer tr&egrave;s
+   utile lorsque vous effectuez une migration d'un serveur vers un
+   autre, et que vous n'&ecirc;tes pas certain que tout le contenu a d&eacute;j&agrave; &eacute;t&eacute;
+   migr&eacute;.</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)" "http://ancien.exemple.com/$1" [P]
+ProxyPassReverse "/" "http://ancien.exemple.com/"
+</highlight>
+    </dd>
+
+    <dt>Discussion :</dt>
+
+    <dd><p>Dans les deux cas, on ajoute une directive <directive
+    module="mod_proxy">ProxyPassReverse</directive> afin de s'assurer
+    que toute redirection en provenance du serveur d'arri&egrave;re-plan est
+    renvoy&eacute;e correctement au client.</p>
+
+    <p>Chaque fois que cela est possible, pr&eacute;f&eacute;rez l'utilisation de la
+    directive <directive module="mod_proxy">ProxyPass</directive> ou
+    <directive module="mod_proxy">ProxyPassMatch</directive> &agrave;
+    mod_rewrite.</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

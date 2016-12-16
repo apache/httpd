@@ -1,0 +1,9 @@
+# testing with conf/test46.conf
+[macro:warn] macro '$i' (defined on line 3 of "./conf/test46.conf") better prefix a macro name with any of '$%@'
+[macro:warn] macro '$i' (defined on line 3 of "./conf/test46.conf"): empty contents!
+[macro:warn] macro 'warnings' (defined on line 7 of "./conf/test46.conf") argument name 'second' (#2) without expected prefix, better prefix argument names with one of '$%@'.
+[macro:warn] macro 'warnings' (defined on line 7 of "./conf/test46.conf"): empty contents!
+[core:error] okay. on line 11 of ./conf/test46.conf
+AH00526: Syntax error on line 11 of ./conf/test46.conf:
+Configuration processing stopped by Error directive
+# exit: 1

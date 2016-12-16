@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_unixd.xml.meta">
+
+<name>mod_unixd</name>
+<description>Basic (required) security for Unix-family platforms.</description>
+<status>Base</status>
+<sourcefile>mod_unixd.c</sourcefile>
+<identifier>unixd_module</identifier>
+
+<seealso><a href="../suexec.html">suEXEC support</a></seealso>
+
+<directivesynopsis>
+<name>Group</name>
+<description>Group under which the server will answer
+requests</description>
+<syntax>Group <var>unix-group</var></syntax>
+<default>Group #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>Group</directive> directive sets the group under
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>. If
+    you start the server as a non-root user, it will fail to change to the
+    specified group, and will instead continue to run as the group of the
+    original user. <var>Unix-group</var> is one of:</p>
+
+    <dl>
+      <dt>A group name</dt>
+      <dd>Refers to the given group by name.</dd>
+
+      <dt><code>#</code> followed by a group number.</dt>
+      <dd>Refers to a group by its number.</dd>
+    </dl>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      Group www-group
+      </highlight>
+    </example>
+
+    <p>It is recommended that you set up a new group specifically for
+    running the server. Some admins use user <code>nobody</code>,
+    but this is not always possible or desirable.</p>
+
+    <note type="warning"><title>Security</title>
+      <p>Don't set <directive>Group</directive> (or <directive
+      module="mod_unixd">User</directive>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostGroup</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>User</name>
+<description>The userid under which the server will answer
+requests</description>
+<syntax>User <var>unix-userid</var></syntax>
+<default>User #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>User</directive> directive sets the user ID as
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>.
+    If you start the server as a non-root user, it will fail to change
+    to the lesser privileged user, and will instead continue to run as
+    that original user. If you do start the server as <code>root</code>,
+    then it is normal for the parent process to remain running as root.
+    <var>Unix-userid</var> is one of:</p>
+
+    <dl>
+      <dt>A username</dt>
+      <dd>Refers to the given user by name.</dd>
+
+      <dt># followed by a user number.</dt>
+      <dd>Refers to a user by its number.</dd>
+    </dl>
+
+    <p>The user should have no privileges that result in it being
+    able to access files that are not intended to be visible to the
+    outside world, and similarly, the user should not be able to
+    execute code that is not meant for HTTP requests. It is
+    recommended that you set up a new user and group specifically for
+    running the server. Some admins use user <code>nobody</code>, but
+    this is not always desirable, since the <code>nobody</code> user
+    can have other uses on the system.</p>
+
+    <note type="warning"><title>Security</title>
+      <p>Don't set <directive>User</directive> (or <directive
+      module="mod_unixd">Group</directive>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostUser</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>Directory for apache to run chroot(8) after startup.</description>
+<syntax>ChrootDir <var>/path/to/directory</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>mod_unixd</module></modulelist>
+<compatibility>Available in Apache 2.2.10 and later</compatibility>
+
+<usage>
+    <p>This directive tells the server to <var>chroot(8)</var> to the
+    specified directory after startup, but before accepting requests
+    over the 'net.</p>
+    <p>Note that running the server under chroot is not simple,
+    and requires additional setup, particularly if you are running
+    scripts such as CGI or PHP.  Please make sure you are properly
+    familiar with the operation of chroot before attempting to use
+    this feature.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>Enable or disable the suEXEC feature</description>
+<syntax>Suexec On|Off</syntax>
+<default>On if suexec binary exists with proper owner and mode,
+Off otherwise</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>When On, startup will fail if the suexec binary doesn't exist
+    or has an invalid owner or file mode.</p>
+    <p>When Off, suEXEC will be disabled even if the suexec binary exists
+    and has a valid owner and file mode.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

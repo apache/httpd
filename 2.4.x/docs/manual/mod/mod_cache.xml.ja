@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 504183:1673563 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_cache.xml.meta">
+
+<name>mod_cache</name>
+<description>URI をキーにしたコンテンツのキャッシュ</description>
+<status>Extension</status>
+<sourcefile>mod_cache.c</sourcefile>
+<identifier>cache_module</identifier>
+
+<summary>
+    <note type="warning">このモジュールは <directive 
+    module="mod_authz_host">Allow</directive> や <directive 
+    module="mod_authz_host">Deny</directive> ディレクティブを無視しますので、
+    注意して使って下さい。クライアントのホスト名、アドレスや環境変数を使って
+    アクセスを制限したいコンテンツに対してはキャッシュ機能を有効にするべきではありません。
+    </note>
+
+    <p><module>mod_cache</module> はローカルのコンテンツやプロキシされた
+    コンテンツをキャッシュするために使われる <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> 準拠の
+    HTTP コンテンツキャッシュを実装しています。<module>mod_cache</module>
+    の動作にはストレージを管理するモジュールが必要です。標準
+    Apache 配布には二つストレージ管理モジュールが含まれています:</p>
+    
+    <dl>
+    <dt><module>mod_cache_disk</module></dt>
+    <dd>ディスクを使用したストレージ管理機構を実装しています。</dd>
+
+    <dt><module>mod_mem_cache</module></dt>
+    <dd>メモリを使用したストレージ管理機構を実装しています。
+    <module>mod_mem_cache</module> は次の二つのモードのどちらかで動作する
+    ように設定できます: オープンされているファイル記述子をキャッシュするモードか、
+    ヒープ上でのオブジェクトの自体をキャッシュをするモードです。
+    <module>mod_mem_cache</module> はローカルで生成されるコンテンツや、
+    <module>mod_proxy</module> が
+    <directive module="mod_proxy">ProxyPass</directive> を使って設定されている
+    ときの (つまり<dfn>リバースプロキシ</dfn> での) バックエンドサーバの
+    コンテンツをキャッシュするのに使えます。</dd>
+    </dl>
+
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+    <p>より詳細な解説や例については<a href="../caching.html">キャッシュ機能</a>
+    を参照してください。</p>
+</summary>
+<seealso><a href="../caching.html">キャッシュ機能</a></seealso>
+
+<section id="related"><title>関連モジュールとディレクティブ</title>
+    <related>
+      <modulelist>
+        <module>mod_cache_disk</module>
+        <module>mod_mem_cache</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_dist">CacheMaxFileSize</directive>
+        <directive module="mod_mem_cache">MCacheSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectCount</directive>
+        <directive module="mod_mem_cache">MCacheMinObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheMaxObjectSize</directive>
+        <directive module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
+        <directive module="mod_mem_cache">MCacheMaxStreamingBuffer</directive>
+      </directivelist>
+    </related>
+</section>
+
+<section id="sampleconf"><title>サンプル設定</title>
+    <example><title>Sample httpd.conf</title>
+      #<br />
+      # Sample Cache Configuration<br />
+      #<br />
+      LoadModule cache_module modules/mod_cache.so<br />
+      <br />
+      &lt;IfModule mod_cache.c&gt;<br />
+      <indent>
+        #LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        # If you want to use mod_cache_disk instead of mod_mem_cache,<br />
+        # uncomment the line above and comment out the LoadModule line below.<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
+        <indent>
+          CacheRoot c:/cacheroot<br />
+          CacheEnable disk  /<br />
+          CacheDirLevels 5<br />
+          CacheDirLength 3<br />
+        </indent>
+        &lt;/IfModule&gt; <br />
+        <br />
+        LoadModule mem_cache_module modules/mod_mem_cache.so<br />
+        &lt;IfModule mod_mem_cache.c&gt;<br />
+        <indent>
+          CacheEnable mem  /<br />
+          MCacheSize 4096<br />
+          MCacheMaxObjectCount 100<br />
+          MCacheMinObjectSize 1<br />
+          MCacheMaxObjectSize 2048<br />
+        </indent>
+        &lt;/IfModule&gt;<br />
+        <br />
+        # When acting as a proxy, don't cache the list of security updates<br />
+        CacheDisable http://security.update.server/update-list/<br />
+      </indent>
+      &lt;/IfModule&gt;
+    </example>
+</section>
+
+<directivesynopsis>
+<name>CacheEnable</name>
+<description>指定したストレージ管理方式を使ってのキャッシュを有効にする</description>
+<syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheEnable</directive> ディレクティブで <module>mod_cache</module> 
+    モジュールが <var>url-string</var> 以下の URL をキャッシュするようにします。
+    キャッシュストレージ管理方式は <var>cache_type</var> 引数で指定します。
+    <var>cache_type</var> <code> mem</code> で、
+    <module>mod_mem_cache</module> で実装されているメモリを使ったストレージ
+    管理方式を使うように <module>mod_cache</module> に指示します。
+    <var>cache_type</var> <code>disk</code> で、
+    <module>mod_cache_disk</module> で実装されているディスクを使ったストレージ
+    管理を使うように <module>mod_cache</module> に指示します。
+    <var>cache_type</var> <code>fd</code> は <module>mod_cache</module> に
+    <module>mod_mem_cache</module> により実装されているファイル記述子の
+    キャッシュを使うように指示します。</p>
+
+    <p>(下の例のように) <directive>CacheEnable</directive> ディレクティブの
+    URL 空間が重複しているときは、該当するストレージ方式を順に試して、
+    実際にリクエストの処理ができると、その方式で処理します。
+    ストレージ管理方式が実行される順番は設定ファイル中の
+    <directive>CacheEnable</directive> の順番により決定されます。</p>
+
+    <example>
+      CacheEnable  mem   /manual<br />
+      CacheEnable  fd    /images<br />
+      CacheEnable  disk  /<br />
+    </example>
+
+    <p>フォワードプロクシサーバとして動作する場合、
+    <var>url-string</var> を使って、キャッシュを有効にするリモートサイトや
+    プロクシプロトコルを指定することもできます。</p>
+
+    <example>
+      # Cache proxied url's<br />
+      CacheEnable  disk  /<br /><br />
+      # Cache FTP-proxied url's<br />
+      CacheEnable  disk  ftp://<br /><br />
+      # Cache content from www.apache.org<br />
+      CacheEnable  disk  http://www.apache.org/<br />
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDisable</name>
+<description>特定の URL をキャッシュしない</description>
+<syntax>CacheDisable <var> url-string</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDisable</directive> ディレクティブで
+    <module>mod_cache</module> モジュールが <var>url-string</var> 以下の
+    URL をキャッシュ<em>しない</em>ようにします。</p>
+
+    <example><title>例</title>
+      CacheDisable /local_files
+    </example>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheMaxExpire</name>
+<description>ドキュメントをキャッシュする最大時間を秒数で表したもの</description>
+<syntax>CacheMaxExpire <var>seconds</var></syntax>
+<default>CacheMaxExpire 86400 (一日)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheMaxExpire</directive> ディレクティブは、
+    キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
+    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
+    なることになります。この最大値は、<transnote>レスポンス中で</transnote>ドキュメントと共に
+    ドキュメントの期日が提供されている場合でも適用されます。</p>
+
+    <example>
+      CacheMaxExpire 604800
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinExpire</name>
+<description>ドキュメントをキャッシュする最小秒数</description>
+<syntax>CacheMinExpire <var>seconds</var></syntax>
+<default>CacheMinExpire 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>キャッシュ可能な HTTP ドキュメントがあったときに、オリジンサーバに問い合わせることなく
+    保持する秒数の最小値は <directive>CacheMinExpire</directive> ディレクティブを使って設定します。
+    この値は、ドキュメントに妥当な有効期限が指定されていなかった場合にのみ使われます。</p>
+
+
+    <example>
+      CacheMinExpire 3600
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDefaultExpire</name>
+<description>期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</description>
+<syntax>CacheDefaultExpire <var>seconds</var></syntax>
+<default>CacheDefaultExpire 3600 (1時間)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive>CacheDefaultExpire</directive> ディレクティブは、ドキュメントに
+    有効期限 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
+    デフォルトの時間を指定します。<directive>CacheMaxExpire</directive> 
+    ディレクティブで指定された値はこの設定を上書き<em>しません</em>。</p>
+
+    <example>
+      CacheDefaultExpire 86400
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreNoLastMod</name>
+<description>応答に Last Modified が無くても気にしないようにする</description>
+<syntax>CacheIgnoreNoLastMod On|Off</syntax>
+<default>CacheIgnoreNoLastMod Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>通常、Last-Modified による最終修正時刻の無いドキュメントはキャッシュ
+    されません。(例えば <module>mod_include</module> による処理のときなどに)
+    Last-Modified 時刻が消去されたり、そもそも最初から提供されていない
+    状況があります。<directive>CacheIgnoreNoLastMod</directive> 
+    ディレクティブを使うと、Last-Modified 日時が指定されていない
+    ドキュメントでもキャッシュするように指定できます。ドキュメントに
+    最終修正時刻 (Last-Modified) 有効期限 (expiry) がない場合は、有効期限の
+    生成に <directive>CacheDefaultExpire</directive> が使われます。</p>
+
+    <example>
+      CacheIgnoreNoLastMod On
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreCacheControl</name>
+<description>キャッシュされているコンテンツを返さないようにクライアントから
+リクエストされても無視する</description>
+<syntax>CacheIgnoreCacheControl On|Off</syntax>
+<default>CacheIgnoreCacheControl Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Cache-Control: no-cache ヘッダや Pragma: no-store ヘッダのあるリクエストに
+    対しては、通常キャッシュを使いません。<directive>CacheIgnoreCacheControl</directive> 
+    ディレクティブを使うと、この動作を上書きできます。
+    <directive>CacheIgnoreCacheControl</directive> On とすると、
+    リクエストに no-cache という値があっても、キャッシュを使ってドキュメントを
+    返すようになります。認証を必要とするドキュメントは<em>決して</em>
+    キャッシュされません。</p>
+
+    <example>
+      CacheIgnoreCacheControl On
+    </example>
+
+    <note type="warning"><title>警告</title>
+       このディレクティブを使うと、ドキュメント取得時にキャッシュを使わないように
+       クライアントがリクエストしているにもかかわらず、キャッシュを
+       使うようになります。その結果、
+       古いコンテンツが送られ続けることになってしまうかもしれません。
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>キャッシュ時にクエリーストリングを無視する</description>
+<syntax>CacheIgnoreQueryString On|Off</syntax>
+<default>CacheIgnoreQueryString Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>クエリーストリング付のリクエストについては通常、クエリーストリングごとに
+    個別にキャッシュされます。
+    キャッシュされるのは有効期限が指定されている場合のみで、これは
+    RFC 2616/13.9 に従ったものです。
+    <directive>CacheIgnoreQueryString</directive> ディレクティブを使うと
+    有効期限が指定されていなくてもキャッシュしますし、
+    クエリーストリングが異なっていてもキャッシュを返します。
+    このディレクティブが有効になっている場合、キャッシュ機能の側面からみると、
+    あたかもリクエストにクエリーストリングがついていなかったかのように扱います。</p>
+
+    <example>
+      CacheIgnoreQueryString On
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLastModifiedFactor</name>
+<description>LastModified の日付に基づいて有効期限 (expiry) 
+を計算するための重みを指定する
+</description>
+<syntax>CacheLastModifiedFactor <var>float</var></syntax>
+<default>CacheLastModifiedFactor 0.1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>ドキュメントに Last-Modified の日付が無いけれども有効期限 (expiry) 
+    の日付があるというときに、有効期限を最終修正時刻からの経過時間として
+    計算するようにできます。有効期限を次の計算式に従って生成するのですが、
+    そのときに使われる <var>factor</var> を
+    <directive>CacheLastModifiedFactor</directive> ディレクティブで指定します。
+    </p>
+
+    <p><code>expiry-period = time-since-last-modified-date * <var>factor</var>
+    expiry-date = current-date + expiry-period</code></p>
+
+    <p>例えば、ドキュメントが 10 時間前に最後に修正されていて、
+    <var>factor</var> が 0.1 であれば、期日は 10*0.1 = 1 時間に
+    設定されます。現在時刻が 3:00pm であれば、計算された期日は
+    3:00pm + 1hour = 4:00pm になります。</p>
+
+    <p>期日が <directive>CacheMaxExpire</directive> で設定されている値
+    より大きくなってしまっている場合は、<directive>CacheMaxExpire</directive>
+    の設定値が優先されます。</p>
+
+    <example>
+      CacheLastModifiedFactor 0.5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreHeaders</name>
+<description>指定された HTTP ヘッダをキャッシュに保存しない。
+</description>
+<syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
+<default>CacheIgnoreHeaders None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>RFC 2616 によると、hop-by-hop HTTP ヘッダはキャッシュには保管されません。
+    以下のヘッダは hop-by-hop ヘッダに該当しますので、
+    <directive>CacheIgnoreHeaders</directive>
+    の設定に<em>関係なく</em>キャッシュには保管されません:</p>
+    <ul>
+      <li><code>Connection</code></li>
+      <li><code>Keep-Alive</code></li>
+      <li><code>Proxy-Authenticate</code></li>
+      <li><code>Proxy-Authorization</code></li>
+      <li><code>TE</code></li>
+      <li><code>Trailers</code></li>
+      <li><code>Transfer-Encoding</code></li>
+      <li><code>Upgrade</code></li>
+    </ul>
+
+    <p><directive>CacheIgnoreHeaders</directive> で
+    キャッシュに保管しない追加の HTTP ヘッダを指定します。
+    例えば、クッキーをキャッシュに保管しないようにした方がよい場合も
+    あるでしょう。</p>
+
+    <p><directive>CacheIgnoreHeaders</directive> の引数は、
+    キャッシュに保管しない HTTP ヘッダを空白区切りにしたリスト形式です。
+    キャッシュに保管しないヘッダが hop-by-hop ヘッダだけの場合
+    (RFC 2616 準拠の動作のとき) は、
+    <directive>CacheIgnoreHeaders</directive> を <code>None</code>
+    に設定できます。</p>
+
+    <example><title>例 1</title>
+      CacheIgnoreHeaders Set-Cookie
+    </example>
+
+    <example><title>例 2</title>
+      CacheIgnoreHeaders None
+    </example>
+
+    <note type="warning"><title>警告:</title>
+      <code>Expires</code> のような適切のキャッシュ管理のために必要な
+      ヘッダが <directive>CacheIgnoreHeaders</directive> の設定により
+      保管されていないときは、mod_cache の動作は定義されていません。
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>private と指定されているレスポンスのキャッシュを試みる。</description>
+<syntax>CacheStorePrivate On|Off</syntax>
+<default>CacheStorePrivate Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>通常 Cache-Control: private ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStorePrivate</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStorePrivate</directive> On で private ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
+
+    <example>
+      CacheStorePrivate On
+    </example>
+
+    <note type="warning"><title>警告:</title>
+       上流サーバがキャッシュしないように指定してきても、
+       それを無視してキャッシュするようになります。
+       望ましい挙動になるのは、本当に 'private' なキャッシュについてのみでしょう。
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>no-store と指定されているレスポンスのキャッシュを試みる。</description>
+<syntax>CacheStoreNoStore On|Off</syntax>
+<default>CacheStoreNoStore Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>通常 Cache-Control: no-store ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStoreNoCache</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStoreNoCache</directive> On で no-store ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
+
+    <example>
+      CacheStoreNoStore On
+    </example>
+
+    <note type="warning"><title>警告:</title>
+       RFC 2616 に記載されているように no-store ディレクティブは、
+       "不注意による機密情報の漏洩や残留 (バックアップテープ等) を防ぐ"
+       目的で使われますが、このオプションを有効にすると、
+       機密情報を保持することになってしまいます。
+       ですので、ここで警告しておきます。
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+</directivesynopsis>
+</modulesynopsis>

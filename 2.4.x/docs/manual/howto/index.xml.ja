@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1597081:1738639 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>How-To / チュートリアル</title>
+
+  <section id="howto">
+
+    <title>How-To / チュートリアル</title>
+
+    <dl>
+      <dt>認証と承認</dt>
+      <dd>
+        <p>認証とは、誰かが自分は誰であるかを名乗っているものを検証する
+        処理のことです。承認とは、誰かが望みの場所に辿り着けたり、
+        望みの情報を手に入れたりすることを許可する処理のことです。</p>
+
+        <p>参照: <a href="auth.html">認証と承認</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>アクセス制御</dt>
+      <dd>
+        <p>アクセス制御は、さまざまな条件でリソースに対するアクセスを
+        許可したり制限したりすることを指します。
+        実現方法には様々な異なる手法があります。</p>
+
+        <p>参照: <a href="access.html">アクセス制御</a></p>
+      </dd>
+    </dl>
+
+   <dl>
+      <dt>CGI による動的コンテンツ</dt>
+      <dd>
+        <p>CGI (Common Gateway Interface) はウェブサーバが外部のコンテンツ
+        生成プログラムとどのように相互動作をするかを定義します。
+        その外部プログラムは通常 CGI プログラムや CGI スクリプトと呼ばれます。
+        CGI はウェブサイトに動的なコンテンツを追加するための、
+        単純な方法です。この文書は Apache ウェブサーバに
+        CGI を設定し、CGI プログラムを書き始めるためのイントロダクションです。</p>
+
+        <p>参照: <a href="cgi.html">CGI: 動的コンテンツ</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt><code>.htaccess</code> ファイル</dt>
+      <dd>
+        <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更するための
+        方法を提供します。設定ディレクティブが書かれたファイルが、あるドキュメント
+        ディレクトリに置かれると、ディレクティブはそのディレクトリと
+        すべてのサブディレクトリに適用されます。</p>
+
+        <p>参照: <a href="htaccess.html"><code>.htaccess</code> ファイル</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>Server Side Includes イントロダクション</dt>
+      <dd>
+        <p>SSI (Server Side Includes) は HTML ページ中に書かれるディレクティブで、
+        ページが送られる時にサーバにより評価されます。これにより、ページ全体を
+        CGI プログラムで生成したり、他の動的な技術を使うことなく、既存の HTML
+        ページに動的に生成された内容を付加することができます。</p>
+
+        <p>参照: <a href="ssi.html">Server Side Includes (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>ユーザ毎のウェブディレクトリ</dt>
+      <dd>
+        <p>複数ユーザの存在するシステムでは、それぞれのユーザは <directive
+        module="mod_userdir">UserDir</directive> ディレクティブを使うことによって
+        ホームディレクトリ上にウェブサイトを作成することができます。
+        URL <code>http://example.com/~username/</code> を訪れた人は
+        ユーザ "<code>username</code>" のホームディレクトリの、<directive
+        module="mod_userdir">UserDir</directive> ディレクティブで指定された
+       サブディレクトリからコンテンツを得ることになります。</p>
+
+        <p>参照: <a href="public_html.html"
+        >ユーザウェブディレクトリ (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>
+
+

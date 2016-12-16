@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "../lang.dtd">
+<!-- English revision: 1741814 -->
+<!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
+<!-- Reviewed by Sergio Ramos-->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<language id="es">
+    <name>Spanish</name>
+    <charset>ISO-8859-1</charset>
+    <source-ext>.xml.es</source-ext>
+    <target-ext>.html.es</target-ext>
+
+    <chm>
+        <lang>0xC0A Spanish (International)</lang>
+        <toc-font>,8,0</toc-font>
+        <charset>windows-1252</charset>
+        <settings>Spanish (Spain), sorting order: international</settings>
+    </chm>
+
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Español</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">Funcionalidad Básica y Módulos
+            de Multi-Procesamiento</message>
+        <message id="othermodules">Otros Módulos</message>
+        <message id="obsoletemodules">Módulos Obsoletos</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">Módulos Obsoletos de
+            Apache</message>
+        <message id="apachemodule">Módulo Apache</message>
+        <message id="apachecore">Funcionalidad Básica de Apache</message>
+        <message id="apachempmcommon">Directivas Comunes de los MPM de
+            Apache</message>
+        <message id="apachempm">MPM de Apache</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">Descripción</message>
+        <message id="seealso">Consulte también</message>
+        <message id="topics">Temas</message>
+        <message id="status">Estado</message>
+        <message id="moduleidentifier">Identificador de Módulos</message>
+        <message id="sourcefile">Ficheros de Código Fuente</message>
+        <message id="compatibility">Compatibilidad</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">Módulos Relacionados</message>
+        <message id="relateddirectives">Directivas Relacionadas</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NOMBRE</message>
+        <message id="hyphenation">Cesura</message>
+        <message id="foundabug">Lista de Bugs</message>
+        <message id="httpdchangelog">lista de cambios en httpd</message>
+        <message id="httpdknownissues">Problemas conocidos</message>
+        <message id="httpdreportabug">Reportar un bug</message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">Sintaxis</message>
+        <message id="default">Valor por defecto</message>
+        <message id="context">Contexto</message>
+        <message id="override">Prevalece sobre</message>
+        <message id="status">Estado</message>
+        <message id="module">Módulo</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extensión</message>
+        <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">Externo</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">server config</message>
+        <message id="virtualhost" letter="v">virtual host</message>
+        <message id="directory" letter="d">directorio</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">Directivas</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <!-- the optional attribute before-name takes a string.
+             if "yes", the 'Directive' word is place before the name instead of
+             being placed behind. See fr.xml for an example. -->
+        <message id="directive">Directiva</message>
+        <message id="nodirectives">Este módulo no suministra ninguna
+            directiva.</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">Resumen de contenidos</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">ver glosario</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Servidor Apache HTTP</message>
+        <message id="apachehttpserver">Versión &httpd.major;.&httpd.minor;
+            del Servidor HTTP Apache</message>
+        <message id="apachedocalt">[DOCUMENTACIÓN DE APACHE]</message>
+        <message id="search">Buscar en Google</message> <!-- search button -->
+        <message id="index">Índice</message> <!-- deprecated -->
+        <message id="home">Página Principal</message> <!-- deprecated -->
+        <message id="comments">Comentarios</message>
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">Servidor HTTP</message>
+        <message id="documentation">Documentación</message>
+        <message id="version">Versión &httpd.major;.&httpd.minor;</message>
+
+        <!-- super menu -->
+        <message id="modules">Módulos</message>
+        <message id="faq">Preguntas Frecuentes</message>
+        <message id="glossary">Glosario</message>
+        <message id="sitemap">Mapa del sitio web</message>
+
+        <!-- footer line -->
+        <message id="before-license">Licencia bajo los términos de</message>
+        <message id="after-license"></message>
+        <message id="langavail">Idiomas disponibles</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">La Documentación para esta directiva 
+        	no ha sido traducida aún. Por favor use la versión en inglés 
+        	mientras tanto.
+            </message>
+
+        <!-- retirement -->
+        <message id="retired.headline">Por favor Nota</message>
+        <message id="retired.description">
+             <p>Esta documentación hace referencia a la versión <strong>2.0</strong> de Apache httpd, que <strong>ya no tiene soporte ni es mantenida</strong>. Actualice,y consulte la versión actual de httpd en su lugar, documentado en:</p>
+        </message>
+        <message id="retired.current">Versión actual de la documentación de Apache HTTP Server</message>
+        <message id="retired.document">Usted puede seguir <link>este enlace </link> para ir a la versión actual de este documento.</message>
+
+    </messages>
+</language>

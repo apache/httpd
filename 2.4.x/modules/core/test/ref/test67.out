@@ -1,0 +1,5 @@
+# testing with conf/test67.conf
+[core:error] done at line 1 without LF. on line 1 of ./conf/test67.conf
+AH00526: Syntax error on line 1 of ./conf/test67.conf:
+Configuration processing stopped by Error directive
+# exit: 1
