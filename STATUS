@@ -133,15 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
      +1: ylavic
 
-  *) event: kill the keepalive conns as early as possible during graceful
-     process exit.
-     trunk patch:
-       http://svn.apache.org/r1774525
-     2.4.x patch: trunk works
-     +1: jim
-     ylavic: reverted, see discussion on dev@ and r1774538 if you still
-             think a backport is necessary.
-
   *) event: close a race condition where we might re-enable listeners while they
      are already or about to be closed.
      trunk patch: http://svn.apache.org/r1774541
