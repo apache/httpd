@@ -1,3 +1,0 @@
-# testing with conf/test57.conf
-httpd: Syntax error on line 2 of ./conf/test57.conf: macro 'foo' (defined on line 2 of "./conf/test57.conf"): empty argument #2 name
-# exit: 1
