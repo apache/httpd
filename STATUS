@@ -139,6 +139,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/r1774525
      2.4.x patch: trunk works
      +1: jim
+     ylavic: reverted, see discussion on dev@ and r1774538 if you still
+             think a backport is necessary.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
