@@ -278,6 +278,7 @@ SET(MODULE_LIST
   "modules/cache/mod_socache_dc+O+distcache small object cache provider"
   "modules/cache/mod_socache_memcache+I+memcache small object cache provider"
   "modules/cache/mod_socache_shmcb+I+ shmcb small object cache provider"
+  "modules/cache/mod_socache_redis+I+redis small object cache provider"
   "modules/cluster/mod_heartbeat+I+Generates Heartbeats"
   "modules/cluster/mod_heartmonitor+I+Collects Heartbeats"
   "modules/core/mod_macro+I+Define and use macros in configuration files"
