@@ -142,6 +142,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: reverted, see discussion on dev@ and r1774538 if you still
              think a backport is necessary.
 
+  *) event: close a race condition where we might re-enable listeners while they
+     are already or about to be closed.
+     trunk patch: http://svn.apache.org/r1774541
+     2.4.x patch: trunk works
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
