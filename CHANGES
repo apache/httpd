@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.25
 
+  *) Fix some build issues related to various modules.
+     [Rainer Jung]
+
 Changes with Apache 2.4.24
 
   *) SECURITY: CVE-2016-8740 (cve.mitre.org)
