@@ -147,6 +147,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung
 
+  *) mod_socache_memcache: Add ../generators to include path for Windows
+     build. It now needs mod_status.h.
+     Untested but exactly analogous to what works for
+     mod_socache_shmcb and others.
+     trunk patch: http://svn.apache.org/r1774609
+     2.4.x patch: trunk works
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
