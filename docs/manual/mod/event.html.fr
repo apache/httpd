@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
@@ -177,6 +175,81 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
         <p>Ces améliorations sont disponible pour les connexions HTTP ou HTTPS.</p> 
 
+    
+
+    <h3><a name="graceful-close" id="graceful-close">Arrêt de processus en douceur et
+    utilisation du scoreboard</a></h3>
+        <p>Ce MPM présentait dans le passé des limitations de montée en
+	puissance qui
+	provoquaient l'erreur suivante : "<strong>scoreboard is full, not at
+	MaxRequestWorkers</strong>". La directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> permet de limiter le
+	nombre de requêtes pouvant être servies simultanément à un moment donné
+	ainsi que le nombre de processus autorisés (<code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> / <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>), alors que le
+	scoreboard représente l'ensemble des processus en cours d'exécution et
+	l'état de leurs threads de travail. Si le scoreboard est plein
+	(autrement dit si aucun des threads n'est dans un état inactif) et si le
+	nombre de requêtes actives servies est inférieur à <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>, cela signifie que
+	certains d'entre eux bloquent les nouvelles requêtes qui pourraient être
+	servies et sont en l'occurrence mises en attente (dans la limite de la
+	valeur imposée par la directive <code class="directive"><a href="../mod/mpm_common.html#listenbacklog">ListenBacklog</a></code>). La plupart du temps, ces
+	threads sont bloqués dans un état d'arrêt en douceur car ils attendent
+	de terminer leur travail sur une connexion TCP pour s'arrêter et ainsi libérer
+	une entrée dans le scoreboard (par exemple dans le cas du traitement des
+	requêtes de longue durée, des clients lents ou des connexions en
+	keep-alive). Voici deux scénarios courants :</p>
+        <ul>
+            <li>Pendant un <a href="../stopping.html#graceful">graceful
+	    restart</a>. Le processus parent demande à tous ses processus
+	    enfants de terminer leur travail et de s'arrêter pendant qu'il
+	    recharge la configuration et lance de nouveaux processus. Si les
+	    processus existants continuent de s'exécuter pendant un certain
+	    temps avant de s'arrêter, le scoreboard sera partiellement occupé
+	    jusqu'à ce que les entrées correspondantes soient libérées.
+            </li>
+            <li>Lorsque la charge du serveur diminue suffisamment pour que httpd
+	    commence à stopper certains processus (par exemple pour respecter la
+	    valeur de la directive <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>). Cette situation
+	    est problèmatique car lorsque la charge augmente à nouveau, httpd va
+	    essayer de lancer de nouveaux processus. Si cette situation se
+	    répète, le nombre de processus peut augmenter sensiblement,
+	    aboutissant à un mélange d'anciens processus tentant de s'arrêter et
+	    de nouveaux processus tentant d'effectuer un travail quelconque.
+            </li>
+        </ul>
+        <p>A partir de la version 2.4.24, mpm-event est plus intelligent et peut
+	traiter les arrêts graceful de manière plus efficace. Voici certaines de
+	ces améliorations :</p>
+        <ul>
+            <li>Utilisation de toutes les entrées du scoreboard dans la limite
+	    de la valeur définie par <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>. Les directives
+	    <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> et
+	    <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>
+	    permettent de limiter le nombre de processus actifs, alors que la
+	    directive <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
+	    prend aussi en compte les proccessus en arrêt graceful pour
+	    permettre l'utilisation d'entrées supplémentaires du scoreboard en
+	    cas de besoin. L'idée consiste à utiliser <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> pour indiquer à httpd
+	    conbien de processus supplémentaires seront tolérés avant
+	    d'atteindre les limites imposées par les ressources du système.
+            </li>
+            <li>Les processus en arrêt graceful doivent fermer leurs connexions
+	    en keep-alive.</li>
+            <li>Lors d'un arrêt graceful, s'il y a plus de threads de travail en
+	    cours d'exécution que de connexions ouvertes pour un processus
+	    donné, ces threads sont arrêtés afin de libérer les ressources plus
+	    vite (ce qui peut s'avérer nécessaire pour lancer de nouveaux
+	    processus).</li>
+            <li>Si le scoreboard est plein, empêche d'arrêter d'autres processus
+	    en mode graceful afin de réduire la charge jusqu'à ce que tous les
+	    anciens processus soient arrêtés (sinon la situation empirerait lors
+	    d'une remontée en charge).</li>
+        </ul>
+        <p>Le comportement décrit dans le dernier point est bien visible via
+	<code class="module"><a href="../mod/mod_status.html">mod_status</a></code> dans la table des connexions avec les deux
+	nouvelles colonnes "Slot" et "Stopping". La première indique le PID et
+	la seconde si le processus est en cours d'arrêt ou non ; l'état
+	supplémentaire "Yes (old gen)" indique un processus encore en exécution
+	après un redémarrage graceful.</p>
     
 
     <h3><a name="limitations" id="limitations">Limitations</a></h3>
