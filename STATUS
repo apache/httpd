@@ -148,6 +148,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: rjung
 
+  *) mod_ssl: Silence compiler warning
+     "686: warning: 'ok' may be used uninitialized in
+     this function"
+     This is a false positive, because the value of "ok"
+     will only be used if stapling_get_cached_response()
+     sets "rsp" to non-NULL in which case it will always
+     have set "ok".
+     trunk patch: http://svn.apache.org/1775173
+     2.4.x patch: trunk works
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
