@@ -142,6 +142,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim
 
+  *) mod_proxy_express.c: Silence compiler warning
+     "111: warning: 'backend' may be used uninitialized in this function"
+     trunk patch: http://svn.apache.org/r1741570
+     2.4.x patch: trunk works
+     +1: rjung
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
