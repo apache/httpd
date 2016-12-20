@@ -164,6 +164,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk work + CHANGES
      +1: covener
 
+  *) mod_http: Optimize bad headers handling workflow
+     Trunk version of patch:
+      http://svn.apache.org/r1775195
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+     +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
