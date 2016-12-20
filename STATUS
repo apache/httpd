@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      will only be used if stapling_get_cached_response()
      sets "rsp" to non-NULL in which case it will always
      have set "ok".
-     trunk patch: http://svn.apache.org/1775173
+     trunk patch: http://svn.apache.org/r1775173
      2.4.x patch: trunk works
      +1: rjung
 
