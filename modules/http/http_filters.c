@@ -1188,7 +1188,6 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
 typedef struct header_filter_ctx {
     int headers_sent;
-    int headers_error;
 } header_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
@@ -1203,23 +1202,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
     ap_bucket_error *eb = NULL;
-    apr_bucket *eos = NULL;
+    apr_status_t rv = APR_SUCCESS;
+    int recursive_error = 0;
 
     AP_DEBUG_ASSERT(!r->main);
 
     if (!ctx) {
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
     }
-    if (ctx->headers_sent) {
+    else if (ctx->headers_sent) {
         /* Eat body if response must not have one. */
         if (r->header_only || r->status == HTTP_NO_CONTENT) {
             apr_brigade_cleanup(b);
             return APR_SUCCESS;
         }
     }
-    else if (!ctx->headers_error && !check_headers(r)) {
-        ctx->headers_error = 1;
-    }
+
     for (e = APR_BRIGADE_FIRST(b);
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
@@ -1236,23 +1234,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, b);
         }
-        if (ctx->headers_error && APR_BUCKET_IS_EOS(e)) {
-            eos = e;
-        }
     }
-    if (ctx->headers_error) {
-        if (!eos) {
-            /* Eat body until EOS */
-            apr_brigade_cleanup(b);
-            return APR_SUCCESS;
-        }
 
+    if (!ctx->headers_sent && !check_headers(r)) {
         /* We may come back here from ap_die() below,
          * so clear anything from this response.
          */
-        ctx->headers_error = 0;
         apr_table_clear(r->headers_out);
         apr_table_clear(r->err_headers_out);
+        apr_brigade_cleanup(b);
 
         /* Don't recall ap_die() if we come back here (from its own internal
          * redirect or error response), otherwise we can end up in infinite
@@ -1260,17 +1250,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          * empty body (EOS only).
          */
         if (!check_headers_recursion(r)) {
-            apr_brigade_cleanup(b);
             ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
             return AP_FILTER_ERROR;
         }
-        APR_BUCKET_REMOVE(eos);
-        apr_brigade_cleanup(b);
-        APR_BRIGADE_INSERT_TAIL(b, eos);
         r->status = HTTP_INTERNAL_SERVER_ERROR;
+        e = ap_bucket_eoc_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+        e = apr_bucket_eos_create(c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
         r->content_type = r->content_encoding = NULL;
         r->content_languages = NULL;
         ap_set_content_length(r, 0);
+        recursive_error = 1;
     }
     else if (eb) {
         int status;
@@ -1283,7 +1274,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (r->assbackwards) {
         r->sent_bodyct = 1;
         ap_remove_output_filter(f);
-        return ap_pass_brigade(f->next, b);
+        rv = ap_pass_brigade(f->next, b);
+        goto out;
     }
 
     /*
@@ -1403,12 +1395,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     terminate_header(b2);
 
-    ap_pass_brigade(f->next, b2);
+    rv = ap_pass_brigade(f->next, b2);
+    if (rv != APR_SUCCESS) {
+        goto out;
+    }
     ctx->headers_sent = 1;
 
     if (r->header_only || r->status == HTTP_NO_CONTENT) {
         apr_brigade_cleanup(b);
-        return APR_SUCCESS;
+        goto out;
     }
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
@@ -1426,7 +1421,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
      * brigade won't be chunked properly.
      */
     ap_remove_output_filter(f);
-    return ap_pass_brigade(f->next, b);
+    rv = ap_pass_brigade(f->next, b);
+out:
+    if (recursive_error) {
+        return AP_FILTER_ERROR;
+    }
+    return rv;
 }
 
 /*
