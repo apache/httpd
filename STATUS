@@ -171,6 +171,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
      +1: rpluem,
 
+  *) util_fcgi: Fix crash with empty-valued envvars. PR60275
+     trunk patch: http://svn.apache.org/r1775487.
+     2.4.x patch: trunk works
+     +1 covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
