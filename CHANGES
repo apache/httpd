@@ -5,30 +5,6 @@ Changes with Apache 2.5.0
     modules add empty environment variables to the request. PR60275.
     [<alex2grad AT gmail.com>]
     
- *) mod_rewrite: Limit runaway memory use by short circuiting some kinds of
-    looping RewriteRules when the local path significantly exceeds 
-    LimitRequestLine.  PR 60478. [Jeff Wheelhouse <apache wheelhouse.org>]
-
- *) mod_proxy: Honor a server scoped ProxyPass exception when ProxyPass is
-     configured in <Location>, like in 2.2. PR 60458.
-     [Eric Covener]
-
-  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
-     PR 51350 [Luca Toscano]
- 
-  *) mod_lua: Fix default value of LuaInherit directive. It should be 
-     'parent-first' instead of 'none', as per documentation.  PR 60419
-     [Christophe Jaillet]
-
-  *) mod_ratelimit: Allow for initial "burst" amount at full speed before
-     throttling: PR 60145 [Andy Valencia <ajv-etradanalhos vsta.org>,
-     Jim Jagielski]
-
-  *) event: Allow to use the whole allocated scoreboard (up to ServerLimit
-     slots) to avoid scoreboard full errors when some processes are finishing
-     gracefully. Also, make gracefully finishing processes close all
-     keep-alive connections. PR 53555. [Stefan Fritsch]
-
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 
@@ -44,17 +20,6 @@ Changes with Apache 2.5.0
   *) core: Permit unencoded ';' characters to appear in proxy requests and
      Location: response headers. Corresponds to modern browser behavior.
      [William Rowe]
-
-  *) mod_cache: Use the actual URI path and query-string for identifying the
-     cached entity (key), such that rewrites are taken into account when
-     running afterwards (CacheQuickHandler off).  PR 21935.  [Yann Ylavic]
-
-  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
-     in the client certificate chain.  PR 55786.  [Yann Ylavic]
-
-  *) mod_reqtimeout: Fix body timeout disabling for CONNECT requests to avoid
-     triggering mod_proxy_connect's AH01018 once the tunnel is established.
-     [Yann Ylavic]
 
   *) mod_crypto: Add the all purpose crypto filters with support for HLS.
      [Graham Leggett]
