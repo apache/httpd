@@ -153,7 +153,7 @@ AP_DECLARE(apr_size_t) ap_fcgi_encoded_env_len(apr_table_t *env,
 
         envlen += keylen;
 
-        vallen = strlen(elts[i].val);
+        vallen = elts[i].val ? strlen(elts[i].val) : 0;
 
         if (vallen >> 7 == 0) {
             envlen += 1;
@@ -226,7 +226,7 @@ AP_DECLARE(apr_status_t) ap_fcgi_encode_env(request_rec *r,
             buflen -= 4;
         }
 
-        vallen = strlen(elts[i].val);
+        vallen = elts[i].val ? strlen(elts[i].val) : 0;
 
         if (vallen >> 7 == 0) {
             if (buflen < 1) {
@@ -262,8 +262,11 @@ AP_DECLARE(apr_status_t) ap_fcgi_encode_env(request_rec *r,
             rv = APR_ENOSPC; /* overflow */
             break;
         }
-        memcpy(itr, elts[i].val, vallen);
-        itr += vallen;
+
+        if (elts[i].val) {
+            memcpy(itr, elts[i].val, vallen);
+            itr += vallen;
+        }
 
         if (buflen == vallen) {
             (*starting_elem)++;
