@@ -433,13 +433,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             }
         }
     }
+
     *read = bytes_handled;
-
-    /* PR#43039: We shouldn't accept NULL bytes within the line */
-    if (strlen(*s) < bytes_handled) {
-        return APR_EINVAL;
-    }
-
     return APR_SUCCESS;
 }
 
@@ -454,7 +449,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      * on EBCDIC boxes, each complete http protocol input line needs to be
      * translated into the code page used by the compiler.  Since
      * ap_rgetline_core uses recursion, we do the translation in a wrapper
-     * function to ensure that each input character gets translated only once.
+     * function to insure that each input character gets translated only once.
      */
     apr_status_t rv;
 
@@ -516,6 +511,9 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
         status = apr_uri_parse_hostinfo(r->pool, uri, &r->parsed_uri);
     }
     else {
+        /* Simple syntax Errors in URLs are trapped by
+         * parse_uri_components().
+         */
         status = apr_uri_parse(r->pool, uri, &r->parsed_uri);
     }
 
@@ -560,7 +558,10 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     const char *uri;
     const char *pro;
 
-    unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+#if 0
+    conn_rec *conn = r->connection;
+#endif
+    int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
     int num_blank_lines = 0;
@@ -588,7 +589,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     do {
         apr_status_t rv;
 
-        /* ensure ap_rgetline allocates memory each time thru the loop
+        /* insure ap_rgetline allocates memory each time thru the loop
          * if there are empty lines
          */
         r->the_request = NULL;
@@ -602,14 +603,11 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
              * buffer before finding the end-of-line.  This is only going to
              * happen if it exceeds the configured limit for a request-line.
              */
-            if (APR_STATUS_IS_ENOSPC(rv)) {
+            if (rv == APR_ENOSPC) {
                 r->status    = HTTP_REQUEST_URI_TOO_LARGE;
             }
             else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
-            }
-            else if (APR_STATUS_IS_EINVAL(rv)) {
-                r->status = HTTP_BAD_REQUEST;
             }
             r->proto_num = HTTP_VERSION(1,0);
             r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
@@ -617,9 +615,19 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         }
     } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
 
+    /* we've probably got something to do, ignore graceful restart requests */
+
     r->request_time = apr_time_now();
     ll = r->the_request;
     r->method = ap_getword_white(r->pool, &ll);
+
+#if 0
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week
+ * sometime.   rbb */
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
+                                r->method);
+#endif
 
     uri = ap_getword_white(r->pool, &ll);
 
@@ -643,6 +651,8 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
+    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
+
     /* Avoid sscanf in the common case */
     if (len == 8
         && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
@@ -658,35 +668,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         r->proto_num = HTTP_VERSION(1, 0);
 
     return 1;
-}
-
-/* get the length of the field name for logging, but no more than 80 bytes */
-#define LOG_NAME_MAX_LEN 80
-static int field_name_len(const char *field)
-{
-    const char *end = ap_strchr_c(field, ':');
-    if (end == NULL || end - field > LOG_NAME_MAX_LEN)
-        return LOG_NAME_MAX_LEN;
-    return end - field;
-}
-
-static int table_do_fn_check_lengths(void *r_, const char *key,
-                                     const char *value)
-{
-    request_rec *r = r_;
-    if (value == NULL || r->server->limit_req_fieldsize >= strlen(value) )
-        return 1;
-
-    r->status = HTTP_BAD_REQUEST;
-    apr_table_setn(r->notes, "error-notes",
-                   apr_pstrcat(r->pool, "Size of a request header field "
-                               "after merging exceeds server limit.<br />"
-                               "\n<pre>\n",
-                               ap_escape_html(r->pool, key),
-                               "</pre>\n", NULL));
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Request header exceeds "
-                  "LimitRequestFieldSize after merging: %s", key);
-    return 0;
 }
 
 /* get the length of the field name for logging, but no more than 80 bytes */
@@ -736,30 +717,17 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
              * finding the end-of-line.  This is only going to happen if it
              * exceeds the configured limit for a field size.
              */
-            if (rv == APR_ENOSPC) {
-                const char *field_escaped;
-                if (field) {
-                    /* ensure ap_escape_html will terminate correctly */
-                    field[len - 1] = '\0';
-                    field_escaped = ap_escape_html(r->pool, field);
-                }
-                else {
-                    field_escaped = field = "";
-                }
-
+            if (rv == APR_ENOSPC && field) {
+                /* insure ap_escape_html will terminate correctly */
+                field[len - 1] = '\0';
                 apr_table_setn(r->notes, "error-notes",
                                apr_psprintf(r->pool,
                                            "Size of a request header field "
                                            "exceeds server limit.<br />\n"
                                            "<pre>\n%.*s\n</pre>/n",
-                                           field_name_len(field_escaped),
-                                           field_escaped));
+                                           field_name_len(field), 
+                                           ap_escape_html(r->pool, field)));
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, 
-                              "Request header exceeds LimitRequestFieldSize%s"
-                              "%.*s",
-                              *field ? ": " : "",
-                              field_name_len(field), field);
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                               "Request header exceeds LimitRequestFieldSize: "
                               "%.*s", field_name_len(field), field);
             }
@@ -793,10 +761,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                   "Request header exceeds LimitRequestFieldSize "
                                   "after folding: %.*s",
                                   field_name_len(last_field), last_field);
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                                  "Request header exceeds LimitRequestFieldSize "
-                                  "after folding: %.*s",
-                                  field_name_len(last_field), last_field);
                     return;
                 }
 
@@ -822,9 +786,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     apr_table_setn(r->notes, "error-notes",
                                    "The number of request header fields "
                                    "exceeds this server's limit.");
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                                  "Number of request headers exceeds "
-                                  "LimitRequestFields");
                     return;
                 }
 
@@ -843,10 +804,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                   "separator: %.*s", (int)LOG_NAME_MAX_LEN,
                                   last_field);
 
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                                  "Request header field is missing ':' "
-                                  "separator: %.*s", (int)LOG_NAME_MAX_LEN,
-                                  last_field);
                     return;
                 }
 
@@ -898,13 +855,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         }
     }
 
-    /* Combine multiple message-header fields with the same
-     * field-name, following RFC 2616, 4.2.
-     */
     apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
-
-    /* enforce LimitRequestFieldSize for merged headers */
-    apr_table_do(table_do_fn_check_lengths, r, r->headers_in, NULL);
 }
 
 AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
@@ -920,7 +871,7 @@ request_rec *ap_read_request(conn_rec *conn)
     request_rec *r;
     apr_pool_t *p;
     const char *expect;
-    int access_status = HTTP_OK;
+    int access_status;
     apr_bucket_brigade *tmp_bb;
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
@@ -972,23 +923,12 @@ request_rec *ap_read_request(conn_rec *conn)
 
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
-        if (r->status == HTTP_REQUEST_URI_TOO_LARGE
-            || r->status == HTTP_BAD_REQUEST) {
-            if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                              "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
-                              r->server->limit_req_line);
-            }
-            else if (r->method == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                              "request failed: invalid characters in URI");
-            }
-            access_status = r->status;
-            r->status = HTTP_OK;
-            ap_die(access_status, r);
+        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
+            ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
-            r = NULL;
             apr_brigade_destroy(tmp_bb);
             return r;
         }
@@ -1021,7 +961,7 @@ request_rec *ap_read_request(conn_rec *conn)
 
         ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -1068,7 +1008,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * headers! Have to dink things just to make sure the error message
              * comes through...
              */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "client sent invalid HTTP/0.9 request: HEAD %s",
                           r->uri);
             r->header_only = 0;
@@ -1109,8 +1049,8 @@ request_rec *ap_read_request(conn_rec *conn)
          * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
-        access_status = HTTP_BAD_REQUEST;
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        r->status = HTTP_BAD_REQUEST;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
@@ -1125,8 +1065,14 @@ request_rec *ap_read_request(conn_rec *conn)
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
 
-    if (access_status != HTTP_OK
-        || (access_status = ap_run_post_read_request(r))) {
+    if (r->status != HTTP_OK) {
+        ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
+        return r;
+    }
+
+    if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
@@ -1326,7 +1272,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;

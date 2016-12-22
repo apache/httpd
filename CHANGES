@@ -1,14 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
-  *) Core: reject NULLs in request line or request headers.
-     PR 43039 [Nick Kew]
 
-  *) core: Enforce LimitRequestFieldSize after multiple headers with the same
-     name have been merged. [Stefan Fritsch]
-
-  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
-     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
 
 Changes with Apache 2.2.31
 
