@@ -976,7 +976,7 @@ request_rec *ap_read_request(conn_rec *conn)
             || r->status == HTTP_BAD_REQUEST) {
             if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                              "request failed: URI too long (longer than %d)",
+                              "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
                               r->server->limit_req_line);
             }
             else if (r->method == NULL) {
