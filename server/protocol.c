@@ -222,9 +222,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
      * against APR_ASCII_LF at the end of the loop if bb only contains
      * zero-length buckets.
      */
-    if (last_char) {
+    if (last_char)
         *last_char = '\0';
-    }
 
     for (;;) {
         apr_brigade_cleanup(bb);
