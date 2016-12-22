@@ -560,7 +560,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     const char *uri;
     const char *pro;
 
-    int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
+    unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
     int num_blank_lines = 0;
