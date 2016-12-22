@@ -617,8 +617,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         }
     } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
 
-    /* we've probably got something to do, ignore graceful restart requests */
-
     r->request_time = apr_time_now();
     ll = r->the_request;
     r->method = ap_getword_white(r->pool, &ll);
