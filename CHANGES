@@ -4,6 +4,9 @@ Changes with Apache 2.2.32
   *) Core: reject NULLs in request line or request headers.
      PR 43039 [Nick Kew]
 
+  *) core: Enforce LimitRequestFieldSize after multiple headers with the same
+     name have been merged. [Stefan Fritsch]
+
 Changes with Apache 2.2.31
 
   *) Correct win32 build issues for mod_proxy exports, OpenSSL 1.0.x headers.
