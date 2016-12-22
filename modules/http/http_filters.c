@@ -1253,7 +1253,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     AP_DEBUG_ASSERT(!r->main);
 
-    if (r->header_only) {
+    if (r->header_only || r->status == HTTP_NO_CONTENT) {
         if (!ctx) {
             ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
         }
@@ -1341,6 +1341,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
+        apr_table_unset(r->headers_out, "Content-Length");
+    }
+
+    if (r->status == HTTP_NO_CONTENT) {
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
@@ -1433,7 +1437,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     ap_pass_brigade(f->next, b2);
 
-    if (r->header_only) {
+    if (r->header_only || r->status == HTTP_NO_CONTENT) {
         apr_brigade_cleanup(b);
         ctx->headers_sent = 1;
         return OK;

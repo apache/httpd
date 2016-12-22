@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
 Changes with Apache 2.4.24
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     PR 51350 [Luca Toscano]
 
   *) Enforce http request grammer corresponding to RFC7230 for request lines
      and request headers [William Rowe, Stefan Fritsch]
