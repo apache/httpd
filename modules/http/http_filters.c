@@ -744,13 +744,10 @@ static APR_INLINE int check_headers(request_rec *r)
 
 static int check_headers_recursion(request_rec *r)
 {
-    request_rec *rr;
-    for (rr = r; rr; rr = rr->prev) {
-        void *dying = NULL;
-        apr_pool_userdata_get(&dying, "check_headers_recursion", rr->pool);
-        if (dying) {
-            return 1;
-        }
+    void *check = NULL;
+    apr_pool_userdata_get(&check, "check_headers_recursion", r->pool);
+    if (check) {
+        return 1;
     }
     apr_pool_userdata_setn("true", "check_headers_recursion", NULL, r->pool);
     return 0;
@@ -1263,7 +1260,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
     ap_bucket_error *eb = NULL;
-    int eos = 0;
+    apr_bucket *eos = NULL;
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -1284,13 +1281,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
     {
-        if (ctx->headers_error) {
-            if (APR_BUCKET_IS_EOS(e)) {
-                eos = 1;
-                break;
-            }
-            continue;
-        }
         if (AP_BUCKET_IS_ERROR(e) && !eb) {
             eb = e->data;
             continue;
@@ -1302,6 +1292,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         if (AP_BUCKET_IS_EOC(e)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, b);
+        }
+        if (ctx->headers_error && APR_BUCKET_IS_EOS(e)) {
+            eos = e;
         }
     }
     if (ctx->headers_error) {
@@ -1328,10 +1321,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
             return AP_FILTER_ERROR;
         }
-        AP_DEBUG_ASSERT(APR_BUCKET_IS_EOS(e));
-        APR_BUCKET_REMOVE(e);
+        APR_BUCKET_REMOVE(eos);
         apr_brigade_cleanup(b);
-        APR_BRIGADE_INSERT_TAIL(b, e);
+        APR_BRIGADE_INSERT_TAIL(b, eos);
         r->status = HTTP_INTERNAL_SERVER_ERROR;
         r->content_type = r->content_encoding = NULL;
         r->content_languages = NULL;
