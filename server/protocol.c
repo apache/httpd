@@ -516,9 +516,6 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
         status = apr_uri_parse_hostinfo(r->pool, uri, &r->parsed_uri);
     }
     else {
-        /* Simple syntax Errors in URLs are trapped by
-         * parse_uri_components().
-         */
         status = apr_uri_parse(r->pool, uri, &r->parsed_uri);
     }
 
