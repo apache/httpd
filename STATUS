@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      "111: warning: 'backend' may be used uninitialized in this function"
      trunk patch: http://svn.apache.org/r1741570
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, jim
 
   *) mod_ssl: Silence compiler warning
      "686: warning: 'ok' may be used uninitialized in
@@ -157,25 +157,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      have set "ok".
      trunk patch: http://svn.apache.org/r1775173
      2.4.x patch: trunk works
-     +1: rjung
+     +1: rjung, jim
 
   *) core: remove isascci check before narrower checks in vhost checking
      trunk patch: http://svn.apache.org/r1775199
                   http://svn.apache.org/r1775664
      2.4.x patch: trunk works + CHANGES
-     +1: covener
+     +1: covener, jim
 
   *) mod_http: Optimize bad headers handling workflow
      Trunk version of patch:
       http://svn.apache.org/r1775195
      Backport version for 2.4.x of patch:
       Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jim
 
   *) util_fcgi: Fix crash with empty-valued envvars. PR60275
      trunk patch: http://svn.apache.org/r1775487.
      2.4.x patch: trunk works
-     +1 covener
+     +1 covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
