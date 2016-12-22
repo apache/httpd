@@ -853,6 +853,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         }
     }
 
+    /* Combine multiple message-header fields with the same
+     * field-name, following RFC 2616, 4.2.
+     */
     apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
 }
 
