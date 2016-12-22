@@ -645,8 +645,6 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
-    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
-
     /* Avoid sscanf in the common case */
     if (len == 8
         && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
