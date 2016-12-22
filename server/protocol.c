@@ -935,7 +935,7 @@ request_rec *ap_read_request(conn_rec *conn)
     request_rec *r;
     apr_pool_t *p;
     const char *expect;
-    int access_status;
+    int access_status = HTTP_OK;
     apr_bucket_brigade *tmp_bb;
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
@@ -1121,7 +1121,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * HTTP/1.1 mentions twice (S9, S14.23) that a request MUST contain
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
-        r->status = HTTP_BAD_REQUEST;
+        access_status = HTTP_BAD_REQUEST;
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
@@ -1137,14 +1137,8 @@ request_rec *ap_read_request(conn_rec *conn)
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
 
-    if (r->status != HTTP_OK) {
-        ap_send_error_response(r, 0);
-        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-        ap_run_log_transaction(r);
-        return r;
-    }
-
-    if ((access_status = ap_run_post_read_request(r))) {
+    if (access_status != HTTP_OK
+        || (access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
