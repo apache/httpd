@@ -177,6 +177,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1 covener, jim
 
+  *) ext_filter: Don't eat error buckets. PR60375
+     trunk patch: http://svn.apache.org/r1775770
+     2.4 patch: trunk works
+     +1 covener
+     
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
