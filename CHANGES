@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
+  *) core: Limit to ten the number of tolerated empty lines between request.
+     [Yann Ylavic]
+
   *) Core: reject NULLs in request line or request headers.
      PR 43039 [Nick Kew]
 

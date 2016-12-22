@@ -205,6 +205,10 @@ extern "C" {
 #ifndef DEFAULT_LIMIT_REQUEST_FIELDS
 #define DEFAULT_LIMIT_REQUEST_FIELDS 100
 #endif 
+/** default/hard limit on number of leading/trailing empty lines */
+#ifndef DEFAULT_LIMIT_BLANK_LINES
+#define DEFAULT_LIMIT_BLANK_LINES 10
+#endif
 
 /**
  * The default default character set name to add if AddDefaultCharset is
