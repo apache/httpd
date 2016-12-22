@@ -454,7 +454,7 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
      * on EBCDIC boxes, each complete http protocol input line needs to be
      * translated into the code page used by the compiler.  Since
      * ap_rgetline_core uses recursion, we do the translation in a wrapper
-     * function to insure that each input character gets translated only once.
+     * function to ensure that each input character gets translated only once.
      */
     apr_status_t rv;
 
@@ -591,7 +591,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     do {
         apr_status_t rv;
 
-        /* insure ap_rgetline allocates memory each time thru the loop
+        /* ensure ap_rgetline allocates memory each time thru the loop
          * if there are empty lines
          */
         r->the_request = NULL;
@@ -752,7 +752,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
              * exceeds the configured limit for a field size.
              */
             if (rv == APR_ENOSPC && field) {
-                /* insure ap_escape_html will terminate correctly */
+                /* ensure ap_escape_html will terminate correctly */
                 field[len - 1] = '\0';
                 apr_table_setn(r->notes, "error-notes",
                                apr_psprintf(r->pool,
