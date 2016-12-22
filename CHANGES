@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ext_filter: Don't interfere with "error buckets" issued by other
+     modules. PR60375.  [Eric Covener, Lubos Uhliarik]
+
   *) mod_proxy_fcgi, mod_fcgid: Fix crashes in ap_fcgi_encoded_env_len() when
      modules add empty environment variables to the request. PR60275.
      [<alex2grad AT gmail.com>]
