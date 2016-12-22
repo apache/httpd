@@ -13,6 +13,9 @@ Changes with Apache 2.2.32
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
 
+  *) core: Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR 57167 [Edward Lu <Chaosed0 gmail.com>]
+
 Changes with Apache 2.2.31
 
   *) Correct win32 build issues for mod_proxy exports, OpenSSL 1.0.x headers.
