@@ -119,6 +119,35 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy_express.c: Silence compiler warning
+     "111: warning: 'backend' may be used uninitialized in this function"
+     trunk patch: http://svn.apache.org/r1741570
+     2.4.x patch: trunk works
+     +1: rjung, jim, ylavic
+
+  *) mod_ssl: Silence compiler warning
+     "686: warning: 'ok' may be used uninitialized in
+     this function"
+     This is a false positive, because the value of "ok"
+     will only be used if stapling_get_cached_response()
+     sets "rsp" to non-NULL in which case it will always
+     have set "ok".
+     trunk patch: http://svn.apache.org/r1775173
+     2.4.x patch: trunk works
+     +1: rjung, jim, ylavic
+
+  *) core: remove isascci check before narrower checks in vhost checking
+     trunk patch: http://svn.apache.org/r1775199
+                  http://svn.apache.org/r1775664
+     2.4.x patch: trunk works + CHANGES
+     +1: covener, jim, ylavic
+
+  *) mod_http: Optimize bad headers handling workflow
+     Trunk version of patch:
+      http://svn.apache.org/r1775195
+     Backport version for 2.4.x of patch:
+      Trunk version of patch works
+     +1: rpluem, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -142,36 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim
 
-  *) mod_proxy_express.c: Silence compiler warning
-     "111: warning: 'backend' may be used uninitialized in this function"
-     trunk patch: http://svn.apache.org/r1741570
-     2.4.x patch: trunk works
-     +1: rjung, jim
-
-  *) mod_ssl: Silence compiler warning
-     "686: warning: 'ok' may be used uninitialized in
-     this function"
-     This is a false positive, because the value of "ok"
-     will only be used if stapling_get_cached_response()
-     sets "rsp" to non-NULL in which case it will always
-     have set "ok".
-     trunk patch: http://svn.apache.org/r1775173
-     2.4.x patch: trunk works
-     +1: rjung, jim
-
-  *) core: remove isascci check before narrower checks in vhost checking
-     trunk patch: http://svn.apache.org/r1775199
-                  http://svn.apache.org/r1775664
-     2.4.x patch: trunk works + CHANGES
-     +1: covener, jim
-
-  *) mod_http: Optimize bad headers handling workflow
-     Trunk version of patch:
-      http://svn.apache.org/r1775195
-     Backport version for 2.4.x of patch:
-      Trunk version of patch works
-     +1: rpluem, jim
-
   *) util_fcgi: Fix crash with empty-valued envvars. PR60275
      trunk patch: http://svn.apache.org/r1775487.
      2.4.x patch: trunk works
@@ -180,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) ext_filter: Don't eat error buckets. PR60375
      trunk patch: http://svn.apache.org/r1775770
      2.4 patch: trunk works
-     +1 covener
+     +1: covener, ylavic
      
   *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
      backend connection, happening with LogLevel trace2 or higher configured,
