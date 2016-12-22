@@ -10,6 +10,9 @@ Changes with Apache 2.2.32
   *) core: Enforce LimitRequestFieldSize after multiple headers with the same
      name have been merged. [Stefan Fritsch]
 
+  *) core: Avoid a possible truncation of the faulty header included in the
+     HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
+
 Changes with Apache 2.2.31
 
   *) Correct win32 build issues for mod_proxy exports, OpenSSL 1.0.x headers.
