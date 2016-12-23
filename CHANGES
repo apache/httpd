@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: cleanup beamer registry on server reload, Fixes PR60510.
-     [Pavel Mateja <pavel@verotel.cz>, Stefan Eissing]
-     
   *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
      backend connection, happening with LogLevel trace2 or higher configured,
      or at any log level with compilers not detected as C99 compliant (e.g.
