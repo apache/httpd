@@ -344,7 +344,7 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
         
         /* If USE_CANONICAL_NAME_OFF was configured for the proxy virtual host,
          * then the server name returned by ap_get_server_name() is the
-         * origin server name (which does make too much sense with Via: headers)
+         * origin server name (which doesn't make sense with Via: headers)
          * so we use the proxy vhost's name instead.
          */
         if (server_name == stream->r->hostname) {
