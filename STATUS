@@ -119,11 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) core: remove isascci check before narrower checks in vhost checking
-     trunk patch: http://svn.apache.org/r1775199
-                  http://svn.apache.org/r1775664
-     2.4.x patch: trunk works + CHANGES
-     +1: covener, jim, ylavic
 
   *) mod_http: Optimize bad headers handling workflow
      Trunk version of patch:
