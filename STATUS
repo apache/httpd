@@ -99,32 +99,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  *) Rather than odds-and-ends applied out of order, proposing we revert
-     r1757240, r1757256, r1757295, r1758671, r1758672, r1775232, all of
-     which is now recorded in the 2.2.x-merge-http-strict branch, and
-     bring that branch back into 2.2.x for 2.4.32 release.
-     Merges;
-       -c-1775232 .
-       -c-1757672 .
-       -c-1757671 .
-       -c-1757295 .
-       -c-1757256 .
-       -c-1757240 .
-     [here we are back at 2.2.32-dev bump]
-       -r1775685:1775780 https://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x-merge-http-strict/
-     Roll-up patch of the above (not recommended for casual reading, these
-     would be committed individually as noted above... but for only for sanity
-     testing the end result. Due to intervening CHANGES/ap_mmn changes, there
-     is small delta after reverting the above...)
-       https://raw.githubusercontent.com/wrowe/patches/master/httpd-2.2-HEAD-http-protocol-strict.patch
-       This patch above does *NOT* apply to the 2.2.31 release, c.f. the delta
-       of the 2.2.x-merge-http-strict branch for that information. This is for
-       folks who are testing rollbacks plus 2.4.x activity against 2.2.x HEAD!
-       Sorry to start from scratch, but yann's correct observation was correct,
-       that nothing will apply out-of-order, and everything on 2.2 branch had
-       already become disordered.
-     +1: wrowe
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -177,6 +151,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
       +1: ylavic
+
+  *) Enforce LimitRequestFieldSize after multiple headers with the same
+     name have been merged, Ensure LimitRequestFieldSize is always logged.
+     Downgrade some more log messages indicating client errors from level error
+     to info. Add log messages for various reasons to return HTTP_BAD_REQUEST.
+     Correctly return a 400 (Bad request) in case of a HTTP/0.9 request like
+     "GET @example.org/foo".
+     Add some trace logging to core (using AP_DEBUG_THE_REQUEST macro, because
+     the TRACE5 facilities aren't in 2.2.x branch).
+     Improve error message (PR 54384).
+     Submitted by: sf, rpluem, jailletc36
+     [Note: everything in this patch is modifying logging and brings in the
+     LimitRequestFieldSize logic used for the lifespan of 2.4.x]
+     Trunk version of patch
+         http://svn.apache.org/r951900 (server/protocol.c alone)
+         http://svn.apache.org/r1178566
+         http://svn.apache.org/r1185385
+         http://svn.apache.org/r1188745
+         http://svn.apache.org/r1352911
+         http://svn.apache.org/r1433613
+     Backport: (Adjustments dodging 2.4'isms such as APLOGNO's)
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r951900-r1178566-r1185385-r1188745-r1352911-r1433613.patch 
+     +1: wrowe, covener
+     ylavic: the patch does not apply cleanly? (I tried both w/ and w/o
+             backport-2.2.x-r892678.patch first, conflicts in protocol.c)
+
+  *) core: ErrorDocument now works for requests without a Host header.
+     Support custom ErrorDocuments for HTTP 501 and 414 status codes.
+     PR: 48357, 57167
+     Submitted by: trawick,  [Edward Lu <Chaosed0 gmail.com>]
+     Trunk version of patch
+         http://svn.apache.org/r1392347
+         http://svn.apache.org/r1635762
+     Backport:
+         https://raw.githubusercontent.com/wrowe/patches/master/backport-2.2.x-r1392347-r1635762.patch 
+     +1: wrowe, covener
+     ylavic: same here (hunk + access_status = HTTP_BAD_REQUEST;)
+             depends on the previous one?
 
   *) core: potential rejection of valid MaxMemFree and ThreadStackSize directives
      trunk patch: https://svn.apache.org/r1542338
