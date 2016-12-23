@@ -461,6 +461,12 @@ static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool)
 {
     /* if the beam owner is the receiver, monitor sender pool lifetime */
     if (beam->owner == H2_BEAM_OWNER_RECV && beam->send_pool != pool) {
+        if (beam->send_pool && pool 
+            && apr_pool_is_ancestor(beam->send_pool, pool)) {
+            /* when sender uses sub-pools to transmit data, stick
+             * to the lifetime of the pool we already have. */
+             return;
+        }
         if (beam->send_pool) {
             apr_pool_cleanup_kill(beam->send_pool, beam, beam_send_cleanup);
         }
@@ -620,6 +626,8 @@ void h2_beam_abort(h2_bucket_beam *beam)
             r_purge_sent(beam);
             h2_blist_cleanup(&beam->send_list);
             report_consumption(beam, 0);
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
+                          "h2_beam(%d-%s): aborted", beam->id, beam->tag);
         }
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
@@ -799,6 +807,17 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
     return APR_SUCCESS;
 }
 
+void h2_beam_send_from(h2_bucket_beam *beam, apr_pool_t *p)
+{
+    h2_beam_lock bl;
+    /* Called from the red thread to add buckets to the beam */
+    if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        r_purge_sent(beam);
+        beam_set_send_pool(beam, p);
+        leave_yellow(beam, &bl);
+    }
+}
+
 apr_status_t h2_beam_send(h2_bucket_beam *beam, 
                           apr_bucket_brigade *red_brigade, 
                           apr_read_type_e block)
@@ -809,8 +828,10 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
 
     /* Called from the red thread to add buckets to the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
+                      "h2_beam(%d-%s): send", beam->id, beam->tag);
         r_purge_sent(beam);
-        if (red_brigade) {
+        if (red_brigade && !beam->send_pool) {
             beam_set_send_pool(beam, red_brigade->p);
         }
         
@@ -850,6 +871,8 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     /* Called from the green thread to take buckets from the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
+        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
+                      "h2_beam(%d-%s): receive", beam->id, beam->tag);
         if (beam->aborted) {
             if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
                 apr_brigade_cleanup(beam->recv_buffer);

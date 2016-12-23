@@ -255,6 +255,13 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
                           apr_read_type_e block);
 
 /**
+ * Register the pool from which future buckets are send. This defines
+ * the lifetime of the buckets, e.g. the pool should not be cleared/destroyed
+ * until the data is no longer needed (or has been received).
+ */
+void h2_beam_send_from(h2_bucket_beam *beam, apr_pool_t *p);
+
+/**
  * Receive buckets from the beam into the given brigade. Will return APR_EOF
  * when reading past an EOS bucket. Reads can be blocking until data is 
  * available or the beam has been closed. Non-blocking calls return APR_EAGAIN

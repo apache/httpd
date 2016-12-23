@@ -53,8 +53,8 @@ static void h2_beam_log(h2_bucket_beam *beam, int id, const char *msg,
         apr_size_t off = 0;
         
         off += apr_snprintf(buffer+off, H2_ALEN(buffer)-off, "cl=%d, ", beam->closed);
-        off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "red", ", ", &beam->send_list);
-        off += h2_util_bb_print(buffer+off, H2_ALEN(buffer)-off, "green", ", ", beam->recv_buffer);
+        off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "to_send", ", ", &beam->send_list);
+        off += h2_util_bb_print(buffer+off, H2_ALEN(buffer)-off, "recv_buffer", ", ", beam->recv_buffer);
         off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "hold", ", ", &beam->hold_list);
         off += h2_util_bl_print(buffer+off, H2_ALEN(buffer)-off, "purge", "", &beam->purge_list);
 
@@ -703,9 +703,14 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
         return APR_ECONNABORTED;
     }
     
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
-                  "h2_mplx(%s): out open", task->id);
-                      
+    if (APLOGctrace2(m->c)) {
+        h2_beam_log(beam, stream_id, "out_open", m->c, APLOG_TRACE2);
+    }
+    else {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, m->c,
+                      "h2_mplx(%s): out open", task->id);
+    }
+    
     h2_beam_on_consumed(stream->output, stream_output_consumed, task);
     h2_beam_on_produced(stream->output, output_produced, m);
     beamed_count = h2_beam_get_files_beamed(stream->output);
