@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_ext_filter: Don't interfere with "error buckets" issued by other
+     modules. PR60375.  [Eric Covener, Lubos Uhliarik]
+
   *) mod_http2: fixes https://github.com/icing/mod_h2/issues/126 e.g. beam
      bucket lifetime handling when data is sent over temporary pools.
      [Stefan Eissing] 
