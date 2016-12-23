@@ -35,7 +35,7 @@ Release history:
           while x.{even}.z versions are Stable/GA releases.]
 
     2.4.26  : In development.
-    2.4.25  : Tagged on December 16, 2016.
+    2.4.25  : Tagged on December 16, 2016. Released on December 21, 2016.
     2.4.24  : Tagged on December 16, 2016, not released.
     2.4.23  : Tagged on June 30, 2016. Released on July 05, 2016.
     2.4.22  : Tagged on June 20, 2016, not released.
@@ -118,12 +118,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
-  *) mod_proxy_express.c: Silence compiler warning
-     "111: warning: 'backend' may be used uninitialized in this function"
-     trunk patch: http://svn.apache.org/r1741570
-     2.4.x patch: trunk works
-     +1: rjung, jim, ylavic
 
   *) mod_ssl: Silence compiler warning
      "686: warning: 'ok' may be used uninitialized in
