@@ -683,7 +683,7 @@ static int get_and_check_cached_response(server_rec *s, modssl_ctx_t *mctx,
                                          OCSP_RESPONSE **rsp, BOOL *pok,
                                          certinfo *cinf, apr_pool_t *p)
 {
-    BOOL ok;
+    BOOL ok = FALSE;
     int rv;
 
     AP_DEBUG_ASSERT(*rsp == NULL);
