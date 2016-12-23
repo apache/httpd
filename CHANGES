@@ -1,10 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: fixes https://github.com/icing/mod_h2/issues/126 e.g. beam
-     bucket lifetime handling when data is sent over temporary pools.
-     [Stefan Eissing] 
-  
   *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
      backend connection, happening with LogLevel trace2 or higher configured,
      or at any log level with compilers not detected as C99 compliant (e.g.
