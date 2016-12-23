@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) ext_filter: Don't eat error buckets. PR60375
      trunk patch: http://svn.apache.org/r1775770
      2.4 patch: trunk works
-     +1: covener, ylavic
+     +1: covener, ylavic, jim
      
   *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
      backend connection, happening with LogLevel trace2 or higher configured,
@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      MSVC on Windows).
      trunk patch: http://svn.apache.org/r1775775
      2.4 patch: trunk works (modulo CHANGES)
-     +1: ylavic
+     +1: ylavic, jim
 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
