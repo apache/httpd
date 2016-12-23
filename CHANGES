@@ -1,6 +1,35 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.32
 
+  *) SECURITY: CVE-2016-8743 (cve.mitre.org)
+     Enforce HTTP request grammar corresponding to RFC7230 for request lines
+     and request headers, to prevent response splitting and cache pollution by
+     malicious clients or downstream proxies. [William Rowe, Stefan Fritsch]
+
+  *) Validate HTTP response header grammar defined by RFC7230, resulting
+     in a 500 error in the event that invalid response header contents are
+     detected when serving the response, to avoid response splitting and cache
+     pollution by malicious clients, upstream servers or faulty modules.
+     [Stefan Fritsch, Eric Covener, Yann Ylavic]
+
+  *) core: Drop Content-Length header and message-body from HTTP 204 responses.
+     PR 51350 [Luca Toscano]
+
+  *) core: New directive HttpProtocolOptions to control httpd enforcement
+     of various RFC7230 requirements. [Stefan Fritsch, William Rowe]
+
+  *) core: Permit unencoded ';' characters to appear in proxy requests and
+     Location: response headers. Corresponds to modern browser behavior.
+     [William Rowe]
+
+  *) core: ap_rgetline_core now pulls from r->proto_input_filters.
+
+  *) core: Correctly parse an IPv6 literal host specification in an absolute
+     URL in the request line. [Stefan Fritsch]
+
+  *) core: New directive RegisterHttpMethod for registering non-standard
+     HTTP methods. [Stefan Fritsch]
+
   *) core: Limit to ten the number of tolerated empty lines between request.
      [Yann Ylavic]
 
