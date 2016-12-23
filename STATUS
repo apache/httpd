@@ -50,7 +50,17 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+
+CURRENT VOTES:
+
+
 THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
+
+  * Competely untangle core filesystem behavior where a filesystem htdocs/
+    resource wasn't indicated by the request URI.
+
+  * Refactor r->uri into a %escaped raw form presented by the client, and
+    a distinct decoded field used only for local filesystem access.
 
   * Change default prefix from /usr/local/apache2 to something corresponding
     to the project name. Rename apachectl.
@@ -64,6 +74,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     care about the two remaining incompatible code lines (one with lua_strlen,
     one with lua_objlen).
 
+
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
@@ -76,22 +87,12 @@ OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
   * the edge connection filter cannot be removed 
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
     http://mail-archives.apache.org/mod_mbox/httpd-dev/200501.mbox/%3C41E30B42.4060202@stason.org%3E
-
     jerenkrantz asks: Why should this block a release?
-
     stas replies: because it requires a rewrite of the filters stack
           implementation (you have suggested that) and once 2.2 is
           released you can't do that anymore. 
-
     pgollucci: this affects mod_perl I'm pretty sure.
 
-CURRENT VOTES:
-
-  * Name the Server (version 2.4 or 3.0, depending on the final call)
-    Recent discussion indicates we should designate a (short name).
-    This is not yet a [Vote] - Your nominations please:
-      * Apache HTTP Server (httpd)
-        +1: sctemme (why mess with it?), pgollucci
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -124,6 +125,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                       if these rise to showstopper status.
     wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
                     out of this list, without reviewing them individually.
+    wrowe asks: what is lingering after 2.4.25 release? Offhand, only
+                URI conformance
 
   * pipes deadlock on all platforms with limited pipe buffers (e.g. both
     Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
