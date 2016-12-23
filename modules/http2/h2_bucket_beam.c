@@ -153,10 +153,19 @@ const apr_bucket_type_t h2_bucket_type_beam = {
  ******************************************************************************/
 
 static apr_array_header_t *beamers;
- 
+
+static apr_status_t cleanup_beamers(void *dummy)
+{
+    (void)dummy;
+    beamers = NULL;
+    return APR_SUCCESS;
+}
+
 void h2_register_bucket_beamer(h2_bucket_beamer *beamer)
 {
     if (!beamers) {
+        apr_pool_cleanup_register(apr_hook_global_pool, NULL,
+                                  cleanup_beamers, apr_pool_cleanup_null);
         beamers = apr_array_make(apr_hook_global_pool, 10, 
                                  sizeof(h2_bucket_beamer*));
     }

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_http2: cleanup beamer registry on server reload, Fixes PR60510.
+     [Pavel Mateja <pavel@verotel.cz>, Stefan Eissing]
+     
   *) mod_ext_filter: Don't interfere with "error buckets" issued by other
      modules. PR60375.  [Eric Covener, Lubos Uhliarik]
 
