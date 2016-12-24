@@ -74,6 +74,15 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     care about the two remaining incompatible code lines (one with lua_strlen,
     one with lua_objlen).
 
+  * Event's timeout_mutex to enter keepalive state probably needs some
+    analysis/attention.
+  
+  * Better H2 integration?
+ 
+  * Remove mod_access_compat?
+
+  * Ditch platforms/89/old prereqs or anything else?
+  
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
