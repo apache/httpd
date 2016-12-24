@@ -82,6 +82,10 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Remove mod_access_compat?
 
   * Ditch platforms/89/old prereqs or anything else?
+
+  * Leverage libmill? Drop serf?
+
+  * Better abstraction of slave connections and "requests".
   
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
