@@ -635,8 +635,6 @@ void h2_beam_abort(h2_bucket_beam *beam)
             r_purge_sent(beam);
             h2_blist_cleanup(&beam->send_list);
             report_consumption(beam, 0);
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
-                          "h2_beam(%d-%s): aborted", beam->id, beam->tag);
         }
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
@@ -837,8 +835,6 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
 
     /* Called from the red thread to add buckets to the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
-                      "h2_beam(%d-%s): send", beam->id, beam->tag);
         r_purge_sent(beam);
         if (red_brigade && !beam->send_pool) {
             beam_set_send_pool(beam, red_brigade->p);
@@ -880,8 +876,6 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     /* Called from the green thread to take buckets from the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, beam->send_pool, 
-                      "h2_beam(%d-%s): receive", beam->id, beam->tag);
         if (beam->aborted) {
             if (beam->recv_buffer && !APR_BRIGADE_EMPTY(beam->recv_buffer)) {
                 apr_brigade_cleanup(beam->recv_buffer);
