@@ -471,6 +471,9 @@ lua_State *ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                     cache_info = sspec->finfo;
                 }
                 else {
+#if APR_HAS_THREADS
+                    apr_thread_mutex_unlock(ap_lua_mutex);
+#endif
                     return NULL;
                 }
             }
