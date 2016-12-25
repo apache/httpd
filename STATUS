@@ -56,6 +56,9 @@ CURRENT VOTES:
 
 THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
+  * Seriously ramp up/replace test framework and cases to have better
+    coverage of existing special cases and behaviours users rely on.
+
   * Competely untangle core filesystem behavior where a filesystem htdocs/
     resource wasn't indicated by the request URI.
 
@@ -78,6 +81,11 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     analysis/attention.
   
   * Better H2 integration?
+    - adding handling of slave connections to mpm, no extra H2 workers, 
+      triggering "events" read/write/timer from main/slave
+    - add slave writes/done/abort to events that wake up master connection
+    - disentangle core filters to server one purpose only, so that H2
+      versions can reuse them properly.
  
   * Remove mod_access_compat?
 
@@ -86,6 +94,18 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Leverage libmill? Drop serf?
 
   * Better abstraction of slave connections and "requests".
+    - add abstraction for "response" as something that can be passed 
+      through filters. To be serialized into the correct HTTP bytes on
+      the main connection.
+    - solve multi-threaded access to master connection props/module conf
+      (e.g. ssl vars)
+    
+  * make mod_ssl more "core"?
+  
+  * add high-level server configuration directives that can steer/influence
+    module defaults/warn/rejects related to security 
+  
+  * Ditch HTTP/0.9?
   
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
