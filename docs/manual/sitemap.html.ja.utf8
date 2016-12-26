@@ -251,6 +251,7 @@
 <li><a href="mod/mod_proxy_html.html">Apache モジュール mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache モジュール mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_http2.html">Apache モジュール mod_proxy_http2</a></li>
+<li><a href="mod/mod_proxy_protocol.html">Apache モジュール mod_proxy_protocol</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache モジュール mod_proxy_scgi</a></li>
 <li><a href="mod/mod_proxy_wstunnel.html">Apache モジュール mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Apache モジュール mod_ratelimit</a></li>
