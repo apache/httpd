@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<metafile reference="mod_proxy_protocol.xml">
+  <basename>mod_proxy_protocol</basename>
+  <path>/mod/</path>
+  <relpath>https://httpd.apache.org/docs/2.4</relpath>
+</metafile>

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_protocol: Add server-side, front-end support for PROXY PROTOCOL
+     (http://blog.haproxy.com/haproxy/proxy-protocol/).  [roadrunner2]
+     
   *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
      [Luca Toscano]
 
