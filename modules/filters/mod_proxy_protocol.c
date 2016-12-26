@@ -128,7 +128,7 @@ static void pp_warn_enable_conflict(pp_addr_info *prev, server_rec *new, int on)
     apr_sockaddr_ip_getbuf(buf, sizeof(buf), prev->addr);
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, new,
-                 "ProxyProtocol: previous setting for %s:%hu from virtual "
+                 "ProxyProtocolFilter: previous setting for %s:%hu from virtual "
                  "host {%s:%hu in %s} is being overriden by virtual host "
                  "{%s:%hu in %s}; new setting is '%s'",
                  buf, prev->addr->port, prev->source->server_hostname,
@@ -202,19 +202,19 @@ static int pp_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     for (info = conf->enabled; info; info = info->next) {
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                     "ProxyProtocol: enabled on %s:%hu", buf, info->addr->port);
+                     "ProxyProtocolFilter: enabled on %s:%hu", buf, info->addr->port);
     }
     for (info = conf->disabled; info; info = info->next) {
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                     "ProxyProtocol: disabled on %s:%hu", buf, info->addr->port);
+                     "ProxyProtocolFilter: disabled on %s:%hu", buf, info->addr->port);
     }
 
     return OK;
 }
 
 static const command_rec proxy_protocol_cmds[] = {
-    AP_INIT_FLAG("ProxyProtocol", pp_enable_proxy_protocol, NULL, RSRC_CONF,
+    AP_INIT_FLAG("ProxyProtocolFilter", pp_enable_proxy_protocol, NULL, RSRC_CONF,
                  "Enable proxy-protocol handling (`on', `off')"),
     { NULL }
 };
@@ -321,7 +321,7 @@ static int pp_hook_pre_connection(conn_rec *c, void *csd)
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                  "ProxyProtocol: enabled on connection to %s:%hu",
+                  "ProxyProtocolFilter: enabled on connection to %s:%hu",
                   c->local_ip, c->local_addr->port);
 
     /* this holds the resolved proxy info for this connection */
@@ -370,7 +370,7 @@ static pp_parse_status_t pp_process_v1_header(conn_rec *c,
     word = apr_strtok(NULL, " ", &saveptr); \
     if (!word) { \
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,  \
-                      "ProxyProtocol: no " field " found in header '%s'", \
+                      "ProxyProtocolFilter: no " field " found in header '%s'", \
                       hdr->v1.line); \
         return HDR_ERROR; \
     }
@@ -405,7 +405,7 @@ static pp_parse_status_t pp_process_v1_header(conn_rec *c,
     }
     else {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, 
-                      "ProxyProtocol: unknown family '%s' in header '%s'",
+                      "ProxyProtocolFilter: unknown family '%s' in header '%s'",
                       word, hdr->v1.line);
         return HDR_ERROR;
     }
@@ -415,7 +415,7 @@ static pp_parse_status_t pp_process_v1_header(conn_rec *c,
 
     if (strspn(word, valid_addr_chars) != strlen(word)) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, 
-                      "ProxyProtocol: invalid client-address '%s' found in "
+                      "ProxyProtocolFilter: invalid client-address '%s' found in "
                       "header '%s'", word, hdr->v1.line);
         return HDR_ERROR;
     }
@@ -429,7 +429,7 @@ static pp_parse_status_t pp_process_v1_header(conn_rec *c,
     GET_NEXT_WORD("client-port")
     if (sscanf(word, "%hu", &port) != 1) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, 
-                      "ProxyProtocol: error parsing port '%s' in header '%s'",
+                      "ProxyProtocolFilter: error parsing port '%s' in header '%s'",
                       word, hdr->v1.line);
         return HDR_ERROR;
     }
@@ -443,7 +443,7 @@ static pp_parse_status_t pp_process_v1_header(conn_rec *c,
     if (ret != APR_SUCCESS) {
         conn_conf->client_addr = NULL;
         ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, c, 
-                      "ProxyProtocol: error converting family '%d', host '%s',"
+                      "ProxyProtocolFilter: error converting family '%d', host '%s',"
                       " and port '%hu' to sockaddr; header was '%s'",
                       family, host, port, hdr->v1.line);
         return HDR_ERROR;
@@ -483,7 +483,7 @@ static pp_parse_status_t pp_process_v2_header(conn_rec *c,
                     if (ret != APR_SUCCESS) {
                         conn_conf->client_addr = NULL;
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, c, 
-                                      "ProxyProtocol: error creating sockaddr");
+                                      "ProxyProtocolFilter: error creating sockaddr");
                         return HDR_ERROR;
                     }
 
@@ -499,7 +499,7 @@ static pp_parse_status_t pp_process_v2_header(conn_rec *c,
                     if (ret != APR_SUCCESS) {
                         conn_conf->client_addr = NULL;
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, c, 
-                                      "ProxyProtocol: error creating sockaddr");
+                                      "ProxyProtocolFilter: error creating sockaddr");
                         return HDR_ERROR;
                     }
 
@@ -520,7 +520,7 @@ static pp_parse_status_t pp_process_v2_header(conn_rec *c,
         default:
             /* not a supported command */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, c, 
-                          "ProxyProtocol: unsupported command %.2hx",
+                          "ProxyProtocolFilter: unsupported command %.2hx",
                           hdr->v2.ver_cmd);
             return HDR_ERROR;
     }
@@ -530,7 +530,7 @@ static pp_parse_status_t pp_process_v2_header(conn_rec *c,
     if (ret != APR_SUCCESS) {
         conn_conf->client_addr = NULL;
         ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, c, 
-                      "ProxyProtocol: error converting address to string");
+                      "ProxyProtocolFilter: error converting address to string");
         return HDR_ERROR;
     }
 
@@ -554,7 +554,7 @@ static int pp_determine_version(conn_rec *c, const char *ptr)
     }
     else {
        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, 
-                     "ProxyProtocol: no valid header found");
+                     "ProxyProtocolFilter: no valid header found");
        return -1;
     }
 }
@@ -664,7 +664,7 @@ static apr_status_t pp_input_filter(ap_filter_t *f,
             }
             else {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, 
-                              "ProxyProtocol: internal error: unknown version "
+                              "ProxyProtocolFilter: internal error: unknown version "
                               "%d", ctx->version);
                 f->c->aborted = 1;
                 apr_brigade_destroy(ctx->bb);
@@ -689,12 +689,12 @@ static apr_status_t pp_input_filter(ap_filter_t *f,
 
     /* we only get here when done == 1 */
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
-                  "ProxyProtocol: received valid header: %s:%hu",
+                  "ProxyProtocolFilter: received valid header: %s:%hu",
                   conn_conf->client_ip, conn_conf->client_addr->port);
 
     if (ctx->rcvd > ctx->need || !APR_BRIGADE_EMPTY(ctx->bb)) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, 
-                      "ProxyProtocol: internal error: have data left over; "
+                      "ProxyProtocolFilter: internal error: have data left over; "
                       " need=%lu, rcvd=%lu, brigade-empty=%d", ctx->need,
                       ctx->rcvd, APR_BRIGADE_EMPTY(ctx->bb));
         f->c->aborted = 1;

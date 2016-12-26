@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="http://httpd.apache.org/docs/2.4/style/manual.en.xsl"?>
 
 <!--
- Copyright 2014 Cloudzilla Inc.
+ Orig Copyright 2014 Cloudzilla Inc.
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -52,14 +52,14 @@
 <seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <directivesynopsis>
-<name>ProxyProtocol</name>
+<name>ProxyProtocolFilter </name>
 <description>Enable or disable the proxy protocol handling</description>
-<syntax>ProxyProtocol On|Off</syntax>
+<syntax>ProxyProtocolFilter On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>ProxyProtocol</directive> enables or disables the
+    <p>The <directive>ProxyProtocolFilter</directive> enables or disables the
     reading and handling of the proxy protocol connection header. If enabled
     the upstream client <em>must</em> send the header every time it opens a
     connection or the connection will get aborted.</p>
@@ -75,7 +75,7 @@
     notice will be logged indicating which setting was being overridden.</p>
 
     <highlight language="config">
-      ProxyProtocol On
+      ProxyProtocolFilter On
     </highlight>
 </usage>
 </directivesynopsis>
