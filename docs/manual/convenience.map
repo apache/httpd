@@ -482,6 +482,7 @@ proxypassreverse	mod/mod_proxy.html#proxypassreverse
 proxypassreversecookiedomain	mod/mod_proxy.html#proxypassreversecookiedomain
 proxypassreversecookiepath	mod/mod_proxy.html#proxypassreversecookiepath
 proxypreservehost	mod/mod_proxy.html#proxypreservehost
+proxyprotocolfilter 	mod/mod_proxy_protocol.html#proxyprotocolfilter 
 proxyreceivebuffersize	mod/mod_proxy.html#proxyreceivebuffersize
 proxyremote	mod/mod_proxy.html#proxyremote
 proxyremotematch	mod/mod_proxy.html#proxyremotematch
