@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "http://httpd.apache.org/docs/2.4/style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="http://httpd.apache.org/docs/2.4/style/manual.en.xsl"?>
+
+<!--
+ Copyright 2014 Cloudzilla Inc.
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_protocol.xml.meta">
+
+<name>mod_proxy_protocol</name>
+<description>Implements the server side of the proxy protocol.</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_protocol.c</sourcefile>
+<identifier>proxy_protocol_module</identifier>
+
+<summary>
+    <p><module>mod_proxy_protocol</module> implements the server side of
+    HAProxy's
+    <a href="http://blog.haproxy.com/haproxy/proxy-protocol/">Proxy Protocol</a>.</p>
+
+    <p>The module overrides the client IP address for the connection
+    with the information supplied by the upstream proxy in the proxy
+    protocol (connection) header.</p>
+
+    <p>This overridden useragent IP address is then used for the
+    <module>mod_authz_host</module>
+    <directive module="mod_authz_core" name="require">Require ip</directive>
+    feature, is reported by <module>mod_status</module>, and is recorded by
+    <module>mod_log_config</module> <code>%a</code> and <module>core</module>
+    <code>%a</code> format strings. The underlying client IP of the connection
+    is available in the <code>%{c}a</code> format string.</p>
+
+    <note type="warning">It is critical to only enable this behavior from
+    intermediate proxies which are trusted by this server, since it is trivial
+    for the remote client to impersonate another client. Currently this must
+    be done by external means (such as a firewall) as this module does not
+    (yet) implement access controls.</note>
+</summary>
+<seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
+
+<directivesynopsis>
+<name>ProxyProtocol</name>
+<description>Enable or disable the proxy protocol handling</description>
+<syntax>ProxyProtocol On|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyProtocol</directive> enables or disables the
+    reading and handling of the proxy protocol connection header. If enabled
+    the upstream client <em>must</em> send the header every time it opens a
+    connection or the connection will get aborted.</p>
+
+    <p>While this directive may be specified in any virtual host, it is
+    important to understand that because the proxy protocol is connection
+    based and protocol agnostic, the enabling and disabling is actually based
+    on ip-address and port. This means that if you have multiple name-based
+    virtual hosts for the same host and port, and you enable it any one of
+    them, then it is enabled for all them (with that host and port). It also
+    means that if you attempt to enable the proxy protocol in one and disable
+    in the other, that won't work; in such a case the last one wins and a
+    notice will be logged indicating which setting was being overridden.</p>
+
+    <highlight language="config">
+      ProxyProtocol On
+    </highlight>
+</usage>
+</directivesynopsis>
+
+<!--
+<directivesynopsis>
+<name>ProxyProtocolTrustedProxies</name>
+<description>A listed of clients that are trusted to provide the proxy
+protocol header.</description>
+<syntax>ProxyProtocolTrustedProxies <var>levels</var></syntax>
+<syntax>ProxyProtocolTrustedProxies all|<var>host</var> [<var>host</var>] ...</syntax>
+<default>ProxyProtocolTrustedProxies all</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyProtocolTrustedProxies</directive> directive limits
+    which clients are trusted to use the proxy protocol. What happens when a
+    client is not trusted is controlled by the
+    <directive module="mod_proxy_protocol">ProxyProtocolRejectUntrusted</directive>
+    directive.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyProtocolRejectUntrusted</name>
+<description>The number of characters in subdirectory names</description>
+<syntax>ProxyProtocolRejectUntrusted On|Off</syntax>
+<default>ProxyProtocolRejectUntrusted On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyProtocolRejectUntrusted</directive> directive
+    controls the behavior when a connection is received from an untrusted
+    client (as configured by the
+    <directive module="mod_proxy_protocol">ProxyProtocolTrustedProxies</directive>
+    directive) on a host and port for which the proxy protocol has been enabled.
+    If set to On (the default) then the connection is aborted; if set to Off
+    then the connection is allowed, and client must send a valid proxy protocol
+    header, but the contents of the header are ignored and the client IP for
+    the connection left untouched (i.e. will be that of the immediate client).
+    </p>
+</usage>
+</directivesynopsis>
+-->
+
+</modulesynopsis>
