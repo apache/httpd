@@ -262,7 +262,7 @@ Require ip 192.54.172.0/24 192.54.148.0/24
 
 <!-- UndefMacro -->
 <directivesynopsis>
-<name>undefMacro</name>
+<name>UndefMacro</name>
 <description>Supprime une macro</description>
 
 <syntax>UndefMacro <var>nom</var></syntax>
