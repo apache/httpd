@@ -1351,7 +1351,7 @@ traitent les connexions clients</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie l'emplacement d'un fichier journal</td></tr>
 <tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
 <tr class="odd"><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>nom-variable</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Invalide la définition d'une variable</td></tr>
-<tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>name</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Undefine a macro</td></tr>
+<tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime une macro</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
 <tr><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
