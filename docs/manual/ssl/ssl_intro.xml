@@ -412,7 +412,7 @@ establishing a protocol session.</p>
     <tr><td>TLS v1.2</td>
         <td>Proposed Internet Standard (from IETF) [<a href="#TLS12"
         >TLS12</a>]</td>
-        <td>Update of TLS 1.2 deprecating MD5 as hash, and adding incompatibility
+        <td>Update of TLS 1.1 deprecating MD5 as hash, and adding incompatibility
         to SSL so it will never negotiate the use of SSLv2.</td>
     </tr>
     </table>
