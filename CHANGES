@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_wstunnel: Reliably run before mod_proxy_http.
+     [Eric Covener]
+
   *) mod_proxy_protocol: Add server-side, front-end support for PROXY PROTOCOL
      (http://blog.haproxy.com/haproxy/proxy-protocol/).  [roadrunner2]
      
