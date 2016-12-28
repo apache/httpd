@@ -467,7 +467,8 @@ static int proxy_wstunnel_handler(request_rec *r, proxy_worker *worker,
     upgrade = apr_table_get(r->headers_in, "Upgrade");
     if (!upgrade || ap_cstr_casecmp(upgrade, "WebSocket") != 0) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02900)
-                      "declining URL %s  (not WebSocket)", url);
+                      "declining URL %s  (not WebSocket, Upgrade: header is %s)", 
+                      url, upgrade ? "missing" : upgrade);
         return DECLINED;
     }
 
