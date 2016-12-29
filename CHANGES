@@ -1,5 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+
+  *) mod_rewrite: When a substitution is a fully qualified URL, and the 
+     scheme/host/port matches the current virtual host, stop interpreting the 
+     path component as a local path just because the first component of the 
+     path exists in the filesystem.  Adds RewriteOption "LegacyPrefixDocRoot" 
+     to revert to previous behavior. PR60009.
+     [Hank Ibell <hwibell gmail.com>]
  
   *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
      [Hank Ibell <hwibell gmail.com>]

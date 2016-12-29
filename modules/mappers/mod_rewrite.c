@@ -202,6 +202,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_INHERIT_DOWN_BEFORE  (1<<7)
 #define OPTION_IGNORE_INHERIT       (1<<8)
 #define OPTION_IGNORE_CONTEXT_INFO  (1<<9)
+#define OPTION_LEGACY_PREFIX_DOCROOT (1<<10)
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -870,8 +871,15 @@ static void reduce_uri(request_rec *r)
 
         /* now check whether we could reduce it to a local path... */
         if (ap_matches_request_vhost(r, host, port)) {
+            rewrite_server_conf *conf = 
+                ap_get_module_config(r->server->module_config, &rewrite_module);
             rewritelog((r, 3, NULL, "reduce %s -> %s", r->filename, url));
             r->filename = apr_pstrdup(r->pool, url);
+
+            /* remember that the uri was reduced */
+            if(!(conf->options & OPTION_LEGACY_PREFIX_DOCROOT)) {
+                apr_table_setn(r->notes, "mod_rewrite_uri_reduced", "true");
+            }
         }
     }
 
@@ -3026,6 +3034,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         else if (!strcasecmp(w, "ignorecontextinfo")) {
             options |= OPTION_IGNORE_CONTEXT_INFO;
         }
+        else if (!strcasecmp(w, "legacyprefixdocroot")) {
+            options |= OPTION_LEGACY_PREFIX_DOCROOT;
+        }
         else {
             return apr_pstrcat(cmd->pool, "RewriteOptions: unknown option '",
                                w, "'", NULL);
@@ -4804,6 +4815,7 @@ static int hook_uri2file(request_rec *r)
         }
         else {
             /* it was finally rewritten to a local path */
+            const char *uri_reduced = NULL;
 
             /* expand "/~user" prefix */
 #if APR_HAS_USER
@@ -4839,7 +4851,12 @@ static int hook_uri2file(request_rec *r)
              * because we only do stat() on the first directory
              * and this gets cached by the kernel for along time!
              */
-            if (!prefix_stat(r->filename, r->pool)) {
+
+            if(!(conf->options & OPTION_LEGACY_PREFIX_DOCROOT)) {
+                uri_reduced = apr_table_get(r->notes, "mod_rewrite_uri_reduced");
+            }
+
+            if (!prefix_stat(r->filename, r->pool) || uri_reduced != NULL) {
                 int res;
                 char *tmp = r->uri;
 
