@@ -230,6 +230,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
             "<code>GET /index.html HTTP/1.1</code>")</td></tr>
     <tr><td><code>REMOTE_ADDR</code></td>
         <td>The IP address of the remote host</td></tr>
+    <tr><td><code>REMOTE_PORT</code></td>
+        <td>The port of the remote host</td></tr>
     <tr><td><code>REMOTE_HOST</code></td>
         <td>The host name of the remote host</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
