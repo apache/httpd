@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
+ 
+  *) core: Add %{REMOTE_PORT} to the expression parser. PR59938
+     [Hank Ibell <hwibell gmail.com>]
 
   *) mod_remoteip: When overriding the useragent address from X-Forwarded-For,
      zero out what had been initialized as the connection-level port.  PR59931.
