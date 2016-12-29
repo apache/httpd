@@ -394,6 +394,9 @@ static int remoteip_modify_request(request_rec *r)
         return OK;
     }
 
+    /* Port is not known so set it to zero; otherwise it can be misleading */
+    req->useragent_addr->port = 0;
+
     req->proxied_remote = remote;
     req->proxy_ips = proxy_ips;
 
