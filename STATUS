@@ -162,6 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_remoteip: Add PROXY protocol support
      trunk patch: http://svn.apache.org/r1776575
                   http://svn.apache.org/r1776578 (doc fix)
+                  http://svn.apache.org/r1776627 (shortened name + doc fix)
      2.4 patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri
