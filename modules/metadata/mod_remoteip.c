@@ -369,7 +369,7 @@ static void remoteip_warn_enable_conflict(remoteip_addr_info *prev, server_rec *
     apr_sockaddr_ip_getbuf(buf, sizeof(buf), prev->addr);
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, new, APLOGNO(03491)
-                 "RemoteIPProxyProtocolEnable: previous setting for %s:%hu from virtual "
+                 "RemoteIPProxyProtocol: previous setting for %s:%hu from virtual "
                  "host {%s:%hu in %s} is being overriden by virtual host "
                  "{%s:%hu in %s}; new setting is '%s'",
                  buf, prev->addr->port, prev->source->server_hostname,
@@ -412,7 +412,7 @@ static const char *remoteip_enable_proxy_protocol(cmd_parms *cmd, void *config,
         rem_list[1] = &global_conf->proxy_protocol_optional;
     }
     else {
-        return apr_pstrcat(cmd->pool, "Unrecognized option for ProxyProtocolEnable `%s'", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Unrecognized option for RemoteIPProxyProtocol `%s'", arg, NULL);
     }
 
     for (addr = cmd->server->addrs; addr; addr = addr->next) {
@@ -1008,7 +1008,7 @@ static int remoteip_determine_version(conn_rec *c, const char *ptr)
     }
 }
 
-/* Capture the first bytes on the protocol and parse the proxy protocol header.
+/* Capture the first bytes on the protocol and parse the PROXY protocol header.
  * Removes itself when the header is complete.
  */
 static apr_status_t remoteip_input_filter(ap_filter_t *f,
@@ -1211,7 +1211,7 @@ static const command_rec remoteip_cmds[] =
                   RSRC_CONF | EXEC_ON_READ,
                   "The filename to read the list of internal proxies, "
                   "see the RemoteIPInternalProxy directive"),
-    AP_INIT_TAKE1("RemoteIPProxyProtocolEnable", remoteip_enable_proxy_protocol, NULL,
+    AP_INIT_TAKE1("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
                   RSRC_CONF, "Enable proxy-protocol handling (`on', `off')"),
     { NULL }
 };
