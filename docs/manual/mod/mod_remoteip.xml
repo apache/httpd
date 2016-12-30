@@ -251,7 +251,7 @@ RemoteIPProxiesHeader X-Forwarded-By
     flags, connections will not be aborted if the header is not sent.
     Instead, enforcement will happen after the request is read so virtual
     hosts configured with <code>On</code> will return a 400 Bad Request.
-    Virtual hosts configured with </code>Optional</code> will continue as
+    Virtual hosts configured with <code>Optional</code> will continue as
     usual but without replacing the client IP information</note>
     
     <highlight language="config">
