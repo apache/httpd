@@ -42,6 +42,12 @@ via the request headers.
     with the useragent IP address reported in the request header configured
     with the <directive module="mod_remoteip">RemoteIPHeader</directive> directive.</p>
 
+    <p>Additionally, this module implements the server side of
+    HAProxy's
+    <a href="http://blog.haproxy.com/haproxy/proxy-protocol/">Proxy Protocol</a> when
+    using the <directive module="mod_remoteip">RemoteIPProxyProtocolEnable</directive>
+    directive.</p>
+
     <p>Once replaced as instructed, this overridden useragent IP address is
     then used for the <module>mod_authz_host</module>
     <directive module="mod_authz_core" name="Require">Require ip</directive>
@@ -59,6 +65,7 @@ via the request headers.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
+<seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <section id="processing"><title>Remote IP Processing</title>
 
@@ -211,6 +218,70 @@ RemoteIPHeader X-Forwarded-For
 RemoteIPProxiesHeader X-Forwarded-By
     </highlight>
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocol</name>
+<description>Enable, optionally enable or disable the proxy protocol handling</description>
+<syntax>ProxyProtocol On|Optional|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPProxyProtocolEnable</directive> enables or 
+    disables the reading and handling of the proxy protocol connection header.
+    If enabled with the <code>On</code> flag, the upstream client <em>must</em>
+    send the header every time it opens a connection or the connection will
+    be aborted. If enabled with the <code>Optional</code> flag, the upstream
+    client <em>may</em> send the header.</p>
+
+    <p>While this directive may be specified in any virtual host, it is
+    important to understand that because the proxy protocol is connection
+    based and protocol agnostic, the enabling and disabling is actually based
+    on ip-address and port. This means that if you have multiple name-based
+    virtual hosts for the same host and port, and you enable it any one of
+    them, then it is enabled for all them (with that host and port). It also
+    means that if you attempt to enable the proxy protocol in one and disable
+    in the other, that won't work; in such a case the last one wins and a
+    notice will be logged indicating which setting was being overridden.</p>
+
+    <note type="hint">When multiple virtual hosts on the same IP and port are
+    configured with a combination of <code>On</code> and <code>Optional</code>
+    flags, connections will not be aborted if the header is not sent.
+    Instead, enforcement will happen after the request is read so virtual
+    hosts configured with <code>On</code> will return a 400 Bad Request.
+    Virtual hosts configured with </code>Optional</code> will continue as
+    usual but without replacing the client IP information</note>
+    
+    <highlight language="config">
+Listen 80
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocolEnable Optional
+
+    #Requests to this virtual host may optionally not have
+    # a proxy protocol header provided
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocolEnable On
+
+    #Requests to this virtual host must have a proxy protocol
+    # header provided. If it is missing, a 400 will result
+&lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocolEnable On
+
+    #Requests to this virtual host must have a proxy protocol
+    # header provided. If it is missing, the connection will
+    # be aborted
+&lt;/VirtualHost&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
