@@ -159,6 +159,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 patch: trunk works (modulo CHANGES)
      +1: elukey
 
+  *) mod_remoteip: Add PROXY protocol support
+     trunk patches:
+     http://svn.apache.org/r1776575
+     http://svn.apache.org/r1776578 (doc fix)
+     2.4 patch (includes CHANGES):
+     http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocolEnable.2.4.x.patch
+     +1: druggeri
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
