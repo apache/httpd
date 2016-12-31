@@ -12,9 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * The majority of the input filter code for PROXY protocol support is
- * Copyright 2014 Cloudzilla Inc.
  */
 
 #include "ap_config.h"
