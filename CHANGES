@@ -2,6 +2,11 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_http2: adding support for MergeTrailers directive. [Stefan Eissing]
+  
+  *) mod_http2: limiting DATA frame sizes by TLS record sizes in use on the 
+     connection. Flushing outgoing frames earlier. [Stefan Eissing]
+
   *) mod_http2: cleanup beamer registry on server reload, Fixes PR60510.
      [Pavel Mateja <pavel@verotel.cz>, Stefan Eissing]
      

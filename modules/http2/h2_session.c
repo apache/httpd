@@ -1394,6 +1394,8 @@ static apr_status_t h2_session_send(h2_session *session)
         apr_socket_timeout_set(socket, session->s->timeout);
     }
     
+    /* This sends one round of frames from every able stream, plus
+     * settings etc. if accumulated */
     rv = nghttp2_session_send(session->ngh2);
     
     if (socket) {
@@ -2040,10 +2042,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                       session->id, async);
     }
                   
-    if (c->cs) {
-        c->cs->state = CONN_STATE_WRITE_COMPLETION;
-    }
-    
     while (session->state != H2_SESSION_ST_DONE) {
         trace = APLOGctrace3(c);
         session->have_read = session->have_written = 0;
