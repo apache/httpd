@@ -1,11 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: adding support for MergeTrailers directive. [Stefan Eissing]
-  
-  *) mod_http2: limiting DATA frame sizes by TLS record sizes in use on the 
-     connection. Flushing outgoing frames earlier. [Stefan Eissing]
-
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
      See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
