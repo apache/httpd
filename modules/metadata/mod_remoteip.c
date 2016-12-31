@@ -969,7 +969,7 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
             /* not a supported command */
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03507)
                           "RemoteIPProxyProtocol: unsupported command %.2hx",
-                          hdr->v2.ver_cmd);
+                          (unsigned short)hdr->v2.ver_cmd);
             return HDR_ERROR;
     }
 
