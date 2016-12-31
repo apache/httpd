@@ -93,7 +93,6 @@
   <modulefile>mod_proxy_html.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_http2.xml</modulefile>
-  <modulefile>mod_proxy_protocol.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
   <modulefile>mod_ratelimit.xml</modulefile>
