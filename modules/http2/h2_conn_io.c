@@ -133,6 +133,7 @@ apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c,
     io->is_tls        = h2_h2_is_tls(c);
     io->buffer_output = io->is_tls;
     io->pass_threshold = (apr_size_t)h2_config_geti64(cfg, H2_CONF_STREAM_MAX_MEM) / 2;
+    io->flush_factor  = h2_config_geti(cfg, H2_CONF_TLS_FLUSH_COUNT);
     
     if (io->is_tls) {
         /* This is what we start with, 
@@ -420,9 +421,18 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
     
     if (status == APR_SUCCESS) {
         if (!APR_BRIGADE_EMPTY(io->output)) {
-            apr_off_t len = h2_brigade_mem_size(io->output);
-            if (len >= io->pass_threshold) {
-                return pass_output(io, 0, NULL);
+            apr_off_t len;
+            if (io->buffer_output) {
+                apr_brigade_length(io->output, 0, &len);
+                if (len >= (io->flush_factor * io->write_size)) {
+                    return pass_output(io, 1, NULL);
+                }
+            }
+            else {
+                len = h2_brigade_mem_size(io->output);
+                if (len >= io->pass_threshold) {
+                    return pass_output(io, 0, NULL);
+                }
             }
         }
     }

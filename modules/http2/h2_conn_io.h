@@ -40,6 +40,7 @@ typedef struct {
     
     int buffer_output;
     apr_size_t pass_threshold;
+    int flush_factor;
     
     char *scratch;
     apr_size_t ssize;
