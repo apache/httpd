@@ -175,9 +175,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
     2.4.x patch: Just change the loglevel to DEBUG.
-    +1 covener
+    +1: covener
 
 
+  *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
+     AP_FTYPE_CONTENT_SET.  PR58856
+     trunk patch: http://svn.apache.org/r1726705
+     2.4.x patch: trunk works
+     +1: covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
