@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
+     Add ability for PROXY protocol processing to be optional to donated code.
+     See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt
+     [Cloudzilla/roadrunner2@GitHub, Jim Jagielski, Daniel Ruggeri]
+
   *) mod_rewrite: When a substitution is a fully qualified URL, and the 
      scheme/host/port matches the current virtual host, stop interpreting the 
      path component as a local path just because the first component of the 
