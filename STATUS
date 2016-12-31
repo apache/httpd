@@ -163,6 +163,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1776575
                   http://svn.apache.org/r1776578 (doc fix)
                   http://svn.apache.org/r1776627 (shortened name + doc fix)
+                  http://svn.apache.org/r1776674 (attribution moved to CHANGES)
+                  http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
      2.4 patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri
