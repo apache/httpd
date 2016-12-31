@@ -730,6 +730,9 @@ apr_status_t h2_filter_request_in(ap_filter_t* f,
     request_rec *r = f->r;
     apr_status_t status = APR_SUCCESS;
     apr_bucket *b, *next;
+    core_server_config *conf =
+        (core_server_config *) ap_get_module_config(r->server->module_config,
+                                                    &core_module);
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, f->r,
                   "h2_task(%s): request filter, exp=%d", task->id, r->expecting_100);
@@ -744,7 +747,11 @@ apr_status_t h2_filter_request_in(ap_filter_t* f,
                 ap_assert(headers);
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "h2_task(%s): receiving trailers", task->id);
-                r->trailers_in = apr_table_clone(r->pool, headers->headers);
+                r->trailers_in = headers->headers;
+                if (conf && conf->merge_trailers == AP_MERGE_TRAILERS_ENABLE) {
+                    r->headers_in = apr_table_overlay(r->pool, r->headers_in,
+                                                      r->trailers_in);                    
+                }
                 APR_BUCKET_REMOVE(b);
                 apr_bucket_destroy(b);
                 ap_remove_input_filter(f);

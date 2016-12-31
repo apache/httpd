@@ -602,7 +602,7 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
 {
     conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
-    apr_off_t requested;
+    apr_off_t requested, max_chunk = H2_DATA_CHUNK_SIZE;
     apr_bucket *b, *e;
 
     if (presponse) {
@@ -620,13 +620,10 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
     }
     prep_output(stream);
 
-    if (*plen > 0) {
-        requested = H2MIN(*plen, H2_DATA_CHUNK_SIZE);
+    if (stream->session->io.write_size > 0) {
+        max_chunk = stream->session->io.write_size - 9; /* header bits */ 
     }
-    else {
-        requested = H2_DATA_CHUNK_SIZE;
-    }
-    *plen = requested;
+    *plen = requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
     
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
     h2_util_bb_avail(stream->out_buffer, plen, peos);
