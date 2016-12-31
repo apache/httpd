@@ -167,6 +167,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri
 
+  *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
+    once-per-restart msg (I guess the concern was that the RNG
+    could block after this message)
+
+      AH01757: generating secret for digest authentication ...
+
+    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
+    2.4.x patch: Just change the loglevel to DEBUG.
+    +1 covener
+
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
@@ -257,16 +269,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
          msgid <20160902120654.GA12674@redhat.com>
          (& also, making the structure change with apr-util version
          means it breaks binary compat across an apr-util upgrade?)
-
-  * mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
-    once-per-restart msg (I guess the concern was that the RNG
-    could block after this message)
-
-      AH01757: generating secret for digest authentication ...
-
-    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
-    2.4.x patch: Just change the loglevel to DEBUG.
-    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
