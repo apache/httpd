@@ -64,6 +64,7 @@ static h2_config defconf = {
     0,                      /* copy files across threads */
     NULL,                   /* push list */
     0,                      /* early hints, http status 103 */
+    2,                      /* TLS records flush count */
 };
 
 void h2_config_init(apr_pool_t *pool)
@@ -99,6 +100,7 @@ static void *h2_config_create(apr_pool_t *pool,
     conf->copy_files           = DEF_VAL;
     conf->push_list            = NULL;
     conf->early_hints          = DEF_VAL;
+    conf->tls_flush_count      = DEF_VAL;
     return conf;
 }
 
@@ -151,6 +153,7 @@ static void *h2_config_merge(apr_pool_t *pool, void *basev, void *addv)
         n->push_list        = add->push_list? add->push_list : base->push_list;
     }
     n->early_hints          = H2_CONFIG_GET(add, base, early_hints);
+    n->tls_flush_count      = H2_CONFIG_GET(add, base, tls_flush_count);
     return n;
 }
 
@@ -208,6 +211,8 @@ apr_int64_t h2_config_geti64(const h2_config *conf, h2_config_var_t var)
             return H2_CONFIG_GET(conf, &defconf, copy_files);
         case H2_CONF_EARLY_HINTS:
             return H2_CONFIG_GET(conf, &defconf, early_hints);
+        case H2_CONF_TLS_FLUSH_COUNT:
+            return H2_CONFIG_GET(conf, &defconf, tls_flush_count);
         default:
             return DEF_VAL;
     }
@@ -505,6 +510,15 @@ static const char *h2_conf_set_tls_cooldown_secs(cmd_parms *parms,
     return NULL;
 }
 
+static const char *h2_conf_set_tls_flush_count(cmd_parms *parms,
+                                               void *arg, const char *value)
+{
+    h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
+    cfg->tls_flush_count = (int)apr_atoi64(value);
+    (void)arg;
+    return NULL;
+}
+
 static const char *h2_conf_set_push_diary_size(cmd_parms *parms,
                                                void *arg, const char *value)
 {
@@ -643,6 +657,8 @@ const command_rec h2_cmds[] = {
                   RSRC_CONF, "number of bytes on TLS connection before doing max writes"),
     AP_INIT_TAKE1("H2TLSCoolDownSecs", h2_conf_set_tls_cooldown_secs, NULL,
                   RSRC_CONF, "seconds of idle time on TLS before shrinking writes"),
+    AP_INIT_TAKE1("H2TLSFlushCount", h2_conf_set_tls_flush_count, NULL,
+                  RSRC_CONF, "number of max TLS records before output is flushed"),
     AP_INIT_TAKE1("H2Push", h2_conf_set_push, NULL,
                   RSRC_CONF, "off to disable HTTP/2 server push"),
     AP_INIT_TAKE23("H2PushPriority", h2_conf_add_push_priority, NULL,

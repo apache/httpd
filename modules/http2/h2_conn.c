@@ -208,7 +208,9 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
     do {
         if (c->cs) {
             c->cs->sense = CONN_SENSE_DEFAULT;
+            c->cs->state = CONN_STATE_HANDLER;
         }
+    
         status = h2_session_process(h2_ctx_session_get(ctx), async_mpm);
         
         if (APR_STATUS_IS_EOF(status)) {
@@ -226,6 +228,10 @@ apr_status_t h2_conn_run(struct h2_ctx *ctx, conn_rec *c)
     } while (!async_mpm
              && c->keepalive == AP_CONN_KEEPALIVE 
              && mpm_state != AP_MPMQ_STOPPING);
+    
+    if (c->cs) {
+        c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    }
     
     return DONE;
 }
