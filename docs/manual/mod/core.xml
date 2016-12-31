@@ -1277,7 +1277,7 @@ EnableSendfile On
     (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
       >RFC 7230 &sect;3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
-    custom user-agents which must be deperecated the <code>Unsafe</code>
+    custom user-agents which must be deprecated the <code>Unsafe</code>
     option has been added to revert to the legacy behaviors. These rules
     are applied prior to request processing, so must be configured at the
     global or default (first) matching virtual host section, by IP/port
@@ -1294,7 +1294,7 @@ EnableSendfile On
     <a href="https://tools.ietf.org/html/rfc7230#section-3.5"
          >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" identify the
     risks of accepting obscure whitespace and request message formatting. 
-    As of the introduction of this directive, all grammer rules of the
+    As of the introduction of this directive, all grammar rules of the
     specification are enforced in the default <code>Strict</code> operating
     mode, and the strict whitespace suggested by section 3.5 is enforced
     and cannot be relaxed.</p>
@@ -1327,7 +1327,7 @@ EnableSendfile On
     <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6"
          >RFC 2616 &sect;19.6</a> "Compatibility With Previous Versions" had
     encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
-    superceeds this with "The expectation to support HTTP/0.9 requests has
+    supersedes this with "The expectation to support HTTP/0.9 requests has
     been removed" and offers additional comments in 
     <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
       >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
@@ -4923,7 +4923,7 @@ hostname or IP address</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>HTTP Methods that are not conforming to the relvant RFCs are normally
+<p>HTTP Methods that are not conforming to the relevant RFCs are normally
 rejected by request processing in Apache HTTPD. To avoid this, modules
 can register non-standard HTTP methods they support.
 The <directive>RegisterHttpMethod</directive> allows to register such
