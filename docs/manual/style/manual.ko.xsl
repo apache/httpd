@@ -29,7 +29,7 @@
 <xsl:variable name="output-encoding">EUC-KR</xsl:variable>
 <xsl:variable name="is-chm" select="false()"/>
 <xsl:variable name="is-zip" select="false()"/>
-<xsl:variable name="is-retired" select="false()"/>
+<xsl:variable name="is-retired" select="true()"/>
 
 <!-- Now get the real guts of the stylesheet -->
 <xsl:include href="xsl/common.xsl"/>
