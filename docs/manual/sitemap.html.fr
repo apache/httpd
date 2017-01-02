@@ -298,7 +298,6 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_proxy_html.html">Module Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Module Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_http2.html">Module Apache mod_proxy_http2</a></li>
-<li><a href="mod/mod_proxy_protocol.html">Module Apache mod_proxy_protocol</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Module Apache mod_proxy_scgi</a></li>
 <li><a href="mod/mod_proxy_wstunnel.html">Module Apache mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Module Apache mod_ratelimit</a></li>
@@ -392,7 +391,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

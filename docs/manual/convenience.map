@@ -482,7 +482,6 @@ proxypassreverse	mod/mod_proxy.html#proxypassreverse
 proxypassreversecookiedomain	mod/mod_proxy.html#proxypassreversecookiedomain
 proxypassreversecookiepath	mod/mod_proxy.html#proxypassreversecookiepath
 proxypreservehost	mod/mod_proxy.html#proxypreservehost
-proxyprotocolfilter 	mod/mod_proxy_protocol.html#proxyprotocolfilter 
 proxyreceivebuffersize	mod/mod_proxy.html#proxyreceivebuffersize
 proxyremote	mod/mod_proxy.html#proxyremote
 proxyremotematch	mod/mod_proxy.html#proxyremotematch
@@ -510,6 +509,7 @@ remoteipheader	mod/mod_remoteip.html#remoteipheader
 remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
 remoteipinternalproxylist	mod/mod_remoteip.html#remoteipinternalproxylist
 remoteipproxiesheader	mod/mod_remoteip.html#remoteipproxiesheader
+remoteipproxyprotocol	mod/mod_remoteip.html#remoteipproxyprotocol
 remoteiptrustedproxy	mod/mod_remoteip.html#remoteiptrustedproxy
 remoteiptrustedproxylist	mod/mod_remoteip.html#remoteiptrustedproxylist
 removecharset	mod/mod_mime.html#removecharset

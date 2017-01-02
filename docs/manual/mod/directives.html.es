@@ -527,7 +527,6 @@
 <li><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
 <li><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
 <li><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost</a></li>
-<li><a href="mod_proxy_protocol.html#proxyprotocolfilter ">ProxyProtocolFilter </a></li>
 <li><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
 <li><a href="mod_proxy.html#proxyremote">ProxyRemote</a></li>
 <li><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch</a></li>
@@ -555,6 +554,7 @@
 <li><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
 <li><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
 <li><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
+<li><a href="mod_remoteip.html#remoteipproxyprotocol">RemoteIPProxyProtocol</a></li>
 <li><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
 <li><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>
@@ -773,7 +773,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.htm
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
