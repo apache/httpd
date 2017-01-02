@@ -23,7 +23,7 @@
 #define AP_RELEASE_H
 
 #define AP_SERVER_COPYRIGHT \
-  "Copyright 2016 The Apache Software Foundation."
+  "Copyright 2017 The Apache Software Foundation."
 
 /*
  * The below defines the base string of the Server: header. Additional
