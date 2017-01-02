@@ -284,7 +284,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_html.html">Módulo Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_http2.html">Módulo Apache mod_proxy_http2</a></li>
-<li><a href="mod/mod_proxy_protocol.html">Módulo Apache mod_proxy_protocol</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
 <li><a href="mod/mod_proxy_wstunnel.html">Módulo Apache mod_proxy_wstunnel</a></li>
 <li><a href="mod/mod_ratelimit.html">Módulo Apache mod_ratelimit</a></li>
@@ -374,7 +373,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
