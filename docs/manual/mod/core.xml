@@ -776,6 +776,8 @@ DefaultType None
     send the response without a Content-Type header field and the
     recipient may attempt to guess the media type.</p>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4689,6 +4691,8 @@ certain events before failing a request</description>
        the changes it makes are visible to any later configuration
        directives, beyond any enclosing virtual host.</p>
 </usage>
+<seealso><directive module="core">Define</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
