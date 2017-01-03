@@ -857,6 +857,11 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
        implementation of this directive and is only preserved (with unintuitive 
        results) to maintain backward compatibility.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#undefine">UnDefine</a></code></li>
+<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
@@ -4574,6 +4579,11 @@ certain events before failing a request</td></tr>
        the changes it makes are visible to any later configuration
        directives, beyond any enclosing virtual host.</p>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#define">Define</a></code></li>
+<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directive</a></h2>

@@ -3473,7 +3473,12 @@ bevor er die Anfrage abbricht</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table><p>Die Dokumentation zu dieser Direktive wurde
             noch nicht übersetzt. Bitte schauen Sie in die englische
-            Version.</p></div>
+            Version.</p><h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#define">Define</a></code></li>
+<li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
+</ul>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a>-<a name="usecanonicalname" id="usecanonicalname">Direktive</a></h2>
 <table class="directive">
