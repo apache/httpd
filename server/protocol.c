@@ -1274,6 +1274,7 @@ request_rec *ap_read_request(conn_rec *conn)
             return r;
         default:
             apr_brigade_destroy(tmp_bb);
+            r = NULL;
             return r;
         }
     }
