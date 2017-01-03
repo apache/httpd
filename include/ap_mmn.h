@@ -158,7 +158,7 @@
  * 20051115.38 (2.2.30) Add ap_proxy_set_scoreboard_lb() in mod_proxy.h
  * 20051115.39 (2.2.30) Add ap_proxy_connection_reusable()
  * 20051115.40 (2.2.30) Add ap_map_http_request_error()
- * 20151115.41 (2.2.32) Add http09_enable, http_conformance, and
+ * 20051115.41 (2.2.32) Add http09_enable, http_conformance, and
  *                      http_methods to core_server_config
  *                      Add ap_scan_http_field_token(),
  *                      ap_scan_http_field_content(),
