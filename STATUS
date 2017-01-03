@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
      2.4 patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
-     +1: druggeri
+     +1: druggeri, jim
 
   *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
     once-per-restart msg (I guess the concern was that the RNG
@@ -177,14 +177,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
     2.4.x patch: Just change the loglevel to DEBUG.
-    +1: covener
+    +1: covener, jim
 
 
   *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
      AP_FTYPE_CONTENT_SET.  PR58856
      trunk patch: http://svn.apache.org/r1726705
      2.4.x patch: trunk works
-     +1: covener
+     +1: covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
