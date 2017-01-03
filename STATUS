@@ -66,7 +66,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     a distinct decoded field used only for local filesystem access.
 
   * Change default prefix from /usr/local/apache2 to something corresponding
-    to the project name. Rename apachectl.
+    to the project name. Rename apachectl to httpdctl.
 
   * Change merge order of <Location> to be most specific match last. This
     is more consistent with <Directory> and allows some optimizations for the
@@ -105,7 +105,14 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * add high-level server configuration directives that can steer/influence
     module defaults/warn/rejects related to security 
   
-  * Ditch HTTP/0.9?
+  * Ditch HTTP/0.9? At least, make HttpProtocolOptions Require1.0 the default.
+
+  * Restructure merge fn table/indexes to ignore modules with no directives,
+    and permit modules with dozens upon dozens of merge values to split these
+    into multiple functional config groups to avoid excessive merging.
+    Retitle from 'per-dir' to 'per-location' to better reflect the always-run
+    sections (location, ifexpr etc), while we phase out the file-oriented
+    bias from httpd.
 
   * New versioning or release cadence.
   
