@@ -123,8 +123,7 @@ RELEASE SHOWSTOPPERS:
        Sorry to start from scratch, but yann's correct observation was correct,
        that nothing will apply out-of-order, and everything on 2.2 branch had
        already become disordered.
-     +1: wrowe
-    
+     +1: wrowe, covener
      covener: 
        - need to rebase patch on branch to pick up one-liner changes in
          r1777178 and r1777182
