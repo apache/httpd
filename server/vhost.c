@@ -757,10 +757,7 @@ static apr_status_t strict_hostname_check(request_rec *r, char *host)
     int is_dotted_decimal = 1, leading_zeroes = 0, dots = 0;
 
     for (ch = host; *ch; ch++) {
-        if (!apr_isascii(*ch)) {
-            goto bad;
-        }
-        else if (apr_isalpha(*ch) || *ch == '-') {
+        if (apr_isalpha(*ch) || *ch == '-') {
             is_dotted_decimal = 0;
         }
         else if (ch[0] == '.') {
