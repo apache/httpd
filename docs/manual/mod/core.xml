@@ -794,6 +794,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
        implementation of this directive and is only preserved (with unintuitive 
        results) to maintain backward compatibility.</p>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -4569,6 +4571,8 @@ certain events before failing a request</description>
        the changes it makes are visible to any later configuration
        directives, beyond any enclosing virtual host.</p>
 </usage>
+<seealso><directive module="core">Define</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
