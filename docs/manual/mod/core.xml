@@ -817,7 +817,7 @@ DocumentRoot "/var/www/${servername}/htdocs"
 
     <p>While this directive is supported in virtual host context,
        the changes it makes are visible to any later configuration
-       directives, beyond any enclosing virtual host</p>
+       directives, beyond any enclosing virtual host.</p>
 </usage>
 </directivesynopsis>
 
