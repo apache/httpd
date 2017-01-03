@@ -102,9 +102,9 @@ typedef struct h2_session {
     
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
-    int open_streams;               /* number of streams open */
+    int open_streams;               /* number of client streams open */
     int unsent_submits;             /* number of submitted, but not yet written responses. */
-    int unsent_promises;            /* number of submitted, but not yet written push promised */
+    int unsent_promises;            /* number of submitted, but not yet written push promises */
                                          
     int responses_submitted;        /* number of http/2 responses submitted */
     int streams_reset;              /* number of http/2 streams reset by client */

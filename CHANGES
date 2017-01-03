@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fix for possible page fault when stream is resumed during 
+     session shutdown. [sidney-j-r-m (github)]
+     
+  *) mod_http2: fix for h2 session ignoring new responses while already
+     open streams continue to have data available. [Stefan Eissing]
+     
   *) mod_remoteip: Add support for PROXY protocol (code donated by Cloudzilla).
      Add ability for PROXY protocol processing to be optional to donated code.
      See also: http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt

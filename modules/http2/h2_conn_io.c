@@ -128,13 +128,14 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
 apr_status_t h2_conn_io_init(h2_conn_io *io, conn_rec *c, 
                              const h2_config *cfg)
 {
-    io->c             = c;
-    io->output        = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->is_tls        = h2_h2_is_tls(c);
-    io->buffer_output = io->is_tls;
-    io->pass_threshold = (apr_size_t)h2_config_geti64(cfg, H2_CONF_STREAM_MAX_MEM) / 2;
-    io->flush_factor  = h2_config_geti(cfg, H2_CONF_TLS_FLUSH_COUNT);
-    
+    io->c              = c;
+    io->output         = apr_brigade_create(c->pool, c->bucket_alloc);
+    io->is_tls         = h2_h2_is_tls(c);
+    io->buffer_output  = io->is_tls;
+    io->pass_threshold = (apr_size_t)h2_config_geti64(cfg, H2_CONF_STREAM_MAX_MEM);
+    io->flush_factor   = h2_config_geti(cfg, H2_CONF_TLS_FLUSH_COUNT);
+    io->speed_factor   = 1.0;
+
     if (io->is_tls) {
         /* This is what we start with, 
          * see https://issues.apache.org/jira/browse/TS-2503 
@@ -256,6 +257,7 @@ static void check_write_size(h2_conn_io *io)
         /* long time not written, reset write size */
         io->write_size = WRITE_SIZE_INITIAL;
         io->bytes_written = 0;
+        io->speed_factor = 1.0;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, io->c,
                       "h2_conn_io(%ld): timeout write size reset to %ld", 
                       (long)io->c->id, (long)io->write_size);
@@ -325,7 +327,34 @@ static apr_status_t pass_output(h2_conn_io *io, int flush,
 
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
-    return pass_output(io, 1, NULL);
+    apr_time_t start = 0;
+    apr_status_t status;
+    
+    if (io->needs_flush > 0) {
+        /* this is a buffer size triggered flush, let's measure how
+         * long it takes and try to adjust our speed factor accordingly */
+        start = apr_time_now();
+    }
+    status = pass_output(io, 1, NULL);
+    check_write_size(io);
+    if (start && status == APR_SUCCESS) {
+        apr_time_t duration = apr_time_now() - start;
+        if (duration < apr_time_from_msec(100)) {
+            io->speed_factor *= 1.0 + ((apr_time_from_msec(100) - duration) 
+                                        / (float)apr_time_from_msec(100));
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, io->c,
+                          "h2_conn_io(%ld): incr speed_factor to %f",
+                          io->c->id, io->speed_factor);
+        }
+        else if (duration > apr_time_from_msec(200)) {
+            io->speed_factor *= 0.5;
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, io->c,
+                          "h2_conn_io(%ld): decr speed_factor to %f",
+                          io->c->id, io->speed_factor);
+        }
+    }
+    io->needs_flush = -1;
+    return status;
 }
 
 apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
@@ -367,6 +396,7 @@ apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
     else {
         status = apr_brigade_write(io->output, NULL, NULL, data, length);
     }
+    io->needs_flush = -1;
     return status;
 }
 
@@ -375,7 +405,6 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
     apr_bucket *b;
     apr_status_t status = APR_SUCCESS;
     
-    check_write_size(io);
     while (!APR_BRIGADE_EMPTY(bb) && status == APR_SUCCESS) {
         b = APR_BRIGADE_FIRST(bb);
         
@@ -418,24 +447,21 @@ apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb)
             APR_BRIGADE_INSERT_TAIL(io->output, b);
         }
     }
-    
-    if (status == APR_SUCCESS) {
-        if (!APR_BRIGADE_EMPTY(io->output)) {
-            apr_off_t len;
-            if (io->buffer_output) {
-                apr_brigade_length(io->output, 0, &len);
-                if (len >= (io->flush_factor * io->write_size)) {
-                    return pass_output(io, 1, NULL);
-                }
-            }
-            else {
-                len = h2_brigade_mem_size(io->output);
-                if (len >= io->pass_threshold) {
-                    return pass_output(io, 0, NULL);
-                }
-            }
-        }
-    }
+    io->needs_flush = -1;
     return status;
 }
 
+int h2_conn_io_needs_flush(h2_conn_io *io)
+{
+    if (io->needs_flush < 0) {
+        apr_off_t len;
+        apr_brigade_length(io->output, 0, &len);
+        if (len > (io->pass_threshold * io->flush_factor * io->speed_factor)) {
+            /* don't want to keep too much around */
+            io->needs_flush = 1;
+            return 1;
+        }
+        io->needs_flush = 0;
+    }
+    return 0;
+}

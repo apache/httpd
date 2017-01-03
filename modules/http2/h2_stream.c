@@ -600,10 +600,10 @@ static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
 apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen, 
                                    int *peos, h2_headers **presponse)
 {
-    conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
     apr_off_t requested, max_chunk = H2_DATA_CHUNK_SIZE;
     apr_bucket *b, *e;
+    conn_rec *c;
 
     if (presponse) {
         *presponse = NULL;
@@ -614,10 +614,11 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         *peos = 1;
         return APR_ECONNRESET;
     }
-    
-    if (!output_open(stream)) {
+    else if (!output_open(stream)) {
         return APR_ECONNRESET;
     }
+    
+    c = stream->session->c;
     prep_output(stream);
 
     if (stream->session->io.write_size > 0) {
