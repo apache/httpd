@@ -106,6 +106,8 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     module defaults/warn/rejects related to security 
   
   * Ditch HTTP/0.9?
+
+  * New versioning or release cadence.
   
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
