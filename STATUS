@@ -124,12 +124,11 @@ RELEASE SHOWSTOPPERS:
        that nothing will apply out-of-order, and everything on 2.2 branch had
        already become disordered.
      +1: wrowe
-     covener: a few issues spotted:
-       - MMN in comment form has major bump typo? s/2015/2005/.
-       - r = NULL issue in ap_read_request() default case (sent via email)    
-       - should drop STATUS changes that snuck in
-               
-
+    
+     covener: 
+       - need to rebase patch on branch to pick up one-liner changes in
+         r1777178 and r1777182
+       - should drop STATUS changes that snuck in to patch [but not branch]
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
