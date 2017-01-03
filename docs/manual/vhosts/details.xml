@@ -110,7 +110,7 @@
     ref="servernameindication">Server Name Indication</glossary>.</p>
 
     <p>The complete list of names in the <code>VirtualHost</code>
-    directive are treated just like a (non wildcard) <code>ServerAlias</code> 
+    directive are treated just like a (non wildcard) <code>ServerAlias</code>
     (but are not overridden by any <code>ServerAlias</code> statement).</p>
 
     <p>For every vhost various default values are set. In
@@ -294,7 +294,7 @@
       topics.</li>
 
       <li><code>ServerName</code> should always be set for each
-      vhost. Otherwise A DNS lookup is required for each
+      vhost. Otherwise a DNS lookup is required for each
       vhost.</li>
       </ul>
       </section>
