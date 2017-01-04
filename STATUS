@@ -129,6 +129,9 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Modify configuration syntax to separate meta-directives from runtime
     directives (e.g. If vs. IfVersion).
 
+  * Support JSON-like configuration files
+
+  * Opaque data structures w/ getters/setters 
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
