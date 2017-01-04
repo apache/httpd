@@ -99,6 +99,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
   *) Rather than odds-and-ends applied out of order, proposing we revert
      r1757240, r1757256, r1757295, r1758671, r1758672, r1775232, all of
      which is now recorded in the 2.2.x-merge-http-strict branch, and
@@ -123,13 +126,13 @@ RELEASE SHOWSTOPPERS:
        Sorry to start from scratch, but yann's correct observation was correct,
        that nothing will apply out-of-order, and everything on 2.2 branch had
        already become disordered.
-     +1: wrowe, covener
+     +1: wrowe, covener, ylavic
      covener: 
        - need to rebase patch on branch to pick up one-liner changes in
          r1777178 and r1777182
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
+     ylavic:
+        httpd-2.2-HEAD-http-protocol-strict.patch + r1777178 + r1777182 worked,
+        but not the former procedure (merge conflicts).
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
