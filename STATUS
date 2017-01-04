@@ -59,6 +59,8 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * Seriously ramp up/replace test framework and cases to have better
     coverage of existing special cases and behaviours users rely on.
 
+  * Add performance testing to the test framework.
+
   * Competely untangle core filesystem behavior where a filesystem htdocs/
     resource wasn't indicated by the request URI.
 
@@ -115,7 +117,18 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     bias from httpd.
 
   * New versioning or release cadence.
-  
+
+  * Ditch old APIs when we have the chance with 3.x. Consolidate current
+    functionality into APIs with stronger guarantees. (Specific examples TBD.)
+
+  * Remove as many undesirable-but-kept-for-backwards-compatibility behaviors
+    as possible from current config directives. (Specific examples TBD.)
+
+  * True event-loop/asynchronous support in the server core.
+
+  * Modify configuration syntax to separate meta-directives from runtime
+    directives (e.g. If vs. IfVersion).
+
 
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
