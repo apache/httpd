@@ -195,6 +195,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works
      +1: covener, ylavic (by inspection)
 
+  *) Fix some compiler warnings
+     trunk patch: https://svn.apache.org/r1125877
+     2.4.x patch: https://svn.apache.org/r1125877 (from trunk)
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_warnings_r1125877.patch
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
