@@ -127,9 +127,6 @@ RELEASE SHOWSTOPPERS:
      covener: 
        - need to rebase patch on branch to pick up one-liner changes in
          r1777178 and r1777182
-       - should drop STATUS changes that snuck in to patch [but not branch]
-         wrowe responds: The STATUS file is net-null no change at this point,
-                         according to svn diff.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
