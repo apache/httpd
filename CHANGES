@@ -2,6 +2,12 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_http2: fix for possible page fault when stream is resumed during 
+     session shutdown. [sidney-j-r-m (github)]
+     
+  *) mod_http2: fix for h2 session ignoring new responses while already
+     open streams continue to have data available. [Stefan Eissing]
+     
   *) mod_http2: adding support for MergeTrailers directive. [Stefan Eissing]
   
   *) mod_http2: limiting DATA frame sizes by TLS record sizes in use on the 

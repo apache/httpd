@@ -39,8 +39,10 @@ typedef struct {
     apr_int64_t bytes_written;
     
     int buffer_output;
+    int needs_flush;
     apr_size_t pass_threshold;
-    int flush_factor;
+    float flush_factor;
+    float speed_factor;
     
     char *scratch;
     apr_size_t ssize;
@@ -73,5 +75,7 @@ apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, struct h2_session *session);
  * @param flush if a flush bucket should be appended to any output
  */
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
+
+int h2_conn_io_needs_flush(h2_conn_io *io);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */
