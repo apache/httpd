@@ -886,6 +886,21 @@ AC_ARG_ENABLE(bsd-makefiles,APACHE_HELP_STRING(--enable-bsd-makefiles,use BSD Ma
   FORCE_BSD_MAKEFILE="auto"
 ])
 
+AC_ARG_WITH([test-suite],
+    APACHE_HELP_STRING([--with-test-suite=PATH], [enable in-tree 'make check' with the given Apache::Test suite location]),
+    [
+        if test "x$withval" = "xyes"; then
+            AC_MSG_ERROR([option --with-test-suite requires a directory]);
+        else
+            test -f "$withval/Makefile.PL" || AC_MSG_WARN([--with-test-suite directory $withval does not appear to contain the expected Makefile.PL])
+            TEST_SUITE_LOCATION="$withval"
+        fi
+    ],
+    [ TEST_SUITE_LOCATION="no" ]
+)
+
+APACHE_SUBST(TEST_SUITE_LOCATION)
+
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile)
