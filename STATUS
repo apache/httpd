@@ -193,8 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r752546
      2.4.x patch: before 2.4.x fork 
      2.2.x patch: trunk works
-     +1: ylavic (by inspection)
-     ylavic: covener, your proposal's vote?
+     +1: covener, ylavic (by inspection)
 
 PATCHES/ISSUES THAT ARE STALLED
 
