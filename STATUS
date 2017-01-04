@@ -186,6 +186,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: mrumph
 
+  *) core: EBCDIC fix for ap_send_interim_response()
+     trunk patch: https://svn.apache.org/r752546
+     2.4.x patch: before 2.4.x fork 
+     2.2.x patch: trunk works
 
 PATCHES/ISSUES THAT ARE STALLED
 
