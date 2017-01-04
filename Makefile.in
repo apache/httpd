@@ -295,5 +295,24 @@ update-log-tags update-log-msg-tags:
 	find server modules os -name \*.c|xargs perl \
 		docs/log-message-tags/update-log-msg-tags
 
+# TODO: don't require an install of the server binaries to run the tests
+APXS_LOCATION := $(DESTDIR)$(bindir)/apxs
+
+check:
+	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
+	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
+	    false; \
+	fi
+	@if ! test -f "$(APXS_LOCATION)"; then \
+	    echo "Can't find apxs at '$(APXS_LOCATION)'"; \
+	    echo "Unfortunately the 'in-tree' tests don't run yet without first running 'make install'. Sorry."; \
+	    false; \
+	fi
+	cd "$(TEST_SUITE_LOCATION)" && \
+	    perl Makefile.PL -apxs "$(APXS_LOCATION)" && \
+	    ./t/TEST -clean && \
+	    ./t/TEST -config && \
+	    ./t/TEST
+
 # XXX: This looks awfully platform-specific [read: bad form and style]
 include $(top_srcdir)/os/os2/core.mk
