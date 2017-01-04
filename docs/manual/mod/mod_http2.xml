@@ -268,9 +268,7 @@ H2Direct on
         <usage>
             <p>
                 This directive toggles the usage of the HTTP/2 server push 
-                protocol feature. This should be used inside a 
-                <directive module="core" type="section">VirtualHost</directive> 
-                section to enable direct HTTP/2 communication for that virtual host. 
+                protocol feature.
             </p>
             <p>
                 The HTTP/2 protocol allows the server to push other resources to

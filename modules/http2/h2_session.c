@@ -47,6 +47,8 @@
 #include "h2_workers.h"
 
 
+static apr_status_t dispatch_master(h2_session *session);
+
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
     if (rv == APR_SUCCESS) {
@@ -238,6 +240,17 @@ static ssize_t send_cb(nghttp2_session *ngh2,
     
     (void)ngh2;
     (void)flags;
+    if (h2_conn_io_needs_flush(&session->io)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "h2_session(%ld): blocking due to io flush",
+                      session->id);
+        status = h2_conn_io_flush(&session->io);
+        if (status != APR_SUCCESS) {
+            return h2_session_status_from_apr_status(status);
+        }
+        return NGHTTP2_ERR_WOULDBLOCK;
+    }
+    
     status = h2_conn_io_write(&session->io, (const char *)data, length);
     if (status == APR_SUCCESS) {
         return length;
@@ -576,6 +589,17 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     
     (void)ngh2;
     (void)source;
+    if (h2_conn_io_needs_flush(&session->io)) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
+                      "h2_stream(%ld-%d): blocking due to io flush",
+                      session->id, stream_id);
+        status = h2_conn_io_flush(&session->io);
+        if (status != APR_SUCCESS) {
+            return h2_session_status_from_apr_status(status);
+        }
+        return NGHTTP2_ERR_WOULDBLOCK;
+    }
+    
     if (frame->data.padlen > H2_MAX_PADLEN) {
         return NGHTTP2_ERR_PROTO;
     }
@@ -1402,7 +1426,7 @@ static apr_status_t h2_session_send(h2_session *session)
         apr_socket_timeout_set(socket, saved_timeout);
     }
     session->have_written = 1;
-    if (rv != 0) {
+    if (rv != 0 && rv != NGHTTP2_ERR_WOULDBLOCK) {
         if (nghttp2_is_fatal(rv)) {
             dispatch_event(session, H2_SESSION_EV_PROTO_ERROR, rv, nghttp2_strerror(rv));
             return APR_EGENERAL;
@@ -2028,6 +2052,21 @@ static void dispatch_event(h2_session *session, h2_session_event_t ev,
     }
 }
 
+/* trigger window updates, stream resumes and submits */
+static apr_status_t dispatch_master(h2_session *session) {
+    apr_status_t status;
+    
+    status = h2_mplx_dispatch_master_events(session->mplx, 
+                                            on_stream_resume, session);
+    if (status != APR_SUCCESS) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, session->c,
+                      "h2_session(%ld): dispatch error", session->id);
+        dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
+                       H2_ERR_INTERNAL_ERROR, "dispatch error");
+    }
+    return status;
+}
+
 static const int MAX_WAIT_MICROS = 200 * 1000;
 
 apr_status_t h2_session_process(h2_session *session, int async)
@@ -2203,18 +2242,9 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, NULL);
                     }
                 }
-                
-                /* trigger window updates, stream resumes and submits */
-                status = h2_mplx_dispatch_master_events(session->mplx, 
-                                                        on_stream_resume,
-                                                        session);
+
+                status = dispatch_master(session);
                 if (status != APR_SUCCESS) {
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, c,
-                                  "h2_session(%ld): dispatch error", 
-                                  session->id);
-                    dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
-                                   H2_ERR_INTERNAL_ERROR, 
-                                   "dispatch error");
                     break;
                 }
                 
