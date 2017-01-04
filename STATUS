@@ -102,7 +102,7 @@ RELEASE SHOWSTOPPERS:
   *) Rather than odds-and-ends applied out of order, proposing we revert
      r1757240, r1757256, r1757295, r1758671, r1758672, r1775232, all of
      which is now recorded in the 2.2.x-merge-http-strict branch, and
-     bring that branch back into 2.2.x for 2.4.32 release.
+     bring that branch back into 2.2.x for 2.2.32 release.
      Merges;
        -c-1775232 .
        -c-1757672 .
@@ -128,6 +128,8 @@ RELEASE SHOWSTOPPERS:
        - need to rebase patch on branch to pick up one-liner changes in
          r1777178 and r1777182
        - should drop STATUS changes that snuck in to patch [but not branch]
+         wrowe responds: The STATUS file is net-null no change at this point,
+                         according to svn diff.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
