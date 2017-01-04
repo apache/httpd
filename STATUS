@@ -187,12 +187,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1542338
      2.4.x patch: https://svn.apache.org/r1542549
      2.2.x patch: trunk patch works
-     +1: mrumph
+     +1: mrumph, ylavic
 
   *) core: EBCDIC fix for ap_send_interim_response()
      trunk patch: https://svn.apache.org/r752546
      2.4.x patch: before 2.4.x fork 
      2.2.x patch: trunk works
+     +1: ylavic (by inspection)
+     ylavic: covener, your proposal's vote?
 
 PATCHES/ISSUES THAT ARE STALLED
 
