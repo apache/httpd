@@ -354,7 +354,9 @@ static void ssl_init_ctx_protocol(server_rec *s,
 #ifndef OPENSSL_NO_SSL2
                      (protocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
 #endif
+#ifndef OPENSSL_NO_SSL3
                      (protocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
+#endif
                      (protocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""),
 #ifdef HAVE_TLSV1_X
                      (protocol & SSL_PROTOCOL_TLSV1_1 ? "TLSv1.1, " : ""),
@@ -374,6 +376,20 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
     else
 #endif
+#ifndef OPENSSL_NO_SSL3
+    if (protocol == SSL_PROTOCOL_SSLV3) {
+        method = mctx->pkp ?
+            SSLv3_client_method() : /* proxy */
+            SSLv3_server_method();  /* server */
+    }
+    else
+#endif
+    if (protocol == SSL_PROTOCOL_TLSV1) {
+        method = mctx->pkp ?
+            TLSv1_client_method() : /* proxy */
+            TLSv1_server_method();  /* server */
+    }
+    else
 #ifdef HAVE_TLSV1_X
     if (protocol == SSL_PROTOCOL_TLSV1_1) {
         method = mctx->pkp ?
@@ -404,9 +420,11 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
 #endif
 
+#ifndef OPENSSL_NO_SSL3
     if (!(protocol & SSL_PROTOCOL_SSLV3)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
     }
+#endif
 
     if (!(protocol & SSL_PROTOCOL_TLSV1)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);

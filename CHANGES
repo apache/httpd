@@ -39,6 +39,9 @@ Changes with Apache 2.2.32
   *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
      directives.  [Mike Rumph <mike.rumph oracle.com>]
 
+  *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3.
+     [Kaspar Brand]
+
   *) core: Limit to ten the number of tolerated empty lines between request.
      [Yann Ylavic]
 
