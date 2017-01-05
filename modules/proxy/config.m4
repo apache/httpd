@@ -5,20 +5,6 @@ APACHE_MODPATH_INIT(proxy)
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , most)
 
-dnl set aside module selections and default, and set the module default to the
-dnl same scope (shared|static) as selected for mod proxy, along with setting
-dnl the default selection to "most" for remaining proxy modules, mirroring the
-dnl behavior of 2.4.1 and later, but failing ./configure only if an explicitly
-dnl enabled module is missing its prereqs
-save_module_selection=$module_selection
-save_module_default=$module_default
-if test "x$enable_proxy" != "xno"; then
-    module_selection=most
-    if test "$enable_proxy" = "shared" -o "$enable_proxy" = "static"; then
-        module_default=$enable_proxy
-    fi
-fi
-
 proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
@@ -77,9 +63,6 @@ APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy.
 APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , most, , [proxy,watchdog])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
-
-module_selection=$save_module_selection
-module_default=$save_module_default
 
 APACHE_MODPATH_FINISH
 
