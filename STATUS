@@ -102,41 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Rather than odds-and-ends applied out of order, proposing we revert
-     r1757240, r1757256, r1757295, r1758671, r1758672, r1775232, all of
-     which is now recorded in the 2.2.x-merge-http-strict branch, and
-     bring that branch back into 2.2.x for 2.2.32 release.
-     Merges;
-       -c-1775232 .
-       -c-1757672 .
-       -c-1757671 .
-       -c-1757295 .
-       -c-1757256 .
-       -c-1757240 .
-     [here we are back at 2.2.32-dev bump]
-       -r1775685:1775780 https://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x-merge-http-strict/
-     Roll-up patch of the above (not recommended for casual reading, these
-     would be committed individually as noted above... but for only for sanity
-     testing the end result. Due to intervening CHANGES/ap_mmn changes, there
-     is small delta after reverting the above...)
-       https://raw.githubusercontent.com/wrowe/patches/master/httpd-2.2-HEAD-http-protocol-strict.patch
-       This patch above does *NOT* apply to the 2.2.31 release, c.f. the delta
-       of the 2.2.x-merge-http-strict branch for that information. This is for
-       folks who are testing rollbacks plus 2.4.x activity against 2.2.x HEAD!
-       Sorry to start from scratch, but yann's correct observation was correct,
-       that nothing will apply out-of-order, and everything on 2.2 branch had
-       already become disordered.
-     +1: wrowe, covener, ylavic
-     covener: 
-       - need to rebase patch on branch to pick up one-liner changes in
-         r1777178 and r1777182
-     ylavic:
-        httpd-2.2-HEAD-http-protocol-strict.patch + r1777178 + r1777182 worked,
-        but not the former procedure (merge conflicts).
-     wrowe asks: covener, would you apply? I'd like to have at least a second
-                 pair of hands and eyes on merging this to branches/2.2.x and
-                 am happy to compare/verify against my working copy.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
