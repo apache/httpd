@@ -102,26 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Fix trivial compiler warnings
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_trivial_warnings.patch
-     +1: ylavic, covener, wrowe
-     ylavic: couldn't find relevant commits in trunk/2.4.x with blame
-             since these are removed lines.
-
-  *) Fix strange indent (gcc even complains)
-     trunk patch: https://svn.apache.org/r1633031
-     2.4.x patch: https://svn.apache.org/r1635970
-     2.2.x patch: trunk works
-     +1: ylavic, covener, wrowe
-
-  *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3
-     [but without: and change the compiled-in default for SSL[Proxy]Protocol
-                   to "all -SSLv3", in accordance with RFC 7568]
-     trunk patch: https://svn.apache.org/r1703952
-     2.4.x patch: https://svn.apache.org/r1706008
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-backport_r1703952.patch
-     +1: ylavic, wrowe, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
