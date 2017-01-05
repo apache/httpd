@@ -102,6 +102,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) Fix trivial compiler warnings
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_trivial_warnings.patch
+     +1: ylavic, covener, wrowe
+     ylavic: couldn't find relevant commits in trunk/2.4.x with blame
+             since these are removed lines.
+
+  *) Fix strange indent (gcc even complains)
+     trunk patch: https://svn.apache.org/r1633031
+     2.4.x patch: https://svn.apache.org/r1635970
+     2.2.x patch: trunk works
+     +1: ylavic, covener, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -158,18 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://svn.apache.org/r1706008
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-backport_r1703952.patch
      +1: ylavic, wrowe
-
-  *) Fix trivial compiler warnings
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_trivial_warnings.patch
-     +1: ylavic, covener, wrowe
-     ylavic: couldn't find relevant commits in trunk/2.4.x with blame
-             since these are removed lines.
-
-  *) Fix strange indent (gcc even complains)
-     trunk patch: https://svn.apache.org/r1633031
-     2.4.x patch: https://svn.apache.org/r1635970
-     2.2.x patch: trunk works
-     +1: ylavic, covener, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
