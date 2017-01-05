@@ -1895,6 +1895,12 @@ static void usage(const char *progname)
 #define SSL2_HELP_MSG ""
 #endif
 
+#ifndef OPENSSL_NO_SSL3
+#define SSL3_HELP_MSG "SSL3, "
+#else
+#define SSL3_HELP_MSG ""
+#endif
+
 #ifdef HAVE_TLSV1_X
 #define TLS1_X_HELP_MSG ", TLS1.1, TLS1.2"
 #else
@@ -1903,7 +1909,7 @@ static void usage(const char *progname)
 
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol\n"); 
-    fprintf(stderr, "                    (" SSL2_HELP_MSG "SSL3, TLS1" TLS1_X_HELP_MSG " or ALL)\n");
+    fprintf(stderr, "                    (" SSL2_HELP_MSG SSL3_HELP_MSG "TLS1" TLS1_X_HELP_MSG " or ALL)\n");
 #endif
     exit(EINVAL);
 }
@@ -2240,8 +2246,10 @@ int main(int argc, const char * const argv[])
                 } else if (strncasecmp(optarg, "SSL2", 4) == 0) {
                     meth = SSLv2_client_method();
 #endif
+#ifndef OPENSSL_NO_SSL3
                 } else if (strncasecmp(optarg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
+#endif
 #ifdef HAVE_TLSV1_X
                 } else if (strncasecmp(optarg, "TLS1.1", 6) == 0) {
                     meth = TLSv1_1_client_method();

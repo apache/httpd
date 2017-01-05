@@ -1362,7 +1362,15 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
 #endif
         }
         else if (strcEQ(w, "SSLv3")) {
+#ifdef OPENSSL_NO_SSL3
+            if (action != '-') {
+                return "SSLv3 not supported by this version of OpenSSL";
+            }
+            /* Nothing to do, the flag is not present to be toggled */
+            continue;
+#else
             thisopt = SSL_PROTOCOL_SSLV3;
+#endif
         }
         else if (strcEQ(w, "TLSv1")) {
             thisopt = SSL_PROTOCOL_TLSV1;
