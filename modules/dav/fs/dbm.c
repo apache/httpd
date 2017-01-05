@@ -485,7 +485,6 @@ static void dav_propdb_close(dav_db *db)
         dav_propdb_metadata m;
         apr_datum_t key;
         apr_datum_t value;
-        dav_error *err;
 
         key.dptr = DAV_GDBM_NS_KEY;
         key.dsize = DAV_GDBM_NS_KEY_LEN;
@@ -500,8 +499,8 @@ static void dav_propdb_close(dav_db *db)
 
         memcpy(db->ns_table.buf, &m, sizeof(m));
 
-        err = dav_dbm_store(db, key, value);
         /* ### what to do with the error? */
+        dav_dbm_store(db, key, value);
     }
 
     dav_dbm_close(db);

@@ -1050,7 +1050,6 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
                              const digest_config_rec *conf)
 {
     char *nonce = apr_palloc(p, NONCE_LEN+1);
-    int len;
     time_rec t;
 
     if (conf->nonce_lifetime != 0) {
@@ -1066,7 +1065,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         /* XXX: WHAT IS THIS CONSTANT? */
         t.time = 42;
     }
-    len = apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
+    apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf);
 
     return nonce;
@@ -1411,7 +1410,6 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
                        const digest_config_rec *conf)
 {
     apr_time_t dt;
-    int len;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
 
@@ -1425,7 +1423,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    len = apr_base64_decode_binary(nonce_time.arr, resp->nonce);
+    apr_base64_decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf);
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
