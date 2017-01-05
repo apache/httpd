@@ -1096,7 +1096,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                               "request to '%s'", hostname_note);
                 ssl_log_ssl_error(APLOG_MARK, APLOG_WARNING, server);
             }
-	}
+        }
 #endif
 
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
