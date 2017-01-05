@@ -71,7 +71,7 @@
  * char in here and get it to work, because if char is signed then it
  * will first be sign extended.
  */
-#define TEST_CHAR(c, f)        (test_char_table[(unsigned)(c)] & (f))
+#define TEST_CHAR(c, f)        (test_char_table[(unsigned char)(c)] & (f))
 
 /* Win32/NetWare/OS2 need to check for both forward and back slashes
  * in ap_getparents() and ap_escape_url.
@@ -1425,6 +1425,36 @@ AP_DECLARE(int) ap_find_list_item(apr_pool_t *p, const char *line,
     return good;
 }
 
+/* Scan a string for HTTP VCHAR/obs-text characters including HT and SP
+ * (as used in header values, for example, in RFC 7230 section 3.2)
+ * returning the pointer to the first non-HT ASCII ctrl character.
+ */
+AP_DECLARE(const char *) ap_scan_http_field_content(const char *ptr)
+{
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_CTRLS); ++ptr) ;
+
+    return ptr;
+}
+
+/* Scan a string for HTTP token characters, returning the pointer to
+ * the first non-token character.
+ */
+AP_DECLARE(const char *) ap_scan_http_token(const char *ptr)
+{
+    for ( ; !TEST_CHAR(*ptr, T_HTTP_TOKEN_STOP); ++ptr) ;
+
+    return ptr;
+}
+
+/* Scan a string for visible ASCII (0x21-0x7E) or obstext (0x80+)
+ * and return a pointer to the first ctrl/space character encountered.
+ */
+AP_DECLARE(const char *) ap_scan_vchar_obstext(const char *ptr)
+{
+    for ( ; TEST_CHAR(*ptr, T_VCHAR_OBSTEXT); ++ptr) ;
+
+    return ptr;
+}
 
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
