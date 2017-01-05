@@ -137,12 +137,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  pair of hands and eyes on merging this to branches/2.2.x and
                  am happy to compare/verify against my working copy.
 
-  *) core: EBCDIC fix for ap_send_interim_response()
-     trunk patch: https://svn.apache.org/r752546
-     2.4.x patch: before 2.4.x fork 
-     2.2.x patch: trunk works
-     +1: covener, ylavic (by inspection), wrowe
-
   *) core: potential rejection of valid MaxMemFree and ThreadStackSize directives
      trunk patch: https://svn.apache.org/r1542338
      2.4.x patch: https://svn.apache.org/r1542549
