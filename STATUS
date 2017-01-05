@@ -133,6 +133,13 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
 
   * Opaque data structures w/ getters/setters 
 
+  * Generic interface to enable runtime changes (adjusting log level, modifying
+    balancer information, toggling flags on/off). Perhaps modules can register
+    callbacks for making these changes?
+
+  * REST-based administration for existing (balancer/etc) and new dynamic
+    runtime changes (see above)
+
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
