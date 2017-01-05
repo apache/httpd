@@ -1133,6 +1133,7 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
         return err;
     }
 
+    errno = 0;
     value = strtol(arg, NULL, 0);
     if (value < 0 || errno == ERANGE)
         return apr_pstrcat(cmd->pool, "Invalid MaxMemFree value: ",
@@ -1157,6 +1158,7 @@ const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
         return err;
     }
 
+    errno = 0;
     value = strtol(arg, NULL, 0);
     if (value < 0 || errno == ERANGE)
         return apr_pstrcat(cmd->pool, "Invalid ThreadStackSize value: ",
