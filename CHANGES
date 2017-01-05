@@ -4,6 +4,9 @@ Changes with Apache 2.2.32
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
+  *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
+     directives.  [Mike Rumph <mike.rumph oracle.com>]
+
   *) core: Limit to ten the number of tolerated empty lines between request.
      [Yann Ylavic]
 
