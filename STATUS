@@ -218,6 +218,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: couldn't find relevant commits in trunk/2.4.x with blame
              since these are removed lines.
 
+  *) Fix strange indent (gcc even complains)
+     trunk patch: https://svn.apache.org/r1633031
+     2.4.x patch: https://svn.apache.org/r1635970
+     2.2.x patch: trunk works
+     +1: ylavic
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
