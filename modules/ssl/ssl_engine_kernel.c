@@ -1796,7 +1796,6 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
                                        SSL_SESSION *session)
 {
     server_rec *s;
-    SSLSrvConfigRec *sc;
     unsigned char *id;
     unsigned int idlen;
 
@@ -1806,8 +1805,6 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     if (!(s = (server_rec *)SSL_CTX_get_app_data(ctx))) {
         return; /* on server shutdown Apache is already gone */
     }
-
-    sc = mySrvConfig(s);
 
     /*
      * Remove the SSL_SESSION from the inter-process cache

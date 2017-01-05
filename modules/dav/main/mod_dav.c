@@ -2473,7 +2473,6 @@ static int dav_method_mkcol(request_rec *r)
     dav_error *err;
     dav_error *err2;
     int result;
-    dav_dir_conf *conf;
     dav_response *multi_status;
 
     /* handle the request body */
@@ -2481,9 +2480,6 @@ static int dav_method_mkcol(request_rec *r)
     if ((result = process_mkcol_body(r)) != OK) {
         return result;
     }
-
-    conf = (dav_dir_conf *)ap_get_module_config(r->per_dir_config,
-                                                &dav_module);
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
