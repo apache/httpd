@@ -133,6 +133,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      ylavic:
         httpd-2.2-HEAD-http-protocol-strict.patch + r1777178 + r1777182 worked,
         but not the former procedure (merge conflicts).
+     wrowe asks: covener, would you apply? I'd like to have at least a second
+                 pair of hands and eyes on merging this to branches/2.2.x and
+                 am happy to compare/verify against my working copy.
+
+  *) core: EBCDIC fix for ap_send_interim_response()
+     trunk patch: https://svn.apache.org/r752546
+     2.4.x patch: before 2.4.x fork 
+     2.2.x patch: trunk works
+     +1: covener, ylavic (by inspection), wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -189,17 +198,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: mrumph, ylavic
 
-  *) core: EBCDIC fix for ap_send_interim_response()
-     trunk patch: https://svn.apache.org/r752546
-     2.4.x patch: before 2.4.x fork 
-     2.2.x patch: trunk works
-     +1: covener, ylavic (by inspection)
-
   *) Fix some compiler warnings
      trunk patch: https://svn.apache.org/r1125877
      2.4.x patch: https://svn.apache.org/r1125877 (from trunk)
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_warnings_r1125877.patch
-     +1: ylavic
+     +1: ylavic, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
