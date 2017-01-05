@@ -143,6 +143,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works
      +1: covener, ylavic (by inspection), wrowe
 
+  *) core: potential rejection of valid MaxMemFree and ThreadStackSize directives
+     trunk patch: https://svn.apache.org/r1542338
+     2.4.x patch: https://svn.apache.org/r1542549
+     2.2.x patch: trunk patch works
+     +1: mrumph, ylavic, covener
+
+  *) Fix some compiler warnings
+     trunk patch: https://svn.apache.org/r1125877
+     2.4.x patch: https://svn.apache.org/r1125877 (from trunk)
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_warnings_r1125877.patch
+     +1: ylavic, wrowe, covener
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -192,18 +204,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
       +1: ylavic
 
-  *) core: potential rejection of valid MaxMemFree and ThreadStackSize directives
-     trunk patch: https://svn.apache.org/r1542338
-     2.4.x patch: https://svn.apache.org/r1542549
-     2.2.x patch: trunk patch works
-     +1: mrumph, ylavic
-
-  *) Fix some compiler warnings
-     trunk patch: https://svn.apache.org/r1125877
-     2.4.x patch: https://svn.apache.org/r1125877 (from trunk)
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_warnings_r1125877.patch
-     +1: ylavic, wrowe
-
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3
      [but without: and change the compiled-in default for SSL[Proxy]Protocol
                    to "all -SSLv3", in accordance with RFC 7568]
@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) Fix trivial compiler warnings
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-fix_trivial_warnings.patch
-     +1: ylavic
+     +1: ylavic, covener
      ylavic: couldn't find relevant commits in trunk/2.4.x with blame
              since these are removed lines.
 
@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1633031
      2.4.x patch: https://svn.apache.org/r1635970
      2.2.x patch: trunk works
-     +1: ylavic
+     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
