@@ -102,6 +102,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_proxy: Correctly consider error response codes by the backend when
+     processing failonstatus. PR 59869
+      Trunk version of patch:
+         http://svn.apache.org/r1753592
+      Backport version for 2.4.x of patch:
+         http://svn.apache.org/r1756562
+      Backport version for 2.2.x of patch:
+         http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
+      +1: ylavic
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -139,16 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://svn.apache.org/r1673941
      2.2.x patch: trunk works (modulo CHANGES)
      +1: ylavic
-
-  *) mod_proxy: Correctly consider error response codes by the backend when
-     processing failonstatus. PR 59869
-      Trunk version of patch:
-         http://svn.apache.org/r1753592
-      Backport version for 2.4.x of patch:
-         http://svn.apache.org/r1756562
-      Backport version for 2.2.x of patch:
-         http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
-      +1: ylavic
 
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3
      [but without: and change the compiled-in default for SSL[Proxy]Protocol
