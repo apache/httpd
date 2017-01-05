@@ -728,8 +728,8 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
     if (conf->provider == NULL) {
         return dav_new_error(r->pool, HTTP_METHOD_NOT_ALLOWED, 0,
                              apr_psprintf(r->pool,
-				          "DAV not enabled for %s",
-					  ap_escape_html(r->pool, r->uri)));
+                             "DAV not enabled for %s",
+                             ap_escape_html(r->pool, r->uri)));
     }
 
     /* resolve the resource */
