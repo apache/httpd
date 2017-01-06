@@ -842,7 +842,7 @@ static int check_authn(request_rec * r, const char *sent_user, const char *sent_
             break;
         }
 
-        /* If we're returning 403, tell them to try again. */
+        /* If we're returning 401, tell them to try again. */
         if (return_code == HTTP_UNAUTHORIZED) {
             note_cookie_auth_failure(r);
         }
