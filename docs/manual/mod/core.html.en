@@ -887,7 +887,7 @@ DocumentRoot "/var/www/${servername}/htdocs"</pre>
 
     <p>While this directive is supported in virtual host context,
        the changes it makes are visible to any later configuration
-       directives, beyond any enclosing virtual host</p>
+       directives, beyond any enclosing virtual host.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

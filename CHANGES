@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) core: EBCDIC fixes for interim responses with additional headers.
+     [Eric Covener]
+
   *) mod_http2: fix for possible page fault when stream is resumed during 
      session shutdown. [sidney-j-r-m (github)]
      

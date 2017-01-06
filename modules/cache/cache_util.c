@@ -640,7 +640,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
 
     /* extract max-stale */
     if (cache->control_in.max_stale) {
-        if(cache->control_in.max_stale_value != -1) {
+        if (cache->control_in.max_stale_value != -1) {
             maxstale = cache->control_in.max_stale_value;
         }
         else {
@@ -809,7 +809,7 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list,
 
     *str = s;
     if (i)
-        return apr_pstrndup(p, list, i);
+        return apr_pstrmemdup(p, list, i);
     else
         return NULL;
 }
@@ -1141,7 +1141,6 @@ static int cache_control_remove(request_rec *r, const char *cc_header,
                         }
                         found = 1;
                     }
-                    break;
                 }
                 break;
             }
