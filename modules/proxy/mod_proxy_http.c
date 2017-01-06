@@ -213,16 +213,13 @@ static void add_cl(apr_pool_t *p,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 }
 
-#define ASCII_CRLF  "\015\012"
-#define ASCII_ZERO  "\060"
-
 static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
                               apr_bucket_brigade *header_brigade)
 {
     apr_bucket *e;
 
     /* add empty line at the end of the headers */
-    e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+    e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 }
 
@@ -281,7 +278,7 @@ static int stream_reqbody_chunked(apr_pool_t *p,
             /*
              * Append the end-of-chunk CRLF
              */
-            e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+            e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         }
 
@@ -357,14 +354,14 @@ static int stream_reqbody_chunked(apr_pool_t *p,
         bb = input_brigade;
     }
 
-    e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
+    e = apr_bucket_immortal_create(ZERO_ASCII CRLF_ASCII
                                    /* <trailers> */
-                                   ASCII_CRLF,
+                                   CRLF_ASCII,
                                    5, bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
-        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
     }
 
@@ -426,7 +423,7 @@ static int stream_reqbody_cl(apr_pool_t *p,
                 apr_bucket_delete(e);
 
                 if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
-                    e = apr_bucket_immortal_create(ASCII_CRLF, 2,
+                    e = apr_bucket_immortal_create(CRLF_ASCII, 2,
                                                    bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(input_brigade, e);
                 }
@@ -665,7 +662,7 @@ static int spool_reqbody_cl(apr_pool_t *p,
         apr_brigade_insert_file(header_brigade, tmpfile, 0, fsize, p);
     }
     if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
-        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        e = apr_bucket_immortal_create(CRLF_ASCII, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     return OK;

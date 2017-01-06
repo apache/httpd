@@ -907,7 +907,7 @@ static int matches_aliases(server_rec *s, const char *host)
     if (names) {
         char **name = (char **) names->elts;
         for (i = 0; i < names->nelts; ++i) {
-            if(!name[i]) continue;
+            if (!name[i]) continue;
             if (!strcasecmp(host, name[i]))
                 return 1;
         }
@@ -916,7 +916,7 @@ static int matches_aliases(server_rec *s, const char *host)
     if (names) {
         char **name = (char **) names->elts;
         for (i = 0; i < names->nelts; ++i) {
-            if(!name[i]) continue;
+            if (!name[i]) continue;
             if (!ap_strcasecmp_match(host, name[i]))
                 return 1;
         }
@@ -1163,7 +1163,7 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
          */
         if (have_hostname_from_url && host_header != NULL) {
             const char *repl = construct_host_header(r, is_v6literal);
-            apr_table_set(r->headers_in, "Host", repl);
+            apr_table_setn(r->headers_in, "Host", repl);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02417)
                           "Replacing host header '%s' with host '%s' given "
                           "in the request uri", host_header, repl);
