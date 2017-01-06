@@ -18,6 +18,9 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-other install-cgi install-include install-suexec install-build \
 	install-man
 
+CLEAN_TARGETS      = check/apxs check/build/config_vars.mk \
+	check/conf/$(PROGRAM_NAME).conf check/conf/magic check/conf/mime.types \
+	check/conf/extra/* check/include/*
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	include/apache_probes.h \
 	modules.c config.cache config.log config.status build/config_vars.mk \
@@ -25,6 +28,7 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	build/pkg/pkginfo build/config_vars.sh bsd_converted
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
+PHONY_TARGETS := check check-conf check-include
 
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
@@ -295,24 +299,130 @@ update-log-tags update-log-msg-tags:
 	find server modules os -name \*.c|xargs perl \
 		docs/log-message-tags/update-log-msg-tags
 
-# TODO: don't require an install of the server binaries to run the tests
-APXS_LOCATION := $(DESTDIR)$(bindir)/apxs
+# XXX: This looks awfully platform-specific [read: bad form and style]
+include $(top_srcdir)/os/os2/core.mk
 
-check:
+#
+# In-tree Testing
+#
+
+# Installs the include/ header files into the ./check/ directory so we can use
+# them during `make check`.
+check-include: override includedir:=$(top_builddir)/check/include
+check-include: install-include
+
+# This is basically the same as install-conf, but we only care about the files
+# necessary to run the test suite, and the LoadModule lines point back to the
+# build tree. Configuration files will be installed to ./check/conf and pointed
+# to by ./check/apxs.
+check-conf:
+	@mkdir -p check/conf/extra; \
+	cd $(top_srcdir)/docs/conf; \
+	for i in mime.types magic; do \
+	    $(INSTALL_DATA) $$i $(top_builddir)/check/conf; \
+	done; \
+	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
+	    cd $$j ; \
+	    for i in httpd.conf extra/*.conf; do \
+	        if [ -f $$i ] ; then \
+	        ( \
+	            n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
+	            if test $$n_lm -eq 0 -o "x$(MPM_MODULE)$(DSO_MODULES)" = "x"; then \
+	                sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                    -e 's#@@Port@@#$(PORT)#g' \
+	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    -e '/@@LoadModule@@/d' \
+	                    < $$i; \
+	            else \
+	                sed -n -e '/@@LoadModule@@/q' \
+	                    -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                    -e 's#@@Port@@#$(PORT)#g' \
+	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    -e 'p' \
+	                    < $$i; \
+	                if echo " $(DSO_MODULES) "|$(EGREP) " cgi " > /dev/null ; then \
+	                    have_cgi="1"; \
+	                else \
+	                    have_cgi="0"; \
+	                fi; \
+	                if echo " $(DSO_MODULES) "|$(EGREP) " cgid " > /dev/null ; then \
+	                    have_cgid="1"; \
+	                else \
+	                    have_cgid="0"; \
+	                fi; \
+	                for j in $(MPM_MODULES) "^EOL^"; do \
+	                    path=$$(find "$(top_builddir)/modules" -name "mod_$$j.so"); \
+	                    if test $$j != "^EOL^"; then \
+	                        if echo ",$(ENABLED_MPM_MODULE),"|$(EGREP) ",$$j," > /dev/null ; then \
+	                            loading_disabled=""; \
+	                        else \
+	                            loading_disabled="#"; \
+	                        fi; \
+	                    echo "$${loading_disabled}LoadModule $${j}_module $${path}"; \
+	                fi; \
+	                done; \
+	                for j in $(DSO_MODULES) "^EOL^"; do \
+	                    path=$$(find "$(top_builddir)/modules" -name "mod_$$j.so"); \
+	                    if test $$j != "^EOL^"; then \
+	                        if echo ",$(ENABLED_DSO_MODULES),"|$(EGREP) ",$$j," > /dev/null ; then \
+	                            loading_disabled=""; \
+	                        else \
+	                            loading_disabled="#"; \
+	                            if test "$(LOAD_ALL_MODULES)" = "yes"; then \
+	                                loading_disabled=""; \
+	                            fi; \
+	                        fi; \
+	                    if test $$j = "cgid" -a "$$have_cgi" = "1"; then \
+	                        echo "<IfModule !mpm_prefork_module>"; \
+	                        echo "	$${loading_disabled}LoadModule $${j}_module $${path}"; \
+	                        echo "</IfModule>"; \
+	                    elif test $$j = "cgi" -a "$$have_cgid" = "1"; then \
+	                        echo "<IfModule mpm_prefork_module>"; \
+	                        echo "	$${loading_disabled}LoadModule $${j}_module $${path}"; \
+	                        echo "</IfModule>"; \
+	                    else \
+	                        echo "$${loading_disabled}LoadModule $${j}_module $${path}"; \
+	                    fi; \
+	                fi; \
+	                done; \
+	                sed -e '1,/@@LoadModule@@/d' \
+	                    -e '/@@LoadModule@@/d' \
+	                    -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                    -e 's#@@Port@@#$(PORT)#g' \
+	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    < $$i; \
+	            fi \
+	        ) > $(top_builddir)/check/conf/$$i; \
+	        chmod 0644 $(top_builddir)/check/conf/$$i; \
+	        if [ "$$i" = "httpd.conf" ]; then \
+	            mv "$(top_builddir)/check/conf/$$i" "$(top_builddir)/check/conf/$(PROGRAM_NAME).conf"; \
+	        fi; \
+	        fi; \
+	    done ; \
+	done ;
+
+# A version of apxs with the PREFIX overridden to point inside the build tree.
+check/apxs:
+	mkdir -p check
+	sed -e 's#$(prefix)#$(top_builddir)/check#g' support/apxs > $@
+	chmod +x $@
+
+# A version of config_vars.mk with the PREFIX and SBINDIR overridden to point
+# inside the build tree.
+check/build/config_vars.mk: build/config_vars.out
+	mkdir -p check/build
+	cp $< $@
+	echo "prefix = $(top_builddir)/check" >> $@
+	echo "sbindir = $(top_builddir)" >> $@
+
+# Run the Apache::Test suite if it has been configured with --with-test-suite.
+check: check-include check-conf check/build/config_vars.mk check/apxs
 	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
 	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
 	    false; \
 	fi
-	@if ! test -f "$(APXS_LOCATION)"; then \
-	    echo "Can't find apxs at '$(APXS_LOCATION)'"; \
-	    echo "Unfortunately the 'in-tree' tests don't run yet without first running 'make install'. Sorry."; \
-	    false; \
-	fi
 	cd "$(TEST_SUITE_LOCATION)" && \
-	    perl Makefile.PL -apxs "$(APXS_LOCATION)" && \
+	    perl Makefile.PL -apxs "$(top_builddir)/check/apxs" && \
 	    ./t/TEST -clean && \
 	    ./t/TEST -config && \
 	    ./t/TEST
-
-# XXX: This looks awfully platform-specific [read: bad form and style]
-include $(top_srcdir)/os/os2/core.mk
