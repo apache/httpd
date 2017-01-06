@@ -640,7 +640,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
 
     /* extract max-stale */
     if (cache->control_in.max_stale) {
-        if(cache->control_in.max_stale_value != -1) {
+        if (cache->control_in.max_stale_value != -1) {
             maxstale = cache->control_in.max_stale_value;
         }
         else {
@@ -1141,7 +1141,6 @@ static int cache_control_remove(request_rec *r, const char *cc_header,
                         }
                         found = 1;
                     }
-                    break;
                 }
                 break;
             }
