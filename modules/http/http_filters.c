@@ -631,8 +631,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
 struct check_header_ctx {
     request_rec *r;
-    unsigned int strict:1,
-                 unfold:1;
+    int strict;
 };
 
 /* check a single header, to be used with apr_table_do() */
@@ -673,10 +672,7 @@ static int check_header(struct check_header_ctx *ctx,
                               name, pos);
                 return 0;
             }
-            if (!ctx->unfold) {
-                end += 3;
-            }
-            else if (!dst) {
+            if (!dst) {
                 *val = dst = apr_palloc(ctx->r->pool, strlen(*val) + 1);
             }
         }
@@ -726,8 +722,6 @@ static APR_INLINE int check_headers(request_rec *r)
 
     ctx.r = r;
     ctx.strict = (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE);
-    ctx.unfold = (!r->content_type || strncmp(r->content_type,
-                                              "message/http", 12));
     return check_headers_table(r->headers_out, &ctx) &&
            check_headers_table(r->err_headers_out, &ctx);
 }
