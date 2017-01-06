@@ -809,7 +809,7 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list,
 
     *str = s;
     if (i)
-        return apr_pstrndup(p, list, i);
+        return apr_pstrmemdup(p, list, i);
     else
         return NULL;
 }
