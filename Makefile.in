@@ -364,26 +364,18 @@ check-conf:
 	                for j in $(DSO_MODULES) "^EOL^"; do \
 	                    path=$$(find "$(top_builddir)/modules" -name "mod_$$j.so"); \
 	                    if test $$j != "^EOL^"; then \
-	                        if echo ",$(ENABLED_DSO_MODULES),"|$(EGREP) ",$$j," > /dev/null ; then \
-	                            loading_disabled=""; \
+	                        if test $$j = "cgid" -a "$$have_cgi" = "1"; then \
+	                            echo "<IfModule !mpm_prefork_module>"; \
+	                            echo "	LoadModule $${j}_module $${path}"; \
+	                            echo "</IfModule>"; \
+	                        elif test $$j = "cgi" -a "$$have_cgid" = "1"; then \
+	                            echo "<IfModule mpm_prefork_module>"; \
+	                            echo "	LoadModule $${j}_module $${path}"; \
+	                            echo "</IfModule>"; \
 	                        else \
-	                            loading_disabled="#"; \
-	                            if test "$(LOAD_ALL_MODULES)" = "yes"; then \
-	                                loading_disabled=""; \
-	                            fi; \
+	                            echo "LoadModule $${j}_module $${path}"; \
 	                        fi; \
-	                    if test $$j = "cgid" -a "$$have_cgi" = "1"; then \
-	                        echo "<IfModule !mpm_prefork_module>"; \
-	                        echo "	$${loading_disabled}LoadModule $${j}_module $${path}"; \
-	                        echo "</IfModule>"; \
-	                    elif test $$j = "cgi" -a "$$have_cgid" = "1"; then \
-	                        echo "<IfModule mpm_prefork_module>"; \
-	                        echo "	$${loading_disabled}LoadModule $${j}_module $${path}"; \
-	                        echo "</IfModule>"; \
-	                    else \
-	                        echo "$${loading_disabled}LoadModule $${j}_module $${path}"; \
 	                    fi; \
-	                fi; \
 	                done; \
 	                sed -e '1,/@@LoadModule@@/d' \
 	                    -e '/@@LoadModule@@/d' \
