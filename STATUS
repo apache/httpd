@@ -152,8 +152,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
      trunk patch: http://svn.apache.org/r1777460
+                  http://svn.apache.org/r1777672
      2.4.x patch: N/A
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1777460.patch
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1777460-v2.patch
                   (needed because of s/APLOGNO//)
      +1: ylavic
 
