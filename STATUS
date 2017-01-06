@@ -157,6 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1777460-v2.patch
                   (needed because of s/APLOGNO//)
      +1: ylavic
+     covener: APR_ARRAY_IDX is apr-1.4 only (noticed on $BIGCO legacy stack)
 
 PATCHES/ISSUES THAT ARE STALLED
 
