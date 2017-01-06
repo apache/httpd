@@ -892,7 +892,7 @@ AC_ARG_WITH([test-suite],
         if test "x$withval" = "xyes"; then
             AC_MSG_ERROR([option --with-test-suite requires a directory]);
         else
-            test -f "$withval/Makefile.PL" || AC_MSG_WARN([--with-test-suite directory $withval does not appear to contain the expected Makefile.PL])
+            test -f "$withval/Makefile.PL" || AC_MSG_ERROR([--with-test-suite directory $withval does not contain the expected Makefile.PL])
             TEST_SUITE_LOCATION="$withval"
         fi
     ],
