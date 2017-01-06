@@ -690,6 +690,7 @@ struct ap_method_list_t {
 #endif /* APR_CHARSET_EBCDIC */
 /** Useful for common code with either platform charset. */
 #define CRLF_ASCII "\015\012"
+#define ZERO_ASCII "\060"
 
 /**
  * @defgroup values_request_rec_body Possible values for request_rec.read_body
