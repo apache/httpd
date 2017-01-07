@@ -48,6 +48,9 @@ Changes with Apache 2.2.32
   *) Core: reject NULLs in request line or request headers.
      PR 43039 [Nick Kew]
 
+  *) mod_proxy: Correctly consider error response codes by the backend when
+     processing failonstatus. PR 59869 [Ruediger Pluem]
+
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
