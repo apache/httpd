@@ -28,8 +28,6 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer Apache pour autoriser CGI</a></li>
@@ -48,10 +46,10 @@
 
     <p>CGI (Common Gateway Interface) définit une méthode d'interaction
     entre un serveur web et des programmes générateurs de contenu
-    externes, plus souvent appelés programmes CGI ou scripts CGI. Il
-    s'agit de la méthode la plus simple, et la plus
-    courante, pour ajouter du contenu dynamique à votre site web. Ce
-    document est une introduction à la configuration de CGI sur votre
+    externes, plus souvent appelés programmes CGI ou scripts CGI.
+    Il s'agit d'une méthode simple pour ajouter du contenu dynamique à votre site
+    web en utilisant votre langage de programmation préféré.
+    Ce document est une introduction à la configuration de CGI sur votre
     serveur web Apache, et une initiation à l'écriture de programmes
     CGI.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

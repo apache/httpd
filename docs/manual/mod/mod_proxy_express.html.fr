@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_express.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_express.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension à <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement
 dynamique inverse de masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -47,7 +45,7 @@ dynamique inverse de masse</td></tr>
     <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, qui propose aussi la croissance
     dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
     de serveurs d'arrière-plan. Il convient parfaitement pour créer un
-    commutateur HTTP frontal.</p>
+    commutateur HTTP frontal et pour les architectures Microservices.</p>
 
     <p>Pour pouvoir être utilisé, ce module nécessite le chargement de
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
