@@ -294,6 +294,11 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_DEFAULT_RETRY  60
 #define PROXY_WORKER_MAX_ROUTE_SIZ  63
 
+/* RFC-1035 mentions limits of 255 for host-names and 253 for domain-names,
+ * dotted together(?) this would fit the below size (+ trailing NUL).
+ */
+#define PROXY_WORKER_RFC1035_NAME_SIZE  512
+
 /* Scoreboard */
 #if MODULE_MAGIC_NUMBER_MAJOR > 20020903
 #define PROXY_HAS_SCOREBOARD 1
