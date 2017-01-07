@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1751932:1773247 (outdated) -->
+<!-- English Revision: 1773247 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,10 +46,10 @@
 
     <p>CGI (Common Gateway Interface) définit une méthode d'interaction
     entre un serveur web et des programmes générateurs de contenu
-    externes, plus souvent appelés programmes CGI ou scripts CGI. Il
-    s'agit de la méthode la plus simple, et la plus
-    courante, pour ajouter du contenu dynamique à votre site web. Ce
-    document est une introduction à la configuration de CGI sur votre
+    externes, plus souvent appelés programmes CGI ou scripts CGI.
+    Il s'agit d'une méthode simple pour ajouter du contenu dynamique à votre site
+    web en utilisant votre langage de programmation préféré.
+    Ce document est une introduction à la configuration de CGI sur votre
     serveur web Apache, et une initiation à l'écriture de programmes
     CGI.</p>
   </section>
