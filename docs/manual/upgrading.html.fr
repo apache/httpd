@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -163,22 +161,23 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <p>Voici quelques exemples de contrôle d'accès avec l'ancienne et
       la nouvelle méthode :</p>
 
-      <p>Dans cet exemple, toutes les requêtes sont rejetées :</p>
+      <p>Dans cet exemple, il n'y a pas d'authentification et toutes les requêtes sont rejetées :</p>
       <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">Order deny,allow
 Deny from all</pre>
 </div>
       <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">Require all denied</pre>
 </div>
 
-      <p>Dans cet exemple, toutes les requêtes sont acceptées :</p>
+      <p>Dans cet exemple, il n'y a pas d'authentification et toutes les requêtes sont acceptées :</p>
       <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">Order allow,deny
 Allow from all</pre>
 </div>
       <div class="example"><h3>version 2.4 :</h3><pre class="prettyprint lang-config">Require all granted</pre>
 </div>
 
-      <p>Dans l'exemple suivant, tous les hôtes du domaine example.org
-      ont l'autorisation d'accès, tous les autres sont rejetés :</p>
+      <p>Dans l'exemple suivant, il n'y a pas d'authentification et tous les
+      hôtes du domaine example.org ont l'autorisation d'accès, tous les autres
+      étant rejetés :</p>
 
       <div class="example"><h3>version 2.2 :</h3><pre class="prettyprint lang-config">Order Deny,Allow
 Deny from all
@@ -248,8 +247,71 @@ access.log - GET /server-status 200 127.0.0.1</pre>
       </p>      
     
 
-    
+    <p>Dans de nombreuses configurations avec authentification où la directive
+     <code class="directive">Satisfy</code> était définie à sa valeur par défaut
+     <em>ALL</em>, les lignes de configuration qui désactivent le contrôle
+     d'accès basé sur l'hôte sont maintenant omises :</p>
 
+      <div class="example"><h3>Version 2.2 :</h3><pre class="prettyprint lang-config">Order Deny,Allow
+Deny from all
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config"># Pas besoin de remplacer les directives Order et deny
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+
+     <p>Dans les configurations où l'authentification et le contrôle d'accès se
+     combinaient dans un but précis, les directives de contrôle d'accès doivent
+     être migrées. Dans l'exemple suivant, les requêtes qui correspondent aux
+     <em>deux</em> critères sont acceptées :</p>
+      <div class="example"><h3>Version 2.2 :</h3><pre class="prettyprint lang-config">Order allow,deny
+Deny from all
+# ALL est la valeur par défaut de Satisfy
+Satisfy ALL
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+&lt;RequireAll&gt;
+  Require valid-user
+  Require ip 127.0.0.1
+&lt;/RequireAll&gt;</pre>
+</div>
+
+     <p>Dans les configurations où l'authentification et le contrôle d'accès se
+     combinaient dans un but précis, les directives de contrôle d'accès doivent
+     être migrées. Dans l'exemple suivant, les requêtes qui correspondent à
+     <em>au moins un</em> critère sont acceptées :</p>
+      <div class="example"><h3>Version 2.2 :</h3><pre class="prettyprint lang-config">Order allow,deny
+Deny from all
+Satisfy any
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user</pre>
+</div>
+      <div class="example"><h3>Version 2.4 :</h3><pre class="prettyprint lang-config">AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+# Implicite : &lt;RequireAny&gt;
+Require valid-user
+Require ip 127.0.0.1</pre>
+</div>
+
+    
+    
     <h3><a name="config" id="config">Autres changements dans la configuration</a></h3>
       
 
