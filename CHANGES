@@ -6,6 +6,10 @@ Changes with Apache 2.2.32
      and request headers, to prevent response splitting and cache pollution by
      malicious clients or downstream proxies. [William Rowe, Stefan Fritsch]
 
+  *) mod_proxy: Use the correct server name for SNI in case the backend
+     SSL connection itself is established via a proxy server.
+     PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
+
   *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
      [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
