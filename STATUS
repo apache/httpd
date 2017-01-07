@@ -102,34 +102,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy: Correctly consider error response codes by the backend when
-     processing failonstatus. PR 59869
-      Trunk version of patch:
-         http://svn.apache.org/r1753592
-      Backport version for 2.4.x of patch:
-         http://svn.apache.org/r1756562
-      Backport version for 2.2.x of patch:
-         http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1753592.patch
-      +1: ylavic, wrowe, covener, orlikowski
-
-  *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
-     had to be issued because the remote closed the previous/reusable one
-     during idle (keep-alive) time.
-     trunk patch: http://svn.apache.org/r1729826
-                  http://svn.apache.org/r1729847
-                  http://svn.apache.org/r1732986
-                  http://svn.apache.org/r1733056
-     2.4.x patch: http://svn.apache.org/r1733474
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-mod_proxy-SNI_reuse.patch
-     +1: ylavic, wrowe, covener, orlikowski
-
-  *) mod_proxy: Use the correct server name for SNI in case the backend
-     SSL connection itself is established via a proxy server.  PR 57139
-     trunk patch: http://svn.apache.org/r1634120
-     2.4.x patch: http://svn.apache.org/r1673941
-     2.2.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, wrowe, covener, orlikowski
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
