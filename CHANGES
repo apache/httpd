@@ -51,6 +51,10 @@ Changes with Apache 2.2.32
   *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869 [Ruediger Pluem]
 
+  *) mod_proxy: Play/restore the TLS-SNI on new backend connections which
+     had to be issued because the remote closed the previous/reusable one
+     during idle (keep-alive) time.  [Yann Ylavic]
+
   *) mod_ssl: Fix a possible memory leak on restart for custom [EC]DH params.
      [Jan Kaluza, Yann Ylavic]
 
