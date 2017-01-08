@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1760590:1776708 (outdated) -->
+<!-- English Revision: 1776708 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -307,6 +307,26 @@ pour le moteur de réécriture</description>
       <module>mod_userdir</module> et <module>mod_alias</module>
       utilisent ces informations de contexte étendu. Disponible à partir de la
       version 2.4.16 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>LegacyPrefixDocRoot</code></dt>
+      <dd>
+
+      <p>Avant la version 2.4.26, si une substitution était une URL absolue qui
+      correspondait au serveur virtuel courant, l'URL pouvait être tout d'abord
+      réduite à sa partie chemin, puis enfin en chemin local. Comme l'URL peut
+      être réduite en chemin local, le chemin doit être préfixé par la
+      valeur de la directive DocumentRoot, ce qui permet d'interdire l'accès à
+      un fichier tel que /tmp/myfile suite à une requête pour
+      http://host/file/myfile avec la <directive
+      module="mod_rewrite">RewriteRule</directive> suivante :</p>
+      <highlight language="config">
+          RewriteRule /file/(.*) http://localhost/tmp/$1
+      </highlight>
+      <p>Cette option permet de restaurer l'ancien comportement lorsqu'un chemin
+      local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
+      valeur de la directive DocumentRoot. Disponible à partir de la version
+      2.4.26 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
