@@ -17,6 +17,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <apr_atomic.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <apr_strings.h>
@@ -141,6 +142,12 @@ static void stream_output_consumed(void *ctx,
     if (length > 0 && task && task->assigned) {
         h2_req_engine_out_consumed(task->assigned, task->c, length); 
     }
+}
+
+static void stream_input_ev(void *ctx, h2_bucket_beam *beam)
+{
+    h2_mplx *m = ctx;
+    apr_atomic_set32(&m->event_pending, 1);
 }
 
 static void stream_input_consumed(void *ctx, 
@@ -337,18 +344,18 @@ int h2_mplx_shutdown(h2_mplx *m)
     return max_stream_started;
 }
 
-static void input_consumed_signal(h2_mplx *m, h2_stream *stream)
+static int input_consumed_signal(h2_mplx *m, h2_stream *stream)
 {
-    if (stream->input && stream->started) {
-        h2_beam_send(stream->input, NULL, 0); /* trigger updates */
+    if (stream->input) {
+        return h2_beam_report_consumption(stream->input);
     }
+    return 0;
 }
 
 static int output_consumed_signal(h2_mplx *m, h2_task *task)
 {
-    if (task->output.beam && task->worker_started && task->assigned) {
-        /* trigger updates */
-        h2_beam_send(task->output.beam, NULL, APR_NONBLOCK_READ);
+    if (task->output.beam) {
+        return h2_beam_report_consumption(task->output.beam);
     }
     return 0;
 }
@@ -438,7 +445,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
     
     h2_stream_cleanup(stream);
     m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
-    h2_beam_on_consumed(stream->input, NULL, NULL);
+    h2_beam_on_consumed(stream->input, NULL, NULL, NULL);
     /* Let anyone blocked reading know that there is no more to come */
     h2_beam_abort(stream->input);
     /* Remove mutex after, so that abort still finds cond to signal */
@@ -711,7 +718,7 @@ static apr_status_t out_open(h2_mplx *m, int stream_id, h2_bucket_beam *beam)
                       "h2_mplx(%s): out open", task->id);
     }
     
-    h2_beam_on_consumed(stream->output, stream_output_consumed, task);
+    h2_beam_on_consumed(stream->output, NULL, stream_output_consumed, task);
     h2_beam_on_produced(stream->output, output_produced, m);
     beamed_count = h2_beam_get_files_beamed(stream->output);
     if (m->tx_handles_reserved >= beamed_count) {
@@ -785,7 +792,7 @@ apr_status_t h2_mplx_out_trywait(h2_mplx *m, apr_interval_time_t timeout,
         if (m->aborted) {
             status = APR_ECONNABORTED;
         }
-        else if (!h2_iq_empty(m->readyq)) {
+        else if (apr_atomic_read32(&m->event_pending) > 0) {
             status = APR_SUCCESS;
         }
         else {
@@ -809,6 +816,7 @@ static void have_out_data_for(h2_mplx *m, h2_stream *stream, int response)
     ap_assert(m);
     ap_assert(stream);
     h2_iq_append(m->readyq, stream->id);
+    apr_atomic_set32(&m->event_pending, 1);
     if (m->added_output) {
         apr_thread_cond_signal(m->added_output);
     }
@@ -847,6 +855,7 @@ apr_status_t h2_mplx_process(h2_mplx *m, struct h2_stream *stream,
         else {
             h2_ihash_add(m->streams, stream);
             if (h2_stream_is_ready(stream)) {
+                apr_atomic_set32(&m->event_pending, 1);
                 h2_iq_append(m->readyq, stream->id);
             }
             else {
@@ -912,7 +921,8 @@ static h2_task *next_stream_task(h2_mplx *m)
             }
 
             h2_beam_timeout_set(stream->input, m->stream_timeout);
-            h2_beam_on_consumed(stream->input, stream_input_consumed, m);
+            h2_beam_on_consumed(stream->input, stream_input_ev, 
+                                stream_input_consumed, m);
             h2_beam_on_file_beam(stream->input, can_beam_file, m);
             h2_beam_mutex_set(stream->input, beam_enter, task->cond, m);
             
@@ -1027,7 +1037,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                           task->id);
             /* more data will not arrive, resume the stream */
             have_out_data_for(m, stream, 0);
-            h2_beam_on_consumed(stream->output, NULL, NULL);
+            h2_beam_on_consumed(stream->output, NULL, NULL, NULL);
             h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
         }
         else {
@@ -1041,7 +1051,7 @@ static void task_done(h2_mplx *m, h2_task *task, h2_req_engine *ngn)
                  * called from a worker thread and freeing memory pools
                  * is only safe in the only thread using it (and its
                  * parent pool / allocator) */
-                h2_beam_on_consumed(stream->output, NULL, NULL);
+                h2_beam_on_consumed(stream->output, NULL, NULL, NULL);
                 h2_beam_mutex_set(stream->output, NULL, NULL, NULL);
                 h2_ihash_remove(m->shold, stream->id);
                 h2_ihash_add(m->spurge, stream);
@@ -1351,7 +1361,12 @@ void h2_mplx_req_engine_done(h2_req_engine *ngn, conn_rec *r_conn,
  * mplx master events dispatching
  ******************************************************************************/
 
-static int update_window(void *ctx, void *val)
+int h2_mplx_has_master_events(h2_mplx *m)
+{
+    return apr_atomic_read32(&m->event_pending) > 0;
+}
+
+static int report_consumption_iter(void *ctx, void *val)
 {
     input_consumed_signal(ctx, val);
     return 1;
@@ -1367,25 +1382,29 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
     h2_stream *stream;
     size_t i, n;
     
+    if (!h2_mplx_has_master_events(m)) {
+        return APR_EAGAIN;
+    }
+    
     if ((status = enter_mutex(m, &acquired)) == APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
-                      "h2_mplx(%ld): dispatch events", m->id);
-                      
+                      "h2_mplx(%ld): dispatch events", m->id);        
+        apr_atomic_set32(&m->event_pending, 0);
         /* update input windows for streams */
-        h2_ihash_iter(m->streams, update_window, m);
-        if (on_resume && !h2_iq_empty(m->readyq)) {
+        h2_ihash_iter(m->streams, report_consumption_iter, m);
+        
+        if (!h2_iq_empty(m->readyq)) {
             n = h2_iq_mshift(m->readyq, ids, H2_ALEN(ids));
             for (i = 0; i < n; ++i) {
                 stream = h2_ihash_get(m->streams, ids[i]);
                 if (stream) {
-                    ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, m->c, 
-                                  "h2_mplx(%ld-%d): on_resume", 
-                                  m->id, stream->id);
                     on_resume(on_ctx, stream);
                 }
             }
         }
-        
+        if (!h2_iq_empty(m->readyq)) {
+            apr_atomic_set32(&m->event_pending, 1);
+        } 
         leave_mutex(m, acquired);
     }
     return status;
@@ -1400,6 +1419,7 @@ apr_status_t h2_mplx_keep_active(h2_mplx *m, int stream_id)
         h2_stream *s = h2_ihash_get(m->streams, stream_id);
         if (s) {
             h2_iq_append(m->readyq, stream_id);
+            apr_atomic_set32(&m->event_pending, 1);
         }
         leave_mutex(m, acquired);
     }

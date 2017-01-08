@@ -67,6 +67,7 @@ struct h2_mplx {
 
     APR_RING_ENTRY(h2_mplx) link;
 
+    unsigned int event_pending;
     unsigned int aborted : 1;
     unsigned int need_registration : 1;
 
@@ -220,6 +221,12 @@ void h2_mplx_set_consumed_cb(h2_mplx *m, h2_mplx_consumed_cb *cb, void *ctx);
 
 
 typedef apr_status_t stream_ev_callback(void *ctx, struct h2_stream *stream);
+
+/**
+ * Check if the multiplexer has events for the master connection pending.
+ * @return != 0 iff there are events pending
+ */
+int h2_mplx_has_master_events(h2_mplx *m);
 
 /**
  * Dispatch events for the master connection, such as
