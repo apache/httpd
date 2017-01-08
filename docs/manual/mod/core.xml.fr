@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1769718:1777163 (outdated) -->
+<!-- English Revision: 1777163 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -843,6 +843,8 @@ DESACTIVÉS à partir de la version 2.3.0.</compatibility>
     Content-Type, et le destinataire devra déterminer lui-même le type
     de médium.</p>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -5078,6 +5080,8 @@ host</context></contextlist>
     changements qu'elle induit sont visibles de toute directive
     ultérieure, au delà de tout bloc VirtualHost.</p>    
 </usage>
+<seealso><directive module="core">Define</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
