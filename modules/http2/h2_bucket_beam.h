@@ -154,6 +154,7 @@ typedef apr_status_t h2_beam_mutex_enter(void *ctx, h2_beam_lock *pbl);
 
 typedef void h2_beam_io_callback(void *ctx, h2_bucket_beam *beam,
                                  apr_off_t bytes);
+typedef void h2_beam_ev_callback(void *ctx, h2_bucket_beam *beam);
 
 typedef struct h2_beam_proxy h2_beam_proxy;
 typedef struct {
@@ -205,12 +206,17 @@ struct h2_bucket_beam {
     h2_beam_mutex_enter *m_enter;
     struct apr_thread_cond_t *m_cond;
     
-    apr_off_t reported_consumed_bytes; /* amount of bytes reported as consumed */
-    h2_beam_io_callback *consumed_fn;
-    void *consumed_ctx;
-    apr_off_t reported_produced_bytes; /* amount of bytes reported as produced */
-    h2_beam_io_callback *produced_fn;
-    void *produced_ctx;
+    apr_uint32_t cons_ev_pending;     /* != 0, consumer event pending */
+    apr_off_t cons_bytes_reported;    /* amount of bytes reported as consumed */
+    h2_beam_ev_callback *cons_ev_cb;
+    h2_beam_io_callback *cons_io_cb;
+    void *cons_ctx;
+
+    apr_uint32_t prod_ev_pending;     /* != 0, producer event pending */
+    apr_off_t prod_bytes_reported;    /* amount of bytes reported as produced */
+    h2_beam_io_callback *prod_io_cb;
+    void *prod_ctx;
+
     h2_beam_can_beam_callback *can_beam_fn;
     void *can_beam_ctx;
 };
@@ -336,26 +342,38 @@ apr_size_t h2_beam_buffer_size_get(h2_bucket_beam *beam);
  * amount of bytes that have been consumed by the receiver, since the
  * last callback invocation or reset.
  * @param beam the beam to set the callback on
- * @param cb   the callback or NULL
+ * @param ev_cb the callback or NULL, called when bytes are consumed
+ * @param io_cb the callback or NULL, called on sender with bytes consumed
  * @param ctx  the context to use in callback invocation
  * 
- * Call from the sender side, callbacks invoked on sender side.
+ * Call from the sender side, io callbacks invoked on sender side, ev callback
+ * from any side.
  */
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
-                         h2_beam_io_callback *cb, void *ctx);
+                         h2_beam_ev_callback *ev_cb,
+                         h2_beam_io_callback *io_cb, void *ctx);
+
+/**
+ * Call any registered consumed handler, if any changes have happened
+ * since the last invocation. 
+ * @return !=0 iff a handler has been called
+ *
+ * Needs to be invoked from the sending side.
+ */
+int h2_beam_report_consumption(h2_bucket_beam *beam);
 
 /**
  * Register a callback to be invoked on the receiver side with the
  * amount of bytes that have been produces by the sender, since the
  * last callback invocation or reset.
  * @param beam the beam to set the callback on
- * @param cb   the callback or NULL
+ * @param io_cb the callback or NULL, called on receiver with bytes produced
  * @param ctx  the context to use in callback invocation
  * 
- * Call from the receiver side, callbacks invoked on receiver side.
+ * Call from the receiver side, callbacks invoked on either side.
  */
 void h2_beam_on_produced(h2_bucket_beam *beam, 
-                         h2_beam_io_callback *cb, void *ctx);
+                         h2_beam_io_callback *io_cb, void *ctx);
 
 void h2_beam_on_file_beam(h2_bucket_beam *beam, 
                           h2_beam_can_beam_callback *cb, void *ctx);

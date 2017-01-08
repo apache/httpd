@@ -481,6 +481,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     APR_BRIGADE_INSERT_TAIL(tmp, b);
     status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
     apr_brigade_destroy(tmp);
+    h2_beam_close(stream->input);
     return status;
 }
 

@@ -48,6 +48,7 @@
 
 
 static apr_status_t dispatch_master(h2_session *session);
+static apr_status_t h2_session_read(h2_session *session, int block);
 
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
@@ -240,17 +241,6 @@ static ssize_t send_cb(nghttp2_session *ngh2,
     
     (void)ngh2;
     (void)flags;
-    if (h2_conn_io_needs_flush(&session->io)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                      "h2_session(%ld): blocking due to io flush",
-                      session->id);
-        status = h2_conn_io_flush(&session->io);
-        if (status != APR_SUCCESS) {
-            return h2_session_status_from_apr_status(status);
-        }
-        return NGHTTP2_ERR_WOULDBLOCK;
-    }
-    
     status = h2_conn_io_write(&session->io, (const char *)data, length);
     if (status == APR_SUCCESS) {
         return length;
@@ -569,6 +559,16 @@ static int on_frame_recv_cb(nghttp2_session *ng2s,
     return 0;
 }
 
+static int h2_session_continue_data(h2_session *session) {
+    if (h2_mplx_has_master_events(session->mplx)) {
+        return 0;
+    }
+    if (h2_conn_io_needs_flush(&session->io)) {
+        return 0;
+    }
+    return 1;
+}
+
 static char immortal_zeros[H2_MAX_PADLEN];
 
 static int on_send_data_cb(nghttp2_session *ngh2, 
@@ -589,17 +589,10 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     
     (void)ngh2;
     (void)source;
-    if (h2_conn_io_needs_flush(&session->io)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c,
-                      "h2_stream(%ld-%d): blocking due to io flush",
-                      session->id, stream_id);
-        status = h2_conn_io_flush(&session->io);
-        if (status != APR_SUCCESS) {
-            return h2_session_status_from_apr_status(status);
-        }
+    if (!h2_session_continue_data(session)) {
         return NGHTTP2_ERR_WOULDBLOCK;
     }
-    
+
     if (frame->data.padlen > H2_MAX_PADLEN) {
         return NGHTTP2_ERR_PROTO;
     }
@@ -1418,8 +1411,6 @@ static apr_status_t h2_session_send(h2_session *session)
         apr_socket_timeout_set(socket, session->s->timeout);
     }
     
-    /* This sends one round of frames from every able stream, plus
-     * settings etc. if accumulated */
     rv = nghttp2_session_send(session->ngh2);
     
     if (socket) {
@@ -2058,7 +2049,11 @@ static apr_status_t dispatch_master(h2_session *session) {
     
     status = h2_mplx_dispatch_master_events(session->mplx, 
                                             on_stream_resume, session);
-    if (status != APR_SUCCESS) {
+    if (status == APR_EAGAIN) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, session->c,
+                      "h2_session(%ld): no master event available", session->id);
+    }
+    else if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, session->c,
                       "h2_session(%ld): dispatch error", session->id);
         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
@@ -2118,6 +2113,14 @@ apr_status_t h2_session_process(h2_session *session, int async)
             case H2_SESSION_ST_IDLE:
                 /* make certain, we send everything before we idle */
                 h2_conn_io_flush(&session->io);
+                /* We trust our connection into the default timeout/keepalive
+                 * handling of the core filters/mpm iff:
+                 * - keep_sync_until is not set
+                 * - we have an async mpm
+                 * - we have no open streams to process
+                 * - we are not sitting on a Upgrade: request
+                 * - we already have seen at least one request
+                 */
                 if (!session->keep_sync_until && async && !session->open_streams
                     && !session->r && session->remote.emitted_count) {
                     if (trace) {
@@ -2126,15 +2129,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                                       "%d streams open", session->id, 
                                       session->open_streams);
                     }
-                    /* We do not return to the async mpm immediately, since under
-                     * load, mpms show the tendency to throw keep_alive connections
-                     * away very rapidly.
-                     * So, if we are still processing streams, we wait for the
-                     * normal timeout first and, on timeout, close.
-                     * If we have no streams, we still wait a short amount of
-                     * time here for the next frame to arrive, before handing
-                     * it to keep_alive processing of the mpm.
-                     */
                     status = h2_session_read(session, 0);
                     
                     if (status == APR_SUCCESS) {
@@ -2219,7 +2213,6 @@ apr_status_t h2_session_process(h2_session *session, int async)
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 0, "error");
                     }
                 }
-                
                 break;
                 
             case H2_SESSION_ST_BUSY:
@@ -2244,13 +2237,16 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
 
                 status = dispatch_master(session);
-                if (status != APR_SUCCESS) {
+                if (status != APR_SUCCESS && status != APR_EAGAIN) {
                     break;
                 }
                 
                 if (nghttp2_session_want_write(session->ngh2)) {
                     ap_update_child_status(session->c->sbh, SERVER_BUSY_WRITE, NULL);
                     status = h2_session_send(session);
+                    if (status == APR_SUCCESS) {
+                        status = h2_conn_io_flush(&session->io);
+                    }
                     if (status != APR_SUCCESS) {
                         dispatch_event(session, H2_SESSION_EV_CONN_ERROR, 
                                        H2_ERR_INTERNAL_ERROR, "writing");

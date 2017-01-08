@@ -42,7 +42,6 @@ typedef enum {
     H2_CONF_PUSH_DIARY_SIZE,
     H2_CONF_COPY_FILES,
     H2_CONF_EARLY_HINTS,
-    H2_CONF_TLS_FLUSH_COUNT,
 } h2_config_var_t;
 
 struct apr_hash_t;
@@ -80,7 +79,6 @@ typedef struct h2_config {
     int copy_files;               /* if files shall be copied vs setaside on output */
     apr_array_header_t *push_list;/* list of h2_push_res configurations */
     int early_hints;              /* support status code 103 */
-    int tls_flush_count;          /* max # of TLS records until output flushed */
 } h2_config;
 
 
