@@ -72,6 +72,7 @@ en toutes circonstances</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -94,6 +95,7 @@ en toutes circonstances</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -1605,6 +1607,84 @@ clients</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="httpprotocoloptions" id="httpprotocoloptions">Directive</a> <a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie les contraintes sur les messages des requêtes HTTP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>HttpProtocolOptions Strict LenientMethods Allow0.9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir des versions 2.2.32 et 2.4.24 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Cette directive permet de modifier les règles qui s'appliquent à la ligne
+    de requête HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230
+    §3.1.1</a>) et aux champs des en-têtes des requêtes HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230
+    §3.2</a>), qui s'appliquent maintenant par défaut ou en utilisant
+    l'option <code>Strict</code>. L'option <code>Unsafe</code>
+    a été ajoutée pour pouvoir restaurer les anciens
+    comportements nécessaires aux anciens modules et applications et aux agents
+    utilisateurs personnalisés considérés comme obsolètes. Ces règles
+    s'appliquant avant le traitement de la requête, elles doivent, pour être prises en
+    compte, être définies
+    au niveau global ou dans la première section par défaut du serveur virtuel
+    qui correspond à la requête considérée, par interface IP/port et non par
+    nom.</p>
+
+    <p>Avant l'introduction de cette directive, les interpréteurs de requêtes du
+    serveur HTTP Apache toléraient un grand nombre de formats en entrée qui
+    n'étaient pas forcément conformes au protocole. <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4
+    Request Splitting</a> et <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response
+    Smuggling</a> ne rappellent que deux des risques potentiels induits par des
+    requêtes non conformes, alors que <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+    §3.5</a> signale les risques encourus par l'acceptation de blancs non
+    conformes dans les lignes de requête. Avec l'introduction de cette
+    directive, toutes les règles de grammaire de la spécification doivent être
+    respectées dans le mode d'opérations par défaut <code>Strict</code>.</p>
+
+    <p>Il est fortement déconseillé aux utilisateurs d'utiliser le mode
+    d'opération <code>Unsafe</code>, ou
+    <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
+    serveurs ouverts sur l'extérieur et/ou accessibles au public. Si un moniteur
+    défectueux ou autre logiciel spécialisé ne s'exécutant que sur un intranet
+    nécessite une interface, les utilisateurs ne doivent utiliser les options de
+    type UnSafe qu'en cas de nécessité et uniquement au sein d'un serveur
+    virtuel bien spécifique et sur un réseau privé.</p>
+
+    <p>La consultation des messages enregistrés dans le journal
+    <code class="directive">ErrorLog</code>, configuré via la directive
+    <code class="directive">LogLevel</code> avec un niveau <code>info</code>, pourra
+    vous aider à identifier de telles requêtes non conformes ainsi que leur
+    provenance. Les utilisateurs devront accorder une attention particulière aux
+    messages d'erreur de type 400 dans le journal access pour détecter les
+    requêtes apparemment valides mais rejetées.</p>
+
+    <p>La section de la <a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
+    §4.1</a> "Request Methods" "Overview" indique que les serveurs doivent
+    renvoyer un message d'erreur lorsque la ligne de requête comporte une
+    méthode non supportée. C'est déjà le cas lorsque l'option
+    <code>LenientMethods</code> est utilisée, mais les administrateurs ont la
+    possibilité de limiter les méthodes utilisées via l'option
+    <code>RegisteredMethods</code> en enregistrant toute méthode non standard
+    via la directive <code class="directive">RegisterHttpMethod</code>, en particulier
+    si l'option <code>Unsafe</code> est utilisée. L'option
+    <code>RegisteredMethods</code> <strong>ne doit pas</strong> être utilisée
+    pour les serveurs mandataires car ces derniers ne connaissent pas les
+    méthodes supportées par les serveurs originaux.</p>
+
+    <p>La section de la <a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
+    §19.6</a> "Compatibility With Previous Versions" encouragait les
+    serveurs HTTP à supporter les anciennes requêtes HTTP/0.9. La RFC 7230 va
+    cependant à son encontre via sa préconisation "Le souhait de supporter les
+    requêtes HTTP/0.9 a été supprimé" et y adjoint des commentaires dans <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix
+    A</a>. A ce titre, l'option <code>Require1.0</code> permet à l'utilisateur
+    d'inhiber le comportement induit par l'option par défaut
+    <code>Allow0.9</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ifdefine" id="ifdefine">Directive</a> <a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliqueront que si un
@@ -2887,6 +2967,24 @@ uniquement depuis la version 2.3.3 sous Windows.</td></tr>
 <li><code class="directive">AcceptFilter</code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="registerhttpmethod" id="registerhttpmethod">Directive</a> <a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement de méthodes HTTP non standards</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RegisterHttpMethod <var>méthode</var> [<var>méthode</var> [...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+<p>Normalement, les méthodes HTTP non conformes aux RFCs correspondantes
+sont rejetées au cours du traitement de la requête par HTTPD. Pour
+éviter ceci, les modules peuvent enregistrer les méthodes HTTP non
+standards qu'ils supportent. La directive
+<code class="directive">RegisterHttpMethod</code> permet d'enregistrer de telles
+méthodes manuellement. Ceci peut s'avérer utile si de telle méthodes
+doivent être utilisées dans un traitement externe, comme un script CGI.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a></h2>
