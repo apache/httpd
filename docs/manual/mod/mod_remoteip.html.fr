@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
@@ -50,6 +48,9 @@ répartiteur de charge via les en-têtes de la requête.
     pour la connexion par l'adresse IP indiquée dans
     l'en-tête de requête configuré via la directive
     <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code>.</p>
+
+    <p>En outre, ce module implémente la partie serveur du <a href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
+    de HAProxy lorsqu'on utilise la directive <code class="directive"><a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></code>.</p>
 
     <p>Une fois sa valeur modifiée comme indiqué, cette adresse IP client est
     utilisée pour la fonctionnalité <code class="directive"><a href="../mod/mod_authz_host.html#require">Require ip</a></code> de
@@ -84,6 +85,7 @@ répartiteur de charge via les en-têtes de la requête.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+<li><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></li>
 <li><a href="#comments_section">Commentaires</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -252,14 +254,71 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="remoteipproxyprotocol" id="remoteipproxyprotocol">Directive</a> <a name="RemoteIPProxyProtocol" id="RemoteIPProxyProtocol">RemoteIPProxyProtocol</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable, optionally enable or disable the PROXY protocol handling</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive la gestion du protocole PROXY</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxyProtocol On|Optional|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+</table>
+    <p>La directive <code class="directive">RemoteIPProxyProtocol</code> permet
+    d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
+    connexion du protocole PROXY. Si elle est définie à <code>On</code>, la
+    demande du client <em>doit</em> envoyer l'en-tête approprié pour chaque
+    nouvelle connexion, sinon cette dernière sera fermée. Si elle est définie à
+    <code>Optional</code>, la demande du client <em>peut</em> envoyer l'en-tête
+    approprié, mais ce n'est pas obligatoire.</p>
+
+    <p>Bien que cette directive peut être définie au niveau de n'importe quel
+    serveur virtuel, il est important de garder à l'esprit que, étant donné que
+    le protocole PROXY est basé sur la connexion et agnostique quant au
+    protocle, son activation/désactivation est basée sur le couple adresse
+    IP/port. Cela signifie que si plusieurs serveurs virtuels à base de nom sont
+    configurés avec le même couple adresse IP/port, et si vous activez le
+    protocole PROXY pour l'un d'entre eux, il le sera aussi pour tous les autres
+    (avec le même couple adresse IP/port). Cela signifie aussi que si vous
+    tentez d'activer le protocole PROXY pour un serveur virtuel et de le
+    désactiver pour un autre, cela ne marchera pas ; dans ce dernier cas, la
+    dernière directive l'emporte sur les autres et une notification sera
+    enregistrée dans le journal pour indiquer les réglages qui ont été annulés.</p>
+
+    <div class="note">Lorsque plusieurs serveurs virtuels avec le même couple
+    adresse IP/port sont configurés avec une combinaison de drapeaux
+    <code>On</code> et <code>Optional</code>, les connexions ne seront pas
+    fermées si l'en-tête approprié n'est pas envoyé. L'activation interviendra
+    alors après la lecture de la requête si bien que les serveurs virtuels
+    configurés avec le drapeau <code>On</code> renverront une erreur 400 Bad
+    Request. Les serveurs virtuels configurés avec le drapeau
+    <code>Optional</code> quant à eux continueront de fonctionner de manière
+    habituelle mais sans remplacer les informations IP du client.</div>
+    
+    <pre class="prettyprint lang-config">Listen 80
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol Optional
+
+    #Les requêtes pour ce serveur virtuel ne doivent pas obligatoirement
+    #contenir d'en-tête du protocole PROXY
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, une erreur 400 sera renvoyée
+&lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée
+&lt;/VirtualHost&gt;</pre>
+
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a> <a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a></h2>
 <table class="directive">
