@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1768961:1777141 (outdated) -->
+<!-- English Revision: 1777141 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -858,6 +858,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
     cette directive, et n'est conservé (avec des effets imprévisibles) que dans un
     but de compatibilité ascendante.</p>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -1335,6 +1337,92 @@ host</context>
     définition de <directive>EnableSendfile</directive> que dans un
     contexte global.
     </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HttpProtocolOptions</name>
+<description>Modifie les contraintes sur les messages des requêtes HTTP</description>
+<syntax>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict LenientMethods Allow0.9</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible à partir des versions 2.2.32 et 2.4.24 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de modifier les règles qui s'appliquent à la ligne
+    de requête HTTP (<a
+    href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230
+    &sect;3.1.1</a>) et aux champs des en-têtes des requêtes HTTP (<a
+    href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230
+    &sect;3.2</a>), qui s'appliquent maintenant par défaut ou en utilisant
+    l'option <code>Strict</code>. L'option <code>Unsafe</code>
+    a été ajoutée pour pouvoir restaurer les anciens
+    comportements nécessaires aux anciens modules et applications et aux agents
+    utilisateurs personnalisés considérés comme obsolètes. Ces règles
+    s'appliquant avant le traitement de la requête, elles doivent, pour être prises en
+    compte, être définies
+    au niveau global ou dans la première section par défaut du serveur virtuel
+    qui correspond à la requête considérée, par interface IP/port et non par
+    nom.</p>
+
+    <p>Avant l'introduction de cette directive, les interpréteurs de requêtes du
+    serveur HTTP Apache toléraient un grand nombre de formats en entrée qui
+    n'étaient pas forcément conformes au protocole. <a
+    href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 &sect;9.4
+    Request Splitting</a> et <a
+    href="https://tools.ietf.org/html/rfc7230#section-9.5">&sect;9.5 Response
+    Smuggling</a> ne rappellent que deux des risques potentiels induits par des
+    requêtes non conformes, alors que <a
+    href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
+    &sect;3.5</a> signale les risques encourus par l'acceptation de blancs non
+    conformes dans les lignes de requête. Avec l'introduction de cette
+    directive, toutes les règles de grammaire de la spécification doivent être
+    respectées dans le mode d'opérations par défaut <code>Strict</code>.</p>
+
+    <p>Il est fortement déconseillé aux utilisateurs d'utiliser le mode
+    d'opération <code>Unsafe</code>, ou
+    <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
+    serveurs ouverts sur l'extérieur et/ou accessibles au public. Si un moniteur
+    défectueux ou autre logiciel spécialisé ne s'exécutant que sur un intranet
+    nécessite une interface, les utilisateurs ne doivent utiliser les options de
+    type UnSafe qu'en cas de nécessité et uniquement au sein d'un serveur
+    virtuel bien spécifique et sur un réseau privé.</p>
+
+    <p>La consultation des messages enregistrés dans le journal
+    <directive>ErrorLog</directive>, configuré via la directive
+    <directive>LogLevel</directive> avec un niveau <code>info</code>, pourra
+    vous aider à identifier de telles requêtes non conformes ainsi que leur
+    provenance. Les utilisateurs devront accorder une attention particulière aux
+    messages d'erreur de type 400 dans le journal access pour détecter les
+    requêtes apparemment valides mais rejetées.</p>
+
+    <p>La section de la <a
+    href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
+    &sect;4.1</a> "Request Methods" "Overview" indique que les serveurs doivent
+    renvoyer un message d'erreur lorsque la ligne de requête comporte une
+    méthode non supportée. C'est déjà le cas lorsque l'option
+    <code>LenientMethods</code> est utilisée, mais les administrateurs ont la
+    possibilité de limiter les méthodes utilisées via l'option
+    <code>RegisteredMethods</code> en enregistrant toute méthode non standard
+    via la directive <directive>RegisterHttpMethod</directive>, en particulier
+    si l'option <code>Unsafe</code> est utilisée. L'option
+    <code>RegisteredMethods</code> <strong>ne doit pas</strong> être utilisée
+    pour les serveurs mandataires car ces derniers ne connaissent pas les
+    méthodes supportées par les serveurs originaux.</p>
+
+    <p>La section de la <a
+    href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
+    &sect;19.6</a> "Compatibility With Previous Versions" encouragait les
+    serveurs HTTP à supporter les anciennes requêtes HTTP/0.9. La RFC 7230 va
+    cependant à son encontre via sa préconisation "Le souhait de supporter les
+    requêtes HTTP/0.9 a été supprimé" et y adjoint des commentaires dans <a
+    href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix
+    A</a>. A ce titre, l'option <code>Require1.0</code> permet à l'utilisateur
+    d'inhiber le comportement induit par l'option par défaut
+    <code>Allow0.9</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -4860,6 +4948,8 @@ host</context></contextlist>
     changements qu'elle induit sont visibles de toute directive
     ultérieure, au delà de tout bloc VirtualHost.</p>
 </usage>
+<seealso><directive module="core">Define</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -5161,6 +5251,23 @@ comme si la directive QualifyRedirectURL était définie à ON.</compatibility>
     soumise avec une URL pleinement qualifiée, la variable REDIRECT_URL
     contiendra quand-même une URL pleinement qualifiée.
     </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RegisterHttpMethod</name>
+<description>Enregistrement de méthodes HTTP non standards</description>
+<syntax>RegisterHttpMethod <var>méthode</var> [<var>méthode</var> [...]]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>Normalement, les méthodes HTTP non conformes aux RFCs correspondantes
+sont rejetées au cours du traitement de la requête par HTTPD. Pour
+éviter ceci, les modules peuvent enregistrer les méthodes HTTP non
+standards qu'ils supportent. La directive
+<directive>RegisterHttpMethod</directive> permet d'enregistrer de telles
+méthodes manuellement. Ceci peut s'avérer utile si de telle méthodes
+doivent être utilisées dans un traitement externe, comme un script CGI.</p>
 </usage>
 </directivesynopsis>
 
