@@ -382,7 +382,7 @@ static int req_parsebody(lua_State *L)
             sscanf(start + len + 2,
                 "Content-Disposition: form-data; name=\"%255[^\"]\"; filename=\"%255[^\"]\"",
                 key, filename);
-            if (strlen(key)) {
+            if (*key) {
                 req_aprtable2luatable_cb_len(L, key, buffer, vlen);
             }
         }
@@ -2110,8 +2110,8 @@ static int lua_set_cookie(lua_State *L)
             secure ? "Secure;" : "", 
             expires ? strexpires : "", 
             httponly ? "HttpOnly;" : "", 
-            strlen(strdomain) ? strdomain : "", 
-            strlen(strpath) ? strpath : "");
+            *strdomain ? strdomain : "", 
+            *strpath ? strpath : "");
     
     apr_table_add(r->err_headers_out, "Set-Cookie", out);
     return 0;

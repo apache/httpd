@@ -377,7 +377,7 @@ static const char *log_remote_user(request_rec *r, char *a)
     if (rvalue == NULL) {
         rvalue = "-";
     }
-    else if (strlen(rvalue) == 0) {
+    else if (!*rvalue) {
         rvalue = "\"\"";
     }
     else {

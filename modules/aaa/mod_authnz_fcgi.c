@@ -855,7 +855,7 @@ static int fcgi_check_authn(request_rec *r)
             const char *err;
             const char *user = ap_expr_str_exec(r, dconf->user_expr,
                                                 &err);
-            if (user && strlen(user)) {
+            if (user && *user) {
                 r->user = apr_pstrdup(r->pool, user);
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               APLOGNO(02519) "%s: Setting user to '%s'",

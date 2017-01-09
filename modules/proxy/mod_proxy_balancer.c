@@ -1100,13 +1100,13 @@ static int balancer_handler(request_rec *r)
             }
         }
         if ((val = apr_table_get(params, "w_wr"))) {
-            if (strlen(val) && strlen(val) < sizeof(wsel->s->route))
+            if (*val && strlen(val) < sizeof(wsel->s->route))
                 strcpy(wsel->s->route, val);
             else
                 *wsel->s->route = '\0';
         }
         if ((val = apr_table_get(params, "w_rr"))) {
-            if (strlen(val) && strlen(val) < sizeof(wsel->s->redirect))
+            if (*val && strlen(val) < sizeof(wsel->s->redirect))
                 strcpy(wsel->s->redirect, val);
             else
                 *wsel->s->redirect = '\0';
@@ -1165,13 +1165,13 @@ static int balancer_handler(request_rec *r)
             }
         }
         if ((val = apr_table_get(params, "w_hu"))) {
-            if (strlen(val) && strlen(val) < sizeof(wsel->s->hcuri))
+            if (*val && strlen(val) < sizeof(wsel->s->hcuri))
                 strcpy(wsel->s->hcuri, val);
             else
                 *wsel->s->hcuri = '\0';
         }
         if (hc_valid_expr_f && (val = apr_table_get(params, "w_he"))) {
-            if (strlen(val) && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
+            if (*val && hc_valid_expr_f(r, val) && strlen(val) < sizeof(wsel->s->hcexpr))
                 strcpy(wsel->s->hcexpr, val);
             else
                 *wsel->s->hcexpr = '\0';
