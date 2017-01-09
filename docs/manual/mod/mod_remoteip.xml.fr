@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1704683:1776624 (outdated) -->
+<!-- English Revision: 1776624 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,6 +46,11 @@ répartiteur de charge via les en-têtes de la requête.
     l'en-tête de requête configuré via la directive
     <directive module="mod_remoteip">RemoteIPHeader</directive>.</p>
 
+    <p>En outre, ce module implémente la partie serveur du <a
+    href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
+    de HAProxy lorsqu'on utilise la directive <directive
+    module="mod_remoteip">RemoteIPProxyProtocol</directive>.</p>
+
     <p>Une fois sa valeur modifiée comme indiqué, cette adresse IP client est
     utilisée pour la fonctionnalité <directive
     module="mod_authz_host" name="Require">Require ip</directive> de
@@ -66,6 +71,7 @@ répartiteur de charge via les en-têtes de la requête.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
+<seealso><a href="http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <section id="processing"><title>Traitement des adresses distantes</title>
 
@@ -243,6 +249,75 @@ RemoteIPHeader X-Forwarded-For
 RemoteIPProxiesHeader X-Forwarded-By
     </highlight>
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxyProtocol</name>
+<description>Active ou désactive la gestion du protocole PROXY</description>
+<syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPProxyProtocol</directive> permet
+    d'activer ou de désactiver la prise en compte et la gestion de l'en-tête de
+    connexion du protocole PROXY. Si elle est définie à <code>On</code>, la
+    demande du client <em>doit</em> envoyer l'en-tête approprié pour chaque
+    nouvelle connexion, sinon cette dernière sera fermée. Si elle est définie à
+    <code>Optional</code>, la demande du client <em>peut</em> envoyer l'en-tête
+    approprié, mais ce n'est pas obligatoire.</p>
+
+    <p>Bien que cette directive peut être définie au niveau de n'importe quel
+    serveur virtuel, il est important de garder à l'esprit que, étant donné que
+    le protocole PROXY est basé sur la connexion et agnostique quant au
+    protocle, son activation/désactivation est basée sur le couple adresse
+    IP/port. Cela signifie que si plusieurs serveurs virtuels à base de nom sont
+    configurés avec le même couple adresse IP/port, et si vous activez le
+    protocole PROXY pour l'un d'entre eux, il le sera aussi pour tous les autres
+    (avec le même couple adresse IP/port). Cela signifie aussi que si vous
+    tentez d'activer le protocole PROXY pour un serveur virtuel et de le
+    désactiver pour un autre, cela ne marchera pas ; dans ce dernier cas, la
+    dernière directive l'emporte sur les autres et une notification sera
+    enregistrée dans le journal pour indiquer les réglages qui ont été annulés.</p>
+
+    <note type="hint">Lorsque plusieurs serveurs virtuels avec le même couple
+    adresse IP/port sont configurés avec une combinaison de drapeaux
+    <code>On</code> et <code>Optional</code>, les connexions ne seront pas
+    fermées si l'en-tête approprié n'est pas envoyé. L'activation interviendra
+    alors après la lecture de la requête si bien que les serveurs virtuels
+    configurés avec le drapeau <code>On</code> renverront une erreur 400 Bad
+    Request. Les serveurs virtuels configurés avec le drapeau
+    <code>Optional</code> quant à eux continueront de fonctionner de manière
+    habituelle mais sans remplacer les informations IP du client.</note>
+    
+    <highlight language="config">
+Listen 80
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol Optional
+
+    #Les requêtes pour ce serveur virtuel ne doivent pas obligatoirement
+    #contenir d'en-tête du protocole PROXY
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, une erreur 400 sera renvoyée
+&lt;/VirtualHost&gt;
+
+Listen 8080
+&lt;VirtualHost *:8080&gt;
+    ServerName www.example.com
+    RemoteIPProxyProtocol On
+
+    #Les requêtes pour ce serveur virtuel doivent contenir un en-tête du
+    #protocole PROXY. Si ce n'est pas le cas, la connexion sera fermée
+&lt;/VirtualHost&gt;
+    </highlight>
 </usage>
 </directivesynopsis>
 
