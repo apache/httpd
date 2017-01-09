@@ -18,7 +18,7 @@
  * mod_auth_digest: MD5 digest authentication
  *
  * Originally by Alexei Kosut <akosut@nueva.pvt.k12.ca.us>
- * Updated to RFC-2617 by Ronald Tschalär <ronald@innovation.ch>
+ * Updated to RFC-2617 by Ronald Tschalï¿½r <ronald@innovation.ch>
  * based on mod_auth, by Rob McCool and Robert S. Thau
  *
  * This module an updated version of modules/standard/mod_digest.c
@@ -232,7 +232,7 @@ static apr_status_t initialize_secret(server_rec *s)
 {
     apr_status_t status;
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(01757)
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01757)
                  "generating secret for digest authentication ...");
 
 #if APR_HAS_RANDOM
