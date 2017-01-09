@@ -119,14 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
-    once-per-restart msg (I guess the concern was that the RNG
-    could block after this message)
-      AH01757: generating secret for digest authentication ...
-    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
-    2.4.x patch: Just change the loglevel to DEBUG.
-    +1: covener, jim, wrowe
-
   *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
      trunk patch: http://svn.apache.org/r1777460
                   http://svn.apache.org/r1777672
