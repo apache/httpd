@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1738217:1772763 (outdated) -->
+<!-- English Revision: 1772763 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -168,7 +168,8 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <p>Voici quelques exemples de contrôle d'accès avec l'ancienne et
       la nouvelle méthode :</p>
 
-      <p>Dans cet exemple, toutes les requêtes sont rejetées :</p>
+      <p>Dans cet exemple, il n'y a pas d'authentification et toutes les
+      requêtes sont rejetées :</p>
       <example>
         <title>version 2.2 :</title>
         <highlight language="config">
@@ -183,7 +184,8 @@ Deny from all
 	</highlight>
       </example>
 
-      <p>Dans cet exemple, toutes les requêtes sont acceptées :</p>
+      <p>Dans cet exemple, il n'y a pas d'authentification et toutes les
+      requêtes sont acceptées :</p>
       <example>
         <title>version 2.2 :</title>
         <highlight language="config">
@@ -198,8 +200,9 @@ Allow from all
 	</highlight>
       </example>
 
-      <p>Dans l'exemple suivant, tous les hôtes du domaine example.org
-      ont l'autorisation d'accès, tous les autres sont rejetés :</p>
+      <p>Dans l'exemple suivant, il n'y a pas d'authentification et tous les
+      hôtes du domaine example.org
+      ont l'autorisation d'accès, tous les autres étant rejetés :</p>
 
       <example>
         <title>version 2.2 :</title>
@@ -276,6 +279,94 @@ access.log - GET /server-status 200 127.0.0.1
       les nouvelles.  
       </p>
     </section>
+
+
+     <p>Dans de nombreuses configurations avec authentification où la directive
+     <directive>Satisfy</directive> était définie à sa valeur par défaut
+     <em>ALL</em>, les lignes de configuration qui désactivent le contrôle
+     d'accès basé sur l'hôte sont maintenant omises :</p>
+
+      <example>
+        <title>Version 2.2 :</title>
+        <highlight language="config">
+Order Deny,Allow
+Deny from all
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Version 2.4 :</title>
+        <highlight language="config">
+# Pas besoin de remplacer les directives Order et deny
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+
+     <p>Dans les configurations où l'authentification et le contrôle d'accès se
+     combinaient dans un but précis, les directives de contrôle d'accès doivent
+     être migrées. Dans l'exemple suivant, les requêtes qui correspondent aux
+     <em>deux</em> critères sont acceptées :</p>
+      <example>
+        <title>Version 2.2 :</title>
+        <highlight language="config">
+Order allow,deny
+Deny from all
+# ALL est la valeur par défaut de Satisfy
+Satisfy ALL
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Version 2.4 :</title>
+        <highlight language="config">
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+&lt;RequireAll&gt;
+  Require valid-user
+  Require ip 127.0.0.1
+&lt;/RequireAll&gt;
+        </highlight>
+      </example>
+
+     <p>Dans les configurations où l'authentification et le contrôle d'accès se
+     combinaient dans un but précis, les directives de contrôle d'accès doivent
+     être migrées. Dans l'exemple suivant, les requêtes qui correspondent à
+     <em>au moins un</em> critère sont acceptées :</p>
+      <example>
+        <title>Version 2.2 :</title>
+        <highlight language="config">
+Order allow,deny
+Deny from all
+Satisfy any
+Allow from 127.0.0.1
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Version 2.4 :</title>
+        <highlight language="config">
+AuthBasicProvider File
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+# Implicite : &lt;RequireAny&gt;
+Require valid-user
+Require ip 127.0.0.1
+        </highlight>
+      </example>
 
     </section>
 

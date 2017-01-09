@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
@@ -1090,6 +1088,24 @@ pour le moteur de réécriture</td></tr>
       <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
       utilisent ces informations de contexte étendu. Disponible à partir de la
       version 2.4.16 du serveur HTTP Apache.</p>
+      </dd>
+
+      <dt><code>LegacyPrefixDocRoot</code></dt>
+      <dd>
+
+      <p>Avant la version 2.4.26, si une substitution était une URL absolue qui
+      correspondait au serveur virtuel courant, l'URL pouvait être tout d'abord
+      réduite à sa partie chemin, puis enfin en chemin local. Comme l'URL peut
+      être réduite en chemin local, le chemin doit être préfixé par la
+      valeur de la directive DocumentRoot, ce qui permet d'interdire l'accès à
+      un fichier tel que /tmp/myfile suite à une requête pour
+      http://host/file/myfile avec la <code class="directive"><a href="#rewriterule">RewriteRule</a></code> suivante :</p>
+      <pre class="prettyprint lang-config">RewriteRule /file/(.*) http://localhost/tmp/$1</pre>
+
+      <p>Cette option permet de restaurer l'ancien comportement lorsqu'un chemin
+      local obtenu à partir de la réduction d'une URL n'est pas préfixé par la
+      valeur de la directive DocumentRoot. Disponible à partir de la version
+      2.4.26 du serveur HTTP Apache.</p>
       </dd>
 
       </dl>
