@@ -399,7 +399,7 @@
       topics.</li>
 
       <li><code>ServerName</code> should always be set for each
-      vhost. Otherwise A DNS lookup is required for each
+      vhost. Otherwise a DNS lookup is required for each
       vhost.</li>
       </ul>
       
