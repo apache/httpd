@@ -119,6 +119,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) util_fcgi: Fix crash with empty-valued envvars. PR60275
+     trunk patch: http://svn.apache.org/r1775487.
+     2.4.x patch: trunk works
+     +1 covener, jim, wrowe
+
+  *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
+    once-per-restart msg (I guess the concern was that the RNG
+    could block after this message)
+      AH01757: generating secret for digest authentication ...
+    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
+    2.4.x patch: Just change the loglevel to DEBUG.
+    +1: covener, jim, wrowe
+
+  *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
+     trunk patch: http://svn.apache.org/r1777460
+                  http://svn.apache.org/r1777672
+     2.4.x patch: trunk works
+     +1: ylavic, covener, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -142,11 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: ylavic, jim
 
-  *) util_fcgi: Fix crash with empty-valued envvars. PR60275
-     trunk patch: http://svn.apache.org/r1775487.
-     2.4.x patch: trunk works
-     +1 covener, jim
-
   *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
      trunk patch: http://svn.apache.org/r1775858
      2.4 patch: trunk works (modulo CHANGES)
@@ -162,27 +175,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
 
-  *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
-    once-per-restart msg (I guess the concern was that the RNG
-    could block after this message)
-
-      AH01757: generating secret for digest authentication ...
-
-    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
-    2.4.x patch: Just change the loglevel to DEBUG.
-    +1: covener, jim
-
   *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
      AP_FTYPE_CONTENT_SET.  PR58856
      trunk patch: http://svn.apache.org/r1726705
      2.4.x patch: trunk works
      +1: covener, jim
 
-  *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
-     trunk patch: http://svn.apache.org/r1777460
-                  http://svn.apache.org/r1777672
-     2.4.x patch: trunk works
-     +1: ylavic, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
@@ -274,6 +272,27 @@ PATCHES/ISSUES THAT ARE BEING WORKED
          msgid <20160902120654.GA12674@redhat.com>
          (& also, making the structure change with apr-util version
          means it breaks binary compat across an apr-util upgrade?)
+
+   * Support PCRE2 (10.x) in place of PCRE (8.x).
+     Submitted by: wrowe, Petr Pisar [ppisar redhat.com]
+     trunk patches:
+         http://svn.apache.org/r1773454
+         http://svn.apache.org/r1773741
+         http://svn.apache.org/r1773742
+         http://svn.apache.org/r1773839
+         http://svn.apache.org/r1773870
+         http://svn.apache.org/r1773882
+     wrowe notes that the current code is too inefficient, owing to the fact
+     that the ovector is a required allocation and is no longer allocated on
+     the stack, by design. The correct fix is an apr userdata allocation on
+     the appropriate pool, which would be thread-safe, but the actual API of
+     ap_regexec[_len]() offers us no pool. We cannot associate that pool with
+     the ap_regex_t, because a single regex may be used by many threads in
+     parallel and is not thread-safe beyond initialization.
+     So the only fix allowing us to use PCRE 10 in httpd 2.4 would be to write
+     this as a thread safe storage buffer for the majority of cases (<10 $args)
+     and we don't have a portable tls mechanism to do so.
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
