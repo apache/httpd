@@ -127,7 +127,9 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
   * True event-loop/asynchronous support in the server core.
 
   * Modify configuration syntax to separate meta-directives from runtime
-    directives (e.g. If vs. IfVersion).
+    directives (e.g. If vs. IfVersion). Allow as much static analysis of the
+    configuration as possible without needing to start the server to figure out
+    what's going on.
 
   * Support JSON-like configuration files
 
