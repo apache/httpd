@@ -6,18 +6,14 @@ Changes with Apache 2.2.32
      and request headers, to prevent response splitting and cache pollution by
      malicious clients or downstream proxies. [William Rowe, Stefan Fritsch]
 
-  *) mod_proxy: Use the correct server name for SNI in case the backend
-     SSL connection itself is established via a proxy server.
-     PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
-
-  *) core: CVE-2016-5387: Mitigate [f]cgi "httpoxy" issues.
-     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
-
   *) Validate HTTP response header grammar defined by RFC7230, resulting
      in a 500 error in the event that invalid response header contents are
      detected when serving the response, to avoid response splitting and cache
      pollution by malicious clients, upstream servers or faulty modules.
      [Stefan Fritsch, Eric Covener, Yann Ylavic]
+
+  *) core: Mitigate [f]cgi CVE-2016-5387 "httpoxy" issues.
+     [Dominic Scheirlinck <dominic vendhq.com>, Yann Ylavic]
 
   *) core: Avoid a possible truncation of the faulty header included in the
      HTML response when LimitRequestFieldSize is reached.  [Yann Ylavic]
@@ -40,17 +36,21 @@ Changes with Apache 2.2.32
   *) core: New directive RegisterHttpMethod for registering non-standard
      HTTP methods. [Stefan Fritsch]
 
+  *) core: Limit to ten the number of tolerated empty lines between request.
+     [Yann Ylavic]
+
+  *) core: reject NULLs in request line or request headers.
+     PR 43039 [Nick Kew]
+
+  *) mod_proxy: Use the correct server name for SNI in case the backend
+     SSL connection itself is established via a proxy server.
+     PR 57139 [Szabolcs Gyurko <szabolcs gyurko.org>]
+
   *) Fix potential rejection of valid MaxMemFree and ThreadStackSize
      directives.  [Mike Rumph <mike.rumph oracle.com>]
 
   *) mod_ssl: Support compilation against libssl built with OPENSSL_NO_SSL3.
      [Kaspar Brand]
-
-  *) core: Limit to ten the number of tolerated empty lines between request.
-     [Yann Ylavic]
-
-  *) Core: reject NULLs in request line or request headers.
-     PR 43039 [Nick Kew]
 
   *) mod_proxy: Correctly consider error response codes by the backend when
      processing failonstatus. PR 59869 [Ruediger Pluem]
