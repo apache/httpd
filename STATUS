@@ -102,8 +102,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
+     trunk patch: http://svn.apache.org/r1777460
+                  http://svn.apache.org/r1777672
+     2.4.x patch: N/A
+     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1777460-v3.patch
+                  (needed because of s/APLOGNO//)
+     +1: ylavic, covener, wrowe
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
+
+
+PATCHES/ISSUES THAT ARE STALLED:
 
   *) mod_proxy_connect: The connect method doesn't work if the client is
      connecting to the apache proxy through an ssl socket. Fixed.
@@ -125,16 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ylavic: well, if it never worked, we won't break it more :)
              the new code would be now very closed to 2.4.x's, might be
              worth it for (one of) the latest 2.2.x release, and RIP...
-
-  *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
-     trunk patch: http://svn.apache.org/r1777460
-                  http://svn.apache.org/r1777672
-     2.4.x patch: N/A
-     2.2.x patch: http://home.apache.org/~ylavic/patches/httpd-2.2.x-r1777460-v3.patch
-                  (needed because of s/APLOGNO//)
-     +1: ylavic, covener
-
-PATCHES/ISSUES THAT ARE STALLED
 
    * mod_proxy_balancer: Always initialize the shared parameters of a load
      balancer member, even if it is already used as standalone.  PR 57067.
