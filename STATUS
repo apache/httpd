@@ -119,11 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) util_fcgi: Fix crash with empty-valued envvars. PR60275
-     trunk patch: http://svn.apache.org/r1775487.
-     2.4.x patch: trunk works
-     +1 covener, jim, wrowe
-
   *) mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
     once-per-restart msg (I guess the concern was that the RNG
     could block after this message)
