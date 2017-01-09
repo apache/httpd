@@ -1,6 +1,24 @@
 
   APACHE INSTALLATION OVERVIEW
 
+  CAUTION
+  -------
+
+  This package represents a legacy version of the Apache HTTP Server software
+  and is not current.
+
+  Please note that Apache Web Server Project will only provide maintenance
+  releases of the 2.2.x flavor through June of 2017, and will provide some
+  security patches beyond this date through at least December of 2017.
+  Minimal maintenance patches of 2.2.x are expected throughout this period,
+  and users are strongly discouraged from deploying this legacy release.
+
+  Also note, this package includes very stale and known-vulnerable versions
+  of the Expat [http://expat.sourceforge.net/] and PCRE [http://www.pcre.org/]
+  packages. Users are strongly encouraged to first install the most recent
+  versions of these components.
+
+
   Quick Start - Unix
   ------------------
 
