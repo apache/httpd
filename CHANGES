@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) Don't set SO_REUSEPORT unless ListenCoresBucketsRatio is greater
+     than zero.  [Eric Covener]
+
   *) mod_http2: streaming of request output now reacts timely to data
      from other streams becoming available. Same for new incoming requests.
      [Stefan Eissing]
