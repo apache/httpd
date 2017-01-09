@@ -119,13 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
-     backend connection, happening with LogLevel trace2 or higher configured,
-     or at any log level with compilers not detected as C99 compliant (e.g.
-     MSVC on Windows).
-     trunk patch: http://svn.apache.org/r1775775
-     2.4 patch: trunk works (modulo CHANGES)
-     +1: ylavic, jim, covener
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
