@@ -28,7 +28,7 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	build/pkg/pkginfo build/config_vars.sh bsd_converted
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
-PHONY_TARGETS := check check-conf check-include
+PHONY_TARGETS := check check-conf check-dirs check-include
 
 include $(top_builddir)/build/rules.mk
 include $(top_srcdir)/build/program.mk
@@ -328,16 +328,18 @@ check-conf:
 	        ( \
 	            n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
 	            if test $$n_lm -eq 0 -o "x$(MPM_MODULE)$(DSO_MODULES)" = "x"; then \
-	                sed -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                sed -e 's#@@ServerRoot@@#$(top_builddir)/check#g' \
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
 	                    -e '/@@LoadModule@@/d' \
 	                    < $$i; \
 	            else \
 	                sed -n -e '/@@LoadModule@@/q' \
-	                    -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                    -e 's#@@ServerRoot@@#$(top_builddir)/check#g' \
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
 	                    -e 'p' \
 	                    < $$i; \
 	                if echo " $(DSO_MODULES) "|$(EGREP) " cgi " > /dev/null ; then \
@@ -351,7 +353,7 @@ check-conf:
 	                    have_cgid="0"; \
 	                fi; \
 	                for j in $(MPM_MODULES) "^EOL^"; do \
-	                    path=$$(find "$(top_builddir)/modules" -name "mod_$$j.so"); \
+	                    path=$$(find "$(top_builddir)/server" -name "mod_$$j.so"); \
 	                    if test $$j != "^EOL^"; then \
 	                        if echo ",$(ENABLED_MPM_MODULE),"|$(EGREP) ",$$j," > /dev/null ; then \
 	                            loading_disabled=""; \
@@ -379,9 +381,10 @@ check-conf:
 	                done; \
 	                sed -e '1,/@@LoadModule@@/d' \
 	                    -e '/@@LoadModule@@/d' \
-	                    -e 's#@@ServerRoot@@#$(prefix)#g' \
+	                    -e 's#@@ServerRoot@@#$(top_builddir)/check#g' \
 	                    -e 's#@@Port@@#$(PORT)#g' \
 	                    -e 's#@@SSLPort@@#$(SSLPORT)#g' \
+	                    -e 's#$(prefix)#$(top_builddir)/check#g' \
 	                    < $$i; \
 	            fi \
 	        ) > $(top_builddir)/check/conf/$$i; \
@@ -392,6 +395,13 @@ check-conf:
 	        fi; \
 	    done ; \
 	done ;
+
+# Sometimes (e.g. when MPM DSOs are enabled) the test suite runs a full
+# configuration check on our in-tree build. To pass, we have to have all of the
+# correct directories, even though they won't be used.
+check-dirs:
+	@mkdir -p check/htdocs
+	@mkdir -p check/logs
 
 # A version of apxs with the PREFIX overridden to point inside the build tree.
 check/apxs:
@@ -408,7 +418,7 @@ check/build/config_vars.mk: build/config_vars.out
 	echo "sbindir = $(top_builddir)" >> $@
 
 # Run the Apache::Test suite if it has been configured with --with-test-suite.
-check: check-include check-conf check/build/config_vars.mk check/apxs
+check: check-include check-dirs check-conf check/build/config_vars.mk check/apxs
 	@if test "x$(TEST_SUITE_LOCATION)" = "xno"; then \
 	    echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'; \
 	    false; \
