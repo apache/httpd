@@ -309,7 +309,7 @@ static const char *h2_conf_set_stream_max_mem_size(cmd_parms *parms,
 static const char *h2_add_alt_svc(cmd_parms *parms,
                                   void *arg, const char *value)
 {
-    if (value && strlen(value)) {
+    if (value && *value) {
         h2_config *cfg = (h2_config *)h2_config_sget(parms->server);
         h2_alt_svc *as = h2_alt_svc_parse(value, parms->pool);
         if (!as) {
@@ -407,7 +407,7 @@ static const char *h2_conf_add_push_priority(cmd_parms *cmd, void *_cfg,
     h2_priority *priority;
     int weight;
     
-    if (!strlen(ctype)) {
+    if (!*ctype) {
         return "1st argument must be a mime-type, like 'text/css' or '*'";
     }
     

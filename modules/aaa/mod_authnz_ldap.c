@@ -748,13 +748,13 @@ static authz_status ldapuser_check_authorization(request_rec *r,
      */
 
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01699)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
     }
 
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01702)
                       "auth_ldap authorize: require user: user's DN has not "
                       "been defined; failing authorization");
@@ -910,7 +910,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01709)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -920,7 +920,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     ent = (struct mod_auth_ldap_groupattr_entry_t *) sec->groupattr->elts;
 
     if (sec->group_attrib_is_dn) {
-        if (req->dn == NULL || strlen(req->dn) == 0) {
+        if (req->dn == NULL || !*req->dn) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01712)
                           "auth_ldap authorize: require group: user's DN has "
                           "not been defined; failing authorization for user %s",
@@ -929,7 +929,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         }
     }
     else {
-        if (req->user == NULL || strlen(req->user) == 0) {
+        if (req->user == NULL || !*req->user) {
             /* We weren't called in the authentication phase, so we didn't have a
              * chance to set the user field. Do so now. */
             req->user = r->user;
@@ -1063,7 +1063,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01722)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -1091,7 +1091,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 
     t = require;
 
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01725)
                       "auth_ldap authorize: require dn: user's DN has not "
                       "been defined; failing authorization");
@@ -1163,7 +1163,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01730)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -1181,7 +1181,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         ldc = get_connection_for_authz(r, LDAP_COMPARE);
     }
 
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01733)
                       "auth_ldap authorize: require ldap-attribute: user's DN "
                       "has not been defined; failing authorization");
@@ -1272,7 +1272,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    if (!strlen(r->user)) {
+    if (!*r->user) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01739)
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -1290,7 +1290,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         ldc = get_connection_for_authz(r, LDAP_SEARCH);
     }
 
-    if (req->dn == NULL || strlen(req->dn) == 0) {
+    if (req->dn == NULL || !*req->dn) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01742)
                       "auth_ldap authorize: require ldap-filter: user's DN "
                       "has not been defined; failing authorization");

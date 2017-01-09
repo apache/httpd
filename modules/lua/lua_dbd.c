@@ -782,7 +782,7 @@ int lua_db_acquire(lua_State *L)
                 arguments = lua_tostring(L, 3);
                 lua_settop(L, 0);
                 
-                if (strlen(arguments)) {
+                if (*arguments) {
                     rc = apr_dbd_open_ex(dbdhandle->driver, pool, 
                             arguments, &dbdhandle->handle, &error);
                     if (rc == APR_SUCCESS) {

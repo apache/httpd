@@ -674,7 +674,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
         return NULL;
     }
 
-    if (r->args && strlen(r->args)) {
+    if (r->args && *r->args) {
         char cachetype[5], lint[2];
         unsigned int id, off;
         char date_str[APR_CTIME_LEN];
