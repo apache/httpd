@@ -184,6 +184,7 @@ group	mod/mpm_common.html#group
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
 hostnamelookups	mod/core.html#hostnamelookups
+httpprotocoloptions	mod/core.html#httpprotocoloptions
 identitycheck	mod/mod_ident.html#identitycheck
 identitychecktimeout	mod/mod_ident.html#identitychecktimeout
 ifdefine	mod/core.html#ifdefine
@@ -302,6 +303,7 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
+registerhttpmethod	mod/core.html#registerhttpmethod
 removecharset	mod/mod_mime.html#removecharset
 removeencoding	mod/mod_mime.html#removeencoding
 removehandler	mod/mod_mime.html#removehandler
