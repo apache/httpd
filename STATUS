@@ -119,11 +119,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) http: allow folding in check_headers(), still compliant with RFC 7230 (3.2.4).
-     trunk patch: http://svn.apache.org/r1777460
-                  http://svn.apache.org/r1777672
-     2.4.x patch: trunk works
-     +1: ylavic, covener, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
