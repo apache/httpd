@@ -229,6 +229,7 @@
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
+<li><a href="core.html#httpprotocoloptions">HttpProtocolOptions</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
@@ -347,6 +348,7 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+<li><a href="core.html#registerhttpmethod">RegisterHttpMethod</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>
 <li><a href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
 <li><a href="mod_mime.html#removehandler">RemoveHandler</a></li>
