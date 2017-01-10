@@ -39,18 +39,6 @@ Changes with Apache 2.5.0
   *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
      [Luca Toscano]
 
-  *) mod_proxy_{ajp,fcgi}: Fix a possible crash when reusing an established
-     backend connection, happening with LogLevel trace2 or higher configured,
-     or at any log level with compilers not detected as C99 compliant (e.g.
-     MSVC on Windows).  [Yann Ylavic]
-
-  *) mod_ext_filter: Don't interfere with "error buckets" issued by other
-     modules. PR60375.  [Eric Covener, Lubos Uhliarik]
-
-  *) mod_proxy_fcgi, mod_fcgid: Fix crashes in ap_fcgi_encoded_env_len() when
-     modules add empty environment variables to the request. PR60275.
-     [<alex2grad AT gmail.com>]
-    
   *) http: Allow unknown response status' lines returned in the form of
      "HTTP/x.x xxx Status xxx".  [Yann Ylavic]
 
