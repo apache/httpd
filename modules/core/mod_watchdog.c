@@ -436,7 +436,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
 {
     apr_status_t rv;
     const char *pk = "watchdog_init_module_tag";
-    apr_pool_t *pproc = s->process->pool;
+    apr_pool_t *pproc = pconf;
     const apr_array_header_t *wl;
 
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
