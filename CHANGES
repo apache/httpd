@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving 
+     a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by 
+     default.  Add ProxyFCGIBackendType to allow the type of backend to be
+     specified so these kinds of fixups can be restored without impacting
+     FPM. PR60576 [Eric Covener]
+
   *) Don't set SO_REUSEPORT unless ListenCoresBucketsRatio is greater
      than zero.  [Eric Covener]
 
