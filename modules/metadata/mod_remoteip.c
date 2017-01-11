@@ -1021,7 +1021,7 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
     remoteip_filter_context *ctx = f->ctx;
     remoteip_conn_config_t *conn_conf;
     apr_bucket *b;
-    remoteip_parse_status_t psts;
+    remoteip_parse_status_t psts = HDR_NEED_MORE;
     const char *ptr;
     apr_size_t len;
 
