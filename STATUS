@@ -163,6 +163,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works
      +1: covener, jim
 
+  *) mod_watchdog: Use pconf as parent pool so mutexes get cleaned on restarts/reloads
+     and fix leaking sems (https://bugzilla.redhat.com/show_bug.cgi?id=1410883)
+     trunk patch: http://svn.apache.org/r1778319
+     2.4.x patch: trunk works
+     +1: jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
