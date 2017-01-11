@@ -195,4 +195,33 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     </dl>
 </section>
 
+<directivesynopsis>
+<name>ProxyFCGIBackendType</name>
+<description>Specify the type of backend FastCGI application</description>
+<syntax>ProxyFCGIBackendType FPM|GENERIC</syntax>
+<default>ProxyFCGIBackendType FPM</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.5 and later</compatibility>
+
+<usage>
+<p>This directive allows the type of backend FastCGI application to be
+specified. Some FastCGI servers, such as PHP-FPM,  use historical quirks of
+environment variables to identify the type of proxy server being used.  Set
+this direcive to "GENERIC" if your non PHP-FPM application has trouble
+interpreting environment variables such as SCRIPT_FILENAME or PATH_TRANSLATED
+as set by the server.</p>
+
+<p>One example of values that change based on the setting of this directive is
+SCRIPT_FILENAME. When using <module>mod_proxy_fcgi</module> historically,
+SCRIPT_FILENAME was prefixed with the string "proxy:fcgi://". This variable is
+what some generic FastCGI applications would read as their script input, but
+PHP-FPM would strip the prefix then remember it was talking to Apache.  In
+2.4.21 through 2.4.25, this prefix was automatically stripped by the server,
+breaking the ability of PHP-FPM to detect and interoperate with Apache in some
+scenarios.</p> 
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

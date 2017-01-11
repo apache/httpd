@@ -24,6 +24,22 @@ typedef struct {
     int need_dirwalk;
 } fcgi_req_config_t;
 
+/* We will assume FPM, but still differentiate */
+typedef enum {
+    BACKEND_DEFAULT_UNKNOWN = 0,
+    BACKEND_FPM,
+    BACKEND_GENERIC,
+} fcgi_backend_t;
+
+#define FCGI_MAY_BE_FPM(dconf)                              \
+        (dconf &&                                           \
+        ((dconf->backend_type == BACKEND_DEFAULT_UNKNOWN) || \
+        (dconf->backend_type == BACKEND_FPM)))
+
+typedef struct {
+    fcgi_backend_t backend_type;
+} fcgi_dirconf_t;
+
 /*
  * Canonicalise http-like URLs.
  * scheme is the scheme for the URL
@@ -254,6 +270,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     apr_size_t avail_len, len, required_len;
     int next_elem, starting_elem;
     fcgi_req_config_t *rconf = ap_get_module_config(r->request_config, &proxy_fcgi_module);
+    fcgi_dirconf_t *dconf = ap_get_module_config(r->per_dir_config, &proxy_fcgi_module);
 
     if (rconf) { 
        if (rconf->need_dirwalk) { 
@@ -268,14 +285,21 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         if (!strncmp(r->filename, "proxy:balancer://", 17)) {
             newfname = apr_pstrdup(r->pool, r->filename+17);
         }
-        else if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
-            newfname = apr_pstrdup(r->pool, r->filename+13);
-        }
-        /* Query string in environment only */
-        if (newfname && r->args && *r->args) { 
-            char *qs = strrchr(newfname, '?');
-            if (qs && !strcmp(qs+1, r->args)) { 
-                *qs = '\0';
+ 
+        if (!FCGI_MAY_BE_FPM(dconf))  { 
+            if (!strncmp(r->filename, "proxy:fcgi://", 13)) {
+                /* If we strip this under FPM, and any internal redirect occurs 
+                 * on PATH_INFO, FPM may use PATH_TRANSLATED instead of 
+                 * SCRIPT_FILENAME (a la mod_fastcgi + Action).
+                 */
+                newfname = apr_pstrdup(r->pool, r->filename+13);
+            }
+            /* Query string in environment only */
+            if (newfname && r->args && *r->args) { 
+                char *qs = strrchr(newfname, '?');
+                if (qs && !strcmp(qs+1, r->args)) { 
+                    *qs = '\0';
+                }
             }
         }
 
@@ -976,18 +1000,71 @@ cleanup:
     return status;
 }
 
+static void *fcgi_create_dconf(apr_pool_t *p, char *path)
+{
+    fcgi_dirconf_t *a;
+
+    a = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    a->backend_type = BACKEND_DEFAULT_UNKNOWN;
+    return a;
+}
+
+static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
+{
+    fcgi_dirconf_t *a, *base, *over;
+
+    a     = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
+    base  = (fcgi_dirconf_t *)basev;
+    over  = (fcgi_dirconf_t *)overridesv;
+
+    a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN) 
+                      ? over->backend_type 
+                      : base->backend_type;
+    return a;
+}
+
+
+static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
+                                   const char *val)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+    
+    if (!val || !*val) { 
+        return "ProxyFCGIBackendType requires one  of the following arguments: "
+               "'GENERIC', 'PHP-FPM'";
+    } 
+
+    if (!strcasecmp(val, "GENERIC")) { 
+       dconf->backend_type = BACKEND_GENERIC;
+    }
+    else if (!strcasecmp(val, "FPM") || !strcasecmp(val, "PHP-FPM")) { 
+       dconf->backend_type = BACKEND_FPM;
+    }
+    else { 
+        return "ProxyFCGIBackendType requires one  of the following arguments: "
+               "'GENERIC', 'PHP-FPM'";
+    }
+
+    return NULL;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
 }
+static const command_rec command_table[] = {
+    AP_INIT_TAKE1(    "ProxyFCGIBackendType",   cmd_servertype,  NULL, OR_FILEINFO,
+                     " Specify the type of FastCGI server: 'Generic' 'FPM'"),
+    { NULL }
+};
 
 AP_DECLARE_MODULE(proxy_fcgi) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
+    fcgi_create_dconf,          /* create per-directory config structure */
+    fcgi_merge_dconf,           /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    NULL,                       /* command apr_table_t */
+    command_table,              /* command apr_table_t */
     register_hooks              /* register hooks */
 };
