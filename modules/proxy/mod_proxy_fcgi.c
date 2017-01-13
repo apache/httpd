@@ -1023,17 +1023,11 @@ static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
     return a;
 }
 
-
 static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
                                    const char *val)
 {
     fcgi_dirconf_t *dconf = in_dconf;
     
-    if (!val || !*val) { 
-        return "ProxyFCGIBackendType requires one  of the following arguments: "
-               "'GENERIC', 'PHP-FPM'";
-    } 
-
     if (!strcasecmp(val, "GENERIC")) { 
        dconf->backend_type = BACKEND_GENERIC;
     }
@@ -1041,8 +1035,8 @@ static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
        dconf->backend_type = BACKEND_FPM;
     }
     else { 
-        return "ProxyFCGIBackendType requires one  of the following arguments: "
-               "'GENERIC', 'PHP-FPM'";
+        return "ProxyFCGIBackendType requires one of the following arguments: "
+               "'GENERIC', 'FPM'";
     }
 
     return NULL;
@@ -1053,9 +1047,10 @@ static void register_hooks(apr_pool_t *p)
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
 }
+
 static const command_rec command_table[] = {
-    AP_INIT_TAKE1(    "ProxyFCGIBackendType",   cmd_servertype,  NULL, OR_FILEINFO,
-                     " Specify the type of FastCGI server: 'Generic' 'FPM'"),
+    AP_INIT_TAKE1("ProxyFCGIBackendType", cmd_servertype, NULL, OR_FILEINFO,
+                  "Specify the type of FastCGI server: 'Generic', 'FPM'"),
     { NULL }
 };
 
