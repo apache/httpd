@@ -14,6 +14,7 @@
  */
 
 #include <apr_lib.h>
+#include <apr_atomic.h>
 #include <apr_strings.h>
 #include <apr_time.h>
 #include <apr_buckets.h>
@@ -243,25 +244,29 @@ static void leave_yellow(h2_bucket_beam *beam, h2_beam_lock *pbl)
     }
 }
 
-static void report_consumption(h2_bucket_beam *beam, int force)
+static int report_consumption(h2_bucket_beam *beam)
 {
-    if (force || beam->received_bytes != beam->reported_consumed_bytes) {
-        if (beam->consumed_fn) { 
-            beam->consumed_fn(beam->consumed_ctx, beam, beam->received_bytes
-                              - beam->reported_consumed_bytes);
+    int rv = 0;
+    if (apr_atomic_read32(&beam->cons_ev_pending)) {
+        if (beam->cons_io_cb) { 
+            beam->cons_io_cb(beam->cons_ctx, beam, beam->received_bytes
+                             - beam->cons_bytes_reported);
+            rv = 1;
         }
-        beam->reported_consumed_bytes = beam->received_bytes;
+        beam->cons_bytes_reported = beam->received_bytes;
+        apr_atomic_set32(&beam->cons_ev_pending, 0);
     }
+    return rv;
 }
 
-static void report_production(h2_bucket_beam *beam, int force)
+static void report_prod_io(h2_bucket_beam *beam, int force)
 {
-    if (force || beam->sent_bytes != beam->reported_produced_bytes) {
-        if (beam->produced_fn) { 
-            beam->produced_fn(beam->produced_ctx, beam, beam->sent_bytes
-                              - beam->reported_produced_bytes);
+    if (force || beam->prod_bytes_reported != beam->sent_bytes) {
+        if (beam->prod_io_cb) { 
+            beam->prod_io_cb(beam->prod_ctx, beam, beam->sent_bytes
+                             - beam->prod_bytes_reported);
         }
-        beam->reported_produced_bytes = beam->sent_bytes;
+        beam->prod_bytes_reported = beam->sent_bytes;
     }
 }
 
@@ -322,7 +327,7 @@ static apr_status_t r_wait_space(h2_bucket_beam *beam, apr_read_type_e block,
     while (!beam->aborted && *premain <= 0 
            && (block == APR_BLOCK_READ) && pbl->mutex) {
         apr_status_t status;
-        report_production(beam, 1);
+        report_prod_io(beam, 1);
         status = wait_cond(beam, pbl->mutex);
         if (APR_STATUS_IS_TIMEUP(status)) {
             return status;
@@ -453,7 +458,7 @@ static apr_status_t beam_send_cleanup(void *data)
     /* sender has gone away, clear up all references to its memory */
     r_purge_sent(beam);
     h2_blist_cleanup(&beam->send_list);
-    report_consumption(beam, 0);
+    report_consumption(beam);
     while (!H2_BPROXY_LIST_EMPTY(&beam->proxies)) {
         h2_beam_proxy *proxy = H2_BPROXY_LIST_FIRST(&beam->proxies);
         H2_BPROXY_REMOVE(proxy);
@@ -634,7 +639,7 @@ void h2_beam_abort(h2_bucket_beam *beam)
             beam->aborted = 1;
             r_purge_sent(beam);
             h2_blist_cleanup(&beam->send_list);
-            report_consumption(beam, 0);
+            report_consumption(beam);
         }
         if (beam->m_cond) {
             apr_thread_cond_broadcast(beam->m_cond);
@@ -650,7 +655,7 @@ apr_status_t h2_beam_close(h2_bucket_beam *beam)
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
         r_purge_sent(beam);
         beam_close(beam);
-        report_consumption(beam, 0);
+        report_consumption(beam);
         leave_yellow(beam, &bl);
     }
     return beam->aborted? APR_ECONNABORTED : APR_SUCCESS;
@@ -851,12 +856,12 @@ apr_status_t h2_beam_send(h2_bucket_beam *beam,
                 b = APR_BRIGADE_FIRST(red_brigade);
                 status = append_bucket(beam, b, block, &bl);
             }
-            report_production(beam, force_report);
+            report_prod_io(beam, force_report);
             if (beam->m_cond) {
                 apr_thread_cond_broadcast(beam->m_cond);
             }
         }
-        report_consumption(beam, 0);
+        report_consumption(beam);
         leave_yellow(beam, &bl);
     }
     return status;
@@ -872,6 +877,7 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
     int transferred = 0;
     apr_status_t status = APR_SUCCESS;
     apr_off_t remain = readbytes;
+    int transferred_buckets = 0;
     
     /* Called from the green thread to take buckets from the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
@@ -968,6 +974,8 @@ transfer:
             APR_BUCKET_REMOVE(bred);
             H2_BLIST_INSERT_TAIL(&beam->hold_list, bred);
             beam->received_bytes += bred->length;
+            ++transferred_buckets;
+            
             if (bgreen) {
                 APR_BRIGADE_INSERT_TAIL(bb, bgreen);
                 remain -= bgreen->length;
@@ -1000,6 +1008,13 @@ transfer:
             }
         }
 
+        if (transferred_buckets > 0) {
+           apr_atomic_set32(&beam->cons_ev_pending, 1);
+           if (beam->cons_ev_cb) { 
+               beam->cons_ev_cb(beam->cons_ctx, beam);
+            }
+        }
+        
         if (beam->closed 
             && (!beam->recv_buffer || APR_BRIGADE_EMPTY(beam->recv_buffer))
             && H2_BLIST_EMPTY(&beam->send_list)) {
@@ -1042,25 +1057,25 @@ leave:
 }
 
 void h2_beam_on_consumed(h2_bucket_beam *beam, 
-                         h2_beam_io_callback *cb, void *ctx)
+                         h2_beam_ev_callback *ev_cb,
+                         h2_beam_io_callback *io_cb, void *ctx)
 {
     h2_beam_lock bl;
-    
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        beam->consumed_fn = cb;
-        beam->consumed_ctx = ctx;
+        beam->cons_ev_cb = ev_cb;
+        beam->cons_io_cb = io_cb;
+        beam->cons_ctx = ctx;
         leave_yellow(beam, &bl);
     }
 }
 
 void h2_beam_on_produced(h2_bucket_beam *beam, 
-                         h2_beam_io_callback *cb, void *ctx)
+                         h2_beam_io_callback *io_cb, void *ctx)
 {
     h2_beam_lock bl;
-    
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
-        beam->produced_fn = cb;
-        beam->produced_ctx = ctx;
+        beam->prod_io_cb = io_cb;
+        beam->prod_ctx = ctx;
         leave_yellow(beam, &bl);
     }
 }
@@ -1170,6 +1185,19 @@ apr_size_t h2_beam_get_files_beamed(h2_bucket_beam *beam)
 
 int h2_beam_no_files(void *ctx, h2_bucket_beam *beam, apr_file_t *file)
 {
+    return 0;
+}
+
+int h2_beam_report_consumption(h2_bucket_beam *beam)
+{
+    if (apr_atomic_read32(&beam->cons_ev_pending)) {
+        h2_beam_lock bl;
+        if (enter_yellow(beam, &bl) == APR_SUCCESS) {
+            int rv = report_consumption(beam);
+            leave_yellow(beam, &bl);
+            return rv;
+        }
+    }
     return 0;
 }
 
