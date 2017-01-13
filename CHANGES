@@ -2,9 +2,13 @@
 
 Changes with Apache 2.4.26
 
- *) mod_proxy_fcgi, mod_fcgid: Fix crashes in ap_fcgi_encoded_env_len() when
-    modules add empty environment variables to the request. PR60275.
-    [<alex2grad AT gmail.com>]
+  *) mod_http2: streaming of request output now reacts timely to data
+     from other streams becoming available. Same for new incoming requests.
+     [Stefan Eissing]
+     
+  *) mod_proxy_fcgi, mod_fcgid: Fix crashes in ap_fcgi_encoded_env_len() when
+     modules add empty environment variables to the request. PR60275.
+     [<alex2grad AT gmail.com>]
 
   *) mod_http2: fix for possible page fault when stream is resumed during 
      session shutdown. [sidney-j-r-m (github)]
