@@ -38,8 +38,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -177,14 +175,14 @@
       Bien entendu, vous pourrez tout de même construire et utiliser
       Apache httpd.</dd>
 
-      <dt><a href="http://apr.apache.org">apr/apr-util &gt;= 1.2</a></dt>
+      <dt><a href="http://apr.apache.org">apr/apr-util &gt;= 1.4</a></dt>
       <dd><code>apr</code> et <code>apr-util</code> sont inclus
       dans les sources d'Apache HTTPd, et peuvent être utilisés sans problème
       dans la plupart des cas. Cependant, si
-      <code>apr</code> ou <code>apr-util</code>, versions 1.0 ou 1.1,
+      <code>apr</code> ou <code>apr-util</code>, versions 1.0, 1.1 ou 1.2,
       sont installés sur votre système, vous devez soit mettre à jour vos
       installations <code>apr</code>/<code>apr-util</code> vers la version
-      1.2, forcer l'utilisation des bibliothèques intégrées,
+      1.4, forcer l'utilisation des bibliothèques intégrées,
       soit faire en sorte que httpd utilise des constructions séparées.
       Pour utiliser les sources de
       <code>apr</code>/<code>apr-util</code> incluses, utilisez l'option
@@ -203,13 +201,13 @@
       <code>apr</code>/<code>apr-util</code> :
 
       <div class="example"><p><code>
-        # Construction et installation apr 1.2<br />
+        # Construction et installation apr 1.4<br />
         cd srclib/apr<br />
         ./configure --prefix=/usr/local/apr-httpd/<br />
         make<br />
         make install<br />
         <br />
-        # Construction et installation apr-util 1.2<br />
+        # Construction et installation apr-util 1.4<br />
         cd ../apr-util<br />
         ./configure --prefix=/usr/local/apr-util-httpd/
           --with-apr=/usr/local/apr-httpd/<br />
