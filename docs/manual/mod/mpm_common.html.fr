@@ -32,8 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une série de directives implémentées par plusieurs
 modules multi-processus (MPM)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr></table>
@@ -672,7 +670,10 @@ processus</td></tr>
     MPMs <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, cette directive, en combinaison avec
     <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>, définit le
     nombre maximum que l'on peut affecter à <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, et ceci pour la durée de
-    vie du processus Apache httpd. Au cours d'un redémarrage, vous pouvez
+    vie du processus Apache httpd. Avec le MPM <code class="module"><a href="../mod/event.html">event</a></code>, cette
+    directive permet aussi de définir le nombre de processus anciens du serveur
+    pouvant continuer à s'exécuter pour terminer le traitement des connexions
+    ouvertes. Au cours d'un redémarrage, vous pouvez
     modifier la valeur de la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, alors que toute
     tentative de modification de la valeur de la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> sera ignorée.</p>
 

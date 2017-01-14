@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/remapping.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">Documentation de référence</a> de
@@ -198,7 +196,7 @@ Redirect "/docs/" "http://nouveau.example.com/docs/"</pre>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
 RewriteBase    "/~quux/"
-RewriteRule    "^foo\.html$"  "foo.cgi"   [H=<strong>cgi-script</strong>]</pre>
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
         </dd>
       </dl>

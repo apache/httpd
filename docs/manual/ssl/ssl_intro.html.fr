@@ -27,8 +27,6 @@
 <a href="../fr/ssl/ssl_intro.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce chapitre en guise d'introduction est destiné aux lecteurs pour lesquels
@@ -437,7 +435,7 @@ l'établissement de la session protocolaire.</p>
     </tr>
     <tr><td>TLS v1.2</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS12">TLS12</a>]</td>
-        <td>Mise à jour de TLS 1.2 rendant les condensés MD5 obsolètes,
+        <td>Mise à jour de TLS 1.1 rendant les condensés MD5 obsolètes,
 	et introduisant une incompatibilité avec SSL ce qui interdit toute
 	négociation en vue d'une utilisation de SSLv2.</td>
     </tr>
