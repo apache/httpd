@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1774511 (outdated) -->
+<!-- English Revision: 1774511 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,18 +35,35 @@ the document to validate. -->
 
 <summary>
 
-<p>Ce module fournit un filtre <code>rate_limit</code> pour limiter la
-bande passante des clients. La variable d'environnement
-<code>rate-limit</code> permet de sp&eacute;cifier, en kb/s, le d&eacute;bit de la
-connexion &agrave; simuler.</p>
+<p>Ce module fournit un filtre <code>RATE_LIMIT</code> pour limiter la
+bande passante des clients. Cette contrainte s'applique à chaque réponse HTTP au
+moment où elle est envoyée au client ; elle n'affecte pas les autres échanges
+entre le client et le serveur. La variable d'environnement
+<code>rate-limit</code> permet de spécifier, en kb/s, le débit de la
+connexion à simuler.</p>
+
+<p>Optionnellement, il est possible, via la variable d'environnement
+<code>rate-initial-burst</code>, de définir une quantité de données en
+kOctets à transmettre à pleine vitesse avant de limiter la bande passante à la
+valeur voulue.</p>
 
 <example><title>Exemple de configuration</title>
 <highlight language="config">
 &lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400
+    SetEnv rate-initial-burst 512
 &lt;/Location&gt;
 </highlight>
+
+<note type="warning">
+Si la valeur affectée à <code>rate-limit</code> dépasse la valeur maximale à
+affecter à un entier, la limitation de bande passante sera désactivée. Si la
+valeur affectée à <code>rate-limit-burst</code> dépasse la valeur maximale à
+affecter à un entier, la transmission du burst initial sans limitation de bande
+passante sera désactivée.
+</note>
+
 </example>
 
 </summary>
