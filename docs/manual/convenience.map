@@ -453,6 +453,7 @@ proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
 proxyexpressdbmfile	mod/mod_proxy_express.html#proxyexpressdbmfile
 proxyexpressdbmtype	mod/mod_proxy_express.html#proxyexpressdbmtype
 proxyexpressenable	mod/mod_proxy_express.html#proxyexpressenable
+proxyfcgibackendtype	mod/mod_proxy_fcgi.html#proxyfcgibackendtype
 proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
