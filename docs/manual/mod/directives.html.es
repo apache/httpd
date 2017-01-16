@@ -162,6 +162,11 @@
 <li><a href="mod_proxy.html#balancerinherit">BalancerInherit</a></li>
 <li><a href="mod_proxy.html#balancermember">BalancerMember</a></li>
 <li><a href="mod_proxy.html#balancerpersist">BalancerPersist</a></li>
+<li><a href="mod_brotli.html#brotlialteretag">BrotliAlterETag</a></li>
+<li><a href="mod_brotli.html#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock</a></li>
+<li><a href="mod_brotli.html#brotlicompressionquality">BrotliCompressionQuality</a></li>
+<li><a href="mod_brotli.html#brotlicompressionwindow">BrotliCompressionWindow</a></li>
+<li><a href="mod_brotli.html#brotlifilternote">BrotliFilterNote</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
