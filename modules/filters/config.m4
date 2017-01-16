@@ -167,13 +167,11 @@ if (o) return *o;],
   else
     if test -n "$PKGCONFIG"; then
       AC_MSG_CHECKING([for Brotli library >= 1.0.0 via pkg-config])
-      if $PKGCONFIG --exists "brotli >= 1.0.0"; then
+      if $PKGCONFIG --exists "libbrotlienc >= 1.0.0"; then
         AC_MSG_RESULT(yes)
         ap_brotli_found=yes
-        ap_brotli_cflags=`$PKGCONFIG brotli --cflags`
-        ap_brotli_libs=`$PKGCONFIG brotli --libs`
-        dnl We only support compression, drop -lbrotlidec.
-        APR_REMOVEFROM(ap_brotli_libs, [-lbrotlidec])
+        ap_brotli_cflags=`$PKGCONFIG libbrotlienc --cflags`
+        ap_brotli_libs=`$PKGCONFIG libbrotlienc --libs`
       else
         AC_MSG_RESULT(no)
       fi
