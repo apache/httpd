@@ -155,7 +155,8 @@ APACHE_MODULE(brotli, Brotli compression support, , , most, [
     AC_MSG_CHECKING([for Brotli library >= 1.0.0 via prefix])
     AC_TRY_COMPILE(
       [#include <brotli/encode.h>],[
-const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);],
+const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);
+if (o) return *o;],
       [AC_MSG_RESULT(yes)
        ap_brotli_found=yes
        ap_brotli_cflags="-I${ap_brotli_base}/include"
