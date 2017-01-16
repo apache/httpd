@@ -186,6 +186,7 @@
 <li><a href="mod/mod_authz_owner.html">Apache モジュール mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache モジュール mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache モジュール mod_autoindex</a></li>
+<li><a href="mod/mod_brotli.html">Apache モジュール mod_brotli</a></li>
 <li><a href="mod/mod_buffer.html">Apache モジュール mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache モジュール mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache モジュール mod_cache_disk</a></li>

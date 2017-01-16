@@ -196,6 +196,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_authz_owner.html">Apache Modülü mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache Modülü mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Modülü mod_autoindex</a></li>
+<li><a href="mod/mod_brotli.html">Apache Modülü mod_brotli</a></li>
 <li><a href="mod/mod_buffer.html">Apache Modülü mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Modülü mod_cache</a></li>
 <li><a href="mod/mod_cache_disk.html">Apache Modülü mod_cache_disk</a></li>
