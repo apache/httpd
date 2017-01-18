@@ -28,7 +28,9 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 
 /* Why? So we can easily set/clear HC_USE_THREADS during dev testing */
 #if APR_HAS_THREADS
+#ifndef HC_USE_THREADS
 #define HC_USE_THREADS 1
+#endif
 #else
 #define HC_USE_THREADS 0
 typedef void apr_thread_pool_t;
