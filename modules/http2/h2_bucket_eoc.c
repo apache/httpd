@@ -33,20 +33,6 @@ typedef struct {
     h2_session *session;
 } h2_bucket_eoc;
 
-static apr_status_t bucket_cleanup(void *data)
-{
-    h2_session **psession = data;
-
-    if (*psession) {
-        /*
-         * If bucket_destroy is called after us, this prevents
-         * bucket_destroy from trying to destroy the pool again.
-         */
-        *psession = NULL;
-    }
-    return APR_SUCCESS;
-}
-
 static apr_status_t bucket_read(apr_bucket *b, const char **str,
                                 apr_size_t *len, apr_read_type_e block)
 {
@@ -77,12 +63,7 @@ apr_bucket * h2_bucket_eoc_create(apr_bucket_alloc_t *list, h2_session *session)
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
-    b = h2_bucket_eoc_make(b, session);
-    if (session) {
-        h2_bucket_eoc *h = b->data;
-        apr_pool_pre_cleanup_register(session->pool, &h->session, bucket_cleanup);
-    }
-    return b;
+    return h2_bucket_eoc_make(b, session);
 }
 
 static void bucket_destroy(void *data)
@@ -92,10 +73,7 @@ static void bucket_destroy(void *data)
     if (apr_bucket_shared_destroy(h)) {
         h2_session *session = h->session;
         apr_bucket_free(h);
-        if (session) {
-            h2_session_eoc_callback(session);
-            /* all is gone now */
-        }
+        h2_session_eoc_callback(session);
     }
 }
 

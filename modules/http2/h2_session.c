@@ -730,7 +730,7 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     return APR_SUCCESS;
 }
 
-static void h2_session_destroy(h2_session *session)
+static void h2_session_cleanup(h2_session *session)
 {
     ap_assert(session);    
 
@@ -752,11 +752,15 @@ static void h2_session_destroy(h2_session *session)
 
     if (APLOGctrace1(session->c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "h2_session(%ld): destroy", session->id);
+                      "h2_session(%ld): cleanup", session->id);
     }
-    if (session->pool) {
-        apr_pool_destroy(session->pool);
-    }
+}
+
+static void h2_session_destroy(h2_session *session)
+{
+    apr_pool_t *p = session->pool;
+    session->pool = NULL;
+    apr_pool_destroy(p);
 }
 
 static apr_status_t h2_session_shutdown_notice(h2_session *session)
@@ -857,9 +861,8 @@ static apr_status_t session_pool_cleanup(void *data)
                       "goodbye, clients will be confused, should not happen", 
                       session->id);
     }
-    /* keep us from destroying the pool, since that is already ongoing. */
+    h2_session_cleanup(session);
     session->pool = NULL;
-    h2_session_destroy(session);
     return APR_SUCCESS;
 }
 
@@ -918,7 +921,9 @@ static h2_session *h2_session_create_int(conn_rec *c,
     }
     apr_pool_tag(pool, "h2_session");
 
-    session = apr_pcalloc(pool, sizeof(h2_session));
+    /* get h2_session a lifetime beyond its pool and everything
+     * connected to it. */
+    session = apr_pcalloc(c->pool, sizeof(h2_session));
     if (session) {
         int rv;
         nghttp2_mem *mem;
@@ -1007,7 +1012,7 @@ static h2_session *h2_session_create_int(conn_rec *c,
             h2_session_destroy(session);
             return NULL;
         }
-         
+        
         n = h2_config_geti(session->config, H2_CONF_PUSH_DIARY_SIZE);
         session->push_diary = h2_push_diary_create(session->pool, n);
         
@@ -1039,10 +1044,14 @@ h2_session *h2_session_rcreate(request_rec *r, h2_ctx *ctx, h2_workers *workers)
 
 void h2_session_eoc_callback(h2_session *session)
 {
-    ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                  "session(%ld): cleanup and destroy", session->id);
-    apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
-    h2_session_destroy(session);
+    /* keep us from destroying the pool, if it's already done (cleanup). */
+    if (session->pool) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
+                      "session(%ld): cleanup and destroy", session->id);
+        apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
+        h2_session_cleanup(session);
+        h2_session_destroy(session);
+    }
 }
 
 static apr_status_t h2_session_start(h2_session *session, int *rv)
