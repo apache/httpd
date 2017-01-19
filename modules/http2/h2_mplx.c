@@ -280,7 +280,7 @@ h2_mplx *h2_mplx_create(conn_rec *c, apr_pool_t *parent,
         m->id = c->id;
         APR_RING_ELEM_INIT(m, link);
         m->c = c;
-        apr_pool_create_ex(&m->pool, parent, NULL, allocator);
+        apr_pool_create_ex(&m->pool, NULL, NULL, allocator);
         if (!m->pool) {
             return NULL;
         }
