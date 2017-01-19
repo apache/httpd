@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: change lifetime of h2_session record to address crashes
+     during connection shutdown. [Yann Ylavic, Stefan Eissing]
+     
   *) mod_proxy_fcgi: Return to 2.4.20-and-earlier behavior of leaving 
      a "proxy:fcgi://" prefix in the SCRIPT_FILENAME environment variable by 
      default.  Add ProxyFCGIBackendType to allow the type of backend to be
