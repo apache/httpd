@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
+     in use (ProxyHCTPsize > 0).  PR 60071.  [Yann Ylavic, Jim Jagielski]
+
   *) mod_http2: change lifetime of h2_session record to address crashes
      during connection shutdown. [Yann Ylavic, Stefan Eissing]
      
