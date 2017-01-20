@@ -692,7 +692,7 @@ static int hc_read_body(request_rec *r, apr_bucket_brigade *bb)
                             APR_BLOCK_READ, len);
 
         if (rv != APR_SUCCESS) {
-            if (APR_STATUS_IS_TIMEUP(rv) || APR_STATUS_IS_EOF(rv)) {
+            if (APR_STATUS_IS_EOF(rv)) {
                 rv = APR_SUCCESS;
                 break;
             }

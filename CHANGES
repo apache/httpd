@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_hcheck: Don't validate timed out responses.  [Yann Ylavic]
+
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
      in use (ProxyHCTPsize > 0).  PR 60071.  [Yann Ylavic, Jim Jagielski]
 
