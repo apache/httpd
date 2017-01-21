@@ -62,12 +62,6 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
 apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
 
 /**
- * Append an End-Of-Connection bucket to the output that, once destroyed,
- * will tear down the complete http2 session.
- */
-apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, struct h2_session *session);
-
-/**
  * Pass any buffered data on to the connection output filters.
  * @param io the connection io
  * @param flush if a flush bucket should be appended to any output

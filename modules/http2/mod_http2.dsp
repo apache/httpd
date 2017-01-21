@@ -109,10 +109,6 @@ SOURCE=./h2_bucket_beam.c
 # End Source File
 # Begin Source File
 
-SOURCE=./h2_bucket_eoc.c
-# End Source File
-# Begin Source File
-
 SOURCE=./h2_bucket_eos.c
 # End Source File
 # Begin Source File

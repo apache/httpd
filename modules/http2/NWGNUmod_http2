@@ -186,7 +186,6 @@ TARGET_lib = \
 FILES_nlm_objs = \
 	$(OBJDIR)/h2_alt_svc.o \
 	$(OBJDIR)/h2_bucket_beam.o \
-	$(OBJDIR)/h2_bucket_eoc.o \
 	$(OBJDIR)/h2_bucket_eos.o \
 	$(OBJDIR)/h2_config.o \
 	$(OBJDIR)/h2_conn.o \

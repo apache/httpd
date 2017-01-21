@@ -29,7 +29,6 @@
 
 #include "h2_private.h"
 #include "h2.h"
-#include "h2_bucket_eoc.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_ctx.h"
@@ -756,13 +755,6 @@ static void h2_session_cleanup(h2_session *session)
     }
 }
 
-static void h2_session_destroy(h2_session *session)
-{
-    apr_pool_t *p = session->pool;
-    session->pool = NULL;
-    apr_pool_destroy(p);
-}
-
 static apr_status_t h2_session_shutdown_notice(h2_session *session)
 {
     apr_status_t status;
@@ -969,7 +961,6 @@ static h2_session *h2_session_create_int(conn_rec *c,
         if (status != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, status, c, APLOGNO(02927) 
                           "nghttp2: error in init_callbacks");
-            h2_session_destroy(session);
             return NULL;
         }
         
@@ -978,7 +969,6 @@ static h2_session *h2_session_create_int(conn_rec *c,
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
                           APLOGNO(02928) "nghttp2_option_new: %s", 
                           nghttp2_strerror(rv));
-            h2_session_destroy(session);
             return NULL;
         }
         nghttp2_option_set_peer_max_concurrent_streams(
@@ -1009,7 +999,6 @@ static h2_session *h2_session_create_int(conn_rec *c,
             ap_log_cerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, c,
                           APLOGNO(02929) "nghttp2_session_server_new: %s",
                           nghttp2_strerror(rv));
-            h2_session_destroy(session);
             return NULL;
         }
         
@@ -1040,18 +1029,6 @@ h2_session *h2_session_create(conn_rec *c, h2_ctx *ctx, h2_workers *workers)
 h2_session *h2_session_rcreate(request_rec *r, h2_ctx *ctx, h2_workers *workers)
 {
     return h2_session_create_int(r->connection, r, ctx, workers);
-}
-
-void h2_session_eoc_callback(h2_session *session)
-{
-    /* keep us from destroying the pool, if it's already done (cleanup). */
-    if (session->pool) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "session(%ld): cleanup and destroy", session->id);
-        apr_pool_cleanup_kill(session->pool, session, session_pool_cleanup);
-        h2_session_cleanup(session);
-        h2_session_destroy(session);
-    }
 }
 
 static apr_status_t h2_session_start(h2_session *session, int *rv)
@@ -2351,10 +2328,6 @@ out:
     status = APR_SUCCESS;
     if (session->state == H2_SESSION_ST_DONE) {
         status = APR_EOF;
-        if (!session->eoc_written) {
-            session->eoc_written = 1;
-            h2_conn_io_write_eoc(&session->io, session);
-        }
     }
     
     return status;

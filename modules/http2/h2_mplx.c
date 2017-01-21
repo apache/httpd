@@ -199,9 +199,13 @@ static void check_tx_free(h2_mplx *m)
     }
 }
 
+typedef struct {
+    h2_mplx *m;
+} purge_ctx;
+
 static int purge_stream(void *ctx, void *val) 
 {
-    h2_mplx *m = ctx;
+    purge_ctx *pctx = ctx;
     h2_stream *stream = val;
     int stream_id = stream->id;
     h2_task *task;
@@ -211,20 +215,22 @@ static int purge_stream(void *ctx, void *val)
      * before task destruction, otherwise it will complain. */
     h2_stream_cleanup(stream);
     
-    task = h2_ihash_get(m->tasks, stream_id);    
+    task = h2_ihash_get(pctx->m->tasks, stream_id);    
     if (task) {
-        task_destroy(m, task, 1);
+        task_destroy(pctx->m, task, 1);
     }
     
     h2_stream_destroy(stream);
-    h2_ihash_remove(m->spurge, stream_id);
+    h2_ihash_remove(pctx->m->spurge, stream_id);
     return 0;
 }
 
 static void purge_streams(h2_mplx *m)
 {
     if (!h2_ihash_empty(m->spurge)) {
-        while(!h2_ihash_iter(m->spurge, purge_stream, m)) {
+        purge_ctx ctx;
+        ctx.m = m;
+        while(!h2_ihash_iter(m->spurge, purge_stream, &ctx)) {
             /* repeat until empty */
         }
         h2_ihash_clear(m->spurge);
@@ -233,20 +239,13 @@ static void purge_streams(h2_mplx *m)
 
 static void h2_mplx_destroy(h2_mplx *m)
 {
-    conn_rec **pslave;
     ap_assert(m);
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c,
                   "h2_mplx(%ld): destroy, tasks=%d", 
                   m->id, (int)h2_ihash_count(m->tasks));
     check_tx_free(m);
-    
-    while (m->spare_slaves->nelts > 0) {
-        pslave = (conn_rec **)apr_array_pop(m->spare_slaves);
-        h2_slave_destroy(*pslave);
-    }
-    if (m->pool) {
-        apr_pool_destroy(m->pool);
-    }
+    /* pool will be destroyed as child of h2_session->pool,
+       slave connection pools are children of m->pool */
 }
 
 /**
@@ -442,6 +441,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
      */
     h2_iq_remove(m->q, stream->id);
     h2_ihash_remove(m->streams, stream->id);
+    h2_ihash_remove(m->shold, stream->id);
     
     h2_stream_cleanup(stream);
     m->tx_handles_reserved += h2_beam_get_files_beamed(stream->input);
@@ -467,7 +467,7 @@ static void stream_done(h2_mplx *m, h2_stream *stream, int rst_error)
             task_destroy(m, task, 1);
         }
     }
-    h2_stream_destroy(stream);
+    h2_ihash_add(m->spurge, stream);
 }
 
 static int stream_done_iter(void *ctx, void *val)
@@ -568,7 +568,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         h2_mplx_set_consumed_cb(m, NULL, NULL);
         h2_mplx_abort(m);
         h2_iq_clear(m->q);
-        purge_streams(m);
+        h2_ihash_clear(m->spurge);
 
         /* 3. wakeup all sleeping tasks. Mark all still active streams as 'done'. 
          *    m->streams has to be empty afterwards with streams either in
@@ -581,10 +581,7 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
         }
         ap_assert(h2_ihash_empty(m->streams));
 
-        /* 4. purge all streams we collected by marking them 'done' */
-        purge_streams(m);
-        
-        /* 5. while workers are busy on this connection, meaning they
+        /* 4. while workers are busy on this connection, meaning they
          *    are processing tasks from this connection, wait on them finishing
          *    to wake us and check again. Eventually, this has to succeed. */    
         m->join_wait = wait;
@@ -602,11 +599,10 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
                 h2_ihash_iter(m->shold, report_stream_iter, m);
                 h2_ihash_iter(m->tasks, task_print, m);
             }
-            purge_streams(m);
         }
         m->join_wait = NULL;
         
-        /* 6. All workers for this connection are done, we are in 
+        /* 5. All workers for this connection are done, we are in 
          * single-threaded processing now effectively. */
         leave_mutex(m, acquired);
 
@@ -625,12 +621,10 @@ apr_status_t h2_mplx_release_and_join(h2_mplx *m, apr_thread_cond_t *wait)
             }
         }
 
-        /* 7. With all tasks done, the stream hold should be empty and all
-         *    remaining streams are ready for purging */
+        /* 6. With all tasks done, the stream hold should be empty now. */
         ap_assert(h2_ihash_empty(m->shold));
-        purge_streams(m);
         
-        /* 8. close the h2_req_enginge shed and self destruct */
+        /* 7. close the h2_req_enginge shed and self destruct */
         h2_ngn_shed_destroy(m->ngn_shed);
         m->ngn_shed = NULL;
         h2_mplx_destroy(m);
@@ -913,7 +907,6 @@ static h2_task *next_stream_task(h2_mplx *m)
                 h2_slave_run_pre_connection(slave, ap_get_conn_socket(slave));
             }
             stream->started = 1;
-            stream->can_be_cleaned = 0;
             task->worker_started = 1;
             task->started_at = apr_time_now();
             if (sid > m->max_stream_started) {
@@ -1392,6 +1385,7 @@ apr_status_t h2_mplx_dispatch_master_events(h2_mplx *m,
         apr_atomic_set32(&m->event_pending, 0);
         /* update input windows for streams */
         h2_ihash_iter(m->streams, report_consumption_iter, m);
+        purge_streams(m);
         
         if (!h2_iq_empty(m->readyq)) {
             n = h2_iq_mshift(m->readyq, ids, H2_ALEN(ids));

@@ -24,7 +24,6 @@
 #include <http_request.h>
 
 #include "h2_private.h"
-#include "h2_bucket_eoc.h"
 #include "h2_bucket_eos.h"
 #include "h2_config.h"
 #include "h2_conn_io.h"
@@ -71,9 +70,6 @@ static void h2_conn_io_bb_log(conn_rec *c, int stream_id, int level,
                 }
                 else if (AP_BUCKET_IS_EOR(b)) {
                     off += apr_snprintf(buffer+off, bmax-off, "eor ");
-                }
-                else if (H2_BUCKET_IS_H2EOC(b)) {
-                    off += apr_snprintf(buffer+off, bmax-off, "h2eoc ");
                 }
                 else if (H2_BUCKET_IS_H2EOS(b)) {
                     off += apr_snprintf(buffer+off, bmax-off, "h2eos ");
@@ -269,8 +265,7 @@ static void check_write_size(h2_conn_io *io)
     }
 }
 
-static apr_status_t pass_output(h2_conn_io *io, int flush,
-                                h2_session *session_eoc)
+static apr_status_t pass_output(h2_conn_io *io, int flush)
 {
     conn_rec *c = io->c;
     apr_bucket_brigade *bb = io->output;
@@ -303,20 +298,6 @@ static apr_status_t pass_output(h2_conn_io *io, int flush,
     }
     apr_brigade_cleanup(bb);
 
-    if (session_eoc) {
-        apr_status_t tmp;
-        b = h2_bucket_eoc_create(c->bucket_alloc, session_eoc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        h2_conn_io_bb_log(c, 0, APLOG_TRACE2, "master conn pass", bb);
-        tmp = ap_pass_brigade(c->output_filters, bb);
-        if (status == APR_SUCCESS) {
-            status = tmp;
-        }
-        /* careful with access to io after this, we have flushed an EOC bucket
-         * that de-allocated us all. */
-        apr_brigade_cleanup(bb);
-    }
-    
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, c, APLOGNO(03044)
                       "h2_conn_io(%ld): pass_out brigade %ld bytes",
@@ -343,14 +324,9 @@ int h2_conn_io_needs_flush(h2_conn_io *io)
 apr_status_t h2_conn_io_flush(h2_conn_io *io)
 {
     apr_status_t status;
-    status = pass_output(io, 1, NULL);
+    status = pass_output(io, 1);
     check_write_size(io);
     return status;
-}
-
-apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, h2_session *session)
-{
-    return pass_output(io, 1, session);
 }
 
 apr_status_t h2_conn_io_write(h2_conn_io *io, const char *data, size_t length)
