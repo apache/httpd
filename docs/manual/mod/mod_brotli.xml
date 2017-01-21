@@ -47,8 +47,8 @@ client</description>
 
     <example><title>Compress only a few types</title>
     <highlight language="config">
-      AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript
-      </highlight>
+AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript
+    </highlight>
     </example>
 
 </section>
@@ -144,7 +144,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
     <highlight language="config">
-      Header append Vary User-Agent
+Header append Vary User-Agent
     </highlight>
 
     <p>If your decision about compression depends on other information
@@ -154,8 +154,8 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
 
     <example><title>Example</title>
     <highlight language="config">
-      Header set Vary *
-      </highlight>
+Header set Vary *
+    </highlight>
     </example>
 </section>
 
@@ -218,11 +218,11 @@ content</title>
 
     <example><title>Example</title>
     <highlight language="config">
-      BrotliFilterNote ratio
+BrotliFilterNote ratio
 
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
-      CustomLog "logs/brotli_log" brotli
-      </highlight>
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
+CustomLog "logs/brotli_log" brotli
+    </highlight>
     </example>
 
     <p>If you want to extract more accurate values from your logs, you
@@ -252,7 +252,7 @@ BrotliFilterNote Ratio ratio
 
 LogFormat '"%r" %{outstream}n/%{instream}n (%{ratio}n%%)' brotli
 CustomLog "logs/brotli_log" brotli
-</highlight>
+    </highlight>
     </example>
 </usage>
 <seealso><module>mod_log_config</module></seealso>
