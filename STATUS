@@ -120,6 +120,12 @@ RELEASE SHOWSTOPPERS:
      ASAP to avoid any further hurdles with FCGI implementations while we figure
      this out.
 
+  *) PR 60071: Child httpd processes crash with Segmentation fault
+     trunk patch: http://svn.apache.org/r1779573
+                  http://svn.apache.org/r1779574
+                  http://svn.apache.org/r1779623
+     2.4.x patch: trunk works
+     +1: jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
