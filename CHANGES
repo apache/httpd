@@ -1,12 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) mod_http2: rework of stream resource cleanup to avoid a crash in a close
-     of a lingering connection. Prohibit special file bucket beaming for
-     shared buckets. Files sent in stream output now use the stream pool
-     as read buffer, reducing memory footprint of connections.
-     [Yann Ylavic, Stefan Eissing]
-     
   *) mod_proxy_hcheck: Don't validate timed out responses.  [Yann Ylavic]
 
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
