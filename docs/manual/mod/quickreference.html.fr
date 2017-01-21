@@ -1003,7 +1003,7 @@ différente</td></tr>
 <tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>chemin URL</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Réfléchit un en-tête d'entrée dans les en-têtes de sortie</td></tr>
+<tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
 <tr><td><a href="core.html#registerhttpmethod">RegisterHttpMethod <var>méthode</var> [<var>méthode</var> [...]]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Enregistrement de méthodes HTTP non standards</td></tr>
 <tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>en-tête</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Définit le champ d'en-tête qui contiendra les adresses IP
 du client</td></tr>

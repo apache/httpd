@@ -238,7 +238,7 @@ mandataire.</dd>
 <dt><a href="mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></dt><dd>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Limitation de la bande passante pour les clients</dd>
-<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Réfléchit un corps de requête comme réponse via la pile de
+<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Renvoie un corps de requête comme réponse via la pile de
 filtres en sortie.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
