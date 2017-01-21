@@ -443,9 +443,9 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 apr_size_t len = strlen(etag);
 
                 if (len > 2 && etag[len - 1] == '"') {
-                    etag = apr_pstrndup(r->pool, etag, len - 1);
+                    etag = apr_pstrmemdup(r->pool, etag, len - 1);
                     etag = apr_pstrcat(r->pool, etag, "-br\"", NULL);
-                    apr_table_set(r->headers_out, "ETag", etag);
+                    apr_table_setn(r->headers_out, "ETag", etag);
                 }
             }
         }
