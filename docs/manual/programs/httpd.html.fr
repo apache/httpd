@@ -28,8 +28,6 @@
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
      <p><code>httpd</code> est le programme du serveur HTTP d'Apache. Il
      a été conçu pour fonctionner sous forme de processus démon
@@ -56,7 +54,7 @@ plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.h
      [ -<strong>e</strong> <var>niveau</var> ] [ -<strong>E</strong>
      <var>fichier</var> ]
      [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
-     [ -<strong>R</strong> <var>répertoire</var> ] [ -<strong>h</strong> ]
+     [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
      [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
