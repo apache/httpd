@@ -2,9 +2,11 @@
 
 Changes with Apache 2.4.26
 
-  *) mod_http2: streaming of request output now reacts timely to data
-     from other streams becoming available. Same for new incoming requests.
-     [Stefan Eissing]
+  *) mod_http2: rework of stream resource cleanup to avoid a crash in a close
+     of a lingering connection. Prohibit special file bucket beaming for
+     shared buckets. Files sent in stream output now use the stream pool
+     as read buffer, reducing memory footprint of connections.
+     [Yann Ylavic, Stefan Eissing]
      
   *) mod_proxy_fcgi, mod_fcgid: Fix crashes in ap_fcgi_encoded_env_len() when
      modules add empty environment variables to the request. PR60275.
