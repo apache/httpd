@@ -48,7 +48,7 @@ static h2_config defconf = {
     -1,                     /* min workers */
     -1,                     /* max workers */
     10 * 60,                /* max workers idle secs */
-    64 * 1024,              /* stream max mem size */
+    32 * 1024,              /* stream max mem size */
     NULL,                   /* no alt-svcs */
     -1,                     /* alt-svc max age */
     0,                      /* serialize headers */

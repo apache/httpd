@@ -57,7 +57,6 @@ struct h2_stream {
     struct h2_bucket_beam *input;
     struct h2_bucket_beam *output;
     apr_bucket_brigade *out_buffer;
-    apr_array_header_t *files;  /* apr_file_t* we collected during I/O */
 
     int rst_error;              /* stream error for RST_STREAM */
     unsigned int aborted   : 1; /* was aborted */
@@ -65,7 +64,6 @@ struct h2_stream {
     unsigned int started   : 1; /* stream has started processing */
     unsigned int has_response : 1; /* response headers are known */
     unsigned int push_policy;   /* which push policy to use for this request */
-    unsigned int can_be_cleaned : 1; /* stream pool can be cleaned */
     
     const h2_priority *pref_priority; /* preferred priority for this stream */
     apr_off_t out_data_frames;  /* # of DATA frames sent */

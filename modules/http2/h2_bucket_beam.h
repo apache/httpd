@@ -72,7 +72,7 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  * A h2_bucket_beam solves the task of transferring buckets, esp. their data,
  * across threads with zero buffer copies.
  *
- * When a thread, let's call it the red thread, wants to send buckets to
+ * When a thread, let's call it the sender thread, wants to send buckets to
  * another, the green thread, it creates a h2_bucket_beam and adds buckets
  * via the h2_beam_send(). It gives the beam to the green thread which then
  * can receive buckets into its own brigade via h2_beam_receive().
@@ -92,7 +92,7 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  * 
  * The proper way of shutting down a beam is to first make sure there are no
  * more green buckets out there, then cleanup the beam to purge eventually
- * still existing red buckets and then, possibly, terminate the beam itself
+ * still existing sender buckets and then, possibly, terminate the beam itself
  * (or the pool it was created with).
  *
  * The following restrictions apply to bucket transport:
@@ -105,32 +105,32 @@ apr_size_t h2_util_bl_print(char *buffer, apr_size_t bmax,
  *   - file buckets will transfer the file itself into a new bucket, if allowed
  *   - all other buckets are read on send to make sure data is present
  *
- * This assures that when the red thread sends its red buckets, the data
- * is made accessible while still on the red side. The red bucket then enters
+ * This assures that when the sender thread sends its sender buckets, the data
+ * is made accessible while still on the sender side. The sender bucket then enters
  * the beams hold storage.
- * When the green thread calls receive, red buckets in the hold are wrapped
+ * When the green thread calls receive, sender buckets in the hold are wrapped
  * into special beam buckets. Beam buckets on read present the data directly
- * from the internal red one, but otherwise live on the green side. When a
+ * from the internal sender one, but otherwise live on the green side. When a
  * beam bucket gets destroyed, it notifies its beam that the corresponding
- * red bucket from the hold may be destroyed.
+ * sender bucket from the hold may be destroyed.
  * Since the destruction of green buckets happens in the green thread, any
- * corresponding red bucket can not immediately be destroyed, as that would
+ * corresponding sender bucket can not immediately be destroyed, as that would
  * result in race conditions.
- * Instead, the beam transfers such red buckets from the hold to the purge
- * storage. Next time there is a call from the red side, the buckets in
+ * Instead, the beam transfers such sender buckets from the hold to the purge
+ * storage. Next time there is a call from the sender side, the buckets in
  * purge will be deleted.
  *
- * There are callbacks that can be registered with a beam:
- * - a "consumed" callback that gets called on the red side with the
+ * There are callbacks that can be registesender with a beam:
+ * - a "consumed" callback that gets called on the sender side with the
  *   amount of data that has been received by the green side. The amount
- *   is a delta from the last callback invocation. The red side can trigger
+ *   is a delta from the last callback invocation. The sender side can trigger
  *   these callbacks by calling h2_beam_send() with a NULL brigade.
  * - a "can_beam_file" callback that can prohibit the transfer of file handles
  *   through the beam. This will cause file buckets to be read on send and
  *   its data buffer will then be transports just like a heap bucket would.
  *   When no callback is registered, no restrictions apply and all files are
  *   passed through.
- *   File handles transferred to the green side will stay there until the
+ *   File handles transfersender to the green side will stay there until the
  *   receiving brigade's pool is destroyed/cleared. If the pool lives very
  *   long or if many different files are beamed, the process might run out
  *   of available file handles.
