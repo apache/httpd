@@ -94,7 +94,6 @@ typedef struct h2_session {
     h2_session_props remote;        /* properites of remote session */
     
     unsigned int reprioritize  : 1; /* scheduled streams priority changed */
-    unsigned int eoc_written   : 1; /* h2 eoc bucket written */
     unsigned int flush         : 1; /* flushing output necessary */
     unsigned int have_read     : 1; /* session has read client data */
     unsigned int have_written  : 1; /* session did write data to client */
@@ -164,13 +163,6 @@ apr_status_t h2_session_process(h2_session *session, int async);
  * Last chance to do anything before the connection is closed.
  */
 apr_status_t h2_session_pre_close(h2_session *session, int async);
-
-/**
- * Cleanup the session and all objects it still contains. This will not
- * destroy h2_task instances that have not finished yet. 
- * @param session the session to destroy
- */
-void h2_session_eoc_callback(h2_session *session);
 
 /**
  * Called when a serious error occurred and the session needs to terminate
