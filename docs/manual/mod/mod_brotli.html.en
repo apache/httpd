@@ -302,10 +302,10 @@ content</a></h2>
     the directive. You can use that note for statistical purposes by
     adding the value to your <a href="../logs.html#accesslog">access log</a>.</p>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">      BrotliFilterNote ratio
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">BrotliFilterNote ratio
 
-      LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
-      CustomLog "logs/brotli_log" brotli</pre>
+LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
+CustomLog "logs/brotli_log" brotli</pre>
 </div>
 
     <p>If you want to extract more accurate values from your logs, you
