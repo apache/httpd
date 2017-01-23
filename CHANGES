@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fixes PR60599, sending proper response for conditional requests
+     answered by mod_cache. [Jeff Wheelhouse, Stefan Eissing]
+     
   *) mod_proxy_hcheck: Don't validate timed out responses.  [Yann Ylavic]
 
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
