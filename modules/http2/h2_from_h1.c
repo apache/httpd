@@ -513,7 +513,7 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket *b, *bresp, *body_bucket = NULL, *next;
     ap_bucket_error *eb = NULL;
     h2_headers *response = NULL;
-
+    int headers_passing = 0;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task(%s): output_filter called", task->id);
     
@@ -536,7 +536,10 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
                               "h2_task(%s): eoc bucket passed", task->id);
                 return ap_pass_brigade(f->next, bb);
             }
-            else if (!H2_BUCKET_IS_HEADERS(b) && !APR_BUCKET_IS_FLUSH(b)) { 
+            else if (H2_BUCKET_IS_HEADERS(b)) {
+                headers_passing = 1;
+            }
+            else if (!APR_BUCKET_IS_FLUSH(b)) { 
                 body_bucket = b;
                 break;
             }
@@ -553,8 +556,9 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
             return AP_FILTER_ERROR;
         }
         
-        if (body_bucket) {
-            /* time to insert the response bucket before the body */
+        if (body_bucket || !headers_passing) {
+            /* time to insert the response bucket before the body or if
+             * no h2_headers is passed, e.g. the response is empty */
             response = create_response(task, r);
             if (response == NULL) {
                 ap_log_cerror(APLOG_MARK, APLOG_NOTICE, 0, f->c, APLOGNO(03048)
@@ -563,7 +567,12 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
             }
             
             bresp = h2_bucket_headers_create(f->c->bucket_alloc, response);
-            APR_BUCKET_INSERT_BEFORE(body_bucket, bresp);
+            if (body_bucket) {
+                APR_BUCKET_INSERT_BEFORE(body_bucket, bresp);
+            }
+            else {
+                APR_BRIGADE_INSERT_HEAD(bb, bresp);
+            }
             task->output.sent_response = 1;
             r->sent_bodyct = 1;
         }
