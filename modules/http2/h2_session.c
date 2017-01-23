@@ -95,7 +95,7 @@ typedef struct stream_sel_ctx {
     h2_stream *candidate;
 } stream_sel_ctx;
 
-static int find_cleanup_stream(h2_stream *stream, void *ictx)
+static int find_unprocessed_stream(h2_stream *stream, void *ictx)
 {
     stream_sel_ctx *ctx = ictx;
     if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
@@ -115,20 +115,17 @@ static int find_cleanup_stream(h2_stream *stream, void *ictx)
     return 1;
 }
 
-static void cleanup_streams(h2_session *session)
+static void cleanup_unprocessed_streams(h2_session *session)
 {
     stream_sel_ctx ctx;
     ctx.session = session;
-    ctx.candidate = NULL;
     while (1) {
-        h2_mplx_stream_do(session->mplx, find_cleanup_stream, &ctx);
-        if (ctx.candidate) {
-            h2_session_stream_done(session, ctx.candidate);
-            ctx.candidate = NULL;
-        }
-        else {
+        ctx.candidate = NULL;
+        h2_mplx_stream_do(session->mplx, find_unprocessed_stream, &ctx);
+        if (!ctx.candidate) {
             break;
         }
+        h2_session_stream_done(session, ctx.candidate);
     }
 }
 
@@ -317,9 +314,9 @@ static int on_data_chunk_recv_cb(nghttp2_session *ngh2, uint8_t flags,
     return 0;
 }
 
-static apr_status_t stream_release(h2_session *session, 
-                                   h2_stream *stream,
-                                   uint32_t error_code) 
+static apr_status_t stream_closed(h2_session *session, 
+                                  h2_stream *stream,
+                                  uint32_t error_code) 
 {
     conn_rec *c = session->c;
     apr_bucket *b;
@@ -329,10 +326,9 @@ static apr_status_t stream_release(h2_session *session,
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
                       "h2_stream(%ld-%d): handled, closing", 
                       session->id, (int)stream->id);
-        if (H2_STREAM_CLIENT_INITIATED(stream->id)) {
-            if (stream->id > session->local.completed_max) {
-                session->local.completed_max = stream->id;
-            }
+        if (H2_STREAM_CLIENT_INITIATED(stream->id)
+            && stream->id > session->local.completed_max) {
+            session->local.completed_max = stream->id;
         }
     }
     else {
@@ -342,7 +338,11 @@ static apr_status_t stream_release(h2_session *session,
                       h2_h2_err_description(error_code));
         h2_stream_rst(stream, error_code);
     }
-    
+    /* The stream might have data in the buffers of the main connection.
+     * We can only free the allocated resources once all had been written.
+     * Send a special buckets on the connection that gets destroyed when
+     * all preceding data has been handled. On its destruction, it is safe
+     * to purge all resources of the stream. */
     b = h2_bucket_eos_create(c->bucket_alloc, stream);
     APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
     status = h2_conn_io_pass(&session->io, session->bbtmp);
@@ -359,7 +359,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     (void)ngh2;
     stream = get_stream(session, stream_id);
     if (stream) {
-        stream_release(session, stream, error_code);
+        stream_closed(session, stream, error_code);
     }
     return 0;
 }
@@ -729,32 +729,6 @@ static apr_status_t init_callbacks(conn_rec *c, nghttp2_session_callbacks **pcb)
     return APR_SUCCESS;
 }
 
-static void h2_session_cleanup(h2_session *session)
-{
-    ap_assert(session);    
-
-    if (session->mplx) {
-        h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
-        h2_mplx_release_and_join(session->mplx, session->iowait);
-        session->mplx = NULL;
-    }
-
-    ap_remove_input_filter_byhandle((session->r? session->r->input_filters :
-                                     session->c->input_filters), "H2_IN");
-    if (session->ngh2) {
-        nghttp2_session_del(session->ngh2);
-        session->ngh2 = NULL;
-    }
-    if (session->c) {
-        h2_ctx_clear(session->c);
-    }
-
-    if (APLOGctrace1(session->c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
-                      "h2_session(%ld): cleanup", session->id);
-    }
-}
-
 static apr_status_t h2_session_shutdown_notice(h2_session *session)
 {
     apr_status_t status;
@@ -829,17 +803,11 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
 static apr_status_t session_pool_cleanup(void *data)
 {
     h2_session *session = data;
-    /* On a controlled connection shutdown, this gets never
-     * called as we deregister and destroy our pool manually.
-     * However when we have an async mpm, and handed it our idle
-     * connection, it will just cleanup once the connection is closed
-     * from the other side (and sometimes even from out side) and
-     * here we arrive then.
-     */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c,
                   "session(%ld): pool_cleanup", session->id);
     
-    if (session->state != H2_SESSION_ST_DONE) {
+    if (session->state != H2_SESSION_ST_DONE
+        && session->state != H2_SESSION_ST_INIT) {
         /* Not good. The connection is being torn down and we have
          * not sent a goaway. This is considered a protocol error and
          * the client has to assume that any streams "in flight" may have
@@ -853,8 +821,16 @@ static apr_status_t session_pool_cleanup(void *data)
                       "goodbye, clients will be confused, should not happen", 
                       session->id);
     }
-    h2_session_cleanup(session);
-    session->pool = NULL;
+
+    if (session->mplx) {
+        h2_mplx_set_consumed_cb(session->mplx, NULL, NULL);
+        h2_mplx_release_and_join(session->mplx, session->iowait);
+        session->mplx = NULL;
+    }
+    if (session->ngh2) {
+        nghttp2_session_del(session->ngh2);
+        session->ngh2 = NULL;
+    }
     return APR_SUCCESS;
 }
 
@@ -1774,7 +1750,7 @@ static void h2_session_ev_init(h2_session *session, int arg, const char *msg)
 
 static void h2_session_ev_local_goaway(h2_session *session, int arg, const char *msg)
 {
-    cleanup_streams(session);
+    cleanup_unprocessed_streams(session);
     if (!session->remote.shutdown) {
         update_child_status(session, SERVER_CLOSING, "local goaway");
     }
@@ -1787,7 +1763,7 @@ static void h2_session_ev_remote_goaway(h2_session *session, int arg, const char
         session->remote.error = arg;
         session->remote.accepting = 0;
         session->remote.shutdown = 1;
-        cleanup_streams(session);
+        cleanup_unprocessed_streams(session);
         update_child_status(session, SERVER_CLOSING, "remote goaway");
         transit(session, "remote goaway", H2_SESSION_ST_DONE);
     }

@@ -527,6 +527,10 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
             if (AP_BUCKET_IS_ERROR(b) && !eb) {
                 eb = b->data;
             }
+            else if (APR_BUCKET_IS_EOS(b) || AP_BUCKET_IS_EOR(b)) {
+                body_bucket = b;
+                break;
+            } 
             else if (AP_BUCKET_IS_EOC(b)) {
                 /* If we see an EOC bucket it is a signal that we should get out
                  * of the way doing nothing.
