@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_http2: fixes PR60599, sending proper response for conditional requests
+     answered by mod_cache. [Jeff Wheelhouse, Stefan Eissing]
+     
   *) mod_http2: rework of stream resource cleanup to avoid a crash in a close
      of a lingering connection. Prohibit special file bucket beaming for
      shared buckets. Files sent in stream output now use the stream pool
