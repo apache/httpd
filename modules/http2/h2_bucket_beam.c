@@ -361,7 +361,7 @@ static void h2_beam_emitted(h2_bucket_beam *beam, h2_beam_proxy *proxy)
             if (b != H2_BLIST_SENTINEL(&beam->hold_list)) {
                 /* bucket is in hold as it should be, mark this one
                  * and all before it for purging. We might have placed meta
-                 * buckets without a green proxy into the hold before it 
+                 * buckets without a receiver proxy into the hold before it 
                  * and schedule them for purging now */
                 for (b = H2_BLIST_FIRST(&beam->hold_list); 
                      b != H2_BLIST_SENTINEL(&beam->hold_list);
@@ -455,7 +455,7 @@ static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool)
 static apr_status_t beam_send_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
-    /* sender has gone away, clear up all references to its memory */
+    /* sender is going away, clear up all references to its memory */
     r_purge_sent(beam);
     h2_blist_cleanup(&beam->send_list);
     report_consumption(beam);
@@ -740,7 +740,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
     
 
     /* The fundamental problem is that reading a sender bucket from
-     * a green thread is a total NO GO, because the bucket might use
+     * a receiver thread is a total NO GO, because the bucket might use
      * its pool/bucket_alloc from a foreign thread and that will
      * corrupt. */
     status = APR_ENOTIMPL;
@@ -751,7 +751,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         status = apr_bucket_setaside(b, beam->send_pool);
     }
     else if (APR_BUCKET_IS_HEAP(b)) {
-        /* For heap buckets read from a green thread is fine. The
+        /* For heap buckets read from a receiver thread is fine. The
          * data will be there and live until the bucket itself is
          * destroyed. */
         status = APR_SUCCESS;
@@ -760,7 +760,7 @@ static apr_status_t append_bucket(h2_bucket_beam *beam,
         /* pool buckets are bastards that register at pool cleanup
          * to morph themselves into heap buckets. That may happen anytime,
          * even after the bucket data pointer has been read. So at
-         * any time inside the green thread, the pool bucket memory
+         * any time inside the receiver thread, the pool bucket memory
          * may disappear. yikes. */
         status = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (status == APR_SUCCESS) {
@@ -879,13 +879,13 @@ apr_status_t h2_beam_receive(h2_bucket_beam *beam,
                              apr_off_t readbytes)
 {
     h2_beam_lock bl;
-    apr_bucket *bsender, *bgreen, *ng;
+    apr_bucket *bsender, *brecv, *ng;
     int transferred = 0;
     apr_status_t status = APR_SUCCESS;
     apr_off_t remain = readbytes;
     int transferred_buckets = 0;
     
-    /* Called from the green thread to take buckets from the beam */
+    /* Called from the receiver thread to take buckets from the beam */
     if (enter_yellow(beam, &bl) == APR_SUCCESS) {
 transfer:
         if (beam->aborted) {
@@ -896,26 +896,26 @@ transfer:
             goto leave;
         }
 
-        /* transfer enough buckets from our green brigade, if we have one */
+        /* transfer enough buckets from our receiver brigade, if we have one */
         beam_set_recv_pool(beam, bb->p);
         while (beam->recv_buffer
                && !APR_BRIGADE_EMPTY(beam->recv_buffer)
                && (readbytes <= 0 || remain >= 0)) {
-            bgreen = APR_BRIGADE_FIRST(beam->recv_buffer);
-            if (readbytes > 0 && bgreen->length > 0 && remain <= 0) {
+            brecv = APR_BRIGADE_FIRST(beam->recv_buffer);
+            if (readbytes > 0 && brecv->length > 0 && remain <= 0) {
                 break;
             }            
-            APR_BUCKET_REMOVE(bgreen);
-            APR_BRIGADE_INSERT_TAIL(bb, bgreen);
-            remain -= bgreen->length;
+            APR_BUCKET_REMOVE(brecv);
+            APR_BRIGADE_INSERT_TAIL(bb, brecv);
+            remain -= brecv->length;
             ++transferred;
         }
 
         /* transfer from our sender brigade, transforming sender buckets to
-         * green ones until we have enough */
+         * receiver ones until we have enough */
         while (!H2_BLIST_EMPTY(&beam->send_list) && (readbytes <= 0 || remain >= 0)) {
             bsender = H2_BLIST_FIRST(&beam->send_list);
-            bgreen = NULL;
+            brecv = NULL;
             
             if (readbytes > 0 && bsender->length > 0 && remain <= 0) {
                 break;
@@ -923,15 +923,15 @@ transfer:
                         
             if (APR_BUCKET_IS_METADATA(bsender)) {
                 if (APR_BUCKET_IS_EOS(bsender)) {
-                    bgreen = apr_bucket_eos_create(bb->bucket_alloc);
+                    brecv = apr_bucket_eos_create(bb->bucket_alloc);
                     beam->close_sent = 1;
                 }
                 else if (APR_BUCKET_IS_FLUSH(bsender)) {
-                    bgreen = apr_bucket_flush_create(bb->bucket_alloc);
+                    brecv = apr_bucket_flush_create(bb->bucket_alloc);
                 }
                 else if (AP_BUCKET_IS_ERROR(bsender)) {
                     ap_bucket_error *eb = (ap_bucket_error *)bsender;
-                    bgreen = ap_bucket_error_create(eb->status, eb->data,
+                    brecv = ap_bucket_error_create(eb->status, eb->data,
                                                     bb->p, bb->bucket_alloc);
                 }
             }
@@ -966,33 +966,33 @@ transfer:
                 continue;
             }
             else {
-                /* create a "green" standin bucket. we took care about the
+                /* create a "receiver" standin bucket. we took care about the
                  * underlying sender bucket and its data when we placed it into
                  * the sender brigade.
                  * the beam bucket will notify us on destruction that bsender is
                  * no longer needed. */
-                bgreen = h2_beam_bucket_create(beam, bsender, bb->bucket_alloc,
+                brecv = h2_beam_bucket_create(beam, bsender, bb->bucket_alloc,
                                                beam->buckets_sent++);
             }
             
             /* Place the sender bucket into our hold, to be destroyed when no
-             * green bucket references it any more. */
+             * receiver bucket references it any more. */
             APR_BUCKET_REMOVE(bsender);
             H2_BLIST_INSERT_TAIL(&beam->hold_list, bsender);
             beam->received_bytes += bsender->length;
             ++transferred_buckets;
             
-            if (bgreen) {
-                APR_BRIGADE_INSERT_TAIL(bb, bgreen);
-                remain -= bgreen->length;
+            if (brecv) {
+                APR_BRIGADE_INSERT_TAIL(bb, brecv);
+                remain -= brecv->length;
                 ++transferred;
             }
             else {
-                bgreen = h2_beam_bucket(beam, bb, bsender);
-                while (bgreen && bgreen != APR_BRIGADE_SENTINEL(bb)) {
+                brecv = h2_beam_bucket(beam, bb, bsender);
+                while (brecv && brecv != APR_BRIGADE_SENTINEL(bb)) {
                     ++transferred;
-                    remain -= bgreen->length;
-                    bgreen = APR_BUCKET_NEXT(bgreen);
+                    remain -= brecv->length;
+                    brecv = APR_BUCKET_NEXT(brecv);
                 }
             }
         }
@@ -1000,14 +1000,14 @@ transfer:
         if (readbytes > 0 && remain < 0) {
             /* too much, put some back */
             remain = readbytes;
-            for (bgreen = APR_BRIGADE_FIRST(bb);
-                 bgreen != APR_BRIGADE_SENTINEL(bb);
-                 bgreen = APR_BUCKET_NEXT(bgreen)) {
-                 remain -= bgreen->length;
+            for (brecv = APR_BRIGADE_FIRST(bb);
+                 brecv != APR_BRIGADE_SENTINEL(bb);
+                 brecv = APR_BUCKET_NEXT(brecv)) {
+                 remain -= brecv->length;
                  if (remain < 0) {
-                     apr_bucket_split(bgreen, bgreen->length+remain);
+                     apr_bucket_split(brecv, brecv->length+remain);
                      beam->recv_buffer = apr_brigade_split_ex(bb, 
-                                                        APR_BUCKET_NEXT(bgreen), 
+                                                        APR_BUCKET_NEXT(brecv), 
                                                         beam->recv_buffer);
                      break;
                  }
