@@ -149,7 +149,7 @@ static void usage(const char *argv0, const char *reason)
 #if APR_FILES_AS_SOCKETS
             "  -c       Create log even if it is empty.\n"
 #endif
-            "  -n num   Rotate file by adding suffixes '.0', '.1', ..., '.(num-1)'.\n"
+            "  -n num   Rotate file by adding suffixes '.1', '.2', ..., '.num'.\n"
             "\n"
             "The program for '-p' is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
             "where <curfile> is the filename of the newly opened logfile, and\n"
