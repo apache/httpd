@@ -35,19 +35,27 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_http2.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides the features used for
-    proxying HTTP/2 requests. <code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code>
-    supports HTTP/2 only. It does <em>not</em>
-    provide any downgrades to HTTP/1.1.</p>
+    <p><code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code>
+    supports HTTP/2 only, it does <em>not</em>
+    provide any downgrades to HTTP/1.1. This means that the backend
+    needs to support HTTP/2 because HTTP/1.1 will not be used instead.</p>
 
-    <p>Thus, in order to get the ability of handling HTTP/2 proxy requests,
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, so in order to get the ability of
+    handling HTTP/2 proxy requests,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code>
-    have to be present in the server.</p>
+    need to be both loaded by the server.</p>
 
-    <p><code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code> works with incoming requests
-    over HTTP/1.1 and HTTP/2 requests. If <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>
-    handles the frontend connection, requests against the same HTTP/2
-    backend are sent over a single connection, whenever possible.</p>
+    <p><code class="module"><a href="../mod/mod_proxy_http2.html">mod_proxy_http2</a></code> works with incoming fronted requests
+    using HTTP/1.1 or HTTP/2. In both cases, requests proxied
+    to the same backend are sent over a single TCP connection
+    whenever possible (namely when the connection can be re-used).</p>
+
+    <p>Caveat: there will be no attemp to consolidate multiple HTTP/1.1 
+    frontend requests (configured to be proxied to the same backend)
+    into HTTP/2 streams belonging to the same HTTP/2 request.
+    Each HTTP/1.1 frontend request will be proxied to the backend using
+    a separate HTTP/2 request (trying to re-use the same TCP connection
+    if possible).</p>
 
     <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>
     to provide the core http/2 engine.</p>
