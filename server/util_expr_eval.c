@@ -1525,7 +1525,10 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
             return result;
         }
     case 23:
-        return r->uri;
+        {
+            const char *uri = apr_table_get(r->subprocess_env, "DOCUMENT_URI");
+            return uri ? uri : r->uri;
+        }
     case 24:
         {
             apr_time_exp_t tm;
