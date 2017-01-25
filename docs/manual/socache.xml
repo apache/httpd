@@ -67,7 +67,7 @@
       <dt>const char *create(ap_socache_instance_t **instance, const char *arg,
                           apr_pool_t *tmp, apr_pool_t *p);</dt>
       <dd>Create a session cache based on the given configuration string.
-      The instance pointer returned in the instance paramater will be
+      The instance pointer returned in the instance parameter will be
       passed as the first argument to subsequent invocations.</dd>
 
       <dt>apr_status_t init(ap_socache_instance_t *instance, const char *cname,

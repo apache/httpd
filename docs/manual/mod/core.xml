@@ -961,7 +961,7 @@ the contents of file-system directories matching a regular expression.</descript
     <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
     that consist of three numbers.</p>
 
-   <note><title>Compatability</title>
+   <note><title>Compatibility</title>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
       (like <directive module="core" type="section">Directory</directive>) and
       could not match the end of line symbol ($).  In 2.3.9 and later,
