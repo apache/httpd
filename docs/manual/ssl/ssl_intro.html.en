@@ -520,7 +520,7 @@ the Internet Engineering Task Force (IETF).</p>
     and "RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfuntion" id="digestfuntion">Digest Function</a></h3>
+<h3><a name="digestfunction" id="digestfunction">Digest Function</a></h3>
 
     <p>The choice of digest function determines how a digest is created
     from a record unit. SSL supports the following:</p>
