@@ -169,6 +169,7 @@ apr_status_t ap_cleanup_scoreboard(void *d);
  */
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
+AP_DECLARE(void) ap_set_conn_count(ap_sb_handle_t *sb, request_rec *r, unsigned short conn_count);
 
 AP_DECLARE(apr_status_t) ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached);
 AP_DECLARE(void) ap_init_scoreboard(void *shared_score);

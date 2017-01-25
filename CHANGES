@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) When using mod_status with the Event MPM, report the number of requests
+     associated with an active connection in the "ACC" field. Previously
+     zero was always reported with this MPM.  PR60647. [Eric Covener]
+
   *) core: %{DOCUMENT_URI} used in nested SSI expressions should point to the
      URI originally requsted by the user, not the nested documents URI. This
      restores the behavior of this variable to match the "legacy" SSI parser.
