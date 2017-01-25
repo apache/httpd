@@ -936,11 +936,11 @@ r:htpassword(string [,algorithm [,cost]]) -- Creates a password hash from a stri
 </highlight>
 
 <highlight language="lua">
-r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.
+r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
-r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.
+r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode parameter.
 </highlight>
 
 <highlight language="lua">
