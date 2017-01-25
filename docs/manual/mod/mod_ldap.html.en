@@ -370,7 +370,7 @@ LDAPTrustedGlobalCert KEY_BASE64 "/certs/key1.pem" [password]
         <p>Both CA and client certificates may be specified globally
         (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).
         When any settings are specified per-connection, the global
-        settings are superceded.</p>
+        settings are superseded.</p>
 
         <p>The documentation for the SDK claims to support both SSL and
         STARTTLS, however STARTTLS does not seem to work on all versions
