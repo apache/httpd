@@ -429,6 +429,25 @@ static apr_status_t beam_close(h2_bucket_beam *beam)
 static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool);
 static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool);
 
+static int pool_register(h2_bucket_beam *beam, apr_pool_t *pool, 
+                         apr_status_t (*cleanup)(void *))
+{
+    if (pool && pool != beam->pool) {
+        apr_pool_pre_cleanup_register(pool, beam, cleanup);
+        return 1;
+    }
+    return 0;
+}
+
+static int pool_kill(h2_bucket_beam *beam, apr_pool_t *pool,
+                     apr_status_t (*cleanup)(void *)) {
+    if (pool && pool != beam->pool) {
+        apr_pool_cleanup_kill(pool, beam, cleanup);
+        return 1;
+    }
+    return 0;
+}
+
 static apr_status_t beam_recv_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
@@ -440,16 +459,16 @@ static apr_status_t beam_recv_cleanup(void *data)
 
 static void beam_set_recv_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
 {
-    /* if the beam owner is the sender, monitor receiver pool lifetime */ 
-    if (beam->owner == H2_BEAM_OWNER_SEND && beam->recv_pool != pool) {
-        if (beam->recv_pool) {
-            apr_pool_cleanup_kill(beam->recv_pool, beam, beam_recv_cleanup);
-        }
-        beam->recv_pool = pool;
-        if (beam->recv_pool) {
-            apr_pool_pre_cleanup_register(beam->recv_pool, beam, beam_recv_cleanup);
-        }
+    if (beam->recv_pool == pool || 
+        (beam->recv_pool && pool 
+         && apr_pool_is_ancestor(beam->recv_pool, pool))) {
+        /* when receiver same or sub-pool of existing, stick
+         * to the the pool we already have. */
+        return;
     }
+    pool_kill(beam, beam->recv_pool, beam_recv_cleanup);
+    beam->recv_pool = pool;
+    pool_register(beam, beam->recv_pool, beam_recv_cleanup);
 }
 
 static apr_status_t beam_send_cleanup(void *data)
@@ -473,65 +492,68 @@ static apr_status_t beam_send_cleanup(void *data)
 
 static void beam_set_send_pool(h2_bucket_beam *beam, apr_pool_t *pool) 
 {
-    /* if the beam owner is the receiver, monitor sender pool lifetime */
-    if (beam->owner == H2_BEAM_OWNER_RECV && beam->send_pool != pool) {
-        if (beam->send_pool && pool 
-            && apr_pool_is_ancestor(beam->send_pool, pool)) {
-            /* when sender uses sub-pools to transmit data, stick
-             * to the lifetime of the pool we already have. */
-             return;
-        }
-        if (beam->send_pool) {
-            apr_pool_cleanup_kill(beam->send_pool, beam, beam_send_cleanup);
-        }
-        beam->send_pool = pool;
-        if (beam->send_pool) {
-            apr_pool_pre_cleanup_register(beam->send_pool, beam, beam_send_cleanup);
-        }
+    if (beam->send_pool == pool || 
+        (beam->send_pool && pool 
+         && apr_pool_is_ancestor(beam->send_pool, pool))) {
+        /* when sender is same or sub-pool of existing, stick
+         * to the the pool we already have. */
+        return;
     }
+    pool_kill(beam, beam->send_pool, beam_send_cleanup);
+    beam->send_pool = pool;
+    pool_register(beam, beam->send_pool, beam_send_cleanup);
 }
 
 static apr_status_t beam_cleanup(void *data)
 {
     h2_bucket_beam *beam = data;
     apr_status_t status = APR_SUCCESS;
-    /* owner of the beam is going away, depending on its role, cleanup
-     * strategies differ. */
-    beam_close(beam);
-    switch (beam->owner) {
-        case H2_BEAM_OWNER_SEND:
-            status = beam_send_cleanup(beam);
-            beam->recv_buffer = NULL;
+    int safe_send = !beam->m_enter || (beam->owner == H2_BEAM_OWNER_SEND);
+    int safe_recv = !beam->m_enter || (beam->owner == H2_BEAM_OWNER_RECV);
+    
+    /* 
+     * Owner of the beam is going away, depending on which side it owns,
+     * cleanup strategies will differ with multi-thread protection
+     * still in place (beam->m_enter).
+     *
+     * In general, receiver holds references to memory from sender. 
+     * Clean up receiver first, if safe, then cleanup sender, if safe.
+     */
+     
+    /* When modify send is not safe, this means we still have multi-thread
+     * protection and the owner is receiving the buckets. If the sending
+     * side has not gone away, this means we could have dangling buckets
+     * in our lists that never get destroyed. This should not happen. */
+    ap_assert(safe_send || !beam->send_pool);
+    if (!H2_BLIST_EMPTY(&beam->send_list)) {
+        ap_assert(beam->send_pool);
+    }
+    
+    if (safe_recv) {
+        if (beam->recv_pool) {
+            pool_kill(beam, beam->recv_pool, beam_recv_cleanup);
             beam->recv_pool = NULL;
-            break;
-        case H2_BEAM_OWNER_RECV:
-            if (beam->recv_buffer) {
-                apr_brigade_destroy(beam->recv_buffer);
-            }
+        }
+        if (beam->recv_buffer) {
+            apr_brigade_destroy(beam->recv_buffer);
             beam->recv_buffer = NULL;
-            beam->recv_pool = NULL;
-            if (!H2_BLIST_EMPTY(&beam->send_list)) {
-                ap_assert(beam->send_pool);
-            }
-            if (beam->send_pool) {
-                /* sender has not cleaned up, its pool still lives.
-                 * this is normal if the sender uses cleanup via a bucket
-                 * such as the BUCKET_EOR for requests. In that case, the
-                 * beam should have lost its mutex protection, meaning
-                 * it is no longer used multi-threaded and we can safely
-                 * purge all remaining sender buckets. */
-                apr_pool_cleanup_kill(beam->send_pool, beam, beam_send_cleanup);
-                ap_assert(!beam->m_enter);
-                beam_send_cleanup(beam);
-            }
-            ap_assert(H2_BPROXY_LIST_EMPTY(&beam->proxies));
-            ap_assert(H2_BLIST_EMPTY(&beam->send_list));
-            ap_assert(H2_BLIST_EMPTY(&beam->hold_list));
-            ap_assert(H2_BLIST_EMPTY(&beam->purge_list));
-            break;
-        default:
-            ap_assert(NULL);
-            break;
+        }
+    }
+    else {
+        beam->recv_buffer = NULL;
+        beam->recv_pool = NULL;
+    }
+    
+    if (safe_send && beam->send_pool) {
+        pool_kill(beam, beam->send_pool, beam_send_cleanup);
+        status = beam_send_cleanup(beam);
+    }
+    
+    if (safe_recv) {
+        ap_assert(H2_BPROXY_LIST_EMPTY(&beam->proxies));
+        ap_assert(H2_BLIST_EMPTY(&beam->send_list));
+        ap_assert(H2_BLIST_EMPTY(&beam->hold_list));
+        ap_assert(H2_BLIST_EMPTY(&beam->purge_list));
     }
     return status;
 }
