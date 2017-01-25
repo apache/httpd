@@ -975,7 +975,7 @@ AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com
 
 <directivesynopsis>
 <name>AuthLDAPBindPassword</name>
-<description>Password used in conjuction with the bind DN</description>
+<description>Password used in conjunction with the bind DN</description>
 <syntax>AuthLDAPBindPassword <em>password</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>

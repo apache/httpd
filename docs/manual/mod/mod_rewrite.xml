@@ -1396,7 +1396,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>qslast|QSL</td>
         <td>Interpret the last (right-most) question mark as the query string
-            delimeter, instead of the first (left-most) as normally used.  
+            delimiter, instead of the first (left-most) as normally used.  
             Available in 2.4.19 and later.
         <em><a href="../rewrite/flags.html#flag_qsl">details
         ...</a></em></td>

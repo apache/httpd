@@ -483,7 +483,7 @@ LuaAuthzProvider rights /path/to/lua/script.lua rights_handler
 <highlight language="lua">
 --[[
      This script has two user groups; members and admins, and whichever
-     is refered to by the "Require rights" directive is checked to see
+     is referred to by the "Require rights" directive is checked to see
      if the authenticated user belongs to this group.
 ]]--
 
