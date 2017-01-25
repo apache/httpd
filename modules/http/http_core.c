@@ -142,7 +142,7 @@ static int ap_process_http_async_connection(conn_rec *c)
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
-
+        if (ap_extended_status) ap_set_conn_count(c->sbh, r, c->keepalives);
         if ((r = ap_read_request(c))) {
 
             c->keepalive = AP_CONN_UNKNOWN;
@@ -150,6 +150,7 @@ static int ap_process_http_async_connection(conn_rec *c)
 
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
+                if (ap_extended_status) ap_set_conn_count(c->sbh, r, c->keepalives+1);
                 ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
                 ap_process_async_request(r);
                 /* After the call to ap_process_request, the

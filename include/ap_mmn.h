@@ -549,6 +549,7 @@
  * 20161018.1 (2.5.0-dev)  Dropped ap_has_cntrls(), ap_scan_http_uri_safe(),
  *                         ap_get_http_token() and http_stricturi conf member.
  *                         Added ap_scan_vchar_obstext()
+ * 20161018.2 (2.5.0-dev)  add ap_set_conn_count()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -556,7 +557,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20161018
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
