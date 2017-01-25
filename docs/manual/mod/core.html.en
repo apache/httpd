@@ -1046,7 +1046,7 @@ the contents of file-system directories matching a regular expression.</td></tr>
     <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
     that consist of three numbers.</p>
 
-   <div class="note"><h3>Compatability</h3>
+   <div class="note"><h3>Compatibility</h3>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
       (like <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>) and
       could not match the end of line symbol ($).  In 2.3.9 and later,
