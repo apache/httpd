@@ -1625,7 +1625,7 @@ As of release 2.4.21, all configurations which enable either one of the
 will use the new <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>
 behavior, and all configurations which disable either one of the 
 <code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
-will supress all remote server certificate name validation. Only the following
+will suppress all remote server certificate name validation. Only the following
 configuration will trigger the legacy certificate CN comparison in 2.4.21 and
 later releases;
 </p>

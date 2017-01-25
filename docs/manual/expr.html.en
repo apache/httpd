@@ -494,7 +494,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"</pr
         <td>Escape characters as required by LDAP distinguished name escaping
             (RFC4514) and LDAP filter escaping (RFC4515).</td><td /></tr>
 <tr class="odd"><td><code>replace</code></td>
-        <td>replace(string, "from", "to") replaces all occurences of "from"
+        <td>replace(string, "from", "to") replaces all occurrences of "from"
             in the string with "to".</td><td /></tr>
 </table>
 

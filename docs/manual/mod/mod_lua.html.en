@@ -923,10 +923,10 @@ end</pre>
                                           -- cost: only valid with BCRYPT algorithm (default = 5).</pre>
 
 
-<pre class="prettyprint lang-lua">r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode paramter.</pre>
+<pre class="prettyprint lang-lua">r:mkdir(dir [,mode]) -- Creates a directory and sets mode to optional mode parameter.</pre>
 
 
-<pre class="prettyprint lang-lua">r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode paramter.</pre>
+<pre class="prettyprint lang-lua">r:mkrdir(dir [,mode]) -- Creates directories recursive and sets mode to optional mode parameter.</pre>
 
 
 <pre class="prettyprint lang-lua">r:rmdir(dir) -- Removes a directory.</pre>

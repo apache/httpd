@@ -359,7 +359,7 @@
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
-    <dt><a name="regularexpresion" id="regularexpresion">Regular Expression</a>
+    <dt><a name="regularexpression" id="regularexpression">Regular Expression</a>
       <a name="regex" id="regex">(Regex)</a></dt>
     <dd>A way of describing a pattern in text - for example, "all the words that
       begin with the letter A" or "every 10-digit phone number" or even "Every
