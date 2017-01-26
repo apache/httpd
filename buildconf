@@ -39,25 +39,71 @@ apu_src_dir=""
 
 while test $# -gt 0 
 do
-  # Normalize
-  case "$1" in
-  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
-  *) optarg= ;;
-  esac
+    # Normalize
+    case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+    esac
 
-  case "$1" in
-  --with-apr=*)
-  apr_src_dir=$optarg
-  ;;
-  esac
+    case "$1" in
+    --with-apr=*)
+        apr_src_dir=$optarg
+        ;;
 
-  case "$1" in
-  --with-apr-util=*)
-  apu_src_dir=$optarg
-  ;;
-  esac
+    --with-apr-util=*)
+        apu_src_dir=$optarg
+        ;;
 
-  shift
+    -h|--help)
+        cat <<EOF
+buildconf: generates the files needed to configure httpd.
+
+Usage: $0 [OPTION]...
+
+Configuration:
+  -h, --help               display this help and exit
+
+  --with-apr=SRCDIR        define a space-separated list of directories to
+                           search for the APR source code. If, instead of a
+                           directory, an apr-config executable name is passed,
+                           APR-Config Mode is enabled (see below). Defaults to
+                           "srclib/apr ../apr"
+  --with-apr-util=SRCDIR   define a space-separated list of directories to
+                           search for the APR-util source code. Defaults to the
+                           same location as the --with-apr SRCDIR, but with
+                           "apr" replaced with "apr-util" or "aprutil". Ignored
+                           in APR-Config Mode.
+
+APR-Config Mode:
+
+  When passing an apr-config executable to --with-apr, buildconf will attempt to
+  copy build scripts from various installed locations on your system instead of
+  an APR source tree. This allows you to configure httpd from source without
+  also requiring you to download the APR and/or APR-util sources.
+
+  For example:
+
+      ./buildconf --with-apr=apr-1-config
+
+  For this functionality to work reliably, you must have automake >= 1.12 and be
+  using a distribution that includes both find_apr.m4 and find_apu.m4 in the
+  --installbuilddir pointed to by apr-config.
+
+Environment variables used by buildconf:
+  AUTOCONF           autoconf executable name [autoconf]
+  AUTOMAKE           automake executable name [automake]
+  AUTOHEADER         autoheader executable name [autoheader]
+EOF
+        exit
+        ;;
+
+    *)
+        echo "unknown option $1 (try --help for usage)"
+        exit 1
+        ;;
+    esac
+
+    shift
 done
 
 #
