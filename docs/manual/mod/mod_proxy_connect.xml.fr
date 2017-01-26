@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1648846:1780210 (outdated) -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015010301 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_connect.xml.meta">
+
+<name>mod_proxy_connect</name>
+<description>Extension de <module>mod_proxy</module> pour le traitement
+des requêtes <code>CONNECT</code></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_connect.c</sourcefile>
+<identifier>proxy_connect_module</identifier>
+
+<summary>
+    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
+    <module>mod_proxy</module>. Il fournit le support de la méthode HTTP
+    <code>CONNECT</code>. Cette méthode est principalement utilisée pour
+    le franchissement des serveurs mandataires par les requêtes SSL à l'aide
+    d'un tunnel.</p>
+
+    <p>Ainsi, pour pouvoir traiter les requêtes <code>CONNECT</code>,
+    <module>mod_proxy</module> et <module>mod_proxy_connect</module>
+    doivent être chargés dans le serveur.</p>
+
+    <p>CONNECT est aussi utilisée lorsque le serveur doit envoyer une
+    requête HTTPS via un mandataire. Dans ce cas, le serveur se comporte
+    comme un client CONNECT. Cette fonctionnalité étant fournie par le
+    module <module>mod_proxy</module>, le module
+    <module>mod_proxy_connect</module> n'est dans ce cas pas nécessaire.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalité de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">sécurisé votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre réseau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+
+<section id="notes"><title>Informations sur les requ&ecirc;tes</title>
+    <p><module>mod_proxy_connect</module> enregistre les informations
+    suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
+    dans les directives <directive
+    module="mod_log_config">LogFormat</directive> ou <directive
+    module="core">ErrorLogFormat</directive> :
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>Le port local utilis&eacute; pour la connexion vers le serveur
+	d'arri&egrave;re-plan.</dd>
+    </dl>
+
+    <p>Les requêtes avec méthode CONNECT sont traitées dans les sections
+    <directive module="mod_proxy">Proxy</directive> au même titre que
+    toute autre requête HTTP qui passe par cette même section. Il est
+    possible de filtrer explicitement les connexions SSL à travers un
+    mandataire en spécifiant les nom d'hôte et port cible comme suit :
+   </p>
+
+   <highlight language="config">
+&lt;Proxy www.example.com:443&gt;
+  Require ip 192.168.0.0/16
+&lt;/Proxy&gt;
+   </highlight>
+</section>
+
+<directivesynopsis>
+<name>AllowCONNECT</name>
+<description>Ports autorisés à se <code>CONNECT</code>er à travers le
+mandataire</description>
+<syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</syntax>
+<default>AllowCONNECT 443 563</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Déplacé depuis <module>mod_proxy</module> à partir
+d'Apache 2.3.5. Tranches de ports disponibles depuis Apache 2.3.7.</compatibility>
+
+<usage>
+    <p>La directive <directive>AllowCONNECT</directive> permet de
+    spécifier une liste de numéros ou de tranches de ports auxquels la
+    méthode de mandataire <code>CONNECT</code> pourra se connecter. Les
+    navigateurs d'aujourd'hui utilisent cette méthode dans le cas où une
+    connexion <code>https</code> est requise et où le tunneling
+    mandataire sur HTTP est en service.</p>
+
+    <p>Par défaut, seuls les ports par défauts https (<code>443</code>)
+    et snews (<code>563</code>) sont pris en compte. Vous pouvez
+    utiliser la directive <directive>AllowCONNECT</directive> pour
+    outrepasser ces valeurs par défaut et n'autoriser les connexions que
+    vers les ports spécifiés.</p>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>

@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1584572 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2014040501 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_unixd.xml.meta">
+
+<name>mod_unixd</name>
+<description>Sécurité de base (nécessaire) pour les plates-formes de la
+famille Unix.</description>
+<status>Base</status>
+<sourcefile>mod_unixd.c</sourcefile>
+<identifier>unixd_module</identifier>
+
+<seealso><a href="../suexec.html">Support de suEXEC</a></seealso>
+
+<directivesynopsis>
+<name>Group</name>
+<description>Groupe sous lequel le serveur va traiter les
+requêtes</description>
+<syntax>Group <var>groupe unix</var></syntax>
+<default>Group #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>Group</directive> permet de définir le
+    groupe sous lequel le serveur va traiter les requêtes. Pour pouvoir
+    utiliser cette directive, le serveur doit avoir été démarré par
+    <code>root</code>. Si vous démarrez le serveur en tant
+    qu'utilisateur non root, celui-ci ne pourra pas adopter le groupe
+    spécifié comme groupe d'exécution, et continuera à s'exécuter sous
+    le groupe de l'utilisateur qui l'aura lancé. <var>groupe unix</var>
+    peut se présenter sous la forme :</p>
+
+    <dl>
+      <dt>d'un nom de groupe</dt>
+      <dd>Référence le groupe spécifié par son nom.</dd>
+
+      <dt>du caractère <code>#</code> suivi d'un numéro de groupe.</dt>
+      <dd>Référence le groupe spécifié par son numéro.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      Group www-group
+      </highlight>
+    </example>
+
+    <p>Il est conseillé de créer un groupe dédié à l'exécution du
+    serveur. Certains administrateurs utilisent l'utilisateur
+    <code>nobody</code>, mais ce n'est pas toujours souhaitable ou même
+    possible.</p>
+
+    <note type="warning"><title>Sécurité</title>
+      <p>Ne définissez pas la directive <directive>Group</directive> (ou
+      <directive module="mod_unixd">User</directive>) à
+      <code>root</code> à moins de savoir exactement ce que vous faites
+      ainsi que les dangers encourus.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostGroup</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>User</name>
+<description>L'utilisateur sous lequel le serveur va traiter les
+requêtes</description>
+<syntax>User <var>utilisateur unix</var></syntax>
+<default>User #-1</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>User</directive> permet de définir
+    l'utilisateur sous lequel le serveur va traiter les requêtes. Pour
+    pouvoir utiliser cette directive, le serveur doit avoir été démarré
+    par <code>root</code>. Si vous démarrez le serveur en tant
+    qu'utilisateur non root, celui-ci ne pourra pas adopter
+    l'utilisateur avec privilèges restreints comme utilisateur
+    d'exécution, et continuera à s'exécuter sous
+    l'utilisateur qui l'aura lancé. Si vous démarrez le serveur en tant
+    que <code>root</code>, il est normal que le processus parent
+    continue à s'exécuter sous root. <var>utilisateur unix</var> peut se
+    présenter sous la forme :</p>
+
+    <dl>
+      <dt>d'un nom d'utilisateur</dt>
+      <dd>Référence l'utilisateur spécifié par son nom.</dd>
+
+      <dt>le caractère # suivi d'un numéro d'utilisateur.</dt>
+      <dd>Référence l'utilisateur spécifié par son numéro.</dd>
+    </dl>
+
+    <p>L'utilisateur ne doit pas posséder de privilèges qui lui
+    permettent d'accéder à des fichiers qui ne doivent pas être visibles
+    du monde extérieur, et parallèlement, l'utilisateur ne doit pas
+    exécuter de code dont l'usage soit destiné à un usage autre que les
+    requêtes HTTP. Il est conseillé de créer un utilisateur et un groupe
+    dédiés à l'exécution du serveur. Certains administrateurs utilisent
+    l'utilisateur <code>nobody</code>, mais ce n'est pas toujours
+    souhaitable, car l'utilisateur <code>nobody</code> peut avoir
+    diverses utilisations dans le système.</p>
+
+    <note type="warning"><title>Sécurité</title>
+      <p>Ne définissez pas la directive <directive>Group</directive> (ou
+      <directive module="mod_unixd">User</directive>) à
+      <code>root</code> à moins de savoir exactement ce que vous faites
+      ainsi que les dangers encourus.</p>
+    </note>
+
+</usage>
+<seealso><directive module="mod_privileges">VHostUser</directive></seealso>
+<seealso><directive module="mod_suexec">SuexecUserGroup</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>Répertoire dans lequel Apache doit se positionner au
+démarrage après avoir effectué un chroot(8).</description>
+<syntax>ChrootDir <var>chemin-répertoire</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>mod_unixd</module></modulelist>
+
+<usage>
+    <p>Cette directive
+    permet de faire en sorte que le serveur effectue un
+    <var>chroot(8)</var> vers le répertoire spécifié après le démarrage,
+    mais avant d'accepter les requêtes en provenance du réseau.</p>
+    <p>Notez que l'exécution du serveur dans un environnement chroot
+    n'est pas simple et nécessite une configuration particulière, en
+    particulier si vous utilisez des scripts CGI ou PHP. Il est
+    conseillé de se familiariser avec l'opération chroot avant d'essayer
+    d'utiliser cette fonctionnalité.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>Active ou désactive la fonctionnalité suEXEC</description>
+<syntax>Suexec On|Off</syntax>
+<default>On si le binaire suexec existe avec les mode et propriétaire
+appropriés, Off dans le cas contraire</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Lorsque cette directive est définie à On, le démarrage échouera si
+    le binaire suexec n'existe pas, ou possède un propriétaire ou mode
+    fichier invalide.</p>
+    <p>Lorsque cette directive est définie à Off, suEXEC sera désactivé,
+    même si le binaire suexec existe et possède un propriétaire et mode
+    fichier valides.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

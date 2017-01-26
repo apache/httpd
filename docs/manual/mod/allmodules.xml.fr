@@ -53,82 +53,82 @@
   <modulefile>mod_expires.xml.fr</modulefile>
   <modulefile>mod_ext_filter.xml.fr</modulefile>
   <modulefile>mod_file_cache.xml.fr</modulefile>
-  <modulefile>mod_filter.xml</modulefile>
+  <modulefile>mod_filter.xml.fr</modulefile>
   <modulefile>mod_firehose.xml</modulefile>
   <modulefile>mod_headers.xml.fr</modulefile>
-  <modulefile>mod_heartbeat.xml</modulefile>
-  <modulefile>mod_heartmonitor.xml</modulefile>
+  <modulefile>mod_heartbeat.xml.fr</modulefile>
+  <modulefile>mod_heartmonitor.xml.fr</modulefile>
   <modulefile>mod_http2.xml</modulefile>
   <modulefile>mod_ident.xml.fr</modulefile>
-  <modulefile>mod_imagemap.xml</modulefile>
-  <modulefile>mod_include.xml</modulefile>
+  <modulefile>mod_imagemap.xml.fr</modulefile>
+  <modulefile>mod_include.xml.fr</modulefile>
   <modulefile>mod_info.xml.fr</modulefile>
-  <modulefile>mod_isapi.xml</modulefile>
+  <modulefile>mod_isapi.xml.fr</modulefile>
   <modulefile>mod_journald.xml</modulefile>
-  <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
-  <modulefile>mod_lbmethod_byrequests.xml</modulefile>
-  <modulefile>mod_lbmethod_bytraffic.xml</modulefile>
-  <modulefile>mod_lbmethod_heartbeat.xml</modulefile>
+  <modulefile>mod_lbmethod_bybusyness.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_byrequests.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_bytraffic.xml.fr</modulefile>
+  <modulefile>mod_lbmethod_heartbeat.xml.fr</modulefile>
   <modulefile>mod_ldap.xml.fr</modulefile>
-  <modulefile>mod_log_config.xml</modulefile>
-  <modulefile>mod_log_debug.xml</modulefile>
+  <modulefile>mod_log_config.xml.fr</modulefile>
+  <modulefile>mod_log_debug.xml.fr</modulefile>
   <modulefile>mod_log_forensic.xml.fr</modulefile>
-  <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_logio.xml.fr</modulefile>
   <modulefile>mod_lua.xml.fr</modulefile>
   <modulefile>mod_macro.xml.fr</modulefile>
-  <modulefile>mod_mime.xml</modulefile>
-  <modulefile>mod_mime_magic.xml</modulefile>
+  <modulefile>mod_mime.xml.fr</modulefile>
+  <modulefile>mod_mime_magic.xml.fr</modulefile>
   <modulefile>mod_negotiation.xml.fr</modulefile>
-  <modulefile>mod_nw_ssl.xml</modulefile>
+  <modulefile>mod_nw_ssl.xml.fr</modulefile>
   <modulefile>mod_policy.xml</modulefile>
-  <modulefile>mod_privileges.xml</modulefile>
+  <modulefile>mod_privileges.xml.fr</modulefile>
   <modulefile>mod_proxy.xml.fr</modulefile>
-  <modulefile>mod_proxy_ajp.xml</modulefile>
-  <modulefile>mod_proxy_balancer.xml</modulefile>
-  <modulefile>mod_proxy_connect.xml</modulefile>
-  <modulefile>mod_proxy_express.xml</modulefile>
-  <modulefile>mod_proxy_fcgi.xml</modulefile>
-  <modulefile>mod_proxy_fdpass.xml</modulefile>
-  <modulefile>mod_proxy_ftp.xml</modulefile>
+  <modulefile>mod_proxy_ajp.xml.fr</modulefile>
+  <modulefile>mod_proxy_balancer.xml.fr</modulefile>
+  <modulefile>mod_proxy_connect.xml.fr</modulefile>
+  <modulefile>mod_proxy_express.xml.fr</modulefile>
+  <modulefile>mod_proxy_fcgi.xml.fr</modulefile>
+  <modulefile>mod_proxy_fdpass.xml.fr</modulefile>
+  <modulefile>mod_proxy_ftp.xml.fr</modulefile>
   <modulefile>mod_proxy_hcheck.xml</modulefile>
-  <modulefile>mod_proxy_html.xml</modulefile>
+  <modulefile>mod_proxy_html.xml.fr</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_http2.xml</modulefile>
-  <modulefile>mod_proxy_scgi.xml</modulefile>
+  <modulefile>mod_proxy_scgi.xml.fr</modulefile>
   <modulefile>mod_proxy_wstunnel.xml</modulefile>
-  <modulefile>mod_ratelimit.xml</modulefile>
-  <modulefile>mod_reflector.xml</modulefile>
+  <modulefile>mod_ratelimit.xml.fr</modulefile>
+  <modulefile>mod_reflector.xml.fr</modulefile>
   <modulefile>mod_remoteip.xml.fr</modulefile>
-  <modulefile>mod_reqtimeout.xml</modulefile>
-  <modulefile>mod_request.xml</modulefile>
+  <modulefile>mod_reqtimeout.xml.fr</modulefile>
+  <modulefile>mod_request.xml.fr</modulefile>
   <modulefile>mod_rewrite.xml.fr</modulefile>
   <modulefile>mod_sed.xml.fr</modulefile>
-  <modulefile>mod_session.xml</modulefile>
-  <modulefile>mod_session_cookie.xml</modulefile>
-  <modulefile>mod_session_crypto.xml</modulefile>
-  <modulefile>mod_session_dbd.xml</modulefile>
+  <modulefile>mod_session.xml.fr</modulefile>
+  <modulefile>mod_session_cookie.xml.fr</modulefile>
+  <modulefile>mod_session_crypto.xml.fr</modulefile>
+  <modulefile>mod_session_dbd.xml.fr</modulefile>
   <modulefile>mod_setenvif.xml.fr</modulefile>
-  <modulefile>mod_slotmem_plain.xml</modulefile>
-  <modulefile>mod_slotmem_shm.xml</modulefile>
+  <modulefile>mod_slotmem_plain.xml.fr</modulefile>
+  <modulefile>mod_slotmem_shm.xml.fr</modulefile>
   <modulefile>mod_so.xml.fr</modulefile>
-  <modulefile>mod_socache_dbm.xml</modulefile>
-  <modulefile>mod_socache_dc.xml</modulefile>
-  <modulefile>mod_socache_memcache.xml</modulefile>
-  <modulefile>mod_socache_shmcb.xml</modulefile>
-  <modulefile>mod_speling.xml</modulefile>
-  <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_socache_dbm.xml.fr</modulefile>
+  <modulefile>mod_socache_dc.xml.fr</modulefile>
+  <modulefile>mod_socache_memcache.xml.fr</modulefile>
+  <modulefile>mod_socache_shmcb.xml.fr</modulefile>
+  <modulefile>mod_speling.xml.fr</modulefile>
+  <modulefile>mod_ssl.xml.fr</modulefile>
   <modulefile>mod_ssl_ct.xml</modulefile>
   <modulefile>mod_status.xml.fr</modulefile>
-  <modulefile>mod_substitute.xml</modulefile>
-  <modulefile>mod_suexec.xml</modulefile>
+  <modulefile>mod_substitute.xml.fr</modulefile>
+  <modulefile>mod_suexec.xml.fr</modulefile>
   <modulefile>mod_syslog.xml</modulefile>
   <modulefile>mod_systemd.xml</modulefile>
   <modulefile>mod_unique_id.xml.fr</modulefile>
-  <modulefile>mod_unixd.xml</modulefile>
-  <modulefile>mod_userdir.xml</modulefile>
-  <modulefile>mod_usertrack.xml</modulefile>
+  <modulefile>mod_unixd.xml.fr</modulefile>
+  <modulefile>mod_userdir.xml.fr</modulefile>
+  <modulefile>mod_usertrack.xml.fr</modulefile>
   <modulefile>mod_version.xml</modulefile>
-  <modulefile>mod_vhost_alias.xml</modulefile>
+  <modulefile>mod_vhost_alias.xml.fr</modulefile>
   <modulefile>mod_watchdog.xml</modulefile>
   <modulefile>mod_xml2enc.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
