@@ -114,6 +114,7 @@ remapping of URLs</page>
 <page href="howto/htaccess.html">.htaccess files</page>
 <page href="howto/public_html.html">Per-user web directories</page>
 <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
+<page href="howto/http2.html">HTTP/2 guide</page>
 </category>
 
 <category id="platform">
