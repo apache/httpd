@@ -1,0 +1,603 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1709121 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2015101701 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_session.xml.meta">
+
+<name>mod_session</name>
+<description>Support des sessions</description>
+<status>Extension</status>
+<sourcefile>mod_session.c</sourcefile>
+<identifier>session_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <note type="warning"><title>Avertissement</title>
+      <p>Le module session fait usage des cookies HTTP, et peut à ce
+      titre être victime d'attaques de type Cross Site Scripting, ou
+      divulguer des informations à caractère privé aux clients. Veuillez
+      vous assurer que les risques ainsi encourus ont été pris en compte
+      avant d'activer le support des sessions sur votre serveur.</p>
+    </note>
+
+    <p>Ce module fournit le support d'une interface de session pour
+    chaque utilisateur au niveau du serveur global. Les sessions
+    permettent de transmettre diverses informations  : l'utilisateur
+    est-il connecté ou non, ou toute autre information qui doit être
+    conservée d'une requête à l'autre.</p>
+
+    <p>Les sessions peuvent être stockées sur le serveur, ou au niveau
+    du navigateur. Les sessions peuvent aussi être chiffrées pour une
+    sécurité accrue. Ces fonctionnalités sont réparties entre différents
+    modules complémentaires de <module>mod_session</module> :
+    <module>mod_session_crypto</module>,
+    <module>mod_session_cookie</module> et
+    <module>mod_session_dbd</module>. Chargez les modules appropriés
+    en fonction des besoins du serveur (soit statiquement à la
+    compilation, soit dynamiquement via la directive <directive
+    module="mod_so">LoadModule</directive>).</p>
+
+    <p>Les sessions peuvent être manipulées par d'autres modules qui
+    dépendent de la session, ou la session peut être lue et écrite dans
+    des variables d'environnement et des en-têtes HTTP, selon les
+    besoins.</p>
+
+</summary>
+<seealso><module>mod_session_cookie</module></seealso>
+<seealso><module>mod_session_crypto</module></seealso>
+<seealso><module>mod_session_dbd</module></seealso>
+
+    <section id="whatisasession"><title>Qu'est-ce qu'une session ?</title>
+      <p>Au coeur de l'interface de session se trouve une table de
+      paires clé/valeur qui sont accessibles d'une requête du navigateur
+      à l'autre. Les valeurs de clés peuvent se voir affecter toute chaîne
+      valide, en fonction des besoins de l'application qui fait usage de
+      la session.</p>
+
+      <p>Une "session" est une chaîne
+      <strong>application/x-www-form-urlencoded</strong> qui contient la
+      paire clé/valeur définie par la <a
+      href="http://www.w3.org/TR/html4/">specification HTML</a>.</p>
+
+      <p>Selon les souhaits de l'administrateur, la session peut être
+      chiffrée et codée en base64 avant d'être soumise au dispositif de
+      stockage.</p>
+
+    </section>
+    <section id="whocanuseasession"><title>Qui peut utiliser une session
+    ?</title>
+      <p>L'interface de session a été conçue à l'origine pour être
+      utilisée par d'autres modules du serveur comme
+      <module>mod_auth_form</module> ; les applications à base de
+      programmes CGI peuvent cependant se voir accorder l'accès au
+      contenu d'une session via la variable d'environnement
+      HTTP_SESSION. Il est possible de modifier et/ou de mettre à jour
+      une session en insérant un en-tête de réponse HTTP contenant les
+      nouveaux paramètres de session.</p>
+
+    </section>
+    <section id="serversession"><title>Stockage des sessions sur le
+    serveur</title>
+      <p>Apache peut être configuré pour stocker les sessions
+      utilisateurs sur un serveur particulier ou un groupe de serveurs.
+      Cette fonctionnalité est similaire aus sessions disponibles sur
+      les serveurs d'applications courants.</p>
+
+      <p>Selon la configuration, les sessions sont suivies à
+      partir d'un identifiant de session stocké dans un cookie, ou
+      extrait de la chaîne de paramètres de l'URL, comme dans les
+      requêtes GET courantes.</p>
+
+      <p>Comme le contenu de la session est stocké exclusivement sur le
+      serveur, il est nécessaire de préserver la confidentialité de ce
+      contenu. Ceci a des implications en matière de performance et de
+      consommation de ressources lorsqu'un grand nombre de sessions est
+      stocké, ou lorsqu'un grand nombre de serveurs doivent se partager
+      les sessions entre eux.</p>
+
+      <p>Le module <module>mod_session_dbd</module> permet de stocker
+      les sessions utilisateurs dans une base de données SQL via le
+      module <module>mod_dbd</module>.</p>
+
+    </section> <!-- /serversession -->
+
+    <section id="browsersession"><title>Stockage des sessions au niveau
+    du navigateur</title>
+      <p>Dans les environnements à haut trafic où le stockage d'une
+      session sur un serveur consomme trop
+      de ressources, il est possible de stocker le contenu de la session
+      dans un cookie au niveau du navigateur client.</p>
+
+      <p>Ceci a pour avantage de ne nécessiter qu'une quantité minimale de
+      ressources sur le serveur pour suivre les sessions, et évite à
+      plusieurs serveurs parmi une forêt de serveurs de devoir partager
+      les informations de session.</p>
+
+      <p>Le contenu de la session est cependant présenté au client, avec
+      pour conséquence un risque de perte de confidentialité. Le module
+      <module>mod_session_crypto</module> peut être configuré pour
+      chiffrer le contenu de la session avant qu'elle soit stockée au
+      niveau du client.</p>
+
+      <p>Le module <module>mod_session_cookie</module> permet de stocker
+      les sessions au niveau du navigateur dans un cookie HTTP.+</p>
+
+    </section> <!-- /browsersession -->
+
+    <section id="basicexamples"><title>Exemples simples</title>
+
+      <p>La création d'une session consiste simplement à ouvrir la
+      session, et à décider de l'endroit où elle doit être stockée. Dans
+      l'exemple suivant, la session sera stockée au niveau du
+      navigateur, dans un cookie nommé <code>session</code>.</p>
+
+      <example><title>Session stockée au niveau du navigateur</title>
+        <highlight language="config">
+Session On
+SessionCookieName session path=/
+        </highlight>
+      </example>
+
+      <p>Une session est inutile s'il n'est pas possible d'y lire
+      ou d'y écrire. L'exemple suivant montre comment des valeurs
+      peuvent être injectées dans une session à l'aide d'un en-tête de
+      réponse HTTP prédéterminé nommé
+      <code>X-Replace-Session</code>.</p>
+
+      <example><title>Ecriture dans une session</title>
+        <highlight language="config">
+Session On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </highlight>
+      </example>
+
+      <p>L'en-tête doit contenir des paires clé/valeur sous le même
+      format que celui de la chaîne d'argument d'une URL, comme dans
+      l'exemple suivant. Donner pour valeur à une clé la chaîne vide a
+      pour effet de supprimer la clé de la session.</p>
+
+      <example><title>Script CGI pour écrire dans une session</title>
+        <highlight language="sh">
+#!/bin/bash
+echo "Content-Type: text/plain"
+echo "X-Replace-Session: key1=foo&amp;key2=&amp;key3=bar"
+echo
+env
+        </highlight>
+      </example>
+
+      <p>Selon la configuration, les informations de la session peuvent
+      être extraites de la variable d'environnement HTTP_SESSION. Par
+      défaut la session est privée, et cette fonctionnalité doit donc
+      être explicitement activée via la directive <directive
+      module="mod_session">SessionEnv</directive>.</p>
+
+      <example><title>Lecture depuis une session</title>
+        <highlight language="config">
+Session On
+SessionEnv On
+SessionCookieName session path=/
+SessionHeader X-Replace-Session
+        </highlight>
+      </example>
+
+      <p>Une fois la lecture effectuée, la variable CGI
+      <code>HTTP_SESSION</code> doit contenir la valeur
+      <code>clé1=foo&amp;clé3=bar</code>.</p>
+
+    </section>
+    <section id="sessionprivacy"><title>Confidentialité des
+    sessions</title>
+
+      <p>En utilisant la fonctionnalité de votre navigateur "Afficher
+      les cookies", vous pouvez voir une réprésentation de la session
+      sous forme de texte en clair. Ceci peut poser problème si le
+      contenu de la session doit être dissimulé à l'utilisateur final,
+      ou si un tiers accède sans autorisation aux informations de
+      session.</p>
+
+      <p>A ce titre, le contenu de la session peut être chiffré à l'aide
+      du module <module>mod_session_crypto</module> avant d'être stocké
+      au niveau du navigateur.</p>
+
+      <example><title>Session chiffrée avant stockage au niveau du
+      navigateur</title>
+        <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+        </highlight>
+      </example>
+
+      <p>La session sera automatiquement déchiffrée à la lecture, et
+      rechiffrée par Apache lors de la sauvegarde, si bien que
+      l'application sous-jacente qui utilise la session n'a pas à se
+      préoccuper de savoir si un chiffrement a été mis en oeuvre ou
+      non.</p>
+
+      <p>Les sessions stockées sur le serveur plutôt qu'au niveau du
+      navigateur peuvent aussi être chiffrées, préservant par là-même la
+      confidentialité lorsque des informations sensibles sont partagées
+      entre les serveurs web d'une forêt de serveurs à l'aide du module
+      <module>mod_session_dbd</module>.</p>
+
+    </section>
+    <section id="cookieprivacy"><title>Confidentialité du cookie</title>
+
+      <p>Le mécanisme de cookie HTTP offre aussi des fonctionnalités
+      quant à la confidentialité, comme la possibilité de
+      restreindre le transport du cookie aux pages protégées par SSL
+      seulement, ou l'interdiction pour les scripts java qui
+      s'exécutent au niveau du navigateur d'obtenir l'accès au contenu
+      du cookie.</p>
+
+      <note type="warning"><title>Avertissement</title>
+      <p>Certaines fonctionnalités de confidentialité du cookie HTTP ne
+      sont pas standardisées, ou ne sont pas toujours implémentées au
+      niveau du navigateur. Les modules de session vous permettent de
+      définir les paramètres du cookie, mais il n'est pas garanti que la
+      confidentialité sera respectée par le navigateur. Si la sécurité
+      est la principale préoccupation, chiffrez le contenu de la session
+      avec le module <module>mod_session_crypto</module>, ou stockez la
+      session sur le serveur avec le module
+      <module>mod_session_dbd</module>.</p>
+      </note>
+
+      <p>Les paramètres standards du cookie peuvent être spécifiés après
+      le nom du cookie comme dans l'exemple suivant :</p>
+
+      <example><title>Définition des paramètres du cookie</title>
+        <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/private;domain=example.com;httponly;secure;
+        </highlight>
+      </example>
+
+      <p>Dans les cas où le serveur Apache sert de frontal pour des
+      serveurs d'arrière-plan, il est possible de supprimer les cookies
+      de session des en-têtes HTTP entrants à l'aide de la directive
+      <directive
+      module="mod_session_cookie">SessionCookieRemove</directive>. Ceci
+      permet d'empêcher les serveurs d'arrière-plan d'accéder au contenu
+      des cookies de session.
+      </p>
+
+    </section>
+    <section id="authentication"><title>Support des sessions pour
+    l'authentification</title>
+
+      <p>Comme il est possible de le faire avec de nombreux serveurs
+      d'applications, les modules d'authentification peuvent utiliser
+      une session pour stocker le nom d'utilisateur et le mot de passe
+      après connexion. Le module <module>mod_auth_form</module> par
+      exemple, sauvegarde les nom de connexion et mot de passe de
+      l'utilisateur dans une session.</p>
+
+      <example><title>Authentification à base de formulaire</title>
+        <highlight language="config">
+Session On
+SessionCryptoPassphrase secret
+SessionCookieName session path=/
+AuthFormProvider file
+AuthUserFile "conf/passwd"
+AuthType form
+AuthName "realm"
+#...
+        </highlight>
+      </example>
+
+      <p>Pour la documentation et des exemples complets, voir le module
+      <module>mod_auth_form</module>.</p>
+
+    </section>
+
+    <section id="integration"><title>Intégration des sessions avec les
+    applications externes</title>
+
+      <p>Pour que les sessions soient utiles, leur contenu doit être
+      accessible aux applications externes, et ces dernières doivent
+      elles-mêmes être capables d'écrire une session.</p>
+
+      <p>L'exemple type est une application qui modifie le mot de passe
+      d'un utilisateur défini par <module>mod_auth_form</module>. Cette
+      application doit pouvoir extraire les nom d'utilisateur et mot de
+      passe courants de la session, effectuer les modifications
+      demandées, puis écrire le nouveau mot de passe dans la session,
+      afin que la transition vers le nouveau mot de passe soit
+      transparente.</p>
+
+      <p>Un autre exemple met en jeu une application qui enregistre un
+      nouvel utilisateur pour la première fois. Une fois
+      l'enregistrement terminé, le nom d'utilisateur et le mot de passe
+      sont écrits dans la session, fournissant là aussi une transition
+      transparente.</p>
+
+      <dl>
+      <dt>Modules Apache</dt>
+      <dd>Selon les besoins, les modules du serveur peuvent utiliser
+      l'API <strong>mod_session.h</strong> pour lire et écrire dans les
+      sessions. Les modules tels que <module>mod_auth_form</module>
+      utilisent ce mécanisme.
+      </dd>
+
+      <dt>Programmes CGI et langages de script</dt>
+      <dd>Les applications qui s'exécutent au sein du serveur web
+      peuvent éventuellement extraire la valeur de la session de la
+      variable d'environnement <strong>HTTP_SESSION</strong>. La session
+      doit être codée sous la forme d'une chaîne
+      <strong>application/x-www-form-urlencoded</strong> selon les
+      préconisations de la <a
+      href="http://www.w3.org/TR/html4/">specification HTML</a>. Cette
+      variable d'environnement est définie via la directive <directive
+      module="mod_session">SessionEnv</directive>. Un script peut écrire
+      dans la session en renvoyant un en-tête de réponse
+      <strong>application/x-www-form-urlencoded</strong> dont le nom est
+      défini via la directive <directive
+      module="mod_session">SessionHeader</directive>. Dans les deux cas,
+      tout chiffrement ou déchiffrement, ainsi que la lecture ou
+      l'écriture de ou vers la session à partir du mécanisme de stockage
+      choisi sont gérés par le module <module>mod_session</module> et la
+      configuration correspondante.
+      </dd>
+      
+      <dt>Applications situées derrière <module>mod_proxy</module></dt>
+      <dd>Si la directive <directive
+      module="mod_session">SessionHeader</directive> est utilisée pour
+      définir un en-tête de requête HTTP, la session codée sous la forme
+      d'une chaîne <strong>application/x-www-form-urlencoded</strong>
+      sera accessible pour l'application. Si ce même en-tête est fourni
+      dans la réponse, sa valeur sera utilisée pour remplacer la
+      session. Comme précédemment, tout chiffrement ou déchiffrement,
+      ainsi que la lecture ou
+      l'écriture de ou vers la session à partir du mécanisme de stockage
+      choisi sont gérés par le module <module>mod_session</module> et la
+      configuration correspondante.</dd>
+      
+      <dt>Applications indépendantes</dt>
+      <dd>Les applications peuvent choisir de manipuler la session en
+      s'affranchissant du contrôle du serveur HTTP Apache. Dans ce cas,
+      c'est l'application qui doit prendre en charge la lecture de la
+      session depuis le mécanisme de stockage choisi, son déchiffrement,
+      sa mise à jour, son chiffrement et sa réécriture vers le mécanisme
+      de stockage choisi de manière appropriée.</dd>
+      </dl>
+
+    </section>    
+
+<directivesynopsis>
+<name>Session</name>
+<description>Ouvre une session pour le contexte courant</description>
+<syntax>Session On|Off</syntax>
+<default>Session Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>Session</directive> permet d'ouvrir une
+    session pour le contexte ou conteneur courant. Les directives
+    suivantes permettent de définir où la session sera stockée et
+    comment sera assurée la confidentialité.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionMaxAge</name>
+<description>Définit une durée de vie maximale pour la session en
+secondes</description>
+<syntax>SessionMaxAge <var>durée de vie maximale</var></syntax>
+<default>SessionMaxAge 0</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>SessionMaxAge</directive> permet de
+    définir la durée maximale pendant laquelle une session restera
+    valide. Lorsqu'une session est sauvegardée, cette durée est
+    réinitialisée et la session peut continuer d'exister. Si la durée
+    d'une session dépasse cette limite sans qu'une requête au serveur ne
+    vienne la rafraîchir, la session va passer hors délai et sera
+    supprimée. Lorsqu'une session est utilisée pour stocker les
+    informations de connexion d'un utilisateur, ceci aura pour effet de
+    le déconnecter automatiquement après le délai spécifié.</p>
+
+    <p>Donner à cette directive la valeur 0 empêche l'expiration de la
+    session.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionEnv</name>
+<description>Définit si le contenu de la session doit être enregistré
+dans la variable d'environnement <var>HTTP_SESSION</var></description>
+<syntax>SessionEnv On|Off</syntax>
+<default>SessionEnv Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Lorsque la directive <directive>SessionEnv</directive> est
+    définie à <var>On</var>, le contenu de la session est enregistré
+    dans une variable d'environnement CGI nommée
+    <var>HTTP_SESSION</var>.</p>
+
+    <p>La chaîne est écrite sous le même format que celui de la chaîne
+    d'arguments d'une URL, comme dans l'exemple suivant :</p>
+
+    <example>
+      <code>clé1=foo&amp;clé3=bar</code>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionHeader</name>
+<description>Importation des mises à jour de session depuis l'en-tête de
+réponse HTTP spécifié</description>
+<syntax>SessionHeader <var>en-tête</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>SessionHeader</directive> permet de
+    définir le nom d'un en-tête de réponse HTTP qui, s'il est présent,
+    sera lu et son contenu écrit dans la session courante.</p>
+
+    <p>Le contenu de l'en-tête doit se présenter sous le même format que
+    celui de la chaîne d'arguments d'une URL, comme dans l'exemple
+    suivant :</p>
+
+    <example>
+      <code>clé1=foo&amp;clé2=&amp;clé3=bar</code>
+    </example>
+
+    <p>Si une clé a pour valeur la chaîne vide, elle sera supprimée de
+    la session.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionInclude</name>
+<description>Définit les préfixes d'URL pour lesquels une session est
+valide</description>
+<syntax>SessionInclude <var>chemin</var></syntax>
+<default>toutes URLs</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>SessionInclude</directive> permet de
+    définir les préfixes d'URL spécifiques pour lesquels une session
+    sera valide. Ceci peut améliorer l'efficacité d'un site web, en
+    ciblant de manière plus précise l'espace d'URL pour lequel une
+    session devra être maintenue. Par défaut, toutes les URLs du
+    contexte ou du conteneur courant sont incluses dans la session.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>Cette directive a un comportement similaire à celui de l'attribut
+    <var>chemin</var> des cookies HTTP, mais ne doit pas être confondue
+    avec cet attribut. En effet, cette directive ne définit pas
+    l'attribut <var>chemin</var>, qui doit être configuré séparément.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionExclude</name>
+<description>Définit les préfixes d'URLs pour lesquels une session sera
+ignorée</description>
+<syntax>SessionExclude <var>chemin</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionExclude</directive> permet de
+    définir les préfixes d'URLs pour lesquels la session sera
+    désactivée. Ceci peut améliorer l'efficacité d'un site web, en
+    ciblant de manière plus précise l'espace d'URL pour lequel une
+    session devra être maintenue. Par défaut, toutes les URLs du
+    contexte ou du conteneur courant sont incluses dans la session. La
+    directive <directive module="mod_session">SessionExclude</directive>
+    l'emporte sur la directive <directive
+    module="mod_session">SessionInclude</directive>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>Cette directive a un comportement similaire à celui de l'attribut
+    <var>chemin</var> des cookies HTTP, mais ne doit pas être confondue
+    avec cet attribut. En effet, cette directive ne définit pas
+    l'attribut <var>chemin</var>, qui doit être configuré
+    séparément.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionExpiryUpdateInterval</name>
+<description>Définit le nombre de secondes dont la durée d'expiration d'une
+session peut changer sans que cette session soit mise à jour</description>
+<syntax>SessionExpiryUpdateInterval <var>interval</var></syntax>
+<default>SessionExpiryUpdateInterval 0 (mise à jour systématique)</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionExpiryUpdateInterval</directive>
+    permet d'éviter le coût de l'écriture d'une session pour chaque
+    requête en n'effectuant cette mise à jour que lorsque la date
+    d'expiration a changé. Ceci permet d'améliorer les performances d'un
+    site web ou de réduire la charge d'une base de données lorsqu'on
+    utilise <module>mod_session_dbd</module>. La session est
+    systématiquement mise à jour si les données stockées dans la session
+    ont été modifiées ou si la durée d'expiration a été modifiée d'une
+    durée supérieure à l'intervalle spécifié.</p>
+
+    <p>Définir l'intervalle à 0 désactive cette directive, et
+    l'expiration de la session sera alors rafraîchie pour chaque requête.</p>
+
+    <p>Cette directive n'a d'effet que si on l'utilise en combinaison
+    avec la directive <directive
+    module="mod_session">SessionMaxAge</directive> qui active
+    l'expiration des sessions. Les sessions sans date d'expiration ne
+    sont écrites que lorsque les données qu'elles renferment ont été
+    modifiées.</p>
+
+    <note type="warning"><title>Avertissement</title>
+    <p>Comme l'expiration de la session n'est pas systématiquement
+    rafraîchie à chaque requête, une session peut arriver à expiration
+    plus tôt d'un nombre de secondes spécifié dans le paramètre
+    <var>interval</var>. Définir un petit intervalle est en général
+    assez sur, mais en revenche n'a qu'un effet minime sur la prise en
+    compte des durées d'expiration.</p></note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

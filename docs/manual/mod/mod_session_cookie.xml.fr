@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1331227 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2012050701 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_session_cookie.xml.meta">
+
+<name>mod_session_cookie</name>
+<description>Support des sessions basé sur les cookies</description>
+<status>Extension</status>
+<sourcefile>mod_session_cookie.c</sourcefile>
+<identifier>session_cookie_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <note type="warning"><title>Avertissement</title>
+      <p>Les modules de session font usage des cookies HTTP, et peuvent
+      à ce titre être victimes d'attaques de type Cross Site Scripting,
+      ou divulguer des informations à caractère privé aux clients.
+      Veuillez vous assurer que les risques ainsi encourus ont été pris
+      en compte avant d'activer le support des sessions sur votre
+      serveur.</p>
+    </note>
+
+    <p>Ce sous-module du module <module>mod_session</module> fournit le
+    support du stockage des sessions utilisateur au niveau du navigateur
+    distant dans des cookies HTTP.</p>
+
+    <p>L'utilisation de cookies pour stocker les sessions décharge le
+    serveur ou le groupe de serveurs de la nécessité de stocker les
+    sessions localement, ou de collaborer pour partager les sessions, et
+    peut être utile dans les environnements à fort trafic où le stockage
+    des sessions sur le serveur pourrait s'avérer trop consommateur de
+    ressources.</p>
+
+    <p>Si la confidentialité de la session doit être préservée, le
+    contenu de cette dernière peut être chiffré avant d'être enregistré
+    au niveau du client à l'aide du module
+    <module>mod_session_crypto</module>.</p>
+
+    <p>Pour plus de détails à propos de l'interface des sessions, voir
+    la documentation du module <module>mod_session</module>.</p>
+
+</summary>
+<seealso><module>mod_session</module></seealso>
+<seealso><module>mod_session_crypto</module></seealso>
+<seealso><module>mod_session_dbd</module></seealso>
+
+    <section id="basicexamples"><title>Exemples simples</title>
+
+      <p>Pour créer une session et la stocker dans un cookie nommé
+      <var>session</var>, configurez-la comme suit :</p>
+
+      <example><title>Session stockée au niveau du navigateur</title>
+        <highlight language="config">
+Session On
+SessionCookieName session path=/
+        </highlight>
+      </example>
+
+      <p>Pour plus d'exemples sur la manière dont une session doit être
+      configurée pour qu'une application CGI puisse l'utiliser, voir la
+      section exemples de la documentation du module
+      <module>mod_session</module>.</p>
+
+      <p>Pour des détails sur la manière dont une session peut être
+      utilisée pour stocker des informations de type nom
+      d'utilisateur/mot de passe, voir la documentation du module
+      <module>mod_auth_form</module>.</p>
+
+    </section>
+
+<directivesynopsis>
+<name>SessionCookieName</name>
+<description>Nom et attributs du cookie RFC2109 dans lequel la session
+est stockée</description>
+<syntax>SessionCookieName <var>nom</var> <var>attributs</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionCookieName</directive> permet de
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2109 dans lequel la session sera stockée. Les cookies RFC2109
+    sont définis en utilisant l'en-tête HTTP <code>Set-Cookie</code>.
+    </p>
+
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tel quel dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
+    cookies.
+    </p>
+
+    <example><title>Cookie avec attributs</title>
+      <highlight language="config">
+Session On
+SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCookieName2</name>
+<description>Nom et attributs pour le cookie RFC2965 dans lequel est
+stockée la session</description>
+<syntax>SessionCookieName2 <var>nom</var> <var>attributs</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionCookieName2</directive> permet de
+    spécifier le nom et les attributs optionnels d'un cookie compatible
+    RFC2965 dans lequel la session sera stockée. Les cookies RFC2965
+    sont définis en utilisant l'en-tête HTTP
+    <code>Set-Cookie2</code>.
+    </p>
+
+    <p>Une liste optionnelle d'attributs peut être spécifiée, comme dans
+    l'exemple suivant. Ces attributs sont insérés tel quel dans le
+    cookie, et ne sont pas interprétés par Apache. Assurez-vous que vos
+    attributs soient définis correctement selon la spécification des
+    cookies.
+    </p>
+
+    <example><title>Cookie2 avec attributs</title>
+      <highlight language="config">
+Session On
+SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
+    </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionCookieRemove</name>
+<description>Détermine si les cookies de session doivent être supprimés
+des en-têtes HTTP entrants</description>
+<syntax>SessionCookieRemove On|Off</syntax>
+<default>SessionCookieRemove Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionCookieRemove</directive> permet de
+    déterminer si les cookies contenant la session doivent être
+    supprimés des en-têtes pendant le traitement de la requête.</p>
+
+    <p>Dans le cas d'un mandataire inverse où le serveur Apache sert de
+    frontal à un serveur d'arrière-plan, révéler le contenu du cookie de
+    session à ce dernier peut conduire à une violation de la
+    confidentialité. A ce titre, si cette directive est définie à "on",
+    le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

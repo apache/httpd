@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1732273 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2016030501 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_speling.xml.meta">
+
+<name>mod_speling</name>
+<description>Tente de corriger les erreurs de casse dans les URLs ou les
+erreurs d'écriture mineures.</description>
+<status>Extension</status>
+<sourcefile>mod_speling.c</sourcefile>
+<identifier>speling_module</identifier>
+
+
+
+<summary>
+
+    <p>Il arrive que des requêtes pour des documents ne puissent pas
+    être traitées par le serveur Apache de base à cause d'une erreur
+    d'orthographe ou de majuscule. Ce module permet de traiter ce
+    problème en essayant de trouver un document correspondant, même
+    lorsque tous les autres modules y ont renoncé. Sa méthode de travail
+    consiste à comparer chaque nom de document du répertoire demandé
+    avec le document de la requête <strong>sans tenir compte de la
+    casse</strong>, et en acceptant <strong>jusqu'à une erreur</strong>
+    (insertion, omission, inversion de caractère ou caractère
+    erroné). Une liste de tous les documents qui correspondent est alors
+    élaborée en utilisant cette stratégie.</p>
+
+    <p>Si après le parcours du répertoire,</p>
+
+    <ul>
+      <li>aucun document correspondant n'a été trouvé, Apache procèdera
+      normalement et renverra une erreur "document non trouvé".</li>
+
+      <li>un seul document correspondant pratiquement à la requête a
+      été trouvé, celui-ci est renvoyé sous la forme d'une réponse de
+      redirection.</li>
+
+      <li>plusieurs documents pouvant correspondre ont été trouvés, une
+      liste des documents est envoyée au client afin que ce dernier
+      puisse sélectionner le document correct.</li>
+    </ul>
+
+</summary>
+
+
+<directivesynopsis>
+<name>CheckSpelling</name>
+<description>Active le module de correction</description>
+<syntax>CheckSpelling on|off</syntax>
+<default>CheckSpelling Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Cette directive permet d'activer ou de désactiver le module de
+    correction. Lorsqu'il est activé, rappelez-vous que :</p>
+
+    <ul>
+      <li>le parcours du répertoire nécessaire à la correction aura un
+      impact sur les performances du serveur lorsque de nombreuses
+      corrections devront être effectuées au même moment.</li>
+
+      <li>l'arborescence ne doit pas contenir de documents
+      sensibles qui pourraient être considérés par erreur comme
+      correspondant à la requête.</li>
+
+      <li>le module ne corrige pas les noms d'utilisateur mal
+      orthographiés (comme dans
+      <code>http://mon.serveur/~apahce/</code>), mais seulement les noms
+      de fichiers ou de répertoires.</li>
+
+      <li>les corrections s'appliquent strictement aux fichiers
+      existants, si bien qu'une requête pour <code>&lt;Location
+      /status&gt;</code> pour être traitée de manière incorrecte comme
+      une requête pour le fichier négocié "<code>/stats.html</code>".</li>
+    </ul>
+
+    <!-- XXX: is that really true?! -nd -->
+    <p>mod_speling ne doit pas être activé pour des répertoires où <a
+    href="mod_dav.html">DAV</a> l'est aussi, car il va essayer de
+    "corriger" les noms des ressources nouvellement créées en fonction
+    des noms de fichiers existants ; par exemple, lors du chargement
+    d'un nouveau document <code>doc43.html</code>, il est possible qu'il
+    redirige vers un document existant <code>doc34.html</code>, ce qui
+    ne correspond pas à ce que l'on souhaite.
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>Limite l'action du module aux corrections de
+majuscules</description>
+<syntax>CheckCaseOnly on|off</syntax>
+<default>CheckCaseOnly Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Lorsqu'elle est définie à "on", cette directive permet de limiter
+    l'action du module aux inversions majuscule/minuscule. Les autres
+    corrections ne sont pas effectuées sauf si la directive
+    <directive>CheckBasenameMatch</directive> est aussi à "on"..</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckBasenameMatch</name>
+<description>Vérifie aussi la correspondance des fichiers, même avec des
+extensions différentes</description>
+<syntax>CheckBasenameMatch on|off</syntax>
+<default>CheckBasenameMatch Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>Cette option n'a aucun effet si
+    <directive>CheckCaseOnly</directive> a été défini.</p>
+
+    <p>Lorsqu'elle est définie, cette directive étend le processus de correction
+    orthographique à l'extension des noms de fichiers. Par exemple, un fichier
+    de nom <code>foo.gif</code> sera pris en compte par une requête pour
+    <code>foo</code> ou <code>foo.jpg</code>. Ceci peut s'avérer
+    particulièrement utile en conjonction avec les <a
+    href="../content-negotiation.html">MultiViews</a>.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

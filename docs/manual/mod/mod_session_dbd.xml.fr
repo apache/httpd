@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 1488164 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2013060101 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_session_dbd.xml.meta">
+
+<name>mod_session_dbd</name>
+<description>Support des session basé sur DBD/SQL</description>
+<status>Extension</status>
+<sourcefile>mod_session_dbd.c</sourcefile>
+<identifier>session_dbd_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <note type="warning"><title>Avertissement</title>
+      <p>Les modules de session font usage des cookies HTTP, et peuvent
+      à ce titre être victimes d'attaques de type Cross Site Scripting,
+      ou divulguer des informations à caractère privé aux clients.
+      Veuillez vous assurer que les risques ainsi encourus ont été pris
+      en compte avant d'activer le support des sessions sur votre
+      serveur.</p>
+    </note>
+
+    <p>Ce sous-module du module <module>mod_session</module> fournit le
+    support du stockage des sessions utilisateur dans une base de
+    données SQL en utilisant le module <module>mod_dbd</module>.</p>
+
+    <p>Les sessions sont soit <strong>anonymes</strong>, et la session
+    est alors identifiée par un UUID unique stocké dans un cookie au
+    niveau du navigateur, soit <strong>propres à l'utilisateur</strong>,
+    et le session est alors identifiée par l'identifiant de
+    l'utilisateur connecté.</p>
+
+    <p>Les sessions basées sur SQL sont dissimulées au navigateur, et
+    permettent ainsi de préserver la confidentialité sans avoir recours
+    au chiffrement.</p>
+
+    <p>Plusieurs serveurs web d'une forêt de serveurs peuvent choisir de
+    partager une base de données, et ainsi partager les sessions entre
+    eux.</p>
+
+    <p>Pour plus de détails à propos de l'interface des sessions, voir
+    la documentation du module <module>mod_session</module>.</p>
+
+</summary>
+<seealso><module>mod_session</module></seealso>
+<seealso><module>mod_session_crypto</module></seealso>
+<seealso><module>mod_session_cookie</module></seealso>
+<seealso><module>mod_dbd</module></seealso>
+
+    <section id="dbdconfig"><title>Configuration de DBD</title>
+
+      <p>Pour que le module <module>mod_session_dbd</module> puisse être
+      configuré pour maintenir une session, il faut tout d'abord
+      configurer le module <module>mod_dbd</module> pour que le serveur
+      puisse exécuter des requêtes vers la base de données.</p>
+
+      <p>Quatre types de requêtes sont nécessaires pour maintenir une
+      session, sélectionner ou mettre à jour une session existante,
+      insérer une nouvelle session et supprimer une session vide ou
+      arrivée à expiration. Ces requêtes sont configurées comme dans
+      l'exemple suivant :</p>
+
+      <example><title>Exemple de configuration de DBD</title>
+        <highlight language="config">
+DBDriver pgsql
+DBDParams "dbname=apachesession user=apache password=xxxxx host=localhost"
+DBDPrepareSQL "delete from session where key = %s" deletesession
+DBDPrepareSQL "update session set value = %s, expiry = %lld, key = %s where key = %s" updatesession
+DBDPrepareSQL "insert into session (value, expiry, key) values (%s, %lld, %s)" insertsession
+DBDPrepareSQL "select value from session where key = %s and (expiry = 0 or expiry &gt; %lld)" selectsession
+DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" cleansession
+    </highlight>
+      </example>
+
+    </section>
+
+    <section id="anonymous"><title>Sessions anonymes</title>
+
+      <p>Les sessions anonymes sont identifiées par un UUID unique, et
+      stockées dans un cookie au niveau du navigateur. Cette méthode est
+      similaire à celle utilisée par la plupart des serveurs
+      d'applications pour stocker les informations de session.</p>
+
+      <p>Pour créer une session anonyme, la stocker dans une table de
+      base de donnée postgres nommée <var>apachesession</var>, et
+      sauvegarder l'identifiant de session dans un cookie nommé
+      <var>session</var>, configurez la session comme suit :</p>
+
+      <example><title>Session anonyme basée sur SQL</title>
+        <highlight language="config">
+Session On
+SessionDBDCookieName session path=/
+        </highlight>
+      </example>
+
+      <p>Pour plus d'exemples sur la manière dont une application CGI
+      peut accéder aux informations de session, voir la section exemples
+      de la documentation du module <module>mod_session</module>.</p>
+
+      <p>Pour des détails sur la manière dont une session peut être
+      utilisée pour stocker des informations de type nom
+      d'utilisateur/mot de passe, voir la documentation du module
+      <module>mod_auth_form</module>.</p>
+
+    </section>
+
+    <section id="peruser"><title>Sessions propres à un
+    utilisateur</title>
+
+      <p>Les sessions propres à un utilisateur sont identifiées par le
+      nom de l'utilisateur authentifié avec succès. Ceci permet
+      d'assurer une confidentialité optimale, car aucun traitement
+      externe à la session n'existe en dehors du contexte
+      authentifié.</p>
+
+      <p>Les sessions propres à un utilisateur ne fonctionnent que dans
+      un environnement d'authentification correctement configuré, qu'il
+      s'agisse d'une authentification de base, à base de condensés
+      (digest) ou de certificats client SSL. Suite à des limitations
+      dues à des dépendances mutuelles, les sessions propres à un
+      utilisateur ne peuvent pas être utilisées pour stocker les données
+      d'authentification en provenance d'un module comme
+      <module>mod_auth_form</module>.</p>
+
+      <p>Pour créer une session propre à un utilisateur, la stocker dans
+      une table de base de données postgres nommée
+      <var>apachesession</var>, avec comme clé de session l'identifiant
+      utilisateur, ajoutez les lignes suivantes :</p>
+
+      <example><title>Session propre à un utilisateur basée sur SQL</title>
+        <highlight language="config">
+Session On
+SessionDBDPerUser On
+        </highlight>
+      </example>
+
+    </section>
+
+    <section id="housekeeping"><title>Nettoyage de la base de
+    données</title>
+      <p>Avec le temps, la base de données va commencer à accumuler des
+      sessions expirées. Pour le moment, le module
+      <module>mod_session_dbd</module> n'est pas en mesure de gérer
+      automatiquement l'expiration des sessions.</p>
+
+      <note type="warning"><title>Avertissement</title>
+      <p>L'administrateur devra mettre en oeuvre un traitement externe
+      via cron pour nettoyer les sessions expirées.</p>
+      </note>
+
+    </section>
+
+<directivesynopsis>
+<name>SessionDBDCookieName</name>
+<description>Nom et attributs du cookie RFC2109 qui contient
+l'identifiant de session</description>
+<syntax>SessionDBDCookieName <var>nom</var> <var>attributs</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDCookieName</directive> permet
+    de spécifier le nom et les attributs optionnels d'un cookie
+    compatible RFC2109 qui contiendra l'identifiant de session. Les
+    cookies RFC2109 sont définis à l'aide de l'en-tête HTTP
+    <code>Set-Cookie</code>.
+    </p>
+
+    <p>Une liste optionnelle d'attributs peut être spécifiée pour ce
+    cookie, comme dans l'exemple ci-dessous. Ces attributs sont insérés
+    dans le cookie tel quel, et ne sont pas interprétés par Apache.
+    Assurez-vous que vos attributs sont définis correctement selon la
+    spécification des cookies.
+    </p>
+
+    <example><title>Cookie avec attributs</title>
+      <highlight language="config">
+Session On
+SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDCookieName2</name>
+<description>Nom et attributs du cookie RFC2965 qui contient
+l'identifiant de session</description>
+<syntax>SessionDBDCookieName2 <var>nom</var> <var>attributs</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDCookieName2</directive> permet
+    de spécifier le nom et les attributs optionnels d'un cookie
+    compatible RFC2965 qui contiendra l'identifiant de session. Les
+    cookies RFC2965 sont définis à l'aide de l'en-tête HTTP
+    <code>Set-Cookie2</code>.
+    </p>
+
+    <p>Une liste optionnelle d'attributs peut être spécifiée pour ce
+    cookie, comme dans l'exemple ci-dessous. Ces attributs sont insérés
+    dans le cookie tel quel, et ne sont pas interprétés par Apache.
+    Assurez-vous que vos attributs sont définis correctement selon la
+    spécification des cookies.
+    </p>
+
+    <example><title>Cookie2 avec attributs</title>
+      <highlight language="config">
+Session On
+SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;
+      </highlight>
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDCookieRemove</name>
+<description>Détermine si les cookies de session doivent être supprimés
+des en-têtes HTTP entrants</description>
+<syntax>SessionDBDCookieRemove On|Off</syntax>
+<default>SessionDBDCookieRemove On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDCookieRemove</directive> permet
+    de déterminer si les cookies contenant l'identifiant de session
+    doivent être supprimés des en-têtes pendant le traitement de la
+    requête.</p>
+
+    <p>Dans le cas d'un mandataire inverse où le serveur Apache sert de
+    frontal à un serveur d'arrière-plan, révéler le contenu du cookie de
+    session à ce dernier peut conduire à une violation de la
+    confidentialité. A ce titre, si cette directive est définie à "on",
+    le cookie de session sera supprimé des en-têtes HTTP entrants.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDPerUser</name>
+<description>Active une session propre à un utilisateur</description>
+<syntax>SessionDBDPerUser On|Off</syntax>
+<default>SessionDBDPerUser Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDPerUser</directive> permet
+    d'activer une session propre à un utilisateur, dont la clé sera le
+    nom de l'utilisateur connecté. Si l'utilisateur n'est pas connecté,
+    la directive sera ignorée.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDSelectLabel</name>
+<description>La requête SQL à utiliser pour sélectionner des sessions
+dans la base de données</description>
+<syntax>SessionDBDSelectLabel <var>étiquette</var></syntax>
+<default>SessionDBDSelectLabel selectsession</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDSelectLabel</directive> permet
+    de définir l'étiquette de la requête de sélection par défaut à
+    utiliser pour charger une session. Cette étiquette doit avoir été
+    définie au préalable via une directive <directive
+    module="mod_dbd">DBDPrepareSQL</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDInsertLabel</name>
+<description>La requête SQL à utiliser pour insérer des sessions dans la
+base de données</description>
+<syntax>SessionDBDInsertLabel <var>étiquette</var></syntax>
+<default>SessionDBDInsertLabel insertsession</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDInsertLabel</directive> permet
+    de définir l'étiquette de la requête d'insertion par défaut à
+    charger dans une session. Cette
+    étiquette doit avoir été définie au préalable via une directive
+    <directive module="mod_dbd">DBDPrepareSQL</directive>.</p>
+
+    <p>Si une tentative de mise à jour d'une session ne concerne aucun
+    enregistrement, c'est cette requête qui sera utilisée pour insérer
+    la session dans la base de données.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDUpdateLabel</name>
+<description>La requête SQL à utiliser pour mettre à jour des sessions
+préexistantes dans la base de données</description>
+<syntax>SessionDBDUpdateLabel <var>étiquette</var></syntax>
+<default>SessionDBDUpdateLabel updatesession</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>SessionDBDUpdateLabel</directive> permet
+    de définir l'étiquette de la requête de mise à jour par défaut à
+    charger dans une session. Cette
+    étiquette doit avoir été définie au préalable via une directive
+    <directive module="mod_dbd">DBDPrepareSQL</directive>.</p>
+
+    <p>Si une tentative de mise à jour d'une session ne concerne aucun
+    enregistrement, c'est la requête d'insertion qui sera appelée pour
+    insérer la session dans la base de données. Si la base de données
+    supporte InsertOrUpdate, modifiez cette requête pour effectuer la
+    mise à jour en une seule requête au lieu de deux.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SessionDBDDeleteLabel</name>
+<description>La requête SQL à utiliser pour supprimer des sessions de la
+base de données</description>
+<syntax>SessionDBDDeleteLabel <var>étiquette</var></syntax>
+<default>SessionDBDDeleteLabel deletesession</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive  <directive>SessionDBDDeleteLabel</directive> permet
+    de définir l'étiquette de la requête de suppression à utiliser par
+    défaut pour supprimer une session vide ou expirée. Cette
+    étiquette doit avoir été définie au préalable via une directive
+    <directive module="mod_dbd">DBDPrepareSQL</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
