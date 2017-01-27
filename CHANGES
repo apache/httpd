@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: regression fix on PR 59348, on graceful restart, ongoing 
+     streams are finished normally before the final GOAWAY is sent. 
+     [Stefan Eissing, <slavko gmail.com>]
+     
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]

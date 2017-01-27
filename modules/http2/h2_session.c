@@ -2252,8 +2252,8 @@ apr_status_t h2_session_process(h2_session *session, int async)
                 }
                 else if (APR_STATUS_IS_TIMEUP(status)) {
                     /* go back to checking all inputs again */
-                    transit(session, "wait cycle", session->local.accepting? 
-                            H2_SESSION_ST_BUSY : H2_SESSION_ST_DONE);
+                    transit(session, "wait cycle", session->local.shutdown? 
+                            H2_SESSION_ST_DONE : H2_SESSION_ST_BUSY);
                 }
                 else if (APR_STATUS_IS_ECONNRESET(status) 
                          || APR_STATUS_IS_ECONNABORTED(status)) {
