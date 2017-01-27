@@ -517,7 +517,7 @@ apr_status_t h2_filter_headers_out(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                   "h2_task(%s): output_filter called", task->id);
     
-    if (!task->output.sent_response) {
+    if (!task->output.sent_response && !f->c->aborted) {
         /* check, if we need to send the response now. Until we actually
          * see a DATA bucket or some EOS/EOR, we do not do so. */
         for (b = APR_BRIGADE_FIRST(bb);
