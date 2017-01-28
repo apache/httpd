@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1776091:1780218 (outdated) -->
+<!-- English Revision: 1780218 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -573,7 +573,7 @@ l'Internet Engineering Task Force (IETF).</p>
     [<a href="#AC96">AC96</a>, ch13].</p>
 </section>
 
-<section id="digestfuntion">
+<section id="digestfunction">
 <title>Fonction de création d'empreinte</title>
     <p>Le choix d'une fonction de création d'empreinte détermine la manière
     dont une empreinte est créée à partir d'une unité de données. SSL supporte
