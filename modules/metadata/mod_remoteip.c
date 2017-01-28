@@ -138,6 +138,7 @@ typedef struct {
     int version;
     ap_input_mode_t mode;
     apr_bucket_brigade *bb;
+    apr_bucket_brigade *store_bb;
     int done;
 } remoteip_filter_context;
 
@@ -1037,6 +1038,7 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
         ctx->version = 0;
         ctx->mode = AP_MODE_READBYTES;
         ctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+        ctx->store_bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         ctx->done = 0;
     }
 
@@ -1077,10 +1079,13 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             memcpy(ctx->header + ctx->rcvd, ptr, len);
             ctx->rcvd += len;
 
-            /* Remove instead of delete - we may put this bucket
-               back into bb_out if the header was optional and we
-               pass down the chain */
+            /* Put this bucket into our temporary storage brigade because
+               we may permit a request without a header. In that case, the
+               data in the temporary storage brigade just gets copied
+               to bb_out */
             APR_BUCKET_REMOVE(b);
+            apr_bucket_setaside(b, f->c->pool);
+            APR_BRIGADE_INSERT_TAIL(ctx->store_bb, b);
             psts = HDR_NEED_MORE;
 
             if (ctx->version == 0) {
@@ -1119,8 +1124,8 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                               "RemoteIPProxyProtocol: internal error: unknown version "
                               "%d", ctx->version);
                 f->c->aborted = 1;
-                apr_bucket_delete(b);
                 apr_brigade_destroy(ctx->bb);
+                apr_brigade_destroy(ctx->store_bb);
                 return APR_ECONNABORTED;
             }
 
@@ -1128,10 +1133,11 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                 case HDR_MISSING:
                     if (conn_conf->proxy_protocol_optional) {
                         /* Same as DONE, but don't delete the bucket. Rather, put it
-                           back into the brigade and move the request along the stack */
+                           into the temporary storgage brigade and move all of the data
+                           in temporary storage to the output brigade */
                         ctx->done = 1;
-                        APR_BRIGADE_INSERT_HEAD(bb_out, b);
-                        return ap_pass_brigade(f->next, ctx->bb);
+                        APR_BRIGADE_PREPEND(bb_out, ctx->store_bb);
+                        return APR_SUCCESS;
                     }
                     else {
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(03510)
@@ -1140,20 +1146,16 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                     }
                 case HDR_ERROR:
                     f->c->aborted = 1;
-                    apr_bucket_delete(b);
                     apr_brigade_destroy(ctx->bb);
+                    apr_brigade_destroy(ctx->store_bb);
                     return APR_ECONNABORTED;
 
                 case HDR_DONE:
-                    apr_bucket_delete(b);
                     ctx->done = 1;
                     break;
 
                 case HDR_NEED_MORE:
-                    /* It is safe to delete this bucket if we get here since we know
-                       that we are definitely processing a header (we've read enough to 
-                       know if the signatures exist on the line) */ 
-                    apr_bucket_delete(b);
+                    /* Do nothing - the content was already set aside */
                     break;
             }
         }
@@ -1177,12 +1179,15 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                       ctx->rcvd, APR_BRIGADE_EMPTY(ctx->bb));
         f->c->aborted = 1;
         apr_brigade_destroy(ctx->bb);
+        apr_brigade_destroy(ctx->store_bb);
         return APR_ECONNABORTED;
     }
 
     /* clean up */
     apr_brigade_destroy(ctx->bb);
+    apr_brigade_destroy(ctx->store_bb);
     ctx->bb = NULL;
+    ctx->store_bb = NULL;
 
     /* now do the real read for the upper layer */
     return ap_get_brigade(f->next, bb_out, mode, block, readbytes);
