@@ -565,7 +565,7 @@ l'Internet Engineering Task Force (IETF).</p>
     [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfuntion" id="digestfuntion">Fonction de création d'empreinte</a></h3>
+<h3><a name="digestfunction" id="digestfunction">Fonction de création d'empreinte</a></h3>
 
     <p>Le choix d'une fonction de création d'empreinte détermine la manière
     dont une empreinte est créée à partir d'une unité de données. SSL supporte
