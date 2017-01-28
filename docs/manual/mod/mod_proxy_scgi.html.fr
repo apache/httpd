@@ -106,8 +106,10 @@
 	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> génère une estimation la plus
 	précise possible de <var>PATH_INFO</var>, définissez cette
 	variable d'environnement. La variable doit être définie avant
-	que la directive <code class="directive">SetEnv</code> ne soit effective. Il est possible
-	d'utiliser à la	place la directive <code class="directive">SetEnvIf</code> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	que la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ne soit
+	effective. Il est possible d'utiliser à la place la directive
+	<code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf
+	Request_URI . proxy-scgi-pathinfo</code>
 	</dd>
     </dl>
 </div>
