@@ -226,7 +226,7 @@
     proprement dit, et contient des méta-informations décrivant le contenu.
     </dd>
 
-    <dt><a name="regularexpresion" id="regularexpresion">Expression Rationnelle
+    <dt><a name="regularexpression" id="regularexpression">Expression Rationnelle
     (Regular Expression)</a>
       <a name="regex" id="regex">(Regex)</a></dt>
     <dd>Une méthode pour décrire un modèle sous forme de texte - par exemple,
