@@ -97,10 +97,10 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
 	<module>mod_proxy_scgi</module> génère une estimation la plus
 	précise possible de <var>PATH_INFO</var>, définissez cette
 	variable d'environnement. La variable doit être définie avant
-	que la directive <directive
-	mod="mod_env">SetEnv</directive> ne soit effective. Il est possible
-	d'utiliser à la	place la directive <directive
-	mod="mod_setenvif">SetEnvIf</directive> : <code>SetEnvIf Request_URI . proxy-scgi-pathinfo</code>
+	que la directive <directive module="mod_env">SetEnv</directive> ne soit
+	effective. Il est possible d'utiliser à la place la directive
+	<directive module="mod_setenvif">SetEnvIf</directive> : <code>SetEnvIf
+	Request_URI . proxy-scgi-pathinfo</code>
 	</dd>
     </dl>
 </section>
