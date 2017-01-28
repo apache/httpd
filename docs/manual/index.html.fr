@@ -87,6 +87,7 @@
 <li><a href="howto/public_html.html">Répertoires Web des utilisateurs (public_html)</a></li>
 <li><a href="howto/reverse_proxy.html">Guide de configuration des mandataires
     inverses</a></li>
+<li><a href="howto/http2.html">Guide HTTP/2</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notes spécifiques aux différentes plateformes</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
