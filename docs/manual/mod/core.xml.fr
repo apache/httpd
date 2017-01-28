@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1777163:1780210 (outdated) -->
+<!-- English Revision: 1780210 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1388,13 +1388,21 @@ Apache</compatibility>
     l'option <code>Strict</code>. L'option <code>Unsafe</code>
     a été ajoutée pour pouvoir restaurer les anciens
     comportements nécessaires aux anciens modules et applications et aux agents
-    utilisateurs personnalisés considérés comme obsolètes. Ces règles
+    utilisateurs personnalisés considérés comme obsolètes.</p>
+
+    <p>Ces règles
     s'appliquant avant le traitement de la requête, elles doivent, pour être prises en
     compte, être définies
     au niveau global ou dans la première section par défaut du serveur virtuel
     qui correspond à la requête considérée, par interface IP/port et non par
     nom.</p>
 
+    <p>Cette directive accepte trois paramètres issus de la liste suivante, ceux
+    qui ne sont pas spécifiés prenant leur valeur par défaut :</p>
+
+    <dl>
+    <dt>Strict|Unsafe</dt>
+    <dd>
     <p>Avant l'introduction de cette directive, les interpréteurs de requêtes du
     serveur HTTP Apache toléraient un grand nombre de formats en entrée qui
     n'étaient pas forcément conformes au protocole. <a
@@ -1409,6 +1417,7 @@ Apache</compatibility>
     directive, toutes les règles de grammaire de la spécification doivent être
     respectées dans le mode d'opérations par défaut <code>Strict</code>.</p>
 
+    <note type="warning"><title>Risques de sécurité liés au mode Unsafe</title>
     <p>Il est fortement déconseillé aux utilisateurs d'utiliser le mode
     d'opération <code>Unsafe</code>, ou
     <code>UnsafeWhitespace</code>, en particulier pour les déploiements de
@@ -1417,15 +1426,17 @@ Apache</compatibility>
     nécessite une interface, les utilisateurs ne doivent utiliser les options de
     type UnSafe qu'en cas de nécessité et uniquement au sein d'un serveur
     virtuel bien spécifique et sur un réseau privé.</p>
+    </note>
 
-    <p>La consultation des messages enregistrés dans le journal
-    <directive>ErrorLog</directive>, configuré via la directive
-    <directive>LogLevel</directive> avec un niveau <code>info</code>, pourra
-    vous aider à identifier de telles requêtes non conformes ainsi que leur
-    provenance. Les utilisateurs devront accorder une attention particulière aux
-    messages d'erreur de type 400 dans le journal access pour détecter les
-    requêtes apparemment valides mais rejetées.</p>
-
+    <example>
+        <title>Exemple de requête provoquant l'envoi d'un message HTTP 400 en
+	mode Strict</title>
+        # Missing CRLF<br />
+        GET / HTTP/1.0\n\n
+      </example>
+    </dd>
+    <dt>RegisteredMethods|LenientMethods</dt>
+    <dd>
     <p>La section de la <a
     href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
     &sect;4.1</a> "Request Methods" "Overview" indique que les serveurs doivent
@@ -1435,11 +1446,26 @@ Apache</compatibility>
     possibilité de limiter les méthodes utilisées via l'option
     <code>RegisteredMethods</code> en enregistrant toute méthode non standard
     via la directive <directive>RegisterHttpMethod</directive>, en particulier
-    si l'option <code>Unsafe</code> est utilisée. L'option
+    si l'option <code>Unsafe</code> est utilisée.</p>
+
+    <note type="warning"><title>Compatibilité avec le mandat direct</title>
+    <p>L'option
     <code>RegisteredMethods</code> <strong>ne doit pas</strong> être utilisée
     pour les serveurs mandataires car ces derniers ne connaissent pas les
     méthodes supportées par les serveurs originaux.</p>
+    </note>
 
+    <example>
+        <title>Exemple de requête provoquant l'envoi d'un message HTTP 501 en
+	mode LenientMethods</title>
+        # Méthode HTTP inconnue<br />
+        WOW / HTTP/1.0\r\n\r\n<br /><br />
+        # Méthode HTTP spécifiée en minuscules<br />
+        get / HTTP/1.0\r\n\r\n<br />
+      </example>
+      </dd>
+      <dt>Allow0.9|Require1.0</dt>
+      <dd>
     <p>La section de la <a
     href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
     &sect;19.6</a> "Compatibility With Previous Versions" encouragait les
@@ -1450,6 +1476,23 @@ Apache</compatibility>
     A</a>. A ce titre, l'option <code>Require1.0</code> permet à l'utilisateur
     d'inhiber le comportement induit par l'option par défaut
     <code>Allow0.9</code>.</p>
+
+    <example>
+        <title>Exemple de requête provoquant l'envoi d'un message HTTP 400 en
+	mode Require1.0</title>
+        # Version HTTP non supportée<br />
+        GET /\r\n\r\n
+      </example>
+    </dd>
+    </dl>
+
+    <p>La consultation des messages enregistrés dans le journal
+    <directive>ErrorLog</directive>, configuré via la directive
+    <directive>LogLevel</directive> avec un niveau <code>info</code>, pourra
+    vous aider à identifier de telles requêtes non conformes ainsi que leur
+    provenance. Les utilisateurs devront accorder une attention particulière aux
+    messages d'erreur de type 400 dans le journal access pour détecter les
+    requêtes apparemment valides mais rejetées.</p>    
 </usage>
 </directivesynopsis>
 
