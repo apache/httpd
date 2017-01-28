@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1732097:1780358 (outdated) -->
+<!-- English Revision: 1780358 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -79,6 +79,7 @@
     <page href="howto/public_html.html">Répertoires Web des utilisateurs (public_html)</page>
     <page href="howto/reverse_proxy.html">Guide de configuration des mandataires
     inverses</page>
+    <page href="howto/http2.html">Guide HTTP/2</page>
 </category>
 
 <category id="platform"><title>Notes spécifiques aux différentes plateformes</title>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1732097:1780358 (outdated) -->
+<!-- English Revision: 1780358 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -130,6 +130,7 @@ Compatibilité</page>
 utilisateurs</page>
 <page href="howto/reverse_proxy.html">Guide de configuration des mandataires
 inverses</page>
+<page href="howto/http2.html">Guide HTTP/2</page>
 </category>
 
 <category id="platform">
