@@ -22,7 +22,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="public_html.xml.meta">
+<manualpage metafile="http2.xml.meta">
 <parentdocument href="./">How-To / Tutoriales</parentdocument>
 
   <title>Guía HTTP/2</title>
