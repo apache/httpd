@@ -4679,7 +4679,8 @@ certain events before failing a request</td></tr>
       full.</li>
 
       <li>In <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> and <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>,
-      the length of time to wait for output from a CGI script.</li>
+      the length of time to wait for the first byte of the
+      CGI script's output.</li>
 
       <li>In <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>, the length of time to
       wait for output from a filtering process.</li>
