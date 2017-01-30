@@ -794,15 +794,22 @@ static int proxy_trans(request_rec *r)
     if (dconf->alias) {
         int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
         if (OK == rv) { 
+            int matches = 0;
             /* Got a hit. Need to make sure it's not explicitly declined */
             if (conf->aliases->nelts) {
                 ent = (struct proxy_alias *) conf->aliases->elts;
                 for (i = 0; i < conf->aliases->nelts; i++) {
                     int rv = ap_proxy_trans_match(r, &ent[i], dconf);
+                    if (OK == rv) matches++;
                     if (DECLINED == rv) { 
                         return DECLINED;
                     }
                 }
+            }
+
+            /* a non !-rule matches in server scope, restore */
+            if (matches > 0) {
+                ap_proxy_trans_match(r, dconf->alias, dconf);
             }
             return OK; 
         }
