@@ -150,6 +150,11 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     understanding what worth looking at in order to improve overall performance.
     (https://cdn.wp.nginx.com/wp-content/uploads/2016/12/Amplify-Dashboards-page-base-for-filters.png)
 
+  * Drop CGI-1.1-incompatible behaviors kept for compatibility reasons with
+    "broken" server implementations (PR 51517). (Note that many of them are
+    "broken" *because* of our behaviors.)
+
+
 OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
