@@ -127,6 +127,8 @@ RELEASE SHOWSTOPPERS:
      2.4.x patch: trunk works
      +1: jim
 
+  *) PR60458: Rip out this regression or fix (TBD)
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
