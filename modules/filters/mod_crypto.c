@@ -19,24 +19,27 @@
  *                  stacks.
  */
 
+#include "apr_version.h"
+#if !APR_VERSION_AT_LEAST(2,0,0)
+#include "apu_version.h"
+#endif
+
+#if !APR_VERSION_AT_LEAST(2,0,0) && \
+    !(APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+#error This module requires at least v1.6.0 of apr-util.
+#else
+
 #include "mod_crypto.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_crypto.h"
 #include "apr_base64.h"
 #include "apr_escape.h"
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
-#include "apu_version.h"
-#endif
 #include "util_filter.h"
 #include "http_log.h"
 #include "http_request.h"
 #include "http_protocol.h"
 #include "ap_expr.h"
-
-#if APR_VERSION_AT_LEAST(2,0,0) || \
-    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
 
 APR_HOOK_STRUCT(APR_HOOK_LINK(crypto_key)
                 APR_HOOK_LINK(crypto_iv))
@@ -1308,6 +1311,4 @@ AP_DECLARE_MODULE(crypto) = {
     register_hooks            /* register hooks */
 };
 
-#else
-#error This module requires at least v1.6.0 of apr-util.
 #endif
