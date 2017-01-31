@@ -383,6 +383,12 @@ static void ssl_util_thr_id(CRYPTO_THREADID *id)
 #endif
 }
 
+static apr_status_t ssl_util_thr_id_cleanup(void *old)
+{
+    CRYPTO_THREADID_set_callback(old);
+    return APR_SUCCESS;
+}
+
 #else
 
 static unsigned long ssl_util_thr_id(void)
@@ -403,16 +409,17 @@ static unsigned long ssl_util_thr_id(void)
 #endif
 }
 
+static apr_status_t ssl_util_thr_id_cleanup(void *old)
+{
+    CRYPTO_set_id_callback(old);
+    return APR_SUCCESS;
+}
+
 #endif
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
     CRYPTO_set_locking_callback(NULL);
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
-    CRYPTO_THREADID_set_callback(NULL);
-#else
-    CRYPTO_set_id_callback(NULL);
-#endif
 
     CRYPTO_set_dynlock_create_callback(NULL);
     CRYPTO_set_dynlock_lock_callback(NULL);
@@ -436,12 +443,6 @@ void ssl_util_thread_setup(apr_pool_t *p)
         apr_thread_mutex_create(&(lock_cs[i]), APR_THREAD_MUTEX_DEFAULT, p);
     }
 
-#if OPENSSL_VERSION_NUMBER >= 0x10000000L
-    CRYPTO_THREADID_set_callback(ssl_util_thr_id);
-#else
-    CRYPTO_set_id_callback(ssl_util_thr_id);
-#endif
-
     CRYPTO_set_locking_callback(ssl_util_thr_lock);
 
     /* Set up dynamic locking scaffolding for OpenSSL to use at its
@@ -453,6 +454,17 @@ void ssl_util_thread_setup(apr_pool_t *p)
     CRYPTO_set_dynlock_destroy_callback(ssl_dyn_destroy_function);
 
     apr_pool_cleanup_register(p, NULL, ssl_util_thread_cleanup,
+                                       apr_pool_cleanup_null);
+}
+
+void ssl_util_thread_id_setup(apr_pool_t *p)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10000000L
+    CRYPTO_THREADID_set_callback(ssl_util_thr_id);
+#else
+    CRYPTO_set_id_callback(ssl_util_thr_id);
+#endif
+    apr_pool_cleanup_register(p, NULL, ssl_util_thr_id_cleanup,
                                        apr_pool_cleanup_null);
 }
 #endif /* #if OPENSSL_VERSION_NUMBER < 0x10100000L */

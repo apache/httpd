@@ -30,6 +30,7 @@
 #include "util_md5.h"
 #include "util_mutex.h"
 #include "ap_provider.h"
+#include "http_config.h"
 
 #include "mod_proxy.h" /* for proxy_hook_section_post_config() */
 
@@ -39,6 +40,7 @@
 #include <valgrind.h>
 int ssl_running_on_valgrind = 0;
 #endif
+static int modssl_running_statically = 0;
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ssl, SSL, int, pre_handshake,
                                     (conn_rec *c,SSL *ssl,int is_proxy),
@@ -308,21 +310,40 @@ static const command_rec ssl_config_cmds[] = {
 /*
  *  the various processing hooks
  */
+static int modssl_is_prelinked(void)
+{
+    apr_size_t i = 0;
+    const module *mod;
+    while ((mod = ap_prelinked_modules[i++])) {
+        if (strcmp(mod->name, "mod_ssl.c") == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
     /*
      * Try to kill the internals of the SSL library.
      */
-    /* Corresponds to OPENSSL_load_builtin_modules():
-     * XXX: borrowed from apps.h, but why not CONF_modules_free()
-     * which also invokes CONF_modules_finish()?
-     */
-    CONF_modules_unload(1);
+#ifdef HAVE_FIPS
+    FIPS_mode_set(0);
+#endif
+    /* Corresponds to OBJ_create()s */
+    OBJ_cleanup();
+    /* Corresponds to OPENSSL_load_builtin_modules() */
+    CONF_modules_free();
     /* Corresponds to SSL_library_init: */
     EVP_cleanup();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_cleanup();
 #endif
+#if OPENSSL_VERSION_NUMBER >= 0x1000200fL
+    SSL_COMP_free_compression_methods();
+#endif
+
+    /* Usually needed per thread, but this parent process is single-threaded */
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 #if OPENSSL_VERSION_NUMBER >= 0x1000000fL
     ERR_remove_thread_state(NULL);
@@ -338,11 +359,14 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     ERR_free_strings();
 #endif
 
-    /* Also don't call CRYPTO_cleanup_all_ex_data here; any registered
-     * ex_data indices may have been cached in static variables in
-     * OpenSSL; removing them may cause havoc.  Notably, with OpenSSL
+    /* Also don't call CRYPTO_cleanup_all_ex_data when linked statically here;
+     * any registered ex_data indices may have been cached in static variables
+     * in OpenSSL; removing them may cause havoc.  Notably, with OpenSSL
      * versions >= 0.9.8f, COMP_CTX cleanups would not be run, which
      * could result in a per-connection memory leak (!). */
+    if (!modssl_running_statically) {
+        CRYPTO_cleanup_all_ex_data();
+    }
 
     /*
      * TODO: determine somewhere we can safely shove out diagnostics
@@ -356,10 +380,15 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
-
 #if HAVE_VALGRIND
-     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
+    ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
 #endif
+    modssl_running_statically = modssl_is_prelinked();
+
+    /* Some OpenSSL internals are allocated per-thread, make sure they
+     * are associated to the/our same thread-id until cleaned up.
+     */
+    ssl_util_thread_id_setup(pconf);
 
     /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
@@ -382,6 +411,9 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
                          "SRVName otherName form");
     }
+
+    /* Start w/o errors (e.g. OBJ_txt2nid() above) */
+    ERR_clear_error();
 
     /*
      * Let us cleanup the ssl library when the module is unloaded
