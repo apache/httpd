@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1450091 -->
@@ -25,18 +25,18 @@
 <manualpage metafile="httxt2dbm.xml.meta">
 <parentdocument href="./">Programmes</parentdocument>
 
-<title>httxt2dbm - G&eacute;n&egrave;re des fichiers dbm &agrave; utiliser avec
+<title>httxt2dbm - Génère des fichiers dbm à utiliser avec
 RewriteMap</title>
 
 <summary>
-    <p><code>httxt2dbm</code> permet, &agrave; partir d'une entr&eacute;e au format
-    texte, de g&eacute;n&eacute;rer des fichiers dbm &agrave; utiliser dans les directives
+    <p><code>httxt2dbm</code> permet, à partir d'une entrée au format
+    texte, de générer des fichiers dbm à utiliser dans les directives
     <directive module="mod_rewrite">RewriteMap</directive> avec le type
     de table <code>dbm</code>.
     </p>
 
-    <p>Si le fichier de sortie existe d&eacute;j&agrave;, il ne sera pas tronqu&eacute;. Les
-    nouvelles cl&eacute;s seront ajout&eacute;es et les cl&eacute;s pr&eacute;existantes mises &agrave;
+    <p>Si le fichier de sortie existe déjà, il ne sera pas tronqué. Les
+    nouvelles clés seront ajoutées et les clés préexistantes mises à
     jour.</p>
 </summary>
 <seealso><program>httpd</program></seealso>
@@ -57,23 +57,23 @@ RewriteMap</title>
     <dd>Sortie plus verbeuse</dd>
 
     <dt><code>-f <var>TYPE_DBM</var></code></dt>
-    <dd>Sp&eacute;cifie le type DBM &agrave; utiliser pour le fichier de sortie.
-    S'il n'est pas sp&eacute;cifi&eacute;, c'est la valeur par d&eacute;faut de
-    l'<glossary>APR</glossary> qui sera utilis&eacute;e. Les types disponibles
+    <dd>Spécifie le type DBM à utiliser pour le fichier de sortie.
+    S'il n'est pas spécifié, c'est la valeur par défaut de
+    l'<glossary>APR</glossary> qui sera utilisée. Les types disponibles
     sont :
     <code>GDBM</code> pour les fichiers GDBM,
     <code>SDBM</code> pour les fichiers SDBM,
     <code>DB</code> pour les fichiers DB,
     <code>NDBM</code> pour les fichiers NDBM,
-    <code>default</code> pour le type DBM par d&eacute;faut
+    <code>default</code> pour le type DBM par défaut
     </dd>
 
     <dt><code>-i <var>TEXTE_SOURCE</var></code></dt>
-    <dd>Le fichier d'entr&eacute;e &agrave; partir duquel le fichier dbm sera cr&eacute;&eacute;. Le
-    fichier doit &ecirc;tre format&eacute; de fa&ccedil;on &agrave; ne contenir qu'un seul
-    enregistrement par ligne, de la forme : <code>cl&eacute; valeur</code>.
+    <dd>Le fichier d'entrée à partir duquel le fichier dbm sera créé. Le
+    fichier doit être formaté de façon à ne contenir qu'un seul
+    enregistrement par ligne, de la forme : <code>clé valeur</code>.
     Voir la documentation de la directive <directive
-    module="mod_rewrite">RewriteMap</directive> pour plus de d&eacute;tails &agrave;
+    module="mod_rewrite">RewriteMap</directive> pour plus de détails à
     propos du format de ce fichier et de sa signification.
     </dd>
 

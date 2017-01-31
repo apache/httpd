@@ -596,11 +596,12 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
     APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
     if test "$GCC" = "yes"; then
       APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
+      APACHE_ADD_GCC_CFLAG([-std=c89])
+      APACHE_ADD_GCC_CFLAG([-Werror])
       APACHE_ADD_GCC_CFLAG([-Wdeclaration-after-statement])
-      APACHE_ADD_GCC_CFLAG([-Werror=declaration-after-statement])
       APACHE_ADD_GCC_CFLAG([-Wformat])
       APACHE_ADD_GCC_CFLAG([-Wformat-security])
-      APACHE_ADD_GCC_CFLAG([-Werror=format-security])
+      APACHE_ADD_GCC_CFLAG([-Wunused])
     elif test "$AIX_XLC" = "yes"; then
       APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
     fi
@@ -808,6 +809,13 @@ AC_MSG_NOTICE([])
 AC_MSG_NOTICE([Restore user-defined environment settings...])
 AC_MSG_NOTICE([])
 
+APACHE_CONF_SEL_CC=${CC}
+APACHE_CONF_SEL_CFLAGS=${CFLAGS}
+APACHE_CONF_SEL_LDFLAGS=${LDFLAGS}
+APACHE_CONF_SEL_LIBS=${LIBS}
+APACHE_CONF_SEL_CPPFLAGS=${CPPFLAGS}
+APACHE_CONF_SEL_CPP=${CPP}
+
 APR_RESTORE_THE_ENVIRONMENT(CPPFLAGS, EXTRA_)
 APR_RESTORE_THE_ENVIRONMENT(CFLAGS, EXTRA_)
 APR_RESTORE_THE_ENVIRONMENT(CXXFLAGS, EXTRA_)
@@ -865,3 +873,14 @@ test -d docs/conf||$mkdir_p docs/conf
 AC_CONFIG_FILES(docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf docs/conf/extra/proxy-html.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh)
 AC_CONFIG_COMMANDS([default], [true], [APACHE_GEN_MAKEFILES])
 AC_OUTPUT
+AC_MSG_NOTICE([summary of build options:
+
+    Server Version: ${HTTPD_VERSION}
+    Install prefix: ${prefix}
+    C compiler:     ${APACHE_CONF_SEL_CC}
+    CFLAGS:         ${APACHE_CONF_SEL_CFLAGS}
+    LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
+    LIBS:           ${APACHE_CONF_SEL_LIBS}
+    CPPFLAGS:       ${APACHE_CONF_SEL_CPPFLAGS}
+    C preprocessor: ${APACHE_CONF_SEL_CPP}
+])

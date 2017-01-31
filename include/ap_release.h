@@ -23,7 +23,7 @@
 #define AP_RELEASE_H
 
 #define AP_SERVER_COPYRIGHT \
-  "Copyright 2016 The Apache Software Foundation."
+  "Copyright 2017 The Apache Software Foundation."
 
 /*
  * The below defines the base string of the Server: header. Additional
@@ -43,7 +43,7 @@
 
 #define AP_SERVER_MAJORVERSION_NUMBER 2
 #define AP_SERVER_MINORVERSION_NUMBER 4
-#define AP_SERVER_PATCHLEVEL_NUMBER   24
+#define AP_SERVER_PATCHLEVEL_NUMBER   26
 #define AP_SERVER_DEVBUILD_BOOLEAN    1
 
 /* Synchronize the above with docs/manual/style/version.ent */

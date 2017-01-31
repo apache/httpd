@@ -1346,7 +1346,7 @@ cannot use <code>$N</code> in the substitution string!
 <tr class="odd">
         <td>qslast|QSL</td>
         <td>Interpret the last (right-most) question mark as the query string
-            delimeter, instead of the first (left-most) as normally used.  
+            delimiter, instead of the first (left-most) as normally used.  
             Available in 2.4.19 and later.
         <em><a href="../rewrite/flags.html#flag_qsl">details
         ...</a></em></td>
@@ -1531,7 +1531,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_rewrite.html
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

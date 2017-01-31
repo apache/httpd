@@ -115,7 +115,7 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
 
 static int filter_header_do(void *v, const char *key, const char *val)
 {
-    if ((*key == 'W' || *key == 'w') && !strcasecmp(key, "Warning")
+    if ((*key == 'W' || *key == 'w') && !ap_cstr_casecmp(key, "Warning")
             && *val == '1') {
         /* any stored Warning headers with warn-code 1xx (see section
          * 14.46) MUST be deleted from the cache entry and the forwarded
@@ -129,7 +129,7 @@ static int filter_header_do(void *v, const char *key, const char *val)
 }
 static int remove_header_do(void *v, const char *key, const char *val)
 {
-    if ((*key == 'W' || *key == 'w') && !strcasecmp(key, "Warning")) {
+    if ((*key == 'W' || *key == 'w') && !ap_cstr_casecmp(key, "Warning")) {
         /* any stored Warning headers with warn-code 2xx MUST be retained
          * in the cache entry and the forwarded response.
          */
@@ -427,7 +427,9 @@ int cache_select(cache_request_rec *cache, request_rec *r)
 }
 
 static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
-        const char *uri, apr_uri_t *parsed_uri, const char **key)
+                                           const char *uri, const char *query,
+                                           apr_uri_t *parsed_uri,
+                                           const char **key)
 {
     cache_server_conf *conf;
     char *port_str, *hn, *lcs;
@@ -563,7 +565,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
      * if needed.
      */
     path = uri;
-    querystring = parsed_uri->query;
+    querystring = apr_pstrdup(p, query ? query : parsed_uri->query);
     if (conf->ignore_session_id->nelts) {
         int i;
         char **identifier;
@@ -588,7 +590,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
             /*
              * Check if the identifier is in the querystring and cut it out.
              */
-            if (querystring) {
+            if (querystring && *querystring) {
                 /*
                  * First check if the identifier is at the beginning of the
                  * querystring and followed by a '='
@@ -605,7 +607,7 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
                      * identifier with a '&' and append a '='
                      */
                     complete = apr_pstrcat(p, "&", *identifier, "=", NULL);
-                    param = strstr(querystring, complete);
+                    param = ap_strstr_c(querystring, complete);
                     /* If we found something we are sitting on the '&' */
                     if (param) {
                         param++;
@@ -669,7 +671,11 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
 apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         const char **key)
 {
-    return cache_canonicalise_key(r, p, r->uri, &r->parsed_uri, key);
+    /* We want the actual query-string, which may differ from
+     * r->parsed_uri.query (immutable), so use "" (not NULL).
+     */
+    const char *args = r->args ? r->args : "";
+    return cache_canonicalise_key(r, p, r->uri, args, &r->parsed_uri, key);
 }
 
 /*
@@ -709,12 +715,13 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
 
     location = apr_table_get(r->headers_out, "Location");
     if (location) {
-        if (APR_SUCCESS != apr_uri_parse(r->pool, location, &location_uri)
-                || APR_SUCCESS
-                        != cache_canonicalise_key(r, r->pool, location,
-                                &location_uri, &location_key)
-                || !(r->parsed_uri.hostname && location_uri.hostname
-                        && !strcmp(r->parsed_uri.hostname,
+        if (apr_uri_parse(r->pool, location, &location_uri)
+                || cache_canonicalise_key(r, r->pool,
+                                          location, NULL,
+                                          &location_uri, &location_key)
+                || !(r->parsed_uri.hostname
+                     && location_uri.hostname
+                     && !strcmp(r->parsed_uri.hostname,
                                 location_uri.hostname))) {
             location_key = NULL;
         }
@@ -722,14 +729,15 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
 
     content_location = apr_table_get(r->headers_out, "Content-Location");
     if (content_location) {
-        if (APR_SUCCESS
-                != apr_uri_parse(r->pool, content_location,
-                        &content_location_uri)
-                || APR_SUCCESS
-                        != cache_canonicalise_key(r, r->pool, content_location,
-                                &content_location_uri, &content_location_key)
-                || !(r->parsed_uri.hostname && content_location_uri.hostname
-                        && !strcmp(r->parsed_uri.hostname,
+        if (apr_uri_parse(r->pool, content_location,
+                          &content_location_uri)
+                || cache_canonicalise_key(r, r->pool,
+                                          content_location, NULL,
+                                          &content_location_uri,
+                                          &content_location_key)
+                || !(r->parsed_uri.hostname
+                     && content_location_uri.hostname
+                     && !strcmp(r->parsed_uri.hostname,
                                 content_location_uri.hostname))) {
             content_location_key = NULL;
         }

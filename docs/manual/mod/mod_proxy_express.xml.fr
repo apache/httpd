@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1774024 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,7 +41,7 @@ dynamique inverse de masse</description>
     <module>mod_proxy_balancer</module>, qui propose aussi la croissance
     dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
     de serveurs d'arrière-plan. Il convient parfaitement pour créer un
-    commutateur HTTP frontal.</p>
+    commutateur HTTP frontal et pour les architectures Microservices.</p>
 
     <p>Pour pouvoir être utilisé, ce module nécessite le chargement de
     <module>mod_proxy</module>.</p>

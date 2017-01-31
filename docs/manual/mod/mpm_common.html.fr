@@ -670,7 +670,10 @@ processus</td></tr>
     MPMs <code class="module"><a href="../mod/worker.html">worker</a></code> et <code class="module"><a href="../mod/event.html">event</a></code>, cette directive, en combinaison avec
     <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>, définit le
     nombre maximum que l'on peut affecter à <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, et ceci pour la durée de
-    vie du processus Apache httpd. Au cours d'un redémarrage, vous pouvez
+    vie du processus Apache httpd. Avec le MPM <code class="module"><a href="../mod/event.html">event</a></code>, cette
+    directive permet aussi de définir le nombre de processus anciens du serveur
+    pouvant continuer à s'exécuter pour terminer le traitement des connexions
+    ouvertes. Au cours d'un redémarrage, vous pouvez
     modifier la valeur de la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>, alors que toute
     tentative de modification de la valeur de la directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code> sera ignorée.</p>
 
@@ -921,7 +924,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mpm_common.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

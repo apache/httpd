@@ -370,7 +370,7 @@ LDAPTrustedGlobalCert KEY_BASE64 "/certs/key1.pem" [password]
         <p>Both CA and client certificates may be specified globally
         (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).
         When any settings are specified per-connection, the global
-        settings are superceded.</p>
+        settings are superseded.</p>
 
         <p>The documentation for the SDK claims to support both SSL and
         STARTTLS, however STARTTLS does not seem to work on all versions
@@ -864,7 +864,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_ldap.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

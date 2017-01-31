@@ -34,7 +34,9 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.24  : In development.
+    2.4.26  : In development.
+    2.4.25  : Tagged on December 16, 2016. Released on December 21, 2016.
+    2.4.24  : Tagged on December 16, 2016, not released.
     2.4.23  : Tagged on June 30, 2016. Released on July 05, 2016.
     2.4.22  : Tagged on June 20, 2016, not released.
     2.4.21  : Tagged on June 16, 2016, not released.
@@ -113,18 +115,91 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  *) PR 60576: 2.4.21 broke PHP-FPM with the patch to strip the bogus "proxy://"
+     prefix from SCRIPT_FILENAME. We need to revert to the previous behavior
+     ASAP to avoid any further hurdles with FCGI implementations while we figure
+     this out.
+
+  *) PR 60071: Child httpd processes crash with Segmentation fault
+     trunk patch: http://svn.apache.org/r1779573
+                  http://svn.apache.org/r1779574
+                  http://svn.apache.org/r1779623
+     2.4.x patch: trunk works
+     +1: jim
+
+  *) PR60458: Rip out this regression or fix (TBD)
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Remove unnecessary apr_table_do() function casts.
-     trunk patch: http://svn.apache.org/r1769192
-     2.4.x patch: trunk works
-     +1: jchampion, rpluem, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
+
+  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
+     allowing per backend TLS configuration.
+     trunk patch: http://svn.apache.org/r1740928
+                  http://svn.apache.org/r1740960
+                  http://svn.apache.org/r1740967
+                  http://svn.apache.org/r1740987
+                  http://svn.apache.org/r1740998
+                  http://svn.apache.org/r1742697
+                  http://svn.apache.org/r1756976
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
+     +1: ylavic
+
+  *) event: close a race condition where we might re-enable listeners while they
+     are already or about to be closed.
+     trunk patch: http://svn.apache.org/r1774541
+     2.4.x patch: trunk works
+     +1: ylavic, jim
+
+  *) mod_proxy_fcgi: Return HTTP 504 rather than 503 in case of proxy timeout.
+     trunk patch: http://svn.apache.org/r1775858
+     2.4 patch: trunk works (modulo CHANGES)
+     +1: elukey
+
+  *) mod_remoteip: Add PROXY protocol support
+     trunk patch: http://svn.apache.org/r1776575
+                  http://svn.apache.org/r1776578 (doc fix)
+                  http://svn.apache.org/r1776627 (shortened name + doc fix)
+                  http://svn.apache.org/r1776674 (attribution moved to CHANGES)
+                  http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
+     2.4 patch (includes CHANGES):
+                  http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
+     +1: druggeri, jim
+     ±0: jorton, not reviewed but please include r1781030 too
+
+  *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
+     AP_FTYPE_CONTENT_SET.  PR58856
+     trunk patch: http://svn.apache.org/r1726705
+     2.4.x patch: trunk works
+     +1: covener, jim
+
+  *) mod_watchdog: Use pconf as parent pool so mutexes get cleaned on restarts/reloads
+     and fix leaking sems (https://bugzilla.redhat.com/show_bug.cgi?id=1410883)
+     trunk patch: http://svn.apache.org/r1778319
+                  http://svn.apache.org/r1778331
+     2.4.x patch: trunk works
+     +1: jim, jorton, 
+
+  *) mod_brotli: Backport of mod_brotli filter
+     trunk patch: http://svn.apache.org/r1761714
+                  http://svn.apache.org/r1762512
+                  http://svn.apache.org/r1762515
+                  http://svn.apache.org/r1771791
+                  http://svn.apache.org/r1779077
+     2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
+     +1: jim, jorton,
+
+  *) mod_auth_digest: Use anonymous shm by default, fall back on name-based
+     trunk patch: http://svn.apache.org/r1684636
+     2.4.x patch: trunk works (needs CHANGES, ref PR 54622)
+     +1: jorton, 
+     
+PATCHES/ISSUES THAT ARE BEING WORKED
+  [ New entried should be added at the START of the list ]
 
   *) mod_ssl: Return 502 instead of 500 when SSL peer check or 
      proxy_post_handshake hook fails. 
@@ -155,118 +230,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      The code has been tested with a simple PHP script returning different Last-Modified
      headers (GMT now, GMT now Europe/Paris, GMT tomorrow, GMT yesterday, PST now).
      +1: elukey
-
-  *) mod_ssl: Fix quick renegotiation (OptRenegotiaton) with no intermediate
-     in the client certificate chain.  PR 55786.
-     trunk patch: http://svn.apache.org/r1756542
-     2.4.x patch: trunk works (modulo CHANGES)
-     +1: ylavic, icing (by inspectin)
-
-  *) mod_proxy, mod_ssl: Handle SSLProxy* directives in <Proxy> sections,
-     allowing per backend TLS configuration.
-     trunk patch: http://svn.apache.org/r1740928
-                  http://svn.apache.org/r1740960
-                  http://svn.apache.org/r1740967
-                  http://svn.apache.org/r1740987
-                  http://svn.apache.org/r1740998
-                  http://svn.apache.org/r1742697
-                  http://svn.apache.org/r1756976
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
-     +1: ylavic
-
-  *) Fix warnings with new compilers, warnings treated as error
-     in maintainer-mode, standard c-89 is enforced
-     trunk patch: http://svn.apache.org/r1702948
-                  http://svn.apache.org/r1759415
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1702948_and_co.patch
-     +1: ylavic, jorton, 
-     jchampion: r1702948 doesn't quite work as advertised. -Werror is never
-                added to CFLAGS because when combined with -Wstrict-prototypes,
-                the AC_LANG_PROGRAM won't compile (it uses a bare main()).
-     ylavic: Maybe the -Werror case could be handled later, for now this series
-             avoids a lot of "warning: 'aplog_module_index' defined but not
-             used [-Wunused-const-variable=]" thanks to AP_MAYBE_UNUSED.
-     jchampion: Fine by me. I just think the dead code should be removed from
-                the backport in the meantime, so people don't have a false sense
-                of security.
-
-  *) mod_cache: Bring up-to-date w/ trunk.
-     trunk patch:
-        try to use the key of a possible open but stale cache entry (PR 50317)
-            http://svn.apache.org/r1597533
-        socache_mc_store: Pass through expiration time.
-            http://svn.apache.org/r1649491
-        Preserve the Content-Type in case of 304 response
-            http://svn.apache.org/r1665216
-        Use the actual URI path and query-string (PR 21935)
-            http://svn.apache.org/r1756553
-            http://svn.apache.org/r1756631
-        better s-maxage support
-            http://svn.apache.org/r1726675
-            http://svn.apache.org/r1718496
-            http://svn.apache.org/r1718476
-        Rename ap_casecmpstr[n]() to ap_cstr_casecmp[n](), update with APR doxygen
-            http://svn.apache.org/r1747469 
-     2.4.x patch: http://home.apache.org/~jim/patches/httpd-2.4-cache.patch.txt
-     +1: jim, ylavic
-     ylavic: r1756553 and r1649491 have a CHANGES entry.
-
-  *) mod_socache_memcache: Provide memcache STATs to mod_status
-     trunk patch: http://svn.apache.org/r1768245
-     2.4.x patch: trunk works
-     +1: jim
-
-  *) Propose default strict RFC7230 behavior, and HttpProtocolOptions directive
-     to relax or further constrain some behaviors.
-     trunk patches: too numerous to list, see 
-       svn log --stop-on-copy http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-     2.4.x patch: see
-       svn diff -r1767912:HEAD http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x-merge-http-strict/
-     +1: wrowe
-
-  *) ap_reclaim_child_processes(): Implement terminate immediately
-     trunk patches:
-       https://svn.apache.org/r1757061
-       https://svn.apache.org/r1770750
-     2.4.x patch: https://people.apache.org/~sf/PR53555_1_ap_reclaim_child_processes.diff
-     +1: sf
-
-  *) Improve mod_status view of async connections
-     trunk patches:
-       https://svn.apache.org/r1738628
-       https://svn.apache.org/r1757009
-       https://svn.apache.org/r1756848
-       https://svn.apache.org/r1757029
-     2.4.x patch: https://people.apache.org/~sf/PR53555_2_mod_status.diff
-     +1: sf
-
-  *) mpm_event: Free resources earlier during shutdown
-     trunk patches:
-       https://svn.apache.org/r1705922
-       https://svn.apache.org/r1706523
-       https://svn.apache.org/r1738464
-       https://svn.apache.org/r1738466
-       https://svn.apache.org/r1738486
-     2.4.x patch: https://people.apache.org/~sf/PR53555_3_free_early.diff
-     +1: sf
-
-  *) mpm_event: Use all free scoreboard slots up to ServerLimit, but don't
-     re-use scoreboard slots of still running, gracefully finishing processes.
-     PR: 53555
-     trunk patches:
-       https://svn.apache.org/r1738631
-       https://svn.apache.org/r1738633
-       https://svn.apache.org/r1738635
-       https://svn.apache.org/r1757030
-       https://svn.apache.org/r1757031
-       https://svn.apache.org/r1770752
-       https://svn.apache.org/r1770768
-     2.4.x patch: https://people.apache.org/~sf/PR53555_4_use_all_slots.diff
-     docs: https://svn.apache.org/r1770771 (in addition to the above)
-     +1: sf
-
-
-PATCHES/ISSUES THAT ARE BEING WORKED
 
   *) http: Don't remove the Content-Length of zero from a HEAD response if
      it comes from an origin server, module or script. Allow the previous
@@ -326,15 +289,26 @@ PATCHES/ISSUES THAT ARE BEING WORKED
          (& also, making the structure change with apr-util version
          means it breaks binary compat across an apr-util upgrade?)
 
-  * mod_auth_digest: Reduce severity from NOTICE to DEBUG this 
-    once-per-restart msg (I guess the concern was that the RNG
-    could block after this message)
+   * Support PCRE2 (10.x) in place of PCRE (8.x).
+     Submitted by: wrowe, Petr Pisar [ppisar redhat.com]
+     trunk patches:
+         http://svn.apache.org/r1773454
+         http://svn.apache.org/r1773741
+         http://svn.apache.org/r1773742
+         http://svn.apache.org/r1773839
+         http://svn.apache.org/r1773870
+         http://svn.apache.org/r1773882
+     wrowe notes that the current code is too inefficient, owing to the fact
+     that the ovector is a required allocation and is no longer allocated on
+     the stack, by design. The correct fix is an apr userdata allocation on
+     the appropriate pool, which would be thread-safe, but the actual API of
+     ap_regexec[_len]() offers us no pool. We cannot associate that pool with
+     the ap_regex_t, because a single regex may be used by many threads in
+     parallel and is not thread-safe beyond initialization.
+     So the only fix allowing us to use PCRE 10 in httpd 2.4 would be to write
+     this as a thread safe storage buffer for the majority of cases (<10 $args)
+     and we don't have a portable tls mechanism to do so.
 
-      AH01757: generating secret for digest authentication ...
-
-    trunk patch: This was fixed in trunk as a trivial part of http://svn.apache.org/r1492395
-    2.4.x patch: Just change the loglevel to DEBUG.
-    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 

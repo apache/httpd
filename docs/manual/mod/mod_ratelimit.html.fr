@@ -36,16 +36,30 @@
 <h3>Sommaire</h3>
 
 
-<p>Ce module fournit un filtre <code>rate_limit</code> pour limiter la
-bande passante des clients. La variable d'environnement
+<p>Ce module fournit un filtre <code>RATE_LIMIT</code> pour limiter la
+bande passante des clients. Cette contrainte s'applique à chaque réponse HTTP au
+moment où elle est envoyée au client ; elle n'affecte pas les autres échanges
+entre le client et le serveur. La variable d'environnement
 <code>rate-limit</code> permet de spécifier, en kb/s, le débit de la
 connexion à simuler.</p>
+
+<p>Optionnellement, il est possible, via la variable d'environnement
+<code>rate-initial-burst</code>, de définir une quantité de données en
+kOctets à transmettre à pleine vitesse avant de limiter la bande passante à la
+valeur voulue.</p>
 
 <div class="example"><h3>Exemple de configuration</h3><pre class="prettyprint lang-config">&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400
+    SetEnv rate-initial-burst 512
 &lt;/Location&gt;</pre>
-</div>
+<div class="warning">
+Si la valeur affectée à <code>rate-limit</code> dépasse la valeur maximale à
+affecter à un entier, la limitation de bande passante sera désactivée. Si la
+valeur affectée à <code>rate-limit-burst</code> dépasse la valeur maximale à
+affecter à un entier, la transmission du burst initial sans limitation de bande
+passante sera désactivée.
+</div></div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -76,7 +90,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_ratelimit.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

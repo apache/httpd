@@ -29,7 +29,7 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reflector.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_reflector.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Réfléchit un corps de requête comme réponse via la pile de
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Renvoie un corps de requête comme réponse via la pile de
 filtres en sortie.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>reflector_module</td></tr>
@@ -83,7 +83,7 @@ filtres en sortie.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="reflectorheader" id="reflectorheader">Directive</a> <a name="ReflectorHeader" id="ReflectorHeader">ReflectorHeader</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Réfléchit un en-tête d'entrée dans les en-têtes de sortie</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Renvoie un en-tête d'entrée dans les en-têtes de sortie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReflectorHeader <var>en-tête-entrée</var> <var>[en-tête-sortie]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Options</td></tr>
@@ -120,7 +120,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_reflector.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

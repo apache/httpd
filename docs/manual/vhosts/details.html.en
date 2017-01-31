@@ -112,7 +112,7 @@
     server does not support <a class="glossarylink" href="../glossary.html#servernameindication" title="see glossary">Server Name Indication</a>.</p>
 
     <p>The complete list of names in the <code>VirtualHost</code>
-    directive are treated just like a (non wildcard) <code>ServerAlias</code> 
+    directive are treated just like a (non wildcard) <code>ServerAlias</code>
     (but are not overridden by any <code>ServerAlias</code> statement).</p>
 
     <p>For every vhost various default values are set. In
@@ -295,7 +295,7 @@
       topics.</li>
 
       <li><code>ServerName</code> should always be set for each
-      vhost. Otherwise A DNS lookup is required for each
+      vhost. Otherwise a DNS lookup is required for each
       vhost.</li>
       </ul>
       
@@ -339,7 +339,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/vhosts/details.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

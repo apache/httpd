@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#ifdef HAVE_SYS_TIMES_H
+#if APR_HAVE_SYS_TIME_H
 #include <sys/time.h>
 #include <sys/times.h>
 #endif

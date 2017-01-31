@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1242481 -->
+<!-- English Revision: 1779470 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,12 +29,12 @@
 
 <summary>
      <p><code>httpd</code> est le programme du serveur HTTP d'Apache. Il
-     a &eacute;t&eacute; con&ccedil;u pour fonctionner sous forme de processus d&eacute;mon
-     ind&eacute;pendant. Lorsqu'il est utilis&eacute; ainsi, il va cr&eacute;er un jeu de
-     processus enfants ou de threads qui traiteront les requ&ecirc;tes.</p>
+     a été conçu pour fonctionner sous forme de processus démon
+     indépendant. Lorsqu'il est utilisé ainsi, il va créer un jeu de
+     processus enfants ou de threads qui traiteront les requêtes.</p>
 
-     <p>En g&eacute;n&eacute;ral, <code>httpd</code> n'est pas invoqu&eacute; directement,
-     mais plut&ocirc;t via <program>apachectl</program> sur les syst&egrave;mes de
+     <p>En général, <code>httpd</code> n'est pas invoqué directement,
+     mais plutôt via <program>apachectl</program> sur les systèmes de
      style Unix ou <a
      href="../platform/windows.html#winsvc">en tant que service sous
      Windows NT, 2000 et XP</a> et <a
@@ -42,10 +42,10 @@
      console sous Windows 9x et ME</a>.</p>
 </summary>
 
-<seealso><a href="../invoking.html">D&eacute;marrer Apache httpd</a></seealso>
-<seealso><a href="../stopping.html">Arr&ecirc;ter Apache httpd</a></seealso>
+<seealso><a href="../invoking.html">Démarrer Apache httpd</a></seealso>
+<seealso><a href="../stopping.html">Arrêter Apache httpd</a></seealso>
 <seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
-<seealso><a href="../platform/">Documentations sp&eacute;cifiques aux
+<seealso><a href="../platform/">Documentations spécifiques aux
 plates-formes</a></seealso>
 <seealso><program>apachectl</program></seealso>
 
@@ -53,17 +53,17 @@ plates-formes</a></seealso>
      <p><code><strong>httpd</strong> [ -<strong>d</strong>
      <var>racine-serveur</var> ] [ -<strong>f</strong> <var>config</var> ]
      [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
-     <var>directive</var> ] [ -<strong>D</strong> <var>param&egrave;tre</var> ]
+     <var>directive</var> ] [ -<strong>D</strong> <var>paramètre</var> ]
      [ -<strong>e</strong> <var>niveau</var> ] [ -<strong>E</strong>
      <var>fichier</var> ]
      [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
-     [ -<strong>R</strong> <var>r&eacute;pertoire</var> ] [ -<strong>h</strong> ]
+     [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
      [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
      </code></p>
 
-     <p>Sur les <a href="../platform/windows.html">syst&egrave;mes Windows</a>,
+     <p>Sur les <a href="../platform/windows.html">systèmes Windows</a>,
      les options additionnelles suivantes sont disponibles :</p>
 
      <p><code><strong>httpd</strong> [ -<strong>k</strong>
@@ -76,105 +76,105 @@ plates-formes</a></seealso>
 <dl>
 <dt><code>-d <var>racine-serveur</var></code></dt>
 
-<dd>D&eacute;finit la valeur initiale de la directive <directive
-module="core">ServerRoot</directive> &agrave; <var>racine-serveur</var>. Cette
-valeur peut &ecirc;tre &eacute;cras&eacute;e par la directive ServerRoot du fichier de
-configuration. La valeur par d&eacute;faut est
+<dd>Définit la valeur initiale de la directive <directive
+module="core">ServerRoot</directive> à <var>racine-serveur</var>. Cette
+valeur peut être écrasée par la directive ServerRoot du fichier de
+configuration. La valeur par défaut est
 <code>/usr/local/apache2</code>.</dd>
 
 <dt><code>-f <var>config</var></code></dt>
 
-<dd>Utilise les directives du fichier <var>config</var> au d&eacute;marrage. Si
-<var>config</var> ne commence pas par un '/', il est consid&eacute;r&eacute; comme
-relatif au chemin d&eacute;fini par la directive <directive
-module="core">ServerRoot</directive>. La valeur par d&eacute;faut est
+<dd>Utilise les directives du fichier <var>config</var> au démarrage. Si
+<var>config</var> ne commence pas par un '/', il est considéré comme
+relatif au chemin défini par la directive <directive
+module="core">ServerRoot</directive>. La valeur par défaut est
 <code>conf/httpd.conf</code>.</dd>
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Permet de d&eacute;marrer, red&eacute;marrer ou arr&ecirc;ter <code>httpd</code>. Voir <a
-href="../stopping.html">Arr&ecirc;ter Apache httpd</a> pour plus d'informations.</dd>
+<dd>Permet de démarrer, redémarrer ou arrêter <code>httpd</code>. Voir <a
+href="../stopping.html">Arrêter Apache httpd</a> pour plus d'informations.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
 
-<dd>Ex&eacute;cute la directive de configuration <var>directive</var> avant de
+<dd>Exécute la directive de configuration <var>directive</var> avant de
 lire les fichiers de configurations.</dd>
 
 <dt><code>-c <var>directive</var></code></dt>
 
-<dd>Ex&eacute;cute la directive de configuration <var>directive</var> apr&egrave;s
+<dd>Exécute la directive de configuration <var>directive</var> après
 avoir lu les fichiers de configurations.</dd>
 
 
-<dt><code>-D <var>param&egrave;tre</var></code></dt>
+<dt><code>-D <var>paramètre</var></code></dt>
 
-<dd>D&eacute;finit un <var>param&egrave;tre</var> de configuration &agrave; utiliser dans les
+<dd>Définit un <var>paramètre</var> de configuration à utiliser dans les
 sections <directive type="section" module="core">IfDefine</directive>
-des fichiers de configuration, ces derni&egrave;res permettant d'ex&eacute;cuter ou
+des fichiers de configuration, ces dernières permettant d'exécuter ou
 non des
-commandes au d&eacute;marrage ou au red&eacute;marrage du serveur. Sert aussi &agrave;
-d&eacute;finir certains param&egrave;tres de d&eacute;marrage moins courants comme
-<code>-DNO_DETACH</code> (emp&ecirc;che le processus parent de lancer des
-processus enfants) et <code>-DFOREGROUND</code> (emp&ecirc;che le processus
+commandes au démarrage ou au redémarrage du serveur. Sert aussi à
+définir certains paramètres de démarrage moins courants comme
+<code>-DNO_DETACH</code> (empêche le processus parent de lancer des
+processus enfants) et <code>-DFOREGROUND</code> (empêche le processus
 parent d'appeler <code>setsid()</code> et autres).</dd>
 
 <dt><code>-e <var>niveau</var></code></dt>
 
-<dd>D&eacute;finit la directive <directive module="core">LogLevel</directive> &agrave;
-<var>niveau</var> pendant le d&eacute;marrage du serveur. Ceci permet
-d'augmenter temporairement la verbosit&eacute; des messages d'erreur afin de
-d&eacute;terminer les probl&egrave;mes de d&eacute;marrage.</dd>
+<dd>Définit la directive <directive module="core">LogLevel</directive> à
+<var>niveau</var> pendant le démarrage du serveur. Ceci permet
+d'augmenter temporairement la verbosité des messages d'erreur afin de
+déterminer les problèmes de démarrage.</dd>
 
 <dt><code>-E <var>fichier</var></code></dt>
 
-<dd>Envoie les messages d'erreur de d&eacute;marrage vers le fichier
+<dd>Envoie les messages d'erreur de démarrage vers le fichier
 <var>fichier</var>.</dd>
 
 <dt><code>-h</code></dt>
 
-<dd>Affiche un bref r&eacute;sum&eacute; des options de ligne de commande
+<dd>Affiche un bref résumé des options de ligne de commande
 disponibles.</dd>
 
 <dt><code>-l</code></dt>
 
-<dd>Affiche la liste des modules compil&eacute;s dans le le serveur. Ce
-param&egrave;tre n'affiche <strong>pas</strong> les modules charg&eacute;s
+<dd>Affiche la liste des modules compilés dans le le serveur. Ce
+paramètre n'affiche <strong>pas</strong> les modules chargés
 dynamiquement via la directive <directive
 module="mod_so">LoadModule</directive>.</dd>
 
 <dt><code>-L</code></dt>
 
 <dd>Affiche une liste des directives fournies par les modules statiques
-avec les arguments associ&eacute;s, ainsi que les contextes dans lesquels elles
-sont valides. Les directives fournies par les modules partag&eacute;s
-(dynamiques) ne sont pas affich&eacute;es).</dd>
+avec les arguments associés, ainsi que les contextes dans lesquels elles
+sont valides. Les directives fournies par les modules partagés
+(dynamiques) ne sont pas affichées).</dd>
 
 <dt><code>-M</code></dt>
 
-<dd>Affiche une liste des modules statiques et des modules charg&eacute;s
+<dd>Affiche une liste des modules statiques et des modules chargés
 dynamiquement.</dd>
 
 <dt><code>-S</code></dt>
 
-<dd>Affiche la configuration telle qu'elle est issue de l'interpr&eacute;tation
+<dd>Affiche la configuration telle qu'elle est issue de l'interprétation
 du fichier de configuration (actuellement, seule la configuration des
-serveurs virtuels est affich&eacute;e).</dd>
+serveurs virtuels est affichée).</dd>
 
 <dt><code>-T</code> (disponible depuis la version 2.3.8)</dt>
 
-<dd>Emp&ecirc;che la v&eacute;rification de la racine des documents (DocumentRoot) au
-d&eacute;marrage/red&eacute;marrage.</dd>
+<dd>Empêche la vérification de la racine des documents (DocumentRoot) au
+démarrage/redémarrage.</dd>
 
 <dt><code>-t</code></dt>
 
-<dd>Ex&eacute;cute une v&eacute;rification de syntaxe pour les fichiers de
-configuration seulement. Le programme se termine imm&eacute;diatement apr&egrave;s ces
-tests de v&eacute;rification de syntaxe avec soit un code de retour de 0
-(syntaxe OK), soit un code de retour diff&eacute;rent de 0 (erreur de
-syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est d&eacute;fini, les
-d&eacute;tails de la configuration des serveurs virtuels seront affich&eacute;s. Si -D
-<var>DUMP</var>_<var>MODULES </var> est d&eacute;fini, tous les modules charg&eacute;s
-seront affich&eacute;s.</dd>
+<dd>Exécute une vérification de syntaxe pour les fichiers de
+configuration seulement. Le programme se termine immédiatement après ces
+tests de vérification de syntaxe avec soit un code de retour de 0
+(syntaxe OK), soit un code de retour différent de 0 (erreur de
+syntaxe). Si -D <var>DUMP</var>_<var>VHOSTS </var> est défini, les
+détails de la configuration des serveurs virtuels seront affichés. Si -D
+<var>DUMP</var>_<var>MODULES </var> est défini, tous les modules chargés
+seront affichés.</dd>
 
 <dt><code>-v</code></dt>
 
@@ -182,13 +182,13 @@ seront affich&eacute;s.</dd>
 
 <dt><code>-V</code></dt>
 
-<dd>Le programme affiche la version et les param&egrave;tres de compilation de
+<dd>Le programme affiche la version et les paramètres de compilation de
 <code>httpd</code>, puis se termine.</dd>
 
 <dt><code>-X</code></dt>
 
-<dd>Ex&eacute;cute httpd en mode debug. Un seul processus sera d&eacute;marr&eacute;, et le
-serveur ne rendra pas la main &agrave; la console.</dd>
+<dd>Exécute httpd en mode debug. Un seul processus sera démarré, et le
+serveur ne rendra pas la main à la console.</dd>
 
 </dl>
 
@@ -200,17 +200,17 @@ href="../platform/windows.html">plate-forme Windows</a> :</p>
 <dt><code>-k install|config|uninstall</code></dt>
 
 <dd>Respectivement : installe Apache httpd en tant que service Windows NT ;
-modifie les options de d&eacute;marrage du service Apache httpd ; d&eacute;sinstalle le
+modifie les options de démarrage du service Apache httpd ; désinstalle le
 service Apache httpd.</dd>
 
 <dt><code>-n <var>nom</var></code></dt>
 
-<dd>Le <var>nom</var> du service Apache httpd &agrave; actionner.</dd>
+<dd>Le <var>nom</var> du service Apache httpd à actionner.</dd>
 
 <dt><code>-w</code></dt>
 
-<dd>Garde la console Windows ouverte en cas de probl&egrave;me de fa&ccedil;on &agrave; ce
-que le message d'erreur puisse &ecirc;tre lu.</dd>
+<dd>Garde la console Windows ouverte en cas de problème de façon à ce
+que le message d'erreur puisse être lu.</dd>
 
 </dl>
 

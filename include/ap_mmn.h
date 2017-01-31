@@ -487,6 +487,13 @@
  * 20120211.65 (2.4.24-dev) Add ap_check_pipeline().
  * 20120211.66 (2.4.24-dev) Rename ap_proxy_check_backend() to
  *                          ap_proxy_check_connection().
+ * 20120211.67 (2.4.24-dev) Add http09_enable, http_conformance, and
+ *                          http_methods to core_server_config
+ *                          Add ap_scan_http_field_token(),
+ *                          ap_scan_http_field_content(),
+ *                          and ap_scan_vchar_obstext()
+ *                          Replaced fold boolean with with multiple bit flags
+ *                          to ap_[r]getline()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -494,7 +501,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 66                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 67                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

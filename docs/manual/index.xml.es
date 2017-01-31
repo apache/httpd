@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1732097 -->
+<!-- English Revision: 1732097:1780358 (outdated) -->
 <!-- Spanish Update by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Review by Sergio Ramos -->
 <!--

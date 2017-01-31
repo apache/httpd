@@ -45,7 +45,7 @@ dynamique inverse de masse</td></tr>
     <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, qui propose aussi la croissance
     dynamique, mais il est conçu pour gérer un nombre beaucoup plus important
     de serveurs d'arrière-plan. Il convient parfaitement pour créer un
-    commutateur HTTP frontal.</p>
+    commutateur HTTP frontal et pour les architectures Microservices.</p>
 
     <p>Pour pouvoir être utilisé, ce module nécessite le chargement de
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
@@ -199,7 +199,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_proxy_expres
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

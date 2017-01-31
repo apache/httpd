@@ -54,7 +54,7 @@ plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.h
      [ -<strong>e</strong> <var>niveau</var> ] [ -<strong>E</strong>
      <var>fichier</var> ]
      [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
-     [ -<strong>R</strong> <var>répertoire</var> ] [ -<strong>h</strong> ]
+     [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
      [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
@@ -230,7 +230,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/programs/httpd.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

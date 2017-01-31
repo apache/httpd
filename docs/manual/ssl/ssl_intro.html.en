@@ -405,7 +405,7 @@ establishing a protocol session.</p>
     </tr>
     <tr><td>TLS v1.2</td>
         <td>Proposed Internet Standard (from IETF) [<a href="#TLS12">TLS12</a>]</td>
-        <td>Update of TLS 1.2 deprecating MD5 as hash, and adding incompatibility
+        <td>Update of TLS 1.1 deprecating MD5 as hash, and adding incompatibility
         to SSL so it will never negotiate the use of SSLv2.</td>
     </tr>
     </table>
@@ -520,7 +520,7 @@ the Internet Engineering Task Force (IETF).</p>
     and "RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfuntion" id="digestfuntion">Digest Function</a></h3>
+<h3><a name="digestfunction" id="digestfunction">Digest Function</a></h3>
 
     <p>The choice of digest function determines how a digest is created
     from a record unit. SSL supports the following:</p>
@@ -663,7 +663,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_intro.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

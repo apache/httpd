@@ -615,7 +615,9 @@ açıklaması</a></li>
       azami değeri belirler. <code class="module"><a href="../mod/worker.html">worker</a></code> ve <code class="module"><a href="../mod/event.html">event</a></code>
       modülü sözkonusu
       olduğunda ise, Apache httpd sürecinin ömrü boyunca <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> yönergesine
-      atanabilecek  azami değeri <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> ile birlikte belirler. Bu yönergeyi bir yeniden
+      atanabilecek  azami değeri <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> ile birlikte belirler. <code class="module"><a href="../mod/event.html">event</a></code> modülü 
+      için bu yönerge kaç eski sunucunun çalışmayı sürdüreceğini ve kaçının açık 
+      bağlantıları işlemeyi bitireceğini belirler. Bu yönergeyi bir yeniden
       başlatma sırasında değiştirirseniz bu değişiklik yok sayılır fakat
       <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>
       değişiklikleri dikkate alınır.</p>
@@ -632,15 +634,18 @@ açıklaması</a></li>
       <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
 
-    <p><code class="module"><a href="../mod/worker.html">worker</a></code> ve <code class="module"><a href="../mod/event.html">event</a></code> modülü söz konusu
-      olduğunda bu yönergeyi
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code> modülü söz konusu olduğunda bu yönergeyi
       <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> ve
       <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
       ayarlayınız. Bu yönergeye <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> ve <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> için gerekli gördüğünüz sunucu süreci
       sayısından fazlasını atamayınız.</p>
 
-    <div class="note"><h3>Ek Bilgi</h3>
+    <p><code class="module"><a href="../mod/event.html">event</a></code> modülü söz konusu olduğunda, <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> ve <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> yönergeleri ile belirlenen 
+      süreç sayısına ek olarak zarifçe kapatılan süreçlerin sayısıyla arttırıp 16
+      sunucu sürecinden (16 öntanımlıdır) fazlasına ayarlayınız.</p>
+
+     <div class="note"><h3>Ek Bilgi</h3>
       <p>Sunucu içinde derlenmiş olarak <code>ServerLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<code class="module"><a href="../mod/prefork.html">prefork</a></code> için
         200000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
@@ -855,7 +860,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mpm_common.html'
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

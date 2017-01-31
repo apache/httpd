@@ -519,6 +519,15 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     if (virt->trace_enable != AP_TRACE_UNSET)
         conf->trace_enable = virt->trace_enable;
 
+    if (virt->http09_enable != AP_HTTP09_UNSET)
+        conf->http09_enable = virt->http09_enable;
+
+    if (virt->http_conformance != AP_HTTP_CONFORMANCE_UNSET)
+        conf->http_conformance = virt->http_conformance;
+
+    if (virt->http_methods != AP_HTTP_METHODS_UNSET)
+        conf->http_methods = virt->http_methods;
+
     /* no action for virt->accf_map, not allowed per-vhost */
 
     if (virt->protocol)
@@ -2340,7 +2349,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
             return "Regex could not be compiled";
         }
     }
-    else if (!strcmp(cmd->path, "/") == 0)
+    else if (strcmp(cmd->path, "/") != 0)
     {
         char *newpath;
 
@@ -3895,6 +3904,57 @@ static const char *set_protocols_honor_order(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_http_protocol_options(cmd_parms *cmd, void *dummy,
+                                             const char *arg)
+{
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
+
+    if (strcasecmp(arg, "allow0.9") == 0)
+        conf->http09_enable |= AP_HTTP09_ENABLE;
+    else if (strcasecmp(arg, "require1.0") == 0)
+        conf->http09_enable |= AP_HTTP09_DISABLE;
+    else if (strcasecmp(arg, "strict") == 0)
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_STRICT;
+    else if (strcasecmp(arg, "unsafe") == 0)
+        conf->http_conformance |= AP_HTTP_CONFORMANCE_UNSAFE;
+    else if (strcasecmp(arg, "registeredmethods") == 0)
+        conf->http_methods |= AP_HTTP_METHODS_REGISTERED;
+    else if (strcasecmp(arg, "lenientmethods") == 0)
+        conf->http_methods |= AP_HTTP_METHODS_LENIENT;
+    else
+        return "HttpProtocolOptions accepts "
+               "'Unsafe' or 'Strict' (default), "
+               "'RegisteredMethods' or 'LenientMethods' (default), and "
+               "'Require1.0' or 'Allow0.9' (default)";
+
+    if ((conf->http09_enable & AP_HTTP09_ENABLE)
+            && (conf->http09_enable & AP_HTTP09_DISABLE))
+        return "HttpProtocolOptions 'Allow0.9' and 'Require1.0'"
+               " are mutually exclusive";
+
+    if ((conf->http_conformance & AP_HTTP_CONFORMANCE_STRICT)
+            && (conf->http_conformance & AP_HTTP_CONFORMANCE_UNSAFE))
+        return "HttpProtocolOptions 'Strict' and 'Unsafe'"
+               " are mutually exclusive";
+
+    if ((conf->http_methods & AP_HTTP_METHODS_REGISTERED)
+            && (conf->http_methods & AP_HTTP_METHODS_LENIENT))
+        return "HttpProtocolOptions 'RegisteredMethods' and 'LenientMethods'"
+               " are mutually exclusive";
+
+    return NULL;
+}
+
+static const char *set_http_method(cmd_parms *cmd, void *conf, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL)
+        return err;
+    ap_method_register(cmd->pool, arg);
+    return NULL;
+}
+
 static apr_hash_t *errorlog_hash;
 
 static int log_constant_item(const ap_errorlog_info *info, const char *arg,
@@ -4419,6 +4479,12 @@ AP_INIT_ITERATE("Protocols", set_protocols, NULL, RSRC_CONF,
 AP_INIT_TAKE1("ProtocolsHonorOrder", set_protocols_honor_order, NULL, RSRC_CONF,
               "'off' (default) or 'on' to respect given order of protocols, "
               "by default the client specified order determines selection"),
+AP_INIT_ITERATE("HttpProtocolOptions", set_http_protocol_options, NULL, RSRC_CONF,
+                "'Allow0.9' or 'Require1.0' (default); "
+                "'RegisteredMethods' or 'LenientMethods' (default); "
+                "'Unsafe' or 'Strict' (default). Sets HTTP acceptance rules"),
+AP_INIT_ITERATE("RegisterHttpMethod", set_http_method, NULL, RSRC_CONF,
+                "Registers non-standard HTTP methods"),
 { NULL }
 };
 

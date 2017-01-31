@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1755987 -->
+<!-- English Revision: 1772336 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -691,7 +691,10 @@ processus</description>
     <directive module="mpm_common">ThreadLimit</directive>, définit le
     nombre maximum que l'on peut affecter à <directive
     module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la durée de
-    vie du processus Apache httpd. Au cours d'un redémarrage, vous pouvez
+    vie du processus Apache httpd. Avec le MPM <module>event</module>, cette
+    directive permet aussi de définir le nombre de processus anciens du serveur
+    pouvant continuer à s'exécuter pour terminer le traitement des connexions
+    ouvertes. Au cours d'un redémarrage, vous pouvez
     modifier la valeur de la directive <directive
     module="mpm_common">MaxRequestWorkers</directive>, alors que toute
     tentative de modification de la valeur de la directive <directive

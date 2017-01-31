@@ -161,11 +161,11 @@ installations de httpd à partir des sources, ou
 <code>/etc/apache2/mods-enabled/ssl.conf</code> pour Ubuntu ou Debian,
 etc...</p>
 
-<p>Le chemin spÃ©cifiÃ© par la directive
+<p>Le chemin spécifié par la directive
 <code class="directive">SSLStaplingCache</code> (par exemple <code>logs/</code>)
-doit Ãªtre le mÃªme que celui spÃ©cifiÃ© par la directive
+doit être le même que celui spécifié par la directive
 <code class="directive">SSLSessionCache</code>. Ce chemin est relatif au chemin
-spÃ©cifiÃ© par la directive <code class="directive">ServerRoot</code>.</p>
+spécifié par la directive <code class="directive">ServerRoot</code>.</p>
 
 <p>Cette directive <code class="directive">SSLStaplingCache</code> particulière
 nécessite le chargement du module <code class="module"><a href="../mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code> (à
@@ -480,7 +480,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_howto.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

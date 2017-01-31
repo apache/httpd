@@ -192,7 +192,7 @@ Redirect "/docs/" "http://new.example.com/docs/"
 <highlight language="config">
 RewriteEngine  on
 RewriteBase    "/~quux/"
-RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 </highlight>
     </dd>
   </dl>
@@ -299,7 +299,7 @@ directive:</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect "/" "http://www.example.com/"
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
@@ -308,7 +308,7 @@ might do the following:</p>
 
 <highlight language="config">
 &lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
-	Redirect "/admin/" "https://www.example.com/admin/"
+    Redirect "/admin/" "https://www.example.com/admin/"
 &lt;/If&gt;
 </highlight>
 
@@ -321,7 +321,7 @@ you might use one of the recipes below.</p>
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteCond "%{SERVER_PORT}" "!^80$"
-RewriteRule "^/?(.*)         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 </highlight>
 
 <p>And for a site running on port 80</p>
@@ -647,7 +647,7 @@ of the URL.</dd>
 <p> Many of the solutions in this section will all use the same condition,
 which leaves the matched value in the %2 backreference.  %1 is the beginining
 of the query string (up to the key of intererest), and %3 is the remainder. This
-condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the 
+condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the
 substitutions.</p>
 <ul>
   <li>This solution removes the matching key and value:
@@ -682,7 +682,7 @@ RewriteRule "(.*)" - [F]
   <li>This solution shows the reverse of the previous ones, copying
       path components (perhaps PATH_INFO) from the URL into the query string.
 <highlight language="config">
-# The desired URL might be /products/kitchen-sink, and the script expects 
+# The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.
 RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 </highlight>

@@ -87,6 +87,7 @@
 <li><a href="howto/public_html.html">Répertoires Web des utilisateurs (public_html)</a></li>
 <li><a href="howto/reverse_proxy.html">Guide de configuration des mandataires
     inverses</a></li>
+<li><a href="howto/http2.html">Guide HTTP/2</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Notes spécifiques aux différentes plateformes</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
@@ -116,7 +117,7 @@
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

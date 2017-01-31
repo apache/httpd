@@ -794,6 +794,8 @@ DocumentRoot "/var/www/${servername}/htdocs"
        implementation of this directive and is only preserved (with unintuitive 
        results) to maintain backward compatibility.</p>
 </usage>
+<seealso><directive module="core">UnDefine</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -959,7 +961,7 @@ the contents of file-system directories matching a regular expression.</descript
     <p>matches directories in <code>/www/</code> (or any subdirectory thereof)
     that consist of three numbers.</p>
 
-   <note><title>Compatability</title>
+   <note><title>Compatibility</title>
       Prior to 2.3.9, this directive implicitly applied to sub-directories
       (like <directive module="core" type="section">Directory</directive>) and
       could not match the end of line symbol ($).  In 2.3.9 and later,
@@ -1234,6 +1236,123 @@ EnableSendfile On
        Only global definition of <directive>EnableSendfile</directive>
        is taken into account by the module.
     </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>HttpProtocolOptions</name>
+<description>Modify restrictions on HTTP Request Messages</description>
+<syntax>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
+ [Allow0.9|Require1.0]</syntax>
+<default>HttpProtocolOptions Strict LenientMethods Allow0.9</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>2.2.32 or 2.4.24 and later</compatibility>
+
+<usage>
+    <p>This directive changes the rules applied to the HTTP Request Line
+    (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1"
+      >RFC 7230 &sect;3.1.1</a>) and the HTTP Request Header Fields
+    (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
+      >RFC 7230 &sect;3.2</a>), which are now applied by default or using
+    the <code>Strict</code> option. Due to legacy modules, applications or
+    custom user-agents which must be deprecated the <code>Unsafe</code>
+    option has been added to revert to the legacy behaviors.</p>
+
+    <p>These rules are applied prior to request processing,
+    so must be configured at the global or default (first) matching
+    virtual host section, by IP/port interface (and not by name)
+    to be honored.</p>
+
+    <p>The directive accepts three parameters from the following list
+       of choices, applying the default to the ones not specified:</p>
+
+    <dl>
+    <dt>Strict|Unsafe</dt>
+    <dd>
+      <p>Prior to the introduction of this directive, the Apache HTTP Server
+      request message parsers were tolerant of a number of forms of input
+      which did not conform to the protocol.
+      <a href="https://tools.ietf.org/html/rfc7230#section-9.4"
+        >RFC 7230 &sect;9.4 Request Splitting</a> and
+      <a href="https://tools.ietf.org/html/rfc7230#section-9.5"
+        >&sect;9.5 Response Smuggling</a> call out only two of the potential
+      risks of accepting non-conformant request messages, while
+      <a href="https://tools.ietf.org/html/rfc7230#section-3.5"
+           >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" identify the
+      risks of accepting obscure whitespace and request message formatting. 
+      As of the introduction of this directive, all grammar rules of the
+      specification are enforced in the default <code>Strict</code> operating
+      mode, and the strict whitespace suggested by section 3.5 is enforced
+      and cannot be relaxed.</p>
+
+      <note type="warning"><title>Security risks of Unsafe</title>
+        <p>Users are strongly cautioned against toggling the <code>Unsafe</code>
+        mode of operation, particularly on outward-facing, publicly accessible
+        server deployments.  If an interface is required for faulty monitoring
+        or other custom service consumers running on an intranet, users should
+        toggle the Unsafe option only on a specific virtual host configured
+        to service their internal private network.</p>
+      </note>
+
+      <example>
+        <title>Example of a request leading to HTTP 400 with Strict mode</title>
+        # Missing CRLF<br />
+        GET / HTTP/1.0\n\n
+      </example>
+    </dd>
+    <dt>RegisteredMethods|LenientMethods</dt>
+    <dd>
+      <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1"
+           >RFC 7231 &sect;4.1</a> "Request Methods" "Overview" requires that
+      origin servers shall respond with a HTTP 501 status code when an
+      unsupported method is encountered in the request line.
+      This already happens when the <code>LenientMethods</code> option is used,
+      but administrators may wish to toggle the <code>RegisteredMethods</code>
+      option and register any non-standard methods using the
+      <directive module="core">RegisterHttpMethod</directive>
+      directive, particularly if the <code>Unsafe</code>
+      option has been toggled.</p>
+
+      <note type="warning"><title>Forward Proxy compatibility</title>
+        <p>The <code>RegisteredMethods</code> option should <strong>not</strong>
+        be toggled for forward proxy hosts, as the methods supported by the
+        origin servers are unknown to the proxy server.</p>
+      </note>
+
+      <example>
+        <title>Example of a request leading to HTTP 501 with LenientMethods mode</title>
+        # Unknown HTTP method<br />
+        WOW / HTTP/1.0\r\n\r\n<br /><br />
+        # Lowercase HTTP method<br />
+        get / HTTP/1.0\r\n\r\n<br />
+      </example>
+      </dd>
+      <dt>Allow0.9|Require1.0</dt>
+      <dd>
+      <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6"
+           >RFC 2616 &sect;19.6</a> "Compatibility With Previous Versions" had
+      encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
+      supersedes this with "The expectation to support HTTP/0.9 requests has
+      been removed" and offers additional comments in 
+      <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
+        >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
+      the user to remove support of the default <code>Allow0.9</code> option's
+      behavior.</p>
+
+      <example>
+        <title>Example of a request leading to HTTP 400 with Require1.0 mode</title>
+        # Unsupported HTTP version<br />
+        GET /\r\n\r\n
+      </example>
+    </dd>
+    </dl>
+    <p>Reviewing the messages logged to the
+    <directive module="core">ErrorLog</directive>, configured with
+    <directive module="core">LogLevel</directive> <code>debug</code> level,
+    can help identify such faulty requests along with their origin.
+    Users should pay particular attention to the 400 responses in the access
+    log for invalid requests which were unexpectedly rejected.</p>
 </usage>
 </directivesynopsis>
 
@@ -4493,6 +4612,8 @@ certain events before failing a request</description>
        the changes it makes are visible to any later configuration
        directives, beyond any enclosing virtual host.</p>
 </usage>
+<seealso><directive module="core">Define</directive></seealso>
+<seealso><directive module="core">IfDefine</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4765,5 +4886,20 @@ as if 'QualifyRedirectURL ON' was configured.</compatibility>
 </directivesynopsis>
 
 
+<directivesynopsis>
+<name>RegisterHttpMethod</name>
+<description>Register non-standard HTTP methods</description>
+<syntax>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+<p>HTTP Methods that are not conforming to the relevant RFCs are normally
+rejected by request processing in Apache HTTPD. To avoid this, modules
+can register non-standard HTTP methods they support.
+The <directive>RegisterHttpMethod</directive> allows to register such
+methods manually. This can be useful for if such methods are forwared
+for external processing, e.g. to a CGI script.</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

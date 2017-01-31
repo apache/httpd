@@ -435,7 +435,7 @@ l'établissement de la session protocolaire.</p>
     </tr>
     <tr><td>TLS v1.2</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS12">TLS12</a>]</td>
-        <td>Mise à jour de TLS 1.2 rendant les condensés MD5 obsolètes,
+        <td>Mise à jour de TLS 1.1 rendant les condensés MD5 obsolètes,
 	et introduisant une incompatibilité avec SSL ce qui interdit toute
 	négociation en vue d'une utilisation de SSLv2.</td>
     </tr>
@@ -565,7 +565,7 @@ l'Internet Engineering Task Force (IETF).</p>
     [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfuntion" id="digestfuntion">Fonction de création d'empreinte</a></h3>
+<h3><a name="digestfunction" id="digestfunction">Fonction de création d'empreinte</a></h3>
 
     <p>Le choix d'une fonction de création d'empreinte détermine la manière
     dont une empreinte est créée à partir d'une unité de données. SSL supporte
@@ -718,7 +718,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/ssl/ssl_intro.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

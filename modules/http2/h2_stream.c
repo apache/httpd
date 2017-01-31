@@ -168,27 +168,6 @@ static void prepend_response(h2_stream *stream, h2_headers *response)
     APR_BRIGADE_INSERT_HEAD(stream->out_buffer, b);
 }
 
-static apr_status_t stream_pool_cleanup(void *ctx)
-{
-    h2_stream *stream = ctx;
-    apr_status_t status;
-    
-    ap_assert(stream->can_be_cleaned);
-    if (stream->files) {
-        apr_file_t *file;
-        int i;
-        for (i = 0; i < stream->files->nelts; ++i) {
-            file = APR_ARRAY_IDX(stream->files, i, apr_file_t*);
-            status = apr_file_close(file);
-            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, stream->session->c, 
-                          "h2_stream(%ld-%d): destroy, closed file %d", 
-                          stream->session->id, stream->id, i);
-        }
-        stream->files = NULL;
-    }
-    return APR_SUCCESS;
-}
-
 h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
                           int initiated_on)
 {
@@ -200,13 +179,12 @@ h2_stream *h2_stream_open(int id, apr_pool_t *pool, h2_session *session,
     stream->state        = H2_STREAM_ST_IDLE;
     stream->pool         = pool;
     stream->session      = session;
-
+    
     h2_beam_create(&stream->input, pool, id, "input", H2_BEAM_OWNER_SEND, 0);
+    h2_beam_send_from(stream->input, stream->pool);
     h2_beam_create(&stream->output, pool, id, "output", H2_BEAM_OWNER_RECV, 0);
     
     set_state(stream, H2_STREAM_ST_OPEN);
-    apr_pool_cleanup_register(pool, stream, stream_pool_cleanup, 
-                              apr_pool_cleanup_null);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03082)
                   "h2_stream(%ld-%d): opened", session->id, stream->id);
     return stream;
@@ -238,13 +216,12 @@ void h2_stream_cleanup(h2_stream *stream)
 void h2_stream_destroy(h2_stream *stream)
 {
     ap_assert(stream);
-    ap_assert(!h2_mplx_stream_get(stream->session->mplx, stream->id));
     ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, stream->session->c, 
                   "h2_stream(%ld-%d): destroy", 
                   stream->session->id, stream->id);
-    stream->can_be_cleaned = 1;
     if (stream->pool) {
         apr_pool_destroy(stream->pool);
+        stream->pool = NULL;
     }
 }
 
@@ -332,44 +309,49 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                   const char *name, size_t nlen,
                                   const char *value, size_t vlen)
 {
+    int error = 0;
     ap_assert(stream);
     
-    if (!stream->has_response) {
-        if (name[0] == ':') {
-            if ((vlen) > stream->session->s->limit_req_line) {
-                /* pseudo header: approximation of request line size check */
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                              "h2_stream(%ld-%d): pseudo header %s too long", 
-                              stream->session->id, stream->id, name);
-                return h2_stream_set_error(stream, 
-                                           HTTP_REQUEST_URI_TOO_LARGE);
-            }
-        }
-        else if ((nlen + 2 + vlen) > stream->session->s->limit_req_fieldsize) {
-            /* header too long */
+    if (stream->has_response) {
+        return APR_EINVAL;    
+    }
+    ++stream->request_headers_added;
+    if (name[0] == ':') {
+        if ((vlen) > stream->session->s->limit_req_line) {
+            /* pseudo header: approximation of request line size check */
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                          "h2_stream(%ld-%d): header %s too long", 
+                          "h2_stream(%ld-%d): pseudo header %s too long", 
                           stream->session->id, stream->id, name);
-            return h2_stream_set_error(stream, 
-                                       HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
+            error = HTTP_REQUEST_URI_TOO_LARGE;
         }
-        
-        if (name[0] != ':') {
-            ++stream->request_headers_added;
-            if (stream->request_headers_added 
-                > stream->session->s->limit_req_fields) {
-                /* too many header lines */
-                ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
-                              "h2_stream(%ld-%d): too many header lines", 
-                              stream->session->id, stream->id);
-                return h2_stream_set_error(stream, 
-                                           HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE);
-            }
+    }
+    else if ((nlen + 2 + vlen) > stream->session->s->limit_req_fieldsize) {
+        /* header too long */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                      "h2_stream(%ld-%d): header %s too long", 
+                      stream->session->id, stream->id, name);
+        error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
+    }
+    
+    if (stream->request_headers_added 
+        > stream->session->s->limit_req_fields + 4) {
+        /* too many header lines, include 4 pseudo headers */
+        if (stream->request_headers_added 
+            > stream->session->s->limit_req_fields + 4 + 100) {
+            /* yeah, right */
+            return APR_ECONNRESET;
         }
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c,
+                      "h2_stream(%ld-%d): too many header lines", 
+                      stream->session->id, stream->id);
+        error = HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
     }
     
     if (h2_stream_is_scheduled(stream)) {
         return add_trailer(stream, name, nlen, value, vlen);
+    }
+    else if (error) {
+        return h2_stream_set_error(stream, error); 
     }
     else {
         if (!stream->rtmp) {
@@ -412,6 +394,7 @@ apr_status_t h2_stream_schedule(h2_stream *stream, int eos, int push_enabled,
                 stream->request = stream->rtmp;
                 stream->rtmp = NULL;
                 stream->scheduled = 1;
+
                 stream->push_policy = h2_push_policy_determine(stream->request->headers, 
                                                                stream->pool, push_enabled);
             
@@ -473,6 +456,7 @@ apr_status_t h2_stream_close_input(h2_stream *stream)
     APR_BRIGADE_INSERT_TAIL(tmp, b);
     status = h2_beam_send(stream->input, tmp, APR_BLOCK_READ);
     apr_brigade_destroy(tmp);
+    h2_beam_close(stream->input);
     return status;
 }
 
@@ -516,8 +500,6 @@ apr_status_t h2_stream_write_data(h2_stream *stream,
 
 static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
 {
-    conn_rec *c = stream->session->c;
-    apr_bucket *b;
     apr_status_t status;
     
     if (!stream->output) {
@@ -528,33 +510,6 @@ static apr_status_t fill_buffer(h2_stream *stream, apr_size_t amount)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, status, stream->session->c,
                   "h2_stream(%ld-%d): beam_received",
                   stream->session->id, stream->id);
-    /* The buckets we reveive are using the stream->out_buffer pool as
-     * lifetime which is exactly what we want since this is stream->pool.
-     *
-     * However: when we send these buckets down the core output filters, the
-     * filter might decide to setaside them into a pool of its own. And it
-     * might decide, after having sent the buckets, to clear its pool.
-     *
-     * This is problematic for file buckets because it then closed the contained
-     * file. Any split off buckets we sent afterwards will result in a 
-     * APR_EBADF.
-     */
-    for (b = APR_BRIGADE_FIRST(stream->out_buffer);
-         b != APR_BRIGADE_SENTINEL(stream->out_buffer);
-         b = APR_BUCKET_NEXT(b)) {
-        if (APR_BUCKET_IS_FILE(b)) {
-            apr_bucket_file *f = (apr_bucket_file *)b->data;
-            apr_pool_t *fpool = apr_file_pool_get(f->fd);
-            if (fpool != c->pool) {
-                apr_bucket_setaside(b, c->pool);
-                if (!stream->files) {
-                    stream->files = apr_array_make(stream->pool, 
-                                                   5, sizeof(apr_file_t*));
-                }
-                APR_ARRAY_PUSH(stream->files, apr_file_t*) = f->fd;
-            }
-        }
-    }
     return status;
 }
 
@@ -592,10 +547,10 @@ static apr_bucket *get_first_headers_bucket(apr_bucket_brigade *bb)
 apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen, 
                                    int *peos, h2_headers **presponse)
 {
-    conn_rec *c = stream->session->c;
     apr_status_t status = APR_SUCCESS;
-    apr_off_t requested;
+    apr_off_t requested, max_chunk = H2_DATA_CHUNK_SIZE;
     apr_bucket *b, *e;
+    conn_rec *c;
 
     if (presponse) {
         *presponse = NULL;
@@ -606,19 +561,17 @@ apr_status_t h2_stream_out_prepare(h2_stream *stream, apr_off_t *plen,
         *peos = 1;
         return APR_ECONNRESET;
     }
-    
-    if (!output_open(stream)) {
+    else if (!output_open(stream)) {
         return APR_ECONNRESET;
     }
+    
+    c = stream->session->c;
     prep_output(stream);
 
-    if (*plen > 0) {
-        requested = H2MIN(*plen, H2_DATA_CHUNK_SIZE);
+    if (stream->session->io.write_size > 0) {
+        max_chunk = stream->session->io.write_size - 9; /* header bits */ 
     }
-    else {
-        requested = H2_DATA_CHUNK_SIZE;
-    }
-    *plen = requested;
+    *plen = requested = (*plen > 0)? H2MIN(*plen, max_chunk) : max_chunk;
     
     H2_STREAM_OUT_LOG(APLOG_TRACE2, stream, "h2_stream_out_prepare_pre");
     h2_util_bb_avail(stream->out_buffer, plen, peos);

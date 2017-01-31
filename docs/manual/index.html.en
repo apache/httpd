@@ -86,6 +86,7 @@ Documentation</h1>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>
 <li><a href="howto/public_html.html">Per-user Web Directories (public_html)</a></li>
 <li><a href="howto/reverse_proxy.html">Reverse proxy setup guide</a></li>
+<li><a href="howto/http2.html">HTTP/2 guide</a></li>
 </ul>
 </div><div class="category"><h2><a name="platform" id="platform">Platform Specific Notes</a></h2>
 <ul><li><a href="platform/windows.html">Microsoft Windows</a></li>
@@ -114,7 +115,7 @@ Documentation</h1>
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

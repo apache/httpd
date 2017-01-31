@@ -318,6 +318,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_fcgi+I+Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_ftp+I+Apache proxy FTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_hcheck+I+Apache proxy health check module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
   "modules/http2/mod_proxy_http2+i+Apache proxy HTTP/2 module.  Requires --enable-proxy."
@@ -381,7 +382,7 @@ SET(mod_http2_requires               NGHTTP2_FOUND)
 SET(mod_http2_extra_defines          ssize_t=long)
 SET(mod_http2_extra_libs             ${NGHTTP2_LIBRARIES})
 SET(mod_http2_extra_sources
-  modules/http2/h2_alt_svc.c         modules/http2/h2_bucket_eoc.c
+  modules/http2/h2_alt_svc.c
   modules/http2/h2_bucket_eos.c      modules/http2/h2_config.c
   modules/http2/h2_conn.c            modules/http2/h2_conn_io.c
   modules/http2/h2_ctx.c             modules/http2/h2_filter.c
@@ -424,6 +425,7 @@ SET(mod_proxy_connect_extra_libs     mod_proxy)
 SET(mod_proxy_express_extra_libs     mod_proxy)
 SET(mod_proxy_fcgi_extra_libs        mod_proxy)
 SET(mod_proxy_ftp_extra_libs         mod_proxy)
+SET(mod_proxy_hcheck_extra_libs      mod_proxy)
 SET(mod_proxy_http_extra_libs        mod_proxy)
 SET(mod_proxy_html_requires          LIBXML2_FOUND)
 IF(LIBXML2_FOUND)

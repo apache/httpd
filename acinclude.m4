@@ -734,7 +734,7 @@ AC_DEFUN([APACHE_ADD_GCC_CFLAG], [
     AC_CACHE_CHECK([whether gcc accepts $1], ap_gcc_ckvar, [
       save_CFLAGS="$CFLAGS"
       CFLAGS="$CFLAGS $1"
-      AC_COMPILE_IFELSE([AC_LANG_SOURCE([int foo() { return 0; }])],
+      AC_COMPILE_IFELSE([AC_LANG_PROGRAM()],
         [ap_gcc_ckvar=yes], [ap_gcc_ckvar=no])
       CFLAGS="$save_CFLAGS"
     ])

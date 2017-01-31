@@ -191,7 +191,7 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
 
 <pre class="prettyprint lang-config">RewriteEngine  on
 RewriteBase    "/~quux/"
-RewriteRule    "^foo\.html$"  "foo.cgi"   [H=<strong>cgi-script</strong>]</pre>
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
     </dd>
   </dl>
@@ -294,7 +294,7 @@ hostname(s).</p>
 directive:</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
-	Redirect "/" "http://www.example.com/"
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;</pre>
 
 
@@ -302,7 +302,7 @@ directive:</p>
 might do the following:</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
-	Redirect "/admin/" "https://www.example.com/admin/"
+    Redirect "/admin/" "https://www.example.com/admin/"
 &lt;/If&gt;</pre>
 
 
@@ -314,7 +314,7 @@ you might use one of the recipes below.</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteCond "%{SERVER_PORT}" "!^80$"
-RewriteRule "^/?(.*)         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
 
 
 <p>And for a site running on port 80</p>
@@ -625,7 +625,7 @@ of the URL.</dd>
 <p> Many of the solutions in this section will all use the same condition,
 which leaves the matched value in the %2 backreference.  %1 is the beginining
 of the query string (up to the key of intererest), and %3 is the remainder. This
-condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the 
+condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the
 substitutions.</p>
 <ul>
   <li>This solution removes the matching key and value:
@@ -656,7 +656,7 @@ RewriteRule "(.*)" - [F]</pre>
 
   <li>This solution shows the reverse of the previous ones, copying
       path components (perhaps PATH_INFO) from the URL into the query string.
-<pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects 
+<pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.
 RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 
@@ -688,7 +688,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/rewrite/remapping.ht
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

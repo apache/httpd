@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563 -->
+<!-- English Revision: 1777005 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,43 +29,43 @@
 
 <summary>
 
-<p>Ce document est un compl&eacute;ment &agrave; la <a
-href="../mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence</a> de
+<p>Ce document est un complément à la <a
+href="../mod/mod_rewrite.html">Documentation de référence</a> de
 <module>mod_rewrite</module>. Il montre comment utiliser
 <module>mod_rewrite</module> pour rediriger et remettre en
-correspondance une requ&ecirc;te. Il contient de
+correspondance une requête. Il contient de
 nombreux exemples d'utilisation courante de mod_rewrite avec une
-description d&eacute;taill&eacute;e de leur fonctionnement.</p>
+description détaillée de leur fonctionnement.</p>
 
-<note type="warning">Vous devez vous attacher &agrave; comprendre le
+<note type="warning">Vous devez vous attacher à comprendre le
 fonctionnement des exemples, car la plupart d'entre eux ne
-fonctionneront pas sur votre syst&egrave;me si vous vous contentez de les
+fonctionneront pas sur votre système si vous vous contentez de les
 copier/coller dans vos fichiers de configuration.</note>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
-<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <!--<seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>-->
-<seealso><a href="access.html">Contr&ocirc;ler l'acc&egrave;s</a></seealso>
+<seealso><a href="access.html">Contrôler l'accès</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
 <seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="old-to-new">
 
-      <title>De l'ancienne &agrave; la nouvelle URL (en interne)</title>
+      <title>De l'ancienne à la nouvelle URL (en interne)</title>
 
       <dl>
         <dt>Description :</dt>
 
         <dd>
-          <p>Supposons que nous ayons r&eacute;cemment renomm&eacute; la page
+          <p>Supposons que nous ayons récemment renommé la page
 	  <code>foo.html</code> en <code>bar.html</code>, et voulions
-	  maintenant que l'ancienne URL soit toujours valide &agrave; des fins
-	  de compatibilit&eacute; ascendante. En fait, on voudrait que le
+	  maintenant que l'ancienne URL soit toujours valide à des fins
+	  de compatibilité ascendante. En fait, on voudrait que le
 	  changement de nom soit transparent aux utilisateurs de
 	  l'ancienne URL.</p>
         </dd>
@@ -73,8 +73,8 @@ correspondance</a></seealso>-->
         <dt>Solution :</dt>
 
         <dd>
-          <p>On r&eacute;&eacute;crit l'ancienne URL en interne vers la nouvelle via
-	  la r&egrave;gle suivante :</p>
+          <p>On réécrit l'ancienne URL en interne vers la nouvelle via
+	  la règle suivante :</p>
 
 <highlight language="config">
 RewriteEngine  on
@@ -93,20 +93,20 @@ RewriteRule    "^<strong>/foo</strong>\.html$" "<strong>/bar</strong>.html" [PT]
         <dt>Description :</dt>
 
         <dd>
-          <p>Supposons toujours que nous ayons r&eacute;cemment renomm&eacute; la page
+          <p>Supposons toujours que nous ayons récemment renommé la page
 	  <code>foo.html</code> en <code>bar.html</code>, et voulions
-	  maintenant que l'ancienne URL soit toujours valide &agrave; des fins
-	  de compatibilit&eacute; ascendante. En revanche, nous voulons cette
-	  fois que la nouvelle URL soit sugg&eacute;r&eacute;e aux utilisateurs de
-	  l'ancienne URL, c'est &agrave; dire que l'adresse vue depuis leur
-	  navigateur doit &eacute;galement &ecirc;tre modifi&eacute;e.</p>
+	  maintenant que l'ancienne URL soit toujours valide à des fins
+	  de compatibilité ascendante. En revanche, nous voulons cette
+	  fois que la nouvelle URL soit suggérée aux utilisateurs de
+	  l'ancienne URL, c'est à dire que l'adresse vue depuis leur
+	  navigateur doit également être modifiée.</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
           <p>On force une redirection HTTP vers la nouvelle URL, ce qui
-	  entra&icirc;ne une modification de celle du navigateur et aussi de ce
+	  entraîne une modification de celle du navigateur et aussi de ce
 	  que voit l'utilisateur :</p>
 
 <highlight language="config">
@@ -119,7 +119,7 @@ RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<st
 
     <dd>
     <p>Dans l'exemple <a
-    href="#old-to-new-intern">interne</a>, on a utilis&eacute; mod_rewrite afin
+    href="#old-to-new-intern">interne</a>, on a utilisé mod_rewrite afin
     de dissimuler la redirection au client. Dans cet exemple, en
     revanche, on aurait pu se contenter d'une directive Redirect :</p>
 
@@ -132,13 +132,13 @@ RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<st
 
 <section id="movehomedirs">
 
-  <title>Ressource d&eacute;plac&eacute;e vers un autre serveur</title>
+  <title>Ressource déplacée vers un autre serveur</title>
 
   <dl>
     <dt>Description :</dt>
 
     <dd>
-      <p>Si une ressource a &eacute;t&eacute; d&eacute;plac&eacute;e vers un autre serveur, vous
+      <p>Si une ressource a été déplacée vers un autre serveur, vous
       pouvez faire en sorte que les URLs de l'ancien serveur continuent
       de fonctionner pendant un certain temps, afin de laisser au
       utilisateurs le temps de modifier leurs favoris.</p>
@@ -172,32 +172,32 @@ Redirect "/docs/" "http://nouveau.example.com/docs/"
 
 <section id="static-to-dynamic">
 
-      <title>De statique &agrave; dynamique</title>
+      <title>De statique à dynamique</title>
 
       <dl>
         <dt>Description :</dt>
 
         <dd>
           <p>Comment transformer une page statique <code>foo.html</code>
-	  en sa variante dynamique <code>foo.cgi</code> de mani&egrave;re
-	  transparente, c'est &agrave; dire sans en avertir le
+	  en sa variante dynamique <code>foo.cgi</code> de manière
+	  transparente, c'est à dire sans en avertir le
 	  navigateur/utilisateur.</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
-          <p>On r&eacute;&eacute;crit simplement l'URL en script CGI et force le
-	  gestionnaire de contenu &agrave; <strong>cgi-script</strong> de fa&ccedil;on
-	  &agrave; ce que le script s'ex&eacute;cute en tant que programme CGI.
-	  Ainsi, une requ&ecirc;te vers <code>/~quux/foo.html</code> conduit
-	  en interne &agrave; l'invocation de
+          <p>On réécrit simplement l'URL en script CGI et force le
+	  gestionnaire de contenu à <strong>cgi-script</strong> de façon
+	  à ce que le script s'exécute en tant que programme CGI.
+	  Ainsi, une requête vers <code>/~quux/foo.html</code> conduit
+	  en interne à l'invocation de
 	  <code>/~quux/foo.cgi</code>.</p>
 
 <highlight language="config">
 RewriteEngine  on
 RewriteBase    "/~quux/"
-RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 </highlight>
         </dd>
       </dl>
@@ -206,17 +206,17 @@ RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
 
 <section id="backward-compatibility">
 
-      <title>Compatibilit&eacute; ascendante dans le cadre d'une modification
+      <title>Compatibilité ascendante dans le cadre d'une modification
       d'extension de nom de fichier</title>
 
       <dl>
         <dt>Description :</dt>
 
         <dd>
-          <p>Comment conf&eacute;rer une compatibilit&eacute; ascendante aux URLs
-	  (existant encore virtuellement) apr&egrave;s avoir migr&eacute;
+          <p>Comment conférer une compatibilité ascendante aux URLs
+	  (existant encore virtuellement) après avoir migré
 	  <code>document.YYYY</code> vers <code>document.XXXX</code>,
-	  c'est &agrave; dire apr&egrave;s avoir par exemple traduit un lot de
+	  c'est à dire après avoir par exemple traduit un lot de
 	  fichiers <code>.html</code> en fichiers <code>.php</code>
 	  ?</p>
         </dd>
@@ -224,14 +224,14 @@ RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
         <dt>Solution :</dt>
 
         <dd>
-          <p>On r&eacute;&eacute;crit simplement le nom du fichier en son nom
-	  de base et v&eacute;rifie s'il existe aussi avec la nouvelle
+          <p>On réécrit simplement le nom du fichier en son nom
+	  de base et vérifie s'il existe aussi avec la nouvelle
 	  extension. Si c'est le cas, on utilise ce nom, sinon on
-	  r&eacute;&eacute;crit l'URL sous sa forme originale.</p>
+	  réécrit l'URL sous sa forme originale.</p>
 
 
 <highlight language="config">
-#   jeu de r&egrave;gles assurant une compatibilit&eacute; ascendante en r&eacute;&eacute;crivant<br />
+#   jeu de règles assurant une compatibilité ascendante en réécrivant<br />
 #   document.html en document.php si et seulement si document.php<br />
 #   existe
 &lt;Directory "/var/www/htdocs"&gt;
@@ -247,22 +247,22 @@ RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
 
     <dt>Discussion</dt>
     <dd>
-    <p>Cet exemple utilise une fonctionnalit&eacute; souvent m&eacute;connue de
-    mod_rewrite, en tirant avantage de l'ordre d'ex&eacute;cution du jeu de
-    r&egrave;gles. En particulier, mod_rewrite &eacute;value la partie gauche des
-    r&egrave;gles de r&eacute;&eacute;criture avant d'&eacute;valuer les directives RewriteCond. En
-    cons&eacute;quence, $1 est d&eacute;j&agrave; d&eacute;fini au moment o&ugrave; les directives
-    RewriteCond sont &eacute;valu&eacute;es. Ceci nous permet de tester l'existence du
+    <p>Cet exemple utilise une fonctionnalité souvent méconnue de
+    mod_rewrite, en tirant avantage de l'ordre d'exécution du jeu de
+    règles. En particulier, mod_rewrite évalue la partie gauche des
+    règles de réécriture avant d'évaluer les directives RewriteCond. En
+    conséquence, $1 est déjà défini au moment où les directives
+    RewriteCond sont évaluées. Ceci nous permet de tester l'existence du
     fichier original (<code>document.html</code>) et du fichier cible
-    (<code>document.php</code>) en utilisant le m&ecirc;me nom de base.</p>
+    (<code>document.php</code>) en utilisant le même nom de base.</p>
 
-    <p>Ce jeu de r&egrave;gles est con&ccedil;u pour une utilisation dans un contexte
-    de r&eacute;pertoire (au sein d'une section &lt;Directory&gt; ou d'un
-    fichier .htaccess), de fa&ccedil;on &agrave; ce que les v&eacute;rifications
-    <code>-f</code> effectuent leurs recherches dans le bon r&eacute;pertoire.
-    Vous serez peut-&ecirc;tre amen&eacute; &agrave; d&eacute;finir une directive <directive
-    module="mod_rewrite">RewriteBase</directive> pour sp&eacute;cifier le
-    r&eacute;pertoire de base &agrave; partir duquel vous travaillez.</p>
+    <p>Ce jeu de règles est conçu pour une utilisation dans un contexte
+    de répertoire (au sein d'une section &lt;Directory&gt; ou d'un
+    fichier .htaccess), de façon à ce que les vérifications
+    <code>-f</code> effectuent leurs recherches dans le bon répertoire.
+    Vous serez peut-être amené à définir une directive <directive
+    module="mod_rewrite">RewriteBase</directive> pour spécifier le
+    répertoire de base à partir duquel vous travaillez.</p>
     </dd>
   </dl>
 
@@ -270,15 +270,15 @@ RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
 
 <section id="canonicalhost">
 
-<title>Noms d'h&ocirc;tes canoniques</title>
+<title>Noms d'hôtes canoniques</title>
 
       <dl>
         <dt>Description :</dt>
 
-        <dd>Le but de cette r&egrave;gle est de pr&eacute;f&eacute;rer l'utilisation d'un nom
-	d'h&ocirc;te particulier &agrave; d'autres noms d'h&ocirc;te utilisables
-	pour atteindre le m&ecirc;me site. Par exemple, si vous voulez
-	utiliser <strong>www.example.com</strong> &agrave; la place de
+        <dd>Le but de cette règle est de préférer l'utilisation d'un nom
+	d'hôte particulier à d'autres noms d'hôte utilisables
+	pour atteindre le même site. Par exemple, si vous voulez
+	utiliser <strong>www.example.com</strong> à la place de
 	<strong>example.com</strong>, vous pouvez utiliser une solution
 	du style :</dd>
 
@@ -287,8 +287,8 @@ RewriteRule    "^foo\.html$"  "foo.cgi" &nbsp; [H=<strong>cgi-script</strong>]
         <dd>
 
 <p>Pour y parvenir, il vaut mieux se passer de mod_rewrite, et utiliser
-plut&ocirc;t la directive <directive module="mod_alias">Redirect</directive> dans
-une section de serveur virtuel pour le/les noms d'h&ocirc;te non canoniques.</p>
+plutôt la directive <directive module="mod_alias">Redirect</directive> dans
+une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
 
 <highlight language="config">
 &lt;VirtualHost *:80&gt;
@@ -321,12 +321,12 @@ type="section">If</directive> :</p>
 &lt;/If&gt;
 </highlight>
 
-<p>Si, pour une raison particuli&egrave;re, vous voulez tout de m&ecirc;me utiliser
-<code>mod_rewrite</code> - dans le cas, par exemple, o&ugrave; vous avez besoin
-d'un jeu plus important de r&egrave;gles de r&eacute;&eacute;critures - vous pouvez utiliser
+<p>Si, pour une raison particulière, vous voulez tout de même utiliser
+<code>mod_rewrite</code> - dans le cas, par exemple, où vous avez besoin
+d'un jeu plus important de règles de réécritures - vous pouvez utiliser
 la recette suivante :</p>
 
-<p>Pour les sites &eacute;coutant sur un port autre que 80:</p>
+<p>Pour les sites écoutant sur un port autre que 80:</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
@@ -334,19 +334,19 @@ RewriteCond "%{SERVER_PORT}" "!^80$"
 RewriteRule "^/?(.*)"         "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 </highlight>
 
-<p>Et pour un site &eacute;coutant sur le port 80</p>
+<p>Et pour un site écoutant sur le port 80</p>
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteRule "^/?(.*)"         "http://www.example.com/$1" [L,R,NE]
 </highlight>
 	<p>
-	Si vous souhaitez que cette r&egrave;gle s'applique &agrave; tous les noms de
+	Si vous souhaitez que cette règle s'applique à tous les noms de
 	domaine - en d'autres termes, si vous voulez rediriger
 	<strong>example.com</strong> vers
 	<strong>www.example.com</strong> pour toutes les valeurs
 	possibles de <strong>example.com</strong>, vous pouvez utiliser
-	le jeu de r&egrave;gles suivants :</p>
+	le jeu de règles suivants :</p>
 
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
@@ -354,9 +354,9 @@ RewriteCond "%{HTTP_HOST}" "!^$"
 RewriteRule "^/?(.*)" "http://www.%{HTTP_HOST}/$1" [L,R,NE]
 </highlight>
 	<p>
-	Vous pouvez utiliser ce jeu de r&egrave;gles aussi bien dans le fichier
+	Vous pouvez utiliser ce jeu de règles aussi bien dans le fichier
 	de configuration de votre serveur principal que dans un fichier
-	<code>.htaccess</code> plac&eacute; dans le r&eacute;pertoire d&eacute;fini par la
+	<code>.htaccess</code> placé dans le répertoire défini par la
 	directive <directive
 	module="core">DocumentRoot</directive> du serveur.</p>
         </dd>
@@ -366,37 +366,37 @@ RewriteRule "^/?(.*)" "http://www.%{HTTP_HOST}/$1" [L,R,NE]
 
 <section id="multipledirs">
 
-  <title>Recherche de pages dans plus d'un r&eacute;pertoire</title>
+  <title>Recherche de pages dans plus d'un répertoire</title>
 
   <dl>
     <dt>Description:</dt>
 
     <dd>
-      <p>Une ressource peut exister dans plusieurs r&eacute;pertoires, et nous
-      voulons rechercher cette ressource dans ces r&eacute;pertoires
-      lorsqu'elle fait l'objet d'une requ&ecirc;te. Il est possible que nous
-      ayons r&eacute;cemment r&eacute;organis&eacute; la structure de notre site en
-      r&eacute;partissant son contenu dans plusieurs r&eacute;pertoires.</p>
+      <p>Une ressource peut exister dans plusieurs répertoires, et nous
+      voulons rechercher cette ressource dans ces répertoires
+      lorsqu'elle fait l'objet d'une requête. Il est possible que nous
+      ayons récemment réorganisé la structure de notre site en
+      répartissant son contenu dans plusieurs répertoires.</p>
     </dd>
 
     <dt>Solution :</dt>
 
     <dd>
-      <p>Le jeu de r&egrave;gles suivant recherche la ressource dans deux
-      r&eacute;pertoires, et s'il ne la trouve dans aucun des deux, il tentera
-      simplement de la servir &agrave; partir de l'adresse fournie dans la
-      requ&ecirc;te.</p>
+      <p>Le jeu de règles suivant recherche la ressource dans deux
+      répertoires, et s'il ne la trouve dans aucun des deux, il tentera
+      simplement de la servir à partir de l'adresse fournie dans la
+      requête.</p>
 
 <highlight language="config">
 RewriteEngine on
 
 #   on cherche tout d'abord dans dir1/...
-#   ... et si on trouve, on est content et on arr&ecirc;te :
+#   ... et si on trouve, on est content et on arrête :
 RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
 RewriteRule  "^(.+)"  "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
 
 #   on cherche ensuite dans dir2/...
-#   ... et si on trouve, on est content et on arr&ecirc;te :
+#   ... et si on trouve, on est content et on arrête :
 RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
 RewriteRule  "^(.+)"  "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
@@ -411,24 +411,24 @@ RewriteRule   "^"  "-"  [PT]
 
 <section id="archive-access-multiplexer">
 
-  <title>Redirection vers des serveurs g&eacute;ographiquement distribu&eacute;s</title>
+  <title>Redirection vers des serveurs géographiquement distribués</title>
 
   <dl>
     <dt>Description :</dt>
 
     <dd>
-    <p>Notre site web poss&egrave;de de nombreux miroirs, et nous voulons
-    rediriger les utilisateurs vers celui qui se situe dans le pays o&ugrave;
+    <p>Notre site web possède de nombreux miroirs, et nous voulons
+    rediriger les utilisateurs vers celui qui se situe dans le pays où
     ils se trouvent. </p>
     </dd>
 
     <dt>Solution :</dt>
 
     <dd>
-    <p>En consultant le nom d'h&ocirc;te du client demandeur, on d&eacute;termine le
+    <p>En consultant le nom d'hôte du client demandeur, on détermine le
     pays dans lequel il se trouve. S'il est impossible d'effectuer une
     recherche sur leur adresse IP, on se rabat sur un serveur par
-    d&eacute;faut.</p>
+    défaut.</p>
     <p>Nous allons utiliser une directive <directive
     module="mod_rewrite">RewriteMap</directive> afin de construire une
     liste des serveurs que nous voulons utiliser.</p>
@@ -453,16 +453,16 @@ com       http://www.example.com/<br />
 
     <dt>Discussion</dt>
     <dd>
-    <note type="warning">Ce jeu de r&egrave;gles n&eacute;cessite la d&eacute;finition &agrave;
+    <note type="warning">Ce jeu de règles nécessite la définition à
     <code>on</code> de la directive <directive
     module="core">HostNameLookups</directive>, ce qui peut induire une
     baisse de performance significative.</note>
 
     <p>La directive <directive
-    module="mod_rewrite">RewriteCond</directive> extrait la derni&egrave;re
-    partie du nom d'h&ocirc;te du client demandeur - le code du pays - et la
-    r&egrave;gle de r&eacute;&eacute;criture qui suit utilise cette valeur pour rechercher le
-    serveur miroir appropri&eacute; dans le fichier de correspondances.</p>
+    module="mod_rewrite">RewriteCond</directive> extrait la dernière
+    partie du nom d'hôte du client demandeur - le code du pays - et la
+    règle de réécriture qui suit utilise cette valeur pour rechercher le
+    serveur miroir approprié dans le fichier de correspondances.</p>
     </dd>
   </dl>
 
@@ -470,29 +470,29 @@ com       http://www.example.com/<br />
 
 <section id="browser-dependent-content">
 
-      <title>Contenu d&eacute;pendant du navigateur</title>
+      <title>Contenu dépendant du navigateur</title>
 
       <dl>
         <dt>Description :</dt>
 
         <dd>
-          <p>Nous voulons fournir des contenus diff&eacute;rents en fonction du
-	  navigateur (user-agent) qui effectue la requ&ecirc;te.</p>
+          <p>Nous voulons fournir des contenus différents en fonction du
+	  navigateur (user-agent) qui effectue la requête.</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
-          <p>Nous devons d&eacute;terminer quel contenu servir, en nous basant
-	  sur l'en-t&ecirc;te HTTP "User-Agent". La
-	  configuration suivante effectue ceci : si l'en-t&ecirc;te HTTP
+          <p>Nous devons déterminer quel contenu servir, en nous basant
+	  sur l'en-tête HTTP "User-Agent". La
+	  configuration suivante effectue ceci : si l'en-tête HTTP
 	  "User-Agent" commence par "Mozilla/3", le nom de la page
-	  <code>foo.html</code> est r&eacute;&eacute;crit en <code>foo.NS.html</code>
-	  et la r&eacute;&eacute;criture s'arr&ecirc;te. Si le navigateur est "Lynx" ou
+	  <code>foo.html</code> est réécrit en <code>foo.NS.html</code>
+	  et la réécriture s'arrête. Si le navigateur est "Lynx" ou
 	  "Mozilla" version 1 ou 2, l'URL devient
 	  <code>foo.20.html</code>. Tous les autres navigateurs
-	  re&ccedil;oivent la page <code>foo.32.html</code>. Tout ceci est
-	  effectu&eacute; par le jeu de r&egrave;gles suivant :</p>
+	  reçoivent la page <code>foo.32.html</code>. Tout ceci est
+	  effectué par le jeu de règles suivant :</p>
 <highlight language="config">
 RewriteCond "%{HTTP_USER_AGENT}"  "^<strong>Mozilla/3</strong>.*"
 RewriteRule "^foo\.html$"         "foo.<strong>NS</strong>.html"          [<strong>L</strong>]
@@ -516,11 +516,11 @@ RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<stro
  <dt>Description :</dt>
 
    <dd>
-     <p>Sur certains serveurs, une ressource peut poss&eacute;der plusieurs
-     URLs. Il y a en g&eacute;n&eacute;ral les URLs canoniques (celles qui sont
-     r&eacute;ellement distribu&eacute;es et utilis&eacute;es), et celles qui correspondent &agrave;
+     <p>Sur certains serveurs, une ressource peut posséder plusieurs
+     URLs. Il y a en général les URLs canoniques (celles qui sont
+     réellement distribuées et utilisées), et celles qui correspondent à
      des raccourcis, les URLs internes, etc... Quelle que soit l'adresse
-     que l'utilisateur fournit dans la requ&ecirc;te, il devrait finalement
+     que l'utilisateur fournit dans la requête, il devrait finalement
      voir l'URL canonique dans la barre d'adresse de son navigateur.</p>
    </dd>
 
@@ -529,15 +529,15 @@ RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<stro
      <dd>
        <p>Nous effectuons une redirection HTTP externe pour toutes les
        URLs non canoniques afin de les corriger dans la barre d'adresse
-       du navigateur, et ceci pour toutes les requ&ecirc;tes futures. Dans le
-       jeu de r&egrave;gles suivant, nous rempla&ccedil;ons <code>/matous</code> et
+       du navigateur, et ceci pour toutes les requêtes futures. Dans le
+       jeu de règles suivant, nous remplaçons <code>/matous</code> et
        <code>/minettes</code> par le canonique <code>/chats</code>.</p>
 
 	<highlight language="config">RewriteRule   "^/(matous|minettes)/(.*)"    "/chats/$2"  [R]</highlight>
         </dd>
 
      <dt>Discussion :</dt>
-     <dd>On serait mieux inspir&eacute; d'utiliser ici les directives Redirect ou
+     <dd>On serait mieux inspiré d'utiliser ici les directives Redirect ou
      RedirectMatch :
 
      <highlight language="config"> RedirectMatch "^/(matous|minettes)/(.*)" "/chats/$2" </highlight>
@@ -548,19 +548,19 @@ RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<stro
 
 <section id="moveddocroot">
 
-  <title>D&eacute;placement du r&eacute;pertoire <code>DocumentRoot</code></title>
+  <title>Déplacement du répertoire <code>DocumentRoot</code></title>
 
   <dl>
     <dt>Description :</dt>
 
     <dd>
-<p>En g&eacute;n&eacute;ral, le r&eacute;pertoire <directive
-module="core">DocumentRoot</directive> du serveur web correspond &agrave; l'URL
-"<code>/</code>". Ce r&eacute;pertoire ne contient cependant pas forc&eacute;ment des
-ressources de premi&egrave;re importance pour l'utilisateur. Par exemple, vous
-pr&eacute;f&eacute;rerez peut-&ecirc;tre que le r&eacute;pertoire d'accueil d'un visiteur acc&eacute;dant
-pour la premi&egrave;re fois &agrave; votre site soit un r&eacute;pertoire particulier
-<code>/a-propos-de/</code>. Pour y parvenir, utilisez le jeu de r&egrave;gles
+<p>En général, le répertoire <directive
+module="core">DocumentRoot</directive> du serveur web correspond à l'URL
+"<code>/</code>". Ce répertoire ne contient cependant pas forcément des
+ressources de première importance pour l'utilisateur. Par exemple, vous
+préférerez peut-être que le répertoire d'accueil d'un visiteur accédant
+pour la première fois à votre site soit un répertoire particulier
+<code>/a-propos-de/</code>. Pour y parvenir, utilisez le jeu de règles
 suivant :</p>
 </dd>
 
@@ -581,28 +581,28 @@ RewriteRule   "^/$"  "/a-propos-de/"  [<strong>R</strong>]
 
 <highlight language="config">RedirectMatch "^/$" "http://example.com/a-propos-de/"</highlight>
 
-<p>Notez aussi que cet exemple ne r&eacute;&eacute;crit que l'URL racine. En d'autres
-termes, il r&eacute;&eacute;crit une requ&ecirc;te pour <code>http://example.com/</code>,
-mais pas pour une requ&ecirc;te <code>http://example.com/page.html</code>. Si
-vous avez effectivement modifi&eacute; la racine de vos documents - c'est &agrave; dire
+<p>Notez aussi que cet exemple ne réécrit que l'URL racine. En d'autres
+termes, il réécrit une requête pour <code>http://example.com/</code>,
+mais pas pour une requête <code>http://example.com/page.html</code>. Si
+vous avez effectivement modifié la racine de vos documents - c'est à dire
 si <strong>tous</strong> vos contenus se trouvent dans un
-sous-r&eacute;pertoire, il est largement pr&eacute;f&eacute;rable de modifier simplement
+sous-répertoire, il est largement préférable de modifier simplement
 votre directive <directive module="core">DocumentRoot</directive>, ou de
-d&eacute;placer l'ensemble du contenu vers le r&eacute;pertoire sup&eacute;rieur, plut&ocirc;t que
-de r&eacute;&eacute;crire les URLs.</p>
+déplacer l'ensemble du contenu vers le répertoire supérieur, plutôt que
+de réécrire les URLs.</p>
 </dd>
 </dl>
 
 </section>
 
 <section id="fallback-resource">
-<title>Ressource par d&eacute;faut</title>
+<title>Ressource par défaut</title>
 
 <dl>
 <dt>Description :</dt>
 <dd>Vous voulez qu'une seule ressource (disons un certain fichier tel
-que index.php) soit servie pour toutes les requ&ecirc;tes &agrave; destination d'un
-certain r&eacute;pertoire, sauf pour celles qui concernent une ressource
+que index.php) soit servie pour toutes les requêtes à destination d'un
+certain répertoire, sauf pour celles qui concernent une ressource
 existant effectivement comme une image, ou un fichier css.</dd>
 
 <dt>Solution :</dt>
@@ -616,8 +616,8 @@ existant effectivement comme une image, ou un fichier css.</dd>
 &lt;/Directory&gt;
 </highlight>
 
-<p>Cependant, si vos besoins &eacute;taient plus complexes, vous pouviez, dans
-les versions plus anciennes d'Apache, utiliser un jeu de r&egrave;gles du style
+<p>Cependant, si vos besoins étaient plus complexes, vous pouviez, dans
+les versions plus anciennes d'Apache, utiliser un jeu de règles du style
 :</p>
 
 <highlight language="config">
@@ -630,13 +630,13 @@ les versions plus anciennes d'Apache, utiliser un jeu de r&egrave;gles du style
 &lt;/Directory&gt;
 </highlight>
 
-<p>D'autre part, si vous voulez transmettre l'URI de la requ&ecirc;te en tant
-que cha&icirc;ne de param&egrave;tres &agrave; index.php, vous pouvez remplacer cette r&egrave;gle
-de r&eacute;&eacute;criture par :</p>
+<p>D'autre part, si vous voulez transmettre l'URI de la requête en tant
+que chaîne de paramètres à index.php, vous pouvez remplacer cette règle
+de réécriture par :</p>
 
 <highlight language="config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</highlight>
 
-<p>Notez que l'on peut utiliser ces jeux de r&egrave;gles aussi bien dans un
+<p>Notez que l'on peut utiliser ces jeux de règles aussi bien dans un
 fichier <code>.htaccess</code> que dans une section
 &lt;Directory&gt;.</p>
 
@@ -651,19 +651,19 @@ fichier <code>.htaccess</code> que dans une section
 
 <dl>
 <dt>Description :</dt>
-<dd>Vous voulez extraire une valeur particuli&egrave;re d'une cha&icirc;ne de
-param&egrave;tres d'une URL, et soit la remplacer, soit l'incorporer dans un
+<dd>Vous voulez extraire une valeur particulière d'une chaîne de
+paramètres d'une URL, et soit la remplacer, soit l'incorporer dans un
 autre composant de l'URL.</dd>
 
 <dt>Solutions :</dt>
 <dd>
-<p>Dans la plupart des solutions de cette section, on utilise la m&ecirc;me
-condition qui stocke la valeur recherch&eacute;e dans la r&eacute;f&eacute;rence arri&egrave;re %2.
-%1 est le d&eacute;but de la requ&ecirc;te, et %3 ce qui reste. Cette condition est
-un peu complexe car elle introduit de la flexibilit&eacute; et &eacute;vite les
+<p>Dans la plupart des solutions de cette section, on utilise la même
+condition qui stocke la valeur recherchée dans la référence arrière %2.
+%1 est le début de la requête, et %3 ce qui reste. Cette condition est
+un peu complexe car elle introduit de la flexibilité et évite les
 doubles perluettes '&amp;&amp;' dans les substitutions.</p>
 <ul>
-  <li>Cette solution supprime le couple cl&eacute;/valeur recherch&eacute; :
+  <li>Cette solution supprime le couple clé/valeur recherché :
 
 <highlight language="config">
 # Remove mykey=???
@@ -673,7 +673,7 @@ RewriteRule "(.*)" "$1?%1%3"
   </li>
 
   <li>Cette solution remplace la partie de l'URL qui suit la valeur
-  recherch&eacute;e par un '?' :
+  recherchée par un '?' :
 
 <highlight language="config">
 # Copy from query string to PATH_INFO
@@ -682,7 +682,7 @@ RewriteRule "(.*)" "$1/products/%2/?" [PT]
 </highlight>
   </li>
 
-  <li>Cette solution utilise la valeur recherch&eacute;e dans une deuxi&egrave;me
+  <li>Cette solution utilise la valeur recherchée dans une deuxième
   condition ::
 
 <highlight language="config">
@@ -693,9 +693,9 @@ RewriteRule "(.*)" - [F]
 </highlight>
   </li>
 
-  <li>Cette solution produit l'effet inverse des pr&eacute;c&eacute;dentes ; elle
-  copie des composantes du chemin (peut-&ecirc;tre PATH_INFO) depuis l'URL
-  vers sa cha&icirc;ne de param&egrave;tres :
+  <li>Cette solution produit l'effet inverse des précédentes ; elle
+  copie des composantes du chemin (peut-être PATH_INFO) depuis l'URL
+  vers sa chaîne de paramètres :
 <highlight language="config">
 # The desired URL might be /products/kitchen-sink, and the script expects 
 # /path?products=kitchen-sink.

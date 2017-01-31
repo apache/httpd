@@ -1623,7 +1623,7 @@ As of release 2.4.21, all configurations which enable either one of the
 will use the new <code class="directive"><a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></code>
 behavior, and all configurations which disable either one of the 
 <code>SSLProxyCheckPeerName</code> or <code>SSLProxyCheckPeerCN</code> options
-will supress all remote server certificate name validation. Only the following
+will suppress all remote server certificate name validation. Only the following
 configuration will trigger the legacy certificate CN comparison in 2.4.21 and
 later releases;
 </p>
@@ -2719,7 +2719,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/mod/mod_ssl.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

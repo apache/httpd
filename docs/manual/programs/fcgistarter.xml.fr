@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision : 1469400 -->
@@ -25,7 +25,7 @@
 <manualpage metafile="fcgistarter.xml.meta">
 <parentdocument href="./">Programmes</parentdocument>
 
-<title>fcgistarter - D&eacute;marrer un programme FastCGI</title>
+<title>fcgistarter - Démarrer un programme FastCGI</title>
 
 <summary>
     <p></p>
@@ -34,7 +34,7 @@
 <seealso><module>mod_proxy_fcgi</module></seealso>
 
 <section id="note"><title>Note</title>
-      <p>Ne fonctionne actuellement que sur les syst&egrave;mes de type Unix.</p>
+      <p>Ne fonctionne actuellement que sur les systèmes de type Unix.</p>
 </section>
 
 <section id="synopsis"><title>Syntaxe</title>
@@ -52,10 +52,10 @@
     <dd>Le programme FastCGI</dd>
 
     <dt><code>-p <var>port</var></code></dt>
-    <dd>Port sur lequel le programme va se mettre en &eacute;coute</dd>
+    <dd>Port sur lequel le programme va se mettre en écoute</dd>
 
     <dt><code>-i <var>interface</var></code></dt>
-    <dd>Interface sur laquelle le programme va se mettre en &eacute;coute</dd>
+    <dd>Interface sur laquelle le programme va se mettre en écoute</dd>
 
     <dt><code>-N <var>nombre</var></code></dt>
     <dd>Nombre d'instances du programme</dd>

@@ -2693,10 +2693,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
     }
 
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, server,
-                     "%s: reusing backend connection %pI<>%pI",
-                     scheme, conn->connection->local_addr,
-                     conn->connection->client_addr);
+        if (APLOGtrace2(server)) {
+            apr_sockaddr_t *local_addr = NULL;
+            apr_socket_addr_get(&local_addr, APR_LOCAL, conn->sock);
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, server,
+                         "%s: reusing backend connection %pI<>%pI",
+                         scheme, local_addr, conn->addr);
+        }
     }
     else if (conn->sock) {
         /* This clears conn->scpool (and associated data), so backup and

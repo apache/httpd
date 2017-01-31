@@ -64,6 +64,7 @@ struct h2_proxy_session {
     
     unsigned int aborted : 1;
     unsigned int check_ping : 1;
+    unsigned int h2_front : 1; /* if front-end connection is HTTP/2 */
 
     h2_proxy_request_done *done;
     void *user_data;
@@ -86,6 +87,7 @@ struct h2_proxy_session {
 
 h2_proxy_session *h2_proxy_session_setup(const char *id, proxy_conn_rec *p_conn,
                                          proxy_server_conf *conf,
+                                         int h2_front, 
                                          unsigned char window_bits_connection,
                                          unsigned char window_bits_stream,
                                          h2_proxy_request_done *done);

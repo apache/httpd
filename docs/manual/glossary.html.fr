@@ -226,7 +226,7 @@
     proprement dit, et contient des méta-informations décrivant le contenu.
     </dd>
 
-    <dt><a name="regularexpresion" id="regularexpresion">Expression Rationnelle
+    <dt><a name="regularexpression" id="regularexpression">Expression Rationnelle
     (Regular Expression)</a>
       <a name="regex" id="regex">(Regex)</a></dt>
     <dd>Une méthode pour décrire un modèle sous forme de texte - par exemple,
@@ -610,7 +610,7 @@ var comments_identifier = 'http://httpd.apache.org/docs/2.4/glossary.html';
     }
 })(window, document);
 //--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2016 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2017 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

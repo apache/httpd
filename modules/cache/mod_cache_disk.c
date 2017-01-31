@@ -786,7 +786,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
         /* ### What about APR_EOF? */
         rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00717)
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00717)
                           "Premature end of cache headers.");
             return rv;
         }
@@ -865,6 +865,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+    apr_status_t rv;
 
     /* This case should not happen... */
     if (!dobj->hdrs.fd) {
@@ -877,8 +878,18 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     h->resp_hdrs = apr_table_make(r->pool, 20);
 
     /* Call routine to read the header lines/status line */
-    read_table(h, r, h->resp_hdrs, dobj->hdrs.fd);
-    read_table(h, r, h->req_hdrs, dobj->hdrs.fd);
+    rv = read_table(h, r, h->resp_hdrs, dobj->hdrs.fd);
+    if (rv != APR_SUCCESS) { 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02987) 
+                      "Error reading response headers from %s for %s",
+                      dobj->hdrs.file, dobj->name);
+    }
+    rv = read_table(h, r, h->req_hdrs, dobj->hdrs.fd);
+    if (rv != APR_SUCCESS) { 
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02988) 
+                      "Error reading request headers from %s for %s",
+                      dobj->hdrs.file, dobj->name);
+    }
 
     apr_file_close(dobj->hdrs.fd);
 

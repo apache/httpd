@@ -39,7 +39,8 @@ typedef struct {
     apr_int64_t bytes_written;
     
     int buffer_output;
-    apr_size_t pass_threshold;
+    apr_size_t flush_threshold;
+    unsigned int is_flushed : 1;
     
     char *scratch;
     apr_size_t ssize;
@@ -61,16 +62,15 @@ apr_status_t h2_conn_io_write(h2_conn_io *io,
 apr_status_t h2_conn_io_pass(h2_conn_io *io, apr_bucket_brigade *bb);
 
 /**
- * Append an End-Of-Connection bucket to the output that, once destroyed,
- * will tear down the complete http2 session.
- */
-apr_status_t h2_conn_io_write_eoc(h2_conn_io *io, struct h2_session *session);
-
-/**
  * Pass any buffered data on to the connection output filters.
  * @param io the connection io
  * @param flush if a flush bucket should be appended to any output
  */
 apr_status_t h2_conn_io_flush(h2_conn_io *io);
+
+/**
+ * Check if the buffered amount of data needs flushing.
+ */
+int h2_conn_io_needs_flush(h2_conn_io *io);
 
 #endif /* defined(__mod_h2__h2_conn_io__) */

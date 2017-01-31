@@ -76,6 +76,7 @@ Documentation</title>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
     <page href="howto/public_html.html">Per-user Web Directories (public_html)</page>
     <page href="howto/reverse_proxy.html">Reverse proxy setup guide</page>
+    <page href="howto/http2.html">HTTP/2 guide</page>
 </category>
 
 <category id="platform"><title>Platform Specific Notes</title>

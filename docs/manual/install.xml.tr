@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1685413:1760550 (outdated) -->
+<!-- English Revision: 1760550 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.gen.tr>
    Reviewed by: Orhan Berent <berent belgeler.gen.tr>
@@ -60,7 +60,10 @@
       <tr>
         <td><a href="#download">İndirme</a></td>
 
-        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
+        <td><a href="http://httpd.apache.org/download.cgi#apache24" 
+          >http://httpd.apache.org/download.cgi</a> adresinden en son 
+          dağıtımı indirin.
+
         </td>
       </tr>
 

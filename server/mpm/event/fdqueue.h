@@ -52,6 +52,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
                                           int *had_to_block);
 apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info);
 apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info);
+void ap_free_idle_pools(fd_queue_info_t *queue_info);
 
 struct fd_queue_elem_t
 {
@@ -98,6 +99,7 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
                                     event_conn_state_t ** ecs, apr_pool_t ** p,
                                     timer_event_t ** te);
 apr_status_t ap_queue_interrupt_all(fd_queue_t * queue);
+apr_status_t ap_queue_interrupt_one(fd_queue_t * queue);
 apr_status_t ap_queue_term(fd_queue_t * queue);
 
 #endif /* FDQUEUE_H */
