@@ -989,6 +989,12 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     return HDR_DONE;
 }
 
+/** Return length for a v2 protocol header. */
+static apr_size_t remoteip_get_v2_len(proxy_header *hdr)
+{
+    return ntohs(hdr->v2.len);
+}
+
 /** Determine if this is a v1 or v2 PROXY header.
  */
 static int remoteip_determine_version(conn_rec *c, const char *ptr)
@@ -1112,7 +1118,8 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             else if (ctx->version == 2) {
                 if (ctx->rcvd >= MIN_V2_HDR_LEN) {
                     ctx->need = MIN_V2_HDR_LEN +
-                                ntohs(((proxy_header *) ctx->header)->v2.len);
+                        remoteip_get_v2_len((proxy_header *) ctx->header);
+
                 }
                 if (ctx->rcvd >= ctx->need) {
                     psts = remoteip_process_v2_header(f->c, conn_conf,
