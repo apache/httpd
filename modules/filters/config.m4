@@ -5,7 +5,6 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(buffer, Filter Buffering, , , most)
-APACHE_MODULE(crypto, Symmetrical encryption / decryption, , , no)
 APACHE_MODULE(data, RFC2397 data encoder, , , )
 APACHE_MODULE(ratelimit, Output Bandwidth Limiting, , , most)
 APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , yes)
@@ -190,6 +189,25 @@ if (o) return *o;],
     if test "$ap_brotli_with" = "yes"; then
       AC_MSG_ERROR([Brotli library was missing or unusable])
     fi
+  fi
+])
+
+APACHE_MODULE(crypto, Symmetrical encryption / decryption, , , no, [
+  dnl Check for the required APR-util version.
+  AC_MSG_CHECKING([for APR-util >= 1.6])
+  if test "$apr_major_version" -lt 2; then
+    case "$APU_VERSION" in
+    dnl Sorry for the quadrigraphs; this expands to "1.[0-5].*)"
+    1.@<:@0-5@:>@.*)
+      AC_MSG_RESULT(no)
+      enable_crypto=no
+      ;;
+    *)
+      AC_MSG_RESULT(yes)
+      ;;
+    esac
+  else
+    AC_MSG_RESULT([yes (APR 2)])
   fi
 ])
 
