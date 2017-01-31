@@ -82,7 +82,7 @@ typedef struct {
 } remoteip_req_t;
 
 /* For PROXY protocol processing */
-static const char *remoteip_filter_name = "REMOTEIP_INPUT";
+static ap_filter_rec_t *remoteip_filter;
 
 typedef struct {
     char line[108];
@@ -881,7 +881,7 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
     }
 
     /* add our filter */
-    if (!ap_add_input_filter(remoteip_filter_name, NULL, NULL, c)) {
+    if (!ap_add_input_filter_handle(remoteip_filter, NULL, NULL, c)) {
         /* XXX: Shouldn't this WARN in log? */
         return DECLINED;
     }
@@ -1232,8 +1232,9 @@ static void register_hooks(apr_pool_t *p)
 {
     /* mod_ssl is CONNECTION + 5, so we want something higher (earlier);
      * mod_reqtimeout is CONNECTION + 8, so we want something lower (later) */
-    ap_register_input_filter(remoteip_filter_name, remoteip_input_filter, NULL,
-                             AP_FTYPE_CONNECTION + 7);
+    remoteip_filter = 
+        ap_register_input_filter("REMOTEIP_INPUT", remoteip_input_filter, NULL,
+                                 AP_FTYPE_CONNECTION + 7);
 
     ap_hook_pre_config(remoteip_hook_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(remoteip_hook_post_config, NULL, NULL, APR_HOOK_MIDDLE);
