@@ -169,6 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4 patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
+     ±0: jorton, not reviewed but please include r1781030 too
 
   *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
      AP_FTYPE_CONTENT_SET.  PR58856
