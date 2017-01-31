@@ -4547,8 +4547,9 @@ certain events before failing a request</description>
       for an acknowledgement of a packet if the send buffer is
       full.</li>
 
-      <li>In <module>mod_cgi</module>, the length of time to wait for
-      output from a CGI script.</li>
+      <li>In <module>mod_cgi</module> and <module>mod_cgid</module>,
+      the length of time to wait for any individual block of output
+      from a CGI script.</li>
 
       <li>In <module>mod_ext_filter</module>, the length of time to
       wait for output from a filtering process.</li>
