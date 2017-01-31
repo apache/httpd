@@ -98,6 +98,12 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
+static apr_status_t modssl_ctx_config_cleanup(void *ctx)
+{
+    SSL_CONF_CTX_free(ctx);
+    return APR_SUCCESS;
+}
+
 static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 {
     mctx->sc                  = NULL; /* set during module init */
@@ -157,6 +163,9 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 #endif
 #ifdef HAVE_SSL_CONF_CMD
     mctx->ssl_ctx_config = SSL_CONF_CTX_new();
+    apr_pool_cleanup_register(p, mctx->ssl_ctx_config,
+                              modssl_ctx_config_cleanup,
+                              apr_pool_cleanup_null);
     SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_FILE);
     SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_SERVER);
     SSL_CONF_CTX_set_flags(mctx->ssl_ctx_config, SSL_CONF_FLAG_CERTIFICATE);
