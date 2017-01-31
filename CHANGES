@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: work around leaks on (graceful) restart. [Yann Ylavic]
+
   *) When using mod_status with the Event MPM, report the number of requests
      associated with an active connection in the "ACC" field. Previously
      zero was always reported with this MPM.  PR60647. [Eric Covener]
