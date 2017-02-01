@@ -388,7 +388,9 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     /* Some OpenSSL internals are allocated per-thread, make sure they
      * are associated to the/our same thread-id until cleaned up.
      */
+#if APR_HAS_THREADS && OPENSSL_VERSION_NUMBER < 0x10100000L
     ssl_util_thread_id_setup(pconf);
+#endif
 
     /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
