@@ -211,6 +211,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: trunk works (modulo CHANGES)
      +1: ylavic
 
+  *) mod_proxy_hcheck: Don't validate timed out responses.
+     trunk patch: http://svn.apache.org/r1779574
+                  http://svn.apache.org/r1779623
+     2.4.x patch: trunk works *after r1779573 above* (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
