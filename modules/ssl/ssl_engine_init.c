@@ -1685,7 +1685,6 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             return ssl_die(s);
     }
-    SSL_CONF_CTX_free(cctx);
 #endif
 
     if (SSL_CTX_check_private_key(sc->server->ssl_ctx) != 1) {
