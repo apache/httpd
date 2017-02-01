@@ -132,6 +132,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_watchdog: Use pconf as parent pool so mutexes get cleaned on restarts/reloads
+     and fix leaking sems (https://bugzilla.redhat.com/show_bug.cgi?id=1410883)
+     trunk patch: http://svn.apache.org/r1778319
+                  http://svn.apache.org/r1778331
+     2.4.x patch: trunk works
+     +1: jim, jorton, ylavic
+
+  *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
+     AP_FTYPE_CONTENT_SET.  PR58856
+     trunk patch: http://svn.apache.org/r1726705
+     2.4.x patch: trunk works
+     +1: covener, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -172,19 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: druggeri, jim
      ±0: jorton, not reviewed but please include r1781030 too
 
-  *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
-     AP_FTYPE_CONTENT_SET.  PR58856
-     trunk patch: http://svn.apache.org/r1726705
-     2.4.x patch: trunk works
-     +1: covener, jim
-
-  *) mod_watchdog: Use pconf as parent pool so mutexes get cleaned on restarts/reloads
-     and fix leaking sems (https://bugzilla.redhat.com/show_bug.cgi?id=1410883)
-     trunk patch: http://svn.apache.org/r1778319
-                  http://svn.apache.org/r1778331
-     2.4.x patch: trunk works
-     +1: jim, jorton, 
-
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
                   http://svn.apache.org/r1762512
@@ -197,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_auth_digest: Use anonymous shm by default, fall back on name-based
      trunk patch: http://svn.apache.org/r1684636
      2.4.x patch: trunk works (needs CHANGES, ref PR 54622)
-     +1: jorton, 
+     +1: jorton, ylavic
 
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
