@@ -781,6 +781,10 @@ static int proxy_trans(request_rec *r)
         || !r->uri || r->uri[0] != '/') {
         return DECLINED;
     }
+   
+    if (apr_table_get(r->subprocess_env, "no-proxy")) { 
+        return DECLINED;
+    }
 
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
