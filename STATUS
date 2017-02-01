@@ -146,7 +146,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1740998
                   http://svn.apache.org/r1742697
                   http://svn.apache.org/r1756976
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co.patch
+                  http://svn.apache.org/r1781188
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v2.patch
      +1: ylavic
 
   *) event: close a race condition where we might re-enable listeners while they
