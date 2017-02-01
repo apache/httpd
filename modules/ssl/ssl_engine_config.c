@@ -98,11 +98,13 @@ BOOL ssl_config_global_isfixed(SSLModConfigRec *mc)
 **  _________________________________________________________________
 */
 
+#ifdef HAVE_SSL_CONF_CMD
 static apr_status_t modssl_ctx_config_cleanup(void *ctx)
 {
     SSL_CONF_CTX_free(ctx);
     return APR_SUCCESS;
 }
+#endif
 
 static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 {
