@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_http2: fix for crash when running out of memory.
+     [Robert Swiecki <robert@swiecki.net>, Stefan Eissing]
+     
   *) mod_ssl: work around leaks on (graceful) restart. [Yann Ylavic]
 
   *) When using mod_status with the Event MPM, report the number of requests
