@@ -158,10 +158,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1740998
                   http://svn.apache.org/r1742697
                   http://svn.apache.org/r1756976
-                  http://svn.apache.org/r1781188
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v2.patch
+                  http://svn.apache.org/r1781313
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-r1740928_and_co-v3.patch
      +1: ylavic
-     rpluem says: Please add r1781299
 
   *) event: close a race condition where we might re-enable listeners while they
      are already or about to be closed.
@@ -201,9 +200,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_ssl: work around leaks on (graceful) restart.
      trunk patch: http://svn.apache.org/r1781187
-                  http://svn.apache.org/r1781188
                   http://svn.apache.org/r1781190
-     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks.patch
+                  http://svn.apache.org/r1781312
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks-v2.patch
      +1: ylavic
 
   *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
