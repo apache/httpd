@@ -17,8 +17,15 @@
 #include "mod_proxy.h"
 #include "util_fcgi.h"
 #include "util_script.h"
+#include "ap_expr.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
+
+typedef struct {
+    ap_expr_info_t *cond;   
+    ap_expr_info_t *subst;   
+    const char *envname;
+} sei_entry;
 
 typedef struct {
     int need_dirwalk;
@@ -31,6 +38,7 @@ typedef enum {
     BACKEND_GENERIC,
 } fcgi_backend_t;
 
+
 #define FCGI_MAY_BE_FPM(dconf)                              \
         (dconf &&                                           \
         ((dconf->backend_type == BACKEND_DEFAULT_UNKNOWN) || \
@@ -38,6 +46,7 @@ typedef enum {
 
 typedef struct {
     fcgi_backend_t backend_type;
+    apr_array_header_t *env_fixups;
 } fcgi_dirconf_t;
 
 /*
@@ -147,6 +156,45 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     }
 
     return OK;
+}
+
+
+/*
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" COVENV1 "$1"
+  ProxyFCGISetEnvIf "reqenv('PATH_INFO') =~ m#/foo(\d+)\.php$#" PATH_INFO "/foo.php"
+  ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*foo)(\d+)(.*)#" PATH_TRANSLATED "$1$3"
+*/
+static void fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
+{ 
+    sei_entry *entries;
+    const char *err, *src; 
+    int i = 0, rc = 0;
+    ap_regmatch_t regm[AP_MAX_REG_MATCH];
+
+    entries = (sei_entry *) dconf->env_fixups->elts;
+    for (i = 0; i < dconf->env_fixups->nelts; i++) { 
+        sei_entry *entry = &entries[i];
+        if (0 < (rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err)))  { 
+            const char *val = ap_expr_str_exec_re(r, entry->subst, AP_MAX_REG_MATCH, regm, &src, &err);
+            if (err) { 
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                              "Error evaluating expression for replacment of %s: '%s'", 
+                               entry->envname, err);
+                continue;
+            }
+            if (APLOGrtrace4(r)) { 
+                const char *oldval = apr_table_get(r->subprocess_env, entry->envname);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, 
+                              "fix_cgivars: override %s from '%s' to '%s'", 
+                              entry->envname, oldval, val);
+        
+            }
+            apr_table_setn(r->subprocess_env, entry->envname, val);
+        } 
+        else { 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "fix_cgivars: Condition returned %d", rc);
+        }
+    }
 }
 
 /* Wrapper for apr_socket_sendv that handles updating the worker stats. */
@@ -323,6 +371,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
+    fix_cgivars(r, dconf);
  
     if (fpm || apr_table_get(r->notes, "virtual_script")) {
         /*
@@ -1035,6 +1084,8 @@ static void *fcgi_create_dconf(apr_pool_t *p, char *path)
 
     a = (fcgi_dirconf_t *)apr_pcalloc(p, sizeof(fcgi_dirconf_t));
     a->backend_type = BACKEND_DEFAULT_UNKNOWN;
+    a->env_fixups = apr_array_make(p, 20, sizeof(sei_entry));
+
     return a;
 }
 
@@ -1049,6 +1100,7 @@ static void *fcgi_merge_dconf(apr_pool_t *p, void *basev, void *overridesv)
     a->backend_type = (over->backend_type != BACKEND_DEFAULT_UNKNOWN) 
                       ? over->backend_type 
                       : base->backend_type;
+    a->env_fixups = apr_array_append(p, base->env_fixups, over->env_fixups);
     return a;
 }
 
@@ -1071,6 +1123,32 @@ static const char *cmd_servertype(cmd_parms *cmd, void *in_dconf,
     return NULL;
 }
 
+
+static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
+                              const char *arg1, const char *arg2, 
+                              const char *arg3)
+{
+    fcgi_dirconf_t *dconf = in_dconf;
+    const char *err;
+    sei_entry *new;
+    const char *envvar = arg2;
+
+    new = apr_array_push(dconf->env_fixups);
+    new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
+    if (err) { 
+        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                            arg1, err);
+    }
+    new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
+    if (err) { 
+        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                            arg3, err);
+    }
+
+    new->envname = envvar;
+
+    return NULL;
+}
 static void register_hooks(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
@@ -1080,6 +1158,8 @@ static void register_hooks(apr_pool_t *p)
 static const command_rec command_table[] = {
     AP_INIT_TAKE1("ProxyFCGIBackendType", cmd_servertype, NULL, OR_FILEINFO,
                   "Specify the type of FastCGI server: 'Generic', 'FPM'"),
+    AP_INIT_TAKE3("ProxyFCGISetEnvIf", cmd_setenv, NULL, OR_FILEINFO,
+                  "expr-condition env-name expr-value"),
     { NULL }
 };
 
