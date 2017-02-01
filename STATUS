@@ -205,6 +205,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks.patch
      +1: ylavic
 
+  *) mod_proxy_hcheck: Ensure thread-safety when concurrent healthchecks are
+     in use (ProxyHCTPsize > 0).  PR 60071.
+     trunk patch: http://svn.apache.org/r1779573
+     2.4.x patch: trunk works (modulo CHANGES)
+     +1: ylavic
+
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
