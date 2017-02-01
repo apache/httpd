@@ -198,7 +198,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1684636
      2.4.x patch: trunk works (needs CHANGES, ref PR 54622)
      +1: jorton, 
-     
+
+  *) mod_ssl: work around leaks on (graceful) restart.
+     trunk patch: http://svn.apache.org/r1781187
+                  http://svn.apache.org/r1781188
+                  http://svn.apache.org/r1781190
+     2.4.x patch: http://home.apache.org/~ylavic/patches/httpd-2.4.x-mod_ssl-restart_leaks.patch
+     +1: ylavic
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entried should be added at the START of the list ]
 
