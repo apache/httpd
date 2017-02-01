@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_proxy_fcgi: Add ProxyFCGISetEnvIf to fixup CGI environment
+     variables just before invoking the FastCGI. [Eric Covener]
+
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
      to set exceptions for ProxyPass specified in <Location> context.
