@@ -1615,11 +1615,6 @@ static apr_status_t ssl_init_proxy_ctx(server_rec *s,
 {
     apr_status_t rv;
 
-    if (proxy->ssl_ctx) {
-        /* Merged/initialized already */
-        return APR_SUCCESS;
-    }
-
     apr_pool_cleanup_register(p, proxy,
                               ssl_cleanup_proxy_ctx,
                               apr_pool_cleanup_null);
@@ -1690,6 +1685,7 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             return ssl_die(s);
     }
+    SSL_CONF_CTX_free(cctx);
 #endif
 
     if (SSL_CTX_check_private_key(sc->server->ssl_ctx) != 1) {
