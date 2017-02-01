@@ -7,7 +7,7 @@ Changes with Apache 2.5.0
   *) mod_proxy: Allow the per-request environment variable "no-proxy" to
      be used as an alternative to ProxyPass /path !. This is primarily
      to set exceptions for ProxyPass specified in <Location> context.
-     Use SetEnvIf, not SetEnv.
+     Use SetEnvIf, not SetEnv. [Eric Covener]
 
   *) mod_http2: fix for crash when running out of memory.
      [Robert Swiecki <robert@swiecki.net>, Stefan Eissing]
