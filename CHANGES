@@ -2,6 +2,9 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_filter: Fix AddOutputFilterByType with non-content-level filters.
+     PR 58856. [Micha Lenk <micha lenk.info>]
+ 
   *) mod_watchdog: Fix semaphore leak over restarts.  [Jim Jagielski]
 
   *) mod_http2: regression fix on PR 59348, on graceful restart, ongoing 
