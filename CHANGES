@@ -2,6 +2,8 @@
 
 Changes with Apache 2.4.26
 
+  *) mod_watchdog: Fix semaphore leak over restarts.  [Jim Jagielski]
+
   *) mod_http2: regression fix on PR 59348, on graceful restart, ongoing 
      streams are finished normally before the final GOAWAY is sent. 
      [Stefan Eissing, <slavko gmail.com>]
