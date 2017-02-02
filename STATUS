@@ -132,18 +132,7 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_watchdog: Use pconf as parent pool so mutexes get cleaned on restarts/reloads
-     and fix leaking sems (https://bugzilla.redhat.com/show_bug.cgi?id=1410883)
-     trunk patch: http://svn.apache.org/r1778319
-                  http://svn.apache.org/r1778331
-     2.4.x patch: trunk works
-     +1: jim, jorton, ylavic
 
-  *) mod_filter: AddOutputFilterByType should use underlying filters type, not just
-     AP_FTYPE_CONTENT_SET.  PR58856
-     trunk patch: http://svn.apache.org/r1726705
-     2.4.x patch: trunk works
-     +1: covener, jim, ylavic
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
