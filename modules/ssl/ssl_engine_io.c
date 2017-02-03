@@ -142,6 +142,7 @@ static int bio_filter_out_pass(bio_filter_out_ctx_t *outctx)
     if (outctx->rc == APR_SUCCESS && outctx->c->aborted) {
         outctx->rc = APR_ECONNRESET;
     }
+    apr_brigade_cleanup(outctx->bb);
     return (outctx->rc == APR_SUCCESS) ? 1 : -1;
 }
 
@@ -1818,18 +1819,15 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
                 ssl_filter_io_shutdown(filter_ctx, f->c, 0);
             }
 
-            AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
-
             /* Metadata buckets are passed one per brigade; it might
              * be more efficient (but also more complex) to use
              * outctx->bb as a true buffer and interleave these with
              * data buckets. */
             APR_BUCKET_REMOVE(bucket);
-            APR_BRIGADE_INSERT_HEAD(outctx->bb, bucket);
-            status = ap_pass_brigade(f->next, outctx->bb);
-            if (status == APR_SUCCESS && f->c->aborted)
-                status = APR_ECONNRESET;
-            apr_brigade_cleanup(outctx->bb);
+            APR_BRIGADE_INSERT_TAIL(outctx->bb, bucket);
+            if (bio_filter_out_pass(outctx) < 0) {
+                status = outctx->rc;
+            }
         }
         else {
             /* Filter a data bucket. */
