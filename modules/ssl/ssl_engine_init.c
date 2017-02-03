@@ -1762,6 +1762,12 @@ apr_status_t ssl_init_ConfigureServer(server_rec *s,
             != APR_SUCCESS) {
             return rv;
         }
+
+	/* Initialize OCSP Responder certificate if OCSP enabled */
+	#ifndef OPENSSL_NO_OCSP
+        	ssl_init_ocsp_certificates(s, sc->server);
+	#endif
+
     }
 
     sdc->proxy->sc = sc;
@@ -2061,6 +2067,12 @@ apr_status_t ssl_init_ModuleKill(void *data)
         sc = mySrvConfig(s);
 
         ssl_init_ctx_cleanup(sc->server);
+
+	/* Not Sure but possibly clear X509 trusted cert file */
+	#ifndef OPENSSL_NO_OCSP
+		sk_X509_pop_free(sc->server->ocsp_certs, X509_free);
+	#endif
+
     }
 
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L
