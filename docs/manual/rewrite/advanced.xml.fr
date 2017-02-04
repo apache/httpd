@@ -355,7 +355,7 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]
     RewriteCond :</p>
 
 <highlight language="config">
-RewriteCond "%{ENV:rewritten}" =1
+RewriteCond "%{ENV:rewritten}" "=1"
 </highlight>
 
     </dd>
