@@ -4893,8 +4893,8 @@ du serveur</td></tr>
       maximum jusqu'à l'arrivée de l'accusé-réception d'un paquet si le
       tampon d'envoi est plein.</li>
 
-      <li>Avec <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, le temps d'attente maximum des
-      sorties d'un script CGI.</li>
+      <li>Avec <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> et <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>, le temps
+      d'attente maximum pour un bloc individuel en sortie d'un script CGI.</li>
 
       <li>Avec <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>, le temps d'attente
       maximum des sorties d'un processus de filtrage.</li>
