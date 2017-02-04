@@ -168,10 +168,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1776627 (shortened name + doc fix)
                   http://svn.apache.org/r1776674 (attribution moved to CHANGES)
                   http://svn.apache.org/r1776740 (attribution updated in mod_remotip.c)
-     2.4 patch (includes CHANGES):
+                  http://svn.apache.org/r1778268 (fix compiler warning)
+                  http://svn.apache.org/r1780725 (set buckets aside)
+                  http://svn.apache.org/r1781030 (fix strict GCC warning)
+                  http://svn.apache.org/r1781031 (reference the filter by handle)
+                  http://svn.apache.org/r1781701 (rework optional processing case)
+     2.4 convenience patch (includes CHANGES):
                   http://people.apache.org/~druggeri/patches/RemoteIPProxyProtocol.2.4.x.patch
      +1: druggeri, jim
-     ±0: jorton, not reviewed but please include r1781030 too
 
   *) mod_brotli: Backport of mod_brotli filter
      trunk patch: http://svn.apache.org/r1761714
