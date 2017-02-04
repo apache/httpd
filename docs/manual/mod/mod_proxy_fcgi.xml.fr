@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1778350:1781329 (outdated) -->
+<!-- English Revision: 1781329 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2017011401 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -239,6 +238,71 @@ peut supprimer le préfixe, puis garder en mémoire qu'il communique avec Apache
 Avec les versions 2.4.21 à 2.4.25, ce préfixe était automatiquement supprimé par
 le serveur, empêchant ainsi PHP-FPM de détecter et interopérer avec Apache dans
 certains scénarios.</p> 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFCGISetEnvIf</name>
+<description>Permet d'adapter la valeur des variables envoyées aux serveurs
+FastCGI</description>
+<syntax>ProxyFCGISetEnvIf <var>conditional-expression</var>
+    <var>environment-variable-name</var>
+    <var>value-expression</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache.</compatibility>
+
+<usage>
+<p>Juste avant la transmission d'une requête au serveur FastCGI configuré, le
+coeur du programme du serveur web définit un certain nombre de variables
+d'environnement en fonction de certains détails de la requête considérée. Les
+programmes FastCGI utilisent souvent ces variables comme données en entrée afin
+de déterminer quels scripts sous-jacents ils vont exécuter, ou quelles données
+en sortie doivent être produites.</p>
+<p>Voici quelques exemples de variables d'environnement importantes :</p>
+<ul>
+  <li>SCRIPT_NAME</li>
+  <li>SCRIPT_FILENAME</li>
+  <li>REQUEST_URI</li>
+  <li>PATH_INFO</li>
+  <li>PATH_TRANSLATED</li>
+</ul>
+
+<p>Cette directive permet de passer outre les variables d'environnement
+ci-dessus, entre autres. Elle est évaluée après la définition de la valeur
+initiale de ces variables ; elle peuvent donc être utilisées comme entrées dans
+les expressions définissants les conditions et les valeurs.</p>
+<p>Syntaxe des paramètres :</p>
+<dl>
+<dt>conditional-expression</dt> 
+<dd>Définit une condition en fonction de laquelle la
+variable d'environnement qui suit sera modifiée ou non. Pour la syntaxe de cette
+expression, reportez-vous aux exemples qui suivent ou à la spécification
+détaillée dans le document <a href="../expr.html">ap_expr</a>.
+   </dd>
+<dt>environment-variable-name</dt> 
+<dd>Spécifie le nom de la variable d'environnement à modifier, par exemple
+PATH_INFO.</dd>
+<dt>value-expression</dt>
+<dd>Spécifie la nouvelle valeur de la variable "environment-variable-name". On
+peut inclure des
+références arrières, comme "$1", issues de captures en provenance de
+l'expression rationnelle <var>conditional-expression</var></dd>
+</dl>
+  
+<example>
+# Une modification basique, inconditionnelle<br/>
+ProxyFCGISetEnvIf "true" PATH_INFO "/example"<br/>
+<br/>
+# Utilisation d'une variable d'environnement pour spécidier la nouvelle valeur<br/>
+ProxyFCGISetEnvIf "true" PATH_INFO "%{reqenv:SCRIPT_NAME}"<br/>
+<br/>
+# Utilisation de captures dans la condition et de références arrières dans la
+# nouvelle valeur<br/>
+ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TRANSLATED "$1$3"<br/>
+</example>
+
 </usage>
 </directivesynopsis>
 
