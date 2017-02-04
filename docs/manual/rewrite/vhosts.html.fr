@@ -149,6 +149,7 @@ RewriteEngine On
 
 # un nom de serveur extrait d'un en-tête Host: peut être dans n'importe
 # quelle casse
+RewriteMap  lowercase  int:tolower
 
 ## on s'occupe tout d'abord des documents normaux :<br />
 # permet à Alias "/icons/" de fonctionner - répéter pour les autres
