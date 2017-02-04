@@ -53,7 +53,7 @@
   <modulefile>mod_expires.xml.fr</modulefile>
   <modulefile>mod_ext_filter.xml.fr</modulefile>
   <modulefile>mod_file_cache.xml.fr</modulefile>
-  <modulefile>mod_filter.xml.fr</modulefile>
+  <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_firehose.xml</modulefile>
   <modulefile>mod_headers.xml.fr</modulefile>
   <modulefile>mod_heartbeat.xml.fr</modulefile>

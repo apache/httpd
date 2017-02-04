@@ -119,9 +119,8 @@ module affichées par le gestionnaire server-info</td></tr>
 <var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les réponses en provenance du
 serveur</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#addoutputfilterbytype">AddOutputFilterByType <var>filtre</var>[;<var>filtre</var>...]
-<var>type_de_média</var> [<var>type_de_média</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">assigne un filtre en sortie pour un type de média
-particulier</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
+<var>media-type</var> [<var>media-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular media-type</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>type-médium</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
@@ -597,14 +596,14 @@ précisés</td></tr>
 <tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>expression rationnelle</var>&gt; ...
 &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui s'appliquent à des fichiers
 spécifiés sous la forme d'expressions rationnelles</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>nom_filtre</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure la chaîne de filtrage</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>nom_filtre</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Déclare un filtre intelligent</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>nom_filtre</var> [<var>nom_fournisseur</var>]
-    <var>drapeaux_protocole</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Vérifie le respect du protocole HTTP</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>nom_filtre</var> <var>nom_fournisseur</var>
- <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enregistre un filtre de contenu</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>nom_filtre</var> <var>niveau</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Obtention d'informations de débogage/diagnostique en
-provenance de <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
+<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
+ <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
+    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
 <tr><td><a href="mod_firehose.html#firehoseconnectioninput">FirehoseConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the server on each connection</td></tr>
 <tr class="odd"><td><a href="mod_firehose.html#firehoseconnectionoutput">FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Capture traffic going out of the server on each connection</td></tr>
 <tr><td><a href="mod_firehose.html#firehoseproxyconnectioninput">FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Capture traffic coming into the back of mod_proxy</td></tr>
@@ -984,7 +983,8 @@ mandatés</td></tr>
 <tr><td><a href="mod_proxy_fcgi.html#proxyfcgibackendtype">ProxyFCGIBackendType FPM|GENERIC</a></td><td> FPM </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Spécifie le type de l'application FastCGI d'arrière-plan</td></tr>
 <tr class="odd"><td><a href="mod_proxy_fcgi.html#proxyfcgisetenvif">ProxyFCGISetEnvIf <var>conditional-expression</var>
     <var>environment-variable-name</var>
-    <var>value-expression</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow variables sent to FastCGI servers to be fixed up</td></tr>
+    <var>value-expression</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet d'adapter la valeur des variables envoyées aux serveurs
+FastCGI</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>jeu-caractères</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le jeu de caractères des listings FTP
 mandatés</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Les caractères génériques dans les noms de fichiers
@@ -1326,11 +1326,12 @@ non sécurisée</td></tr>
 OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">skip the OCSP responder certificates verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslocspnoverify">SSLOCSPNoverify <em>On/Off</em></a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Evite la vérification des certificats des répondeurs OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspproxyurl">SSLOCSPProxyURL <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set of trusted PEM encoded OCSP responder certificates</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile <em>file</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fournit un jeu de certificats de confiance du répondeur OCSP avec
+encodage PEM</td></tr>
 <tr><td><a href="mod_ssl.html#sslocsprespondertimeout">SSLOCSPResponderTimeout <em>secondes</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Délai d'attente pour les requêtes OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspresponsemaxage">SSLOCSPResponseMaxAge <em>secondes</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum autorisé pour les réponses OCSP</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew <em>secondes</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dérive temporelle maximale autorisée pour la validation des
