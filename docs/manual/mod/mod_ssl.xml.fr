@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210:1781580 (outdated) -->
+<!-- English Revision: 1781580 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -2749,6 +2749,42 @@ défaut, un nombre à usage unique est toujours présent dans les requêtes
 et il est comparé à celui de la réponse. Lorsque le répondeur n'utilise pas de
 nombre à usage unique (comme Microsoft OCSP Responder), cette directive
 doit être définie à <code>off</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOCSPNoverify</name>
+<description>Evite la vérification des certificats des répondeurs OCSP</description>
+<syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
+<default>SSLOCSPNoverify Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
+<usage>
+<p>Cette directive permet d'éviter la vérification des certificats
+des répondeurs OCSP, ce qui peut s'avérer utile lorsqu'on teste un serveur OCSP.</p>
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>SSLOCSPResponderCertificateFile</name>
+<description>Fournit un jeu de certificats de confiance du répondeur OCSP avec
+encodage PEM</description>
+<syntax>SSLOCSPResponderCertificateFile <em>file</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache,
+sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</compatibility>
+<usage>
+<p>Cette directive permet de définir un fichier contenant une liste de
+certificats de confiance du répondeur OCSP à utiliser au cours de la validation
+du certificat du répondeur OCSP. Les certificats fournis peuvent
+être considérés comme de confiance sans avoir à effectuer de vérifications
+supplémentaires. Ce processus de validation du certificat du répondeur OCSP
+intervient en général lorsque ce dernier est autosigné ou tout simplement absent
+de la réponse OCSP.</p>
 </usage>
 </directivesynopsis>
 
