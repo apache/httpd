@@ -29,22 +29,22 @@
 
 <summary>
 
-<p>Ce document est un compl&eacute;ment de la <a
-href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
-<module>mod_rewrite</module>. Il d&eacute;crit les changements apport&eacute;s aux r&egrave;gles
+<p>Ce document est un complément de la <a
+href="../mod/mod_rewrite.html">documentation de référence</a> du module
+<module>mod_rewrite</module>. Il décrit les changements apportés aux règles
 lorsqu'on utilise mod_rewrite dans les fichiers .htaccess, et comment
 travailler avec ces changements.</p>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
-<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
 <!-- <seealso><a href="access.html">Controlling access</a></seealso> -->
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
 <seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
+<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 </manualpage>
