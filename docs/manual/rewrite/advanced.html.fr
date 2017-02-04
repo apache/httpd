@@ -346,7 +346,7 @@ RewriteRule   "^/cheval/(.*)"   "/poney/$1" [E=<strong>rewritten:1</strong>]</pr
     contenu de cette variable d'environnement via une directive
     RewriteCond :</p>
 
-<pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}" =1</pre>
+<pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}" "=1"</pre>
 
 
     </dd>
