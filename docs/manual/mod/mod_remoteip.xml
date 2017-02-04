@@ -227,6 +227,7 @@ RemoteIPProxiesHeader X-Forwarded-By
 <syntax>RemoteIPProxyProtocol On|Optional|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>RemoteIPProxyProtocol is only available in httpd 2.4.26 and newer</compatibility>
 
 <usage>
     <p>The <directive>RemoteIPProxyProtocol</directive> enables or 

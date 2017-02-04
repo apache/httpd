@@ -138,7 +138,7 @@ typedef struct {
     int version;
     ap_input_mode_t mode;
     apr_bucket_brigade *bb;
-    apr_bucket_brigade *store_bb;
+    int peeking;
     int done;
 } remoteip_filter_context;
 
@@ -162,11 +162,11 @@ static void *create_remoteip_server_config(apr_pool_t *p, server_rec *s)
     remoteip_config_t *config = apr_pcalloc(p, sizeof *config);
     /* config->header_name = NULL;
      * config->proxies_header_name = NULL;
+     * config->proxy_protocol_enabled = NULL;
+     * config->proxy_protocol_optional = NULL;
+     * config->proxy_protocol_disabled = NULL;
+     * config->pp_optional = 0;
      */
-    config->proxy_protocol_enabled = NULL;
-    config->proxy_protocol_optional = NULL;
-    config->proxy_protocol_disabled = NULL;
-    config->pp_optional = 0;
     config->pool = p;
     return config;
 }
@@ -413,7 +413,7 @@ static const char *remoteip_enable_proxy_protocol(cmd_parms *cmd, void *config,
         rem_list[1] = &global_conf->proxy_protocol_optional;
     }
     else {
-        return apr_pstrcat(cmd->pool, "Unrecognized option for RemoteIPProxyProtocol `%s'", arg, NULL);
+        return apr_pstrcat(cmd->pool, "Unrecognized option for %s `%s'", cmd->cmd->name, arg, NULL);
     }
 
     for (addr = cmd->server->addrs; addr; addr = addr->next) {
@@ -1036,16 +1036,24 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
         return APR_ECONNABORTED;
     }
 
+    conn_conf = ap_get_module_config(f->c->conn_config, &remoteip_module);
+
     /* allocate/retrieve the context that holds our header */
     if (!ctx) {
         ctx = f->ctx = apr_palloc(f->c->pool, sizeof(*ctx));
         ctx->rcvd = 0;
         ctx->need = MIN_HDR_LEN;
         ctx->version = 0;
-        ctx->mode = AP_MODE_READBYTES;
         ctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
-        ctx->store_bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
         ctx->done = 0;
+        if (conn_conf->proxy_protocol_optional) {
+            ctx->mode = AP_MODE_SPECULATIVE;
+            ctx->peeking = 1;
+        }
+        else {
+            ctx->mode = AP_MODE_READBYTES;
+            ctx->peeking = 0;
+        }
     }
 
     if (ctx->done) {
@@ -1055,8 +1063,6 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
          */
         return ap_get_brigade(f->next, bb_out, mode, block, readbytes);
     }
-
-    conn_conf = ap_get_module_config(f->c->conn_config, &remoteip_module);
 
     /* try to read a header's worth of data */
     while (!ctx->done) {
@@ -1068,7 +1074,7 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             }
         }
         if (APR_BRIGADE_EMPTY(ctx->bb)) {
-            return APR_EOF;
+            return block == APR_NONBLOCK_READ ? APR_SUCCESS : APR_EOF;
         }
 
         while (!ctx->done && !APR_BRIGADE_EMPTY(ctx->bb)) {
@@ -1085,28 +1091,53 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             memcpy(ctx->header + ctx->rcvd, ptr, len);
             ctx->rcvd += len;
 
-            /* Put this bucket into our temporary storage brigade because
-               we may permit a request without a header. In that case, the
-               data in the temporary storage brigade just gets copied
-               to bb_out */
-            APR_BUCKET_REMOVE(b);
-            apr_bucket_setaside(b, f->c->pool);
-            APR_BRIGADE_INSERT_TAIL(ctx->store_bb, b);
+            apr_bucket_delete(b);
             psts = HDR_NEED_MORE;
 
             if (ctx->version == 0) {
                 /* reading initial chunk */
                 if (ctx->rcvd >= MIN_HDR_LEN) {
                     ctx->version = remoteip_determine_version(f->c, ctx->header);
-                    if (ctx->version < 0) {
-                        psts = HDR_MISSING;
+
+                    /* We've read enough to know that a header is present. In peek mode
+                       we purge the bb and can decide to step aside or switch to
+                       non-speculative read to consume the data */
+                    if (ctx->peeking) {
+                        apr_brigade_destroy(ctx->bb);
+
+                        if (ctx->version < 0) {
+                            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03512)
+                                          "RemoteIPProxyProtocol: PROXY header is missing from "
+                                          "request. Stepping aside.");
+                            ctx->bb = NULL;
+                            ctx->done = 1;
+                            return ap_get_brigade(f->next, bb_out, mode, block, readbytes);
+                        }
+                        else {
+                            /* Rest ctx to initial values */
+                            ctx->rcvd = 0;
+                            ctx->need = MIN_HDR_LEN;
+                            ctx->version = 0;
+                            ctx->bb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+                            ctx->done = 0;
+                            ctx->mode = AP_MODE_READBYTES;
+                            ctx->peeking = 0;
+
+                            ap_get_brigade(f->next, ctx->bb, ctx->mode, block,
+                                           ctx->need - ctx->rcvd);
+                        }
                     }
-                    else if (ctx->version == 1) {
-                        ctx->mode = AP_MODE_GETLINE;
-                        ctx->need = sizeof(proxy_v1);
-                    }
-                    else if (ctx->version == 2) {
-                        ctx->need = MIN_V2_HDR_LEN;
+                    else {
+                        if (ctx->version < 0) {
+                            psts = HDR_MISSING;
+                        }
+                        else if (ctx->version == 1) {
+                            ctx->mode = AP_MODE_GETLINE;
+                            ctx->need = sizeof(proxy_v1);
+                        }
+                        else if (ctx->version == 2) {
+                            ctx->need = MIN_V2_HDR_LEN;
+                        }
                     }
                 }
             }
@@ -1132,29 +1163,17 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                               "%d", ctx->version);
                 f->c->aborted = 1;
                 apr_brigade_destroy(ctx->bb);
-                apr_brigade_destroy(ctx->store_bb);
                 return APR_ECONNABORTED;
             }
 
             switch (psts) {
                 case HDR_MISSING:
-                    if (conn_conf->proxy_protocol_optional) {
-                        /* Same as DONE, but don't delete the bucket. Rather, put it
-                           into the temporary storgage brigade and move all of the data
-                           in temporary storage to the output brigade */
-                        ctx->done = 1;
-                        APR_BRIGADE_PREPEND(bb_out, ctx->store_bb);
-                        return APR_SUCCESS;
-                    }
-                    else {
-                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(03510)
-                                     "RemoteIPProxyProtocol: no valid PROXY header found");
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(03510)
+                                 "RemoteIPProxyProtocol: no valid PROXY header found");
                         /* fall through to error case */
-                    }
                 case HDR_ERROR:
                     f->c->aborted = 1;
                     apr_brigade_destroy(ctx->bb);
-                    apr_brigade_destroy(ctx->store_bb);
                     return APR_ECONNABORTED;
 
                 case HDR_DONE:
@@ -1162,22 +1181,15 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                     break;
 
                 case HDR_NEED_MORE:
-                    /* Do nothing - the content was already set aside */
                     break;
             }
         }
     }
 
     /* we only get here when done == 1 */
-    if (psts == HDR_DONE) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03511)
-                      "RemoteIPProxyProtocol: received valid PROXY header: %s:%hu",
-                      conn_conf->client_ip, conn_conf->client_addr->port);
-    }
-    else {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03512)
-                      "RemoteIPProxyProtocol: PROXY header was missing");
-    }
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c, APLOGNO(03511)
+                  "RemoteIPProxyProtocol: received valid PROXY header: %s:%hu",
+                  conn_conf->client_ip, conn_conf->client_addr->port);
 
     if (ctx->rcvd > ctx->need || !APR_BRIGADE_EMPTY(ctx->bb)) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(03513)
@@ -1186,15 +1198,12 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
                       ctx->rcvd, APR_BRIGADE_EMPTY(ctx->bb));
         f->c->aborted = 1;
         apr_brigade_destroy(ctx->bb);
-        apr_brigade_destroy(ctx->store_bb);
         return APR_ECONNABORTED;
     }
 
     /* clean up */
     apr_brigade_destroy(ctx->bb);
-    apr_brigade_destroy(ctx->store_bb);
     ctx->bb = NULL;
-    ctx->store_bb = NULL;
 
     /* now do the real read for the upper layer */
     return ap_get_brigade(f->next, bb_out, mode, block, readbytes);
@@ -1224,7 +1233,7 @@ static const command_rec remoteip_cmds[] =
                   "The filename to read the list of internal proxies, "
                   "see the RemoteIPInternalProxy directive"),
     AP_INIT_TAKE1("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
-                  RSRC_CONF, "Enable proxy-protocol handling (`on', `off')"),
+                  RSRC_CONF, "Enable PROXY protocol handling (`on', `off', `optional')"),
     { NULL }
 };
 
