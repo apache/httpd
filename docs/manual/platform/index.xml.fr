@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1220529 -->
+<!-- English Revision : 1329361 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <manualpage metafile="index.xml.meta">
   <parentdocument href="../"/>
 
-  <title>Notes sp&eacute;cifiques aux diff&eacute;rentes plateformes.</title>
+  <title>Notes spécifiques aux différentes plateformes.</title>
 
   <section id="win">
 
@@ -35,7 +35,7 @@
       <dt>Utilisation d'Apache</dt>
       <dd>
         <p>Ce document explique comment installer, configurer et
-	ex&eacute;cuter Apache 2.4 sous Microsoft Windows.</p>
+	exécuter Apache 2.4 sous Microsoft Windows.</p>
 
         <p>Voir : <a href="windows.html">Utilisation d'Apache avec Microsoft Windows</a></p>
       </dd>
@@ -44,7 +44,7 @@
     <dl>
       <dt>Compilation d'Apache</dt>
       <dd>
-        <p>Il y a de nombreux points importants &agrave; conna&icirc;tre avant de se
+        <p>Il y a de nombreux points importants à connaître avant de se
 	lancer dans la compilation d'Apache. Ce document en donne la
 	description.</p>
 
@@ -57,17 +57,17 @@
 
   <section id="unix">
 
-    <title>Syst&egrave;mes de type Unix</title>
+    <title>Systèmes de type Unix</title>
 
     <dl>
-      <dt>Syst&egrave;mes &agrave; base de paquets RPM (Redhat / CentOS / Fedora)</dt>
+      <dt>Systèmes à base de paquets RPM (Redhat / CentOS / Fedora)</dt>
       <dd>
         <p>Ce document explique comment installer, configurer et
-	ex&eacute;cuter Apache 2.4 sur des syst&egrave;mes qui supportent le format de
+	exécuter Apache 2.4 sur des systèmes qui supportent le format de
 	paquet RPM.</p>
 
         <p>Voir : <a href="rpm.html">Utilisation d'Apache avec les
-	syst&egrave;mes &agrave; base de paquets RPM</a></p>
+	systèmes à base de paquets RPM</a></p>
       </dd>
     </dl>
 
@@ -81,8 +81,8 @@
       <dt>Novell NetWare</dt>
       <dd>
         <p>Ce document explique comment installer, configurer et
-	ex&eacute;cuter Apache 2.4 sous Novell NetWare versions 5.1 et
-	sup&eacute;rieures.</p>
+	exécuter Apache 2.4 sous Novell NetWare versions 5.1 et
+	supérieures.</p>
 
         <p>Voir : <a href="netware.html">Utilisation d'Apache avec Novell NetWare</a></p>
       </dd>
@@ -91,16 +91,16 @@
     <dl>
       <dt>EBCDIC</dt>
       <dd>
-        <p>La version 1.3 du serveur HTTP Apache est la premi&egrave;re &agrave;
-	avoir &eacute;t&eacute; port&eacute;e vers une machine de type mainframe (non-ASCII)
-	qui utilisait le jeu de caract&egrave;res EBCDIC comme jeu de
-	caract&egrave;res natif.</p>
+        <p>La version 1.3 du serveur HTTP Apache est la première à
+	avoir été portée vers une machine de type mainframe (non-ASCII)
+	qui utilisait le jeu de caractères EBCDIC comme jeu de
+	caractères natif.</p>
 
         <note type="warning"><strong>Avertissement :</strong>Ce document
-	n'a pas fait l'objet d'une mise &agrave; jour pour int&eacute;grer les
-	modifications intervenues &agrave; partir de la version 2.4 du serveur
+	n'a pas fait l'objet d'une mise à jour pour intégrer les
+	modifications intervenues à partir de la version 2.4 du serveur
 	HTTP Apache. Certaines des informations qu'il contient sont
-	toujours pertinentes, mais il est conseill&eacute; de les utiliser avec
+	toujours pertinentes, mais il est conseillé de les utiliser avec
 	prudence.</note>
 
         <p>Voir : <a href="ebcdic.html">Le portage d'Apache vers EBCDIC</a></p>
