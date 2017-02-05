@@ -185,6 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/r1779077
      2.4.x patch: http://home.apache.org/~jim/patches/brotli-2.4.patch
      +1: jim, jorton,
+     jailletc36: doc should also be back-ported (r1779091 + r1779699)
 
   *) mod_auth_digest: Use anonymous shm by default, fall back on name-based
      trunk patch: http://svn.apache.org/r1684636
