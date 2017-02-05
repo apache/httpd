@@ -28,6 +28,8 @@
 <a href="../ko/platform/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/platform/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#win">Microsoft Windows</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#unix">Systèmes de type Unix</a></li>
