@@ -58,9 +58,10 @@ for 2.2.x versions</compatibility>
     </dd>
     <dt>Non-enabled modules</dt><dd>
     <p>To use it with a libxml2-based module that isn't explicitly enabled for
-    mod_xml2enc, you will have to configure the filter chain yourself.
-    So to use it with a filter foo provided by a module mod_foo to
-    improve the latter's i18n support with HTML and XML, you could use</p>
+    mod_xml2enc, you will have to configure the filter chain yourself.  So to
+    use it with a filter <strong>foo</strong> provided by a module
+    <strong>mod_foo</strong> to improve the latter's i18n support with HTML and
+    XML, you could use</p>
     <pre><code>
     FilterProvider iconv    xml2enc Content-Type $text/html
     FilterProvider iconv    xml2enc Content-Type $xml
@@ -68,7 +69,7 @@ for 2.2.x versions</compatibility>
     FilterProvider markup   foo Content-Type $xml
     FilterChain     iconv markup
     </code></pre>
-    <p>mod_foo will now support any character set supported by either
+    <p><strong>mod_foo</strong> will now support any character set supported by either
     (or both) of libxml2 or apr_xlate/iconv.</p>
     </dd></dl>
 </section>
